@@ -1148,11 +1148,11 @@ const Landing: React.FC = () => {
                             <div className="relative flex flex-col items-center perspective-1000 pb-16">
                                 {/* Base Image */}
                                 <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(16,185,129,0.25)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
-                                    <img src="/imgs/dash.png" alt="Dashboard Tổng Quan" className="w-full rounded-2xl" />
+                                    <img src="/imgs/dash1.png" alt="Dashboard Tổng Quan" className="w-full rounded-2xl" />
                                 </div>
                                 {/* Stacked Image */}
                                 <div className="absolute -bottom-4 md:-bottom-8 md:-left-8 border border-white/10 rounded-3xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.9)] w-[85%] sm:w-[70%] z-30 hover:-translate-y-3 hover:scale-[1.02] hover:z-50 transition-all duration-500">
-                                    <img src="/imgs/dash1.png" alt="Biểu Diễn Số Liệu" className="w-full rounded-2xl" />
+                                    <img src="/imgs/dash.png" alt="Biểu Diễn Số Liệu" className="w-full rounded-2xl" />
                                 </div>
                             </div>
                         </FadeIn>
