@@ -95,8 +95,8 @@ const PricingCard = ({ tier, price, desc, features, highlight = false, delay = 0
 }) => (
     <FadeIn delay={delay} className="h-full">
         <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${highlight
-                ? 'pricing-highlight-glow hover:-translate-y-3 hover:scale-[1.02]'
-                : 'bg-white/10 hover:-translate-y-1'
+            ? 'pricing-highlight-glow hover:-translate-y-3 hover:scale-[1.02]'
+            : 'bg-white/10 hover:-translate-y-1'
             }`} style={highlight ? {
                 background: 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444, #a855f7, #f59e0b)',
                 backgroundSize: '300% 300%',
@@ -141,8 +141,8 @@ const PricingCard = ({ tier, price, desc, features, highlight = false, delay = 0
                     ))}
                 </ul>
                 <button onClick={onClick} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${highlight
-                        ? 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-black hover:-translate-y-0.5'
-                        : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                    ? 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:-translate-y-0.5'
+                    : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
                     }`}>
                     {price === 'Liên hệ' ? 'Liên hệ tư vấn' : 'Bắt đầu ngay'}
                 </button>
@@ -254,8 +254,8 @@ const Landing: React.FC = () => {
                     100% { background-position: 200% center; }
                 }
                 @keyframes glow-pulse {
-                    0%,100% { box-shadow: 0 0 20px 4px rgba(245,158,11,0.35), 0 0 60px 10px rgba(234,88,12,0.15); }
-                    50% { box-shadow: 0 0 35px 8px rgba(245,158,11,0.6), 0 0 80px 20px rgba(234,88,12,0.25); }
+                    0%,100% { box-shadow: 0 0 10px 2px rgba(245,158,11,0.15); }
+                    50% { box-shadow: 0 0 20px 4px rgba(245,158,11,0.4); }
                 }
                 @keyframes float-y {
                     0%,100% { transform: translate3d(0,0px,0); }
@@ -274,6 +274,10 @@ const Landing: React.FC = () => {
                     0%,100% { transform: translate3d(0,0,0) rotate(0deg); opacity:0.8; }
                     50% { transform: translate3d(0,-8px,0) rotate(180deg); opacity:1; }
                 }
+                @keyframes spin-slow {
+                    from { transform: translate(-50%, -50%) rotate(0deg); }
+                    to { transform: translate(-50%, -50%) rotate(360deg); }
+                }
 
                 /* ── GPU hints ── */
                 .aurora-1, .aurora-2, .aurora-3 { will-change: transform, opacity; }
@@ -286,18 +290,19 @@ const Landing: React.FC = () => {
                     -webkit-text-fill-color: transparent;
                     animation: shimmer-sweep 4s linear infinite;
                 }
-                .glow-btn { animation: glow-pulse 2s ease-in-out infinite; }
+                .glow-btn { animation: glow-pulse 3s ease-in-out infinite; }
                 .aurora-1 { animation: aurora-1 18s ease-in-out infinite; }
                 .aurora-2 { animation: aurora-2 24s ease-in-out infinite; }
                 .aurora-3 { animation: aurora-3 30s ease-in-out infinite; }
                 .float-y { animation: float-y 6s ease-in-out infinite; }
                 .live-dot { animation: live-dot 1.4s ease-in-out infinite; }
+                .animate-spin-slow { animation: spin-slow 8s linear infinite; }
 
                 /* Disable expensive animations on mobile to prevent jank */
                 @media (max-width: 767px) {
                     .aurora-1, .aurora-2, .aurora-3 { animation: none !important; opacity: 0.08; }
                     .float-y { animation: none !important; }
-                    .glow-btn { animation: none !important; box-shadow: 0 0 20px 4px rgba(245,158,11,0.3); }
+                    .glow-btn { animation: none !important; box-shadow: 0 0 10px 2px rgba(245,158,11,0.2); }
                     .pricing-highlight-glow { animation: none !important; }
                     .shimmer-text { animation: shimmer-sweep 6s linear infinite; }
                 }
@@ -362,8 +367,8 @@ const Landing: React.FC = () => {
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#080c14]/90 backdrop-blur-xl shadow-[0_1px_0_0_rgba(245,158,11,0.15),0_8px_32px_rgba(0,0,0,0.6)]' : 'bg-transparent'}`}>
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                        <div className="relative">
-                            <img src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30 float-y" />
+                        <div className="relative float-y">
+                            <img src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30" />
                             <div className="absolute -inset-1 rounded-[18px] bg-amber-500/20 blur-md -z-10" />
                         </div>
                         <span className="text-xl font-black tracking-tight shimmer-text">
@@ -372,7 +377,7 @@ const Landing: React.FC = () => {
                     </div>
 
                     <div className="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-400">
-                        {[['#features', 'Tính Năng'], ['#builder', 'Email Builder'], ['#flow', 'Flow Builder'], ['#ai-segment', 'AI Phân Tích'], ['#campaign-tracking', 'Web Analytics'], ['#pricing', 'Giá']].map(([href, label]) => (
+                        {[['#builder', 'Email Builder'], ['#flow', 'Flow Builder'], ['#analytics', 'Web Analytics'], ['#ai-segment', 'AI Phân Tích'], ['#ai-space', 'AI Workspace'], ['#dashboard', 'Báo Cáo']].map(([href, label]) => (
                             <a key={href} href={href} className="group relative hover:text-white transition-colors duration-300">
                                 {label}
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-amber-400 to-orange-500 group-hover:w-full transition-all duration-300 rounded-full" />
@@ -386,9 +391,9 @@ const Landing: React.FC = () => {
                             Liên Hệ
                         </button>
                         <button onClick={() => setIsFormOpen(true)}
-                            className="glow-btn flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-black px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
-                            Dùng Thử Nền Tảng
-                            <ArrowRight className="w-4 h-4" />
+                            className="glow-btn flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
+                            <span >Get Started</span>
+                            <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         </button>
                     </div>
                 </div>
@@ -405,32 +410,33 @@ const Landing: React.FC = () => {
                     </motion.div>
 
                     {/* Heading */}
-                    <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }}
-                        className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-8 w-full">
-                        <span className="block text-white mb-2 md:mb-4" style={{ textShadow: '0 0 80px rgba(255,255,255,0.08)' }}>DIGITAL AI</span>
-                        <span className="shimmer-text block pb-2">
+                    <motion.h1 initial={{ opacity: 0, y: 40, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-8 w-full relative z-10">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/10 blur-[60px] -z-10 rounded-full pointer-events-none" />
+                        <span className="block text-white mb-2 md:mb-4" style={{ textShadow: '0 0 40px rgba(245,158,11,0.4), 0 0 15px rgba(245,158,11,0.2)' }}>DIGITAL AI</span>
+                        <span className="shimmer-text block pb-2 inline-block">
                             MARKETING AUTOMATION
                         </span>
                     </motion.h1>
 
-                    <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}
+                    <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
                         className="text-lg md:text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
                         Hệ thống Automation đa thông điệp đã sẵn sàng. Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-200">Email, Zalo, Meta &amp; AI</strong> — Chạm đúng người, đúng thời điểm.
                     </motion.p>
 
                     {/* CTA */}
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                        className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-16 w-full">
                         <button onClick={() => setIsFormOpen(true)}
-                            className="glow-btn group relative flex items-center gap-3 bg-gradient-to-r from-amber-400 to-orange-500 text-black px-8 py-4 rounded-2xl text-base font-black hover:-translate-y-1 transition-transform duration-300 overflow-hidden">
-                            <span className="relative z-10 flex items-center gap-3">
+                            className="w-full sm:w-auto glow-btn group relative flex items-center justify-center gap-2 md:gap-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-black hover:-translate-y-1 transition-transform duration-300 overflow-hidden">
+                            <span className="relative z-10 flex items-center gap-2 md:gap-3">
                                 Bắt Đầu Tăng Trưởng
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                             </span>
                             <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
-                        <button onClick={() => setIsFormOpen(true)} className="flex items-center gap-3 px-8 py-4 rounded-2xl text-base font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:-translate-y-0.5 transition-all duration-300 backdrop-blur-sm">
-                            <Play className="w-5 h-5 text-amber-400" />
+                        <button onClick={() => setIsFormOpen(true)} className="w-full sm:w-auto justify-center flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:-translate-y-0.5 transition-all duration-300 backdrop-blur-sm">
+                            <Play className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
                             Xem Demo Thực Tế
                         </button>
                     </motion.div>
@@ -444,41 +450,60 @@ const Landing: React.FC = () => {
                             { name: 'Zalo ZNS', icon: LOGOS.zalo },
                             { name: 'Meta Messenger', icon: LOGOS.meta },
                             { name: 'Google Sheets', icon: 'https://mailmeteor.com/logos/assets/PNG/Google_Sheets_Logo_512px.png' },
+                            { name: 'Gemini AI', icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Google_Gemini_icon_2025.svg/250px-Google_Gemini_icon_2025.svg.png' },
                             { name: 'MISA CRM', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlIpztniIEN5ZYvLlwwqBvhzdodvu2NfPSbg&s' }
                         ].map((plat) => (
-                            <div key={plat.name} className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                            <div key={plat.name} className="flex items-center gap-2 hover:-translate-y-0.5 transition-transform duration-300">
                                 <img src={plat.icon} alt={plat.name} className="h-7 md:h-8 object-contain rounded-md" />
-                                <span className="font-bold text-slate-300 hidden sm:block text-sm">{plat.name}</span>
+                                <span className="font-bold text-slate-300 hidden sm:block text-sm opacity-90">{plat.name}</span>
                             </div>
                         ))}
                     </motion.div>
                 </div>
 
                 {/* Hero Image — Holographic Frame */}
-                <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: isMobile ? 0.6 : 1.0, delay: isMobile ? 0.3 : 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="w-full max-w-6xl mx-auto mt-16 md:mt-20 relative px-4">
-                    {/* Amber-orange glow border — desktop only (animation cost) */}
-                    <div className="hidden md:block absolute -inset-[2px] rounded-[30px] opacity-60" style={{
-                        background: 'linear-gradient(90deg, #fbbf24, #f97316, #ea580c, #fbbf24)',
-                        backgroundSize: '200% 200%',
-                        animation: 'border-flow 4s linear infinite',
-                        filter: 'blur(3px)'
-                    }} />
-                    {/* Mobile: simple static border */}
-                    <div className="md:hidden absolute -inset-[1px] rounded-[30px] opacity-50 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500" style={{ filter: 'blur(2px)' }} />
-                    <div className="relative rounded-[28px] border border-white/10 shadow-[0_20px_80px_-20px_rgba(0,0,0,0.9)] md:shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)] overflow-hidden bg-[#161b22] p-2">
-                        <img src="/imgs/home.jpg" alt="DOM Marketing Overview" className="w-full h-auto rounded-3xl object-cover" loading="eager" />
-                    </div>
-                    {/* Floating badges */}
-                    <div className="absolute -top-4 right-4 md:right-8 flex items-center gap-2 bg-[#0a0f1a]/90 border border-emerald-500/40 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-sm">
-                        <span className="live-dot w-2 h-2 rounded-full bg-emerald-400" />
-                        <span className="text-emerald-400 text-xs font-bold">Live System</span>
-                    </div>
-                    <div className="absolute -bottom-4 left-4 md:left-8 flex items-center gap-2 bg-[#0a0f1a]/90 border border-amber-500/40 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-[0_0_20px_rgba(245,158,11,0.2)] backdrop-blur-sm">
-                        <Zap className="w-3 h-3 text-amber-400" />
-                        <span className="text-amber-400 text-xs font-bold">98% Inbox Rate</span>
-                    </div>
-                </motion.div>
+                <div style={{ perspective: '1200px' }} className="w-full max-w-6xl mx-auto mt-16 md:mt-20 relative px-4 z-20">
+                    <motion.div initial={{ opacity: 0, y: 80, rotateX: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }} transition={{ duration: 1.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        className="relative w-full rounded-[30px] p-[2px] group z-10"
+                    >
+                        {/* The Actual Image Container */}
+                        <div className="relative z-10 rounded-[28px] overflow-hidden bg-[#161b22] px-[1px] py-[1px] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.9)] md:shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]" style={{ zIndex: 10 }}>
+                            <img src="/imgs/home.jpg" alt="DOM Marketing Overview" className="w-full h-auto rounded-3xl object-cover" loading="eager" />
+                        </div>
+
+                        {/* Spinning Light Beams for Desktop */}
+                        <div className="hidden md:block absolute -inset-[2px] rounded-[32px] overflow-hidden z-0">
+                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow opacity-90" style={{
+                                backgroundImage: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, transparent 40%, rgba(245,158,11,0.5) 50%, #f97316 55%, transparent 60%, transparent 100%)'
+                            }} />
+                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow opacity-90" style={{
+                                backgroundImage: 'conic-gradient(from 180deg at 50% 50%, transparent 0%, transparent 40%, rgba(245,158,11,0.5) 50%, #f97316 55%, transparent 60%, transparent 100%)'
+                            }} />
+                        </div>
+                        {/* Outer blurred glow */}
+                        <div className="hidden md:block absolute -inset-[2px] rounded-[32px] overflow-hidden blur-[12px] z-0 opacity-60 mix-blend-screen">
+                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow" style={{
+                                backgroundImage: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, transparent 40%, #f59e0b 50%, #f97316 55%, transparent 60%, transparent 100%)'
+                            }} />
+                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow" style={{
+                                backgroundImage: 'conic-gradient(from 180deg at 50% 50%, transparent 0%, transparent 40%, #f59e0b 50%, #f97316 55%, transparent 60%, transparent 100%)'
+                            }} />
+                        </div>
+
+                        {/* Mobile fallback static border */}
+                        <div className="md:hidden absolute -inset-[1px] rounded-[30px] opacity-80 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 blur-[3px] z-0" />
+
+                        {/* Floating badges */}
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }} className="absolute -top-4 right-4 md:right-8 flex items-center gap-2 bg-[#0a0f1a]/90 border border-emerald-500/40 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-sm z-20">
+                            <span className="live-dot w-2 h-2 rounded-full bg-emerald-400" />
+                            <span className="text-emerald-400 text-xs font-bold">Live System</span>
+                        </motion.div>
+                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.4, duration: 0.6 }} className="absolute -bottom-4 left-4 md:left-8 flex items-center gap-2 bg-[#0a0f1a]/90 border border-amber-500/40 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] backdrop-blur-sm z-20 float-y">
+                            <Zap className="w-3 h-3 text-amber-400" />
+                            <span className="text-amber-400 text-xs font-bold">98% Inbox Rate</span>
+                        </motion.div>
+                    </motion.div>
+                </div>
             </section>
 
             {/* ── Stats Bar ── */}
@@ -560,7 +585,8 @@ const Landing: React.FC = () => {
                                 <span className="text-rose-400">Siêu Mượt, Siêu Tốc</span>
                             </h2>
                             <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                Loại bỏ hoàn toàn sự phụ thuộc vào IT. Tạo Email Template tuyệt đẹp bằng trực giác với trình kéo thả (Drag & Drop) thông minh. Nội dung hiển thị hoàn hảo trên cả Mobile & Desktop.
+                                <strong className="text-rose-400/90 font-medium block mb-2 italic">Marketing loay hoay thiết kế Email chuyên nghiệp? Hay đành "chữa cháy" bằng một bức ảnh đơn lẻ dễ bay vào hòm thư Spam?</strong>
+                                Yên tâm, công cụ kéo thả (Drag & Drop) thông minh sẽ giải quyết mọi rắc rối. Giờ đây bạn có thể dễ dàng "lắp ráp" các tài liệu tiếp thị lộng lẫy, chuẩn Responsive mà không tốn lấy một giọt mồ hôi.
                             </p>
                             <ul className="space-y-4 mb-10">
                                 {[
@@ -593,12 +619,13 @@ const Landing: React.FC = () => {
                                 <Workflow className="w-3.5 h-3.5" />
                                 Automation Flow Tree
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-                                Rẽ Nhánh Kịch Bản<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Theo Chạm Hành Vi</span>
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 md:mb-6 leading-tight">
+                                Lắp Ráp Kịch Bản <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Trong Vài Phút</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                Khách hàng mở mail? Khách hàng lờ tin nhắn? Kịch bản rẽ nhánh tự động giải quyết mọi tình huống. Kết hợp "Wait Conditions" để tạo ra chuỗi sự kiện nuôi dưỡng lead tự nhiên đỉnh cao.
+                            <p className="text-slate-400 text-base md:text-lg mb-6 leading-relaxed">
+                                <strong className="text-rose-400/90 font-medium block mb-2 italic">Đội ngũ của bạn đang kiệt sức, sai sót vì ngày ngày phải gửi Mail, Zalo, chầu chực trả lời tin nhắn thủ công?</strong>
+                                Đã đến lúc hệ thống làm thay con người. Với giao diện trực quan, bạn có thể thiết lập hàng loạt chiến dịch chăm sóc tinh vi bằng những thao tác kéo thả siêu cơ bản – tự động hóa x100 giờ làm việc.
                             </p>
                             <div className="grid grid-cols-2 gap-4">
                                 {[
@@ -838,7 +865,7 @@ const Landing: React.FC = () => {
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
                                 Trợ Lý Ảo AI<br />
-                                <span className="text-purple-400">Thông Minh Như Chuyên Gia</span>
+                                <span className="text-purple-400 whitespace-nowrap">Thông Minh Như Chuyên Gia</span>
                             </h2>
                             <p className="text-slate-400 text-lg mb-10 leading-relaxed">
                                 Train AI từ tài liệu nội bộ, website của bạn. Thiết lập nền tảng kiến thức (Knowledge Base) thông minh, trả lời trực tiếp thắc mắc Khách hàng 24/7.
@@ -926,19 +953,26 @@ const Landing: React.FC = () => {
                                     ))}
                                 </div>
                             </div>
-                            {/* Desktop stacked */}
-                            <div className="hidden lg:block relative flex flex-col items-center pb-16 perspective-1000">
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_0_80px_-20px_rgba(99,102,241,0.3)] group hover:-translate-y-2 transition-all duration-500 w-full sm:w-[85%] z-10 self-start hover:z-40">
-                                    <img src="/imgs/phan_tich_ai_1.png" alt="Phân Tích AI Segment" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                            {/* Desktop stacked new layout */}
+                            <div className="hidden lg:block relative flex flex-col items-center pb-20 perspective-1000 mt-4">
+                                {/* The Big Main Image */}
+                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(99,102,241,0.4)] group hover:-translate-y-2 transition-all duration-500 w-full z-20 self-center hover:z-[60]">
+                                    <img src="/imgs/phan_tich_ai_3.png" alt="Phân Tích Độ Chính Xác" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.8)] group hover:-translate-y-2 transition-all duration-500 w-[80%] sm:w-[70%] -mt-12 sm:-mt-20 self-end z-20 hover:z-40">
-                                    <img src="/imgs/phan_tich_ai_2.png" alt="Phân Tích Chủ Đề" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(99,102,241,0.5)] group hover:-translate-y-2 transition-all duration-500 w-[85%] sm:w-[75%] -mt-10 sm:-mt-16 self-start z-30 hover:z-50">
+
+                                {/* Stacked under it, offset slightly left */}
+                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.8)] group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 self-start z-10 hover:z-[60]">
                                     <img src="/imgs/thauhieu.png" alt="Thấu Hiểu Khách Hàng" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="absolute bottom-[-2%] right-0 md:-right-4 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] group hover:-translate-y-2 transition-all duration-500 w-[45%] sm:w-[38%] z-40 hover:z-50">
-                                    <img src="/imgs/phan_tich_ai_3.png" alt="Phân Tích Độ Chính Xác" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+
+                                {/* Floating Top Right */}
+                                <div className="absolute top-[-8%] right-[-5%] border border-white/10 rounded-3xl p-1.5 bg-[#161b22] shadow-[0_30px_60px_-10px_rgba(0,0,0,0.9)] group hover:-translate-y-2 transition-all duration-500 w-[45%] z-30 hover:z-[60]">
+                                    <img src="/imgs/phan_tich_ai_1.png" alt="Phân Tích AI Segment" className="w-full h-auto rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                </div>
+
+                                {/* Floating Bottom Center/Right */}
+                                <div className="absolute bottom-[2%] right-[5%] border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(99,102,241,0.6)] group hover:-translate-y-2 transition-all duration-500 w-[55%] z-40 hover:z-[60]">
+                                    <img src="/imgs/phan_tich_ai_2.png" alt="Phân Tích Chủ Đề" className="w-full h-auto rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -952,11 +986,12 @@ const Landing: React.FC = () => {
                                 Cụm Hành Vi (AI Segment)
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-                                Phân Tích &amp; Thấu Hiểu<br />
+                                <span className="whitespace-nowrap">Phân Tích &amp; Thấu Hiểu</span><br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Từng Khách Hàng</span>
                             </h2>
                             <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                Đào sâu vào hội thoại để nhận diện bức tranh tổng thể. AI Tự động phân loại luồng khách hàng (Segmentation) thành nhóm "tiềm năng", "đang do dự" – và gợi ý ngay kịch bản chăm sóc tiếp theo cho bạn.
+                                <strong className="text-rose-400/90 font-medium block mb-2 italic">Bắn tin nhắn rác hàng loạt và lãng phí hàng triệu đồng cho SMS, ZNS cực kỳ vô ích mỗi tháng?</strong>
+                                Đừng ép khách hàng chặn bạn. AI đào sâu vào hội thoại, đếm nhịp tương tác để tự định lượng mức độ "tiềm năng" hay "do dự" của khách. Gửi đúng thông điệp, đúng người – x3 tỷ lệ chốt sale!
                             </p>
                             <div className="space-y-4 mb-4">
                                 {[
@@ -994,10 +1029,11 @@ const Landing: React.FC = () => {
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
                                 Không Gian AI <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400">Độc Lập Cho Phòng Ban</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400 whitespace-nowrap">Độc Lập Cho Phòng Ban</span>
                             </h2>
                             <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                AI Space chuyên nghiệp đáp ứng nhu cầu doanh nghiệp: Huấn luyện kiến thức riêng lẻ cho phòng Nhân sự, Sale hay Marketing. Với thiết lập Knowledge Base khắt khe, AI sẽ đóng vai trò chuyên môn cực cao.
+                                <strong className="text-amber-400/90 font-medium block mb-2 italic">Nhân sự cạn kiệt ý tưởng, tư vấn nhầm lẫn? Khách hàng bức xúc vì chờ đợi trả lời quá lâu?</strong>
+                                Đã đến lúc "thuê" một nhân sự AI xuất sắc. Phân chia rõ ràng AI chuyên gia Sale - Marketing - CSKH. Được huấn luyện khắt khe dưới tiêu chuẩn Knowledge Base đóng, triệt tiêu tình trạng AI bịa chuyện, làm việc xuyên đêm 24/7.
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -1046,6 +1082,64 @@ const Landing: React.FC = () => {
                                 {/* Floating Bottom-Left */}
                                 <div className="absolute bottom-[-5%] -left-2 md:-left-6 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.9)] w-[45%] sm:w-[40%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
                                     <img src="/imgs/AI GROUP (5).png" alt="Code Mode" className="w-full rounded-xl" />
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Dashboard & Reporting ── */}
+            <section id="dashboard" className="py-24 px-6 relative z-10 overflow-hidden bg-[#080c14]">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 to-transparent pointer-events-none" />
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
+                    {/* Content */}
+                    <div className="w-full lg:w-[45%] z-20">
+                        <FadeIn from="right">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                <BarChart3 className="w-3.5 h-3.5" />
+                                Theo dõi Real-time
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                                Báo Cáo Thông Minh <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Kiểm Soát Mọi Điểm Chạm</span>
+                            </h2>
+                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                                <strong className="text-emerald-400/90 font-medium block mb-2 italic">Mù mờ về số liệu thực tế? Phải đợi đến cuối tháng rà soát lại mới vỡ lẽ chiến dịch đang bốc hơi hàng chục triệu đồng?</strong>
+                                Làm chủ dòng chảy dữ liệu. Nắm bắt toàn bộ bức tranh hiệu suất trải dài từ tần suất tương tác Website, tốc độ chốt đơn của AI, đến tỷ lệ phản hồi Zalo OA/Email với độ trễ gần như bằng 0.
+                            </p>
+
+                            <div className="space-y-4 mb-4">
+                                {[
+                                    { t: "Dashboard Tổng Quan", d: "Mọi chỉ số cốt lõi từ Website, Zalo, Meta... hội tụ trên một màn hình duy nhất." },
+                                    { t: "Biểu Đồ Trực Quan", d: "Đánh giá sức khỏe chiến dịch với đa dạng loại biểu đồ trực quan, dễ hiểu." },
+                                    { t: "Triết Xuất Chi Tiết", d: "Truy vết tăng trưởng, cập nhật sự kiện hàng ngày theo thời gian thực." }
+                                ].map((box, i) => (
+                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-colors">
+                                        <div className="mt-1 w-6 h-6 rounded border border-emerald-500/40 bg-emerald-500/20 flex shrink-0 items-center justify-center">
+                                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-400">{box.d}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </FadeIn>
+                    </div>
+
+                    {/* Visual Gallery */}
+                    <div className="w-full lg:w-[55%] relative">
+                        <FadeIn delay={0.2} from="left">
+                            <div className="relative flex flex-col items-center perspective-1000 pb-16">
+                                {/* Base Image */}
+                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(16,185,129,0.25)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                                    <img src="/imgs/dash.png" alt="Dashboard Tổng Quan" className="w-full rounded-2xl" />
+                                </div>
+                                {/* Stacked Image */}
+                                <div className="absolute -bottom-4 md:-bottom-8 md:-left-8 border border-white/10 rounded-3xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.9)] w-[85%] sm:w-[70%] z-30 hover:-translate-y-3 hover:scale-[1.02] hover:z-50 transition-all duration-500">
+                                    <img src="/imgs/dash1.png" alt="Biểu Diễn Số Liệu" className="w-full rounded-2xl" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -1135,13 +1229,18 @@ const Landing: React.FC = () => {
                                 <span className="live-dot w-2 h-2 rounded-full bg-white" />
                                 <span className="text-white text-xs font-bold uppercase tracking-widest">Sẵn Sàng Tăng Trưởng</span>
                             </div>
-                            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight" style={{ textShadow: '0 0 40px rgba(255,255,255,0.2)' }}>
-                                Tăng Trưởng Cùng<br />Hệ Thống AI DIGITAL VISION
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-white/90 mb-6 leading-tight tracking-tight">
+                                Tăng Trưởng Cùng Hệ Thống <br />
+                                <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white block mt-2" style={{ textShadow: '0 0 40px rgba(255,255,255,0.4), 0 0 15px rgba(255,255,255,0.2)' }}>
+                                    AI DIGITAL VISION
+                                </span>
                             </h2>
-                            <p className="text-white/90 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">Bắt đầu khám phá sức mạnh của Automation Đa Kênh. Miễn phí setup, đội ngũ chuyên gia hỗ trợ bạn từng bước.</p>
+                            <p className="text-white/80 text-base md:text-lg mb-12 max-w-xl mx-auto font-medium leading-relaxed">
+                                Bắt đầu khám phá sức mạnh của Automation Đa Kênh. Miễn phí setup, đội ngũ chuyên gia hỗ trợ bạn từng bước.
+                            </p>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <button onClick={() => setIsFormOpen(true)} className="group flex items-center gap-3 bg-white text-orange-600 px-10 py-4 rounded-2xl text-lg font-black shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.5)] hover:-translate-y-1 hover:scale-105 transition-all duration-300">
-                                    <Rocket className="w-5 h-5 text-orange-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> Đăng Ký Trải Nghiệm
+                                <button onClick={() => setIsFormOpen(true)} className="group w-full sm:w-auto flex items-center justify-center gap-2 md:gap-3 bg-white text-orange-600 px-6 md:px-10 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-lg font-black shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.5)] hover:-translate-y-1 hover:scale-105 transition-all duration-300">
+                                    <Rocket className="w-4 h-4 md:w-5 md:h-5 text-orange-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> Đăng Ký Trải Nghiệm
                                 </button>
                             </div>
                         </FadeIn>
@@ -1164,7 +1263,7 @@ const Landing: React.FC = () => {
                                 <span className="text-xl font-black tracking-tight shimmer-text">DOMATION</span>
                             </div>
                             <p className="text-slate-600 text-sm leading-relaxed mb-5">Nền tảng tự động hoá marketing đa kênh. Automation flow, AI chatbot, Email Drag Drop siêu việt.</p>
-                            <p className="text-xs text-slate-700">© {new Date().getFullYear()} IDEAS Institute. All rights reserved.</p>
+                            <p className="text-xs text-slate-700">© {new Date().getFullYear()} DOM Marketing. All rights reserved.</p>
                         </div>
                         {[
                             { title: 'Sản Phẩm', links: [['#features', 'Email Template Builder'], ['#builder', 'Email Builder'], ['#ai', 'Chatbot Meta AI'], ['#campaign-tracking', 'Web Tracking Pixel'], ['#flow', 'Flow Builder']] },
@@ -1267,7 +1366,7 @@ const Landing: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <button disabled={formStatus === 'submitting'} type="submit" className="w-full mt-6 bg-gradient-to-r from-amber-400 to-orange-500 text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-70">
+                                        <button disabled={formStatus === 'submitting'} type="submit" className="w-full mt-6 bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-70">
                                             {formStatus === 'submitting' ? 'Đang gửi...' : 'Gửi Yêu Cầu Demo'}
                                             {formStatus !== 'submitting' && <ArrowRight className="w-5 h-5" />}
                                         </button>
