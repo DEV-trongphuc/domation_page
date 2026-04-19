@@ -424,7 +424,7 @@ const Landing: React.FC = () => {
 
                     {/* Heading */}
                     <motion.h1 initial={{ opacity: 0, y: 40, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-8 w-full relative z-10">
+                        className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.2] md:leading-[1.1] mb-8 w-full relative z-10">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/10 blur-[60px] -z-10 rounded-full pointer-events-none" />
                         <span className="block text-white mb-2 md:mb-4" style={{ textShadow: '0 0 40px rgba(245,158,11,0.4), 0 0 15px rgba(245,158,11,0.2)' }}>DIGITAL AI</span>
                         <span className="shimmer-text block pb-2 inline-block">
@@ -663,10 +663,10 @@ const Landing: React.FC = () => {
                             <div className="block lg:hidden">
                                 <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
                                     {[
-                                        { src: '/imgs/flow_mail.png', alt: 'Phân nhánh kịch bản' },
-                                        { src: '/imgs/flowstep_track.png', alt: 'Theo dõi bước flow' },
                                         { src: '/imgs/kichban.png', alt: 'Kịch bản 1' },
                                         { src: '/imgs/kichban2.png', alt: 'Kịch bản 2' },
+                                        { src: '/imgs/flow_mail.png', alt: 'Phân nhánh kịch bản' },
+                                        { src: '/imgs/flowstep_track.png', alt: 'Theo dõi bước flow' },
                                     ].map((img, i) => (
                                         <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]">
                                             <img src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
