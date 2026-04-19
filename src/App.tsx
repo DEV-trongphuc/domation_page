@@ -143,7 +143,7 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
                         <p className="text-slate-500 text-sm mt-2">{desc}</p>
                     </div>
                     <ul className="space-y-3 mb-8 flex-1">
-                        {features.map((f, i) => (
+                        {features.map((f: string, i: number) => (
                             <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
                                 <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isSpecial ? checkBg : 'bg-white/10 border border-white/20'}`}>
                                     <Check className={`w-3 h-3 ${isSpecial ? checkColor : 'text-slate-400'}`} />
