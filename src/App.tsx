@@ -564,7 +564,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Email Drag & Drop Builder ── */}
-            <section id="builder" className="py-16 md:py-28 px-4 md:px-6 relative z-10 bg-[#0e121a] scroll-mt-20">
+            <section id="builder" className="py-16 md:py-28 px-4 md:px-6 relative z-10 scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
                     {/* Visual */}
                     <div className="w-full lg:w-1/2">
@@ -700,7 +700,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Campaign Tracking Section ── */}
-            <section id="campaign-tracking" className="py-16 md:py-28 px-4 md:px-6 relative z-10 bg-[#0b0f16] scroll-mt-20">
+            <section id="campaign-tracking" className="py-16 md:py-28 px-4 md:px-6 relative z-10 scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Visual */}
                     <div className="w-full lg:w-1/2">
@@ -940,7 +940,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Segment Analytics ── */}
-            <section id="ai-segment" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden border-t border-white/5 bg-[#0b101e] scroll-mt-20">
+            <section id="ai-segment" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden border-t border-white/5 scroll-mt-20">
                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/10 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Visual */}
@@ -1030,7 +1030,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Space Section ── */}
-            <section id="ai-space" className="py-28 px-6 relative z-10 overflow-hidden border-t border-white/5 bg-[#080c14]">
+            <section id="ai-space" className="py-28 px-6 relative z-10 overflow-hidden border-t border-white/5">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-900/10 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Content */}
@@ -1103,7 +1103,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Dashboard & Reporting ── */}
-            <section id="dashboard" className="py-24 px-6 relative z-10 overflow-hidden bg-[#080c14]">
+            <section id="dashboard" className="py-24 px-6 relative z-10 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
                     {/* Content */}
@@ -1161,7 +1161,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Testimonials ── */}
-            <section className="py-24 px-6 relative z-10 bg-white/2 border-white/5">
+            <section className="py-24 px-6 relative z-10 border-white/5">
                 <div className="max-w-4xl mx-auto">
                     <FadeIn className="text-center mb-16">
                         <div className="flex items-center justify-center gap-1 mb-4">
@@ -1242,9 +1242,9 @@ const Landing: React.FC = () => {
                                 <span className="live-dot w-2 h-2 rounded-full bg-white" />
                                 <span className="text-white text-xs font-bold uppercase tracking-widest">Sẵn Sàng Tăng Trưởng</span>
                             </div>
-                            <h2 className="text-3xl md:text-4xl font-extrabold text-white/90 mb-6 leading-tight tracking-tight">
+                            <h2 className="text-xl md:text-2xl font-extrabold text-white/90 mb-6 leading-tight tracking-tight">
                                 Tăng Trưởng Cùng Hệ Thống <br />
-                                <span className="text-5xl md:text-6xl lg:text-7xl font-black text-white block mt-2" style={{ textShadow: '0 0 40px rgba(255,255,255,0.4), 0 0 15px rgba(255,255,255,0.2)' }}>
+                                <span className="text-4xl md:text-5xl lg:text-5xl font-black text-white block mt-2" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3), 0 0 10px rgba(255,255,255,0.2)' }}>
                                     AI DIGITAL VISION
                                 </span>
                             </h2>
@@ -1262,7 +1262,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Footer ── */}
-            <footer className="relative z-10 border-t border-white/[0.06] bg-[#050810] py-16 px-6 overflow-hidden">
+            <footer className="relative z-10 border-t border-white/[0.06] py-16 px-6 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg,transparent 0%,rgba(245,158,11,0.5) 30%,rgba(234,88,12,0.5) 60%,transparent 100%)' }} />
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-48 bg-amber-900/10 blur-[80px] pointer-events-none" />
                 <div className="max-w-7xl mx-auto">
