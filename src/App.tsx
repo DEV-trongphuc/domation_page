@@ -226,11 +226,11 @@ const Landing: React.FC = () => {
 
     const plans = [
         {
-            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '13.932.000₫', desc: 'Dành cho Startup & Shop nhỏ',
+            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '13.158.000₫', desc: 'Dành cho Startup & Shop nhỏ',
             features: ['Khối lượng 100.000 Email/tháng', 'AI Phân tích', 'Flow Automation 5 Kịch bản', 'Gắn Web Tracking Tiêu Chuẩn', 'AI trực Zalo ZNS & Messenger'],
         },
         {
-            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '26.892.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
+            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '25.398.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
             features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
             scaleUp: true,
@@ -1188,12 +1188,12 @@ const Landing: React.FC = () => {
                                 <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${isYearly ? 'translate-x-[26px] bg-amber-400' : 'translate-x-0 bg-slate-400'}`} />
                             </button>
                             <span className={`text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'text-white' : 'text-slate-400'}`}>
-                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-widest leading-none">Giảm 10%</span>
+                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-widest leading-none">Giảm 15%</span>
                             </span>
                         </div>
                     </FadeIn>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 items-stretch mt-8 px-0 md:px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-14 items-stretch mt-8 px-0 md:px-4">
                         {plans.map((plan, i) => (
                             <PricingCard key={plan.tier} {...plan} delay={i * 0.1} isYearly={isYearly} onClick={() => setIsFormOpen(true)} />
                         ))}
