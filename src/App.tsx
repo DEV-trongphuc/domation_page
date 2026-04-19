@@ -95,8 +95,8 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
     const currentPrice = isYearly && yearlyPrice ? yearlyPrice : price;
     const suffix = currentPrice !== 'Liên hệ' ? (isYearly ? '/năm' : '/tháng') : '';
 
-    const borderGradient = enterprise 
-        ? 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)' 
+    const borderGradient = enterprise
+        ? 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)'
         : 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444, #a855f7, #f59e0b)';
     const badgeBg = enterprise ? 'from-blue-500 to-purple-500' : 'from-amber-400 to-orange-500';
     const badgeText = enterprise ? 'Giải Pháp Tối Đa' : 'Phổ Biến Nhất';
@@ -105,14 +105,14 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
     const lineGradient = enterprise ? 'linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent)' : 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6), transparent)';
     const checkBg = enterprise ? 'bg-blue-500/20 border border-blue-500/40' : 'bg-amber-500/20 border border-amber-500/40';
     const checkColor = enterprise ? 'text-blue-400' : 'text-amber-400';
-    const btnClass = enterprise 
+    const btnClass = enterprise
         ? 'glow-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:-translate-y-0.5'
         : 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:-translate-y-0.5';
-    
+
     return (
-        <FadeIn delay={delay} className={`h-full ${scaleUp ? 'md:scale-105 md:z-10' : ''}`}>
+        <FadeIn delay={delay} className={`h-full ${scaleUp ? 'lg:scale-[1.08] lg:-translate-y-4 z-20 shadow-2xl relative' : 'z-10 relative'}`}>
             <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${isSpecial
-                ? `pricing-highlight-glow hover:-translate-y-3 ${scaleUp ? 'hover:scale-[1.02] md:hover:scale-[1.07]' : 'hover:scale-[1.02]'}`
+                ? `pricing-highlight-glow hover:-translate-y-3 ${scaleUp ? 'hover:scale-[1.02] lg:hover:scale-[1.10]' : 'hover:scale-[1.02]'}`
                 : 'bg-white/10 hover:-translate-y-1 hover:scale-[1.02]'
                 }`} style={isSpecial ? {
                     background: borderGradient,
@@ -125,7 +125,7 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
                             <div key={i} className={`absolute ${pos} ${enterprise ? 'text-blue-400' : 'text-amber-400'} text-xs pointer-events-none`}
                                 style={{ animation: `star-float ${2 + i * 0.7}s ease-in-out infinite`, animationDelay: `${i * 0.5}s` }}>✦</div>
                         ))}
-                        <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r ${badgeBg} text-white text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20`} style={{boxShadow: `0 4px 20px ${glowShadow}`}}>
+                        <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r ${badgeBg} text-white text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20`} style={{ boxShadow: `0 4px 20px ${glowShadow}` }}>
                             {badgeText}
                         </div>
                     </>
@@ -226,18 +226,18 @@ const Landing: React.FC = () => {
 
     const plans = [
         {
-            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '15.480.000₫', desc: 'Dành cho Startup & Shop nhỏ',
+            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '13.900.000₫', desc: 'Dành cho Startup & Shop nhỏ',
             features: ['Khối lượng 100.000 Email/tháng', 'AI Phân tích', 'Flow Automation 5 Kịch bản', 'Gắn Web Tracking Tiêu Chuẩn', 'AI trực Zalo ZNS & Messenger'],
         },
         {
-            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '25.900.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
-            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động Ticket 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
+            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '26.900.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
+            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
             scaleUp: true,
         },
         {
             tier: 'Enterprise', price: 'Liên hệ', yearlyPrice: 'Liên hệ', desc: 'Tập đoàn & Agency Marketing',
-            features: ['Khối lượng Email không giới hạn', 'Hỗ trợ AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
+            features: ['Khối lượng Email 50.000/ngày', 'AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
             enterprise: true,
         },
     ];
@@ -1188,7 +1188,7 @@ const Landing: React.FC = () => {
                                 <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${isYearly ? 'translate-x-[26px] bg-amber-400' : 'translate-x-0 bg-slate-400'}`} />
                             </button>
                             <span className={`text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'text-white' : 'text-slate-400'}`}>
-                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-widest leading-none">Ưu đãi</span>
+                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-widest leading-none">Giảm 10%</span>
                             </span>
                         </div>
                     </FadeIn>
