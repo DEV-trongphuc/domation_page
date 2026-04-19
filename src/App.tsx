@@ -90,66 +90,78 @@ const FeatureCard = ({ icon: Icon, imageIcon, title, description, delay = 0, gra
 );
 
 // Pricing card
-const PricingCard = ({ tier, price, desc, features, highlight = false, delay = 0, onClick }: {
-    tier: string; price: string; desc: string; features: string[]; highlight?: boolean; delay?: number; onClick?: () => void;
-}) => (
-    <FadeIn delay={delay} className="h-full">
-        <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${highlight
-            ? 'pricing-highlight-glow hover:-translate-y-3 hover:scale-[1.02]'
-            : 'bg-white/10 hover:-translate-y-1'
-            }`} style={highlight ? {
-                background: 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444, #a855f7, #f59e0b)',
-                backgroundSize: '300% 300%',
-                animation: 'border-flow 4s linear infinite'
-            } : {}}>
-            {highlight && (
-                <>
-                    {/* Floating star particles */}
-                    {['top-2 right-8', 'top-8 left-4', 'bottom-16 right-4'].map((pos, i) => (
-                        <div key={i} className={`absolute ${pos} text-amber-400 text-xs pointer-events-none`}
-                            style={{ animation: `star-float ${2 + i * 0.7}s ease-in-out infinite`, animationDelay: `${i * 0.5}s` }}>✦</div>
-                    ))}
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-orange-500 text-black text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20 shadow-[0_4px_20px_rgba(245,158,11,0.6)]">
-                        Phổ Biến Nhất
-                    </div>
-                </>
-            )}
-            <div className={`relative rounded-[23px] p-8 h-full flex flex-col overflow-hidden ${highlight ? 'bg-gradient-to-b from-[#1a1020] to-[#110d1a]' : 'bg-[#161b22]'
-                }`}>
-                {highlight && (
-                    <div className="absolute top-0 left-0 right-0 h-px" style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6), transparent)'
-                    }} />
+const PricingCard = ({ tier, price, desc, features, highlight = false, enterprise = false, delay = 0, onClick }: {
+    tier: string; price: string; desc: string; features: string[]; highlight?: boolean; enterprise?: boolean; delay?: number; onClick?: () => void;
+}) => {
+    const isSpecial = highlight || enterprise;
+    const borderGradient = enterprise 
+        ? 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)' 
+        : 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444, #a855f7, #f59e0b)';
+    const badgeBg = enterprise ? 'from-blue-500 to-purple-500' : 'from-amber-400 to-orange-500';
+    const badgeText = enterprise ? 'Giải Pháp Tối Đa' : 'Phổ Biến Nhất';
+    const glowShadow = enterprise ? 'rgba(139,92,246,0.5)' : 'rgba(245,158,11,0.6)';
+    const innerBg = enterprise ? 'bg-gradient-to-b from-[#101020] to-[#0a0a16]' : 'bg-gradient-to-b from-[#1a1020] to-[#110d1a]';
+    const lineGradient = enterprise ? 'linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent)' : 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6), transparent)';
+    const checkBg = enterprise ? 'bg-blue-500/20 border border-blue-500/40' : 'bg-amber-500/20 border border-amber-500/40';
+    const checkColor = enterprise ? 'text-blue-400' : 'text-amber-400';
+    const btnClass = enterprise 
+        ? 'glow-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:-translate-y-0.5'
+        : 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:-translate-y-0.5';
+    
+    return (
+        <FadeIn delay={delay} className="h-full">
+            <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${isSpecial
+                ? 'pricing-highlight-glow hover:-translate-y-3 hover:scale-[1.02]'
+                : 'bg-white/10 hover:-translate-y-1'
+                }`} style={isSpecial ? {
+                    background: borderGradient,
+                    backgroundSize: '300% 300%',
+                    animation: 'border-flow 4s linear infinite'
+                } : {}}>
+                {isSpecial && (
+                    <>
+                        {['top-2 right-8', 'top-8 left-4', 'bottom-16 right-4'].map((pos, i) => (
+                            <div key={i} className={`absolute ${pos} ${enterprise ? 'text-blue-400' : 'text-amber-400'} text-xs pointer-events-none`}
+                                style={{ animation: `star-float ${2 + i * 0.7}s ease-in-out infinite`, animationDelay: `${i * 0.5}s` }}>✦</div>
+                        ))}
+                        <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r ${badgeBg} text-white text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20`} style={{boxShadow: `0 4px 20px ${glowShadow}`}}>
+                            {badgeText}
+                        </div>
+                    </>
                 )}
-                <div className="mb-6">
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">{tier}</p>
-                    <div className="flex items-end gap-1">
-                        <span className={`text-4xl font-black ${highlight ? 'shimmer-text' : 'text-white'}`}>{price}</span>
-                        {price !== 'Liên hệ' && <span className="text-slate-400 text-sm mb-1">/tháng</span>}
+                <div className={`relative rounded-[23px] p-6 lg:p-8 h-full flex flex-col overflow-hidden ${isSpecial ? innerBg : 'bg-[#161b22]'}`}>
+                    {isSpecial && (
+                        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: lineGradient }} />
+                    )}
+                    <div className="mb-6">
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">{tier}</p>
+                        <div className="flex items-end gap-1">
+                            <span className={`text-3xl lg:text-4xl font-black ${isSpecial ? (enterprise ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400' : 'shimmer-text') : 'text-white'}`}>{price}</span>
+                            {price !== 'Liên hệ' && <span className="text-slate-400 text-sm mb-1">/tháng</span>}
+                        </div>
+                        <p className="text-slate-500 text-sm mt-2">{desc}</p>
                     </div>
-                    <p className="text-slate-500 text-sm mt-2">{desc}</p>
+                    <ul className="space-y-3 mb-8 flex-1">
+                        {features.map((f, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isSpecial ? checkBg : 'bg-white/10 border border-white/20'}`}>
+                                    <Check className={`w-3 h-3 ${isSpecial ? checkColor : 'text-slate-400'}`} />
+                                </div>
+                                {f}
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={onClick} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${isSpecial
+                        ? btnClass
+                        : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                        }`}>
+                        {price === 'Liên hệ' ? 'Liên hệ tư vấn' : 'Bắt đầu ngay'}
+                    </button>
                 </div>
-                <ul className="space-y-3 mb-8 flex-1">
-                    {features.map((f, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                            <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${highlight ? 'bg-amber-500/20 border border-amber-500/40' : 'bg-white/10 border border-white/20'
-                                }`}>
-                                <Check className={`w-3 h-3 ${highlight ? 'text-amber-400' : 'text-slate-400'}`} />
-                            </div>
-                            {f}
-                        </li>
-                    ))}
-                </ul>
-                <button onClick={onClick} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${highlight
-                    ? 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:-translate-y-0.5'
-                    : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
-                    }`}>
-                    {price === 'Liên hệ' ? 'Liên hệ tư vấn' : 'Bắt đầu ngay'}
-                </button>
             </div>
-        </div>
-    </FadeIn>
-);
+        </FadeIn>
+    );
+};
 
 // ─── Main Component ─────────────────────────────────────────────
 const Landing: React.FC = () => {
@@ -217,12 +229,13 @@ const Landing: React.FC = () => {
         },
         {
             tier: 'Growth', price: '1.890.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
-            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động Ticket 24/7', 'AI Lead Score Phân Loại Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
+            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động Ticket 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
         },
         {
             tier: 'Enterprise', price: 'Liên hệ', desc: 'Tập đoàn & Agency Marketing',
-            features: ['Trên 1.000.000 Email/tháng', 'Self-hosted AI Language Model', 'Dedicated AWS Infrastructure', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
+            features: ['Khối lượng Email không giới hạn', 'Hỗ trợ AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
+            enterprise: true,
         },
     ];
 
@@ -388,7 +401,7 @@ const Landing: React.FC = () => {
                     <div className="flex items-center space-x-3">
                         <button onClick={() => setIsFormOpen(true)}
                             className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
-                            Liên Hệ
+                            Bảng Giá
                         </button>
                         <button onClick={() => setIsFormOpen(true)}
                             className="glow-btn flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
