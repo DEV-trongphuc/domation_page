@@ -110,10 +110,10 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
         : 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:-translate-y-0.5';
 
     return (
-        <FadeIn delay={delay} className={`h-full ${scaleUp ? 'lg:scale-[1.08] lg:-translate-y-4 z-20 shadow-2xl relative' : 'z-10 relative'}`}>
-            <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${isSpecial
-                ? `pricing-highlight-glow hover:-translate-y-3 ${scaleUp ? 'hover:scale-[1.02] lg:hover:scale-[1.10]' : 'hover:scale-[1.02]'}`
-                : 'bg-white/10 hover:-translate-y-1 hover:scale-[1.02]'
+        <FadeIn delay={delay} className="h-full">
+            <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${scaleUp ? 'md:scale-[1.08] lg:scale-[1.12] z-10' : ''} ${isSpecial
+                ? 'pricing-highlight-glow hover:-translate-y-3'
+                : 'bg-white/10 hover:-translate-y-1'
                 }`} style={isSpecial ? {
                     background: borderGradient,
                     backgroundSize: '300% 300%',
@@ -226,18 +226,18 @@ const Landing: React.FC = () => {
 
     const plans = [
         {
-            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '13.900.000₫', desc: 'Dành cho Startup & Shop nhỏ',
+            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '13.932.000₫', desc: 'Dành cho Startup & Shop nhỏ',
             features: ['Khối lượng 100.000 Email/tháng', 'AI Phân tích', 'Flow Automation 5 Kịch bản', 'Gắn Web Tracking Tiêu Chuẩn', 'AI trực Zalo ZNS & Messenger'],
         },
         {
-            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '26.900.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
+            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '26.892.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
             features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
             scaleUp: true,
         },
         {
             tier: 'Enterprise', price: 'Liên hệ', yearlyPrice: 'Liên hệ', desc: 'Tập đoàn & Agency Marketing',
-            features: ['Khối lượng Email 50.000/ngày', 'AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
+            features: ['Khối lượng Email không giới hạn', 'Hỗ trợ AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
             enterprise: true,
         },
     ];
