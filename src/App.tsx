@@ -876,7 +876,7 @@ const Landing: React.FC = () => {
                                 <Cpu className="w-3.5 h-3.5" />
                                 AI Chatbot System
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
                                 Trợ Lý Ảo AI<br />
                                 <span className="text-purple-400 whitespace-nowrap">Thông Minh Như Chuyên Gia</span>
                             </h2>
@@ -903,27 +903,8 @@ const Landing: React.FC = () => {
                     {/* Screenshot */}
                     <div className="w-full lg:w-1/2 relative perspective-1000">
                         <FadeIn delay={0.2} from="left">
-                            {/* Mobile slider */}
-                            <div className="block lg:hidden">
-                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
-                                    {[
-                                        { src: '/imgs/kien thuc ai.jpg', alt: 'Knowledge Base' },
-                                        { src: '/imgs/ai_2.jpg', alt: 'AI Chatbot' },
-                                        { src: '/imgs/AIchatbot.png', alt: 'Custom Chatbot UI' },
-                                    ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]">
-                                            <img src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex justify-center gap-1.5 mt-3">
-                                    {[0, 1, 2].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${chatSlide === i ? 'w-5 h-2 bg-purple-400' : 'w-2 h-2 bg-white/20'}`} />
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Desktop stacked */}
-                            <div className="hidden lg:block relative flex flex-col items-start pt-6 md:pt-12 pb-10">
+                            {/* Stacked layout for all devices */}
+                            <div className="relative flex flex-col items-start pt-6 md:pt-12 pb-10">
                                 <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_0_80px_-20px_rgba(168,85,247,0.3)] group hover:-translate-y-2 transition-all duration-500 w-full sm:w-[85%] z-10 hover:z-40">
                                     <img src="/imgs/kien thuc ai.jpg" alt="Knowledge Base Platform" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
@@ -942,32 +923,12 @@ const Landing: React.FC = () => {
             {/* ── AI Segment Analytics ── */}
             <section id="ai-segment" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden border-t border-white/5 scroll-mt-20">
                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/10 to-transparent pointer-events-none" />
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Visual */}
                     <div className="w-full lg:w-[55%]">
                         <FadeIn delay={0.2} from="left">
-                            {/* Mobile slider */}
-                            <div className="block lg:hidden">
-                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
-                                    {[
-                                        { src: '/imgs/phan_tich_ai_1.png', alt: 'Phân Tích AI' },
-                                        { src: '/imgs/phan_tich_ai_2.png', alt: 'Chủ Đề Quan Tâm' },
-                                        { src: '/imgs/thauhieu.png', alt: 'Thấu Hiểu KH' },
-                                        { src: '/imgs/phan_tich_ai_3.png', alt: 'Độ Chính Xác' },
-                                    ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]">
-                                            <img src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex justify-center gap-1.5 mt-3">
-                                    {[0, 1, 2, 3].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${segSlide === i ? 'w-5 h-2 bg-indigo-400' : 'w-2 h-2 bg-white/20'}`} />
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Desktop stacked new layout */}
-                            <div className="hidden lg:block relative flex flex-col items-center pb-20 perspective-1000 mt-4">
+                            {/* Stacked layout for all devices */}
+                            <div className="relative flex flex-col items-center pb-20 perspective-1000 mt-4">
                                 {/* The Big Main Image */}
                                 <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(99,102,241,0.4)] group hover:-translate-y-2 transition-all duration-500 w-full z-20 self-center hover:z-[60]">
                                     <img src="/imgs/phan_tich_ai_3.png" alt="Phân Tích Độ Chính Xác" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
@@ -998,7 +959,7 @@ const Landing: React.FC = () => {
                                 <Users className="w-3.5 h-3.5" />
                                 Cụm Hành Vi (AI Segment)
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
                                 <span className="whitespace-nowrap">Phân Tích &amp; Thấu Hiểu</span><br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Từng Khách Hàng</span>
                             </h2>
