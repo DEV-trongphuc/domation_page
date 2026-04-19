@@ -90,10 +90,11 @@ const FeatureCard = ({ icon: Icon, imageIcon, title, description, delay = 0, gra
 );
 
 // Pricing card
-const PricingCard = ({ tier, price, desc, features, highlight = false, enterprise = false, delay = 0, onClick }: {
-    tier: string; price: string; desc: string; features: string[]; highlight?: boolean; enterprise?: boolean; delay?: number; onClick?: () => void;
-}) => {
+const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highlight, enterprise, scaleUp, isYearly, onClick }: any) => {
     const isSpecial = highlight || enterprise;
+    const currentPrice = isYearly && yearlyPrice ? yearlyPrice : price;
+    const suffix = currentPrice !== 'Liên hệ' ? (isYearly ? '/năm' : '/tháng') : '';
+
     const borderGradient = enterprise 
         ? 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)' 
         : 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444, #a855f7, #f59e0b)';
@@ -109,10 +110,10 @@ const PricingCard = ({ tier, price, desc, features, highlight = false, enterpris
         : 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:-translate-y-0.5';
     
     return (
-        <FadeIn delay={delay} className="h-full">
+        <FadeIn delay={delay} className={`h-full ${scaleUp ? 'md:scale-105 md:z-10' : ''}`}>
             <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${isSpecial
-                ? 'pricing-highlight-glow hover:-translate-y-3 hover:scale-[1.02]'
-                : 'bg-white/10 hover:-translate-y-1'
+                ? `pricing-highlight-glow hover:-translate-y-3 ${scaleUp ? 'hover:scale-[1.02] md:hover:scale-[1.07]' : 'hover:scale-[1.02]'}`
+                : 'bg-white/10 hover:-translate-y-1 hover:scale-[1.02]'
                 }`} style={isSpecial ? {
                     background: borderGradient,
                     backgroundSize: '300% 300%',
@@ -136,8 +137,8 @@ const PricingCard = ({ tier, price, desc, features, highlight = false, enterpris
                     <div className="mb-6">
                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">{tier}</p>
                         <div className="flex items-end gap-1">
-                            <span className={`text-3xl lg:text-4xl font-black ${isSpecial ? (enterprise ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400' : 'shimmer-text') : 'text-white'}`}>{price}</span>
-                            {price !== 'Liên hệ' && <span className="text-slate-400 text-sm mb-1">/tháng</span>}
+                            <span className={`text-3xl lg:text-4xl font-black tracking-tight ${isSpecial ? (enterprise ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400' : 'shimmer-text') : 'text-white'}`}>{currentPrice}</span>
+                            {currentPrice !== 'Liên hệ' && <span className="text-slate-400 text-sm mb-1">{suffix}</span>}
                         </div>
                         <p className="text-slate-500 text-sm mt-2">{desc}</p>
                     </div>
@@ -167,6 +168,7 @@ const PricingCard = ({ tier, price, desc, features, highlight = false, enterpris
 const Landing: React.FC = () => {
     const [activeTestimonial, setActiveTestimonial] = useState(0);
     const [scrolled, setScrolled] = useState(false);
+    const [isYearly, setIsYearly] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
     const [emailVolume, setEmailVolume] = useState('500k Emails');
@@ -224,16 +226,17 @@ const Landing: React.FC = () => {
 
     const plans = [
         {
-            tier: 'Starter', price: '890.000₫', desc: 'Dành cho Startup & Shop nhỏ',
+            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '15.480.000₫', desc: 'Dành cho Startup & Shop nhỏ',
             features: ['Khối lượng 100.000 Email/tháng', 'AI Phân tích', 'Flow Automation 5 Kịch bản', 'Gắn Web Tracking Tiêu Chuẩn', 'AI trực Zalo ZNS & Messenger'],
         },
         {
-            tier: 'Growth', price: '1.890.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
+            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '25.900.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
             features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động Ticket 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
+            scaleUp: true,
         },
         {
-            tier: 'Enterprise', price: 'Liên hệ', desc: 'Tập đoàn & Agency Marketing',
+            tier: 'Enterprise', price: 'Liên hệ', yearlyPrice: 'Liên hệ', desc: 'Tập đoàn & Agency Marketing',
             features: ['Khối lượng Email không giới hạn', 'Hỗ trợ AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
             enterprise: true,
         },
@@ -1174,11 +1177,25 @@ const Landing: React.FC = () => {
                             Giá Phù Hợp<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Mọi Quy Mô Doanh Nghiệp</span>
                         </h2>
+
+                        {/* Billing Toggle */}
+                        <div className="mt-8 flex flex-row items-center justify-center gap-3">
+                            <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-white' : 'text-slate-400'}`}>Hàng Tháng</span>
+                            <button
+                                onClick={() => setIsYearly(!isYearly)}
+                                className="relative w-14 h-7 rounded-full bg-[#161b22] border border-white/10 flex items-center p-1 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/50 hover:bg-[#1e2530]"
+                            >
+                                <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${isYearly ? 'translate-x-[26px] bg-amber-400' : 'translate-x-0 bg-slate-400'}`} />
+                            </button>
+                            <span className={`text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'text-white' : 'text-slate-400'}`}>
+                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-widest leading-none">Ưu đãi</span>
+                            </span>
+                        </div>
                     </FadeIn>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch mt-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 items-stretch mt-8 px-0 md:px-4">
                         {plans.map((plan, i) => (
-                            <PricingCard key={plan.tier} {...plan} delay={i * 0.1} onClick={() => setIsFormOpen(true)} />
+                            <PricingCard key={plan.tier} {...plan} delay={i * 0.1} isYearly={isYearly} onClick={() => setIsFormOpen(true)} />
                         ))}
                     </div>
                 </div>
