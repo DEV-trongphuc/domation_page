@@ -402,10 +402,10 @@ const Landing: React.FC = () => {
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <button onClick={() => setIsFormOpen(true)}
+                        <a href="#pricing"
                             className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
                             Bảng Giá
-                        </button>
+                        </a>
                         <button onClick={() => setIsFormOpen(true)}
                             className="glow-btn flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
                             <span >Get Started</span>
