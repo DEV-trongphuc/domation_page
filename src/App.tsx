@@ -433,7 +433,7 @@ const Landing: React.FC = () => {
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-                        className="text-base md:text-lg text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed px-2">
+                        className="text-sm sm:text-base md:text-xl text-slate-400 mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
                         Hệ thống Automation đa thông điệp đã sẵn sàng. Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-200">Email, Zalo, Meta &amp; AI</strong> — Chạm đúng người, đúng thời điểm.
                     </motion.p>
 
