@@ -424,16 +424,16 @@ const Landing: React.FC = () => {
 
                     {/* Heading */}
                     <motion.h1 initial={{ opacity: 0, y: 40, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.2] md:leading-[1.1] mb-8 w-full relative z-10">
+                        className="font-black tracking-tight leading-[1.2] md:leading-[1.1] mb-8 w-full relative z-10 text-center">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/10 blur-[60px] -z-10 rounded-full pointer-events-none" />
-                        <span className="block text-white mb-2 md:mb-4" style={{ textShadow: '0 0 40px rgba(245,158,11,0.4), 0 0 15px rgba(245,158,11,0.2)' }}>DIGITAL AI</span>
-                        <span className="shimmer-text block pb-2 inline-block">
+                        <span className="block text-xl md:text-3xl lg:text-4xl text-white mb-2 md:mb-3 tracking-[0.2em] font-extrabold opacity-90" style={{ textShadow: '0 0 40px rgba(245,158,11,0.4), 0 0 15px rgba(245,158,11,0.2)' }}>DIGITAL AI</span>
+                        <span className="shimmer-text block pb-2 inline-block text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
                             MARKETING AUTOMATION
                         </span>
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-                        className="text-lg md:text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+                        className="text-base md:text-lg text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed px-2">
                         Hệ thống Automation đa thông điệp đã sẵn sàng. Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-200">Email, Zalo, Meta &amp; AI</strong> — Chạm đúng người, đúng thời điểm.
                     </motion.p>
 
