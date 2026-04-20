@@ -584,7 +584,7 @@ const Landing: React.FC = () => {
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
                         className="text-sm sm:text-base md:text-xl text-slate-400 mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
-                        Hệ thống Automation đa thông điệp đã sẵn sàng. Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-200">Email, Zalo, Meta &amp; AI</strong> — tiết kiệm nguồn lực và thời gian.
+                        Thế hệ tiếp theo của Marketing Automation - Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-200">Automation Flow, Email, Zalo, Meta &amp; AI</strong> — Tối ưu hóa quy trình, tiết kiệm nguồn lực và thời gian.
                     </motion.p>
 
                     {/* CTA */}
