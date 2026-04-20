@@ -327,7 +327,7 @@ const Landing: React.FC = () => {
         const data = {
             email: formData.get('email'),
             phone: formData.get('phone'),
-            company: formData.get('company'),
+            company: `${formData.get('company')} | ${formData.get('problem')}`,
             volume: emailVolume
         };
 
@@ -1680,6 +1680,10 @@ const Landing: React.FC = () => {
                                                     )}
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Vấn đề khó khăn & Nhu cầu Automation</label>
+                                            <textarea required name="problem" rows={3} className="w-full bg-[#161b22] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500/50 transition-colors resize-none" placeholder="Mô tả khó khăn và nhu cầu áp dụng Automation Marketing..."></textarea>
                                         </div>
                                         <button disabled={formStatus === 'submitting'} type="submit" className="w-full mt-6 bg-gradient-to-r from-amber-400 to-orange-500 text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-70">
                                             {formStatus === 'submitting' ? 'Đang gửi...' : 'Gửi Yêu Cầu Demo'}
