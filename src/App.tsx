@@ -6,7 +6,8 @@ import {
     Cpu, Activity, Layers, Sparkles, Check,
     TrendingUp, Globe, Clock, Star, ChevronDown,
     Play, MousePointer, Bell, Target, Database,
-    Lock, Rocket, MousePointerClick, Pointer, ScanLine, LayoutTemplate, BoxSelect, Settings2, FileText, Ticket, Code2
+    Lock, Rocket, MousePointerClick, Pointer, ScanLine, LayoutTemplate, BoxSelect, Settings2, FileText, Ticket, Code2,
+    ClipboardList, GanttChart, EyeOff
 } from 'lucide-react';
 
 // ─── Constants ────────────────────────────────────────────────
@@ -241,6 +242,9 @@ const ALL_MODULES = [
         id: 'vouchers', title: 'Voucher Hub', sub: 'Quản lý tập trung toàn bộ mã ưu đãi, quà tặng. Tự động sinh mã ngẫu nhiên và theo dõi lượt sử dụng thời gian thực.', icon: Ticket, color: 'from-[#F59E0B] to-[#D97706]', tags: ['Promo', 'Loyalty']
     },
     {
+        id: 'survey', title: 'Survey Builder', sub: 'Thiết kế khảo sát kéo thả siêu dễ. Tracking qua mail, kích hoạt Flow tự động sau khảo sát. Hỗ trợ ẩn danh hoặc thu thập đầy đủ thông tin.', icon: ClipboardList, color: 'from-[#06b6d4] to-[#0284c7]', tags: ['Survey', 'Trigger']
+    },
+    {
         id: 'zalo-oa', title: 'Zalo Connect', sub: 'Tích hợp Zalo Official Account. Gửi tin nhắn quan tâm, thông báo ZNS và quản lý hội thoại tập trung.', icon: MessageSquare, color: 'from-[#0068FF] to-[#00c6ff]', tags: ['Zalo', 'ZNS']
     },
     {
@@ -286,7 +290,7 @@ const Landing: React.FC = () => {
         const updateScroll = () => {
             setScrolled(window.scrollY > 20);
 
-            const sections = ['builder', 'flow', 'analytics', 'ai-segment', 'ai-space', 'dashboard'];
+            const sections = ['builder', 'flow', 'analytics', 'ai-segment', 'ai-space', 'dashboard', 'survey'];
             let current = '';
             for (const section of sections) {
                 const el = document.getElementById(section);
@@ -983,6 +987,158 @@ const Landing: React.FC = () => {
                                 <div className="absolute -bottom-8 -left-2 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(217,70,239,0.5)] w-[70%] sm:w-[65%] z-20 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/voucher.png" alt="Tracking & Redeem" className="w-full rounded-xl object-cover" />
                                 </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Survey Builder Section ── */}
+            <section id="survey" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-white/5 scroll-mt-20">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/10 to-sky-900/5 pointer-events-none" />
+                {/* Decorative orbs */}
+                <div className="absolute top-0 right-[10%] w-72 h-72 rounded-full bg-cyan-500/5 blur-[80px] pointer-events-none" />
+                <div className="absolute bottom-0 left-[5%] w-56 h-56 rounded-full bg-sky-500/5 blur-[60px] pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                    {/* ── Visual (left) ── */}
+                    <div className="w-full lg:w-[52%] relative perspective-1000">
+                        <FadeIn delay={0.2} from="left">
+                            {/* Mobile: horizontal scroll */}
+                            <div className="block lg:hidden">
+                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
+                                    {[
+                                        { src: '/imgs/ks.png', alt: 'Survey Dashboard' },
+                                        { src: '/imgs/ks2.png', alt: 'Survey Builder' },
+                                        { src: '/imgs/ks3.png', alt: 'Survey Results' },
+                                    ].map((img, i) => (
+                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex justify-center gap-1.5 mt-3">
+                                    {[0, 1, 2].map(i => (
+                                        <div key={i} className="w-2 h-2 rounded-full bg-white/20" />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Desktop: stacked overlapping cards */}
+                            <div className="hidden lg:block relative pt-10 pb-20">
+                                {/* Base image — Survey dashboard */}
+                                <div
+                                    className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(6,182,212,0.25)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center"
+                                    onClick={() => setPreviewImage('/imgs/ks.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/ks.png" alt="Survey Dashboard" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                </div>
+
+                                {/* Overlay top-right — Survey builder */}
+                                <div
+                                    className="cursor-pointer absolute -top-4 -right-4 md:-right-10 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(6,182,212,0.4)] group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[60%] z-30 hover:z-[60]"
+                                    onClick={() => setPreviewImage('/imgs/ks2.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/ks2.png" alt="Survey Builder" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                </div>
+
+                                {/* Overlay bottom-left — Survey results/stats */}
+                                <div
+                                    className="cursor-pointer absolute -bottom-10 -left-4 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(2,132,199,0.5)] group hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 w-[55%] z-20 hover:z-[60]"
+                                    onClick={() => setPreviewImage('/imgs/ks3.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/ks3.png" alt="Survey Statistics" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                </div>
+
+                                {/* Floating live-result badge */}
+                                <div className="absolute top-[40%] -right-6 md:-right-12 z-40 bg-[#0d1117]/90 border border-cyan-500/30 rounded-2xl p-3.5 shadow-[0_0_30px_rgba(6,182,212,0.2)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500">
+                                    <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">Live Result</p>
+                                    <div className="space-y-1.5">
+                                        {[
+                                            { label: 'Rất hài lòng', pct: 62, color: 'bg-cyan-400' },
+                                            { label: 'Hài lòng', pct: 24, color: 'bg-sky-400' },
+                                            { label: 'Trung lập', pct: 9, color: 'bg-slate-400' },
+                                        ].map((row) => (
+                                            <div key={row.label} className="flex items-center gap-2">
+                                                <span className="text-[9px] text-slate-400 w-16 truncate">{row.label}</span>
+                                                <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                                    <div className={`h-full ${row.color} rounded-full`} style={{ width: `${row.pct}%` }} />
+                                                </div>
+                                                <span className="text-[9px] font-bold text-white w-6 text-right">{row.pct}%</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+
+                    {/* ── Content (right) ── */}
+                    <div className="w-full lg:w-[48%] z-20">
+                        <FadeIn from="right">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                <ClipboardList className="w-3.5 h-3.5" />
+                                Survey & Feedback Hub
+                            </div>
+
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                                Khảo Sát Thông Minh<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-sky-400">Kích Hoạt Chăm Sóc Tự Động</span>
+                            </h2>
+
+                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                                <strong className="text-cyan-400/90 font-medium block mb-2 italic">Chưa biết khách hàng thực sự nghĩ gì? Dữ liệu phản hồi bị lãng quên mà không tạo ra hành động tiếp theo?</strong>
+                                Thiết kế khảo sát kéo thả siêu dễ trong vài phút. Hệ thống tự động tracking phản hồi qua mail, nhận diện điểm cần cải thiện và kích hoạt Flow Automation chăm sóc sau khảo sát ngay lập tức.
+                            </p>
+
+                            {/* Feature cards grid */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                {[
+                                    {
+                                        icon: GanttChart,
+                                        t: 'Kéo Thả Thiết Kế',
+                                        d: 'Tạo form khảo sát trực quan tức thì. Hỗ trợ trắc nghiệm, xếp hạng, bổ sung văn bản tự do.'
+                                    },
+                                    {
+                                        icon: Mail,
+                                        t: 'Tracking Qua Mail',
+                                        d: 'Nhúng khảo sát vào email, theo dõi ai đã phản hồi. Kích hoạt nhắc nhở tự động cho người chưa hoàn thành.'
+                                    },
+                                    {
+                                        icon: Zap,
+                                        t: 'Flow Trigger Tự Động',
+                                        d: 'Sau khi nhận phản hồi, hệ thống tự kích hoạt chuỗi chăm sóc phù hợp với từng phân nhóm điểm số.'
+                                    },
+                                    {
+                                        icon: EyeOff,
+                                        t: 'Ẩn Danh / Thu Thập',
+                                        d: 'Linh hoạt chọn mode ẩn danh để nhận phản hồi thật lòng, hoặc thu thập thông tin để cá nhân hóa follow-up.'
+                                    },
+                                ].map((box, i) => (
+                                    <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyan-500/30 transition-colors">
+                                        <div className="mt-0.5 w-8 h-8 rounded-lg border border-cyan-500/40 bg-cyan-500/15 flex shrink-0 items-center justify-center">
+                                            <box.icon className="w-4 h-4 text-cyan-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Stats strip */}
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-sky-500/5 border border-cyan-500/15">
+                                {[
+                                    { val: '3 phút', sub: 'Tạo xong 1 khảo sát' },
+                                    { val: '92%', sub: 'Tỷ lệ phản hồi thu thập' },
+                                    { val: 'Real-time', sub: 'Kích hoạt Flow ngay lập tức' },
+                                ].map((s, i) => (
+                                    <div key={i} className="flex-1 text-center">
+                                        <p className="text-base md:text-lg font-black text-cyan-400">{s.val}</p>
+                                        <p className="text-[10px] text-slate-500 leading-tight mt-0.5">{s.sub}</p>
+                                    </div>
+                                ))}
                             </div>
                         </FadeIn>
                     </div>
