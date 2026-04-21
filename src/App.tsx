@@ -245,6 +245,9 @@ const ALL_MODULES = [
         id: 'survey', title: 'Survey Builder', sub: 'Thiết kế khảo sát kéo thả siêu dễ. Tracking qua mail, kích hoạt Flow tự động sau khảo sát. Hỗ trợ ẩn danh hoặc thu thập đầy đủ thông tin.', icon: ClipboardList, color: 'from-[#06b6d4] to-[#0284c7]', tags: ['Survey', 'Trigger']
     },
     {
+        id: 'qr-tracking', title: 'QR Code Tracking', sub: 'Tạo mã QR có ID giúp tracking chuẩn xác lượt quét cho từng chiến dịch sự kiện. Thiết kế custom đa dạng.', icon: ScanLine, color: 'from-amber-500 to-orange-500', tags: ['QR', 'Offline']
+    },
+    {
         id: 'zalo-oa', title: 'Zalo Connect', sub: 'Tích hợp Zalo Official Account. Gửi tin nhắn quan tâm, thông báo ZNS và quản lý hội thoại tập trung.', icon: MessageSquare, color: 'from-[#0068FF] to-[#00c6ff]', tags: ['Zalo', 'ZNS']
     },
     {
@@ -279,6 +282,7 @@ const Landing: React.FC = () => {
     const [chatSlide, setChatSlide] = useState(0);
     const [segSlide, setSegSlide] = useState(0);
     const [campSlide, setCampSlide] = useState(0);
+    const [qrSlide, setQrSlide] = useState(0);
     const [activeSection, setActiveSection] = useState('');
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -290,7 +294,7 @@ const Landing: React.FC = () => {
         const updateScroll = () => {
             setScrolled(window.scrollY > 20);
 
-            const sections = ['builder', 'flow', 'analytics', 'ai-segment', 'ai-space', 'dashboard', 'survey'];
+            const sections = ['builder', 'flow', 'analytics', 'ai-segment', 'ai-space', 'dashboard', 'survey', 'qr-tracking'];
             let current = '';
             for (const section of sections) {
                 const el = document.getElementById(section);
@@ -1144,6 +1148,104 @@ const Landing: React.FC = () => {
                                     <div key={i} className="flex-1 text-center">
                                         <p className="text-base md:text-lg font-black text-cyan-400">{s.val}</p>
                                         <p className="text-[10px] text-slate-500 leading-tight mt-0.5">{s.sub}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </FadeIn>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── QR Link Tracking Section ── */}
+            <section id="qr-tracking" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-white/5 scroll-mt-20">
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-900/10 to-orange-900/5 pointer-events-none" />
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
+                    {/* Visual (right side) */}
+                    <div className="w-full lg:w-1/2 relative perspective-1000">
+                        <FadeIn delay={0.2} from="right">
+                            {/* Mobile slider */}
+                            <div className="block lg:hidden">
+                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
+                                    {[
+                                        { src: '/imgs/qr_code.png', alt: 'QR Design Customization' },
+                                        { src: '/imgs/qr_code2.png', alt: 'QR Analytics Dashboard' },
+                                    ].map((img, i) => (
+                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex justify-center gap-1.5 mt-3">
+                                    {[0, 1].map(i => (
+                                        <div key={i} className={`rounded-full transition-all duration-300 ${qrSlide === i ? 'w-5 h-2 bg-amber-400' : 'w-2 h-2 bg-white/20'}`} />
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            {/* Desktop stacked layout */}
+                            <div className="hidden lg:block relative pt-10 pb-20">
+                                {/* Base Image */}
+                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(245,158,11,0.25)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center" onClick={() => setPreviewImage('/imgs/qr_code.png')}>
+                                    <img loading="lazy" decoding="async" src="/imgs/qr_code.png" alt="QR Thiết Kế Đẹp" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                </div>
+                                
+                                {/* Overlay Image */}
+                                <div className="cursor-pointer absolute -bottom-6 -left-4 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(245,158,11,0.4)] group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[70%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/qr_code2.png')}>
+                                    <img loading="lazy" decoding="async" src="/imgs/qr_code2.png" alt="QR Tracking Report" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+
+                    {/* Content (left side) */}
+                    <div className="w-full lg:w-1/2 z-20">
+                        <FadeIn from="left">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                <ScanLine className="w-3.5 h-3.5" />
+                                QR Tracking & Analytics
+                            </div>
+
+                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                                Tracking Mã QR<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Từ Offline Lên Online</span>
+                            </h2>
+
+                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                                <strong className="text-amber-400/90 font-medium block mb-2 italic">Phát tờ rơi, chạy standee sự kiện nhưng không biết có bao nhiêu người thực sự chú ý và quét mã?</strong>
+                                Xóa nhòa ranh giới giữa Offline và Online. Trình tạo mã QR chuyên nghiệp cho phép tuỳ biến thiết kế, đính kèm Logo thương hiệu và đo lường trực tiếp số người quét theo từng chiến dịch (Event) hiệu quả kinh ngạc.
+                            </p>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                {[
+                                    {
+                                        icon: LayoutTemplate,
+                                        t: 'Thiết Kế Custom QR',
+                                        d: 'Đổi kiểu dáng điểm, thêm màu sắc gradient và chèn Logo chuyên nghiệp.'
+                                    },
+                                    {
+                                        icon: BarChart3,
+                                        t: 'Thống Kê Lượt Quét',
+                                        d: 'Theo dõi chi tiết báo cáo Scan hàng ngày đo chính xác tỷ lệ quan tâm tại điểm vật lý.'
+                                    },
+                                    {
+                                        icon: Zap,
+                                        t: 'Cập Nhật Dynamic Link',
+                                        d: 'Sửa link đích tuỳ ý phía sau mã mà không cần phải in hay phát hành lại QR bản cứng.'
+                                    },
+                                    {
+                                        icon: Target,
+                                        t: 'Quản Lý Theo Tổ Chức',
+                                        d: 'Nhóm các mã quét theo từng chuỗi dự án để tối ưu hóa ngân sách OOH (Out Of Home).'
+                                    },
+                                ].map((box, i) => (
+                                    <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-amber-500/30 transition-colors">
+                                        <div className="mt-0.5 w-8 h-8 rounded-lg border border-amber-500/40 bg-amber-500/15 flex shrink-0 items-center justify-center">
+                                            <box.icon className="w-4 h-4 text-amber-400" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { motion, useAnimation, useInView } from 'framer-motion';
+import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { 
     Check, ArrowRight, ShieldCheck, Zap, MonitorPlay, Component, Target, 
-    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles
+    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send
 } from 'lucide-react';
 
 
@@ -71,6 +71,10 @@ export const WebDesignPricing: React.FC = () => {
         payment: false,
         users: false
     });
+    const [showModal, setShowModal] = React.useState(false);
+    const [formData, setFormData] = React.useState({ email: '', phone: '', message: '' });
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [isSuccess, setIsSuccess] = React.useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -87,6 +91,28 @@ export const WebDesignPricing: React.FC = () => {
         (addons.sales ? addonPrices.sales : 0) + 
         (addons.payment ? addonPrices.payment : 0) + 
         (addons.users ? addonPrices.users : 0);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        
+        console.log("Form Submitted:", {
+            ...formData,
+            addonsSelected: addons,
+            basePrice,
+            totalPrice
+        });
+
+        setTimeout(() => {
+            setIsSubmitting(false);
+            setIsSuccess(true);
+            setTimeout(() => {
+                setShowModal(false);
+                setIsSuccess(false);
+                setFormData({ email: '', phone: '', message: '' });
+            }, 3000);
+        }, 1500);
+    };
 
     const modules = [
         {
@@ -241,14 +267,14 @@ export const WebDesignPricing: React.FC = () => {
                         </span>
                     </a>
                     <div className="flex items-center space-x-3">
-                        <a href="/" className="glow-btn flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
-                            Get Started
-                        </a>
+                        <button onClick={() => setShowModal(true)} className="glow-btn flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 cursor-pointer">
+                            Request
+                        </button>
                     </div>
                 </div>
             </nav>
 
-            <main className="relative pt-32 pb-20 px-4 md:px-6 z-10 w-full">
+            <main className="relative pt-32 pb-24 md:pb-20 px-4 md:px-6 z-10 w-full">
                 <div className="max-w-5xl mx-auto">
                     
                     {/* Header */}
@@ -378,9 +404,140 @@ export const WebDesignPricing: React.FC = () => {
             </main>
             
             {/* Footer */}
-            <footer className="border-t border-white/10 py-8 px-6 bg-[#080c14] relative z-10 text-center">
+            <footer className="border-t border-white/10 py-8 px-6 bg-[#080c14] relative z-10 text-center pb-28 md:pb-8">
                 <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
             </footer>
+
+            {/* Mobile Fixed Bottom Price Bar */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[#0d1117]/95 backdrop-blur-xl border-t border-amber-500/20 z-[60] flex items-center justify-between shadow-[0_-20px_40px_rgba(245,158,11,0.15)] transition-all duration-300">
+                 <div className="flex flex-col">
+                      <span className="text-[10px] text-amber-400/80 font-bold uppercase tracking-wider mb-1">Tổng thiết kế</span>
+                      <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 shimmer-text leading-none">
+                          <Counter to={totalPrice} /> <span className="text-sm text-amber-500">đ</span>
+                      </span>
+                 </div>
+                 <div className="flex flex-col items-end gap-1.5">
+                      <button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2 rounded-full text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] active:scale-95 transition-transform cursor-pointer">
+                          Request
+                      </button>
+                      <span className="text-[9px] text-slate-400 font-medium">
+                          Duy trì: <span className="text-rose-400"><Counter to={550000 + ( (addons.sales || addons.payment || addons.users) ? 1500000 : 660000 )} /> đ/năm</span>
+                      </span>
+                 </div>
+            </div>
+
+            {/* Request Modal */}
+            <AnimatePresence>
+                {showModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            exit={{ opacity: 0 }} 
+                            className="absolute inset-0 bg-[#080c14]/80 backdrop-blur-sm"
+                            onClick={() => !isSubmitting && setShowModal(false)}
+                        />
+                        
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-lg bg-[#0d1117] rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_80px_rgba(245,158,11,0.1)] z-10"
+                        >
+                            <div className="p-6 md:p-8">
+                                <div className="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h3 className="text-2xl font-black text-white mb-1">Request Service</h3>
+                                        <p className="text-slate-400 text-sm">Điền thông tin để được hỗ trợ & tư vấn chi tiết.</p>
+                                    </div>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowModal(false)}
+                                        className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                                    >
+                                        <X className="w-5 h-5 text-slate-400" />
+                                    </button>
+                                </div>
+
+                                {isSuccess ? (
+                                    <div className="py-12 flex flex-col items-center text-center">
+                                        <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
+                                            <Check className="w-8 h-8 text-emerald-400" />
+                                        </div>
+                                        <h4 className="text-xl font-bold text-white mb-2">Gửi thành công!</h4>
+                                        <p className="text-slate-400">Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email</label>
+                                            <input 
+                                                type="email" 
+                                                required
+                                                value={formData.email}
+                                                onChange={e => setFormData({...formData, email: e.target.value})}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all"
+                                                placeholder="Nhập địa chỉ email..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Số điện thoại</label>
+                                            <input 
+                                                type="tel" 
+                                                required
+                                                value={formData.phone}
+                                                onChange={e => setFormData({...formData, phone: e.target.value})}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all"
+                                                placeholder="Nhập số điện thoại..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nội dung</label>
+                                            <textarea 
+                                                required
+                                                value={formData.message}
+                                                onChange={e => setFormData({...formData, message: e.target.value})}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all min-h-[100px] resize-none"
+                                                placeholder="Yêu cầu chi tiết của bạn..."
+                                            />
+                                        </div>
+
+                                        {/* Current selection summary */}
+                                        <div className="bg-black/30 rounded-xl p-4 mt-6">
+                                            <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Thông tin tùy chọn</h5>
+                                            <div className="flex justify-between items-center mb-1">
+                                                 <span className="text-sm text-slate-300">Tổng phí (1 lần):</span>
+                                                 <span className="text-sm font-bold text-amber-400">{totalPrice.toLocaleString()} VNĐ</span>
+                                            </div>
+                                            <div className="flex gap-2 flex-wrap mt-2">
+                                                 {addons.sales && <span className="text-[10px] px-2 py-1 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">+ Bán hàng</span>}
+                                                 {addons.payment && <span className="text-[10px] px-2 py-1 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">+ TT Online</span>}
+                                                 {addons.users && <span className="text-[10px] px-2 py-1 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">+ QL Thành viên</span>}
+                                                 {!addons.sales && !addons.payment && !addons.users && <span className="text-[10px] text-slate-500">Mặc định (Không chọn thêm)</span>}
+                                            </div>
+                                        </div>
+
+                                        <button 
+                                            type="submit" 
+                                            disabled={isSubmitting}
+                                            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black py-4 rounded-xl mt-4 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                        >
+                                            {isSubmitting ? (
+                                                <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                                            ) : (
+                                                <>
+                                                    <Send className="w-4 h-4" />
+                                                    Gửi Yêu Cầu
+                                                </>
+                                            )}
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
