@@ -2,8 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { 
     Check, ArrowRight, ShieldCheck, Zap, MonitorPlay, Component, Target, 
-    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send
+    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send, Download
 } from 'lucide-react';
+import ExcelJS from 'exceljs';
+// @ts-ignore
+import { saveAs } from 'file-saver';
 
 
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
@@ -238,6 +241,163 @@ export const WebDesignPricing: React.FC = () => {
         </div>
     );
 
+    const exportToExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Báo Giá Website', {
+            properties: { tabColor: { argb: 'FFF59E0B' } }
+        });
+
+        const cellStyle = {
+            alignment: { vertical: 'middle', wrapText: true } as any,
+            border: {
+                top: {style:'thin', color: {argb:'FFE2E8F0'}} as any, left: {style:'thin', color: {argb:'FFE2E8F0'}} as any,
+                bottom: {style:'thin', color: {argb:'FFE2E8F0'}} as any, right: {style:'thin', color: {argb:'FFE2E8F0'}} as any
+            }
+        };
+
+        sheet.columns = [
+            { header: 'STT', key: 'stt', width: 6 },
+            { header: 'HẠNG MỤC TÍNH NĂNG', key: 'title', width: 35 },
+            { header: 'MÔ TẢ CHI TIẾT', key: 'features', width: 55 },
+            { header: 'ĐƠN GIÁ (VNĐ)', key: 'price', width: 22 }
+        ];
+
+        try {
+            const response = await fetch(window.location.origin + '/imgs/ICON.png');
+            const blob = await response.blob();
+            const base64 = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(blob);
+            });
+            const imageId = workbook.addImage({ base64, extension: 'png' });
+            sheet.addImage(imageId, { tl: { col: 0.1, row: 0.1 }, ext: { width: 50, height: 50 } });
+        } catch (e) { console.error('Logo failed', e); }
+
+        sheet.insertRow(1, []);
+        sheet.getRow(1).height = 45;
+        
+        sheet.getCell('B1').value = 'DOMATION';
+        sheet.getCell('B1').font = { bold: true, size: 28, color: { argb: 'FFEA580C' } }; 
+        sheet.getCell('B1').alignment = { vertical: 'middle', horizontal: 'left' };
+        sheet.mergeCells('B1:D1');
+        
+        sheet.insertRow(2, ['', 'CÔNG TY TNHH CÔNG NGHỆ CHUYỂN ĐỔI SỐ DOMATION']);
+        sheet.getCell('B2').font = { bold: true, size: 11, color: { argb: 'FF64748B' } };
+        sheet.getCell('B2').alignment = { vertical: 'middle', horizontal: 'left' };
+        sheet.mergeCells('B2:D2');
+
+        sheet.insertRow(3, []);
+
+        sheet.insertRow(4, ['BẢNG BÁO GIÁ DỊCH VỤ THIẾT KẾ WEBSITE']);
+        sheet.getCell('A4').font = { bold: true, size: 16, color: { argb: 'FF1E293B' } };
+        sheet.getCell('A4').alignment = { horizontal: 'center', vertical: 'middle' };
+        sheet.getRow(4).height = 30;
+        sheet.mergeCells('A4:D4');
+
+        sheet.insertRow(5, []);
+
+        const headerRow = sheet.getRow(6);
+        headerRow.values = ['STT', 'HẠNG MỤC TÍNH NĂNG', 'MÔ TẢ CHI TIẾT', 'ĐƠN GIÁ (VNĐ)'];
+        headerRow.eachCell(cell => {
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E293B' } };
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            cell.border = cellStyle.border;
+        });
+        headerRow.height = 30;
+
+        let rowIndex = 7;
+        let finalPrice = 0;
+        
+        modules.forEach((mod, idx) => {
+            const numPrice = parseInt(mod.price.replace(/\./g, '')) || 0;
+            const featuresText = mod.features.map((f: string) => '• ' + f).join('\n');
+            const row = sheet.getRow(rowIndex);
+            row.values = [idx + 1, mod.title, featuresText, numPrice];
+            row.getCell(4).numFmt = '#,##0 "₫"';
+            
+            row.eachCell(cell => {
+                cell.font = { size: 11 };
+                cell.border = cellStyle.border;
+                cell.alignment = cellStyle.alignment;
+                if (Number(cell.col) === 1) cell.alignment = { ...cell.alignment, horizontal: 'center' };
+            });
+            row.getCell(2).font = { bold: true, size: 11, color: { argb: 'FF0F172A' } };
+            row.getCell(4).font = { bold: true, size: 11, color: { argb: 'FF0F172A' } };
+            row.height = Math.max(30, mod.features.length * 18);
+            
+            finalPrice += numPrice;
+            rowIndex++;
+        });
+
+        const activeAddons = [];
+        if (addons.sales) activeAddons.push({ title: "Module Add-on: Quản lý Bán hàng", price: addonPrices.sales, desc: "• Tích hợp Giỏ hàng & Thanh toán nội bộ\n• Quản lý đơn hàng, kho trạng thái" });
+        if (addons.payment) activeAddons.push({ title: "Module Add-on: Thanh toán Online", price: addonPrices.payment, desc: "• Tích hợp quét mã QR chuyển khoản tự động\n• Cổng thanh toán VNPay/Momo/Paypal" });
+        if (addons.users) activeAddons.push({ title: "Module Add-on: Quản lý Thành viên", price: addonPrices.users, desc: "• Chế độ Đăng ký/Đăng nhập, Quản lý Profile\n• Điểm thưởng khách hàng thân thiết" });
+
+        activeAddons.forEach(item => {
+            const row = sheet.getRow(rowIndex);
+            row.values = ['+', item.title, item.desc, item.price];
+            row.getCell(4).numFmt = '#,##0 "₫"';
+            
+            row.eachCell(cell => {
+                cell.font = { size: 11, color: { argb: 'FFD97706' } };
+                cell.border = cellStyle.border;
+                cell.alignment = cellStyle.alignment;
+                if (Number(cell.col) === 1) cell.alignment = { ...cell.alignment, horizontal: 'center' };
+            });
+            row.getCell(2).font = { bold: true, size: 11, color: { argb: 'FFD97706' } };
+            row.getCell(4).font = { bold: true, size: 11, color: { argb: 'FFD97706' } };
+            row.height = 40;
+            finalPrice += item.price;
+            rowIndex++;
+        });
+
+        const totalRow = sheet.getRow(rowIndex);
+        totalRow.values = ['', 'TỔNG CỘNG HOÀN THIỆN', '', finalPrice];
+        totalRow.getCell(2).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        totalRow.getCell(2).alignment = { horizontal: 'right', vertical: 'middle' };
+        totalRow.getCell(4).numFmt = '#,##0 "₫"';
+        totalRow.getCell(4).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+        totalRow.height = 40;
+        totalRow.eachCell((cell, colNum) => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEA580C' } };
+            cell.border = cellStyle.border;
+            if(Number(colNum) === 4) cell.alignment = { horizontal: 'left', vertical: 'middle' };
+        });
+        sheet.mergeCells('B' + rowIndex + ':C' + rowIndex);
+        
+        rowIndex += 2;
+        sheet.getCell('B' + rowIndex).value = "* Ghi chú:";
+        sheet.getCell('B' + rowIndex).font = { bold: true, italic: true };
+        
+        rowIndex++;
+        sheet.getCell('B' + rowIndex).value = "- Báo giá trên đã bao gồm Tiêu chuẩn và các Add-on khách hàng đã chọn. Thanh toán 1 lần duy nhất.";
+        
+        rowIndex++;
+        sheet.getCell('B' + rowIndex).value = "- Từ năm thứ 2 trở đi, khách hàng chỉ cần đóng phí duy trì cơ sở hạ tầng mạng (Chi phí này được thanh toán và gia hạn trực tiếp từ các nhà cung cấp dịch vụ bên thứ 3 uy tín dựa trên nhu cầu và sự chấp thuận của khách hàng):";
+        
+        rowIndex++;
+        sheet.getCell('B' + rowIndex).value = "  + Tên miền (.com/.vn): 550.000 VNĐ / năm";
+        
+        rowIndex++;
+        const hostingTuDong = (addons.sales || addons.payment || addons.users) ? "1.500.000" : "660.000";
+        sheet.getCell('B' + rowIndex).value = `  + Hosting Tốc độ cao: ${hostingTuDong} VNĐ / năm`;
+        
+        rowIndex++;
+        let minDays = 15;
+        let maxDays = 20;
+        if (addons.sales) { minDays += 3; maxDays += 5; }
+        if (addons.payment) { minDays += 2; maxDays += 3; }
+        if (addons.users) { minDays += 2; maxDays += 3; }
+        sheet.getCell('B' + rowIndex).value = `- Thời gian hoàn thành dự kiến: ${minDays} - ${maxDays} ngày làm việc.`;
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'Bao_Gia_Website_DOMATION.xlsx');
+    };
+
     return (
         <div className="min-h-screen bg-[#080c14] text-white overflow-x-hidden font-sans selection:bg-amber-500/30" style={{ scrollbarWidth: 'thin', scrollbarColor: '#f59e0b transparent' }}>
             {/* Background Animations */}
@@ -305,6 +465,15 @@ export const WebDesignPricing: React.FC = () => {
                                     <h3 className="text-lg md:text-2xl text-slate-400 font-bold mb-1 md:mb-2">Tổng Cộng Khoản Phí</h3>
                                     <div className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 mb-6 md:mb-8 shimmer-text">
                                         <Counter to={totalPrice} /> <span className="text-xl md:text-2xl text-amber-500 font-bold">VNĐ</span>
+                                    </div>
+                                    
+                                    <div className="w-full max-w-sm mx-auto flex flex-col sm:flex-row gap-3 mb-8">
+                                        <button onClick={() => setShowModal(true)} className="flex-1 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 py-3.5 rounded-xl text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] active:scale-95 transition-transform cursor-pointer">
+                                            Yêu cầu tư vấn
+                                        </button>
+                                        <button onClick={exportToExcel} className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white py-3.5 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(255,255,255,0.05)] active:scale-95 transition-transform cursor-pointer flex items-center justify-center gap-2">
+                                            <Download className="w-4 h-4 text-emerald-400" /> Xuất Báo Giá
+                                        </button>
                                     </div>
 
                                     <div className="w-full max-w-2xl bg-white/5 border border-white/10 rounded-[20px] p-4 md:p-6 text-left mb-2 md:mb-8">
@@ -379,7 +548,7 @@ export const WebDesignPricing: React.FC = () => {
                                                     <h3 className="text-lg font-bold text-white leading-tight">{mod.title}</h3>
                                                     <div className="flex items-center gap-2 mt-1">
                                                         <span className="text-xl font-black" style={{ color: mod.gradient }}>
-                                                            {mod.price !== "0" ? `${mod.price} VNĐ` : "Miễn Phí"}
+                                                            {String(mod.price) !== "0" ? `${mod.price} VNĐ` : "Miễn Phí"}
                                                         </span>
                                                         {mod.suffix && <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400">{mod.suffix}</span>}
                                                     </div>
@@ -417,9 +586,14 @@ export const WebDesignPricing: React.FC = () => {
                       </span>
                  </div>
                  <div className="flex flex-col items-end gap-1.5">
-                      <button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2 rounded-full text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] active:scale-95 transition-transform cursor-pointer">
-                          Request
-                      </button>
+                      <div className="flex items-center gap-2">
+                          <button onClick={exportToExcel} className="p-2.5 border border-white/20 rounded-full text-emerald-400 bg-white/10 active:scale-95 transition-transform" title="Xuất Báo Giá Excel">
+                              <Download className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] active:scale-95 transition-transform cursor-pointer">
+                              Request
+                          </button>
+                      </div>
                       <span className="text-[9px] text-slate-400 font-medium">
                           Duy trì: <span className="text-rose-400"><Counter to={550000 + ( (addons.sales || addons.payment || addons.users) ? 1500000 : 660000 )} /> đ/năm</span>
                       </span>
