@@ -710,6 +710,13 @@ const Landing: React.FC = () => {
                     <div className="w-full relative border border-white/10 rounded-[24px] md:rounded-[32px] p-1.5 md:p-2 bg-[#161b22] backdrop-blur-sm shadow-[0_0_80px_-20px_rgba(245,158,11,0.3)] float-y cursor-pointer group" onClick={() => setPreviewImage('/imgs/cac_tinh_nang.png')}>
                         <img loading="lazy" decoding="async" src="/imgs/cac_tinh_nang.png" alt="Các tính năng nổi bật" className="w-full h-auto rounded-[18px] md:rounded-[24px] object-cover group-hover:opacity-90 transition-opacity" />
                     </div>
+
+                    <FadeIn delay={0.2} className="mt-10 md:mt-16 flex justify-center">
+                        <button onClick={() => setIsDemoModalOpen(true)} className="glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold px-8 md:px-10 py-3.5 md:py-4 rounded-xl hover:-translate-y-1 transition-all flex items-center gap-2.5 shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+                            <Layers className="w-5 h-5" />
+                            Xem Chi Tiết Các Tính Năng
+                        </button>
+                    </FadeIn>
                 </div>
             </section>
 
@@ -1581,9 +1588,9 @@ const Landing: React.FC = () => {
                             <p className="text-xs text-slate-700">© {new Date().getFullYear()} DOM Marketing. All rights reserved.</p>
                         </div>
                         {[
-                            { title: 'Sản Phẩm', links: [['#features', 'Email Template Builder'], ['#builder', 'Email Builder'], ['#ai', 'Chatbot Meta AI'], ['#campaign-tracking', 'Web Tracking Pixel'], ['#flow', 'Flow Builder']] },
-                            { title: 'Công Ty', links: [['#', 'Về Chúng Tôi'], ['#', 'Báo Cáo Tăng Trưởng'], ['#', 'Khách Hàng'], ['#', 'Đối Tác Kênh']] },
-                            { title: 'Hỗ Trợ', links: [['#', 'Tài Liệu HDSD'], ['#', 'API Docs'], ['#', 'Status Server'], ['#', 'Liên Hệ Phím Nóng']] },
+                            { title: 'Công Cụ Marketing', links: [['#builder', 'Email Builder Kéo Thả'], ['#flow', 'Automation Flow'], ['#survey', 'Tạo Khảo Sát (Survey)'], ['#voucher', 'Smart Voucher Hub']] },
+                            { title: 'Tracking & Phân Tích', links: [['#campaign-tracking', 'Web Tracking Pixel'], ['#analytics', 'Web Analytics Tracking'], ['#ai-segment', 'AI Phân Tích (Lead)'], ['#dashboard', 'Báo Cáo Tăng Trưởng']] },
+                            { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['#pricing', 'Bảng Giá Hệ Thống']] },
                         ].map((col) => (
                             <div key={col.title}>
                                 <h4 className="text-sm font-bold text-white/80 mb-5 uppercase tracking-wider">{col.title}</h4>
