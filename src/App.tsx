@@ -7,7 +7,7 @@ import {
     TrendingUp, Globe, Clock, Star, ChevronDown,
     Play, MousePointer, Bell, Target, Database,
     Lock, Rocket, MousePointerClick, Pointer, ScanLine, LayoutTemplate, BoxSelect, Settings2, FileText, Ticket, Code2,
-    ClipboardList, GanttChart, EyeOff
+    ClipboardList, GanttChart, EyeOff, QrCode
 } from 'lucide-react';
 
 // ─── Constants ────────────────────────────────────────────────
@@ -379,7 +379,7 @@ const Landing: React.FC = () => {
         },
         {
             tier: 'Growth', price: '2.490.000₫', yearlyPrice: '25.398.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
-            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Cụm Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
+            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
             scaleUp: true,
         },
@@ -1181,14 +1181,14 @@ const Landing: React.FC = () => {
                                     ))}
                                 </div>
                             </div>
-                            
+
                             {/* Desktop stacked layout */}
                             <div className="hidden lg:block relative pt-10 pb-20">
                                 {/* Base Image */}
                                 <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(245,158,11,0.25)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center" onClick={() => setPreviewImage('/imgs/qr_code.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/qr_code.png" alt="QR Thiết Kế Đẹp" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                
+
                                 {/* Overlay Image */}
                                 <div className="cursor-pointer absolute -bottom-6 -left-4 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(245,158,11,0.4)] group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[70%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/qr_code2.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/qr_code2.png" alt="QR Tracking Report" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
@@ -1236,6 +1236,11 @@ const Landing: React.FC = () => {
                                         icon: Target,
                                         t: 'Quản Lý Theo Tổ Chức',
                                         d: 'Nhóm các mã quét theo từng chuỗi dự án để tối ưu hóa ngân sách OOH (Out Of Home).'
+                                    },
+                                    {
+                                        icon: Globe,
+                                        t: 'Điều Hướng Thiết Bị',
+                                        d: 'Nhận diện tự động hệ điều hành (iOS/Android) để điều hướng tải App hoặc Link tương ứng.'
                                     },
                                 ].map((box, i) => (
                                     <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-amber-500/30 transition-colors">
