@@ -707,7 +707,7 @@ const Landing: React.FC = () => {
                         </p>
                     </FadeIn>
 
-                    <div className="w-full relative border border-white/10 rounded-[24px] md:rounded-[32px] p-1.5 md:p-2 bg-[#161b22] backdrop-blur-sm shadow-[0_0_80px_-20px_rgba(245,158,11,0.3)] float-y cursor-pointer group" onClick={() => setPreviewImage('/imgs/cac_tinh_nang.png')}>
+                    <div className="w-full relative border border-white/10 rounded-[24px] md:rounded-[32px] p-1.5 md:p-2 bg-[#161b22] backdrop-blur-sm shadow-[0_0_80px_-20px_rgba(245,158,11,0.3)] float-y flex-shrink-0 cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
                         <img loading="lazy" decoding="async" src="/imgs/cac_tinh_nang.png" alt="Các tính năng nổi bật" className="w-full h-auto rounded-[18px] md:rounded-[24px] object-cover group-hover:opacity-90 transition-opacity" />
                     </div>
 
