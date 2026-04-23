@@ -1,0 +1,67 @@
+		BẢNG BÁO GIÁ		
+		Ngày 29/08/2021		
+				
+THÔNG TIN KHÁCH HÀNG				
+				
+ Tên Dự án:		 VITRAC E-commerce Website		
+ Họ và tên người liên hệ:		Linh Nga		
+ Số điện thoại:				
+ Email khách hàng:				
+				
+BÁO GIÁ CHI TIẾT				
+				
+ STT	 HẠNG MỤC	 MÔ TẢ CHI TIẾT	CHI PHÍ	GHI CHÚ
+I	HẠ TẦNG CÔNG NGHỆ			
+1	CMS (Content Management System)	Xây dựng trên mã nguồn Wordpress	0 ₫	
+2	Domain	Tên miền truy cập tới website	0 ₫	VITRAC cung cấp
+3	Hosting / Server	Lưu trữ tài nguyên website	0 ₫	VITRAC cung cấp 
+4	SSL	Chứng chỉ bảo mật SSL cho website	0 ₫	VITRAC cung cấp
+II	XÂY DỰNG WEBSITE			
+A	Triển khai Front-End			
+1	Thiết kế giao diện Trang chủ	03 lựa chọn thiết kế cho trang chủ theo Brand Guideline của VITRAC	5.000.000 ₫	Chọn 01 trong 03 để triển khai, tương thích trên các thiết bị di động
+2	Thiết kế giao diện	29 trang giao diện ( Vui lòng xem chi tiết tại Thống kê các trang)	15.000.000 ₫	Chỉnh sửa giao diện tối đa 3 lần trước khi triển khai, tương thích trên các thiết bị di động
+3	Lập trình giao diện	30 trang giao diện ( Vui lòng xem chi tiết tại Thống kê các trang)	30.000.000 ₫	Theo mẫu thiết kế đã thống nhât, tương thích trên các thiết bị di động
+B	Triển khai Back-End			
+1	Các chức năng Ecommerce mua bán Phụ tùng/ Đồ lưu niệm	Bao gồm chức năng thêm vào giỏ hàng, thanh toán	15.000.000 ₫	Xây dựng trên Woocommerce tích hơp với Wordpress
+2	Bộ lọc Sản phẩm / Phụ tùng tùy biến theo nhu cầu	"Có bộ lọc theo từng nhóm sản phẩm
+Có thể tùy biến theo từng nhóm sản phẩm
+Hiện sản phẩm theo bộ lọc"	15.000.000 ₫	
+3	Các chức năng đặt hàng cho sản phẩm chính	Biểu mẫu đặt hàng đẩy thông tin về CRM	5.000.000 ₫	
+4	Tương tác sản phẩm chính để thể hiện các phụ tùng đang sử dụng	Chức năng xem các phụ tùng chi tiết một cách trực quan trên sản phẩm chính	10.000.000 ₫	
+5	Kết nối CRM Getfly - chăm sóc khách hàng	Đẩy thông tin khách hàng về Getfly CRM	5.000.000 ₫	Cần kết nối với bộ phận kỹ thuật Getfly
+6	Kết nối ERP Fast - kiểm tra tình trạng tồn kho	Đồng bộ tồn kho giữa Fast ERP và website	5.000.000 ₫	Cần kết nối với bộ phận kỹ thuật Fast
+7	Kết nối với các cổng thanh toán trực tuyén	Kết nối cổng thanh toán Momo, VNPay, ZaloPay, ...	5.000.000 ₫	
+8	Kết nối với hệ thống chat dùng chăm sóc khâch hàng	Kết nối công cụ chat facebook, zalo, ... với website	1.000.000 ₫	
+9	Cấu hình WPML - Đa ngôn ngữ	Chi phí cấu hình và triển khai ngôn ngữ tiếng Anh	15.000.000 ₫	
+10	Cấu hình E-Learning	Chi phí cấu hình hệ thống elearning dùng đạo tạo cho nội bộ hoặc cho khách hàng	3.000.000 ₫	
+11	Cấu hình RankMath - SEO Onpage	Chi phí cấu hình và chuẩn hóa SEO Onpage	5.000.000 ₫	
+12	Cấu hình  Mautic - Marketing Automation	Chi phí cấu hình hệ thống Marketing Automation 	8.000.000 ₫	
+13	Cấu hình Google Suite - Các công cụ đo lường và phân tích website	Chi phí cấu hình các công cụ của google như google analytics, google search console, google tag manager, google webmaster tools, google business, ...	5.000.000 ₫	
+III	BẢN QUYỀN SỬ DỤNG			
+1	WPML - Đa ngôn ngữ	Chi phí mua bản quyền WPML	3.623.610 ₫	"Gói: Multilingual CMS - 79 USD
+License có gía trị vĩnh viễn, tự động cập nhật phiên bản mới trong vòng 1 năm"
+2	RankMath - SEO Onpage	Chi phí mua bản quyền RanhMath Pro 01 năm (500 keywords)	1.344.610 ₫	License có giá trị 1 năm, khách hàng vui lòng gia hạn sau một năm để tiếp tục sử dụng. Chi phí gia hạn: 1.344.610đ/ năm
+3	E - Learning - Discussion on Ultimate Learning Pro WordPress Plugin	Chi phí mua bản quyền	1.344.610 ₫	License có giá trị 1 vĩnh viễn
+4	Mautic - Marketing Automation	Chi phí gửi email hàng tháng thông qua Amazon Simple Email Service (SES) 	911.600 ₫	"Chi phí thanh toán hàng tháng, phụ thuộc vào số lượng email gửi đi và email nhận về.
+Giá đang được áp dụng cho gói 62000 email kèm 20GB dung lượng file đính kèm."
+IV	NHỮNG HẠNG MỤC KHÁC			
+1	Nhập liệu thông tin	Nhập liệu sản phẩm, thông tin khách hàng cung cấp lên Webiste	5.000.000 ₫	
+2	Chi tiết sản phẩm	Khách hàng cung cấp chi tiết sản phẩm bao gồm hình ảnh & nội dung	0 ₫	
+3	Các trang chính sách, qui định, ...	Thiết kế và lập trình các trang chính sách mua hàng, chính sách bảo mật, qui định sử dụng, ...	0 ₫	
+4	Kiểm tra chất lượng	Kiểm tra giao diện/ chức năng trước khi bàn giao	0 ₫	
+5	Tài liệu hướng dẫn	Hỗ trợ tài liệu hướng dẫn sử dụng website	0 ₫	
+6	Đào tạo chuyển giao	Trực tiếp đào tạo và hướng dẫn sử dụng trong 8 giờ	0 ₫	
+7	Bảo trì kỹ thuật	Hỗ trợ kỹ thuật trong vòng 3 tháng	0 ₫	
+		Chi phí xây dựng Website (1):	152.000.000 ₫	
+		Chiết khấu 15% (2):	22.800.000 ₫	
+		Chi phí bản quyền các module tích hợp (3):	7.224.430 ₫	
+		TỔNG CỘNG (1) - (2) + (3):	136.424.430 ₫	
+Ghi chú:				
+ - Website domain, Cấu trúc website, chức năng, flow người dùng sẽ được chốt hoàn tất trước khi thực hiện thiết kế và lập trình website. Những phát sinh thêm khi đang thực hiện sẽ được tính phí riêng theo yêu cầu và mức độ chức năng				
+ - Nội dung tài liệu chuyển giao: source code, hướng dẫn sử dụng website				
+- Giá trên chưa bao gồm 10% VAT				
+- Báo giá có gía trị đến ngày 07/09/2021				
+- Việc nhập liệu các nội dung phát sinh do khách hàng chịu trách nhiệm.				
+- Tỉ giá quy đổi ngoại tệ ngày 30/08/2021: 1USD = 22.790VNĐ				
+ Thời gian thực hiện dự tính khi được cung cấp đầy đủ tài liệu		 30 ngày làm việc ( không bao gồm T7, Chủ Nhật và thời gian giữa các lần feedback của hai bên)		
+				

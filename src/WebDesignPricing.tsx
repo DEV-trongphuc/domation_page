@@ -72,7 +72,11 @@ export const WebDesignPricing: React.FC = () => {
     const [addons, setAddons] = React.useState({
         sales: false,
         payment: false,
-        users: false
+        users: false,
+        crmErp: false,
+        multilingual: false,
+        automation: false,
+        elearning: false
     });
     const [showModal, setShowModal] = React.useState(false);
     const [formData, setFormData] = React.useState({ email: '', phone: '', message: '' });
@@ -87,13 +91,21 @@ export const WebDesignPricing: React.FC = () => {
     const addonPrices = {
         sales: 3500000,
         payment: 2000000,
-        users: 2500000
+        users: 2500000,
+        crmErp: 10000000,
+        multilingual: 18623610,
+        automation: 8911600,
+        elearning: 4344610
     };
 
     const totalPrice = basePrice + 
         (addons.sales ? addonPrices.sales : 0) + 
         (addons.payment ? addonPrices.payment : 0) + 
-        (addons.users ? addonPrices.users : 0);
+        (addons.users ? addonPrices.users : 0) +
+        (addons.crmErp ? addonPrices.crmErp : 0) +
+        (addons.multilingual ? addonPrices.multilingual : 0) +
+        (addons.automation ? addonPrices.automation : 0) +
+        (addons.elearning ? addonPrices.elearning : 0);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -227,15 +239,26 @@ export const WebDesignPricing: React.FC = () => {
     ];
 
     const Toggle = ({ active, onClick, label, price, desc }: any) => (
-        <div className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center justify-between ${active ? 'bg-amber-500/10 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.1)]' : 'bg-white/5 border-white/10 hover:bg-white/10'}`} onClick={onClick}>
-            <div className="flex flex-col gap-1">
-                <span className="text-white font-bold flex items-center gap-2">
+        <div className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-row items-start justify-between gap-4 ${active ? 'bg-amber-500/10 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.1)]' : 'bg-white/5 border-white/10 hover:bg-white/10'}`} onClick={onClick}>
+            <div className="flex flex-col gap-2 flex-1">
+                <span className="text-white font-bold flex flex-wrap items-center gap-2">
                     {label}
                     <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-md">+{price.toLocaleString()}đ</span>
                 </span>
-                <span className="text-xs text-slate-400">{desc}</span>
+                {Array.isArray(desc) ? (
+                    <ul className="text-xs text-slate-400 space-y-1.5 mt-1">
+                        {desc.map((d: string, i: number) => (
+                            <li key={i} className="flex items-start gap-1.5">
+                                <span className="text-amber-500/50 mt-[2px]">•</span>
+                                <span className="leading-relaxed">{d}</span>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <span className="text-xs text-slate-400 leading-relaxed">{desc}</span>
+                )}
             </div>
-            <div className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${active ? 'bg-amber-500' : 'bg-slate-700'}`}>
+            <div className={`w-12 h-6 rounded-full relative transition-colors duration-300 shrink-0 mt-1 ${active ? 'bg-amber-500' : 'bg-slate-700'}`}>
                 <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${active ? 'left-7' : 'left-1'}`} />
             </div>
         </div>
@@ -335,6 +358,10 @@ export const WebDesignPricing: React.FC = () => {
         if (addons.sales) activeAddons.push({ title: "Module Add-on: Quản lý Bán hàng", price: addonPrices.sales, desc: "• Tích hợp Giỏ hàng & Thanh toán nội bộ\n• Quản lý đơn hàng, kho trạng thái" });
         if (addons.payment) activeAddons.push({ title: "Module Add-on: Thanh toán Online", price: addonPrices.payment, desc: "• Tích hợp quét mã QR chuyển khoản tự động\n• Cổng thanh toán VNPay/Momo/Paypal" });
         if (addons.users) activeAddons.push({ title: "Module Add-on: Quản lý Thành viên", price: addonPrices.users, desc: "• Chế độ Đăng ký/Đăng nhập, Quản lý Profile\n• Điểm thưởng khách hàng thân thiết" });
+        if (addons.crmErp) activeAddons.push({ title: "Module Add-on: Đồng bộ CRM & ERP", price: addonPrices.crmErp, desc: "• Đẩy thông tin tự động về Getfly CRM\n• Đồng bộ tồn kho với Fast ERP" });
+        if (addons.multilingual) activeAddons.push({ title: "Module Add-on: Đa Ngôn Ngữ", price: addonPrices.multilingual, desc: "• Cấu hình đa ngôn ngữ toàn diện\n• Bản quyền plugin WPML vĩnh viễn" });
+        if (addons.automation) activeAddons.push({ title: "Module Add-on: Marketing Automation", price: addonPrices.automation, desc: "• Cài đặt Mautic & Tracking sâu\n• Gửi Email tự động qua Amazon SES" });
+        if (addons.elearning) activeAddons.push({ title: "Module Add-on: E-Learning", price: addonPrices.elearning, desc: "• Hệ thống đào tạo trực tuyến\n• Bản quyền Ultimate Learning Pro" });
 
         activeAddons.forEach(item => {
             const row = sheet.getRow(rowIndex);
@@ -382,7 +409,8 @@ export const WebDesignPricing: React.FC = () => {
         sheet.getCell('B' + rowIndex).value = "  + Tên miền (.com/.vn): 550.000 VNĐ / năm";
         
         rowIndex++;
-        const hostingTuDong = (addons.sales || addons.payment || addons.users) ? "1.500.000" : "660.000";
+        const hasAnyAddon = Object.values(addons).some(v => v);
+        const hostingTuDong = hasAnyAddon ? "1.500.000" : "660.000";
         sheet.getCell('B' + rowIndex).value = `  + Hosting Tốc độ cao: ${hostingTuDong} VNĐ / năm`;
         
         rowIndex++;
@@ -486,12 +514,12 @@ export const WebDesignPricing: React.FC = () => {
                                         </p>
                                         <ul className="list-disc list-inside text-[12px] md:text-sm text-slate-300 mt-2 md:mt-3 space-y-1 ml-2">
                                             <li>Tên miền (.com/.vn): <strong className="text-amber-400">550.000 VNĐ</strong> / năm</li>
-                                            <li>Hosting Tốc độ cao: <strong className="text-amber-400">{(addons.sales || addons.payment || addons.users) ? "1.500.000" : "660.000"} VNĐ</strong> / năm</li>
+                                            <li>Hosting Tốc độ cao: <strong className="text-amber-400">{Object.values(addons).some(v => v) ? "1.500.000" : "660.000"} VNĐ</strong> / năm</li>
                                         </ul>
                                         <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between bg-black/20 rounded-xl p-3 gap-2">
                                             <span className="text-[12px] md:text-sm font-semibold text-slate-300">Tổng phí gia hạn dự kiến năm 2:</span>
                                             <span className="font-black text-rose-400 text-base md:text-lg">
-                                                <Counter to={550000 + ( (addons.sales || addons.payment || addons.users) ? 1500000 : 660000 )} suffix=" VNĐ / năm" />
+                                                <Counter to={550000 + (Object.values(addons).some(v => v) ? 1500000 : 660000)} suffix=" VNĐ / năm" />
                                             </span>
                                         </div>
                                     </div>
@@ -505,27 +533,77 @@ export const WebDesignPricing: React.FC = () => {
                                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                                     <Sparkles className="w-5 h-5 text-amber-400" /> Tùy chọn nâng cao (Options)
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     <Toggle 
                                         active={addons.sales} 
                                         label="Quản lý Bán hàng" 
                                         price={addonPrices.sales} 
-                                        desc="Giỏ hàng, Quản lý đơn hàng & Kho"
+                                        desc={[
+                                            "Xây dựng tính năng thêm vào giỏ hàng, đặt hàng & thanh toán trực tuyến.",
+                                            "Hệ thống bộ lọc sản phẩm & phụ tùng tùy biến chuyên sâu.",
+                                            "Giao diện tương tác trực quan cho sản phẩm & phụ tùng đi kèm."
+                                        ]}
                                         onClick={() => setAddons({ ...addons, sales: !addons.sales })}
                                     />
                                     <Toggle 
                                         active={addons.payment} 
                                         label="Thanh toán Online" 
                                         price={addonPrices.payment} 
-                                        desc="VNPay, Momo, Chuyển khoản QR"
+                                        desc={[
+                                            "Kết nối và thiết lập các cổng thanh toán (Momo, VNPay, ZaloPay, Paypal, ...).",
+                                            "Hệ thống tự động nhận diện và quét mã QR chuyển khoản ngân hàng."
+                                        ]}
                                         onClick={() => setAddons({ ...addons, payment: !addons.payment })}
                                     />
                                     <Toggle 
                                         active={addons.users} 
                                         label="Quản lý Thành viên" 
                                         price={addonPrices.users} 
-                                        desc="Đăng ký, Đăng nhập & Affiliate"
+                                        desc={[
+                                            "Xây dựng cơ chế Đăng ký, Đăng nhập và Quản lý hồ sơ cá nhân.",
+                                            "Hệ thống Affiliate (Tiếp thị liên kết), quản lý hoa hồng và điểm thưởng."
+                                        ]}
                                         onClick={() => setAddons({ ...addons, users: !addons.users })}
+                                    />
+                                    <Toggle 
+                                        active={addons.crmErp} 
+                                        label="Đồng bộ CRM & ERP" 
+                                        price={addonPrices.crmErp} 
+                                        desc={[
+                                            "Kết nối Getfly CRM: Tự động đẩy thông tin đơn hàng/khách hàng để CSKH.",
+                                            "Kết nối Fast ERP: Đồng bộ dữ liệu và kiểm tra tình trạng tồn kho theo thời gian thực."
+                                        ]}
+                                        onClick={() => setAddons({ ...addons, crmErp: !addons.crmErp })}
+                                    />
+                                    <Toggle 
+                                        active={addons.multilingual} 
+                                        label="Đa Ngôn Ngữ" 
+                                        price={addonPrices.multilingual} 
+                                        desc={[
+                                            "Cấu hình và triển khai nền tảng đa ngôn ngữ toàn diện (Tiếng Anh, ...).",
+                                            "Bao gồm chi phí mua bản quyền plugin WPML Multilingual CMS (Giá trị vĩnh viễn)."
+                                        ]}
+                                        onClick={() => setAddons({ ...addons, multilingual: !addons.multilingual })}
+                                    />
+                                    <Toggle 
+                                        active={addons.automation} 
+                                        label="Marketing Automation" 
+                                        price={addonPrices.automation} 
+                                        desc={[
+                                            "Thiết lập hệ thống Mautic Marketing Automation và các kịch bản nuôi dưỡng.",
+                                            "Bao gồm chi phí máy chủ gửi Email qua Amazon SES (Gói 62,000 email/tháng & 20GB lưu trữ)."
+                                        ]}
+                                        onClick={() => setAddons({ ...addons, automation: !addons.automation })}
+                                    />
+                                    <Toggle 
+                                        active={addons.elearning} 
+                                        label="E-Learning" 
+                                        price={addonPrices.elearning} 
+                                        desc={[
+                                            "Cấu hình hệ thống E-learning để phát hành khóa học, đào tạo nội bộ hoặc khách hàng.",
+                                            "Bao gồm chi phí mua bản quyền plugin Ultimate Learning Pro WordPress (Giá trị vĩnh viễn)."
+                                        ]}
+                                        onClick={() => setAddons({ ...addons, elearning: !addons.elearning })}
                                     />
                                 </div>
                             </div>
@@ -577,26 +655,29 @@ export const WebDesignPricing: React.FC = () => {
                 <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
             </footer>
 
-            {/* Mobile Fixed Bottom Price Bar */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[#0d1117]/95 backdrop-blur-xl border-t border-amber-500/20 z-[60] flex items-center justify-between shadow-[0_-20px_40px_rgba(245,158,11,0.15)] transition-all duration-300">
-                 <div className="flex flex-col">
-                      <span className="text-[10px] text-amber-400/80 font-bold uppercase tracking-wider mb-1">Tổng thiết kế</span>
-                      <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 shimmer-text leading-none">
-                          <Counter to={totalPrice} /> <span className="text-sm text-amber-500">đ</span>
-                      </span>
-                 </div>
-                 <div className="flex flex-col items-end gap-1.5">
-                      <div className="flex items-center gap-2">
-                          <button onClick={exportToExcel} className="p-2.5 border border-white/20 rounded-full text-emerald-400 bg-white/10 active:scale-95 transition-transform" title="Xuất Báo Giá Excel">
-                              <Download className="w-4 h-4" />
-                          </button>
-                          <button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] active:scale-95 transition-transform cursor-pointer">
-                              Request
-                          </button>
-                      </div>
-                      <span className="text-[9px] text-slate-400 font-medium">
-                          Duy trì: <span className="text-rose-400"><Counter to={550000 + ( (addons.sales || addons.payment || addons.users) ? 1500000 : 660000 )} /> đ/năm</span>
-                      </span>
+            {/* Fixed Bottom Price Bar (Mobile + PC) */}
+            <div className="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-xl border-t border-amber-500/20 z-[60] shadow-[0_-20px_40px_rgba(245,158,11,0.15)] transition-all duration-300">
+                 <div className="max-w-7xl mx-auto p-4 md:px-6 md:py-4 flex items-center justify-between">
+                     <div className="flex flex-col">
+                          <span className="text-[10px] md:text-xs text-amber-400/80 font-bold uppercase tracking-wider mb-1">Tổng thiết kế</span>
+                          <span className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 shimmer-text leading-none">
+                              <Counter to={totalPrice} /> <span className="text-sm md:text-base text-amber-500">đ</span>
+                          </span>
+                     </div>
+                     <div className="flex flex-col items-end gap-1.5 md:gap-2">
+                          <div className="flex items-center gap-2 md:gap-4">
+                              <button onClick={exportToExcel} className="p-2.5 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/20 rounded-full text-emerald-400 bg-white/10 hover:bg-white/20 active:scale-95 transition-all cursor-pointer" title="Xuất Báo Giá Excel">
+                                  <Download className="w-4 h-4" />
+                                  <span className="hidden md:inline text-sm font-bold">Xuất File Báo Giá</span>
+                              </button>
+                              <button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 md:px-8 py-2.5 rounded-full text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] active:scale-95 transition-all cursor-pointer">
+                                  Request
+                              </button>
+                          </div>
+                          <span className="text-[9px] md:text-xs text-slate-400 font-medium">
+                              Duy trì: <span className="text-rose-400"><Counter to={550000 + (Object.values(addons).some(v => v) ? 1500000 : 660000)} /> đ/năm</span>
+                          </span>
+                     </div>
                  </div>
             </div>
 
