@@ -224,9 +224,10 @@ const TestimonialSection = () => {
 
 const WebDesignSection = () => {
     const projects = [
-        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://nava-one.vercel.app/', color: 'from-blue-500 to-cyan-500' },
-        { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-fuchsia-500 to-pink-500' },
-        { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-emerald-500 to-teal-500' },
+        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://nava-one.vercel.app/', color: 'from-blue-500 to-cyan-500', icon: Monitor },
+        { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-fuchsia-500 to-pink-500', icon: Monitor },
+        { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-emerald-500 to-teal-500', icon: Monitor },
+        { name: 'Meta Ad Report', desc: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI chuyên sâu.', link: '/?page=meta-ad-report', color: 'from-amber-500 to-orange-500', icon: Activity },
     ];
 
     return (
@@ -245,15 +246,15 @@ const WebDesignSection = () => {
                     </p>
                 </FadeIn>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                     {projects.map((p, i) => (
                         <FadeIn key={i} delay={i * 0.1} className="h-full">
-                            <a href={p.link} target="_blank" rel="noreferrer" className="group block holo-card p-px rounded-2xl overflow-hidden bg-white/5 hover:bg-white/10 transition-all border border-white/10 hover:-translate-y-2 h-full shadow-[0_0_20px_rgba(217,70,239,0.05)] hover:shadow-[0_0_30px_rgba(217,70,239,0.2)]">
+                            <a href={p.link} target={p.link.startsWith('/') ? '_self' : '_blank'} rel="noreferrer" className="group block holo-card p-px rounded-2xl overflow-hidden bg-white/5 hover:bg-white/10 transition-all border border-white/10 hover:-translate-y-2 h-full shadow-[0_0_20px_rgba(217,70,239,0.05)] hover:shadow-[0_0_30px_rgba(217,70,239,0.2)]">
                                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(400px at 50% 50%, rgba(217,70,239,0.1), transparent)` }} />
                                 <div className="relative p-6 flex flex-col h-full bg-[#11151c] rounded-[15px]">
                                     <div className={`w-full h-40 rounded-xl mb-6 flex flex-col items-center justify-center bg-gradient-to-br ${p.color} overflow-hidden relative group-hover:shadow-lg transition-shadow`}>
                                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
-                                        <Monitor className="w-12 h-12 text-white/80 group-hover:scale-110 transition-transform duration-500 drop-shadow-md z-10" />
+                                        <p.icon className="w-12 h-12 text-white/80 group-hover:scale-110 transition-transform duration-500 drop-shadow-md z-10" />
                                         <div className="mt-3 text-white text-sm font-bold z-10 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
                                             Xem Dự Án <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                                         </div>

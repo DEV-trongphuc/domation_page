@@ -41,6 +41,7 @@ export const MetaAdReport: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [showVideoModal, setShowVideoModal] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -113,6 +114,38 @@ export const MetaAdReport: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-[#080c14] text-white overflow-x-hidden font-sans selection:bg-amber-500/30" style={{ scrollbarWidth: 'thin', scrollbarColor: '#f59e0b transparent' }}>
+            <style>{`
+                @keyframes shimmer-sweep {
+                    0% { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                }
+                .shimmer-text {
+                    background: linear-gradient(90deg, #f59e0b 0%, #fb923c 20%, #fde68a 40%, #f97316 60%, #ef4444 80%, #f59e0b 100%);
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    animation: shimmer-sweep 4s linear infinite;
+                }
+                @keyframes float-y {
+                    0%,100% { transform: translate3d(0,0px,0); }
+                    50% { transform: translate3d(0,-8px,0); }
+                }
+                @keyframes aurora-1 {
+                    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:0.12; }
+                    33% { transform: translate3d(8%,-12%,0) scale(1.1); opacity:0.16; }
+                    66% { transform: translate3d(-5%,8%,0) scale(0.92); opacity:0.1; }
+                }
+                @keyframes aurora-2 {
+                    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:0.1; }
+                    40% { transform: translate3d(-8%,8%,0) scale(1.12); opacity:0.14; }
+                    70% { transform: translate3d(5%,-5%,0) scale(0.88); opacity:0.08; }
+                }
+                @keyframes aurora-3 {
+                    0%,100% { transform: translate3d(0,0,0) scale(1); }
+                    50% { transform: translate3d(10%,6%,0) scale(1.08); }
+                }
+            `}</style>
             {/* Background Animations */}
             <div className="fixed inset-0 pointer-events-none z-0" style={{ transform: 'translateZ(0)' }}>
                 <div className="absolute top-[-25%] left-[-15%] w-[70%] h-[70%] rounded-full bg-amber-500/[0.12] blur-[120px] md:blur-[160px]" style={{ animation: 'aurora-1 18s ease-in-out infinite' }} />
@@ -132,7 +165,7 @@ export const MetaAdReport: React.FC = () => {
                             <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform" />
                             <div className="absolute -inset-1 rounded-[18px] bg-amber-500/20 blur-md -z-10" />
                         </div>
-                        <span className="text-xl font-black tracking-tight text-white group-hover:text-amber-400 transition-colors">
+                        <span className="text-xl font-black tracking-tight shimmer-text">
                             DOMATION
                         </span>
                     </a>
@@ -159,10 +192,14 @@ export const MetaAdReport: React.FC = () => {
                             Tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ theo dõi ra quyết định trên thời gian thực.
                         </motion.p>
 
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
                             <a href="https://meta.domation.net" target="_blank" rel="noreferrer" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-8 py-4 rounded-xl text-base font-black hover:-translate-y-1 transition-transform duration-300 shadow-[0_0_30px_rgba(245,158,11,0.3)]">
                                 Dùng Thử Ngay <ArrowRight className="w-4 h-4" />
                             </a>
+                            <button onClick={() => setShowVideoModal(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white bg-blue-600/20 border border-blue-500/30 hover:border-blue-500/60 hover:bg-blue-600/30 hover:-translate-y-0.5 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.15)]">
+                                <Play className="w-4 h-4" fill="currentColor" />
+                                Hướng Dẫn Kích Hoạt
+                            </button>
                             <button onClick={() => setShowModal(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:-translate-y-0.5 transition-all duration-300">
                                 Nhận Tư Vấn
                             </button>
@@ -221,19 +258,19 @@ export const MetaAdReport: React.FC = () => {
 
                     {/* Admin Log & Pain Points */}
                     <div className="mb-24">
-                        <div className="bg-gradient-to-br from-rose-500/10 to-[#080c14] border border-rose-500/20 rounded-[32px] p-8 md:p-12 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 blur-[80px] rounded-full pointer-events-none" />
+                        <div className="bg-gradient-to-br from-amber-500/10 to-[#080c14] border border-amber-500/20 rounded-[32px] p-8 md:p-12 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none" />
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                                 <div>
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
                                         <ShieldCheck className="w-3.5 h-3.5" /> Giải Quyết Nỗi Đau Doanh Nghiệp
                                     </div>
                                     <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
                                         Mất Kiểm Soát Tài Khoản Quảng Cáo?
                                     </h2>
                                     <p className="text-slate-300 text-base md:text-lg mb-8 leading-relaxed">
-                                        Bạn là chủ doanh nghiệp hay đang thuế Agency chạy trên BM, nhưng lại <strong className="text-rose-400">không thể kiểm soát</strong> được:
+                                        Bạn là chủ doanh nghiệp hay đang thuê Agency chạy trên BM, nhưng lại <strong className="text-amber-400">không thể kiểm soát</strong> được:
                                     </p>
                                     <ul className="space-y-4 mb-8">
                                         {[
@@ -242,8 +279,8 @@ export const MetaAdReport: React.FC = () => {
                                             "Thay đổi nội dung, ngân sách lúc nào và do ai thực hiện?"
                                         ].map((pain, idx) => (
                                             <li key={idx} className="flex items-start gap-3">
-                                                <div className="w-6 h-6 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0 mt-0.5">
-                                                    <X className="w-3.5 h-3.5 text-rose-400" />
+                                                <div className="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                                                    <X className="w-3.5 h-3.5 text-amber-400" />
                                                 </div>
                                                 <span className="text-slate-300 font-medium">{pain}</span>
                                             </li>
@@ -261,9 +298,14 @@ export const MetaAdReport: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/20 to-amber-500/20 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                <div className="relative group cursor-pointer" onClick={() => setPreviewImage('/meta/admin_log.png')}>
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-orange-500/20 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
                                     <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#161b22]">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#080c14]/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                            <div className="flex items-center gap-2 text-white font-bold text-sm">
+                                                <Target className="w-4 h-4 text-amber-400" /> Xem chi tiết
+                                            </div>
+                                        </div>
                                         <img src="/meta/admin_log.png" alt="Admin Log Screenshot" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
                                     </div>
                                 </div>
@@ -323,32 +365,33 @@ export const MetaAdReport: React.FC = () => {
 
                         {/* 2. Tracking Thời Gian */}
                         <FadeIn className="bg-gradient-to-r from-[#161b22] to-[#0d1117] border border-white/5 rounded-[32px] p-8 md:p-12 relative overflow-hidden group">
-                            <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 blur-[100px] rounded-full" />
+                            <div className="absolute -right-20 -top-20 w-64 h-64 bg-amber-500/10 blur-[100px] rounded-full" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
                                 <div>
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
                                         <Clock className="w-3.5 h-3.5" /> Giờ Vàng Chốt Sale
                                     </div>
                                     <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
                                         Theo Dõi Chuyển Đổi Theo Khung Giờ
                                     </h2>
                                     <p className="text-slate-400 text-base md:text-lg mb-8 leading-relaxed">
-                                        Không còn lên camp dựa vào cảm tính. Hệ thống phân tích dữ liệu lịch sử để tìm ra <strong className="text-emerald-400">"Khung Giờ Vàng"</strong> có tỷ lệ chuyển đổi cao nhất.
+                                        Không còn lên camp dựa vào cảm tính. Hệ thống phân tích dữ liệu lịch sử để tìm ra <strong className="text-amber-400">"Khung Giờ Vàng"</strong> có tỷ lệ chuyển đổi cao nhất.
                                     </p>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                                             <div className="text-2xl font-black text-white mb-1">08:00 - 10:00</div>
                                             <div className="text-sm text-slate-400">Tỷ lệ tương tác cao</div>
                                         </div>
-                                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-                                            <div className="text-2xl font-black text-emerald-400 mb-1">20:00 - 23:00</div>
-                                            <div className="text-sm text-slate-300">Đỉnh điểm chuyển đổi</div>
+                                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/20 blur-xl rounded-full" />
+                                            <div className="relative z-10 text-2xl font-black text-emerald-400 mb-1">20:00 - 23:00</div>
+                                            <div className="relative z-10 text-sm text-slate-300">Đỉnh điểm chuyển đổi</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="relative h-64 flex items-end gap-2 px-4">
                                     {[40, 25, 60, 30, 80, 100, 45, 20].map((height, i) => (
-                                        <div key={i} className="flex-1 bg-gradient-to-t from-emerald-500/40 to-emerald-400/80 rounded-t-lg group-hover:from-emerald-500/60 transition-colors" style={{ height: `${height}%`, animation: `pulse 3s infinite ${i * 0.2}s` }} />
+                                        <div key={i} className={`flex-1 rounded-t-lg transition-colors ${height === 100 ? 'bg-gradient-to-t from-emerald-500/50 to-emerald-400/90 group-hover:from-emerald-500/70 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-gradient-to-t from-amber-500/30 to-orange-400/70 group-hover:from-amber-500/50'}`} style={{ height: `${height}%`, animation: `pulse 3s infinite ${i * 0.2}s` }} />
                                     ))}
                                     <div className="absolute bottom-0 left-0 right-0 h-px bg-white/20" />
                                 </div>
@@ -363,16 +406,23 @@ export const MetaAdReport: React.FC = () => {
                         </FadeIn>
 
                         {/* Toggle */}
-                        <div className="flex justify-center mb-10">
-                            <div className="bg-white/5 p-1 rounded-full border border-white/10 flex items-center relative">
-                                <button onClick={() => setIsYearly(false)} className={`relative px-6 py-2.5 rounded-full text-sm font-bold transition-all z-10 ${!isYearly ? 'text-white' : 'text-slate-400 hover:text-white'}`}>
-                                    Thanh Toán Tháng
-                                </button>
-                                <button onClick={() => setIsYearly(true)} className={`relative px-6 py-2.5 rounded-full text-sm font-bold transition-all z-10 flex items-center gap-2 ${isYearly ? 'text-white' : 'text-slate-400 hover:text-white'}`}>
-                                    Thanh Toán Năm
-                                    <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/20">Giảm 29%</span>
-                                </button>
-                                <div className="absolute top-1 bottom-1 w-[50%] bg-white/10 rounded-full transition-all duration-300" style={{ left: isYearly ? '50%' : '4px', width: isYearly ? 'calc(50% - 4px)' : 'calc(50% - 4px)' }} />
+                        <div className="flex items-center justify-center gap-4 mb-10">
+                            <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-white' : 'text-slate-400'}`}>
+                                Hàng Tháng
+                            </span>
+                            <button 
+                                onClick={() => setIsYearly(!isYearly)} 
+                                className="relative w-14 h-7 bg-white/5 border border-white/10 rounded-full transition-colors focus:outline-none cursor-pointer hover:bg-white/10"
+                            >
+                                <div className={`absolute top-1/2 -translate-y-1/2 left-1 w-5 h-5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-transform duration-300 shadow-[0_0_10px_rgba(245,158,11,0.5)] ${isYearly ? 'translate-x-7' : 'translate-x-0'}`} />
+                            </button>
+                            <div className="flex items-center gap-2">
+                                <span className={`text-sm font-bold transition-colors ${isYearly ? 'text-white' : 'text-slate-400'}`}>
+                                    Hàng Năm
+                                </span>
+                                <span className="bg-amber-500/10 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/20">
+                                    GIẢM 29%
+                                </span>
                             </div>
                         </div>
 
@@ -538,6 +588,41 @@ export const MetaAdReport: React.FC = () => {
                                 <X className="w-8 h-8" />
                             </button>
                             <img src={previewImage} alt="Preview" className="w-full h-full object-contain rounded-2xl shadow-2xl" />
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Video Modal */}
+            <AnimatePresence>
+                {showVideoModal && (
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setShowVideoModal(false)}>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative w-full max-w-7xl flex flex-col items-center gap-6"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-black border border-white/10">
+                                <button onClick={() => setShowVideoModal(false)} className="absolute top-4 right-4 z-10 p-2.5 bg-black/60 hover:bg-rose-500 text-white rounded-full transition-colors cursor-pointer backdrop-blur-md">
+                                    <X className="w-6 h-6" />
+                                </button>
+                                <iframe 
+                                    width="100%" 
+                                    height="100%" 
+                                    src="https://www.youtube.com/embed/fvIHSrpsAlI?autoplay=1" 
+                                    title="Hướng dẫn kích hoạt report" 
+                                    frameBorder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowFullScreen
+                                    className="absolute inset-0"
+                                ></iframe>
+                            </div>
+                            <a href="https://youtu.be/fvIHSrpsAlI?si=u4Ch5TjsjZWyvkkW" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/10 hover:bg-rose-600 text-white text-sm font-bold transition-all shadow-lg border border-white/20 hover:border-rose-500 backdrop-blur-md">
+                                <Play className="w-5 h-5" fill="currentColor" />
+                                Xem trên YouTube
+                            </a>
                         </motion.div>
                     </div>
                 )}
