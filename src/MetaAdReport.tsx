@@ -137,9 +137,9 @@ export const MetaAdReport: React.FC = () => {
                         </span>
                     </a>
                     <div className="flex items-center space-x-3">
-                        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-                            Đăng Ký Trải Nghiệm
-                        </button>
+                        <a href="https://meta.domation.net" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+                            Dùng Thử Ngay
+                        </a>
                     </div>
                 </div>
             </nav>
@@ -156,7 +156,7 @@ export const MetaAdReport: React.FC = () => {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400" style={{ animation: 'shimmer-sweep 4s linear infinite', backgroundSize: '200% auto' }}>Hiệu Suất Meta Ads</span>
                         </motion.h1>
                         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
-                            Tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ ra quyết định Scale hay Vít ngân sách dựa trên thời gian thực.
+                            Tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ theo dõi ra quyết định trên thời gian thực.
                         </motion.p>
 
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -527,7 +527,7 @@ export const MetaAdReport: React.FC = () => {
             <AnimatePresence>
                 {previewImage && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setPreviewImage(null)}>
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
