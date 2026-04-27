@@ -321,6 +321,9 @@ const ALL_MODULES = [
         id: 'web-design', title: 'Thiết Kế Web & Landing Page', sub: 'Thiết kế Website và Landing Page chuyên nghiệp, chuẩn SEO, tối ưu tỷ lệ chuyển đổi cao, tích hợp sẵn các công cụ tracking.', icon: Monitor, color: 'from-fuchsia-500 to-pink-600', tags: ['Web', 'Landing']
     },
     {
+        id: 'meta-ad-report', title: 'Meta Ad Realtime Report', sub: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ ra quyết định Scale hay Vít ngân sách.', icon: Activity, color: 'from-amber-500 to-orange-500', tags: ['Meta Ads', 'Report', 'AI']
+    },
+    {
         id: 'settings', title: 'Cấu hình', sub: 'Quản lý tài khoản, phân quyền thành viên và thiết lập các kết nối API ngoại vi cho hệ thống.', icon: Settings2, color: 'from-slate-400 to-slate-600'
     }
 ];
@@ -608,6 +611,10 @@ const Landing: React.FC = () => {
                     </div>
 
                     <div className="flex items-center space-x-3">
+                        <a href="/?page=meta-ad-report"
+                            className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
+                            Meta Ad Report
+                        </a>
                         <a href="#pricing"
                             className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
                             Bảng Giá
