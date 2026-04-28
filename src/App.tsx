@@ -227,7 +227,6 @@ const WebDesignSection = () => {
         { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://nava-one.vercel.app/', color: 'from-blue-500 to-cyan-500', icon: Monitor },
         { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-fuchsia-500 to-pink-500', icon: Monitor },
         { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-emerald-500 to-teal-500', icon: Monitor },
-        { name: 'Meta Ad Report', desc: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI chuyên sâu.', link: '/?page=meta-ad-report', color: 'from-amber-500 to-orange-500', icon: Activity },
     ];
 
     return (
@@ -246,7 +245,7 @@ const WebDesignSection = () => {
                     </p>
                 </FadeIn>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {projects.map((p, i) => (
                         <FadeIn key={i} delay={i * 0.1} className="h-full">
                             <a href={p.link} target={p.link.startsWith('/') ? '_self' : '_blank'} rel="noreferrer" className="group block holo-card p-px rounded-2xl overflow-hidden bg-white/5 hover:bg-white/10 transition-all border border-white/10 hover:-translate-y-2 h-full shadow-[0_0_20px_rgba(217,70,239,0.05)] hover:shadow-[0_0_30px_rgba(217,70,239,0.2)]">
@@ -269,6 +268,47 @@ const WebDesignSection = () => {
                             </a>
                         </FadeIn>
                     ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const MetaAdReportFeatureSection = () => {
+    return (
+        <section id="meta-ad-report-feature" className="py-24 px-6 relative z-10 border-t border-white/5 bg-[#080c14]">
+            <div className="max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <FadeIn>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <Activity className="w-3.5 h-3.5" /> Sản Phẩm Mới
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            Hệ Thống Báo Cáo <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Hiệu Suất Meta Ads</span>
+                        </h2>
+                        <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                            Nền tảng báo cáo real-time độc lập, phân tích dữ liệu chuyên sâu bằng AI. Khám phá Khung Giờ Vàng chốt sale, theo dõi Admin Log chi tiết và tối ưu chiến dịch quảng cáo chưa từng có.
+                        </p>
+                        <a href="/?page=meta-ad-report" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:-translate-y-1">
+                            Khám Phá Ngay <ArrowRight className="w-5 h-5" />
+                        </a>
+                    </FadeIn>
+                    <FadeIn delay={0.2}>
+                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black group">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                src="https://www.youtube.com/embed/fvIHSrpsAlI?autoplay=0&mute=1" 
+                                title="Hướng dẫn hệ thống Meta Ad Report" 
+                                frameBorder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowFullScreen
+                                className="relative z-10 w-full h-full rounded-2xl"
+                            ></iframe>
+                        </div>
+                    </FadeIn>
                 </div>
             </div>
         </section>
@@ -612,13 +652,13 @@ const Landing: React.FC = () => {
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <a href="/?page=meta-ad-report"
-                            className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
-                            Meta Ad Report
-                        </a>
                         <a href="#pricing"
                             className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
                             Bảng Giá
+                        </a>
+                        <a href="/?page=meta-ad-report"
+                            className="hidden md:flex items-center justify-center text-sm font-semibold text-amber-400 hover:text-amber-300 transition-all px-4 py-1.5 border border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 rounded-full">
+                            Meta Ad Report
                         </a>
                         <button onClick={() => setIsFormOpen(true)}
                             className="glow-btn flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
@@ -1666,6 +1706,9 @@ const Landing: React.FC = () => {
 
             {/* ── Web Design & Landing Page ── */}
             <WebDesignSection />
+
+            {/* Meta Ad Report Feature */}
+            <MetaAdReportFeatureSection />
 
             {/* ── Testimonials ── */}
             <TestimonialSection />
