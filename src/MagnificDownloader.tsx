@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Link as LinkIcon, Image as ImageIcon, CheckCircle2, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Download, Link as LinkIcon, Image as ImageIcon, CheckCircle2, AlertCircle, Loader2, ArrowRight, X } from 'lucide-react';
 
 export const MagnificDownloader = () => {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageResult, setImageResult] = useState<{ originalUrl: string, imageUrl: string } | null>(null);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const isValidUrl = (testUrl: string) => {
+    return testUrl.includes('magnific.com') || testUrl.includes('freepik.com') || testUrl.includes('stock.adobe.com');
+  };
 
   const extractImageFromUrl = async (inputUrl: string) => {
     setIsLoading(true);
@@ -15,7 +20,7 @@ export const MagnificDownloader = () => {
 
     try {
       // Validate URL format
-      if (!inputUrl.includes('magnific.com') && !inputUrl.includes('freepik.com') && !inputUrl.includes('stock.adobe.com')) {
+      if (!isValidUrl(inputUrl)) {
         throw new Error('Vui lòng nhập link hợp lệ từ Magnific, Freepik hoặc Adobe Stock');
       }
 
@@ -162,14 +167,24 @@ export const MagnificDownloader = () => {
     const pastedText = e.clipboardData.getData('text');
     if (pastedText && pastedText.startsWith('http')) {
       setUrl(pastedText);
-      extractImageFromUrl(pastedText);
+      if (isValidUrl(pastedText)) {
+        extractImageFromUrl(pastedText);
+      } else {
+        setError('Vui lòng nhập link hợp lệ từ Magnific, Freepik hoặc Adobe Stock');
+        setImageResult(null);
+      }
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (url) {
-      extractImageFromUrl(url);
+      if (isValidUrl(url)) {
+        extractImageFromUrl(url);
+      } else {
+        setError('Vui lòng nhập link hợp lệ từ Magnific, Freepik hoặc Adobe Stock');
+        setImageResult(null);
+      }
     }
   };
 
@@ -307,7 +322,10 @@ export const MagnificDownloader = () => {
             <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 
               {/* Image Preview */}
-              <div className="relative group rounded-2xl overflow-hidden bg-[#0a0a0a] border border-white/5 aspect-square md:aspect-[4/3] flex items-center justify-center">
+              <div 
+                className="relative group rounded-2xl overflow-hidden bg-[#0a0a0a] border border-white/5 aspect-square md:aspect-[4/3] flex items-center justify-center cursor-pointer"
+                onClick={() => setIsZoomed(true)}
+              >
                 <img
                   src={imageResult.imageUrl}
                   alt="Extracted Preview"
@@ -320,8 +338,9 @@ export const MagnificDownloader = () => {
                     }
                   }}
                 />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center backdrop-blur-sm gap-2">
                   <ImageIcon className="w-12 h-12 text-white/50" />
+                  <span className="text-white/70 font-medium">Bấm để phóng to</span>
                 </div>
               </div>
 
@@ -367,6 +386,37 @@ export const MagnificDownloader = () => {
           </motion.div>
         )}
       </div>
+
+      {/* Zoom Modal */}
+      {isZoomed && imageResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-8">
+          <button 
+            onClick={() => setIsZoomed(false)}
+            className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+          >
+            <X className="w-8 h-8" />
+          </button>
+          
+          <div className="flex flex-col items-center max-w-7xl max-h-full w-full">
+            <div className="relative w-full flex-1 min-h-0 flex items-center justify-center">
+              <img 
+                src={imageResult.imageUrl} 
+                alt="Zoomed Preview" 
+                className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl"
+              />
+            </div>
+            <div className="mt-6 flex gap-4 w-full max-w-md">
+              <button
+                onClick={() => downloadImage(imageResult.imageUrl)}
+                className="flex-1 bg-amber-600 hover:bg-amber-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-3 text-lg group"
+              >
+                <Download className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
+                Tải về máy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
