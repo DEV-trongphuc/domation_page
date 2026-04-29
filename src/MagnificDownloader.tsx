@@ -33,10 +33,22 @@ export const MagnificDownloader = () => {
 
           if (previewRes.ok) {
             const previewData = await previewRes.json();
+            
+            // Trường hợp 1: Ảnh đã từng được cào trước đó, server trả về luôn kết quả
+            if (previewData.ok === 1 && previewData.objects && previewData.objects[0] && previewData.objects[0].pic) {
+              setImageResult({
+                originalUrl: inputUrl,
+                imageUrl: `https://fotoget.org${previewData.objects[0].pic}`
+              });
+              setIsLoading(false);
+              return; // Thoát luôn
+            }
+            
+            // Trường hợp 2: Cần chờ server cào (có try_parsing_id)
             if (previewData && previewData.try_parsing_id) {
-              // Chờ server Fotoget xử lý (tối đa 3 lần x 2s)
-              for (let i = 0; i < 3; i++) {
-                await new Promise(resolve => setTimeout(resolve, 2000));
+              // Chờ server Fotoget xử lý (tối đa 4 lần x 2.5s)
+              for (let i = 0; i < 4; i++) {
+                await new Promise(resolve => setTimeout(resolve, 2500));
                 const checkRes = await fetch(`${proxyBase}?action=checkTryParsing`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
