@@ -211,7 +211,7 @@ export const MagnificDownloader = () => {
 
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight shimmer-text inline-block pb-2 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-500">
-            MAGNICFIC DOWNLOAD PREMIUM
+            MAGNICFIC DOWNLOADER
           </h1>
           <p className="text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
             Dán đường link ảnh từ Magnific, Freepik vào ô bên dưới để tự động lấy link ảnh gốc.
@@ -317,16 +317,22 @@ export const MagnificDownloader = () => {
               <div className="flex flex-col h-full justify-center">
                 <div className="inline-flex items-center gap-2 text-green-400 mb-4 bg-green-400/10 px-3 py-1.5 rounded-full w-fit text-sm font-semibold">
                   <CheckCircle2 className="w-4 h-4" />
-                  Đã tìm thấy ảnh
+                  Đã tìm thấy file
                 </div>
 
                 <h3 className="text-2xl font-bold text-white mb-2">Sẵn sàng tải về</h3>
-                <p className="text-neutral-400 mb-8 text-sm">Ảnh đã được trích xuất thành công. Bạn có thể tải về máy với định dạng JPG chất lượng cao.</p>
+                <p className="text-neutral-400 mb-8 text-sm">File đã được trích xuất thành công. Bạn có thể tải về máy tính với chất lượng cao nhất.</p>
 
                 <div className="space-y-4 mb-8">
                   <div className="bg-[#0a0a0a] p-4 rounded-xl border border-white/5">
                     <div className="text-xs text-neutral-500 uppercase tracking-wider font-semibold mb-1">Định dạng</div>
-                    <div className="text-white font-medium">JPEG Image (.jpg)</div>
+                    <div className="text-white font-medium">
+                      {(() => {
+                        const match = imageResult.imageUrl.match(/\.([a-zA-Z0-9]+)(?:[\?#]|$)/);
+                        const ext = match ? match[1].toUpperCase() : 'JPG';
+                        return `${ext} File (.${ext.toLowerCase()})`;
+                      })()}
+                    </div>
                   </div>
                   <div className="bg-[#0a0a0a] p-4 rounded-xl border border-white/5">
                     <div className="text-xs text-neutral-500 uppercase tracking-wider font-semibold mb-1">Nguồn</div>
@@ -341,7 +347,7 @@ export const MagnificDownloader = () => {
                   className="w-full bg-amber-600 hover:bg-amber-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] transition-all py-4 px-6 rounded-xl font-bold flex items-center justify-center gap-3 text-lg group"
                 >
                   <Download className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
-                  Tải về máy (.JPG)
+                  Tải về máy
                 </button>
               </div>
 

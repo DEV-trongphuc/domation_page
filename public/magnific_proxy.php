@@ -24,8 +24,12 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'downloadImage') {
     $imgUrl = isset($_GET['imgUrl']) ? $_GET['imgUrl'] : '';
     if (filter_var($imgUrl, FILTER_VALIDATE_URL)) {
+        // Lấy đuôi file từ URL (mặc định là jpg nếu không tìm thấy)
+        $ext = pathinfo(parse_url($imgUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+        if (!$ext) $ext = 'jpg';
+        
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="premium_download.jpg"');
+        header('Content-Disposition: attachment; filename="premium_download.' . $ext . '"');
         readfile($imgUrl);
     }
     exit();
