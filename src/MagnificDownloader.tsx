@@ -24,13 +24,13 @@ export const MagnificDownloader = () => {
         try {
           const proxyBase = 'https://open.domation.net/proxy/magnific_proxy.php';
           const type = 15; // Type ID cho Freepik trên Fotoget
-          
+
           const previewRes = await fetch(`${proxyBase}?action=imagePreview`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `str=${encodeURIComponent(inputUrl)}&type=${type}`
           });
-          
+
           if (previewRes.ok) {
             const previewData = await previewRes.json();
             if (previewData && previewData.try_parsing_id) {
@@ -42,7 +42,7 @@ export const MagnificDownloader = () => {
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   body: `str=${encodeURIComponent(inputUrl)}&type=${type}&try_parsing_id=${previewData.try_parsing_id}`
                 });
-                
+
                 if (checkRes.ok) {
                   const checkData = await checkRes.json();
                   if (checkData.ok === 1 && checkData.objects && checkData.objects[0]) {
@@ -68,7 +68,7 @@ export const MagnificDownloader = () => {
       // Nếu là Adobe Stock hoặc Fotoget thất bại, chuyển sang lấy HTML qua Proxy (ScraperAPI)
       const proxyUrl = `https://open.domation.net/proxy/magnific_proxy.php?url=${encodeURIComponent(inputUrl)}`;
       const response = await fetch(proxyUrl);
-      
+
       if (!response.ok) {
         throw new Error('Không thể kết nối đến máy chủ proxy.');
       }
@@ -211,7 +211,7 @@ export const MagnificDownloader = () => {
 
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight shimmer-text inline-block pb-2 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-500">
-            DOWNLOAD PREMIUM
+            MAGNICFIC DOWNLOAD PREMIUM
           </h1>
           <p className="text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
             Dán đường link ảnh từ Magnific, Freepik vào ô bên dưới để tự động lấy link ảnh gốc.
@@ -236,7 +236,7 @@ export const MagnificDownloader = () => {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 onPaste={handlePaste}
-                placeholder="https://stock.adobe.com/... hoặc Freepik"
+                placeholder="https://magnific.com/..."
                 className="w-full bg-transparent border-none outline-none text-white placeholder-neutral-600 py-4 px-2 text-lg font-medium"
                 disabled={isLoading}
               />
