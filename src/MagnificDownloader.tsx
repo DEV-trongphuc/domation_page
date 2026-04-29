@@ -162,16 +162,12 @@ export const MagnificDownloader = () => {
   };
 
   const downloadImage = (imageUrl: string) => {
-    // Extract filename from URL
-    const filenameMatch = imageUrl.match(/\/([^\/?#]+)$/);
-    const filename = filenameMatch ? filenameMatch[1] : 'magnific_image.jpg';
-    const finalFilename = filename.endsWith('.jpg') ? filename : `${filename}.jpg`;
-
-    // Attempt direct download via anchor tag (browser native behavior)
+    // Để force download thay vì mở tab mới do lỗi CORS, tải qua proxy php với action=downloadImage
+    const proxyDownloadUrl = `https://open.domation.net/proxy/magnific_proxy.php?action=downloadImage&imgUrl=${encodeURIComponent(imageUrl)}`;
     const a = document.createElement('a');
-    a.href = imageUrl;
-    a.download = finalFilename;
-    a.target = '_blank'; // Opens in new tab if download attribute is ignored due to cross-origin
+    a.href = proxyDownloadUrl;
+    a.download = 'premium_download.jpg';
+    a.target = '_blank';
     a.rel = 'noopener noreferrer';
     document.body.appendChild(a);
     a.click();

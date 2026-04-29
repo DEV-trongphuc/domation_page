@@ -19,6 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Hỗ trợ Fotoget API Proxy qua POST
 $action = isset($_GET['action']) ? $_GET['action'] : '';
+
+// Hỗ trợ tải trực tiếp file để không bị mở tab mới (Force Download)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'downloadImage') {
+    $imgUrl = isset($_GET['imgUrl']) ? $_GET['imgUrl'] : '';
+    if (filter_var($imgUrl, FILTER_VALIDATE_URL)) {
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="premium_download.jpg"');
+        readfile($imgUrl);
+    }
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($action === 'imagePreview' || $action === 'checkTryParsing')) {
     $postData = file_get_contents('php://input');
     $ch = curl_init("https://fotoget.org/ajax/" . $action);
