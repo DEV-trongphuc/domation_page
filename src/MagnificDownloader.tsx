@@ -243,7 +243,7 @@ export const MagnificDownloader = () => {
               <button
                 type="submit"
                 disabled={!url || isLoading}
-                className="ml-2 bg-white text-black p-4 rounded-xl font-semibold hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0"
+                className="ml-2 bg-white text-black p-4 rounded-xl font-semibold hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 relative z-10"
               >
                 {isLoading ? (
                   <Loader2 className="w-6 h-6 animate-spin" />
@@ -251,6 +251,23 @@ export const MagnificDownloader = () => {
                   <ArrowRight className="w-6 h-6" />
                 )}
               </button>
+
+              {/* Progress Bar */}
+              {isLoading && (
+                <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/5 overflow-hidden rounded-b-2xl">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-amber-500 via-orange-400 to-rose-500"
+                    initial={{ x: '-100%' }}
+                    animate={{ x: '200%' }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.5,
+                      ease: "linear"
+                    }}
+                    style={{ width: '50%' }}
+                  />
+                </div>
+              )}
             </div>
           </form>
 
