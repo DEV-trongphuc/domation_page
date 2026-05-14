@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/crm", "destination": "/crm/index.html" },
+    { "source": "/crm", "destination": "/index.html" },
+    { "source": "/automation", "destination": "/index.html" },
+    { "source": "/meta-report", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

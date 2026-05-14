@@ -194,8 +194,16 @@ export const CrmLanding: React.FC = () => {
                             DOMATION
                         </span>
                     </a>
-                    <div className="flex items-center space-x-3">
-                        <button onClick={() => setShowModal(true)} className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                    <div className="flex items-center gap-2">
+                        <a href="/automation" className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-amber-400 border border-amber-500/30 hover:bg-amber-500/10 hover:-translate-y-0.5 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            Marketing Automation
+                        </a>
+                        <a href="/meta-report" className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-orange-400 border border-orange-500/30 hover:bg-orange-500/10 hover:-translate-y-0.5 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            Meta-Report
+                        </a>
+                        <button onClick={() => setShowModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/5 hover:-translate-y-0.5 transition-all duration-300">
                             Nhận Báo Giá
                         </button>
                         <a href="https://crm-domation.vercel.app/" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)]">
