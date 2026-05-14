@@ -136,10 +136,10 @@ export const DomationHome: React.FC = () => {
         
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }}
           className="flex flex-col items-center mb-8">
-          <span className="text-white text-xl md:text-2xl font-black tracking-[0.4em] uppercase mb-4 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
+          <span className="text-white text-lg md:text-xl font-black tracking-[0.4em] uppercase mb-4 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
             BUILT TO SCALE
           </span>
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase shimmer-orange drop-shadow-[0_0_50px_rgba(249,115,22,0.6)]">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.85] uppercase shimmer-orange drop-shadow-[0_0_50px_rgba(249,115,22,0.6)]">
             DOMATION
           </h1>
         </motion.div>
@@ -151,30 +151,24 @@ export const DomationHome: React.FC = () => {
         </motion.p>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-wrap items-center justify-center gap-5">
-          <a href="/automation" className="group relative flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 text-slate-900 font-black text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:shadow-[0_15px_40px_rgba(245,158,11,0.4)]">
+          <a href="/automation" className="group relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 text-slate-900 font-black text-xs md:text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:shadow-[0_15px_40px_rgba(245,158,11,0.4)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
             </svg>
-            Automation
+            Marketing Automation
           </a>
-          <a href="/meta-report" className="group relative flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 text-white font-black text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:shadow-[0_15px_40px_rgba(249,115,22,0.4)]">
+          <a href="/meta-report" className="group relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 text-white font-black text-xs md:text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:shadow-[0_15px_40px_rgba(249,115,22,0.4)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
             </svg>
-            Meta Report
+            Meta Realtime Report
           </a>
-          <a href="/crm" className="group relative flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-700 text-white font-black text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(168,85,247,0.3)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.4)]">
+          <a href="/crm" className="group relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-700 text-white font-black text-xs md:text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(168,85,247,0.3)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.4)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            CRM Quản trị Doanh nghiệp
+            CRM Quản trị doanh nghiệp
           </a>
-          <button className="flex items-center gap-2 px-7 py-4 rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-1 transition-all backdrop-blur-md">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-            Video hướng dẫn
-          </button>
         </motion.div>
       </section>
 
