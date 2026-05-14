@@ -103,9 +103,9 @@ export const DomationHome: React.FC = () => {
 
       {/* BG */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-orange-500/[0.12] blur-[130px]" style={{animation:'bg1 20s ease-in-out infinite'}} />
-        <div className="absolute bottom-[10%] right-[-15%] w-[55%] h-[55%] rounded-full bg-amber-500/[0.08] blur-[130px]" style={{animation:'bg2 25s ease-in-out infinite'}} />
-        <div className="hidden md:block absolute inset-0 opacity-[0.025]" style={{backgroundImage:'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',backgroundSize:'60px 60px'}} />
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-orange-500/[0.12] blur-[130px]" style={{ animation: 'bg1 20s ease-in-out infinite' }} />
+        <div className="absolute bottom-[10%] right-[-15%] w-[55%] h-[55%] rounded-full bg-amber-500/[0.08] blur-[130px]" style={{ animation: 'bg2 25s ease-in-out infinite' }} />
+        <div className="hidden md:block absolute inset-0 opacity-[0.025]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)', backgroundSize: '60px 60px' }} />
       </div>
 
       {/* Nav */}
@@ -133,7 +133,7 @@ export const DomationHome: React.FC = () => {
           <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" />
           READY TO SCALE 🚀
         </motion.div>
-        
+
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }}
           className="flex flex-col items-center mb-8">
           <span className="text-white text-lg md:text-xl font-black tracking-[0.4em] uppercase mb-4 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
@@ -153,19 +153,19 @@ export const DomationHome: React.FC = () => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-wrap items-center justify-center gap-5">
           <a href="/automation" className="group relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 text-slate-900 font-black text-xs md:text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:shadow-[0_15px_40px_rgba(245,158,11,0.4)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
             Marketing Automation
           </a>
           <a href="/meta-report" className="group relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 text-white font-black text-xs md:text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(249,115,22,0.3)] hover:shadow-[0_15px_40px_rgba(249,115,22,0.4)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+              <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
             </svg>
             Meta Realtime Report
           </a>
           <a href="/crm" className="group relative flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-700 text-white font-black text-xs md:text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(168,85,247,0.3)] hover:shadow-[0_15px_40px_rgba(168,85,247,0.4)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
             CRM Quản trị doanh nghiệp
           </a>
@@ -175,7 +175,7 @@ export const DomationHome: React.FC = () => {
       {/* ── SECTION 1: AUTOMATION ── */}
       <section id="section-automation" className="relative z-10 py-24 px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,ease:[.22,1,.36,1]}}>
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-bold uppercase tracking-widest mb-6">
               <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-amber-400" /> Sản phẩm 01
             </div>
@@ -184,7 +184,7 @@ export const DomationHome: React.FC = () => {
               Tự động hóa toàn bộ hành trình khách hàng đa kênh. Flow Builder kéo thả trực quan, Lead Score thông minh, Web Tracking chuyên sâu — Email, Zalo ZNS, Meta Messenger và AI Chatbot.
             </p>
             <div className="flex flex-wrap gap-2 mb-8">
-              {['Email Scale','Zalo ZNS','AI Chatbot','Flow Builder','Web Tracking','Lead Score'].map(t=>(
+              {['Email Scale', 'Zalo ZNS', 'AI Chatbot', 'Flow Builder', 'Web Tracking', 'Lead Score'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">{t}</span>
               ))}
             </div>
@@ -192,7 +192,7 @@ export const DomationHome: React.FC = () => {
               Khám phá Automation →
             </a>
           </motion.div>
-          <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,delay:.1,ease:[.22,1,.36,1]}}>
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
             <GalleryBlock
               main="/imgs/home.jpg"
               thumbs={['/imgs/flow.jpg', '/imgs/email build.jpg', '/imgs/website tracking.jpg']}
@@ -207,7 +207,7 @@ export const DomationHome: React.FC = () => {
       <section id="section-meta" className="relative z-10 py-24 px-6 border-t border-white/5 bg-[#050810]">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-900/8 to-transparent pointer-events-none" />
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,ease:[.22,1,.36,1]}} className="order-2 lg:order-1">
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }} className="order-2 lg:order-1">
             <GalleryBlock
               main="https://portfo-turnio.vercel.app/assets/dom_rp%20(1)-z9-_yBNr.jpg"
               thumbs={['https://portfo-turnio.vercel.app/assets/dom_rp%20(3)-QpcZBQYW.jpg', 'https://portfo-turnio.vercel.app/assets/dom_rp%20(6)-CDWL6ejy.jpg']}
@@ -215,7 +215,7 @@ export const DomationHome: React.FC = () => {
               onOpen={openLightbox}
             />
           </motion.div>
-          <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,delay:.1,ease:[.22,1,.36,1]}} className="order-1 lg:order-2">
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }} className="order-1 lg:order-2">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-widest mb-6">
               <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" /> Sản phẩm 02
             </div>
@@ -224,14 +224,22 @@ export const DomationHome: React.FC = () => {
               Hệ thống báo cáo Meta Ads thời gian thực, độc lập với Business Manager. AI phân tích Khung Giờ Vàng chốt sale, Admin Log chi tiết, tối ưu và Scale ngân sách thông minh.
             </p>
             <div className="flex flex-wrap gap-2 mb-8">
-              {['Real-time Data','AI Insights','Khung Giờ Vàng','Scale Budget','Admin Log','Cost Analysis'].map(t=>(
+              {['Real-time Data', 'AI Insights', 'Khung Giờ Vàng', 'Scale Budget', 'Admin Log', 'Cost Analysis'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold">{t}</span>
               ))}
             </div>
-            <a href="/meta-report" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(249,115,22,.3)]"
-              style={{background:'linear-gradient(135deg,#f97316,#ef4444)'}}>
-              Xem Meta Report →
-            </a>
+            <div className="flex flex-wrap gap-4">
+              <a href="/meta-report" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-black text-sm text-white hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(249,115,22,.3)]"
+                style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
+                Xem Meta Report →
+              </a>
+              <button className="flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Video hướng dẫn
+              </button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -240,24 +248,24 @@ export const DomationHome: React.FC = () => {
       <section id="section-crm" className="relative z-10 py-24 px-6 border-t border-white/5">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/8 to-transparent pointer-events-none" />
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,ease:[.22,1,.36,1]}}>
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-bold uppercase tracking-widest mb-6">
               <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-purple-400" /> Sản phẩm 03
             </div>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-              CRM<br /><span style={{background:'linear-gradient(90deg,#a855f7,#ec4899)',WebkitBackgroundClip:'text',backgroundClip:'text',WebkitTextFillColor:'transparent'}}>Quản trị Doanh nghiệp</span>
+              CRM Quản trị<br /><span style={{ background: 'linear-gradient(90deg,#a855f7,#ec4899)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Doanh nghiệp</span>
             </h2>
             <p className="text-slate-400 text-base leading-relaxed mb-6">
               Số hóa toàn diện quy trình kinh doanh: Sales Pipeline Kanban, Khách hàng 360°, Tồn kho, Báo giá & Hóa đơn, Ticket hỗ trợ — tất cả trên một nền tảng duy nhất.
             </p>
             <div className="flex flex-wrap gap-2 mb-8">
-              {['Kanban Pipeline','Contacts 360°','Inventory','Quotes & Invoices','Tickets','Analytics'].map(t=>(
+              {['Kanban Pipeline', 'Contacts 360°', 'Inventory', 'Quotes & Invoices', 'Tickets', 'Analytics'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold">{t}</span>
               ))}
             </div>
             <div className="flex flex-wrap gap-3">
               <a href="/crm" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(168,85,247,.3)]"
-                style={{background:'linear-gradient(135deg,#a855f7,#ec4899)'}}>
+                style={{ background: 'linear-gradient(135deg,#a855f7,#ec4899)' }}>
                 Khám phá CRM →
               </a>
               <a href="https://crm-domation.vercel.app/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-purple-500/30 text-purple-300 font-bold text-sm hover:bg-purple-500/10 hover:-translate-y-0.5 transition-all">
@@ -265,7 +273,7 @@ export const DomationHome: React.FC = () => {
               </a>
             </div>
           </motion.div>
-          <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,delay:.1,ease:[.22,1,.36,1]}}>
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
             <GalleryBlock
               main="/crm_imgs/CRMS (1).jpg"
               thumbs={['/crm_imgs/CRMS (2).jpg', '/crm_imgs/CRMS (3).jpg', '/crm_imgs/CRMS (4).jpg']}
@@ -279,19 +287,19 @@ export const DomationHome: React.FC = () => {
       {/* Mini Services */}
       <section className="relative z-10 py-20 px-6 border-t border-white/5 bg-[#050810]">
         <div className="max-w-6xl mx-auto">
-          <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="text-center mb-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[11px] font-bold uppercase tracking-widest mb-4">Dịch Vụ Mở Rộng</div>
             <h2 className="text-3xl md:text-4xl font-black text-white mb-3">Giải Pháp Bổ Sung</h2>
             <p className="text-slate-500 max-w-lg mx-auto text-sm">Các dịch vụ chuyên biệt giúp doanh nghiệp tăng trưởng nhanh hơn.</p>
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { emoji:'🖥️', title:'Thiết Kế Landing Page', desc:'Landing page chuẩn SEO, tối ưu chuyển đổi, tích hợp tracking & form thu lead.', color:'text-fuchsia-400', border:'border-fuchsia-500/20 hover:border-fuchsia-500/40', href:'/automation?page=web-design' },
-              { emoji:'📣', title:'Chạy Quảng Cáo Meta', desc:'Dịch vụ chạy ads Facebook & Instagram hiệu quả, tối ưu chi phí, tăng ROI.', color:'text-blue-400', border:'border-blue-500/20 hover:border-blue-500/40', href:'/meta-report' },
-              { emoji:'💬', title:'Zalo ZNS Marketing', desc:'Gửi Zalo ZNS hàng loạt tỷ lệ đọc ~100%. Chăm sóc tự động qua Zalo OA.', color:'text-cyan-400', border:'border-cyan-500/20 hover:border-cyan-500/40', href:'/automation' },
-              { emoji:'🤖', title:'AI Chatbot 24/7', desc:'Trợ lý AI tự động phản hồi đa kênh theo dữ liệu riêng của doanh nghiệp.', color:'text-emerald-400', border:'border-emerald-500/20 hover:border-emerald-500/40', href:'/automation' },
-            ].map((s,i)=>(
-              <motion.a key={s.title} href={s.href} initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:.5,delay:i*.08}}
+              { emoji: '🖥️', title: 'Thiết Kế Landing Page', desc: 'Landing page chuẩn SEO, tối ưu chuyển đổi, tích hợp tracking & form thu lead.', color: 'text-fuchsia-400', border: 'border-fuchsia-500/20 hover:border-fuchsia-500/40', href: '/automation?page=web-design' },
+              { emoji: '📣', title: 'Chạy Quảng Cáo Meta', desc: 'Dịch vụ chạy ads Facebook & Instagram hiệu quả, tối ưu chi phí, tăng ROI.', color: 'text-blue-400', border: 'border-blue-500/20 hover:border-blue-500/40', href: '/meta-report' },
+              { emoji: '💬', title: 'Zalo ZNS Marketing', desc: 'Gửi Zalo ZNS hàng loạt tỷ lệ đọc ~100%. Chăm sóc tự động qua Zalo OA.', color: 'text-cyan-400', border: 'border-cyan-500/20 hover:border-cyan-500/40', href: '/automation' },
+              { emoji: '🤖', title: 'AI Chatbot 24/7', desc: 'Trợ lý AI tự động phản hồi đa kênh theo dữ liệu riêng của doanh nghiệp.', color: 'text-emerald-400', border: 'border-emerald-500/20 hover:border-emerald-500/40', href: '/automation' },
+            ].map((s, i) => (
+              <motion.a key={s.title} href={s.href} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .5, delay: i * .08 }}
                 className={`group block rounded-2xl p-6 bg-white/[0.03] border ${s.border} transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.05]`}>
                 <div className="text-3xl mb-4">{s.emoji}</div>
                 <h3 className="font-bold text-sm text-white mb-2">{s.title}</h3>
@@ -310,8 +318,8 @@ export const DomationHome: React.FC = () => {
           {/* Decorative rings */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-orange-500/10 rounded-full pointer-events-none" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-orange-500/5 rounded-full pointer-events-none" />
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
