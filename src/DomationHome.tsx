@@ -186,7 +186,7 @@ export const DomationHome: React.FC = () => {
           <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.7,ease:[.22,1,.36,1]}} className="order-2 lg:order-1">
             <GalleryBlock
               main="https://portfo-turnio.vercel.app/assets/dom_rp%20(1)-z9-_yBNr.jpg"
-              thumbs={['/meta/admin_log.png', '/imgs/dash.png']}
+              thumbs={['https://portfo-turnio.vercel.app/assets/dom_rp%20(3)-QpcZBQYW.jpg', 'https://portfo-turnio.vercel.app/assets/dom_rp%20(6)-CDWL6ejy.jpg']}
               accentGlow="rgba(249,115,22,0.12)"
               onOpen={openLightbox}
             />
@@ -195,7 +195,7 @@ export const DomationHome: React.FC = () => {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-widest mb-6">
               <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" /> Sản phẩm 02
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">Meta Ad<br /><span className="shimmer-meta">Report</span></h2>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">Meta Ad<br /><span className="shimmer-meta">Realtime Report</span></h2>
             <p className="text-slate-400 text-base leading-relaxed mb-6">
               Hệ thống báo cáo Meta Ads thời gian thực, độc lập với Business Manager. AI phân tích Khung Giờ Vàng chốt sale, Admin Log chi tiết, tối ưu và Scale ngân sách thông minh.
             </p>
