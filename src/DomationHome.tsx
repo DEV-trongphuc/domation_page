@@ -119,9 +119,24 @@ export const DomationHome: React.FC = () => {
             <span className="text-xl font-black tracking-tight shimmer-orange">DOMATION</span>
           </div>
           <div className="flex items-center gap-2">
-            <a href="/automation" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-amber-400 border border-amber-500/25 rounded-full hover:bg-amber-500/10 hover:-translate-y-0.5 transition-all">⚡ Automation</a>
-            <a href="/meta-report" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-orange-400 border border-orange-500/25 rounded-full hover:bg-orange-500/10 hover:-translate-y-0.5 transition-all">📊 Meta Report</a>
-            <a href="/crm" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-purple-400 border border-purple-500/25 rounded-full hover:bg-purple-500/10 hover:-translate-y-0.5 transition-all">👥 CRM</a>
+            <a href="/automation" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              Automation
+            </a>
+            <a href="/meta-report" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+              Meta Report
+            </a>
+            <a href="/crm" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              CRM
+            </a>
           </div>
         </div>
       </nav>
