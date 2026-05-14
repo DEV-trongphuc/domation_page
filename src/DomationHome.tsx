@@ -131,13 +131,7 @@ export const DomationHome: React.FC = () => {
               <div className="absolute -inset-4 bg-gradient-to-br from-orange-500/20 to-rose-500/10 rounded-[36px] blur-2xl" />
               <div className="relative rounded-[28px] overflow-hidden border border-orange-500/20 shadow-[0_0_60px_rgba(249,115,22,.12)] section-img bg-[#0f1420]">
                 {/* Placeholder visual nếu chưa có ảnh */}
-                <div className="w-full aspect-video bg-gradient-to-br from-[#1a0f08] to-[#0d0c14] flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">📊</div>
-                    <p className="text-orange-400 font-bold text-lg">Meta Ad Report</p>
-                    <p className="text-slate-500 text-sm mt-1">Real-time Analytics Dashboard</p>
-                  </div>
-                </div>
+                <img src="https://portfo-turnio.vercel.app/assets/dom_rp%20(1)-z9-_yBNr.jpg" alt="Meta Ad Report Dashboard" className="w-full h-auto object-cover" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#080c14]/60 to-transparent pointer-events-none" />
               </div>
               <div className="absolute -bottom-4 -left-4 flex items-center gap-2 bg-[#0f1420]/95 border border-orange-500/30 rounded-2xl px-4 py-2.5 shadow-[0_0_20px_rgba(249,115,22,.2)] backdrop-blur-sm">
