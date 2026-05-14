@@ -131,16 +131,16 @@ export const DomationHome: React.FC = () => {
         <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.6}}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs font-bold text-orange-400 uppercase tracking-widest mb-8">
           <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          Nền Tảng Số Hóa Doanh Nghiệp Toàn Diện
+          Digital Growth Platform
         </motion.div>
         <motion.h1 initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.1}}
           className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1] mb-5">
-          <span className="text-white">One Platform.</span><br />
-          <span className="shimmer-orange">Three Superpowers.</span>
+          <span className="text-white">DOMATION.</span><br />
+          <span className="shimmer-orange">Built to Scale.</span>
         </motion.h1>
         <motion.p initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.8,delay:.25}}
           className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
-          Marketing Automation, Meta Ad Report và CRM Doanh Nghiệp — ba ứng dụng kết hợp thành hệ sinh thái tăng trưởng toàn diện.
+          Tự động hóa thông minh, phân tích chuyên sâu và quản trị toàn diện — hệ sinh thái công nghệ giúp doanh nghiệp vận hành hiệu quả hơn và tăng trưởng bứt phá.
         </motion.p>
         <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.4}} className="flex items-center justify-center gap-3 flex-wrap">
           <a href="/automation" className="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(249,115,22,.35)]">Khám phá ngay →</a>
