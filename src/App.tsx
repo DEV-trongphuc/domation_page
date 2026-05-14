@@ -629,15 +629,15 @@ const Landing: React.FC = () => {
             {/* ── Navigation ── */}
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#080c14]/90 backdrop-blur-xl shadow-[0_1px_0_0_rgba(245,158,11,0.15),0_8px_32px_rgba(0,0,0,0.6)]' : 'bg-transparent'}`}>
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <a href="/" className="flex items-center space-x-3 group">
                         <div className="relative float-y">
-                            <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30" />
+                            <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform" />
                             <div className="absolute -inset-1 rounded-[18px] bg-amber-500/20 blur-md -z-10" />
                         </div>
                         <span className="text-xl font-black tracking-tight shimmer-text">
                             DOMATION
                         </span>
-                    </div>
+                    </a>
 
                     <div className="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-400">
                         {[['#builder', 'Email Builder'], ['#flow', 'Flow Builder'], ['#analytics', 'Web Analytics'], ['#ai-segment', 'AI Phân Tích'], ['#ai-space', 'AI Workspace'], ['#dashboard', 'Báo Cáo']].map(([href, label]) => {
