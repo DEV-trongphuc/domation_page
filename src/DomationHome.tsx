@@ -127,24 +127,42 @@ export const DomationHome: React.FC = () => {
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 pt-40 pb-12 px-6 text-center">
-        <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.6}}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs font-bold text-orange-400 uppercase tracking-widest mb-8">
-          <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          Digital Growth Platform
+      <section className="relative z-10 pt-40 pb-20 px-6 text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-orange-500/5 border border-orange-500/20 text-[10px] font-bold text-orange-400 uppercase tracking-[0.2em] mb-10 backdrop-blur-sm">
+          <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" />
+          READY TO SCALE 🚀
         </motion.div>
-        <motion.h1 initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.1}}
-          className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1] mb-5">
-          <span className="text-white">DOMATION.</span><br />
-          <span className="shimmer-orange">Built to Scale.</span>
-        </motion.h1>
-        <motion.p initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:.8,delay:.25}}
-          className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
-          Tự động hóa thông minh, phân tích chuyên sâu và quản trị toàn diện — hệ sinh thái công nghệ giúp doanh nghiệp vận hành hiệu quả hơn và tăng trưởng bứt phá.
+        
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }}
+          className="flex flex-col items-center mb-10">
+          <span className="text-white text-2xl md:text-3xl font-black tracking-[0.4em] uppercase mb-6 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
+            BUILT TO SCALE
+          </span>
+          <h1 className="text-7xl md:text-9xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] uppercase shimmer-orange drop-shadow-[0_0_60px_rgba(249,115,22,0.7)]">
+            DOMATION MARKETING
+          </h1>
+        </motion.div>
+
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
+          className="text-slate-400 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-12">
+          Tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ theo dõi ra quyết định trên thời gian thực.<br />
+          <strong className="text-slate-200">Tối ưu hóa quy trình báo cáo</strong> tiết kiệm nguồn lực và thời gian.
         </motion.p>
-        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.4}} className="flex items-center justify-center gap-3 flex-wrap">
-          <a href="/automation" className="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(249,115,22,.35)]">Khám phá ngay →</a>
-          <a href="#section-crm" className="px-7 py-3.5 rounded-xl border border-white/10 text-slate-300 font-bold text-sm hover:bg-white/5 hover:-translate-y-0.5 transition-all">Xem tất cả sản phẩm ↓</a>
+
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex items-center justify-center gap-4 flex-wrap">
+          <a href="/automation" className="flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_30px_rgba(249,115,22,0.4)]">
+            Miễn phí dùng thử 
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <button className="flex items-center gap-2 px-8 py-4 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Video hướng dẫn
+          </button>
         </motion.div>
       </section>
 
