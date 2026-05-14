@@ -309,6 +309,42 @@ export const DomationHome: React.FC = () => {
         </div>
       </section>
 
+      {/* ── FINAL CTA ── */}
+      <section className="relative z-10 py-32 px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent pointer-events-none" />
+        <div className="max-w-4xl mx-auto relative">
+          {/* Decorative rings */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-orange-500/10 rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-orange-500/5 rounded-full pointer-events-none" />
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative rounded-[40px] p-12 md:p-20 bg-[#0a0f1a] border border-white/10 text-center shadow-[0_0_80px_rgba(249,115,22,0.1)]"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-widest mb-8">
+              Khởi đầu ngay hôm nay
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight">
+              Sẵn sàng đưa doanh nghiệp<br />
+              <span className="shimmer-orange">Lên Tầm Cao Mới?</span>
+            </h2>
+            <p className="text-slate-400 text-lg max-w-xl mx-auto mb-12">
+              Gia nhập cùng hàng trăm doanh nghiệp đang sử dụng DOMATION để tối ưu vận hành và bứt phá doanh thu.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="/automation" className="w-full sm:w-auto px-10 py-5 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-600 text-slate-900 font-black text-base hover:-translate-y-1 transition-all shadow-[0_20px_40px_rgba(249,115,22,0.3)]">
+                Bắt đầu miễn phí
+              </a>
+              <button className="w-full sm:w-auto px-10 py-5 rounded-2xl border border-white/10 bg-white/5 text-white font-bold text-base hover:bg-white/10 transition-all">
+                Liên hệ tư vấn
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-white/5 py-10 px-6 bg-[#04060e] z-10 relative text-center">
         <div className="flex items-center justify-center gap-2 mb-3">
