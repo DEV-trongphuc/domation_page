@@ -167,8 +167,14 @@ export const DomationHome: React.FC = () => {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            CRM
+            CRM Quản trị Doanh nghiệp
           </a>
+          <button className="flex items-center gap-2 px-7 py-4 rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-1 transition-all backdrop-blur-md">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Video hướng dẫn
+          </button>
         </motion.div>
       </section>
 
@@ -244,7 +250,9 @@ export const DomationHome: React.FC = () => {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-bold uppercase tracking-widest mb-6">
               <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-purple-400" /> Sản phẩm 03
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">CRM<br /><span className="shimmer-crm">Doanh Nghiệp</span></h2>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+              CRM<br /><span style={{background:'linear-gradient(90deg,#a855f7,#ec4899)',WebkitBackgroundClip:'text',backgroundClip:'text',WebkitTextFillColor:'transparent'}}>Quản trị Doanh nghiệp</span>
+            </h2>
             <p className="text-slate-400 text-base leading-relaxed mb-6">
               Số hóa toàn diện quy trình kinh doanh: Sales Pipeline Kanban, Khách hàng 360°, Tồn kho, Báo giá & Hóa đơn, Ticket hỗ trợ — tất cả trên một nền tảng duy nhất.
             </p>
