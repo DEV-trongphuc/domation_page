@@ -170,9 +170,14 @@ export const MetaAdReport: React.FC = () => {
                         </span>
                     </a>
                     <div className="flex items-center space-x-3">
-                        <button onClick={() => setShowModal(true)} className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:-translate-y-0.5 transition-all duration-300">
-                            Nhận Tư Vấn
-                        </button>
+                        <a href="https://zalo.me/0336214481" target="_blank" rel="noreferrer" className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold text-slate-300 border border-white/10 hover:border-blue-500/40 hover:bg-blue-500/5 transition-all">
+                            <img src="https://automation.ideas.edu.vn/imgs/zalolog.png" className="w-4 h-4 object-contain" alt="Zalo" />
+                            Zalo
+                        </a>
+                        <a href="https://fb.com/turni0" target="_blank" rel="noreferrer" className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold text-slate-300 border border-white/10 hover:border-blue-600/40 hover:bg-blue-600/5 transition-all">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" className="w-4 h-4 object-contain" alt="Facebook" />
+                            Facebook
+                        </a>
                         <a href="https://meta.domation.net" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]">
                             Bắt đầu ngay
                         </a>
@@ -508,9 +513,16 @@ export const MetaAdReport: React.FC = () => {
                                         ))}
                                     </div>
 
-                                    <button onClick={() => setShowModal(true)} className="w-full max-w-md mx-auto bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 py-4 rounded-xl font-black shadow-[0_0_20px_rgba(245,158,11,0.4)] active:scale-95 transition-transform flex items-center justify-center gap-2">
-                                        Đăng Ký Ngay
-                                    </button>
+                                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto">
+                                        <a href="https://zalo.me/0336214481" target="_blank" rel="noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#0068ff] text-white py-4 rounded-xl font-black shadow-[0_0_20px_rgba(0,104,255,0.3)] hover:-translate-y-1 transition-all">
+                                            <img src="https://automation.ideas.edu.vn/imgs/zalolog.png" className="w-5 h-5 object-contain invert brightness-0" alt="Zalo" />
+                                            Liên hệ qua Zalo
+                                        </a>
+                                        <a href="https://fb.com/turni0" target="_blank" rel="noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#1877f2] text-white py-4 rounded-xl font-black shadow-[0_0_20px_rgba(24,119,242,0.3)] hover:-translate-y-1 transition-all">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" className="w-5 h-5 object-contain invert brightness-0" alt="Facebook" />
+                                            Liên hệ Facebook
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </FadeIn>
