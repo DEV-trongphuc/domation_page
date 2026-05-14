@@ -135,30 +135,33 @@ export const DomationHome: React.FC = () => {
         </motion.div>
         
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }}
-          className="flex flex-col items-center mb-10">
-          <span className="text-white text-2xl md:text-3xl font-black tracking-[0.4em] uppercase mb-6 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
+          className="flex flex-col items-center mb-8">
+          <span className="text-white text-xl md:text-2xl font-black tracking-[0.4em] uppercase mb-4 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
             BUILT TO SCALE
           </span>
-          <h1 className="text-7xl md:text-9xl lg:text-[10rem] font-black tracking-tighter leading-[0.85] uppercase shimmer-orange drop-shadow-[0_0_60px_rgba(249,115,22,0.7)]">
-            DOMATION MARKETING
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.85] uppercase shimmer-orange drop-shadow-[0_0_50px_rgba(249,115,22,0.6)]">
+            DOMATION
           </h1>
         </motion.div>
 
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
-          className="text-slate-400 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-12">
+          className="text-slate-400 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-10">
           Tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ theo dõi ra quyết định trên thời gian thực.<br />
           <strong className="text-slate-200">Tối ưu hóa quy trình báo cáo</strong> tiết kiệm nguồn lực và thời gian.
         </motion.p>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex items-center justify-center gap-4 flex-wrap">
-          <a href="/automation" className="flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_30px_rgba(249,115,22,0.4)]">
-            Miễn phí dùng thử 
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-wrap items-center justify-center gap-4">
+          <a href="/automation" className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+            ⚡ Automation
           </a>
-          <button className="flex items-center gap-2 px-8 py-4 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
+          <a href="/meta-report" className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+            📊 Meta Report
+          </a>
+          <a href="/crm" className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+            👥 CRM
+          </a>
+          <button className="flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md ml-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
               <path d="M8 5v14l11-7z"/>
             </svg>
             Video hướng dẫn
