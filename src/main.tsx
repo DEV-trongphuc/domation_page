@@ -8,8 +8,13 @@ import { MagnificDownloader } from './MagnificDownloader.tsx'
 import { CrmLanding } from './CrmLanding.tsx'
 
 const Main = () => {
+  if (typeof window !== 'undefined' && window.location.search.includes('page=meta-ad-report')) {
+    window.location.replace('/meta-report');
+    return null;
+  }
+
   const isWebDesign = typeof window !== 'undefined' && window.location.search.includes('page=web-design');
-  const isMetaAdReport = typeof window !== 'undefined' && window.location.search.includes('page=meta-ad-report');
+  const isMetaAdReport = typeof window !== 'undefined' && (window.location.pathname === '/meta-report' || window.location.pathname === '/meta-report/');
   const isMagnific = typeof window !== 'undefined' && window.location.search.includes('page=magnific-downloader');
   const isCrm = typeof window !== 'undefined' && (window.location.pathname === '/crm' || window.location.pathname === '/crm/');
   
