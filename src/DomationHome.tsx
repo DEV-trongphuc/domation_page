@@ -203,9 +203,14 @@ export const DomationHome: React.FC = () => {
                 <span key={t} className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">{t}</span>
               ))}
             </div>
-            <a href="/automation" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(245,158,11,.3)]">
-              Khám phá Automation →
-            </a>
+            <div className="flex flex-wrap gap-3">
+              <a href="/automation" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(245,158,11,.3)]">
+                Khám phá Automation →
+              </a>
+              <a href="/automation" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-amber-500/30 text-amber-300 font-bold text-sm hover:bg-amber-500/10 hover:-translate-y-0.5 transition-all">
+                View Guess Demo
+              </a>
+            </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
             <GalleryBlock
