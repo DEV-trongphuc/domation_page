@@ -9,6 +9,13 @@ interface ContactModalProps {
 }
 
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, themeColor = 'amber-500' }) => {
+    const shadowMap: Record<string, string> = {
+        'amber-500': 'shadow-[0_0_80px_rgba(245,158,11,0.15)]',
+        'purple-500': 'shadow-[0_0_80px_rgba(168,85,247,0.15)]',
+        'orange-500': 'shadow-[0_0_80px_rgba(249,115,22,0.15)]',
+    };
+    const shadowClass = shadowMap[themeColor] || shadowMap['amber-500'];
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -25,7 +32,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, the
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className={`relative w-full max-w-sm bg-[#0d1117] rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_80px_rgba(var(--${themeColor}-rgb),0.15)] z-10`}
+                        className={`relative w-full max-w-sm bg-[#0d1117] rounded-3xl border border-white/10 overflow-hidden ${shadowClass} z-10`}
                     >
                         <div className="p-6 md:p-8 text-center">
                             <div className="flex items-start justify-between mb-4">
