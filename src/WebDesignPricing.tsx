@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { 
     Check, ArrowRight, ShieldCheck, Zap, MonitorPlay, Component, Target, 
-    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send, Download
+    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send, Download, MessageSquare
 } from 'lucide-react';
+import { ContactModal } from './ContactModal';
 import ExcelJS from 'exceljs';
 // @ts-ignore
 import { saveAs } from 'file-saver';
@@ -79,6 +80,7 @@ export const WebDesignPricing: React.FC = () => {
         elearning: false
     });
     const [showModal, setShowModal] = React.useState(false);
+    const [showContactModal, setShowContactModal] = React.useState(false);
     const [formData, setFormData] = React.useState({ email: '', phone: '', message: '' });
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [isSuccess, setIsSuccess] = React.useState(false);
@@ -455,6 +457,9 @@ export const WebDesignPricing: React.FC = () => {
                         </span>
                     </a>
                     <div className="flex items-center space-x-3">
+                        <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300 cursor-pointer">
+                            <MessageSquare className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
+                        </button>
                         <button onClick={() => setShowModal(true)} className="glow-btn flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 cursor-pointer">
                             Request
                         </button>
@@ -793,6 +798,8 @@ export const WebDesignPricing: React.FC = () => {
                     </div>
                 )}
             </AnimatePresence>
+
+            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="amber-500" />
         </div>
     );
 };

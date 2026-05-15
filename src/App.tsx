@@ -7,8 +7,9 @@ import {
     TrendingUp, Globe, Clock, Star, ChevronDown,
     Play, MousePointer, Bell, Target, Database,
     Lock, Rocket, MousePointerClick, Pointer, ScanLine, LayoutTemplate, BoxSelect, Settings2, FileText, Ticket, Code2,
-    ClipboardList, GanttChart, EyeOff, QrCode, Monitor
+    ClipboardList, GanttChart, EyeOff, QrCode, Monitor, MessageSquare as MessageSquareIcon
 } from 'lucide-react';
+import { ContactModal } from './ContactModal';
 
 // ─── Constants ────────────────────────────────────────────────
 const LOGOS = {
@@ -385,6 +386,7 @@ const Landing: React.FC = () => {
     const [activeSection, setActiveSection] = useState('');
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [showContactModal, setShowContactModal] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -660,6 +662,9 @@ const Landing: React.FC = () => {
                             className="hidden md:flex items-center justify-center text-sm font-semibold text-amber-400 hover:text-amber-300 transition-all px-4 py-1.5 border border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 rounded-full">
                             Meta Ad Report
                         </a>
+                        <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300">
+                            <MessageSquareIcon className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
+                        </button>
                         <button onClick={() => setIsFormOpen(true)}
                             className="glow-btn flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
                             <span >Get Started</span>
@@ -2031,6 +2036,8 @@ const Landing: React.FC = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="amber-500" />
         </div>
     );
 };

@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare } from 'lucide-react';
+import { ContactModal } from './ContactModal';
 
 // ── Lightbox ────────────────────────────────────────────────────
 const Lightbox = ({ src, onClose }: { src: string; onClose: () => void }) => {
@@ -75,6 +77,7 @@ const GalleryBlock = ({
 export const DomationHome: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [showContactModal, setShowContactModal] = useState(false);
   const openLightbox = useCallback((src: string) => setLightboxSrc(src), []);
   const closeLightbox = useCallback(() => setLightboxSrc(null), []);
 
@@ -137,6 +140,10 @@ export const DomationHome: React.FC = () => {
               </svg>
               CRM
             </a>
+            <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
+              <MessageSquare className="w-3.5 h-3.5 text-orange-400" />
+              Liên hệ hỗ trợ
+            </button>
           </div>
         </div>
       </nav>
@@ -347,6 +354,8 @@ export const DomationHome: React.FC = () => {
 
       {/* Lightbox */}
       {lightboxSrc && <Lightbox src={lightboxSrc} onClose={closeLightbox} />}
+
+      <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="orange-500" />
     </div>
   );
 };
