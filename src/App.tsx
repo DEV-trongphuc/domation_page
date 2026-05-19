@@ -316,7 +316,90 @@ const MetaAdReportFeatureSection = () => {
     );
 };
 
+const DomationDataSection = () => {
+    return (
+        <section id="domation-data" className="py-24 px-6 relative z-10 border-t border-white/5 bg-[#0a0f1a]">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 to-transparent pointer-events-none" />
+            <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
+                
+                <div className="w-full lg:w-1/2 relative perspective-1000">
+                    <FadeIn delay={0.2} from="left">
+                        <div className="relative flex flex-col items-center pt-8 pb-10">
+                            <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(16,185,129,0.3)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                                <img loading="lazy" decoding="async" src="/CHIA DATA/chia_data (1).png" alt="Domation Data Interface" className="w-full rounded-2xl object-cover" />
+                            </div>
+                            
+                            <div className="absolute -bottom-6 -right-6 md:-right-10 z-40 bg-[#0d1117]/95 border border-emerald-500/30 rounded-2xl p-4 md:p-5 shadow-[0_0_40px_rgba(16,185,129,0.2)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500 w-[260px] md:w-[300px]">
+                                <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/50">
+                                            <img src={LOGOS.zalo} className="w-3.5 h-3.5" alt="Zalo" />
+                                        </div>
+                                        <p className="text-[11px] font-bold text-white uppercase">Zalo Bot Noti</p>
+                                    </div>
+                                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-xs text-white leading-relaxed"><span className="text-emerald-400 font-bold">Data mới:</span> Nguyễn Văn A - 098x.xxx.xxx</p>
+                                    <p className="text-[10px] text-slate-400">Từ chiến dịch: FB Ads - Mùa Hè</p>
+                                    <p className="text-[10px] text-slate-400">Sale nhận: Trần Thị B</p>
+                                </div>
+                            </div>
+                        </div>
+                    </FadeIn>
+                </div>
+                
+                <div className="w-full lg:w-1/2 z-20">
+                    <FadeIn from="right">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <Database className="w-3.5 h-3.5" /> DOMATION DATA
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            Hệ Thống Phân Bổ <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Data Tự Động</span>
+                        </h2>
+                        <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                            <strong className="text-emerald-400/90 font-medium block mb-2 italic">Bạn mệt mỏi vì Data khách hàng đổ về bị sót? Sale phàn nàn vì nhận số chậm, mất "thời điểm vàng" để chốt đơn?</strong>
+                            Giải pháp điều phối luồng Data tự động và bảo vệ doanh thu. Thiết lập các vòng giao data, logic giao từng vòng, tích hợp Zalo BOT và Email thông báo bảo mật cho từng tư vấn viên.
+                        </p>
+
+                        <div className="space-y-4 mb-8">
+                            {[
+                                { t: "Tích Hợp Realtime", d: "Dữ liệu từ Landing Page, Facebook Ads hay Google Sheets đồng bộ lập tức. Không độ trễ, không copy-paste thủ công." },
+                                { t: "Thông báo chủ động", d: "Lead vừa đổ về, Sale nhận thông báo chi tiết qua Zalo Bot cá nhân & Email. Đảm bảo gọi khách trong vài phút đầu." },
+                                { t: "Chia đều & Định tuyến", d: "Tự động chia vòng Round-Robin hoặc định tuyến theo nguồn. Nhận diện Sale nghỉ phép và chuyển luồng chia số." },
+                                { t: "Quản Lý Lỗi & Đền Bù", d: "Khách trùng, sai số, sai nhu cầu? Sale báo lỗi trực tiếp, Admin duyệt là tự động bù 1 Data mới. Đảm bảo công bằng 100%." },
+                                { t: "Báo Cáo Tự Động", d: "Cuối ngày Zalo Bot tự động gửi bảng tổng kết: Data thu về, số lượng chia, tỷ lệ lỗi. Giúp Quản lý nắm trọn hiệu suất." },
+                            ].map((box, i) => (
+                                <div key={i} className="flex gap-3.5 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-colors">
+                                    <div className="mt-0.5 w-7 h-7 rounded border border-emerald-500/40 bg-emerald-500/15 flex shrink-0 items-center justify-center">
+                                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
+                                        <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <div className="flex">
+                            <a href="https://ideas-data.vercel.app/demo" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1">
+                                <Monitor className="w-5 h-5" /> Trải Nghiệm Demo Tính Năng
+                            </a>
+                        </div>
+                    </FadeIn>
+                </div>
+
+            </div>
+        </section>
+    );
+};
+
 const ALL_MODULES = [
+    {
+        id: 'domation-data', title: 'Hệ Thống Phân Bổ Data', sub: 'Hệ thống logic chia vòng DATA tự động. Định tuyến luồng thông minh, thông báo Zalo Bot/Email Real-time cho từng tư vấn viên.', icon: Database, color: 'from-emerald-500 to-teal-600', tags: ['Data', 'Routing', 'Bot']
+    },
     {
         id: 'campaigns', title: 'Campaigns', sub: 'Gửi kịch bản hàng loạt đa kênh Mail & Zalo ZNS. Tối ưu tỷ lệ mở với bộ lọc đối tượng thông minh.', icon: Mail, color: 'from-amber-400 to-orange-500', tags: ['Marketing', 'Bulk']
     },
@@ -1714,6 +1797,9 @@ const Landing: React.FC = () => {
 
             {/* Meta Ad Report Feature */}
             <MetaAdReportFeatureSection />
+
+            {/* Domation Data Feature */}
+            <DomationDataSection />
 
             {/* ── Testimonials ── */}
             <TestimonialSection />

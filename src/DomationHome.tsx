@@ -140,6 +140,12 @@ export const DomationHome: React.FC = () => {
               </svg>
               CRM
             </a>
+            <a href="/data" className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+              </svg>
+              Auto Data
+            </a>
             <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
               <MessageSquare className="w-3.5 h-3.5 text-orange-400" />
               Liên hệ hỗ trợ
@@ -190,6 +196,12 @@ export const DomationHome: React.FC = () => {
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
             CRM Quản trị doanh nghiệp
+          </a>
+          <a href="/data" className="group flex items-center gap-3 px-7 py-4 rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400 group-hover:scale-110 transition-transform">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+            Auto Chia Data
           </a>
         </motion.div>
       </section>
@@ -307,6 +319,44 @@ export const DomationHome: React.FC = () => {
               accentGlow="rgba(168,85,247,0.12)"
               onOpen={openLightbox}
             />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── SECTION 4: DATA SYSTEM ── */}
+      <section id="section-data" className="relative z-10 py-24 px-6 border-t border-white/5 bg-[#050810]">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/8 to-transparent pointer-events-none" />
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }} className="order-2 lg:order-1">
+            <GalleryBlock
+              main="/CHIA DATA/chia_data (8).png"
+              thumbs={['/CHIA DATA/chia_data (9).png', '/CHIA DATA/chia_data (18).png']}
+              accentGlow="rgba(168,85,247,0.12)"
+              onOpen={openLightbox}
+            />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }} className="order-1 lg:order-2">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-bold uppercase tracking-widest mb-6">
+              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-purple-400" /> Sản phẩm 04
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">DOMATION<br /><span style={{ background: 'linear-gradient(90deg,#a855f7,#ec4899)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>DATA</span></h2>
+            <p className="text-slate-400 text-base leading-relaxed mb-6">
+              Hệ thống logic chia vòng DATA tự động. Định tuyến luồng thông minh, thông báo Zalo Bot/Email Real-time cho từng tư vấn viên. Đảm bảo luồng khách hàng được xử lý ngay trong "thời điểm vàng".
+            </p>
+            <div className="flex flex-wrap gap-2 mb-8">
+              {['Auto Routing', 'Zalo Bot', 'Real-time', 'Bù Data Lỗi', 'Round-Robin', 'Báo Cáo Tự Động'].map(t => (
+                <span key={t} className="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold">{t}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-4">
+              <a href="/data" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-black text-sm text-white hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(168,85,247,.3)]"
+                style={{ background: 'linear-gradient(135deg,#a855f7,#ec4899)' }}>
+                Xem DOMATION DATA →
+              </a>
+              <a href="https://ideas-data.vercel.app/demo" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md">
+                Xem Demo Live
+              </a>
+            </div>
           </motion.div>
         </div>
       </section>
