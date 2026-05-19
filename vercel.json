@@ -3,6 +3,8 @@
     { "source": "/crm", "destination": "/index.html" },
     { "source": "/automation", "destination": "/index.html" },
     { "source": "/meta-report", "destination": "/index.html" },
+    { "source": "/ideas", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
+

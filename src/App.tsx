@@ -725,7 +725,7 @@ const Landing: React.FC = () => {
                     </a>
 
                     <div className="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-400">
-                        {[['#builder', 'Email Builder'], ['#flow', 'Flow Builder'], ['#analytics', 'Web Analytics'], ['#ai-segment', 'AI Phân Tích'], ['#ai-space', 'AI Workspace'], ['#dashboard', 'Báo Cáo']].map(([href, label]) => {
+                        {[['#flow', 'Flow Builder'], ['#builder', 'Email Builder'], ['#ai-space', 'AI Workspace']].map(([href, label]) => {
                             const isActive = activeSection === href.replace('#', '');
                             return (
                                 <a key={href} href={href} className={`group relative transition-colors duration-300 ${isActive ? 'text-white' : 'hover:text-white'}`}>

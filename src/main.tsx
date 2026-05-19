@@ -8,6 +8,7 @@ import { MagnificDownloader } from './MagnificDownloader.tsx'
 import { CrmLanding } from './CrmLanding.tsx'
 import { DomationHome } from './DomationHome.tsx'
 import { DomationDataLanding } from './DomationDataLanding.tsx'
+import { IdeasLanding } from './IdeasLanding.tsx'
 
 const Main = () => {
   if (typeof window !== 'undefined' && window.location.search.includes('page=meta-ad-report')) {
@@ -24,6 +25,7 @@ const Main = () => {
   const isMetaReport = path === '/meta-report';
   const isCrm = path === '/crm';
   const isData = path === '/data' || (typeof window !== 'undefined' && window.location.search.includes('page=data'));
+  const isIdeas = path === '/ideas' || (typeof window !== 'undefined' && window.location.search.includes('page=ideas'));
 
   if (isWebDesign) return <WebDesignPricing />;
   if (isMagnific) return <MagnificDownloader />;
@@ -31,6 +33,7 @@ const Main = () => {
   if (isCrm) return <CrmLanding />;
   if (isData) return <DomationDataLanding />;
   if (isAutomation) return <App />;
+  if (isIdeas) return <IdeasLanding />;
   if (isHome) return <DomationHome />;
   return <DomationHome />;
 };
@@ -40,3 +43,4 @@ createRoot(document.getElementById('root')!).render(
     <Main />
   </StrictMode>,
 )
+
