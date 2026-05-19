@@ -232,7 +232,7 @@ export const DomationDataLanding: React.FC = () => {
                             HỆ THỐNG CHIA VÒNG DATA
                         </motion.h2>
                         <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-4xl md:text-6xl lg:text-[5rem] font-black uppercase mb-8 leading-[1.1] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-fuchsia-400 to-indigo-500 drop-shadow-[0_0_30px_rgba(16,185,129,0.4)]" style={{ animation: 'shimmer-sweep 4s linear infinite', backgroundSize: '200% auto' }}>
-                            TỰ ĐỘNG CHO TƯ VẤN VIÊN
+                            DATA ROUTING
                         </motion.h1>
                         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-slate-400 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-10">
                             Bạn mệt mỏi vì Data khách hàng đổ về bị sót? Sale phàn nàn vì nhận số chậm, mất "thời điểm vàng" để chốt đơn? Khám phá ngay hệ thống Domation DATA – Giải pháp điều phối luồng Data tự động và bảo vệ doanh thu cho team của bạn.
