@@ -230,18 +230,18 @@ export const IdeasLanding: React.FC = () => {
       imageUrl: "/meta/auto_data.png",
       delay: 0.3
     },
-    {
-      title: "Report CRM MISA",
-      subtitle: "Đồng bộ phễu & thống kê doanh số",
-      description: "Đồng bộ dữ liệu trực tiếp từ hệ thống CRM MISA AMIS. Báo cáo trực quan sales pipeline, thống kê doanh số theo nguồn data, đo lường năng lực chốt đơn của sales và cảnh báo trễ hạn.",
-      badges: ["MISA AMIS Sync", "Sales Pipeline", "CRM Dashboard", "Performance KPI"],
-      mainUrl: "https://dev-trongphuc.github.io/DOM_MISA_IDEAS_CRM/",
-      detailUrl: "/crm",
-      icon: TrendingUp,
-      themeColor: "cyan" as const,
-      imageUrl: "/meta/misa_data.png",
-      delay: 0.4
-    }
+    // {
+    //   title: "Report CRM MISA",
+    //   subtitle: "Đồng bộ phễu & thống kê doanh số",
+    //   description: "Đồng bộ dữ liệu trực tiếp từ hệ thống CRM MISA AMIS. Báo cáo trực quan sales pipeline, thống kê doanh số theo nguồn data, đo lường năng lực chốt đơn của sales và cảnh báo trễ hạn.",
+    //   badges: ["MISA AMIS Sync", "Sales Pipeline", "CRM Dashboard", "Performance KPI"],
+    //   mainUrl: "https://dev-trongphuc.github.io/DOM_MISA_IDEAS_CRM/",
+    //   detailUrl: "/crm",
+    //   icon: TrendingUp,
+    //   themeColor: "cyan" as const,
+    //   imageUrl: "/meta/misa_data.png",
+    //   delay: 0.4
+    // }
   ];
 
   return (
