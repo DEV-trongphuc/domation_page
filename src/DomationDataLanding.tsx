@@ -4,7 +4,7 @@ import {
     Activity, Bot, BarChart3, TrendingUp, Network, Settings2,
     Check, ArrowRight, Target, Send, X, Play, ShieldCheck, Monitor,
     Filter, Clock, MousePointerClick, Eye, Users, Box, Calendar, LifeBuoy, Package, Users2, MessageSquare,
-    Database, Zap, Lock
+    Database, Zap, Lock, Cpu, Scale
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 
@@ -364,6 +364,241 @@ export const DomationDataLanding: React.FC = () => {
                                         <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
                                             <h4 className="font-bold text-white mb-1">Báo Cáo Data Lỗi Tự Động Bù</h4>
                                             <p className="text-sm text-slate-400">Khách sai số, sai nhu cầu? Sale báo cáo lên hệ thống, sau khi Admin duyệt, luồng sẽ tự chia bù cho Sale đó 1 Data mới.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+
+                    {/* Deep Dive 3: AI Pre-screener */}
+                    <div className="mb-24">
+                        <FadeIn className="bg-gradient-to-br from-[#0c0d21] to-[#080811] border border-purple-500/20 rounded-[32px] p-8 md:p-12 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+                            <div className="relative z-10 flex flex-col gap-12">
+                                {/* Top Content: Text & Badges */}
+                                <div className="max-w-4xl">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                        <Cpu className="w-3.5 h-3.5 animate-pulse" /> Bộ Lọc AI (Pre-screener)
+                                    </div>
+                                    <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
+                                        Bộ Lọc AI Pre-screener hoạt động thế nào?
+                                    </h2>
+                                    <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+                                        Hệ thống tự động tiếp nhận dữ liệu từ webhook nguồn, chuyển qua đánh giá chất lượng tự động (DOMATION AI hoặc Luật thủ công cấu hình). Những dữ liệu không đạt chuẩn sẽ được tạm giữ phê duyệt và gửi tin báo cho Quản trị viên, giúp tiết kiệm thời gian Telesale.
+                                    </p>
+                                </div>
+
+                                {/* Flow Steps: Horizontal grid of 4 cards on desktop */}
+                                <div>
+                                    <h4 className="text-xs font-extrabold tracking-wider uppercase text-purple-400 mb-6 flex items-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping" />
+                                        Luồng Xử Lý Hiện Tại (Dynamic Flow)
+                                    </h4>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                        {/* Step 1 */}
+                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
+                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
+                                                1
+                                            </div>
+                                            <div className="pr-10">
+                                                <h5 className="font-bold text-white mb-2 flex flex-col gap-1 items-start">
+                                                    Webhook tiếp nhận
+                                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                        Thời gian thực (Realtime)
+                                                    </span>
+                                                </h5>
+                                                <p className="text-xs text-slate-400 leading-relaxed">
+                                                    Lead mới được gửi realtime từ các kênh Google Sheets, Facebook Lead Ads, Landing Page...
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Step 2 */}
+                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
+                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
+                                                2
+                                            </div>
+                                            <div className="pr-10">
+                                                <h5 className="font-bold text-white mb-2 flex flex-col gap-1 items-start">
+                                                    Kiểm tra bộ lọc AI
+                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 animate-pulse">
+                                                        Đang BẬT
+                                                    </span>
+                                                </h5>
+                                                <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                                                    Kiểm tra vòng của Lead. Áp dụng cho các vòng:
+                                                </p>
+                                                <div className="flex gap-1.5 flex-wrap">
+                                                    <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Form</span>
+                                                    <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">BBA</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Step 3 */}
+                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
+                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
+                                                3
+                                            </div>
+                                            <div className="pr-10">
+                                                <h5 className="font-bold text-white mb-2">
+                                                    Đánh giá chất lượng
+                                                </h5>
+                                                <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                                                    Lọc chuẩn tiếng Anh. Vòng: <span className="text-slate-300">Form, BBA</span>
+                                                </p>
+                                                <div className="space-y-1 text-[10px] bg-white/5 p-2 rounded-lg border border-white/5">
+                                                    <div>
+                                                        <span className="text-slate-500">Match logic:</span> <span className="text-slate-300 font-semibold">2 nhánh thủ công</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-slate-500">Quy tắc AI:</span> <span className="text-slate-300 font-semibold">Có tiếng Anh là được</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Step 4 */}
+                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
+                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
+                                                4
+                                            </div>
+                                            <div className="pr-10">
+                                                <h5 className="font-bold text-white mb-2">
+                                                    Phân bổ & Hàng chờ
+                                                </h5>
+                                                <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                                                    Phân luồng sau khi đánh giá:
+                                                </p>
+                                                <div className="space-y-1 text-[10px]">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                                                        <span className="text-slate-300 truncate"><strong>Đạt:</strong> Tự động chia & Sheets.</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                                                        <span className="text-slate-300 truncate"><strong>Lỗi:</strong> Giữ chờ Admin duyệt.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Full Width Image: Horizontal below */}
+                                <div className="relative group cursor-pointer w-full mt-4" onClick={() => setPreviewImage('/CHIA DATA/anhdat1 (1).png')}>
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-indigo-500/10 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#080811]">
+                                        <img src="/CHIA DATA/anhdat1 (1).png" alt="AI Pre-screener Interface" className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-700" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div className="flex items-center gap-2 text-white font-bold text-sm bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg scale-95 group-hover:scale-100 transition-all duration-300">
+                                                <Eye className="w-4 h-4 text-purple-400" /> Click để xem chi tiết cấu hình Bộ Lọc AI
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </FadeIn>
+                    </div>
+
+                    {/* Deep Dive 4: Fairness Distribution Audit */}
+                    <div className="mb-24">
+                        <FadeIn className="bg-[#0b0b14] border border-white/5 rounded-[32px] p-8 md:p-12 relative overflow-hidden group">
+                            <div className="absolute top-0 left-0 w-80 h-80 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+                            <div className="absolute bottom-0 right-0 w-80 h-80 bg-fuchsia-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+                            <div className="relative z-10 flex flex-col gap-12">
+                                {/* Top Content */}
+                                <div className="max-w-4xl">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                        <Scale className="w-3.5 h-3.5" /> Đối Soát Phân Phối
+                                    </div>
+                                    <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
+                                        Báo cáo Đối soát Công bằng hoạt động thế nào?
+                                    </h2>
+                                    <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+                                        Hệ thống áp dụng công thức Hệ số bất bình đẳng Gini và Độ lệch chuẩn thực tế của lượng data bàn giao cho Sale. Chỉ số Công bằng được tính toán bằng cách chuẩn hóa lượng data nhận được chia cho Tỷ lệ (Receive Ratio) thiết lập của từng Sale. Giúp bạn ngay lập tức phát hiện xem có sự bất bình đẳng ngoài ý muốn do lỗi phân phối hoặc Sale offline kéo dài hay không.
+                                    </p>
+                                </div>
+
+                                {/* Audit Metrics Grid (4 columns) */}
+                                <div>
+                                    <h4 className="text-xs font-extrabold tracking-wider uppercase text-indigo-400 mb-6 flex items-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping" />
+                                        Chỉ số Đo Lường & Kiểm Toán Phân Phối
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                        {/* Gini Metric */}
+                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
+                                            <div>
+                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Chỉ Số Công Bằng</h4>
+                                                <div className="text-2xl font-extrabold text-white mb-2">Rất Công Bằng</div>
+                                                <p className="text-xs text-slate-400 leading-relaxed">
+                                                    Thuật toán đang phân phối data cực kỳ đồng đều.
+                                                </p>
+                                            </div>
+                                            <div className="mt-4 text-emerald-400 font-extrabold text-sm tracking-wide bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 w-fit">
+                                                98.6%
+                                            </div>
+                                        </div>
+
+                                        {/* SD Metric */}
+                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
+                                            <div>
+                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Độ Lệch Chuẩn (SD)</h4>
+                                                <div className="text-2xl font-extrabold text-white mb-2">Mức Phân Tán</div>
+                                                <p className="text-xs text-slate-400 leading-relaxed">
+                                                    SD càng nhỏ nghĩa là lượng data được chia càng đồng đều giữa các Sale.
+                                                </p>
+                                            </div>
+                                            <div className="mt-4 text-purple-400 font-extrabold text-sm tracking-wide bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20 w-fit">
+                                                ± 0.43
+                                            </div>
+                                        </div>
+
+                                        {/* Average Metric */}
+                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
+                                            <div>
+                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Số Lead Trung Bình</h4>
+                                                <div className="text-2xl font-extrabold text-white mb-2">Nhận Bởi Sale</div>
+                                                <p className="text-xs text-slate-400 leading-relaxed">
+                                                    Số lượng lead trung bình một Tư vấn viên nhận được trong vòng và khoảng thời gian đã chọn.
+                                                </p>
+                                            </div>
+                                            <div className="mt-4 text-indigo-400 font-extrabold text-sm tracking-wide bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20 w-fit">
+                                                13.25
+                                            </div>
+                                        </div>
+
+                                        {/* Audit Scope */}
+                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
+                                            <div>
+                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Phạm Vi Kiểm Toán</h4>
+                                                <div className="text-2xl font-extrabold text-white mb-2">4 Saleperson</div>
+                                                <p className="text-xs text-slate-400 leading-relaxed">
+                                                    Gồm 4 Tư vấn viên đang hoạt động với tổng số 53 lead thành công.
+                                                </p>
+                                            </div>
+                                            <div className="mt-4 text-amber-400 font-extrabold text-sm tracking-wide bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 w-fit">
+                                                53 Lead
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Full Width Image: Horizontal below */}
+                                <div className="relative group cursor-pointer w-full mt-4" onClick={() => setPreviewImage('/CHIA DATA/anhdat1 (19).png')}>
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-fuchsia-500/10 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
+                                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#080811]">
+                                        <img src="/CHIA DATA/anhdat1 (19).png" alt="Fairness Distribution Report" className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-700" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div className="flex items-center gap-2 text-white font-bold text-sm bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg scale-95 group-hover:scale-100 transition-all duration-300">
+                                                <Eye className="w-4 h-4 text-indigo-400" /> Click để xem chi tiết Báo Cáo Đối Soát Công Bằng
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
