@@ -17,7 +17,7 @@ const Main = () => {
   }
 
   const path = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/';
-  const isWebDesign = typeof window !== 'undefined' && window.location.search.includes('page=web-design');
+  const isWebDesign = path === '/web-design' || (typeof window !== 'undefined' && window.location.search.includes('page=web-design'));
   const isMagnific = typeof window !== 'undefined' && window.location.search.includes('page=magnific-downloader');
 
   const isHome = path === '' || path === '/';

@@ -172,6 +172,9 @@ export const MetaAdReport: React.FC = () => {
                         </span>
                     </a>
                     <div className="flex items-center space-x-3">
+                        <a href="/web-design" className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all">
+                            Web & Landing Page
+                        </a>
                         <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all">
                             <MessageSquare className="w-3.5 h-3.5" />
                             Liên hệ hỗ trợ

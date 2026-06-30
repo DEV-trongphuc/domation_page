@@ -225,7 +225,7 @@ const TestimonialSection = () => {
 
 const WebDesignSection = () => {
     const projects = [
-        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://nava-one.vercel.app/', color: 'from-blue-500 to-cyan-500', icon: Monitor },
+        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://navastore.vn/', color: 'from-blue-500 to-cyan-500', icon: Monitor },
         { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-fuchsia-500 to-pink-500', icon: Monitor },
         { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-emerald-500 to-teal-500', icon: Monitor },
     ];
@@ -741,9 +741,13 @@ const Landing: React.FC = () => {
                             className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
                             Bảng Giá
                         </a>
-                        <a href="/?page=meta-ad-report"
+                        <a href="/meta-report"
                             className="hidden md:flex items-center justify-center text-sm font-semibold text-amber-400 hover:text-amber-300 transition-all px-4 py-1.5 border border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 rounded-full">
                             Meta Ad Report
+                        </a>
+                        <a href="/web-design"
+                            className="hidden md:flex items-center justify-center text-sm font-semibold text-amber-400 hover:text-amber-300 transition-all px-4 py-1.5 border border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 rounded-full">
+                            Web & Landing Page
                         </a>
                         <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300">
                             <MessageSquareIcon className="w-3.5 h-3.5" /> Liên hệ hỗ trợ

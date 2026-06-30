@@ -316,6 +316,12 @@ export const IdeasLanding: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3">
+            <a
+              href="/web-design"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-xs md:text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300"
+            >
+              Web & Landing Page
+            </a>
             <button
               onClick={() => setShowContactModal(true)}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-xs md:text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300"

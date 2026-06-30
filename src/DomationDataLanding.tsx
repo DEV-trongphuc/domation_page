@@ -208,6 +208,10 @@ export const DomationDataLanding: React.FC = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                             Trang Chủ Automation
                         </a>
+                        <a href="/web-design" className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-rose-400 border border-rose-500/30 hover:bg-rose-500/10 hover:-translate-y-0.5 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            Web & Landing Page
+                        </a>
                         <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/5 hover:text-purple-400 transition-all duration-300">
                             <MessageSquare className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
                         </button>

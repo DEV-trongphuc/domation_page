@@ -146,6 +146,12 @@ export const DomationHome: React.FC = () => {
               </svg>
               Auto Data
             </a>
+            <a href="/web-design" className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              Web & Landing Page
+            </a>
             <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
               <MessageSquare className="w-3.5 h-3.5 text-orange-400" />
               Liên hệ hỗ trợ
@@ -361,6 +367,188 @@ export const DomationHome: React.FC = () => {
         </div>
       </section>
 
+      {/* ── SECTION 5: WEBSITE & LANDING PAGE ── */}
+      <section id="section-web-design" className="relative z-10 py-24 px-6 border-t border-white/5 bg-[#080c14]">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-950/5 to-transparent pointer-events-none" />
+        <div className="max-w-6xl mx-auto">
+          {/* Header of Section 5 */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+            <div className="lg:col-span-8">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-widest mb-6">
+                <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" /> Sản phẩm 05
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">
+                Thiết Kế <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 shimmer-orange">Website & Landing Page</span>
+              </h2>
+              <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
+                Dịch vụ thiết kế và phát triển Website & Landing Page chuyên nghiệp, chuẩn SEO On-page, tối ưu tỷ lệ chuyển đổi và tốc độ tải trang dưới 3 giây. Mã nguồn độc quyền, bàn giao vĩnh viễn cho doanh nghiệp.
+              </p>
+            </div>
+            <div className="lg:col-span-4 lg:text-right lg:mt-16">
+              <a href="/web-design" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(245,158,11,.3)]">
+                Xem Báo Giá & Dự Toán →
+              </a>
+            </div>
+          </div>
+
+          {/* Grid of 6 Landing Pages */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                name: 'Nava Store',
+                desc: 'Website thương mại điện tử (E-commerce) chuyên nghiệp, tối ưu hóa trải nghiệm mua sắm và quy trình thanh toán.',
+                link: 'https://navastore.vn/',
+                badges: ['E-commerce', 'React/Vite', 'Modern UI'],
+                color: 'from-blue-500/20 to-cyan-500/5',
+                borderColor: 'group-hover:border-blue-500/50',
+                glowColor: 'rgba(59,130,246,0.15)',
+                img: '/landingpage_avatar/nava.webp',
+                icon: (
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                )
+              },
+              {
+                name: 'Viện IDEAS MBA',
+                desc: 'Landing Page tuyển sinh chương trình Thạc sĩ Quản trị Kinh doanh (MBA), tập trung tối đa tỷ lệ chuyển đổi điền form.',
+                link: 'https://ideas.edu.vn/mba',
+                badges: ['Education', 'Conversion UI', 'Lead Form'],
+                color: 'from-fuchsia-500/20 to-pink-500/5',
+                borderColor: 'group-hover:border-fuchsia-500/50',
+                glowColor: 'rgba(236,72,153,0.15)',
+                img: '/landingpage_avatar/ideasmba.webp',
+                icon: (
+                  <svg className="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                  </svg>
+                )
+              },
+              {
+                name: 'Turnio Portfolio',
+                desc: 'Trang thông tin năng lực (Portfolio) cao cấp của Creative Agency, hiển thị dự án với hiệu ứng tương tác 3D mượt mà.',
+                link: 'https://portfo-turnio.vercel.app/',
+                badges: ['Creative', 'Next.js', 'Framer Motion'],
+                color: 'from-emerald-500/20 to-teal-500/5',
+                borderColor: 'group-hover:border-emerald-500/50',
+                glowColor: 'rgba(16,185,129,0.15)',
+                img: '/landingpage_avatar/portfolio.webp',
+                icon: (
+                  <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                )
+              },
+              {
+                name: 'Cấy Ghép Nha Khoa Cơ Bản',
+                desc: 'Landing Page giới thiệu và tuyển sinh khóa đào tạo Cấy ghép Nha khoa Cơ bản của Brandson Academy cấp chứng chỉ CME.',
+                link: 'https://brandson.vn/cay-ghep-nha-khoa-co-ban',
+                badges: ['CME Course', 'Medical Landing', 'SEO Standard'],
+                color: 'from-amber-500/20 to-orange-500/5',
+                borderColor: 'group-hover:border-amber-500/50',
+                glowColor: 'rgba(245,158,11,0.15)',
+                img: '/landingpage_avatar/brandson.webp',
+                icon: (
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                )
+              },
+              {
+                name: 'Ngày Hội Implant Flora',
+                desc: 'Landing Page sự kiện thường niên "Ngày Hội Implant" của Nha khoa Flora, thiết kế nhằm thúc đẩy đặt hẹn khám trực tiếp.',
+                link: 'https://nhakhoaflora.com/ngay-hoi-implant/',
+                badges: ['Dental Clinic', 'Event Campaign', 'Conversion Rate'],
+                color: 'from-rose-500/20 to-red-500/5',
+                borderColor: 'group-hover:border-rose-500/50',
+                glowColor: 'rgba(244,63,94,0.15)',
+                img: '/landingpage_avatar/flora.webp',
+                icon: (
+                  <svg className="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                )
+              },
+              {
+                name: 'Viện Đào Tạo IDEAS',
+                desc: 'Trang thông tin điện tử tích hợp của Viện Đào Tạo & Nghiên Cứu Quản Trị IDEAS, giới thiệu hoạt động và cổng thông tin sinh viên.',
+                link: 'https://ideas.edu.vn/',
+                badges: ['Institutional', 'Multipage Portal', 'WordPress Engine'],
+                color: 'from-indigo-500/20 to-violet-500/5',
+                borderColor: 'group-hover:border-indigo-500/50',
+                glowColor: 'rgba(99,102,241,0.15)',
+                img: '/landingpage_avatar/ideasedu.webp',
+                icon: (
+                  <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                )
+              }
+            ].map((p, i) => (
+              <motion.a
+                key={p.name}
+                href={p.link}
+                target="_blank"
+                rel="noreferrer"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group relative block rounded-2xl bg-[#161b22]/40 border border-white/5 transition-all duration-500 hover:-translate-y-1 hover:bg-[#161b22]/70 overflow-hidden"
+              >
+                {/* Background Glow on Hover */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"
+                  style={{
+                    background: `radial-gradient(300px circle at top left, ${p.glowColor}, transparent 70%)`
+                  }}
+                />
+
+                {/* Mockup Preview Image */}
+                <div className="relative overflow-hidden aspect-video bg-black/40 border-b border-white/5">
+                  <img
+                    src={p.img}
+                    alt={p.name}
+                    className="w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-700"
+                    loading="lazy"
+                  />
+                  {/* Overlays */}
+                  <div className="absolute top-3 left-3 p-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-xl">
+                    {p.icon}
+                  </div>
+                  <div className="absolute top-3 right-3 text-slate-400 group-hover:text-white p-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-full transition-all">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                </div>
+                
+                {/* Info */}
+                <div className="p-6 relative z-10">
+                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">
+                    {p.name}
+                  </h3>
+                  <p className="text-slate-400 text-xs leading-relaxed min-h-[50px] mb-6">
+                    {p.desc}
+                  </p>
+                  
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-2">
+                    {p.badges.map(b => (
+                      <span key={b} className="px-2.5 py-1 text-[10px] font-bold text-slate-300 bg-white/5 border border-white/10 rounded-md">
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Mini Services */}
       <section className="relative z-10 py-20 px-6 border-t border-white/5 bg-[#050810]">
         <div className="max-w-6xl mx-auto">
@@ -369,9 +557,8 @@ export const DomationHome: React.FC = () => {
             <h2 className="text-3xl md:text-4xl font-black text-white mb-3">Giải Pháp Bổ Sung</h2>
             <p className="text-slate-500 max-w-lg mx-auto text-sm">Các dịch vụ chuyên biệt giúp doanh nghiệp tăng trưởng nhanh hơn.</p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { emoji: '🖥️', title: 'Thiết Kế Landing Page', desc: 'Landing page chuẩn SEO, tối ưu chuyển đổi, tích hợp tracking & form thu lead.', color: 'text-fuchsia-400', border: 'border-fuchsia-500/20 hover:border-fuchsia-500/40', href: '/automation?page=web-design' },
               { emoji: '📣', title: 'Chạy Quảng Cáo Meta', desc: 'Dịch vụ chạy ads Facebook & Instagram hiệu quả, tối ưu chi phí, tăng ROI.', color: 'text-blue-400', border: 'border-blue-500/20 hover:border-blue-500/40', href: '/meta-report' },
               { emoji: '💬', title: 'Zalo ZNS Marketing', desc: 'Gửi Zalo ZNS hàng loạt tỷ lệ đọc ~100%. Chăm sóc tự động qua Zalo OA.', color: 'text-cyan-400', border: 'border-cyan-500/20 hover:border-cyan-500/40', href: '/automation' },
               { emoji: '🤖', title: 'AI Chatbot 24/7', desc: 'Trợ lý AI tự động phản hồi đa kênh theo dữ liệu riêng của doanh nghiệp.', color: 'text-emerald-400', border: 'border-emerald-500/20 hover:border-emerald-500/40', href: '/automation' },

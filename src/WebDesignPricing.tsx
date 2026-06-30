@@ -456,6 +456,12 @@ export const WebDesignPricing: React.FC = () => {
                             DOMATION
                         </span>
                     </a>
+                    <div className="hidden lg:flex items-center space-x-6 text-sm font-semibold text-slate-400">
+                        <a href="/automation" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">Automation</a>
+                        <a href="/meta-report" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">Meta Report</a>
+                        <a href="/crm" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">CRM</a>
+                        <a href="/data" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">Auto Data</a>
+                    </div>
                     <div className="flex items-center space-x-3">
                         <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300 cursor-pointer">
                             <MessageSquare className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
