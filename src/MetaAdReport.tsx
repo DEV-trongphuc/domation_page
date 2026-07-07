@@ -92,12 +92,12 @@ export const MetaAdReport: React.FC = () => {
     ];
 
     const gallery = [
-        "https://portfo-turnio.vercel.app/assets/dom_rp%20(1)-CYoNu-lK.webp",
-        "https://portfo-turnio.vercel.app/assets/dom_rp%20(2)-CMkJ9oWy.jpg",
-        "https://portfo-turnio.vercel.app/assets/dom_rp%20(3)-QpcZBQYW.jpg",
-        "https://portfo-turnio.vercel.app/assets/dom_rp%20(4)-C7VhGmXk.jpg",
-        "https://portfo-turnio.vercel.app/assets/dom_rp%20(5)-C6x66szu.webp",
-        "https://portfo-turnio.vercel.app/assets/dom_rp%20(6)-CeMvDVZi.webp"
+        "/imgs/dom_rp (1).webp",
+        "/imgs/dom_rp (2).webp",
+        "/imgs/dom_rp (3).webp",
+        "/imgs/dom_rp (4).webp",
+        "/imgs/dom_rp (5).webp",
+        "/imgs/dom_rp (6).webp"
     ];
 
     const handleSubmit = async (e: React.FormEvent) => {

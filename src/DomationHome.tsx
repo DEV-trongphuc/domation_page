@@ -184,27 +184,27 @@ export const DomationHome: React.FC = () => {
           <strong className="text-slate-200">Tối ưu hóa quy trình báo cáo</strong> tiết kiệm nguồn lực và thời gian.
         </motion.p>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 gap-3 md:flex md:flex-wrap items-center justify-center md:gap-5 w-full max-w-md md:max-w-none mx-auto">
-          <a href="/automation" className="group flex items-center justify-center gap-2 md:gap-3 px-3 py-3.5 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-xs md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 gap-3 max-w-sm mx-auto px-4 md:px-0 md:max-w-none md:flex md:flex-wrap md:justify-center md:gap-5">
+          <a href="/automation" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
             </svg>
             <span className="leading-tight">Marketing Automation</span>
           </a>
-          <a href="/meta-report" className="group flex items-center justify-center gap-2 md:gap-3 px-3 py-3.5 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-xs md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
+          <a href="/meta-report" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
               <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
             </svg>
             <span className="leading-tight">Meta Realtime Report</span>
           </a>
-          <a href="/crm" className="group flex items-center justify-center gap-2 md:gap-3 px-3 py-3.5 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-xs md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
+          <a href="/crm" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
             <span className="leading-tight">CRM Quản trị doanh nghiệp</span>
           </a>
-          <a href="/data" className="group flex items-center justify-center gap-2 md:gap-3 px-3 py-3.5 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-xs md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
+          <a href="/data" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
               <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
             </svg>
             <span className="leading-tight">Auto Chia Data</span>
@@ -254,8 +254,8 @@ export const DomationHome: React.FC = () => {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }} className="order-2 lg:order-1">
             <GalleryBlock
-              main="https://portfo-turnio.vercel.app/assets/dom_rp%20(1)-CYoNu-lK.webp"
-              thumbs={['https://portfo-turnio.vercel.app/assets/dom_rp%20(6)-CeMvDVZi.webp', 'https://portfo-turnio.vercel.app/assets/dom_rp%20(5)-C6x66szu.webp']}
+              main="/imgs/dom_rp (1).webp"
+              thumbs={['/imgs/dom_rp (6).webp', '/imgs/dom_rp (5).webp']}
               accentGlow="rgba(249,115,22,0.12)"
               onOpen={openLightbox}
             />
