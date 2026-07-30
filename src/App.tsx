@@ -558,11 +558,11 @@ const Landing: React.FC = () => {
 
     const plans = [
         {
-            tier: 'Starter', price: '1.290.000₫', yearlyPrice: '13.158.000₫', desc: 'Dành cho Startup & Shop nhỏ',
+            tier: 'Starter', price: '2.990.000₫', yearlyPrice: '30.498.000₫', desc: 'Dành cho Startup & Shop nhỏ',
             features: ['Khối lượng 100.000 Email/tháng', 'AI Phân tích', 'Flow Automation 5 Kịch bản', 'Gắn Web Tracking Tiêu Chuẩn', 'AI trực Zalo ZNS & Messenger'],
         },
         {
-            tier: 'Growth', price: '2.490.000₫', yearlyPrice: '25.398.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
+            tier: 'Growth', price: '4.990.000₫', yearlyPrice: '50.898.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
             features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
             highlight: true,
             scaleUp: true,
