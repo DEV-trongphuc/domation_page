@@ -1809,6 +1809,7 @@ const Landing: React.FC = () => {
             <TestimonialSection />
 
             {/* ── Pricing ── */}
+            {false && (
             <section id="pricing" className="py-28 px-6 relative z-10 scroll-mt-20">
                 <div className="max-w-6xl mx-auto">
                     <FadeIn className="text-center mb-16">
@@ -1842,6 +1843,7 @@ const Landing: React.FC = () => {
                     </div>
                 </div>
             </section>
+            )}
 
             {/* ── CTA Final ── */}
             <section className="py-32 px-6 relative z-10 overflow-hidden">
