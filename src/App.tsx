@@ -10,6 +10,7 @@ import {
     ClipboardList, GanttChart, EyeOff, QrCode, Monitor, MessageSquare as MessageSquareIcon
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
+import { Navbar } from './Navbar';
 
 // ─── Constants ────────────────────────────────────────────────
 const LOGOS = {
@@ -712,54 +713,7 @@ const Landing: React.FC = () => {
             </div>
 
             {/* ── Navigation ── */}
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#080c14]/90 backdrop-blur-xl shadow-[0_1px_0_0_rgba(245,158,11,0.15),0_8px_32px_rgba(0,0,0,0.6)]' : 'bg-transparent'}`}>
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <a href="/" className="flex items-center space-x-3 group">
-                        <div className="relative float-y">
-                            <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform" />
-                            <div className="absolute -inset-1 rounded-[18px] bg-amber-500/20 blur-md -z-10" />
-                        </div>
-                        <span className="text-xl font-black tracking-tight shimmer-text">
-                            DOMATION
-                        </span>
-                    </a>
-
-                    <div className="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-400">
-                        {[['#flow', 'Flow Builder'], ['#builder', 'Email Builder'], ['#ai-space', 'AI Workspace']].map(([href, label]) => {
-                            const isActive = activeSection === href.replace('#', '');
-                            return (
-                                <a key={href} href={href} className={`group relative transition-colors duration-300 ${isActive ? 'text-white' : 'hover:text-white'}`}>
-                                    {label}
-                                    <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-300 rounded-full ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-                                </a>
-                            );
-                        })}
-                    </div>
-
-                    <div className="flex items-center space-x-3">
-                        <a href="#pricing"
-                            className="hidden md:block text-sm font-semibold text-slate-400 hover:text-amber-400 transition-colors px-4 py-2">
-                            Bảng Giá
-                        </a>
-                        <a href="/meta-report"
-                            className="hidden md:flex items-center justify-center text-sm font-semibold text-amber-400 hover:text-amber-300 transition-all px-4 py-1.5 border border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 rounded-full">
-                            Meta Ad Report
-                        </a>
-                        <a href="/web-design"
-                            className="hidden md:flex items-center justify-center text-sm font-semibold text-amber-400 hover:text-amber-300 transition-all px-4 py-1.5 border border-amber-500/50 hover:border-amber-400 hover:bg-amber-500/10 rounded-full">
-                            Web & Landing Page
-                        </a>
-                        <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300">
-                            <MessageSquareIcon className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
-                        </button>
-                        <button onClick={() => setIsFormOpen(true)}
-                            className="glow-btn flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-black hover:-translate-y-0.5 transition-transform duration-300">
-                            <span >Get Started</span>
-                            <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                        </button>
-                    </div>
-                </div>
-            </nav>
+            <Navbar activePage="automation" onOpenContact={() => setShowContactModal(true)} />
 
             {/* ── Hero ── */}
             <section className="relative pt-40 pb-20 md:pt-52 md:pb-28 px-4 md:px-6 z-10 min-h-screen flex flex-col items-center justify-center">

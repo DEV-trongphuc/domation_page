@@ -5,6 +5,7 @@ import {
     Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send, Download, MessageSquare
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
+import { Navbar } from './Navbar';
 import ExcelJS from 'exceljs';
 // @ts-ignore
 import { saveAs } from 'file-saver';
@@ -445,33 +446,7 @@ export const WebDesignPricing: React.FC = () => {
             </div>
 
             {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080c14]/90 backdrop-blur-xl border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <a href="/" className="flex items-center space-x-3 group">
-                        <div className="relative float-y">
-                            <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform" />
-                            <div className="absolute -inset-1 rounded-[18px] bg-amber-500/20 blur-md -z-10" />
-                        </div>
-                        <span className="text-xl font-black tracking-tight text-white group-hover:text-amber-400 transition-colors">
-                            DOMATION
-                        </span>
-                    </a>
-                    <div className="hidden lg:flex items-center space-x-6 text-sm font-semibold text-slate-400">
-                        <a href="/automation" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">Automation</a>
-                        <a href="/meta-report" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">Meta Report</a>
-                        <a href="/crm" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">CRM</a>
-                        <a href="/data" className="hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider">Auto Data</a>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                        <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300 cursor-pointer">
-                            <MessageSquare className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
-                        </button>
-                        <button onClick={() => setShowModal(true)} className="glow-btn flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 cursor-pointer">
-                            Request
-                        </button>
-                    </div>
-                </div>
-            </nav>
+            <Navbar activePage="web-design" onOpenContact={() => setShowContactModal(true)} />
 
             <main className="relative pt-32 pb-24 md:pb-20 px-4 md:px-6 z-10 w-full">
                 <div className="max-w-5xl mx-auto">

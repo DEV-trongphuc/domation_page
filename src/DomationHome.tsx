@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 
+import { Navbar } from './Navbar';
+
 // ── Lightbox ────────────────────────────────────────────────────
 const Lightbox = ({ src, onClose }: { src: string; onClose: () => void }) => {
   useEffect(() => {
@@ -112,53 +114,7 @@ export const DomationHome: React.FC = () => {
       </div>
 
       {/* Nav */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#080c14]/92 backdrop-blur-xl border-b border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.5)]' : 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="float relative">
-              <img src="/imgs/ICON.png" alt="DOMATION" className="w-10 h-10 rounded-[14px] object-contain shadow-lg shadow-orange-500/25" />
-              <div className="absolute -inset-1 rounded-[18px] bg-orange-500/20 blur-md -z-10" />
-            </div>
-            <span className="text-xl font-black tracking-tight shimmer-orange">DOMATION</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <a href="/automation" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-              Automation
-            </a>
-            <a href="/meta-report" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
-                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-              </svg>
-              Meta Report
-            </a>
-            <a href="/crm" className="hidden md:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-              CRM
-            </a>
-            <a href="/data" className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
-                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-              </svg>
-              Auto Data
-            </a>
-            <a href="/web-design" className="hidden lg:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-              Web & Landing Page
-            </a>
-            <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold text-slate-300 border border-white/10 rounded-full hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-orange-400 transition-all">
-              <MessageSquare className="w-3.5 h-3.5 text-orange-400" />
-              Liên hệ hỗ trợ
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar activePage="home" onOpenContact={() => setShowContactModal(true)} />
 
       {/* Hero */}
       <section className="relative z-10 pt-40 pb-20 px-6 text-center">
@@ -184,8 +140,14 @@ export const DomationHome: React.FC = () => {
           <strong className="text-slate-200">Tối ưu hóa quy trình báo cáo</strong> tiết kiệm nguồn lực và thời gian.
         </motion.p>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 gap-3 max-w-sm mx-auto px-4 md:px-0 md:max-w-none md:flex md:flex-wrap md:justify-center md:gap-5">
-          <a href="/automation" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 gap-3 max-w-sm mx-auto px-4 md:px-0 md:max-w-none md:flex md:flex-wrap md:justify-center md:gap-4">
+          <a href="/erp" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-6 md:py-3.5 rounded-xl md:rounded-2xl border border-rose-500/40 bg-rose-500/15 text-rose-300 font-black text-[11px] md:text-sm hover:border-rose-500/70 hover:bg-rose-500/25 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center shadow-[0_0_25px_rgba(244,63,94,0.3)]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-rose-400 group-hover:scale-110 transition-transform shrink-0">
+              <path d="M3 21h18M3 7v14M21 7v14M7 21V3h10v18M11 7h2M11 11h2M11 15h2"/>
+            </svg>
+            <span className="leading-tight flex items-center gap-1.5">Hệ Thống ERP <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider">Mới</span></span>
+          </a>
+          <a href="/automation" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-6 md:py-3.5 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
             </svg>
@@ -210,6 +172,51 @@ export const DomationHome: React.FC = () => {
             <span className="leading-tight">Auto Chia Data</span>
           </a>
         </motion.div>
+      </section>
+
+      {/* ── SECTION 0: ENTERPRISE ERP (NEW) ── */}
+      <section id="section-erp" className="relative z-10 py-24 px-6 border-b border-white/5 bg-gradient-to-b from-[#0b0e1a]/80 via-[#080b12] to-transparent">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }}>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[11px] font-bold uppercase tracking-widest mb-6">
+              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-rose-500" /> Phân hệ Mới • Enterprise ERP 5.0
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">
+              Hệ Thống ERP<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-red-400 to-rose-600">
+                AI Automation & Workflow
+              </span>
+            </h2>
+            <p className="text-slate-300 text-base leading-relaxed mb-6">
+              Hệ sinh thái Quản trị & Vận hành Doanh nghiệp toàn diện: Tự động chia Lead qua 5 cổng kiểm duyệt, Chấm công định vị GPS & Selfie AI, Bảng lương tự động lũy tiến và quản trị dòng tiền khép kín.
+            </p>
+            <div className="flex flex-wrap gap-2 mb-8">
+              {['Auto-Routing 5 Cổng', 'Chấm Công GPS & AI Selfie', 'Bảng Lương Động', 'Phiếu Lương PDF', 'Purchase Order', 'Forward-only CAPI', 'Bảo Mật RLS'].map(t => (
+                <span key={t} className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-semibold">{t}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a href="/erp" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(244,63,94,.4)]">
+                Khám phá Chi tiết ERP →
+              </a>
+              <a href="/erp#thu-vien-anh" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-rose-500/30 text-rose-300 font-bold text-sm hover:bg-rose-500/10 hover:-translate-y-0.5 transition-all">
+                Xem 15 Ảnh Giao Diện
+              </a>
+            </div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
+            <GalleryBlock
+              main="/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg"
+              thumbs={[
+                '/ERP-Product/1788856522396_2141578413905312186_2310722037673454867_637ed02e6f5c0e0560d1bcac82cf9a19.jpg',
+                '/ERP-Product/1788856668006_2141578413905312186_2310722037673454867_72b9a0047bb54f03c54fb657c81e41dc.jpg',
+                '/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg'
+              ]}
+              accentGlow="rgba(244,63,94,0.18)"
+              onOpen={openLightbox}
+            />
+          </motion.div>
+        </div>
       </section>
 
       {/* ── SECTION 1: AUTOMATION ── */}

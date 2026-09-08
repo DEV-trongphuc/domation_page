@@ -13,6 +13,7 @@ import {
   Play
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
+import { Navbar } from './Navbar';
 
 interface ToolCardProps {
   title: string;
@@ -291,47 +292,7 @@ export const IdeasLanding: React.FC = () => {
       </div>
 
       {/* ── Navigation Header ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#080c14]/90 backdrop-blur-xl border-b border-white/5 shadow-2xl' : 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3 group">
-            <div className="float relative">
-              <img
-                loading="lazy"
-                decoding="async"
-                src="/imgs/ICON.png"
-                alt="DOMATION Logo"
-                className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform"
-              />
-              <div className="absolute -inset-1 rounded-[18px] bg-orange-500/20 blur-md -z-10" />
-            </div>
-            <span className="text-xl font-black tracking-tight shimmer-orange uppercase">
-              DOMATION
-            </span>
-          </a>
-
-          {/* Center Brand Divider */}
-          <div className="hidden sm:flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300 text-xs font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-            <span>IDEAS.EDU.VN</span>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <a
-              href="/web-design"
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-xs md:text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300"
-            >
-              Web & Landing Page
-            </a>
-            <button
-              onClick={() => setShowContactModal(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs md:text-sm font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400 transition-all duration-300"
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              Liên hệ hỗ trợ
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar activePage="ideas" onOpenContact={() => setShowContactModal(true)} />
 
       {/* ── Hero Section ── */}
       <section className="relative pt-32 pb-8 md:pt-40 md:pb-12 px-6 z-10 flex flex-col items-center justify-center">

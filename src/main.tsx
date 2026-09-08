@@ -9,6 +9,7 @@ import { CrmLanding } from './CrmLanding.tsx'
 import { DomationHome } from './DomationHome.tsx'
 import { DomationDataLanding } from './DomationDataLanding.tsx'
 import { IdeasLanding } from './IdeasLanding.tsx'
+import { ErpLanding } from './ErpLanding.tsx'
 
 const Main = () => {
   if (typeof window !== 'undefined' && window.location.search.includes('page=meta-ad-report')) {
@@ -26,7 +27,9 @@ const Main = () => {
   const isCrm = path === '/crm';
   const isData = path === '/data' || (typeof window !== 'undefined' && window.location.search.includes('page=data'));
   const isIdeas = path === '/ideas' || (typeof window !== 'undefined' && window.location.search.includes('page=ideas'));
+  const isErp = path === '/erp' || path === '/ideas-erp' || (typeof window !== 'undefined' && (window.location.search.includes('page=erp') || window.location.search.includes('page=ideas-erp')));
 
+  if (isErp) return <ErpLanding />;
   if (isWebDesign) return <WebDesignPricing />;
   if (isMagnific) return <MagnificDownloader />;
   if (isMetaReport) return <MetaAdReport />;

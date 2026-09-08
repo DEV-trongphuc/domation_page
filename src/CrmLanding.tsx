@@ -6,6 +6,7 @@ import {
     Filter, Clock, MousePointerClick, Eye, Users, Box, Calendar, LifeBuoy, Package, Users2, MessageSquare
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
+import { Navbar } from './Navbar';
 
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -185,42 +186,7 @@ export const CrmLanding: React.FC = () => {
             </div>
 
             {/* Navigation */}
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#080811]/90 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <a href="/" className="flex items-center space-x-3 group">
-                        <div className="relative" style={{ animation: 'float-y 6s ease-in-out infinite' }}>
-                            <img loading="lazy" decoding="async" src="https://crm-domation.vercel.app/LOGO.jpg" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-purple-500/30 group-hover:scale-105 transition-transform" />
-                            <div className="absolute -inset-1 rounded-[18px] bg-purple-500/20 blur-md -z-10" />
-                        </div>
-                        <span className="text-xl font-black tracking-tight shimmer-text">
-                            DOMATION
-                        </span>
-                    </a>
-                    <div className="flex items-center gap-2">
-                        <a href="/automation" className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-amber-400 border border-amber-500/30 hover:bg-amber-500/10 hover:-translate-y-0.5 transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            Marketing Automation
-                        </a>
-                        <a href="/meta-report" className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-orange-400 border border-orange-500/30 hover:bg-orange-500/10 hover:-translate-y-0.5 transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                            Meta-Report
-                        </a>
-                        <a href="/web-design" className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-rose-400 border border-rose-500/30 hover:bg-rose-500/10 hover:-translate-y-0.5 transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                            Web & Landing Page
-                        </a>
-                        <button onClick={() => setShowContactModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/5 hover:text-purple-400 transition-all duration-300">
-                            <MessageSquare className="w-3.5 h-3.5" /> Liên hệ hỗ trợ
-                        </button>
-                        <button onClick={() => setShowModal(true)} className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-300 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/5 hover:-translate-y-0.5 transition-all duration-300">
-                            Nhận Báo Giá
-                        </button>
-                        <a href="https://crm-domation.vercel.app/" target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white px-5 py-2.5 rounded-full text-sm font-black hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-                            Demo CRM
-                        </a>
-                    </div>
-                </div>
-            </nav>
+            <Navbar activePage="crm" onOpenContact={() => setShowContactModal(true)} />
 
             <main className="relative pt-32 pb-24 md:pb-20 px-4 md:px-6 z-10 w-full">
                 <div className="max-w-6xl mx-auto">
