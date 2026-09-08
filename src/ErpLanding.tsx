@@ -26,7 +26,10 @@ import {
   Bot,
   Sliders,
   X,
-  Maximize2
+  Maximize2,
+  BellRing,
+  Send,
+  Mail
 } from 'lucide-react';
 import { Navbar } from './Navbar';
 import { ContactModal } from './ContactModal';
@@ -160,6 +163,15 @@ const ERP_GALLERY: ErpImageItem[] = [
     highlight: 'Linh hoạt tùy biến 100% nghiệp vụ'
   },
   {
+    id: 'notification_deep_config',
+    src: '/ERP-Product/1788858964647_2141578413905312186_2310722037673454867_b8873435ef7af2c83ac2aa6b32603ac2.jpg',
+    title: 'Hệ Thống Thông Báo Tùy Chỉnh Chuyên Sâu',
+    category: 'Hệ thống & Cài đặt',
+    tag: 'Multi-Channel Alert Bot',
+    description: 'Hệ thống thông báo thời gian thực đa kênh: Tích hợp Zalo Bot, Telegram Bot và Email SMTP. Tùy biến thông báo khi chia Lead, cảnh báo hết hạn Databank, lời mời hợp tác Co-care hoa hồng và @mention đồng nghiệp.',
+    highlight: 'Zalo Bot • Telegram • Email SMTP'
+  },
+  {
     id: 'nav_menu_1',
     src: '/ERP-Product/1788856691047_2141578413905312186_2310722037673454867_2dacee1206b6e8f836cdea82018d556e.jpg',
     title: 'Hệ thống Menu Điều hướng Nhanh (Phần 1)',
@@ -275,6 +287,13 @@ export const ErpLanding: React.FC = () => {
       desc: 'Phân quyền sâu đến từng dòng dữ liệu: Sales chỉ thấy khách của mình, Quản lý xem toàn team, Ban Giám Đốc giám sát toàn diện. Audit log bất biến.',
       icon: ShieldCheck,
       color: 'from-fuchsia-500 to-purple-600'
+    },
+    {
+      num: '12',
+      title: 'Hệ Thống Thông Báo Đa Kênh Chuyên Sâu',
+      desc: 'Ma trận thông báo thời gian thực: Kết nối Zalo Bot, Telegram Bot, Email SMTP. Tự động thông báo khi chia Lead, đếm ngược hạn bảo mật Databank, Co-care hoa hồng và @mention.',
+      icon: BellRing,
+      color: 'from-pink-500 to-rose-600'
     }
   ];
 
@@ -356,7 +375,7 @@ export const ErpLanding: React.FC = () => {
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-medium text-xs sm:text-sm transition-all hover:-translate-y-0.5"
             >
               <Building2 className="w-3.5 h-3.5 text-rose-400" />
-              <span>11 Phân Hệ</span>
+              <span>12 Phân Hệ</span>
             </a>
 
             <a
@@ -364,7 +383,7 @@ export const ErpLanding: React.FC = () => {
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-medium text-xs sm:text-sm transition-all hover:-translate-y-0.5"
             >
               <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>15 Ảnh Thực Tế</span>
+              <span>16 Ảnh Thực Tế</span>
             </a>
           </motion.div>
 
@@ -402,7 +421,7 @@ export const ErpLanding: React.FC = () => {
           {/* Key Metrics Counter Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto mt-8 text-left">
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-rose-500/25 transition-all">
-              <div className="text-xl md:text-2xl font-bold text-rose-400 mb-0.5">11+</div>
+              <div className="text-xl md:text-2xl font-bold text-rose-400 mb-0.5">12+</div>
               <div className="text-xs font-semibold text-white mb-0.5">Phân Hệ Cốt Lõi</div>
               <div className="text-[11px] text-slate-400">Enterprise Blueprint</div>
             </div>
@@ -425,7 +444,7 @@ export const ErpLanding: React.FC = () => {
         </div>
       </section>
 
-      {/* 11 Modules Architecture Section */}
+      {/* 12 Modules Architecture Section */}
       <section id="phan-he" className="py-24 relative z-10 border-t border-white/5 bg-[#090d18]/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -433,7 +452,7 @@ export const ErpLanding: React.FC = () => {
               <Layers className="w-3.5 h-3.5" /> Kiến Trúc Hệ Thống
             </div>
             <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4">
-              11 Phân Hệ Doanh Nghiệp Chuẩn Hóa
+              12 Phân Hệ Doanh Nghiệp Chuẩn Hóa
             </h2>
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
               Toàn bộ chu trình vận hành từ khi khách hàng xuất hiện trên Ads đến chấm công, chia hoa hồng,
@@ -490,7 +509,7 @@ export const ErpLanding: React.FC = () => {
           {/* Tab Buttons */}
           <div className="flex items-center justify-center flex-wrap gap-2 mb-12">
             {[
-              { id: 'all', label: 'Tất Cả (15 Ảnh)' },
+              { id: 'all', label: 'Tất Cả (16 Ảnh)' },
               { id: 'lead', label: 'Vận Hành & Lead' },
               { id: 'crm', label: 'CRM & Pipeline' },
               { id: 'hr', label: 'Nhân Sự & Chấm Công' },
@@ -699,6 +718,72 @@ export const ErpLanding: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Deep Notification Highlight */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-24">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs font-bold uppercase tracking-wider mb-4">
+                <BellRing className="w-3.5 h-3.5" /> Thông Báo Thời Gian Thực
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mb-4">
+                Cấu Hình Thông Báo Tùy Chỉnh Chuyên Sâu
+              </h3>
+              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                Chấm dứt hoàn toàn trễ nải thông tin và bỏ sót khách hàng nóng với ma trận thông báo đa kênh tự động:
+              </p>
+
+              <div className="space-y-3">
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-300 leading-relaxed">
+                    <strong>Đa Kênh Tích Hợp Sẵn:</strong> Kết nối trực tiếp Zalo Bot, Telegram Bot và Email SMTP cá nhân / công ty nhanh chóng.
+                  </div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-300 leading-relaxed">
+                    <strong>Phân Quyền Ma Trận Sự Kiện:</strong> Phân chia riêng luồng thông báo cho Cá nhân &amp; Quản lý vs Dành cho Quản trị &amp; Ban Giám Đốc.
+                  </div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-300 leading-relaxed">
+                    <strong>Bắn Lead Mới Tức Thì:</strong> Ngay khi hệ thống chia lead, Sales nhận ngay tin nhắn Zalo/Telegram kèm tóm tắt nhu cầu để phản hồi trong SLA 2 phút.
+                  </div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-300 leading-relaxed">
+                    <strong>Cảnh Báo Hạn Bảo Mật Databank:</strong> Tự động đếm ngược và nhắc trước khi Data bị thu hồi về kho chung do không tương tác đúng hạn.
+                  </div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-300 leading-relaxed">
+                    <strong>Hợp Tác Co-Care &amp; @Mention:</strong> Thông báo ngay khi có lời mời hợp tác chăm sóc, tạo phiếu chia hoa hồng hoặc được đồng nghiệp nhắc tên.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black cursor-zoom-in group"
+              onClick={() => {
+                const notifImg = ERP_GALLERY.find((img) => img.id === 'notification_deep_config');
+                if (notifImg) setLightboxImg(notifImg);
+              }}
+            >
+              <img
+                src="/ERP-Product/1788858964647_2141578413905312186_2310722037673454867_b8873435ef7af2c83ac2aa6b32603ac2.jpg"
+                alt="Cấu hình thông báo tùy chỉnh chuyên sâu"
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="p-4 bg-[#0d121f] flex items-center justify-between text-xs text-slate-300">
+                <span>Ma trận Cấu hình Thông báo Đa Kênh (Zalo Bot • Telegram • Email SMTP)</span>
+                <Maximize2 className="w-4 h-4 text-pink-400" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -738,6 +823,11 @@ export const ErpLanding: React.FC = () => {
                   <td className="p-4 sm:p-5 font-bold text-white">Tính lương & hoa hồng</td>
                   <td className="p-4 sm:p-5 text-slate-400">Mất hàng tuần nhập liệu Excel, dễ nhầm công thức thuế</td>
                   <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Tính tự động theo ngày công & UNC cọc, xuất PDF 1 chạm</td>
+                </tr>
+                <tr>
+                  <td className="p-4 sm:p-5 font-bold text-white">Thông báo vận hành</td>
+                  <td className="p-4 sm:p-5 text-slate-400">Tra cứu thủ công, trễ nải thông tin, dễ bỏ sót khách nóng</td>
+                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Zalo Bot, Telegram Bot &amp; Email SMTP thông báo tức thì theo SLA</td>
                 </tr>
                 <tr>
                   <td className="p-4 sm:p-5 font-bold text-white">Kho dữ liệu lead</td>
