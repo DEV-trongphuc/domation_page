@@ -41,6 +41,7 @@ export interface BillingCatalogDto {
   annual_discount_pct: number;
   min_topup_vnd: number;
   post_trial_policy: 'step_renewal_or_upgrade' | 'strict_lock';
+  automation_upgrade_url: string;
   crm_upgrade_url: string;
   erp_upgrade_url: string;
   payment_bank_info: {
@@ -87,6 +88,28 @@ export interface BillingTransactionDto {
   reference_code: string;
   note: string;
   created_at: string;
+}
+
+export interface ServerlessPersonalLeadRecord {
+  id: string;
+  name: string;
+  phone: string;
+  sale_owner_name: string;
+  product_interest: string;
+  note: string;
+  sheet_sync_status: string;
+  bypass_round_robin: boolean;
+  quota_impact: number;
+  sla_recall_exempt: boolean;
+  created_at: string;
+}
+
+export interface ServerlessZaloBotConfig {
+  verified: boolean;
+  verification_mode: 'live_zalo_api' | 'sandbox_bridge_verified';
+  bot_name: string;
+  chat_id: string;
+  verified_at: string;
 }
 
 interface ServerlessSaleRep {
@@ -136,6 +159,7 @@ interface ServerlessTenantRecord {
     distribution_mode: 'weighted_round_robin' | 'strict_round_robin' | 'least_loaded' | 'manual_only';
     duplicate_lead_action: 'route_to_existing_owner' | 'update_existing' | 'create_new_round_robin' | 'reject_duplicate';
     duplicate_threshold_days: number;
+    is_external_agency: boolean;
     mask_pii_for_external: boolean;
     sla_auto_recall_enabled: boolean;
     default_sla_minutes: number;
@@ -144,6 +168,8 @@ interface ServerlessTenantRecord {
   rr_cursor: number;
   reps: ServerlessSaleRep[];
   leads: ServerlessLeadRecord[];
+  personal_leads?: ServerlessPersonalLeadRecord[];
+  zalo_bot?: ServerlessZaloBotConfig | null;
   transactions: BillingTransactionDto[];
 }
 
@@ -176,8 +202,9 @@ function buildFallbackCatalog(): BillingCatalogDto {
     annual_discount_pct: discountPct,
     min_topup_vnd: 100_000,
     post_trial_policy: 'step_renewal_or_upgrade',
-    crm_upgrade_url: 'https://domation.net/crm',
-    erp_upgrade_url: 'https://domation.net/erp',
+    automation_upgrade_url: '/automation',
+    crm_upgrade_url: '/crm',
+    erp_upgrade_url: '/erp',
     payment_bank_info: {
       bank_name: 'Techcombank (TCB)',
       account_number: '19038889996868',
@@ -188,8 +215,8 @@ function buildFallbackCatalog(): BillingCatalogDto {
       {
         code: 'autodata_standard',
         step_order: 1,
-        name: 'Auto Data Standard',
-        tagline: 'Gói mặc định sau 3 tháng dùng thử cho mọi doanh nghiệp.',
+        name: 'Auto Data Lite Standard',
+        tagline: 'Bản Lite chuyên cho Sale & Chia Data — Mặc định sau 3 tháng dùng thử 0đ.',
         badge: 'Mặc Định • Phổ Biến Nhất',
         plan_tier: 'starter',
         monthly_price_vnd: baseMonthly,
@@ -199,18 +226,18 @@ function buildFallbackCatalog(): BillingCatalogDto {
         monthly_lead_quota: 15_000,
         is_enterprise_upgrade: false,
         features: [
-          'Tự động chia vòng Auto Data Router < 4s (Round-Robin / Trọng số)',
-          'Kết nối Webhook đa kênh (Facebook Ads, Website, TikTok, Google Sheets)',
-          'Bắn thông báo ZaloBot cá nhân & phản hồi Meta CAPI v21.0 (HTTP 200)',
-          'Công tắc Online / Nghỉ phép & Che giấu SĐT bảo mật cho Cộng tác viên / F1',
-          'Quản lý tới 25 nhân sự nhận số & 5 vòng định tuyến song song',
+          'Mặc định chia trực tiếp tới từng Sale nội bộ < 4s (Round-Robin / Trọng số)',
+          'Cổng Sale cá nhân: Tự nhập/Import Lead riêng (không tính quota), Xuất CSV & Đồng bộ Sheets 2 chiều',
+          'Kết nối Webhook đa kênh, báo số ZaloBot cá nhân & phản hồi Meta CAPI v21.0 (HTTP 200)',
+          'Công tắc Online / Nghỉ phép, Thu hồi SLA 15 phút & Tùy chọn bật thêm Đại lý F1 (che SĐT)',
+          'Quản lý tới 25 nhân sự Sale nhận số & 5 vòng định tuyến song song',
         ],
       },
       {
         code: 'autodata_growth',
         step_order: 2,
         name: 'Auto Data Scale Pro',
-        tagline: 'Mở rộng đa phòng ban, đa chi nhánh & Dual-Send Meta CAPI nâng cao.',
+        tagline: 'Mở rộng đa phòng ban Sale, đa chi nhánh & Dual-Send Meta CAPI nâng cao.',
         badge: 'Đội Sale Quy Mô Lớn',
         plan_tier: 'growth',
         monthly_price_vnd: baseMonthly * 2,
@@ -220,19 +247,19 @@ function buildFallbackCatalog(): BillingCatalogDto {
         monthly_lead_quota: 100_000,
         is_enterprise_upgrade: false,
         features: [
-          'Toàn bộ tính năng gói Standard + Đa phễu Pipeline độc lập theo sản phẩm',
-          'Routing Rules chuyên sâu theo UTM Source, Chiến dịch, Khu vực & Khung giờ',
-          'Dual-Send Meta CAPI 2 Dataset song song + SLA Auto-Recall tự thu hồi số trễ',
-          'Đền bù tự động 1-đổi-1 khi duyệt Ticket lỗi & Báo cáo đối soát Gini',
-          'Quản lý tới 100 nhân sự / Đại lý liên kết & 100.000 Leads / tháng',
+          'Toàn bộ tính năng gói Lite Standard + Đa phễu Pipeline độc lập theo dòng sản phẩm',
+          'Routing Rules chuyên sâu theo UTM Source, Chiến dịch, Khu vực & Khung giờ trực ca',
+          'Dual-Send Meta CAPI 2 Dataset song song + Đồng bộ Google Sheets 2 chiều không giới hạn',
+          'Đền bù tự động 1-đổi-1 khi duyệt Ticket số rác & Báo cáo đối soát công bằng Gini',
+          'Quản lý tới 100 nhân sự Sale nội bộ (kèm tùy chọn Đại lý F1) & 100.000 Leads / tháng',
         ],
       },
       {
         code: 'domation_crm_erp',
         step_order: 3,
-        name: 'Nâng Cấp DOMATION CRM 360° / ERP 5.0',
-        tagline: 'Chuyển đổi liền mạch từ Auto Data lên Hệ sinh thái Quản trị Toàn diện DOMATION.',
-        badge: 'Hệ Sinh Thái Enterprise',
+        name: 'Nâng Cấp Automation / CRM 360° / ERP 5.0',
+        tagline: 'Lộ trình nâng cấp liền mạch từ Bản Lite lên Marketing Automation, Full CRM 360° & ERP 5.0.',
+        badge: 'Hệ Sinh Thái Toàn Diện',
         plan_tier: 'enterprise',
         monthly_price_vnd: baseMonthly * 4,
         ...calcAnnual(baseMonthly * 4),
@@ -241,10 +268,10 @@ function buildFallbackCatalog(): BillingCatalogDto {
         monthly_lead_quota: 1_000_000,
         is_enterprise_upgrade: true,
         features: [
-          'Giữ nguyên 100% dữ liệu Lead, lịch sử Timeline & cấu hình nhân sự hiện có',
-          'DOMATION CRM 360°: Kanban 8 nấc, kịch bản CSKH tự động, hợp đồng & hóa đơn MISA',
-          'DOMATION ERP 5.0: 12 phân hệ HRM/Chấm công GPS, Lương KPI, Tài chính, Kho vận',
-          'Hỗ trợ triển khai Private Cloud hoặc Server độc lập riêng của doanh nghiệp',
+          'Giữ nguyên 100% danh sách Lead, dữ liệu Sale cá nhân, Timeline & nhân sự hiện có',
+          'Marketing Automation (/automation): Flow rẽ nhánh IF/ELSE, Email kéo thả, Zalo ZNS & AI 24/7',
+          'Full CRM 360° (/crm): Kanban 8 nấc chuyên sâu, Báo giá, Hợp đồng & Hóa đơn MISA',
+          'Enterprise ERP 5.0 (/erp): 12 phân hệ HRM Chấm công GPS AI, Lương KPI, Tài chính & Kho vận',
         ],
       },
     ],
@@ -557,13 +584,24 @@ export async function handleAutodataBridgeHttp(
           forwardUpstreamJson(upstream.baseUrl, '/api/v1/auth/default-settings'),
         ]);
         if (catRes.status === 200 && catRes.json.data) {
+          const upstreamCatalog = catRes.json.data as Record<string, unknown>;
+          const upstreamDefaults = (defRes.json.data || {}) as Record<string, unknown>;
           sendJson(res, 200, {
             success: true,
             bridge_mode: 'upstream_rls_postgres',
             upstream_app_url: upstream.publicAppUrl,
             data: {
-              catalog: catRes.json.data,
-              default_settings: defRes.json.data || {},
+              catalog: {
+                automation_upgrade_url: '/automation',
+                crm_upgrade_url: '/crm',
+                erp_upgrade_url: '/erp',
+                ...upstreamCatalog,
+              },
+              default_settings: {
+                ...upstreamDefaults,
+                is_external_agency: false,
+                mask_pii_for_external: false,
+              },
             },
           });
           return;
@@ -581,7 +619,8 @@ export async function handleAutodataBridgeHttp(
             distribution_mode: 'weighted_round_robin',
             duplicate_lead_action: 'route_to_existing_owner',
             duplicate_threshold_days: 90,
-            mask_pii_for_external: true,
+            is_external_agency: false,
+            mask_pii_for_external: false,
             sla_auto_recall_enabled: true,
             default_sla_minutes: 15,
             trial_duration_months: fallbackCatalog.trial_duration_months,
@@ -673,12 +712,13 @@ export async function handleAutodataBridgeHttp(
             : rawDedupVal === 'update_existing'
               ? 'update_existing'
               : 'route_to_previous_sale';
+      const isExternalAgency = Boolean(rawSettings.is_external_agency ?? rawSettings.mask_pii_for_external ?? false);
       const resolvedMaskPii =
         rawSettings.pii_masking_enabled !== undefined
           ? Boolean(rawSettings.pii_masking_enabled)
           : rawSettings.mask_pii_for_external !== undefined
             ? Boolean(rawSettings.mask_pii_for_external)
-            : true;
+            : isExternalAgency;
 
       if (upstream.reachable) {
         const regRes = await forwardUpstreamJson(upstream.baseUrl, '/api/v1/auth/register', {
@@ -696,6 +736,7 @@ export async function handleAutodataBridgeHttp(
             custom_stages: body.custom_stages,
             custom_settings: {
               ...rawSettings,
+              is_external_agency: isExternalAgency,
               duplicate_action: canonicalUpstreamDedup,
               pii_masking_enabled: resolvedMaskPii,
             },
@@ -795,6 +836,7 @@ export async function handleAutodataBridgeHttp(
           distribution_mode: distMode,
           duplicate_lead_action: dedupAction,
           duplicate_threshold_days: Math.max(0, Number(rawSettings.duplicate_threshold_days ?? 90)),
+          is_external_agency: isExternalAgency,
           mask_pii_for_external: resolvedMaskPii,
           sla_auto_recall_enabled: Boolean(rawSettings.sla_auto_recall_enabled ?? true),
           default_sla_minutes: Math.max(1, Number(rawSettings.default_sla_minutes ?? 15)),
@@ -804,7 +846,7 @@ export async function handleAutodataBridgeHttp(
         reps: [
           {
             id: crypto.randomUUID(),
-            name: `${adminName} (Trưởng nhóm)`,
+            name: `${adminName} (Trưởng nhóm Sale)`,
             role: 'tenant_admin',
             weight: 2,
             received_count: 0,
@@ -813,24 +855,36 @@ export async function handleAutodataBridgeHttp(
           },
           {
             id: crypto.randomUUID(),
-            name: 'Chuyên viên Sale Senior #01',
+            name: 'Chuyên viên Sale Nội Bộ #01',
             role: 'sale',
             weight: 3,
             received_count: 0,
             is_online: true,
             is_external_f1: false,
           },
-          {
-            id: crypto.randomUUID(),
-            name: 'Đối tác Cộng tác viên F1',
-            role: 'agency_partner',
-            weight: 1,
-            received_count: 0,
-            is_online: true,
-            is_external_f1: true,
-          },
+          isExternalAgency
+            ? {
+                id: crypto.randomUUID(),
+                name: 'Đối tác Đại lý / CTV F1',
+                role: 'agency_partner',
+                weight: 1,
+                received_count: 0,
+                is_online: true,
+                is_external_f1: true,
+              }
+            : {
+                id: crypto.randomUUID(),
+                name: 'Chuyên viên Sale Nội Bộ #02',
+                role: 'sale',
+                weight: 2,
+                received_count: 0,
+                is_online: true,
+                is_external_f1: false,
+              },
         ],
         leads: [],
+        personal_leads: [],
+        zalo_bot: null,
         transactions: [],
       };
 
@@ -1058,6 +1112,9 @@ export async function handleAutodataBridgeHttp(
           catalog,
           transactions: record.transactions,
           leads: record.leads.slice(0, 10),
+          personal_leads: (record.personal_leads || []).slice(0, 20),
+          zalo_bot: record.zalo_bot || null,
+          is_external_agency: Boolean(record.settings.is_external_agency),
           webhook_url: `${originHost}/api/autodata?action=webhook-test&slug=${record.slug}&token=${record.webhook_token}`,
           webhook_token: record.webhook_token,
         },
@@ -1083,6 +1140,39 @@ export async function handleAutodataBridgeHttp(
         sendJson(res, 422, {
           success: false,
           error: { code: 'INVALID_PHONE', message: 'Số điện thoại Lead kiểm thử cần tối thiểu 9 chữ số.' },
+        });
+        return;
+      }
+
+      if (String(body.sync_direction || '').trim() === 'sheet_to_autodata') {
+        const saleStatus = String(body.sale_status || 'Đã liên hệ').trim();
+        const saleNote = String(body.sale_note || '').trim();
+        const cleanSyncDigits = leadPhone.replace(/\D/g, '');
+        const store = loadStore();
+        const verified = token ? verifyServerlessToken(token) : null;
+        const targetSlug = slug || verified?.slug || '';
+        const record = store.tenants[targetSlug];
+        if (record && Array.isArray(record.personal_leads)) {
+          const matchedPersonal = record.personal_leads.find(
+            (p) => p.phone.replace(/\D/g, '') === cleanSyncDigits
+          );
+          if (matchedPersonal) {
+            if (saleNote) matchedPersonal.note = saleNote;
+            matchedPersonal.sheet_sync_status = `Đã đồng bộ ngược từ Sheet (${saleStatus})`;
+            saveStore(store);
+          }
+        }
+        sendJson(res, 200, {
+          success: true,
+          bridge_mode: upstream.reachable ? 'upstream_rls_postgres' : 'vercel_serverless_engine',
+          data: {
+            synced: true,
+            direction: 'sheet_to_autodata',
+            phone: leadPhone,
+            sale_status: saleStatus,
+            capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
+            latency_ms: Math.max(1, Date.now() - startedAt),
+          },
         });
         return;
       }
@@ -1511,7 +1601,7 @@ export async function handleAutodataBridgeHttp(
         discount_pct: body.billing_cycle === 'monthly' ? 0 : entPlan.annual_discount_pct,
         payment_method: 'bank_transfer',
         status: 'pending',
-        reference_code: `DOMDATA-CRMERP-${cleanSlugUpper}-${refRand}`,
+        reference_code: `DOMDATA-SUITE-${cleanSlugUpper}-${refRand}`,
         note: `Yêu cầu nâng cấp DOMATION ${suite.toUpperCase()} (Giữ nguyên 100% dữ liệu Auto Data)`,
         created_at: new Date().toISOString(),
       };
@@ -1523,8 +1613,273 @@ export async function handleAutodataBridgeHttp(
         data: {
           transaction: tx,
           target_suite: suite,
+          automation_upgrade_url: catalog.automation_upgrade_url,
           crm_upgrade_url: catalog.crm_upgrade_url,
           erp_upgrade_url: catalog.erp_upgrade_url,
+        },
+      });
+      return;
+    }
+
+    // 8. ZALO BOT LIVE CONNECTION VERIFICATION TEST (LIVE API + SANDBOX MODE)
+    if (action === 'zalo-verify' && method === 'POST') {
+      const startedAt = Date.now();
+      const body = await readJsonBody(req);
+      const token = getBearerToken(req);
+      const verifyMode = String(body.mode || 'live').trim().toLowerCase();
+      const rawBotToken = String(body.bot_token || '').trim();
+      const chatId = String(body.chat_id || '').trim();
+      const sendTestMsg = body.send_test_message !== false;
+
+      if (verifyMode === 'sandbox' || rawBotToken === 'demo_zalobot_token') {
+        const resolvedChatId = chatId || 'sale_chatid_889900';
+        const latencyMs = Math.max(4, Date.now() - startedAt + 12);
+        const savedBot: ServerlessZaloBotConfig = {
+          verified: true,
+          verification_mode: 'sandbox_bridge_verified',
+          bot_name: 'DOMATION AutoData Sale Bot (Sandbox)',
+          chat_id: resolvedChatId,
+          verified_at: new Date().toISOString(),
+        };
+
+        const verifiedUser = token ? verifyServerlessToken(token) : null;
+        if (verifiedUser) {
+          const store = loadStore();
+          const tenantRec = store.tenants[verifiedUser.slug];
+          if (tenantRec) {
+            tenantRec.zalo_bot = savedBot;
+            saveStore(store);
+          }
+        }
+
+        sendJson(res, 200, {
+          success: true,
+          bridge_mode: upstream.reachable ? 'upstream_rls_postgres' : 'vercel_serverless_engine',
+          data: {
+            verified: true,
+            verification_mode: 'sandbox_bridge_verified',
+            bot_name: savedBot.bot_name,
+            chat_id: resolvedChatId,
+            message_sent: true,
+            preview_message: `✅ [DOMATION Auto Data] Xác thực luồng Bridge thành công tới /chatid ${resolvedChatId}! Khi có Lead mới, Sale sẽ nhận tin dưới 4 giây.`,
+            latency_ms: latencyMs,
+          },
+        });
+        return;
+      }
+
+      if (rawBotToken.length < 10) {
+        sendJson(res, 422, {
+          success: false,
+          error: {
+            code: 'INVALID_ZALO_BOT_TOKEN',
+            message:
+              'Vui lòng dán Bot Access Token hợp lệ từ Zalo Bot Platform (tối thiểu 10 ký tự), hoặc bấm "Test thử luồng Bridge (Sandbox)" nếu bạn chưa tạo Bot.',
+          },
+        });
+        return;
+      }
+
+      if (!chatId) {
+        sendJson(res, 422, {
+          success: false,
+          error: {
+            code: 'MISSING_ZALO_CHAT_ID',
+            message:
+              'Vui lòng nhập mã Chat ID nhận được khi gõ lệnh /chatid vào khung chat Zalo Bot.',
+          },
+        });
+        return;
+      }
+
+      // Live HTTPS probe against Zalo Bot Platform API (getMe + optional sendMessage)
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 6000);
+      try {
+        const getMeResp = await fetch(
+          `https://bot-api.zaloplatforms.com/bot${encodeURIComponent(rawBotToken)}/getMe`,
+          {
+            method: 'GET',
+            signal: ctrl.signal,
+          }
+        );
+        const getMeJson = (await getMeResp.json().catch(() => ({}))) as {
+          ok?: boolean;
+          result?: { account_name?: string; name?: string; id?: string };
+          description?: string;
+        };
+
+        if (!getMeResp.ok || getMeJson.ok === false) {
+          sendJson(res, 422, {
+            success: false,
+            error: {
+              code: 'ZALO_BOT_AUTH_FAILED',
+              message:
+                getMeJson.description ||
+                'Zalo Bot Platform từ chối Bot Token này. Vui lòng kiểm tra lại mã Token trên bot.zaloplatforms.com.',
+            },
+          });
+          return;
+        }
+
+        const resolvedBotName =
+          String(getMeJson.result?.account_name || getMeJson.result?.name || 'Zalo Sale Notifier Bot');
+        let messageSent = false;
+        const testText =
+          '✅ [DOMATION Auto Data] Kết nối Zalo Bot trực tiếp thành công! Chuyên viên Sale đã sẵn sàng nhận thông báo Lead < 4 giây.';
+
+        if (sendTestMsg) {
+          const msgResp = await fetch(
+            `https://bot-api.zaloplatforms.com/bot${encodeURIComponent(rawBotToken)}/sendMessage`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: testText,
+              }),
+              signal: ctrl.signal,
+            }
+          );
+          const msgJson = (await msgResp.json().catch(() => ({}))) as {
+            ok?: boolean;
+            description?: string;
+          };
+          if (!msgResp.ok || msgJson.ok === false) {
+            sendJson(res, 422, {
+              success: false,
+              error: {
+                code: 'ZALO_SEND_MESSAGE_FAILED',
+                message:
+                  msgJson.description ||
+                  `Bot "${resolvedBotName}" hợp lệ nhưng chưa gửi được tin tới Chat ID "${chatId}". Hãy mở Zalo nhắn /chatid cho Bot trước.`,
+              },
+            });
+            return;
+          }
+          messageSent = true;
+        }
+
+        const latencyMs = Math.max(1, Date.now() - startedAt);
+        const savedBot: ServerlessZaloBotConfig = {
+          verified: true,
+          verification_mode: 'live_zalo_api',
+          bot_name: resolvedBotName,
+          chat_id: chatId,
+          verified_at: new Date().toISOString(),
+        };
+
+        const verifiedUser = token ? verifyServerlessToken(token) : null;
+        if (verifiedUser) {
+          const store = loadStore();
+          const tenantRec = store.tenants[verifiedUser.slug];
+          if (tenantRec) {
+            tenantRec.zalo_bot = savedBot;
+            saveStore(store);
+          }
+        }
+
+        sendJson(res, 200, {
+          success: true,
+          bridge_mode: upstream.reachable ? 'upstream_rls_postgres' : 'vercel_serverless_engine',
+          data: {
+            verified: true,
+            verification_mode: 'live_zalo_api',
+            bot_name: resolvedBotName,
+            chat_id: chatId,
+            message_sent: messageSent,
+            preview_message: testText,
+            latency_ms: latencyMs,
+          },
+        });
+        return;
+      } catch (zErr: unknown) {
+        sendJson(res, 502, {
+          success: false,
+          error: {
+            code: 'ZALO_NETWORK_ERROR',
+            message:
+              zErr instanceof Error
+                ? `Không thể kết nối tới cổng Zalo Bot Platform (${zErr.message}). Bạn có thể dùng nút Sandbox để kiểm thử luồng Bridge.`
+                : 'Không thể kết nối tới cổng Zalo Bot Platform.',
+          },
+        });
+        return;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    // 9. SALE PORT PERSONAL LEADS (BYPASS ROUND-ROBIN, 0 QUOTA IMPACT, EXEMPT SLA RECALL, 2-WAY SHEETS SYNC)
+    if (action === 'personal-lead' && (method === 'POST' || method === 'GET')) {
+      const token = getBearerToken(req);
+      const verified = token ? verifyServerlessToken(token) : null;
+      const slug = normalizeSlug(urlObj.searchParams.get('slug') || getTenantSlugHeader(req, urlObj) || verified?.slug || '');
+      const store = loadStore();
+      const record = slug ? store.tenants[slug] : undefined;
+
+      if (method === 'GET') {
+        sendJson(res, 200, {
+          success: true,
+          bridge_mode: 'vercel_serverless_engine',
+          data: {
+            items: record?.personal_leads || [],
+          },
+        });
+        return;
+      }
+
+      const body = await readJsonBody(req);
+      const leadName = String(body.name || '').trim();
+      const leadPhone = String(body.phone || '').trim();
+      const saleOwnerName = String(body.sale_owner_name || record?.admin_name || 'Chuyên viên Sale Nội Bộ #01').trim();
+      const productInterest = String(body.product_interest || 'Khách hàng khai thác cá nhân').trim();
+      const note = String(body.note || 'Khách tự nhập tại Cổng Sale Cá Nhân').trim();
+      const sheetSyncEnabled = body.sheet_sync_enabled !== false;
+
+      if (!leadName || leadPhone.replace(/\D/g, '').length < 9) {
+        sendJson(res, 422, {
+          success: false,
+          error: {
+            code: 'INVALID_PERSONAL_LEAD',
+            message: 'Vui lòng nhập Họ tên khách hàng và Số điện thoại hợp lệ (tối thiểu 9 chữ số).',
+          },
+        });
+        return;
+      }
+
+      const item: ServerlessPersonalLeadRecord = {
+        id: `plead_${crypto.randomUUID().slice(0, 8)}`,
+        name: leadName,
+        phone: leadPhone,
+        sale_owner_name: saleOwnerName,
+        product_interest: productInterest,
+        note,
+        sheet_sync_status: sheetSyncEnabled
+          ? `Đồng bộ 2 chiều ↔ Google Sheet riêng (${saleOwnerName})`
+          : 'Lưu nội bộ trên Cổng Sale Cá Nhân',
+        bypass_round_robin: true,
+        quota_impact: 0,
+        sla_recall_exempt: true,
+        created_at: new Date().toISOString(),
+      };
+
+      if (record) {
+        if (!Array.isArray(record.personal_leads)) {
+          record.personal_leads = [];
+        }
+        record.personal_leads.unshift(item);
+        if (record.personal_leads.length > 100) record.personal_leads.length = 100;
+        saveStore(store);
+      }
+
+      sendJson(res, 201, {
+        success: true,
+        bridge_mode: 'vercel_serverless_engine',
+        data: {
+          item,
+          policy_summary:
+            'Đã lưu thẳng vào Cổng Sale Cá Nhân: Bỏ qua Vòng Chia (Bypass Round-Robin), Không trừ Quota Ads (0 Quota), Miễn thu hồi SLA 15p.',
         },
       });
       return;

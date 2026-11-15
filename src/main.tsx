@@ -52,7 +52,10 @@ const Main = () => {
   const isAutomation = path === '/automation';
   const isMetaReport = path === '/meta-report';
   const isCrm = path === '/crm';
-  const isData = path === '/data' || (typeof window !== 'undefined' && window.location.search.includes('page=data'));
+  const isData =
+    path === '/data' ||
+    path.startsWith('/data/') ||
+    (typeof window !== 'undefined' && window.location.search.includes('page=data'));
   const isIdeas = path === '/ideas' || (typeof window !== 'undefined' && window.location.search.includes('page=ideas'));
   const isErp = path === '/erp' || path === '/ideas-erp' || (typeof window !== 'undefined' && (window.location.search.includes('page=erp') || window.location.search.includes('page=ideas-erp')));
 

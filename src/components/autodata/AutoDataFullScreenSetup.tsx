@@ -10,19 +10,22 @@ import {
   Check,
   CheckCircle2,
   Clock,
+  Compass,
   Copy,
   CreditCard,
+  Download,
   EyeOff,
   FileEdit,
+  FolderKanban,
   Gauge,
   GraduationCap,
   Hand,
   HeartPulse,
   KeyRound,
-  Layers,
   Loader2,
   LogOut,
   Mail,
+  PlusCircle,
   RefreshCw,
   Scale,
   Send,
@@ -34,16 +37,25 @@ import {
   Sparkles,
   Table2,
   UserCheck,
+  Users,
   Wallet,
   Webhook,
   X,
 } from 'lucide-react';
-import type {
-  ClientBillingCatalog,
-  ClientBillingPlan,
-  ClientBillingTransaction,
-  ClientSessionState,
-  SetupModalIntent,
+import { AutoDataHelpTrigger } from './AutoDataHelpTour';
+import { AutoDataZaloBotGuide } from './AutoDataZaloBotGuide';
+import {
+  buildGoogleAppsScriptSnippet,
+  buildPersonalLeadsCsvContent,
+  type ClientBillingCatalog,
+  type ClientBillingPlan,
+  type ClientBillingTransaction,
+  type ClientSessionState,
+  type HelpTopicKey,
+  type LegalDocTab,
+  type PersonalSaleLeadItem,
+  type SetupModalIntent,
+  type ZaloBotSavedState,
 } from './autodataTypes';
 
 interface AutoDataFullScreenSetupProps {
@@ -53,6 +65,8 @@ interface AutoDataFullScreenSetupProps {
   session: ClientSessionState | null;
   onSessionChange: (nextSession: ClientSessionState | null) => void;
   onClose: () => void;
+  onOpenLegal?: (tab: LegalDocTab) => void;
+  onOpenTour?: () => void;
 }
 
 interface BusinessDomainOption {
@@ -82,6 +96,8 @@ interface ChannelOption {
   key: string;
   title: string;
   desc: string;
+  required?: boolean;
+  helpTopic?: HelpTopicKey;
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -99,6 +115,7 @@ interface RoutedLeadPreview {
 interface LiveWebhookResult {
   lead_id: string;
   assigned_to_name: string;
+  is_external_f1?: boolean;
   displayed_phone?: string;
   masked_phone: string;
   is_duplicate: boolean;
@@ -108,18 +125,20 @@ interface LiveWebhookResult {
   zalobot_status: string;
 }
 
+type WorkspaceTabKey = 'router' | 'sale_port' | 'zalo_connect' | 'billing' | 'crm_erp';
+
 const BUSINESS_DOMAINS: BusinessDomainOption[] = [
   {
     key: 'general',
-    label: 'Đa Ngành / Tùy Chỉnh Tự Do',
-    subtitle: 'Cấu hình mở cho mọi mô hình doanh nghiệp & đội kinh doanh',
+    label: 'Đa Ngành / Đội Sale Nội Bộ',
+    subtitle: 'Cấu hình chuẩn mặc định cho mọi đội Sale & doanh nghiệp',
     icon: SlidersHorizontal,
     pipelineName: 'Phễu Kinh Doanh Tiêu Chuẩn Doanh Nghiệp',
   },
   {
     key: 'real_estate',
-    label: 'Bất Động Sản & Sàn Liên Kết F1',
-    subtitle: 'Chia giỏ dự án, chống trùng 90 ngày & bảo mật SĐT đại lý',
+    label: 'Bất Động Sản & Sàn Kinh Doanh',
+    subtitle: 'Chia giỏ dự án cho Sale nội bộ, tùy chọn bật thêm CTV F1',
     icon: Building2,
     pipelineName: 'Phễu Tư Vấn & Giữ Chỗ Dự Án',
   },
@@ -165,33 +184,37 @@ const ROUTER_MODES: RouterModeOption[] = [
     key: 'weighted_round_robin',
     title: 'Chia Trọng Số Công Bằng (Weighted Fair-Share)',
     badge: 'Khuyên dùng',
-    desc: 'Tự động cân bằng tỷ lệ nhận khách theo năng lực/KPI từng nhân sự (VD: Senior x3, Junior x1).',
+    desc: 'Tự động cân bằng tỷ lệ nhận khách theo năng lực/KPI từng Sale (VD: Senior x3, Junior x1).',
     icon: Scale,
   },
   {
     key: 'strict_round_robin',
     title: 'Xoay Vòng Tuần Tự 1:1 (Strict Round-Robin)',
-    desc: 'Chia đều tuyệt đối lần lượt từ nhân sự thứ 1 đến người thứ N đang bật trạng thái Online.',
+    desc: 'Chia đều tuyệt đối lần lượt từ Sale thứ 1 đến người thứ N đang bật trạng thái Online.',
     icon: RefreshCw,
   },
   {
     key: 'least_loaded',
     title: 'Ưu Tiên Người Ít Việc Nhất (Least-Loaded)',
-    desc: 'Phân tích tải thực tế và đẩy khách mới cho nhân sự đang có ít hồ sơ chờ xử lý nhất.',
+    desc: 'Phân tích tải thực tế và đẩy khách mới cho Sale đang có ít hồ sơ chờ xử lý nhất.',
     icon: Gauge,
   },
   {
     key: 'manual_only',
     title: 'Giỏ Chờ Duyệt Tay (Manual Queue)',
-    desc: 'Tập trung Lead về giỏ chung để Giám đốc kinh doanh hoặc Admin chỉ định thủ công.',
+    desc: 'Tập trung Lead về giỏ chung để Trưởng phòng Sale hoặc Admin chỉ định thủ công.',
     icon: Hand,
   },
 ];
 
+function RepeatIconFallback({ className }: { className?: string }) {
+  return <RefreshCw className={className} />;
+}
+
 const DEDUP_POLICIES: DedupPolicyOption[] = [
   {
     key: 'route_to_existing_owner',
-    title: 'Trả Về Nhân Sự Cũ Đang Chăm',
+    title: 'Trả Về Đúng Sale Cũ Đang Chăm',
     desc: 'Bảo vệ quyền lợi Sale khai thác ban đầu và gắn cảnh báo khách quay lại trong 90 ngày.',
     icon: UserCheck,
   },
@@ -215,39 +238,45 @@ const DEDUP_POLICIES: DedupPolicyOption[] = [
   },
 ];
 
-function RepeatIconFallback({ className }: { className?: string }) {
-  return <RefreshCw className={className} />;
-}
-
 const CHANNEL_OPTIONS: ChannelOption[] = [
   {
     key: 'webhook',
     title: 'Inbound Webhook Đa Nền Tảng',
-    desc: 'Nhận Lead tức thì từ Website, LadiPage, WordPress, Webflow, Typeform.',
+    desc: 'Tự động cấp sẵn ngay khi tạo tài khoản — nhận Lead tức thì từ LadiPage, Web, Form.',
+    required: true,
+    helpTopic: 'apps_script',
     icon: Webhook,
   },
   {
-    key: 'meta_capi',
-    title: 'Facebook Lead Ads & Meta CAPI v21.0',
-    desc: 'Đồng bộ ngược sự kiện khách chất lượng giúp tối ưu máy học quảng cáo.',
-    icon: Share2,
-  },
-  {
     key: 'zalobot',
-    title: 'ZaloBot Báo Số Cá Nhân & Nhóm',
-    desc: 'Nhận thông báo khách mới < 4s, bấm tiếp nhận hoặc báo số rác 1-đổi-1 trên Zalo.',
+    title: 'ZaloBot Báo Số Từng Sale (< 4s)',
+    desc: 'Nhận thông báo khách mới qua Zalo cá nhân/nhóm bằng mã /chatid (Có thể cài sau).',
+    required: false,
+    helpTopic: 'zalobot_chatid',
     icon: Bot,
   },
   {
     key: 'sheets_tiktok',
-    title: 'TikTok Lead Gen & Google Sheets',
-    desc: 'Kết nối luồng dữ liệu tự động không cần xuất/nhập file Excel thủ công.',
+    title: 'Google Sheets 2 Chiều & TikTok Lead',
+    desc: 'Đồng bộ 2 chiều với Google Sheet riêng của từng Sale bằng Apps Script mẫu.',
+    required: false,
+    helpTopic: 'apps_script',
     icon: Table2,
+  },
+  {
+    key: 'meta_capi',
+    title: 'Facebook Lead Ads & Meta CAPI v21.0',
+    desc: 'Đồng bộ ngược sự kiện khách chất lượng băm SHA-256 về Facebook Dataset.',
+    required: false,
+    helpTopic: 'meta_capi',
+    icon: Share2,
   },
   {
     key: 'smtp_sla',
     title: 'Email Cảnh Báo SLA & Báo Cáo Gini',
-    desc: 'Gửi báo cáo đối soát công bằng chia số và cảnh báo trễ SLA cho Ban giám đốc.',
+    desc: 'Gửi báo cáo đối soát công bằng chia số và cảnh báo trễ SLA cuối ngày.',
+    required: false,
+    helpTopic: 'sla_recall',
     icon: Mail,
   },
 ];
@@ -270,19 +299,22 @@ export default function AutoDataFullScreenSetup({
   session,
   onSessionChange,
   onClose,
+  onOpenLegal,
+  onOpenTour,
 }: AutoDataFullScreenSetupProps) {
-  // Determine view mode from session + initialIntent
   const [authMode, setAuthMode] = useState<'register' | 'login'>(
     initialIntent === 'login' ? 'login' : 'register'
   );
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [workspaceTab, setWorkspaceTab] = useState<'router' | 'billing' | 'crm_erp'>(() => {
+  const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTabKey>(() => {
     if (initialIntent === 'workspace_crm_erp') return 'crm_erp';
+    if (initialIntent === 'workspace_sale_port') return 'sale_port';
+    if (initialIntent === 'workspace_zalo') return 'zalo_connect';
     if (initialIntent === 'workspace_billing' || session?.subscription?.is_expired) return 'billing';
     return 'router';
   });
 
-  // Registration Step 1 state
+  // Registration Step 1 state (Required core fields)
   const [companyName, setCompanyName] = useState('');
   const [tenantSlug, setTenantSlug] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
@@ -293,15 +325,20 @@ export default function AutoDataFullScreenSetup({
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
-  // Registration Step 2 state (Auto Data Router Engine)
+  // Registration Step 2 state — Individual Internal Sale is strictly DEFAULT (is_external_agency = false)
   const [routerMode, setRouterMode] = useState<RouterModeOption['key']>('weighted_round_robin');
   const [dedupPolicy, setDedupPolicy] = useState<DedupPolicyOption['key']>('route_to_existing_owner');
   const [dedupDays, setDedupDays] = useState<number>(90);
-  const [maskPiiExternal, setMaskPiiExternal] = useState<boolean>(true);
+  const [isExternalAgency, setIsExternalAgency] = useState<boolean>(false);
   const [slaAutoRecall, setSlaAutoRecall] = useState<boolean>(true);
 
-  // Registration Step 3 state (Channels)
-  const [selectedChannels, setSelectedChannels] = useState<string[]>(['webhook', 'meta_capi', 'zalobot']);
+  // Registration Step 3 state (Channels + Optional Zalo Bot preview)
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([
+    'webhook',
+    'zalobot',
+    'sheets_tiktok',
+  ]);
+  const [pendingZaloBot, setPendingZaloBot] = useState<ZaloBotSavedState | null>(null);
 
   // Login state
   const [loginSlug, setLoginSlug] = useState('');
@@ -313,6 +350,7 @@ export default function AutoDataFullScreenSetup({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
   const [copiedWebhook, setCopiedWebhook] = useState(false);
+  const [copiedAppsScript, setCopiedAppsScript] = useState(false);
 
   // Live Workspace data
   const [transactions, setTransactions] = useState<ClientBillingTransaction[]>([]);
@@ -322,6 +360,29 @@ export default function AutoDataFullScreenSetup({
   const [testLeadSource, setTestLeadSource] = useState('facebook_lead_ads');
   const [testLeadInterest, setTestLeadInterest] = useState('Tư vấn giải pháp gói Doanh Nghiệp');
   const [lastWebhookResult, setLastWebhookResult] = useState<LiveWebhookResult | null>(null);
+
+  // Sale Port Personal Leads & 2-Way Google Sheets Sync state
+  const [personalLeads, setPersonalLeads] = useState<PersonalSaleLeadItem[]>([
+    {
+      id: 'plead_demo01',
+      name: 'Trần Quốc Bảo (Khách quen tự khai thác)',
+      phone: '0908666888',
+      sale_owner_name: 'Chuyên viên Sale Nội Bộ #01',
+      product_interest: 'Gói dịch vụ VIP giới thiệu trực tiếp',
+      note: 'Khách hẹn gọi lại 14h chiều — Không qua vòng chia',
+      sheet_sync_status: 'Đồng bộ 2 chiều ↔ Google Sheet riêng (Sale #01)',
+      bypass_round_robin: true,
+      quota_impact: 0,
+      sla_recall_exempt: true,
+      created_at: new Date().toISOString(),
+    },
+  ]);
+  const [pLeadName, setPLeadName] = useState('');
+  const [pLeadPhone, setPLeadPhone] = useState('');
+  const [pLeadOwner, setPLeadOwner] = useState('Chuyên viên Sale Nội Bộ #01');
+  const [pLeadInterest, setPLeadInterest] = useState('Khách cá nhân tự tìm kiếm');
+  const [pLeadNote, setPLeadNote] = useState('Đi thẳng vào giỏ riêng, miễn thu hồi SLA');
+  const [pSheetSync, setPSheetSync] = useState(true);
 
   // Billing & Upgrade UI state inside Connected Workspace
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual');
@@ -333,7 +394,9 @@ export default function AutoDataFullScreenSetup({
     reference_code: string;
     amount_vnd: number;
   } | null>(null);
-  const [upgradeSuite, setUpgradeSuite] = useState<'crm' | 'erp' | 'crm_erp_bundle'>('crm_erp_bundle');
+  const [upgradeSuite, setUpgradeSuite] = useState<
+    'automation' | 'crm' | 'erp' | 'crm_erp_bundle'
+  >('crm_erp_bundle');
   const [upgradePhone, setUpgradePhone] = useState('');
   const [upgradeNote, setUpgradeNote] = useState('');
 
@@ -398,6 +461,9 @@ export default function AutoDataFullScreenSetup({
             subscription?: ClientSessionState['subscription'];
             transactions?: ClientBillingTransaction[];
             leads?: RoutedLeadPreview[];
+            personal_leads?: PersonalSaleLeadItem[];
+            zalo_bot?: ZaloBotSavedState | null;
+            is_external_agency?: boolean;
             webhook_url?: string;
             webhook_token?: string;
           };
@@ -405,8 +471,16 @@ export default function AutoDataFullScreenSetup({
         if (!active || !json.success || !json.data) return;
         setTransactions(Array.isArray(json.data.transactions) ? json.data.transactions : []);
         setRecentLeads(Array.isArray(json.data.leads) ? json.data.leads : []);
+        if (Array.isArray(json.data.personal_leads) && json.data.personal_leads.length > 0) {
+          setPersonalLeads(json.data.personal_leads);
+        }
         if (json.data.subscription) {
-          if (json.data.subscription.is_expired && initialIntent !== 'workspace_crm_erp') {
+          if (
+            json.data.subscription.is_expired &&
+            initialIntent !== 'workspace_crm_erp' &&
+            initialIntent !== 'workspace_sale_port' &&
+            initialIntent !== 'workspace_zalo'
+          ) {
             setWorkspaceTab('billing');
           }
           onSessionChange({
@@ -415,6 +489,8 @@ export default function AutoDataFullScreenSetup({
             upstream_app_url: json.upstream_app_url ?? session.upstream_app_url,
             webhook_url: json.data.webhook_url || session.webhook_url,
             webhook_token: json.data.webhook_token || session.webhook_token,
+            is_external_agency: json.data.is_external_agency ?? session.is_external_agency ?? false,
+            zalo_bot: json.data.zalo_bot ?? session.zalo_bot ?? null,
             subscription: json.data.subscription,
           });
         }
@@ -448,14 +524,15 @@ export default function AutoDataFullScreenSetup({
   };
 
   const toggleChannel = (key: string) => {
+    if (key === 'webhook') return; // Core inbound webhook is always active
     setSelectedChannels((prev) =>
-      prev.includes(key) ? (prev.length > 1 ? prev.filter((item) => item !== key) : prev) : [...prev, key]
+      prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
     );
   };
 
   const validateStep1 = (): boolean => {
     if (!companyName.trim() || tenantSlug.trim().length < 2) {
-      setErrorMsg('Vui lòng nhập Tên doanh nghiệp và Mã định danh tổ chức (tối thiểu 2 ký tự).');
+      setErrorMsg('Vui lòng nhập Tên doanh nghiệp/đội Sale và Mã định danh (tối thiểu 2 ký tự).');
       return false;
     }
     if (slugStatus === 'taken') {
@@ -474,7 +551,7 @@ export default function AutoDataFullScreenSetup({
     return true;
   };
 
-  const handleRegisterSubmit = async () => {
+  const handleRegisterSubmit = async (fastSkippedOptional = false) => {
     if (!validateStep1()) {
       setStep(1);
       return;
@@ -507,8 +584,9 @@ export default function AutoDataFullScreenSetup({
                   ? 'route_to_previous_sale'
                   : dedupPolicy,
             duplicate_threshold_days: dedupDays,
-            mask_pii_for_external: maskPiiExternal,
-            pii_masking_enabled: maskPiiExternal,
+            is_external_agency: isExternalAgency,
+            mask_pii_for_external: isExternalAgency,
+            pii_masking_enabled: isExternalAgency,
             sla_auto_recall_enabled: slaAutoRecall,
           },
         }),
@@ -532,7 +610,9 @@ export default function AutoDataFullScreenSetup({
       };
 
       if (!res.ok || !json.success || !json.data) {
-        setErrorMsg(json.error?.message || 'Không thể khởi tạo hệ thống. Vui lòng kiểm tra lại thông tin.');
+        setErrorMsg(
+          json.error?.message || 'Không thể khởi tạo hệ thống. Vui lòng kiểm tra lại thông tin.'
+        );
         return;
       }
 
@@ -543,6 +623,8 @@ export default function AutoDataFullScreenSetup({
         admin_email: json.data.user.email,
         webhook_url: json.data.webhook_url,
         webhook_token: json.data.webhook_token,
+        is_external_agency: isExternalAgency,
+        zalo_bot: pendingZaloBot,
         bridge_mode: json.bridge_mode || 'vercel_serverless_engine',
         upstream_app_url: json.upstream_app_url || null,
         subscription: json.data.tenant.subscription,
@@ -550,7 +632,9 @@ export default function AutoDataFullScreenSetup({
       onSessionChange(nextSession);
       setWorkspaceTab('router');
       setSuccessBanner(
-        `Đã khởi tạo thành công không gian "${nextSession.company_name}" — Kích hoạt ${catalog.trial_duration_months} tháng (${catalog.trial_duration_days} ngày) miễn phí!`
+        fastSkippedOptional
+          ? `Đã tạo nhanh "${nextSession.company_name}" (Mặc định chia cho từng Sale nội bộ) — Bạn có thể bắn thử Lead ngay hoặc cài Zalo Bot tùy chọn bất cứ lúc nào!`
+          : `Đã khởi tạo thành công không gian "${nextSession.company_name}" — Kích hoạt ${catalog.trial_duration_months} tháng (${catalog.trial_duration_days} ngày) miễn phí!`
       );
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối máy chủ khi khởi tạo.');
@@ -583,6 +667,7 @@ export default function AutoDataFullScreenSetup({
             slug: string;
             name: string;
             subscription: ClientSessionState['subscription'];
+            settings?: { is_external_agency?: boolean };
           };
           user: { email: string };
           webhook_url: string;
@@ -591,7 +676,9 @@ export default function AutoDataFullScreenSetup({
         error?: { message?: string };
       };
       if (!res.ok || !json.success || !json.data) {
-        setErrorMsg(json.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra Slug, Email và Mật khẩu.');
+        setErrorMsg(
+          json.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra Slug, Email và Mật khẩu.'
+        );
         return;
       }
 
@@ -602,6 +689,7 @@ export default function AutoDataFullScreenSetup({
         admin_email: json.data.user.email,
         webhook_url: json.data.webhook_url,
         webhook_token: json.data.webhook_token,
+        is_external_agency: Boolean(json.data.tenant.settings?.is_external_agency ?? false),
         bridge_mode: json.bridge_mode || 'vercel_serverless_engine',
         upstream_app_url: json.upstream_app_url || null,
         subscription: json.data.tenant.subscription,
@@ -657,7 +745,7 @@ export default function AutoDataFullScreenSetup({
           id: nextLeadId,
           name: testLeadName,
           phone: testLeadPhone,
-          masked_phone: json.data!.displayed_phone || json.data!.masked_phone,
+          masked_phone: json.data!.displayed_phone || testLeadPhone,
           utm_source: testLeadSource,
           assigned_to_name: json.data!.assigned_to_name,
           is_duplicate: json.data!.is_duplicate,
@@ -665,11 +753,93 @@ export default function AutoDataFullScreenSetup({
         },
         ...prev.filter((item) => item.id !== nextLeadId).slice(0, 9),
       ]);
-      // Generate fresh phone suffix hint so user can either test new lead or duplicate
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối cổng Webhook.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleAddPersonalLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session) return;
+    setSubmitting(true);
+    setErrorMsg(null);
+    try {
+      const res = await fetch(
+        `/api/autodata?action=personal-lead&slug=${encodeURIComponent(session.tenant_slug)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+            'X-Tenant-Slug': session.tenant_slug,
+          },
+          body: JSON.stringify({
+            name: pLeadName.trim(),
+            phone: pLeadPhone.trim(),
+            sale_owner_name: pLeadOwner.trim() || 'Chuyên viên Sale Nội Bộ #01',
+            product_interest: pLeadInterest.trim(),
+            note: pLeadNote.trim(),
+            sheet_sync_enabled: pSheetSync,
+          }),
+        }
+      );
+      const json = (await res.json()) as {
+        success?: boolean;
+        data?: { item: PersonalSaleLeadItem; policy_summary?: string };
+        error?: { message?: string };
+      };
+      if (!res.ok || !json.success || !json.data?.item) {
+        setErrorMsg(json.error?.message || 'Không thể thêm Lead cá nhân.');
+        return;
+      }
+      setPersonalLeads((prev) => [json.data!.item, ...prev]);
+      setPLeadName('');
+      setPLeadPhone('');
+      setSuccessBanner(
+        json.data.policy_summary ||
+          'Đã thêm Lead vào Cổng Sale Cá Nhân (Bỏ qua vòng chia & Không trừ quota Ads)!'
+      );
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối Cổng Sale Cá Nhân.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDownloadPersonalCsv = () => {
+    const csv = buildPersonalLeadsCsvContent(personalLeads);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `domation-sale-personal-leads-${session?.tenant_slug || 'demo'}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const copyWebhookUrl = async () => {
+    if (!session?.webhook_url) return;
+    try {
+      await navigator.clipboard.writeText(session.webhook_url);
+      setCopiedWebhook(true);
+      window.setTimeout(() => setCopiedWebhook(false), 1800);
+    } catch {
+      // Ignore clipboard failure
+    }
+  };
+
+  const copyAppsScriptCode = async () => {
+    const code = buildGoogleAppsScriptSnippet(session?.webhook_url, session?.admin_email);
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedAppsScript(true);
+      window.setTimeout(() => setCopiedAppsScript(false), 1800);
+    } catch {
+      // Ignore clipboard failure
     }
   };
 
@@ -794,28 +964,17 @@ export default function AutoDataFullScreenSetup({
         error?: { message?: string };
       };
       if (!res.ok || !json.success || !json.data) {
-        setErrorMsg(json.error?.message || 'Không thể gửi yêu cầu nâng cấp CRM / ERP.');
+        setErrorMsg(json.error?.message || 'Không thể gửi yêu cầu nâng cấp hệ sinh thái.');
         return;
       }
       setTransactions((prev) => [json.data!.transaction, ...prev]);
       setSuccessBanner(
-        'Đã ghi nhận yêu cầu nâng cấp lên Hệ sinh thái DOMATION CRM 360° / ERP 5.0 (Giữ nguyên 100% dữ liệu Auto Data hiện có)!'
+        'Đã ghi nhận yêu cầu nâng cấp từ Bản Lite lên Hệ sinh thái DOMATION (Giữ nguyên 100% dữ liệu Lead & Sale hiện có)!'
       );
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối máy chủ.');
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const copyWebhookUrl = async () => {
-    if (!session?.webhook_url) return;
-    try {
-      await navigator.clipboard.writeText(session.webhook_url);
-      setCopiedWebhook(true);
-      window.setTimeout(() => setCopiedWebhook(false), 1800);
-    } catch {
-      // Ignore clipboard failure
     }
   };
 
@@ -826,20 +985,19 @@ export default function AutoDataFullScreenSetup({
       aria-label="Không gian khởi tạo và kết nối Auto Data"
       className="fixed inset-0 z-[120] w-screen h-screen bg-[#FAFAFA] text-slate-900 flex flex-col overflow-hidden"
     >
-      {/* Top Full-Screen Minimal App Bar (Google / Claude Start App aesthetic) */}
-      <header className="shrink-0 h-16 px-4 sm:px-8 border-b border-slate-200/80 bg-white flex items-center justify-between gap-4">
+      {/* Top Full-Screen Minimal App Bar */}
+      <header className="shrink-0 h-16 px-4 sm:px-8 border-b border-slate-200/80 bg-white flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm tracking-tight shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm tracking-normal shrink-0">
             AD
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 truncate">
+              <span className="font-bold text-sm sm:text-base text-slate-900 truncate">
                 DOMATION AUTO DATA
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                Live Connect
+              <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700 whitespace-nowrap">
+                Bản Lite • Sale &amp; Chia Data
               </span>
             </div>
             <p className="text-[11px] text-slate-500 truncate">
@@ -850,16 +1008,16 @@ export default function AutoDataFullScreenSetup({
           </div>
         </div>
 
-        {/* Center Progress Steps or Workspace Tabs */}
+        {/* Center Mode Switcher or Workspace Tabs */}
         {!session ? (
-          <div className="hidden md:flex items-center gap-2 bg-slate-100 p-1 rounded-full">
+          <div className="hidden md:flex items-center gap-1.5 bg-slate-100 p-1 rounded-full shrink-0">
             <button
               type="button"
               onClick={() => {
                 setAuthMode('register');
                 setErrorMsg(null);
               }}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 authMode === 'register'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -873,7 +1031,7 @@ export default function AutoDataFullScreenSetup({
                 setAuthMode('login');
                 setErrorMsg(null);
               }}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 authMode === 'login'
                   ? 'bg-white text-slate-900 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -883,11 +1041,13 @@ export default function AutoDataFullScreenSetup({
             </button>
           </div>
         ) : (
-          <div className="hidden lg:flex items-center gap-1.5 bg-slate-100 p-1 rounded-full">
+          <div className="hidden xl:flex items-center gap-1.5 bg-slate-100 p-1 rounded-full shrink-0">
             {[
-              { id: 'router' as const, label: '1. Cổng Webhook & Chia Vòng Thật' },
-              { id: 'billing' as const, label: '2. Quản Lý Gói & Topup Gia Hạn' },
-              { id: 'crm_erp' as const, label: '3. Nâng Cấp CRM 360° / ERP 5.0' },
+              { id: 'router' as const, label: '1. Webhook & Chia Vòng' },
+              { id: 'sale_port' as const, label: '2. Cổng Sale & Sheets 2 Chiều' },
+              { id: 'zalo_connect' as const, label: '3. Zalo Bot A–Z (Tùy chọn)' },
+              { id: 'billing' as const, label: '4. Gói & Ví Topup' },
+              { id: 'crm_erp' as const, label: '5. Nâng Cấp Suite' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -896,7 +1056,7 @@ export default function AutoDataFullScreenSetup({
                   setWorkspaceTab(tab.id);
                   setErrorMsg(null);
                 }}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   workspaceTab === tab.id
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -908,7 +1068,18 @@ export default function AutoDataFullScreenSetup({
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          {onOpenTour && (
+            <button
+              type="button"
+              onClick={onOpenTour}
+              className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <Compass className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline">Tour A–Z</span>
+              <span className="sm:hidden">?</span>
+            </button>
+          )}
           {session && (
             <button
               type="button"
@@ -917,9 +1088,9 @@ export default function AutoDataFullScreenSetup({
                 setSuccessBanner(null);
                 setTransferOrderInfo(null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-rose-600 hover:border-rose-200 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-rose-600 hover:border-rose-200 transition-colors cursor-pointer whitespace-nowrap"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              <LogOut className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">Đăng xuất</span>
             </button>
           )}
@@ -927,21 +1098,21 @@ export default function AutoDataFullScreenSetup({
             type="button"
             onClick={onClose}
             aria-label="Đóng cửa sổ thiết lập"
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer whitespace-nowrap"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4 shrink-0" />
             <span>Đóng</span>
           </button>
         </div>
       </header>
 
-      {/* Mobile Switcher when under md/lg */}
+      {/* Sub-bar Switcher on Mobile / Tablet */}
       {!session ? (
         <div className="md:hidden shrink-0 px-4 py-2 bg-white border-b border-slate-200 flex gap-2">
           <button
             type="button"
             onClick={() => setAuthMode('register')}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold ${
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold whitespace-nowrap ${
               authMode === 'register' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
             }`}
           >
@@ -950,7 +1121,7 @@ export default function AutoDataFullScreenSetup({
           <button
             type="button"
             onClick={() => setAuthMode('login')}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold ${
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold whitespace-nowrap ${
               authMode === 'login' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
             }`}
           >
@@ -958,17 +1129,19 @@ export default function AutoDataFullScreenSetup({
           </button>
         </div>
       ) : (
-        <div className="lg:hidden shrink-0 px-4 py-2 bg-white border-b border-slate-200 flex gap-1.5 overflow-x-auto">
+        <div className="xl:hidden shrink-0 px-4 py-2 bg-white border-b border-slate-200 flex gap-2 overflow-x-auto">
           {[
-            { id: 'router' as const, label: 'Webhook & Router' },
-            { id: 'billing' as const, label: 'Gói & Topup' },
-            { id: 'crm_erp' as const, label: 'Nâng Cấp CRM/ERP' },
+            { id: 'router' as const, label: '1. Webhook & Chia Vòng' },
+            { id: 'sale_port' as const, label: '2. Cổng Sale & Sheets' },
+            { id: 'zalo_connect' as const, label: '3. Zalo Bot (Tùy chọn)' },
+            { id: 'billing' as const, label: '4. Gói & Topup' },
+            { id: 'crm_erp' as const, label: '5. Nâng Cấp Suite' },
           ].map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setWorkspaceTab(tab.id)}
-              className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold ${
+              className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer ${
                 workspaceTab === tab.id ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
               }`}
             >
@@ -980,14 +1153,14 @@ export default function AutoDataFullScreenSetup({
 
       {/* Main Scrollable Canvas */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-10 space-y-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-7 sm:py-10 space-y-6">
           {errorMsg && (
             <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 flex items-center justify-between gap-3">
               <span>{errorMsg}</span>
               <button
                 type="button"
                 onClick={() => setErrorMsg(null)}
-                className="text-xs font-bold text-rose-600 hover:underline shrink-0"
+                className="text-xs font-bold text-rose-600 hover:underline shrink-0 whitespace-nowrap"
               >
                 Ẩn
               </button>
@@ -998,12 +1171,12 @@ export default function AutoDataFullScreenSetup({
             <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-medium">{successBanner}</span>
+                <span className="font-medium leading-relaxed">{successBanner}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setSuccessBanner(null)}
-                className="text-xs font-bold text-emerald-700 hover:underline shrink-0"
+                className="text-xs font-bold text-emerald-700 hover:underline shrink-0 whitespace-nowrap"
               >
                 Ẩn
               </button>
@@ -1015,12 +1188,12 @@ export default function AutoDataFullScreenSetup({
              ================================================================ */}
           {!session && authMode === 'register' && (
             <div className="space-y-8">
-              {/* Stepper Indicator */}
-              <div className="flex items-center justify-between max-w-2xl mx-auto">
+              {/* Stepper Indicator with explicit Bắt buộc vs Tùy chọn badges */}
+              <div className="flex items-center justify-between gap-2 max-w-3xl mx-auto overflow-x-auto py-1">
                 {[
-                  { n: 1 as const, label: 'Tổ chức & Lĩnh vực' },
-                  { n: 2 as const, label: 'Cấu hình Vòng Chia Số' },
-                  { n: 3 as const, label: 'Kênh Kết Nối & Kích Hoạt' },
+                  { n: 1 as const, label: 'Tài khoản & Tổ chức', reqLabel: 'Bắt buộc', reqTone: 'bg-rose-100 text-rose-800' },
+                  { n: 2 as const, label: 'Quy tắc Chia Vòng', reqLabel: 'Tùy chọn', reqTone: 'bg-amber-100 text-amber-800' },
+                  { n: 3 as const, label: 'Zalo Bot & Kênh ngoài', reqLabel: 'Tùy chọn', reqTone: 'bg-amber-100 text-amber-800' },
                 ].map((s, idx) => {
                   const active = step === s.n;
                   const done = step > s.n;
@@ -1031,10 +1204,10 @@ export default function AutoDataFullScreenSetup({
                         onClick={() => {
                           if (s.n === 1 || validateStep1()) setStep(s.n);
                         }}
-                        className="flex items-center gap-2.5 text-left cursor-pointer group"
+                        className="flex items-center gap-2.5 text-left cursor-pointer group shrink-0"
                       >
                         <span
-                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors shrink-0 ${
                             done
                               ? 'bg-emerald-600 text-white'
                               : active
@@ -1044,70 +1217,101 @@ export default function AutoDataFullScreenSetup({
                         >
                           {done ? <Check className="w-4 h-4" /> : s.n}
                         </span>
-                        <span
-                          className={`text-xs sm:text-sm font-semibold ${
-                            active ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-800'
-                          }`}
-                        >
-                          {s.label}
-                        </span>
+                        <div className="flex flex-col">
+                          <span
+                            className={`text-xs sm:text-sm font-semibold whitespace-nowrap ${
+                              active ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-800'
+                            }`}
+                          >
+                            {s.label}
+                          </span>
+                          <span
+                            className={`self-start rounded-full px-2 py-0.5 text-[10px] font-bold whitespace-nowrap mt-0.5 ${s.reqTone}`}
+                          >
+                            {s.reqLabel}
+                          </span>
+                        </div>
                       </button>
-                      {idx < 2 && <div className="flex-1 h-px bg-slate-200 mx-3 hidden sm:block" />}
+                      {idx < 2 && <div className="flex-1 min-w-6 h-px bg-slate-200 mx-2 hidden sm:block" />}
                     </React.Fragment>
                   );
                 })}
               </div>
 
-              {/* STEP 1: Organization & Universal Domain Picker with Specialized Icons */}
+              {/* STEP 1: Required Organization & Admin Info + Optional Domain Preset */}
               {step === 1 && (
-                <div className="space-y-8">
-                  <div className="text-center max-w-2xl mx-auto space-y-2">
-                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                      Khởi tạo không gian Auto Data riêng cho doanh nghiệp
+                <div className="space-y-7">
+                  <div className="text-center max-w-2xl mx-auto space-y-2.5">
+                    <div className="inline-flex items-center gap-2">
+                      <span className="rounded-full bg-rose-50 border border-rose-200 px-3 py-1 text-[11px] font-bold text-rose-700 whitespace-nowrap">
+                        BƯỚC 1: BẮT BUỘC • TẠO KHÔNG GIAN RIÊNG
+                      </span>
+                      <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={onOpenTour} />
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
+                      Khởi tạo không gian Auto Data riêng cho đội Sale
                     </h2>
-                    <p className="text-sm sm:text-base text-slate-600">
+                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                       Dùng thử miễn phí trọn vẹn tính năng trong{' '}
-                      <strong className="text-slate-900">{catalog.trial_duration_months} tháng đầu ({catalog.trial_duration_days} ngày)</strong>. Không yêu cầu thẻ tín dụng.
+                      <strong className="text-slate-900">
+                        {catalog.trial_duration_months} tháng đầu ({catalog.trial_duration_days} ngày)
+                      </strong>
+                      . Điền xong bước này bạn có thể vào setup ngay lập tức!
                     </p>
                   </div>
 
                   <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
+                    <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Thông tin khởi tạo tài khoản Quản trị
+                      </span>
+                      <span className="rounded-full bg-rose-50 border border-rose-200 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 whitespace-nowrap">
+                        Bắt buộc (*)
+                      </span>
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-slate-700">
-                          Tên doanh nghiệp / Đội kinh doanh *
+                          Tên doanh nghiệp / Đội Sale *
                         </label>
                         <input
                           type="text"
                           value={companyName}
                           onChange={(e) => handleCompanyNameChange(e.target.value)}
-                          placeholder="VD: Công ty Cổ phần Giải pháp Á Châu"
+                          placeholder="VD: Phòng Kinh Doanh Á Châu"
                           className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-2">
                           <label className="text-xs font-semibold text-slate-700">
                             Mã định danh Workspace (Slug) *
                           </label>
                           {slugStatus === 'checking' && (
-                            <span className="text-[11px] text-slate-500">Đang kiểm tra...</span>
+                            <span className="text-[11px] text-slate-500 whitespace-nowrap">Đang kiểm tra...</span>
                           )}
                           {slugStatus === 'available' && (
-                            <span className="text-[11px] font-semibold text-emerald-600">✓ Khả dụng</span>
+                            <span className="text-[11px] font-semibold text-emerald-600 whitespace-nowrap">
+                              ✓ Khả dụng
+                            </span>
                           )}
                           {slugStatus === 'taken' && (
-                            <span className="text-[11px] font-semibold text-rose-600">✕ Đã tồn tại</span>
+                            <span className="text-[11px] font-semibold text-rose-600 whitespace-nowrap">
+                              ✕ Đã tồn tại
+                            </span>
                           )}
                         </div>
                         <div className="flex items-center rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 focus-within:border-blue-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
-                          <span className="text-xs text-slate-400 select-none mr-1">domation.net/t/</span>
+                          <span className="text-xs text-slate-400 select-none mr-1 whitespace-nowrap">
+                            domation.net/t/
+                          </span>
                           <input
                             type="text"
                             value={tenantSlug}
                             onChange={(e) => handleSlugInput(e.target.value)}
-                            placeholder="giai-phap-a-chau"
+                            placeholder="phong-sale-a-chau"
                             className="w-full bg-transparent text-sm font-mono text-slate-900 focus:outline-none"
                           />
                         </div>
@@ -1160,13 +1364,15 @@ export default function AutoDataFullScreenSetup({
                       </div>
                     </div>
 
-                    {/* Optional Business Preset Picker (Universal First — No Forced Industry) */}
-                    <div className="pt-2 space-y-3">
-                      <div className="flex items-center justify-between">
+                    {/* Optional Business Preset Picker */}
+                    <div className="pt-3 border-t border-slate-100 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <label className="text-xs font-semibold text-slate-700">
-                          Chọn mẫu phễu gợi ý (Hoặc giữ "Đa ngành / Tùy chỉnh tự do")
+                          Mẫu phễu gợi ý ban đầu (Mặc định: Đa ngành / Đội Sale Nội Bộ)
                         </label>
-                        <span className="text-[11px] text-slate-500">Có thể sửa tự do bất kỳ lúc nào</span>
+                        <span className="rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[11px] font-bold text-amber-800 whitespace-nowrap">
+                          Tùy chọn • Đổi tự do sau
+                        </span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {BUSINESS_DOMAINS.map((item) => {
@@ -1194,34 +1400,115 @@ export default function AutoDataFullScreenSetup({
                                 <div className="text-sm font-semibold text-slate-900 leading-snug">
                                   {item.label}
                                 </div>
-                                <div className="text-xs text-slate-500 mt-1 leading-relaxed">{item.subtitle}</div>
+                                <div className="text-xs text-slate-500 mt-1 leading-relaxed">
+                                  {item.subtitle}
+                                </div>
                               </div>
                             </button>
                           );
                         })}
                       </div>
                     </div>
+
+                    {onOpenLegal && (
+                      <p className="text-xs text-slate-500 pt-1 leading-relaxed">
+                        Bằng việc khởi tạo không gian làm việc, bạn đồng ý với{' '}
+                        <button
+                          type="button"
+                          onClick={() => onOpenLegal('terms')}
+                          className="font-semibold text-blue-600 hover:underline cursor-pointer"
+                        >
+                          Điều khoản sử dụng
+                        </button>{' '}
+                        và{' '}
+                        <button
+                          type="button"
+                          onClick={() => onOpenLegal('privacy')}
+                          className="font-semibold text-blue-600 hover:underline cursor-pointer"
+                        >
+                          Chính sách bảo mật dữ liệu
+                        </button>{' '}
+                        của DOMATION.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
 
-              {/* STEP 2: Auto Data Router Configuration with Specialized Icons */}
+              {/* STEP 2: Optional Router Configuration (Internal Sale Default!) */}
               {step === 2 && (
-                <div className="space-y-8">
-                  <div className="text-center max-w-2xl mx-auto space-y-2">
-                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                      Thiết lập quy tắc Vòng Chia Số (Auto Data Router)
+                <div className="space-y-7">
+                  <div className="text-center max-w-2xl mx-auto space-y-2.5">
+                    <div className="inline-flex flex-wrap items-center justify-center gap-2">
+                      <span className="rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-800 whitespace-nowrap">
+                        BƯỚC 2: TÙY CHỌN • ĐÃ CÀI SẴN MẶC ĐỊNH TỐI ƯU
+                      </span>
+                      <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={onOpenTour} />
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
+                      Quy tắc Vòng Chia Số — Mặc định cho từng Sale nội bộ
                     </h2>
-                    <p className="text-sm sm:text-base text-slate-600">
-                      Mọi thông số định tuyến, chống trùng và bảo mật SĐT đều hoạt động tự động dưới 4 giây.
+                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                      Hệ thống mặc định chia cho từng nhân viên Sale cá nhân trong công ty. Bạn có thể giữ nguyên hoặc bấm bỏ qua để vào Workspace ngay.
                     </p>
                   </div>
 
                   <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-8">
+                    {/* Default Individual Internal Sale vs Optional External Agency F1 */}
+                    <div className="rounded-2xl border-2 border-blue-100 bg-blue-50/40 p-5 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+                            <Users className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-sm font-bold text-slate-950">
+                                Đối tượng nhận Lead mặc định: Từng Chuyên Viên Sale Nội Bộ
+                              </span>
+                              <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 whitespace-nowrap">
+                                Mặc định (is_external_agency = false)
+                              </span>
+                              <AutoDataHelpTrigger topic="internal_sale_default" onOpenTour={onOpenTour} />
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                              Sale nội bộ nhận trực tiếp khách hàng kèm đầy đủ Số Điện Thoại (VD: 0912 888 678) để gọi tư vấn ngay dưới 4 giây.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Optional External Agency F1 Toggle */}
+                      <div className="pt-3 border-t border-blue-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-start gap-2.5">
+                          <EyeOff className="w-4 h-4 text-slate-600 shrink-0 mt-0.5" />
+                          <div className="text-xs text-slate-700 leading-relaxed">
+                            <strong>Tùy chọn mở rộng:</strong> Có chia thêm giỏ hàng cho Đại lý liên kết / Cộng tác viên F1 bên ngoài công ty (Tự động che SĐT dạng <code className="font-mono">0912***678</code>)?
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsExternalAgency((v) => !v)}
+                          className={`self-start sm:self-center rounded-full px-4 py-2 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                            isExternalAgency
+                              ? 'bg-slate-900 text-white'
+                              : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50'
+                          }`}
+                        >
+                          {isExternalAgency
+                            ? 'Đại lý F1: ĐANG BẬT (Che SĐT)'
+                            : 'Đại lý F1: TẮT (Chỉ Sale nội bộ)'}
+                        </button>
+                      </div>
+                    </div>
+
                     <div className="space-y-3">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        1. Thuật toán phân bổ khách hàng mới
-                      </label>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          1. Thuật toán phân bổ khách hàng mới
+                        </label>
+                        <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={onOpenTour} />
+                      </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         {ROUTER_MODES.map((m) => {
                           const Icon = m.icon;
@@ -1248,7 +1535,7 @@ export default function AutoDataFullScreenSetup({
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className="text-sm font-semibold text-slate-900">{m.title}</span>
                                   {m.badge && (
-                                    <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">
+                                    <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700 whitespace-nowrap">
                                       {m.badge}
                                     </span>
                                   )}
@@ -1263,9 +1550,12 @@ export default function AutoDataFullScreenSetup({
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                          2. Chính sách xử lý trùng Số Điện Thoại
-                        </label>
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                            2. Chính sách xử lý trùng Số Điện Thoại
+                          </label>
+                          <AutoDataHelpTrigger topic="dedupe_90d" onOpenTour={onOpenTour} />
+                        </div>
                         <div className="flex items-center gap-2 text-xs">
                           <span className="text-slate-600">Chu kỳ quét trùng:</span>
                           <input
@@ -1311,40 +1601,11 @@ export default function AutoDataFullScreenSetup({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-                      <button
-                        type="button"
-                        onClick={() => setMaskPiiExternal((v) => !v)}
-                        className={`rounded-2xl border p-4 text-left flex items-start gap-3.5 cursor-pointer transition-all ${
-                          maskPiiExternal ? 'border-slate-900 bg-slate-50' : 'border-slate-200 bg-white'
-                        }`}
-                      >
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
-                          <EyeOff className="w-5 h-5" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-slate-900">
-                              Che SĐT Cộng tác viên / Đại lý F1
-                            </span>
-                            <span
-                              className={`text-xs font-bold ${
-                                maskPiiExternal ? 'text-emerald-600' : 'text-slate-400'
-                              }`}
-                            >
-                              {maskPiiExternal ? 'ĐANG BẬT' : 'TẮT'}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-500 mt-1">
-                            Hiển thị dạng <code className="font-mono text-slate-800">0912***678</code> chống rò rỉ dữ liệu ra ngoài.
-                          </p>
-                        </div>
-                      </button>
-
+                    <div className="pt-1">
                       <button
                         type="button"
                         onClick={() => setSlaAutoRecall((v) => !v)}
-                        className={`rounded-2xl border p-4 text-left flex items-start gap-3.5 cursor-pointer transition-all ${
+                        className={`w-full rounded-2xl border p-4 text-left flex items-start gap-3.5 cursor-pointer transition-all ${
                           slaAutoRecall ? 'border-slate-900 bg-slate-50' : 'border-slate-200 bg-white'
                         }`}
                       >
@@ -1352,20 +1613,23 @@ export default function AutoDataFullScreenSetup({
                           <Clock className="w-5 h-5" />
                         </div>
                         <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold text-slate-900">
-                              Tự động thu hồi SLA quá hạn (15p)
-                            </span>
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-semibold text-slate-900">
+                                Tự động thu hồi SLA quá hạn (15 phút) đối với Lead Ads công ty
+                              </span>
+                              <AutoDataHelpTrigger topic="sla_recall" onOpenTour={onOpenTour} />
+                            </div>
                             <span
-                              className={`text-xs font-bold ${
+                              className={`text-xs font-bold whitespace-nowrap ${
                                 slaAutoRecall ? 'text-emerald-600' : 'text-slate-400'
                               }`}
                             >
                               {slaAutoRecall ? 'ĐANG BẬT' : 'TẮT'}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-500 mt-1">
-                            Quá 15 phút chưa nhận khách, Router tự thu hồi chuyển ngay cho nhân sự kế tiếp.
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                            Quá 15 phút Sale chưa tiếp nhận, Router tự thu hồi chuyển Sale kế tiếp (Lưu ý: Lead cá nhân tự nhập tại Cổng Sale được miễn thu hồi 100%).
                           </p>
                         </div>
                       </button>
@@ -1374,15 +1638,18 @@ export default function AutoDataFullScreenSetup({
                 </div>
               )}
 
-              {/* STEP 3: Channels & 3-Month Free Trial Activation */}
+              {/* STEP 3: Required vs Optional Channels + Inline Zalo Bot A-Z Guide & Live Verification */}
               {step === 3 && (
-                <div className="space-y-8">
-                  <div className="text-center max-w-2xl mx-auto space-y-2">
-                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                      Chọn kênh kết nối & Kích hoạt {catalog.trial_duration_months} tháng miễn phí
+                <div className="space-y-7">
+                  <div className="text-center max-w-2xl mx-auto space-y-2.5">
+                    <span className="inline-block rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-800 whitespace-nowrap">
+                      BƯỚC 3: TÙY CHỌN • KẾT NỐI KÊNH NGOÀI &amp; ZALO BOT
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
+                      Kênh kết nối (Bắt buộc vs Tùy chọn) &amp; Xác thực Zalo Bot
                     </h2>
-                    <p className="text-sm sm:text-base text-slate-600">
-                      Hệ thống sẽ cấp ngay cổng Webhook thật để bạn bắn thử Lead trực tiếp vào Vòng Chia Số.
+                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                      Cổng Webhook trung tâm được cấp tự động. Các kênh Zalo Bot, Meta CAPI và Google Sheets là tùy chọn — bạn có thể test ngay bên dưới hoặc tạm bỏ qua để vào hệ thống!
                     </p>
                   </div>
 
@@ -1392,11 +1659,12 @@ export default function AutoDataFullScreenSetup({
                         const Icon = ch.icon;
                         const active = selectedChannels.includes(ch.key);
                         return (
-                          <button
+                          <div
                             key={ch.key}
-                            type="button"
                             onClick={() => toggleChannel(ch.key)}
-                            className={`rounded-2xl border p-4 text-left transition-all cursor-pointer flex items-start gap-3.5 ${
+                            className={`rounded-2xl border p-4 text-left transition-all flex items-start gap-3.5 ${
+                              ch.required ? 'cursor-default' : 'cursor-pointer'
+                            } ${
                               active
                                 ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-100'
                                 : 'border-slate-200 bg-white hover:border-slate-300'
@@ -1409,45 +1677,72 @@ export default function AutoDataFullScreenSetup({
                             >
                               <Icon className="w-5 h-5" />
                             </div>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2 flex-wrap">
                                 <span className="text-sm font-semibold text-slate-900">{ch.title}</span>
-                                {active && <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />}
+                                <div className="flex items-center gap-1.5">
+                                  <span
+                                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${
+                                      ch.required
+                                        ? 'bg-rose-100 text-rose-800'
+                                        : 'bg-amber-100 text-amber-800'
+                                    }`}
+                                  >
+                                    {ch.required ? 'Bắt buộc • Cấp sẵn' : 'Tùy chọn'}
+                                  </span>
+                                  {ch.helpTopic && (
+                                    <AutoDataHelpTrigger topic={ch.helpTopic} onOpenTour={onOpenTour} />
+                                  )}
+                                </div>
                               </div>
                               <p className="text-xs text-slate-500 mt-1 leading-relaxed">{ch.desc}</p>
                             </div>
-                          </button>
+                          </div>
                         );
                       })}
                     </div>
 
+                    {/* A-Z Zalo Bot Step-by-Step Guide & Live Verification Test */}
+                    <AutoDataZaloBotGuide
+                      compact
+                      savedZaloBot={pendingZaloBot}
+                      onVerified={(saved) => setPendingZaloBot(saved)}
+                      onFastSkip={() => void handleRegisterSubmit(true)}
+                      fastSkipLabel="Tùy chọn — Tạm bỏ qua & vào setup ngay"
+                      onOpenTour={onOpenTour}
+                    />
+
                     {/* Transparent Trial & Post-Trial Step Policy Card */}
                     <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-5 space-y-2.5">
-                      <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                        <ShieldCheck className="w-5 h-5 text-blue-600" />
-                        <span>Chính sách Dùng Thử & Gia Hạn Minh Bạch DOMATION</span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                          <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0" />
+                          <span>Chính sách Dùng Thử &amp; Gia Hạn Minh Bạch DOMATION</span>
+                        </div>
+                        <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={onOpenTour} />
                       </div>
                       <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700 pt-1">
-                        <li className="rounded-xl bg-white p-3 border border-blue-100">
+                        <li className="rounded-xl bg-white p-3.5 border border-blue-100">
                           <div className="font-bold text-slate-900">
                             01. Miễn phí {catalog.trial_duration_months} tháng đầu
                           </div>
-                          <div className="text-slate-500 mt-0.5">
-                            Trọn vẹn {catalog.trial_duration_days} ngày sử dụng Auto Data Router không giới hạn tính năng.
+                          <div className="text-slate-500 mt-1 leading-relaxed">
+                            Trọn vẹn {catalog.trial_duration_days} ngày sử dụng Bản Lite không giới hạn tính năng.
                           </div>
                         </li>
-                        <li className="rounded-xl bg-white p-3 border border-blue-100">
+                        <li className="rounded-xl bg-white p-3.5 border border-blue-100">
                           <div className="font-bold text-slate-900">
-                            02. Hết {catalog.trial_duration_months} tháng gia hạn linh hoạt
+                            02. Gia hạn từ {(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k/tháng
                           </div>
-                          <div className="text-slate-500 mt-0.5">
-                            Mặc định {catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng hoặc mua năm tiết kiệm {catalog.annual_discount_pct}% ({catalog.plans[0]?.annual_monthly_equivalent_vnd.toLocaleString('vi-VN')}₫/tháng).
+                          <div className="text-slate-500 mt-1 leading-relaxed">
+                            Mua năm tiết kiệm {catalog.annual_discount_pct}% (chỉ{' '}
+                            {catalog.plans[0]?.annual_monthly_equivalent_vnd.toLocaleString('vi-VN')}₫/tháng).
                           </div>
                         </li>
-                        <li className="rounded-xl bg-white p-3 border border-blue-100">
-                          <div className="font-bold text-slate-900">03. Sẵn sàng lên CRM / ERP</div>
-                          <div className="text-slate-500 mt-0.5">
-                            Nâng cấp 1-click lên DOMATION CRM 360° hoặc ERP 5.0 giữ nguyên 100% lịch sử dữ liệu.
+                        <li className="rounded-xl bg-white p-3.5 border border-blue-100">
+                          <div className="font-bold text-slate-900">03. Lộ trình nâng cấp mở</div>
+                          <div className="text-slate-500 mt-1 leading-relaxed">
+                            Nâng cấp 1-click lên Marketing Automation, CRM 360° hoặc ERP 5.0 giữ 100% dữ liệu.
                           </div>
                         </li>
                       </ul>
@@ -1469,8 +1764,8 @@ export default function AutoDataFullScreenSetup({
                   <KeyRound className="w-6 h-6" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900">Đăng nhập không gian Auto Data</h2>
-                <p className="text-xs text-slate-500">
-                  Kết nối trực tiếp để kiểm tra Webhook, thời hạn dùng thử, nạp Topup hoặc nâng cấp gói.
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Kết nối trực tiếp để mở Cổng Sale Cá Nhân, kiểm tra Webhook, Zalo Bot, nạp Topup hoặc nâng cấp gói.
                 </p>
               </div>
 
@@ -1513,7 +1808,7 @@ export default function AutoDataFullScreenSetup({
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-slate-900 text-white py-3 text-sm font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                className="w-full rounded-xl bg-slate-900 text-white py-3 px-5 text-sm font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 whitespace-nowrap"
               >
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
                 <span>Kết nối vào Workspace</span>
@@ -1529,10 +1824,10 @@ export default function AutoDataFullScreenSetup({
               {/* Top Subscription & Trial Countdown Strip */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-2xl bg-white border border-slate-200 p-5 space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                    <span>TRẠNG THÁI GÓI HIỆN TẠI</span>
+                  <div className="flex items-center justify-between gap-2 text-xs font-semibold text-slate-500">
+                    <span>TRẠNG THÁI GÓI LITE</span>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap ${
                         session.subscription.is_expired
                           ? 'bg-rose-100 text-rose-700'
                           : session.subscription.is_in_trial
@@ -1555,44 +1850,49 @@ export default function AutoDataFullScreenSetup({
                 </div>
 
                 <div className="rounded-2xl bg-white border border-slate-200 p-5 space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+                  <div className="flex items-center justify-between gap-2 text-xs font-semibold text-slate-500">
+                    <span>CHẾ ĐỘ NHẬN SỐ &amp; ZALO BOT</span>
+                    <Users className="w-4 h-4 text-blue-600 shrink-0" />
+                  </div>
+                  <div className="text-sm font-bold text-slate-900">
+                    {session.is_external_agency
+                      ? 'Sale Nội Bộ + Đại lý F1 (Che SĐT)'
+                      : 'Mặc định: Từng Sale Nội Bộ (Đủ SĐT)'}
+                  </div>
+                  <div className="text-xs text-slate-500 flex items-center justify-between gap-2">
+                    <span>
+                      Zalo Bot:{' '}
+                      <strong className={session.zalo_bot?.verified ? 'text-emerald-600' : 'text-amber-700'}>
+                        {session.zalo_bot?.verified ? `Đã kết nối (${session.zalo_bot.chat_id})` : 'Tùy chọn (Chưa gắn)'}
+                      </strong>
+                    </span>
+                    {!session.zalo_bot?.verified && (
+                      <button
+                        type="button"
+                        onClick={() => setWorkspaceTab('zalo_connect')}
+                        className="text-blue-600 font-semibold hover:underline cursor-pointer whitespace-nowrap"
+                      >
+                        Cài Zalo →
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-white border border-slate-200 p-5 space-y-1.5">
+                  <div className="flex items-center justify-between gap-2 text-xs font-semibold text-slate-500">
                     <span>SỐ DƯ VÍ TOPUP</span>
-                    <Wallet className="w-4 h-4 text-blue-600" />
+                    <Wallet className="w-4 h-4 text-emerald-600 shrink-0" />
                   </div>
                   <div className="text-xl font-bold text-blue-600 font-mono">
                     {session.subscription.wallet_balance_vnd.toLocaleString('vi-VN')} ₫
                   </div>
                   <div className="text-xs text-slate-500">
-                    Gia hạn tự động 1-click ({catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng hoặc -{catalog.annual_discount_pct}%/năm)
+                    Gia hạn {(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k/tháng hoặc -{catalog.annual_discount_pct}%/năm
                   </div>
-                </div>
-
-                <div className="rounded-2xl bg-white border border-slate-200 p-5 space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                    <span>HẠ TẦNG KẾT NỐI BACKEND</span>
-                    <Layers className="w-4 h-4 text-emerald-600" />
-                  </div>
-                  <div className="text-sm font-bold text-slate-900">
-                    {session.bridge_mode === 'upstream_rls_postgres'
-                      ? 'PostgreSQL RLS Kernel Cluster'
-                      : 'DOMATION Cloud Serverless Engine'}
-                  </div>
-                  {session.upstream_app_url ? (
-                    <a
-                      href={`${session.upstream_app_url}/workspace`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline"
-                    >
-                      Mở toàn màn hình Kanban App <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
-                  ) : (
-                    <div className="text-xs text-slate-500">Đã cấp phát cổng Webhook & Router thực tế</div>
-                  )}
                 </div>
               </div>
 
-              {/* Post-3-Month Expiry / Expiring-Soon Step Renewal & CRM/ERP Upgrade Banner */}
+              {/* Post-3-Month Expiry / Expiring-Soon Step Renewal Banner */}
               {(session.subscription.is_expired || session.subscription.is_expiring_soon) && (
                 <div
                   className={`rounded-2xl border p-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
@@ -1607,19 +1907,18 @@ export default function AutoDataFullScreenSetup({
                         ? `Chu kỳ dùng thử miễn phí ${catalog.trial_duration_months} tháng đã kết thúc — Vui lòng chọn bước tiếp theo:`
                         : `Thời hạn gói hiện tại còn ${session.subscription.days_remaining} ngày — Gia hạn sớm cộng dồn trọn vẹn số ngày còn lại:`}
                     </div>
-                    <div className="text-xs opacity-90">
-                      Gia hạn các gói Step bên dưới (từ{' '}
-                      <strong>{catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng</strong> hoặc mua theo năm{' '}
-                      <strong>tiết kiệm {catalog.annual_discount_pct}%</strong>), nạp Ví Topup, hoặc nâng cấp liền mạch lên{' '}
-                      <strong>DOMATION CRM 360° / ERP 5.0</strong>.
+                    <div className="text-xs opacity-90 leading-relaxed">
+                      Gia hạn gói Lite từ <strong>{catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng</strong>{' '}
+                      (mua năm <strong>tiết kiệm {catalog.annual_discount_pct}%</strong>) hoặc nâng cấp lên{' '}
+                      <strong>Automation / CRM 360° / ERP 5.0</strong>.
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                     {workspaceTab !== 'billing' && (
                       <button
                         type="button"
                         onClick={() => setWorkspaceTab('billing')}
-                        className="rounded-xl bg-blue-600 text-white px-3.5 py-2 text-xs font-semibold hover:bg-blue-700 cursor-pointer"
+                        className="rounded-xl bg-blue-600 text-white px-4 py-2 text-xs font-semibold hover:bg-blue-700 cursor-pointer whitespace-nowrap"
                       >
                         Chọn Gói Gia Hạn / Topup
                       </button>
@@ -1628,9 +1927,9 @@ export default function AutoDataFullScreenSetup({
                       <button
                         type="button"
                         onClick={() => setWorkspaceTab('crm_erp')}
-                        className="rounded-xl border border-slate-300 bg-white text-slate-800 px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 cursor-pointer"
+                        className="rounded-xl border border-slate-300 bg-white text-slate-800 px-4 py-2 text-xs font-semibold hover:bg-slate-50 cursor-pointer whitespace-nowrap"
                       >
-                        Nâng cấp CRM / ERP
+                        Nâng cấp Suite
                       </button>
                     )}
                   </div>
@@ -1641,33 +1940,61 @@ export default function AutoDataFullScreenSetup({
               {workspaceTab === 'router' && (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                   <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
-                    <div className="space-y-1">
-                      <h3 className="text-lg font-bold text-slate-900">
-                        Cổng Inbound Webhook thực tế của bạn
-                      </h3>
-                      <p className="text-xs text-slate-500">
-                        Gắn URL này vào LadiPage, WordPress, Zapier hoặc Facebook Lead Ads để đổ số thẳng vào vòng chia.
-                      </p>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 whitespace-nowrap">
+                            Bắt buộc • Đã kích hoạt
+                          </span>
+                          <AutoDataHelpTrigger
+                            topic="apps_script"
+                            label="Mã Apps Script"
+                            webhookUrl={session.webhook_url}
+                            saleEmail={session.admin_email}
+                            onOpenTour={onOpenTour}
+                          />
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-900">
+                          Cổng Inbound Webhook thực tế của bạn
+                        </h3>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          Gắn URL này vào LadiPage, WordPress, Google Sheets hoặc Facebook Lead Ads để đổ số thẳng vào vòng chia cho từng Sale nội bộ.
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="rounded-2xl bg-slate-900 text-slate-100 p-4 space-y-2">
-                      <div className="flex items-center justify-between text-[11px] text-slate-400">
-                        <span>POST • JSON / FORM-URLENCODED</span>
-                        <button
-                          type="button"
-                          onClick={() => void copyWebhookUrl()}
-                          className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>{copiedWebhook ? 'Đã sao chép!' : 'Sao chép URL'}</span>
-                        </button>
+                    <div className="rounded-2xl bg-slate-900 text-slate-100 p-4 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2 text-[11px] text-slate-400">
+                        <span className="whitespace-nowrap">POST • JSON / FORM</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => void copyAppsScriptCode()}
+                            className="inline-flex items-center gap-1 text-blue-300 hover:text-blue-200 font-semibold cursor-pointer whitespace-nowrap"
+                          >
+                            <Copy className="w-3.5 h-3.5 shrink-0" />
+                            <span>{copiedAppsScript ? 'Đã chép Script!' : 'Chép Apps Script'}</span>
+                          </button>
+                          <span className="text-slate-600">|</span>
+                          <button
+                            type="button"
+                            onClick={() => void copyWebhookUrl()}
+                            className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer whitespace-nowrap"
+                          >
+                            <Copy className="w-3.5 h-3.5 shrink-0" />
+                            <span>{copiedWebhook ? 'Đã chép URL!' : 'Sao chép URL'}</span>
+                          </button>
+                        </div>
                       </div>
                       <div className="font-mono text-xs break-all text-blue-300">{session.webhook_url}</div>
                     </div>
 
                     <form onSubmit={handleFireRealWebhookTest} className="space-y-3.5 pt-2 border-t border-slate-100">
-                      <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        Bắn thử Lead thật qua Auto Data Router ngay lập tức
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          Bắn thử Lead thật qua Auto Data Router
+                        </span>
+                        <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={onOpenTour} />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -1712,7 +2039,7 @@ export default function AutoDataFullScreenSetup({
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full rounded-xl bg-blue-600 text-white py-2.5 px-4 text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                        className="w-full rounded-xl bg-blue-600 text-white py-3 px-5 text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 whitespace-nowrap"
                       >
                         {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                         <span>Bắn Lead Thật Vào Vòng Chia Số</span>
@@ -1721,7 +2048,7 @@ export default function AutoDataFullScreenSetup({
                   </div>
 
                   <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <div>
                         <h3 className="text-lg font-bold text-slate-900">Kết quả định tuyến thời gian thực</h3>
                         <p className="text-xs text-slate-500">
@@ -1729,7 +2056,7 @@ export default function AutoDataFullScreenSetup({
                         </p>
                       </div>
                       {lastWebhookResult && (
-                        <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-xs font-mono font-bold text-emerald-700">
+                        <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-xs font-mono font-bold text-emerald-700 whitespace-nowrap shrink-0">
                           {lastWebhookResult.latency_ms} ms
                         </span>
                       )}
@@ -1737,18 +2064,23 @@ export default function AutoDataFullScreenSetup({
 
                     {lastWebhookResult ? (
                       <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 space-y-2 text-xs">
-                        <div className="flex items-center justify-between font-bold text-slate-900">
-                          <span>Nhân sự nhận số: {lastWebhookResult.assigned_to_name}</span>
+                        <div className="flex items-center justify-between gap-2 font-bold text-slate-900 flex-wrap">
+                          <span>Sale nhận số: {lastWebhookResult.assigned_to_name}</span>
                           {lastWebhookResult.is_duplicate && (
-                            <span className="rounded bg-amber-100 px-2 py-0.5 text-[10px] text-amber-800">
-                              Phát hiện Trùng SĐT → Giữ chủ sở hữu
+                            <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] text-amber-800 whitespace-nowrap">
+                              Trùng SĐT 90d → Trả về Sale cũ
                             </span>
                           )}
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 pt-1">
                           <div>
-                            Hiển thị bảo mật F1:{' '}
-                            <strong className="font-mono text-slate-900">{lastWebhookResult.masked_phone}</strong>
+                            Hiển thị SĐT:{' '}
+                            <strong className="font-mono text-slate-900">
+                              {lastWebhookResult.displayed_phone || testLeadPhone}
+                            </strong>{' '}
+                            <span className="text-[11px] text-slate-500">
+                              ({lastWebhookResult.is_external_f1 ? 'F1 Che số' : 'Sale Nội Bộ'})
+                            </span>
                           </div>
                           <div>
                             Thuật toán: <strong className="text-slate-900">{lastWebhookResult.distribution_mode}</strong>
@@ -1762,14 +2094,14 @@ export default function AutoDataFullScreenSetup({
                         </div>
                       </div>
                     ) : (
-                      <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500">
-                        Chưa có lượt bắn thử trong phiên này. Nhấn nút <strong>"Bắn Lead Thật Vào Vòng Chia Số"</strong> bên trái để kiểm tra kết nối backend!
+                      <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500 leading-relaxed">
+                        Chưa có lượt bắn thử trong phiên này. Nhấn nút <strong>&ldquo;Bắn Lead Thật Vào Vòng Chia Số&rdquo;</strong> bên trái để kiểm tra kết nối backend!
                       </div>
                     )}
 
                     <div className="space-y-2">
                       <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        Nhật ký phân bổ gần nhất ({recentLeads.length})
+                        Nhật ký Vòng Chia Công Ty gần nhất ({recentLeads.length})
                       </div>
                       <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
                         {recentLeads.length === 0 ? (
@@ -1800,17 +2132,208 @@ export default function AutoDataFullScreenSetup({
                 </div>
               )}
 
-              {/* TAB 2: STEP RENEWAL PLANS & WALLET TOPUP */}
+              {/* TAB 2: SALE PORT PERSONAL LEADS, CSV EXPORT & 2-WAY GOOGLE SHEETS SYNC */}
+              {workspaceTab === 'sale_port' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 whitespace-nowrap">
+                            Bypass Vòng Chia • 0 Quota • Miễn SLA Recall
+                          </span>
+                          <AutoDataHelpTrigger topic="sale_port_personal" onOpenTour={onOpenTour} />
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-900">
+                          Cổng Sale Cá Nhân — Tự nhập / Import Data riêng
+                        </h3>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          Khách hàng do chính Sale tự tìm kiếm sẽ đi thẳng vào giỏ riêng của Sale đó: không qua vòng chia chung, không tính vào quota nhận số Ads và không bị thu hồi SLA 15 phút.
+                        </p>
+                      </div>
+
+                      <form onSubmit={handleAddPersonalLead} className="space-y-3.5">
+                        <div>
+                          <label className="text-xs font-semibold text-slate-700">Họ tên khách hàng cá nhân *</label>
+                          <input
+                            type="text"
+                            required
+                            value={pLeadName}
+                            onChange={(e) => setPLeadName(e.target.value)}
+                            placeholder="VD: Chị Lan Anh (Khách tự giới thiệu)"
+                            className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs font-semibold text-slate-700">Số điện thoại *</label>
+                            <input
+                              type="tel"
+                              required
+                              value={pLeadPhone}
+                              onChange={(e) => setPLeadPhone(e.target.value)}
+                              placeholder="0909123456"
+                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-mono"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-slate-700">Sale sở hữu trực tiếp</label>
+                            <input
+                              type="text"
+                              value={pLeadOwner}
+                              onChange={(e) => setPLeadOwner(e.target.value)}
+                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs font-semibold text-slate-700">Sản phẩm / Nhu cầu quan tâm</label>
+                            <input
+                              type="text"
+                              value={pLeadInterest}
+                              onChange={(e) => setPLeadInterest(e.target.value)}
+                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-semibold text-slate-700">Ghi chú chăm sóc riêng</label>
+                            <input
+                              type="text"
+                              value={pLeadNote}
+                              onChange={(e) => setPLeadNote(e.target.value)}
+                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                            />
+                          </div>
+                        </div>
+                        <label className="flex items-center gap-2.5 text-xs text-slate-700 cursor-pointer pt-1">
+                          <input
+                            type="checkbox"
+                            checked={pSheetSync}
+                            onChange={(e) => setPSheetSync(e.target.checked)}
+                            className="rounded border-slate-300 text-blue-600"
+                          />
+                          <span>Tự động đồng bộ 2 chiều sang Google Sheet cá nhân của Sale</span>
+                        </label>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="w-full rounded-xl bg-slate-900 hover:bg-blue-600 text-white py-3 px-5 text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+                        >
+                          {submitting ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <PlusCircle className="w-4 h-4" />
+                          )}
+                          <span>Lưu Vào Giỏ Cá Nhân (Không Qua Vòng Chia)</span>
+                        </button>
+                      </form>
+                    </div>
+
+                    <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-900">
+                            Danh sách Lead Cá Nhân &amp; Đồng bộ Google Sheets 2 Chiều
+                          </h3>
+                          <p className="text-xs text-slate-500">
+                            Xuất file CSV chuẩn tiếng Việt hoặc sao chép mã Apps Script đồng bộ Sheet riêng cho từng Sale.
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={handleDownloadPersonalCsv}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 px-3.5 py-2 text-xs font-semibold text-slate-800 cursor-pointer whitespace-nowrap"
+                          >
+                            <Download className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                            <span>Xuất CSV Cá Nhân ({personalLeads.length})</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => void copyAppsScriptCode()}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap"
+                          >
+                            <Copy className="w-3.5 h-3.5 shrink-0" />
+                            <span>{copiedAppsScript ? 'Đã chép Script!' : 'Chép Script Sheets 2 Chiều'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden">
+                        {personalLeads.map((item) => (
+                          <div key={item.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                            <div className="space-y-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-bold text-slate-900">{item.name}</span>
+                                <span className="font-mono font-semibold text-blue-700">{item.phone}</span>
+                              </div>
+                              <div className="text-slate-600">{item.note}</div>
+                              <div className="text-[11px] text-emerald-700 font-medium">
+                                ⇄ {item.sheet_sync_status}
+                              </div>
+                            </div>
+                            <div className="flex sm:flex-col items-start sm:items-end gap-1.5 shrink-0">
+                              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-800 whitespace-nowrap">
+                                {item.sale_owner_name}
+                              </span>
+                              <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 whitespace-nowrap">
+                                0 Quota • Miễn SLA Recall
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <FolderKanban className="w-4 h-4 text-blue-600 shrink-0" />
+                          <span className="text-slate-700 leading-relaxed">
+                            Cần xem chi tiết mã <strong>Google Apps Script 2 Chiều</strong> (onFormSubmit &amp; onEdit) cho từng Sale?
+                          </span>
+                        </div>
+                        <AutoDataHelpTrigger
+                          topic="apps_script"
+                          label="Xem mã Script"
+                          webhookUrl={session.webhook_url}
+                          saleEmail={session.admin_email}
+                          onOpenTour={onOpenTour}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: OPTIONAL ZALO BOT A-Z GUIDE & LIVE CONNECTION VERIFICATION */}
+              {workspaceTab === 'zalo_connect' && (
+                <AutoDataZaloBotGuide
+                  accessToken={session.access_token}
+                  tenantSlug={session.tenant_slug}
+                  savedZaloBot={session.zalo_bot}
+                  onVerified={(saved) =>
+                    onSessionChange({
+                      ...session,
+                      zalo_bot: saved,
+                    })
+                  }
+                  onFastSkip={() => setWorkspaceTab('router')}
+                  fastSkipLabel="Tùy chọn — Tạm bỏ qua & quay lại Webhook"
+                  onOpenTour={onOpenTour}
+                />
+              )}
+
+              {/* TAB 4: STEP RENEWAL PLANS & WALLET TOPUP */}
               {workspaceTab === 'billing' && (
                 <div className="space-y-6">
                   {transferOrderInfo && (
                     <div className="rounded-2xl border-2 border-blue-200 bg-blue-50/70 p-5 space-y-3">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <div className="text-sm font-bold text-slate-900">{transferOrderInfo.title}</div>
                         <button
                           type="button"
                           onClick={() => setTransferOrderInfo(null)}
-                          className="text-xs font-semibold text-slate-500 hover:text-slate-900"
+                          className="text-xs font-semibold text-slate-500 hover:text-slate-900 whitespace-nowrap cursor-pointer"
                         >
                           Đóng hướng dẫn
                         </button>
@@ -1845,18 +2368,21 @@ export default function AutoDataFullScreenSetup({
                   <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
-                        <h3 className="text-lg font-bold text-slate-900">
-                          Các gói gia hạn sau {catalog.trial_duration_months} tháng miễn phí
-                        </h3>
-                        <p className="text-xs text-slate-500">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-bold text-slate-900">
+                            Các gói gia hạn sau {catalog.trial_duration_months} tháng miễn phí
+                          </h3>
+                          <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={onOpenTour} />
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">
                           Gia hạn sớm được cộng dồn trực tiếp vào số ngày dùng thử còn lại — không mất ngày nào.
                         </p>
                       </div>
-                      <div className="inline-flex items-center bg-slate-100 p-1 rounded-full self-start">
+                      <div className="inline-flex items-center gap-1.5 bg-slate-100 p-1 rounded-full self-start shrink-0">
                         <button
                           type="button"
                           onClick={() => setBillingCycle('monthly')}
-                          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer ${
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer whitespace-nowrap ${
                             billingCycle === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
                           }`}
                         >
@@ -1865,11 +2391,11 @@ export default function AutoDataFullScreenSetup({
                         <button
                           type="button"
                           onClick={() => setBillingCycle('annual')}
-                          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer ${
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer whitespace-nowrap ${
                             billingCycle === 'annual' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600'
                           }`}
                         >
-                          Theo năm (Tiết kiệm {catalog.annual_discount_pct}%)
+                          Theo năm (-{catalog.annual_discount_pct}%)
                         </button>
                       </div>
                     </div>
@@ -1891,12 +2417,12 @@ export default function AutoDataFullScreenSetup({
                           >
                             <div className="space-y-3">
                               <div className="flex items-center justify-between gap-2">
-                                <span className="text-[11px] font-bold uppercase tracking-wider opacity-70">
+                                <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">
                                   Step 0{plan.step_order}
                                 </span>
                                 {plan.badge && (
                                   <span
-                                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap ${
                                       plan.is_enterprise_upgrade
                                         ? 'bg-white/15 text-white'
                                         : 'bg-blue-50 text-blue-700'
@@ -1927,7 +2453,7 @@ export default function AutoDataFullScreenSetup({
                                 {plan.features.slice(0, 4).map((f, i) => (
                                   <li key={i} className="flex items-start gap-2">
                                     <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-500" />
-                                    <span className="opacity-90">{f}</span>
+                                    <span className="opacity-90 leading-relaxed">{f}</span>
                                   </li>
                                 ))}
                               </ul>
@@ -1937,15 +2463,15 @@ export default function AutoDataFullScreenSetup({
                               type="button"
                               disabled={submitting}
                               onClick={() => void handleSubscribePlan(plan)}
-                              className={`mt-5 w-full rounded-xl py-2.5 px-3 text-xs font-bold transition-colors cursor-pointer ${
+                              className={`mt-5 w-full rounded-xl py-2.5 px-4 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap ${
                                 plan.is_enterprise_upgrade
                                   ? 'bg-white text-slate-900 hover:bg-blue-50'
                                   : 'bg-slate-900 text-white hover:bg-blue-600'
                               }`}
                             >
                               {session.subscription.wallet_balance_vnd >= totalPayable
-                                ? `Gia hạn tức thì bằng Ví (${totalPayable.toLocaleString('vi-VN')}₫)`
-                                : `Chọn gói này (${totalPayable.toLocaleString('vi-VN')}₫)`}
+                                ? `Gia hạn bằng Ví (${totalPayable.toLocaleString('vi-VN')}₫)`
+                                : `Chọn gói (${totalPayable.toLocaleString('vi-VN')}₫)`}
                             </button>
                           </div>
                         );
@@ -1955,9 +2481,9 @@ export default function AutoDataFullScreenSetup({
 
                   {/* Wallet Topup Section */}
                   <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center justify-between flex-wrap gap-3">
                       <div className="flex items-center gap-2.5">
-                        <CreditCard className="w-5 h-5 text-blue-600" />
+                        <CreditCard className="w-5 h-5 text-blue-600 shrink-0" />
                         <div>
                           <h4 className="text-base font-bold text-slate-900">Nạp Ví Topup Gia Hạn Nhanh</h4>
                           <p className="text-xs text-slate-500">
@@ -1969,7 +2495,7 @@ export default function AutoDataFullScreenSetup({
                         type="button"
                         disabled={submitting}
                         onClick={() => void handleCreateTopupOrder()}
-                        className="rounded-xl bg-blue-600 text-white px-4 py-2.5 text-xs font-bold hover:bg-blue-700 transition-colors cursor-pointer"
+                        className="rounded-xl bg-blue-600 text-white px-4 py-2.5 text-xs font-bold hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
                       >
                         Tạo Lệnh Nạp Gói Đang Chọn
                       </button>
@@ -2004,18 +2530,18 @@ export default function AutoDataFullScreenSetup({
                           {transactions.slice(0, 5).map((tx) => (
                             <div
                               key={tx.id}
-                              className="flex items-center justify-between text-xs bg-slate-50 rounded-xl px-3.5 py-2"
+                              className="flex items-center justify-between gap-2 text-xs bg-slate-50 rounded-xl px-3.5 py-2"
                             >
-                              <div>
+                              <div className="min-w-0 truncate">
                                 <span className="font-mono font-bold text-slate-800 mr-2">{tx.reference_code}</span>
                                 <span className="text-slate-600">{tx.note}</span>
                               </div>
-                              <div className="flex items-center gap-3">
-                                <span className="font-mono font-bold text-slate-900">
+                              <div className="flex items-center gap-3 shrink-0">
+                                <span className="font-mono font-bold text-slate-900 whitespace-nowrap">
                                   {tx.amount_vnd.toLocaleString('vi-VN')}₫
                                 </span>
                                 <span
-                                  className={`rounded px-2 py-0.5 text-[10px] font-bold ${
+                                  className={`rounded-md px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${
                                     tx.status === 'approved' || tx.status === 'completed'
                                       ? 'bg-emerald-100 text-emerald-800'
                                       : 'bg-amber-100 text-amber-800'
@@ -2033,61 +2559,77 @@ export default function AutoDataFullScreenSetup({
                 </div>
               )}
 
-              {/* TAB 3: UPGRADE TO DOMATION CRM 360 / ERP 5.0 */}
+              {/* TAB 5: UPGRADE FROM LITE TO AUTOMATION / FULL CRM 360 / ENTERPRISE ERP 5.0 */}
               {workspaceTab === 'crm_erp' && (
                 <form
                   onSubmit={handleRequestCrmErpUpgrade}
                   className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6"
                 >
                   <div className="flex items-start justify-between flex-wrap gap-4">
-                    <div className="space-y-1 max-w-xl">
+                    <div className="space-y-1.5 max-w-xl">
                       <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600">
-                        <Sparkles className="w-4 h-4" />
-                        <span>LỘ TRÌNH MỞ RỘNG HỆ SINH THÁI DOMATION</span>
+                        <Sparkles className="w-4 h-4 shrink-0" />
+                        <span>LỘ TRÌNH NÂNG CẤP TỪ BẢN LITE (/DATA)</span>
                       </div>
-                      <h3 className="text-xl font-bold text-slate-900">
-                        Nâng cấp liền mạch từ Auto Data lên CRM 360° hoặc Enterprise ERP 5.0
+                      <h3 className="text-xl font-bold text-slate-900 leading-snug">
+                        Mở rộng từ Bản Lite Chia Data lên Marketing Automation, Full CRM 360° &amp; ERP 5.0
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-600">
-                        Giữ nguyên 100% cơ sở dữ liệu khách hàng, lịch sử tương tác, cấu trúc nhân sự và cổng Webhook đang chạy.
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Giữ nguyên 100% danh sách Lead công ty, dữ liệu Cổng Sale cá nhân, cấu trúc nhân sự và cổng Webhook đang chạy.
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <a
+                        href={catalog.automation_upgrade_url || '/automation'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1 whitespace-nowrap"
+                      >
+                        <span>Marketing Automation</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
+                      </a>
                       <a
                         href={catalog.crm_upgrade_url || '/crm'}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1"
+                        className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1 whitespace-nowrap"
                       >
-                        Tìm hiểu CRM 360° <ArrowUpRight className="w-3.5 h-3.5" />
+                        <span>Full CRM 360°</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
                       </a>
                       <a
                         href={catalog.erp_upgrade_url || '/erp'}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1"
+                        className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1 whitespace-nowrap"
                       >
-                        Tìm hiểu ERP 5.0 <ArrowUpRight className="w-3.5 h-3.5" />
+                        <span>Enterprise ERP 5.0</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
                       </a>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {[
                       {
+                        id: 'automation' as const,
+                        title: 'Marketing Automation & AI RAG (/automation)',
+                        desc: 'Kịch bản nuôi dưỡng tự động IF/ELSE, Email kéo thả, Zalo ZNS hàng loạt & AI Chatbot trực 24/7.',
+                      },
+                      {
                         id: 'crm' as const,
-                        title: 'DOMATION CRM 360°',
-                        desc: 'Quản trị phễu bán hàng chuyên sâu, kịch bản CSKH đa điểm chạm, báo giá & hợp đồng.',
+                        title: 'Full DOMATION CRM 360° (/crm)',
+                        desc: 'Quản trị phễu Kanban 8 nấc chuyên sâu, CSKH đa điểm chạm, Báo giá, Hợp đồng & Hóa đơn MISA.',
                       },
                       {
                         id: 'erp' as const,
-                        title: 'DOMATION Enterprise ERP 5.0',
-                        desc: '12 phân hệ quản trị tổng thể: HRM chấm công, KPI lương thưởng, Tài chính kế toán & Kho.',
+                        title: 'DOMATION Enterprise ERP 5.0 (/erp)',
+                        desc: '12 phân hệ quản trị tổng thể: HRM chấm công GPS AI, KPI lương thưởng, Tài chính & Kho vận.',
                       },
                       {
                         id: 'crm_erp_bundle' as const,
-                        title: 'Trọn Bộ Hợp Nhất CRM + ERP',
-                        desc: 'Đồng bộ xuyên suốt từ lúc Lead đổ về Quảng cáo tới Doanh thu thực thu & Hoa hồng.',
+                        title: 'Trọn Bộ Hợp Nhất Automation + CRM + ERP',
+                        desc: 'Đồng bộ xuyên suốt từ lúc Lead đổ về Quảng cáo tới Chăm sóc tự động, Doanh thu & Hoa hồng.',
                       },
                     ].map((opt) => (
                       <button
@@ -2109,7 +2651,7 @@ export default function AutoDataFullScreenSetup({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-semibold text-slate-700">
-                        Số điện thoại Giám đốc / Trưởng dự án nhận tư vấn chuyển đổi
+                        Số điện thoại Giám đốc / Trưởng phòng nhận tư vấn chuyển đổi
                       </label>
                       <input
                         type="tel"
@@ -2126,7 +2668,7 @@ export default function AutoDataFullScreenSetup({
                         type="text"
                         value={upgradeNote}
                         onChange={(e) => setUpgradeNote(e.target.value)}
-                        placeholder="VD: Đồng bộ 45 nhân sự kinh doanh + kế toán nội bộ"
+                        placeholder="VD: Đồng bộ 35 nhân sự Sale + Automation CSKH"
                         className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm"
                       />
                     </div>
@@ -2135,10 +2677,10 @@ export default function AutoDataFullScreenSetup({
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-xl bg-slate-900 text-white px-6 py-3 text-sm font-semibold hover:bg-blue-600 transition-colors inline-flex items-center gap-2 cursor-pointer"
+                    className="rounded-xl bg-slate-900 text-white px-6 py-3 text-sm font-semibold hover:bg-blue-600 transition-colors inline-flex items-center gap-2 cursor-pointer whitespace-nowrap"
                   >
                     {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                    <span>Gửi Yêu Cầu Khởi Tạo Nâng Cấp CRM / ERP</span>
+                    <span>Gửi Yêu Cầu Nâng Cấp Hệ Sinh Thái</span>
                   </button>
                 </form>
               )}
@@ -2147,28 +2689,38 @@ export default function AutoDataFullScreenSetup({
         </div>
       </div>
 
-      {/* Sticky Bottom Action Bar for 3-Step Registration Wizard */}
+      {/* Sticky Bottom Action Bar for 3-Step Registration Wizard — With Fast-Skip CTA */}
       {!session && authMode === 'register' && (
-        <footer className="shrink-0 border-t border-slate-200 bg-white px-4 sm:px-8 py-4">
-          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-            <div>
+        <footer className="shrink-0 border-t border-slate-200 bg-white px-4 sm:px-8 py-3.5">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="flex items-center justify-between sm:justify-start gap-3">
               {step > 1 ? (
                 <button
                   type="button"
                   onClick={() => setStep((s) => (s === 3 ? 2 : 1))}
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer whitespace-nowrap"
                 >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Quay lại bước trước</span>
+                  <ArrowLeft className="w-4 h-4 shrink-0" />
+                  <span>Quay lại</span>
                 </button>
               ) : (
-                <span className="text-xs text-slate-500 hidden sm:inline">
-                  Bước 1/3 • Không ép buộc ngành nghề cố định
+                <span className="text-xs text-slate-500 hidden md:inline whitespace-nowrap">
+                  Bước 1/3 (Bắt buộc) • Mặc định chia cho từng Sale nội bộ
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              {/* Fast-Skip Optional Steps CTA */}
+              <button
+                type="button"
+                disabled={submitting}
+                onClick={() => void handleRegisterSubmit(true)}
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-60"
+              >
+                <span>Tùy chọn — Tạm bỏ qua &amp; vào setup ngay</span>
+              </button>
+
               {step < 3 ? (
                 <button
                   type="button"
@@ -2177,20 +2729,24 @@ export default function AutoDataFullScreenSetup({
                     setErrorMsg(null);
                     setStep((s) => (s === 1 ? 2 : 3));
                   }}
-                  className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-600 transition-colors cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-600 transition-colors cursor-pointer whitespace-nowrap"
                 >
-                  <span>Tiếp theo</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Tiếp theo ({step === 1 ? 'Tùy chọn Chia Vòng' : 'Tùy chọn Kênh'})</span>
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               ) : (
                 <button
                   type="button"
                   disabled={submitting}
-                  onClick={() => void handleRegisterSubmit()}
-                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-700 transition-colors cursor-pointer disabled:opacity-60"
+                  onClick={() => void handleRegisterSubmit(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-700 transition-colors cursor-pointer disabled:opacity-60 whitespace-nowrap"
                 >
-                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                  <span>Kích Hoạt Hệ Thống & Nhận {catalog.trial_duration_months} Tháng Miễn Phí</span>
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  )}
+                  <span>Kích Hoạt ({catalog.trial_duration_months} Tháng Miễn Phí)</span>
                 </button>
               )}
             </div>
