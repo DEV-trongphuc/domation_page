@@ -4,10 +4,10 @@ import {
     Bot, Zap, Mail, MessageSquare, BarChart3,
     ArrowRight, ArrowUp, Workflow, Users, ShieldCheck,
     Cpu, Activity, Layers, Sparkles, Check,
-    TrendingUp, Globe, Clock, Star, ChevronDown,
-    Play, MousePointer, Bell, Target, Database,
-    Lock, Rocket, MousePointerClick, Pointer, ScanLine, LayoutTemplate, BoxSelect, Settings2, FileText, Ticket, Code2,
-    ClipboardList, GanttChart, EyeOff, QrCode, Monitor, MessageSquare as MessageSquareIcon
+    Globe, Star,
+    Play, Target, Database,
+    Lock, Rocket, Pointer, ScanLine, LayoutTemplate, BoxSelect, Settings2, FileText, Ticket, Code2,
+    ClipboardList, GanttChart, EyeOff, Monitor
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
@@ -36,11 +36,14 @@ const FadeIn = ({ children, delay = 0, className = '', from = 'bottom' }: {
     const initial = isMobile
         ? { opacity: 0, y: 20 }
         : from === 'left' ? { opacity: 0, x: -40 } : from === 'right' ? { opacity: 0, x: 40 } : { opacity: 0, y: 30 };
-    const animate = isMobile
-        ? { opacity: 1, y: 0 }
-        : from === 'left' || from === 'right' ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 };
 
-    useEffect(() => { if (inView) controls.start(animate); }, [controls, inView]);
+    useEffect(() => {
+        if (!inView) return;
+        const target = isMobile
+            ? { opacity: 1, y: 0 }
+            : from === 'left' || from === 'right' ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 };
+        controls.start(target);
+    }, [controls, inView, from]);
 
     return (
         <motion.div ref={ref} animate={controls} initial={initial}
@@ -71,32 +74,22 @@ const Counter = ({ to, suffix = '', prefix = '' }: { to: number; suffix?: string
     return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
 };
 
-// Feature card component
-const FeatureCard = ({ icon: Icon, imageIcon, title, description, delay = 0, gradient }: {
-    icon?: any; imageIcon?: string; title: string; description: string; delay?: number; gradient: string;
-}) => (
-    <FadeIn delay={delay}>
-        <div className="inkica-glass-card group relative rounded-2xl overflow-hidden transition-all duration-500 border border-white/90 hover:border-blue-300 hover:-translate-y-1 hover:shadow-xl">
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: `radial-gradient(300px at 50% 50%, ${gradient}14, transparent 70%)` }} />
-            <div className="relative p-8 flex flex-col h-full">
-                <div className={`w-14 h-14 rounded-2xl mb-6 flex items-center justify-center overflow-hidden`}
-                    style={{ background: `linear-gradient(135deg, ${gradient}22, ${gradient}0D)`, border: `1px solid ${gradient}30` }}>
-                    {imageIcon ? (
-                        <img loading="lazy" decoding="async" src={imageIcon} alt={title} className="w-8 h-8 object-contain drop-shadow-md" />
-                    ) : Icon ? (
-                        <Icon className="w-7 h-7" style={{ color: gradient }} />
-                    ) : null}
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3">{title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
-            </div>
-        </div>
-    </FadeIn>
-);
+interface PricingCardProps {
+    tier: string;
+    price: string;
+    yearlyPrice?: string;
+    desc: string;
+    features: string[];
+    delay?: number;
+    highlight?: boolean;
+    enterprise?: boolean;
+    scaleUp?: boolean;
+    isYearly: boolean;
+    onClick: () => void;
+}
 
 // Pricing card
-const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highlight, enterprise, scaleUp, isYearly, onClick }: any) => {
+const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highlight, enterprise, scaleUp, isYearly, onClick }: PricingCardProps) => {
     const isSpecial = highlight || enterprise;
     const currentPrice = isYearly && yearlyPrice ? yearlyPrice : price;
     const suffix = currentPrice !== 'Liên hệ' ? (isYearly ? '/năm' : '/tháng') : '';
@@ -157,16 +150,18 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
     );
 };
 
+const TESTIMONIALS = [
+    { name: 'Nguyễn Minh Khoa', role: 'CEO, TechViet Solutions', text: 'Hệ thống automation giúp chúng tôi tiết kiệm 80% thời gian chăm sóc khách hàng. Lead Score cực kỳ chính xác, team sales tập trung đúng người cần.', avatar: 'MK' },
+    { name: 'Trần Thị Lan Anh', role: 'Marketing Director, EduPro', text: 'Tỉ lệ open email tăng từ 18% lên 41% sau 2 tháng dùng. Flow builder rất trực quan, Email Kéo Thả tạo template chỉ trong 5 phút.', avatar: 'LA' },
+    { name: 'Lê Văn Hùng', role: 'Founder, RetailMax', text: 'Gửi ZNS Zalo cho 50,000 KH chỉ mất 15 phút, kết hợp Tracking Website chạm Click quá đỉnh. AI chatbot xử lý 70% FAQ.', avatar: 'VH' },
+];
+
 const TestimonialSection = () => {
     const [activeTestimonial, setActiveTestimonial] = useState(0);
-    const testimonials = [
-        { name: 'Nguyễn Minh Khoa', role: 'CEO, TechViet Solutions', text: 'Hệ thống automation giúp chúng tôi tiết kiệm 80% thời gian chăm sóc khách hàng. Lead Score cực kỳ chính xác, team sales tập trung đúng người cần.', avatar: 'MK' },
-        { name: 'Trần Thị Lan Anh', role: 'Marketing Director, EduPro', text: 'Tỉ lệ open email tăng từ 18% lên 41% sau 2 tháng dùng. Flow builder rất trực quan, Email Kéo Thả tạo template chỉ trong 5 phút.', avatar: 'LA' },
-        { name: 'Lê Văn Hùng', role: 'Founder, RetailMax', text: 'Gửi ZNS Zalo cho 50,000 KH chỉ mất 15 phút, kết hợp Tracking Website chạm Click quá đỉnh. AI chatbot xử lý 70% FAQ.', avatar: 'VH' },
-    ];
+    const testimonials = TESTIMONIALS;
 
     useEffect(() => {
-        const t = setInterval(() => setActiveTestimonial(p => (p + 1) % testimonials.length), 5000);
+        const t = setInterval(() => setActiveTestimonial(p => (p + 1) % TESTIMONIALS.length), 5000);
         return () => clearInterval(t);
     }, []);
 
@@ -441,56 +436,21 @@ const ALL_MODULES = [
 
 // ─── Main Component ─────────────────────────────────────────────
 const Landing: React.FC = () => {
-    const [scrolled, setScrolled] = useState(false);
     const [isYearly, setIsYearly] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
     const [emailVolume, setEmailVolume] = useState('500k Emails');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [flowSlide, setFlowSlide] = useState(0);
-    const [chatSlide, setChatSlide] = useState(0);
-    const [segSlide, setSegSlide] = useState(0);
-    const [campSlide, setCampSlide] = useState(0);
-    const [qrSlide, setQrSlide] = useState(0);
-    const [activeSection, setActiveSection] = useState('');
+    const flowSlide = 0;
+    const campSlide = 0;
+    const qrSlide = 0;
+    const showLegacyPricing = false;
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [showContactModal, setShowContactModal] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        let ticking = false;
-
-        const updateScroll = () => {
-            setScrolled(window.scrollY > 20);
-
-            const sections = ['builder', 'flow', 'analytics', 'ai-segment', 'ai-space', 'dashboard', 'survey', 'qr-tracking'];
-            let current = '';
-            for (const section of sections) {
-                const el = document.getElementById(section);
-                if (el) {
-                    const rect = el.getBoundingClientRect();
-                    // trigger active state when section top is within roughly the top third of viewport
-                    if (rect.top <= 250 && rect.bottom >= 200) {
-                        current = section;
-                        break;
-                    }
-                }
-            }
-            setActiveSection(current);
-            ticking = false;
-        };
-
-        const onScroll = () => {
-            if (!ticking) {
-                window.requestAnimationFrame(updateScroll);
-                ticking = true;
-            }
-        };
-
-        // passive: true → browser không cần chờ JS để scroll, giảm lag scroll trên mobile
-        window.addEventListener('scroll', onScroll, { passive: true });
-        return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -523,17 +483,6 @@ const Landing: React.FC = () => {
             setFormStatus('success');
         });
     };
-
-    const features = [
-        { imageIcon: LOGOS.aws_ses, title: 'Email Marketing Scale', description: 'Gửi hàng triệu email trực tiếp qua hạ tầng Amazon SES. Cấu hình DNS thông minh đảm bảo tỉ lệ vào Inbox > 95%.', gradient: '#f59e0b' },
-        { imageIcon: LOGOS.zalo, title: 'Zalo ZNS & OA Official', description: 'Gửi tin Zalo an toàn 100% tỷ lệ đọc. Hỗ trợ đầy đủ tương tác, tin nhắn CTA, hình ảnh, API Zalo Official Account.', gradient: '#3b82f6' },
-        { imageIcon: LOGOS.meta, title: 'Meta Messenger API', description: 'Tích hợp mượt mà với Facebook Page. Gửi tin nhắn Carousel cấu trúc chuẩn, chat tự động và quy tắc phân nhánh sâu.', gradient: '#6366f1' },
-        { icon: Bot, title: 'Trợ Lý AI (LLM)', description: 'Knowledge Base thông minh từ tài liệu của bạn. Trợ lý ảo AI túc trực 24/7 đón đầu intent Khách hàng đa nền tảng.', gradient: '#a855f7' },
-        { icon: Zap, title: 'Visual Flow Builder', description: 'Thiết kế hành trình bằng giao diện kéo thả trực quan: Chờ, Phân Nhánh (Đã Đọc, Chưa Đọc, Click Link).', gradient: '#22c55e' },
-        { icon: Target, title: 'Lead Score Thông Minh', description: 'Tự động chấm điểm (Lead Score) theo mỗi click, scroll trên website để filter khách hàng nóng nhất.', gradient: '#ef4444' },
-        { icon: LayoutTemplate, title: 'Drag & Drop Builder', description: 'Email Builder kéo thả siêu mượt như Figma. Hàng trăm block layout có sẵn cho ra những mẫu Email tuyệt đẹp.', gradient: '#ec4899' },
-        { icon: ScanLine, title: 'Website Tracking Cực Sâu', description: 'Gắn pixel theo dõi mọi sự kiện User: Web Click, Scroll trang, hành động chạm tương tác với các component.', gradient: '#14b8a6' },
-    ];
 
     const stats = [
         { value: 98, suffix: '%', label: 'Tỉ lệ inbox Email' },
@@ -1654,7 +1603,7 @@ const Landing: React.FC = () => {
             <TestimonialSection />
 
             {/* ── Pricing ── */}
-            {false && (
+            {showLegacyPricing && (
             <section id="pricing" className="py-28 px-6 relative z-10 scroll-mt-20">
                 <div className="max-w-6xl mx-auto">
                     <FadeIn className="text-center mb-16">

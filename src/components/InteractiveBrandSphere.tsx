@@ -62,7 +62,7 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
         z: Math.sin(theta) * rAtY,
       };
     });
-  }, [nodes.length]);
+  }, [nodes]);
 
   const rotationRef = useRef({
     rx: 0.16,

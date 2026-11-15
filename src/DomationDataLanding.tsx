@@ -1084,14 +1084,14 @@ export function DomationDataLanding() {
             </button>
             <div className="grid grid-cols-2 gap-3">
               <a
-                href="/crm"
+                href={catalog.crm_upgrade_url || '/crm'}
                 className="rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-800 flex items-center justify-between transition-colors"
               >
                 <span>Xem DOMATION CRM 360°</span>
                 <ArrowUpRight className="w-4 h-4 text-blue-600" />
               </a>
               <a
-                href="/erp"
+                href={catalog.erp_upgrade_url || '/erp'}
                 className="rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-800 flex items-center justify-between transition-colors"
               >
                 <span>Xem Enterprise ERP 5.0</span>
@@ -1114,10 +1114,10 @@ export function DomationDataLanding() {
             <a href="/" className="hover:text-slate-900">
               Trang chủ DOMATION
             </a>
-            <a href="/crm" className="hover:text-slate-900">
+            <a href={catalog.crm_upgrade_url || '/crm'} className="hover:text-slate-900">
               CRM 360°
             </a>
-            <a href="/erp" className="hover:text-slate-900">
+            <a href={catalog.erp_upgrade_url || '/erp'} className="hover:text-slate-900">
               ERP 5.0
             </a>
             <button

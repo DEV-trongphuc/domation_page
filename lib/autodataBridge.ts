@@ -352,10 +352,10 @@ function computeServerlessSubscription(t: ServerlessTenantRecord, catalog: Billi
   const trialEndsMs = new Date(t.trial_ends_at).getTime();
   const paidEndsMs = t.subscription_expires_at ? new Date(t.subscription_expires_at).getTime() : null;
   const hasPaidPlan = t.subscription_plan_code !== 'trial_3m' && paidEndsMs !== null;
-  const isInTrial = !hasPaidPlan;
   const effectiveEndsMs = hasPaidPlan && paidEndsMs ? Math.max(paidEndsMs, trialEndsMs) : trialEndsMs;
   const diffMs = effectiveEndsMs - nowMs;
   const isExpired = diffMs <= 0;
+  const isInTrial = !hasPaidPlan && !isExpired;
   const daysRemaining = isExpired ? 0 : Math.ceil(diffMs / 86_400_000);
   const hoursRemaining = isExpired ? 0 : Math.ceil(diffMs / 3_600_000);
   const isExpiringSoon = !isExpired && daysRemaining <= catalog.trial_warning_days;
@@ -484,10 +484,13 @@ async function forwardUpstreamJson(
     method?: string;
     token?: string;
     tenantSlug?: string;
+    extraHeaders?: Record<string, string>;
     body?: unknown;
   }
 ): Promise<{ status: number; json: Record<string, unknown> }> {
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    ...(options?.extraHeaders || {}),
+  };
   if (options?.body !== undefined) {
     headers['Content-Type'] = 'application/json';
   }
@@ -657,6 +660,26 @@ export async function handleAutodataBridgeHttp(
         return;
       }
 
+      const rawSettings =
+        body.custom_settings && typeof body.custom_settings === 'object'
+          ? (body.custom_settings as Record<string, unknown>)
+          : {};
+      const rawDedupVal = String(rawSettings.duplicate_action ?? rawSettings.duplicate_lead_action ?? '').trim();
+      const canonicalUpstreamDedup =
+        rawDedupVal === 'create_new_round_robin' || rawDedupVal === 'round_robin'
+          ? 'round_robin'
+          : rawDedupVal === 'reject_duplicate'
+            ? 'reject_duplicate'
+            : rawDedupVal === 'update_existing'
+              ? 'update_existing'
+              : 'route_to_previous_sale';
+      const resolvedMaskPii =
+        rawSettings.pii_masking_enabled !== undefined
+          ? Boolean(rawSettings.pii_masking_enabled)
+          : rawSettings.mask_pii_for_external !== undefined
+            ? Boolean(rawSettings.mask_pii_for_external)
+            : true;
+
       if (upstream.reachable) {
         const regRes = await forwardUpstreamJson(upstream.baseUrl, '/api/v1/auth/register', {
           method: 'POST',
@@ -671,7 +694,11 @@ export async function handleAutodataBridgeHttp(
             seed_demo_leads: Boolean(body.seed_demo_leads ?? true),
             custom_pipeline_name: body.custom_pipeline_name,
             custom_stages: body.custom_stages,
-            custom_settings: body.custom_settings,
+            custom_settings: {
+              ...rawSettings,
+              duplicate_action: canonicalUpstreamDedup,
+              pii_masking_enabled: resolvedMaskPii,
+            },
           },
         });
 
@@ -729,10 +756,6 @@ export async function handleAutodataBridgeHttp(
       const passwordHash = crypto.scryptSync(password, salt, 64).toString('hex');
       const tenantId = crypto.randomUUID();
       const webhookToken = `whsec_${crypto.randomBytes(12).toString('hex')}`;
-      const rawSettings =
-        body.custom_settings && typeof body.custom_settings === 'object'
-          ? (body.custom_settings as Record<string, unknown>)
-          : {};
 
       const distModeRaw = String(rawSettings.distribution_mode || 'weighted_round_robin');
       const distMode: ServerlessTenantRecord['settings']['distribution_mode'] =
@@ -740,11 +763,14 @@ export async function handleAutodataBridgeHttp(
           ? distModeRaw
           : 'weighted_round_robin';
 
-      const dedupRaw = String(rawSettings.duplicate_lead_action || 'route_to_existing_owner');
       const dedupAction: ServerlessTenantRecord['settings']['duplicate_lead_action'] =
-        dedupRaw === 'update_existing' || dedupRaw === 'create_new_round_robin' || dedupRaw === 'reject_duplicate'
-          ? dedupRaw
-          : 'route_to_existing_owner';
+        canonicalUpstreamDedup === 'round_robin'
+          ? 'create_new_round_robin'
+          : canonicalUpstreamDedup === 'reject_duplicate'
+            ? 'reject_duplicate'
+            : canonicalUpstreamDedup === 'update_existing'
+              ? 'update_existing'
+              : 'route_to_existing_owner';
 
       const record: ServerlessTenantRecord = {
         id: tenantId,
@@ -769,7 +795,7 @@ export async function handleAutodataBridgeHttp(
           distribution_mode: distMode,
           duplicate_lead_action: dedupAction,
           duplicate_threshold_days: Math.max(0, Number(rawSettings.duplicate_threshold_days ?? 90)),
-          mask_pii_for_external: Boolean(rawSettings.mask_pii_for_external ?? true),
+          mask_pii_for_external: resolvedMaskPii,
           sla_auto_recall_enabled: Boolean(rawSettings.sla_auto_recall_enabled ?? true),
           default_sla_minutes: Math.max(1, Number(rawSettings.default_sla_minutes ?? 15)),
         },
@@ -1062,11 +1088,19 @@ export async function handleAutodataBridgeHttp(
       }
 
       if (upstream.reachable && slug && whToken) {
+        const rawIdemHeader = req.headers['x-idempotency-key'];
+        const idemKey =
+          (Array.isArray(rawIdemHeader) ? rawIdemHeader[0] : rawIdemHeader)?.trim() ||
+          `live-test-${crypto.randomUUID()}`;
+
         const whRes = await forwardUpstreamJson(
           upstream.baseUrl,
           `/api/v1/webhooks/${encodeURIComponent(slug)}/${encodeURIComponent(whToken)}`,
           {
             method: 'POST',
+            extraHeaders: {
+              'X-Idempotency-Key': idemKey,
+            },
             body: {
               name: leadName,
               phone: leadPhone,
@@ -1074,15 +1108,19 @@ export async function handleAutodataBridgeHttp(
               utm_source: utmSource,
               utm_campaign: body.utm_campaign || 'domation_data_live_connect',
               product_interest: productInterest,
+              live_test_seq: idemKey,
             },
           }
         );
 
         const latencyMs = Math.max(1, Date.now() - startedAt);
         const whData = (whRes.json.data || whRes.json || {}) as Record<string, unknown>;
-        const leadId = String(whData.lead_id || '');
+        const isIdempotentSkip = whData.status === 'DUPLICATE_SKIPPED';
+        const leadId = String(whData.lead_id || (isIdempotentSkip ? `idem-${Date.now()}` : ''));
+        const assignedToId = String(whData.assigned_to || '');
+        const resolvedDistMode = String(whData.distribution_mode || 'weighted_round_robin');
         let assignedName = String(whData.assigned_to_name || '');
-        if (!assignedName && token && leadId) {
+        if (!assignedName && assignedToId && token && leadId && !isIdempotentSkip) {
           const leadLookup = await forwardUpstreamJson(upstream.baseUrl, `/api/v1/leads?limit=5`, {
             token,
             tenantSlug: slug,
@@ -1093,27 +1131,38 @@ export async function handleAutodataBridgeHttp(
           const foundLead = leadItems.find((item) => item.id === leadId);
           assignedName = String(foundLead?.assigned_to_name || 'Quản trị viên nhận vòng');
         }
+        if (!assignedName) {
+          assignedName = isIdempotentSkip
+            ? 'Đã bỏ qua bản phát lại mạng (Idempotency)'
+            : !assignedToId && resolvedDistMode === 'manual_only'
+              ? 'Giỏ chờ duyệt tay (Manual Queue)'
+              : !assignedToId
+                ? 'Hàng đợi ưu tiên (Chờ Sale Online)'
+                : 'Đã phân bổ vào Vòng Chia';
+        }
 
         sendJson(res, whRes.status === 202 ? 200 : whRes.status, {
           success: Boolean(whRes.json.success),
           bridge_mode: 'upstream_rls_postgres',
           data: {
             lead_id: leadId,
-            assigned_to_id: String(whData.assigned_to || ''),
-            assigned_to_name: assignedName || 'Đã phân bổ vào Vòng Chia',
-            is_duplicate: Boolean(whData.is_duplicate_reminder || whData.is_duplicate),
-            distribution_mode: String(whData.distribution_mode || 'weighted_round_robin'),
+            assigned_to_id: assignedToId,
+            assigned_to_name: assignedName,
+            is_duplicate: Boolean(whData.is_duplicate_reminder || whData.is_duplicate || isIdempotentSkip),
+            distribution_mode: resolvedDistMode,
             masked_phone: maskPhone(leadPhone),
             latency_ms: latencyMs,
             capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
-            zalobot_status: 'Đã đẩy thông báo nhận số SLA',
+            zalobot_status: assignedToId
+              ? 'Đã đẩy thông báo nhận số SLA'
+              : 'Đang giữ tại Hàng đợi chờ phân bổ',
           },
           error: whRes.json.error,
         });
         return;
       }
 
-      // Serverless Router Execution (Weighted Fair-Share / Strict Round-Robin / Least-Loaded + 90d Dedup + F1 Masking)
+      // Serverless Router Execution (Weighted Fair-Share / Strict Round-Robin / Least-Loaded / Manual-Only + Dedup Window + F1 Masking)
       const store = loadStore();
       const verified = token ? verifyServerlessToken(token) : null;
       const targetSlug = slug || verified?.slug || '';
@@ -1128,27 +1177,77 @@ export async function handleAutodataBridgeHttp(
       }
 
       const cleanDigits = leadPhone.replace(/\D/g, '');
-      const existingLead = record.leads.find((l) => l.phone.replace(/\D/g, '') === cleanDigits);
+      const dedupWindowDays = Math.max(0, Number(record.settings.duplicate_threshold_days ?? 90));
+      const existingLead =
+        dedupWindowDays > 0
+          ? record.leads.find((l) => {
+              if (l.phone.replace(/\D/g, '') !== cleanDigits) return false;
+              const ageDays = (Date.now() - new Date(l.created_at).getTime()) / 86_400_000;
+              return ageDays <= dedupWindowDays;
+            })
+          : undefined;
+
       if (existingLead && record.settings.duplicate_lead_action === 'reject_duplicate') {
         sendJson(res, 409, {
           success: false,
           error: {
             code: 'DUPLICATE_LEAD_REJECTED',
-            message: `SĐT ${leadPhone} đã tồn tại trong cửa sổ chống trùng ${record.settings.duplicate_threshold_days} ngày (Chính sách: Chặn trùng).`,
+            message: `SĐT ${leadPhone} đã tồn tại trong cửa sổ chống trùng ${dedupWindowDays} ngày (Chính sách: Chặn trùng).`,
           },
         });
         return;
       }
 
-      let chosenRep = record.reps[0];
+      if (existingLead && record.settings.duplicate_lead_action === 'update_existing') {
+        existingLead.name = leadName;
+        existingLead.utm_source = utmSource;
+        existingLead.product_interest = productInterest;
+        existingLead.is_duplicate = true;
+        record.leads = [existingLead, ...record.leads.filter((l) => l.id !== existingLead.id)];
+        saveStore(store);
+
+        const existingRep = record.reps.find((r) => r.id === existingLead.assigned_to_id);
+        const latencyMs = Math.max(1, Date.now() - startedAt);
+        sendJson(res, 200, {
+          success: true,
+          bridge_mode: 'vercel_serverless_engine',
+          data: {
+            lead_id: existingLead.id,
+            assigned_to_id: existingLead.assigned_to_id,
+            assigned_to_name: existingLead.assigned_to_name,
+            is_external_f1: Boolean(existingRep?.is_external_f1),
+            displayed_phone: existingLead.masked_phone,
+            masked_phone: maskPhone(leadPhone),
+            is_duplicate: true,
+            distribution_mode: record.settings.distribution_mode,
+            latency_ms: latencyMs,
+            capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
+            zalobot_status: `Đã cập nhật hồ sơ gốc & nhắc ${existingLead.assigned_to_name}`,
+          },
+        });
+        return;
+      }
+
+      let assignedToId = '';
+      let assignedToName = 'Giỏ chờ duyệt tay (Manual Queue)';
+      let isExternalF1 = false;
       let isDuplicate = false;
 
       if (existingLead && record.settings.duplicate_lead_action === 'route_to_existing_owner') {
         isDuplicate = true;
-        chosenRep = record.reps.find((r) => r.id === existingLead.assigned_to_id) || record.reps[0];
-      } else {
+        const ownerRep = record.reps.find((r) => r.id === existingLead.assigned_to_id);
+        if (ownerRep) {
+          assignedToId = ownerRep.id;
+          assignedToName = ownerRep.name;
+          isExternalF1 = ownerRep.is_external_f1;
+        } else if (existingLead.assigned_to_id) {
+          assignedToId = existingLead.assigned_to_id;
+          assignedToName = existingLead.assigned_to_name;
+        }
+      } else if (record.settings.distribution_mode !== 'manual_only') {
         const onlineReps = record.reps.filter((r) => r.is_online);
         const pool = onlineReps.length > 0 ? onlineReps : record.reps;
+        let chosenRep = pool[0];
 
         if (record.settings.distribution_mode === 'strict_round_robin') {
           const idx = record.rr_cursor % pool.length;
@@ -1163,17 +1262,20 @@ export async function handleAutodataBridgeHttp(
           )[0];
         }
         chosenRep.received_count += 1;
+        assignedToId = chosenRep.id;
+        assignedToName = chosenRep.name;
+        isExternalF1 = chosenRep.is_external_f1;
       }
 
       const newLead: ServerlessLeadRecord = {
         id: crypto.randomUUID(),
         name: leadName,
         phone: leadPhone,
-        masked_phone: chosenRep.is_external_f1 && record.settings.mask_pii_for_external ? maskPhone(leadPhone) : leadPhone,
+        masked_phone: isExternalF1 && record.settings.mask_pii_for_external ? maskPhone(leadPhone) : leadPhone,
         utm_source: utmSource,
         product_interest: productInterest,
-        assigned_to_id: chosenRep.id,
-        assigned_to_name: chosenRep.name,
+        assigned_to_id: assignedToId,
+        assigned_to_name: assignedToName,
         is_duplicate: isDuplicate,
         distribution_mode: record.settings.distribution_mode,
         created_at: new Date().toISOString(),
@@ -1189,16 +1291,18 @@ export async function handleAutodataBridgeHttp(
         bridge_mode: 'vercel_serverless_engine',
         data: {
           lead_id: newLead.id,
-          assigned_to_id: chosenRep.id,
-          assigned_to_name: chosenRep.name,
-          is_external_f1: chosenRep.is_external_f1,
+          assigned_to_id: assignedToId,
+          assigned_to_name: assignedToName,
+          is_external_f1: isExternalF1,
           displayed_phone: newLead.masked_phone,
           masked_phone: maskPhone(leadPhone),
           is_duplicate: isDuplicate,
           distribution_mode: record.settings.distribution_mode,
           latency_ms: latencyMs,
           capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
-          zalobot_status: `Đã bắn ZaloBot cho ${chosenRep.name} (SLA ${record.settings.default_sla_minutes}p)`,
+          zalobot_status: assignedToId
+            ? `Đã bắn ZaloBot cho ${assignedToName} (SLA ${record.settings.default_sla_minutes}p)`
+            : 'Đang giữ tại Giỏ chờ duyệt tay (Chế độ Manual Queue)',
         },
       });
       return;
@@ -1307,6 +1411,65 @@ export async function handleAutodataBridgeHttp(
         const cycle = body.billing_cycle === 'annual' ? 'annual' : 'monthly';
         const months = cycle === 'annual' ? 12 : Math.max(1, Math.round(Number(body.months || 1)));
         const amountVnd = cycle === 'annual' ? targetPlan.annual_total_vnd : targetPlan.monthly_price_vnd * months;
+        const payMethod = body.payment_method === 'wallet' ? 'wallet' : 'bank_transfer';
+
+        if (payMethod === 'wallet') {
+          if (record.wallet_balance_vnd < amountVnd) {
+            sendJson(res, 402, {
+              success: false,
+              error: {
+                code: 'INSUFFICIENT_WALLET_BALANCE',
+                message: `Số dư Ví Topup không đủ (Cần ${amountVnd.toLocaleString('vi-VN')}₫, hiện có ${record.wallet_balance_vnd.toLocaleString('vi-VN')}₫).`,
+                details: {
+                  required_vnd: amountVnd,
+                  current_balance_vnd: record.wallet_balance_vnd,
+                  shortfall_vnd: amountVnd - record.wallet_balance_vnd,
+                },
+              },
+            });
+            return;
+          }
+
+          const nowMs = Date.now();
+          const trialEndsMs = new Date(record.trial_ends_at).getTime();
+          const paidEndsMs = record.subscription_expires_at ? new Date(record.subscription_expires_at).getTime() : 0;
+          const baseStartMs = Math.max(nowMs, trialEndsMs, paidEndsMs);
+          const daysToAdd = cycle === 'annual' ? 365 : months * 30;
+          const nextExpiresIso = new Date(baseStartMs + daysToAdd * 86_400_000).toISOString();
+
+          record.wallet_balance_vnd = Math.max(0, record.wallet_balance_vnd - amountVnd);
+          record.subscription_plan_code = targetPlan.code;
+          record.plan_tier = targetPlan.plan_tier;
+          record.billing_cycle = cycle;
+          record.subscription_expires_at = nextExpiresIso;
+
+          const tx: BillingTransactionDto = {
+            id: crypto.randomUUID(),
+            tx_type: 'subscription_purchase',
+            plan_code: targetPlan.code,
+            billing_cycle: cycle,
+            months_added: months,
+            amount_vnd: amountVnd,
+            discount_pct: cycle === 'annual' ? targetPlan.annual_discount_pct : 0,
+            payment_method: 'wallet',
+            status: 'completed',
+            reference_code: `DOMDATA-WALLET-${cleanSlugUpper}-${refRand}`,
+            note: `Gia hạn tức thì bằng Ví Topup: ${targetPlan.name} (${cycle === 'annual' ? `12 tháng -${targetPlan.annual_discount_pct}%` : `${months} tháng`})`,
+            created_at: new Date().toISOString(),
+          };
+          record.transactions.unshift(tx);
+          saveStore(store);
+          sendJson(res, 200, {
+            success: true,
+            bridge_mode: 'vercel_serverless_engine',
+            data: {
+              transaction: tx,
+              subscription: computeServerlessSubscription(record, catalog),
+            },
+          });
+          return;
+        }
+
         const tx: BillingTransactionDto = {
           id: crypto.randomUUID(),
           tx_type: 'subscription_purchase',
@@ -1318,7 +1481,7 @@ export async function handleAutodataBridgeHttp(
           payment_method: 'bank_transfer',
           status: 'pending',
           reference_code: `DOMDATA-PLAN-${cleanSlugUpper}-${refRand}`,
-          note: `Gia hạn ${targetPlan.name} (${cycle === 'annual' ? '12 tháng -15%' : `${months} tháng`})`,
+          note: `Gia hạn ${targetPlan.name} (${cycle === 'annual' ? `12 tháng -${targetPlan.annual_discount_pct}%` : `${months} tháng`})`,
           created_at: new Date().toISOString(),
         };
         record.transactions.unshift(tx);

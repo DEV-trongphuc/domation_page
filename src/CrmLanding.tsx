@@ -43,10 +43,8 @@ const FadeIn = ({
     : from === 'right'
     ? { opacity: 0, x: 32 }
     : { opacity: 0, y: 24 };
-  const animate = { opacity: 1, x: 0, y: 0 };
-
   useEffect(() => {
-    if (inView) controls.start(animate);
+    if (inView) controls.start({ opacity: 1, x: 0, y: 0 });
   }, [controls, inView]);
 
   return (

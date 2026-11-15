@@ -7,29 +7,21 @@ import {
   Users,
   Clock,
   CheckCircle2,
-  Lock,
-  Search,
   ExternalLink,
-  ChevronRight,
   Sparkles,
   PhoneCall,
   MessageSquare,
   FileSpreadsheet,
   MapPin,
   Camera,
-  CalendarCheck,
   TrendingUp,
   CreditCard,
-  Briefcase,
   Layers,
   ArrowRight,
   Bot,
-  Sliders,
   X,
   Maximize2,
-  BellRing,
-  Send,
-  Mail
+  BellRing
 } from 'lucide-react';
 import { Navbar } from './Navbar';
 import { ContactModal } from './ContactModal';

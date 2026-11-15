@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { 
-    Check, ArrowRight, ArrowUp, ShieldCheck, Zap, MonitorPlay, Component, Target, 
-    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send, Download, MessageSquare
+    Check, ArrowUp, ShieldCheck, Zap, MonitorPlay, Component, Target, 
+    Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, Sparkles, X, Send, Download
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
@@ -10,15 +10,48 @@ import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
 import ExcelJS from 'exceljs';
-// @ts-ignore
 import { saveAs } from 'file-saver';
+
+interface PricingToggleProps {
+    active: boolean;
+    onClick: () => void;
+    label: string;
+    price: number;
+    desc: string | string[];
+}
+
+const Toggle: React.FC<PricingToggleProps> = ({ active, onClick, label, price, desc }) => (
+    <div className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-row items-start justify-between gap-4 ${active ? 'bg-gradient-to-br from-blue-50/90 to-cyan-50/75 border-[#1E40FF]/45 shadow-[0_12px_28px_rgba(30,64,255,0.10)]' : 'bg-white/85 border-slate-200/90 hover:border-blue-300 hover:bg-white shadow-sm'}`} onClick={onClick}>
+        <div className="flex flex-col gap-2 flex-1">
+            <span className="text-slate-900 font-bold flex flex-wrap items-center gap-2">
+                {label}
+                <span className="text-xs font-bold text-[#1E40FF] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">+{price.toLocaleString()}đ</span>
+            </span>
+            {Array.isArray(desc) ? (
+                <ul className="text-xs text-slate-600 space-y-1.5 mt-1">
+                    {desc.map((d: string, i: number) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                            <span className="text-[#1E40FF] mt-[2px]">•</span>
+                            <span className="leading-relaxed">{d}</span>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <span className="text-xs text-slate-600 leading-relaxed">{desc}</span>
+            )}
+        </div>
+        <div className={`w-12 h-6 rounded-full relative transition-colors duration-300 shrink-0 mt-1 ${active ? 'bg-[#1E40FF]' : 'bg-slate-300'}`}>
+            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-300 ${active ? 'left-7' : 'left-1'}`} />
+        </div>
+    </div>
+);
 
 const Counter = ({ to, suffix = '', prefix = '' }: { to: number; suffix?: string; prefix?: string }) => {
     const [count, setCount] = React.useState(to);
     const prevTo = React.useRef(to);
 
     React.useEffect(() => {
-        let startValue = prevTo.current;
+        const startValue = prevTo.current;
         const duration = 600; // ms
         const startTime = performance.now();
 
@@ -52,10 +85,9 @@ const FadeIn = ({ children, delay = 0, className = '', from = 'bottom' }: {
     const ref = useRef<HTMLDivElement>(null);
     const inView = useInView(ref, { once: true, amount: 0.02 });
     const initial = from === 'left' ? { opacity: 0.96, x: -16 } : from === 'right' ? { opacity: 0.96, x: 16 } : { opacity: 0.96, y: 14 };
-    const animate = { opacity: 1, x: 0, y: 0 };
 
     useEffect(() => {
-        if (inView) controls.start(animate);
+        if (inView) controls.start({ opacity: 1, x: 0, y: 0 });
     }, [controls, inView]);
 
     return (
@@ -239,43 +271,22 @@ export const WebDesignPricing: React.FC = () => {
         }
     ];
 
-    const Toggle = ({ active, onClick, label, price, desc }: any) => (
-        <div className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-row items-start justify-between gap-4 ${active ? 'bg-gradient-to-br from-blue-50/90 to-cyan-50/75 border-[#1E40FF]/45 shadow-[0_12px_28px_rgba(30,64,255,0.10)]' : 'bg-white/85 border-slate-200/90 hover:border-blue-300 hover:bg-white shadow-sm'}`} onClick={onClick}>
-            <div className="flex flex-col gap-2 flex-1">
-                <span className="text-slate-900 font-bold flex flex-wrap items-center gap-2">
-                    {label}
-                    <span className="text-xs font-bold text-[#1E40FF] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">+{price.toLocaleString()}đ</span>
-                </span>
-                {Array.isArray(desc) ? (
-                    <ul className="text-xs text-slate-600 space-y-1.5 mt-1">
-                        {desc.map((d: string, i: number) => (
-                            <li key={i} className="flex items-start gap-1.5">
-                                <span className="text-[#1E40FF] mt-[2px]">•</span>
-                                <span className="leading-relaxed">{d}</span>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <span className="text-xs text-slate-600 leading-relaxed">{desc}</span>
-                )}
-            </div>
-            <div className={`w-12 h-6 rounded-full relative transition-colors duration-300 shrink-0 mt-1 ${active ? 'bg-[#1E40FF]' : 'bg-slate-300'}`}>
-                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-300 ${active ? 'left-7' : 'left-1'}`} />
-            </div>
-        </div>
-    );
-
     const exportToExcel = async () => {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Báo Giá Website', {
             properties: { tabColor: { argb: 'FF1E40FF' } }
         });
 
-        const cellStyle = {
-            alignment: { vertical: 'middle', wrapText: true } as any,
+        const cellStyle: {
+            alignment: Partial<ExcelJS.Alignment>;
+            border: Partial<ExcelJS.Borders>;
+        } = {
+            alignment: { vertical: 'middle', wrapText: true },
             border: {
-                top: {style:'thin', color: {argb:'FFE2E8F0'}} as any, left: {style:'thin', color: {argb:'FFE2E8F0'}} as any,
-                bottom: {style:'thin', color: {argb:'FFE2E8F0'}} as any, right: {style:'thin', color: {argb:'FFE2E8F0'}} as any
+                top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+                right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
             }
         };
 

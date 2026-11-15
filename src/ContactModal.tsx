@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   CheckCircle2,
   Clock,
@@ -47,14 +47,17 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
-  useEffect(() => {
+  const openSyncKey = `${isOpen}:${defaultService || ''}:${defaultNote || ''}`;
+  const [prevOpenSyncKey, setPrevOpenSyncKey] = useState(openSyncKey);
+  if (openSyncKey !== prevOpenSyncKey) {
+    setPrevOpenSyncKey(openSyncKey);
     if (isOpen) {
       setStatus('idle');
       setErrorMsg('');
       if (defaultService) setService(defaultService);
       if (defaultNote) setMessage(defaultNote);
     }
-  }, [isOpen, defaultService, defaultNote]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

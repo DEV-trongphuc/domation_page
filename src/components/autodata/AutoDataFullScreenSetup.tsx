@@ -277,8 +277,8 @@ export default function AutoDataFullScreenSetup({
   );
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [workspaceTab, setWorkspaceTab] = useState<'router' | 'billing' | 'crm_erp'>(() => {
-    if (initialIntent === 'workspace_billing') return 'billing';
     if (initialIntent === 'workspace_crm_erp') return 'crm_erp';
+    if (initialIntent === 'workspace_billing' || session?.subscription?.is_expired) return 'billing';
     return 'router';
   });
 
@@ -406,6 +406,9 @@ export default function AutoDataFullScreenSetup({
         setTransactions(Array.isArray(json.data.transactions) ? json.data.transactions : []);
         setRecentLeads(Array.isArray(json.data.leads) ? json.data.leads : []);
         if (json.data.subscription) {
+          if (json.data.subscription.is_expired && initialIntent !== 'workspace_crm_erp') {
+            setWorkspaceTab('billing');
+          }
           onSessionChange({
             ...session,
             bridge_mode: json.bridge_mode || session.bridge_mode,
@@ -497,8 +500,15 @@ export default function AutoDataFullScreenSetup({
           custom_settings: {
             distribution_mode: routerMode,
             duplicate_lead_action: dedupPolicy,
+            duplicate_action:
+              dedupPolicy === 'create_new_round_robin'
+                ? 'round_robin'
+                : dedupPolicy === 'route_to_existing_owner'
+                  ? 'route_to_previous_sale'
+                  : dedupPolicy,
             duplicate_threshold_days: dedupDays,
             mask_pii_for_external: maskPiiExternal,
+            pii_masking_enabled: maskPiiExternal,
             sla_auto_recall_enabled: slaAutoRecall,
           },
         }),
@@ -597,6 +607,9 @@ export default function AutoDataFullScreenSetup({
         subscription: json.data.tenant.subscription,
       };
       onSessionChange(nextSession);
+      if (nextSession.subscription.is_expired) {
+        setWorkspaceTab('billing');
+      }
       setSuccessBanner(`Chào mừng quay trở lại không gian "${nextSession.company_name}".`);
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Không thể kết nối tới máy chủ xác thực.');
@@ -637,10 +650,11 @@ export default function AutoDataFullScreenSetup({
         return;
       }
 
+      const nextLeadId = json.data.lead_id || `lead-${Date.now()}`;
       setLastWebhookResult(json.data);
       setRecentLeads((prev) => [
         {
-          id: json.data!.lead_id,
+          id: nextLeadId,
           name: testLeadName,
           phone: testLeadPhone,
           masked_phone: json.data!.displayed_phone || json.data!.masked_phone,
@@ -649,7 +663,7 @@ export default function AutoDataFullScreenSetup({
           is_duplicate: json.data!.is_duplicate,
           created_at: new Date().toISOString(),
         },
-        ...prev.slice(0, 9),
+        ...prev.filter((item) => item.id !== nextLeadId).slice(0, 9),
       ]);
       // Generate fresh phone suffix hint so user can either test new lead or duplicate
     } catch (err: unknown) {
@@ -1578,6 +1592,51 @@ export default function AutoDataFullScreenSetup({
                 </div>
               </div>
 
+              {/* Post-3-Month Expiry / Expiring-Soon Step Renewal & CRM/ERP Upgrade Banner */}
+              {(session.subscription.is_expired || session.subscription.is_expiring_soon) && (
+                <div
+                  className={`rounded-2xl border p-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    session.subscription.is_expired
+                      ? 'bg-rose-50 border-rose-200 text-rose-900'
+                      : 'bg-amber-50 border-amber-200 text-amber-900'
+                  }`}
+                >
+                  <div className="space-y-0.5 text-xs sm:text-sm">
+                    <div className="font-bold">
+                      {session.subscription.is_expired
+                        ? `Chu kỳ dùng thử miễn phí ${catalog.trial_duration_months} tháng đã kết thúc — Vui lòng chọn bước tiếp theo:`
+                        : `Thời hạn gói hiện tại còn ${session.subscription.days_remaining} ngày — Gia hạn sớm cộng dồn trọn vẹn số ngày còn lại:`}
+                    </div>
+                    <div className="text-xs opacity-90">
+                      Gia hạn các gói Step bên dưới (từ{' '}
+                      <strong>{catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng</strong> hoặc mua theo năm{' '}
+                      <strong>tiết kiệm {catalog.annual_discount_pct}%</strong>), nạp Ví Topup, hoặc nâng cấp liền mạch lên{' '}
+                      <strong>DOMATION CRM 360° / ERP 5.0</strong>.
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    {workspaceTab !== 'billing' && (
+                      <button
+                        type="button"
+                        onClick={() => setWorkspaceTab('billing')}
+                        className="rounded-xl bg-blue-600 text-white px-3.5 py-2 text-xs font-semibold hover:bg-blue-700 cursor-pointer"
+                      >
+                        Chọn Gói Gia Hạn / Topup
+                      </button>
+                    )}
+                    {workspaceTab !== 'crm_erp' && (
+                      <button
+                        type="button"
+                        onClick={() => setWorkspaceTab('crm_erp')}
+                        className="rounded-xl border border-slate-300 bg-white text-slate-800 px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 cursor-pointer"
+                      >
+                        Nâng cấp CRM / ERP
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* TAB 1: REAL WEBHOOK & LIVE ROUTER TEST */}
               {workspaceTab === 'router' && (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -1995,7 +2054,7 @@ export default function AutoDataFullScreenSetup({
                     </div>
                     <div className="flex items-center gap-2">
                       <a
-                        href="/crm"
+                        href={catalog.crm_upgrade_url || '/crm'}
                         target="_blank"
                         rel="noreferrer"
                         className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1"
@@ -2003,7 +2062,7 @@ export default function AutoDataFullScreenSetup({
                         Tìm hiểu CRM 360° <ArrowUpRight className="w-3.5 h-3.5" />
                       </a>
                       <a
-                        href="/erp"
+                        href={catalog.erp_upgrade_url || '/erp'}
                         target="_blank"
                         rel="noreferrer"
                         className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-1"

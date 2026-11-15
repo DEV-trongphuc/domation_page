@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ExternalLink, Layers, PlayCircle, ZoomIn } from 'lucide-react';
 import { GlassModal, ImageZoomModal } from './GlassModal';
 import { MODAL_SCREEN_GALLERIES, type SolutionPillar } from '../data/enterpriseData';
@@ -37,12 +37,15 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
     desc?: string;
   } | null>(null);
 
-  useEffect(() => {
+  const openSyncKey = `${isOpen}:${initialTab}`;
+  const [prevOpenSyncKey, setPrevOpenSyncKey] = useState(openSyncKey);
+  if (openSyncKey !== prevOpenSyncKey) {
+    setPrevOpenSyncKey(openSyncKey);
     if (isOpen) {
       setActiveTab(initialTab);
       setErpCategory('Tất cả');
     }
-  }, [isOpen, initialTab]);
+  }
 
   const currentGallery = MODAL_SCREEN_GALLERIES[activeTab] || MODAL_SCREEN_GALLERIES['data-capi'];
 
