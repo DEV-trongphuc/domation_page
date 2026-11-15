@@ -33,6 +33,9 @@ import {
 } from 'lucide-react';
 import { Navbar } from './Navbar';
 import { ContactModal } from './ContactModal';
+import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
+import { DomationLogoMark } from './components/DomationLogoMark';
+import { DECOR_PNGS } from './data/enterpriseData';
 
 interface ErpImageItem {
   id: string;
@@ -216,35 +219,35 @@ export const ErpLanding: React.FC = () => {
       title: 'Tiếp Nhận Lead Một Cửa & Chống Trùng',
       desc: 'Mọi nguồn (Meta, Google, Hotline, Giới thiệu) đổ về 1 điểm. Tách biệt Lead và Person để nhận diện trùng lặp qua SĐT. Dữ liệu lead nguồn bất biến.',
       icon: Layers,
-      color: 'from-rose-500 to-red-600'
+      color: 'from-[#1E40FF] to-[#0284C7]'
     },
     {
       num: '02',
       title: 'Thuật Toán Chia Lead 5 Cổng & Van Chống Ôm',
       desc: 'Phân phối lead tới cá nhân Sales qua 5 rào chắn: Roster dự án, Check-in selfie, Vacation Mode, Van chống ôm (Backpressure) và Hạn mức giờ/ngày/tháng.',
       icon: Zap,
-      color: 'from-amber-500 to-orange-600'
+      color: 'from-[#0284C7] to-[#06B6D4]'
     },
     {
       num: '03',
       title: 'Chăm Sóc, Ma Trận Nhiệt Độ & Form Rào Cản TTL1',
       desc: 'Phân loại nhiệt độ (Nóng, Ấm, Lạnh). Tự động hạ nhiệt (Decay) sau 5 ngày không tương tác. Bắt buộc hoàn thiện form TTL1 trước khi lên lịch gặp khách.',
       icon: TrendingUp,
-      color: 'from-orange-500 to-rose-600'
+      color: 'from-[#1E40FF] to-[#06B6D4]'
     },
     {
       num: '04',
       title: 'Hợp Tác Số & Phân Chia Hoa Hồng 100%',
       desc: 'Tự động sinh Phiếu Hợp Tác khi phát sinh cọc. Ghi nhận toàn bộ thành viên hỗ trợ, kiểm tra tổng hoa hồng 100%, ký số xác nhận và Ban Giám Đốc phê duyệt.',
       icon: Users,
-      color: 'from-purple-500 to-indigo-600'
+      color: 'from-blue-600 to-cyan-500'
     },
     {
       num: '05',
       title: 'Kho Databank & Đồng Hồ Bảo Mật Lead',
       desc: 'Đồng hồ bảo mật tái khai thác: Lead chưa tương tác tự động trả về kho chung (3h - 1 ngày - 4 ngày). Hỗ trợ chia song song 2 Sales để giải cứu khách.',
       icon: Clock,
-      color: 'from-blue-500 to-cyan-600'
+      color: 'from-[#0284C7] to-blue-700'
     },
     {
       num: '06',
@@ -258,14 +261,14 @@ export const ErpLanding: React.FC = () => {
       title: 'Quản Trị Nhân Sự HRM & Chấm Công GPS AI',
       desc: 'Chấm công định vị tọa độ vệ tinh GPS văn phòng, chụp ảnh Selfie AI nhận diện vào ca. Quản lý ngày công, đi muộn, tăng ca OT và duyệt đơn phép đa cấp.',
       icon: MapPin,
-      color: 'from-rose-500 to-pink-600'
+      color: 'from-[#1E40FF] to-indigo-600'
     },
     {
       num: '08',
       title: 'Bảng Tính Lương Tự Động & Xuất Phiếu PDF',
       desc: 'Thuật toán tính lương phức hợp: Lương ngày công, phụ cấp, thưởng chuyên cần, KPI, khấu trừ BHXH, thuế TNCN lũy tiến và xuất phiếu lương PDF điện tử.',
       icon: FileSpreadsheet,
-      color: 'from-red-500 to-amber-600'
+      color: 'from-cyan-500 to-[#0284C7]'
     },
     {
       num: '09',
@@ -279,54 +282,62 @@ export const ErpLanding: React.FC = () => {
       title: 'Dữ Liệu Ngược Meta CAPI (Forward-Only)',
       desc: 'Bắn tín hiệu chuyển đổi CAPI trực tiếp về Meta Pixel (Lead -> Schedule -> Purchase). Forward-only không bắn lùi sự kiện, tự động join chi phí Ads tính ROAS.',
       icon: Bot,
-      color: 'from-indigo-500 to-blue-600'
+      color: 'from-indigo-500 to-[#1E40FF]'
     },
     {
       num: '11',
       title: 'Bảo Mật Row-Level Security (RLS) & Audit Log',
       desc: 'Phân quyền sâu đến từng dòng dữ liệu: Sales chỉ thấy khách của mình, Quản lý xem toàn team, Ban Giám Đốc giám sát toàn diện. Audit log bất biến.',
       icon: ShieldCheck,
-      color: 'from-fuchsia-500 to-purple-600'
+      color: 'from-sky-500 to-[#1E40FF]'
     },
     {
       num: '12',
       title: 'Hệ Thống Thông Báo Đa Kênh Chuyên Sâu',
       desc: 'Ma trận thông báo thời gian thực: Kết nối Zalo Bot, Telegram Bot, Email SMTP. Tự động thông báo khi chia Lead, đếm ngược hạn bảo mật Databank, Co-care hoa hồng và @mention.',
       icon: BellRing,
-      color: 'from-pink-500 to-rose-600'
+      color: 'from-[#06B6D4] to-[#1E40FF]'
     }
   ];
 
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
   return (
-    <div className="min-h-screen bg-[#080b12] text-slate-100 font-sans selection:bg-rose-500 selection:text-white">
-      {/* Dynamic Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[10%] w-[600px] h-[600px] rounded-full bg-rose-600/[0.08] blur-[150px]" />
-        <div className="absolute bottom-[10%] right-[5%] w-[500px] h-[500px] rounded-full bg-red-800/[0.07] blur-[160px]" />
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
-            backgroundSize: '48px 48px'
-          }}
-        />
-      </div>
+    <div className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans relative overflow-x-clip selection:bg-[#1E40FF] selection:text-white">
+      <LuxuryGoldBackdrop />
 
       {/* Navigation */}
       <Navbar activePage="erp" onOpenContact={() => setShowContactModal(true)} />
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-28 pb-12 md:pt-36 md:pb-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="relative z-10 pt-28 pb-12 md:pt-36 md:pb-16 px-4 sm:px-6 overflow-x-clip">
+        {/* Subtle Floating 3D PNG Decors */}
+        <motion.img
+          src={DECOR_PNGS.prism}
+          alt=""
+          aria-hidden="true"
+          animate={{ y: [0, -14, 0], rotate: [-4, 4, -4] }}
+          transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="hidden xl:block pointer-events-none select-none fixed top-28 left-[2%] w-32 h-32 object-contain opacity-65 drop-shadow-[0_18px_28px_rgba(30,64,255,0.16)]"
+        />
+        <motion.img
+          src={DECOR_PNGS.torus}
+          alt=""
+          aria-hidden="true"
+          animate={{ y: [0, 14, 0], rotate: [5, -5, 5] }}
+          transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="hidden xl:block pointer-events-none select-none fixed top-44 right-[2%] w-32 h-32 object-contain opacity-65 drop-shadow-[0_18px_28px_rgba(6,182,212,0.18)]"
+        />
+
+        <div className="max-w-7xl mx-auto text-center relative">
           {/* Top Pill */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[11px] sm:text-xs font-medium mb-4 backdrop-blur-sm"
+            transition={{ duration: 0.45 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-blue-200/80 text-[#1E40FF] text-[11px] sm:text-xs font-bold mb-4 shadow-sm backdrop-blur-md"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#06B6D4] animate-pulse" />
             Hệ Thống Quản Trị Doanh Nghiệp 5.0 • AI Automation
           </motion.div>
 
@@ -334,11 +345,11 @@ export const ErpLanding: React.FC = () => {
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.08 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-extrabold tracking-tight text-white max-w-3xl mx-auto leading-tight md:leading-[1.25] mb-3.5"
+            transition={{ duration: 0.55, delay: 0.08 }}
+            className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight md:leading-[1.18] mb-4"
           >
             Hệ Thống Quản Trị Doanh Nghiệp{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-rose-300 to-red-400">
+            <span className="text-gradient-inkica">
               Toàn Diện &amp; Tự Động Hóa
             </span>
           </motion.h1>
@@ -347,8 +358,8 @@ export const ErpLanding: React.FC = () => {
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="text-xs sm:text-sm md:text-[15px] text-slate-400 max-w-2xl mx-auto leading-relaxed mb-6 font-normal"
+            transition={{ duration: 0.55, delay: 0.15 }}
+            className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed mb-7 font-medium"
           >
             Giải pháp ERP thế hệ mới tích hợp sâu AI Workflow: từ tiếp nhận Lead đa kênh, tự động phân bổ 5 cổng,
             quản lý nhân sự &amp; chấm công GPS AI đến bảng lương tự động và dữ liệu ngược Meta CAPI.
@@ -358,31 +369,31 @@ export const ErpLanding: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.22 }}
-            className="flex flex-wrap items-center justify-center gap-2.5 mb-10 md:mb-12"
+            transition={{ duration: 0.55, delay: 0.22 }}
+            className="flex flex-wrap items-center justify-center gap-3 mb-10 md:mb-12"
           >
             <button
               type="button"
               onClick={() => setShowContactModal(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-semibold text-xs sm:text-sm shadow-md shadow-rose-600/25 hover:shadow-rose-600/40 hover:-translate-y-0.5 transition-all cursor-pointer"
+              className="btn-inkica-primary flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-4 h-4" />
               <span>Đăng Ký Tư Vấn Triển Khai</span>
             </button>
 
             <a
               href="#phan-he"
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-medium text-xs sm:text-sm transition-all hover:-translate-y-0.5"
+              className="ql-btn-outline flex items-center gap-1.5 px-5 py-3 rounded-full text-xs sm:text-sm font-bold"
             >
-              <Building2 className="w-3.5 h-3.5 text-rose-400" />
+              <Building2 className="w-4 h-4 text-[#1E40FF]" />
               <span>12 Phân Hệ</span>
             </a>
 
             <a
               href="#thu-vien-anh"
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-medium text-xs sm:text-sm transition-all hover:-translate-y-0.5"
+              className="ql-btn-outline flex items-center gap-1.5 px-5 py-3 rounded-full text-xs sm:text-sm font-bold"
             >
-              <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
+              <Maximize2 className="w-4 h-4 text-[#0284C7]" />
               <span>16 Ảnh Thực Tế</span>
             </a>
           </motion.div>
@@ -391,100 +402,105 @@ export const ErpLanding: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="relative max-w-5xl mx-auto rounded-2xl md:rounded-3xl p-1.5 md:p-2.5 bg-gradient-to-b from-white/15 via-white/5 to-transparent border border-white/10 shadow-[0_20px_80px_rgba(0,0,0,0.8)] backdrop-blur-xl group cursor-zoom-in"
+            transition={{ duration: 0.7, delay: 0.28 }}
+            whileHover={{ y: -4 }}
+            className="relative max-w-5xl mx-auto rounded-2xl md:rounded-[28px] p-2 md:p-3 bg-white/95 border border-slate-200/90 shadow-[0_24px_70px_-15px_rgba(30,64,255,0.16)] backdrop-blur-xl group cursor-zoom-in"
             onClick={() => setLightboxImg(ERP_GALLERY[2])}
           >
-            <div className="relative rounded-xl md:rounded-2xl overflow-hidden bg-[#0a0d16] aspect-[16/9]">
+            <div className="relative rounded-xl md:rounded-2xl overflow-hidden bg-slate-100 aspect-[16/9] border border-slate-200/80">
               <img
                 src={ERP_GALLERY[2].src}
                 alt="IDEAS ERP Executive Dashboard"
                 className="w-full h-full object-cover group-hover:scale-[1.015] transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#080b12] via-transparent to-transparent opacity-60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent opacity-80" />
               <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 flex items-center justify-between pointer-events-none">
                 <div className="text-left">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/80 backdrop-blur-md text-[10px] sm:text-[11px] font-semibold text-white mb-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" /> Giao diện điều hành thời gian thực
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E40FF] text-[10px] sm:text-[11px] font-bold text-white mb-1.5 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 animate-ping" /> Giao diện điều hành thời gian thực
                   </div>
-                  <h3 className="text-sm md:text-base font-bold text-white drop-shadow-md">
+                  <h3 className="text-sm md:text-base font-bold text-white drop-shadow">
                     Dashboard Vận Hành &amp; Phân Bổ Data Doanh Nghiệp
                   </h3>
                 </div>
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/20 text-xs font-medium text-white backdrop-blur-md">
-                  <Maximize2 className="w-3 h-3 text-rose-400" /> Bấm để phóng to
+                <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-slate-200 text-xs font-bold text-slate-800 shadow-sm">
+                  <Maximize2 className="w-3.5 h-3.5 text-[#1E40FF]" /> Bấm để phóng to
                 </div>
               </div>
             </div>
           </motion.div>
 
           {/* Key Metrics Counter Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto mt-8 text-left">
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-rose-500/25 transition-all">
-              <div className="text-xl md:text-2xl font-bold text-rose-400 mb-0.5">12+</div>
-              <div className="text-xs font-semibold text-white mb-0.5">Phân Hệ Cốt Lõi</div>
-              <div className="text-[11px] text-slate-400">Enterprise Blueprint</div>
-            </div>
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-amber-500/25 transition-all">
-              <div className="text-xl md:text-2xl font-bold text-amber-400 mb-0.5">5 Cổng</div>
-              <div className="text-xs font-semibold text-white mb-0.5">Auto-Routing Lead</div>
-              <div className="text-[11px] text-slate-400">Loại bỏ cảm tính 100%</div>
-            </div>
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-emerald-500/25 transition-all">
-              <div className="text-xl md:text-2xl font-bold text-emerald-400 mb-0.5">GPS &amp; AI</div>
-              <div className="text-xs font-semibold text-white mb-0.5">Selfie Chấm Công</div>
-              <div className="text-[11px] text-slate-400">Chống gian lận vị trí</div>
-            </div>
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/25 transition-all">
-              <div className="text-xl md:text-2xl font-bold text-purple-400 mb-0.5">100% RLS</div>
-              <div className="text-xs font-semibold text-white mb-0.5">Bảo Mật Dữ Liệu</div>
-              <div className="text-[11px] text-slate-400">Phân quyền hàng DB</div>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 max-w-4xl mx-auto mt-8 text-left">
+            {[
+              { val: '12+', title: 'Phân Hệ Cốt Lõi', sub: 'Enterprise Blueprint', color: 'text-[#1E40FF]' },
+              { val: '5 Cổng', title: 'Auto-Routing Lead', sub: 'Loại bỏ cảm tính 100%', color: 'text-[#0284C7]' },
+              { val: 'GPS & AI', title: 'Selfie Chấm Công', sub: 'Chống gian lận vị trí', color: 'text-emerald-600' },
+              { val: '100% RLS', title: 'Bảo Mật Dữ Liệu', sub: 'Phân quyền hàng DB', color: 'text-cyan-600' },
+            ].map((kpi, idx) => (
+              <motion.div
+                key={kpi.title}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="inkica-glass-card p-4 hover:border-blue-300/80 transition-all"
+              >
+                <div className={`text-xl md:text-2xl font-black ${kpi.color} mb-0.5`}>{kpi.val}</div>
+                <div className="text-xs font-bold text-slate-900 mb-0.5">{kpi.title}</div>
+                <div className="text-[11px] font-medium text-slate-500">{kpi.sub}</div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* 12 Modules Architecture Section */}
-      <section id="phan-he" className="py-24 relative z-10 border-t border-white/5 bg-[#090d18]/60">
+      <section id="phan-he" className="py-20 md:py-24 relative z-10 border-t border-slate-200/80 bg-white/45 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold uppercase tracking-wider mb-3">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <div className="ql-eyebrow mb-3">
               <Layers className="w-3.5 h-3.5" /> Kiến Trúc Hệ Thống
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4">
-              12 Phân Hệ Doanh Nghiệp Chuẩn Hóa
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-4">
+              12 Phân Hệ Doanh Nghiệp <span className="text-gradient-inkica">Chuẩn Hóa</span>
             </h2>
-            <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
               Toàn bộ chu trình vận hành từ khi khách hàng xuất hiện trên Ads đến chấm công, chia hoa hồng,
               tính lương và báo cáo tài chính đều được số hóa chặt chẽ.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {enterpriseModules.map((mod) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {enterpriseModules.map((mod, idx) => {
               const Icon = mod.icon;
               return (
-                <div
+                <motion.div
                   key={mod.num}
-                  className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-rose-500/40 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden"
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ delay: (idx % 3) * 0.06 }}
+                  whileHover={{ y: -4 }}
+                  className="inkica-glass-card p-6 group relative overflow-hidden"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${mod.color} text-white shadow-lg`}
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br ${mod.color} text-white shadow-[0_8px_20px_-4px_rgba(30,64,255,0.3)]`}
                     >
-                      <Icon className="w-6 h-6" />
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-2xl font-black text-white/20 group-hover:text-rose-500/40 transition-colors">
+                    <span className="text-2xl font-black text-slate-200 group-hover:text-[#1E40FF]/30 transition-colors">
                       {mod.num}
                     </span>
                   </div>
-                  <h3 className="text-base font-bold text-white mb-2 group-hover:text-rose-300 transition-colors">
+                  <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-[#1E40FF] transition-colors">
                     {mod.title}
                   </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
                     {mod.desc}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -492,22 +508,22 @@ export const ErpLanding: React.FC = () => {
       </section>
 
       {/* Interactive Tabs: Deep-Dive into Key Capabilities */}
-      <section className="py-24 relative z-10 border-t border-white/5">
+      <section className="py-20 md:py-24 relative z-10 border-t border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider mb-3">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="ql-eyebrow mb-3">
               <Sparkles className="w-3.5 h-3.5" /> Khám Phá Trực Quan
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4">
-              Chi Tiết Tính Năng Thực Chiến
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-4">
+              Chi Tiết Tính Năng <span className="text-gradient-inkica">Thực Chiến</span>
             </h2>
-            <p className="text-slate-400 text-sm sm:text-base">
+            <p className="text-slate-600 text-sm sm:text-base">
               Hệ thống được thiết kế tỉ mỉ, phục vụ chính xác các nhu cầu khắt khe của doanh nghiệp vận hành quy mô lớn.
             </p>
           </div>
 
           {/* Tab Buttons */}
-          <div className="flex items-center justify-center flex-wrap gap-2 mb-12">
+          <div className="flex items-center justify-center flex-wrap gap-2 mb-10">
             {[
               { id: 'all', label: 'Tất Cả (16 Ảnh)' },
               { id: 'lead', label: 'Vận Hành & Lead' },
@@ -519,11 +535,11 @@ export const ErpLanding: React.FC = () => {
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                   activeTab === tab.id
-                    ? 'bg-rose-500 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)]'
-                    : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 border border-white/5'
+                    ? 'bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white shadow-[0_8px_20px_-4px_rgba(30,64,255,0.4)]'
+                    : 'bg-white/90 text-slate-600 hover:text-[#1E40FF] hover:border-blue-300 border border-slate-200/90'
                 }`}
               >
                 {tab.label}
@@ -537,15 +553,15 @@ export const ErpLanding: React.FC = () => {
               <motion.div
                 key={item.id}
                 layout
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.3 }}
-                className="group rounded-2xl overflow-hidden bg-[#0d121f] border border-white/10 hover:border-rose-500/40 transition-all duration-300 shadow-xl flex flex-col"
+                whileHover={{ y: -4 }}
+                className="inkica-glass-card overflow-hidden flex flex-col group"
               >
-                {/* Image Container */}
                 <div
-                  className="relative aspect-[16/10] overflow-hidden bg-black cursor-zoom-in"
+                  className="relative aspect-[16/10] overflow-hidden bg-slate-100 cursor-zoom-in border-b border-slate-100"
                   onClick={() => setLightboxImg(item)}
                 >
                   <img
@@ -554,31 +570,30 @@ export const ErpLanding: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-4">
-                    <span className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full bg-rose-500/80 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-4">
+                    <span className="text-[11px] font-bold text-white px-2.5 py-1 rounded-full bg-[#1E40FF] shadow-sm">
                       {item.highlight}
                     </span>
-                    <span className="p-2 rounded-full bg-white/20 backdrop-blur-md text-white">
+                    <span className="p-2 rounded-full bg-white/95 text-[#1E40FF] shadow">
                       <Maximize2 className="w-4 h-4" />
                     </span>
                   </div>
                 </div>
 
-                {/* Info Container */}
-                <div className="p-5 flex-1 flex flex-col justify-between">
+                <div className="p-5 flex-1 flex flex-col justify-between bg-white/75">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase font-bold text-rose-400 tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-[#1E40FF] tracking-wider">
                         {item.category}
                       </span>
-                      <span className="text-[9px] font-semibold text-slate-400 px-2 py-0.5 rounded bg-white/5">
+                      <span className="text-[10px] font-semibold text-slate-500 px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200/70">
                         {item.tag}
                       </span>
                     </div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-rose-300 transition-colors mb-2">
+                    <h4 className="text-sm font-bold text-slate-900 group-hover:text-[#1E40FF] transition-colors mb-2">
                       {item.title}
                     </h4>
-                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -586,7 +601,7 @@ export const ErpLanding: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setLightboxImg(item)}
-                    className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-semibold text-rose-400 group-hover:text-rose-300 cursor-pointer"
+                    className="mt-4 pt-3 border-t border-slate-200/70 flex items-center justify-between text-xs font-bold text-[#1E40FF] hover:text-[#0284C7] cursor-pointer"
                   >
                     <span>Xem phóng to chi tiết</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -599,188 +614,169 @@ export const ErpLanding: React.FC = () => {
       </section>
 
       {/* Deep-Dive Feature Highlights */}
-      <section className="py-24 relative z-10 border-t border-white/5 bg-[#0a0f1d]/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-24">
+      <section className="py-20 md:py-24 relative z-10 border-t border-slate-200/80 bg-white/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-20">
+          {/* Block 1: 5 Gates */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center relative">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold uppercase tracking-wider mb-4">
+              <div className="ql-eyebrow mb-4">
                 <Zap className="w-3.5 h-3.5" /> Đột phá Vận hành Lead
               </div>
-              <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mb-4">
-                Thuật Toán Chia Lead 5 Cổng & Van Chống Ôm
+              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-4">
+                Thuật Toán Chia Lead 5 Cổng &amp; Van Chống Ôm
               </h3>
-              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 Chấm dứt hoàn toàn tình trạng Sales “ôm số” nhưng không gọi khách, gây lãng phí ngân sách Marketing:
               </p>
 
               <div className="space-y-3">
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Cổng 1 - Project Roster:</strong> Chỉ Sales có tên trong danh sách chiến dịch dự án mới được phân phối lead.
+                {[
+                  { title: 'Cổng 1 - Project Roster:', desc: 'Chỉ Sales có tên trong danh sách chiến dịch dự án mới được phân phối lead.' },
+                  { title: 'Cổng 2 - Selfie Check-in:', desc: 'Phải điểm danh chụp ảnh selfie vào ca đầu ngày mới được nhận số.' },
+                  { title: 'Cổng 3 - Vacation Mode:', desc: 'Tự động loại trừ nhân sự đang bật chế độ nghỉ phép, tạm vắng.' },
+                  { title: 'Cổng 4 - Van Chống Ôm (Backpressure):', desc: 'Vượt quá 5 lead chưa gọi/chưa có tương tác => Khóa nhận lead mới ngay lập tức.' },
+                  { title: 'Cổng 5 - Hạn mức Quota:', desc: 'Giới hạn nhận số theo giờ (3 số), theo ngày (2 số) và theo tháng (300 số).' },
+                ].map((item) => (
+                  <div key={item.title} className="p-3.5 rounded-xl bg-white/90 border border-slate-200/85 shadow-sm flex items-start gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" />
+                    <div className="text-xs text-slate-700 leading-relaxed">
+                      <strong className="text-slate-900">{item.title}</strong> {item.desc}
+                    </div>
                   </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Cổng 2 - Selfie Check-in:</strong> Phải điểm danh chụp ảnh selfie vào ca đầu ngày mới được nhận số.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Cổng 3 - Vacation Mode:</strong> Tự động loại trừ nhân sự đang bật chế độ nghỉ phép, tạm vắng.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Cổng 4 - Van Chống Ôm (Backpressure):</strong> Vượt quá 5 lead chưa gọi/chưa có tương tác =&gt; Khóa nhận lead mới ngay lập tức.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Cổng 5 - Hạn mức Quota:</strong> Giới hạn nhận số theo giờ (3 số), theo ngày (2 số) và theo tháng (300 số).
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            <div
-              className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black cursor-zoom-in group"
-              onClick={() => setLightboxImg(ERP_GALLERY[12])}
-            >
+            <div className="relative">
               <img
-                src={ERP_GALLERY[12].src}
-                alt="Cài đặt hệ thống v246"
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                src={DECOR_PNGS.funnel}
+                alt=""
+                aria-hidden="true"
+                className="hidden sm:block pointer-events-none select-none absolute -top-10 -right-8 w-24 h-24 object-contain opacity-90 animate-float-decor z-20"
               />
-              <div className="p-4 bg-[#0d121f] flex items-center justify-between text-xs text-slate-300">
-                <span>Giao diện Cài đặt Nghiệp vụ & Hạn mức v246 (Không hardcode)</span>
-                <Maximize2 className="w-4 h-4 text-rose-400" />
+              <div
+                className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(30,64,255,0.16)] bg-white cursor-zoom-in group p-2"
+                onClick={() => setLightboxImg(ERP_GALLERY[12])}
+              >
+                <div className="rounded-xl overflow-hidden bg-slate-100">
+                  <img
+                    src={ERP_GALLERY[12].src}
+                    alt="Cài đặt hệ thống v246"
+                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-3.5 bg-slate-50/90 rounded-b-xl flex items-center justify-between text-xs font-semibold text-slate-700 mt-1">
+                  <span>Giao diện Cài đặt Nghiệp vụ &amp; Hạn mức v246 (Không hardcode)</span>
+                  <Maximize2 className="w-4 h-4 text-[#1E40FF]" />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div
-              className="order-2 lg:order-1 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black cursor-zoom-in group"
-              onClick={() => setLightboxImg(ERP_GALLERY[11])}
-            >
+          {/* Block 2: GPS & Payroll */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            <div className="order-2 lg:order-1 relative">
               <img
-                src={ERP_GALLERY[11].src}
-                alt="Chấm công GPS và Selfie"
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                src={DECOR_PNGS.shield}
+                alt=""
+                aria-hidden="true"
+                className="hidden sm:block pointer-events-none select-none absolute -bottom-8 -left-8 w-24 h-24 object-contain opacity-90 animate-float-gentle z-20"
               />
-              <div className="p-4 bg-[#0d121f] flex items-center justify-between text-xs text-slate-300">
-                <span>Chi tiết tọa độ GPS thực tế & Ảnh Selfie check-in từng nhân sự</span>
-                <Maximize2 className="w-4 h-4 text-rose-400" />
+              <div
+                className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(16,185,129,0.16)] bg-white cursor-zoom-in group p-2"
+                onClick={() => setLightboxImg(ERP_GALLERY[11])}
+              >
+                <div className="rounded-xl overflow-hidden bg-slate-100">
+                  <img
+                    src={ERP_GALLERY[11].src}
+                    alt="Chấm công GPS và Selfie"
+                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-3.5 bg-slate-50/90 rounded-b-xl flex items-center justify-between text-xs font-semibold text-slate-700 mt-1">
+                  <span>Chi tiết tọa độ GPS thực tế &amp; Ảnh Selfie check-in từng nhân sự</span>
+                  <Maximize2 className="w-4 h-4 text-emerald-600" />
+                </div>
               </div>
             </div>
 
             <div className="order-1 lg:order-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-4">
-                <Camera className="w-3.5 h-3.5" /> Minh Bạch Chấm Công & Tính Lương
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-bold uppercase tracking-wider mb-4">
+                <Camera className="w-3.5 h-3.5" /> Minh Bạch Chấm Công &amp; Tính Lương
               </div>
-              <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mb-4">
-                Chấm Công GPS Vệ Tinh, AI Selfie & Bảng Lương Tự Động
+              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-4">
+                Chấm Công GPS Vệ Tinh, AI Selfie &amp; Bảng Lương Tự Động
               </h3>
-              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 Giải quyết triệt để bài toán chấm công gian lận và tính toán lương thưởng cồng kềnh cho doanh nghiệp:
               </p>
 
               <div className="space-y-3">
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Định Vị Tọa Độ GPS:</strong> Bắt buộc nhân viên có mặt trong bán kính cho phép của văn phòng hoặc chi nhánh mới mở nút check-in.
+                {[
+                  { title: 'Định Vị Tọa Độ GPS:', desc: 'Bắt buộc nhân viên có mặt trong bán kính cho phép của văn phòng hoặc chi nhánh mới mở nút check-in.' },
+                  { title: 'Chụp Ảnh Selfie Nhận Diện:', desc: 'Chụp trực tiếp từ camera thiết bị, chống chụp lại màn hình hoặc nhờ người khác bấm hộ.' },
+                  { title: 'Bảng Lương Động Chuẩn Pháp Lý:', desc: 'Tự động tính công chuẩn, trừ phút trễ, cộng làm thêm OT, tính thuế TNCN lũy tiến từng bậc và BHXH.' },
+                  { title: 'Xuất Phiếu Lương PDF & Ký Số:', desc: 'Mỗi nhân sự có phiếu lương điện tử riêng, xem và xác nhận trực tuyến trên điện thoại.' },
+                ].map((item) => (
+                  <div key={item.title} className="p-3.5 rounded-xl bg-white/90 border border-slate-200/85 shadow-sm flex items-start gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <div className="text-xs text-slate-700 leading-relaxed">
+                      <strong className="text-slate-900">{item.title}</strong> {item.desc}
+                    </div>
                   </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Chụp Ảnh Selfie Nhận Diện:</strong> Chụp trực tiếp từ camera thiết bị, chống chụp lại màn hình hoặc nhờ người khác bấm hộ.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Bảng Lương Động Chuẩn Pháp Lý:</strong> Tự động tính công chuẩn, trừ phút trễ, cộng làm thêm OT, tính thuế TNCN lũy tiến từng bậc và BHXH.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Xuất Phiếu Lương PDF & Ký Số:</strong> Mỗi nhân sự có phiếu lương điện tử riêng, xem và xác nhận trực tuyến trên điện thoại.
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Deep Notification Highlight */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-24">
+          {/* Block 3: Deep Notification */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs font-bold uppercase tracking-wider mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-50 border border-cyan-200 text-[#0284C7] text-[11px] font-bold uppercase tracking-wider mb-4">
                 <BellRing className="w-3.5 h-3.5" /> Thông Báo Thời Gian Thực
               </div>
-              <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mb-4">
+              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-4">
                 Cấu Hình Thông Báo Tùy Chỉnh Chuyên Sâu
               </h3>
-              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 Chấm dứt hoàn toàn trễ nải thông tin và bỏ sót khách hàng nóng với ma trận thông báo đa kênh tự động:
               </p>
 
               <div className="space-y-3">
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Đa Kênh Tích Hợp Sẵn:</strong> Kết nối trực tiếp Zalo Bot, Telegram Bot và Email SMTP cá nhân / công ty nhanh chóng.
+                {[
+                  { title: 'Đa Kênh Tích Hợp Sẵn:', desc: 'Kết nối trực tiếp Zalo Bot, Telegram Bot và Email SMTP cá nhân / công ty nhanh chóng.' },
+                  { title: 'Phân Quyền Ma Trận Sự Kiện:', desc: 'Phân chia riêng luồng thông báo cho Cá nhân & Quản lý vs Dành cho Quản trị & Ban Giám Đốc.' },
+                  { title: 'Bắn Lead Mới Tức Thì:', desc: 'Ngay khi hệ thống chia lead, Sales nhận ngay tin nhắn Zalo/Telegram kèm tóm tắt nhu cầu để phản hồi trong SLA 2 phút.' },
+                  { title: 'Cảnh Báo Hạn Bảo Mật Databank:', desc: 'Tự động đếm ngược và nhắc trước khi Data bị thu hồi về kho chung do không tương tác đúng hạn.' },
+                  { title: 'Hợp Tác Co-Care & @Mention:', desc: 'Thông báo ngay khi có lời mời hợp tác chăm sóc, tạo phiếu chia hoa hồng hoặc được đồng nghiệp nhắc tên.' },
+                ].map((item) => (
+                  <div key={item.title} className="p-3.5 rounded-xl bg-white/90 border border-slate-200/85 shadow-sm flex items-start gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
+                    <div className="text-xs text-slate-700 leading-relaxed">
+                      <strong className="text-slate-900">{item.title}</strong> {item.desc}
+                    </div>
                   </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Phân Quyền Ma Trận Sự Kiện:</strong> Phân chia riêng luồng thông báo cho Cá nhân &amp; Quản lý vs Dành cho Quản trị &amp; Ban Giám Đốc.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Bắn Lead Mới Tức Thì:</strong> Ngay khi hệ thống chia lead, Sales nhận ngay tin nhắn Zalo/Telegram kèm tóm tắt nhu cầu để phản hồi trong SLA 2 phút.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Cảnh Báo Hạn Bảo Mật Databank:</strong> Tự động đếm ngược và nhắc trước khi Data bị thu hồi về kho chung do không tương tác đúng hạn.
-                  </div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-pink-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-300 leading-relaxed">
-                    <strong>Hợp Tác Co-Care &amp; @Mention:</strong> Thông báo ngay khi có lời mời hợp tác chăm sóc, tạo phiếu chia hoa hồng hoặc được đồng nghiệp nhắc tên.
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
             <div
-              className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black cursor-zoom-in group"
+              className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(6,182,212,0.16)] bg-white cursor-zoom-in group p-2"
               onClick={() => {
                 const notifImg = ERP_GALLERY.find((img) => img.id === 'notification_deep_config');
                 if (notifImg) setLightboxImg(notifImg);
               }}
             >
-              <img
-                src="/ERP-Product/1788858964647_2141578413905312186_2310722037673454867_b8873435ef7af2c83ac2aa6b32603ac2.jpg"
-                alt="Cấu hình thông báo tùy chỉnh chuyên sâu"
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="p-4 bg-[#0d121f] flex items-center justify-between text-xs text-slate-300">
+              <div className="rounded-xl overflow-hidden bg-slate-100">
+                <img
+                  src="/ERP-Product/1788858964647_2141578413905312186_2310722037673454867_b8873435ef7af2c83ac2aa6b32603ac2.jpg"
+                  alt="Cấu hình thông báo tùy chỉnh chuyên sâu"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-3.5 bg-slate-50/90 rounded-b-xl flex items-center justify-between text-xs font-semibold text-slate-700 mt-1">
                 <span>Ma trận Cấu hình Thông báo Đa Kênh (Zalo Bot • Telegram • Email SMTP)</span>
-                <Maximize2 className="w-4 h-4 text-pink-400" />
+                <Maximize2 className="w-4 h-4 text-[#0284C7]" />
               </div>
             </div>
           </div>
@@ -788,62 +784,42 @@ export const ErpLanding: React.FC = () => {
       </section>
 
       {/* Comparison Table */}
-      <section className="py-24 relative z-10 border-t border-white/5">
+      <section className="py-20 md:py-24 relative z-10 border-t border-slate-200/80">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4">
-              So Sánh ERP Truyền Thống vs IDEAS ERP Tự Động Hóa
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">
+              So Sánh ERP Truyền Thống vs <span className="text-gradient-inkica">IDEAS ERP</span>
             </h2>
-            <p className="text-slate-400 text-sm">
+            <p className="text-slate-600 text-sm">
               Sự khác biệt khi chuyển đổi từ quy trình thủ công sang hệ thống thông minh.
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
+          <div className="overflow-x-auto inkica-glass-card">
+            <table className="w-full text-left text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-white/10 bg-white/5 text-slate-300">
-                  <th className="p-4 sm:p-5 font-bold uppercase tracking-wider text-white">Nghiệp Vụ</th>
-                  <th className="p-4 sm:p-5 font-bold uppercase tracking-wider text-slate-400">ERP & Excel Truyền Thống</th>
-                  <th className="p-4 sm:p-5 font-bold uppercase tracking-wider text-rose-400">IDEAS ERP (DOMATION)</th>
+                <tr className="border-b border-slate-200 bg-slate-50/90 text-slate-700">
+                  <th className="p-4 sm:p-5 font-bold uppercase tracking-wider text-slate-900">Nghiệp Vụ</th>
+                  <th className="p-4 sm:p-5 font-bold uppercase tracking-wider text-slate-500">ERP &amp; Excel Truyền Thống</th>
+                  <th className="p-4 sm:p-5 font-bold uppercase tracking-wider text-[#1E40FF]">IDEAS ERP (DOMATION)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-slate-300">
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Phân phối Lead</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Chia thủ công bằng tay, dễ thiên vị, ôm số, chậm trễ</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Tự động 100% qua 5 cổng kiểm duyệt, SLA 2 phút</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Chấm công nhân sự</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Vân tay tại văn phòng, dễ quên quẹt hoặc can thiệp file</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">GPS vệ tinh + Selfie AI xác thực theo thời gian thực</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Tính lương & hoa hồng</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Mất hàng tuần nhập liệu Excel, dễ nhầm công thức thuế</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Tính tự động theo ngày công & UNC cọc, xuất PDF 1 chạm</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Thông báo vận hành</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Tra cứu thủ công, trễ nải thông tin, dễ bỏ sót khách nóng</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Zalo Bot, Telegram Bot &amp; Email SMTP thông báo tức thì theo SLA</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Kho dữ liệu lead</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Lead cũ bị bỏ quên, thất thoát tài nguyên quảng cáo</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Kho Databank đồng hồ bảo mật, tái khai thác song song</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Bảo mật dữ liệu</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Dễ lộ số điện thoại, nhân viên nghỉ việc mang theo data</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Row-Level Security (RLS), ẩn số điện thoại, Audit Log</td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-white">Tối ưu Marketing</td>
-                  <td className="p-4 sm:p-5 text-slate-400">Không đo được lead nào ra deal, lãng phí ngân sách Ads</td>
-                  <td className="p-4 sm:p-5 text-emerald-400 font-semibold">Bắn Meta CAPI forward-only, tính chính xác CAC/ROAS</td>
-                </tr>
+              <tbody className="divide-y divide-slate-200/75 text-slate-600">
+                {[
+                  ['Phân phối Lead', 'Chia thủ công bằng tay, dễ thiên vị, ôm số, chậm trễ', 'Tự động 100% qua 5 cổng kiểm duyệt, SLA 2 phút'],
+                  ['Chấm công nhân sự', 'Vân tay tại văn phòng, dễ quên quẹt hoặc can thiệp file', 'GPS vệ tinh + Selfie AI xác thực theo thời gian thực'],
+                  ['Tính lương & hoa hồng', 'Mất hàng tuần nhập liệu Excel, dễ nhầm công thức thuế', 'Tính tự động theo ngày công & UNC cọc, xuất PDF 1 chạm'],
+                  ['Thông báo vận hành', 'Tra cứu thủ công, trễ nải thông tin, dễ bỏ sót khách nóng', 'Zalo Bot, Telegram Bot & Email SMTP thông báo tức thì theo SLA'],
+                  ['Kho dữ liệu lead', 'Lead cũ bị bỏ quên, thất thoát tài nguyên quảng cáo', 'Kho Databank đồng hồ bảo mật, tái khai thác song song'],
+                  ['Bảo mật dữ liệu', 'Dễ lộ số điện thoại, nhân viên nghỉ việc mang theo data', 'Row-Level Security (RLS), ẩn số điện thoại, Audit Log'],
+                  ['Tối ưu Marketing', 'Không đo được lead nào ra deal, lãng phí ngân sách Ads', 'Bắn Meta CAPI forward-only, tính chính xác CAC/ROAS'],
+                ].map(([op, trad, erp]) => (
+                  <tr key={op} className="hover:bg-blue-50/40 transition-colors">
+                    <td className="p-4 sm:p-5 font-bold text-slate-900">{op}</td>
+                    <td className="p-4 sm:p-5 text-slate-500">{trad}</td>
+                    <td className="p-4 sm:p-5 text-emerald-700 font-semibold">{erp}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -851,17 +827,17 @@ export const ErpLanding: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section id="tu-van" className="py-24 relative z-10 border-t border-white/5">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-rose-950/30 via-[#0d121f] to-[#080b12] border border-rose-500/30 shadow-[0_0_80px_rgba(244,63,94,0.2)]">
-            <div className="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center mx-auto mb-6">
+      <section id="tu-van" className="py-20 md:py-24 relative z-10 border-t border-slate-200/80">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative">
+          <div className="inkica-glass-card p-8 sm:p-14 bg-gradient-to-br from-white/95 via-blue-50/60 to-cyan-50/60 border border-blue-200/80 shadow-[0_24px_70px_-15px_rgba(30,64,255,0.18)]">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#1E40FF] to-[#06B6D4] text-white flex items-center justify-center mx-auto mb-6 shadow-[0_10px_28px_rgba(30,64,255,0.3)]">
               <Sparkles className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-4">
               Sẵn Sàng Chuyển Đổi Số Doanh Nghiệp Của Bạn?
             </h2>
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mb-8">
-              Liên hệ ngay với đội ngũ kỹ sư của <strong>DOMATION</strong> để nhận tư vấn kiến trúc ERP,
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto mb-8">
+              Liên hệ ngay với đội ngũ kỹ sư của <strong className="text-slate-900">DOMATION</strong> để nhận tư vấn kiến trúc ERP,
               bản dùng thử hệ thống và lộ trình triển khai chi tiết cho doanh nghiệp của bạn.
             </p>
 
@@ -869,7 +845,7 @@ export const ErpLanding: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowContactModal(true)}
-                className="flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-rose-500 to-red-600 text-white font-bold text-sm shadow-[0_0_30px_rgba(244,63,94,0.5)] hover:-translate-y-1 transition-all cursor-pointer"
+                className="btn-inkica-primary flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm cursor-pointer"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Liên Hệ Tư Vấn Trực Tiếp</span>
@@ -879,7 +855,7 @@ export const ErpLanding: React.FC = () => {
                 href="https://zalo.me/0378859736"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 px-8 py-4 rounded-full bg-[#0068ff] text-white font-bold text-sm shadow-[0_0_30px_rgba(0,104,255,0.4)] hover:-translate-y-1 transition-all"
+                className="flex items-center gap-2 px-8 py-4 rounded-full bg-[#0068FF] hover:bg-[#0055D4] text-white font-bold text-sm shadow-[0_10px_28px_rgba(0,104,255,0.3)] hover:-translate-y-0.5 transition-all"
               >
                 <PhoneCall className="w-4 h-4" />
                 <span>Chat Zalo: 0378 859 736</span>
@@ -890,31 +866,41 @@ export const ErpLanding: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-white/5 bg-[#06080e] relative z-10 text-slate-400 text-xs">
+      <footer className="py-12 border-t border-slate-200/80 bg-white/80 backdrop-blur-md relative z-10 text-slate-600 text-xs pb-24 sm:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <img src="/imgs/ICON.png" alt="DOMATION Logo" className="w-8 h-8 rounded-xl object-contain" />
+            <DomationLogoMark size={36} />
             <div>
-              <div className="font-bold text-white text-sm">DOMATION ECOSYSTEM</div>
-              <div className="text-[11px] text-slate-400">Hệ sinh thái Quản trị & Công nghệ Bất Động Sản</div>
+              <div className="font-black text-slate-900 text-sm">DOMATION.NET</div>
+              <div className="text-[11px] text-slate-500">Hệ sinh thái Quản trị &amp; Công nghệ Doanh nghiệp</div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-[11px]">
-            <a href="/" className="hover:text-white transition-colors">Trang chủ</a>
-            <a href="/erp" className="text-rose-400 font-bold">Hệ thống ERP</a>
-            <a href="/crm" className="hover:text-white transition-colors">Hệ thống CRM</a>
-            <a href="/data" className="hover:text-white transition-colors">Auto Data Lead</a>
-            <a href="/automation" className="hover:text-white transition-colors">Marketing Automation</a>
-            <a href="/meta-report" className="hover:text-white transition-colors">Meta-Report Ads</a>
-            <a href="/web-design" className="hover:text-white transition-colors">Web & Landing Page</a>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-[11px] font-medium">
+            <a href="/" className="hover:text-[#1E40FF] transition-colors">Trang chủ</a>
+            <a href="/erp" className="text-[#1E40FF] font-bold">Hệ thống ERP</a>
+            <a href="/crm" className="hover:text-[#1E40FF] transition-colors">Hệ thống CRM</a>
+            <a href="/data" className="hover:text-[#1E40FF] transition-colors">Auto Data Lead</a>
+            <a href="/automation" className="hover:text-[#1E40FF] transition-colors">Marketing Automation</a>
+            <a href="/meta-report" className="hover:text-[#1E40FF] transition-colors">Meta-Report Ads</a>
+            <a href="/web-design" className="hover:text-[#1E40FF] transition-colors">Web &amp; Landing Page</a>
           </div>
 
-          <div className="text-center md:text-right text-[11px] text-slate-400">
-            © 2026 DOMATION & IDEAS JSC. All rights reserved.
+          <div className="text-center md:text-right text-[11px] text-slate-500">
+            © {new Date().getFullYear()} DOMATION.NET • Enterprise Ecosystem.
           </div>
         </div>
       </footer>
+
+      {/* Centered Sticky Back to Top */}
+      <button
+        type="button"
+        onClick={scrollToTop}
+        aria-label="Lên đầu trang"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
+      >
+        ↑ Đầu trang
+      </button>
 
       {/* Lightbox Modal */}
       <AnimatePresence>
@@ -924,7 +910,7 @@ export const ErpLanding: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
               onClick={() => setLightboxImg(null)}
             />
 
@@ -932,38 +918,35 @@ export const ErpLanding: React.FC = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-6xl max-h-[95vh] bg-[#0c101c] rounded-2xl border border-white/15 overflow-hidden shadow-2xl z-10 flex flex-col"
+              className="relative w-full max-w-6xl max-h-[95vh] bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xl z-10 flex flex-col"
             >
-              {/* Modal Header */}
-              <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#080b12]">
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/90">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-[#1E40FF] border border-blue-200 shrink-0">
                     {lightboxImg.tag}
                   </span>
-                  <h3 className="text-sm sm:text-base font-bold text-white truncate max-w-md sm:max-w-xl">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 truncate max-w-md sm:max-w-xl">
                     {lightboxImg.title}
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setLightboxImg(null)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-slate-200/70 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Modal Image */}
-              <div className="flex-1 overflow-auto bg-black/50 p-2 sm:p-4 flex items-center justify-center">
+              <div className="flex-1 overflow-auto bg-slate-100 p-2 sm:p-4 flex items-center justify-center">
                 <img
                   src={lightboxImg.src}
                   alt={lightboxImg.title}
-                  className="max-w-full max-h-[72vh] object-contain rounded-lg shadow-2xl"
+                  className="max-w-full max-h-[72vh] object-contain rounded-lg shadow-lg"
                 />
               </div>
 
-              {/* Modal Footer Description */}
-              <div className="p-4 border-t border-white/10 bg-[#0a0d17] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-300">
+              <div className="p-4 border-t border-slate-200 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-600">
                 <p className="flex-1 leading-relaxed">
                   {lightboxImg.description}
                 </p>
@@ -972,7 +955,7 @@ export const ErpLanding: React.FC = () => {
                     href={lightboxImg.src}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1E40FF] font-semibold transition-colors"
                   >
                     <span>Mở ảnh gốc HD</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -988,7 +971,6 @@ export const ErpLanding: React.FC = () => {
       <ContactModal
         isOpen={showContactModal}
         onClose={() => setShowContactModal(false)}
-        themeColor="purple-500"
       />
     </div>
   );

@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { 
-    Check, ArrowRight, ShieldCheck, Zap, MonitorPlay, Component, Target, 
+    Check, ArrowRight, ArrowUp, ShieldCheck, Zap, MonitorPlay, Component, Target, 
     Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, PhoneCall, Sparkles, X, Send, Download, MessageSquare
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
+import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
+import { DomationLogoMark } from './components/DomationLogoMark';
+import { DECOR_PNGS } from './data/enterpriseData';
 import ExcelJS from 'exceljs';
 // @ts-ignore
 import { saveAs } from 'file-saver';
-
-
-const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
 const Counter = ({ to, suffix = '', prefix = '' }: { to: number; suffix?: string; prefix?: string }) => {
     const [count, setCount] = React.useState(to);
@@ -49,20 +49,18 @@ const FadeIn = ({ children, delay = 0, className = '', from = 'bottom' }: {
     children: React.ReactNode; delay?: number; className?: string; from?: 'bottom' | 'left' | 'right';
 }) => {
     const controls = useAnimation();
-    const ref = useRef(null);
-    const inView = useInView(ref, { once: true, margin: '-40px' });
-    const initial = isMobile
-        ? { opacity: 0, y: 20 }
-        : from === 'left' ? { opacity: 0, x: -40 } : from === 'right' ? { opacity: 0, x: 40 } : { opacity: 0, y: 30 };
-    const animate = isMobile
-        ? { opacity: 1, y: 0 }
-        : from === 'left' || from === 'right' ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 };
+    const ref = useRef<HTMLDivElement>(null);
+    const inView = useInView(ref, { once: true, amount: 0.02 });
+    const initial = from === 'left' ? { opacity: 0.96, x: -16 } : from === 'right' ? { opacity: 0.96, x: 16 } : { opacity: 0.96, y: 14 };
+    const animate = { opacity: 1, x: 0, y: 0 };
 
-    useEffect(() => { if (inView) controls.start(animate); }, [controls, inView]);
+    useEffect(() => {
+        if (inView) controls.start(animate);
+    }, [controls, inView]);
 
     return (
         <motion.div ref={ref} animate={controls} initial={initial}
-            transition={{ duration: isMobile ? 0.45 : 0.7, delay: isMobile ? delay * 0.5 : delay, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.45, delay: Math.min(delay * 0.35, 0.2), ease: [0.22, 1, 0.36, 1] }}
             className={className}
             style={{ willChange: 'opacity, transform' }}>
             {children}
@@ -137,9 +135,9 @@ export const WebDesignPricing: React.FC = () => {
             title: "Thiết kế Giao diện (UI/UX)",
             price: "2.500.000",
             icon: MonitorPlay,
-            gradient: "#f59e0b",
+            gradient: "#1E40FF",
             features: [
-                "Thiết kế độc quyền theo nhận diện thương hiệu.",
+                "Thiết kế riêng theo nhận diện thương hiệu.",
                 "Giao diện chuẩn Responsive (tương thích Mobile, PC, Tablet).",
                 "Hiệu ứng hình ảnh, animation mượt mà, chuyên nghiệp."
             ]
@@ -148,7 +146,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Module Trang chủ",
             price: "1.500.000",
             icon: LayoutDashboard,
-            gradient: "#3b82f6",
+            gradient: "#0284C7",
             features: [
                 "Slider banner tràn viền tự động chuyển động.",
                 "Khối sản phẩm nổi bật/bán chạy chia theo đối tượng.",
@@ -159,7 +157,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Module Giới thiệu",
             price: "1.000.000",
             icon: Users,
-            gradient: "#8b5cf6",
+            gradient: "#2563EB",
             features: [
                 "Trang lịch sử hình thành, tầm nhìn, sứ mệnh.",
                 "Hồ sơ năng lực, đội ngũ chuyên gia, hệ thống nhà máy/chứng nhận."
@@ -169,7 +167,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Module Sản phẩm (Cốt lõi)",
             price: "2.500.000",
             icon: Component,
-            gradient: "#ec4899",
+            gradient: "#0EA5E9",
             features: [
                 "Phân loại danh mục (Theo dòng sữa, độ tuổi, công dụng).",
                 "Trang chi tiết: Ảnh zoom sắc nét, giá, bảng thành phần dinh dưỡng, công dụng, đối tượng.",
@@ -180,7 +178,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Module Hệ thống Điểm bán",
             price: "1.500.000",
             icon: MapPin,
-            gradient: "#14b8a6",
+            gradient: "#06B6D4",
             features: [
                 "Danh sách đại lý, hệ thống phân phối toàn quốc.",
                 "Bộ lọc tìm kiếm thông minh theo Tỉnh/Thành phố, Quận/Huyện."
@@ -190,7 +188,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Module Cẩm nang & Tuyển dụng",
             price: "1.000.000",
             icon: Layers,
-            gradient: "#eab308",
+            gradient: "#0284C7",
             features: [
                 "Trang Tin tức / Kiến thức dinh dưỡng chuẩn báo chí.",
                 "Trang Tuyển dụng: Đăng vị trí, form nộp CV trực tuyến."
@@ -200,7 +198,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Module Tương tác & Chuyển đổi",
             price: "500.000",
             icon: Share2,
-            gradient: "#ef4444",
+            gradient: "#1E40FF",
             features: [
                 "Nút liên hệ nhanh (Hotline, Zalo, Messenger Facebook).",
                 "Form \"Nhận tư vấn/Đặt hàng\" gửi thẳng thông tin về Email.",
@@ -211,7 +209,7 @@ export const WebDesignPricing: React.FC = () => {
             title: "Hệ thống Quản trị & Tối ưu SEO",
             price: "1.500.000",
             icon: ShieldCheck,
-            gradient: "#22c55e",
+            gradient: "#10B981",
             features: [
                 "Cấu trúc web chuẩn SEO On-page, tối ưu tốc độ load (<3s).",
                 "Tích hợp chứng chỉ bảo mật SSL (https).",
@@ -223,7 +221,7 @@ export const WebDesignPricing: React.FC = () => {
             price: "0",
             suffix: "(Tặng năm đầu)",
             icon: Globe2,
-            gradient: "#6366f1",
+            gradient: "#2563EB",
             features: [
                 "Đăng ký chính chủ định danh cho khách hàng trực tiếp."
             ]
@@ -233,7 +231,7 @@ export const WebDesignPricing: React.FC = () => {
             price: "0",
             suffix: "(Tặng năm đầu)",
             icon: Server,
-            gradient: "#06b6d4",
+            gradient: "#06B6D4",
             features: [
                 "Dung lượng lưu trữ tối ưu.",
                 "Băng thông rộng rãi với độ trễ thấp nhất."
@@ -242,27 +240,27 @@ export const WebDesignPricing: React.FC = () => {
     ];
 
     const Toggle = ({ active, onClick, label, price, desc }: any) => (
-        <div className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-row items-start justify-between gap-4 ${active ? 'bg-amber-500/10 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.1)]' : 'bg-white/5 border-white/10 hover:bg-white/10'}`} onClick={onClick}>
+        <div className={`p-5 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-row items-start justify-between gap-4 ${active ? 'bg-gradient-to-br from-blue-50/90 to-cyan-50/75 border-[#1E40FF]/45 shadow-[0_12px_28px_rgba(30,64,255,0.10)]' : 'bg-white/85 border-slate-200/90 hover:border-blue-300 hover:bg-white shadow-sm'}`} onClick={onClick}>
             <div className="flex flex-col gap-2 flex-1">
-                <span className="text-white font-bold flex flex-wrap items-center gap-2">
+                <span className="text-slate-900 font-bold flex flex-wrap items-center gap-2">
                     {label}
-                    <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-md">+{price.toLocaleString()}đ</span>
+                    <span className="text-xs font-bold text-[#1E40FF] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">+{price.toLocaleString()}đ</span>
                 </span>
                 {Array.isArray(desc) ? (
-                    <ul className="text-xs text-slate-400 space-y-1.5 mt-1">
+                    <ul className="text-xs text-slate-600 space-y-1.5 mt-1">
                         {desc.map((d: string, i: number) => (
                             <li key={i} className="flex items-start gap-1.5">
-                                <span className="text-amber-500/50 mt-[2px]">•</span>
+                                <span className="text-[#1E40FF] mt-[2px]">•</span>
                                 <span className="leading-relaxed">{d}</span>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <span className="text-xs text-slate-400 leading-relaxed">{desc}</span>
+                    <span className="text-xs text-slate-600 leading-relaxed">{desc}</span>
                 )}
             </div>
-            <div className={`w-12 h-6 rounded-full relative transition-colors duration-300 shrink-0 mt-1 ${active ? 'bg-amber-500' : 'bg-slate-700'}`}>
-                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${active ? 'left-7' : 'left-1'}`} />
+            <div className={`w-12 h-6 rounded-full relative transition-colors duration-300 shrink-0 mt-1 ${active ? 'bg-[#1E40FF]' : 'bg-slate-300'}`}>
+                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-300 ${active ? 'left-7' : 'left-1'}`} />
             </div>
         </div>
     );
@@ -270,7 +268,7 @@ export const WebDesignPricing: React.FC = () => {
     const exportToExcel = async () => {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Báo Giá Website', {
-            properties: { tabColor: { argb: 'FFF59E0B' } }
+            properties: { tabColor: { argb: 'FF1E40FF' } }
         });
 
         const cellStyle = {
@@ -289,12 +287,30 @@ export const WebDesignPricing: React.FC = () => {
         ];
 
         try {
-            const response = await fetch(window.location.origin + '/imgs/ICON.png');
-            const blob = await response.blob();
-            const base64 = await new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.readAsDataURL(blob);
+            const response = await fetch(window.location.origin + '/domation-logo.svg');
+            const svgText = await response.text();
+            const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+            const svgUrl = URL.createObjectURL(svgBlob);
+            const base64 = await new Promise<string>((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 128;
+                    canvas.height = 128;
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.drawImage(img, 0, 0, 128, 128);
+                        resolve(canvas.toDataURL('image/png'));
+                    } else {
+                        reject(new Error('Canvas context missing'));
+                    }
+                    URL.revokeObjectURL(svgUrl);
+                };
+                img.onerror = (err) => {
+                    URL.revokeObjectURL(svgUrl);
+                    reject(err);
+                };
+                img.src = svgUrl;
             });
             const imageId = workbook.addImage({ base64, extension: 'png' });
             sheet.addImage(imageId, { tl: { col: 0.1, row: 0.1 }, ext: { width: 50, height: 50 } });
@@ -304,7 +320,7 @@ export const WebDesignPricing: React.FC = () => {
         sheet.getRow(1).height = 45;
         
         sheet.getCell('B1').value = 'DOMATION';
-        sheet.getCell('B1').font = { bold: true, size: 28, color: { argb: 'FFEA580C' } }; 
+        sheet.getCell('B1').font = { bold: true, size: 28, color: { argb: 'FF1E40FF' } }; 
         sheet.getCell('B1').alignment = { vertical: 'middle', horizontal: 'left' };
         sheet.mergeCells('B1:D1');
         
@@ -372,13 +388,13 @@ export const WebDesignPricing: React.FC = () => {
             row.getCell(4).numFmt = '#,##0 "₫"';
             
             row.eachCell(cell => {
-                cell.font = { size: 11, color: { argb: 'FFD97706' } };
+                cell.font = { size: 11, color: { argb: 'FF1E40FF' } };
                 cell.border = cellStyle.border;
                 cell.alignment = cellStyle.alignment;
                 if (Number(cell.col) === 1) cell.alignment = { ...cell.alignment, horizontal: 'center' };
             });
-            row.getCell(2).font = { bold: true, size: 11, color: { argb: 'FFD97706' } };
-            row.getCell(4).font = { bold: true, size: 11, color: { argb: 'FFD97706' } };
+            row.getCell(2).font = { bold: true, size: 11, color: { argb: 'FF1E40FF' } };
+            row.getCell(4).font = { bold: true, size: 11, color: { argb: 'FF1E40FF' } };
             row.height = 40;
             finalPrice += item.price;
             rowIndex++;
@@ -392,7 +408,7 @@ export const WebDesignPricing: React.FC = () => {
         totalRow.getCell(4).font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
         totalRow.height = 40;
         totalRow.eachCell((cell, colNum) => {
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEA580C' } };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E40FF' } };
             cell.border = cellStyle.border;
             if(Number(colNum) === 4) cell.alignment = { horizontal: 'left', vertical: 'middle' };
         });
@@ -430,38 +446,44 @@ export const WebDesignPricing: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#080c14] text-white overflow-x-hidden font-sans selection:bg-amber-500/30" style={{ scrollbarWidth: 'thin', scrollbarColor: '#f59e0b transparent' }}>
-            {/* Background Animations */}
-            <div className="fixed inset-0 pointer-events-none z-0" style={{ transform: 'translateZ(0)' }}>
-                <div className="aurora-1 absolute top-[-25%] left-[-15%] w-[70%] h-[70%] rounded-full bg-amber-500/[0.12] blur-[120px] md:blur-[160px]" />
-                <div className="aurora-2 absolute top-[5%] right-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-600/[0.1] blur-[120px] md:blur-[160px]" />
-                <div className="aurora-3 absolute bottom-[-5%] left-[15%] w-[50%] h-[50%] rounded-full bg-rose-500/[0.08] blur-[100px] md:blur-[140px]" />
-                <div className="hidden md:block absolute inset-0 opacity-[0.035]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',
-                    backgroundSize: '60px 60px'
-                }} />
-                <div className="hidden md:block absolute inset-0 opacity-[0.025]" style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`
-                }} />
-            </div>
+        <div className="min-h-screen bg-[#F8F9FA] text-slate-900 relative overflow-x-clip font-sans selection:bg-blue-600/20">
+            <LuxuryGoldBackdrop />
+
+            {/* Floating 3D Glass Decor */}
+            <motion.img
+                src={DECOR_PNGS.prism}
+                alt=""
+                aria-hidden="true"
+                animate={{ y: [0, -14, 0], rotate: [0, 3, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                className="pointer-events-none select-none hidden lg:block fixed top-28 right-8 w-36 xl:w-44 opacity-55 drop-shadow-[0_18px_36px_rgba(30,64,255,0.16)] z-[1]"
+            />
+            <motion.img
+                src={DECOR_PNGS.torus}
+                alt=""
+                aria-hidden="true"
+                animate={{ y: [0, 12, 0], rotate: [0, -3, 0] }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+                className="pointer-events-none select-none hidden lg:block fixed bottom-28 left-8 w-32 xl:w-40 opacity-50 drop-shadow-[0_18px_36px_rgba(6,182,212,0.16)] z-[1]"
+            />
 
             {/* Navigation */}
             <Navbar activePage="web-design" onOpenContact={() => setShowContactModal(true)} />
 
-            <main className="relative pt-32 pb-24 md:pb-20 px-4 md:px-6 z-10 w-full">
+            <main className="relative pt-32 pb-28 md:pb-24 px-4 md:px-6 z-10 w-full">
                 <div className="max-w-5xl mx-auto">
                     
                     {/* Header */}
-                    <div className="text-center mb-16 md:mb-24">
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                    <div className="text-center mb-14 md:mb-20">
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/90 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
                             <Zap className="w-3.5 h-3.5" /> Source Code Sở Hữu Vĩnh Viễn
                         </motion.div>
-                        <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-[1.24] md:leading-[1.22] tracking-tight">
                             Bảng Báo Giá Dịch Vụ <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 shimmer-text">Thiết Kế Website</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] via-[#0284C7] to-[#06B6D4]">Thiết Kế Website</span>
                         </motion.h1>
-                        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-slate-400 text-base md:text-xl max-w-3xl mx-auto leading-relaxed">
-                            Mẫu giao diện và chức năng tương đương website tiêu chuẩn quốc tế. Cấu trúc chuẩn SEO, thiết kế độc quyền, tăng cường chuyển đổi.
+                        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-slate-600 text-base md:text-xl max-w-3xl mx-auto leading-relaxed">
+                            Mẫu giao diện và chức năng tương đương website tiêu chuẩn quốc tế. Cấu trúc chuẩn SEO, thiết kế may đo riêng, tăng cường chuyển đổi.
                         </motion.p>
                     </div>
 
@@ -470,41 +492,40 @@ export const WebDesignPricing: React.FC = () => {
                         
                         {/* 1. Checkout Card (Top on Mobile) */}
                         <FadeIn delay={0.4} className="order-1 md:order-3 mb-10 md:mb-0">
-                            <div className="relative rounded-[32px] md:rounded-[40px] p-[2px] pricing-highlight-glow bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 overflow-hidden shadow-[0_0_80px_rgba(245,158,11,0.2)]">
-                                <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 blur-xl opacity-30 pointer-events-none" />
-                                <div className="relative bg-[#0d1117] rounded-[30px] md:rounded-[38px] p-5 md:p-12 border border-white/10 flex flex-col items-center text-center">
-                                    <span className="inline-block px-3 py-1.5 md:px-4 md:py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] md:text-xs font-bold text-slate-300 uppercase tracking-widest mb-3 md:mb-4">
+                            <div className="relative rounded-[32px] md:rounded-[38px] p-[1.5px] bg-gradient-to-r from-[#1E40FF] via-[#0284C7] to-[#06B6D4] overflow-hidden shadow-[0_24px_60px_rgba(30,64,255,0.14)]">
+                                <div className="relative bg-white/95 backdrop-blur-xl rounded-[30px] md:rounded-[36px] p-6 md:p-12 flex flex-col items-center text-center">
+                                    <span className="inline-block px-3 py-1.5 md:px-4 md:py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-[10px] md:text-xs font-bold text-[#1E40FF] uppercase tracking-widest mb-3 md:mb-4">
                                         Thanh toán 1 lần • Sở hữu vĩnh viễn Source Code
                                     </span>
-                                    <h3 className="text-lg md:text-2xl text-slate-400 font-bold mb-1 md:mb-2">Tổng Cộng Khoản Phí</h3>
-                                    <div className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500 mb-6 md:mb-8 shimmer-text">
-                                        <Counter to={totalPrice} /> <span className="text-xl md:text-2xl text-amber-500 font-bold">VNĐ</span>
+                                    <h3 className="text-lg md:text-2xl text-slate-600 font-bold mb-1 md:mb-2">Tổng Cộng Khoản Phí</h3>
+                                    <div className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4] mb-6 md:mb-8">
+                                        <Counter to={totalPrice} /> <span className="text-xl md:text-2xl text-[#1E40FF] font-bold">VNĐ</span>
                                     </div>
                                     
                                     <div className="w-full max-w-sm mx-auto flex flex-col sm:flex-row gap-3 mb-8">
-                                        <button onClick={() => setShowModal(true)} className="flex-1 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 py-3.5 rounded-xl text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] active:scale-95 transition-transform cursor-pointer">
+                                        <button onClick={() => setShowModal(true)} className="flex-1 btn-inkica-primary py-3.5 rounded-xl text-sm font-black shadow-[0_12px_28px_rgba(30,64,255,0.28)] active:scale-95 transition-transform cursor-pointer">
                                             Yêu cầu tư vấn
                                         </button>
-                                        <button onClick={exportToExcel} className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white py-3.5 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(255,255,255,0.05)] active:scale-95 transition-transform cursor-pointer flex items-center justify-center gap-2">
-                                            <Download className="w-4 h-4 text-emerald-400" /> Xuất Báo Giá
+                                        <button onClick={exportToExcel} className="flex-1 ql-btn-outline bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 py-3.5 rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-transform cursor-pointer flex items-center justify-center gap-2">
+                                            <Download className="w-4 h-4 text-emerald-600" /> Xuất Báo Giá
                                         </button>
                                     </div>
 
-                                    <div className="w-full max-w-2xl bg-white/5 border border-white/10 rounded-[20px] p-4 md:p-6 text-left mb-2 md:mb-8">
-                                        <h4 className="flex items-center gap-2 font-bold text-white text-sm md:text-base mb-2 md:mb-3"><Target className="w-4 h-4 md:w-5 md:h-5 text-amber-400" /> Ghi chú duy trì</h4>
-                                        <p className="text-slate-400 text-[12px] md:text-sm leading-relaxed mb-2">
-                                            * Chi phí trên là phí thiết kế trọn gói <strong className="text-white">trả 1 lần duy nhất</strong>.
+                                    <div className="w-full max-w-2xl bg-slate-50/90 border border-slate-200 rounded-[20px] p-4 md:p-6 text-left mb-2 md:mb-4">
+                                        <h4 className="flex items-center gap-2 font-bold text-slate-900 text-sm md:text-base mb-2 md:mb-3"><Target className="w-4 h-4 md:w-5 md:h-5 text-[#1E40FF]" /> Ghi chú duy trì</h4>
+                                        <p className="text-slate-600 text-[12px] md:text-sm leading-relaxed mb-2">
+                                            * Chi phí trên là phí thiết kế trọn gói <strong className="text-slate-900">trả 1 lần duy nhất</strong>.
                                         </p>
-                                        <p className="text-slate-400 text-[12px] md:text-sm leading-relaxed">
-                                            Từ <strong className="text-white">năm thứ 2</strong> trở đi, khách hàng chỉ cần đóng phí duy trì cơ sở hạ tầng mạng (Chi phí này được thanh toán và gia hạn trực tiếp từ các nhà cung cấp dịch vụ bên thứ 3 uy tín dựa trên nhu cầu và sự chấp thuận của khách hàng):
+                                        <p className="text-slate-600 text-[12px] md:text-sm leading-relaxed">
+                                            Từ <strong className="text-slate-900">năm thứ 2</strong> trở đi, khách hàng chỉ cần đóng phí duy trì cơ sở hạ tầng mạng (Chi phí này được thanh toán và gia hạn trực tiếp từ các nhà cung cấp dịch vụ bên thứ 3 uy tín dựa trên nhu cầu và sự chấp thuận của khách hàng):
                                         </p>
-                                        <ul className="list-disc list-inside text-[12px] md:text-sm text-slate-300 mt-2 md:mt-3 space-y-1 ml-2">
-                                            <li>Tên miền (.com/.vn): <strong className="text-amber-400">550.000 VNĐ</strong> / năm</li>
-                                            <li>Hosting Tốc độ cao: <strong className="text-amber-400">{Object.values(addons).some(v => v) ? "1.500.000" : "660.000"} VNĐ</strong> / năm</li>
+                                        <ul className="list-disc list-inside text-[12px] md:text-sm text-slate-700 mt-2 md:mt-3 space-y-1 ml-2">
+                                            <li>Tên miền (.com/.vn): <strong className="text-[#1E40FF]">550.000 VNĐ</strong> / năm</li>
+                                            <li>Hosting Tốc độ cao: <strong className="text-[#1E40FF]">{Object.values(addons).some(v => v) ? "1.500.000" : "660.000"} VNĐ</strong> / năm</li>
                                         </ul>
-                                        <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between bg-black/20 rounded-xl p-3 gap-2">
-                                            <span className="text-[12px] md:text-sm font-semibold text-slate-300">Tổng phí gia hạn dự kiến năm 2:</span>
-                                            <span className="font-black text-rose-400 text-base md:text-lg">
+                                        <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between bg-blue-50/75 border border-blue-100 rounded-xl p-3 gap-2">
+                                            <span className="text-[12px] md:text-sm font-semibold text-slate-700">Tổng phí gia hạn dự kiến năm 2:</span>
+                                            <span className="font-black text-[#0284C7] text-base md:text-lg">
                                                 <Counter to={550000 + (Object.values(addons).some(v => v) ? 1500000 : 660000)} suffix=" VNĐ / năm" />
                                             </span>
                                         </div>
@@ -515,9 +536,9 @@ export const WebDesignPricing: React.FC = () => {
 
                         {/* 2. Add-ons Toggles */}
                         <FadeIn delay={0.3} className="order-2 md:order-2 mb-12">
-                            <div className="bg-[#161b22]/50 backdrop-blur-md rounded-[32px] p-6 md:p-8 border border-white/10">
-                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-amber-400" /> Tùy chọn nâng cao (Options)
+                            <div className="inkica-glass-card rounded-[28px] p-6 md:p-8 border border-white/90">
+                                <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                    <Sparkles className="w-5 h-5 text-[#1E40FF]" /> Tùy chọn nâng cao (Options)
                                 </h3>
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     <Toggle 
@@ -599,35 +620,30 @@ export const WebDesignPricing: React.FC = () => {
                         <div className="order-3 md:order-1 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-16">
                             {modules.map((mod, i) => (
                                 <FadeIn key={i} delay={i * 0.05} className="h-full">
-                                    <div className="holo-card relative rounded-2xl p-px h-full bg-white/5 hover:bg-white/10 transition-all duration-500 group">
-                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
-                                            style={{ background: `radial-gradient(400px circle at bottom right, ${mod.gradient}15, transparent 70%)` }} />
-                                        
-                                        <div className="relative bg-[#161b22]/80 backdrop-blur-sm rounded-[15px] p-6 lg:p-8 flex flex-col h-full border border-white/5">
-                                            <div className="flex items-center gap-4 mb-6">
-                                                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${mod.gradient}15`, border: `1px solid ${mod.gradient}30` }}>
-                                                    <mod.icon className="w-6 h-6" style={{ color: mod.gradient }} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-bold text-white leading-tight">{mod.title}</h3>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <span className="text-xl font-black" style={{ color: mod.gradient }}>
-                                                            {String(mod.price) !== "0" ? `${mod.price} VNĐ` : "Miễn Phí"}
-                                                        </span>
-                                                        {mod.suffix && <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400">{mod.suffix}</span>}
-                                                    </div>
+                                    <div className="inkica-glass-card relative rounded-[24px] p-6 lg:p-8 flex flex-col h-full border border-white/90 hover:-translate-y-1 transition-all duration-300 group">
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${mod.gradient}14`, border: `1px solid ${mod.gradient}28` }}>
+                                                <mod.icon className="w-6 h-6" style={{ color: mod.gradient }} />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold text-slate-900 leading-tight">{mod.title}</h3>
+                                                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                                    <span className="text-xl font-black" style={{ color: mod.gradient }}>
+                                                        {String(mod.price) !== "0" ? `${mod.price} VNĐ` : "Miễn Phí"}
+                                                    </span>
+                                                    {mod.suffix && <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700">{mod.suffix}</span>}
                                                 </div>
                                             </div>
-                                            
-                                            <ul className="space-y-3 flex-1 mt-2">
-                                                {mod.features.map((feature, j) => (
-                                                    <li key={j} className="flex items-start gap-3 text-sm text-slate-300">
-                                                        <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: mod.gradient }} />
-                                                        <span className="leading-relaxed">{feature}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
                                         </div>
+                                        
+                                        <ul className="space-y-3 flex-1 mt-2">
+                                            {mod.features.map((feature, j) => (
+                                                <li key={j} className="flex items-start gap-3 text-sm text-slate-600">
+                                                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: mod.gradient }} />
+                                                    <span className="leading-relaxed">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
                                 </FadeIn>
                             ))}
@@ -637,31 +653,49 @@ export const WebDesignPricing: React.FC = () => {
             </main>
             
             {/* Footer */}
-            <footer className="border-t border-white/10 py-8 px-6 bg-[#080c14] relative z-10 text-center pb-28 md:pb-8">
-                <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
+            <footer className="border-t border-slate-200/80 py-10 px-6 bg-white/70 backdrop-blur-md relative z-10 text-center pb-36 md:pb-32">
+                <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
+                    <div className="flex items-center gap-2.5">
+                        <DomationLogoMark className="w-8 h-8" />
+                        <span className="text-lg font-black tracking-tight text-slate-900">
+                            DOMATION<span className="text-[#1E40FF]">.NET</span>
+                        </span>
+                    </div>
+                    <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
+                </div>
             </footer>
 
+            {/* Centered Scroll-to-Top Pill (above fixed price bar) */}
+            <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="fixed bottom-[94px] sm:bottom-[90px] left-1/2 -translate-x-1/2 z-40 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
+            >
+                <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
+                <span>Đầu trang</span>
+            </button>
+
             {/* Fixed Bottom Price Bar (Mobile + PC) */}
-            <div className="fixed bottom-0 left-0 right-0 bg-[#0d1117]/95 backdrop-blur-xl border-t border-amber-500/20 z-[60] shadow-[0_-20px_40px_rgba(245,158,11,0.15)] transition-all duration-300">
-                 <div className="max-w-7xl mx-auto p-4 md:px-6 md:py-4 flex items-center justify-between">
-                     <div className="flex flex-col">
-                          <span className="text-[10px] md:text-xs text-amber-400/80 font-bold uppercase tracking-wider mb-1">Tổng thiết kế</span>
-                          <span className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 shimmer-text leading-none">
-                              <Counter to={totalPrice} /> <span className="text-sm md:text-base text-amber-500">đ</span>
+            <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-200 z-[50] shadow-[0_-12px_36px_rgba(15,23,42,0.08)] transition-all duration-300">
+                 <div className="max-w-7xl mx-auto p-3.5 pr-28 sm:pr-44 md:pl-6 md:py-4 flex items-center justify-between gap-3">
+                     <div className="flex flex-col shrink-0">
+                          <span className="text-[10px] md:text-xs text-[#1E40FF] font-semibold uppercase tracking-wider mb-0.5">Tổng thiết kế</span>
+                          <span className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4] leading-none whitespace-nowrap">
+                              <Counter to={totalPrice} /> <span className="text-sm md:text-base text-[#1E40FF]">đ</span>
                           </span>
                      </div>
-                     <div className="flex flex-col items-end gap-1.5 md:gap-2">
-                          <div className="flex items-center gap-2 md:gap-4">
-                              <button onClick={exportToExcel} className="p-2.5 md:px-4 md:py-2.5 flex items-center gap-2 border border-white/20 rounded-full text-emerald-400 bg-white/10 hover:bg-white/20 active:scale-95 transition-all cursor-pointer" title="Xuất Báo Giá Excel">
+                     <div className="flex flex-col items-end gap-1">
+                          <div className="flex items-center gap-2 md:gap-3">
+                              <button onClick={exportToExcel} className="p-2.5 md:px-4 md:py-2.5 flex items-center gap-2 border border-slate-200 rounded-full text-emerald-700 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 active:scale-95 transition-all cursor-pointer" title="Xuất Báo Giá Excel">
                                   <Download className="w-4 h-4" />
                                   <span className="hidden md:inline text-sm font-bold">Xuất File Báo Giá</span>
                               </button>
-                              <button onClick={() => setShowModal(true)} className="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-5 md:px-8 py-2.5 rounded-full text-sm font-black shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] active:scale-95 transition-all cursor-pointer">
+                              <button onClick={() => setShowModal(true)} className="btn-inkica-primary px-4 sm:px-6 md:px-8 py-2.5 rounded-full text-xs sm:text-sm font-black shadow-[0_10px_24px_rgba(30,64,255,0.26)] active:scale-95 transition-all cursor-pointer">
                                   Request
                               </button>
                           </div>
-                          <span className="text-[9px] md:text-xs text-slate-400 font-medium">
-                              Duy trì: <span className="text-rose-400"><Counter to={550000 + (Object.values(addons).some(v => v) ? 1500000 : 660000)} /> đ/năm</span>
+                          <span className="text-[10px] md:text-xs text-slate-500 font-medium">
+                              Duy trì: <span className="text-[#0284C7] font-bold"><Counter to={550000 + (Object.values(addons).some(v => v) ? 1500000 : 660000)} /> đ/năm</span>
                           </span>
                      </div>
                  </div>
@@ -675,7 +709,7 @@ export const WebDesignPricing: React.FC = () => {
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1 }} 
                             exit={{ opacity: 0 }} 
-                            className="absolute inset-0 bg-[#080c14]/80 backdrop-blur-sm"
+                            className="absolute inset-0 bg-slate-900/45 backdrop-blur-sm"
                             onClick={() => !isSubmitting && setShowModal(false)}
                         />
                         
@@ -683,88 +717,92 @@ export const WebDesignPricing: React.FC = () => {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-lg bg-[#0d1117] rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_80px_rgba(245,158,11,0.1)] z-10"
+                            className="relative w-full max-w-lg bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl z-10"
                         >
                             <div className="p-6 md:p-8">
                                 <div className="flex items-start justify-between mb-6">
                                     <div>
-                                        <h3 className="text-2xl font-black text-white mb-1">Request Service</h3>
-                                        <p className="text-slate-400 text-sm">Điền thông tin để được hỗ trợ & tư vấn chi tiết.</p>
+                                        <h3 className="text-2xl font-black text-slate-900 mb-1">Request Service</h3>
+                                        <p className="text-slate-600 text-sm">Điền thông tin để được hỗ trợ & tư vấn chi tiết.</p>
                                     </div>
                                     <button 
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                                        className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors cursor-pointer"
                                     >
-                                        <X className="w-5 h-5 text-slate-400" />
+                                        <X className="w-5 h-5 text-slate-600" />
                                     </button>
                                 </div>
 
                                 {isSuccess ? (
                                     <div className="py-12 flex flex-col items-center text-center">
-                                        <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
-                                            <Check className="w-8 h-8 text-emerald-400" />
+                                        <div className="w-16 h-16 bg-emerald-50 border border-emerald-200 rounded-full flex items-center justify-center mb-4">
+                                            <Check className="w-8 h-8 text-emerald-600" />
                                         </div>
-                                        <h4 className="text-xl font-bold text-white mb-2">Gửi thành công!</h4>
-                                        <p className="text-slate-400">Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
+                                        <h4 className="text-xl font-bold text-slate-900 mb-2">Gửi thành công!</h4>
+                                        <p className="text-slate-600">Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email</label>
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Email</label>
                                             <input 
                                                 type="email" 
                                                 required
                                                 value={formData.email}
                                                 onChange={e => setFormData({...formData, email: e.target.value})}
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-all"
                                                 placeholder="Nhập địa chỉ email..."
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Số điện thoại</label>
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Số điện thoại</label>
                                             <input 
                                                 type="tel" 
                                                 required
                                                 value={formData.phone}
                                                 onChange={e => setFormData({...formData, phone: e.target.value})}
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-all"
                                                 placeholder="Nhập số điện thoại..."
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nội dung</label>
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Nội dung</label>
                                             <textarea 
                                                 required
                                                 value={formData.message}
                                                 onChange={e => setFormData({...formData, message: e.target.value})}
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all min-h-[100px] resize-none"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-all min-h-[100px] resize-none"
                                                 placeholder="Yêu cầu chi tiết của bạn..."
                                             />
                                         </div>
 
                                         {/* Current selection summary */}
-                                        <div className="bg-black/30 rounded-xl p-4 mt-6">
-                                            <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Thông tin tùy chọn</h5>
+                                        <div className="bg-blue-50/75 border border-blue-200/80 rounded-xl p-4 mt-6">
+                                            <h5 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Thông tin tùy chọn</h5>
                                             <div className="flex justify-between items-center mb-1">
-                                                 <span className="text-sm text-slate-300">Tổng phí (1 lần):</span>
-                                                 <span className="text-sm font-bold text-amber-400">{totalPrice.toLocaleString()} VNĐ</span>
+                                                 <span className="text-sm text-slate-700">Tổng phí (1 lần):</span>
+                                                 <span className="text-sm font-bold text-[#1E40FF]">{totalPrice.toLocaleString()} VNĐ</span>
                                             </div>
                                             <div className="flex gap-2 flex-wrap mt-2">
-                                                 {addons.sales && <span className="text-[10px] px-2 py-1 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">+ Bán hàng</span>}
-                                                 {addons.payment && <span className="text-[10px] px-2 py-1 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">+ TT Online</span>}
-                                                 {addons.users && <span className="text-[10px] px-2 py-1 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">+ QL Thành viên</span>}
-                                                 {!addons.sales && !addons.payment && !addons.users && <span className="text-[10px] text-slate-500">Mặc định (Không chọn thêm)</span>}
+                                                 {addons.sales && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ Bán hàng</span>}
+                                                 {addons.payment && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ TT Online</span>}
+                                                 {addons.users && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ QL Thành viên</span>}
+                                                 {addons.crmErp && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ CRM & ERP</span>}
+                                                 {addons.multilingual && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ Đa Ngôn Ngữ</span>}
+                                                 {addons.automation && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ Automation</span>}
+                                                 {addons.elearning && <span className="text-[10px] font-bold px-2 py-1 rounded bg-white text-[#1E40FF] border border-blue-200">+ E-Learning</span>}
+                                                 {!Object.values(addons).some(Boolean) && <span className="text-[10px] text-slate-500">Mặc định (Không chọn thêm)</span>}
                                             </div>
                                         </div>
 
                                         <button 
                                             type="submit" 
                                             disabled={isSubmitting}
-                                            className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black py-4 rounded-xl mt-4 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                            className="w-full btn-inkica-primary font-black py-4 rounded-xl mt-4 flex items-center justify-center gap-2 hover:opacity-95 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-[0_12px_28px_rgba(30,64,255,0.25)]"
                                         >
                                             {isSubmitting ? (
-                                                <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                             ) : (
                                                 <>
                                                     <Send className="w-4 h-4" />
@@ -780,7 +818,7 @@ export const WebDesignPricing: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="amber-500" />
+            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="blue-600" />
         </div>
     );
 };

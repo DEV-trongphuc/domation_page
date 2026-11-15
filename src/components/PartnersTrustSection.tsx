@@ -1,0 +1,138 @@
+import React from 'react';
+import { Award, ExternalLink, Sparkles } from 'lucide-react';
+import {
+  F1_AGENCY_PARTNERS,
+  FLAGSHIP_PARTNERS,
+} from '../data/enterpriseData';
+
+export const PartnersTrustSection: React.FC = () => {
+  return (
+    <section id="partners" className="relative py-20 sm:py-26 px-4 sm:px-6 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-12">
+          <div className="max-w-2xl">
+            <div className="ql-eyebrow mb-3">
+              <Award className="w-3.5 h-3.5 text-[#1E40FF]" />
+              <span>ĐỐI TÁC CHIẾN LƯỢC &amp; MẠNG LƯỚI ĐẠI LÝ F1</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+              Đồng Hành Cùng{' '}
+              <span className="text-gradient-inkica">Chủ Đầu Tư &amp; Doanh Nghiệp Dẫn Đầu</span>
+            </h2>
+          </div>
+          <p className="text-sm text-slate-600 max-w-md leading-relaxed">
+            Hạ tầng may đo vận hành thực tế cho Chủ đầu tư, nền tảng AI quốc tế và hệ thống sàn phân phối.
+          </p>
+        </div>
+
+        {/* Flagship Strategic Partners — Clean Minimalist Rows */}
+        <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-sm divide-y divide-slate-200/75 overflow-hidden mb-7">
+          {FLAGSHIP_PARTNERS.map((partner) => {
+            const isInkica = partner.id === 'inkica';
+            return (
+              <div
+                key={partner.id}
+                className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center hover:bg-slate-50/60 transition-colors"
+              >
+                {/* Logo & Name */}
+                <div className="lg:col-span-4 flex items-center gap-4">
+                  <div className="h-14 w-36 sm:w-40 px-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center gap-2 shrink-0">
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      loading="lazy"
+                      className="h-8 max-w-[115px] object-contain"
+                    />
+                    {isInkica && (
+                      <span className="text-base font-bold tracking-tight text-slate-900 select-none">
+                        inkica<span className="text-[#1E40FF]">.</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                      {partner.badge}
+                    </div>
+                    <h3 className="text-base font-semibold text-slate-900 leading-snug mt-0.5">
+                      {partner.name}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Concise 1-Sentence Story */}
+                <div className="lg:col-span-5">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    {partner.subtitle}
+                  </p>
+                </div>
+
+                {/* Crisp Pills + Link */}
+                <div className="lg:col-span-3 flex flex-wrap items-center lg:justify-end gap-2">
+                  {partner.metrics.map((metric) => (
+                    <span
+                      key={metric}
+                      className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-700"
+                    >
+                      {metric}
+                    </span>
+                  ))}
+
+                  {partner.url && (
+                    <a
+                      href={partner.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E40FF] hover:text-cyan-600 ml-1 shrink-0"
+                    >
+                      <span>Live</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 3 F1 Distribution Network Strip */}
+        <div className="rounded-[24px] bg-white/75 backdrop-blur-xl border border-slate-200/80 p-5 sm:p-7">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3.5 border-b border-slate-200/70">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-800">
+              <Sparkles className="w-4 h-4 text-[#1E40FF]" />
+              <span>Mạng Lưới 3 Đại Lý F1 • Chia Số Tự Động Công Bằng</span>
+            </div>
+            <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full w-fit">
+              Tỷ lệ 1 : 1 : 1 • Độ lệch ~ 0%
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/75">
+            {F1_AGENCY_PARTNERS.map((f1, i) => (
+              <div
+                key={f1.id}
+                className={`flex items-center gap-3.5 py-3.5 md:py-0 ${
+                  i === 0 ? 'md:pr-6' : i === 1 ? 'md:px-6' : 'md:pl-6'
+                }`}
+              >
+                <div className="w-12 h-12 rounded-xl bg-white border border-slate-200/80 p-1.5 flex items-center justify-center shrink-0">
+                  <img
+                    src={f1.logo}
+                    alt={f1.name}
+                    loading="lazy"
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold text-slate-900 truncate">{f1.name}</div>
+                  <div className="text-[11px] font-medium text-[#1E40FF] mt-0.5">{f1.routeMetric}</div>
+                  <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">{f1.note}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};

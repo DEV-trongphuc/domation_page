@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
   Cpu,
   Activity,
-  TrendingUp,
   GitFork,
-  MessageSquare,
-  Sparkles,
-  ArrowRight,
   ExternalLink,
-  Play
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
+import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
+import { DomationLogoMark } from './components/DomationLogoMark';
+import { DECOR_PNGS } from './data/enterpriseData';
 
 interface ToolCardProps {
   title: string;
@@ -22,8 +20,7 @@ interface ToolCardProps {
   badges: string[];
   mainUrl: string;
   detailUrl: string;
-  icon: React.ComponentType<any>;
-  themeColor: 'amber' | 'blue' | 'emerald' | 'cyan' | 'purple';
+  icon: React.ComponentType<{ className?: string }>;
   imageUrl: string;
   delay: number;
 }
@@ -34,121 +31,59 @@ const ToolCard: React.FC<ToolCardProps> = ({
   description,
   badges,
   mainUrl,
-  detailUrl,
   icon: Icon,
-  themeColor,
   imageUrl,
-  delay
+  delay,
 }) => {
-  const themeClasses = {
-    amber: {
-      border: 'hover:border-amber-500/40',
-      badge: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
-      iconBg: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
-      shadow: 'hover:shadow-[0_0_50px_rgba(245,158,11,0.15)]',
-      glow: 'from-amber-500/20 to-orange-500/5',
-      button: 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]'
-    },
-    blue: {
-      border: 'hover:border-blue-500/40',
-      badge: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-      iconBg: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-      shadow: 'hover:shadow-[0_0_50px_rgba(59,130,246,0.15)]',
-      glow: 'from-blue-500/20 to-indigo-500/5',
-      button: 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]'
-    },
-    emerald: {
-      border: 'hover:border-emerald-500/40',
-      badge: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-      iconBg: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-      shadow: 'hover:shadow-[0_0_50px_rgba(16,185,129,0.15)]',
-      glow: 'from-emerald-500/20 to-teal-500/5',
-      button: 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-    },
-    purple: {
-      border: 'hover:border-purple-500/40',
-      badge: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
-      iconBg: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
-      shadow: 'hover:shadow-[0_0_50px_rgba(168,85,247,0.15)]',
-      glow: 'from-purple-500/20 to-pink-500/5',
-      button: 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]'
-    },
-    cyan: {
-      border: 'hover:border-cyan-500/40',
-      badge: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400',
-      iconBg: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400',
-      shadow: 'hover:shadow-[0_0_50px_rgba(6,182,212,0.15)]',
-      glow: 'from-cyan-500/20 to-blue-500/5',
-      button: 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]'
-    }
-  };
-
-  const classes = themeClasses[themeColor];
-
   return (
     <motion.a
       href={mainUrl}
       target="_blank"
       rel="noreferrer"
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={`block group relative rounded-3xl p-6 md:p-8 bg-white/[0.02] border border-white/10 ${classes.border} transition-all duration-500 overflow-hidden ${classes.shadow}`}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] }}
+      className="inkica-glass-card block group relative p-6 md:p-8 overflow-hidden hover:border-blue-300 transition-all duration-300"
     >
-      {/* Background glow overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${classes.glow} opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-3xl`} />
-
-      {/* Decorative noise grid details */}
-      <div className="absolute inset-0 opacity-[0.015] pointer-events-none" style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',
-        backgroundSize: '20px 20px'
-      }} />
-
       <div className="relative z-10 flex flex-col h-full justify-between">
         <div>
-          {/* Header section with Icon & link indicator */}
+          {/* Header section */}
           <div className="flex items-center justify-between mb-6">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${classes.iconBg}`}>
-              <Icon className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white shadow-[0_8px_20px_-4px_rgba(30,64,255,0.3)]">
+              <Icon className="w-5 h-5" />
             </div>
-            <div
-              className="text-slate-500 group-hover:text-white p-2 group-hover:bg-white/5 rounded-full transition-colors"
-            >
+            <div className="text-slate-400 group-hover:text-[#1E40FF] p-2 group-hover:bg-blue-50 rounded-full transition-colors">
               <ArrowUpRight className="w-5 h-5" />
             </div>
           </div>
 
-          {/* Title and Subtitle */}
-          <span className={`text-xs font-bold uppercase tracking-wider ${themeColor === 'amber' ? 'text-amber-400' : themeColor === 'blue' ? 'text-blue-400' : themeColor === 'purple' ? 'text-purple-400' : themeColor === 'emerald' ? 'text-emerald-400' : 'text-cyan-400'} mb-1.5 block`}>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#1E40FF] mb-1.5 block">
             {subtitle}
           </span>
-          <h3 className="text-xl md:text-2xl font-black text-white mb-3 tracking-tight group-hover:text-white transition-colors">
+          <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-[#1E40FF] transition-colors">
             {title}
           </h3>
 
-          {/* Description */}
-          <p className="text-slate-400 text-sm leading-relaxed mb-6">
-            {description}
-          </p>
+          <p className="text-slate-600 text-sm leading-relaxed mb-6">{description}</p>
 
           {/* Card Mockup Image */}
-          <div className="relative rounded-xl overflow-hidden border border-white/5 bg-slate-950/40 mb-6 aspect-[16/10] group-hover:border-white/10 transition-colors">
+          <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 bg-slate-100 mb-6 aspect-[16/10] shadow-sm">
             <img
               src={imageUrl}
               alt={`${title} Interface`}
               className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-700"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
           </div>
 
           {/* Badges */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-7">
             {badges.map((badge) => (
               <span
                 key={badge}
-                className={`px-3 py-1 rounded-lg border text-xs font-semibold ${classes.badge}`}
+                className="px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200/80 text-[#1E40FF] text-xs font-semibold"
               >
                 {badge}
               </span>
@@ -156,11 +91,9 @@ const ToolCard: React.FC<ToolCardProps> = ({
           </div>
         </div>
 
-        {/* Buttons / Actions */}
-        <div className="pt-4 border-t border-white/5">
-          <div
-            className={`w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm transition-all duration-300 ${classes.button}`}
-          >
+        {/* Action */}
+        <div className="pt-4 border-t border-slate-200/80">
+          <div className="btn-inkica-primary w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm font-bold">
             Truy cập App
             <ExternalLink className="w-4 h-4" />
           </div>
@@ -171,229 +104,201 @@ const ToolCard: React.FC<ToolCardProps> = ({
 };
 
 export const IdeasLanding: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "IDEAS Company Ecosystem | DOMATION";
+    document.title = 'IDEAS Company Ecosystem | DOMATION';
 
-    // Dynamically update meta description for SEO best practices
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'Trang tổng hợp liên kết truy cập các ứng dụng phần mềm được tùy biến chuyên biệt dành cho Viện IDEAS: Marketing Automation, Meta Report, Chia data Auto, Misa CRM Report.');
+      metaDesc.setAttribute(
+        'content',
+        'Trang tổng hợp liên kết truy cập các ứng dụng phần mềm được tùy biến chuyên biệt dành cho Viện IDEAS: Marketing Automation, Meta Report, Chia data Auto, Misa CRM Report.'
+      );
     }
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const ideasLogoUrl = "https://ideas.edu.vn/wp-content/uploads/2025/10/518336360_122227900856081421_6060559121060410681_n.webp";
-
+  const ideasLogoUrl =
+    'https://ideas.edu.vn/wp-content/uploads/2025/10/518336360_122227900856081421_6060559121060410681_n.webp';
 
   const tools: ToolCardProps[] = [
     {
-      title: "Marketing Automation",
-      subtitle: "Tự động hóa kịch bản đa kênh",
-      description: "Xây dựng kịch bản tiếp thị đa kênh (Email, Zalo, Messenger) tự động. Hỗ trợ rẽ nhánh thông minh dựa trên tương tác, Lead Score và tích hợp trợ lý AI 24/7 đón đầu khách hàng tiềm năng.",
-      badges: ["Amazon SES", "Zalo ZNS", "Messenger Bot", "AI Virtual Agent"],
-      mainUrl: "https://automation.ideas.edu.vn/",
-      detailUrl: "/automation",
+      title: 'Marketing Automation',
+      subtitle: 'Tự động hóa kịch bản đa kênh',
+      description:
+        'Xây dựng kịch bản tiếp thị đa kênh (Email, Zalo, Messenger) tự động. Hỗ trợ rẽ nhánh thông minh dựa trên tương tác, Lead Score và tích hợp trợ lý AI 24/7 đón đầu khách hàng tiềm năng.',
+      badges: ['Amazon SES', 'Zalo ZNS', 'Messenger Bot', 'AI Virtual Agent'],
+      mainUrl: 'https://automation.ideas.edu.vn/',
+      detailUrl: '/automation',
       icon: Cpu,
-      themeColor: "amber" as const,
-      imageUrl: "/imgs/home.jpg",
-      delay: 0.1
+      imageUrl: '/imgs/home.jpg',
+      delay: 0.1,
     },
     {
-      title: "Meta Realtime Report",
-      subtitle: "Báo cáo quảng cáo Meta Ads tức thì",
-      description: "Hệ thống tổng hợp báo cáo chi tiết hiệu suất quảng cáo Facebook & Instagram thời gian thực. Phân tích khung giờ chuyển đổi vàng, admin log chi tiết, tối ưu hóa ngân sách và scale chiến dịch.",
-      badges: ["Realtime Ads", "Hour Metrics", "AI Analytics", "Budget Optimizer"],
-      mainUrl: "https://meta.domation.net/ideas",
-      detailUrl: "/meta-report",
+      title: 'Meta Realtime Report',
+      subtitle: 'Báo cáo quảng cáo Meta Ads tức thì',
+      description:
+        'Hệ thống tổng hợp báo cáo chi tiết hiệu suất quảng cáo Facebook & Instagram thời gian thực. Phân tích khung giờ chuyển đổi vàng, admin log chi tiết, tối ưu hóa ngân sách và scale chiến dịch.',
+      badges: ['Realtime Ads', 'Hour Metrics', 'AI Analytics', 'Budget Optimizer'],
+      mainUrl: 'https://meta.domation.net/ideas',
+      detailUrl: '/meta-report',
       icon: Activity,
-      themeColor: "amber" as const,
-      imageUrl: "/meta/meta_app.png",
-      delay: 0.2
+      imageUrl: '/meta/meta_app.png',
+      delay: 0.2,
     },
     {
-      title: "Auto Lead Router",
-      subtitle: "Phân bổ dữ liệu tự động cho Sale",
-      description: "Điều phối Lead tự động từ Landing Page/Form về đội ngũ kinh doanh theo cơ chế xoay vòng (Round-Robin). Thông báo qua Zalo Bot tức thì, tự động đền bù data lỗi minh bạch.",
-      badges: ["Round-Robin", "Zalo Bot Notify", "Data Compensation", "Auto Routing"],
-      mainUrl: "https://ideas-data.vercel.app/",
-      detailUrl: "/data",
+      title: 'Auto Lead Router',
+      subtitle: 'Phân bổ dữ liệu tự động cho Sale',
+      description:
+        'Điều phối Lead tự động từ Landing Page/Form về đội ngũ kinh doanh theo cơ chế xoay vòng (Round-Robin). Thông báo qua Zalo Bot tức thì, tự động đền bù data lỗi minh bạch.',
+      badges: ['Round-Robin', 'Zalo Bot Notify', 'Data Compensation', 'Auto Routing'],
+      mainUrl: 'https://ideas-data.vercel.app/',
+      detailUrl: '/data',
       icon: GitFork,
-      themeColor: "purple" as const,
-      imageUrl: "/meta/auto_data.png",
-      delay: 0.3
+      imageUrl: '/meta/auto_data.png',
+      delay: 0.3,
     },
-    // {
-    //   title: "Report CRM MISA",
-    //   subtitle: "Đồng bộ phễu & thống kê doanh số",
-    //   description: "Đồng bộ dữ liệu trực tiếp từ hệ thống CRM MISA AMIS. Báo cáo trực quan sales pipeline, thống kê doanh số theo nguồn data, đo lường năng lực chốt đơn của sales và cảnh báo trễ hạn.",
-    //   badges: ["MISA AMIS Sync", "Sales Pipeline", "CRM Dashboard", "Performance KPI"],
-    //   mainUrl: "https://dev-trongphuc.github.io/DOM_MISA_IDEAS_CRM/",
-    //   detailUrl: "/crm",
-    //   icon: TrendingUp,
-    //   themeColor: "cyan" as const,
-    //   imageUrl: "/meta/misa_data.png",
-    //   delay: 0.4
-    // }
   ];
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-white overflow-x-hidden font-sans selection:bg-amber-500/30">
-      <style>{`
-        @keyframes shimmer-sweep {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        .shimmer-text {
-          background: linear-gradient(90deg, #f59e0b 0%, #fb923c 20%, #fde68a 40%, #f97316 60%, #ef4444 80%, #f59e0b 100%);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shimmer-sweep 4s linear infinite;
-        }
-        .shimmer-orange {
-          background: linear-gradient(90deg, #f59e0b 0%, #f97316 50%, #f59e0b 100%);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shimmer-sweep 3s linear infinite;
-        }
-        @keyframes float-y {
-          0%,100% { transform: translate3d(0,0px,0); }
-          50% { transform: translate3d(0,-8px,0); }
-        }
-        .float {
-          animation: float-y 6s ease-in-out infinite;
-        }
-      `}</style>
+    <div className="min-h-screen bg-[#F8F9FA] text-slate-900 overflow-x-clip font-sans relative selection:bg-[#1E40FF] selection:text-white">
+      <LuxuryGoldBackdrop />
 
-      {/* ── Background: Premium Blurry Auroras ── */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-20%] left-[-15%] w-[60%] h-[60%] rounded-full bg-amber-500/[0.08] blur-[140px] md:blur-[180px]" />
-        <div className="absolute top-[10%] right-[-15%] w-[55%] h-[55%] rounded-full bg-blue-600/[0.07] blur-[140px] md:blur-[180px]" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-emerald-500/[0.05] blur-[120px] md:blur-[160px]" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[45%] h-[45%] rounded-full bg-cyan-500/[0.06] blur-[120px]" />
-
-        {/* Sleek Grid Overlay */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',
-          backgroundSize: '80px 80px'
-        }} />
-      </div>
-
-      {/* ── Navigation Header ── */}
+      {/* Navigation Header */}
       <Navbar activePage="ideas" onOpenContact={() => setShowContactModal(true)} />
 
-      {/* ── Hero Section ── */}
-      <section className="relative pt-32 pb-8 md:pt-40 md:pb-12 px-6 z-10 flex flex-col items-center justify-center">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* Floating 3D PNG Decors */}
+      <motion.img
+        src={DECOR_PNGS.prism}
+        alt=""
+        aria-hidden="true"
+        animate={{ y: [0, -14, 0], rotate: [-4, 4, -4] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        className="hidden xl:block pointer-events-none select-none fixed top-32 left-[2%] w-28 h-28 object-contain opacity-65 z-0"
+      />
+      <motion.img
+        src={DECOR_PNGS.torus}
+        alt=""
+        aria-hidden="true"
+        animate={{ y: [0, 14, 0], rotate: [5, -5, 5] }}
+        transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut' }}
+        className="hidden xl:block pointer-events-none select-none fixed top-44 right-[2%] w-28 h-28 object-contain opacity-65 z-0"
+      />
 
-          {/* Badge */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#161b22]/80 border border-amber-500/30 text-amber-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-md shadow-[0_0_20px_rgba(245,158,11,0.1)]"
-          >
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div> READY TO SCALE 🚀
+      {/* Hero Section */}
+      <section className="relative pt-28 pb-10 md:pt-36 md:pb-14 px-6 z-10 flex flex-col items-center justify-center">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="ql-eyebrow mb-5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> READY TO SCALE • IDEAS ECOSYSTEM
           </motion.div>
 
-          {/* Heading */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xs sm:text-sm md:text-base font-bold text-white/60 uppercase tracking-[0.3em] mb-3 md:mb-4"
-          >
-            HỆ THỐNG CÔNG CỤ HỖ TRỢ
-          </motion.h2>
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-3xl sm:text-[2.5rem] md:text-[3.25rem] lg:text-[3.75rem] xl:text-[4.5rem] 2xl:text-[5rem] font-black uppercase mb-6 py-2 leading-normal tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 drop-shadow-[0_0_35px_rgba(245,158,11,0.45)] sm:whitespace-nowrap"
-            style={{ animation: 'shimmer-sweep 4s linear infinite', backgroundSize: '200% auto' }}
+            transition={{ duration: 0.65, delay: 0.12 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-5 leading-[1.12]"
           >
-            MARKETING TOOLS
+            Hệ Thống Công Cụ{' '}
+            <span className="text-gradient-inkica">Marketing Tools</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-0"
+            transition={{ duration: 0.65, delay: 0.2 }}
+            className="text-slate-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-medium"
           >
-            Trang tổng hợp hệ thống dashboard và các công cụ tự động hóa (automation tools) được tùy biến chuyên biệt nhằm tối ưu hóa quy trình vận hành nội bộ, nâng cao hiệu suất theo dõi và tự động báo cáo số liệu tức thời cho <strong className="text-slate-200">IDEAS</strong>.
+            Trang tổng hợp hệ thống dashboard và các công cụ tự động hóa được tùy biến chuyên biệt nhằm tối ưu hóa quy
+            trình vận hành nội bộ, nâng cao hiệu suất theo dõi và tự động báo cáo số liệu tức thời cho{' '}
+            <strong className="text-slate-900">IDEAS</strong>.
           </motion.p>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-3 mt-10 w-full max-w-4xl"
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.28 }}
+            className="flex flex-wrap items-center justify-center gap-3 mt-9 w-full max-w-4xl mx-auto"
           >
             {tools.map((tool, idx) => (
-                <a key={idx} href={tool.mainUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 px-4 md:px-5 py-3 rounded-2xl bg-[#161b22] border border-white/5 hover:border-amber-500/40 hover:bg-white/5 text-slate-300 hover:text-white hover:-translate-y-0.5 transition-all duration-300 text-xs md:text-sm font-bold shadow-lg">
-                    <tool.icon className={`w-4 h-4 ${tool.themeColor === 'amber' ? 'text-amber-500' : tool.themeColor === 'blue' ? 'text-blue-500' : tool.themeColor === 'purple' ? 'text-purple-500' : tool.themeColor === 'emerald' ? 'text-emerald-500' : 'text-cyan-500'}`} />
-                    {tool.title === "Auto Lead Router" ? "Auto Chia Data" : tool.title === "Report CRM MISA" ? "CRM Quản trị doanh nghiệp" : tool.title}
-                </a>
+              <a
+                key={idx}
+                href={tool.mainUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="ql-btn-outline flex items-center gap-2.5 px-4 md:px-5 py-3 rounded-full text-xs md:text-sm font-bold"
+              >
+                <tool.icon className="w-4 h-4 text-[#1E40FF]" />
+                {tool.title === 'Auto Lead Router' ? 'Auto Chia Data' : tool.title}
+              </a>
             ))}
           </motion.div>
-
-
         </div>
       </section>
 
-      {/* ── 4 Tool Cards Grid Section ── */}
-      <section id="tools" className="pb-24 px-6 z-10 relative max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {tools.map((tool, index) => (
+      {/* Tool Cards Grid Section */}
+      <section id="tools" className="pb-20 px-6 z-10 relative max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+          {tools.map((tool) => (
             <ToolCard key={tool.title} {...tool} />
           ))}
         </div>
       </section>
 
-      {/* ── Partner Section ── */}
-      <section className="py-16 border-t border-white/5 bg-white/[0.01] z-10 relative">
+      {/* Partner Section */}
+      <section className="py-14 border-t border-slate-200/80 bg-white/55 backdrop-blur-sm z-10 relative">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">Được liên kết & vận hành trực tiếp bởi</h3>
-          <div className="flex items-center justify-center gap-6 md:gap-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
-            <div className="flex items-center gap-2">
-              <img src="/imgs/ICON.png" alt="DOMATION" className="h-6 object-contain rounded" />
-              <span className="text-sm font-bold text-slate-300">DOMATION</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">
+            Được liên kết &amp; vận hành trực tiếp bởi
+          </h3>
+          <div className="flex items-center justify-center gap-6 md:gap-8">
+            <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/90 shadow-sm">
+              <DomationLogoMark size={24} />
+              <span className="text-sm font-black text-slate-900">DOMATION.NET</span>
             </div>
-            <div className="w-1.5 h-1.5 rounded-full bg-slate-700" />
-            <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+            <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/90 shadow-sm">
               <img src={ideasLogoUrl} alt="IDEAS" className="h-6 object-contain rounded" />
-              <span className="text-sm font-bold text-slate-300">IDEAS</span>
+              <span className="text-sm font-black text-slate-900">IDEAS</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-white/5 py-12 px-6 bg-[#04060e] z-10 relative text-center">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <img src="/imgs/ICON.png" alt="DOMATION" className="w-6 h-6 rounded-lg object-contain opacity-40 grayscale" />
-          <span className="text-sm font-black tracking-widest text-white/20 uppercase">DOMATION</span>
+      {/* Footer */}
+      <footer className="border-t border-slate-200/80 py-10 px-6 bg-white/80 backdrop-blur-md z-10 relative text-center pb-24 sm:pb-12">
+        <div className="flex items-center justify-center gap-2.5 mb-3">
+          <DomationLogoMark size={28} />
+          <span className="text-sm font-black tracking-wider text-slate-900 uppercase">DOMATION.NET</span>
         </div>
-        <p className="text-slate-700 text-xs mb-2">© {new Date().getFullYear()} Nền tảng số hóa doanh nghiệp toàn diện.</p>
-        <p className="text-slate-600 text-[10px] uppercase tracking-[0.2em]">
-          Powered by <a href="https://fb.com/turni0" target="_blank" rel="noreferrer" className="text-orange-500/60 hover:text-orange-500 transition-colors font-bold">TurnioDEV</a>
+        <p className="text-slate-500 text-xs mb-1.5">
+          © {new Date().getFullYear()} Nền tảng số hóa doanh nghiệp toàn diện.
+        </p>
+        <p className="text-slate-400 text-[10px] uppercase tracking-[0.2em]">
+          Powered by{' '}
+          <a
+            href="https://fb.com/turni0"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#1E40FF] hover:underline font-bold"
+          >
+            TurnioDEV
+          </a>
         </p>
       </footer>
 
-      {/* ── Support Contact Modal ── */}
-      <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="amber-500" />
+      {/* Centered Sticky Back to Top */}
+      <button
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="Lên đầu trang"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
+      >
+        ↑ Đầu trang
+      </button>
+
+      {/* Support Contact Modal */}
+      <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} />
     </div>
   );
 };

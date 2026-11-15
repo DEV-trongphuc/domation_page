@@ -1,605 +1,978 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare } from 'lucide-react';
-import { ContactModal } from './ContactModal';
-
+import React, { useEffect, useState } from 'react';
+import {
+  ArrowRight,
+  ArrowUp,
+  Bot,
+  Building2,
+  Calculator,
+  CheckCircle2,
+  Cpu,
+  Database,
+  ExternalLink,
+  Layers,
+  MonitorSmartphone,
+  Network,
+  Sparkles,
+  Workflow,
+} from 'lucide-react';
 import { Navbar } from './Navbar';
+import { ContactModal } from './ContactModal';
+import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
+import { InteractiveBrandSphere } from './components/InteractiveBrandSphere';
+import {
+  type InspectionTabId,
+  ProductInspectionModal,
+} from './components/ProductInspectionModal';
+import { WebEstimatorModal } from './components/WebEstimatorModal';
+import { PartnersTrustSection } from './components/PartnersTrustSection';
+import { SectionQuickDock } from './components/SectionQuickDock';
+import { DomationLogoMark } from './components/DomationLogoMark';
+import {
+  CASE_STUDY_SPOTLIGHTS,
+  CORE_OPERATION_PILLARS,
+  DECOR_PNGS,
+  DOMATION_SAAS_PLANS,
+  ENTERPRISE_STORY_CHAPTERS,
+  MULTI_AGENT_NODES,
+} from './data/enterpriseData';
+import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 
-// ── Lightbox ────────────────────────────────────────────────────
-const Lightbox = ({ src, onClose }: { src: string; onClose: () => void }) => {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+const DEDICATED_APP_LINKS = [
+  { label: 'ERP 5.0', href: '/erp' },
+  { label: 'CRM 360°', href: '/crm' },
+  { label: 'AI & Flow', href: '/automation' },
+  { label: 'Auto Data', href: '/data' },
+  { label: 'Meta Ads BI', href: '/meta-report' },
+  { label: 'Thiết Kế Web', href: '/web-design' },
+];
 
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-black/85 backdrop-blur-md"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.88, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 10 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="relative max-w-5xl w-full max-h-[90vh]"
-          onClick={e => e.stopPropagation()}
-        >
-          <img src={src} alt="Preview" className="w-full h-full object-contain rounded-2xl shadow-2xl" style={{ maxHeight: '85vh' }} />
-          <button
-            onClick={onClose}
-            className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-lg transition-colors"
-          >✕</button>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+const AGENT_ICONS = [Workflow, Bot, Cpu, Layers];
 
-// ── Image Gallery Block ─────────────────────────────────────────
-const GalleryBlock = ({
-  main, thumbs, accentGlow, onOpen,
-}: {
-  main: string; thumbs: string[]; accentGlow: string; onOpen: (src: string) => void;
-}) => (
-  <div className="flex flex-col gap-3">
-    {/* Main image */}
-    <div
-      className="relative rounded-[22px] overflow-hidden border border-white/10 cursor-zoom-in group"
-      style={{ boxShadow: `0 0 60px ${accentGlow}` }}
-      onClick={() => onOpen(main)}
-    >
-      <img src={main} alt="Main" className="w-full h-auto object-cover group-hover:scale-[1.03] transition-transform duration-700" loading="lazy" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-        <span className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-bold text-white">🔍 Phóng to</span>
-      </div>
-    </div>
-    {/* Thumbnails */}
-    <div className={`grid gap-3 ${thumbs.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-      {thumbs.map((src, i) => (
-        <div
-          key={i}
-          className="relative rounded-[14px] overflow-hidden border border-white/10 cursor-zoom-in group aspect-video"
-          onClick={() => onOpen(src)}
-        >
-          <img src={src} alt={`thumb-${i}`} className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-500" loading="lazy" />
-          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-white text-lg">🔍</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-// ── Main ────────────────────────────────────────────────────────
 export const DomationHome: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const [showContactModal, setShowContactModal] = useState(false);
-  const openLightbox = useCallback((src: string) => setLightboxSrc(src), []);
-  const closeLightbox = useCallback(() => setLightboxSrc(null), []);
+  const [inspectionOpen, setInspectionOpen] = useState(false);
+  const [inspectionTab, setInspectionTab] = useState<InspectionTabId>('erp');
+  const [estimatorOpen, setEstimatorOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactDefaults, setContactDefaults] = useState<{
+    service?: string;
+    note?: string;
+  }>({});
+
+  const [activePillarIdx, setActivePillarIdx] = useState(0);
+  const [billingYearly, setBillingYearly] = useState(true);
+  const [showBackTop, setShowBackTop] = useState(false);
+
+  const openInspection = (tab: InspectionTabId) => {
+    setInspectionTab(tab);
+    setInspectionOpen(true);
+  };
+
+  const openContact = (service?: string, note?: string) => {
+    setContactDefaults({ service, note });
+    setContactOpen(true);
+  };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setShowBackTop(window.scrollY > 560);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const currentPillar =
+    CORE_OPERATION_PILLARS[activePillarIdx] || CORE_OPERATION_PILLARS[0];
+
   return (
-    <div className="min-h-screen bg-[#080c14] text-white overflow-x-hidden" style={{ fontFamily: "'Inter',sans-serif", scrollbarWidth: 'thin', scrollbarColor: '#f97316 transparent' }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
-        .shimmer-orange { background:linear-gradient(90deg,#fbbf24 0%,#f97316 35%,#fb923c 65%,#fbbf24 100%); background-size:200% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 4s linear infinite; }
-        .shimmer-meta { background:linear-gradient(90deg,#f97316 0%,#ef4444 50%,#f97316 100%); background-size:200% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 4s linear infinite; }
-        .shimmer-crm { background:linear-gradient(90deg,#a855f7 0%,#ec4899 50%,#a855f7 100%); background-size:200% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 4s linear infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-        .float { animation: float 4s ease-in-out infinite; }
-        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-        .pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
-        @keyframes bg1 { 0%,100%{opacity:.1} 50%{opacity:.17} }
-        @keyframes bg2 { 0%,100%{opacity:.07} 50%{opacity:.13} }
-      `}</style>
+    <div className="min-h-screen relative text-slate-900 selection:bg-blue-600 selection:text-white font-sans">
+      <LuxuryGoldBackdrop />
+      <SectionQuickDock />
 
-      {/* BG */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-orange-500/[0.12] blur-[130px]" style={{ animation: 'bg1 20s ease-in-out infinite' }} />
-        <div className="absolute bottom-[10%] right-[-15%] w-[55%] h-[55%] rounded-full bg-amber-500/[0.08] blur-[130px]" style={{ animation: 'bg2 25s ease-in-out infinite' }} />
-        <div className="hidden md:block absolute inset-0 opacity-[0.025]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)', backgroundSize: '60px 60px' }} />
-      </div>
+      <Navbar
+        activePage="home"
+        onOpenContact={() => openContact()}
+        onOpenShowcase={() => openInspection('erp')}
+      />
 
-      {/* Nav */}
-      <Navbar activePage="home" onOpenContact={() => setShowContactModal(true)} />
+      <main className="relative z-10 pt-20 sm:pt-24">
+        {/* ================================================================ */}
+        {/* 1. HERO — BESPOKE ENTERPRISE OS & MULTI-AGENT FOCUS              */}
+        {/* ================================================================ */}
+        <section
+          id="hero"
+          className="relative px-4 sm:px-6 pt-4 pb-14 sm:pb-20 overflow-hidden"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+              {/* Left Executive Narrative */}
+              <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center justify-center lg:justify-start">
+                  <span className="ql-eyebrow">
+                    <Sparkles className="w-3.5 h-3.5 text-[#1E40FF]" />
+                    <span>THIẾT KẾ RIÊNG CHO TỪNG DOANH NGHIỆP • BESPOKE AI &amp; ERP</span>
+                  </span>
+                </div>
 
-      {/* Hero */}
-      <section className="relative z-10 pt-40 pb-20 px-6 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-orange-500/5 border border-orange-500/20 text-[10px] font-bold text-orange-400 uppercase tracking-[0.2em] mb-10 backdrop-blur-sm">
-          <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" />
-          READY TO SCALE 🚀
-        </motion.div>
+                <h1 className="text-3xl sm:text-4xl xl:text-[44px] font-bold text-slate-900 tracking-[-0.015em] space-y-2">
+                  <span className="block leading-[1.3]">Hệ Điều Hành Vận Hành &amp;</span>
+                  <span className="block leading-[1.3] text-gradient-inkica">
+                    Multi-Agent Thiết Kế Riêng
+                  </span>
+                </h1>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }}
-          className="flex flex-col items-center mb-8">
-          <span className="text-white text-lg md:text-xl font-black tracking-[0.4em] uppercase mb-4 opacity-95" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3)' }}>
-            BUILT TO SCALE
-          </span>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.85] uppercase shimmer-orange drop-shadow-[0_0_50px_rgba(249,115,22,0.6)]">
-            DOMATION
-          </h1>
-        </motion.div>
+                {/* Concise Value Proposition Glass Box (Zero 3D mention, zero clutter) */}
+                <div className="relative rounded-2xl inkica-glass-card px-4 py-3.5 sm:px-5 sm:py-4 max-w-xl mx-auto lg:mx-0">
+                  <p className="text-sm sm:text-[15px] text-slate-600 leading-[1.75] font-normal">
+                    May đo kiến trúc{' '}
+                    <span className="font-semibold text-[#1E40FF]">
+                      ERP – CRM – Flow Tự Động
+                    </span>{' '}
+                    và đội ngũ{' '}
+                    <span className="font-semibold text-slate-900">
+                      Multi-Agent AI
+                    </span>{' '}
+                    bám sát 100% cơ cấu tổ chức, quy trình phê duyệt và đặc thù vận hành của từng doanh nghiệp.
+                  </p>
+                </div>
 
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}
-          className="text-slate-400 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-10">
-          Tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ theo dõi ra quyết định trên thời gian thực.<br />
-          <strong className="text-slate-200">Tối ưu hóa quy trình báo cáo</strong> tiết kiệm nguồn lực và thời gian.
-        </motion.p>
+                {/* Clean 3-Row Executive Focus Card + Integrated Channel Logos */}
+                <div className="rounded-2xl bg-white/85 backdrop-blur-xl border border-slate-200/80 p-4 sm:p-5 shadow-xs max-w-xl mx-auto lg:mx-0 text-left space-y-3">
+                  <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-200/70">
+                    <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Trọng Tâm Kiến Trúc DOMATION
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400 whitespace-nowrap shrink-0">
+                      BESPOKE OS
+                    </span>
+                  </div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 gap-3 max-w-sm mx-auto px-4 md:px-0 md:max-w-none md:flex md:flex-wrap md:justify-center md:gap-4">
-          <a href="/erp" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-6 md:py-3.5 rounded-xl md:rounded-2xl border border-rose-500/40 bg-rose-500/15 text-rose-300 font-black text-[11px] md:text-sm hover:border-rose-500/70 hover:bg-rose-500/25 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center shadow-[0_0_25px_rgba(244,63,94,0.3)]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-rose-400 group-hover:scale-110 transition-transform shrink-0">
-              <path d="M3 21h18M3 7v14M21 7v14M7 21V3h10v18M11 7h2M11 11h2M11 15h2"/>
-            </svg>
-            <span className="leading-tight flex items-center gap-1.5">Hệ Thống ERP <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider">Mới</span></span>
-          </a>
-          <a href="/automation" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-6 md:py-3.5 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-            <span className="leading-tight">Marketing Automation</span>
-          </a>
-          <a href="/meta-report" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
-              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-            </svg>
-            <span className="leading-tight">Meta Realtime Report</span>
-          </a>
-          <a href="/crm" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            <span className="leading-tight">CRM Quản trị doanh nghiệp</span>
-          </a>
-          <a href="/data" className="group flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-3 py-4 md:px-7 md:py-4 rounded-xl md:rounded-2xl border border-white/10 bg-white/5 text-slate-300 font-bold text-[11px] md:text-sm hover:border-orange-500/40 hover:bg-orange-500/10 hover:-translate-y-1 transition-all duration-300 backdrop-blur-md text-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 md:w-5 md:h-5 text-orange-400 group-hover:scale-110 transition-transform shrink-0">
-              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-            </svg>
-            <span className="leading-tight">Auto Chia Data</span>
-          </a>
-        </motion.div>
-      </section>
+                  <div className="space-y-2.5 text-xs sm:text-[13px] text-slate-600">
+                    <div className="flex items-start gap-2.5">
+                      <Cpu className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" />
+                      <span className="leading-snug">
+                        <strong className="font-semibold text-slate-800">May Đo Vận Hành:</strong>{' '}
+                        ERP 5.0, Task, Nhân sự &amp; Cấp duyệt riêng
+                      </span>
+                    </div>
 
-      {/* ── SECTION 0: ENTERPRISE ERP (NEW) ── */}
-      <section id="section-erp" className="relative z-10 py-24 px-6 border-b border-white/5 bg-gradient-to-b from-[#0b0e1a]/80 via-[#080b12] to-transparent">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[11px] font-bold uppercase tracking-widest mb-6">
-              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-rose-500" /> Phân hệ Mới • Enterprise ERP 5.0
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">
-              Hệ Thống ERP<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-red-400 to-rose-600">
-                AI Automation & Workflow
-              </span>
-            </h2>
-            <p className="text-slate-300 text-base leading-relaxed mb-6">
-              Hệ sinh thái Quản trị & Vận hành Doanh nghiệp toàn diện: Tự động chia Lead qua 5 cổng kiểm duyệt, Chấm công định vị GPS & Selfie AI, Bảng lương tự động lũy tiến và quản trị dòng tiền khép kín.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {['Auto-Routing 5 Cổng', 'Chấm Công GPS & AI Selfie', 'Bảng Lương Động', 'Phiếu Lương PDF', 'Purchase Order', 'Forward-only CAPI', 'Bảo Mật RLS'].map(t => (
-                <span key={t} className="px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-semibold">{t}</span>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <a href="/erp" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(244,63,94,.4)]">
-                Khám phá Chi tiết ERP →
-              </a>
-              <a href="/erp#thu-vien-anh" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-rose-500/30 text-rose-300 font-bold text-sm hover:bg-rose-500/10 hover:-translate-y-0.5 transition-all">
-                Xem 15 Ảnh Giao Diện
-              </a>
-            </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
-            <GalleryBlock
-              main="/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg"
-              thumbs={[
-                '/ERP-Product/1788856522396_2141578413905312186_2310722037673454867_637ed02e6f5c0e0560d1bcac82cf9a19.jpg',
-                '/ERP-Product/1788856668006_2141578413905312186_2310722037673454867_72b9a0047bb54f03c54fb657c81e41dc.jpg',
-                '/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg'
-              ]}
-              accentGlow="rgba(244,63,94,0.18)"
-              onOpen={openLightbox}
-            />
-          </motion.div>
-        </div>
-      </section>
+                    <div className="flex items-start gap-2.5">
+                      <Network className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
+                      <span className="leading-snug">
+                        <strong className="font-semibold text-slate-800">Multi-Agent AI:</strong>{' '}
+                        Đội ngũ Agent chuyên trách phối hợp 24/7
+                      </span>
+                    </div>
 
-      {/* ── SECTION 1: AUTOMATION ── */}
-      <section id="section-automation" className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-bold uppercase tracking-widest mb-6">
-              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-amber-400" /> Sản phẩm 01
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">Marketing<br /><span className="shimmer-orange">Automation</span></h2>
-            <p className="text-slate-400 text-base leading-relaxed mb-6">
-              Tự động hóa toàn bộ hành trình khách hàng đa kênh. Flow Builder kéo thả trực quan, Lead Score thông minh, Web Tracking chuyên sâu — Email, Zalo ZNS, Meta Messenger và AI Chatbot.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {['Email Scale', 'Zalo ZNS', 'AI Chatbot', 'Flow Builder', 'Web Tracking', 'Lead Score'].map(t => (
-                <span key={t} className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">{t}</span>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <a href="/automation" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(245,158,11,.3)]">
-                Khám phá Automation →
-              </a>
-              <a href="/automation" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-amber-500/30 text-amber-300 font-bold text-sm hover:bg-amber-500/10 hover:-translate-y-0.5 transition-all">
-                View Guess Demo
-              </a>
-            </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
-            <GalleryBlock
-              main="/imgs/home.jpg"
-              thumbs={['/imgs/flow.jpg', '/imgs/email build.jpg', '/imgs/website tracking.jpg']}
-              accentGlow="rgba(245,158,11,0.12)"
-              onOpen={openLightbox}
-            />
-          </motion.div>
-        </div>
-      </section>
+                    <div className="pt-1 flex flex-wrap items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
+                        <Bot className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>Tích Hợp Đa Kênh:</span>
+                      </span>
+                      <ChannelLogoStrip variant="compact" />
+                    </div>
+                  </div>
+                </div>
 
-      {/* ── SECTION 2: META REPORT ── */}
-      <section id="section-meta" className="relative z-10 py-24 px-6 border-t border-white/5 bg-[#050810]">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-900/8 to-transparent pointer-events-none" />
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }} className="order-2 lg:order-1">
-            <GalleryBlock
-              main="/imgs/dom_rp (1).webp"
-              thumbs={['/imgs/dom_rp (6).webp', '/imgs/dom_rp (5).webp']}
-              accentGlow="rgba(249,115,22,0.12)"
-              onOpen={openLightbox}
-            />
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }} className="order-1 lg:order-2">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-widest mb-6">
-              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" /> Sản phẩm 02
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">Meta Ad<br /><span className="shimmer-meta">Realtime Report</span></h2>
-            <p className="text-slate-400 text-base leading-relaxed mb-6">
-              Hệ thống báo cáo Meta Ads thời gian thực, độc lập với Business Manager. AI phân tích Khung Giờ Vàng chốt sale, Admin Log chi tiết, tối ưu và Scale ngân sách thông minh.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {['Real-time Data', 'AI Insights', 'Khung Giờ Vàng', 'Scale Budget', 'Admin Log', 'Cost Analysis'].map(t => (
-                <span key={t} className="px-3 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold">{t}</span>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <a href="/meta-report" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-black text-sm text-white hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(249,115,22,.3)]"
-                style={{ background: 'linear-gradient(135deg,#f97316,#ef4444)' }}>
-                Xem Meta Report →
-              </a>
-              <button className="flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                Video hướng dẫn
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+                {/* 2 Buttons on 1 Single Row */}
+                <div className="grid grid-cols-2 sm:inline-flex items-center gap-2.5 sm:gap-3 pt-1 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openContact(
+                        'Tư Vấn Kiến Trúc Thiết Kế Riêng (ERP • CRM • Multi-Agent)',
+                        'Mong muốn khảo sát quy trình và thiết kế hệ thống riêng cho doanh nghiệp'
+                      )
+                    }
+                    className="btn-inkica-primary justify-center px-3 sm:px-6 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                  >
+                    <span>Tư Vấn Kiến Trúc</span>
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  </button>
 
-      {/* ── SECTION 3: CRM ── */}
-      <section id="section-crm" className="relative z-10 py-24 px-6 border-t border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/8 to-transparent pointer-events-none" />
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-bold uppercase tracking-widest mb-6">
-              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-purple-400" /> Sản phẩm 03
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-              CRM Quản trị<br /><span style={{ background: 'linear-gradient(90deg,#a855f7,#ec4899)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Doanh nghiệp</span>
-            </h2>
-            <p className="text-slate-400 text-base leading-relaxed mb-6">
-              Số hóa toàn diện quy trình kinh doanh: Sales Pipeline Kanban, Khách hàng 360°, Tồn kho, Báo giá & Hóa đơn, Ticket hỗ trợ — tất cả trên một nền tảng duy nhất.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {['Kanban Pipeline', 'Contacts 360°', 'Inventory', 'Quotes & Invoices', 'Tickets', 'Analytics'].map(t => (
-                <span key={t} className="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold">{t}</span>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <a href="/crm" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(168,85,247,.3)]"
-                style={{ background: 'linear-gradient(135deg,#a855f7,#ec4899)' }}>
-                Khám phá CRM →
-              </a>
-              <a href="https://crm-domation.vercel.app/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-purple-500/30 text-purple-300 font-bold text-sm hover:bg-purple-500/10 hover:-translate-y-0.5 transition-all">
-                Xem Demo Live
-              </a>
-            </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }}>
-            <GalleryBlock
-              main="/crm_imgs/CRMS (1).jpg"
-              thumbs={['/crm_imgs/CRMS (2).jpg', '/crm_imgs/CRMS (3).jpg', '/crm_imgs/CRMS (4).jpg']}
-              accentGlow="rgba(168,85,247,0.12)"
-              onOpen={openLightbox}
-            />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── SECTION 4: DATA SYSTEM ── */}
-      <section id="section-data" className="relative z-10 py-24 px-6 border-t border-white/5 bg-[#050810]">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/8 to-transparent pointer-events-none" />
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, ease: [.22, 1, .36, 1] }} className="order-2 lg:order-1">
-            <GalleryBlock
-              main="/CHIA DATA/chia_data (8).png"
-              thumbs={['/CHIA DATA/chia_data (9).png', '/CHIA DATA/chia_data (18).png']}
-              accentGlow="rgba(168,85,247,0.12)"
-              onOpen={openLightbox}
-            />
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .1, ease: [.22, 1, .36, 1] }} className="order-1 lg:order-2">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-bold uppercase tracking-widest mb-6">
-              <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-purple-400" /> Sản phẩm 04
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">DOMATION<br /><span style={{ background: 'linear-gradient(90deg,#a855f7,#ec4899)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>DATA</span></h2>
-            <p className="text-slate-400 text-base leading-relaxed mb-6">
-              Hệ thống logic chia vòng DATA tự động. Định tuyến luồng thông minh, thông báo Zalo Bot/Email Real-time cho từng tư vấn viên. Đảm bảo luồng khách hàng được xử lý ngay trong "thời điểm vàng".
-            </p>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {['Auto Routing', 'Zalo Bot', 'Real-time', 'Bù Data Lỗi', 'Round-Robin', 'Báo Cáo Tự Động'].map(t => (
-                <span key={t} className="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold">{t}</span>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <a href="/data" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-black text-sm text-white hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(168,85,247,.3)]"
-                style={{ background: 'linear-gradient(135deg,#a855f7,#ec4899)' }}>
-                Xem DOMATION DATA →
-              </a>
-              <a href="https://ideas-data.vercel.app/demo" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 font-bold text-sm hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-md">
-                Xem Demo Live
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── SECTION 5: WEBSITE & LANDING PAGE ── */}
-      <section id="section-web-design" className="relative z-10 py-24 px-6 border-t border-white/5 bg-[#080c14]">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-950/5 to-transparent pointer-events-none" />
-        <div className="max-w-6xl mx-auto">
-          {/* Header of Section 5 */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
-            <div className="lg:col-span-8">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-widest mb-6">
-                <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-orange-400" /> Sản phẩm 05
+                  <button
+                    type="button"
+                    onClick={() => openInspection('erp')}
+                    className="ql-btn-outline justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                  >
+                    <MonitorSmartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1E40FF] shrink-0" />
+                    <span>Màn Hình Thực Tế</span>
+                  </button>
+                </div>
               </div>
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">
-                Thiết Kế <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 shimmer-orange">Website & Landing Page</span>
-              </h2>
-              <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
-                Dịch vụ thiết kế và phát triển Website & Landing Page chuyên nghiệp, chuẩn SEO On-page, tối ưu tỷ lệ chuyển đổi và tốc độ tải trang dưới 3 giây. Mã nguồn độc quyền, bàn giao vĩnh viễn cho doanh nghiệp.
+
+              {/* Right Enlarged Interactive Brand Sphere */}
+              <div className="lg:col-span-6 relative flex flex-col items-center">
+                <div className="w-full max-w-[580px] lg:max-w-[600px] mx-auto">
+                  <InteractiveBrandSphere />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 2. ENTERPRISE STORY — WHY BESPOKE DESIGN MATTERS                 */}
+        {/* ================================================================ */}
+        <section id="story" className="relative py-20 sm:py-26 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div className="max-w-2xl">
+                <div className="ql-eyebrow mb-3">
+                  <Sparkles className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>CÂU CHUYỆN DOANH NGHIỆP • TRIẾT LÝ MAY ĐO</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Mỗi Doanh Nghiệp Là Một{' '}
+                  <span className="text-gradient-inkica">Bản Thiết Kế Riêng</span>
+                </h2>
+              </div>
+              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
+                Phần mềm đóng gói buộc đội ngũ sửa quy trình theo công cụ; DOMATION kiến tạo hệ thống xoay quanh chính mô hình của bạn.
               </p>
             </div>
-            <div className="lg:col-span-4 lg:text-right lg:mt-16">
-              <a href="/web-design" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-black text-sm hover:-translate-y-0.5 transition-transform shadow-[0_0_24px_rgba(245,158,11,.3)]">
-                Xem Báo Giá & Dự Toán →
-              </a>
+
+            {/* 3 Spacious Story Chapters — Calm Swiss Hairline Architecture */}
+            <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
+              {ENTERPRISE_STORY_CHAPTERS.map((chapter) => (
+                <div
+                  key={chapter.step}
+                  className="p-7 sm:p-9 flex flex-col justify-between gap-6"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-semibold text-[#1E40FF] bg-slate-100 px-2.5 py-0.5 rounded-full">
+                          {chapter.step}
+                        </span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#0284C7]">
+                          {chapter.tag}
+                        </span>
+                      </div>
+                      <img
+                        src={chapter.decorImg}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        className="w-12 h-12 object-contain shrink-0 drop-shadow-[0_10px_16px_rgba(30,64,255,0.12)]"
+                      />
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-semibold text-slate-900 leading-snug pt-1">
+                      {chapter.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      {chapter.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 3. MULTI-AGENT ORCHESTRATION & INTEGRATED PLATFORMS              */}
+        {/* ================================================================ */}
+        <section id="multi-agent" className="relative py-20 sm:py-26 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div className="max-w-2xl">
+                <div className="ql-eyebrow mb-3">
+                  <Network className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>AGENT HỖ TRỢ &amp; MULTI-AGENT • TỰ ĐỘNG HÓA LIÊN PHÒNG BAN</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Một Trung Tâm Điều Phối,{' '}
+                  <span className="text-gradient-inkica">Nhiều Agent Cùng Vận Hành</span>
+                </h2>
+              </div>
+              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
+                Huấn luyện trực tiếp từ tài liệu nội bộ, các AI Agent chia sẻ ngữ cảnh và phối hợp xử lý tác vụ xuyên suốt 24/7.
+              </p>
+            </div>
+
+            <div className="rounded-[28px] bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.07)] p-6 sm:p-10">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+                {/* Left: Bespoke 3D Fluent Glass Orchestrator Hub */}
+                <div className="lg:col-span-5 space-y-4">
+                  <div className="relative rounded-2xl overflow-hidden border border-slate-200/75 bg-[#F4F8FF]">
+                    <img
+                      src="/imgs/enterprise/sol-multi-agent.webp"
+                      alt="DOMATION Multi-Agent Orchestrator Hub"
+                      loading="lazy"
+                      className="w-full h-56 sm:h-64 object-cover"
+                    />
+                  </div>
+                  <div className="px-1 space-y-1.5">
+                    <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span>Orchestrator Core • Tri Thức Nội Bộ</span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      Tiếp nhận yêu cầu, kiểm soát phân quyền dữ liệu và kích hoạt đúng Agent chuyên môn theo quy trình riêng của từng doanh nghiệp.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right: 4 Specialized Enterprise Agents (Clean 2x2 Grid, Zero Bullet Lists) */}
+                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {MULTI_AGENT_NODES.map((agent, idx) => {
+                    const Icon = AGENT_ICONS[idx % AGENT_ICONS.length];
+                    return (
+                      <div
+                        key={agent.id}
+                        className="rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 p-5 sm:p-6 transition-colors flex flex-col justify-between gap-3"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] flex items-center justify-center shadow-2xs">
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200/70">
+                            {agent.roleTag}
+                          </span>
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm sm:text-base font-semibold text-slate-900 mb-1">
+                            {agent.name}
+                          </h3>
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            {agent.focus}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Integrated Platforms Logo Dock — Visual Brand Logos Instead of Text Lists */}
+              <div className="mt-8 pt-7 border-t border-slate-200/75 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                <div className="shrink-0">
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-800">
+                    Platform &amp; Kênh Tích Hợp Đồng Bộ
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Kết nối hai chiều thời gian thực với hệ sinh thái sẵn có của doanh nghiệp.
+                  </p>
+                </div>
+
+                <ChannelLogoStrip variant="platforms" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 4. CORE FUNCTIONS & OPERATIONS — CLEAN 4-PILLAR STUDIO           */}
+        {/* ================================================================ */}
+        <section id="solutions" className="relative py-20 sm:py-26 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+              <div className="max-w-2xl">
+                <div className="ql-eyebrow mb-3">
+                  <Layers className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>CHỨC NĂNG &amp; VẬN HÀNH TRỌNG TÂM</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Bốn Trụ Cột{' '}
+                  <span className="text-gradient-inkica">Vận Hành Doanh Nghiệp Khép Kín</span>
+                </h2>
+              </div>
+              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
+                Tập trung vào những nghiệp vụ cốt lõi tạo ra hiệu suất thực — tinh gọn, trực quan và sẵn sàng mở rộng.
+              </p>
+            </div>
+
+            {/* Clean 4-Pillar Selector (2 per row on mobile, 4 on desktop — zero cluttered subtabs) */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-6">
+              {CORE_OPERATION_PILLARS.map((pillar, idx) => {
+                const active = activePillarIdx === idx;
+                return (
+                  <button
+                    key={pillar.id}
+                    type="button"
+                    onClick={() => setActivePillarIdx(idx)}
+                    className={`rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 text-left border transition-all cursor-pointer flex items-center justify-between gap-1.5 sm:gap-2 ${
+                      active
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-md'
+                        : 'bg-white/80 text-slate-700 border-slate-200/80 hover:bg-white'
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <div
+                        className={`text-[10px] font-mono font-semibold ${
+                          active ? 'text-cyan-300' : 'text-slate-400'
+                        }`}
+                      >
+                        {pillar.step}
+                      </div>
+                      <div className="text-[11px] sm:text-sm font-semibold leading-snug mt-0.5">
+                        {pillar.tabLabel}
+                      </div>
+                    </div>
+                    <ArrowRight
+                      className={`w-3.5 h-3.5 shrink-0 hidden sm:block ${
+                        active ? 'text-cyan-300' : 'text-slate-400'
+                      }`}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Spacious Active Operation Stage */}
+            <div className="rounded-[28px] bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.07)] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+              <div className="lg:col-span-6">
+                <div className="relative rounded-2xl overflow-hidden border border-slate-200/75 bg-[#F4F8FF]">
+                  <img
+                    src={currentPillar.image}
+                    alt={currentPillar.tabLabel}
+                    className="w-full h-56 sm:h-72 object-cover"
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 space-y-5">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF] mb-1.5">
+                    {currentPillar.eyebrow}
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
+                    {currentPillar.title}{' '}
+                    <span className="text-gradient-inkica">{currentPillar.accent}</span>
+                  </h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mt-3">
+                    {currentPillar.summary}
+                  </p>
+                </div>
+
+                {/* 3 Crisp Focus Pills Instead of Long Bullet Sentences */}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {currentPillar.keyTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 text-xs font-medium text-slate-700"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      <span>{tag}</span>
+                    </span>
+                  ))}
+                </div>
+
+                {/* 2 Buttons on 1 Single Row */}
+                <div className="grid grid-cols-2 sm:inline-flex items-center gap-2.5 sm:gap-3 pt-2 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => openInspection(currentPillar.inspectionTab)}
+                    className="btn-inkica-primary justify-center px-3 sm:px-5 py-2.5 sm:py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                  >
+                    <MonitorSmartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span>Màn Hình Thực Tế</span>
+                  </button>
+
+                  <a
+                    href={currentPillar.routeUrl}
+                    className="ql-btn-outline justify-center px-3 sm:px-5 py-2.5 sm:py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
+                  >
+                    <span>{currentPillar.routeLabel}</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Minimalist Direct Links to Dedicated Product Pages */}
+            <div className="mt-6 px-2 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+              <span className="font-medium text-slate-600">
+                Truy cập nhanh chuyên trang từng ứng dụng:
+              </span>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                {DEDICATED_APP_LINKS.map((app) => (
+                  <a
+                    key={app.href}
+                    href={app.href}
+                    className="font-semibold text-slate-700 hover:text-[#1E40FF] inline-flex items-center gap-1 transition-colors"
+                  >
+                    <span>{app.label}</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 5. BESPOKE ENTERPRISE CASE STUDIES                               */}
+        {/* ================================================================ */}
+        <section id="cases" className="relative py-20 sm:py-26 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div className="max-w-2xl">
+                <div className="ql-eyebrow mb-3">
+                  <Building2 className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>CÂU CHUYỆN TRIỂN KHAI THỰC TẾ</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25]">
+                  Kiến Trúc May Đo{' '}
+                  <span className="text-gradient-inkica">Tại Doanh Nghiệp Đối Tác</span>
+                </h2>
+              </div>
+              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
+                Mỗi dự án được thiết kế riêng từ luồng dữ liệu, trợ lý AI đến giao diện vận hành để giải quyết đúng bài toán ngành.
+              </p>
+            </div>
+
+            <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/75 overflow-hidden">
+              {CASE_STUDY_SPOTLIGHTS.map((cs, idx) => {
+                const isInkica = cs.id === 'inkica';
+                return (
+                  <div
+                    key={cs.id}
+                    className={`p-7 sm:p-9 flex flex-col justify-between gap-5 ${
+                      idx >= 2 ? 'lg:border-t lg:border-slate-200/75' : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className="h-11 px-3 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-1.5 shrink-0">
+                            <img
+                              src={cs.logo}
+                              alt={cs.company}
+                              loading="lazy"
+                              className="h-6 max-w-[115px] object-contain"
+                            />
+                            {isInkica && (
+                              <span className="text-sm font-bold tracking-tight text-slate-900">
+                                inkica<span className="text-[#1E40FF]">.</span>
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="text-base font-semibold text-slate-900">
+                              {cs.company}
+                            </h3>
+                            <div className="text-xs font-medium text-slate-500">
+                              {cs.sector}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        {cs.summary}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-slate-200/70 flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-semibold">
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-[#1E40FF]">
+                          {cs.result}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">
+                          {cs.cost}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                          {cs.impact}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        {cs.inspectionTab && (
+                          <button
+                            type="button"
+                            onClick={() => openInspection(cs.inspectionTab!)}
+                            className="text-xs font-semibold text-[#1E40FF] hover:text-cyan-600 flex items-center gap-1 cursor-pointer"
+                          >
+                            <MonitorSmartphone className="w-3.5 h-3.5" />
+                            <span>Xem Thực Tế</span>
+                          </button>
+                        )}
+                        {cs.url && (
+                          <a
+                            href={cs.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1"
+                          >
+                            <span>Live</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 6. STRATEGIC PARTNERS & F1 DISTRIBUTION NETWORK                  */}
+        {/* ================================================================ */}
+        <PartnersTrustSection />
+
+        {/* ================================================================ */}
+        {/* 7. TRANSPARENT INVESTMENT & BESPOKE ROADMAP                      */}
+        {/* ================================================================ */}
+        <section id="pricing" className="relative py-20 sm:py-26 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div>
+                <div className="ql-eyebrow mb-3">
+                  <Database className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>LỘ TRÌNH ĐẦU TƯ MINH BẠCH • KHỞI ĐỘNG NHANH HOẶC MAY ĐO RIÊNG</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                  Giải Pháp Tương Xứng{' '}
+                  <span className="text-gradient-inkica">Quy Mô Từng Doanh Nghiệp</span>
+                </h2>
+              </div>
+
+              <div className="inline-flex items-center p-1 rounded-full bg-white border border-slate-200 shadow-2xs w-fit">
+                <button
+                  type="button"
+                  onClick={() => setBillingYearly(false)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    !billingYearly ? 'bg-[#1E40FF] text-white' : 'text-slate-600'
+                  }`}
+                >
+                  Theo Tháng
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingYearly(true)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    billingYearly ? 'bg-[#1E40FF] text-white' : 'text-slate-600'
+                  }`}
+                >
+                  <span>Theo Năm</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                      billingYearly
+                        ? 'bg-white/20 text-white'
+                        : 'bg-emerald-100 text-emerald-700'
+                    }`}
+                  >
+                    -15%
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Clean 3-Column Matrix (Max 3 Crisp Points Per Plan, Spotlighting Bespoke Enterprise) */}
+            <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/75 mb-10">
+              {DOMATION_SAAS_PLANS.map((plan) => {
+                const isCustom = plan.monthly === 'May Đo';
+                return (
+                  <div
+                    key={plan.name}
+                    className={`p-7 sm:p-9 flex flex-col justify-between ${
+                      plan.popular
+                        ? 'bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white'
+                        : ''
+                    }`}
+                  >
+                    <div>
+                      <div
+                        className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4 ${
+                          plan.popular
+                            ? 'bg-cyan-400/20 text-cyan-300'
+                            : 'bg-slate-100 text-[#1E40FF]'
+                        }`}
+                      >
+                        {plan.badge}
+                      </div>
+
+                      <h3
+                        className={`text-xl font-bold ${
+                          plan.popular ? 'text-white' : 'text-slate-900'
+                        }`}
+                      >
+                        {plan.name}
+                      </h3>
+
+                      <div className="mt-3 mb-2.5 flex items-baseline gap-1.5">
+                        <span
+                          className={`text-3xl sm:text-4xl font-bold tracking-tight ${
+                            plan.popular ? 'text-white' : 'text-slate-900'
+                          }`}
+                        >
+                          {billingYearly ? plan.yearly : plan.monthly}
+                        </span>
+                        {!isCustom && (
+                          <span
+                            className={`text-xs font-medium ${
+                              plan.popular ? 'text-slate-300' : 'text-slate-500'
+                            }`}
+                          >
+                            {billingYearly ? '/ năm' : '/ tháng'}
+                          </span>
+                        )}
+                      </div>
+
+                      <p
+                        className={`text-xs sm:text-sm leading-relaxed mb-6 ${
+                          plan.popular ? 'text-slate-300' : 'text-slate-600'
+                        }`}
+                      >
+                        {plan.desc}
+                      </p>
+
+                      <div
+                        className={`space-y-3 pt-5 border-t ${
+                          plan.popular ? 'border-white/15' : 'border-slate-200/75'
+                        }`}
+                      >
+                        {plan.features.map((feat) => (
+                          <div key={feat} className="flex items-start gap-2.5 text-xs sm:text-[13px]">
+                            <CheckCircle2
+                              className={`w-4 h-4 shrink-0 mt-0.5 ${
+                                plan.popular ? 'text-cyan-300' : 'text-emerald-500'
+                              }`}
+                            />
+                            <span
+                              className={
+                                plan.popular ? 'text-slate-100' : 'text-slate-700'
+                              }
+                            >
+                              {feat}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openContact(
+                          isCustom
+                            ? 'Thiết Kế Riêng Bespoke Enterprise (ERP • CRM • Multi-Agent)'
+                            : 'Hệ thống Auto Chia Data ZaloBot & Flow Automation',
+                          `Quan tâm gói DOMATION ${plan.name} (${
+                            billingYearly ? plan.yearly : plan.monthly
+                          })`
+                        )
+                      }
+                      className={`mt-8 w-full py-3.5 px-5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        plan.popular
+                          ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-lg'
+                          : 'ql-btn-outline'
+                      }`}
+                    >
+                      <span>
+                        {isCustom ? 'Đặt Lịch Khảo Sát & Thiết Kế Riêng' : `Chọn Gói ${plan.name}`}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Clean Website Estimator Banner (2 Buttons 1 Row) */}
+            <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 p-6 sm:p-9 relative overflow-hidden shadow-xs">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="lg:col-span-2 hidden lg:flex items-center justify-center">
+                  <img
+                    src={DECOR_PNGS.prism}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="w-20 h-20 object-contain animate-float-decor drop-shadow-[0_14px_22px_rgba(30,64,255,0.16)]"
+                  />
+                </div>
+
+                <div className="lg:col-span-6 space-y-2">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#1E40FF]">
+                    <Calculator className="w-4 h-4" />
+                    <span>THIẾT KẾ WEBSITE THƯƠNG HIỆU &amp; TƯƠNG TÁC</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                    Dự Toán Chi Phí Website Từ{' '}
+                    <span className="text-[#1E40FF]">12.000.000₫</span>
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Tùy chọn linh hoạt các hạng mục giao diện, bảng hàng, cổng thanh toán và đồng bộ CRM ngay trên bảng tính trực quan.
+                  </p>
+                </div>
+
+                <div className="lg:col-span-4 grid grid-cols-2 items-center gap-2.5 sm:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEstimatorOpen(true)}
+                    className="btn-inkica-primary justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                  >
+                    <Calculator className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span>Dự Toán Web</span>
+                  </button>
+                  <a
+                    href="/web-design"
+                    className="ql-btn-outline justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
+                  >
+                    <span>Bảng Giá Web</span>
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ================================================================ */}
+      {/* 8. EXECUTIVE NAVY-SAPPHIRE FOOTER                                */}
+      {/* ================================================================ */}
+      <footer className="relative z-10 bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white border-t border-slate-800/40 pt-14 pb-20 sm:pb-10 px-4 sm:px-6 mt-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
+            <div className="md:col-span-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <DomationLogoMark className="w-10 h-10 shrink-0 shadow-md" />
+                <div>
+                  <div className="text-lg font-bold tracking-tight">
+                    DOMATION<span className="text-cyan-400">.NET</span>
+                  </div>
+                  <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                    Bespoke Enterprise OS &amp; Multi-Agent AI
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md">
+                Thiết kế riêng kiến trúc ERP 5.0, CRM 360°, Flow rẽ nhánh và đội ngũ Multi-Agent AI đồng bộ đa nền tảng cho từng doanh nghiệp.
+              </p>
+            </div>
+
+            <div className="md:col-span-3 space-y-2.5">
+              <div className="text-xs font-semibold uppercase tracking-widest text-cyan-300">
+                Chuyên Trang Giải Pháp
+              </div>
+              <ul className="space-y-2 text-xs text-slate-300">
+                <li>
+                  <a href="/erp" className="hover:text-white transition-colors">
+                    Enterprise ERP 5.0
+                  </a>
+                </li>
+                <li>
+                  <a href="/crm" className="hover:text-white transition-colors">
+                    CRM 360° &amp; Đồng Bộ MISA
+                  </a>
+                </li>
+                <li>
+                  <a href="/automation" className="hover:text-white transition-colors">
+                    Multi-Agent &amp; Flow Automation
+                  </a>
+                </li>
+                <li>
+                  <a href="/data" className="hover:text-white transition-colors">
+                    Auto Chia Data &amp; Meta CAPI
+                  </a>
+                </li>
+                <li>
+                  <a href="/meta-report" className="hover:text-white transition-colors">
+                    Meta Ads Realtime Report
+                  </a>
+                </li>
+                <li>
+                  <a href="/web-design" className="hover:text-white transition-colors">
+                    Thiết Kế Website Thương Hiệu
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="md:col-span-4 space-y-3">
+              <div className="text-xs font-semibold uppercase tracking-widest text-cyan-300">
+                Kết Nối Solution Architect
+              </div>
+              <div className="space-y-2 text-xs text-slate-300">
+                <div>
+                  Hotline / Zalo:{' '}
+                  <a
+                    href="https://zalo.me/0378859736"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-white hover:text-cyan-300 font-mono"
+                  >
+                    0378.859.736
+                  </a>
+                </div>
+                <div>
+                  Email:{' '}
+                  <a
+                    href="mailto:turniodev@gmail.com"
+                    className="font-semibold text-white hover:text-cyan-300"
+                  >
+                    turniodev@gmail.com
+                  </a>
+                </div>
+                <div>
+                  Facebook:{' '}
+                  <a
+                    href="https://www.facebook.com/turni0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-white hover:text-cyan-300"
+                  >
+                    fb.com/turni0
+                  </a>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => openContact()}
+                className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-blue-500/30 border border-white/15 text-xs font-semibold text-white transition-colors cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                <span>Đặt Lịch Tư Vấn 1-1</span>
+              </button>
             </div>
           </div>
 
-          {/* Grid of 6 Landing Pages */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Nava Store',
-                desc: 'Website thương mại điện tử (E-commerce) chuyên nghiệp, tối ưu hóa trải nghiệm mua sắm và quy trình thanh toán.',
-                link: 'https://navastore.vn/',
-                badges: ['E-commerce', 'React/Vite', 'Modern UI'],
-                color: 'from-blue-500/20 to-cyan-500/5',
-                borderColor: 'group-hover:border-blue-500/50',
-                glowColor: 'rgba(59,130,246,0.15)',
-                img: '/landingpage_avatar/nava.webp',
-                icon: (
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                )
-              },
-              {
-                name: 'Viện IDEAS MBA',
-                desc: 'Landing Page tuyển sinh chương trình Thạc sĩ Quản trị Kinh doanh (MBA), tập trung tối đa tỷ lệ chuyển đổi điền form.',
-                link: 'https://ideas.edu.vn/mba',
-                badges: ['Education', 'Conversion UI', 'Lead Form'],
-                color: 'from-fuchsia-500/20 to-pink-500/5',
-                borderColor: 'group-hover:border-fuchsia-500/50',
-                glowColor: 'rgba(236,72,153,0.15)',
-                img: '/landingpage_avatar/ideasmba.webp',
-                icon: (
-                  <svg className="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                  </svg>
-                )
-              },
-              {
-                name: 'Turnio Portfolio',
-                desc: 'Trang thông tin năng lực (Portfolio) cao cấp của Creative Agency, hiển thị dự án với hiệu ứng tương tác 3D mượt mà.',
-                link: 'https://portfo-turnio.vercel.app/',
-                badges: ['Creative', 'Next.js', 'Framer Motion'],
-                color: 'from-emerald-500/20 to-teal-500/5',
-                borderColor: 'group-hover:border-emerald-500/50',
-                glowColor: 'rgba(16,185,129,0.15)',
-                img: '/landingpage_avatar/portfolio.webp',
-                icon: (
-                  <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                )
-              },
-              {
-                name: 'Cấy Ghép Nha Khoa Cơ Bản',
-                desc: 'Landing Page giới thiệu và tuyển sinh khóa đào tạo Cấy ghép Nha khoa Cơ bản của Brandson Academy cấp chứng chỉ CME.',
-                link: 'https://brandson.vn/cay-ghep-nha-khoa-co-ban',
-                badges: ['CME Course', 'Medical Landing', 'SEO Standard'],
-                color: 'from-amber-500/20 to-orange-500/5',
-                borderColor: 'group-hover:border-amber-500/50',
-                glowColor: 'rgba(245,158,11,0.15)',
-                img: '/landingpage_avatar/brandson.webp',
-                icon: (
-                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                )
-              },
-              {
-                name: 'Ngày Hội Implant Flora',
-                desc: 'Landing Page sự kiện thường niên "Ngày Hội Implant" của Nha khoa Flora, thiết kế nhằm thúc đẩy đặt hẹn khám trực tiếp.',
-                link: 'https://nhakhoaflora.com/ngay-hoi-implant/',
-                badges: ['Dental Clinic', 'Event Campaign', 'Conversion Rate'],
-                color: 'from-rose-500/20 to-red-500/5',
-                borderColor: 'group-hover:border-rose-500/50',
-                glowColor: 'rgba(244,63,94,0.15)',
-                img: '/landingpage_avatar/flora.webp',
-                icon: (
-                  <svg className="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                )
-              },
-              {
-                name: 'Viện Đào Tạo IDEAS',
-                desc: 'Trang thông tin điện tử tích hợp của Viện Đào Tạo & Nghiên Cứu Quản Trị IDEAS, giới thiệu hoạt động và cổng thông tin sinh viên.',
-                link: 'https://ideas.edu.vn/',
-                badges: ['Institutional', 'Multipage Portal', 'WordPress Engine'],
-                color: 'from-indigo-500/20 to-violet-500/5',
-                borderColor: 'group-hover:border-indigo-500/50',
-                glowColor: 'rgba(99,102,241,0.15)',
-                img: '/landingpage_avatar/ideasedu.webp',
-                icon: (
-                  <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                  </svg>
-                )
-              }
-            ].map((p, i) => (
-              <motion.a
-                key={p.name}
-                href={p.link}
-                target="_blank"
-                rel="noreferrer"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="group relative block rounded-2xl bg-[#161b22]/40 border border-white/5 transition-all duration-500 hover:-translate-y-1 hover:bg-[#161b22]/70 overflow-hidden"
-              >
-                {/* Background Glow on Hover */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"
-                  style={{
-                    background: `radial-gradient(300px circle at top left, ${p.glowColor}, transparent 70%)`
-                  }}
-                />
-
-                {/* Mockup Preview Image */}
-                <div className="relative overflow-hidden aspect-video bg-black/40 border-b border-white/5">
-                  <img
-                    src={p.img}
-                    alt={p.name}
-                    className="w-full h-full object-cover object-top group-hover:scale-[1.04] transition-transform duration-700"
-                    loading="lazy"
-                  />
-                  {/* Overlays */}
-                  <div className="absolute top-3 left-3 p-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-xl">
-                    {p.icon}
-                  </div>
-                  <div className="absolute top-3 right-3 text-slate-400 group-hover:text-white p-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-full transition-all">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </div>
-                </div>
-                
-                {/* Info */}
-                <div className="p-6 relative z-10">
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">
-                    {p.name}
-                  </h3>
-                  <p className="text-slate-400 text-xs leading-relaxed min-h-[50px] mb-6">
-                    {p.desc}
-                  </p>
-                  
-                  {/* Badges */}
-                  <div className="flex flex-wrap gap-2">
-                    {p.badges.map(b => (
-                      <span key={b} className="px-2.5 py-1 text-[10px] font-bold text-slate-300 bg-white/5 border border-white/10 rounded-md">
-                        {b}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.a>
-            ))}
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
+            <span>© 2026 DOMATION Enterprise Technology. All rights reserved.</span>
+            <span>Bespoke Enterprise Architecture • Multi-Agent AI Systems.</span>
           </div>
         </div>
-      </section>
-
-      {/* Mini Services */}
-      <section className="relative z-10 py-20 px-6 border-t border-white/5 bg-[#050810]">
-        <div className="max-w-6xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[11px] font-bold uppercase tracking-widest mb-4">Dịch Vụ Mở Rộng</div>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-3">Giải Pháp Bổ Sung</h2>
-            <p className="text-slate-500 max-w-lg mx-auto text-sm">Các dịch vụ chuyên biệt giúp doanh nghiệp tăng trưởng nhanh hơn.</p>
-          </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { emoji: '📣', title: 'Chạy Quảng Cáo Meta', desc: 'Dịch vụ chạy ads Facebook & Instagram hiệu quả, tối ưu chi phí, tăng ROI.', color: 'text-blue-400', border: 'border-blue-500/20 hover:border-blue-500/40', href: '/meta-report' },
-              { emoji: '💬', title: 'Zalo ZNS Marketing', desc: 'Gửi Zalo ZNS hàng loạt tỷ lệ đọc ~100%. Chăm sóc tự động qua Zalo OA.', color: 'text-cyan-400', border: 'border-cyan-500/20 hover:border-cyan-500/40', href: '/automation' },
-              { emoji: '🤖', title: 'AI Chatbot 24/7', desc: 'Trợ lý AI tự động phản hồi đa kênh theo dữ liệu riêng của doanh nghiệp.', color: 'text-emerald-400', border: 'border-emerald-500/20 hover:border-emerald-500/40', href: '/automation' },
-            ].map((s, i) => (
-              <motion.a key={s.title} href={s.href} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .5, delay: i * .08 }}
-                className={`group block rounded-2xl p-6 bg-white/[0.03] border ${s.border} transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.05]`}>
-                <div className="text-3xl mb-4">{s.emoji}</div>
-                <h3 className="font-bold text-sm text-white mb-2">{s.title}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed">{s.desc}</p>
-                <div className={`flex items-center gap-1 mt-4 text-xs font-bold ${s.color} opacity-0 group-hover:opacity-100 transition-opacity`}>Tìm hiểu →</div>
-              </motion.a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-12 px-6 bg-[#04060e] z-10 relative text-center">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <img src="/imgs/ICON.png" alt="DOMATION" className="w-6 h-6 rounded-lg object-contain opacity-40 grayscale" />
-          <span className="text-sm font-black tracking-widest text-white/20 uppercase">DOMATION</span>
-        </div>
-        <p className="text-slate-700 text-xs mb-2">© {new Date().getFullYear()} Nền tảng số hóa doanh nghiệp toàn diện.</p>
-        <p className="text-slate-600 text-[10px] uppercase tracking-[0.2em]">
-          Powered by <a href="https://fb.com/turni0" target="_blank" rel="noreferrer" className="text-orange-500/60 hover:text-orange-500 transition-colors font-bold">TurnioDEV</a>
-        </p>
       </footer>
 
-      {/* Lightbox */}
-      {lightboxSrc && <Lightbox src={lightboxSrc} onClose={closeLightbox} />}
+      {showBackTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Lên đầu trang"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
+        >
+          <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
+          <span>Đầu trang</span>
+        </button>
+      )}
 
-      <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="orange-500" />
+      <ProductInspectionModal
+        isOpen={inspectionOpen}
+        initialTab={inspectionTab}
+        onClose={() => setInspectionOpen(false)}
+        onOpenContact={(topic) => openContact(undefined, topic)}
+      />
+
+      <WebEstimatorModal
+        isOpen={estimatorOpen}
+        onClose={() => setEstimatorOpen(false)}
+        onRequestQuote={(summary) =>
+          openContact('Website Thương Hiệu & Tương Tác (Từ 12.0M₫)', summary)
+        }
+      />
+
+      <ContactModal
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+        defaultService={contactDefaults.service}
+        defaultNote={contactDefaults.note}
+      />
     </div>
   );
 };

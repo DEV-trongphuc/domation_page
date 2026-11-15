@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import {
     Bot, Zap, Mail, MessageSquare, BarChart3,
-    ArrowRight, Workflow, Users, ShieldCheck,
+    ArrowRight, ArrowUp, Workflow, Users, ShieldCheck,
     Cpu, Activity, Layers, Sparkles, Check,
     TrendingUp, Globe, Clock, Star, ChevronDown,
     Play, MousePointer, Bell, Target, Database,
@@ -11,6 +11,9 @@ import {
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
+import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
+import { DomationLogoMark } from './components/DomationLogoMark';
+import { DECOR_PNGS } from './data/enterpriseData';
 
 // ─── Constants ────────────────────────────────────────────────
 const LOGOS = {
@@ -73,20 +76,20 @@ const FeatureCard = ({ icon: Icon, imageIcon, title, description, delay = 0, gra
     icon?: any; imageIcon?: string; title: string; description: string; delay?: number; gradient: string;
 }) => (
     <FadeIn delay={delay}>
-        <div className="holo-card group relative p-px rounded-2xl overflow-hidden bg-white/5 hover:bg-white/10 transition-all duration-500 border border-white/10 hover:border-white/20 hover:-translate-y-1 hover:shadow-xl">
+        <div className="inkica-glass-card group relative rounded-2xl overflow-hidden transition-all duration-500 border border-white/90 hover:border-blue-300 hover:-translate-y-1 hover:shadow-xl">
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: `radial-gradient(300px at 50% 50%, ${gradient}15, transparent 70%)` }} />
+                style={{ background: `radial-gradient(300px at 50% 50%, ${gradient}14, transparent 70%)` }} />
             <div className="relative p-8 flex flex-col h-full">
                 <div className={`w-14 h-14 rounded-2xl mb-6 flex items-center justify-center overflow-hidden`}
-                    style={{ background: `linear-gradient(135deg, ${gradient}30, ${gradient}10)`, border: `1px solid ${gradient}30` }}>
+                    style={{ background: `linear-gradient(135deg, ${gradient}22, ${gradient}0D)`, border: `1px solid ${gradient}30` }}>
                     {imageIcon ? (
                         <img loading="lazy" decoding="async" src={imageIcon} alt={title} className="w-8 h-8 object-contain drop-shadow-md" />
                     ) : Icon ? (
                         <Icon className="w-7 h-7" style={{ color: gradient }} />
                     ) : null}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3">{title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
+                <h3 className="text-lg font-bold text-slate-900 mb-3">{title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">{description}</p>
             </div>
         </div>
     </FadeIn>
@@ -99,57 +102,44 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
     const suffix = currentPrice !== 'Liên hệ' ? (isYearly ? '/năm' : '/tháng') : '';
 
     const borderGradient = enterprise
-        ? 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)'
-        : 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444, #a855f7, #f59e0b)';
-    const badgeBg = enterprise ? 'from-blue-500 to-purple-500' : 'from-amber-400 to-orange-500';
+        ? 'linear-gradient(135deg, #0F172A, #1E40FF, #06B6D4)'
+        : 'linear-gradient(135deg, #1E40FF, #0284C7, #06B6D4)';
+    const badgeBg = enterprise ? 'from-[#0F172A] to-[#1E40FF]' : 'from-[#1E40FF] to-[#06B6D4]';
     const badgeText = enterprise ? 'Giải Pháp Tối Đa' : 'Phổ Biến Nhất';
-    const glowShadow = enterprise ? 'rgba(139,92,246,0.5)' : 'rgba(245,158,11,0.6)';
-    const innerBg = enterprise ? 'bg-gradient-to-b from-[#101020] to-[#0a0a16]' : 'bg-gradient-to-b from-[#1a1020] to-[#110d1a]';
-    const lineGradient = enterprise ? 'linear-gradient(90deg, transparent, rgba(139,92,246,0.6), transparent)' : 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6), transparent)';
-    const checkBg = enterprise ? 'bg-blue-500/20 border border-blue-500/40' : 'bg-amber-500/20 border border-amber-500/40';
-    const checkColor = enterprise ? 'text-blue-400' : 'text-amber-400';
-    const btnClass = enterprise
-        ? 'glow-btn bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:-translate-y-0.5'
-        : 'glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 hover:-translate-y-0.5';
+    const glowShadow = enterprise ? 'rgba(15,23,42,0.22)' : 'rgba(30,64,255,0.26)';
+    const checkBg = 'bg-blue-50 border border-blue-200';
+    const checkColor = 'text-[#1E40FF]';
+    const btnClass = 'btn-inkica-primary text-white hover:-translate-y-0.5';
 
     return (
         <FadeIn delay={delay} className="h-full">
-            <div className={`relative rounded-[24px] p-px h-full mt-4 transition-all duration-500 ${scaleUp ? 'md:scale-[1.08] lg:scale-[1.12] z-10' : ''} ${isSpecial
-                ? 'pricing-highlight-glow hover:-translate-y-3'
-                : 'bg-white/10 hover:-translate-y-1'
+            <div className={`relative rounded-[24px] p-[1.5px] h-full mt-4 transition-all duration-500 ${scaleUp ? 'md:scale-[1.06] lg:scale-[1.08] z-10' : ''} ${isSpecial
+                ? 'hover:-translate-y-2 shadow-[0_24px_56px_rgba(30,64,255,0.16)]'
+                : 'bg-slate-200/80 hover:-translate-y-1 shadow-sm'
                 }`} style={isSpecial ? {
                     background: borderGradient,
                     backgroundSize: '300% 300%',
                     animation: 'border-flow 4s linear infinite'
                 } : {}}>
                 {isSpecial && (
-                    <>
-                        {['top-2 right-8', 'top-8 left-4', 'bottom-16 right-4'].map((pos, i) => (
-                            <div key={i} className={`absolute ${pos} ${enterprise ? 'text-blue-400' : 'text-amber-400'} text-xs pointer-events-none`}
-                                style={{ animation: `star-float ${2 + i * 0.7}s ease-in-out infinite`, animationDelay: `${i * 0.5}s` }}>✦</div>
-                        ))}
-                        <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r ${badgeBg} text-white text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20`} style={{ boxShadow: `0 4px 20px ${glowShadow}` }}>
-                            {badgeText}
-                        </div>
-                    </>
+                    <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r ${badgeBg} text-white text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20`} style={{ boxShadow: `0 4px 20px ${glowShadow}` }}>
+                        {badgeText}
+                    </div>
                 )}
-                <div className={`relative rounded-[23px] p-6 lg:p-8 h-full flex flex-col overflow-hidden ${isSpecial ? innerBg : 'bg-[#161b22]'}`}>
-                    {isSpecial && (
-                        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: lineGradient }} />
-                    )}
+                <div className={`relative rounded-[23px] p-6 lg:p-8 h-full flex flex-col overflow-hidden bg-white/95 backdrop-blur-xl`}>
                     <div className="mb-6">
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">{tier}</p>
+                        <p className="text-sm font-bold text-[#1E40FF] uppercase tracking-widest mb-2">{tier}</p>
                         <div className="flex items-end gap-1">
-                            <span className={`text-3xl lg:text-4xl font-black tracking-tight ${isSpecial ? (enterprise ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400' : 'shimmer-text') : 'text-white'}`}>{currentPrice}</span>
-                            {currentPrice !== 'Liên hệ' && <span className="text-slate-400 text-sm mb-1">{suffix}</span>}
+                            <span className={`text-3xl lg:text-4xl font-black tracking-tight ${isSpecial ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4]' : 'text-slate-900'}`}>{currentPrice}</span>
+                            {currentPrice !== 'Liên hệ' && <span className="text-slate-500 text-sm mb-1">{suffix}</span>}
                         </div>
-                        <p className="text-slate-500 text-sm mt-2">{desc}</p>
+                        <p className="text-slate-600 text-sm mt-2">{desc}</p>
                     </div>
                     <ul className="space-y-3 mb-8 flex-1">
                         {features.map((f: string, i: number) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                                <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isSpecial ? checkBg : 'bg-white/10 border border-white/20'}`}>
-                                    <Check className={`w-3 h-3 ${isSpecial ? checkColor : 'text-slate-400'}`} />
+                            <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isSpecial ? checkBg : 'bg-slate-100 border border-slate-200'}`}>
+                                    <Check className={`w-3 h-3 ${isSpecial ? checkColor : 'text-slate-600'}`} />
                                 </div>
                                 {f}
                             </li>
@@ -157,7 +147,7 @@ const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highligh
                     </ul>
                     <button onClick={onClick} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${isSpecial
                         ? btnClass
-                        : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                        : 'bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200'
                         }`}>
                         {price === 'Liên hệ' ? 'Liên hệ tư vấn' : 'Bắt đầu ngay'}
                     </button>
@@ -181,14 +171,14 @@ const TestimonialSection = () => {
     }, []);
 
     return (
-        <section className="py-24 px-6 relative z-10 border-white/5">
+        <section className="py-24 px-6 relative z-10 border-t border-slate-200/70">
             <div className="max-w-4xl mx-auto">
                 <FadeIn className="text-center mb-16">
                     <div className="flex items-center justify-center gap-1 mb-4">
-                        {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
+                        {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-[#1E40FF] text-[#1E40FF]" />)}
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Khách Hàng Nói Gì?</h2>
-                    <p className="text-slate-400">Hàng trăm doanh nghiệp đang tăng trưởng cùng nền tảng của chúng tôi</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">Khách Hàng Nói Gì?</h2>
+                    <p className="text-slate-600">Hàng trăm doanh nghiệp đang tăng trưởng cùng nền tảng của chúng tôi</p>
                 </FadeIn>
 
                 <div className="relative min-h-[240px]">
@@ -196,16 +186,16 @@ const TestimonialSection = () => {
                         <motion.div key={activeTestimonial}
                             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.4 }}
-                            className="bg-[#11151c] border border-separator/10 rounded-3xl p-10 text-center shadow-xl">
-                            <p className="text-lg text-slate-200 mb-8 leading-relaxed max-w-2xl mx-auto font-medium">
+                            className="inkica-glass-card border border-white/90 rounded-3xl p-10 text-center shadow-[0_18px_50px_rgba(30,64,255,0.08)]">
+                            <p className="text-lg text-slate-800 mb-8 leading-relaxed max-w-2xl mx-auto font-medium">
                                 "{testimonials[activeTestimonial].text}"
                             </p>
                             <div className="flex items-center justify-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-black font-black text-sm">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] flex items-center justify-center text-white font-black text-sm shadow-md">
                                     {testimonials[activeTestimonial].avatar}
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-bold text-white">{testimonials[activeTestimonial].name}</p>
+                                    <p className="font-bold text-slate-900">{testimonials[activeTestimonial].name}</p>
                                     <p className="text-sm text-slate-500">{testimonials[activeTestimonial].role}</p>
                                 </div>
                             </div>
@@ -216,7 +206,7 @@ const TestimonialSection = () => {
                 <div className="flex justify-center gap-2 mt-8">
                     {testimonials.map((_, i) => (
                         <button key={i} onClick={() => setActiveTestimonial(i)}
-                            className={`rounded-full transition-all duration-300 ${i === activeTestimonial ? 'w-8 h-2 bg-amber-400' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`} />
+                            className={`rounded-full transition-all duration-300 ${i === activeTestimonial ? 'w-8 h-2 bg-[#1E40FF]' : 'w-2 h-2 bg-slate-300 hover:bg-slate-400'}`} />
                     ))}
                 </div>
             </div>
@@ -226,23 +216,22 @@ const TestimonialSection = () => {
 
 const WebDesignSection = () => {
     const projects = [
-        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://navastore.vn/', color: 'from-blue-500 to-cyan-500', icon: Monitor },
-        { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-fuchsia-500 to-pink-500', icon: Monitor },
-        { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-emerald-500 to-teal-500', icon: Monitor },
+        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://navastore.vn/', color: 'from-[#1E40FF] to-[#06B6D4]', icon: Monitor },
+        { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-[#0284C7] to-[#2563EB]', icon: Monitor },
+        { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-[#0EA5E9] to-[#10B981]', icon: Monitor },
     ];
 
     return (
-        <section id="other-services" className="py-24 px-6 relative z-10 border-t border-white/5 bg-[#0a0f1a]">
-            <div className="absolute inset-0 bg-gradient-to-b from-fuchsia-900/5 to-transparent pointer-events-none" />
+        <section id="other-services" className="py-24 px-6 relative z-10 border-t border-slate-200/70 bg-white/45 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto">
                 <FadeIn className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 text-fuchsia-400 text-xs font-bold uppercase tracking-widest mb-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-4">
                         <Monitor className="w-3.5 h-3.5" /> Dịch Vụ Mở Rộng
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-                        Thiết Kế <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-pink-500">Website & Landing Page</span>
+                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
+                        Thiết Kế <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Website &amp; Landing Page</span>
                     </h2>
-                    <p className="text-slate-400 max-w-2xl mx-auto text-base md:text-lg">
+                    <p className="text-slate-600 max-w-2xl mx-auto text-base md:text-lg">
                         Không chỉ cung cấp nền tảng Automation, DOMATION còn mang đến giải pháp xây dựng hình ảnh thương hiệu trực tuyến với thiết kế hiện đại, chuẩn SEO và tỷ lệ chuyển đổi cao.
                     </p>
                 </FadeIn>
@@ -250,19 +239,17 @@ const WebDesignSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {projects.map((p, i) => (
                         <FadeIn key={i} delay={i * 0.1} className="h-full">
-                            <a href={p.link} target={p.link.startsWith('/') ? '_self' : '_blank'} rel="noreferrer" className="group block holo-card p-px rounded-2xl overflow-hidden bg-white/5 hover:bg-white/10 transition-all border border-white/10 hover:-translate-y-2 h-full shadow-[0_0_20px_rgba(217,70,239,0.05)] hover:shadow-[0_0_30px_rgba(217,70,239,0.2)]">
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(400px at 50% 50%, rgba(217,70,239,0.1), transparent)` }} />
-                                <div className="relative p-6 flex flex-col h-full bg-[#11151c] rounded-[15px]">
-                                    <div className={`w-full h-40 rounded-xl mb-6 flex flex-col items-center justify-center bg-gradient-to-br ${p.color} overflow-hidden relative group-hover:shadow-lg transition-shadow`}>
-                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
-                                        <p.icon className="w-12 h-12 text-white/80 group-hover:scale-110 transition-transform duration-500 drop-shadow-md z-10" />
-                                        <div className="mt-3 text-white text-sm font-bold z-10 flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
+                            <a href={p.link} target={p.link.startsWith('/') ? '_self' : '_blank'} rel="noreferrer" className="group block inkica-glass-card rounded-2xl overflow-hidden transition-all border border-white/90 hover:border-blue-300 hover:-translate-y-2 h-full shadow-[0_14px_36px_rgba(30,64,255,0.08)] hover:shadow-[0_22px_50px_rgba(30,64,255,0.16)]">
+                                <div className="relative p-6 flex flex-col h-full">
+                                    <div className={`w-full h-40 rounded-xl mb-6 flex flex-col items-center justify-center bg-gradient-to-br ${p.color} overflow-hidden relative shadow-md`}>
+                                        <p.icon className="w-12 h-12 text-white group-hover:scale-110 transition-transform duration-500 drop-shadow-md z-10" />
+                                        <div className="mt-3 text-white text-sm font-bold z-10 flex items-center gap-1.5 opacity-95 group-hover:opacity-100 transition-opacity">
                                             Xem Dự Án <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                                         </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">{p.name}</h3>
-                                    <p className="text-sm text-slate-400 mb-6 flex-1">{p.desc}</p>
-                                    <div className="mt-auto flex items-center text-xs text-slate-500 group-hover:text-fuchsia-400 transition-colors">
+                                    <h3 className="text-xl font-bold text-slate-900 mb-2">{p.name}</h3>
+                                    <p className="text-sm text-slate-600 mb-6 flex-1">{p.desc}</p>
+                                    <div className="mt-auto flex items-center text-xs text-slate-500 group-hover:text-[#1E40FF] transition-colors font-semibold">
                                         <Globe className="w-3.5 h-3.5 mr-1.5" />
                                         {p.link.replace('https://', '')}
                                     </div>
@@ -278,27 +265,26 @@ const WebDesignSection = () => {
 
 const MetaAdReportFeatureSection = () => {
     return (
-        <section id="meta-ad-report-feature" className="py-24 px-6 relative z-10 border-t border-white/5 bg-[#080c14]">
+        <section id="meta-ad-report-feature" className="py-24 px-6 relative z-10 border-t border-slate-200/70">
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <FadeIn>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
                             <Activity className="w-3.5 h-3.5" /> Sản Phẩm Mới
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                             Hệ Thống Báo Cáo <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Hiệu Suất Meta Ads</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Hiệu Suất Meta Ads</span>
                         </h2>
-                        <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                        <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                             Nền tảng báo cáo real-time độc lập, phân tích dữ liệu chuyên sâu bằng AI. Khám phá Khung Giờ Vàng chốt sale, theo dõi Admin Log chi tiết và tối ưu chiến dịch quảng cáo chưa từng có.
                         </p>
-                        <a href="/?page=meta-ad-report" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:-translate-y-1">
+                        <a href="/meta-report" className="inline-flex items-center gap-2 px-8 py-4 rounded-full btn-inkica-primary text-white font-bold transition-all shadow-[0_12px_30px_rgba(30,64,255,0.28)] hover:-translate-y-1">
                             Khám Phá Ngay <ArrowRight className="w-5 h-5" />
                         </a>
                     </FadeIn>
                     <FadeIn delay={0.2}>
-                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_24px_60px_rgba(15,23,42,0.14)] border border-slate-200 bg-slate-900 group">
                             <iframe 
                                 width="100%" 
                                 height="100%" 
@@ -319,31 +305,30 @@ const MetaAdReportFeatureSection = () => {
 
 const DomationDataSection = () => {
     return (
-        <section id="domation-data" className="py-24 px-6 relative z-10 border-t border-white/5 bg-[#0a0f1a]">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 to-transparent pointer-events-none" />
+        <section id="domation-data" className="py-24 px-6 relative z-10 border-t border-slate-200/70 bg-white/45 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
                 
                 <div className="w-full lg:w-1/2 relative perspective-1000">
                     <FadeIn delay={0.2} from="left">
                         <div className="relative flex flex-col items-center pt-8 pb-10">
-                            <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(16,185,129,0.3)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                            <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_64px_rgba(16,185,129,0.14)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
                                 <img loading="lazy" decoding="async" src="/CHIA DATA/chia_data (1).png" alt="Domation Data Interface" className="w-full rounded-2xl object-cover" />
                             </div>
                             
-                            <div className="absolute -bottom-6 -right-6 md:-right-10 z-40 bg-[#0d1117]/95 border border-emerald-500/30 rounded-2xl p-4 md:p-5 shadow-[0_0_40px_rgba(16,185,129,0.2)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500 w-[260px] md:w-[300px]">
-                                <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+                            <div className="absolute -bottom-6 -right-4 md:-right-10 z-40 bg-white/95 border border-emerald-200 rounded-2xl p-4 md:p-5 shadow-[0_18px_40px_rgba(16,185,129,0.18)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500 w-[260px] md:w-[300px]">
+                                <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/50">
+                                        <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center border border-blue-200">
                                             <img src={LOGOS.zalo} className="w-3.5 h-3.5" alt="Zalo" />
                                         </div>
-                                        <p className="text-[11px] font-bold text-white uppercase">Zalo Bot Noti</p>
+                                        <p className="text-[11px] font-bold text-slate-900 uppercase">Zalo Bot Noti</p>
                                     </div>
-                                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                                 </div>
                                 <div className="space-y-2">
-                                    <p className="text-xs text-white leading-relaxed"><span className="text-emerald-400 font-bold">Data mới:</span> Nguyễn Văn A - 098x.xxx.xxx</p>
-                                    <p className="text-[10px] text-slate-400">Từ chiến dịch: FB Ads - Mùa Hè</p>
-                                    <p className="text-[10px] text-slate-400">Sale nhận: Trần Thị B</p>
+                                    <p className="text-xs text-slate-800 leading-relaxed"><span className="text-emerald-600 font-bold">Data mới:</span> Nguyễn Văn A - 098x.xxx.xxx</p>
+                                    <p className="text-[10px] text-slate-500">Từ chiến dịch: FB Ads - Mùa Hè</p>
+                                    <p className="text-[10px] text-slate-500">Sale nhận: Trần Thị B</p>
                                 </div>
                             </div>
                         </div>
@@ -352,15 +337,15 @@ const DomationDataSection = () => {
                 
                 <div className="w-full lg:w-1/2 z-20">
                     <FadeIn from="right">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
                             <Database className="w-3.5 h-3.5" /> DOMATION DATA
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                             Hệ Thống Phân Bổ <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Data Tự Động</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Data Tự Động</span>
                         </h2>
-                        <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                            <strong className="text-emerald-400/90 font-medium block mb-2 italic">Bạn mệt mỏi vì Data khách hàng đổ về bị sót? Sale phàn nàn vì nhận số chậm, mất "thời điểm vàng" để chốt đơn?</strong>
+                        <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                            <strong className="text-emerald-700 font-semibold block mb-2">Bạn mệt mỏi vì Data khách hàng đổ về bị sót? Sale phàn nàn vì nhận số chậm, mất "thời điểm vàng" để chốt đơn?</strong>
                             Giải pháp điều phối luồng Data tự động và bảo vệ doanh thu. Thiết lập các vòng giao data, logic giao từng vòng, tích hợp Zalo BOT và Email thông báo bảo mật cho từng tư vấn viên.
                         </p>
 
@@ -372,20 +357,20 @@ const DomationDataSection = () => {
                                 { t: "Quản Lý Lỗi & Đền Bù", d: "Khách trùng, sai số, sai nhu cầu? Sale báo lỗi trực tiếp, Admin duyệt là tự động bù 1 Data mới. Đảm bảo công bằng 100%." },
                                 { t: "Báo Cáo Tự Động", d: "Cuối ngày Zalo Bot tự động gửi bảng tổng kết: Data thu về, số lượng chia, tỷ lệ lỗi. Giúp Quản lý nắm trọn hiệu suất." },
                             ].map((box, i) => (
-                                <div key={i} className="flex gap-3.5 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-colors">
-                                    <div className="mt-0.5 w-7 h-7 rounded border border-emerald-500/40 bg-emerald-500/15 flex shrink-0 items-center justify-center">
-                                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <div key={i} className="flex gap-3.5 p-3.5 rounded-xl bg-white/85 border border-slate-200 hover:border-emerald-300 transition-colors shadow-sm">
+                                    <div className="mt-0.5 w-7 h-7 rounded border border-emerald-200 bg-emerald-50 flex shrink-0 items-center justify-center">
+                                        <Check className="w-3.5 h-3.5 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                        <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                        <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                        <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         
                         <div className="flex">
-                            <a href="https://ideas-data.vercel.app/demo" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-1">
+                            <a href="/data" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition-all shadow-[0_12px_28px_rgba(16,185,129,0.28)] hover:-translate-y-1">
                                 <Monitor className="w-5 h-5" /> Trải Nghiệm Demo Tính Năng
                             </a>
                         </div>
@@ -402,28 +387,28 @@ const ALL_MODULES = [
         id: 'domation-data', title: 'Hệ Thống Phân Bổ Data', sub: 'Hệ thống logic chia vòng DATA tự động. Định tuyến luồng thông minh, thông báo Zalo Bot/Email Real-time cho từng tư vấn viên.', icon: Database, color: 'from-emerald-500 to-teal-600', tags: ['Data', 'Routing', 'Bot']
     },
     {
-        id: 'campaigns', title: 'Campaigns', sub: 'Gửi kịch bản hàng loạt đa kênh Mail & Zalo ZNS. Tối ưu tỷ lệ mở với bộ lọc đối tượng thông minh.', icon: Mail, color: 'from-amber-400 to-orange-500', tags: ['Marketing', 'Bulk']
+        id: 'campaigns', title: 'Campaigns', sub: 'Gửi kịch bản hàng loạt đa kênh Mail & Zalo ZNS. Tối ưu tỷ lệ mở với bộ lọc đối tượng thông minh.', icon: Mail, color: 'from-[#1E40FF] to-[#06B6D4]', tags: ['Marketing', 'Bulk']
     },
     {
-        id: 'flows', title: 'Automation', sub: 'Thiết lập kịch bản dựa trên hành vi và sự kiện thực tế. Tự động hóa 100% quy trình CSKH đa kênh.', icon: Zap, color: 'from-blue-500 to-indigo-600', tags: ['Trigger', 'Workflow']
+        id: 'flows', title: 'Automation', sub: 'Thiết lập kịch bản dựa trên hành vi và sự kiện thực tế. Tự động hóa 100% quy trình CSKH đa kênh.', icon: Zap, color: 'from-blue-600 to-indigo-600', tags: ['Trigger', 'Workflow']
     },
     {
-        id: 'templates', title: 'Email Design', sub: 'Thư viện mẫu thiết kế chuyên nghiệp, kéo thả linh hoạt. Hỗ trợ đầy đủ các khối nội dung và biến cá nhân hóa.', icon: FileText, color: 'from-purple-500 to-pink-600', tags: ['Drag & Drop', 'Design']
+        id: 'templates', title: 'Email Design', sub: 'Thư viện mẫu thiết kế chuyên nghiệp, kéo thả linh hoạt. Hỗ trợ đầy đủ các khối nội dung và biến cá nhân hóa.', icon: FileText, color: 'from-sky-500 to-blue-600', tags: ['Drag & Drop', 'Design']
     },
     {
-        id: 'ai-training', title: 'AI Training', sub: 'Huấn luyện bộ não AI theo dữ liệu riêng của doanh nghiệp. AI phản hồi Khách hàng chính xác theo ngữ cảnh.', icon: Bot, color: 'from-rose-500 to-red-600', tags: ['AI', 'Smart']
+        id: 'ai-training', title: 'AI Training', sub: 'Huấn luyện bộ não AI theo dữ liệu riêng của doanh nghiệp. AI phản hồi Khách hàng chính xác theo ngữ cảnh.', icon: Bot, color: 'from-[#0F172A] to-[#1E40FF]', tags: ['AI', 'Smart']
     },
     {
-        id: 'ai-space', title: 'AI Space', sub: 'Training kiến thức AI và giao diện chuyên nghiệp riêng biệt dành cho đội nhóm & các phòng ban độc lập.', icon: Sparkles, color: 'from-[#e11d48] to-[#9f1239]', tags: ['Agents', 'Workspace']
+        id: 'ai-space', title: 'AI Space', sub: 'Training kiến thức AI và giao diện chuyên nghiệp riêng biệt dành cho đội nhóm & các phòng ban độc lập.', icon: Sparkles, color: 'from-[#0284C7] to-[#06B6D4]', tags: ['Agents', 'Workspace']
     },
     {
-        id: 'vouchers', title: 'Voucher Hub', sub: 'Quản lý tập trung toàn bộ mã ưu đãi, quà tặng. Tự động sinh mã ngẫu nhiên và theo dõi lượt sử dụng thời gian thực.', icon: Ticket, color: 'from-[#F59E0B] to-[#D97706]', tags: ['Promo', 'Loyalty']
+        id: 'vouchers', title: 'Voucher Hub', sub: 'Quản lý tập trung toàn bộ mã ưu đãi, quà tặng. Tự động sinh mã ngẫu nhiên và theo dõi lượt sử dụng thời gian thực.', icon: Ticket, color: 'from-[#1E40FF] to-[#0EA5E9]', tags: ['Promo', 'Loyalty']
     },
     {
-        id: 'survey', title: 'Survey Builder', sub: 'Thiết kế khảo sát kéo thả siêu dễ. Tracking qua mail, kích hoạt Flow tự động sau khảo sát. Hỗ trợ ẩn danh hoặc thu thập đầy đủ thông tin.', icon: ClipboardList, color: 'from-[#06b6d4] to-[#0284c7]', tags: ['Survey', 'Trigger']
+        id: 'survey', title: 'Survey Builder', sub: 'Thiết kế khảo sát kéo thả siêu dễ. Tracking qua mail, kích hoạt Flow tự động sau khảo sát. Hỗ trợ ẩn danh hoặc thu thập đầy đủ thông tin.', icon: ClipboardList, color: 'from-cyan-500 to-sky-600', tags: ['Survey', 'Trigger']
     },
     {
-        id: 'qr-tracking', title: 'QR Code Tracking', sub: 'Tạo mã QR có ID giúp tracking chuẩn xác lượt quét cho từng chiến dịch sự kiện. Thiết kế custom đa dạng.', icon: ScanLine, color: 'from-amber-500 to-orange-500', tags: ['QR', 'Offline']
+        id: 'qr-tracking', title: 'QR Code Tracking', sub: 'Tạo mã QR có ID giúp tracking chuẩn xác lượt quét cho từng chiến dịch sự kiện. Thiết kế custom đa dạng.', icon: ScanLine, color: 'from-blue-600 to-cyan-600', tags: ['QR', 'Offline']
     },
     {
         id: 'zalo-oa', title: 'Zalo Connect', sub: 'Tích hợp Zalo Official Account. Gửi tin nhắn quan tâm, thông báo ZNS và quản lý hội thoại tập trung.', icon: MessageSquare, color: 'from-[#0068FF] to-[#00c6ff]', tags: ['Zalo', 'ZNS']
@@ -441,16 +426,16 @@ const ALL_MODULES = [
         id: 'reports', title: 'Analytics', sub: 'Phân tích hiệu suất chi tiết theo từng chiến dịch. Theo dõi tỷ lệ chuyển đổi và tăng trưởng Khách hàng.', icon: BarChart3, color: 'from-slate-700 to-slate-900'
     },
     {
-        id: 'api-triggers', title: 'API Triggers', sub: 'Thiết lập Webhook và API kết nối 2 chiều. Kích hoạt Automation trực tiếp từ các hệ thống ngoại vi.', icon: Code2, color: 'from-indigo-500 to-violet-600', tags: ['Dev', 'API']
+        id: 'api-triggers', title: 'API Triggers', sub: 'Thiết lập Webhook và API kết nối 2 chiều. Kích hoạt Automation trực tiếp từ các hệ thống ngoại vi.', icon: Code2, color: 'from-indigo-500 to-blue-600', tags: ['Dev', 'API']
     },
     {
-        id: 'web-design', title: 'Thiết Kế Web & Landing Page', sub: 'Thiết kế Website và Landing Page chuyên nghiệp, chuẩn SEO, tối ưu tỷ lệ chuyển đổi cao, tích hợp sẵn các công cụ tracking.', icon: Monitor, color: 'from-fuchsia-500 to-pink-600', tags: ['Web', 'Landing']
+        id: 'web-design', title: 'Thiết Kế Web & Landing Page', sub: 'Thiết kế Website và Landing Page chuyên nghiệp, chuẩn SEO, tối ưu tỷ lệ chuyển đổi cao, tích hợp sẵn các công cụ tracking.', icon: Monitor, color: 'from-[#1E40FF] to-[#06B6D4]', tags: ['Web', 'Landing']
     },
     {
-        id: 'meta-ad-report', title: 'Meta Ad Realtime Report', sub: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ ra quyết định Scale hay Vít ngân sách.', icon: Activity, color: 'from-amber-500 to-orange-500', tags: ['Meta Ads', 'Report', 'AI']
+        id: 'meta-ad-report', title: 'Meta Ad Realtime Report', sub: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI phân tích dữ liệu chuyên sâu, hỗ trợ ra quyết định Scale hay Vít ngân sách.', icon: Activity, color: 'from-blue-600 to-cyan-500', tags: ['Meta Ads', 'Report', 'AI']
     },
     {
-        id: 'settings', title: 'Cấu hình', sub: 'Quản lý tài khoản, phân quyền thành viên và thiết lập các kết nối API ngoại vi cho hệ thống.', icon: Settings2, color: 'from-slate-400 to-slate-600'
+        id: 'settings', title: 'Cấu hình', sub: 'Quản lý tài khoản, phân quyền thành viên và thiết lập các kết nối API ngoại vi cho hệ thống.', icon: Settings2, color: 'from-slate-500 to-slate-700'
     }
 ];
 
@@ -576,35 +561,21 @@ const Landing: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#080c14] text-white overflow-x-hidden font-sans selection:bg-amber-500/30" style={{ scrollbarWidth: 'thin', scrollbarColor: '#f59e0b transparent' }}>
+        <div className="min-h-screen bg-[#F8F9FA] text-slate-900 relative overflow-x-clip font-sans selection:bg-blue-600/20">
             <style>{`
-                html, body { scrollbar-width: thin; scrollbar-color: #f59e0b #080c14; overflow-y: scroll; background-color: #080c14; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+                html, body { overflow-y: scroll; background-color: #F8F9FA; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
                 ::-webkit-scrollbar { width: 6px; height: 6px; }
-                ::-webkit-scrollbar-track { background: #080c14; }
-                ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #fbbf24, #f97316, #ea580c); border-radius: 10px; }
-                ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #fde68a, #fb923c, #f97316); }
+                ::-webkit-scrollbar-track { background: #F1F5F9; }
+                ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #1E40FF, #0284C7, #06B6D4); border-radius: 10px; }
+                ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #0F172A, #1E40FF, #0284C7); }
 
-                @keyframes aurora-1 {
-                    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:0.12; }
-                    33% { transform: translate3d(8%,-12%,0) scale(1.1); opacity:0.16; }
-                    66% { transform: translate3d(-5%,8%,0) scale(0.92); opacity:0.1; }
-                }
-                @keyframes aurora-2 {
-                    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:0.1; }
-                    40% { transform: translate3d(-8%,8%,0) scale(1.12); opacity:0.14; }
-                    70% { transform: translate3d(5%,-5%,0) scale(0.88); opacity:0.08; }
-                }
-                @keyframes aurora-3 {
-                    0%,100% { transform: translate3d(0,0,0) scale(1); }
-                    50% { transform: translate3d(10%,6%,0) scale(1.08); }
-                }
                 @keyframes shimmer-sweep {
                     0% { background-position: -200% center; }
                     100% { background-position: 200% center; }
                 }
                 @keyframes glow-pulse {
-                    0%,100% { box-shadow: 0 0 10px 2px rgba(245,158,11,0.15); }
-                    50% { box-shadow: 0 0 20px 4px rgba(245,158,11,0.4); }
+                    0%,100% { box-shadow: 0 8px 24px rgba(30,64,255,0.16); }
+                    50% { box-shadow: 0 12px 34px rgba(6,182,212,0.28); }
                 }
                 @keyframes float-y {
                     0%,100% { transform: translate3d(0,0px,0); }
@@ -619,147 +590,112 @@ const Landing: React.FC = () => {
                     50% { background-position: 100% 50%; }
                     100% { background-position: 0% 50%; }
                 }
-                @keyframes star-float {
-                    0%,100% { transform: translate3d(0,0,0) rotate(0deg); opacity:0.8; }
-                    50% { transform: translate3d(0,-8px,0) rotate(180deg); opacity:1; }
-                }
                 @keyframes spin-slow {
                     from { transform: translate(-50%, -50%) rotate(0deg); }
                     to { transform: translate(-50%, -50%) rotate(360deg); }
                 }
 
-                /* ── GPU hints ── */
-                .aurora-1, .aurora-2, .aurora-3 { will-change: transform, opacity; }
-
                 .shimmer-text {
-                    background: linear-gradient(90deg, #f59e0b 0%, #fb923c 20%, #fde68a 40%, #f97316 60%, #ef4444 80%, #f59e0b 100%);
+                    background: linear-gradient(90deg, #0F172A 0%, #1E40FF 35%, #0284C7 65%, #06B6D4 100%);
                     background-size: 200% auto;
                     -webkit-background-clip: text;
                     background-clip: text;
                     -webkit-text-fill-color: transparent;
-                    animation: shimmer-sweep 4s linear infinite;
+                    animation: shimmer-sweep 5s linear infinite;
                 }
                 .glow-btn { animation: glow-pulse 3s ease-in-out infinite; }
-                .aurora-1 { animation: aurora-1 18s ease-in-out infinite; }
-                .aurora-2 { animation: aurora-2 24s ease-in-out infinite; }
-                .aurora-3 { animation: aurora-3 30s ease-in-out infinite; }
                 .float-y { animation: float-y 6s ease-in-out infinite; }
                 .live-dot { animation: live-dot 1.4s ease-in-out infinite; }
                 .animate-spin-slow { animation: spin-slow 8s linear infinite; }
 
-                /* Disable expensive animations on mobile to prevent jank */
                 @media (max-width: 767px) {
-                    .aurora-1, .aurora-2, .aurora-3 { animation: none !important; opacity: 0.08; }
                     .float-y { animation: none !important; }
-                    .glow-btn { animation: none !important; box-shadow: 0 0 10px 2px rgba(245,158,11,0.2); }
-                    .pricing-highlight-glow { animation: none !important; }
+                    .glow-btn { animation: none !important; }
                     .shimmer-text { animation: shimmer-sweep 6s linear infinite; }
                 }
 
-                /* Respect prefers-reduced-motion */
                 @media (prefers-reduced-motion: reduce) {
                     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
                 }
 
                 .holo-card { position: relative; }
-                /* On desktop only: animated border on hover */
                 @media (hover: hover) {
-                    .holo-card::before {
-                        content: '';
-                        position: absolute;
-                        inset: -1px;
-                        border-radius: inherit;
-                        background: linear-gradient(90deg, #fbbf24, #f97316, #ea580c, #fbbf24);
-                        background-size: 300% 300%;
-                        animation: border-flow 4s linear infinite;
-                        z-index: -1;
-                        opacity: 0;
-                        transition: opacity 0.4s;
+                    .holo-card:hover {
+                        box-shadow: 0 20px 44px -12px rgba(30,64,255,0.16);
+                        border-color: rgba(30,64,255,0.35);
                     }
-                    .holo-card:hover::before { opacity: 1; }
-                    .holo-card:hover .text-4xl {
-                        background: none !important;
-                        -webkit-text-fill-color: white !important;
-                        text-shadow: 0 0 12px rgba(255,255,255,0.4);
-                    }
-                    .holo-card:hover p { color: white !important; }
                 }
-                .pricing-highlight-glow { animation: glow-pulse 3s ease-in-out infinite; }
 
-                /* Smooth image rendering */
                 img { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-
-                /* Reduce overflow-x issues on mobile */
                 section { overflow-x: clip; }
             `}</style>
 
-            {/* ── Background: Animated Aurora ── */}
-            <div className="fixed inset-0 pointer-events-none z-0" style={{ transform: 'translateZ(0)' }}>
-                {/* On mobile: static blobs (no animation) to save GPU. On desktop: animated. */}
-                <div className="aurora-1 absolute top-[-25%] left-[-15%] w-[70%] h-[70%] rounded-full bg-amber-500/[0.12] blur-[120px] md:blur-[160px]" />
-                <div className="aurora-2 absolute top-[5%] right-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-600/[0.1] blur-[120px] md:blur-[160px]" />
-                <div className="aurora-3 absolute bottom-[-5%] left-[15%] w-[50%] h-[50%] rounded-full bg-rose-500/[0.08] blur-[100px] md:blur-[140px]" />
-                {/* 4th blob hidden on mobile (cost > benefit) */}
-                <div className="aurora-1 hidden md:block absolute top-[40%] right-[10%] w-[35%] h-[35%] rounded-full bg-purple-600/[0.07] blur-[120px]" style={{ animationDelay: '-8s' }} />
-                {/* Grid — hidden on mobile */}
-                <div className="hidden md:block absolute inset-0 opacity-[0.035]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',
-                    backgroundSize: '60px 60px'
-                }} />
-                {/* Noise — hidden on mobile (SVG filter expensive) */}
-                <div className="hidden md:block absolute inset-0 opacity-[0.025]" style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`
-                }} />
-            </div>
+            <LuxuryGoldBackdrop />
+
+            {/* Floating 3D Glass Decor */}
+            <motion.img
+                src={DECOR_PNGS.prism}
+                alt=""
+                aria-hidden="true"
+                animate={{ y: [0, -14, 0], rotate: [0, 3, 0] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                className="pointer-events-none select-none hidden lg:block fixed top-28 right-8 w-36 xl:w-44 opacity-55 drop-shadow-[0_18px_36px_rgba(30,64,255,0.16)] z-[1]"
+            />
+            <motion.img
+                src={DECOR_PNGS.funnel}
+                alt=""
+                aria-hidden="true"
+                animate={{ y: [0, 12, 0], rotate: [0, -3, 0] }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+                className="pointer-events-none select-none hidden lg:block fixed bottom-24 left-8 w-32 xl:w-40 opacity-50 drop-shadow-[0_18px_36px_rgba(6,182,212,0.16)] z-[1]"
+            />
 
             {/* ── Navigation ── */}
             <Navbar activePage="automation" onOpenContact={() => setShowContactModal(true)} />
 
             {/* ── Hero ── */}
-            <section className="relative pt-40 pb-20 md:pt-52 md:pb-28 px-4 md:px-6 z-10 min-h-screen flex flex-col items-center justify-center">
+            <section className="relative pt-36 pb-20 md:pt-44 md:pb-24 px-4 md:px-6 z-10 min-h-screen flex flex-col items-center justify-center">
                 <div className="max-w-5xl mx-auto text-center">
                     {/* Badge Hook */}
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-                        className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-sm font-bold mb-10 shadow-[0_0_30px_rgba(245,158,11,0.15)] backdrop-blur-sm">
-                        <span className="live-dot w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                        <span className="text-amber-400 tracking-wide uppercase">Ready To Scale 🚀</span>
+                        className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-blue-50/90 border border-blue-200 text-sm font-bold mb-8 shadow-sm backdrop-blur-sm">
+                        <span className="live-dot w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                        <span className="text-[#1E40FF] tracking-wide uppercase">Ready To Scale 🚀</span>
                     </motion.div>
 
                     {/* Heading */}
                     <motion.h1 initial={{ opacity: 0, y: 40, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         className="font-black tracking-tight leading-[1.2] md:leading-[1.1] mb-8 w-full relative z-10 text-center">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/10 blur-[60px] -z-10 rounded-full pointer-events-none" />
-                        <span className="block text-xl md:text-3xl lg:text-4xl text-white mb-2 md:mb-3 tracking-[0.2em] font-extrabold opacity-90" style={{ textShadow: '0 0 40px rgba(245,158,11,0.4), 0 0 15px rgba(245,158,11,0.2)' }}>DIGITAL AI</span>
+                        <span className="block text-xl md:text-3xl lg:text-4xl text-slate-800 mb-2 md:mb-3 tracking-[0.2em] font-extrabold">DIGITAL AI</span>
                         <span className="shimmer-text block pb-2 inline-block text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
                             MARKETING AUTOMATION
                         </span>
                     </motion.h1>
 
                     <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-                        className="text-sm sm:text-base md:text-xl text-slate-400 mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
-                        Thế hệ tiếp theo của Marketing Automation - Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-200">Automation Flow, Email, Zalo, Meta &amp; AI</strong> — Tối ưu hóa quy trình, tiết kiệm nguồn lực và thời gian.
+                        className="text-sm sm:text-base md:text-xl text-slate-600 mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
+                        Thế hệ tiếp theo của Marketing Automation - Trải nghiệm sức mạnh tự động hóa vượt trội từ <strong className="text-slate-900">Automation Flow, Email, Zalo, Meta &amp; AI</strong> — Tối ưu hóa quy trình, tiết kiệm nguồn lực và thời gian.
                     </motion.p>
 
                     {/* CTA */}
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
                         className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-16 w-full">
                         <button onClick={() => setIsFormOpen(true)}
-                            className="w-full sm:w-auto glow-btn group relative flex items-center justify-center gap-2 md:gap-3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-black hover:-translate-y-1 transition-transform duration-300 overflow-hidden">
+                            className="w-full sm:w-auto btn-inkica-primary group relative flex items-center justify-center gap-2 md:gap-3 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-black hover:-translate-y-1 transition-transform duration-300 shadow-[0_14px_32px_rgba(30,64,255,0.28)]">
                             <span className="relative z-10 flex items-center gap-2 md:gap-3">
                                 Bắt Đầu Tăng Trưởng
                                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                             </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </button>
-                        <button onClick={() => setIsDemoModalOpen(true)} className="w-full sm:w-auto justify-center flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-bold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 hover:-translate-y-0.5 transition-all duration-300 backdrop-blur-sm">
-                            <Play className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
+                        <button onClick={() => setIsDemoModalOpen(true)} className="w-full sm:w-auto justify-center flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-bold text-slate-800 bg-white/90 border border-slate-200 hover:border-blue-300 hover:bg-white hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
+                            <Play className="w-4 h-4 md:w-5 md:h-5 text-[#1E40FF]" />
                             Khám Phá Tính Năng
                         </button>
                     </motion.div>
 
                     {/* Platform Bar */}
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.5 }}
-                        className="flex flex-wrap items-center justify-center gap-4 md:gap-6 p-4 md:p-6 rounded-3xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-md">
+                        className="flex flex-wrap items-center justify-center gap-4 md:gap-6 p-4 md:p-6 rounded-3xl bg-white/85 border border-slate-200/90 backdrop-blur-md shadow-sm">
                         <div className="text-xs font-bold text-slate-500 uppercase tracking-widest w-full mb-1">Kết nối trực tiếp</div>
                         {[
                             { name: 'Amazon SES', icon: LOGOS.aws_ses },
@@ -771,76 +707,44 @@ const Landing: React.FC = () => {
                         ].map((plat) => (
                             <div key={plat.name} className="flex items-center gap-2 hover:-translate-y-0.5 transition-transform duration-300">
                                 <img loading="lazy" decoding="async" src={plat.icon} alt={plat.name} className="h-7 md:h-8 object-contain rounded-md" />
-                                <span className="font-bold text-slate-300 hidden sm:block text-sm opacity-90">{plat.name}</span>
+                                <span className="font-bold text-slate-700 hidden sm:block text-sm">{plat.name}</span>
                             </div>
                         ))}
                     </motion.div>
                 </div>
 
-                {/* Hero Image — Holographic Frame */}
-                <div style={{ perspective: '1200px' }} className="w-full max-w-6xl mx-auto mt-16 md:mt-20 relative px-4 z-20">
-                    <motion.div initial={{ opacity: 0, y: 80, rotateX: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }} transition={{ duration: 1.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        className="relative w-full rounded-[30px] p-[2px] group z-10"
+                {/* Hero Image — Luminous Frosted Frame */}
+                <div style={{ perspective: '1200px' }} className="w-full max-w-6xl mx-auto mt-14 md:mt-18 relative px-4 z-20">
+                    <motion.div initial={{ opacity: 0, y: 80, rotateX: 16, scale: 0.96 }} animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }} transition={{ duration: 1.2, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                        className="relative w-full rounded-[30px] p-[2px] bg-gradient-to-br from-[#1E40FF]/35 via-[#0284C7]/25 to-[#06B6D4]/35 group z-10 shadow-[0_28px_70px_rgba(30,64,255,0.14)]"
                     >
-                        {/* The Actual Image Container */}
-                        <div className="relative z-10 rounded-[28px] overflow-hidden bg-[#161b22] px-[1px] py-[1px] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.9)] md:shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]" style={{ zIndex: 10 }}>
-                            <img src="/imgs/home.jpg" alt="DOM Marketing Overview" className="w-full h-auto rounded-3xl object-cover" loading="eager" />
+                        <div className="relative z-10 rounded-[28px] overflow-hidden bg-white p-1.5">
+                            <img src="/imgs/home.jpg" alt="DOM Marketing Overview" className="w-full h-auto rounded-[22px] object-cover" loading="eager" />
                         </div>
-
-                        {/* Spinning Light Beams for Desktop */}
-                        <div className="hidden md:block absolute -inset-[2px] rounded-[32px] overflow-hidden z-0">
-                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow opacity-90" style={{
-                                backgroundImage: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, transparent 40%, rgba(245,158,11,0.5) 50%, #f97316 55%, transparent 60%, transparent 100%)'
-                            }} />
-                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow opacity-90" style={{
-                                backgroundImage: 'conic-gradient(from 180deg at 50% 50%, transparent 0%, transparent 40%, rgba(245,158,11,0.5) 50%, #f97316 55%, transparent 60%, transparent 100%)'
-                            }} />
-                        </div>
-                        {/* Outer blurred glow */}
-                        <div className="hidden md:block absolute -inset-[2px] rounded-[32px] overflow-hidden blur-[12px] z-0 opacity-60 mix-blend-screen">
-                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow" style={{
-                                backgroundImage: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, transparent 40%, #f59e0b 50%, #f97316 55%, transparent 60%, transparent 100%)'
-                            }} />
-                            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] animate-spin-slow" style={{
-                                backgroundImage: 'conic-gradient(from 180deg at 50% 50%, transparent 0%, transparent 40%, #f59e0b 50%, #f97316 55%, transparent 60%, transparent 100%)'
-                            }} />
-                        </div>
-
-                        {/* Mobile fallback static border */}
-                        <div className="md:hidden absolute -inset-[1px] rounded-[30px] opacity-80 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 blur-[3px] z-0" />
 
                         {/* Floating badges */}
-                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }} className="absolute -top-4 right-4 md:right-8 flex items-center gap-2 bg-[#0a0f1a]/90 border border-emerald-500/40 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-sm z-20">
-                            <span className="live-dot w-2 h-2 rounded-full bg-emerald-400" />
-                            <span className="text-emerald-400 text-xs font-bold">Live System</span>
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.0, duration: 0.6 }} className="absolute -top-4 right-4 md:right-8 flex items-center gap-2 bg-white/95 border border-emerald-200 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-lg backdrop-blur-sm z-20">
+                            <span className="live-dot w-2 h-2 rounded-full bg-emerald-500" />
+                            <span className="text-emerald-700 text-xs font-bold">Live System</span>
                         </motion.div>
-                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.4, duration: 0.6 }} className="absolute -bottom-4 left-4 md:left-8 flex items-center gap-2 bg-[#0a0f1a]/90 border border-amber-500/40 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] backdrop-blur-sm z-20 float-y">
-                            <Zap className="w-3 h-3 text-amber-400" />
-                            <span className="text-amber-400 text-xs font-bold">98% Inbox Rate</span>
+                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }} className="absolute -bottom-4 left-4 md:left-8 flex items-center gap-2 bg-white/95 border border-blue-200 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-lg backdrop-blur-sm z-20 float-y">
+                            <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
+                            <span className="text-[#1E40FF] text-xs font-bold">98% Inbox Rate</span>
                         </motion.div>
                     </motion.div>
                 </div>
             </section>
 
             {/* ── Stats Bar ── */}
-            <section className="py-16 px-6 relative z-10 border-y border-white/5">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-900/5 via-transparent to-amber-900/5 pointer-events-none" />
+            <section className="py-16 px-6 relative z-10 border-y border-slate-200/70 bg-white/40 backdrop-blur-sm">
                 <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {stats.map((s, i) => (
                         <FadeIn key={s.label} delay={i * 0.1}>
-                            <div className="holo-card relative text-center p-5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-amber-500/30 transition-all duration-500 group overflow-hidden">
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" style={{
-                                    background: 'radial-gradient(circle at center, rgba(245,158,11,0.08), transparent 70%)'
-                                }} />
-                                <div className="text-4xl md:text-5xl font-black mb-2" style={{
-                                    background: 'linear-gradient(135deg, #fbbf24, #f97316)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    filter: 'drop-shadow(0 0 12px rgba(245,158,11,0.4))'
-                                }}>
+                            <div className="holo-card inkica-glass-card relative text-center p-5 rounded-2xl border border-white/90 transition-all duration-500 group overflow-hidden">
+                                <div className="text-4xl md:text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4]">
                                     <Counter to={s.value} suffix={s.suffix} />
                                 </div>
-                                <p className="text-xs md:text-sm text-slate-500 font-semibold">{s.label}</p>
+                                <p className="text-xs md:text-sm text-slate-600 font-semibold">{s.label}</p>
                             </div>
                         </FadeIn>
                     ))}
@@ -851,21 +755,21 @@ const Landing: React.FC = () => {
             <section id="features" className="py-16 md:py-28 px-4 md:px-6 relative z-10 scroll-mt-20">
                 <div className="max-w-7xl mx-auto">
                     <FadeIn className="text-center mb-12 md:mb-20">
-                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 md:mb-5 leading-tight">
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-5 leading-tight">
                             Công Cụ Nền Tảng<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Cho Chiến Lược Đa Kênh</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Cho Chiến Lược Đa Kênh</span>
                         </h2>
-                        <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
+                        <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto">
                             Tất cả mọi thứ bạn cần để thu hút, nuôi dưỡng và chuyển đổi khách hàng hoàn toàn tự động.
                         </p>
                     </FadeIn>
 
-                    <div className="w-full relative border border-white/10 rounded-[24px] md:rounded-[32px] p-1.5 md:p-2 bg-[#161b22] backdrop-blur-sm shadow-[0_0_80px_-20px_rgba(245,158,11,0.3)] float-y flex-shrink-0 cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
-                        <img loading="lazy" decoding="async" src="/imgs/cac_tinh_nang.png" alt="Các tính năng nổi bật" className="w-full h-auto rounded-[18px] md:rounded-[24px] object-cover group-hover:opacity-90 transition-opacity" />
+                    <div className="w-full relative border border-slate-200 rounded-[24px] md:rounded-[32px] p-2 md:p-3 bg-white/95 backdrop-blur-sm shadow-[0_24px_64px_rgba(30,64,255,0.10)] float-y flex-shrink-0 cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
+                        <img loading="lazy" decoding="async" src="/imgs/cac_tinh_nang.png" alt="Các tính năng nổi bật" className="w-full h-auto rounded-[18px] md:rounded-[24px] object-cover group-hover:opacity-95 transition-opacity" />
                     </div>
 
                     <FadeIn delay={0.2} className="mt-10 md:mt-16 flex justify-center">
-                        <button onClick={() => setIsDemoModalOpen(true)} className="glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold px-8 md:px-10 py-3.5 md:py-4 rounded-xl hover:-translate-y-1 transition-all flex items-center gap-2.5 shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+                        <button onClick={() => setIsDemoModalOpen(true)} className="btn-inkica-primary text-white font-bold px-8 md:px-10 py-3.5 md:py-4 rounded-xl hover:-translate-y-1 transition-all flex items-center gap-2.5 shadow-[0_14px_32px_rgba(30,64,255,0.28)]">
                             <Layers className="w-5 h-5" />
                             Xem Chi Tiết Các Tính Năng
                         </button>
@@ -879,18 +783,17 @@ const Landing: React.FC = () => {
                     {/* Visual */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="left">
-                            <div className="relative rounded-2xl md:rounded-3xl border border-white/10 bg-[#161b22] p-3 md:p-4 shadow-2xl shadow-rose-500/10 float-y cursor-pointer group" onClick={() => setPreviewImage('/imgs/email build.jpg')}>
-                                <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/5 to-transparent rounded-2xl md:rounded-3xl pointer-events-none" />
-                                <div className="flex justify-between items-center px-2 pb-3 md:pb-4 border-b border-white/10 mb-3 md:mb-4">
+                            <div className="relative rounded-2xl md:rounded-3xl border border-slate-200/90 bg-white/95 p-3 md:p-4 shadow-[0_24px_60px_rgba(30,64,255,0.10)] float-y cursor-pointer group" onClick={() => setPreviewImage('/imgs/email build.jpg')}>
+                                <div className="flex justify-between items-center px-2 pb-3 md:pb-4 border-b border-slate-200 mb-3 md:mb-4">
                                     <div className="flex gap-1.5">
-                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-rose-500" />
-                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-amber-400" />
+                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-rose-400" />
+                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-[#1E40FF]" />
                                         <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-emerald-400" />
                                     </div>
-                                    <div className="text-xs font-bold text-slate-400 flex items-center gap-1.5"><LayoutTemplate className="w-3.5 h-3.5" /> Studio Design</div>
+                                    <div className="text-xs font-bold text-slate-500 flex items-center gap-1.5"><LayoutTemplate className="w-3.5 h-3.5 text-[#1E40FF]" /> Studio Design</div>
                                 </div>
                                 <div className="p-1">
-                                    <img loading="lazy" decoding="async" src="/imgs/email build.jpg" alt="Email Builder Drag and Drop" className="w-full h-auto rounded-xl md:rounded-2xl shadow-lg object-cover group-hover:opacity-90 transition-opacity" />
+                                    <img loading="lazy" decoding="async" src="/imgs/email build.jpg" alt="Email Builder Drag and Drop" className="w-full h-auto rounded-xl md:rounded-2xl shadow-md object-cover group-hover:opacity-95 transition-opacity" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -899,17 +802,17 @@ const Landing: React.FC = () => {
                     {/* Content */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold uppercase tracking-widest mb-5">
+                            <div className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-5">
                                 <Pointer className="w-3.5 h-3.5" />
                                 Email Builder Studio
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 leading-tight">
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 leading-tight">
                                 Thiết Kế Email Kéo Thả <br />
-                                <span className="text-rose-400">Siêu Mượt, Siêu Tốc</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Siêu Mượt, Siêu Tốc</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-rose-400/90 font-medium block mb-2 italic">Marketing loay hoay thiết kế Email chuyên nghiệp? Hay đành "chữa cháy" bằng một bức ảnh đơn lẻ dễ bay vào hòm thư Spam?</strong>
-                                Yên tâm, công cụ kéo thả (Drag & Drop) thông minh sẽ giải quyết mọi rắc rối. Giờ đây bạn có thể dễ dàng "lắp ráp" các tài liệu tiếp thị lộng lẫy, chuẩn Responsive mà không tốn lấy một giọt mồ hôi.
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-[#0284C7] font-semibold block mb-2">Marketing loay hoay thiết kế Email chuyên nghiệp? Hay đành "chữa cháy" bằng một bức ảnh đơn lẻ dễ bay vào hòm thư Spam?</strong>
+                                Yên tâm, công cụ kéo thả (Drag &amp; Drop) thông minh sẽ giải quyết mọi rắc rối. Giờ đây bạn có thể dễ dàng "lắp ráp" các tài liệu tiếp thị lộng lẫy, chuẩn Responsive mà không tốn lấy một giọt mồ hôi.
                             </p>
                             <ul className="space-y-4 mb-10">
                                 {[
@@ -919,10 +822,10 @@ const Landing: React.FC = () => {
                                     'Kho biểu tượng và hình nền tích hợp sẵn'
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-3">
-                                        <div className="mt-1 w-5 h-5 rounded-md bg-rose-500/20 border border-rose-500/40 flex items-center justify-center flex-shrink-0">
-                                            <Check className="w-3 h-3 text-rose-400" />
+                                        <div className="mt-1 w-5 h-5 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
+                                            <Check className="w-3 h-3 text-[#1E40FF]" />
                                         </div>
-                                        <span className="text-slate-300 font-medium">{item}</span>
+                                        <span className="text-slate-700 font-medium">{item}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -932,22 +835,21 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Flow Builder ── */}
-            <section id="flow" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden border-y border-white/5 scroll-mt-20">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-900/10 to-emerald-900/10 pointer-events-none" />
+            <section id="flow" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-24">
                     {/* Text */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="left">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
                                 <Workflow className="w-3.5 h-3.5" />
                                 Automation Flow Tree
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 md:mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 leading-tight">
                                 Kéo Thả <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Các Nhánh Kịch Bản</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#0284C7]">Các Nhánh Kịch Bản</span>
                             </h2>
-                            <p className="text-slate-400 text-base md:text-lg mb-6 leading-relaxed">
-                                <strong className="text-rose-400/90 font-medium block mb-2 italic">Chăm sóc tự động chuẩn xác nhờ rẽ nhánh hành vi thông minh!</strong>
+                            <p className="text-slate-600 text-base md:text-lg mb-6 leading-relaxed">
+                                <strong className="text-[#0284C7] font-semibold block mb-2">Chăm sóc tự động chuẩn xác nhờ rẽ nhánh hành vi thông minh!</strong>
                                 Tự do xây dựng quy trình chăm sóc phức tạp. Hệ thống tự động phân loại theo hành vi, kiểm duyệt an toàn, và điều phối gửi nhận tùy theo sự tương tác của Khách hàng với độ chính xác cao nhất.
                             </p>
                             <div className="grid grid-cols-2 gap-4">
@@ -957,9 +859,9 @@ const Landing: React.FC = () => {
                                     { t: "Kiểm Duyệt Kịch Bản", d: "Quy trình xác nhận và phê duyệt bản nháp trước lúc Live." },
                                     { t: "Wait/Delay Timer", d: "Kiểm soát thời gian gửi bằng cách thiết lập chờ dễ dàng." }
                                 ].map((box, i) => (
-                                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4">
-                                        <div className="text-sm font-bold text-white mb-1">{box.t}</div>
-                                        <div className="text-xs text-slate-500">{box.d}</div>
+                                    <div key={i} className="bg-white/90 border border-slate-200 rounded-xl p-4 shadow-sm hover:border-blue-300 transition-colors">
+                                        <div className="text-sm font-bold text-slate-900 mb-1">{box.t}</div>
+                                        <div className="text-xs text-slate-600">{box.d}</div>
                                     </div>
                                 ))}
                             </div>
@@ -977,29 +879,29 @@ const Landing: React.FC = () => {
                                         { src: '/imgs/flow.png', alt: 'Cấu hình rẽ nhánh' },
                                         { src: '/imgs/flow_renhanh.png', alt: 'Chi tiết tự động hoá' }
                                     ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]" onClick={() => setPreviewImage(img.src)} style={{ cursor: "pointer" }}>
+                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: "pointer" }}>
                                             <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
                                         </div>
                                     ))}
                                 </div>
                                 <div className="flex justify-center gap-1.5 mt-3">
                                     {[0, 1, 2].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${flowSlide === i ? 'w-5 h-2 bg-blue-400' : 'w-2 h-2 bg-white/20'}`} />
+                                        <div key={i} className={`rounded-full transition-all duration-300 ${flowSlide === i ? 'w-5 h-2 bg-[#1E40FF]' : 'w-2 h-2 bg-slate-300'}`} />
                                     ))}
                                 </div>
                             </div>
                             {/* Desktop stacked */}
                             <div className="hidden lg:block relative flex flex-col items-center pt-8 pb-16 perspective-1000 mt-6">
                                 {/* Base Image */}
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(59,130,246,0.3)] w-[95%] z-20 hover:-translate-y-2 hover:z-[60] transition-all duration-500 self-center cursor-pointer" onClick={() => setPreviewImage('/imgs/flow.png')}>
+                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] w-[95%] z-20 hover:-translate-y-2 hover:z-[60] transition-all duration-500 self-center cursor-pointer" onClick={() => setPreviewImage('/imgs/flow.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/flow.png" alt="Automation Flow Builder" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                                 {/* Overlay Top Right Background */}
-                                <div className="absolute -top-8 -right-6 md:-top-12 md:-right-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.9)] w-[55%] sm:w-[50%] z-10 hover:-translate-y-3 hover:scale-[1.05] hover:z-[60] transition-all duration-500 cursor-pointer" onClick={() => setPreviewImage('/imgs/flow_renhanh.png')}>
+                                <div className="absolute -top-8 -right-6 md:-top-12 md:-right-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[55%] sm:w-[50%] z-10 hover:-translate-y-3 hover:scale-[1.05] hover:z-[60] transition-all duration-500 cursor-pointer" onClick={() => setPreviewImage('/imgs/flow_renhanh.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/flow_renhanh.png" alt="Cấu hình luồng" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                                 {/* Stacked Overlay Bottom Left */}
-                                <div className="absolute -bottom-8 -left-6 md:-bottom-10 md:-left-12 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] w-[65%] sm:w-[60%] z-30 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 hover:z-[60] cursor-pointer" onClick={() => setPreviewImage('/imgs/flow.jpg')}>
+                                <div className="absolute -bottom-8 -left-6 md:-bottom-10 md:-left-12 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[65%] sm:w-[60%] z-30 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 hover:z-[60] cursor-pointer" onClick={() => setPreviewImage('/imgs/flow.jpg')}>
                                     <img loading="lazy" decoding="async" src="/imgs/flow.jpg" alt="Rẽ nhánh kịch bản" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
@@ -1024,32 +926,32 @@ const Landing: React.FC = () => {
                                         { src: '/imgs/campain_track_1.png', alt: 'Heatmap Insights' },
                                         { src: '/imgs/campain_track_2.png', alt: 'Time Tracking' },
                                     ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]" onClick={() => setPreviewImage(img.src)} style={{ cursor: "pointer" }}>
+                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: "pointer" }}>
                                             <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
                                         </div>
                                     ))}
                                 </div>
                                 <div className="flex justify-center gap-1.5 mt-3">
                                     {[0, 1, 2, 3, 4].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${campSlide === i ? 'w-5 h-2 bg-pink-400' : 'w-2 h-2 bg-white/20'}`} />
+                                        <div key={i} className={`rounded-full transition-all duration-300 ${campSlide === i ? 'w-5 h-2 bg-[#0284C7]' : 'w-2 h-2 bg-slate-300'}`} />
                                     ))}
                                 </div>
                             </div>
                             {/* Desktop stacked layout */}
                             <div className="hidden lg:block relative flex flex-col items-center pb-10 perspective-1000 mt-8">
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_0_80px_-20px_rgba(236,72,153,0.3)] group hover:-translate-y-2 transition-all duration-500 w-[90%] z-10 self-start ml-4 hover:z-40" onClick={() => setPreviewImage('/imgs/campain_track_3.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_20px_50px_rgba(30,64,255,0.10)] group hover:-translate-y-2 transition-all duration-500 w-[90%] z-10 self-start ml-4 hover:z-40" onClick={() => setPreviewImage('/imgs/campain_track_3.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/campain_track_3.png" alt="Mail Detail Track" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.6)] group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 z-20 self-end mr-4 hover:z-40" onClick={() => setPreviewImage('/imgs/campain_track_4.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 z-20 self-end mr-4 hover:z-40" onClick={() => setPreviewImage('/imgs/campain_track_4.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/campain_track_4.png" alt="Device Analytics" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.7)] group hover:-translate-y-2 transition-all duration-500 w-[90%] -mt-14 z-30 self-center hover:z-50" onClick={() => setPreviewImage('/imgs/campain_track_heatmap.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[90%] -mt-14 z-30 self-center hover:z-50" onClick={() => setPreviewImage('/imgs/campain_track_heatmap.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/campain_track_heatmap.png" alt="Location Metrics" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="cursor-pointer absolute top-[25%] -left-10 border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] group hover:-translate-y-2 transition-all duration-500 w-[50%] z-40 hover:z-[60]" onClick={() => setPreviewImage('/imgs/campain_track_1.png')}>
+                                <div className="cursor-pointer absolute top-[25%] -left-10 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[50%] z-40 hover:z-[60]" onClick={() => setPreviewImage('/imgs/campain_track_1.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/campain_track_1.png" alt="Heatmap Insights" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="cursor-pointer absolute top-[65%] -right-8 border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] group hover:-translate-y-2 transition-all duration-500 w-[45%] z-50 hover:z-[60]" onClick={() => setPreviewImage('/imgs/campain_track_2.png')}>
+                                <div className="cursor-pointer absolute top-[65%] -right-8 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[45%] z-50 hover:z-[60]" onClick={() => setPreviewImage('/imgs/campain_track_2.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/campain_track_2.png" alt="Time Tracking" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
@@ -1059,15 +961,15 @@ const Landing: React.FC = () => {
                     {/* Content */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-50 border border-cyan-200 text-[#0284C7] text-xs font-bold uppercase tracking-widest mb-6">
                                 <BarChart3 className="w-3.5 h-3.5" />
                                 Campaign Deep Analytics
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Theo Dõi Chiến Dịch <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-400">Siêu Chi Tiết Tâm Điểm</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284C7] to-[#06B6D4]">Siêu Chi Tiết Tâm Điểm</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                                 Nắm bắt trọn vẹn hành vi của từng người nhận. Hệ thống phân tích đa chiều không bỏ sót bất kỳ điểm chạm nào: Tỷ lệ Click theo khu vực vị trí, Môi trường thiết bị, và cả bản đồ tương tác (Heatmap) ngay trên file Mail/Landing.
                             </p>
                             <div className="grid grid-cols-2 gap-4">
@@ -1077,9 +979,9 @@ const Landing: React.FC = () => {
                                     { t: "Location Tracking", d: "Báo cáo vị trí mở theo Quốc gia/Thành phố" },
                                     { t: "Time Matrix", d: "Biểu đồ phân tích khung giờ mở cực đại" }
                                 ].map((box, i) => (
-                                    <div key={i} className="bg-white/3 border border-white/8 rounded-xl p-4 hover:border-pink-500/30 transition-colors">
-                                        <div className="text-sm font-bold text-white mb-1">{box.t}</div>
-                                        <div className="text-xs text-slate-500">{box.d}</div>
+                                    <div key={i} className="bg-white/90 border border-slate-200 rounded-xl p-4 shadow-sm hover:border-cyan-300 transition-colors">
+                                        <div className="text-sm font-bold text-slate-900 mb-1">{box.t}</div>
+                                        <div className="text-xs text-slate-600">{box.d}</div>
                                     </div>
                                 ))}
                             </div>
@@ -1089,22 +991,21 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Voucher & Promotion Section ── */}
-            <section id="voucher" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-white/5 scroll-mt-20">
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-900/10 to-fuchsia-900/5 pointer-events-none" />
+            <section id="voucher" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Content */}
                     <div className="w-full lg:w-1/2 z-20">
                         <FadeIn from="left">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                <Star className="w-3.5 h-3.5 fill-violet-400/30 text-violet-400" />
-                                Voucher & Promotion
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
+                                <Star className="w-3.5 h-3.5 fill-[#1E40FF] text-[#1E40FF]" />
+                                Voucher &amp; Promotion
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Khuyến Mãi <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Tích Hợp & Cá Nhân Hoá</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Tích Hợp &amp; Cá Nhân Hoá</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-violet-400/90 font-medium block mb-2 italic">Thúc đẩy tỷ lệ chuyển đổi bằng các mã ưu đãi độc quyền?</strong>
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-[#1E40FF] font-semibold block mb-2">Thúc đẩy tỷ lệ chuyển đổi bằng các mã ưu đãi cá nhân hóa?</strong>
                                 Tích hợp voucher trực tiếp vào các luồng Email Marketing và Automation của bạn. Nền tảng ghi nhận theo thời gian thực mỗi lượt khách hàng tương tác nhận (collect) và sử dụng (redeem) ngay trên hệ thống.
                             </p>
 
@@ -1115,13 +1016,13 @@ const Landing: React.FC = () => {
                                     { t: "Quản Lý Số Lượng", d: "Kiểm soát lượng phân phối tổng và số vòng quay tối đa của mỗi chương trình." },
                                     { t: "Tracking & Redeem", d: "Dữ liệu được cập nhật Real-Time thống nhất vào luồng theo dõi Users Journey." }
                                 ].map((box, i) => (
-                                    <div key={i} className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-violet-500/30 transition-colors">
-                                        <div className="mt-1 w-8 h-8 rounded border border-violet-500/40 bg-violet-500/20 flex shrink-0 items-center justify-center">
-                                            <Check className="w-4 h-4 text-violet-400" />
+                                    <div key={i} className="flex gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                                        <div className="mt-1 w-8 h-8 rounded border border-blue-200 bg-blue-50 flex shrink-0 items-center justify-center">
+                                            <Check className="w-4 h-4 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                            <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -1134,17 +1035,17 @@ const Landing: React.FC = () => {
                         <FadeIn delay={0.2} from="right">
                             <div className="relative flex flex-col items-center pt-10 pb-16">
                                 {/* Base Image */}
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(139,92,246,0.3)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/voucher3.png" alt="Promotion Dashboard" className="w-full rounded-2xl object-cover" />
                                 </div>
 
                                 {/* Overlay Top Right */}
-                                <div className="absolute -top-4 -right-2 md:-right-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.8)] w-[65%] sm:w-[60%] z-30 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
+                                <div className="absolute -top-4 -right-2 md:-right-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[65%] sm:w-[60%] z-30 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/voucher2.png" alt="Voucher Setup Rules" className="w-full rounded-xl object-cover" />
                                 </div>
 
                                 {/* Overlay Bottom Left */}
-                                <div className="absolute -bottom-8 -left-2 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(217,70,239,0.5)] w-[70%] sm:w-[65%] z-20 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
+                                <div className="absolute -bottom-8 -left-2 md:-left-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[70%] sm:w-[65%] z-20 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/voucher.png" alt="Tracking & Redeem" className="w-full rounded-xl object-cover" />
                                 </div>
                             </div>
@@ -1154,12 +1055,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Survey Builder Section ── */}
-            <section id="survey" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-white/5 scroll-mt-20">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/10 to-sky-900/5 pointer-events-none" />
-                {/* Decorative orbs */}
-                <div className="absolute top-0 right-[10%] w-72 h-72 rounded-full bg-cyan-500/5 blur-[80px] pointer-events-none" />
-                <div className="absolute bottom-0 left-[5%] w-56 h-56 rounded-full bg-sky-500/5 blur-[60px] pointer-events-none" />
-
+            <section id="survey" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* ── Visual (left) ── */}
                     <div className="w-full lg:w-[52%] relative perspective-1000">
@@ -1172,14 +1068,14 @@ const Landing: React.FC = () => {
                                         { src: '/imgs/ks2.png', alt: 'Survey Builder' },
                                         { src: '/imgs/ks3.png', alt: 'Survey Results' },
                                     ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
+                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
                                             <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
                                         </div>
                                     ))}
                                 </div>
                                 <div className="flex justify-center gap-1.5 mt-3">
                                     {[0, 1, 2].map(i => (
-                                        <div key={i} className="w-2 h-2 rounded-full bg-white/20" />
+                                        <div key={i} className="w-2 h-2 rounded-full bg-slate-300" />
                                     ))}
                                 </div>
                             </div>
@@ -1188,7 +1084,7 @@ const Landing: React.FC = () => {
                             <div className="hidden lg:block relative pt-10 pb-20">
                                 {/* Base image — Survey dashboard */}
                                 <div
-                                    className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(6,182,212,0.25)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center"
+                                    className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(6,182,212,0.12)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center"
                                     onClick={() => setPreviewImage('/imgs/ks.png')}
                                 >
                                     <img loading="lazy" decoding="async" src="/imgs/ks.png" alt="Survey Dashboard" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
@@ -1196,7 +1092,7 @@ const Landing: React.FC = () => {
 
                                 {/* Overlay top-right — Survey builder */}
                                 <div
-                                    className="cursor-pointer absolute -top-4 -right-4 md:-right-10 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(6,182,212,0.4)] group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[60%] z-30 hover:z-[60]"
+                                    className="cursor-pointer absolute -top-4 -right-4 md:-right-10 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[60%] z-30 hover:z-[60]"
                                     onClick={() => setPreviewImage('/imgs/ks2.png')}
                                 >
                                     <img loading="lazy" decoding="async" src="/imgs/ks2.png" alt="Survey Builder" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
@@ -1204,27 +1100,27 @@ const Landing: React.FC = () => {
 
                                 {/* Overlay bottom-left — Survey results/stats */}
                                 <div
-                                    className="cursor-pointer absolute -bottom-10 -left-4 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(2,132,199,0.5)] group hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 w-[55%] z-20 hover:z-[60]"
+                                    className="cursor-pointer absolute -bottom-10 -left-4 md:-left-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 w-[55%] z-20 hover:z-[60]"
                                     onClick={() => setPreviewImage('/imgs/ks3.png')}
                                 >
                                     <img loading="lazy" decoding="async" src="/imgs/ks3.png" alt="Survey Statistics" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
 
                                 {/* Floating live-result badge */}
-                                <div className="absolute top-[40%] -right-6 md:-right-12 z-40 bg-[#0d1117]/90 border border-cyan-500/30 rounded-2xl p-3.5 shadow-[0_0_30px_rgba(6,182,212,0.2)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500">
-                                    <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">Live Result</p>
+                                <div className="absolute top-[40%] -right-6 md:-right-12 z-40 bg-white/95 border border-cyan-200 rounded-2xl p-3.5 shadow-[0_18px_40px_rgba(6,182,212,0.16)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500">
+                                    <p className="text-[10px] font-bold text-[#0284C7] uppercase tracking-widest mb-2">Live Result</p>
                                     <div className="space-y-1.5">
                                         {[
-                                            { label: 'Rất hài lòng', pct: 62, color: 'bg-cyan-400' },
-                                            { label: 'Hài lòng', pct: 24, color: 'bg-sky-400' },
+                                            { label: 'Rất hài lòng', pct: 62, color: 'bg-[#1E40FF]' },
+                                            { label: 'Hài lòng', pct: 24, color: 'bg-[#06B6D4]' },
                                             { label: 'Trung lập', pct: 9, color: 'bg-slate-400' },
                                         ].map((row) => (
                                             <div key={row.label} className="flex items-center gap-2">
-                                                <span className="text-[9px] text-slate-400 w-16 truncate">{row.label}</span>
-                                                <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                                <span className="text-[9px] text-slate-600 w-16 truncate">{row.label}</span>
+                                                <div className="flex-1 h-1.5 rounded-full bg-slate-200 overflow-hidden">
                                                     <div className={`h-full ${row.color} rounded-full`} style={{ width: `${row.pct}%` }} />
                                                 </div>
-                                                <span className="text-[9px] font-bold text-white w-6 text-right">{row.pct}%</span>
+                                                <span className="text-[9px] font-bold text-slate-900 w-6 text-right">{row.pct}%</span>
                                             </div>
                                         ))}
                                     </div>
@@ -1236,18 +1132,18 @@ const Landing: React.FC = () => {
                     {/* ── Content (right) ── */}
                     <div className="w-full lg:w-[48%] z-20">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-50 border border-cyan-200 text-[#0284C7] text-xs font-bold uppercase tracking-widest mb-6">
                                 <ClipboardList className="w-3.5 h-3.5" />
-                                Survey & Feedback Hub
+                                Survey &amp; Feedback Hub
                             </div>
 
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Khảo Sát Thông Minh<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-sky-400">Kích Hoạt Chăm Sóc Tự Động</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284C7] to-[#06B6D4]">Kích Hoạt Chăm Sóc Tự Động</span>
                             </h2>
 
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-cyan-400/90 font-medium block mb-2 italic">Chưa biết khách hàng thực sự nghĩ gì? Dữ liệu phản hồi bị lãng quên mà không tạo ra hành động tiếp theo?</strong>
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-[#0284C7] font-semibold block mb-2">Chưa biết khách hàng thực sự nghĩ gì? Dữ liệu phản hồi bị lãng quên mà không tạo ra hành động tiếp theo?</strong>
                                 Thiết kế khảo sát kéo thả siêu dễ trong vài phút. Hệ thống tự động tracking phản hồi qua mail, nhận diện điểm cần cải thiện và kích hoạt Flow Automation chăm sóc sau khảo sát ngay lập tức.
                             </p>
 
@@ -1275,28 +1171,28 @@ const Landing: React.FC = () => {
                                         d: 'Linh hoạt chọn mode ẩn danh để nhận phản hồi thật lòng, hoặc thu thập thông tin để cá nhân hóa follow-up.'
                                     },
                                 ].map((box, i) => (
-                                    <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyan-500/30 transition-colors">
-                                        <div className="mt-0.5 w-8 h-8 rounded-lg border border-cyan-500/40 bg-cyan-500/15 flex shrink-0 items-center justify-center">
-                                            <box.icon className="w-4 h-4 text-cyan-400" />
+                                    <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-cyan-300 transition-colors">
+                                        <div className="mt-0.5 w-8 h-8 rounded-lg border border-cyan-200 bg-cyan-50 flex shrink-0 items-center justify-center">
+                                            <box.icon className="w-4 h-4 text-[#0284C7]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                            <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Stats strip */}
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-sky-500/5 border border-cyan-500/15">
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200">
                                 {[
                                     { val: '3 phút', sub: 'Tạo xong 1 khảo sát' },
                                     { val: '92%', sub: 'Tỷ lệ phản hồi thu thập' },
                                     { val: 'Real-time', sub: 'Kích hoạt Flow ngay lập tức' },
                                 ].map((s, i) => (
                                     <div key={i} className="flex-1 text-center">
-                                        <p className="text-base md:text-lg font-black text-cyan-400">{s.val}</p>
-                                        <p className="text-[10px] text-slate-500 leading-tight mt-0.5">{s.sub}</p>
+                                        <p className="text-base md:text-lg font-black text-[#1E40FF]">{s.val}</p>
+                                        <p className="text-[10px] text-slate-600 leading-tight mt-0.5">{s.sub}</p>
                                     </div>
                                 ))}
                             </div>
@@ -1306,8 +1202,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── QR Link Tracking Section ── */}
-            <section id="qr-tracking" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-white/5 scroll-mt-20">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-900/10 to-orange-900/5 pointer-events-none" />
+            <section id="qr-tracking" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
                     {/* Visual (right side) */}
                     <div className="w-full lg:w-1/2 relative perspective-1000">
@@ -1319,14 +1214,14 @@ const Landing: React.FC = () => {
                                         { src: '/imgs/qr_code.png', alt: 'QR Design Customization' },
                                         { src: '/imgs/qr_code2.png', alt: 'QR Analytics Dashboard' },
                                     ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-white/10 rounded-2xl p-1.5 bg-[#161b22]" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
+                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
                                             <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
                                         </div>
                                     ))}
                                 </div>
                                 <div className="flex justify-center gap-1.5 mt-3">
                                     {[0, 1].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${qrSlide === i ? 'w-5 h-2 bg-amber-400' : 'w-2 h-2 bg-white/20'}`} />
+                                        <div key={i} className={`rounded-full transition-all duration-300 ${qrSlide === i ? 'w-5 h-2 bg-[#1E40FF]' : 'w-2 h-2 bg-slate-300'}`} />
                                     ))}
                                 </div>
                             </div>
@@ -1334,12 +1229,12 @@ const Landing: React.FC = () => {
                             {/* Desktop stacked layout */}
                             <div className="hidden lg:block relative pt-10 pb-20">
                                 {/* Base Image */}
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(245,158,11,0.25)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center" onClick={() => setPreviewImage('/imgs/qr_code.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center" onClick={() => setPreviewImage('/imgs/qr_code.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/qr_code.png" alt="QR Thiết Kế Đẹp" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
 
                                 {/* Overlay Image */}
-                                <div className="cursor-pointer absolute -bottom-6 -left-4 md:-left-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(245,158,11,0.4)] group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[70%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/qr_code2.png')}>
+                                <div className="cursor-pointer absolute -bottom-6 -left-4 md:-left-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[70%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/qr_code2.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/qr_code2.png" alt="QR Tracking Report" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
@@ -1349,18 +1244,18 @@ const Landing: React.FC = () => {
                     {/* Content (left side) */}
                     <div className="w-full lg:w-1/2 z-20">
                         <FadeIn from="left">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
                                 <ScanLine className="w-3.5 h-3.5" />
-                                QR Tracking & Analytics
+                                QR Tracking &amp; Analytics
                             </div>
 
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Tracking Mã QR<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Từ Offline Lên Online</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Từ Offline Lên Online</span>
                             </h2>
 
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-amber-400/90 font-medium block mb-2 italic">Phát tờ rơi, chạy standee sự kiện nhưng không biết có bao nhiêu người thực sự chú ý và quét mã?</strong>
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-[#1E40FF] font-semibold block mb-2">Phát tờ rơi, chạy standee sự kiện nhưng không biết có bao nhiêu người thực sự chú ý và quét mã?</strong>
                                 Xóa nhòa ranh giới giữa Offline và Online. Trình tạo mã QR chuyên nghiệp cho phép tuỳ biến thiết kế, đính kèm Logo thương hiệu và đo lường trực tiếp số người quét theo từng chiến dịch (Event) hiệu quả kinh ngạc.
                             </p>
 
@@ -1392,13 +1287,13 @@ const Landing: React.FC = () => {
                                         d: 'Nhận diện tự động hệ điều hành (iOS/Android) để điều hướng tải App hoặc Link tương ứng.'
                                     },
                                 ].map((box, i) => (
-                                    <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-amber-500/30 transition-colors">
-                                        <div className="mt-0.5 w-8 h-8 rounded-lg border border-amber-500/40 bg-amber-500/15 flex shrink-0 items-center justify-center">
-                                            <box.icon className="w-4 h-4 text-amber-400" />
+                                    <div key={i} className="flex gap-3.5 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                                        <div className="mt-0.5 w-8 h-8 rounded-lg border border-blue-200 bg-blue-50 flex shrink-0 items-center justify-center">
+                                            <box.icon className="w-4 h-4 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                            <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -1414,27 +1309,27 @@ const Landing: React.FC = () => {
                     {/* Text */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
                                 <ScanLine className="w-3.5 h-3.5" />
-                                Web Analytics & Lead Score
+                                Web Analytics &amp; Lead Score
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Tracking Mọi Chạm <br />
-                                <span className="text-emerald-400">Trên Hành Trình Users</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Trên Hành Trình Users</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                                 Bạn nghĩ khách truy cập website là những cái bóng vô hình? DOM Pixel ghi lại hành động Scroll màn hình, Click từng nút bấm. Kết hợp bộ xử lý Điểm Tiềm Năng (Lead Scoring) tự động phân đoạn luồng chăm sóc.
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-                                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                                    <Bot className="w-6 h-6 text-emerald-400 mb-3" />
-                                    <h4 className="font-bold text-white mb-1">AI Phân Tích Segment</h4>
-                                    <p className="text-xs text-slate-400 leading-relaxed">Phân cụm hành vi khách hàng hoàn toàn tự động, phân group nóng/lạnh chuẩn xác.</p>
+                                <div className="inkica-glass-card border border-white/90 rounded-2xl p-5">
+                                    <Bot className="w-6 h-6 text-emerald-600 mb-3" />
+                                    <h4 className="font-bold text-slate-900 mb-1">AI Phân Tích Segment</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">Phân cụm hành vi khách hàng hoàn toàn tự động, phân group nóng/lạnh chuẩn xác.</p>
                                 </div>
-                                <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                                    <Target className="w-6 h-6 text-amber-400 mb-3" />
-                                    <h4 className="font-bold text-white mb-1">Cộng/Trừ Điểm Tự Động</h4>
-                                    <p className="text-xs text-slate-400 leading-relaxed">Score += 5 nếu Scroll 100%. Tiết kiệm sức cho Telesale khi gọi đúng người.</p>
+                                <div className="inkica-glass-card border border-white/90 rounded-2xl p-5">
+                                    <Target className="w-6 h-6 text-[#1E40FF] mb-3" />
+                                    <h4 className="font-bold text-slate-900 mb-1">Cộng/Trừ Điểm Tự Động</h4>
+                                    <p className="text-xs text-slate-600 leading-relaxed">Score += 5 nếu Scroll 100%. Tiết kiệm sức cho Telesale khi gọi đúng người.</p>
                                 </div>
                             </div>
                         </FadeIn>
@@ -1445,42 +1340,42 @@ const Landing: React.FC = () => {
                         <FadeIn delay={0.2} from="left" className="w-full">
                             <div className="relative flex flex-col items-center pb-10 md:pb-0">
                                 {/* Base Vertical Image */}
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_0_80px_-20px_rgba(16,185,129,0.3)] group hover:-translate-y-2 transition-all duration-500 w-[70%] sm:w-[60%] z-10 self-start hover:z-40" onClick={() => setPreviewImage('/imgs/website_tracking1.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(16,185,129,0.12)] group hover:-translate-y-2 transition-all duration-500 w-[70%] sm:w-[60%] z-10 self-start hover:z-40" onClick={() => setPreviewImage('/imgs/website_tracking1.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/website_tracking1.png" alt="User Journey Vertical" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                                 {/* Second Base Image */}
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.8)] group hover:-translate-y-2 transition-all duration-500 w-[90%] sm:w-[85%] -mt-20 md:-mt-32 self-end z-20 hover:z-40" onClick={() => setPreviewImage('/imgs/website tracking.jpg')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[90%] sm:w-[85%] -mt-20 md:-mt-32 self-end z-20 hover:z-40" onClick={() => setPreviewImage('/imgs/website tracking.jpg')}>
                                     <img loading="lazy" decoding="async" src="/imgs/website tracking.jpg" alt="Website Tracking Metrics" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                                 {/* Third Image (Dọc nhỏ hơn) */}
-                                <div className="cursor-pointer absolute top-[5%] md:top-[-30%] -right-4 md:-right-10 border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] group hover:-translate-y-2 transition-all duration-500 w-[55%] md:w-[60%] z-30 hover:z-50" onClick={() => setPreviewImage('/imgs/user_jouney.jpg')}>
+                                <div className="cursor-pointer absolute top-[5%] md:top-[-30%] -right-4 md:-right-10 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[55%] md:w-[60%] z-30 hover:z-50" onClick={() => setPreviewImage('/imgs/user_jouney.jpg')}>
                                     <img loading="lazy" decoding="async" src="/imgs/user_jouney.jpg" alt="Tracking Mobile/Vertical" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
 
                                 {/* Live Tracking Log HTML Mockup */}
-                                <div className="absolute right-0 -bottom-8 md:-bottom-12 lg:-right-12 w-[280px] sm:w-[320px] bg-[#0d1117]/90 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl z-40 transform hover:-translate-y-2 transition-transform duration-500">
-                                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
-                                        <div><p className="text-sm font-bold text-white">Live Tracking Log</p><p className="text-[10px] text-slate-500">Phát hiện dữ liệu Real-time</p></div>
-                                        <div className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse border-2 border-red-500/30" />
+                                <div className="absolute right-0 -bottom-8 md:-bottom-12 lg:-right-12 w-[280px] sm:w-[320px] bg-white/95 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-[0_22px_54px_rgba(15,23,42,0.14)] overflow-hidden backdrop-blur-xl z-40 transform hover:-translate-y-2 transition-transform duration-500">
+                                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+                                        <div><p className="text-sm font-bold text-slate-900">Live Tracking Log</p><p className="text-[10px] text-slate-500">Phát hiện dữ liệu Real-time</p></div>
+                                        <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse border-2 border-emerald-200" />
                                     </div>
                                     <div className="space-y-3">
                                         {[
-                                            { ev: "PAGE SCROLL_75%", user: "Nguyen Minh (ng**n)", score: "+5 Point", p: "bg-emerald-500" },
-                                            { ev: "BTN CLICK: BUY NOW", user: "Tran Anh (tr**a)", score: "+20 Point", p: "bg-amber-500" },
-                                            { ev: "EMAIL OPENED", user: "Le Hoang (le**c)", score: "+2 Point", p: "bg-blue-500" },
+                                            { ev: "PAGE SCROLL_75%", user: "Nguyen Minh (ng**n)", score: "+5 Point", iconBg: "bg-emerald-50 border-emerald-200", iconColor: "text-emerald-600" },
+                                            { ev: "BTN CLICK: BUY NOW", user: "Tran Anh (tr**a)", score: "+20 Point", iconBg: "bg-blue-50 border-blue-200", iconColor: "text-[#1E40FF]" },
+                                            { ev: "EMAIL OPENED", user: "Le Hoang (le**c)", score: "+2 Point", iconBg: "bg-cyan-50 border-cyan-200", iconColor: "text-[#0284C7]" },
                                         ].map((row, i) => (
-                                            <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+                                            <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-200 transition-colors">
                                                 <div className="flex items-center gap-2.5">
-                                                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${row.p}/20`}>
-                                                        <Pointer className={`w-3.5 h-3.5 text-${row.p.replace('bg-', '')}`} style={{ color: `var(--${row.p.replace('bg-', '')})` }} />
+                                                    <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${row.iconBg}`}>
+                                                        <Pointer className={`w-3.5 h-3.5 ${row.iconColor}`} />
                                                     </div>
                                                     <div>
-                                                        <p className="text-[11px] font-bold text-white leading-tight">{row.ev}</p>
+                                                        <p className="text-[11px] font-bold text-slate-900 leading-tight">{row.ev}</p>
                                                         <p className="text-[9px] text-slate-500 mt-0.5">{row.user}</p>
                                                     </div>
                                                 </div>
                                                 <div className="mt-1 sm:mt-0 text-right">
-                                                    <span className="inline-block px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-black text-amber-400 border border-amber-500/20">
+                                                    <span className="inline-block px-1.5 py-0.5 rounded bg-blue-50 text-[9px] font-black text-[#1E40FF] border border-blue-200">
                                                         {row.score}
                                                     </span>
                                                 </div>
@@ -1495,21 +1390,20 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Chatbot Section ── */}
-            <section id="ai" className="py-28 px-6 relative z-10 overflow-hidden border-y border-white/5">
-                <div className="absolute inset-0 bg-gradient-to-l from-purple-900/15 to-transparent pointer-events-none" />
+            <section id="ai" className="py-28 px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-20">
                     {/* Text */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-widest mb-8">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-8">
                                 <Cpu className="w-3.5 h-3.5" />
                                 AI Chatbot System
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Trợ Lý Ảo AI<br />
-                                <span className="text-purple-400 whitespace-nowrap">Thông Minh Như Chuyên Gia</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] whitespace-nowrap">Thông Minh Như Chuyên Gia</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-10 leading-relaxed">
+                            <p className="text-slate-600 text-lg mb-10 leading-relaxed">
                                 Train AI từ tài liệu nội bộ, website của bạn. Thiết lập nền tảng kiến thức (Knowledge Base) thông minh, trả lời trực tiếp thắc mắc Khách hàng 24/7.
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
@@ -1519,10 +1413,10 @@ const Landing: React.FC = () => {
                                     { icon: Users, label: 'Giao Tiếp Tự Nhiên', value: 'Tư vấn, hỏi đáp, chốt sale như người thật' },
                                     { icon: Database, label: 'Train Kiến Thức', value: 'Máy học thần tốc qua File, Web URL' },
                                 ].map((item) => (
-                                    <div key={item.label} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors">
-                                        <item.icon className="w-6 h-6 text-purple-400 mb-3" />
-                                        <p className="text-xs text-slate-400 font-bold mb-1 uppercase tracking-wider">{item.label}</p>
-                                        <p className="text-sm font-semibold text-white leading-relaxed">{item.value}</p>
+                                    <div key={item.label} className="inkica-glass-card border border-white/90 rounded-2xl p-5 hover:border-blue-300 transition-colors">
+                                        <item.icon className="w-6 h-6 text-[#1E40FF] mb-3" />
+                                        <p className="text-xs text-slate-500 font-bold mb-1 uppercase tracking-wider">{item.label}</p>
+                                        <p className="text-sm font-semibold text-slate-900 leading-relaxed">{item.value}</p>
                                     </div>
                                 ))}
                             </div>
@@ -1534,13 +1428,13 @@ const Landing: React.FC = () => {
                         <FadeIn delay={0.2} from="left">
                             {/* Stacked layout for all devices */}
                             <div className="relative flex flex-col items-start pt-6 md:pt-12 pb-10">
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_0_80px_-20px_rgba(168,85,247,0.3)] group hover:-translate-y-2 transition-all duration-500 w-full sm:w-[85%] z-10 hover:z-40" onClick={() => setPreviewImage('/imgs/kien thuc ai.jpg')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] group hover:-translate-y-2 transition-all duration-500 w-full sm:w-[85%] z-10 hover:z-40" onClick={() => setPreviewImage('/imgs/kien thuc ai.jpg')}>
                                     <img loading="lazy" decoding="async" src="/imgs/kien thuc ai.jpg" alt="Knowledge Base Platform" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.8)] group hover:-translate-y-2 transition-all duration-500 w-[90%] -mt-24 md:-mt-32 self-end z-20 hover:z-40" onClick={() => setPreviewImage('/imgs/ai_2.jpg')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[90%] -mt-24 md:-mt-32 self-end z-20 hover:z-40" onClick={() => setPreviewImage('/imgs/ai_2.jpg')}>
                                     <img loading="lazy" decoding="async" src="/imgs/ai_2.jpg" alt="AI Chatbot Interaction" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
-                                <div className="cursor-pointer absolute top-[15%] md:top-[25%] -left-4 sm:-left-12 border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(168,85,247,0.8)] group hover:-translate-y-3 transition-all duration-500 w-[55%] sm:w-[45%] z-30 hover:z-50" onClick={() => setPreviewImage('/imgs/AIchatbot.png')}>
+                                <div className="cursor-pointer absolute top-[15%] md:top-[25%] -left-4 sm:-left-12 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-3 transition-all duration-500 w-[55%] sm:w-[45%] z-30 hover:z-50" onClick={() => setPreviewImage('/imgs/AIchatbot.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/AIchatbot.png" alt="Custom AI Chatbot" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.05] transition-transform duration-500" />
                                 </div>
                             </div>
@@ -1550,8 +1444,7 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Segment Analytics ── */}
-            <section id="ai-segment" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden border-t border-white/5 scroll-mt-20">
-                <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/10 to-transparent pointer-events-none" />
+            <section id="ai-segment" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Visual */}
                     <div className="w-full lg:w-[55%]">
@@ -1559,22 +1452,22 @@ const Landing: React.FC = () => {
                             {/* Stacked layout for all devices */}
                             <div className="relative flex flex-col items-center pb-20 perspective-1000 mt-4">
                                 {/* The Big Main Image */}
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(99,102,241,0.4)] group hover:-translate-y-2 transition-all duration-500 w-full z-20 self-center hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_3.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] group hover:-translate-y-2 transition-all duration-500 w-full z-20 self-center hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_3.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_3.png" alt="Phân Tích Độ Chính Xác" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
 
                                 {/* Stacked under it, offset slightly left */}
-                                <div className="cursor-pointer border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.8)] group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 self-start z-10 hover:z-[60]" onClick={() => setPreviewImage('/imgs/thauhieu.png')}>
+                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 self-start z-10 hover:z-[60]" onClick={() => setPreviewImage('/imgs/thauhieu.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/thauhieu.png" alt="Thấu Hiểu Khách Hàng" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
 
                                 {/* Floating Top Right */}
-                                <div className="cursor-pointer absolute top-[-8%] right-[-5%] border border-white/10 rounded-3xl p-1.5 bg-[#161b22] shadow-[0_30px_60px_-10px_rgba(0,0,0,0.9)] group hover:-translate-y-2 transition-all duration-500 w-[45%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_1.png')}>
+                                <div className="cursor-pointer absolute top-[-8%] right-[-5%] border border-slate-200 rounded-3xl p-1.5 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[45%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_1.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_1.png" alt="Phân Tích AI Segment" className="w-full h-auto rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
 
                                 {/* Floating Bottom Center/Right */}
-                                <div className="cursor-pointer absolute bottom-[2%] right-[5%] border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_30px_80px_-20px_rgba(99,102,241,0.6)] group hover:-translate-y-2 transition-all duration-500 w-[55%] z-40 hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_2.png')}>
+                                <div className="cursor-pointer absolute bottom-[2%] right-[5%] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[55%] z-40 hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_2.png')}>
                                     <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_2.png" alt="Phân Tích Chủ Đề" className="w-full h-auto rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
@@ -1584,16 +1477,16 @@ const Landing: React.FC = () => {
                     {/* Content */}
                     <div className="w-full lg:w-[45%] z-20">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold uppercase tracking-widest mb-6">
                                 <Users className="w-3.5 h-3.5" />
                                 Cụm Hành Vi (AI Segment)
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 <span className="whitespace-nowrap">Phân Tích &amp; Thấu Hiểu</span><br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Từng Khách Hàng</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#0284C7]">Từng Khách Hàng</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-rose-400/90 font-medium block mb-2 italic">Bắn tin nhắn rác hàng loạt và lãng phí hàng triệu đồng cho SMS, ZNS cực kỳ vô ích mỗi tháng?</strong>
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-[#1E40FF] font-semibold block mb-2">Bắn tin nhắn rác hàng loạt và lãng phí hàng triệu đồng cho SMS, ZNS cực kỳ vô ích mỗi tháng?</strong>
                                 Đừng ép khách hàng chặn bạn. AI đào sâu vào hội thoại, đếm nhịp tương tác để tự định lượng mức độ "tiềm năng" hay "do dự" của khách. Gửi đúng thông điệp, đúng người – x3 tỷ lệ chốt sale!
                             </p>
                             <div className="space-y-4 mb-4">
@@ -1603,13 +1496,13 @@ const Landing: React.FC = () => {
                                     { t: "Theo dõi độ chính xác (Accuracy)", d: "Bảng điều khiển đo lường tỷ lệ trả lời đúng của Bot" },
                                     { t: "Khai thác chủ đề quan tâm", d: "Top từ khóa, chủ đề khách hàng hỏi nhiều nhất" }
                                 ].map((box, i) => (
-                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-indigo-500/30 transition-colors">
-                                        <div className="mt-1 w-6 h-6 rounded border border-indigo-500/40 bg-indigo-500/20 flex shrink-0 items-center justify-center">
-                                            <Check className="w-3.5 h-3.5 text-indigo-400" />
+                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                                        <div className="mt-1 w-6 h-6 rounded border border-blue-200 bg-blue-50 flex shrink-0 items-center justify-center">
+                                            <Check className="w-3.5 h-3.5 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                            <p className="text-xs text-slate-400">{box.d}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-600">{box.d}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -1620,22 +1513,21 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Space Section ── */}
-            <section id="ai-space" className="py-28 px-6 relative z-10 overflow-hidden border-t border-white/5">
-                <div className="absolute inset-0 bg-gradient-to-br from-rose-900/10 to-transparent pointer-events-none" />
+            <section id="ai-space" className="py-28 px-6 relative z-10 overflow-hidden border-t border-slate-200/70 bg-white/45 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Content */}
                     <div className="w-full lg:w-[45%] z-20">
                         <FadeIn from="left">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
                                 <Sparkles className="w-3.5 h-3.5" />
                                 Nền tảng AI Workspace
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Không Gian AI <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400 whitespace-nowrap">Độc Lập Cho Phòng Ban</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284C7] to-[#06B6D4] whitespace-nowrap">Độc Lập Cho Phòng Ban</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-amber-400/90 font-medium block mb-2 italic">Nhân sự cạn kiệt ý tưởng, tư vấn nhầm lẫn? Khách hàng bức xúc vì chờ đợi trả lời quá lâu?</strong>
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-[#1E40FF] font-semibold block mb-2">Nhân sự cạn kiệt ý tưởng, tư vấn nhầm lẫn? Khách hàng bức xúc vì chờ đợi trả lời quá lâu?</strong>
                                 Đã đến lúc "thuê" một nhân sự AI xuất sắc. Phân chia rõ ràng AI chuyên gia Sale - Marketing - CSKH. Được huấn luyện khắt khe dưới tiêu chuẩn Knowledge Base đóng, triệt tiêu tình trạng AI bịa chuyện, làm việc xuyên đêm 24/7.
                             </p>
 
@@ -1646,13 +1538,13 @@ const Landing: React.FC = () => {
                                     { icon: ShieldCheck, t: "Knowledge Khắt khe", d: "Kiểm soát truy xuất tài liệu, cấm AI bịa chuyện" },
                                     { icon: Users, t: "Phong Cách AI", d: "Giọng điệu Mentoring chân thật, hướng dẫn chi tiết" },
                                 ].map((box, i) => (
-                                    <div key={i} className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-rose-500/30 transition-colors">
-                                        <div className="mt-1 w-8 h-8 rounded border border-rose-500/40 bg-rose-500/20 flex shrink-0 items-center justify-center">
-                                            <box.icon className="w-4 h-4 text-rose-400" />
+                                    <div key={i} className="flex gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                                        <div className="mt-1 w-8 h-8 rounded border border-blue-200 bg-blue-50 flex shrink-0 items-center justify-center">
+                                            <box.icon className="w-4 h-4 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                            <p className="text-xs text-slate-400 leading-relaxed">{box.d}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -1665,25 +1557,25 @@ const Landing: React.FC = () => {
                         <FadeIn delay={0.2} from="right">
                             <div className="relative flex flex-col items-center pb-12 pt-6 perspective-1000">
                                 {/* Base Image */}
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_0_80px_-20px_rgba(244,63,94,0.3)] w-full sm:w-[90%] z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] w-full sm:w-[90%] z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/AI GROUP (1).png" alt="AI Space" className="w-full rounded-2xl" />
                                 </div>
                                 {/* Stacked Right */}
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.8)] w-[85%] -mt-16 sm:-mt-24 self-end z-20 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-xl w-[85%] -mt-16 sm:-mt-24 self-end z-20 hover:-translate-y-2 hover:z-40 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/AI GROUP (2).png" alt="Department Training" className="w-full rounded-2xl" />
                                 </div>
                                 {/* Stacked Left */}
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.9)] w-[95%] sm:w-[85%] -mt-10 sm:-mt-16 z-30 self-center hover:-translate-y-2 hover:z-50 transition-all duration-500">
+                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-xl w-[95%] sm:w-[85%] -mt-10 sm:-mt-16 z-30 self-center hover:-translate-y-2 hover:z-50 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/AI GROUP (4).png" alt="AI Expert Mode" className="w-full rounded-2xl" />
                                 </div>
 
                                 {/* Floating Top-Right */}
-                                <div className="absolute top-[8%] -right-2 md:-right-8 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_50px_rgba(244,63,94,0.4)] w-[40%] sm:w-[35%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
+                                <div className="absolute top-[8%] -right-2 md:-right-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[40%] sm:w-[35%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/AI GROUP (3).png" alt="Image Mode" className="w-full rounded-xl" />
                                 </div>
 
                                 {/* Floating Bottom-Left */}
-                                <div className="absolute bottom-[-5%] -left-2 md:-left-6 border border-white/10 rounded-2xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.9)] w-[45%] sm:w-[40%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
+                                <div className="absolute bottom-[-5%] -left-2 md:-left-6 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[45%] sm:w-[40%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/AI GROUP (5).png" alt="Code Mode" className="w-full rounded-xl" />
                                 </div>
                             </div>
@@ -1694,21 +1586,20 @@ const Landing: React.FC = () => {
 
             {/* ── Dashboard & Reporting ── */}
             <section id="dashboard" className="py-24 px-6 relative z-10 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
                     {/* Content */}
                     <div className="w-full lg:w-[45%] z-20">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
                                 <BarChart3 className="w-3.5 h-3.5" />
                                 Theo dõi Real-time
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Báo Cáo Thông Minh <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Kiểm Soát Mọi Điểm Chạm</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Kiểm Soát Mọi Điểm Chạm</span>
                             </h2>
-                            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                                <strong className="text-emerald-400/90 font-medium block mb-2 italic">Mù mờ về số liệu thực tế? Phải đợi đến cuối tháng rà soát lại mới vỡ lẽ chiến dịch đang bốc hơi hàng chục triệu đồng?</strong>
+                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+                                <strong className="text-emerald-700 font-semibold block mb-2">Mù mờ về số liệu thực tế? Phải đợi đến cuối tháng rà soát lại mới vỡ lẽ chiến dịch đang bốc hơi hàng chục triệu đồng?</strong>
                                 Làm chủ dòng chảy dữ liệu. Nắm bắt toàn bộ bức tranh hiệu suất trải dài từ tần suất tương tác Website, tốc độ chốt đơn của AI, đến tỷ lệ phản hồi Zalo OA/Email với độ trễ gần như bằng 0.
                             </p>
 
@@ -1718,13 +1609,13 @@ const Landing: React.FC = () => {
                                     { t: "Biểu Đồ Trực Quan", d: "Đánh giá sức khỏe chiến dịch với đa dạng loại biểu đồ trực quan, dễ hiểu." },
                                     { t: "Triết Xuất Chi Tiết", d: "Truy vết tăng trưởng, cập nhật sự kiện hàng ngày theo thời gian thực." }
                                 ].map((box, i) => (
-                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-colors">
-                                        <div className="mt-1 w-6 h-6 rounded border border-emerald-500/40 bg-emerald-500/20 flex shrink-0 items-center justify-center">
-                                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                        <div className="mt-1 w-6 h-6 rounded border border-emerald-200 bg-emerald-50 flex shrink-0 items-center justify-center">
+                                            <Check className="w-3.5 h-3.5 text-emerald-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white text-sm mb-1">{box.t}</h4>
-                                            <p className="text-xs text-slate-400">{box.d}</p>
+                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <p className="text-xs text-slate-600">{box.d}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -1737,11 +1628,11 @@ const Landing: React.FC = () => {
                         <FadeIn delay={0.2} from="left">
                             <div className="relative flex flex-col items-center perspective-1000 pb-16">
                                 {/* Base Image */}
-                                <div className="border border-white/10 rounded-3xl p-2 bg-[#161b22] shadow-[0_30px_100px_-20px_rgba(16,185,129,0.25)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(16,185,129,0.12)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/dash1.png" alt="Dashboard Tổng Quan" className="w-full rounded-2xl" />
                                 </div>
                                 {/* Stacked Image */}
-                                <div className="absolute -bottom-4 md:-bottom-8 md:-left-8 border border-white/10 rounded-3xl p-1.5 bg-[#161b22] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.9)] w-[85%] sm:w-[70%] z-30 hover:-translate-y-3 hover:scale-[1.02] hover:z-50 transition-all duration-500">
+                                <div className="absolute -bottom-4 md:-bottom-8 md:-left-8 border border-slate-200 rounded-3xl p-1.5 bg-white shadow-xl w-[85%] sm:w-[70%] z-30 hover:-translate-y-3 hover:scale-[1.02] hover:z-50 transition-all duration-500">
                                     <img loading="lazy" decoding="async" src="/imgs/dash.png" alt="Biểu Diễn Số Liệu" className="w-full rounded-2xl" />
                                 </div>
                             </div>
@@ -1767,25 +1658,25 @@ const Landing: React.FC = () => {
             <section id="pricing" className="py-28 px-6 relative z-10 scroll-mt-20">
                 <div className="max-w-6xl mx-auto">
                     <FadeIn className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
                             <BoxSelect className="w-3.5 h-3.5" /> Bảng Giá
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mb-5">
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-5">
                             Giá Phù Hợp<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Mọi Quy Mô Doanh Nghiệp</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Mọi Quy Mô Doanh Nghiệp</span>
                         </h2>
 
                         {/* Billing Toggle */}
                         <div className="mt-8 flex flex-row items-center justify-center gap-3">
-                            <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-white' : 'text-slate-400'}`}>Hàng Tháng</span>
+                            <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-slate-900' : 'text-slate-500'}`}>Hàng Tháng</span>
                             <button
                                 onClick={() => setIsYearly(!isYearly)}
-                                className="relative w-14 h-7 rounded-full bg-[#161b22] border border-white/10 flex items-center p-1 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/50 hover:bg-[#1e2530]"
+                                className="relative w-14 h-7 rounded-full bg-slate-200 border border-slate-300 flex items-center p-1 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                             >
-                                <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${isYearly ? 'translate-x-[26px] bg-amber-400' : 'translate-x-0 bg-slate-400'}`} />
+                                <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${isYearly ? 'translate-x-[26px] bg-[#1E40FF]' : 'translate-x-0 bg-white'}`} />
                             </button>
-                            <span className={`text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'text-white' : 'text-slate-400'}`}>
-                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-widest leading-none">Giảm 15%</span>
+                            <span className={`text-sm font-bold transition-colors flex items-center gap-2 ${isYearly ? 'text-slate-900' : 'text-slate-500'}`}>
+                                Hàng Năm <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-blue-50 text-[#1E40FF] border border-blue-200 uppercase tracking-widest leading-none">Giảm 15%</span>
                             </span>
                         </div>
                     </FadeIn>
@@ -1800,36 +1691,32 @@ const Landing: React.FC = () => {
             )}
 
             {/* ── CTA Final ── */}
-            <section className="py-32 px-6 relative z-10 overflow-hidden">
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="aurora-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(180,83,9,0.12) 0%, rgba(154,52,18,0.06) 40%, transparent 70%)' }} />
-                    <div className="aurora-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full" style={{ background: 'radial-gradient(circle, rgba(120,53,196,0.08) 0%, transparent 70%)', animationDelay: '-5s' }} />
-                </div>
+            <section className="py-28 px-6 relative z-10 overflow-hidden">
                 <div className="max-w-5xl mx-auto">
-                    <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_0_60px_rgba(120,53,9,0.25),0_40px_80px_rgba(0,0,0,0.7)]">
-                        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg,#3b1a06,#92400e,#7c2d12,#4a0e2a)', backgroundSize: '300% 300%', animation: 'border-flow 8s linear infinite' }} />
+                    <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_30px_70px_rgba(30,64,255,0.24)]">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E40FF] to-[#06B6D4]" />
                         <div className="absolute inset-0">
-                            <div className="absolute top-0 right-0 w-96 h-96 bg-white/8 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                            <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/60 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                            <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                            <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-900/40 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+                            <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
                         </div>
                         <FadeIn className="relative z-10 p-10 md:p-20 text-center">
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 border border-white/30 mb-8">
-                                <span className="live-dot w-2 h-2 rounded-full bg-white" />
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 mb-8">
+                                <span className="live-dot w-2 h-2 rounded-full bg-cyan-300" />
                                 <span className="text-white text-xs font-bold uppercase tracking-widest">Sẵn Sàng Tăng Trưởng</span>
                             </div>
-                            <h2 className="text-xl md:text-2xl font-extrabold text-white/90 mb-6 leading-tight tracking-tight">
+                            <h2 className="text-xl md:text-2xl font-extrabold text-white/95 mb-6 leading-tight tracking-tight">
                                 Tăng Trưởng Cùng Hệ Thống <br />
-                                <span className="text-4xl md:text-5xl lg:text-5xl font-black text-white block mt-2" style={{ textShadow: '0 0 30px rgba(255,255,255,0.3), 0 0 10px rgba(255,255,255,0.2)' }}>
+                                <span className="text-4xl md:text-5xl lg:text-5xl font-black text-white block mt-2">
                                     AI DIGITAL VISION
                                 </span>
                             </h2>
-                            <p className="text-white/80 text-base md:text-lg mb-12 max-w-xl mx-auto font-medium leading-relaxed">
+                            <p className="text-blue-50 text-base md:text-lg mb-12 max-w-xl mx-auto font-medium leading-relaxed">
                                 Bắt đầu khám phá sức mạnh của Automation Đa Kênh. Miễn phí setup, đội ngũ chuyên gia hỗ trợ bạn từng bước.
                             </p>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <button onClick={() => setIsFormOpen(true)} className="group w-full sm:w-auto flex items-center justify-center gap-2 md:gap-3 bg-white text-orange-600 px-6 md:px-10 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-lg font-black shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.5)] hover:-translate-y-1 hover:scale-105 transition-all duration-300">
-                                    <Rocket className="w-4 h-4 md:w-5 md:h-5 text-orange-500 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> Đăng Ký Trải Nghiệm
+                                <button onClick={() => setIsFormOpen(true)} className="group w-full sm:w-auto flex items-center justify-center gap-2 md:gap-3 bg-white text-[#1E40FF] px-6 md:px-10 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-lg font-black shadow-xl hover:-translate-y-1 hover:scale-105 transition-all duration-300">
+                                    <Rocket className="w-4 h-4 md:w-5 md:h-5 text-[#1E40FF] group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> Đăng Ký Trải Nghiệm
                                 </button>
                             </div>
                         </FadeIn>
@@ -1838,21 +1725,18 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Footer ── */}
-            <footer className="relative z-10 border-t border-white/[0.06] py-16 px-6 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg,transparent 0%,rgba(245,158,11,0.5) 30%,rgba(234,88,12,0.5) 60%,transparent 100%)' }} />
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-48 bg-amber-900/10 blur-[80px] pointer-events-none" />
+            <footer className="relative z-10 border-t border-slate-200/80 bg-white/75 backdrop-blur-md py-16 pb-24 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-8">
                         <div className="md:col-span-1">
                             <div className="flex items-center gap-3 mb-5">
-                                <div className="relative">
-                                    <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-10 h-10 object-contain rounded-[14px] shadow-lg shadow-amber-500/20" />
-                                    <div className="absolute -inset-1 rounded-[18px] bg-amber-500/10 blur-md -z-10" />
-                                </div>
-                                <span className="text-xl font-black tracking-tight shimmer-text">DOMATION</span>
+                                <DomationLogoMark className="w-10 h-10" />
+                                <span className="text-xl font-black tracking-tight text-slate-900">
+                                    DOMATION<span className="text-[#1E40FF]">.NET</span>
+                                </span>
                             </div>
                             <p className="text-slate-600 text-sm leading-relaxed mb-5">Nền tảng tự động hoá marketing đa kênh. Automation flow, AI chatbot, Email Drag Drop siêu việt.</p>
-                            <p className="text-xs text-slate-700">© {new Date().getFullYear()} DOM Marketing. All rights reserved.</p>
+                            <p className="text-xs text-slate-500">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
                         </div>
                         {[
                             { title: 'Công Cụ Marketing', links: [['#builder', 'Email Builder Kéo Thả'], ['#flow', 'Automation Flow'], ['#survey', 'Tạo Khảo Sát (Survey)'], ['#voucher', 'Smart Voucher Hub']] },
@@ -1860,10 +1744,10 @@ const Landing: React.FC = () => {
                             { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['#pricing', 'Bảng Giá Hệ Thống']] },
                         ].map((col) => (
                             <div key={col.title}>
-                                <h4 className="text-sm font-bold text-white/80 mb-5 uppercase tracking-wider">{col.title}</h4>
+                                <h4 className="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">{col.title}</h4>
                                 <ul className="space-y-3">
                                     {col.links.map(([href, l]) => (
-                                        <li key={l}><a href={href} className="text-sm text-slate-600 hover:text-amber-400 transition-colors duration-200">{l}</a></li>
+                                        <li key={l}><a href={href} className="text-sm text-slate-600 hover:text-[#1E40FF] transition-colors duration-200">{l}</a></li>
                                     ))}
                                 </ul>
                             </div>
@@ -1871,6 +1755,16 @@ const Landing: React.FC = () => {
                     </div>
                 </div>
             </footer>
+
+            {/* Centered Scroll-to-Top Pill */}
+            <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
+            >
+                <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
+                <span>Đầu trang</span>
+            </button>
 
 
             {/* ── Form Modal ── */}
@@ -1880,71 +1774,71 @@ const Landing: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-sm"
                     >
                         <motion.div
                             initial={{ scale: 0.95, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-lg bg-[#0e121a] border border-white/10 rounded-3xl p-8 shadow-2xl"
+                            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-8 shadow-2xl"
                         >
                             <button
                                 onClick={() => { setIsFormOpen(false); setFormStatus('idle'); }}
-                                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+                                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-600"
                             >
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M13 1L1 13M1 1L13 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </button>
 
                             {formStatus === 'success' ? (
                                 <div className="text-center py-8">
-                                    <div className="w-16 h-16 bg-gradient-to-tr from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                                        <Check className="w-8 h-8 text-black" />
+                                    <div className="w-16 h-16 bg-gradient-to-tr from-[#1E40FF] to-[#06B6D4] rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                                        <Check className="w-8 h-8 text-white" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-white mb-2">Cảm ơn bạn!</h3>
-                                    <p className="text-slate-400">Thông tin đã được ghi nhận. Chuyên gia của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất qua số Zalo để demo trực tiếp hệ thống.</p>
-                                    <button onClick={() => { setIsFormOpen(false); setFormStatus('idle'); }} className="mt-8 bg-white/10 hover:bg-white/20 px-6 py-2.5 rounded-full text-white font-semibold transition-colors">Đóng lại</button>
+                                    <h3 className="text-2xl font-black text-slate-900 mb-2">Cảm ơn bạn!</h3>
+                                    <p className="text-slate-600">Thông tin đã được ghi nhận. Chuyên gia của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất qua số Zalo để demo trực tiếp hệ thống.</p>
+                                    <button onClick={() => { setIsFormOpen(false); setFormStatus('idle'); }} className="mt-8 bg-slate-100 hover:bg-slate-200 px-6 py-2.5 rounded-full text-slate-800 font-semibold transition-colors">Đóng lại</button>
                                 </div>
                             ) : (
                                 <div>
-                                    <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/5">
-                                        <img loading="lazy" decoding="async" src="/imgs/ICON.png" alt="DOMATION Logo" className="w-12 h-12 object-contain rounded-[14px] shadow-lg shadow-amber-500/20" />
-                                        <span className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-500">
-                                            DOMATION
+                                    <div className="flex items-center gap-3 mb-8 pb-6 border-b border-slate-200">
+                                        <DomationLogoMark className="w-11 h-11" />
+                                        <span className="text-2xl font-black tracking-tight text-slate-900">
+                                            DOMATION<span className="text-[#1E40FF]">.NET</span>
                                         </span>
                                     </div>
-                                    <h3 className="text-2xl font-black text-white mb-2">Đăng Ký Tư Vấn & Demo</h3>
-                                    <p className="text-slate-400 text-sm mb-6">Để lại thông tin để trực tiếp trải nghiệm nền tảng Marketing Automation số 1.</p>
+                                    <h3 className="text-2xl font-black text-slate-900 mb-2">Đăng Ký Tư Vấn &amp; Demo</h3>
+                                    <p className="text-slate-600 text-sm mb-6">Để lại thông tin để trực tiếp trải nghiệm nền tảng Marketing Automation số 1.</p>
                                     <form onSubmit={handleFormSubmit} className="space-y-4">
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Email liên hệ</label>
-                                            <input required name="email" type="email" className="w-full bg-[#161b22] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500/50 transition-colors" placeholder="name@company.com" />
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Email liên hệ</label>
+                                            <input required name="email" type="email" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-colors" placeholder="name@company.com" />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Số điện thoại (Zalo)</label>
-                                            <input required name="phone" type="tel" className="w-full bg-[#161b22] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500/50 transition-colors" placeholder="09xx xxx xxx" />
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Số điện thoại (Zalo)</label>
+                                            <input required name="phone" type="tel" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-colors" placeholder="09xx xxx xxx" />
                                         </div>
                                         <div className="flex gap-3">
                                             <div className="w-[60%]">
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Doanh nghiệp / Dự án</label>
-                                                <input required name="company" type="text" className="w-full bg-[#161b22] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500/50 transition-colors" placeholder="Website công ty" />
+                                                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Doanh nghiệp / Dự án</label>
+                                                <input required name="company" type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-colors" placeholder="Website công ty" />
                                             </div>
                                             <div className="w-[40%] relative">
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Số lượng Email/tháng</label>
+                                                <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Số lượng Email/tháng</label>
                                                 <div
-                                                    className="w-full bg-[#161b22] border border-white/10 rounded-xl px-4 py-3 text-white flex justify-between items-center cursor-pointer hover:border-amber-500/50 transition-colors"
+                                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 flex justify-between items-center cursor-pointer hover:border-[#1E40FF] transition-colors"
                                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                                 >
                                                     <span className="text-sm truncate">{emailVolume}</span>
-                                                    <svg className={`w-4 h-4 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                                    <svg className={`w-4 h-4 text-slate-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
 
                                                     {isDropdownOpen && (
-                                                        <div className="absolute top-full left-0 right-0 mt-2 bg-[#1a1f26] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden py-1">
+                                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 overflow-hidden py-1">
                                                             {['100.000 Emails', '500.000 Emails', '1.000.000 Emails'].map(vol => (
                                                                 <div
                                                                     key={vol}
-                                                                    className="px-4 py-2.5 text-sm cursor-pointer hover:bg-amber-500/20 hover:text-amber-400 transition-colors"
+                                                                    className="px-4 py-2.5 text-sm text-slate-700 cursor-pointer hover:bg-blue-50 hover:text-[#1E40FF] transition-colors"
                                                                     onClick={() => setEmailVolume(vol)}
                                                                 >
                                                                     {vol}
@@ -1956,23 +1850,23 @@ const Landing: React.FC = () => {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Vấn đề khó khăn & Nhu cầu Automation</label>
-                                            <textarea required name="problem" rows={3} className="w-full bg-[#161b22] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500/50 transition-colors resize-none" placeholder="Mô tả khó khăn và nhu cầu áp dụng Automation Marketing..."></textarea>
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Vấn đề khó khăn &amp; Nhu cầu Automation</label>
+                                            <textarea required name="problem" rows={3} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-colors resize-none" placeholder="Mô tả khó khăn và nhu cầu áp dụng Automation Marketing..."></textarea>
                                         </div>
-                                        <button disabled={formStatus === 'submitting'} type="submit" className="w-full mt-6 bg-gradient-to-r from-amber-400 to-orange-500 text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-70">
+                                        <button disabled={formStatus === 'submitting'} type="submit" className="w-full mt-6 btn-inkica-primary text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 shadow-[0_12px_28px_rgba(30,64,255,0.26)] transition-all disabled:opacity-70">
                                             {formStatus === 'submitting' ? 'Đang gửi...' : 'Gửi Yêu Cầu Demo'}
                                             {formStatus !== 'submitting' && <ArrowRight className="w-5 h-5" />}
                                         </button>
                                     </form>
 
-                                    <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                        <span className="text-xs text-slate-400 font-medium">Hoặc liên hệ nhanh qua:</span>
+                                    <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                        <span className="text-xs text-slate-500 font-medium">Hoặc liên hệ nhanh qua:</span>
                                         <div className="flex items-center gap-3">
-                                            <a href="https://zalo.me/0378859736" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0068FF]/10 text-[#0068FF] hover:bg-[#0068FF]/20 border border-[#0068FF]/20 transition-all text-sm font-bold">
+                                            <a href="https://zalo.me/0378859736" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 text-[#0068FF] hover:bg-blue-100 border border-blue-200 transition-all text-sm font-bold">
                                                 <img loading="lazy" decoding="async" src={LOGOS.zalo} alt="Zalo" className="w-4 h-4 object-contain" />
                                                 Zalo
                                             </a>
-                                            <a href="https://www.facebook.com/turni0" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0866FF]/10 text-[#0866FF] hover:bg-[#0866FF]/20 border border-[#0866FF]/20 transition-all text-sm font-bold">
+                                            <a href="https://www.facebook.com/turni0" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 text-[#0866FF] hover:bg-blue-100 border border-blue-200 transition-all text-sm font-bold">
                                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
                                                 Facebook
                                             </a>
@@ -1992,7 +1886,7 @@ const Landing: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-sm overflow-y-auto"
                         onClick={(e) => {
                             if (e.target === e.currentTarget) setIsDemoModalOpen(false);
                         }}
@@ -2001,11 +1895,11 @@ const Landing: React.FC = () => {
                             initial={{ scale: 0.95, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-5xl bg-[#0a0f1a] border border-white/10 rounded-3xl p-6 md:p-10 shadow-2xl overflow-hidden shadow-amber-500/10 max-h-[95vh] flex flex-col"
+                            className="relative w-full max-w-5xl bg-white border border-slate-200 rounded-3xl p-6 md:p-10 shadow-2xl overflow-hidden max-h-[95vh] flex flex-col"
                         >
                             <button
                                 onClick={() => setIsDemoModalOpen(false)}
-                                className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors z-50 text-slate-400 hover:text-white"
+                                className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors z-50 text-slate-600"
                             >
                                 <svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor">
                                     <path d="M13 1L1 13M1 1L13 13" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -2013,42 +1907,39 @@ const Landing: React.FC = () => {
                             </button>
 
                             <div className="mb-6 md:mb-10 text-center relative z-10 shrink-0">
-                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-4">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-4">
                                     <Sparkles className="w-4 h-4" /> Hệ Sinh Thái DOMATION
                                 </div>
-                                <h3 className="text-3xl md:text-4xl font-black text-white mb-3">Tính Năng Hệ Thống</h3>
-                                <p className="text-slate-400 max-w-2xl mx-auto">Trải nghiệm toàn bộ các công cụ Digital AI Marketing Automation tiên tiến nhất được tích hợp trên cùng một nền tảng chuyên nghiệp.</p>
+                                <h3 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">Tính Năng Hệ Thống</h3>
+                                <p className="text-slate-600 max-w-2xl mx-auto">Trải nghiệm toàn bộ các công cụ Digital AI Marketing Automation tiên tiến nhất được tích hợp trên cùng một nền tảng chuyên nghiệp.</p>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10 flex-1 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#475569 transparent' }}>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10 flex-1 overflow-y-auto pr-2">
                                 {ALL_MODULES.map(module => (
-                                    <div key={module.id} className="group flex flex-col bg-[#161b22] border border-white/5 hover:border-amber-500/30 rounded-2xl p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300">
-                                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${module.color} flex items-center justify-center text-white mb-4 shrink-0 shadow-lg`}>
+                                    <div key={module.id} className="group flex flex-col bg-slate-50/90 border border-slate-200 hover:border-blue-300 hover:bg-white rounded-2xl p-5 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${module.color} flex items-center justify-center text-white mb-4 shrink-0 shadow-md`}>
                                             <module.icon className="w-6 h-6" />
                                         </div>
                                         <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1.5">
-                                                <h4 className="font-bold text-white text-lg">{module.title}</h4>
+                                            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                                                <h4 className="font-bold text-slate-900 text-lg">{module.title}</h4>
                                                 {module.tags && module.tags[0] && (
-                                                    <span className="px-2 py-0.5 rounded bg-white/10 text-[9px] font-bold uppercase text-amber-400 whitespace-nowrap">
+                                                    <span className="px-2 py-0.5 rounded bg-blue-50 border border-blue-200 text-[9px] font-bold uppercase text-[#1E40FF] whitespace-nowrap">
                                                         {module.tags[0]}
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-xs text-slate-400 leading-relaxed">{module.sub}</p>
+                                            <p className="text-xs text-slate-600 leading-relaxed">{module.sub}</p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="mt-6 md:mt-8 pt-6 border-t border-white/10 flex justify-center relative z-10 shrink-0">
-                                <button onClick={() => { setIsDemoModalOpen(false); setIsFormOpen(true); }} className="glow-btn bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold px-8 py-3.5 rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                            <div className="mt-6 md:mt-8 pt-6 border-t border-slate-200 flex justify-center relative z-10 shrink-0">
+                                <button onClick={() => { setIsDemoModalOpen(false); setIsFormOpen(true); }} className="btn-inkica-primary text-white font-bold px-8 py-3.5 rounded-xl shadow-[0_12px_28px_rgba(30,64,255,0.26)] hover:-translate-y-0.5 transition-all flex items-center gap-2">
                                     <Lock className="w-4 h-4" /> Mở Khoá Trải Nghiệm Khám Phá
                                 </button>
                             </div>
-
-                            {/* Ambient Light */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl bg-amber-500/5 blur-[100px] pointer-events-none rounded-full" />
                         </motion.div>
                     </motion.div>
                 )}
@@ -2061,12 +1952,12 @@ const Landing: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[200] flex items-center justify-center p-4 xl:p-8 bg-black/90 backdrop-blur-md"
+                        className="fixed inset-0 z-[200] flex items-center justify-center p-4 xl:p-8 bg-slate-900/75 backdrop-blur-md"
                         onClick={() => setPreviewImage(null)}
                     >
                         <motion.button
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 hover:scale-110 transition-all z-50 text-white shadow-xl shadow-orange-500/30"
+                            className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 flex items-center justify-center rounded-full btn-inkica-primary hover:scale-110 transition-all z-50 text-white shadow-xl"
                         >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                         </motion.button>
@@ -2076,14 +1967,14 @@ const Landing: React.FC = () => {
                             exit={{ scale: 0.9, opacity: 0 }}
                             src={previewImage}
                             alt="Preview"
-                            className="max-w-full max-h-[95vh] object-contain rounded-2xl shadow-2xl shadow-black relative z-40"
+                            className="max-w-full max-h-[95vh] object-contain rounded-2xl shadow-2xl relative z-40 border border-white/20"
                             onClick={(e) => e.stopPropagation()}
                         />
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="amber-500" />
+            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="blue-600" />
         </div>
     );
 };

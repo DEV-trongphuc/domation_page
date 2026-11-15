@@ -1,819 +1,1180 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import {
-    Activity, Bot, BarChart3, TrendingUp, Network, Settings2,
-    Check, ArrowRight, Target, Send, X, Play, ShieldCheck, Monitor,
-    Filter, Clock, MousePointerClick, Eye, Users, Box, Calendar, LifeBuoy, Package, Users2, MessageSquare,
-    Database, Zap, Lock, Cpu, Scale
+  Activity,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Bot,
+  Check,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  EyeOff,
+  FileCheck2,
+  Gauge,
+  Layers,
+  Menu,
+  RefreshCw,
+  Scale,
+  Share2,
+  ShieldCheck,
+  Sparkles,
+  ToggleRight,
+  UserCheck,
+  Wallet,
+  Webhook,
+  X,
+  ZoomIn,
 } from 'lucide-react';
-import { ContactModal } from './ContactModal';
-import { Navbar } from './Navbar';
+import AutoDataFullScreenSetup from './components/autodata/AutoDataFullScreenSetup';
+import {
+  DEFAULT_CLIENT_CATALOG,
+  type ClientBillingCatalog,
+  type ClientSessionState,
+  type SetupModalIntent,
+} from './components/autodata/autodataTypes';
 
-const LOGOS = {
-    zalo: 'https://automation.ideas.edu.vn/imgs/zalolog.png',
-    meta: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg',
-    aws_ses: 'https://www.eetasia.com/wp-content/uploads/sites/2/2021/03/amazon-AWS_1200.jpg?w=600'
-};
+const SESSION_STORAGE_KEY = 'domation_autodata_session_v1';
 
-const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+interface PartnerBrand {
+  name: string;
+  sector: string;
+  logo: string;
+}
 
-const FadeIn = ({ children, delay = 0, className = '', from = 'bottom' }: {
-    children: React.ReactNode; delay?: number; className?: string; from?: 'bottom' | 'left' | 'right';
-}) => {
-    const controls = useAnimation();
-    const ref = useRef(null);
-    const inView = useInView(ref, { once: true, margin: '-40px' });
-    const initial = isMobile
-        ? { opacity: 0, y: 20 }
-        : from === 'left' ? { opacity: 0, x: -40 } : from === 'right' ? { opacity: 0, x: 40 } : { opacity: 0, y: 30 };
-    const animate = isMobile
-        ? { opacity: 1, y: 0 }
-        : from === 'left' || from === 'right' ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 };
+const PARTNER_BRANDS: PartnerBrand[] = [
+  {
+    name: 'Viện Quốc Tế IDEAS',
+    sector: 'Giáo dục & Đào tạo Quốc tế',
+    logo: '/assets/partners/logo_ideas.webp',
+  },
+  {
+    name: 'RichLand',
+    sector: 'Phát triển & Phân phối BĐS',
+    logo: '/assets/partners/partner_richland.webp',
+  },
+  {
+    name: 'Hệ Thống Nha Khoa Flora',
+    sector: 'Y tế & Nha khoa Thẩm mỹ',
+    logo: '/assets/partners/partner_flora.webp',
+  },
+  {
+    name: 'Capital House',
+    sector: 'Tập đoàn Đầu tư Đa ngành',
+    logo: '/assets/partners/logo_capital_house.webp',
+  },
+  {
+    name: 'EcoLife Signature',
+    sector: 'Chuỗi Dự án Xanh Cao cấp',
+    logo: '/assets/partners/logo_ecolife_ngang.webp',
+  },
+  {
+    name: 'Tùng Long Group',
+    sector: 'Thương mại & Dịch vụ',
+    logo: '/assets/partners/logo_tung_long.webp',
+  },
+  {
+    name: 'Hợp Nhất Land',
+    sector: 'Liên minh Kinh doanh Khu vực',
+    logo: '/assets/partners/logo_hop_nhat.webp',
+  },
+  {
+    name: 'IHD Group',
+    sector: 'Tập đoàn Đầu tư & Vận hành',
+    logo: '/assets/partners/logo_ihd_group.webp',
+  },
+];
 
-    useEffect(() => { if (inView) controls.start(animate); }, [controls, inView]);
+interface ScreenshotItem {
+  title: string;
+  badge: string;
+  desc: string;
+  src: string;
+}
 
-    return (
-        <motion.div ref={ref} animate={controls} initial={initial}
-            transition={{ duration: isMobile ? 0.45 : 0.7, delay: isMobile ? delay * 0.5 : delay, ease: [0.22, 1, 0.36, 1] }}
-            className={className}
-            style={{ willChange: 'opacity, transform' }}>
-            {children}
-        </motion.div>
-    );
-};
+const SYSTEM_SCREENSHOTS: ScreenshotItem[] = [
+  {
+    title: 'Bảng Điều Khiển Vòng Chia Số Real-Time',
+    badge: 'Router Console',
+    desc: 'Theo dõi trực quan lưu lượng Lead đổ về từ các chiến dịch, tốc độ tiếp nhận SLA và trạng thái Online từng nhân sự.',
+    src: '/CHIA DATA/chia_data (1).png',
+  },
+  {
+    title: 'Ma Trận Trọng Số & Công Tắc Online / Nghỉ Phép',
+    badge: 'Fair-Share Matrix',
+    desc: 'Cấu hình hệ số nhận khách (Senior x3, Junior x1), bảo lưu lượt khi nghỉ phép và bật/tắt Cộng tác viên F1 tức thì.',
+    src: '/CHIA DATA/chia_data (22).png',
+  },
+  {
+    title: 'Phễu Chăm Sóc & Dòng Thời Gian Bất Biến',
+    badge: 'Pipeline & SLA',
+    desc: 'Mọi thao tác nhận khách, ghi chú cuộc gọi và chuyển bước đều đóng dấu thời gian phục vụ kiểm toán minh bạch.',
+    src: '/CHIA DATA/chia_data (20).png',
+  },
+  {
+    title: 'Đồng Bộ Ngược Tín Hiệu Meta CAPI v21.0',
+    badge: 'Meta Conversion API',
+    desc: 'Khi nhân sự xác nhận khách chất lượng hoặc chốt đơn, hệ thống tự bắn sự kiện HTTP 200 tối ưu máy học quảng cáo.',
+    src: '/CHIA DATA/chia_data (16).png',
+  },
+  {
+    title: 'Cơ Chế Duyệt Lỗi & Đền Bù Tự Động 1-Đổi-1',
+    badge: 'Compensation Engine',
+    desc: 'Nhân sự báo số rác/sai đối tượng ngay trên ZaloBot; Admin duyệt 1 chạm tự động cộng bù định mức ở vòng kế tiếp.',
+    src: '/CHIA DATA/chia_data (14).png',
+  },
+  {
+    title: 'Báo Cáo Đối Soát Độ Công Bằng Gini',
+    badge: 'Fairness Audit',
+    desc: 'Đo lường độ lệch phân bổ dữ liệu giữa các phòng ban, chi nhánh và nguồn chiến dịch hoàn toàn minh bạch.',
+    src: '/CHIA DATA/chia_data (19).png',
+  },
+];
 
-export const DomationDataLanding: React.FC = () => {
-    const [scrolled, setScrolled] = useState(false);
-    const [isYearly, setIsYearly] = useState(true);
-    const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '', size: '1-10', note: 'Đăng ký trải nghiệm Domation DATA' });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const [showContactModal, setShowContactModal] = useState(false);
+function readSavedSession(): ClientSessionState | null {
+  try {
+    const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as ClientSessionState;
+    if (parsed && parsed.access_token && parsed.tenant_slug) {
+      return parsed;
+    }
+  } catch {
+    // Ignore corrupted localStorage
+  }
+  return null;
+}
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        const handleScroll = () => setScrolled(window.scrollY > 20);
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+export function DomationDataLanding() {
+  const [catalog, setCatalog] = useState<ClientBillingCatalog>(DEFAULT_CLIENT_CATALOG);
+  const [session, setSession] = useState<ClientSessionState | null>(() => readSavedSession());
+  const [bridgeMode, setBridgeMode] = useState<'upstream_rls_postgres' | 'vercel_serverless_engine'>(
+    'vercel_serverless_engine'
+  );
 
-    const features = [
-        {
-            title: "Tích Hợp Realtime",
-            desc: "Dữ liệu từ Landing Page, Facebook Ads hay Google Sheets sẽ được đồng bộ ngay lập tức vào hệ thống. Không độ trễ.",
-            icon: Zap,
-            gradient: "#c026d3" // fuchsia
-        },
-        {
-            title: "Thông báo chủ động",
-            desc: "Lead vừa đổ về, Sale lập tức nhận được thông báo chi tiết qua Zalo Bot cá nhân và Email. Nắm bắt thời điểm vàng.",
-            icon: Bot,
-            gradient: "#4f46e5" // indigo
-        },
-        {
-            title: "Tự động chia đều",
-            desc: "Tự động chia đều Data cho các Sale (Round-Robin) hoặc tự động định tuyến (Routing) theo nguồn khách.",
-            icon: Network,
-            gradient: "#9333ea" // purple
-        },
-        {
-            title: "Quản Lý Lỗi & Đền Bù",
-            desc: "Khách trùng, sai số? Sale báo lỗi, Admin duyệt là tự động bù 1 Data mới. Đảm bảo tính minh bạch.",
-            icon: ShieldCheck,
-            gradient: "#3b82f6" // blue
-        },
-        {
-            title: "Nhận Diện Nghỉ Phép",
-            desc: "Khi Sale xin nghỉ phép, hệ thống tự động chuyển luồng chia số sang nhân sự khác, không làm gián đoạn.",
-            icon: Users,
-            gradient: "#f59e0b" // amber
-        },
-        {
-            title: "Báo Cáo Tự Động",
-            desc: "Cuối ngày, Zalo Bot tự động gửi bảng tổng kết: Data thu về, lượng đã chia, tỷ lệ lỗi.",
-            icon: BarChart3,
-            gradient: "#8b5cf6" // violet
+  // Full-screen setup app state
+  const [setupOpen, setSetupOpen] = useState(false);
+  const [setupIntent, setSetupIntent] = useState<SetupModalIntent>('register');
+  const [setupModalKey, setSetupModalKey] = useState(0);
+
+  // Interactive Hero Browser Preview state
+  const [heroTab, setHeroTab] = useState<0 | 1 | 2 | 3>(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Pricing section cycle toggle
+  const [pricingCycle, setPricingCycle] = useState<'annual' | 'monthly'>('annual');
+
+  // Zoomable screenshot lightbox
+  const [zoomImage, setZoomImage] = useState<ScreenshotItem | null>(null);
+
+  // Sync live dynamic catalog & platform defaults from real backend bridge
+  useEffect(() => {
+    document.title = 'DOMATION Auto Data — Hệ Thống Tự Động Chia Vòng Lead Đa Kênh';
+    let mounted = true;
+    const bootstrapFromApi = async () => {
+      try {
+        const res = await fetch('/api/autodata?action=bootstrap');
+        const json = (await res.json()) as {
+          success?: boolean;
+          bridge_mode?: 'upstream_rls_postgres' | 'vercel_serverless_engine';
+          data?: { catalog?: ClientBillingCatalog };
+        };
+        if (!mounted || !json.success || !json.data?.catalog) return;
+        setCatalog(json.data.catalog);
+        if (json.bridge_mode) {
+          setBridgeMode(json.bridge_mode);
         }
-    ];
-
-    const gallery = [
-        "/CHIA DATA/chia_data (14).png",
-        "/CHIA DATA/chia_data (15).png",
-        "/CHIA DATA/chia_data (16).png",
-        "/CHIA DATA/chia_data (17).png",
-        "/CHIA DATA/chia_data (18).png",
-        "/CHIA DATA/chia_data (19).png",
-        "/CHIA DATA/chia_data (20).png",
-        "/CHIA DATA/chia_data (21).png",
-        "/CHIA DATA/chia_data (22).png",
-        "/CHIA DATA/chia_data (6).png",
-        "/CHIA DATA/chia_data (8).png",
-        "/CHIA DATA/chia_data (9).png"
-    ];
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!formData.name || !formData.email) return;
-
-        setIsSubmitting(true);
-        try {
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwY3J_VJN6lhGHaoJ0zNnOyYxsswyb3I1KqQ7nrdeElMZreXEKO_cigKEOEhtH-0noK/exec'; 
-            
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    source: 'DOMATION DATA Landing',
-                    timestamp: new Date().toLocaleString('vi-VN')
-                })
-            });
-
-            setIsSuccess(true);
-            setTimeout(() => {
-                setShowModal(false);
-                setIsSuccess(false);
-                setFormData({ name: '', email: '', phone: '', company: '', size: '1-10', note: 'Đăng ký trải nghiệm Domation DATA' });
-            }, 3000);
-        } catch (error) {
-            console.error('Submit error:', error);
-            alert('Có lỗi xảy ra, vui lòng thử lại.');
-        } finally {
-            setIsSubmitting(false);
-        }
+      } catch {
+        // Fallback catalog remains active
+      }
     };
+    void bootstrapFromApi();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-    return (
-        <div className="min-h-screen bg-[#080811] text-white overflow-x-hidden font-sans selection:bg-purple-500/30" style={{ scrollbarWidth: 'thin', scrollbarColor: '#9333ea transparent' }}>
-            <style>{`
-                @keyframes shimmer-sweep {
-                    0% { background-position: -200% center; }
-                    100% { background-position: 200% center; }
-                }
-                .shimmer-text {
-                    background: linear-gradient(90deg, #a855f7 0%, #9333ea 20%, #7e22ce 40%, #a855f7 60%, #c084fc 80%, #a855f7 100%);
-                    background-size: 200% auto;
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    animation: shimmer-sweep 4s linear infinite;
-                }
-                @keyframes float-y {
-                    0%,100% { transform: translate3d(0,0px,0); }
-                    50% { transform: translate3d(0,-8px,0); }
-                }
-                @keyframes aurora-1 {
-                    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:0.12; }
-                    33% { transform: translate3d(8%,-12%,0) scale(1.1); opacity:0.16; }
-                    66% { transform: translate3d(-5%,8%,0) scale(0.92); opacity:0.1; }
-                }
-                @keyframes aurora-2 {
-                    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:0.1; }
-                    40% { transform: translate3d(-8%,8%,0) scale(1.12); opacity:0.14; }
-                    70% { transform: translate3d(5%,-5%,0) scale(0.88); opacity:0.08; }
-                }
-                @keyframes aurora-3 {
-                    0%,100% { transform: translate3d(0,0,0) scale(1); }
-                    50% { transform: translate3d(10%,6%,0) scale(1.08); }
-                }
-            `}</style>
-            
-            {/* Background Animations */}
-            <div className="fixed inset-0 pointer-events-none z-0" style={{ transform: 'translateZ(0)' }}>
-                <div className="absolute top-[-25%] left-[-15%] w-[70%] h-[70%] rounded-full bg-purple-600/[0.12] blur-[120px] md:blur-[160px]" style={{ animation: 'aurora-1 18s ease-in-out infinite' }} />
-                <div className="absolute top-[5%] right-[-20%] w-[60%] h-[60%] rounded-full bg-fuchsia-600/[0.1] blur-[120px] md:blur-[160px]" style={{ animation: 'aurora-2 24s ease-in-out infinite' }} />
-                <div className="absolute bottom-[-5%] left-[15%] w-[50%] h-[50%] rounded-full bg-indigo-600/[0.08] blur-[100px] md:blur-[140px]" style={{ animation: 'aurora-3 30s ease-in-out infinite' }} />
-                <div className="hidden md:block absolute inset-0 opacity-[0.035]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)',
-                    backgroundSize: '60px 60px'
-                }} />
+  const handleSessionChange = (nextSession: ClientSessionState | null) => {
+    setSession(nextSession);
+    try {
+      if (nextSession) {
+        window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(nextSession));
+      } else {
+        window.localStorage.removeItem(SESSION_STORAGE_KEY);
+      }
+    } catch {
+      // Ignore storage quota issues
+    }
+  };
+
+  const openFullScreenApp = (intent: SetupModalIntent) => {
+    setSetupIntent(intent);
+    setSetupModalKey((k) => k + 1);
+    setSetupOpen(true);
+    setMobileMenuOpen(false);
+  };
+
+  const standardPlan = catalog.plans[0] || DEFAULT_CLIENT_CATALOG.plans[0];
+
+  return (
+    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-700 overflow-x-clip">
+      {/* ====================================================================
+          DEDICATED /data SUB-APP HEADER (Separate from Portfolio & Home Navbar)
+         ==================================================================== */}
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <a href="/data" className="flex items-center gap-2.5 shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-black text-xs tracking-tight">
+                AD
+              </div>
+              <span className="font-bold text-sm sm:text-base tracking-tight text-slate-950">
+                DOMATION <span className="text-blue-600">DATA</span>
+              </span>
+            </a>
+
+            <span className="hidden sm:inline text-slate-300">|</span>
+
+            <a
+              href="/"
+              className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors truncate"
+            >
+              <ArrowLeft className="w-3 h-3" />
+              <span>Hệ sinh thái DOMATION.NET</span>
+            </a>
+          </div>
+
+          <nav className="hidden lg:flex items-center gap-6 text-[13px] font-medium text-slate-600">
+            <a href="#router-engine" className="hover:text-slate-950 transition-colors">
+              Cơ chế Chia Vòng
+            </a>
+            <a href="#omni-channel" className="hover:text-slate-950 transition-colors">
+              Luồng Đa Kênh
+            </a>
+            <a href="#screenshots" className="hover:text-slate-950 transition-colors">
+              Giao diện Thật
+            </a>
+            <a href="#partners" className="hover:text-slate-950 transition-colors">
+              Khách hàng
+            </a>
+            <a href="#pricing" className="hover:text-slate-950 transition-colors">
+              Gói &amp; Gia hạn
+            </a>
+            <a href="#crm-erp-upgrade" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+              Nâng cấp CRM / ERP
+            </a>
+          </nav>
+
+          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+            {session ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => openFullScreenApp('workspace_billing')}
+                  className="rounded-full border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Gói &amp; Topup ({session.subscription.days_remaining}d)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openFullScreenApp('workspace_router')}
+                  className="rounded-full bg-slate-900 text-white px-4 py-2 text-xs font-semibold hover:bg-blue-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Workspace ({session.tenant_slug})</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => openFullScreenApp('login')}
+                  className="rounded-full px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Đăng nhập
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openFullScreenApp('register')}
+                  className="rounded-full bg-slate-900 text-white px-4 py-2 text-xs font-semibold hover:bg-blue-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Dùng thử {catalog.trial_duration_months} tháng miễn phí</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Mở menu điều hướng"
+            className="sm:hidden rounded-lg border border-slate-200 p-2 text-slate-700"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="sm:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3">
+            <div className="grid grid-cols-2 gap-2 text-xs font-medium text-slate-700">
+              <a href="#router-engine" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
+                Cơ chế Chia Vòng
+              </a>
+              <a href="#omni-channel" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
+                Luồng Đa Kênh
+              </a>
+              <a href="#partners" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
+                Khách hàng
+              </a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="py-1.5">
+                Bảng gói ({(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k)
+              </a>
+              <a href="#crm-erp-upgrade" onClick={() => setMobileMenuOpen(false)} className="py-1.5 text-blue-600 font-semibold">
+                Nâng cấp CRM / ERP
+              </a>
+              <a href="/" className="py-1.5 text-slate-500">
+                ← Trang chủ DOMATION
+              </a>
+            </div>
+            <div className="pt-2 border-t border-slate-100 flex gap-2">
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_billing' : 'login')}
+                className="flex-1 rounded-full border border-slate-300 py-2 text-xs font-semibold text-slate-800"
+              >
+                {session ? 'Quản lý Gói' : 'Đăng nhập'}
+              </button>
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+                className="flex-1 rounded-full bg-slate-900 text-white py-2 text-xs font-semibold"
+              >
+                {session ? 'Mở Workspace' : `Miễn phí ${catalog.trial_duration_months} tháng`}
+              </button>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* ====================================================================
+          HERO SECTION (BlankBuilder Clean Minimalist High-Contrast Style)
+          Industry-agnostic • Crisp 2-line headline • Centered CTAs • Browser Frame
+         ==================================================================== */}
+      <section className="pt-14 sm:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-slate-50/40 to-white">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-medium text-slate-600 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-blue-600" />
+            <span>Auto Data Router cho mọi doanh nghiệp • Kết nối thật dưới 60 giây</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.12]">
+            Tự động chia vòng Lead đa kênh.
+            <span className="block text-blue-600 mt-1.5">
+              Công bằng dưới 4 giây cho đội Sale.
+            </span>
+          </h1>
+
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
+            Nền tảng định tuyến dữ liệu khách hàng độc lập không giới hạn ngành nghề — tự động phân bổ theo trọng số, chống trùng SĐT 90 ngày, báo ZaloBot tức thì và đồng bộ ngược Meta CAPI.
+          </p>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+              className="w-full sm:w-auto rounded-full bg-slate-900 text-white px-7 py-3.5 text-sm font-semibold hover:bg-blue-600 transition-all shadow-sm inline-flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>
+                {session
+                  ? `Mở Không Gian Kết Nối (${session.tenant_slug})`
+                  : `Bắt đầu ${catalog.trial_duration_months} tháng miễn phí`}
+              </span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <a
+              href="#router-engine"
+              className="w-full sm:w-auto rounded-full border border-slate-300 bg-white text-slate-800 px-7 py-3.5 text-sm font-semibold hover:bg-slate-50 transition-colors inline-flex items-center justify-center gap-2"
+            >
+              <span>Xem cơ chế Vòng Chia Số</span>
+            </a>
+          </div>
+
+          <p className="text-xs text-slate-500">
+            Miễn phí <strong className="text-slate-700">{catalog.trial_duration_months} tháng đầu ({catalog.trial_duration_days} ngày)</strong> · Hết hạn gia hạn từ{' '}
+            <strong className="text-slate-700">{catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng</strong> · Mua năm tiết kiệm{' '}
+            <strong className="text-emerald-700">{catalog.annual_discount_pct}% ({standardPlan.annual_monthly_equivalent_vnd.toLocaleString('vi-VN')}₫/tháng)</strong>
+          </p>
+        </div>
+
+        {/* Clean Browser Window Interactive Preview (BlankBuilder Frame) */}
+        <div className="max-w-6xl mx-auto mt-12 sm:mt-16">
+          <div className="rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white shadow-[0_24px_70px_-20px_rgba(15,23,42,0.12)] overflow-hidden">
+            {/* Browser Top Chrome */}
+            <div className="px-4 sm:px-6 py-3 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="ml-2 text-xs font-mono text-slate-500 truncate">
+                  domation.net/data • Auto Data Router Engine ({bridgeMode === 'upstream_rls_postgres' ? 'PostgreSQL RLS Live' : 'Serverless Live'})
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+                className="rounded-full bg-blue-600 text-white px-3.5 py-1 text-[11px] font-semibold hover:bg-blue-700 transition-colors cursor-pointer shrink-0"
+              >
+                Kết nối thật toàn màn hình →
+              </button>
             </div>
 
-            {/* Navigation */}
-            <Navbar activePage="data" onOpenContact={() => setShowContactModal(true)} />
+            {/* Interactive 4-Pillar Router Switcher */}
+            <div className="p-4 sm:p-8 space-y-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                {[
+                  { idx: 0 as const, label: '01. Thuật Toán Chia Vòng', icon: Scale },
+                  { idx: 1 as const, label: '02. Chống Trùng 90 Ngày', icon: UserCheck },
+                  { idx: 2 as const, label: '03. Công Tắc Online & Bù Số', icon: ToggleRight },
+                  { idx: 3 as const, label: '04. ZaloBot & Meta CAPI', icon: Share2 },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  const active = heroTab === item.idx;
+                  return (
+                    <button
+                      key={item.idx}
+                      type="button"
+                      onClick={() => setHeroTab(item.idx)}
+                      className={`rounded-xl border px-3.5 py-2.5 text-left text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                        active
+                          ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-            <main className="relative pt-32 pb-24 md:pb-20 px-4 md:px-6 z-10 w-full">
-                <div className="max-w-6xl mx-auto">
-                    {/* Hero Section */}
-                    <div className="text-center mb-20 md:mb-28">
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#0a0a0f]/80 border border-purple-500/30 text-purple-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div> DOMATION DATA 🚀
-                        </motion.div>
-                        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-xl md:text-3xl font-black text-white uppercase tracking-[0.25em] mb-2 md:mb-4">
-                            HỆ THỐNG CHIA VÒNG DATA
-                        </motion.h2>
-                        <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-4xl md:text-6xl lg:text-[5rem] font-black uppercase mb-8 leading-[1.1] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-fuchsia-400 to-indigo-500 drop-shadow-[0_0_30px_rgba(16,185,129,0.4)]" style={{ animation: 'shimmer-sweep 4s linear infinite', backgroundSize: '200% auto' }}>
-                            DATA ROUTING
-                        </motion.h1>
-                        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-slate-400 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-10">
-                            Bạn mệt mỏi vì Data khách hàng đổ về bị sót? Sale phàn nàn vì nhận số chậm, mất "thời điểm vàng" để chốt đơn? Khám phá ngay hệ thống Domation DATA – Giải pháp điều phối luồng Data tự động và bảo vệ doanh thu cho team của bạn.
-                        </motion.p>
+              {/* Active Router Stage */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-slate-50/70 rounded-2xl border border-slate-200/80 p-5 sm:p-7">
+                <div className="lg:col-span-5 space-y-4">
+                  {heroTab === 0 && (
+                    <>
+                      <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider">
+                        <Scale className="w-4 h-4" />
+                        <span>Deficit Weighted Fair-Share &amp; Round-Robin</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900">
+                        Chia số chính xác theo trọng số năng lực hoặc xoay vòng 1:1
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Hỗ trợ đồng thời 4 chế độ: Chia theo hệ số KPI (VD: Chuyên viên chính nhận 3 phần, Nhân sự mới nhận 1 phần), Xoay vòng tuần tự 1:1, Ưu tiên người ít tải nhất hoặc Hàng đợi duyệt tay theo từng chiến dịch UTM.
+                      </p>
+                    </>
+                  )}
+                  {heroTab === 1 && (
+                    <>
+                      <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider">
+                        <UserCheck className="w-4 h-4" />
+                        <span>90-Day Deduplication &amp; Ownership Lock</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900">
+                        Chấm dứt tranh chấp khách trùng giữa các nhân sự &amp; nguồn Ads
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Khi khách cũ để lại SĐT lần 2 từ chiến dịch khác trong chu kỳ 90 ngày, Router tự động nhận diện tức thì để định tuyến về đúng nhân sự đang chăm sóc hoặc ghi nối lịch sử mà không làm lệch lượt vòng chia.
+                      </p>
+                    </>
+                  )}
+                  {heroTab === 2 && (
+                    <>
+                      <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider">
+                        <ToggleRight className="w-4 h-4" />
+                        <span>Online Toggle, SLA 15m Recall &amp; 1-for-1 Credit</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900">
+                        Tự thu hồi khi quá hạn 15 phút &amp; đền bù 1-đổi-1 khi gặp số rác
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Nhân sự nghỉ phép bật Offline không bị đổ số oan. Quá 15 phút chưa nhận khách, hệ thống tự thu hồi chuyển người kế tiếp. Gặp SĐT sai/thuê bao, duyệt Ticket tự động cộng bù ngay lượt mới.
+                      </p>
+                    </>
+                  )}
+                  {heroTab === 3 && (
+                    <>
+                      <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider">
+                        <Share2 className="w-4 h-4" />
+                        <span>ZaloBot Instant Push &amp; Meta CAPI v21.0</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900">
+                        Báo số qua Zalo dưới 4 giây &amp; nuôi máy học quảng cáo tự động
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Nhận thông báo và bấm nhận khách ngay trên Zalo điện thoại; che giấu SĐT dạng <code className="font-mono text-slate-900">0912***678</code> với Cộng tác viên ngoài; tự gửi sự kiện khách nét về Facebook Dataset.
+                      </p>
+                    </>
+                  )}
 
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap mb-16">
-                            <a href="https://ideas-data.vercel.app/demo" target="_blank" rel="noreferrer" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white px-8 py-4 rounded-2xl text-sm md:text-base font-black hover:-translate-y-1 transition-transform duration-300 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                                Trải nghiệm ngay Demo <ArrowRight className="w-4 h-4" />
-                            </a>
-                            <button onClick={() => setShowModal(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm md:text-base font-bold text-slate-300 bg-[#0a0a0f] border border-white/10 hover:border-purple-500/40 hover:bg-white/5 hover:-translate-y-0.5 transition-all duration-300">
-                                Đăng ký tư vấn giải pháp
-                            </button>
-                        </motion.div>
-
-                        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }} className="relative mx-auto rounded-[32px] p-px bg-gradient-to-b from-purple-500/30 to-transparent">
-                            <div className="rounded-[31px] overflow-hidden bg-[#080811] border border-white/5 relative group">
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#080811]/80 to-transparent z-10 pointer-events-none" />
-                                <img src="/CHIA DATA/chia_data (8).png" alt="Domation Data Hero" className="w-full h-auto rounded-[31px] shadow-2xl scale-[1.01] group-hover:scale-[1.03] transition-transform duration-700" />
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    {/* Features Grid */}
-                    <div className="mb-24 mt-20">
-                        <FadeIn className="text-center mb-12">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-widest mb-4">
-                                Các Tính Năng Đột Phá
-                            </div>
-                            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Điều Phối Luồng Data Thông Minh</h2>
-                            <p className="text-slate-400 max-w-2xl mx-auto">Thiết lập các vòng giao data và logic giao từng vòng. Thông báo Zalo Bot/Email riêng bảo mật cho từng tư vấn viên và khách hàng.</p>
-                        </FadeIn>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {features.map((feat, idx) => (
-                                <FadeIn key={idx} delay={idx * 0.1} className="h-full">
-                                    <div className="relative rounded-[20px] p-px bg-white/5 hover:bg-white/10 transition-all duration-500 group h-full">
-                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[20px]"
-                                            style={{ background: `radial-gradient(400px circle at bottom right, ${feat.gradient}15, transparent 70%)` }} />
-
-                                        <div className="relative bg-[#11111a]/80 backdrop-blur-sm rounded-[19px] p-6 lg:p-8 flex flex-col h-full border border-white/5">
-                                            <div className="w-12 h-12 rounded-xl mb-6 flex items-center justify-center" style={{ backgroundColor: `${feat.gradient}15`, border: `1px solid ${feat.gradient}30` }}>
-                                                <feat.icon className="w-6 h-6" style={{ color: feat.gradient }} />
-                                            </div>
-                                            <h3 className="text-xl font-bold text-white mb-3 leading-tight">{feat.title}</h3>
-                                            <p className="text-sm text-slate-400 leading-relaxed flex-1">{feat.desc}</p>
-                                        </div>
-                                    </div>
-                                </FadeIn>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Deep Dive 1: Real-time & Zalo Bot */}
-                    <div className="mb-24">
-                        <div className="bg-gradient-to-br from-purple-500/10 to-[#080811] border border-purple-500/20 rounded-[32px] p-8 md:p-12 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
-
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-                                <div>
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                        <Zap className="w-3.5 h-3.5" /> Phản Hồi Tức Thì
-                                    </div>
-                                    <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
-                                        Đồng Bộ Real-time & Cảnh Báo Chủ Động
-                                    </h2>
-                                    <p className="text-slate-300 text-base md:text-lg mb-8 leading-relaxed">
-                                        Không còn tình trạng copy-paste từ Google Sheets hay chờ đồng bộ. Khi có thông tin khách hàng từ Landing Page, Facebook Ads, hệ thống đẩy ngay vào ứng dụng và thông báo.
-                                    </p>
-                                    <ul className="space-y-4 mb-8">
-                                        {[
-                                            "Tích hợp Webhook, API trực tiếp 2 chiều",
-                                            "Zalo Bot Noti: Sale nhận ngay chi tiết Data qua Zalo cá nhân",
-                                            "Email Cảnh báo: Quản lý nắm bắt ngay khi có bất thường"
-                                        ].map((pain, idx) => (
-                                            <li key={idx} className="flex items-start gap-3">
-                                                <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center shrink-0 mt-0.5">
-                                                    <Check className="w-3.5 h-3.5 text-purple-400" />
-                                                </div>
-                                                <span className="text-slate-300 font-medium">{pain}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="relative group cursor-pointer" onClick={() => setPreviewImage('/CHIA DATA/chia_data (16).png')}>
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-fuchsia-500/20 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
-                                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#080811]">
-                                        <img src="/CHIA DATA/chia_data (16).png" alt="Zalo Bot Integration" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6">
-                                            <div className="flex items-center gap-2 text-white font-bold text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
-                                                <Eye className="w-4 h-4 text-purple-400" /> Phóng to
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Deep Dive 2: Routing Logic & Báo Cáo */}
-                    <div className="mb-24">
-                        <FadeIn className="bg-[#0b0b14] border border-white/5 rounded-[32px] p-8 md:p-12 relative overflow-hidden group">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-                                <div className="order-2 lg:order-1 relative cursor-pointer" onClick={() => setPreviewImage('/CHIA DATA/chia_data (18).png')}>
-                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/20 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
-                                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#080811]">
-                                        <img src="/CHIA DATA/chia_data (18).png" alt="Routing System" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6">
-                                            <div className="flex items-center gap-2 text-white font-bold text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
-                                                <Eye className="w-4 h-4 text-indigo-400" /> Phóng to
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="order-1 lg:order-2">
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                        <Network className="w-3.5 h-3.5" /> Điều Phối & Đền Bù
-                                    </div>
-                                    <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
-                                        Định Tuyến Phân Bổ Logic Chặt Chẽ
-                                    </h2>
-                                    <p className="text-slate-300 text-base md:text-lg mb-8 leading-relaxed">
-                                        Đảm bảo công bằng trong việc chia luồng Data cho từng thành viên. Tính toán bù đắp nếu phát sinh lỗi khách hàng.
-                                    </p>
-                                    <div className="space-y-4">
-                                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                                            <h4 className="font-bold text-white mb-1">Round-Robin & Nguồn Gốc</h4>
-                                            <p className="text-sm text-slate-400">Thiết lập chia số lần lượt theo vòng, hoặc chia nhánh dựa trên UTM Source, chiến dịch cụ thể.</p>
-                                        </div>
-                                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                                            <h4 className="font-bold text-white mb-1">Báo Cáo Data Lỗi Tự Động Bù</h4>
-                                            <p className="text-sm text-slate-400">Khách sai số, sai nhu cầu? Sale báo cáo lên hệ thống, sau khi Admin duyệt, luồng sẽ tự chia bù cho Sale đó 1 Data mới.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </FadeIn>
-                    </div>
-
-                    {/* Deep Dive 3: AI Pre-screener */}
-                    <div className="mb-24">
-                        <FadeIn className="bg-gradient-to-br from-[#0c0d21] to-[#080811] border border-purple-500/20 rounded-[32px] p-8 md:p-12 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
-
-                            <div className="relative z-10 flex flex-col gap-12">
-                                {/* Top Content: Text & Badges */}
-                                <div className="max-w-4xl">
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                        <Cpu className="w-3.5 h-3.5 animate-pulse" /> Bộ Lọc AI (Pre-screener)
-                                    </div>
-                                    <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
-                                        Bộ Lọc AI Pre-screener hoạt động thế nào?
-                                    </h2>
-                                    <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-                                        Hệ thống tự động tiếp nhận dữ liệu từ webhook nguồn, chuyển qua đánh giá chất lượng tự động (DOMATION AI hoặc Luật thủ công cấu hình). Những dữ liệu không đạt chuẩn sẽ được tạm giữ phê duyệt và gửi tin báo cho Quản trị viên, giúp tiết kiệm thời gian Telesale.
-                                    </p>
-                                </div>
-
-                                {/* Flow Steps: Horizontal grid of 4 cards on desktop */}
-                                <div>
-                                    <h4 className="text-xs font-extrabold tracking-wider uppercase text-purple-400 mb-6 flex items-center gap-2">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping" />
-                                        Luồng Xử Lý Hiện Tại (Dynamic Flow)
-                                    </h4>
-                                    
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                        {/* Step 1 */}
-                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
-                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
-                                                1
-                                            </div>
-                                            <div className="pr-10">
-                                                <h5 className="font-bold text-white mb-2 flex flex-col gap-1 items-start">
-                                                    Webhook tiếp nhận
-                                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                        Thời gian thực (Realtime)
-                                                    </span>
-                                                </h5>
-                                                <p className="text-xs text-slate-400 leading-relaxed">
-                                                    Lead mới được gửi realtime từ các kênh Google Sheets, Facebook Lead Ads, Landing Page...
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Step 2 */}
-                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
-                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
-                                                2
-                                            </div>
-                                            <div className="pr-10">
-                                                <h5 className="font-bold text-white mb-2 flex flex-col gap-1 items-start">
-                                                    Kiểm tra bộ lọc AI
-                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 animate-pulse">
-                                                        Đang BẬT
-                                                    </span>
-                                                </h5>
-                                                <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                                                    Kiểm tra vòng của Lead. Áp dụng cho các vòng:
-                                                </p>
-                                                <div className="flex gap-1.5 flex-wrap">
-                                                    <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Form</span>
-                                                    <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">BBA</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Step 3 */}
-                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
-                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
-                                                3
-                                            </div>
-                                            <div className="pr-10">
-                                                <h5 className="font-bold text-white mb-2">
-                                                    Đánh giá chất lượng
-                                                </h5>
-                                                <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                                                    Lọc chuẩn tiếng Anh. Vòng: <span className="text-slate-300">Form, BBA</span>
-                                                </p>
-                                                <div className="space-y-1 text-[10px] bg-white/5 p-2 rounded-lg border border-white/5">
-                                                    <div>
-                                                        <span className="text-slate-500">Match logic:</span> <span className="text-slate-300 font-semibold">2 nhánh thủ công</span>
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-slate-500">Quy tắc AI:</span> <span className="text-slate-300 font-semibold">Có tiếng Anh là được</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Step 4 */}
-                                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative flex flex-col justify-between hover:bg-white/10 transition-colors">
-                                            <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xs font-bold text-purple-300">
-                                                4
-                                            </div>
-                                            <div className="pr-10">
-                                                <h5 className="font-bold text-white mb-2">
-                                                    Phân bổ & Hàng chờ
-                                                </h5>
-                                                <p className="text-xs text-slate-400 leading-relaxed mb-3">
-                                                    Phân luồng sau khi đánh giá:
-                                                </p>
-                                                <div className="space-y-1 text-[10px]">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                                                        <span className="text-slate-300 truncate"><strong>Đạt:</strong> Tự động chia & Sheets.</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
-                                                        <span className="text-slate-300 truncate"><strong>Lỗi:</strong> Giữ chờ Admin duyệt.</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Full Width Image: Horizontal below */}
-                                <div className="relative group cursor-pointer w-full mt-4" onClick={() => setPreviewImage('/CHIA DATA/anhdat1 (1).png')}>
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-indigo-500/10 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
-                                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#080811]">
-                                        <img src="/CHIA DATA/anhdat1 (1).png" alt="AI Pre-screener Interface" className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-700" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <div className="flex items-center gap-2 text-white font-bold text-sm bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg scale-95 group-hover:scale-100 transition-all duration-300">
-                                                <Eye className="w-4 h-4 text-purple-400" /> Click để xem chi tiết cấu hình Bộ Lọc AI
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </FadeIn>
-                    </div>
-
-                    {/* Deep Dive 4: Fairness Distribution Audit */}
-                    <div className="mb-24">
-                        <FadeIn className="bg-[#0b0b14] border border-white/5 rounded-[32px] p-8 md:p-12 relative overflow-hidden group">
-                            <div className="absolute top-0 left-0 w-80 h-80 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
-                            <div className="absolute bottom-0 right-0 w-80 h-80 bg-fuchsia-500/5 blur-[100px] rounded-full pointer-events-none" />
-
-                            <div className="relative z-10 flex flex-col gap-12">
-                                {/* Top Content */}
-                                <div className="max-w-4xl">
-                                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
-                                        <Scale className="w-3.5 h-3.5" /> Đối Soát Phân Phối
-                                    </div>
-                                    <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
-                                        Báo cáo Đối soát Công bằng hoạt động thế nào?
-                                    </h2>
-                                    <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-                                        Hệ thống áp dụng công thức Hệ số bất bình đẳng Gini và Độ lệch chuẩn thực tế của lượng data bàn giao cho Sale. Chỉ số Công bằng được tính toán bằng cách chuẩn hóa lượng data nhận được chia cho Tỷ lệ (Receive Ratio) thiết lập của từng Sale. Giúp bạn ngay lập tức phát hiện xem có sự bất bình đẳng ngoài ý muốn do lỗi phân phối hoặc Sale offline kéo dài hay không.
-                                    </p>
-                                </div>
-
-                                {/* Audit Metrics Grid (4 columns) */}
-                                <div>
-                                    <h4 className="text-xs font-extrabold tracking-wider uppercase text-indigo-400 mb-6 flex items-center gap-2">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping" />
-                                        Chỉ số Đo Lường & Kiểm Toán Phân Phối
-                                    </h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                        {/* Gini Metric */}
-                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
-                                            <div>
-                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Chỉ Số Công Bằng</h4>
-                                                <div className="text-2xl font-extrabold text-white mb-2">Rất Công Bằng</div>
-                                                <p className="text-xs text-slate-400 leading-relaxed">
-                                                    Thuật toán đang phân phối data cực kỳ đồng đều.
-                                                </p>
-                                            </div>
-                                            <div className="mt-4 text-emerald-400 font-extrabold text-sm tracking-wide bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 w-fit">
-                                                98.6%
-                                            </div>
-                                        </div>
-
-                                        {/* SD Metric */}
-                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
-                                            <div>
-                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Độ Lệch Chuẩn (SD)</h4>
-                                                <div className="text-2xl font-extrabold text-white mb-2">Mức Phân Tán</div>
-                                                <p className="text-xs text-slate-400 leading-relaxed">
-                                                    SD càng nhỏ nghĩa là lượng data được chia càng đồng đều giữa các Sale.
-                                                </p>
-                                            </div>
-                                            <div className="mt-4 text-purple-400 font-extrabold text-sm tracking-wide bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20 w-fit">
-                                                ± 0.43
-                                            </div>
-                                        </div>
-
-                                        {/* Average Metric */}
-                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
-                                            <div>
-                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Số Lead Trung Bình</h4>
-                                                <div className="text-2xl font-extrabold text-white mb-2">Nhận Bởi Sale</div>
-                                                <p className="text-xs text-slate-400 leading-relaxed">
-                                                    Số lượng lead trung bình một Tư vấn viên nhận được trong vòng và khoảng thời gian đã chọn.
-                                                </p>
-                                            </div>
-                                            <div className="mt-4 text-indigo-400 font-extrabold text-sm tracking-wide bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20 w-fit">
-                                                13.25
-                                            </div>
-                                        </div>
-
-                                        {/* Audit Scope */}
-                                        <div className="bg-white/5 border border-white/10 p-6 rounded-2xl relative overflow-hidden group/card hover:bg-white/10 transition-colors flex flex-col justify-between">
-                                            <div>
-                                                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Phạm Vi Kiểm Toán</h4>
-                                                <div className="text-2xl font-extrabold text-white mb-2">4 Saleperson</div>
-                                                <p className="text-xs text-slate-400 leading-relaxed">
-                                                    Gồm 4 Tư vấn viên đang hoạt động với tổng số 53 lead thành công.
-                                                </p>
-                                            </div>
-                                            <div className="mt-4 text-amber-400 font-extrabold text-sm tracking-wide bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 w-fit">
-                                                53 Lead
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Full Width Image: Horizontal below */}
-                                <div className="relative group cursor-pointer w-full mt-4" onClick={() => setPreviewImage('/CHIA DATA/anhdat1 (19).png')}>
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-fuchsia-500/10 rounded-[24px] blur-xl group-hover:blur-2xl transition-all duration-500" />
-                                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 shadow-2xl bg-[#080811]">
-                                        <img src="/CHIA DATA/anhdat1 (19).png" alt="Fairness Distribution Report" className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-700" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <div className="flex items-center gap-2 text-white font-bold text-sm bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg scale-95 group-hover:scale-100 transition-all duration-300">
-                                                <Eye className="w-4 h-4 text-indigo-400" /> Click để xem chi tiết Báo Cáo Đối Soát Công Bằng
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </FadeIn>
-                    </div>
-
-                    {/* Gallery Section */}
-                    <div className="mb-24">
-                        <FadeIn className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Giao Diện Hệ Thống DOMATION DATA</h2>
-                            <p className="text-slate-400 max-w-2xl mx-auto">Trực quan, dễ sử dụng cho cả Tư vấn viên và Người quản lý. Click để xem chi tiết.</p>
-                        </FadeIn>
-
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                            {gallery.map((img, idx) => (
-                                <FadeIn key={idx} delay={idx * 0.05}>
-                                    <div className="group relative rounded-xl overflow-hidden border border-white/10 aspect-video bg-[#11111a] cursor-pointer shadow-lg" onClick={() => setPreviewImage(img)}>
-                                        <div className="absolute inset-0 bg-purple-900/40 z-10 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-overlay" />
-                                        <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                                                <Eye className="w-5 h-5 text-white" />
-                                            </div>
-                                        </div>
-                                        <img src={img} alt={`Data Screenshot ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                                    </div>
-                                </FadeIn>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Pricing Section (Báo giá) */}
-                    <div className="max-w-5xl mx-auto mb-20" id="pricing">
-                        <FadeIn className="text-center mb-12">
-                            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Giải Pháp Triển Khai</h2>
-                            <p className="text-slate-400 max-w-2xl mx-auto">Chỉ trả phí sử dụng một lần hoặc theo tháng. Hệ thống đảm bảo vận hành trơn tru cho đội ngũ từ 5 đến 500 Sales.</p>
-                        </FadeIn>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                            {/* Standard */}
-                            <FadeIn delay={0.1}>
-                                <div className="bg-[#11111a] rounded-[24px] p-8 border border-white/10 h-full flex flex-col hover:border-purple-500/30 transition-colors">
-                                    <h3 className="text-xl font-bold text-white mb-2">Cloud Standard</h3>
-                                    <p className="text-slate-400 text-sm mb-6">Phù hợp đội nhóm kinh doanh muốn bắt đầu ngay.</p>
-                                    <div className="mb-6">
-                                        <span className="text-3xl font-black text-white">Liên hệ để nhận báo giá</span>
-                                    </div>
-                                    <ul className="space-y-4 mb-8 flex-1">
-                                        {["Triển khai trên Cloud ổn định", "Tích hợp sẵn Zalo Bot Notification", "Quản lý 5 vòng chia số (Round-Robin)", "Báo cáo tự động mỗi ngày"].map((item, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                                                <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" /> {item}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <button onClick={() => setShowModal(true)} className="w-full py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white/5 transition-colors">
-                                        Nhận tư vấn
-                                    </button>
-                                </div>
-                            </FadeIn>
-
-                            {/* Enterprise */}
-                            <FadeIn delay={0.2} className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-b from-purple-500 to-fuchsia-600 rounded-[24px] blur-lg opacity-40 pointer-events-none" />
-                                <div className="relative bg-gradient-to-b from-[#0a1f1b] to-[#080811] rounded-[24px] p-8 border border-purple-500/50 h-full flex flex-col shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                                    <div className="absolute top-0 right-0 bg-purple-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl rounded-tr-[23px] uppercase tracking-wider">
-                                        Giải Pháp Toàn Diện
-                                    </div>
-                                    <h3 className="text-xl font-bold text-purple-400 mb-2">Private Server & Tùy Chỉnh</h3>
-                                    <p className="text-slate-400 text-sm mb-6">Cho doanh nghiệp cần bảo mật cao & chia luồng phức tạp.</p>
-                                    <div className="mb-6">
-                                        <span className="text-3xl font-black text-white">Khảo sát & Báo giá</span>
-                                    </div>
-                                    <ul className="space-y-4 mb-8 flex-1">
-                                        {["Triển khai độc lập trên Server khách hàng", "Logic định tuyến tùy chỉnh không giới hạn", "Hệ thống quản lý điểm trừ/cộng tự động", "Bảo mật Data mã hóa cao cấp"].map((item, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                                                <Check className="w-4 h-4 text-fuchsia-400 shrink-0 mt-0.5" /> {item}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <button onClick={() => setShowModal(true)} className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white font-black hover:opacity-90 transition-opacity shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-                                        Liên hệ giải pháp Enterprise
-                                    </button>
-                                </div>
-                            </FadeIn>
-                        </div>
-                    </div>
+                  <div className="pt-1 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+                      className="rounded-xl bg-slate-900 text-white px-4 py-2.5 text-xs font-semibold hover:bg-blue-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Thiết lập &amp; Bắn thử Lead thật</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-            </main>
 
-            {/* Footer */}
-            <footer className="border-t border-white/10 py-12 px-6 bg-[#030809] relative z-10 text-center">
-                <div className="flex items-center justify-center space-x-2 mb-4">
-                    <img src="https://crm-domation.vercel.app/LOGO.jpg" alt="DOMATION" className="w-6 h-6 object-contain rounded opacity-50 grayscale" />
-                    <span className="text-lg font-black tracking-widest text-white/30 uppercase">DOMATION DATA</span>
+                {/* Live Router Diagram Card on the Right */}
+                <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 space-y-3.5 shadow-sm">
+                  <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-3">
+                    <span className="font-bold text-slate-800">Mô phỏng trạng thái Vòng Chia Số Trực Tiếp</span>
+                    <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+                      SLA &lt; 3.8s • Gini 0.02
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs">
+                    {[
+                      {
+                        name: 'Trưởng nhóm Kinh doanh #01',
+                        mode: 'Trọng số x3 • Nội bộ',
+                        phoneView: '0912 888 678',
+                        quota: 'Đã nhận: 12/12',
+                        status: 'ONLINE',
+                        tone: 'bg-emerald-100 text-emerald-800',
+                      },
+                      {
+                        name: 'Chuyên viên Tư vấn #02',
+                        mode: 'Trọng số x2 • Nội bộ',
+                        phoneView: '0987 456 321',
+                        quota: 'Đã nhận: 7/8 (+1 bù lỗi)',
+                        status: 'ƯU TIÊN KẾ TIẾP',
+                        tone: 'bg-blue-100 text-blue-800',
+                      },
+                      {
+                        name: 'Đối tác Liên kết / CTV F1',
+                        mode: 'Trọng số x1 • PII Masked',
+                        phoneView: '0909 *** 412',
+                        quota: 'Đã nhận: 4/4',
+                        status: 'CHE SĐT BẢO MẬT',
+                        tone: 'bg-slate-100 text-slate-700',
+                      },
+                      {
+                        name: 'Chuyên viên Tư vấn #03',
+                        mode: 'Đang bật chế độ Nghỉ phép',
+                        phoneView: 'Tạm ngưng đổ số',
+                        quota: 'Bảo lưu định mức (Skipped Credit)',
+                        status: 'OFFLINE',
+                        tone: 'bg-amber-100 text-amber-800',
+                      },
+                    ].map((row, idx) => (
+                      <div
+                        key={idx}
+                        className="rounded-xl border border-slate-100 bg-slate-50/70 px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                      >
+                        <div>
+                          <div className="font-semibold text-slate-900">{row.name}</div>
+                          <div className="text-[11px] text-slate-500">
+                            {row.mode} • Hiển thị: <code className="font-mono text-slate-700">{row.phoneView}</code>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
+                          <span className="text-[11px] text-slate-500 font-medium">{row.quota}</span>
+                          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${row.tone}`}>
+                            {row.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-slate-600 text-sm font-medium">© {new Date().getFullYear()} Nền tảng chia data tự động.</p>
-            </footer>
-
-            {/* Request Modal */}
-            <AnimatePresence>
-                {showModal && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-[#080811]/80 backdrop-blur-sm"
-                            onClick={() => !isSubmitting && setShowModal(false)}
-                        />
-
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-lg bg-[#11111a] rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.15)] z-10"
-                        >
-                            <div className="p-6 md:p-8">
-                                <div className="flex items-start justify-between mb-6">
-                                    <div>
-                                        <h3 className="text-2xl font-black text-white mb-1">Đăng Ký Tư Vấn</h3>
-                                        <p className="text-slate-400 text-sm">Hệ thống phân bổ Data tự động.</p>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowModal(false)}
-                                        className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
-                                    >
-                                        <X className="w-5 h-5 text-slate-400" />
-                                    </button>
-                                </div>
-
-                                {isSuccess ? (
-                                    <div className="py-12 flex flex-col items-center text-center">
-                                        <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mb-4">
-                                            <Check className="w-8 h-8 text-purple-400" />
-                                        </div>
-                                        <h4 className="text-xl font-bold text-white mb-2">Gửi thành công!</h4>
-                                        <p className="text-slate-400">Chuyên viên tư vấn DOMATION sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
-                                    </div>
-                                ) : (
-                                    <form onSubmit={handleSubmit} className="space-y-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Họ và tên <span className="text-rose-500">*</span></label>
-                                                <input
-                                                    required
-                                                    value={formData.name}
-                                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
-                                                    placeholder="Nguyễn Văn A"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Số điện thoại</label>
-                                                <input
-                                                    type="tel"
-                                                    value={formData.phone}
-                                                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
-                                                    placeholder="09xx xxx xxx"
-                                                />
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email doanh nghiệp <span className="text-rose-500">*</span></label>
-                                                <input
-                                                    type="email"
-                                                    required
-                                                    value={formData.email}
-                                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
-                                                    placeholder="example@business.com"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lượng Data/ngày</label>
-                                                <input
-                                                    value={formData.company}
-                                                    onChange={e => setFormData({ ...formData, company: e.target.value })}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
-                                                    placeholder="Vd: 100-200 leads..."
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Số lượng Sales</label>
-                                                <select
-                                                    value={formData.size}
-                                                    onChange={e => setFormData({ ...formData, size: e.target.value })}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all appearance-none"
-                                                >
-                                                    <option value="1-10" className="bg-[#11111a]">Dưới 10 nhân sự</option>
-                                                    <option value="11-50" className="bg-[#11111a]">Từ 11 - 50 nhân sự</option>
-                                                    <option value="51-200" className="bg-[#11111a]">Từ 51 - 200 nhân sự</option>
-                                                    <option value="200+" className="bg-[#11111a]">Trên 200 nhân sự</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            type="submit"
-                                            disabled={isSubmitting}
-                                            className="w-full bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white font-black py-4 rounded-xl mt-4 flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                                        >
-                                            {isSubmitting ? (
-                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            ) : (
-                                                <>
-                                                    <Send className="w-4 h-4" />
-                                                    Nhận Tư Vấn
-                                                </>
-                                            )}
-                                        </button>
-                                    </form>
-                                )}
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* Image Preview Modal */}
-            <AnimatePresence>
-                {previewImage && (
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setPreviewImage(null)}>
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="relative w-full max-w-6xl max-h-[90vh] flex items-center justify-center"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button onClick={() => setPreviewImage(null)} className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors cursor-pointer">
-                                <X className="w-8 h-8" />
-                            </button>
-                            <img src={previewImage} alt="Preview" className="w-full h-full object-contain rounded-2xl shadow-2xl" />
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} themeColor="purple-500" />
+              </div>
+            </div>
+          </div>
         </div>
-    );
-};
+      </section>
 
+      {/* ====================================================================
+          REAL PARTNERS STRIP (#partners) — Including IDEAS, RichLand, Nha khoa Flora
+         ==================================================================== */}
+      <section id="partners" className="py-12 sm:py-16 border-y border-slate-200/80 bg-slate-50/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center space-y-1.5">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
+              ĐƯỢC TIN DÙNG BỞI CÁC DOANH NGHIỆP ĐA LĨNH VỰC TRÊN TOÀN QUỐC
+            </p>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+              Vận hành thực tế từ Giáo dục Quốc tế (IDEAS), Y tế (Nha khoa Flora) đến Bất động sản (RichLand, Capital House)
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {PARTNER_BRANDS.map((partner) => (
+              <div
+                key={partner.name}
+                className="rounded-2xl bg-white border border-slate-200/80 px-5 py-4 flex flex-col items-center justify-center text-center gap-2.5 hover:border-slate-300 transition-colors"
+              >
+                <div className="h-11 flex items-center justify-center">
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    loading="lazy"
+                    className="max-h-10 max-w-[150px] w-auto object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-800">{partner.name}</div>
+                  <div className="text-[11px] text-slate-500">{partner.sector}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ====================================================================
+          DEEP AUTO DATA ROUTER MECHANICS (#router-engine) — Universal & Detailed
+         ==================================================================== */}
+      <section id="router-engine" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="max-w-3xl space-y-3">
+            <div className="text-xs font-bold uppercase tracking-widest text-blue-600">
+              KIẾN TRÚC BỘ ĐỊNH TUYẾN AUTO DATA ROUTER
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+              Giải quyết triệt để 6 bài toán cốt lõi của mọi phòng Kinh doanh &amp; Marketing
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+              Không phụ thuộc ngành nghề — dù doanh nghiệp của bạn có 5 chuyên viên tư vấn hay 200 đại lý cộng tác viên bên ngoài, toàn bộ vòng chia đều được tự động hóa theo luật minh bạch.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Scale,
+                title: '1. Chia Vòng Trọng Số & Xoay Vòng 1:1',
+                desc: 'Tùy chọn linh hoạt giữa Deficit Weighted Fair-Share (chia theo định mức năng lực x1, x2, x5), Strict Round-Robin 1:1 hoặc Least-Loaded (ưu tiên nhân sự đang rảnh).',
+              },
+              {
+                icon: UserCheck,
+                title: '2. Chống Trùng SĐT 90 Ngày Đa Chính Sách',
+                desc: 'Quét trùng tức thì bằng khóa nguyên tử cấp Database. Tự chọn: trả về nhân sự cũ đang chăm, ghi nối vào hồ sơ sẵn có, mở vòng mới theo sản phẩm hoặc chặn trùng tại cổng.',
+              },
+              {
+                icon: Clock,
+                title: '3. Tự Động Thu Hồi SLA Quá Hạn (Auto-Recall)',
+                desc: 'Cấu hình thời gian cam kết phản hồi (VD: 15 phút). Nếu nhân sự chưa bấm tiếp nhận khách mới, Router tự động thu hồi và chuyển ngay sang người kế tiếp đang Online.',
+              },
+              {
+                icon: RefreshCw,
+                title: '4. Báo Số Rác & Đền Bù Tự Động 1-Đổi-1',
+                desc: 'Gặp khách nhầm số, thuê bao hoặc sai đối tượng, nhân sự gửi báo cáo kèm lý do. Ngay khi Quản lý duyệt, hệ thống tự cộng trả 1 lượt bù ưu tiên ở vòng chia tiếp theo.',
+              },
+              {
+                icon: EyeOff,
+                title: '5. Che Giấu SĐT Cộng Tác Viên (PII Masking)',
+                desc: 'Chia sẻ giỏ hàng an toàn cho Đại lý liên kết / CTV bên ngoài với định dạng che số 0912***678 ngay từ tầng API — chống sao chép danh sách khách hàng của công ty.',
+              },
+              {
+                icon: Gauge,
+                title: '6. Định Tuyến Theo UTM & Kiểm Toán Gini',
+                desc: 'Tự động bẻ nhánh Lead về đúng đội chuyên trách dựa trên utm_source, chiến dịch, khu vực địa lý hoặc khung giờ trực ca, kèm chỉ số đo lường công bằng Gini.',
+              },
+            ].map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <div
+                  key={i}
+                  className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 space-y-3.5 hover:border-slate-300 transition-colors"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-950">{card.title}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed">{card.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ====================================================================
+          OMNI-CHANNEL FLOW (#omni-channel)
+         ==================================================================== */}
+      <section id="omni-channel" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-950 text-white">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div className="max-w-2xl space-y-2.5">
+              <div className="text-xs font-bold uppercase tracking-widest text-blue-400">
+                LUỒNG KẾT NỐI ĐA KÊNH KHÉP KÍN
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                Từ lúc khách bấm Đăng ký Quảng cáo tới điện thoại Sale dưới 4 giây
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+              className="self-start rounded-full bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 text-xs sm:text-sm font-semibold inline-flex items-center gap-2 transition-colors cursor-pointer"
+            >
+              <span>Lấy URL Webhook Thật Ngay</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[
+              {
+                step: 'BƯỚC 01 • THU HÚT',
+                icon: Webhook,
+                title: 'Hội tụ mọi nguồn Lead',
+                desc: 'Nhận dữ liệu thời gian thực từ Facebook Lead Ads, TikTok, LadiPage, WordPress, Google Sheets qua cổng Webhook chuẩn hóa.',
+              },
+              {
+                step: 'BƯỚC 02 • LỌC & CHIA VÒNG',
+                icon: Layers,
+                title: 'Chống trùng & Định tuyến',
+                desc: 'Chuẩn hóa đầu số Việt Nam (+84 -> 0), kiểm tra trùng 90 ngày và chọn nhân sự tối ưu theo thuật toán vòng chia đã cài.',
+              },
+              {
+                step: 'BƯỚC 03 • TƯƠNG TÁC TỨC THÌ',
+                icon: Bot,
+                title: 'Đẩy ZaloBot & Đếm SLA',
+                desc: 'Bắn thông báo đến Zalo nhân sự phụ trách; cho phép gõ lệnh nhanh để xác nhận tiếp nhận hoặc báo cáo SĐT lỗi.',
+              },
+              {
+                step: 'BƯỚC 04 • TỐI ƯU ADS AI',
+                icon: Activity,
+                title: 'Phản hồi Meta CAPI v21.0',
+                desc: 'Khi khách chuyển sang Đủ điều kiện hoặc Chốt đơn, hệ thống tự động gửi tín hiệu băm SHA-256 ngược về Meta Dataset.',
+              },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div key={idx} className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono font-bold text-blue-400">{item.step}</span>
+                    <Icon className="w-5 h-5 text-slate-300" />
+                  </div>
+                  <h3 className="text-base font-bold text-white">{item.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{item.desc}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ====================================================================
+          REAL PRODUCT SCREENSHOTS GALLERY (#screenshots)
+         ==================================================================== */}
+      <section id="screenshots" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-slate-50/60 border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="max-w-2xl space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-widest text-blue-600">
+              GIAO DIỆN HỆ THỐNG THỰC TẾ
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+              Trực quan, tinh gọn cho cả Quản trị viên lẫn Nhân viên Kinh doanh
+            </h2>
+            <p className="text-sm text-slate-600">
+              Nhấn vào từng màn hình để phóng to chi tiết các phân hệ điều hành bên trong Auto Data.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SYSTEM_SCREENSHOTS.map((shot) => (
+              <button
+                key={shot.title}
+                type="button"
+                onClick={() => setZoomImage(shot)}
+                className="group rounded-3xl border border-slate-200 bg-white overflow-hidden text-left hover:border-blue-300 transition-all shadow-sm cursor-pointer flex flex-col"
+              >
+                <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-100">
+                  <img
+                    src={shot.src}
+                    alt={shot.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
+                  />
+                  <span className="absolute bottom-3 right-3 rounded-full bg-slate-900/80 text-white px-2.5 py-1 text-[11px] font-semibold inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ZoomIn className="w-3.5 h-3.5" /> Phóng to
+                  </span>
+                </div>
+                <div className="p-5 space-y-1.5 flex-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">{shot.badge}</span>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900">{shot.title}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">{shot.desc}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ====================================================================
+          LIVE DYNAMIC PRICING: 3-MONTH FREE TRIAL -> STEP RENEWAL (900K / -15%) & TOPUP
+         ==================================================================== */}
+      <section id="pricing" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-4 py-1 text-xs font-bold text-emerald-800">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>MẶC ĐỊNH MIỄN PHÍ {catalog.trial_duration_months} THÁNG ĐẦU ({catalog.trial_duration_days} NGÀY)</span>
+            </div>
+
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+              Trải nghiệm trọn vẹn {catalog.trial_duration_months} tháng 0đ. Hết hạn gia hạn linh hoạt từ {(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k/tháng.
+            </h2>
+
+            <p className="text-sm sm:text-base text-slate-600">
+              Sau {catalog.trial_duration_months} tháng dùng thử miễn phí, doanh nghiệp chủ động chọn gia hạn các gói Step bên dưới, nạp Ví Topup tự động hoặc nâng cấp thẳng lên Hệ sinh thái CRM / ERP.
+            </p>
+
+            {/* Billing Cycle Switcher */}
+            <div className="pt-2 inline-flex items-center bg-slate-100 p-1.5 rounded-full">
+              <button
+                type="button"
+                onClick={() => setPricingCycle('monthly')}
+                className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                  pricingCycle === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                Thanh toán theo tháng ({(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k/tháng)
+              </button>
+              <button
+                type="button"
+                onClick={() => setPricingCycle('annual')}
+                className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                  pricingCycle === 'annual' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600'
+                }`}
+              >
+                Mua theo năm • Tiết kiệm {catalog.annual_discount_pct}%
+              </button>
+            </div>
+          </div>
+
+          {/* 3 Step Plans */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            {catalog.plans.map((plan) => {
+              const displayMonthly =
+                pricingCycle === 'annual' ? plan.annual_monthly_equivalent_vnd : plan.monthly_price_vnd;
+              const isEnterprise = Boolean(plan.is_enterprise_upgrade);
+              const isDefaultStandard = plan.code === 'autodata_standard';
+
+              return (
+                <div
+                  key={plan.code}
+                  className={`rounded-3xl border p-7 flex flex-col justify-between transition-all ${
+                    isEnterprise
+                      ? 'bg-slate-950 text-white border-slate-900'
+                      : isDefaultStandard
+                        ? 'bg-white text-slate-900 border-blue-600 ring-2 ring-blue-100 shadow-md'
+                        : 'bg-white text-slate-900 border-slate-200'
+                  }`}
+                >
+                  <div className="space-y-5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className={`text-xs font-mono font-bold uppercase ${
+                          isEnterprise ? 'text-blue-400' : 'text-blue-600'
+                        }`}
+                      >
+                        STEP 0{plan.step_order}
+                      </span>
+                      {plan.badge && (
+                        <span
+                          className={`rounded-full px-3 py-0.5 text-[11px] font-bold ${
+                            isEnterprise
+                              ? 'bg-white/15 text-white'
+                              : isDefaultStandard
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-100 text-slate-700'
+                          }`}
+                        >
+                          {plan.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-bold">{plan.name}</h3>
+                      <p className={`text-xs mt-1 leading-relaxed ${isEnterprise ? 'text-slate-300' : 'text-slate-500'}`}>
+                        {plan.tagline}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200/20">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight">
+                          {displayMonthly.toLocaleString('vi-VN')}₫
+                        </span>
+                        <span className={`text-xs ${isEnterprise ? 'text-slate-300' : 'text-slate-500'}`}>
+                          / tháng
+                        </span>
+                      </div>
+                      {pricingCycle === 'annual' ? (
+                        <div
+                          className={`text-xs font-semibold mt-1.5 ${
+                            isEnterprise ? 'text-emerald-300' : 'text-emerald-700'
+                          }`}
+                        >
+                          Thanh toán cả năm: {plan.annual_total_vnd.toLocaleString('vi-VN')}₫ (Tiết kiệm{' '}
+                          {plan.annual_saved_vnd.toLocaleString('vi-VN')}₫ • -{plan.annual_discount_pct}%)
+                        </div>
+                      ) : (
+                        <div className={`text-xs mt-1.5 ${isEnterprise ? 'text-slate-400' : 'text-slate-500'}`}>
+                          Chu kỳ 1 tháng linh hoạt • Mua theo năm giảm ngay {plan.annual_discount_pct}%
+                        </div>
+                      )}
+                    </div>
+
+                    <ul className="space-y-2.5 text-xs sm:text-sm pt-2">
+                      {plan.features.map((feat, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <Check
+                            className={`w-4 h-4 shrink-0 mt-0.5 ${
+                              isEnterprise ? 'text-blue-400' : 'text-blue-600'
+                            }`}
+                          />
+                          <span className={isEnterprise ? 'text-slate-200' : 'text-slate-700'}>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="pt-7 space-y-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openFullScreenApp(
+                          isEnterprise
+                            ? session
+                              ? 'workspace_crm_erp'
+                              : 'register'
+                            : session
+                              ? 'workspace_billing'
+                              : 'register'
+                        )
+                      }
+                      className={`w-full rounded-full py-3 px-5 text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 cursor-pointer ${
+                        isEnterprise
+                          ? 'bg-white text-slate-950 hover:bg-blue-50'
+                          : isDefaultStandard
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-slate-900 text-white hover:bg-blue-600'
+                      }`}
+                    >
+                      <span>
+                        {session
+                          ? isEnterprise
+                            ? 'Yêu cầu nâng cấp CRM / ERP'
+                            : 'Gia hạn / Nâng cấp gói này'
+                          : `Dùng miễn phí ${catalog.trial_duration_months} tháng trước`}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Wallet Topup Packages Strip */}
+          <div className="rounded-3xl border border-slate-200 bg-slate-50/80 p-6 sm:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+                  <Wallet className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Cơ chế Nạp Ví Topup &amp; Gia Hạn Tự Động Không Gián Đoạn
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600">
+                    Nạp sẵn hạn mức vào Ví doanh nghiệp để tự động gia hạn tức thì khi hết {catalog.trial_duration_months} tháng dùng thử — cộng dồn 100% số ngày còn dư.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_billing' : 'register')}
+                className="self-start rounded-full border border-slate-300 bg-white px-5 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-100 inline-flex items-center gap-1.5 cursor-pointer shrink-0"
+              >
+                <CreditCard className="w-4 h-4 text-blue-600" />
+                <span>Mở Quản lý Gói &amp; Ví Topup</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {catalog.topup_packages.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  className={`rounded-2xl border bg-white p-5 flex flex-col justify-between gap-3 ${
+                    pkg.highlight ? 'border-blue-600 ring-1 ring-blue-100' : 'border-slate-200'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-slate-800">{pkg.label}</span>
+                      {pkg.highlight && (
+                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                          -{catalog.annual_discount_pct}%
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xl font-extrabold font-mono text-blue-600 mt-1.5">
+                      {pkg.amount_vnd.toLocaleString('vi-VN')} ₫
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">{pkg.equivalent_months_note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ====================================================================
+          SEAMLESS UPGRADE TO DOMATION CRM 360 & ENTERPRISE ERP 5.0 (#crm-erp-upgrade)
+         ==================================================================== */}
+      <section id="crm-erp-upgrade" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200/80">
+        <div className="max-w-7xl mx-auto rounded-3xl bg-white border border-slate-200 p-7 sm:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center shadow-sm">
+          <div className="lg:col-span-7 space-y-4">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600">
+              <Sparkles className="w-4 h-4" />
+              <span>LỘ TRÌNH MỞ RỘNG KHÔNG GIỚI HẠN</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+              Khi doanh nghiệp mở rộng quy mô, nâng cấp liền mạch lên DOMATION CRM 360° &amp; ERP 5.0
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+              Bắt đầu nhẹ nhàng với Auto Data để chuẩn hóa vòng chia số. Bất cứ lúc nào cần quản lý hợp đồng, công nợ, hóa đơn điện tử, nhân sự chấm công GPS hay kho vận, bạn có thể nâng cấp trực tiếp mà không phải nhập lại bất kỳ dữ liệu nào.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs font-medium text-slate-700">
+              <div className="flex items-center gap-2">
+                <FileCheck2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Giữ nguyên 100% danh sách Lead &amp; lịch sử chăm sóc</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                <span>Đồng bộ nguyên vẹn sơ đồ phòng ban &amp; phân quyền</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => openFullScreenApp(session ? 'workspace_crm_erp' : 'register')}
+              className="w-full rounded-2xl bg-slate-900 text-white px-6 py-4 text-sm font-semibold hover:bg-blue-600 transition-colors flex items-center justify-between cursor-pointer"
+            >
+              <span>Khởi tạo / Đăng ký Nâng cấp Hệ sinh thái</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <a
+                href="/crm"
+                className="rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-800 flex items-center justify-between transition-colors"
+              >
+                <span>Xem DOMATION CRM 360°</span>
+                <ArrowUpRight className="w-4 h-4 text-blue-600" />
+              </a>
+              <a
+                href="/erp"
+                className="rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-800 flex items-center justify-between transition-colors"
+              >
+                <span>Xem Enterprise ERP 5.0</span>
+                <ArrowUpRight className="w-4 h-4 text-emerald-600" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Minimal Dedicated /data Footer */}
+      <footer className="bg-white border-t border-slate-200 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-900">DOMATION AUTO DATA</span>
+            <span>•</span>
+            <span>Một sản phẩm thuộc Hệ sinh thái Quản trị Doanh nghiệp DOMATION.NET</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-5 font-medium">
+            <a href="/" className="hover:text-slate-900">
+              Trang chủ DOMATION
+            </a>
+            <a href="/crm" className="hover:text-slate-900">
+              CRM 360°
+            </a>
+            <a href="/erp" className="hover:text-slate-900">
+              ERP 5.0
+            </a>
+            <button
+              type="button"
+              onClick={() => openFullScreenApp('login')}
+              className="hover:text-slate-900 cursor-pointer"
+            >
+              Đăng nhập Workspace
+            </button>
+          </div>
+        </div>
+      </footer>
+
+      {/* Screenshot Lightbox Modal */}
+      {zoomImage && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setZoomImage(null)}
+          className="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-sm p-4 sm:p-8 flex items-center justify-center"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="max-w-5xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl"
+          >
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
+              <div>
+                <div className="text-sm font-bold text-slate-900">{zoomImage.title}</div>
+                <div className="text-xs text-slate-500">{zoomImage.desc}</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setZoomImage(null)}
+                className="rounded-full border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="bg-slate-100 max-h-[78vh] overflow-auto p-2 sm:p-4">
+              <img src={zoomImage.src} alt={zoomImage.title} className="w-full h-auto rounded-xl" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FULL-SCREEN (100vw x 100vh) REAL CONNECT & WORKSPACE APP */}
+      <AutoDataFullScreenSetup
+        key={setupModalKey}
+        open={setupOpen}
+        initialIntent={setupIntent}
+        catalog={catalog}
+        session={session}
+        onSessionChange={handleSessionChange}
+        onClose={() => setSetupOpen(false)}
+      />
+    </div>
+  );
+}
+
+export default DomationDataLanding;
