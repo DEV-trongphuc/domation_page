@@ -381,6 +381,57 @@ export function DomationDataLanding() {
 
   const standardPlan = catalog.plans[0] || DEFAULT_CLIENT_CATALOG.plans[0];
 
+  const industrySectors: Array<{
+    icon: React.ComponentType<{ className?: string }>;
+    tag: string;
+    mobileTag: string;
+    title: string;
+    desc: string;
+  }> = [
+    {
+      icon: Building2,
+      tag: 'Dự án & Sàn F1',
+      mobileTag: 'Dự án & Sàn F1',
+      title: 'Bất Động Sản & Sàn Kinh Doanh',
+      desc: 'Chia giỏ dự án công bằng cho Sale nội bộ; tùy chọn mở rộng thêm CTV hoặc Đại lý F1.',
+    },
+    {
+      icon: HeartPulse,
+      tag: 'Chuỗi phòng khám',
+      mobileTag: 'Phòng khám',
+      title: 'Nha Khoa, Thẩm Mỹ & Phòng Khám',
+      desc: 'Đặt lịch tư vấn bác sĩ, phân tuyến khách hàng theo từng chi nhánh & khu vực cơ sở.',
+    },
+    {
+      icon: GraduationCap,
+      tag: 'Tuyển sinh & Khóa học',
+      mobileTag: 'Tuyển sinh',
+      title: 'Giáo Dục, Học Viện & Du Học',
+      desc: 'Phân bổ học viên tiềm năng theo khóa học, chương trình kiểm tra đầu vào & cơ sở.',
+    },
+    {
+      icon: Briefcase,
+      tag: 'Tư vấn doanh nghiệp',
+      mobileTag: 'Dịch vụ B2B',
+      title: 'Dịch Vụ B2B, Phần Mềm & Agency',
+      desc: 'Định tuyến khách doanh nghiệp theo quy mô hợp đồng & chuyên viên tư vấn phụ trách.',
+    },
+    {
+      icon: ShoppingBag,
+      tag: 'Chốt đơn đa kênh',
+      mobileTag: 'Bán lẻ',
+      title: 'Thương Mại & Chuỗi Bán Lẻ',
+      desc: 'Gom đơn từ Landing Page, TikTok, Facebook và chia vòng xử lý tức thì không sót khách.',
+    },
+    {
+      icon: Car,
+      tag: 'Giá trị đơn cao',
+      mobileTag: 'Giá trị cao',
+      title: 'Showroom Ô Tô & Tài Chính Bảo Hiểm',
+      desc: 'Phân bổ lịch đăng ký lái thử, thẩm định hồ sơ tư vấn vay tức thì ngay khi khách đăng ký.',
+    },
+  ];
+
   const routerEngineCards: Array<{
     icon: React.ComponentType<{ className?: string }>;
     title: string;
@@ -629,10 +680,71 @@ export function DomationDataLanding() {
             </p>
           </div>
 
-          {/* Top Flagship Multi-Industry Card + 6 Specialized Sector Cards inside Clean Glass Grid */}
-          <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs overflow-hidden divide-y divide-slate-200/75">
+          {/* Mobile: Clean Flagship Card + Standalone Sector SlideDots (Zero Box-in-Box) */}
+          <div className="md:hidden space-y-4">
+            <div className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-white border border-blue-200/75 p-5 shadow-xs space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <div className="w-10 h-10 rounded-xl bg-[#1E40FF] text-white shadow-sm flex items-center justify-center shrink-0">
+                  <Users className="w-5 h-5" />
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-slate-200/80 px-2.5 py-1 text-[10px] font-semibold text-slate-700 whitespace-nowrap shadow-2xs shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  Mặc định tối ưu
+                </span>
+              </div>
+
+              <div className="space-y-1.5">
+                <p className="text-[11px] font-medium text-slate-500">
+                  Đổi linh hoạt bất cứ lúc nào
+                </p>
+                <h3 className="text-base font-bold text-slate-900 leading-snug">
+                  Đa Ngành / Đội Sale Nội Bộ
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Phân bổ khách hàng trực tiếp cho từng nhân viên Sale &amp; tư vấn viên nội bộ, hiển thị đầy đủ SĐT để gọi ngay tức thì qua Zalo.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+                className="btn-inkica-primary w-full rounded-full px-5 py-3 text-xs cursor-pointer whitespace-nowrap justify-center"
+              >
+                <span>Chọn phễu ngành này</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+              </button>
+            </div>
+
+            <ResponsiveSlideDeck
+              items={industrySectors}
+              keyExtractor={(s) => s.title}
+              mobilePerPage={1}
+              gapClass="gap-3"
+              ariaLabel="Ngành hàng phù hợp DOMATION"
+              renderItem={(sector) => {
+                const SectorIcon = sector.icon;
+                return (
+                  <div className="rounded-2xl bg-white border border-slate-200/85 p-5 shadow-2xs space-y-3 h-full">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50/70 border border-blue-100 text-[#1E40FF] flex items-center justify-center shrink-0">
+                        <SectorIcon className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200/70 whitespace-nowrap shrink-0">
+                        {sector.mobileTag}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-slate-900 leading-snug">{sector.title}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">{sector.desc}</p>
+                  </div>
+                );
+              }}
+            />
+          </div>
+
+          {/* Desktop: Flagship Multi-Industry Card + 6 Specialized Sector Cards inside Clean Glass Grid */}
+          <div className="hidden md:block rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs overflow-hidden divide-y divide-slate-200/75">
             {/* Flagship Row */}
-            <div className="p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-[#F4F8FF]/85 via-white/95 to-white">
+            <div className="p-8 flex items-center justify-between gap-6 bg-gradient-to-r from-[#F4F8FF]/85 via-white/95 to-white">
               <div className="flex items-start gap-4 max-w-2xl">
                 <div className="w-12 h-12 rounded-2xl bg-[#1E40FF] text-white shadow-sm flex items-center justify-center shrink-0">
                   <Users className="w-5 h-5" />
@@ -659,7 +771,7 @@ export function DomationDataLanding() {
                   alt=""
                   aria-hidden="true"
                   loading="lazy"
-                  className="w-14 h-14 object-contain hidden sm:block animate-float-decor drop-shadow-[0_12px_20px_rgba(30,64,255,0.16)]"
+                  className="w-14 h-14 object-contain animate-float-decor drop-shadow-[0_12px_20px_rgba(30,64,255,0.16)]"
                 />
                 <button
                   type="button"
@@ -672,110 +784,8 @@ export function DomationDataLanding() {
               </div>
             </div>
 
-            {/* 6 Specialized Sectors: Mobile SlideDots + Desktop 3-Column Swiss Grid */}
-            <div className="md:hidden p-4 bg-white/70">
-              <ResponsiveSlideDeck
-                items={[
-                  {
-                    icon: Building2,
-                    tag: 'Dự án & Sàn F1',
-                    title: 'Bất Động Sản & Sàn Kinh Doanh',
-                    desc: 'Chia giỏ dự án công bằng cho Sale nội bộ; tùy chọn mở rộng thêm CTV hoặc Đại lý F1.',
-                  },
-                  {
-                    icon: HeartPulse,
-                    tag: 'Chuỗi phòng khám',
-                    title: 'Nha Khoa, Thẩm Mỹ & Phòng Khám',
-                    desc: 'Đặt lịch tư vấn bác sĩ, phân tuyến khách hàng theo từng chi nhánh & khu vực cơ sở.',
-                  },
-                  {
-                    icon: GraduationCap,
-                    tag: 'Tuyển sinh',
-                    title: 'Giáo Dục, Học Viện & Du Học',
-                    desc: 'Phân bổ học viên tiềm năng theo khóa học, chương trình kiểm tra đầu vào & cơ sở.',
-                  },
-                  {
-                    icon: Briefcase,
-                    tag: 'Dịch vụ B2B',
-                    title: 'Dịch Vụ B2B, Phần Mềm & Agency',
-                    desc: 'Định tuyến khách doanh nghiệp theo quy mô hợp đồng & chuyên viên tư vấn phụ trách.',
-                  },
-                  {
-                    icon: ShoppingBag,
-                    tag: 'Bán lẻ đa kênh',
-                    title: 'Thương Mại & Chuỗi Bán Lẻ',
-                    desc: 'Gom đơn từ Landing Page, TikTok, Facebook và chia vòng xử lý tức thì không sót khách.',
-                  },
-                  {
-                    icon: Car,
-                    tag: 'Giá trị cao',
-                    title: 'Showroom Ô Tô & Tài Chính Bảo Hiểm',
-                    desc: 'Phân bổ lịch đăng ký lái thử, thẩm định hồ sơ tư vấn vay tức thì ngay khi khách đăng ký.',
-                  },
-                ]}
-                keyExtractor={(s) => s.title}
-                mobilePerPage={1}
-                gapClass="gap-3"
-                ariaLabel="Ngành hàng phù hợp DOMATION"
-                renderItem={(sector) => {
-                  const SectorIcon = sector.icon;
-                  return (
-                    <div className="rounded-2xl bg-slate-50/75 border border-slate-200/80 p-5 space-y-3 h-full">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] shadow-2xs flex items-center justify-center shrink-0">
-                          <SectorIcon className="w-4 h-4" />
-                        </div>
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200/70 whitespace-nowrap shrink-0">
-                          {sector.tag}
-                        </span>
-                      </div>
-                      <h3 className="text-base font-bold text-slate-900 leading-snug">{sector.title}</h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">{sector.desc}</p>
-                    </div>
-                  );
-                }}
-              />
-            </div>
-
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 divide-x divide-slate-200/75">
-              {[
-                {
-                  icon: Building2,
-                  tag: 'Dự án & Sàn F1',
-                  title: 'Bất Động Sản & Sàn Kinh Doanh',
-                  desc: 'Chia giỏ dự án công bằng cho Sale nội bộ; tùy chọn mở rộng thêm CTV hoặc Đại lý F1.',
-                },
-                {
-                  icon: HeartPulse,
-                  tag: 'Chuỗi phòng khám',
-                  title: 'Nha Khoa, Thẩm Mỹ & Phòng Khám',
-                  desc: 'Đặt lịch tư vấn bác sĩ, phân tuyến khách hàng theo từng chi nhánh & khu vực cơ sở.',
-                },
-                {
-                  icon: GraduationCap,
-                  tag: 'Tuyển sinh & Khóa học',
-                  title: 'Giáo Dục, Học Viện & Du Học',
-                  desc: 'Phân bổ học viên tiềm năng theo khóa học, chương trình kiểm tra đầu vào & cơ sở.',
-                },
-                {
-                  icon: Briefcase,
-                  tag: 'Tư vấn doanh nghiệp',
-                  title: 'Dịch Vụ B2B, Phần Mềm & Agency',
-                  desc: 'Định tuyến khách doanh nghiệp theo quy mô hợp đồng & chuyên viên tư vấn phụ trách.',
-                },
-                {
-                  icon: ShoppingBag,
-                  tag: 'Chốt đơn đa kênh',
-                  title: 'Thương Mại & Chuỗi Bán Lẻ',
-                  desc: 'Gom đơn từ Landing Page, TikTok, Facebook và chia vòng xử lý tức thì không sót khách.',
-                },
-                {
-                  icon: Car,
-                  tag: 'Giá trị đơn cao',
-                  title: 'Showroom Ô Tô & Tài Chính Bảo Hiểm',
-                  desc: 'Phân bổ lịch đăng ký lái thử, thẩm định hồ sơ tư vấn vay tức thì ngay khi khách đăng ký.',
-                },
-              ].map((sector, idx) => {
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 divide-x divide-slate-200/75">
+              {industrySectors.map((sector, idx) => {
                 const SectorIcon = sector.icon;
                 return (
                   <div
@@ -789,7 +799,7 @@ export function DomationDataLanding() {
                         <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] shadow-2xs flex items-center justify-center shrink-0">
                           <SectorIcon className="w-4 h-4" />
                         </div>
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200/70">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200/70 whitespace-nowrap">
                           {sector.tag}
                         </span>
                       </div>
