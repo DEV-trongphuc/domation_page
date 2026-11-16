@@ -126,6 +126,11 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     sector: 'AI Tâm linh & Giải trí',
     logo: '/assets/partners/logo_mystery_tarot.webp',
   },
+  {
+    name: 'Bếp Nhà SON',
+    sector: 'F&B • Bếp Nhà Đãi Khách',
+    logo: '/assets/partners/logo_son_fnb.webp',
+  },
 ];
 
 interface ScreenshotItem {
