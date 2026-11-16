@@ -43,6 +43,13 @@ import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { Navbar } from './Navbar';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 import { DomationLogoMark } from './components/DomationLogoMark';
+import { FaqAccordionSection } from './components/FaqAccordionSection';
+import { handleSpaLinkClick } from './utils/navigation';
+import {
+  buildSoftwareAppSchema,
+  type PageFaqItem,
+  usePageSeo,
+} from './utils/seo';
 import AutoDataFullScreenSetup from './components/autodata/AutoDataFullScreenSetup';
 import { AutoDataCookieConsent, AutoDataLegalModal } from './components/autodata/AutoDataLegalAndCookie';
 import {
@@ -90,7 +97,7 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     logo: '/assets/partners/logo_ecolife_ngang.webp',
   },
   {
-    name: 'Tùng Long Group',
+    name: 'Tùng Long Property',
     sector: 'Đại lý F1 Bất động sản',
     logo: '/assets/partners/logo_tung_long.webp',
   },
@@ -211,7 +218,79 @@ function detectInitialLegalModal(): { open: boolean; tab: LegalDocTab } {
   return { open: false, tab: 'terms' };
 }
 
+const AUTODATA_FAQS: PageFaqItem[] = [
+  {
+    question: 'DOMATION Auto Data chia Lead về máy Sale trong bao lâu?',
+    answer:
+      'Lead từ Meta Instant Form, TikTok, Ladipage hoặc Website được lọc trùng 180 ngày và phân bổ Round-Robin qua ZaloBot / Telegram Bot trong dưới 5 giây.',
+  },
+  {
+    question: 'Cơ chế đền bù Ticket lỗi 1:1 và Van SLA 120s hoạt động như thế nào?',
+    answer:
+      'Nếu quá 120 giây Sale chưa nhận số, hệ thống tự thu hồi chuyển vòng để không rớt khách. Khi Sale hoặc Đại lý F1 báo số lỗi được Admin duyệt, hệ thống tự động bù +1 lượt mới ở vòng kế tiếp.',
+  },
+  {
+    question: 'Chi phí sử dụng DOMATION Auto Data và Meta CAPI là bao nhiêu?',
+    answer:
+      'Gói tiêu chuẩn từ 1.500.000₫/tháng kèm 1 tháng dùng thử thực tế, bao gồm chia vòng 5 cổng, lọc trùng 6 tháng và tự động bắn Meta CAPI SHA-256 đạt HTTP 200.',
+  },
+];
+
 export function DomationDataLanding() {
+  usePageSeo({
+    title: 'DOMATION Auto Data | Chia Lead ZaloBot < 5s, Lọc Trùng 6 Tháng & Meta CAPI',
+    description:
+      'Hệ thống điều phối & chia vòng khách hàng tự động dưới 5 giây qua ZaloBot & Telegram, lọc trùng 180 ngày, đền bù Ticket lỗi 1:1 và bắn Meta CAPI chuẩn SHA-256 HTTP 200.',
+    path: '/data',
+    keywords: [
+      'Auto Chia Data ZaloBot',
+      'Meta CAPI SHA-256',
+      'Chia Lead Round-Robin',
+      'Lọc trùng Lead 6 tháng',
+      'Đền bù Ticket lỗi 1:1',
+    ],
+    ogImage: '/imgs/enterprise/sol-data-capi.webp',
+    breadcrumbs: [
+      { name: 'Trang Chủ', url: '/' },
+      { name: 'Auto Data & Meta CAPI', url: '/data' },
+    ],
+    faqs: AUTODATA_FAQS,
+    jsonLd: [
+      buildSoftwareAppSchema({
+        name: 'DOMATION Auto Data & Meta CAPI Router',
+        description:
+          'Phần mềm tự động chia Lead < 5 giây qua ZaloBot & Telegram, lọc trùng 6 tháng và bắn Meta Conversions API SHA-256.',
+        path: '/data',
+        screenshot: '/imgs/domation_v2/data_v2_overview.webp',
+        featureList: [
+          'Chia vòng Round-Robin 5 cổng dưới 5 giây qua ZaloBot & Telegram',
+          'Chuẩn hóa SĐT +84 & lọc trùng Lead đa kênh 180 ngày',
+          'Van SLA 120s chống ôm số & Đền bù Ticket lỗi 1:1',
+          'Bắn sự kiện Meta CAPI SHA-256 (Qualified/DisqualifiedLead) HTTP 200',
+        ],
+        offers: [
+          {
+            name: 'Auto Data Standard',
+            price: '1500000',
+            description: '1.500.000₫/tháng (tối đa 5 Sale, 3 Quản lý, 15.000 Lead/tháng) • Dùng thử 30 ngày 0đ',
+            url: '/data#pricing',
+          },
+          {
+            name: 'Auto Data Pro',
+            price: '3000000',
+            description: '3.000.000₫/tháng (tối đa 25 Sale, 10 Quản lý, 100.000 Lead/tháng)',
+            url: '/data#pricing',
+          },
+          {
+            name: 'Automation • CRM 360° • ERP 5.0',
+            price: '6000000',
+            description: '6.000.000₫/tháng • Nâng cấp trọn bộ Automation, CRM 360° & ERP 5.0',
+            url: '/data#pricing',
+          },
+        ],
+      }),
+    ],
+  });
   const [catalog, setCatalog] = useState<ClientBillingCatalog>(DEFAULT_CLIENT_CATALOG);
   const [googleClientId, setGoogleClientId] = useState<string | null>(() => {
     const viteClientId = (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim();
@@ -245,8 +324,6 @@ export function DomationDataLanding() {
 
   // Sync live dynamic catalog & platform defaults from real backend bridge
   useEffect(() => {
-    document.title =
-      'DOMATION Auto Data — Hệ Thống Điều Phối & Chia Vòng Khách Hàng Đa Kênh';
     let mounted = true;
     const bootstrapFromApi = async () => {
       try {
@@ -1651,6 +1728,7 @@ export function DomationDataLanding() {
               </div>
               <a
                 href={catalog.automation_upgrade_url || '/automation'}
+                onClick={(e) => handleSpaLinkClick(e, catalog.automation_upgrade_url || '/automation')}
                 className="ql-btn-outline w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
               >
                 <span>Khám phá Marketing Automation</span>
@@ -1693,6 +1771,7 @@ export function DomationDataLanding() {
               </div>
               <a
                 href={catalog.crm_upgrade_url || '/crm'}
+                onClick={(e) => handleSpaLinkClick(e, catalog.crm_upgrade_url || '/crm')}
                 className="ql-btn-outline w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
               >
                 <span>Khám phá Full CRM 360°</span>
@@ -1735,6 +1814,7 @@ export function DomationDataLanding() {
               </div>
               <a
                 href={catalog.erp_upgrade_url || '/erp'}
+                onClick={(e) => handleSpaLinkClick(e, catalog.erp_upgrade_url || '/erp')}
                 className="btn-inkica-primary w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
               >
                 <span>Khám phá Enterprise ERP 5.0</span>
@@ -1757,6 +1837,12 @@ export function DomationDataLanding() {
           </div>
         </div>
       </section>
+
+      <FaqAccordionSection
+        faqs={AUTODATA_FAQS}
+        heading="Câu Hỏi Thường Gặp Về Auto Data & Meta CAPI"
+        subtitle="Giải đáp về tốc độ chia số <5s, cơ chế bù Ticket lỗi 1:1, Van SLA 120s và chi phí vận hành."
+      />
       </main>
 
       {/* ====================================================================
@@ -1788,22 +1874,40 @@ export function DomationDataLanding() {
               </div>
               <ul className="space-y-2 text-xs text-slate-300">
                 <li>
-                  <a href="/" className="hover:text-white transition-colors">
+                  <a
+                    href="/"
+                    onClick={(e) => handleSpaLinkClick(e, '/')}
+                    className="hover:text-white transition-colors"
+                  >
                     Trang chủ DOMATION
                   </a>
                 </li>
                 <li>
-                  <a href={catalog.automation_upgrade_url || '/automation'} className="hover:text-white transition-colors">
+                  <a
+                    href={catalog.automation_upgrade_url || '/automation'}
+                    onClick={(e) =>
+                      handleSpaLinkClick(e, catalog.automation_upgrade_url || '/automation')
+                    }
+                    className="hover:text-white transition-colors"
+                  >
                     Marketing Automation
                   </a>
                 </li>
                 <li>
-                  <a href={catalog.crm_upgrade_url || '/crm'} className="hover:text-white transition-colors">
+                  <a
+                    href={catalog.crm_upgrade_url || '/crm'}
+                    onClick={(e) => handleSpaLinkClick(e, catalog.crm_upgrade_url || '/crm')}
+                    className="hover:text-white transition-colors"
+                  >
                     Full CRM 360°
                   </a>
                 </li>
                 <li>
-                  <a href={catalog.erp_upgrade_url || '/erp'} className="hover:text-white transition-colors">
+                  <a
+                    href={catalog.erp_upgrade_url || '/erp'}
+                    onClick={(e) => handleSpaLinkClick(e, catalog.erp_upgrade_url || '/erp')}
+                    className="hover:text-white transition-colors"
+                  >
                     Enterprise ERP 5.0
                   </a>
                 </li>
