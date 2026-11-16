@@ -7,6 +7,7 @@ export interface ChannelLogoStripProps {
 }
 
 const ZALO_FAVICON = 'https://stc-zpl.zdn.vn/favicon.ico';
+const ZALOBOT_LOGO = '/assets/brands/zalobot-logo.webp';
 const GMAIL_LOGO = '/assets/brands/gmail-logo.webp';
 
 const WebsiteLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
@@ -132,7 +133,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       fullLabel: 'ZaloBot',
       renderIcon: () => (
         <img
-          src={ZALO_FAVICON}
+          src={ZALOBOT_LOGO}
           alt="ZaloBot"
           className={`${iconCls} rounded-full object-contain`}
         />
