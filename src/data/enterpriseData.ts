@@ -726,9 +726,11 @@ export const MODAL_SCREEN_GALLERIES: Record<
       { src: '/landingpage_avatar/nava.webp', badge: 'E-COMMERCE', title: 'Nava Store (navastore.vn)', desc: 'Website thương mại điện tử tối ưu mua hàng, gắn Pixel Tracking sâu.' },
       { src: '/landingpage_avatar/ideasmba.webp', badge: 'EDUCATION MBA', title: 'Viện IDEAS MBA (ideas.edu.vn/mba)', desc: 'Landing Page tuyển sinh Thạc sĩ Quản trị Kinh doanh Quốc tế.' },
       { src: '/landingpage_avatar/brandson.webp', badge: 'MEDICAL ACADEMY', title: 'Brandson Academy (brandson.vn)', desc: 'Landing Page đào tạo Nha khoa CME tỷ lệ chuyển đổi Lead cao.' },
-      { src: '/landingpage_avatar/flora.webp', badge: 'DENTAL CLINIC', title: 'Nha Khoa Flora (nhakhoaflora.com)', desc: 'Landing Page Ngày Hội Implant kết nối đặt hẹn thẳng về CRM.' },
+      { src: '/assets/flora/flora_architecture.webp', badge: 'AFFILIATE & VOUCHER', title: 'Nha Khoa Flora — Bản Đồ Hệ Thống Affiliate & VietQR', desc: 'Cổng đặt E-Voucher, VietQR ACB Webhook, Partner Portal chuẩn HIPAA & Quyết toán Napas 24/7.' },
+      { src: '/assets/flora/flora_settlement.webp', badge: 'PARTNER PORTAL', title: 'Phiếu Quyết Toán & Lịch Sử Chi Trả Hoa Hồng', desc: 'Bảng kê che SĐT bệnh nhân chuẩn y khoa kèm mã giao dịch FT ngân hàng thật.' },
+      { src: '/assets/flora/flora_checkout_qr.webp', badge: 'VIETQR CHECKOUT', title: 'Cổng Đặt Gói Care Plus / White Up & VietQR ACB', desc: 'Tự động gán mã REF KOL vào cú pháp chuyển khoản không lo thất lạc đơn.' },
       { src: '/landingpage_avatar/ideasedu.webp', badge: 'INSTITUTIONAL', title: 'Viện Đào Tạo IDEAS (ideas.edu.vn)', desc: 'Cổng thông tin đa trang & hệ thống SEO từ khóa Top 1 Google.' },
-      { src: '/landingpage_avatar/portfolio.webp', badge: 'EXECUTIVE PROFILE', title: 'Turnio Architecture Portal (portfo-turnio.vercel.app)', desc: 'Hồ sơ năng lực điều hành hệ sinh thái Marketing × App đa tầng.' },
+      { src: '/landingpage_avatar/portfolio.webp', badge: 'EXECUTIVE PROFILE', title: 'Turnio Architecture Portal (turnio.vercel.app)', desc: 'Hồ sơ năng lực điều hành hệ sinh thái Marketing × App đa tầng.' },
     ],
   },
   inkica: {
