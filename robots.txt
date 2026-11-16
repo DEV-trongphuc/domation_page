@@ -1,28 +1,84 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /magnific_proxy.php
 
 # Explicit AI Search & Generative Engine Crawlers (GEO)
 User-agent: GPTBot
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: GoogleOther
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: DuckAssistBot
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /api/
+Disallow: /magnific_proxy.php
 
 Sitemap: https://domation.net/sitemap.xml
-# GEO Knowledge Spec: https://domation.net/llms.txt
+# LLMs.txt (GEO Spec): https://domation.net/llms.txt
+# LLMs-Full.txt (GEO Deep Context): https://domation.net/llms-full.txt

@@ -1,207 +1,524 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://domation.net/</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/og-domation-v2.jpg</image:loc>
+      <image:title>Hệ Sinh Thái Công Nghệ Doanh Nghiệp DOMATION.NET — Bespoke Enterprise OS &amp; Multi-Agent AI</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/sol-multi-agent.webp</image:loc>
+      <image:title>Trung Tâm Điều Phối Multi-Agent AI Liên Phòng Ban DOMATION</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/hero-domation-hub.webp</image:loc>
+      <image:title>DOMATION Bespoke Enterprise Hub</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-hero-growth-hub.jpg</image:loc>
+      <image:title>DOMATION Boost Growth Hub — 24+ Bài Triển Khai &amp; 50 Chủ Đề SEO</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/portfolio</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://domation.net/landingpage_avatar/portfolio.webp</image:loc>
+      <image:title>Portfolio Dự Án &amp; Case Study Đa Ngành DOMATION.NET</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/ecolife/bocmai/bocmai_3d_b3.webp</image:loc>
+      <image:title>EcoLife Signature Đà Nẵng — Sa Bàn 3D Bóc Mái &amp; Auto F1 Router</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/inkica/inkica_aop_3d.jpg</image:loc>
+      <image:title>INKICA AI POD Studio — Multi-Agent AI Prepress 208 SKU 3D CAD</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/data</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/sol-data-capi.webp</image:loc>
+      <image:title>DOMATION Auto Chia Data ZaloBot &lt; 5s &amp; Meta CAPI SHA-256</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/data_v2_overview.webp</image:loc>
+      <image:title>Bảng Điều Khiển Auto Chia Data V2 Real-Time &amp; ZaloBot</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/erp</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/sol-erp-operations.webp</image:loc>
+      <image:title>DOMATION Enterprise ERP 5.0 (12 Phân Hệ)</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg</image:loc>
+      <image:title>Dashboard Vận Hành &amp; Phân Bổ Data Doanh Nghiệp ERP 5.0</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/crm</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/sol-crm-misa.webp</image:loc>
+      <image:title>DOMATION CRM 360° Pipeline Kanban 8 Nấc &amp; Hóa Đơn MISA</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/crm_imgs/CRMS%20(1).jpg</image:loc>
+      <image:title>Giao Diện DOMATION CRM 360° Dashboard Thực Tế</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/automation</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/sol-ai-automation.webp</image:loc>
+      <image:title>DOMATION Marketing Automation, Amazon SES &amp; AI RAG 24/7</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/imgs/home.jpg</image:loc>
+      <image:title>Bảng Điều Khiển Marketing Automation Đa Kênh DOMATION</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/meta-report</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/sol-web3d-meta.webp</image:loc>
+      <image:title>Meta Ad Realtime Report &amp; Video Hook Rate Analytics</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/meta/admin_log.png</image:loc>
+      <image:title>Hệ Thống Giám Sát Admin Audit Log Quảng Cáo Meta</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/web-design</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/enterprise/hero-domation-hub.webp</image:loc>
+      <image:title>Thiết Kế Website Doanh Nghiệp &amp; Sa Bàn 3D WebGL Từ 12M₫</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/ideas</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://domation.net/landingpage_avatar/ideasmba.webp</image:loc>
+      <image:title>IDEAS Company Ecosystem Portal — Case Study Tuyển Sinh &amp; Automation</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-zalobot-5s-router.jpg</image:loc>
+      <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead</image:title>
+      <image:caption>Kiến trúc Auto Chia Data ZaloBot dưới 5 giây cho Chủ đầu tư và Đại lý F1 Bất động sản</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/data_v2_overview.webp</image:loc>
+      <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead — Giao diện thực tế</image:title>
+      <image:caption>Giao diện DOMATION Auto Data V2 chia số đa cổng dưới 5 giây kèm nhật ký nhận lead.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-f1-fair-balance.jpg</image:loc>
+      <image:title>Minh bạch chia giỏ hàng &amp; bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature</image:title>
+      <image:caption>Đối soát chia data công bằng giữa 3 Đại lý F1 dự án EcoLife Signature</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/data_v2_fair_audit.webp</image:loc>
+      <image:title>Minh bạch chia giỏ hàng &amp; bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature — Giao diện thực tế</image:title>
+      <image:caption>Bảng thống kê đối soát tỷ lệ chia và bù Ticket lỗi công bằng giữa Tùng Long, Hợp Nhất và IHD Group.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-realestate-3d.jpg</image:loc>
+      <image:title>Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile &amp; gắn Tracking đẩy thẳng CRM</image:title>
+      <image:caption>Mô hình Web 3D bóc mái căn hộ Three.js chuẩn Quiet Luxury gắn tracking CRM</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/ecolife/bocmai/bocmai_3d_b3.webp</image:loc>
+      <image:title>Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile &amp; gắn Tracking đẩy thẳng CRM — Giao diện thực tế</image:title>
+      <image:caption>Mô hình bóc mái 3D căn góc Panorama B3 (88.8m²) chạy mượt trực tiếp trên trình duyệt.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-meta-capi-bi.jpg</image:loc>
+      <image:title>Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác</image:title>
+      <image:caption>Chu trình Meta Conversions API SHA-256 phản hồi trạng thái Qualified về Facebook Dataset</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/data_v2_capi_masked.webp</image:loc>
+      <image:title>Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác — Giao diện thực tế</image:title>
+      <image:caption>Nhật ký DOMATION tự động hash SHA-256 và bắn sự kiện CAPI đạt chuẩn HTTP 200.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-mba-education-funnel.jpg</image:loc>
+      <image:title>Quản lý phễu tuyển sinh MBA &amp; Khóa học dài ngày: Nâng quy mô từ 20 lên 60 học viên/khóa &amp; giảm 30% CPA</image:title>
+      <image:caption>Hệ thống phễu tuyển sinh CRM và Flow tự động ngành giáo dục sau đại học</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/landingpage_avatar/ideasmba.webp</image:loc>
+      <image:title>Quản lý phễu tuyển sinh MBA &amp; Khóa học dài ngày: Nâng quy mô từ 20 lên 60 học viên/khóa &amp; giảm 30% CPA — Giao diện thực tế</image:title>
+      <image:caption>Landing Page &amp; Phễu tuyển sinh MBA Quốc tế của Viện IDEAS tích hợp trọn bộ Automation DOMATION.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-education-erp.jpg</image:loc>
+      <image:title>Xây dựng ERP 5.0 thay thế 14 file Excel rời rạc cho Viện Đào Tạo: Bài học triển khai chấm công GPS &amp; Payroll PDF</image:title>
+      <image:caption>Hệ thống ERP 5.0 chấm công GPS AI, phê duyệt đa cấp và xuất phiếu lương PDF</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg</image:loc>
+      <image:title>Xây dựng ERP 5.0 thay thế 14 file Excel rời rạc cho Viện Đào Tạo: Bài học triển khai chấm công GPS &amp; Payroll PDF — Giao diện thực tế</image:title>
+      <image:caption>Màn hình Payroll Engine tự động tính công, KPI, BHXH và xuất phiếu lương PDF trong ERP 5.0.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-ai-rag-pdf-vault.jpg</image:loc>
+      <image:title>AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí &amp; chuyển nóng sang Sale</image:title>
+      <image:caption>Kiến trúc AI RAG Agent trích xuất tri thức PDF chống sai lệch bảng giá</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_ai_chatbot.webp</image:loc>
+      <image:title>AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí &amp; chuyển nóng sang Sale — Giao diện thực tế</image:title>
+      <image:caption>Giao diện huấn luyện AI Space &amp; Chatbot RAG trực đa kênh 24/7 trên hệ sinh thái DOMATION.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-fnb-franchise.jpg</image:loc>
+      <image:title>Bài toán đứt gãy dữ liệu POS &amp; CSKH chuỗi 30+ cửa hàng F&amp;B: Tự động hóa Zalo ZNS &amp; Voucher Hub đạt ROAS 5+</image:title>
+      <image:caption>Kết nối POS cửa hàng F&amp;B với Zalo ZNS và Voucher Hub tự động</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_voucher.webp</image:loc>
+      <image:title>Bài toán đứt gãy dữ liệu POS &amp; CSKH chuỗi 30+ cửa hàng F&amp;B: Tự động hóa Zalo ZNS &amp; Voucher Hub đạt ROAS 5+ — Giao diện thực tế</image:title>
+      <image:caption>Phân hệ Voucher Hub phát hành mã ưu đãi duy nhất theo thời gian thực chống trùng lặp.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-franchise-lead-score.jpg</image:loc>
+      <image:title>Phễu thu Lead Nhượng quyền (Franchise) 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Survey &amp; Lead Score</image:title>
+      <image:caption>Phễu thu và chấm điểm hồ sơ nhượng quyền thương hiệu F&amp;B tự động</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_survey.webp</image:loc>
+      <image:title>Phễu thu Lead Nhượng quyền (Franchise) 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Survey &amp; Lead Score — Giao diện thực tế</image:title>
+      <image:caption>Survey Builder tự động thu thập ngân sách, mặt bằng và tính điểm Lead Score phân loại đối tác.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-o2o-qr-heatmap.jpg</image:loc>
+      <image:title>Đo lường chuyển đổi Offline-to-Online (O2O) bằng QR Code Tracking &amp; Heatmap hành vi khách hàng</image:title>
+      <image:caption>Đo lường chiến dịch Offline-to-Online qua mã QR động và Heatmap website</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_qr.webp</image:loc>
+      <image:title>Đo lường chuyển đổi Offline-to-Online (O2O) bằng QR Code Tracking &amp; Heatmap hành vi khách hàng — Giao diện thực tế</image:title>
+      <image:caption>Quản lý mã QR Tracking riêng cho từng ấn phẩm OOH, Standee và điểm chạm tại quầy.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/chong-sot-lich-hen-tu-dong-nhac-tai-kham-nha-khoa-flow-if-else</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-medical-dental.jpg</image:loc>
+      <image:title>Chống sót lịch hẹn &amp; tự động nhắc tái khám Nha khoa đa chi nhánh bằng Flow rẽ nhánh IF/ELSE</image:title>
+      <image:caption>Hệ thống CRM và Flow nhắc lịch hẹn tái khám cho chuỗi Nha khoa đa chi nhánh</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/landingpage_avatar/flora.webp</image:loc>
+      <image:title>Chống sót lịch hẹn &amp; tự động nhắc tái khám Nha khoa đa chi nhánh bằng Flow rẽ nhánh IF/ELSE — Giao diện thực tế</image:title>
+      <image:caption>Landing Page Ngày Hội Implant của Nha khoa Flora kết nối lịch hẹn trực tiếp về CRM.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/bao-mat-du-lieu-benh-an-phan-quyen-rls-chi-nhanh-meta-ads</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-rls-privacy-shield.jpg</image:loc>
+      <image:title>Bảo mật dữ liệu khách hàng y tế &amp; phân quyền RLS từng chi nhánh khi chạy Quảng cáo Meta Lead Ads</image:title>
+      <image:caption>Lớp khiên bảo mật Row-Level Security và che số điện thoại tự động trong CRM Y tế</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/data_v2_capi_masked.webp</image:loc>
+      <image:title>Bảo mật dữ liệu khách hàng y tế &amp; phân quyền RLS từng chi nhánh khi chạy Quảng cáo Meta Lead Ads — Giao diện thực tế</image:title>
+      <image:caption>Cơ chế mask số điện thoại bảo mật và nhật ký kiểm soát truy cập trên DOMATION.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-pod-3d-cad.jpg</image:loc>
+      <image:title>Triển khai hệ thống Multi-Agent AI Prepress xử lý 208 SKU 3D CAD: Những nút thắt kỹ thuật và bài học thực tế</image:title>
+      <image:caption>Hệ thống Multi-Agent AI Prepress 3D CAD xử lý 208 SKU may mặc toàn cầu</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/inkica/inkica_aop_3d.jpg</image:loc>
+      <image:title>Triển khai hệ thống Multi-Agent AI Prepress xử lý 208 SKU 3D CAD: Những nút thắt kỹ thuật và bài học thực tế — Giao diện thực tế</image:title>
+      <image:caption>Phân hệ AOP 3D CAD trên ai.inkica.com bóc rập .PSD Bezier chính xác 0 px lệch đường may.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-ecommerce-misa.jpg</image:loc>
+      <image:title>Tối ưu E-commerce &amp; Đồng bộ Hóa đơn điện tử MISA hai chiều từ CRM 360° không sai lệch công nợ</image:title>
+      <image:caption>Đồng bộ đơn hàng E-commerce, CRM 360 và Hóa đơn điện tử MISA hai chiều</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/crm_10.webp</image:loc>
+      <image:title>Tối ưu E-commerce &amp; Đồng bộ Hóa đơn điện tử MISA hai chiều từ CRM 360° không sai lệch công nợ — Giao diện thực tế</image:title>
+      <image:caption>Màn hình quản trị chứng từ, giỏ hàng và kết nối xuất hóa đơn từ DOMATION CRM 360°.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/vi-sao-70-du-an-erp-dong-goi-that-bai-o-sme-viet-nam</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-bespoke-erp-blueprint.jpg</image:loc>
+      <image:title>Vì sao 70% dự án triển khai ERP đóng gói thất bại ở SME Việt Nam? Lợi thế của Kiến trúc May đo (Bespoke OS)</image:title>
+      <image:caption>So sánh ERP đóng gói truyền thống với kiến trúc ERP 5.0 May đo Bespoke OS</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg</image:loc>
+      <image:title>Vì sao 70% dự án triển khai ERP đóng gói thất bại ở SME Việt Nam? Lợi thế của Kiến trúc May đo (Bespoke OS) — Giao diện thực tế</image:title>
+      <image:caption>Executive Dashboard trong DOMATION ERP 5.0 thiết kế tinh gọn khớp đúng chỉ số lãnh đạo cần xem.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/chong-gian-lan-cham-cong-ho-gps-ban-kinh-selfie-ai</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-hr-gps-payroll.jpg</image:loc>
+      <image:title>Chống gian lận chấm công hộ bằng GPS bán kính + Selfie AI: Kinh nghiệm xử lý ngoại lệ ngoài thị trường</image:title>
+      <image:caption>Công nghệ chấm công định vị GPS bán kính và Selfie AI chống giả lập vị trí</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/ERP-Product/1788856668006_2141578413905312186_2310722037673454867_72b9a0047bb54f03c54fb657c81e41dc.jpg</image:loc>
+      <image:title>Chống gian lận chấm công hộ bằng GPS bán kính + Selfie AI: Kinh nghiệm xử lý ngoại lệ ngoài thị trường — Giao diện thực tế</image:title>
+      <image:caption>Giao diện chấm công GPS + Selfie AI kiểm tra tọa độ và khoảng cách văn phòng chuẩn từng mét.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-approval-kanban-erp.jpg</image:loc>
+      <image:title>Số hóa quy trình Phê duyệt đa cấp (PO, Tạm ứng, Nghỉ phép) &amp; Task Kanban liên phòng ban</image:title>
+      <image:caption>Quy trình phê duyệt đa cấp Purchase Order và bảng công việc Task Kanban liên phòng ban</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/ERP-Product/1788856559658_2141578413905312186_2310722037673454867_192068dc865f82425fa3645d12da931a.jpg</image:loc>
+      <image:title>Số hóa quy trình Phê duyệt đa cấp (PO, Tạm ứng, Nghỉ phép) &amp; Task Kanban liên phòng ban — Giao diện thực tế</image:title>
+      <image:caption>Giao diện Bàn làm việc &amp; Task Kanban theo dõi tiến độ công việc, cảnh báo quá hạn.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-meta-cpl-crm-roas.jpg</image:loc>
+      <image:title>Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report</image:title>
+      <image:caption>Đối chiếu chi phí Meta Graph API với doanh thu thực và số khách thiện chí trên CRM</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/meta_rp_3.webp</image:loc>
+      <image:title>Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report — Giao diện thực tế</image:title>
+      <image:caption>Màn hình Meta Ad Realtime Report đối chiếu chi phí từng mẫu Ad với lượng khách Thiện chí và Booking CRM.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-video-hook-rate.jpg</image:loc>
+      <image:title>Phân tích Video Hook Rate 3s &amp; Creative Fatigue: Khi nào nên tắt hoặc Scale ngân sách quảng cáo?</image:title>
+      <image:caption>Biểu đồ phân tích Video Hook Rate 3 giây, Hold Rate và Creative Fatigue trên Meta Ads</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/meta_rp_2.webp</image:loc>
+      <image:title>Phân tích Video Hook Rate 3s &amp; Creative Fatigue: Khi nào nên tắt hoặc Scale ngân sách quảng cáo? — Giao diện thực tế</image:title>
+      <image:caption>Phễu phân tích Hook Rate 3s, Hold Rate 15s và độ bão hòa tần suất của từng video quảng cáo.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84</loc>
     <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-dedup-phone-e164.jpg</image:loc>
+      <image:title>Lọc trùng Lead đa kênh 6 tháng &amp; chuẩn hóa số điện thoại +84: Chìa khóa tiết kiệm 35% ngân sách Media</image:title>
+      <image:caption>Engine chuẩn hóa số điện thoại +84 và lọc trùng dữ liệu đa kênh trong cửa sổ 180 ngày</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/chia_data_14.webp</image:loc>
+      <image:title>Lọc trùng Lead đa kênh 6 tháng &amp; chuẩn hóa số điện thoại +84: Chìa khóa tiết kiệm 35% ngân sách Media — Giao diện thực tế</image:title>
+      <image:caption>Bộ lọc trùng 6 tháng và log xử lý Ticket lỗi đảm bảo mỗi SĐT chỉ vào vòng chia hợp lệ.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview</loc>
     <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-seo-geo-search.jpg</image:loc>
+      <image:title>Chiến lược SEO &amp; GEO (Generative Engine Optimization) 2026: Đưa doanh nghiệp B2B lọt Top Google &amp; AI Overview</image:title>
+      <image:caption>Chiến lược kết hợp Technical SEO và Generative Engine Optimization GEO cho B2B</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_tracking.webp</image:loc>
+      <image:title>Chiến lược SEO &amp; GEO (Generative Engine Optimization) 2026: Đưa doanh nghiệp B2B lọt Top Google &amp; AI Overview — Giao diện thực tế</image:title>
+      <image:caption>Màn hình Website Tracking &amp; Bot Crawler thực tế trong DOMATION ghi nhận hành trình khách và lượt thu thập AI Search.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-flow-automation.jpg</image:loc>
+      <image:title>Email Marketing Amazon SES đạt 98% Inbox &amp; Flow nuôi dưỡng IF/ELSE theo hành vi Click/Scroll</image:title>
+      <image:caption>Flow kịch bản Email Amazon SES rẽ nhánh IF/ELSE tự động theo hành vi người đọc</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_flow.webp</image:loc>
+      <image:title>Email Marketing Amazon SES đạt 98% Inbox &amp; Flow nuôi dưỡng IF/ELSE theo hành vi Click/Scroll — Giao diện thực tế</image:title>
+      <image:caption>Trình tạo kịch bản Visual Flow Builder kéo thả rẽ nhánh điều kiện IF/ELSE trong DOMATION.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side</loc>
     <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-quiet-luxury-web.jpg</image:loc>
+      <image:title>Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury &amp; Tracking Server-side: Tránh bẫy Web đẹp nhưng 0 chuyển đổi</image:title>
+      <image:caption>Website doanh nghiệp thiết kế riêng chuẩn Quiet Luxury tích hợp tracking và CRM</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/landingpage_avatar/nava.webp</image:loc>
+      <image:title>Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury &amp; Tracking Server-side: Tránh bẫy Web đẹp nhưng 0 chuyển đổi — Giao diện thực tế</image:title>
+      <image:caption>Giao diện dự án E-commerce Nava Store thiết kế tối ưu chuyển đổi và tốc độ tải.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://domation.net/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat</loc>
     <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://domation.net/imgs/boost/boost-ai-multiagent.jpg</image:loc>
+      <image:title>Triển khai Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật &amp; tránh chồng chéo</image:title>
+      <image:caption>Trung tâm Orchestrator điều phối 4 AI Agent chuyên trách liên phòng ban trong doanh nghiệp</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/assets/domation/auto_ai_group.webp</image:loc>
+      <image:title>Triển khai Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật &amp; tránh chồng chéo — Giao diện thực tế</image:title>
+      <image:caption>Phân hệ AI Space &amp; AI Phòng ban phân quyền tri thức riêng cho từng bộ phận.</image:caption>
+    </image:image>
   </url>
 </urlset>

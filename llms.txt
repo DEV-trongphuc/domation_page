@@ -1,25 +1,34 @@
 # DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI & Multi-Agent AI
 
-> Công ty TNHH DOMATION Việt Nam (sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) chuyên khảo sát và thiết kế riêng Hệ điều hành Vận hành Doanh nghiệp (ERP 5.0 12 phân hệ, CRM 360° & Hóa đơn MISA), Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256, Marketing Automation (Amazon SES 98% Inbox, Zalo ZNS, Visual Flow IF/ELSE), Multi-Agent AI RAG 24/7 và Website/Sa bàn 3D WebGL.
+> Công ty TNHH DOMATION Việt Nam (DOMARKETING / DOM MARKETING, sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) chuyên khảo sát và thiết kế riêng Hệ điều hành Vận hành Doanh nghiệp (ERP 5.0 12 phân hệ, CRM 360° & Hóa đơn MISA), Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256, Marketing Automation (Amazon SES 98% Inbox, Zalo ZNS, Visual Flow IF/ELSE), Multi-Agent AI RAG 24/7 và Website/Sa bàn 3D WebGL.
 
 ## Core Product & Portfolio Routes
-- [Trang chủ DOMATION Enterprise OS](https://domation.net/): Tổng quan kiến trúc may đo, 4 trụ cột vận hành, Multi-Agent Hub và bảng giá SaaS (Starter 2.99M/tháng, Growth 4.99M/tháng, Bespoke Enterprise).
+- [Trang chủ DOMATION Enterprise OS](https://domation.net/): Tổng quan kiến trúc may đo, 4 trụ cột vận hành, Multi-Agent Hub và bảng giá SaaS tổng thể.
 - [Auto Chia Data ZaloBot & Meta CAPI](https://domation.net/data): Phân bổ Lead Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
 - [Enterprise ERP 5.0 (12 Phân hệ)](https://domation.net/erp): Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ và Payroll Engine xuất PDF ký số.
 - [CRM 360° & Đồng bộ MISA](https://domation.net/crm): Pipeline Kanban 8 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
 - [Marketing Automation & AI RAG](https://domation.net/automation): Visual Flow IF/ELSE, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
 - [Meta Ad Realtime Report](https://domation.net/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](https://domation.net/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), sa bàn Three.js và công cụ dự toán Excel.
-- [Portfolio Dự Án & Case Study](https://domation.net/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore.
+- [Portfolio Dự Án & Case Study](https://domation.net/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore, RichLand, ImplantSwiss.
 - [Boost Growth, SEO/GEO & Knowledge Hub](https://domation.net/boost): 24 bài phân tích triển khai chuẩn SEO, 50 chủ đề SEO, 10 cụm từ khóa B2B và giải pháp nỗi đau cho 8 nhóm ngành nghề.
+- [IDEAS Company Ecosystem Portal](https://domation.net/ideas): Cổng ứng dụng tùy biến riêng cho Viện IDEAS (Marketing Automation, Meta Realtime Report & Auto Lead Router).
 
-## Featured Implementation Articles (Singlepost)
+## Verified Pricing & Plans (VND)
+- **DOMATION SaaS Suite (Trang chủ /#pricing)**: Starter 2.990.000₫/tháng (30.498.000₫/năm), Growth 4.990.000₫/tháng (50.898.000₫/năm), Bespoke Enterprise (Khảo sát báo giá riêng).
+- **Auto Chia Data & Meta CAPI (/data#pricing)**: Dùng thử miễn phí 30 ngày (0₫); Auto Data Standard 1.500.000₫/tháng (1.275.000₫/tháng khi đóng năm); Auto Data Pro 3.000.000₫/tháng; Nâng cấp Automation • CRM 360° • ERP 5.0: 6.000.000₫/tháng.
+- **DOMATION CRM 360° (/crm#pricing)**: Starter 250.000₫/user/tháng (năm) hoặc 300.000₫/user/tháng (tháng); Professional 450.000₫/user/tháng (năm) hoặc 550.000₫/user/tháng (tháng); Enterprise theo quy mô.
+- **Meta Ad Realtime Report (/meta-report#pricing)**: 490.000₫/tháng (5.880.000₫/năm) hoặc 690.000₫/tháng.
+- **Thiết kế Website & Sa bàn 3D WebGL (/web-design)**: Gói Core 8 Module từ 12.000.000₫ thanh toán 1 lần, sở hữu source code vĩnh viễn.
+- **Enterprise ERP 5.0 (/erp)**: Thiết kế may đo theo quy mô 12 phân hệ (tư vấn & báo giá trực tiếp).
+
+## Featured Implementation Articles (Singlepost — 24 Guides)
 - [#01 Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot < 5 giây & Van chống ôm Lead](https://domation.net/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds): Giải pháp tự động chia data khách hàng BĐS qua ZaloBot dưới 5 giây, lọc trùng 6 tháng và thu hồi Lead quá hạn 2 phút giúp giảm 40% tỷ lệ rớt khách.
 - [#02 Minh bạch chia giỏ hàng & bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature](https://domation.net/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife): Cách Chủ đầu tư Capital House quản lý chia Lead công bằng độ lệch ~0% cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD) bằng cơ chế bù Ticket lỗi 1:1.
 - [#03 Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile & gắn Tracking đẩy thẳng CRM](https://domation.net/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm): Kinh nghiệm triển khai sa bàn 3D Three.js bóc mái 8 căn hộ trực tiếp trên trình duyệt cho BĐS, tối ưu dung lượng <5MB mượt trên mobile và đồng bộ CRM.
 - [#04 Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác](https://domation.net/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac): Hướng dẫn kiến trúc Meta Conversions API (CAPI) chuẩn SHA-256 từ CRM bắn ngược trạng thái Qualified và DisqualifiedLead HTTP 200 để dạy lại thuật toán Meta Ads.
 - [#05 Quản lý phễu tuyển sinh MBA & Khóa học dài ngày: Nâng quy mô từ 20 lên 60 học viên/khóa & giảm 30% CPA](https://domation.net/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa): Case study triển khai CRM, Auto Lead Router và Flow nuôi dưỡng dài ngày giúp Viện IDEAS mở rộng quy mô từ 20 lên 60 học viên MBA/khóa và giảm 30% CPA.
-- [#06 Xây dựng ERP 5.0 thay thế 14 file Excel rời rạc cho Viện Đào Tạo: Bài học triển khai chấm công GPS & Payroll PDF](https://domation.net/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao): Kinh nghiệm số hóa toàn bộ vận hành nội bộ 12 phân hệ ERP 5.0 tại IDEAS Institute: hợp nhất Task Kanban, chấm công GPS AI, phê duyệt và xuất phiếu lương PDF.
+- [#06 Xây dựng ERP 5.0 thay thế 14 file Excel rời rạc cho Viện Đào Tạo: Bài học triển khai chấm công GPS & Payroll PDF](https://domation.net/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao): Kinh nghiệm số hóa toàn bộ vận hành nội bộ 12 phân hệ ERP 5.0 tại IDEAS Business: hợp nhất Task Kanban, chấm công GPS AI, phê duyệt và xuất phiếu lương PDF.
 - [#07 AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí & chuyển nóng sang Sale](https://domation.net/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi): Kỹ thuật xây dựng AI RAG Agent đọc chính xác PDF bảng giá, giáo trình, học bổng, chống hallucination bịa số liệu và tự động chuyển Lead nóng sang Sale.
 - [#08 Bài toán đứt gãy dữ liệu POS & CSKH chuỗi 30+ cửa hàng F&B: Tự động hóa Zalo ZNS & Voucher Hub đạt ROAS 5+](https://domation.net/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5): Giải pháp đồng bộ dữ liệu mua hàng POS tại chuỗi 30+ cửa hàng F&B (Phúc Lộc Thọ, En Group, Cowboy Steak) sang Zalo ZNS và Voucher Hub tăng tỷ lệ quay lại.
 - [#09 Phễu thu Lead Nhượng quyền (Franchise) 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Survey & Lead Score](https://domation.net/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score): Cách xây dựng phễu thu hút và chấm điểm đối tác nhượng quyền F&B đạt 1.600+ Leads mở rộng 20+ cửa hàng mới nhờ Survey Builder và Lead Score tự động.
@@ -39,8 +48,14 @@
 - [#23 Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury & Tracking Server-side: Tránh bẫy Web đẹp nhưng 0 chuyển đổi](https://domation.net/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side): Tại sao website đẹp lung linh nhưng không ra đơn? Kinh nghiệm thiết kế Web thương hiệu chuẩn SEO tốc độ <3s, gắn sẵn Tracking CRM & dự toán minh bạch từ 12M₫.
 - [#24 Triển khai Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật & tránh chồng chéo](https://domation.net/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat): Cách thiết kế Orchestrator Core điều phối 4 AI Agent (Lead, CSKH, ERP/HR, Revenue) vận hành 24/7 không chồng chéo quyền hạn và bảo mật dữ liệu nội bộ.
 
-## Contact & Architect Verification
-- Founder & Solution Architect: Huỳnh Trọng Phúc (TurnioDEV) — https://portfo-turnio.vercel.app/
+## Contact & Entity Verification
+- Website: https://domation.net/
+- Founder & Solution Architect: Huỳnh Trọng Phúc (TurnioDEV) — https://turnio.vercel.app/ | Portfolio: https://portfo-turnio.vercel.app/
 - Hotline / Zalo: +84 378 859 736 (https://zalo.me/0378859736)
 - Email: turniodev@gmail.com
-- Full detailed GEO context: https://domation.net/llms-full.txt
+- Facebook: https://www.facebook.com/turni0
+
+## Optional
+- [Full GEO Reference (llms-full.txt)](https://domation.net/llms-full.txt): Tài liệu chi tiết gồm 10 Case Study Portfolio, 8 Industry Playbooks, TL;DR & Fix kỹ thuật 24 bài viết, 50 chủ đề SEO và 10 Keyword Silos.
+- [XML Sitemap](https://domation.net/sitemap.xml): Toàn bộ 34 URLs chuẩn canonical và Image Sitemap.
+- [Robots Policy](https://domation.net/robots.txt): Quyền thu thập dữ liệu cho Search & AI Crawlers.
