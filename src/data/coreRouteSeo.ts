@@ -39,19 +39,19 @@ export const AUTODATA_FAQS: PageFaqItem[] = [
 
 export function getHomeSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION | Công Ty Công Nghệ Marketing × App × AI Cho Doanh Nghiệp',
+    title: 'DOMATION | Hệ Thống Vận Hành May Đo, ERP 5.0 & AI',
     description:
-      'Công ty TNHH DOMATION Việt Nam — Kiến tạo hệ điều hành tăng trưởng doanh nghiệp: Auto Chia Data ZaloBot <5s, Meta CAPI HTTP 200, ERP 5.0 (12 Phân hệ), CRM MISA, Marketing Automation AI RAG 24/7 & Web 3D.',
+      'DOMATION thiết kế hệ thống vận hành custom may đo, flow riêng cho doanh nghiệp 5.0: ERP 5.0, CRM MISA, Auto Chia Data <5s, Vibecode & AI Agent.',
     path: '/',
     keywords: [
       'DOMATION',
       'domation.net',
-      'Auto Chia Data ZaloBot',
-      'Meta CAPI SHA-256',
+      'hệ thống vận hành custom may đo',
+      'thiết kế flow riêng cho doanh nghiệp thời đại mới',
       'Enterprise ERP 5.0',
+      'Vibecode AI doanh nghiệp 5.0',
+      'Auto Chia Data ZaloBot',
       'CRM 360 MISA',
-      'Multi-Agent AI RAG',
-      'Thiết kế Website 3D WebGL',
     ],
     ogImage: '/imgs/og-domation-v2.jpg',
     ogImageAlt: 'Hệ Sinh Thái Công Nghệ Doanh Nghiệp DOMATION.NET',
@@ -63,14 +63,14 @@ export function getHomeSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION Bespoke Enterprise OS & Multi-Agent AI',
         description:
-          'Hệ điều hành doanh nghiệp may đo tích hợp Auto Chia Data ZaloBot <5s, Meta CAPI SHA-256, CRM 360°, Enterprise ERP 5.0 và Multi-Agent AI.',
+          'DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: ERP 5.0, CRM 360°, Auto Chia Data <5s, Vibecode & Multi-Agent AI.',
         path: '/',
         screenshot: '/imgs/enterprise/hero-domation-hub.webp',
         featureList: [
-          'Auto Chia Data ZaloBot <5s & Lọc trùng 180 ngày',
-          'Meta Conversions API (CAPI) SHA-256 HTTP 200',
-          'Enterprise ERP 5.0 12 phân hệ & CRM 360° MISA',
-          'Multi-Agent AI RAG 24/7 & Visual Flow IF/ELSE',
+          'Hệ thống vận hành custom may đo & Thiết kế flow riêng theo sơ đồ tổ chức',
+          'Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256 HTTP 200',
+          'Enterprise ERP 5.0 12 phân hệ, GPS Selfie AI, Payroll PDF & CRM MISA',
+          'Vibecode Enterprise & Multi-Agent AI RAG 24/7 thời đại 5.0',
         ],
         offers: [
           {
@@ -93,9 +93,9 @@ export function getHomeSeoConfig(): PageSeoConfig {
 
 export function getDataSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION Auto Data | Chia Lead ZaloBot < 5s, Lọc Trùng 6 Tháng & Meta CAPI',
+    title: 'DOMATION Auto Data | Chia Lead ZaloBot < 5s & Meta CAPI',
     description:
-      'Hệ thống điều phối & chia vòng khách hàng tự động dưới 5 giây qua ZaloBot & Telegram, lọc trùng 180 ngày, đền bù Ticket lỗi 1:1 và bắn Meta CAPI chuẩn SHA-256 HTTP 200.',
+      'Hệ thống chia Lead tự động dưới 5s qua ZaloBot & Telegram, lọc trùng 180 ngày, đền bù Ticket 1:1 và bắn Meta CAPI chuẩn SHA-256 HTTP 200.',
     path: '/data',
     keywords: [
       'Auto Chia Data ZaloBot',
@@ -154,36 +154,37 @@ export function getDataSeoConfig(): PageSeoConfig {
 
 export function getErpSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION Enterprise ERP 5.0 | 12 Phân Hệ, Chấm Công GPS AI & Payroll PDF',
+    title: 'DOMATION ERP 5.0 May Đo | Thiết Kế Flow Riêng Doanh Nghiệp',
     description:
-      'Hệ thống Enterprise ERP 5.0 may đo gồm 12 phân hệ: Task Kanban, Chấm công GPS + Selfie AI chống fake, Phê duyệt đa cấp PO/Đơn từ và Bảng tính lương tự động xuất PDF ký số.',
+      'Hệ thống ERP 5.0 custom may đo 12 phân hệ, thiết kế flow riêng cho doanh nghiệp thời đại mới: Kanban, Chấm công GPS AI, Duyệt PO & Payroll PDF.',
     path: '/erp',
     keywords: [
       'Enterprise ERP 5.0',
       'ERP may đo doanh nghiệp',
+      'hệ thống vận hành custom may đo',
+      'thiết kế flow riêng cho doanh nghiệp thời đại mới',
       'Chấm công GPS Selfie AI',
       'Payroll PDF tự động',
-      'Phê duyệt Purchase Order',
     ],
     ogImage: '/imgs/enterprise/sol-erp-operations.webp',
-    ogImageAlt: 'DOMATION Enterprise ERP 5.0 — 12 Phân hệ vận hành doanh nghiệp',
+    ogImageAlt: 'DOMATION Enterprise ERP 5.0 May Đo — 12 Phân hệ vận hành doanh nghiệp',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
-      { name: 'Enterprise ERP 5.0', url: '/erp' },
+      { name: 'Enterprise ERP 5.0 May Đo', url: '/erp' },
     ],
     jsonLd: [
       buildSoftwareAppSchema({
-        name: 'DOMATION Enterprise ERP 5.0',
+        name: 'DOMATION Enterprise ERP 5.0 May Đo',
         description:
-          'Nền tảng ERP 5.0 12 phân hệ thiết kế riêng cho doanh nghiệp: Task Kanban, HRM Chấm công GPS Selfie AI, Phê duyệt đa cấp PO & Payroll PDF.',
+          'DOMATION ERP 5.0 là hệ thống vận hành custom may đo 12 phân hệ, thiết kế flow riêng cho doanh nghiệp thời đại mới: Task Kanban, HRM Chấm công GPS AI, Duyệt PO & Payroll PDF.',
         path: '/erp',
         softwareVersion: '5.0',
         screenshot: '/imgs/enterprise/sol-erp-operations.webp',
         featureList: [
+          'Thiết kế flow riêng theo sơ đồ tổ chức & cấp phê duyệt doanh nghiệp',
           'Tiếp nhận Lead một cửa & Thuật toán chia Lead 5 cổng + Van SLA',
           'Task Kanban & Phê duyệt đa cấp (PO, Tạm ứng, Nghỉ phép)',
-          'Chấm công GPS vệ tinh + Selfie AI chống gian lận',
-          'Bảng tính lương tự động (Payroll Engine) & Xuất phiếu lương PDF',
+          'Chấm công GPS vệ tinh + Selfie AI & Payroll Engine xuất PDF',
           'Row-Level Security (RLS), Audit Log & Meta CAPI Forward-Only',
         ],
         isCustomQuote: true,
@@ -195,9 +196,9 @@ export function getErpSeoConfig(): PageSeoConfig {
 
 export function getCrmSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION CRM 360° | Pipeline Kanban 8 Nấc, Giỏ Hàng Live & Hóa Đơn MISA',
+    title: 'DOMATION CRM 360° | Pipeline 8 Nấc & Hóa Đơn MISA',
     description:
-      'Giải pháp DOMATION CRM 360° quản trị phễu bán hàng Kanban 8 bước, hồ sơ khách hàng toàn diện, giỏ hàng real-time và đồng bộ hóa đơn điện tử MISA hai chiều.',
+      'Giải pháp CRM 360° quản trị phễu bán hàng Kanban 8 nấc, giỏ hàng real-time, nhắc hẹn tự động và đồng bộ hóa đơn điện tử MISA hai chiều.',
     path: '/crm',
     keywords: [
       'DOMATION CRM 360',
@@ -245,35 +246,36 @@ export function getCrmSeoConfig(): PageSeoConfig {
 
 export function getAutomationSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION Automation | Visual Flow IF/ELSE, Email SES 98% Inbox & AI RAG 24/7',
+    title: 'DOMATION Automation | Flow IF/ELSE, Email SES & AI 5.0',
     description:
-      'Nền tảng Marketing Automation đa kênh của DOMATION: Visual Flow kéo thả IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking, Web Heatmap & Trợ lý AI RAG theo phòng ban.',
+      'Nền tảng Automation & AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking & Multi-Agent RAG.',
     path: '/automation',
     keywords: [
       'Marketing Automation đa kênh',
       'Visual Flow Builder IF ELSE',
       'Email Amazon SES 98% Inbox',
       'Zalo ZNS Automation',
-      'AI RAG Phòng Ban',
+      'AI doanh nghiệp thời đại 5.0',
+      'Vibecode doanh nghiệp',
     ],
     ogImage: '/imgs/enterprise/sol-ai-automation.webp',
-    ogImageAlt: 'DOMATION Marketing Automation Visual Flow & AI RAG 24/7',
+    ogImageAlt: 'DOMATION Marketing Automation Visual Flow & AI Doanh Nghiệp 5.0',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
-      { name: 'Marketing Automation & AI', url: '/automation' },
+      { name: 'Marketing Automation & AI 5.0', url: '/automation' },
     ],
     jsonLd: [
       buildSoftwareAppSchema({
-        name: 'DOMATION Marketing Automation & AI Space',
+        name: 'DOMATION Marketing Automation & AI Space 5.0',
         description:
-          'Hệ thống tự động hóa kịch bản chăm sóc đa kênh Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking & AI Chatbot RAG 24/7.',
+          'Hệ thống tự động hóa kịch bản chăm sóc đa kênh Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking & Multi-Agent AI RAG 24/7.',
         path: '/automation',
         screenshot: '/imgs/enterprise/sol-ai-automation.webp',
         featureList: [
           'Visual Flow Builder kéo thả IF/ELSE đa kênh',
           'Email Marketing Amazon SES 98% Inbox & Email Builder kéo thả',
           'Zalo OA / Zalo ZNS, Voucher Hub & Survey Lead Score',
-          'QR Code Tracking O2O, Web Heatmap & AI RAG Phòng Ban 24/7',
+          'QR Code Tracking O2O, Web Heatmap & Multi-Agent AI RAG 24/7',
         ],
         offers: [
           {
@@ -298,15 +300,16 @@ export function getAutomationSeoConfig(): PageSeoConfig {
 
 export function getMetaReportSeoConfig(): PageSeoConfig {
   return {
-    title: 'Meta Ad Realtime Report | Đo ROAS Thực CRM, Video Hook Rate & Admin Audit Log',
+    title: 'Meta Ad Realtime Report | Đo ROAS Thực CRM & Hook Rate',
     description:
-      'Hệ thống báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực trên CRM, phân tích Video Hook Rate 3s, Hold Rate, Creative Fatigue và Admin Audit Log.',
+      'Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log.',
     path: '/meta-report',
     keywords: [
       'Meta Ad Realtime Report',
       'Video Hook Rate Meta Ads',
       'Đối chiếu CPL với CRM',
       'Meta Graph API BI',
+      'tối ưu quảng cáo đa kênh',
     ],
     ogImage: '/imgs/enterprise/sol-web3d-meta.webp',
     ogImageAlt: 'DOMATION Meta Ad Realtime Report & Video Hook Rate Analytics',
@@ -348,18 +351,19 @@ export function getMetaReportSeoConfig(): PageSeoConfig {
 
 export function getWebDesignSeoConfig(): PageSeoConfig {
   return {
-    title: 'Bảng Giá Thiết Kế Website Doanh Nghiệp & Web 3D Từ 12.000.000₫ | DOMATION',
+    title: 'Thiết Kế Website & Landing Page Từ 12M₫ Chuẩn SEO | DOMATION',
     description:
-      'Thiết kế Website chuẩn SEO, tốc độ <3s, sở hữu source code vĩnh viễn từ 12.000.000₫. Dự toán trực tiếp chi phí Giỏ hàng, VNPay, Sa bàn 3D WebGL & đồng bộ DOMATION CRM, xuất file Excel ngay.',
+      'Thiết kế Website & Landing Page tối ưu chuyển đổi, tải <1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL & CRM ZaloBot.',
     path: '/web-design',
     keywords: [
       'báo giá thiết kế website doanh nghiệp',
+      'tối ưu landing page',
       'thiết kế web 3d sa bàn',
       'dự toán chi phí website',
       'thiết kế website chuẩn seo domation',
     ],
     ogImage: '/imgs/enterprise/hero-domation-hub.webp',
-    ogImageAlt: 'Thiết Kế Website Doanh Nghiệp & Sa Bàn 3D WebGL Từ 12.000.000₫ DOMATION',
+    ogImageAlt: 'Thiết Kế Website Doanh Nghiệp, Landing Page CRO & Sa Bàn 3D WebGL Từ 12.000.000₫ DOMATION',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
       { name: 'Bảng Giá Thiết Kế Website', url: '/web-design' },
@@ -369,10 +373,10 @@ export function getWebDesignSeoConfig(): PageSeoConfig {
         '@context': 'https://schema.org',
         '@type': 'Service',
         '@id': `${SITE_URL}/web-design#service`,
-        name: 'Dịch vụ Thiết Kế Website Doanh Nghiệp & Sa Bàn 3D WebGL',
-        serviceType: 'Web Design, 3D WebGL & CRM Integration',
+        name: 'Dịch vụ Thiết Kế Website Doanh Nghiệp, Landing Page CRO & Sa Bàn 3D WebGL',
+        serviceType: 'Web Design, Landing Page CRO, 3D WebGL & CRM Integration',
         description:
-          'Thiết kế Website chuẩn SEO, tốc độ <3s, sở hữu source code vĩnh viễn từ 12.000.000₫ cùng sa bàn 3D WebGL Three.js và đồng bộ CRM/ZaloBot.',
+          'Thiết kế Website chuẩn 100% SEO, tốc độ <1.5s, sở hữu source code vĩnh viễn từ 12.000.000₫ cùng sa bàn 3D WebGL Three.js và đồng bộ CRM/ZaloBot.',
         image: `${SITE_URL}/imgs/enterprise/hero-domation-hub.webp`,
         areaServed: { '@type': 'Country', name: 'Việt Nam' },
         provider: { '@id': ORG_ID },
@@ -392,9 +396,9 @@ export function getWebDesignSeoConfig(): PageSeoConfig {
 
 export function getIdeasSeoConfig(): PageSeoConfig {
   return {
-    title: 'IDEAS Company Ecosystem | Case Study Tuyển Sinh & Hệ Thống Công Cụ | DOMATION',
+    title: 'IDEAS Ecosystem | Hệ Thống Tuyển Sinh & ERP May Đo | DOMATION',
     description:
-      'Trang tổng hợp liên kết truy cập các ứng dụng phần mềm được tùy biến chuyên biệt dành cho Viện IDEAS: Marketing Automation, Meta Realtime Report và Auto Lead Router.',
+      'Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA.',
     path: '/ideas',
     keywords: ['IDEAS Ecosystem', 'ERP Viện IDEAS', 'Auto Lead Router IDEAS', 'DOMATION'],
     ogImage: '/landingpage_avatar/ideasmba.webp',
@@ -435,6 +439,18 @@ export function getIdeasSeoConfig(): PageSeoConfig {
         },
       },
     ],
+  };
+}
+
+export function getNotFoundSeoConfig(path = '/404'): PageSeoConfig {
+  return {
+    title: '404 — Không Tìm Thấy Trang | DOMATION.NET',
+    description:
+      'Trang bạn tìm không tồn tại hoặc đã được di chuyển. Quay lại Blog DOMATION hoặc khám phá hệ thống ERP 5.0 may đo, CRM 360° và Auto Chia Data.',
+    path,
+    ogImage: '/imgs/boost/boost-404-lost-compass.jpg',
+    ogImageAlt: '404 Không Tìm Thấy Trang — DOMATION.NET',
+    noindex: true,
   };
 }
 

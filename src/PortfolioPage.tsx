@@ -82,7 +82,7 @@ export const PortfolioPage: React.FC = () => {
                   <span className="text-gradient-inkica">Case Study Đa Ngành</span>
                 </h1>
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-                  Mỗi dự án trong Portfolio của DOMATION đi kèm đầy đủ: Bài toán ban đầu, Khó khăn thực tế khi triển khai, Kiến trúc kỹ thuật xử lý, Số liệu đo lường thật và bài phân tích chuyên sâu trên <strong className="text-slate-900">Tạp chí Triển khai DOMATION</strong>.
+                  Mỗi dự án trong Portfolio của DOMATION đi kèm đầy đủ: Bài toán ban đầu, Khó khăn thực tế khi triển khai, Kiến trúc kỹ thuật xử lý, Số liệu đo lường thật và bài phân tích chuyên sâu trên <strong className="text-slate-900">Blog DOMATION</strong>.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -92,7 +92,7 @@ export const PortfolioPage: React.FC = () => {
                     className="btn-inkica-primary px-5 py-3 text-xs sm:text-sm"
                   >
                     <BookOpen className="w-4 h-4" />
-                    <span>Đọc Tạp Chí Triển Khai</span>
+                    <span>Đọc Blog DOMATION</span>
                   </a>
                   <button
                     type="button"
@@ -110,7 +110,7 @@ export const PortfolioPage: React.FC = () => {
                   {[
                     { num: '30+', label: 'Doanh nghiệp đồng hành' },
                     { num: '10', label: 'Flagship Case Study sâu' },
-                    { num: '24+', label: 'Bài phân tích chuẩn SEO' },
+                    { num: '74+', label: 'Bài phân tích chuẩn SEO' },
                     { num: '< 5s', label: 'SLA Chia Lead thực chiến' },
                   ].map((stat) => (
                     <div

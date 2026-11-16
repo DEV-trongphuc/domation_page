@@ -410,13 +410,13 @@ export const CrmLanding: React.FC = () => {
                   </p>
                   <div className="space-y-4">
                     <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-                      <h4 className="font-bold text-slate-900 mb-1">Kiểm Kê Sản Phẩm Tự Động</h4>
+                      <h3 className="font-bold text-slate-900 mb-1">Kiểm Kê Sản Phẩm Tự Động</h3>
                       <p className="text-sm text-slate-600">
                         Tự động trừ kho khi xuất Invoice. Có hệ thống định mức tối thiểu cảnh báo cần nhập hàng từ Suppliers.
                       </p>
                     </div>
                     <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-                      <h4 className="font-bold text-slate-900 mb-1">Theo Dõi Thu Chi (Expenses)</h4>
+                      <h3 className="font-bold text-slate-900 mb-1">Theo Dõi Thu Chi (Expenses)</h3>
                       <p className="text-sm text-slate-600">
                         Ghi nhận mọi khoản chi phí công ty, giúp tính toán Profit Margin chuẩn xác tới từng đồng.
                       </p>

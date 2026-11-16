@@ -35,13 +35,24 @@ export const DOMATION_CORPUS = [
   {
     id: 'domation-pillar-erp5',
     category: 'Giải pháp Lõi #02',
-    title: 'Enterprise ERP 5.0 — 12 Phân hệ Quản trị Toàn diện & Chấm công GPS AI',
+    title: 'Enterprise ERP 5.0 May Đo — Hệ Thống Vận Hành Custom Thiết Kế Flow Riêng',
     sectionId: 'solutions',
     url: '/erp',
     urlLabel: 'Mở trang /erp',
     image: '/imgs/enterprise/sol-erp-suite.webp',
     content:
-      'DOMATION / IDEAS ERP 5.0 thay thế hoàn toàn Excel rời rạc với 12 phân hệ tích hợp: Dashboard SLA & Data Real-time, CRM Đa Đại lý & Chống trùng, Chấm công GPS AI kiểm tra bán kính địa điểm + thiết bị, Quản lý KPI OKR theo phòng ban, Tính lương Tự động (Automated Payroll) kết xuất phiếu lương PDF hàng loạt trong 1 click, Quy trình phê duyệt Purchase Order/Tạm ứng/Đề xuất đa cấp, Công nợ & Báo giá tập trung, cùng Quản trị Tài nguyên LMS/Tài liệu. Triển khai hiệu quả tại IDEAS Institute giúp quản lý toàn bộ vận hành từ Lead đến Lương & KPI.',
+      'ERP DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (12 phân hệ tích hợp, thay thế hoàn toàn Excel rời rạc): Dashboard SLA & Data Real-time, CRM Đa Đại lý & Chống trùng, Chấm công GPS AI kiểm tra bán kính địa điểm + thiết bị, Quản lý KPI OKR theo phòng ban, Tính lương Tự động (Automated Payroll) kết xuất phiếu lương PDF hàng loạt trong 1 click, Quy trình phê duyệt Purchase Order/Tạm ứng/Đề xuất đa cấp, Công nợ & Báo giá tập trung, cùng Quản trị Tài nguyên LMS/Tài liệu. Triển khai hiệu quả tại IDEAS Institute giúp quản lý toàn bộ vận hành từ Lead đến Lương & KPI.',
+  },
+  {
+    id: 'domation-blog-boost-seo',
+    category: 'Blog & Tri thức 5.0',
+    title: 'Blog DOMATION (/boost) — 74+ Bài Chiến Lược ERP May Đo, Vibecode, AI 5.0 & Tối Ưu Quảng Cáo',
+    sectionId: 'boost',
+    url: '/boost',
+    urlLabel: 'Đọc Blog /boost',
+    image: '/imgs/boost/boost-hero-growth-hub.jpg',
+    content:
+      'Blog DOMATION tại https://domation.net/boost tổng hợp 74+ bài phân tích triển khai thực tế và 12 cụm Content SEO Cluster (từ khóa ngắn & dài, chính & phụ) về: ERP DOMATION custom may đo thiết kế flow riêng, phương pháp Vibecode xây dựng hệ thống quản trị tốc độ cao, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị doanh nghiệp, tối ưu quảng cáo Meta CAPI, Landing Page CRO chuyển đổi cao và chiến dịch Automation Marketing đa kênh.',
   },
   {
     id: 'domation-pillar-crm-misa',

@@ -40,6 +40,11 @@ function upsertCanonical(href: string): void {
   link.setAttribute('href', href);
 }
 
+function removeCanonical(): void {
+  if (typeof document === 'undefined') return;
+  document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]').forEach((el) => el.remove());
+}
+
 function upsertHeadLink(attrs: Record<string, string>, selector: string): void {
   if (typeof document === 'undefined') return;
   let link = document.querySelector<HTMLLinkElement>(selector);
@@ -59,7 +64,11 @@ export function applyPageSeo(config: PageSeoConfig): void {
   const ogType = config.ogType || 'website';
 
   document.title = config.title;
-  upsertCanonical(canonicalUrl);
+  if (config.noindex) {
+    removeCanonical();
+  } else {
+    upsertCanonical(canonicalUrl);
+  }
   upsertHeadLink(
     {
       rel: 'alternate',

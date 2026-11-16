@@ -630,7 +630,7 @@ export const AiDomationChatbot: React.FC = () => {
     <>
       {/* Floating Bottom-Right Vertical Dock: Zalo Icon on Top + Circular DOMATION Logo AI Launcher Below */}
       {!isOpen && (
-        <div
+        <aside
           className="fixed bottom-4 right-3.5 sm:bottom-6 sm:right-6 z-[60] flex flex-col items-center gap-2.5 sm:gap-3"
           aria-label="Tư vấn nhanh DOMATION AI và Zalo"
         >
@@ -684,7 +684,7 @@ export const AiDomationChatbot: React.FC = () => {
               Hỏi Trợ Lý AI DOMATION
             </span>
           </button>
-        </div>
+        </aside>
       )}
 
       {/* Chatbot Panel: Light Frosted Window (>= sm) / Full-screen Mobile */}

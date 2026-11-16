@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface ResponsiveSlideDeckProps<T> {
@@ -44,13 +44,10 @@ export function ResponsiveSlideDeck<T>({
   }, [items, mobilePerPage]);
 
   const totalPages = Math.max(1, pages.length);
+  const activePage = Math.min(page, totalPages - 1);
 
-  useEffect(() => {
-    if (page >= totalPages) setPage(Math.max(0, totalPages - 1));
-  }, [page, totalPages]);
-
-  const goPrev = () => setPage((p) => (p > 0 ? p - 1 : totalPages - 1));
-  const goNext = () => setPage((p) => (p < totalPages - 1 ? p + 1 : 0));
+  const goPrev = () => setPage((p) => (Math.min(p, totalPages - 1) > 0 ? Math.min(p, totalPages - 1) - 1 : totalPages - 1));
+  const goNext = () => setPage((p) => (Math.min(p, totalPages - 1) < totalPages - 1 ? Math.min(p, totalPages - 1) + 1 : 0));
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     const touch = e.touches[0];
@@ -76,14 +73,19 @@ export function ResponsiveSlideDeck<T>({
   const dotWindowStart =
     totalPages <= MAX_VISIBLE_DOTS
       ? 0
-      : Math.max(0, Math.min(page - Math.floor(MAX_VISIBLE_DOTS / 2), totalPages - MAX_VISIBLE_DOTS));
+      : Math.max(0, Math.min(activePage - Math.floor(MAX_VISIBLE_DOTS / 2), totalPages - MAX_VISIBLE_DOTS));
   const dotIndices = Array.from(
     { length: Math.min(totalPages, MAX_VISIBLE_DOTS) },
     (_, offset) => dotWindowStart + offset
   );
 
   return (
-    <div className={`w-full ${className}`} aria-roledescription="carousel" aria-label={ariaLabel}>
+    <div
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={ariaLabel}
+      className={`w-full ${className}`}
+    >
       <div
         className="overflow-hidden w-full touch-pan-y"
         onTouchStart={handleTouchStart}
@@ -91,7 +93,7 @@ export function ResponsiveSlideDeck<T>({
       >
         <div
           className="flex transition-transform duration-300 ease-out will-change-transform"
-          style={{ transform: `translate3d(-${page * 100}%, 0, 0)` }}
+          style={{ transform: `translate3d(-${activePage * 100}%, 0, 0)` }}
         >
           {pages.map((group, pIdx) => (
             <div key={pIdx} className="w-full shrink-0 px-0.5">
@@ -120,7 +122,7 @@ export function ResponsiveSlideDeck<T>({
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs">
             {dotIndices.map((idx) => {
-              const active = idx === page;
+              const active = idx === activePage;
               return (
                 <button
                   key={idx}
@@ -142,7 +144,7 @@ export function ResponsiveSlideDeck<T>({
             })}
             {totalPages > 4 && (
               <span className="ml-1.5 pl-1.5 border-l border-slate-200 text-[10.5px] font-mono font-bold text-slate-500 tabular-nums">
-                {String(page + 1).padStart(2, '0')}/{String(totalPages).padStart(2, '0')}
+                {String(activePage + 1).padStart(2, '0')}/{String(totalPages).padStart(2, '0')}
               </span>
             )}
           </div>

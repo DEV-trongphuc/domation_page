@@ -148,7 +148,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
     alternateName: ['DOMATION', 'DOMATION.NET', 'DOMARKETING', 'DOM MARKETING'],
     url: `${SITE_URL}/`,
     description:
-      'Công ty công nghệ Marketing × App × AI chuyên thiết kế riêng Hệ điều hành Doanh nghiệp (Enterprise ERP 5.0, CRM 360° & Hóa đơn điện tử), Auto Chia Data ZaloBot, Meta CAPI SHA-256, Marketing Automation, AI Agent RAG 24/7 và Website 3D WebGL.',
+      'DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: Enterprise ERP 5.0 (12 phân hệ), CRM 360° MISA, Auto Chia Data ZaloBot <5s, Meta CAPI, Vibecode & AI Doanh nghiệp 5.0.',
     image: DEFAULT_OG_IMAGE,
     logo: {
       '@type': 'ImageObject',
@@ -191,15 +191,15 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       'https://zalo.me/0378859736',
     ],
     knowsAbout: [
-      'Auto Chia Data ZaloBot',
-      'Meta Conversions API (CAPI) SHA-256',
-      'Enterprise ERP 5.0',
-      'CRM 360 độ & Hóa đơn MISA',
-      'Marketing Automation & Zalo ZNS',
-      'AI Agent & RAG Doanh nghiệp',
+      'Hệ thống vận hành custom may đo doanh nghiệp',
+      'Thiết kế flow riêng cho doanh nghiệp thời đại mới',
+      'Enterprise ERP 5.0 May Đo 12 Phân Hệ',
+      'Vibecode Enterprise & AI Doanh Nghiệp Thời Đại 5.0',
+      'Auto Chia Data ZaloBot < 5s & Meta CAPI SHA-256',
+      'CRM 360 độ & Hóa đơn điện tử MISA',
+      'Tối ưu Quảng cáo, Landing Page & Chiến dịch Automation',
       'Thiết kế Website & Sa bàn 3D WebGL',
-      'Meta Ads Realtime Analytics',
-      'SEO & Generative Engine Optimization (GEO)',
+      'SEO 100%, GEO & LLMS.txt',
     ],
   };
 }
@@ -298,6 +298,8 @@ export function buildSoftwareAppSchema(params: {
     offersNode = {
       '@type': 'Offer',
       name: 'Báo giá thiết kế riêng (Bespoke Quote)',
+      priceCurrency: 'VND',
+      price: '0',
       url: `${fullUrl}#tu-van`,
       availability: 'https://schema.org/InStock',
       description:

@@ -649,13 +649,18 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         answer:
           'Rất phù hợp. Pipeline 8 nấc và chuỗi Flow nuôi dưỡng dài ngày được tùy biến theo từng kỳ tuyển sinh, lọc theo ngành học và kết nối cả LMS quản lý học viên sau khi nhập học.',
       },
+      {
+        question: 'Làm sao giữ tỷ lệ chuyển đổi trong phễu tuyển sinh dài 30–60 ngày?',
+        answer:
+          'Hệ thống kết hợp Lead Score hành vi và gửi chuỗi tài liệu học bổng, video giảng viên qua Zalo/Email đúng thời điểm thay vì nhắn tin rập khuôn hàng loạt.',
+      },
     ],
   },
   {
     id: 'art-06',
     number: '06',
     slug: 'xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao',
-    title: 'Xây dựng ERP 5.0 thay thế 14 file Excel rời rạc cho Viện Đào Tạo: Bài học triển khai chấm công GPS & Payroll PDF',
+    title: 'Xây dựng ERP 5.0 thay thế 14 file Excel cho Viện Đào Tạo: Chấm công GPS & Payroll PDF',
     seoTitle: 'Triển Khai ERP 5.0 Thay 14 File Excel Viện Đào Tạo | DOMATION',
     metaDescription:
       'Kinh nghiệm số hóa toàn bộ vận hành nội bộ 12 phân hệ ERP 5.0 tại IDEAS Business: hợp nhất Task Kanban, chấm công GPS AI, phê duyệt và xuất phiếu lương PDF.',
@@ -759,6 +764,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         question: 'ERP 5.0 của DOMATION có dùng được cho doanh nghiệp không thuộc ngành giáo dục?',
         answer:
           'Có. Nhờ kiến trúc may đo theo cơ cấu tổ chức thực tế, 12 phân hệ Task, Chấm công GPS, Phê duyệt, Chi phí và Payroll được tùy chỉnh dễ dàng cho BĐS, Agency, Chuỗi bán lẻ và Sản xuất.',
+      },
+      {
+        question: 'ERP DOMATION có thay thế hoàn toàn 14 file Excel rời rạc mà không làm chậm nhân sự?',
+        answer:
+          'Có. DOMATION thiết kế flow riêng bám sát thói quen duyệt đơn, xuất phiếu lương PDF tự động và phân quyền từng phòng ban giúp đội ngũ làm quen trong 3–5 ngày.',
       },
     ],
   },
@@ -871,6 +881,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         answer:
           'Với bộ tài liệu bảng giá, brochure và FAQ chuẩn, quá trình chuẩn hóa và huấn luyện hoàn tất trong 2–3 ngày làm việc.',
       },
+      {
+        question: 'Khi nào AI RAG Agent tự động chuyển nóng hội thoại sang Sale?',
+        answer:
+          'Ngay khi học viên hỏi chính sách ưu đãi đóng phí sớm, lịch khai giảng cụ thể hoặc yêu cầu gọi lại, hệ thống tự tạo Lead nóng trong CRM và đẩy thông báo ZaloBot.',
+      },
     ],
   },
   {
@@ -982,13 +997,18 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         answer:
           'Có. Quản lý có thể cấu hình mã chỉ áp dụng vào khung giờ thấp điểm (14h–17h), giới hạn chi nhánh cụ thể và tự động nhắc qua ZNS trước khi hết hạn 48 giờ.',
       },
+      {
+        question: 'Chuỗi F&B đo lường ROAS của tin nhắn Zalo ZNS bằng cách nào?',
+        answer:
+          'Mỗi mã E-Voucher phát qua ZNS gắn định danh khách hàng CDP; khi thu ngân quét mã tại POS, doanh thu tự động đối soát ngược về từng chiến dịch Marketing.',
+      },
     ],
   },
   {
     id: 'art-09',
     number: '09',
     slug: 'pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score',
-    title: 'Phễu thu Lead Nhượng quyền (Franchise) 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Survey & Lead Score',
+    title: 'Phễu Lead Nhượng quyền 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Lead Score',
     seoTitle: 'Phễu Lead Nhượng Quyền 1.600+ Hồ Sơ Survey Score | DOMATION',
     metaDescription:
       'Cách xây dựng phễu thu hút và chấm điểm đối tác nhượng quyền F&B đạt 1.600+ Leads mở rộng 20+ cửa hàng mới nhờ Survey Builder và Lead Score tự động.',
@@ -1079,6 +1099,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         question: 'Có thể dùng Survey Builder để phân loại cả đại lý phân phối sản phẩm không?',
         answer:
           'Hoàn toàn được. Logic chấm điểm theo khu vực địa lý, doanh số cam kết và ngành hàng áp dụng hiệu quả cho cả Nhượng quyền F&B, Nhà phân phối FMCG và Đại lý B2B.',
+      },
+      {
+        question: 'Vì sao Survey 5 bước trước khi nhận cuộc gọi giúp giảm chi phí đội Sale?',
+        answer:
+          'Đội Sale chỉ cần gọi cho những ứng viên đạt ngưỡng điểm vốn đầu tư và mặt bằng phù hợp, giảm hơn 60% thời gian lọc hồ sơ kém chất lượng.',
       },
     ],
   },
@@ -1176,6 +1201,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         question: 'Mã QR Tracking của DOMATION có bị hết hạn sau thời gian dùng thử không?',
         answer:
           'Doanh nghiệp có thể chủ động điều chỉnh URL đích hoặc xuất toàn bộ thống kê bất kỳ lúc nào; với khách hàng triển khai hạ tầng riêng, hệ thống short-link chạy trên chính tên miền thương hiệu của bạn.',
+      },
+      {
+        question: 'Dữ liệu quét QR Offline có liên kết được về hồ sơ khách hàng Online?',
+        answer:
+          'Có. Khi khách quét QR tại cửa hàng và điền form hoặc mở mini-web, hệ thống gắn UTM điểm bán vào CDP 360° và đồng bộ sự kiện lên Meta CAPI.',
       },
     ],
   },
@@ -1279,6 +1309,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         answer:
           'Có. Hệ thống cập nhật trạng thái mới trong CRM và thông báo ngay cho Điều phối viên phòng khám sắp xếp lại khung giờ bác sĩ.',
       },
+      {
+        question: 'Quy trình nhắc tái khám đa chi nhánh tránh trùng lịch như thế nào?',
+        answer:
+          'Flow IF/ELSE tự kiểm tra trạng thái xác nhận T-24h và T-3h qua Zalo ZNS, chỉ chuyển nhắc tiếp cho CSKH nếu khách chưa phản hồi xác nhận.',
+      },
     ],
   },
   {
@@ -1374,6 +1409,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         question: 'Doanh nghiệp Enterprise có thể đặt cơ sở dữ liệu tách biệt hoàn toàn không?',
         answer:
           'Có. Gói Bespoke Enterprise của DOMATION hỗ trợ hạ tầng cơ sở dữ liệu tách riêng hoàn toàn (Private DB / Server riêng) với cam kết SLA 99.9%.',
+      },
+      {
+        question: 'Phân quyền RLS ngăn Sale chi nhánh A thấy hồ sơ bệnh nhân chi nhánh B ra sao?',
+        answer:
+          'Row-Level Security khóa quyền truy vấn ở tầng cơ sở dữ liệu theo Branch ID và Role người dùng, đảm bảo dù xuất API vẫn không rò rỉ dữ liệu chéo chi nhánh.',
       },
     ],
   },

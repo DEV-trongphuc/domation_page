@@ -241,18 +241,18 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     previewImage: '/landingpage_avatar/portfolio.webp',
     liveUrl: 'https://portfo-turnio.vercel.app/',
     problem:
-      'Xây dựng kiến trúc cổng thông tin doanh nghiệp tích hợp trợ lý AI RAG nội bộ, 24+ bài chuyên sâu chuẩn SEO/GEO và bản đồ 50 chủ đề tăng trưởng B2B.',
+      'Xây dựng kiến trúc cổng thông tin doanh nghiệp tích hợp trợ lý AI RAG nội bộ, 74+ bài Blog DOMATION chuẩn SEO/GEO và bản đồ 12 cụm từ khóa tăng trưởng B2B.',
     implementationPain:
-      'Ứng dụng React SPA dễ gặp lỗi trùng lặp thẻ Canonical/Title ở các trang con và thiếu chuẩn dữ liệu `llms.txt` cho AI Search.',
+      'Ứng dụng React SPA dễ gặp lỗi trùng lặp thẻ Canonical/Title ở các trang con, Soft-404 và thiếu chuẩn dữ liệu `llms.txt` cho AI Search.',
     architecture:
-      'Dynamic SEO & JSON-LD Engine (`src/utils/seo.ts`) + RAG Hybrid Vector Search (`gemini-embedding-001`) + `/boost` Knowledge Hub + `/boost/:slug` Singlepost + `sitemap.xml` & `llms.txt`.',
+      'Dynamic SEO & JSON-LD Engine (`src/utils/seo.ts`) + Prerender HTML/Blog + RAG Hybrid Vector Search + `/boost` Blog SEO Hub + `/boost/:slug` Singlepost + `sitemap.xml` & `llms.txt`.',
     deliverables: [
       'Cổng thông tin Đa chuyên trang DOMATION.NET',
-      'Trung tâm Tri thức /boost (24+ Bài SEO, 50 Chủ đề, 10 Keyword Clusters)',
+      'Blog DOMATION /boost (74+ Bài SEO, 74 Chủ đề, 12 Keyword Clusters)',
       'Trợ lý AI RAG tư vấn giải pháp & báo giá 24/7',
       'Chuẩn hóa GEO llms.txt & Dynamic Schema.org',
     ],
-    metrics: ['24+ Bài Chuẩn SEO', '50 Chủ Đề SEO', '100+ Từ Khóa', 'Full GEO llms.txt'],
+    metrics: ['74+ Bài Blog SEO', '12 Keyword Clusters', '404 & Prerender 100%', 'Full GEO llms.txt'],
     relatedArticleSlug: 'chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview',
     inspectionTab: 'web-3d',
   },

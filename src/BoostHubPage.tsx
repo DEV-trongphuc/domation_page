@@ -19,6 +19,7 @@ import { DomationFooter } from './components/DomationFooter';
 import { BOOST_ARTICLES } from './data/boostArticles';
 import { BOOST_PILLAR_META, INDUSTRY_PAIN_PLAYBOOK } from './data/boostSeoData';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
+import { BoostSeoClusterSection } from './components/BoostSeoClusterSection';
 import { BOOST_FAQS, getBoostHubSeoConfig } from './data/boostRouteSeo';
 import { DOMATION_NAV_EVENT, handleSpaLinkClick } from './utils/navigation';
 import { usePageSeo } from './utils/seo';
@@ -28,7 +29,7 @@ const PILLAR_FILTERS = [
   ...Object.values(BOOST_PILLAR_META),
 ];
 
-const ARTICLES_PAGE_SIZE = 9;
+const ARTICLES_PAGE_SIZE = 12;
 
 function readSearchFiltersFromUrl(): { q: string; pillar: string } {
   if (typeof window === 'undefined') return { q: '', pillar: 'all' };
@@ -81,7 +82,8 @@ export const BoostHubPage: React.FC = () => {
   const hasActiveFilter =
     Boolean(articleSearch.trim()) || articlePillar !== 'all' || articleIndustry !== 'all';
 
-  const featuredArticle = BOOST_ARTICLES[0];
+  const featuredArticle =
+    BOOST_ARTICLES.find((a) => a.id === 'art-25') || BOOST_ARTICLES[0];
 
   const filteredArticles = useMemo(() => {
     const q = articleSearch.trim().toLowerCase();
@@ -138,14 +140,19 @@ export const BoostHubPage: React.FC = () => {
               <div className="space-y-2.5 max-w-3xl">
                 <div className="ql-eyebrow">
                   <BookOpen className="w-3.5 h-3.5 text-[#1E40FF]" />
-                  <span>TẠP CHÍ DOMATION • KINH NGHIỆM TRIỂN KHAI DOANH NGHIỆP</span>
+                  <span>BLOG DOMATION • 74+ BÀI SEO, VIBECODE, AI 5.0 &amp; ERP MAY ĐO</span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl xl:text-[42px] font-extrabold text-slate-900 leading-[1.2] tracking-tight">
-                  Tin Tức &amp; Góc Nhìn{' '}
-                  <span className="text-gradient-inkica">Vận Hành Công Nghệ</span>
+                  Blog DOMATION &amp;{' '}
+                  <span className="text-gradient-inkica">Chiến Lược Vận Hành Thời Đại 5.0</span>
                 </h1>
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                  Chia sẻ kinh nghiệm triển khai thực tế về tự động hóa dữ liệu, hệ thống ERP/CRM, đo lường hiệu suất quảng cáo và ứng dụng trợ lý AI trong vận hành doanh nghiệp.
+                  Chia sẻ kiến thức thực chiến về{' '}
+                  <strong className="text-slate-900">
+                    ERP DOMATION custom may đo thiết kế flow riêng
+                  </strong>
+                  , Vibecode, AI doanh nghiệp thời đại 5.0, logic quản trị doanh nghiệp và chiến lược
+                  tối ưu quảng cáo, Landing Page, chiến dịch chuyển đổi cao.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2.5 shrink-0">
@@ -153,14 +160,26 @@ export const BoostHubPage: React.FC = () => {
                   href="#articles"
                   className="btn-inkica-primary px-5 py-2.5 text-xs sm:text-sm"
                 >
-                  <span>Bài Viết Mới Nhất</span>
+                  <span>74+ Bài Blog SEO</span>
                   <ArrowRight className="w-4 h-4" />
+                </a>
+                <a
+                  href="#seo-clusters"
+                  className="ql-btn-outline px-4 py-2.5 text-xs sm:text-sm"
+                >
+                  <span>Cụm Từ Khóa SEO</span>
                 </a>
                 <a
                   href="#pain-points"
                   className="ql-btn-outline px-4 py-2.5 text-xs sm:text-sm"
                 >
                   <span>Theo Ngành Nghề</span>
+                </a>
+                <a
+                  href="#faq"
+                  className="ql-btn-outline px-4 py-2.5 text-xs sm:text-sm"
+                >
+                  <span>FAQ</span>
                 </a>
               </div>
             </div>
@@ -176,6 +195,9 @@ export const BoostHubPage: React.FC = () => {
                   <img
                     src={featuredArticle.coverImage}
                     alt={featuredArticle.coverAlt}
+                    width={1376}
+                    height={768}
+                    fetchPriority="high"
                     className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                   />
                   <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/95 text-[#1E40FF] text-[11px] font-bold border border-blue-200 shadow-xs">
@@ -189,7 +211,7 @@ export const BoostHubPage: React.FC = () => {
                       <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1E40FF] font-bold">
                         Tiêu Điểm Mới Nhất
                       </span>
-                      <span className="font-semibold text-[#0284C7]">
+                      <span className="font-semibold text-[#0369A1]">
                         {featuredArticle.pillarLabel}
                       </span>
                     </div>
@@ -348,6 +370,8 @@ export const BoostHubPage: React.FC = () => {
                           <img
                             src={art.coverImage}
                             alt={art.coverAlt}
+                            width={1376}
+                            height={768}
                             loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
@@ -358,7 +382,7 @@ export const BoostHubPage: React.FC = () => {
 
                         <div className="p-5 space-y-3">
                           <div className="flex items-center justify-between gap-2 text-[11px]">
-                            <span className="font-bold text-[#0284C7]">{art.pillarLabel}</span>
+                            <span className="font-bold text-[#0369A1]">{art.pillarLabel}</span>
                             <span className="inline-flex items-center gap-1 text-slate-500">
                               <Clock className="w-3 h-3" />
                               {art.readingMinutes} phút
@@ -414,7 +438,12 @@ export const BoostHubPage: React.FC = () => {
           </section>
 
           {/* ================================================================ */}
-          {/* 3. INDUSTRY PRACTICAL CHALLENGES & SOLUTIONS                     */}
+          {/* 3. CONTENT SEO CLUSTERS & 74-TOPIC KEYWORD MATRIX                */}
+          {/* ================================================================ */}
+          <BoostSeoClusterSection />
+
+          {/* ================================================================ */}
+          {/* 4. INDUSTRY PRACTICAL CHALLENGES & SOLUTIONS                     */}
           {/* ================================================================ */}
           <section id="pain-points" className="space-y-6 scroll-mt-24 pt-2">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -598,12 +627,14 @@ export const BoostHubPage: React.FC = () => {
           </section>
 
           {/* Visible FAQ Section */}
-          <FaqAccordionSection
-            faqs={BOOST_FAQS}
-            className="!px-0 !py-0"
-            heading="Câu Hỏi Thường Gặp"
-            subtitle="Giải đáp nhanh về nội dung chuyên mục và cách đặt lịch tư vấn kiến trúc giải pháp cùng DOMATION."
-          />
+          <div className="scroll-mt-24">
+            <FaqAccordionSection
+              faqs={BOOST_FAQS}
+              className="!px-0 !py-0"
+              heading="Câu Hỏi Thường Gặp Về Blog, SEO & ERP May Đo"
+              subtitle="Giải đáp nhanh về nội dung chuyên mục, chiến lược SEO Cluster và cách đặt lịch tư vấn ERP may đo cùng DOMATION."
+            />
+          </div>
 
           {/* Bottom Consultation CTA */}
           <section className="rounded-[28px] bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white p-7 sm:p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -613,10 +644,12 @@ export const BoostHubPage: React.FC = () => {
                 <span>TRIỂN KHAI THỰC TẾ CHO DOANH NGHIỆP CỦA BẠN</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                Cần Tư Vấn Kiến Trúc Hệ Thống Phù Hợp Với Doanh Nghiệp Của Bạn?
+                Cần Thiết Kế Hệ Thống Vận Hành Custom May Đo &amp; Flow Riêng?
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Đặt lịch trao đổi 1-1 cùng Solution Architect của DOMATION để thiết kế luồng Auto Chia Data, ERP 5.0, CRM MISA, trợ lý AI hoặc Website thương hiệu may đo riêng.
+                Đặt lịch trao đổi 1-1 cùng Solution Architect của DOMATION để may đo ERP 5.0,
+                CRM MISA, luồng Auto Chia Data, Vibecode AI Agent hoặc hệ thống tối ưu quảng cáo
+                &amp; Landing Page chuyển đổi cao cho doanh nghiệp của bạn.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
@@ -624,8 +657,8 @@ export const BoostHubPage: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setContactDefaults({
-                    service: 'Tư vấn Chuyển đổi số & Hạ tầng Dữ liệu Riêng',
-                    note: 'Liên hệ từ trang Tin tức DOMATION — Muốn khảo sát giải pháp theo ngành',
+                    service: 'Enterprise ERP 5.0 (12 Phân hệ • Chấm công GPS & Payroll)',
+                    note: 'Liên hệ từ Blog DOMATION (/boost) — Muốn tư vấn ERP may đo & thiết kế flow riêng',
                   });
                   setContactOpen(true);
                 }}

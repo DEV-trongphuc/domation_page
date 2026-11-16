@@ -109,6 +109,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Có. Đội ngũ DOMATION chuyên thiết kế kiến trúc Bespoke Multi-Agent kết hợp xử lý tài liệu, ảnh 3D WebGL và tự động hóa quy trình theo đặc thù từng ngành.',
       },
+      {
+        question: 'Multi-Agent AI Prepress có kiểm tra lỗi file in hoặc kích thước 3D CAD trước khi xuất?',
+        answer:
+          'Có. Tác nhân kiểm thử (QA Agent) tự đối chiếu độ phân giải, hệ màu và thông số BOM trước khi chuyển file sang bộ phận sản xuất.',
+      },
     ],
   },
   {
@@ -218,6 +223,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Có. Hệ thống hỗ trợ giỏ hàng real-time (khóa sản phẩm/căn hộ tức thì chống đặt trùng) và công thức tính hoa hồng tự động theo cấp bậc cộng tác viên/đại lý.',
       },
+      {
+        question: 'Khi đơn hàng hoàn hủy trong CRM thì hóa đơn MISA và công nợ cập nhật ra sao?',
+        answer:
+          'Webhook hai chiều tự động phát hành phiếu điều chỉnh hoặc hủy hóa đơn nháp trên MISA và cập nhật lại công nợ ròng trong thời gian thực.',
+      },
     ],
   },
   {
@@ -319,6 +329,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         question: 'Khi doanh nghiệp mở rộng quy mô hoặc đổi quy trình sau 1 năm thì hệ thống may đo có sửa được không?',
         answer:
           'Hoàn toàn linh hoạt. Kiến trúc module của DOMATION cho phép mở rộng thêm phân hệ mới hoặc điều chỉnh bậc phê duyệt mà không làm gián đoạn dữ liệu lịch sử.',
+      },
+      {
+        question: 'Tại sao hệ thống ERP may đo có tỷ lệ nhân viên sử dụng cao hơn phần mềm đóng gói?',
+        answer:
+          'Vì giao diện, trường dữ liệu và luồng duyệt đơn được thiết kế khớp 100% quy trình thật của công ty, bỏ hết nút thừa gây rối nhân sự.',
       },
     ],
   },
@@ -422,6 +437,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Có. Hệ thống gắn Device ID chống mượn máy chấm hộ, và khi nhân viên đổi điện thoại chỉ cần HR bấm Reset thiết bị 1 chạm trong trang quản trị.',
       },
+      {
+        question: 'Nhân viên đi gặp khách ngoài thị trường mất mạng có chấm công GPS được không?',
+        answer:
+          'Ứng dụng lưu tạm tọa độ + ảnh Selfie kèm timestamp thiết bị có chữ ký bảo mật và tự đồng bộ ngay khi điện thoại kết nối 4G/Wi-Fi trở lại.',
+      },
     ],
   },
   {
@@ -518,6 +538,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Có. Ngoài Nghỉ phép, OT, Tạm ứng và PO, DOMATION có thể thêm biểu mẫu Đề xuất thiết bị, Đề xuất chi ngân sách Marketing hoặc Phê duyệt hợp đồng theo đúng mẫu nội bộ của doanh nghiệp.',
       },
+      {
+        question: 'Sếp đi công tác có thể duyệt đơn PO hoặc tạm ứng ngay trên Zalo không?',
+        answer:
+          'Có. Hệ thống đẩy thông báo duyệt nhanh kèm tóm tắt hạn mức ngân sách qua Zalo/App giúp lãnh đạo phê duyệt chỉ với 1 chạm.',
+      },
     ],
   },
   {
@@ -525,7 +550,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     number: '18',
     slug: 'bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm',
     title: 'Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report',
-    seoTitle: 'Báo Cáo Meta Ads Realtime Đối Chiếu Doanh Thu Thực CRM | DOMATION',
+    seoTitle: 'Báo Cáo Meta Ads Realtime Đối Chiếu Doanh Thu CRM | DOMATION',
     metaDescription:
       'Tránh bẫy giá Lead rẻ nhưng không có đơn hàng bằng hệ thống Meta Ad Realtime Report kết nối trực tiếp Facebook Graph API với dữ liệu Qualified & Cọc trên CRM.',
     focusKeyword: 'báo cáo meta ads realtime đối chiếu crm',
@@ -619,6 +644,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         question: 'Sếp không rành giao diện phức tạp của Facebook Business Manager có xem được báo cáo này không?',
         answer:
           'Hoàn toàn được. Cổng Meta Ad Realtime Report thiết kế riêng cho Chủ doanh nghiệp & Quản lý xem nhanh Spend, Số Lead Thiện chí, Doanh thu thực và ROAS chỉ trên 1 màn hình tiếng Việt.',
+      },
+      {
+        question: 'Dữ liệu Meta Ads được làm mới bao lâu một lần so với số chốt thực tế trong CRM?',
+        answer:
+          'Graph API đồng bộ chi phí quảng cáo theo chu kỳ 15 phút và ghép khớp trực tiếp bằng Campaign/AdSet ID với doanh thu chốt đơn thật trong CRM.',
       },
     ],
   },
@@ -717,6 +747,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Đó thường là những video dùng câu Hook giật gân/hài hước không liên quan đến sản phẩm nên thu hút người xem tò mò nhưng không phải tệp mua hàng. Kết hợp Hook Rate với CRM Qualified Rate giúp nhận diện ngay tình huống này.',
       },
+      {
+        question: 'Ngưỡng tần suất (Frequency) bao nhiêu thì nên thay Creative Video mới?',
+        answer:
+          'Khi Frequency vượt 2.8–3.2 và CTR giảm liên tục 3 ngày, bảng cảnh báo Creative Fatigue gợi ý xoay vòng Hook 3 giây mới hoặc chuyển sang tệp Lookalike khác.',
+      },
     ],
   },
   {
@@ -813,6 +848,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Bộ lọc Regex & AI Pre-scorer tự động đánh dấu số không hợp lệ vào hàng đợi kiểm tra, không đẩy làm nhiễu vòng chia Round-Robin của đội Sale.',
       },
+      {
+        question: 'Lead trùng từ nhiều chiến dịch quảng cáo khác nhau được xử lý ra sao?',
+        answer:
+          'Hệ thống giữ nguyên người Sale đang chăm sóc lịch sử, tự động gắn thêm tag chiến dịch mới và cộng ghi chú tái tương tác để không tốn ngân sách chia lại.',
+      },
     ],
   },
   {
@@ -887,7 +927,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
       },
       {
         step: '03',
-        title: 'Xây dựng Hệ Sinh Thái 50 Chủ Đề SEO & 24+ Singlepost Liên Kết Nội Bộ',
+        title: 'Xây dựng Hệ Sinh Thái 12 Cụm Cluster & 74+ Bài Blog Liên Kết Nội Bộ',
         detail: 'Mỗi bài viết giải quyết một nỗi đau ngành nghề cụ thể và trỏ liên kết nội bộ về đúng chuyên trang giải pháp.',
         techStack: 'Hub & Spoke Internal Linking',
       },
@@ -904,13 +944,13 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
       },
     ],
     metricsOutcome: [
-      { label: 'Chủ đề SEO quy hoạch', value: '50 Chủ đề chuẩn' },
+      { label: 'Chủ đề SEO quy hoạch', value: '74 Chủ đề chuẩn' },
       { label: 'Chuẩn AI Crawler', value: 'llms.txt + JSON-LD' },
       { label: 'Độ phủ Intent', value: 'TOFU • MOFU • BOFU' },
     ],
     relatedPortfolioId: 'turnio-executive-portal',
     relatedModuleUrl: '/boost',
-    relatedModuleLabel: 'Xem Trọn Bộ 50 Chủ Đề & Từ Khóa SEO Trên /boost',
+    relatedModuleLabel: 'Xem Trọn Bộ 74 Chủ Đề & 12 Cụm SEO Trên Blog /boost',
     faqs: [
       {
         question: 'GEO (Generative Engine Optimization) khác gì so với SEO truyền thống?',
@@ -918,7 +958,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
           'SEO tập trung tối ưu từ khóa và kỹ thuật web để xếp hạng cao trên danh sách link Google. GEO bổ sung cấu trúc dữ liệu, bằng chứng định lượng, tóm tắt Direct-Answer và file `llms.txt` để các AI như ChatGPT, Perplexity và Google AI Overview trích dẫn trực tiếp thương hiệu của bạn.',
       },
       {
-        question: 'Bao lâu thì chiến lược 50 chủ đề SEO theo nỗi đau ngành phát huy hiệu quả?',
+        question: 'Bao lâu thì chiến lược 12 Cụm Cluster & 74 chủ đề SEO theo nỗi đau ngành phát huy hiệu quả?',
         answer:
           'Các từ khóa ngách giải quyết nỗi đau cụ thể (Long-tail Pain Point) thường bắt đầu lên trang 1 sau 4–8 tuần nếu hạ tầng kỹ thuật SEO sạch và liên kết nội bộ chặt chẽ.',
       },
@@ -1017,6 +1057,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         question: 'Gói Starter và Growth của DOMATION hỗ trợ bao nhiêu Email mỗi tháng?',
         answer:
           'Gói Starter (2.990.000₫/tháng) hỗ trợ 100.000 Email/tháng; gói Growth (4.990.000₫/tháng) hỗ trợ 500.000 Email/tháng với SMTP riêng; gói Bespoke Enterprise không giới hạn khối lượng.',
+      },
+      {
+        question: 'Làm sao cấu hình SPF, DKIM và DMARC để Email không bị rơi vào tab Spam?',
+        answer:
+          'Kỹ sư DOMATION xác thực tên miền gửi riêng trên Amazon SES, cấu hình DMARC alignment và tách luồng Email giao dịch khỏi Email chiến dịch hàng loạt.',
       },
     ],
   },
@@ -1120,13 +1165,18 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         answer:
           'Từ năm thứ 2, doanh nghiệp chỉ trả chi phí hạ tầng cho nhà cung cấp tên miền (~550.000₫/năm) và Hosting (660.000₫ – 1.500.000₫/năm tùy quy mô module), không thu thêm phí bản quyền ẩn.',
       },
+      {
+        question: 'Website do DOMATION thiết kế có đạt 100 điểm Core Web Vitals & SEO kỹ thuật?',
+        answer:
+          'Có. Toàn bộ trang được pre-render HTML tĩnh chuẩn Schema JSON-LD, tối ưu LCP ảnh thế hệ mới và gắn sẵn Tracking Server-side chuyển đổi.',
+      },
     ],
   },
   {
     id: 'art-24',
     number: '24',
     slug: 'trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat',
-    title: 'Triển khai Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật & tránh chồng chéo',
+    title: 'Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật & chống chồng chéo',
     seoTitle: 'Multi-Agent AI Liên Phòng Ban & Bảo Mật Nội Bộ | DOMATION',
     metaDescription:
       'Cách thiết kế Orchestrator Core điều phối 4 AI Agent (Lead, CSKH, ERP/HR, Revenue) vận hành 24/7 không chồng chéo quyền hạn và bảo mật dữ liệu nội bộ.',
@@ -1215,6 +1265,11 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
         question: 'Dữ liệu tài liệu nội bộ nạp cho AI có bị dùng để train mô hình AI công cộng không?',
         answer:
           'Không. DOMATION sử dụng Enterprise API và vector index riêng cho từng doanh nghiệp, dữ liệu chỉ phục vụ truy xuất ngữ cảnh nội bộ của chính doanh nghiệp đó.',
+      },
+      {
+        question: 'Làm sao kiểm soát chi phí token và độ chính xác khi nhiều phòng ban cùng dùng Multi-Agent AI?',
+        answer:
+          'Hệ thống gán quota token theo từng Workspace phòng ban, lưu audit log câu trả lời kèm trích dẫn tài liệu nguồn để kiểm chứng tức thì.',
       },
     ],
   },

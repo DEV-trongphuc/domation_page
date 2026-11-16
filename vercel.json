@@ -53,6 +53,48 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/blog",
+      "destination": "/boost",
+      "permanent": true
+    },
+    {
+      "source": "/blog/",
+      "destination": "/boost",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/boost/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/bai-viet",
+      "destination": "/boost",
+      "permanent": true
+    },
+    {
+      "source": "/bai-viet/",
+      "destination": "/boost",
+      "permanent": true
+    },
+    {
+      "source": "/bai-viet/:slug",
+      "destination": "/boost/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/ideas-erp",
+      "destination": "/erp",
+      "permanent": true
+    },
+    {
+      "source": "/ideas-erp/",
+      "destination": "/erp",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/crm",
@@ -77,26 +119,6 @@
     {
       "source": "/data/",
       "destination": "/data/index.html"
-    },
-    {
-      "source": "/data/:slug",
-      "destination": "/data/index.html"
-    },
-    {
-      "source": "/data/:slug/",
-      "destination": "/data/index.html"
-    },
-    {
-      "source": "/data/:slug/:subpath*",
-      "destination": "/data/index.html"
-    },
-    {
-      "source": "/api/v1/:path*",
-      "destination": "/api/autodata?__v1_path=:path*"
-    },
-    {
-      "source": "/v1/:path*",
-      "destination": "/api/autodata?__raw_v1_path=:path*"
     },
     {
       "source": "/automation",
@@ -145,6 +167,26 @@
     {
       "source": "/boost/",
       "destination": "/boost/index.html"
+    },
+    {
+      "source": "/404",
+      "destination": "/404/index.html"
+    },
+    {
+      "source": "/404/",
+      "destination": "/404/index.html"
+    },
+    {
+      "source": "/404.html",
+      "destination": "/404.html"
+    },
+    {
+      "source": "/magnific",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/magnific/",
+      "destination": "/index.html"
     },
     {
       "source": "/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds",
@@ -339,36 +381,404 @@
       "destination": "/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat/index.html"
     },
     {
-      "source": "/boost/:slug",
-      "destination": "/index.html"
+      "source": "/boost/erp-may-do-cho-doanh-nghiep-thoi-dai-moi-thiet-ke-flow-rieng",
+      "destination": "/boost/erp-may-do-cho-doanh-nghiep-thoi-dai-moi-thiet-ke-flow-rieng/index.html"
     },
     {
-      "source": "/bai-viet",
-      "destination": "/boost/index.html"
+      "source": "/boost/erp-may-do-cho-doanh-nghiep-thoi-dai-moi-thiet-ke-flow-rieng/",
+      "destination": "/boost/erp-may-do-cho-doanh-nghiep-thoi-dai-moi-thiet-ke-flow-rieng/index.html"
     },
     {
-      "source": "/bai-viet/",
-      "destination": "/boost/index.html"
+      "source": "/boost/logic-van-hanh-quan-tri-doanh-nghiep-50-ket-noi-lien-mach",
+      "destination": "/boost/logic-van-hanh-quan-tri-doanh-nghiep-50-ket-noi-lien-mach/index.html"
     },
     {
-      "source": "/bai-viet/:slug",
-      "destination": "/index.html"
+      "source": "/boost/logic-van-hanh-quan-tri-doanh-nghiep-50-ket-noi-lien-mach/",
+      "destination": "/boost/logic-van-hanh-quan-tri-doanh-nghiep-50-ket-noi-lien-mach/index.html"
     },
     {
-      "source": "/blog",
-      "destination": "/boost/index.html"
+      "source": "/boost/phan-mem-tinh-luong-tu-dong-xuat-pdf-payroll-engine-erp",
+      "destination": "/boost/phan-mem-tinh-luong-tu-dong-xuat-pdf-payroll-engine-erp/index.html"
     },
     {
-      "source": "/blog/",
-      "destination": "/boost/index.html"
+      "source": "/boost/phan-mem-tinh-luong-tu-dong-xuat-pdf-payroll-engine-erp/",
+      "destination": "/boost/phan-mem-tinh-luong-tu-dong-xuat-pdf-payroll-engine-erp/index.html"
     },
     {
-      "source": "/blog/:slug",
-      "destination": "/index.html"
+      "source": "/boost/quan-tri-kpi-okr-phong-ban-gan-task-kanban-erp-50",
+      "destination": "/boost/quan-tri-kpi-okr-phong-ban-gan-task-kanban-erp-50/index.html"
     },
     {
-      "source": "/((?!api/|imgs/|assets/|uploads/|ERP-Product/|landingpage_avatar/|crm_imgs/|meta/|CHIA(?:%20|\\s)DATA/|domation-logo\\.svg|favicon\\.svg|icons\\.svg|magnific_proxy\\.php|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|crm/index\\.html|data/index\\.html|erp/index\\.html|automation/index\\.html|meta-report/index\\.html|web-design/index\\.html|ideas/index\\.html|portfolio/index\\.html|boost/.*index\\.html).*)",
-      "destination": "/index.html"
+      "source": "/boost/quan-tri-kpi-okr-phong-ban-gan-task-kanban-erp-50/",
+      "destination": "/boost/quan-tri-kpi-okr-phong-ban-gan-task-kanban-erp-50/index.html"
+    },
+    {
+      "source": "/boost/kiem-soat-chi-phi-van-hanh-purchase-order-chong-vuot-ngan-sach",
+      "destination": "/boost/kiem-soat-chi-phi-van-hanh-purchase-order-chong-vuot-ngan-sach/index.html"
+    },
+    {
+      "source": "/boost/kiem-soat-chi-phi-van-hanh-purchase-order-chong-vuot-ngan-sach/",
+      "destination": "/boost/kiem-soat-chi-phi-van-hanh-purchase-order-chong-vuot-ngan-sach/index.html"
+    },
+    {
+      "source": "/boost/he-thong-e-learning-dao-tao-sale-noi-bo-onboarding-erp",
+      "destination": "/boost/he-thong-e-learning-dao-tao-sale-noi-bo-onboarding-erp/index.html"
+    },
+    {
+      "source": "/boost/he-thong-e-learning-dao-tao-sale-noi-bo-onboarding-erp/",
+      "destination": "/boost/he-thong-e-learning-dao-tao-sale-noi-bo-onboarding-erp/index.html"
+    },
+    {
+      "source": "/boost/chi-phi-trien-khai-erp-may-do-doanh-nghiep-vua-va-nho-roi",
+      "destination": "/boost/chi-phi-trien-khai-erp-may-do-doanh-nghiep-vua-va-nho-roi/index.html"
+    },
+    {
+      "source": "/boost/chi-phi-trien-khai-erp-may-do-doanh-nghiep-vua-va-nho-roi/",
+      "destination": "/boost/chi-phi-trien-khai-erp-may-do-doanh-nghiep-vua-va-nho-roi/index.html"
+    },
+    {
+      "source": "/boost/he-thong-van-hanh-custom-may-do-thiet-ke-flow-rieng-domation",
+      "destination": "/boost/he-thong-van-hanh-custom-may-do-thiet-ke-flow-rieng-domation/index.html"
+    },
+    {
+      "source": "/boost/he-thong-van-hanh-custom-may-do-thiet-ke-flow-rieng-domation/",
+      "destination": "/boost/he-thong-van-hanh-custom-may-do-thiet-ke-flow-rieng-domation/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-he-thong-van-hanh-thoi-dai-moi-du-lieu-mot-cua",
+      "destination": "/boost/toi-uu-he-thong-van-hanh-thoi-dai-moi-du-lieu-mot-cua/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-he-thong-van-hanh-thoi-dai-moi-du-lieu-mot-cua/",
+      "destination": "/boost/toi-uu-he-thong-van-hanh-thoi-dai-moi-du-lieu-mot-cua/index.html"
+    },
+    {
+      "source": "/boost/so-sanh-erp-dong-goi-va-domation-erp-50-may-do-viet-nam",
+      "destination": "/boost/so-sanh-erp-dong-goi-va-domation-erp-50-may-do-viet-nam/index.html"
+    },
+    {
+      "source": "/boost/so-sanh-erp-dong-goi-va-domation-erp-50-may-do-viet-nam/",
+      "destination": "/boost/so-sanh-erp-dong-goi-va-domation-erp-50-may-do-viet-nam/index.html"
+    },
+    {
+      "source": "/boost/vibecode-la-gi-ung-dung-vibecode-xay-phan-mem-doanh-nghiep-50",
+      "destination": "/boost/vibecode-la-gi-ung-dung-vibecode-xay-phan-mem-doanh-nghiep-50/index.html"
+    },
+    {
+      "source": "/boost/vibecode-la-gi-ung-dung-vibecode-xay-phan-mem-doanh-nghiep-50/",
+      "destination": "/boost/vibecode-la-gi-ung-dung-vibecode-xay-phan-mem-doanh-nghiep-50/index.html"
+    },
+    {
+      "source": "/boost/vibecode-erp-crm-custom-dua-quy-trinh-vao-van-hanh-14-ngay",
+      "destination": "/boost/vibecode-erp-crm-custom-dua-quy-trinh-vao-van-hanh-14-ngay/index.html"
+    },
+    {
+      "source": "/boost/vibecode-erp-crm-custom-dua-quy-trinh-vao-van-hanh-14-ngay/",
+      "destination": "/boost/vibecode-erp-crm-custom-dua-quy-trinh-vao-van-hanh-14-ngay/index.html"
+    },
+    {
+      "source": "/boost/vibecode-vs-low-code-no-code-he-thong-loi-doanh-nghiep",
+      "destination": "/boost/vibecode-vs-low-code-no-code-he-thong-loi-doanh-nghiep/index.html"
+    },
+    {
+      "source": "/boost/vibecode-vs-low-code-no-code-he-thong-loi-doanh-nghiep/",
+      "destination": "/boost/vibecode-vs-low-code-no-code-he-thong-loi-doanh-nghiep/index.html"
+    },
+    {
+      "source": "/boost/vibecode-landing-page-chuyen-doi-cao-chuan-seo-meta-capi",
+      "destination": "/boost/vibecode-landing-page-chuyen-doi-cao-chuan-seo-meta-capi/index.html"
+    },
+    {
+      "source": "/boost/vibecode-landing-page-chuyen-doi-cao-chuan-seo-meta-capi/",
+      "destination": "/boost/vibecode-landing-page-chuyen-doi-cao-chuan-seo-meta-capi/index.html"
+    },
+    {
+      "source": "/boost/ai-doanh-nghiep-thoi-dai-50-he-dieu-hanh-multi-agent-tu-tri",
+      "destination": "/boost/ai-doanh-nghiep-thoi-dai-50-he-dieu-hanh-multi-agent-tu-tri/index.html"
+    },
+    {
+      "source": "/boost/ai-doanh-nghiep-thoi-dai-50-he-dieu-hanh-multi-agent-tu-tri/",
+      "destination": "/boost/ai-doanh-nghiep-thoi-dai-50-he-dieu-hanh-multi-agent-tu-tri/index.html"
+    },
+    {
+      "source": "/boost/ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan",
+      "destination": "/boost/ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan/index.html"
+    },
+    {
+      "source": "/boost/ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan/",
+      "destination": "/boost/ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan/index.html"
+    },
+    {
+      "source": "/boost/chatbot-ai-da-kenh-zalo-facebook-website-telegram-hop-nhat",
+      "destination": "/boost/chatbot-ai-da-kenh-zalo-facebook-website-telegram-hop-nhat/index.html"
+    },
+    {
+      "source": "/boost/chatbot-ai-da-kenh-zalo-facebook-website-telegram-hop-nhat/",
+      "destination": "/boost/chatbot-ai-da-kenh-zalo-facebook-website-telegram-hop-nhat/index.html"
+    },
+    {
+      "source": "/boost/tro-ly-ai-tu-van-bat-dong-san-24-7-tinh-dong-tien-can-ho",
+      "destination": "/boost/tro-ly-ai-tu-van-bat-dong-san-24-7-tinh-dong-tien-can-ho/index.html"
+    },
+    {
+      "source": "/boost/tro-ly-ai-tu-van-bat-dong-san-24-7-tinh-dong-tien-can-ho/",
+      "destination": "/boost/tro-ly-ai-tu-van-bat-dong-san-24-7-tinh-dong-tien-can-ho/index.html"
+    },
+    {
+      "source": "/boost/ai-tom-tat-hoi-thoai-chuyen-crm-human-handover",
+      "destination": "/boost/ai-tom-tat-hoi-thoai-chuyen-crm-human-handover/index.html"
+    },
+    {
+      "source": "/boost/ai-tom-tat-hoi-thoai-chuyen-crm-human-handover/",
+      "destination": "/boost/ai-tom-tat-hoi-thoai-chuyen-crm-human-handover/index.html"
+    },
+    {
+      "source": "/boost/checklist-bao-mat-du-lieu-doanh-nghiep-ai-rag-noi-bo",
+      "destination": "/boost/checklist-bao-mat-du-lieu-doanh-nghiep-ai-rag-noi-bo/index.html"
+    },
+    {
+      "source": "/boost/checklist-bao-mat-du-lieu-doanh-nghiep-ai-rag-noi-bo/",
+      "destination": "/boost/checklist-bao-mat-du-lieu-doanh-nghiep-ai-rag-noi-bo/index.html"
+    },
+    {
+      "source": "/boost/so-sanh-chia-lead-zalobot-telegram-bot-va-google-sheet",
+      "destination": "/boost/so-sanh-chia-lead-zalobot-telegram-bot-va-google-sheet/index.html"
+    },
+    {
+      "source": "/boost/so-sanh-chia-lead-zalobot-telegram-bot-va-google-sheet/",
+      "destination": "/boost/so-sanh-chia-lead-zalobot-telegram-bot-va-google-sheet/index.html"
+    },
+    {
+      "source": "/boost/dong-bo-tiktok-instant-form-ladipage-ve-zalo-crm-auto-data",
+      "destination": "/boost/dong-bo-tiktok-instant-form-ladipage-ve-zalo-crm-auto-data/index.html"
+    },
+    {
+      "source": "/boost/dong-bo-tiktok-instant-form-ladipage-ve-zalo-crm-auto-data/",
+      "destination": "/boost/dong-bo-tiktok-instant-form-ladipage-ve-zalo-crm-auto-data/index.html"
+    },
+    {
+      "source": "/boost/ai-pre-scorer-cham-diem-thien-chi-lead-truoc-khi-giao-sale",
+      "destination": "/boost/ai-pre-scorer-cham-diem-thien-chi-lead-truoc-khi-giao-sale/index.html"
+    },
+    {
+      "source": "/boost/ai-pre-scorer-cham-diem-thien-chi-lead-truoc-khi-giao-sale/",
+      "destination": "/boost/ai-pre-scorer-cham-diem-thien-chi-lead-truoc-khi-giao-sale/index.html"
+    },
+    {
+      "source": "/boost/bao-cao-chia-data-sla-cuoi-ngay-tu-dong-zalo-bot",
+      "destination": "/boost/bao-cao-chia-data-sla-cuoi-ngay-tu-dong-zalo-bot/index.html"
+    },
+    {
+      "source": "/boost/bao-cao-chia-data-sla-cuoi-ngay-tu-dong-zalo-bot/",
+      "destination": "/boost/bao-cao-chia-data-sla-cuoi-ngay-tu-dong-zalo-bot/index.html"
+    },
+    {
+      "source": "/boost/crm-pipeline-kanban-8-nac-rao-can-ttl1-chong-sot-lead",
+      "destination": "/boost/crm-pipeline-kanban-8-nac-rao-can-ttl1-chong-sot-lead/index.html"
+    },
+    {
+      "source": "/boost/crm-pipeline-kanban-8-nac-rao-can-ttl1-chong-sot-lead/",
+      "destination": "/boost/crm-pipeline-kanban-8-nac-rao-can-ttl1-chong-sot-lead/index.html"
+    },
+    {
+      "source": "/boost/quan-ly-gio-hang-bat-dong-san-real-time-chia-hoa-hong-crm",
+      "destination": "/boost/quan-ly-gio-hang-bat-dong-san-real-time-chia-hoa-hong-crm/index.html"
+    },
+    {
+      "source": "/boost/quan-ly-gio-hang-bat-dong-san-real-time-chia-hoa-hong-crm/",
+      "destination": "/boost/quan-ly-gio-hang-bat-dong-san-real-time-chia-hoa-hong-crm/index.html"
+    },
+    {
+      "source": "/boost/ho-so-khach-hang-360-do-cdp-hop-nhat-da-kenh-crm",
+      "destination": "/boost/ho-so-khach-hang-360-do-cdp-hop-nhat-da-kenh-crm/index.html"
+    },
+    {
+      "source": "/boost/ho-so-khach-hang-360-do-cdp-hop-nhat-da-kenh-crm/",
+      "destination": "/boost/ho-so-khach-hang-360-do-cdp-hop-nhat-da-kenh-crm/index.html"
+    },
+    {
+      "source": "/boost/phan-loai-khach-hang-nong-am-lanh-crm-toi-uu-ty-le-chot",
+      "destination": "/boost/phan-loai-khach-hang-nong-am-lanh-crm-toi-uu-ty-le-chot/index.html"
+    },
+    {
+      "source": "/boost/phan-loai-khach-hang-nong-am-lanh-crm-toi-uu-ty-le-chot/",
+      "destination": "/boost/phan-loai-khach-hang-nong-am-lanh-crm-toi-uu-ty-le-chot/index.html"
+    },
+    {
+      "source": "/boost/so-sanh-crm-may-do-va-crm-dong-goi-doanh-nghiep-viet",
+      "destination": "/boost/so-sanh-crm-may-do-va-crm-dong-goi-doanh-nghiep-viet/index.html"
+    },
+    {
+      "source": "/boost/so-sanh-crm-may-do-va-crm-dong-goi-doanh-nghiep-viet/",
+      "destination": "/boost/so-sanh-crm-may-do-va-crm-dong-goi-doanh-nghiep-viet/index.html"
+    },
+    {
+      "source": "/boost/thiet-ke-flow-rieng-theo-mo-hinh-kinh-doanh-if-else-logic",
+      "destination": "/boost/thiet-ke-flow-rieng-theo-mo-hinh-kinh-doanh-if-else-logic/index.html"
+    },
+    {
+      "source": "/boost/thiet-ke-flow-rieng-theo-mo-hinh-kinh-doanh-if-else-logic/",
+      "destination": "/boost/thiet-ke-flow-rieng-theo-mo-hinh-kinh-doanh-if-else-logic/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-quang-cao-da-kenh-meta-tiktok-google-du-lieu-crm",
+      "destination": "/boost/toi-uu-quang-cao-da-kenh-meta-tiktok-google-du-lieu-crm/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-quang-cao-da-kenh-meta-tiktok-google-du-lieu-crm/",
+      "destination": "/boost/toi-uu-quang-cao-da-kenh-meta-tiktok-google-du-lieu-crm/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-landing-page-chay-quang-cao-ty-le-chuyen-doi-cao",
+      "destination": "/boost/toi-uu-landing-page-chay-quang-cao-ty-le-chuyen-doi-cao/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-landing-page-chay-quang-cao-ty-le-chuyen-doi-cao/",
+      "destination": "/boost/toi-uu-landing-page-chay-quang-cao-ty-le-chuyen-doi-cao/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-chien-dich-quang-cao-pheu-nuoi-duong-retargeting",
+      "destination": "/boost/toi-uu-chien-dich-quang-cao-pheu-nuoi-duong-retargeting/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-chien-dich-quang-cao-pheu-nuoi-duong-retargeting/",
+      "destination": "/boost/toi-uu-chien-dich-quang-cao-pheu-nuoi-duong-retargeting/index.html"
+    },
+    {
+      "source": "/boost/checklist-audit-website-landing-page-truoc-khi-chay-ads",
+      "destination": "/boost/checklist-audit-website-landing-page-truoc-khi-chay-ads/index.html"
+    },
+    {
+      "source": "/boost/checklist-audit-website-landing-page-truoc-khi-chay-ads/",
+      "destination": "/boost/checklist-audit-website-landing-page-truoc-khi-chay-ads/index.html"
+    },
+    {
+      "source": "/boost/phat-hien-khung-gio-vang-chot-don-admin-audit-log-meta-ads",
+      "destination": "/boost/phat-hien-khung-gio-vang-chot-don-admin-audit-log-meta-ads/index.html"
+    },
+    {
+      "source": "/boost/phat-hien-khung-gio-vang-chot-don-admin-audit-log-meta-ads/",
+      "destination": "/boost/phat-hien-khung-gio-vang-chot-don-admin-audit-log-meta-ads/index.html"
+    },
+    {
+      "source": "/boost/kich-ban-gui-zalo-zns-tu-dong-hau-mai-nhac-thanh-toan",
+      "destination": "/boost/kich-ban-gui-zalo-zns-tu-dong-hau-mai-nhac-thanh-toan/index.html"
+    },
+    {
+      "source": "/boost/kich-ban-gui-zalo-zns-tu-dong-hau-mai-nhac-thanh-toan/",
+      "destination": "/boost/kich-ban-gui-zalo-zns-tu-dong-hau-mai-nhac-thanh-toan/index.html"
+    },
+    {
+      "source": "/boost/5-kich-ban-marketing-automation-cho-doanh-nghiep-ra-don",
+      "destination": "/boost/5-kich-ban-marketing-automation-cho-doanh-nghiep-ra-don/index.html"
+    },
+    {
+      "source": "/boost/5-kich-ban-marketing-automation-cho-doanh-nghiep-ra-don/",
+      "destination": "/boost/5-kich-ban-marketing-automation-cho-doanh-nghiep-ra-don/index.html"
+    },
+    {
+      "source": "/boost/web-tracking-hanh-vi-khach-hang-an-danh-xem-bang-gia",
+      "destination": "/boost/web-tracking-hanh-vi-khach-hang-an-danh-xem-bang-gia/index.html"
+    },
+    {
+      "source": "/boost/web-tracking-hanh-vi-khach-hang-an-danh-xem-bang-gia/",
+      "destination": "/boost/web-tracking-hanh-vi-khach-hang-an-danh-xem-bang-gia/index.html"
+    },
+    {
+      "source": "/boost/tu-dong-tang-voucher-sinh-nhat-loyalty-khach-vip-voucher-hub",
+      "destination": "/boost/tu-dong-tang-voucher-sinh-nhat-loyalty-khach-vip-voucher-hub/index.html"
+    },
+    {
+      "source": "/boost/tu-dong-tang-voucher-sinh-nhat-loyalty-khach-vip-voucher-hub/",
+      "destination": "/boost/tu-dong-tang-voucher-sinh-nhat-loyalty-khach-vip-voucher-hub/index.html"
+    },
+    {
+      "source": "/boost/landing-page-ab-testing-server-side-tracking-doanh-thu-crm",
+      "destination": "/boost/landing-page-ab-testing-server-side-tracking-doanh-thu-crm/index.html"
+    },
+    {
+      "source": "/boost/landing-page-ab-testing-server-side-tracking-doanh-thu-crm/",
+      "destination": "/boost/landing-page-ab-testing-server-side-tracking-doanh-thu-crm/index.html"
+    },
+    {
+      "source": "/boost/lo-trinh-chuyen-doi-so-doanh-nghiep-sme-viet-nam-domation",
+      "destination": "/boost/lo-trinh-chuyen-doi-so-doanh-nghiep-sme-viet-nam-domation/index.html"
+    },
+    {
+      "source": "/boost/lo-trinh-chuyen-doi-so-doanh-nghiep-sme-viet-nam-domation/",
+      "destination": "/boost/lo-trinh-chuyen-doi-so-doanh-nghiep-sme-viet-nam-domation/index.html"
+    },
+    {
+      "source": "/boost/chuan-hoa-llms-txt-schema-json-ld-dua-thuong-hieu-len-ai-search",
+      "destination": "/boost/chuan-hoa-llms-txt-schema-json-ld-dua-thuong-hieu-len-ai-search/index.html"
+    },
+    {
+      "source": "/boost/chuan-hoa-llms-txt-schema-json-ld-dua-thuong-hieu-len-ai-search/",
+      "destination": "/boost/chuan-hoa-llms-txt-schema-json-ld-dua-thuong-hieu-len-ai-search/index.html"
+    },
+    {
+      "source": "/boost/xay-dung-content-seo-topic-cluster-bo-tu-khoa-ngan-dai",
+      "destination": "/boost/xay-dung-content-seo-topic-cluster-bo-tu-khoa-ngan-dai/index.html"
+    },
+    {
+      "source": "/boost/xay-dung-content-seo-topic-cluster-bo-tu-khoa-ngan-dai/",
+      "destination": "/boost/xay-dung-content-seo-topic-cluster-bo-tu-khoa-ngan-dai/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-slug-url-canonical-trang-404-chuan-seo-react-spa",
+      "destination": "/boost/toi-uu-slug-url-canonical-trang-404-chuan-seo-react-spa/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-slug-url-canonical-trang-404-chuan-seo-react-spa/",
+      "destination": "/boost/toi-uu-slug-url-canonical-trang-404-chuan-seo-react-spa/index.html"
+    },
+    {
+      "source": "/boost/dat-100-diem-google-lighthouse-seo-core-web-vitals-website",
+      "destination": "/boost/dat-100-diem-google-lighthouse-seo-core-web-vitals-website/index.html"
+    },
+    {
+      "source": "/boost/dat-100-diem-google-lighthouse-seo-core-web-vitals-website/",
+      "destination": "/boost/dat-100-diem-google-lighthouse-seo-core-web-vitals-website/index.html"
+    },
+    {
+      "source": "/boost/he-thong-quan-tri-chuoi-ban-le-franchise-thoi-dai-50",
+      "destination": "/boost/he-thong-quan-tri-chuoi-ban-le-franchise-thoi-dai-50/index.html"
+    },
+    {
+      "source": "/boost/he-thong-quan-tri-chuoi-ban-le-franchise-thoi-dai-50/",
+      "destination": "/boost/he-thong-quan-tri-chuoi-ban-le-franchise-thoi-dai-50/index.html"
+    },
+    {
+      "source": "/boost/kien-truc-api-webhook-2-chieu-erp-crm-zalo-misa-vietqr",
+      "destination": "/boost/kien-truc-api-webhook-2-chieu-erp-crm-zalo-misa-vietqr/index.html"
+    },
+    {
+      "source": "/boost/kien-truc-api-webhook-2-chieu-erp-crm-zalo-misa-vietqr/",
+      "destination": "/boost/kien-truc-api-webhook-2-chieu-erp-crm-zalo-misa-vietqr/index.html"
+    },
+    {
+      "source": "/boost/logic-phan-quyen-du-lieu-rbac-rls-doanh-nghiep-da-chi-nhanh",
+      "destination": "/boost/logic-phan-quyen-du-lieu-rbac-rls-doanh-nghiep-da-chi-nhanh/index.html"
+    },
+    {
+      "source": "/boost/logic-phan-quyen-du-lieu-rbac-rls-doanh-nghiep-da-chi-nhanh/",
+      "destination": "/boost/logic-phan-quyen-du-lieu-rbac-rls-doanh-nghiep-da-chi-nhanh/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-chi-phi-nhan-su-van-hanh-tu-dong-hoa-phe-duyet-ai",
+      "destination": "/boost/toi-uu-chi-phi-nhan-su-van-hanh-tu-dong-hoa-phe-duyet-ai/index.html"
+    },
+    {
+      "source": "/boost/toi-uu-chi-phi-nhan-su-van-hanh-tu-dong-hoa-phe-duyet-ai/",
+      "destination": "/boost/toi-uu-chi-phi-nhan-su-van-hanh-tu-dong-hoa-phe-duyet-ai/index.html"
+    },
+    {
+      "source": "/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu",
+      "destination": "/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu/index.html"
+    },
+    {
+      "source": "/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu/",
+      "destination": "/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu/index.html"
     }
   ]
 }

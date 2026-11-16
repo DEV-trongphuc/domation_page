@@ -1,10 +1,17 @@
 import { BOOST_ARTICLES_PART_1 } from './boostArticlesPart1.ts';
 import { BOOST_ARTICLES_PART_2 } from './boostArticlesPart2.ts';
+import { BOOST_ARTICLES_PART_3 } from './boostArticlesPart3.ts';
+import { BOOST_ARTICLES_PART_4 } from './boostArticlesPart4.ts';
+import { BOOST_ARTICLES_PART_5 } from './boostArticlesPart5.ts';
 import { PORTFOLIO_PROJECTS } from './portfolioData.ts';
 import type { BoostArticle } from './boostTypes.ts';
 import {
+  FOUNDER_ID,
+  ORG_ID,
   SITE_URL,
   buildArticleSchema,
+  normalizeIsoDateTime,
+  toAbsoluteUrl,
   type PageFaqItem,
   type PageSeoConfig,
 } from '../utils/seoSchema.ts';
@@ -12,23 +19,26 @@ import {
 export const BOOST_ALL_ARTICLES: BoostArticle[] = [
   ...BOOST_ARTICLES_PART_1,
   ...BOOST_ARTICLES_PART_2,
+  ...BOOST_ARTICLES_PART_3,
+  ...BOOST_ARTICLES_PART_4,
+  ...BOOST_ARTICLES_PART_5,
 ];
 
 export const BOOST_FAQS: PageFaqItem[] = [
   {
-    question: 'Chuyên mục Tin Tức & Kinh Nghiệm của DOMATION tập trung vào nội dung gì?',
+    question: 'Blog DOMATION (/boost) tập trung chia sẻ những chủ đề chuyên sâu nào?',
     answer:
-      'Chuyên mục tổng hợp các bài phân tích thực tế về triển khai hệ thống phần mềm doanh nghiệp, tự động hóa phân phối dữ liệu đa kênh, vận hành ERP/CRM tích hợp kế toán MISA, đo lường hiệu suất quảng cáo Meta Ads và ứng dụng trợ lý AI theo từng ngành nghề.',
+      'Blog DOMATION tổng hợp 74+ bài phân tích thực chiến và kế hoạch 12 Topic Cluster về: Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO, chiến dịch Automation và SEO/GEO 100 điểm.',
   },
   {
-    question: 'Các bài viết giải quyết những khó khăn vận hành thực tế nào?',
+    question: 'Tại sao DOMATION định vị là hệ thống vận hành custom may đo cho doanh nghiệp thời đại mới?',
     answer:
-      'Các bài phân tích đi thẳng vào điểm nghẽn kỹ thuật và quy trình nhân sự khi triển khai thật: độ trễ Webhook quảng cáo, Lead bị nguội khi chia thủ công, đối soát sàn đại lý, đồng bộ hóa đơn MISA hai chiều, kiểm soát AI bịa thông tin báo giá và tối ưu trải nghiệm 3D Web trên thiết bị di động.',
+      'Thay vì ép doanh nghiệp cắt gọt quy trình để vừa với phần mềm đóng gói, DOMATION sử dụng lõi 12 phân hệ ERP 5.0 kết hợp Vibecode và Visual Flow Builder để thiết kế luồng phê duyệt, chia data ZaloBot <5s, tính hoa hồng, CRM MISA và Multi-Agent AI khớp 100% cơ cấu tổ chức thực tế.',
   },
   {
-    question: 'Doanh nghiệp có thể đặt lịch tư vấn kiến trúc giải pháp riêng theo từng bài viết không?',
+    question: 'Doanh nghiệp có thể tham khảo bộ từ khóa SEO Cluster và đặt lịch tư vấn triển khai 1-1 không?',
     answer:
-      'Có. Ở mỗi bài viết và chuyên mục ngành nghề đều có nút Đặt Lịch Khảo Sát 1-1 để đội ngũ kỹ sư giải pháp DOMATION trao đổi trực tiếp dựa trên quy mô nhân sự và quy trình vận hành thực tế của doanh nghiệp bạn.',
+      'Có. Ngay trên trang Blog /boost có sẵn bản đồ 12 Content SEO Clusters (từ khóa chính–phụ, ngắn–dài) kèm nút xuất Excel và nút Đặt Lịch Khảo Sát 1-1 cùng Solution Architect của DOMATION.',
   },
 ];
 
@@ -51,7 +61,7 @@ export function getPortfolioSeoConfig(): PageSeoConfig {
   return {
     title: 'Portfolio Dự Án & Case Study Đa Ngành | DOMATION.NET',
     description:
-      'Hồ sơ triển khai thực tế của DOMATION cho 30+ doanh nghiệp: Capital House EcoLife 3D, INKICA AI 208 SKU, IDEAS ERP 5.0, Phúc Lộc Thọ ROAS 5+, Nha khoa Flora & Navastore.',
+      'Hồ sơ triển khai thực tế của DOMATION cho 30+ doanh nghiệp: Capital House EcoLife 3D, INKICA AI 208 SKU, IDEAS ERP 5.0, Phúc Lộc Thọ & Flora.',
     path: '/portfolio',
     keywords: [
       'portfolio domation',
@@ -88,53 +98,101 @@ export function getPortfolioSeoConfig(): PageSeoConfig {
 }
 
 export function getBoostHubSeoConfig(): PageSeoConfig {
+  const blogId = `${SITE_URL}/boost#blog`;
+  const itemListId = `${SITE_URL}/boost#article-list`;
   return {
-    title: 'Tin Tức & Kinh Nghiệm Triển Khai Công Nghệ Doanh Nghiệp | DOMATION',
+    title: 'Blog DOMATION | ERP May Đo, Vibecode & AI Doanh Nghiệp 5.0',
     description:
-      'Tạp chí công nghệ và kinh nghiệm triển khai thực tế từ DOMATION: tự động hóa chia Lead đa kênh, ERP 5.0, CRM MISA, tối ưu quảng cáo Meta CAPI và ứng dụng AI doanh nghiệp.',
+      'Blog kiến thức DOMATION: 74+ bài SEO chuyên sâu về ERP may đo, Vibecode, AI 5.0, logic vận hành, tối ưu quảng cáo, Landing Page & chiến dịch.',
     path: '/boost',
     keywords: [
-      'kinh nghiệm triển khai erp crm',
-      'tự động chia data zalobot telegram',
-      'meta capi ads tối ưu lead',
-      'ứng dụng ai cho doanh nghiệp b2b',
-      'chuyển đổi số đa ngành',
-      'domation tạp chí công nghệ',
+      'blog domation',
+      'erp may đo cho doanh nghiệp thời đại mới',
+      'hệ thống vận hành custom may đo',
+      'vibecode doanh nghiệp',
+      'ai doanh nghiệp thời đại 5.0',
+      'logic vận hành quản trị doanh nghiệp',
+      'tối ưu quảng cáo landing page chiến dịch',
+      'content seo topic cluster',
     ],
     ogImage: '/imgs/boost/boost-hero-growth-hub.jpg',
-    ogImageAlt: 'DOMATION — Tin Tức & Kinh Nghiệm Triển Khai Công Nghệ Doanh Nghiệp',
+    ogImageAlt: 'Blog DOMATION — ERP May Đo, Vibecode, AI 5.0 & Tối Ưu Quảng Cáo Chiến Dịch',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
-      { name: 'Tin Tức & Tri Thức', url: '/boost' },
+      { name: 'Blog DOMATION', url: '/boost' },
     ],
     faqs: BOOST_FAQS,
     jsonLd: [
       {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: 'Tin Tức & Kinh Nghiệm Triển Khai Công Nghệ Doanh Nghiệp | DOMATION',
+        name: 'Blog DOMATION — Hệ Thống Vận Hành May Đo, Vibecode & AI Doanh Nghiệp 5.0',
         url: `${SITE_URL}/boost`,
-        mainEntity: {
-          '@type': 'ItemList',
-          numberOfItems: BOOST_ALL_ARTICLES.length,
-          itemListElement: BOOST_ALL_ARTICLES.map((art, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: art.title,
-            url: `${SITE_URL}/boost/${art.slug}`,
-          })),
-        },
+        mainEntity: { '@id': blogId },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Blog',
+        '@id': blogId,
+        name: 'Blog DOMATION — Kiến Thức Vận Hành Doanh Nghiệp 5.0, ERP May Đo, Vibecode & Growth SEO',
+        description:
+          'Blog chuyên sâu 74+ bài viết và 12 Content SEO Clusters của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
+        url: `${SITE_URL}/boost`,
+        inLanguage: 'vi-VN',
+        publisher: { '@id': ORG_ID },
+        author: { '@id': FOUNDER_ID },
+        mainEntityOfPage: { '@id': `${SITE_URL}/boost#webpage` },
+        blogPost: BOOST_ALL_ARTICLES.map((art) => ({
+          '@type': 'BlogPosting',
+          '@id': `${SITE_URL}/boost/${art.slug}#article`,
+          headline: art.title,
+          description: art.metaDescription,
+          url: `${SITE_URL}/boost/${art.slug}`,
+          image: toAbsoluteUrl(art.coverImage),
+          datePublished: normalizeIsoDateTime(art.publishedAt, '08:00:00+07:00'),
+          dateModified: normalizeIsoDateTime(art.updatedAt, '09:00:00+07:00'),
+          author: { '@id': FOUNDER_ID },
+          publisher: { '@id': ORG_ID },
+        })),
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        '@id': itemListId,
+        name: `Danh sách ${BOOST_ALL_ARTICLES.length} bài Blog DOMATION`,
+        numberOfItems: BOOST_ALL_ARTICLES.length,
+        itemListElement: BOOST_ALL_ARTICLES.map((art, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: art.title,
+          url: `${SITE_URL}/boost/${art.slug}`,
+        })),
       },
     ],
   };
 }
 
 export function getSinglePostSeoConfig(article: BoostArticle): PageSeoConfig {
+  const schema = buildArticleSchema({
+    headline: article.title,
+    description: article.metaDescription,
+    path: `/boost/${article.slug}`,
+    image: article.coverImage,
+    extraImages: [article.screenshotImage],
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt,
+    keywords: [article.focusKeyword, ...article.secondaryKeywords],
+    articleSection: article.pillarLabel,
+    aboutIndustry: article.industry,
+    wordCount: computeArticleWordCount(article),
+  });
+  schema.isPartOf = { '@id': `${SITE_URL}/boost#blog` };
+
   return {
     title: article.seoTitle,
     description: article.metaDescription,
     path: `/boost/${article.slug}`,
-    keywords: [article.focusKeyword, ...article.secondaryKeywords, 'DOMATION', article.industry],
+    keywords: [article.focusKeyword, ...article.secondaryKeywords, 'Blog DOMATION', article.industry],
     ogType: 'article',
     ogImage: article.coverImage,
     ogImageAlt: article.coverAlt,
@@ -143,26 +201,12 @@ export function getSinglePostSeoConfig(article: BoostArticle): PageSeoConfig {
     section: article.pillarLabel,
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
-      { name: 'Tin Tức', url: '/boost' },
+      { name: 'Blog', url: '/boost' },
       { name: article.pillarLabel, url: `/boost?pillar=${article.pillar}` },
       { name: article.title, url: `/boost/${article.slug}` },
     ],
     faqs: article.faqs,
-    jsonLd: [
-      buildArticleSchema({
-        headline: article.title,
-        description: article.metaDescription,
-        path: `/boost/${article.slug}`,
-        image: article.coverImage,
-        extraImages: [article.screenshotImage],
-        datePublished: article.publishedAt,
-        dateModified: article.updatedAt,
-        keywords: [article.focusKeyword, ...article.secondaryKeywords],
-        articleSection: article.pillarLabel,
-        aboutIndustry: article.industry,
-        wordCount: computeArticleWordCount(article),
-      }),
-    ],
+    jsonLd: [schema],
   };
 }
 

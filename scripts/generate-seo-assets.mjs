@@ -3,8 +3,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BOOST_ARTICLES_PART_1 } from '../src/data/boostArticlesPart1.ts';
 import { BOOST_ARTICLES_PART_2 } from '../src/data/boostArticlesPart2.ts';
+import { BOOST_ARTICLES_PART_3 } from '../src/data/boostArticlesPart3.ts';
+import { BOOST_ARTICLES_PART_4 } from '../src/data/boostArticlesPart4.ts';
+import { BOOST_ARTICLES_PART_5 } from '../src/data/boostArticlesPart5.ts';
 import {
-  BOOST_50_SEO_TOPICS,
+  BOOST_74_SEO_TOPICS,
   BOOST_KEYWORD_CLUSTERS,
   INDUSTRY_PAIN_PLAYBOOK,
 } from '../src/data/boostSeoData.ts';
@@ -19,7 +22,13 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 const SITE_URL = 'https://domation.net';
 const TODAY = new Date().toISOString().slice(0, 10);
 
-const ALL_ARTICLES = [...BOOST_ARTICLES_PART_1, ...BOOST_ARTICLES_PART_2];
+const ALL_ARTICLES = [
+  ...BOOST_ARTICLES_PART_1,
+  ...BOOST_ARTICLES_PART_2,
+  ...BOOST_ARTICLES_PART_3,
+  ...BOOST_ARTICLES_PART_4,
+  ...BOOST_ARTICLES_PART_5,
+];
 const LATEST_ARTICLE_DATE = ALL_ARTICLES.reduce(
   (max, a) => (a.updatedAt > max ? a.updatedAt : max),
   TODAY
@@ -54,7 +63,7 @@ const CORE_ROUTES = [
     images: [
       {
         src: '/imgs/boost/boost-hero-growth-hub.jpg',
-        title: `DOMATION Boost Growth Hub — ${ALL_ARTICLES.length}+ Bài Triển Khai & ${BOOST_50_SEO_TOPICS.length} Chủ Đề SEO`,
+        title: `Blog DOMATION — ${ALL_ARTICLES.length}+ Bài Chuẩn SEO & ${BOOST_74_SEO_TOPICS.length} Chủ Đề Vận Hành 5.0`,
       },
     ],
   },
@@ -282,18 +291,18 @@ fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
 // 2. Shared core body for llms.txt & llms-full.txt (keeps ## Optional strictly at the end per llmstxt.org spec)
 const llmsCoreBody = `# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI & Multi-Agent AI
 
-> Công ty TNHH DOMATION Việt Nam (DOMARKETING / DOM MARKETING, sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) chuyên khảo sát và thiết kế riêng Hệ điều hành Vận hành Doanh nghiệp (ERP 5.0 12 phân hệ, CRM 360° & Hóa đơn MISA), Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256, Marketing Automation (Amazon SES 98% Inbox, Zalo ZNS, Visual Flow IF/ELSE), Multi-Agent AI RAG 24/7 và Website/Sa bàn 3D WebGL.
+> Công ty TNHH DOMATION Việt Nam (DOMARKETING / DOM MARKETING, sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: ERP 5.0 (12 phân hệ, Payroll PDF, Chấm công GPS AI), CRM 360° & Hóa đơn MISA, Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256, Vibecode & Multi-Agent AI RAG 24/7 thời đại 5.0, cùng hệ thống tối ưu quảng cáo, Landing Page CRO & Website/Sa bàn 3D WebGL.
 
 ## Core Product & Portfolio Routes
-- [Trang chủ DOMATION Enterprise OS](${SITE_URL}/): Tổng quan kiến trúc may đo, 4 trụ cột vận hành, Multi-Agent Hub và bảng giá SaaS tổng thể.
+- [Trang chủ DOMATION Enterprise OS](${SITE_URL}/): Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới, 4 trụ cột, Multi-Agent AI Hub và bảng giá SaaS tổng thể.
 - [Auto Chia Data ZaloBot & Meta CAPI](${SITE_URL}/data): Phân bổ Lead Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
-- [Enterprise ERP 5.0 (12 Phân hệ)](${SITE_URL}/erp): Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ và Payroll Engine xuất PDF ký số.
+- [Enterprise ERP 5.0 May Đo (12 Phân hệ)](${SITE_URL}/erp): Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng (Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF ký số).
 - [CRM 360° & Đồng bộ MISA](${SITE_URL}/crm): Pipeline Kanban 8 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
-- [Marketing Automation & AI RAG](${SITE_URL}/automation): Visual Flow IF/ELSE, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
+- [Marketing Automation & AI RAG](${SITE_URL}/automation): Visual Flow IF/ELSE rẽ nhánh tự động, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
 - [Meta Ad Realtime Report](${SITE_URL}/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
-- [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), sa bàn Three.js và công cụ dự toán Excel.
+- [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.
 - [Portfolio Dự Án & Case Study](${SITE_URL}/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore, RichLand, ImplantSwiss.
-- [Boost Growth, SEO/GEO & Knowledge Hub](${SITE_URL}/boost): ${ALL_ARTICLES.length} bài phân tích triển khai chuẩn SEO, ${BOOST_50_SEO_TOPICS.length} chủ đề SEO, ${BOOST_KEYWORD_CLUSTERS.length} cụm từ khóa B2B và giải pháp nỗi đau cho ${INDUSTRY_PAIN_PLAYBOOK.length} nhóm ngành nghề.
+- [Blog DOMATION & SEO/GEO Cluster Hub](${SITE_URL}/boost): ${ALL_ARTICLES.length} bài viết chuyên sâu chuẩn SEO, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO, ${BOOST_KEYWORD_CLUSTERS.length} cụm từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và ${INDUSTRY_PAIN_PLAYBOOK.length} cẩm nang ngành nghề.
 - [IDEAS Company Ecosystem Portal](${SITE_URL}/ideas): Cổng ứng dụng tùy biến riêng cho Viện IDEAS (Marketing Automation, Meta Realtime Report & Auto Lead Router).
 
 ## Verified Pricing & Plans (VND)
@@ -320,7 +329,7 @@ ${ALL_ARTICLES.map(
 const llmsTxt = `${llmsCoreBody}
 
 ## Optional
-- [Full GEO Reference (llms-full.txt)](${SITE_URL}/llms-full.txt): Tài liệu chi tiết gồm ${PORTFOLIO_PROJECTS.length} Case Study Portfolio, ${INDUSTRY_PAIN_PLAYBOOK.length} Industry Playbooks, TL;DR & Fix kỹ thuật ${ALL_ARTICLES.length} bài viết, ${BOOST_50_SEO_TOPICS.length} chủ đề SEO và ${BOOST_KEYWORD_CLUSTERS.length} Keyword Silos.
+- [Full GEO Reference (llms-full.txt)](${SITE_URL}/llms-full.txt): Tài liệu chi tiết gồm ${PORTFOLIO_PROJECTS.length} Case Study Portfolio, ${INDUSTRY_PAIN_PLAYBOOK.length} Industry Playbooks, TL;DR & Fix kỹ thuật ${ALL_ARTICLES.length} bài viết, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO và ${BOOST_KEYWORD_CLUSTERS.length} Keyword Silos.
 - [XML Sitemap](${SITE_URL}/sitemap.xml): Toàn bộ ${CORE_ROUTES.length + ALL_ARTICLES.length} URLs chuẩn canonical và Image Sitemap.
 - [Robots Policy](${SITE_URL}/robots.txt): Quyền thu thập dữ liệu cho Search & AI Crawlers.
 `;
@@ -377,18 +386,18 @@ ${ALL_ARTICLES.map(
 
 ---
 
-## ${BOOST_50_SEO_TOPICS.length} Curated Enterprise SEO Topics for DOMATION
-${BOOST_50_SEO_TOPICS.map(
+## ${BOOST_74_SEO_TOPICS.length} Curated Enterprise SEO Topics for DOMATION
+${BOOST_74_SEO_TOPICS.map(
   (t) =>
     `- [${t.code}] (${t.pillarLabel} | ${t.funnelStage} | ${t.searchIntent}) ${t.title} — Primary KW: "${t.primaryKeyword}" -> Target: ${SITE_URL}${t.targetLandingPage}${t.linkedArticleSlug ? ` | Article: ${SITE_URL}/boost/${t.linkedArticleSlug}` : ''}`
 ).join('\n')}
 
 ---
 
-## Keyword Clusters Summary (${BOOST_KEYWORD_CLUSTERS.length} Silos)
+## Keyword Clusters Summary (${BOOST_KEYWORD_CLUSTERS.length} Silos — Short/Long & Primary/Secondary)
 ${BOOST_KEYWORD_CLUSTERS.map(
   (c) =>
-    `- ${c.name} (${SITE_URL}${c.hubUrl}): ${c.keywords.map((k) => `${k.keyword} [${k.lsiVariants.join('; ')}]`).join(' | ')}`
+    `- ${c.name} (${SITE_URL}${c.hubUrl}) | Short-tail: ${(c.shortTailTerms || []).join(', ')} | Long-tail: ${(c.longTailTerms || []).join(', ')} | Keywords: ${c.keywords.map((k) => `${k.keyword} [${k.lsiVariants.join('; ')}]`).join(' | ')}`
 ).join('\n')}
 
 ---
@@ -433,29 +442,30 @@ const vercelConfig = {
       ],
     },
   ],
+  redirects: [
+    { source: '/blog', destination: '/boost', permanent: true },
+    { source: '/blog/', destination: '/boost', permanent: true },
+    { source: '/blog/:slug', destination: '/boost/:slug', permanent: true },
+    { source: '/bai-viet', destination: '/boost', permanent: true },
+    { source: '/bai-viet/', destination: '/boost', permanent: true },
+    { source: '/bai-viet/:slug', destination: '/boost/:slug', permanent: true },
+    { source: '/ideas-erp', destination: '/erp', permanent: true },
+    { source: '/ideas-erp/', destination: '/erp', permanent: true },
+  ],
   rewrites: [
-    ...['crm', 'erp', 'data', 'automation', 'meta-report', 'web-design', 'ideas', 'portfolio', 'boost'].flatMap(
+    ...['crm', 'erp', 'data', 'automation', 'meta-report', 'web-design', 'ideas', 'portfolio', 'boost', '404'].flatMap(
       (route) => [
         { source: `/${route}`, destination: `/${route}/index.html` },
         { source: `/${route}/`, destination: `/${route}/index.html` },
       ]
     ),
+    { source: '/404.html', destination: '/404.html' },
+    { source: '/magnific', destination: '/index.html' },
+    { source: '/magnific/', destination: '/index.html' },
     ...ALL_ARTICLES.flatMap((art) => [
       { source: `/boost/${art.slug}`, destination: `/boost/${art.slug}/index.html` },
       { source: `/boost/${art.slug}/`, destination: `/boost/${art.slug}/index.html` },
     ]),
-    { source: '/boost/:slug', destination: '/index.html' },
-    { source: '/bai-viet', destination: '/boost/index.html' },
-    { source: '/bai-viet/', destination: '/boost/index.html' },
-    { source: '/bai-viet/:slug', destination: '/index.html' },
-    { source: '/blog', destination: '/boost/index.html' },
-    { source: '/blog/', destination: '/boost/index.html' },
-    { source: '/blog/:slug', destination: '/index.html' },
-    {
-      source:
-        '/((?!api/|imgs/|assets/|ERP-Product/|landingpage_avatar/|crm_imgs/|meta/|CHIA(?:%20|\\s)DATA/|domation-logo\\.svg|favicon\\.svg|icons\\.svg|magnific_proxy\\.php|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|crm/index\\.html|data/index\\.html|erp/index\\.html|automation/index\\.html|meta-report/index\\.html|web-design/index\\.html|ideas/index\\.html|portfolio/index\\.html|boost/.*index\\.html).*)',
-      destination: '/index.html',
-    },
   ],
 };
 

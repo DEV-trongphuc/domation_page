@@ -115,7 +115,7 @@ export const DomationFooter: React.FC<DomationFooterProps> = ({ onOpenContact })
                     onClick={(e) => handleSpaLinkClick(e, '/boost')}
                     className="hover:text-white transition-colors text-cyan-200 font-semibold"
                   >
-                    Tin Tức &amp; Kinh Nghiệm Triển Khai
+                    Blog DOMATION • Kiến Thức &amp; SEO
                   </a>
                 </li>
               </ul>

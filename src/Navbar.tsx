@@ -29,7 +29,8 @@ export interface NavbarProps {
     | 'web-design'
     | 'ideas'
     | 'boost'
-    | 'portfolio';
+    | 'portfolio'
+    | 'not-found';
   onOpenContact?: () => void;
   onOpenShowcase?: () => void;
   contactLabel?: string;
@@ -93,8 +94,8 @@ const GROWTH_ROUTES = [
   {
     id: 'boost',
     href: '/boost',
-    label: 'Tin Tức & Kinh Nghiệm Triển Khai',
-    desc: 'Bài viết chuyên đề, vận hành & công nghệ đa ngành',
+    label: 'Blog DOMATION • Triển Khai & SEO',
+    desc: '74+ bài chuyên sâu: ERP may đo, Vibecode, AI 5.0 & tối ưu Ads',
     icon: BookOpen,
   },
   {
@@ -207,7 +208,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
               }`}
             >
-              Tin Tức
+              Blog
             </a>
 
             {/* Ecosystem Apps Dropdown */}
@@ -277,7 +278,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                   <div className="mt-2 pt-2 border-t border-slate-100">
                     <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-                      Tin Tức &amp; Portfolio
+                      Blog &amp; Portfolio
                     </div>
                     <div className="space-y-1">
                       {GROWTH_ROUTES.map((route) => {
@@ -375,7 +376,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="w-full px-3.5 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-[#1E40FF] flex items-center gap-2"
             >
               <BookOpen className="w-4 h-4 shrink-0" />
-              <span>Tin Tức &amp; Kinh Nghiệm Triển Khai</span>
+              <span>Blog DOMATION • Kiến Thức &amp; SEO</span>
             </a>
 
             <div className="border-t border-slate-100 pt-3">

@@ -50,7 +50,7 @@ const DEDICATED_APP_LINKS = [
   { label: 'Meta Ads BI', href: '/meta-report' },
   { label: 'Thiết Kế Web', href: '/web-design' },
   { label: 'Portfolio', href: '/portfolio' },
-  { label: 'Tin Tức', href: '/boost' },
+  { label: 'Blog', href: '/boost' },
 ];
 
 const CASE_ARTICLE_MAP: Record<string, string> = {
@@ -137,15 +137,15 @@ export const DomationHome: React.FC = () => {
                 {/* Concise Value Proposition Glass Box (Zero 3D mention, zero clutter) */}
                 <div className="relative rounded-2xl inkica-glass-card px-4 py-3.5 sm:px-5 sm:py-4 max-w-xl mx-auto lg:mx-0">
                   <p className="text-sm sm:text-[15px] text-slate-600 leading-[1.75] font-normal">
-                    May đo kiến trúc{' '}
+                    DOMATION là{' '}
                     <span className="font-semibold text-[#1E40FF]">
-                      ERP – CRM – Flow Tự Động
+                      hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới
                     </span>{' '}
-                    và đội ngũ{' '}
+                    — kết hợp ERP – CRM – Flow Tự Động và đội ngũ{' '}
                     <span className="font-semibold text-slate-900">
-                      AI Agent
+                      AI Agent 5.0
                     </span>{' '}
-                    bám sát 100% cơ cấu tổ chức, quy trình phê duyệt và đặc thù vận hành của từng doanh nghiệp.
+                    bám sát 100% cơ cấu tổ chức &amp; quy trình phê duyệt của bạn.
                   </p>
                 </div>
 
@@ -259,7 +259,7 @@ export const DomationHome: React.FC = () => {
                         <span className="text-xs font-mono font-semibold text-[#1E40FF] bg-slate-100 px-2.5 py-0.5 rounded-full">
                           {chapter.step}
                         </span>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#0284C7]">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#0369A1]">
                           {chapter.tag}
                         </span>
                       </div>

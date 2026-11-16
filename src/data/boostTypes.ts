@@ -4,7 +4,9 @@ export type BoostPillarId =
   | 'crm-misa-sales'
   | 'automation-zns'
   | 'multi-agent-ai'
-  | 'web3d-ads-seo';
+  | 'web3d-ads-seo'
+  | 'vibecode-ops'
+  | 'ads-cro-seo';
 
 export type SearchIntentType =
   | 'Informational'
@@ -103,6 +105,8 @@ export interface SeoKeywordItem {
   intent: SearchIntentType;
   difficulty: 'Thấp (Dễ Top)' | 'Trung bình' | 'Cao (Cạnh tranh)';
   priority: 'Core Money' | 'High Intent' | 'Pain Point Long-tail' | 'GEO Entity';
+  role?: 'Từ khóa Chính' | 'Từ khóa Phụ';
+  lengthType?: 'Ngắn (Short-tail)' | 'Dài (Long-tail)';
   targetUrl: string;
   lsiVariants: string[];
 }
@@ -113,6 +117,8 @@ export interface KeywordCluster {
   pillar: BoostPillarId;
   description: string;
   hubUrl: string;
+  shortTailTerms?: string[];
+  longTailTerms?: string[];
   keywords: SeoKeywordItem[];
 }
 

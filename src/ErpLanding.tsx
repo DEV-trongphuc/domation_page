@@ -306,6 +306,7 @@ export const ErpLanding: React.FC = () => {
       <Navbar activePage="erp" onOpenContact={() => setShowContactModal(true)} />
 
       {/* Hero Section */}
+      <main>
       <section className="relative z-10 pt-28 pb-12 md:pt-36 md:pb-16 px-4 sm:px-6 overflow-x-clip">
         {/* Subtle Floating 3D PNG Decors */}
         <motion.img
@@ -357,8 +358,12 @@ export const ErpLanding: React.FC = () => {
             transition={{ duration: 0.55, delay: 0.15 }}
             className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed mb-7 font-medium"
           >
-            Giải pháp ERP thế hệ mới tích hợp sâu AI Workflow: từ tiếp nhận Lead đa kênh, tự động phân bổ 5 cổng,
-            quản lý nhân sự &amp; chấm công GPS AI đến bảng lương tự động và dữ liệu ngược Meta CAPI.
+            ERP DOMATION là{' '}
+            <strong className="text-slate-900">
+              hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới
+            </strong>
+            : tích hợp sâu AI Workflow 5.0 từ tiếp nhận Lead đa kênh, phân bổ 5 cổng, chấm công GPS AI,
+            bảng lương tự động đến dữ liệu ngược Meta CAPI.
           </motion.p>
 
           {/* Actions */}
@@ -415,9 +420,9 @@ export const ErpLanding: React.FC = () => {
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E40FF] text-[10px] sm:text-[11px] font-bold text-white mb-1.5 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 animate-ping" /> Giao diện điều hành thời gian thực
                   </div>
-                  <h3 className="text-sm md:text-base font-bold text-white drop-shadow">
+                  <h2 className="text-sm md:text-base font-bold text-white drop-shadow">
                     Dashboard Vận Hành &amp; Phân Bổ Data Doanh Nghiệp
-                  </h3>
+                  </h2>
                 </div>
                 <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 border border-slate-200 text-xs font-bold text-slate-800 shadow-sm">
                   <Maximize2 className="w-3.5 h-3.5 text-[#1E40FF]" /> Bấm để phóng to
@@ -430,7 +435,7 @@ export const ErpLanding: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 max-w-4xl mx-auto mt-8 text-left">
             {[
               { val: '12+', title: 'Phân Hệ Cốt Lõi', sub: 'Enterprise Blueprint', color: 'text-[#1E40FF]' },
-              { val: '5 Cổng', title: 'Auto-Routing Lead', sub: 'Loại bỏ cảm tính 100%', color: 'text-[#0284C7]' },
+              { val: '5 Cổng', title: 'Auto-Routing Lead', sub: 'Loại bỏ cảm tính 100%', color: 'text-[#0369A1]' },
               { val: 'GPS & AI', title: 'Selfie Chấm Công', sub: 'Chống gian lận vị trí', color: 'text-emerald-600' },
               { val: '100% RLS', title: 'Bảo Mật Dữ Liệu', sub: 'Phân quyền hàng DB', color: 'text-cyan-600' },
             ].map((kpi, idx) => (
@@ -586,9 +591,9 @@ export const ErpLanding: React.FC = () => {
                         {item.tag}
                       </span>
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 group-hover:text-[#1E40FF] transition-colors mb-2">
+                    <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#1E40FF] transition-colors mb-2">
                       {item.title}
-                    </h4>
+                    </h3>
                     <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                       {item.description}
                     </p>
@@ -728,7 +733,7 @@ export const ErpLanding: React.FC = () => {
           {/* Block 3: Deep Notification */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-50 border border-cyan-200 text-[#0284C7] text-[11px] font-bold uppercase tracking-wider mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-50 border border-cyan-200 text-[#0369A1] text-[11px] font-bold uppercase tracking-wider mb-4">
                 <BellRing className="w-3.5 h-3.5" /> Thông Báo Thời Gian Thực
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-4">
@@ -784,10 +789,10 @@ export const ErpLanding: React.FC = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">
-              So Sánh ERP Truyền Thống vs <span className="text-gradient-inkica">IDEAS ERP</span>
+              So Sánh ERP Truyền Thống vs <span className="text-gradient-inkica">ERP DOMATION May Đo</span>
             </h2>
             <p className="text-slate-600 text-sm">
-              Sự khác biệt khi chuyển đổi từ quy trình thủ công sang hệ thống thông minh.
+              Sự khác biệt giữa phần mềm đóng gói cứng nhắc và hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới.
             </p>
           </div>
 
@@ -860,6 +865,7 @@ export const ErpLanding: React.FC = () => {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="py-12 border-t border-slate-200/80 bg-white/80 backdrop-blur-md relative z-10 text-slate-600 text-xs pb-24 sm:pb-12">

@@ -336,7 +336,7 @@ export const MetaAdReport: React.FC = () => {
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
                         <Check className="w-4 h-4 text-emerald-600" />
                       </div>
-                      <h4 className="font-bold text-slate-900">Tính Năng Quản Lý Admin Log</h4>
+                      <h3 className="font-bold text-slate-900">Tính Năng Quản Lý Admin Log</h3>
                     </div>
                     <p className="text-sm text-slate-600">
                       Lưu trữ lịch sử thao tác (Log) chi tiết đến từng giây. Biết chính xác ai, làm gì, khi nào trên tài

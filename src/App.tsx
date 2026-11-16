@@ -20,9 +20,9 @@ import { usePageSeo } from './utils/seo';
 
 // ─── Constants ────────────────────────────────────────────────
 const LOGOS = {
-    zalo: 'https://automation.ideas.edu.vn/imgs/zalolog.png',
-    meta: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg',
-    aws_ses: 'https://www.eetasia.com/wp-content/uploads/sites/2/2021/03/amazon-AWS_1200.jpg?w=600'
+    zalo: '/assets/brands/zalobot-logo.webp',
+    meta: '/assets/brands/meta-icon.svg',
+    aws_ses: '/assets/brands/aws-ses.svg'
 };
 
 // ─── Helpers ───────────────────────────────────────────────────
@@ -245,7 +245,7 @@ const WebDesignSection = () => {
                             onClick={(e) => handleSpaLinkClick(e, '/boost')}
                             className="ql-btn-outline px-4 py-2 text-xs"
                         >
-                            Đọc 24+ Bài Triển Khai &amp; SEO
+                            Đọc 74+ Bài Blog SEO &amp; Triển Khai
                         </a>
                     </div>
                 </FadeIn>
@@ -394,7 +394,7 @@ const DomationDataSection = () => {
                                         <Check className="w-3.5 h-3.5 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                        <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                         <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                     </div>
                                 </div>
@@ -644,6 +644,7 @@ const Landing: React.FC = () => {
             {/* ── Navigation ── */}
             <Navbar activePage="automation" onOpenContact={() => setShowContactModal(true)} />
 
+            <main>
             {/* ── Hero ── */}
             <section className="relative pt-36 pb-20 md:pt-44 md:pb-24 px-4 md:px-6 z-10 min-h-screen flex flex-col items-center justify-center">
                 <div className="max-w-5xl mx-auto text-center">
@@ -692,8 +693,8 @@ const Landing: React.FC = () => {
                             { name: 'Amazon SES', icon: LOGOS.aws_ses },
                             { name: 'Zalo ZNS', icon: LOGOS.zalo },
                             { name: 'Meta Messenger', icon: LOGOS.meta },
-                            { name: 'Google Sheets', icon: 'https://mailmeteor.com/logos/assets/PNG/Google_Sheets_Logo_512px.png' },
-                            { name: 'Gemini AI', icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Google_Gemini_icon_2025.svg/250px-Google_Gemini_icon_2025.svg.png' },
+                            { name: 'Google Sheets', icon: '/assets/brands/sheets-icon.svg' },
+                            { name: 'Gemini AI', icon: '/assets/brands/gemini-icon.svg' },
                             { name: 'DOMATION CRM', icon: '/domation-logo.svg' }
                         ].map((plat) => (
                             <div key={plat.name} className="flex items-center gap-2 hover:-translate-y-0.5 transition-transform duration-300">
@@ -1012,7 +1013,7 @@ const Landing: React.FC = () => {
                                             <Check className="w-4 h-4 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                             <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
@@ -1167,7 +1168,7 @@ const Landing: React.FC = () => {
                                             <box.icon className="w-4 h-4 text-[#0284C7]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                             <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
@@ -1283,7 +1284,7 @@ const Landing: React.FC = () => {
                                             <box.icon className="w-4 h-4 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                             <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
@@ -1314,12 +1315,12 @@ const Landing: React.FC = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
                                 <div className="inkica-glass-card border border-white/90 rounded-2xl p-5">
                                     <Bot className="w-6 h-6 text-emerald-600 mb-3" />
-                                    <h4 className="font-bold text-slate-900 mb-1">AI Phân Tích Segment</h4>
+                                    <h3 className="font-bold text-slate-900 mb-1">AI Phân Tích Segment</h3>
                                     <p className="text-xs text-slate-600 leading-relaxed">Phân cụm hành vi khách hàng hoàn toàn tự động, phân group nóng/lạnh chuẩn xác.</p>
                                 </div>
                                 <div className="inkica-glass-card border border-white/90 rounded-2xl p-5">
                                     <Target className="w-6 h-6 text-[#1E40FF] mb-3" />
-                                    <h4 className="font-bold text-slate-900 mb-1">Cộng/Trừ Điểm Tự Động</h4>
+                                    <h3 className="font-bold text-slate-900 mb-1">Cộng/Trừ Điểm Tự Động</h3>
                                     <p className="text-xs text-slate-600 leading-relaxed">Score += 5 nếu Scroll 100%. Tiết kiệm sức cho Telesale khi gọi đúng người.</p>
                                 </div>
                             </div>
@@ -1492,7 +1493,7 @@ const Landing: React.FC = () => {
                                             <Check className="w-3.5 h-3.5 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                             <p className="text-xs text-slate-600">{box.d}</p>
                                         </div>
                                     </div>
@@ -1534,7 +1535,7 @@ const Landing: React.FC = () => {
                                             <box.icon className="w-4 h-4 text-[#1E40FF]" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                             <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                         </div>
                                     </div>
@@ -1605,7 +1606,7 @@ const Landing: React.FC = () => {
                                             <Check className="w-3.5 h-3.5 text-emerald-600" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h4>
+                                            <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
                                             <p className="text-xs text-slate-600">{box.d}</p>
                                         </div>
                                     </div>
@@ -1714,6 +1715,7 @@ const Landing: React.FC = () => {
                     </div>
                 </div>
             </section>
+            </main>
 
             {/* ── Footer ── */}
             <footer className="relative z-10 border-t border-slate-200/80 bg-white/75 backdrop-blur-md py-16 pb-24 px-6 overflow-hidden">
@@ -1735,7 +1737,7 @@ const Landing: React.FC = () => {
                             { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['/#pricing', 'Bảng Giá Hệ Thống']] },
                         ].map((col) => (
                             <div key={col.title}>
-                                <h4 className="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">{col.title}</h4>
+                                <h3 className="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">{col.title}</h3>
                                 <ul className="space-y-3">
                                     {col.links.map(([href, l]) => (
                                         <li key={l}>

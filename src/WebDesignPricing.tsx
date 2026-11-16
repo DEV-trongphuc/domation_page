@@ -511,7 +511,7 @@ export const WebDesignPricing: React.FC = () => {
                                     <span className="inline-block px-3 py-1.5 md:px-4 md:py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-[10px] md:text-xs font-bold text-[#1E40FF] uppercase tracking-widest mb-3 md:mb-4">
                                         Thanh toán 1 lần • Sở hữu vĩnh viễn Source Code
                                     </span>
-                                    <h3 className="text-lg md:text-2xl text-slate-600 font-bold mb-1 md:mb-2">Tổng Cộng Khoản Phí</h3>
+                                    <h2 className="text-lg md:text-2xl text-slate-600 font-bold mb-1 md:mb-2">Tổng Cộng Khoản Phí</h2>
                                     <div className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4] mb-6 md:mb-8">
                                         <Counter to={totalPrice} /> <span className="text-xl md:text-2xl text-[#1E40FF] font-bold">VNĐ</span>
                                     </div>
@@ -526,7 +526,7 @@ export const WebDesignPricing: React.FC = () => {
                                     </div>
 
                                     <div className="w-full max-w-2xl bg-slate-50/90 border border-slate-200 rounded-[20px] p-4 md:p-6 text-left mb-2 md:mb-4">
-                                        <h4 className="flex items-center gap-2 font-bold text-slate-900 text-sm md:text-base mb-2 md:mb-3"><Target className="w-4 h-4 md:w-5 md:h-5 text-[#1E40FF]" /> Ghi chú duy trì</h4>
+                                        <h3 className="flex items-center gap-2 font-bold text-slate-900 text-sm md:text-base mb-2 md:mb-3"><Target className="w-4 h-4 md:w-5 md:h-5 text-[#1E40FF]" /> Ghi chú duy trì</h3>
                                         <p className="text-slate-600 text-[12px] md:text-sm leading-relaxed mb-2">
                                             * Chi phí trên là phí thiết kế trọn gói <strong className="text-slate-900">trả 1 lần duy nhất</strong>.
                                         </p>
@@ -551,9 +551,9 @@ export const WebDesignPricing: React.FC = () => {
                         {/* 2. Add-ons Toggles */}
                         <FadeIn delay={0.3} className="order-2 md:order-2 mb-12">
                             <div className="inkica-glass-card rounded-[28px] p-6 md:p-8 border border-white/90">
-                                <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                                     <Sparkles className="w-5 h-5 text-[#1E40FF]" /> Tùy chọn nâng cao (Options)
-                                </h3>
+                                </h2>
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     <Toggle 
                                         active={addons.sales} 
@@ -640,7 +640,7 @@ export const WebDesignPricing: React.FC = () => {
                                                 <mod.icon className="w-6 h-6" style={{ color: mod.gradient }} />
                                             </div>
                                             <div>
-                                                <h3 className="text-lg font-bold text-slate-900 leading-tight">{mod.title}</h3>
+                                                <h2 className="text-lg font-bold text-slate-900 leading-tight">{mod.title}</h2>
                                                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                                                     <span className="text-xl font-black" style={{ color: mod.gradient }}>
                                                         {String(mod.price) !== "0" ? `${mod.price} VNĐ` : "Miễn Phí"}

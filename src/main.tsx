@@ -38,6 +38,9 @@ const SinglePostPage = lazy(() =>
 const PortfolioPage = lazy(() =>
   import('./PortfolioPage').then((m) => ({ default: m.PortfolioPage }))
 );
+const NotFoundPage = lazy(() =>
+  import('./NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
+);
 
 const PageLoader = () => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8F9FA] text-slate-700">
@@ -176,7 +179,7 @@ const Main = () => {
         !isCrm &&
         !isData &&
         !isAutomation &&
-        !isIdeas && <DomationHome />}
+        !isIdeas && <NotFoundPage path={path} />}
     </Suspense>
   );
 };

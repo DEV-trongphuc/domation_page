@@ -241,7 +241,6 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
           <span
             key={item.id}
             title={item.title}
-            aria-label={item.title}
             className={
               bare
                 ? 'inline-flex items-center justify-center sm:justify-start gap-2.5 h-11 px-2 text-[13px] font-semibold text-slate-700 whitespace-nowrap'
@@ -264,7 +263,6 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
           <span
             key={item.id}
             title={item.title}
-            aria-label={item.title}
             className={
               bare
                 ? 'inline-flex items-center justify-start gap-2.5 h-10 px-2.5 text-[13px] font-medium text-slate-700 whitespace-nowrap'
@@ -285,7 +283,6 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
         <span
           key={ch.id}
           title={ch.title}
-          aria-label={ch.title}
           className={
             isCompact
               ? 'inline-flex items-center gap-1 h-7 px-1 text-slate-600'
@@ -298,7 +295,9 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
               <span className="text-[11px] font-semibold tracking-tight text-slate-600">
                 {ch.shortTag}
               </span>
-            ) : null
+            ) : (
+              <span className="sr-only">{ch.title}</span>
+            )
           ) : (
             <span>{ch.fullLabel}</span>
           )}

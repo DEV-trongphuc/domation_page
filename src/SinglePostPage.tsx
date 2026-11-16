@@ -66,12 +66,12 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
   const seoConfig: PageSeoConfig = matchedArticle
     ? getSinglePostSeoConfig(article)
     : {
-        title: 'Không Tìm Thấy Bài Viết | Tạp Chí DOMATION',
+        title: 'Không Tìm Thấy Bài Viết | Blog DOMATION',
         description:
-          'Bài viết bạn tìm không tồn tại hoặc đã được chuyển chuyên mục. Khám phá chuyên mục Tin Tức & Kinh Nghiệm triển khai công nghệ doanh nghiệp tại DOMATION.',
+          'Bài viết bạn tìm không tồn tại hoặc đã được chuyển chuyên mục. Khám phá Blog DOMATION — kiến thức ERP may đo, Vibecode, AI 5.0 & tối ưu quảng cáo.',
         path: `/boost/${encodeURIComponent(slug)}`,
         ogImage: '/imgs/boost/boost-hero-growth-hub.jpg',
-        ogImageAlt: 'Tạp Chí Triển Khai Công Nghệ DOMATION',
+        ogImageAlt: 'Blog DOMATION — Hệ Sinh Thái Triển Khai & SEO Doanh Nghiệp 5.0',
         noindex: true,
       };
 
@@ -119,7 +119,7 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
                 Bài Viết Không Tồn Tại Hoặc Đã Được Chuyển Mục
               </h1>
               <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-                Nội dung bạn đang truy cập hiện không còn ở đường dẫn này. Bạn có thể quay về trang Tin Tức để xem các bài phân tích và kinh nghiệm triển khai mới nhất từ DOMATION.
+                Nội dung bạn đang truy cập hiện không còn ở đường dẫn này. Bạn có thể quay về Blog DOMATION (/boost) để xem 74+ bài phân tích SEO, ERP may đo, Vibecode và chiến lược tối ưu chuyển đổi mới nhất.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <a
@@ -128,7 +128,7 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
                   className="btn-inkica-primary px-6 py-3 text-xs sm:text-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  <span>Quay Lại Trang Tin Tức</span>
+                  <span>Quay Lại Blog DOMATION</span>
                 </a>
                 <a
                   href="/"
@@ -178,6 +178,7 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
             </section>
           </div>
         </main>
+        <DomationFooter onOpenContact={() => setContactOpen(true)} />
         <ContactModal isOpen={contactOpen} onClose={() => setContactOpen(false)} />
       </div>
     );
@@ -245,7 +246,7 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
               onClick={(e) => handleSpaLinkClick(e, '/boost')}
               className="hover:text-[#1E40FF] font-medium transition-colors"
             >
-              Tin Tức
+              Blog
             </a>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <a
@@ -330,6 +331,9 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
                   <img
                     src={article.coverImage}
                     alt={article.coverAlt}
+                    width={1376}
+                    height={768}
+                    fetchPriority="high"
                     className="w-full aspect-[16/9] object-cover"
                   />
                 </div>
@@ -704,7 +708,7 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
                 className="rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200/85 p-6 sm:p-8 shadow-xs space-y-4"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-cyan-50 border border-cyan-200 text-[#0284C7] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-50 border border-cyan-200 text-[#0369A1] flex items-center justify-center shrink-0">
                     <ListChecks className="w-4 h-4" />
                   </div>
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
@@ -837,6 +841,8 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
                       <img
                         src={rel.coverImage}
                         alt={rel.coverAlt}
+                        width={1376}
+                        height={768}
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />

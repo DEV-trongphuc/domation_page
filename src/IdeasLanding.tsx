@@ -64,9 +64,9 @@ const ToolCard: React.FC<ToolCardProps> = ({
           <span className="text-xs font-bold uppercase tracking-wider text-[#1E40FF] mb-1.5 block">
             {subtitle}
           </span>
-          <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-[#1E40FF] transition-colors">
+          <h2 className="text-xl md:text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-[#1E40FF] transition-colors">
             {title}
-          </h3>
+          </h2>
 
           <p className="text-slate-600 text-sm leading-relaxed mb-6">{description}</p>
 
@@ -114,8 +114,7 @@ export const IdeasLanding: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const ideasLogoUrl =
-    'https://ideas.edu.vn/wp-content/uploads/2025/10/518336360_122227900856081421_6060559121060410681_n.webp';
+  const ideasLogoUrl = '/assets/partners/logo_ideas.webp';
 
   const tools: ToolCardProps[] = [
     {
@@ -182,6 +181,7 @@ export const IdeasLanding: React.FC = () => {
       />
 
       {/* Hero Section */}
+      <main>
       <section className="relative pt-28 pb-10 md:pt-36 md:pb-14 px-6 z-10 flex flex-col items-center justify-center">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="ql-eyebrow mb-5">
@@ -243,9 +243,9 @@ export const IdeasLanding: React.FC = () => {
       {/* Partner Section */}
       <section className="py-14 border-t border-slate-200/80 bg-white/55 backdrop-blur-sm z-10 relative">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">
             Được liên kết &amp; vận hành trực tiếp bởi
-          </h3>
+          </h2>
           <div className="flex items-center justify-center gap-6 md:gap-8">
             <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/90 shadow-sm">
               <DomationLogoMark size={24} />
@@ -259,6 +259,7 @@ export const IdeasLanding: React.FC = () => {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-slate-200/80 py-10 px-6 bg-white/80 backdrop-blur-md z-10 relative text-center pb-24 sm:pb-12">
