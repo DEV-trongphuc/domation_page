@@ -139,7 +139,7 @@ export const PartnersTrustSection: React.FC = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             {ECOSYSTEM_PARTNERS.map((brand) => (
               <a
                 key={brand.name}
@@ -147,7 +147,7 @@ export const PartnersTrustSection: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={`${brand.name} • ${brand.industry}`}
-                className="group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 p-3.5 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
+                className="w-[calc(50%-6px)] sm:w-[calc(25%-9px)] md:w-[calc(16.666667%-10px)] group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 p-3.5 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
               >
                 <div className="h-10 w-full flex items-center justify-center">
                   <img

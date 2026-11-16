@@ -923,6 +923,7 @@ export const ECOSYSTEM_PARTNERS: EcosystemBrand[] = [
   { name: 'Implantswiss', image: '/assets/partners/partner_implantswiss.png', website: 'https://implantswiss.vn/', industry: 'Dental / Implant' },
   { name: 'Rich Land', image: '/assets/partners/partner_richland.webp', website: 'https://rich-land.vercel.app/', industry: 'Real Estate / PropTech' },
   { name: 'MINTH Store', image: '/assets/partners/logo_minth.webp', website: 'https://minth-store.vercel.app/', industry: 'Cosmetics & Perfume / Retail' },
+  { name: 'Mystery Tarot', image: '/assets/partners/logo_mystery_tarot.webp', website: 'https://www.mystery-tarot.net/', industry: 'Spiritual AI / Entertainment' },
 ];
 
 export const DOMATION_SAAS_PLANS = [

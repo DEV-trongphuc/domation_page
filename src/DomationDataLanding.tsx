@@ -116,6 +116,16 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     sector: 'Nước hoa & Mỹ phẩm Retail',
     logo: '/assets/partners/logo_minth.webp',
   },
+  {
+    name: 'Navatek',
+    sector: 'Công nghiệp & Công nghệ',
+    logo: '/assets/partners/logo_navatek.webp',
+  },
+  {
+    name: 'Mystery Tarot',
+    sector: 'AI Tâm linh & Giải trí',
+    logo: '/assets/partners/logo_mystery_tarot.webp',
+  },
 ];
 
 interface ScreenshotItem {
