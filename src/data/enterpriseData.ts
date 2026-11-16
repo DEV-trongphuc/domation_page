@@ -130,7 +130,7 @@ export const ENTERPRISE_STORY_CHAPTERS: EnterpriseStoryChapter[] = [
   {
     step: '03',
     tag: 'TỰ ĐỘNG HÓA LIÊN PHÒNG BAN',
-    title: 'Đội Ngũ Multi-Agent Vận Hành Xuyên Suốt 24/7',
+    title: 'Đội Ngũ AI Agent Vận Hành Xuyên Suốt 24/7',
     desc: 'Các AI Agent chuyên trách học tri thức nội bộ, tự động phối hợp xử lý tác vụ từ đón khách, chia số đến nhắc việc và báo cáo doanh thu.',
     decorImg: DECOR_PNGS.torus,
   },
@@ -770,7 +770,7 @@ export const CASE_STUDY_SPOTLIGHTS: CaseStudySpotlightItem[] = [
     result: '208 SKU AOP 3D',
     cost: '6 AI Agents',
     impact: '300 DPI AI',
-    tags: ['Multi-Agent Chat', '208 SKU 3D', '300 DPI AI'],
+    tags: ['AI Agent Chat', '208 SKU 3D', '300 DPI AI'],
     summary:
       'Kiến tạo hệ điều hành 6 AI Prepress Agents tự động tách nền 300 DPI, bóc rập CAD chính xác và dựng mockup đa màu cho 208 mã sản phẩm.',
     inspectionTab: 'inkica',
@@ -834,7 +834,7 @@ export const FLAGSHIP_PARTNERS: FlagshipPartner[] = [
     name: 'INKICA AI POD Studio',
     role: 'ĐỐI TÁC CÔNG NGHỆ AI',
     subtitle:
-      'Nền tảng Multi-Agent Prepress phục vụ thị trường in ấn toàn cầu với 6 tác nhân AI chuyên biệt xử lý đồ họa và rập 3D tự động.',
+      'Nền tảng AI Agent Prepress phục vụ thị trường in ấn toàn cầu với 6 tác nhân AI chuyên biệt xử lý đồ họa và rập 3D tự động.',
     logo: '/assets/partners/logo_inkica_icon.svg',
     url: 'https://ai.inkica.com/',
     badge: 'AI.INKICA.COM',
@@ -843,13 +843,24 @@ export const FLAGSHIP_PARTNERS: FlagshipPartner[] = [
   {
     id: 'ideas-business',
     name: 'IDEAS Business',
-    role: 'ĐỐI TÁC GIÁO DỤC • MULTI-AGENT AI',
+    role: 'ĐỐI TÁC GIÁO DỤC • AI AGENT',
     subtitle:
-      'Vận hành hệ thống Multi-Agent AI phối hợp xuyên suốt cùng ERP 5.0, CRM tuyển sinh và tự động chia vòng Lead cho đội ngũ tư vấn.',
+      'Vận hành hệ thống AI Agent phối hợp xuyên suốt cùng ERP 5.0, CRM tuyển sinh và tự động chia vòng Lead cho đội ngũ tư vấn.',
     logo: '/assets/partners/logo_ideas.webp',
     url: 'https://ideas.edu.vn/mba',
-    badge: 'IDEAS.EDU.VN • MULTI-AGENT',
-    metrics: ['Multi-Agent AI 24/7', 'ERP 5.0 & CRM'],
+    badge: 'IDEAS.EDU.VN • AI AGENT',
+    metrics: ['AI Agent 24/7', 'ERP 5.0 & CRM'],
+  },
+  {
+    id: 'richland',
+    name: 'Rich Land',
+    role: 'SÀN BĐS • CRM & KHO DATABANK',
+    subtitle:
+      'Vận hành hệ thống CRM chia Lead linh hoạt theo hai chế độ (tranh nhận data tức thì hoặc chia theo vòng công bằng), quản lý kho DataBank tập trung, lọc trùng đa kênh và kiểm soát SLA chăm sóc khách hàng.',
+    logo: '/assets/partners/partner_richland.webp',
+    url: 'https://rich-land.vercel.app/',
+    badge: 'CRM • CHIA LEAD & DATABANK',
+    metrics: ['Tranh Nhận / Chia Vòng', 'Kho DataBank Tập Trung'],
   },
 ];
 
@@ -907,7 +918,7 @@ export const ECOSYSTEM_PARTNERS: EcosystemBrand[] = [
   { name: 'Brandson', image: '/assets/partners/partner_brandson.webp', website: 'https://brandson.vn', industry: 'Branding / Agency' },
   { name: 'Ampersand', image: '/assets/partners/partner_ampersand.jpg', website: 'https://www.ampersand.vn/', industry: 'FNB / Management' },
   { name: 'Implantswiss', image: '/assets/partners/partner_implantswiss.png', website: 'https://implantswiss.vn/', industry: 'Dental / Implant' },
-  { name: 'Richland', image: '/assets/partners/partner_richland.webp', website: 'https://rich-land.vercel.app/', industry: 'Real Estate / PropTech' },
+  { name: 'Rich Land', image: '/assets/partners/partner_richland.webp', website: 'https://rich-land.vercel.app/', industry: 'Real Estate / PropTech' },
 ];
 
 export const DOMATION_SAAS_PLANS = [
@@ -942,11 +953,11 @@ export const DOMATION_SAAS_PLANS = [
     badge: 'THIẾT KẾ RIÊNG 100%',
     monthly: 'May Đo',
     yearly: 'Kiến Trúc Riêng',
-    desc: 'Khảo sát và kiến tạo hệ điều hành ERP, CRM & Multi-Agent khớp hoàn toàn cơ cấu tổ chức doanh nghiệp.',
+    desc: 'Khảo sát và kiến tạo hệ điều hành ERP, CRM & AI Agent khớp hoàn toàn cơ cấu tổ chức doanh nghiệp.',
     popular: true,
     features: [
       'Thiết kế riêng ERP 5.0, cấp phê duyệt & phễu CRM đặc thù',
-      'Hệ Multi-Agent liên phòng ban & tích hợp API / Webhook / CAPI',
+      'Hệ AI Agent liên phòng ban & tích hợp API / Webhook / CAPI',
       'Hạ tầng Server riêng biệt, phân quyền RLS & cam kết SLA 99.9%',
     ],
   },

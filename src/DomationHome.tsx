@@ -27,7 +27,7 @@ import {
 import { WebEstimatorModal } from './components/WebEstimatorModal';
 import { PartnersTrustSection } from './components/PartnersTrustSection';
 import { SectionQuickDock } from './components/SectionQuickDock';
-import { DomationLogoMark } from './components/DomationLogoMark';
+import { DomationFooter } from './components/DomationFooter';
 import {
   CASE_STUDY_SPOTLIGHTS,
   CORE_OPERATION_PILLARS,
@@ -37,7 +37,9 @@ import {
   MULTI_AGENT_NODES,
 } from './data/enterpriseData';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
+import { FaqAccordionSection } from './components/FaqAccordionSection';
 import { handleSpaLinkClick } from './utils/navigation';
+import { HOME_FAQS, getHomeSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
 
 const DEDICATED_APP_LINKS = [
@@ -48,7 +50,7 @@ const DEDICATED_APP_LINKS = [
   { label: 'Meta Ads BI', href: '/meta-report' },
   { label: 'Thiết Kế Web', href: '/web-design' },
   { label: 'Portfolio', href: '/portfolio' },
-  { label: 'Tri Thức /boost', href: '/boost' },
+  { label: 'Tin Tức', href: '/boost' },
 ];
 
 const CASE_ARTICLE_MAP: Record<string, string> = {
@@ -62,36 +64,7 @@ const AGENT_ICONS = [Workflow, Bot, Cpu, Layers];
 const PILLAR_ICONS = [Building2, Workflow, Database, Globe];
 
 export const DomationHome: React.FC = () => {
-  usePageSeo({
-    title: 'DOMATION | Công Ty Công Nghệ Marketing × App × AI Cho Doanh Nghiệp',
-    description:
-      'Công ty TNHH DOMATION Việt Nam — Kiến tạo hệ điều hành tăng trưởng doanh nghiệp: Auto Chia Data ZaloBot <5s, Meta CAPI HTTP 200, ERP 5.0 (12 Phân hệ), CRM MISA, Marketing Automation AI RAG 24/7 & Web 3D.',
-    path: '/',
-    keywords: [
-      'DOMATION',
-      'domation.net',
-      'Auto Chia Data ZaloBot',
-      'Meta CAPI SHA-256',
-      'Enterprise ERP 5.0',
-      'CRM 360 MISA',
-      'Multi-Agent AI RAG',
-      'Thiết kế Website 3D WebGL',
-    ],
-    ogImage: '/imgs/home.jpg',
-    breadcrumbs: [{ name: 'Trang Chủ', url: '/' }],
-    faqs: [
-      {
-        question: 'DOMATION cung cấp những hệ thống phần mềm và công nghệ nào cho doanh nghiệp?',
-        answer:
-          'DOMATION thiết kế kiến trúc doanh nghiệp may đo gồm: Auto Chia Data ZaloBot <5s & Meta CAPI (/data), Enterprise ERP 5.0 12 phân hệ (/erp), CRM 360° & Hóa đơn MISA (/crm), Marketing Automation & AI RAG (/automation), Meta Ad Realtime Report (/meta-report) và Website 3D WebGL (/web-design).',
-      },
-      {
-        question: 'Chi phí các gói phần mềm SaaS và Thiết kế Website tại DOMATION là bao nhiêu?',
-        answer:
-          'Nền tảng SaaS khởi điểm từ 2.990.000₫/tháng (Starter), 4.990.000₫/tháng (Growth) và gói Bespoke Enterprise thiết kế riêng. Dịch vụ Thiết kế Website chuẩn SEO trọn gói khởi điểm từ 12.000.000₫ thanh toán 1 lần, sở hữu vĩnh viễn source code.',
-      },
-    ],
-  });
+  usePageSeo(getHomeSeoConfig());
   const [inspectionOpen, setInspectionOpen] = useState(false);
   const [inspectionTab, setInspectionTab] = useState<InspectionTabId>('erp');
   const [estimatorOpen, setEstimatorOpen] = useState(false);
@@ -157,7 +130,7 @@ export const DomationHome: React.FC = () => {
                 <h1 className="text-3xl sm:text-4xl xl:text-[44px] font-bold text-slate-900 tracking-[-0.015em] space-y-2">
                   <span className="block leading-[1.3]">Hệ Điều Hành Vận Hành &amp;</span>
                   <span className="block leading-[1.3] text-gradient-inkica">
-                    Multi-Agent Thiết Kế Riêng
+                    AI Agent Thiết Kế Riêng
                   </span>
                 </h1>
 
@@ -170,7 +143,7 @@ export const DomationHome: React.FC = () => {
                     </span>{' '}
                     và đội ngũ{' '}
                     <span className="font-semibold text-slate-900">
-                      Multi-Agent AI
+                      AI Agent
                     </span>{' '}
                     bám sát 100% cơ cấu tổ chức, quy trình phê duyệt và đặc thù vận hành của từng doanh nghiệp.
                   </p>
@@ -200,7 +173,7 @@ export const DomationHome: React.FC = () => {
                     <div className="flex items-start gap-2.5">
                       <Network className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
                       <span className="leading-snug">
-                        <strong className="font-semibold text-slate-800">Multi-Agent AI:</strong>{' '}
+                        <strong className="font-semibold text-slate-800">AI Agent:</strong>{' '}
                         Đội ngũ Agent chuyên trách phối hợp 24/7
                       </span>
                     </div>
@@ -221,7 +194,7 @@ export const DomationHome: React.FC = () => {
                     type="button"
                     onClick={() =>
                       openContact(
-                        'Tư Vấn Kiến Trúc Thiết Kế Riêng (ERP • CRM • Multi-Agent)',
+                        'Tư Vấn Kiến Trúc Thiết Kế Riêng (ERP • CRM • AI Agent)',
                         'Mong muốn khảo sát quy trình và thiết kế hệ thống riêng cho doanh nghiệp'
                       )
                     }
@@ -322,7 +295,7 @@ export const DomationHome: React.FC = () => {
               <div className="max-w-2xl">
                 <div className="ql-eyebrow mb-3">
                   <Network className="w-3.5 h-3.5 text-[#1E40FF]" />
-                  <span>AGENT HỖ TRỢ &amp; MULTI-AGENT • TỰ ĐỘNG HÓA LIÊN PHÒNG BAN</span>
+                  <span>AI AGENT HỖ TRỢ &amp; ĐIỀU PHỐI • TỰ ĐỘNG HÓA LIÊN PHÒNG BAN</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
                   Một Trung Tâm Điều Phối,{' '}
@@ -528,6 +501,7 @@ export const DomationHome: React.FC = () => {
 
                   <a
                     href={currentPillar.routeUrl}
+                    onClick={(e) => handleSpaLinkClick(e, currentPillar.routeUrl)}
                     className="ql-btn-outline justify-center px-3 sm:px-5 py-2.5 sm:py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
                   >
                     <span>{currentPillar.routeLabel}</span>
@@ -547,6 +521,7 @@ export const DomationHome: React.FC = () => {
                   <a
                     key={app.href}
                     href={app.href}
+                    onClick={(e) => handleSpaLinkClick(e, app.href)}
                     className="font-semibold text-slate-700 hover:text-[#1E40FF] inline-flex items-center gap-1 transition-colors"
                   >
                     <span>{app.label}</span>
@@ -826,7 +801,7 @@ export const DomationHome: React.FC = () => {
                       onClick={() =>
                         openContact(
                           isCustom
-                            ? 'Thiết Kế Riêng Bespoke Enterprise (ERP • CRM • Multi-Agent)'
+                            ? 'Thiết Kế Riêng Bespoke Enterprise (ERP • CRM • AI Agent)'
                             : 'Hệ thống Auto Chia Data ZaloBot & Flow Automation',
                           `Quan tâm gói DOMATION ${plan.name} (${
                             billingYearly ? plan.yearly : plan.monthly
@@ -887,6 +862,7 @@ export const DomationHome: React.FC = () => {
                   </button>
                   <a
                     href="/web-design"
+                    onClick={(e) => handleSpaLinkClick(e, '/web-design')}
                     className="ql-btn-outline justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
                   >
                     <span>Bảng Giá Web</span>
@@ -897,155 +873,18 @@ export const DomationHome: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <FaqAccordionSection
+          faqs={HOME_FAQS}
+          heading="Câu Hỏi Thường Gặp Về Hệ Sinh Thái DOMATION"
+          subtitle="Thông tin trực diện về giải pháp may đo Enterprise OS, chi phí SaaS và dịch vụ thiết kế Website chuẩn SEO/GEO."
+        />
       </main>
 
       {/* ================================================================ */}
-      {/* 8. EXECUTIVE NAVY-SAPPHIRE FOOTER                                */}
+      {/* 8. EXECUTIVE NAVY-SAPPHIRE FOOTER (SHARED)                       */}
       {/* ================================================================ */}
-      <footer className="relative z-10 bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white border-t border-slate-800/40 pt-14 pb-20 sm:pb-10 px-4 sm:px-6 mt-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-white/10">
-            <div className="md:col-span-5 space-y-4">
-              <div className="flex items-center gap-3">
-                <DomationLogoMark className="w-10 h-10 shrink-0 shadow-md" />
-                <div>
-                  <div className="text-lg font-bold tracking-tight">
-                    DOMATION<span className="text-cyan-400">.NET</span>
-                  </div>
-                  <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-                    Bespoke Enterprise OS &amp; Multi-Agent AI
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md">
-                Thiết kế riêng kiến trúc ERP 5.0, CRM 360°, Flow rẽ nhánh và đội ngũ Multi-Agent AI đồng bộ đa nền tảng cho từng doanh nghiệp.
-              </p>
-            </div>
-
-            <div className="md:col-span-3 space-y-2.5">
-              <div className="text-xs font-semibold uppercase tracking-widest text-cyan-300">
-                Chuyên Trang Giải Pháp
-              </div>
-              <ul className="space-y-2 text-xs text-slate-300">
-                <li>
-                  <a href="/erp" className="hover:text-white transition-colors">
-                    Enterprise ERP 5.0
-                  </a>
-                </li>
-                <li>
-                  <a href="/crm" className="hover:text-white transition-colors">
-                    CRM 360° &amp; Quản Trị Bán Hàng
-                  </a>
-                </li>
-                <li>
-                  <a href="/automation" className="hover:text-white transition-colors">
-                    Multi-Agent &amp; Flow Automation
-                  </a>
-                </li>
-                <li>
-                  <a href="/data" className="hover:text-white transition-colors">
-                    Auto Chia Data &amp; Meta CAPI
-                  </a>
-                </li>
-                <li>
-                  <a href="/meta-report" className="hover:text-white transition-colors">
-                    Meta Ads Realtime Report
-                  </a>
-                </li>
-                <li>
-                  <a href="/web-design" className="hover:text-white transition-colors">
-                    Thiết Kế Website Thương Hiệu
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/portfolio"
-                    onClick={(e) => handleSpaLinkClick(e, '/portfolio')}
-                    className="hover:text-white transition-colors text-cyan-200 font-semibold"
-                  >
-                    Portfolio &amp; Case Study Đa Ngành
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/boost"
-                    onClick={(e) => handleSpaLinkClick(e, '/boost')}
-                    className="hover:text-white transition-colors text-cyan-200 font-semibold"
-                  >
-                    Boost Hub • 24+ Bài SEO &amp; 50 Chủ Đề
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="md:col-span-4 space-y-3">
-              <div className="text-xs font-semibold uppercase tracking-widest text-cyan-300">
-                Kết Nối Solution Architect
-              </div>
-              <div className="space-y-2 text-xs text-slate-300">
-                <div>
-                  Hotline / Zalo:{' '}
-                  <a
-                    href="https://zalo.me/0378859736"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-white hover:text-cyan-300 font-mono"
-                  >
-                    0378.859.736
-                  </a>
-                </div>
-                <div>
-                  Email:{' '}
-                  <a
-                    href="mailto:turniodev@gmail.com"
-                    className="font-semibold text-white hover:text-cyan-300"
-                  >
-                    turniodev@gmail.com
-                  </a>
-                </div>
-                <div>
-                  Facebook:{' '}
-                  <a
-                    href="https://www.facebook.com/turni0"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-white hover:text-cyan-300"
-                  >
-                    fb.com/turni0
-                  </a>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => openContact()}
-                className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-blue-500/30 border border-white/15 text-xs font-semibold text-white transition-colors cursor-pointer"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-                <span>Đặt Lịch Tư Vấn 1-1</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
-            <span>© 2026 DOMATION Enterprise Technology. All rights reserved.</span>
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <span>Bespoke Enterprise Architecture • Multi-Agent AI Systems.</span>
-              <span className="hidden sm:inline text-slate-600">•</span>
-              <span>
-                Powered by{' '}
-                <a
-                  href="https://turnio.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-300 hover:text-cyan-200 hover:underline font-semibold"
-                >
-                  Turnio DEV
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <DomationFooter onOpenContact={() => openContact()} />
 
       {showBackTop && (
         <button
