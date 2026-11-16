@@ -898,6 +898,7 @@ export const F1_AGENCY_PARTNERS: F1AgencyPartner[] = [
 
 export const ECOSYSTEM_PARTNERS: EcosystemBrand[] = [
   { name: 'Phúc Lộc Thọ', image: '/assets/partners/partner_phucloctho.webp', website: 'https://phucloctho.vn', industry: 'FNB / Franchise' },
+  { name: 'Cơm Gà Đệ Nhất', image: '/assets/partners/logo_plt_partner.webp', website: '#', industry: 'FNB / Restaurant' },
   { name: 'Duyên Mai', image: '/assets/partners/partner_duyenmai.webp', website: 'https://duyenmai.vn', industry: 'Fashion / Retail' },
   { name: 'Cowboy Steak', image: '/assets/partners/partner_cowboysteak.webp', website: 'https://www.facebook.com/CowboySteakhouseVietnam/', industry: 'FNB / Restaurant' },
   { name: 'En Group', image: '/assets/partners/partner_engroup.webp', website: 'https://engroup.vn', industry: 'FNB / Holdings' },
