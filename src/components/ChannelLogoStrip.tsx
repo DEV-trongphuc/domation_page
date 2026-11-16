@@ -115,6 +115,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
   className = '',
 }) => {
   const isCompact = variant === 'compact';
+  const iconCls = isCompact ? 'w-4 h-4' : 'w-6 h-6';
 
   const channels = [
     {
@@ -122,7 +123,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       title: 'Website Doanh Nghiệp & Live Chat',
       shortTag: '',
       fullLabel: 'Website',
-      renderIcon: () => <WebsiteLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <WebsiteLogoSvg className={iconCls} />,
     },
     {
       id: 'zalobot',
@@ -133,7 +134,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
         <img
           src={ZALO_FAVICON}
           alt="ZaloBot"
-          className="w-4 h-4 rounded-full object-contain"
+          className={`${iconCls} rounded-full object-contain`}
         />
       ),
     },
@@ -142,7 +143,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       title: 'Telegram Bot Báo Số & Điều Hành Tức Thì',
       shortTag: 'Tele',
       fullLabel: 'Telegram',
-      renderIcon: () => <TelegramLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <TelegramLogoSvg className={iconCls} />,
     },
     {
       id: 'zalo-oa',
@@ -153,7 +154,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
         <img
           src={ZALO_FAVICON}
           alt="Zalo OA"
-          className="w-4 h-4 rounded-full object-contain"
+          className={`${iconCls} rounded-full object-contain`}
         />
       ),
     },
@@ -162,7 +163,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       title: 'Facebook Messenger',
       shortTag: '',
       fullLabel: 'Messenger',
-      renderIcon: () => <MessengerLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <MessengerLogoSvg className={iconCls} />,
     },
     {
       id: 'zalo-zns',
@@ -173,7 +174,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
         <img
           src={ZALO_FAVICON}
           alt="Zalo ZNS"
-          className="w-4 h-4 rounded-full object-contain"
+          className={`${iconCls} rounded-full object-contain`}
         />
       ),
     },
@@ -186,7 +187,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
         <img
           src={GMAIL_LOGO}
           alt="Email SES"
-          className="w-4 h-4 object-contain"
+          className={`${iconCls} object-contain`}
         />
       ),
     },
@@ -197,25 +198,25 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       id: 'meta-capi',
       title: 'Meta Conversions API & Graph API',
       fullLabel: 'Meta CAPI',
-      renderIcon: () => <MetaLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <MetaLogoSvg className={iconCls} />,
     },
     {
       id: 'einvoice',
       title: 'Kế Toán & Hóa Đơn Điện Tử',
       fullLabel: 'Hóa đơn ĐT',
-      renderIcon: () => <EInvoiceLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <EInvoiceLogoSvg className={iconCls} />,
     },
     {
       id: 'sheets',
       title: 'Đồng Bộ Google Sheets Real-Time',
       fullLabel: 'Sheets',
-      renderIcon: () => <SheetsLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <SheetsLogoSvg className={iconCls} />,
     },
     {
       id: 'webhook',
       title: 'REST API & Webhook 2 Chiều',
       fullLabel: 'Webhook API',
-      renderIcon: () => <WebhookLogoSvg className="w-4 h-4" />,
+      renderIcon: () => <WebhookLogoSvg className={iconCls} />,
     },
   ];
 
@@ -242,8 +243,8 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
             aria-label={item.title}
             className={
               bare
-                ? 'inline-flex items-center justify-center sm:justify-start gap-2 h-9 px-2 text-xs font-semibold text-slate-700 whitespace-nowrap'
-                : 'inline-flex items-center justify-start gap-2 h-9 px-3 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-xs font-medium text-slate-700 whitespace-nowrap'
+                ? 'inline-flex items-center justify-center sm:justify-start gap-2.5 h-11 px-2 text-[13px] font-semibold text-slate-700 whitespace-nowrap'
+                : 'inline-flex items-center justify-start gap-2.5 h-11 px-3.5 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-[13px] font-semibold text-slate-700 whitespace-nowrap'
             }
           >
             <span className="shrink-0">{item.renderIcon()}</span>
@@ -257,7 +258,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
   if (variant === 'platforms') {
     const allItems = [...channels, ...enterprisePlatforms];
     return (
-      <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+      <div className={`flex flex-wrap items-center gap-2.5 ${className}`}>
         {allItems.map((item) => (
           <span
             key={item.id}
@@ -265,8 +266,8 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
             aria-label={item.title}
             className={
               bare
-                ? 'inline-flex items-center justify-start gap-2 h-8 px-2 text-xs font-medium text-slate-700 whitespace-nowrap'
-                : 'inline-flex items-center justify-start gap-2 h-9 px-3.5 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-xs font-medium text-slate-700 whitespace-nowrap'
+                ? 'inline-flex items-center justify-start gap-2.5 h-10 px-2.5 text-[13px] font-medium text-slate-700 whitespace-nowrap'
+                : 'inline-flex items-center justify-start gap-2.5 h-10 px-3.5 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-[13px] font-medium text-slate-700 whitespace-nowrap'
             }
           >
             <span className="shrink-0">{item.renderIcon()}</span>
