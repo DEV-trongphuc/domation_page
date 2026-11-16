@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/domation-logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1E40FF" />
 
   <!-- Typography: Unified Be Vietnam Pro + Plus Jakarta Sans + Fira Code -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,11 +20,13 @@
   <title>DOMATION | Công Ty Công Nghệ Marketing × App × AI Cho Doanh Nghiệp</title>
   <meta name="title" content="DOMATION | Công Ty Công Nghệ Marketing × App × AI Cho Doanh Nghiệp" />
   <meta name="description"
-    content="Công ty TNHH DOMATION Việt Nam — Kiến tạo hệ điều hành tăng trưởng doanh nghiệp: Auto Chia Data giữ Lead luôn nóng, AI đánh giá trước khi giao, Bù data lỗi 1-đổi-1, Meta CAPI, ERP 5.0, CRM 360° & Marketing Automation." />
+    content="Công ty TNHH DOMATION Việt Nam — Kiến tạo hệ điều hành tăng trưởng doanh nghiệp: Auto Chia Data ZaloBot <5s, Meta CAPI HTTP 200, ERP 5.0 (12 Phân hệ), CRM MISA, Marketing Automation AI RAG 24/7 & Web 3D." />
   <meta name="keywords"
-    content="DOMATION, domation.net, Công ty công nghệ Marketing, ERP 5.0, Auto Chia Data, Meta CAPI, ZaloBot, Zalo ZNS, Marketing Automation, CRM 360, AI RAG" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
+    content="DOMATION, domation.net, Công ty công nghệ Marketing, ERP 5.0, Auto Chia Data, Meta CAPI, ZaloBot, Zalo ZNS, Marketing Automation, CRM 360, AI RAG, Boost SEO GEO" />
+  <meta name="author" content="Huỳnh Trọng Phúc (TurnioDEV) — DOMATION.NET" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <link rel="canonical" href="https://domation.net/" />
+  <link rel="alternate" type="text/plain" title="LLM Context (GEO)" href="https://domation.net/llms.txt" />
 
   <!-- Open Graph / Facebook / Zalo -->
   <meta property="og:type" content="website" />
@@ -33,51 +36,83 @@
   <meta property="og:title"
     content="DOMATION | Hệ Sinh Thái Công Nghệ Marketing × App × AI Doanh Nghiệp" />
   <meta property="og:description"
-    content="Đồng bộ trọn vẹn từ Quảng cáo Meta -> AI đánh giá & chia Lead tức thì qua ZaloBot -> CRM 360° & ERP 5.0 -> Tự động bắn Meta CAPI nâng cao tỷ lệ chốt đơn cho doanh nghiệp." />
-  <meta property="og:image" content="https://domation.net/imgs/og-domation-v2.jpg" />
-  <meta property="og:image:secure_url" content="https://domation.net/imgs/og-domation-v2.jpg" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+    content="Đồng bộ trọn vẹn từ Quảng cáo Meta -> Chia Lead ZaloBot <5s -> AI RAG 24/7 -> CRM & ERP 5.0 -> Tự động bắn Meta CAPI nâng cao tỷ lệ chốt đơn cho 30+ doanh nghiệp." />
+  <meta property="og:image" content="https://domation.net/imgs/home.jpg" />
+  <meta property="og:image:alt" content="Hệ Sinh Thái Công Nghệ Doanh Nghiệp DOMATION.NET" />
 
   <!-- Twitter / X -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:title" content="DOMATION | Công Ty Công Nghệ Marketing × App × AI" />
-  <meta property="twitter:image" content="https://domation.net/imgs/og-domation-v2.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DOMATION | Công Ty Công Nghệ Marketing × App × AI" />
+  <meta name="twitter:description"
+    content="Kiến trúc may đo ERP 5.0, CRM 360°, Auto Chia Data ZaloBot <5s, Meta CAPI SHA-256 & Multi-Agent AI." />
+  <meta name="twitter:image" content="https://domation.net/imgs/home.jpg" />
 
-  <!-- Structured Data JSON-LD -->
+  <!-- Structured Data JSON-LD (Base GEO Entity Graph) -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Công Ty TNHH DOMATION Việt Nam",
-      "alternateName": ["DOMATION", "DOMARKETING"],
-      "url": "https://domation.net/",
-      "logo": "https://domation.net/domation-logo.svg",
-      "email": "turniodev@gmail.com",
-      "telephone": "+84378859736",
-      "founder": {
-        "@type": "Person",
-        "name": "Huỳnh Trọng Phúc (Turnio DEV)",
-        "url": "https://turnio.vercel.app/"
-      }
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://domation.net/#organization",
+          "name": "Công Ty TNHH DOMATION Việt Nam",
+          "alternateName": ["DOMATION", "DOMATION.NET", "DOMARKETING"],
+          "url": "https://domation.net/",
+          "logo": "https://domation.net/domation-logo.svg",
+          "email": "turniodev@gmail.com",
+          "telephone": "+84378859736",
+          "areaServed": ["VN", "TP. Hồ Chí Minh", "Đà Nẵng", "Hà Nội"],
+          "sameAs": [
+            "https://www.facebook.com/turni0",
+            "https://portfo-turnio.vercel.app/",
+            "https://zalo.me/0378859736"
+          ],
+          "knowsAbout": [
+            "Auto Chia Data ZaloBot",
+            "Meta Conversions API (CAPI) SHA-256",
+            "Enterprise ERP 5.0",
+            "CRM 360 độ & Hóa đơn MISA",
+            "Marketing Automation & Zalo ZNS",
+            "Multi-Agent AI & RAG Doanh nghiệp",
+            "Thiết kế Website & Sa bàn 3D WebGL",
+            "SEO & Generative Engine Optimization (GEO)"
+          ],
+          "founder": {
+            "@type": "Person",
+            "name": "Huỳnh Trọng Phúc (TurnioDEV)",
+            "url": "https://portfo-turnio.vercel.app/"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://domation.net/#website",
+          "url": "https://domation.net/",
+          "name": "DOMATION.NET",
+          "inLanguage": "vi-VN",
+          "publisher": { "@id": "https://domation.net/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://domation.net/boost?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
     }
   </script>
   <script type="module" crossorigin src="/assets/LuxuryGoldBackdrop-BaP9rWQ4.js"></script>
   <script type="module" crossorigin src="/assets/filter-props--llFN9Or.js"></script>
   <script type="module" crossorigin src="/assets/arrow-right-7H9K_bGF.js"></script>
-  <script type="module" crossorigin src="/assets/Navbar-BEGN_9oX.js"></script>
+  <script type="module" crossorigin src="/assets/seo-RgcmYRzr.js"></script>
   <script type="module" crossorigin src="/assets/arrow-up-BKRPmV-C.js"></script>
-  <script type="module" crossorigin src="/assets/enterpriseData-Im5-lal7.js"></script>
-  <script type="module" crossorigin src="/assets/ProductInspectionModal-DzHZl_lo.js"></script>
+  <script type="module" crossorigin src="/assets/enterpriseData-BZEqTYdh.js"></script>
+  <script type="module" crossorigin src="/assets/ProductInspectionModal-B8L5uYFL.js"></script>
   <script type="module" crossorigin src="/assets/bot-CSl1ObG1.js"></script>
   <script type="module" crossorigin src="/assets/building-2-wurAZU_5.js"></script>
   <script type="module" crossorigin src="/assets/globe-BDNZdfmw.js"></script>
   <script type="module" crossorigin src="/assets/network-BtMMYGAx.js"></script>
   <script type="module" crossorigin src="/assets/ChannelLogoStrip-B4vSO5Po.js"></script>
-  <script type="module" crossorigin src="/assets/seo-BcwDvABD.js"></script>
-  <script type="module" crossorigin src="/assets/main-CQ7MYUtn.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-CCeejwZO.css">
+  <script type="module" crossorigin src="/assets/main-cvGnbeyk.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-48fhAunm.css">
 </head>
 
 <body class="bg-[#F8F9FA] text-[#0F172A] antialiased selection:bg-blue-100 selection:text-[#1E40FF]">

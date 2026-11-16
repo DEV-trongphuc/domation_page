@@ -1,0 +1,174 @@
+# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI & Multi-Agent AI
+
+> Công ty TNHH DOMATION Việt Nam (sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) chuyên khảo sát và thiết kế riêng Hệ điều hành Vận hành Doanh nghiệp (ERP 5.0 12 phân hệ, CRM 360° & Hóa đơn MISA), Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256, Marketing Automation (Amazon SES 98% Inbox, Zalo ZNS, Visual Flow IF/ELSE), Multi-Agent AI RAG 24/7 và Website/Sa bàn 3D WebGL.
+
+## Core Product & Portfolio Routes
+- [Trang chủ DOMATION Enterprise OS](https://domation.net/): Tổng quan kiến trúc may đo, 4 trụ cột vận hành, Multi-Agent Hub và bảng giá SaaS (Starter 2.99M/tháng, Growth 4.99M/tháng, Bespoke Enterprise).
+- [Auto Chia Data ZaloBot & Meta CAPI](https://domation.net/data): Phân bổ Lead Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
+- [Enterprise ERP 5.0 (12 Phân hệ)](https://domation.net/erp): Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ và Payroll Engine xuất PDF ký số.
+- [CRM 360° & Đồng bộ MISA](https://domation.net/crm): Pipeline Kanban 8 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
+- [Marketing Automation & AI RAG](https://domation.net/automation): Visual Flow IF/ELSE, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
+- [Meta Ad Realtime Report](https://domation.net/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
+- [Thiết kế Website & Sa bàn 3D WebGL](https://domation.net/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), sa bàn Three.js và công cụ dự toán Excel.
+- [Portfolio Dự Án & Case Study](https://domation.net/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore.
+- [Boost Growth, SEO/GEO & Knowledge Hub](https://domation.net/boost): 24 bài phân tích triển khai chuẩn SEO, 50 chủ đề SEO, 10 cụm từ khóa B2B và giải pháp nỗi đau cho 8 nhóm ngành nghề.
+
+## Featured Implementation Articles (Singlepost)
+- [#01 Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot < 5 giây & Van chống ôm Lead](https://domation.net/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds): Giải pháp tự động chia data khách hàng BĐS qua ZaloBot dưới 5 giây, lọc trùng 6 tháng và thu hồi Lead quá hạn 2 phút giúp giảm 40% tỷ lệ rớt khách.
+- [#02 Minh bạch chia giỏ hàng & bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature](https://domation.net/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife): Cách Chủ đầu tư Capital House quản lý chia Lead công bằng độ lệch ~0% cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD) bằng cơ chế bù Ticket lỗi 1:1.
+- [#03 Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile & gắn Tracking đẩy thẳng CRM](https://domation.net/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm): Kinh nghiệm triển khai sa bàn 3D Three.js bóc mái 8 căn hộ trực tiếp trên trình duyệt cho BĐS, tối ưu dung lượng <5MB mượt trên mobile và đồng bộ CRM.
+- [#04 Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác](https://domation.net/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac): Hướng dẫn kiến trúc Meta Conversions API (CAPI) chuẩn SHA-256 từ CRM bắn ngược trạng thái Qualified và DisqualifiedLead HTTP 200 để dạy lại thuật toán Meta Ads.
+- [#05 Quản lý phễu tuyển sinh MBA & Khóa học dài ngày: Nâng quy mô từ 20 lên 60 học viên/khóa & giảm 30% CPA](https://domation.net/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa): Case study triển khai CRM, Auto Lead Router và Flow nuôi dưỡng dài ngày giúp Viện IDEAS mở rộng quy mô từ 20 lên 60 học viên MBA/khóa và giảm 30% CPA.
+- [#06 Xây dựng ERP 5.0 thay thế 14 file Excel rời rạc cho Viện Đào Tạo: Bài học triển khai chấm công GPS & Payroll PDF](https://domation.net/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao): Kinh nghiệm số hóa toàn bộ vận hành nội bộ 12 phân hệ ERP 5.0 tại IDEAS Institute: hợp nhất Task Kanban, chấm công GPS AI, phê duyệt và xuất phiếu lương PDF.
+- [#07 AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí & chuyển nóng sang Sale](https://domation.net/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi): Kỹ thuật xây dựng AI RAG Agent đọc chính xác PDF bảng giá, giáo trình, học bổng, chống hallucination bịa số liệu và tự động chuyển Lead nóng sang Sale.
+- [#08 Bài toán đứt gãy dữ liệu POS & CSKH chuỗi 30+ cửa hàng F&B: Tự động hóa Zalo ZNS & Voucher Hub đạt ROAS 5+](https://domation.net/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5): Giải pháp đồng bộ dữ liệu mua hàng POS tại chuỗi 30+ cửa hàng F&B (Phúc Lộc Thọ, En Group, Cowboy Steak) sang Zalo ZNS và Voucher Hub tăng tỷ lệ quay lại.
+- [#09 Phễu thu Lead Nhượng quyền (Franchise) 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Survey & Lead Score](https://domation.net/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score): Cách xây dựng phễu thu hút và chấm điểm đối tác nhượng quyền F&B đạt 1.600+ Leads mở rộng 20+ cửa hàng mới nhờ Survey Builder và Lead Score tự động.
+- [#10 Đo lường chuyển đổi Offline-to-Online (O2O) bằng QR Code Tracking & Heatmap hành vi khách hàng](https://domation.net/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap): Cách đo lường chính xác lượt quét từ Standee, Tờ gấp, Billboard OOH bằng QR Code động có ID và theo dõi hành vi scroll/click trên Heatmap website.
+- [#11 Chống sót lịch hẹn & tự động nhắc tái khám Nha khoa đa chi nhánh bằng Flow rẽ nhánh IF/ELSE](https://domation.net/boost/chong-sot-lich-hen-tu-dong-nhac-tai-kham-nha-khoa-flow-if-else): Giải pháp tự động đặt hẹn, nhắc lịch tái khám định kỳ 6 tháng và phân luồng CSKH cho chuỗi Nha khoa (Flora, ImplantSwiss) bằng Flow rẽ nhánh IF/ELSE.
+- [#12 Bảo mật dữ liệu khách hàng y tế & phân quyền RLS từng chi nhánh khi chạy Quảng cáo Meta Lead Ads](https://domation.net/boost/bao-mat-du-lieu-benh-an-phan-quyen-rls-chi-nhanh-meta-ads): Cách phân quyền Row-Level Security (RLS), ẩn số điện thoại bảo mật trên báo cáo và tuân thủ riêng tư khi vận hành Meta CAPI cho ngành Y tế và Nha khoa.
+- [#13 Triển khai hệ thống Multi-Agent AI Prepress xử lý 208 SKU 3D CAD: Những nút thắt kỹ thuật và bài học thực tế](https://domation.net/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica): Kinh nghiệm kiến tạo nền tảng INKICA AI POD Studio với 6 AI Prepress Agents, tách nền 300 DPI SAM 3 và bóc rập CAD 3D không lệch đường may.
+- [#14 Tối ưu E-commerce & Đồng bộ Hóa đơn điện tử MISA hai chiều từ CRM 360° không sai lệch công nợ](https://domation.net/boost/dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360): Kinh nghiệm đồng bộ đơn hàng E-commerce và CRM 360° sang phần mềm kế toán MISA hai chiều, tự động xuất hóa đơn điện tử và đối soát công nợ.
+- [#15 Vì sao 70% dự án triển khai ERP đóng gói thất bại ở SME Việt Nam? Lợi thế của Kiến trúc May đo (Bespoke OS)](https://domation.net/boost/vi-sao-70-du-an-erp-dong-goi-that-bai-o-sme-viet-nam): Phân tích nguyên nhân 70% SME bỏ cuộc với phần mềm ERP đóng gói cứng nhắc và cách kiến trúc Bespoke Enterprise OS của DOMATION bám sát 100% quy trình thực tế.
+- [#16 Chống gian lận chấm công hộ bằng GPS bán kính + Selfie AI: Kinh nghiệm xử lý ngoại lệ ngoài thị trường](https://domation.net/boost/chong-gian-lan-cham-cong-ho-gps-ban-kinh-selfie-ai): Kinh nghiệm triển khai chấm công định vị GPS kết hợp Selfie AI nhận diện thiết bị, chống app Fake GPS và xử lý ngoại lệ cho nhân viên thị trường/đa chi nhánh.
+- [#17 Số hóa quy trình Phê duyệt đa cấp (PO, Tạm ứng, Nghỉ phép) & Task Kanban liên phòng ban](https://domation.net/boost/so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban): Loại bỏ tình trạng trôi đơn xin phép, chi phí mua hàng PO và tắc nghẽn công việc giữa các phòng ban bằng Task Kanban & Approval Hub trong DOMATION ERP 5.0.
+- [#18 Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report](https://domation.net/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm): Tránh bẫy giá Lead rẻ nhưng không có đơn hàng bằng hệ thống Meta Ad Realtime Report kết nối trực tiếp Facebook Graph API với dữ liệu Qualified & Cọc trên CRM.
+- [#19 Phân tích Video Hook Rate 3s & Creative Fatigue: Khi nào nên tắt hoặc Scale ngân sách quảng cáo?](https://domation.net/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads): Hướng dẫn đo lường Video Hook Rate (tỷ lệ giữ chân 3 giây đầu), Hold Rate và cảnh báo bão hòa Creative Fatigue để tắt/scale quảng cáo Meta chính xác.
+- [#20 Lọc trùng Lead đa kênh 6 tháng & chuẩn hóa số điện thoại +84: Chìa khóa tiết kiệm 35% ngân sách Media](https://domation.net/boost/loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84): Kỹ thuật chuẩn hóa số điện thoại +84 và lọc trùng Lead 180 ngày từ Meta Ads, TikTok, Landing Page, QR Offline để tránh chia trùng và tiết kiệm 35% chi phí Ads.
+- [#21 Chiến lược SEO & GEO (Generative Engine Optimization) 2026: Đưa doanh nghiệp B2B lọt Top Google & AI Overview](https://domation.net/boost/chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview): Hướng dẫn triển khai SEO kỹ thuật kết hợp GEO (Generative Engine Optimization): llms.txt, JSON-LD thực thể, tóm tắt Direct-Answer và Topic Cluster cho B2B.
+- [#22 Email Marketing Amazon SES đạt 98% Inbox & Flow nuôi dưỡng IF/ELSE theo hành vi Click/Scroll](https://domation.net/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi): Kinh nghiệm vận hành Email Automation qua Amazon SES đạt 98% vào Inbox chính, kết hợp kịch bản rẽ nhánh IF/ELSE theo lượt mở mail và hành vi website.
+- [#23 Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury & Tracking Server-side: Tránh bẫy Web đẹp nhưng 0 chuyển đổi](https://domation.net/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side): Tại sao website đẹp lung linh nhưng không ra đơn? Kinh nghiệm thiết kế Web thương hiệu chuẩn SEO tốc độ <3s, gắn sẵn Tracking CRM & dự toán minh bạch từ 12M₫.
+- [#24 Triển khai Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật & tránh chồng chéo](https://domation.net/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat): Cách thiết kế Orchestrator Core điều phối 4 AI Agent (Lead, CSKH, ERP/HR, Revenue) vận hành 24/7 không chồng chéo quyền hạn và bảo mật dữ liệu nội bộ.
+
+## Contact & Architect Verification
+- Founder & Solution Architect: Huỳnh Trọng Phúc (TurnioDEV) — https://portfo-turnio.vercel.app/
+- Hotline / Zalo: +84 378 859 736 (https://zalo.me/0378859736)
+- Email: turniodev@gmail.com
+- Full detailed GEO context: https://domation.net/llms-full.txt
+
+
+---
+
+## Industry Pain Points & Implementation Fixes (8 Industries)
+### Bất Động Sản & Sàn Phân Phối F1 (REAL ESTATE & PROPTECH)
+- Clients: Capital House Group, EcoLife Signature, RichLand, Địa Ốc Tùng Long, Hợp Nhất Land, IHD Group
+- Pain Points: Độ trễ chia Lead qua Google Sheet khiến khách nguội nhu cầu, tỷ lệ nghe máy dưới 35%. | Sale ôm Lead nhưng không gọi hoặc các Sàn F1 tranh cãi thiếu minh bạch về số lỗi, số trùng. | Khách ở xa không hình dung được layout căn hộ 2D; web truyền thống thoát trang trên 65%. | Meta Ads tối ưu theo lượt điền form nên hút 60–70% tệp không đủ tài chính.
+- Deployment Friction: Meta Webhook đôi khi retry hoặc trễ nhịp khi nhiều chiến dịch chạy đồng loạt vào buổi tối. | Sale bận đi tiếp khách dự án không bấm nhận số -> cần Van SLA 120s tự chuyển vòng thông minh. | Lộ SĐT khách giữa 3 Sàn F1 nếu dùng chung bảng tính -> bắt buộc phân tách Row-Level Security. | Sa bàn 3D file gốc 80MB làm văng Safari trên iPhone nếu không nén GLB Draco & tối ưu lightmap.
+- DOMATION Architecture: Kết nối đồng bộ Web 3D Bóc Mái (<3s, Draco GLB) -> Auto Data Router chia 3 Sàn F1 qua ZaloBot <5s + Van SLA 120s + Bù Ticket 1:1 -> Trợ lý AI Sale 24/7 -> Meta CAPI SHA-256 bắn ngược Qualified/Schedule HTTP 200.
+- Outcomes: Chia Lead < 5 giây, Độ lệch 3 Sàn F1 ~ 0%, Giảm 35% Lead trùng/rác, 8 căn hộ 3D mượt 60 FPS
+
+### Giáo Dục Sau Đại Học & Đào Tạo (EDTECH & HIGHER EDUCATION)
+- Clients: IDEAS Business, College de Paris, Swiss UMEF, Ascencia, VTCI Edu
+- Pain Points: Chu kỳ cân nhắc học MBA/Chứng chỉ quốc tế kéo dài 30–90 ngày khiến Tư vấn viên bỏ quên 70% Lead ấm. | Chi phí thu 1 học viên (CPA) cao (18 triệu+) do phải liên tục mua Lead mới mỗi kỳ khai giảng. | Vận hành nội bộ tách rời trên 14 file Excel: lịch giảng, KPI, chấm công và bảng lương hoa hồng.
+- Deployment Friction: Trùng lặp ứng viên đăng ký lại qua nhiều kỳ tuyển sinh gây tranh chấp hoa hồng giữa các bạn Tư vấn. | Nhân sự đào tạo & tư vấn phản ứng nếu bắt học 12 phân hệ ERP cùng một tuần. | AI Chatbot thông thường dễ "tự bịa" mức học phí hoặc điều kiện học bổng nếu đọc file PDF bảng cột bị vỡ.
+- DOMATION Architecture: CRM Pipeline 8 nấc + Cửa sổ bảo hộ 90 ngày -> Flow Amazon SES (98% Inbox) & Zalo ZNS nuôi dưỡng 45 ngày -> AI RAG đọc PDF chính sách chuẩn xác 0% sai số -> ERP 5.0 12 phân hệ (Task Kanban, Chấm công GPS, Payroll PDF).
+- Outcomes: +300% Quy mô (20 -> 60 HV/khóa), -30% CPA tuyển sinh, 12,600+ Leads vận hành, 96% Adoption ERP sau 21 ngày
+
+### Chuỗi F&B & Nhượng Quyền (Franchise) (F&B CHAINS & FRANCHISE)
+- Clients: Phúc Lộc Thọ, Cowboy Steak, En Group, Ka-En, Haagen-Dazs, The Running Bean, Ampersand
+- Pain Points: Dữ liệu khách ăn tại quán nằm chết trong máy POS, tỷ lệ khách quay lại dưới 18%. | Phát mã giảm giá tĩnh bị lạm dụng hoặc nhân viên thu ngân áp mã sai, không đo được ROI từng cửa hàng. | Phễu tuyển đối tác Nhượng quyền hút 80% người tò mò không đủ vốn đầu tư tối thiểu.
+- Deployment Friction: POS tại chuỗi cửa hàng dùng nhiều phiên bản khác nhau, nhiều máy không mở Webhook push thời gian thực. | Gửi ZNS hàng loạt thiếu phân khúc RFM làm tăng vọt chi phí tin nhắn mà không ra đơn. | Form khảo sát nhượng quyền dài ngay trang đầu làm tỷ lệ thoát form lên tới 85%.
+- DOMATION Architecture: Adapter đồng bộ POS <-> Audience Hub -> Survey 2h sau ăn phân nhánh (1–3 sao cảnh báo Quản lý, 4–5 sao tặng Voucher Hub mã động) -> Phễu Nhượng quyền 2 tầng + Lead Score lọc vốn & mặt bằng.
+- Outcomes: 30+ Cửa hàng đồng bộ, ROAS 5+ chiến dịch, 1,600+ Leads Nhượng quyền, 20+ Cửa hàng mở mới
+
+### Y Tế, Nha Khoa Thẩm Mỹ & Clinic (HEALTHCARE & DENTAL CLINICS)
+- Clients: Nha khoa Flora, ImplantSwiss, Brandson Academy
+- Pain Points: Tỷ lệ khách đặt lịch quảng cáo nhưng quên không đến khám (No-show) lên tới 30–38%. | Thiếu hệ thống nhắc tái khám & bảo hành định kỳ 6 tháng sau khi cấy Implant/bọc sứ. | Rủi ro lộ danh sách số điện thoại bệnh nhân giữa các chi nhánh hoặc vi phạm chính sách riêng tư Meta.
+- Deployment Friction: Lễ tân phải gọi nhắc tay dễ sót vào ngày cao điểm và khó sắp xếp lại giờ bác sĩ khi khách đổi lịch. | Truyền từ khóa bệnh lý nhạy cảm vào Pixel/CAPI dễ bị Meta hạn chế tài khoản quảng cáo.
+- DOMATION Architecture: Định tuyến đặt hẹn theo chi nhánh gần nhất -> Flow nhắc 3 chạm (-24h / -2h / hậu phẫu) qua Zalo ZNS -> Row-Level Security cô lập dữ liệu từng phòng khám -> Meta CAPI chuẩn SHA-256 chỉ gửi sự kiện chuẩn.
+- Outcomes: Giảm No-show 35% -> 11%, 94% nhắc tái khám đúng hạn, 100% RLS bảo mật chi nhánh
+
+### Sản Xuất, In Ấn POD & Thời Trang (AI PREPRESS & 3D MANUFACTURING)
+- Clients: INKICA AI Studio, Duyên Mai Fashion
+- Pain Points: Thiết kế tay bộ Mockup 3D & File rập in cho 1 SKU mới tốn 45–60 phút, nghẽn ra mắt mẫu mới. | Ảnh độ phân giải thấp hoặc tách nền thủ công bị răng cưa và lệch mép may khi in toàn thân (AOP).
+- Deployment Friction: Chạy 20+ mô hình AI xử lý ảnh (SAM 3, ViTMatte, 300 DPI Upscaler) trực tiếp trên HTTP request gây tràn VRAM GPU. | Hệ tọa độ UV lưới 3D dễ sai lệch so với file rập .PSD Cubic Bezier vật lý tại xưởng.
+- DOMATION Architecture: Chat Orchestrator điều phối 6 AI Prepress Agents -> GPU Worker Pool qua BullMQ + Redis -> Neural Extract 300 DPI + Chuẩn hóa UV-to-PSD 208 SKU AOP 3D không lệch pixel.
+- Outcomes: 208 SKU AOP 3D, 0 px sai lệch đường may, 300 DPI chuẩn in, 60 phút -> 40 giây/bộ
+
+### Thương Mại Điện Tử & Bán Lẻ (E-COMMERCE & MISA SYNC)
+- Clients: Navastore, Các nhà bán lẻ tích hợp VNPay/VietQR
+- Pain Points: Sale chốt đơn trên CRM nhưng Kế toán phải gõ tay lại vào MISA gây sai MST, sai thuế VAT và lệch công nợ. | Website giao diện nặng, không tối ưu SEO On-page và form đặt hàng không đẩy về Zalo/CRM.
+- Deployment Friction: Tên combo marketing trên Web/CRM khác tên mã hàng chuẩn thuế trong phần mềm Kế toán. | Khách hủy hoặc đổi một phần đơn hàng sau khi đã đồng bộ dữ liệu sang kế toán.
+- DOMATION Architecture: Web E-commerce tốc độ <3s -> Giỏ hàng & Thanh toán VietQR/VNPay -> CRM 360° Mapping SKU 1-1 -> Webhook 2 chiều đồng bộ Kế toán MISA & trả link PDF hóa đơn tự động.
+- Outcomes: Giảm 95% nhập liệu hóa đơn, Tốc độ tải Web < 3s, Đồng bộ gạch nợ Real-time
+
+### Agency Marketing, Media & In-house Ads Team (PERFORMANCE MARKETING & BI)
+- Clients: Hệ thống Đối tác Performance & Doanh nghiệp chạy Meta Ads quy mô lớn
+- Pain Points: Mâu thuẫn triền miên giữa Media ("CPL rẻ") và Sale ("Lead toàn rác") vì dùng hai hệ quy chiếu số liệu khác nhau. | Không phát hiện kịp Video bị bão hòa (Creative Fatigue) hoặc nhầm giờ chạy hiệu quả. | Tốn 60 phút mỗi sáng ghép CSV từ Facebook Business Manager và CRM bằng tay.
+- Deployment Friction: Độ trễ chuyển đổi 3–14 ngày từ lúc click Ad tới lúc đặt cọc làm sai lệch attribution theo ngày. | Khách hàng của Agency không muốn cấp quyền quản trị BM phức tạp cho mọi nhân sự xem báo cáo.
+- DOMATION Architecture: Meta Ad Realtime Report kéo Graph API kết hợp Cohort Attribution từ CRM -> Tính tự động Hook Rate 3s, Hold Rate, Cost/Qualified Lead, ROAS thực và Admin Audit Log độc lập BM.
+- Outcomes: Hook Rate mục tiêu >=30%, Phát hiện bão hòa sớm 3–5 ngày, Đối chiếu ROAS 24/7
+
+### Doanh Nghiệp SME (Vận Hành Nội Bộ & Tăng Trưởng) (BESPOKE ENTERPRISE OS)
+- Clients: An Ninh Tiên Hoàng, Brandson, Các doanh nghiệp 20–300 nhân sự
+- Pain Points: Mua ERP đóng gói xong nhân viên vẫn trốn ra dùng Excel & Zalo vì biểu mẫu quá rườm rà. | Đề xuất tạm ứng, mua hàng (PO), xin nghỉ phép bị trôi trong tin nhắn, sếp không kiểm soát được ngân sách. | Chấm công đa điểm hoặc nhân viên thị trường dễ gian lận chấm hộ/Fake GPS.
+- Deployment Friction: Sợ may đo từ đầu mất 12 tháng hoặc khi sếp đi công tác bị kẹt dây chuyền duyệt đơn. | GPS trong tòa nhà kính bị sai số 150m nếu cài đặt cứng nhắc sẽ phạt nhầm nhân viên đi làm thật.
+- DOMATION Architecture: Triển khai Lõi ERP 5.0 may đo trong 2–4 tuần theo 3 nhịp: Approval + GPS Selfie AI (Geofence + Wi-Fi BSSID) -> Task Kanban KPI -> Payroll Engine PDF + Multi-Agent AI điều phối.
+- Outcomes: Triển khai 2–4 tuần, Giảm 70% bước nhập thừa, Chốt lương 4 ngày -> 30 phút
+
+---
+
+## 50 Curated Enterprise SEO Topics for DOMATION
+- [SEO-01] (Auto Chia Data & Meta CAPI | BOFU | Commercial) Auto Chia Data ZaloBot < 5 giây & Van chống ôm Lead Bất động sản — Primary KW: "auto chia data zalobot" -> Target: /data
+- [SEO-02] (Auto Chia Data & Meta CAPI | BOFU | Commercial) Minh bạch chia data & bù Ticket lỗi 1:1 giữa các Đại lý F1 BĐS — Primary KW: "chia data đại lý f1 bất động sản" -> Target: /data
+- [SEO-03] (Auto Chia Data & Meta CAPI | MOFU | Informational) Kết nối Meta CAPI SHA-256 bắn Qualified & DisqualifiedLead HTTP 200 — Primary KW: "meta capi sha-256" -> Target: /data
+- [SEO-04] (Auto Chia Data & Meta CAPI | TOFU | Informational) Lọc trùng Lead đa kênh 6 tháng & chuẩn hóa số điện thoại +84 — Primary KW: "lọc trùng lead đa kênh" -> Target: /data
+- [SEO-05] (Auto Chia Data & Meta CAPI | MOFU | Commercial) Bảo mật dữ liệu khách hàng Y tế & Phân quyền RLS đa chi nhánh — Primary KW: "bảo mật dữ liệu khách hàng crm rls" -> Target: /data
+- [SEO-06] (Auto Chia Data & Meta CAPI | MOFU | Comparison) So sánh chia Lead qua ZaloBot, Telegram Bot và Google Sheet thủ công — Primary KW: "chia lead qua zalobot hay telegram bot" -> Target: /data
+- [SEO-07] (Auto Chia Data & Meta CAPI | MOFU | Informational) Hướng dẫn tích hợp TikTok Instant Form & Ladipage vào Auto Data Router — Primary KW: "đồng bộ tiktok lead về zalo crm" -> Target: /data
+- [SEO-08] (Auto Chia Data & Meta CAPI | MOFU | Commercial) AI Pre-Scorer chấm điểm độ thiện chí Lead ngay trước khi giao Sale — Primary KW: "chấm điểm lead tự động bằng ai" -> Target: /data
+- [SEO-09] (Auto Chia Data & Meta CAPI | MOFU | Informational) Báo cáo tổng kết Data & Tỷ lệ nghe máy cuối ngày tự động cho Giám đốc — Primary KW: "báo cáo chia data tự động cuối ngày" -> Target: /data
+- [SEO-10] (Enterprise ERP 5.0 | BOFU | Commercial) ERP 5.0 thay thế 14 file Excel cho Viện Đào Tạo & Doanh nghiệp tăng trưởng — Primary KW: "triển khai erp may đo doanh nghiệp" -> Target: /erp
+- [SEO-11] (Enterprise ERP 5.0 | TOFU | Comparison) Vì sao 70% dự án ERP đóng gói thất bại ở SME Việt Nam & Lợi thế Bespoke OS — Primary KW: "erp may đo theo yêu cầu doanh nghiệp" -> Target: /erp
+- [SEO-12] (Enterprise ERP 5.0 | MOFU | Commercial) Chống gian lận chấm công hộ bằng GPS bán kính + Selfie AI & xử lý ngoại lệ — Primary KW: "chấm công gps selfie ai" -> Target: /erp
+- [SEO-13] (Enterprise ERP 5.0 | MOFU | Informational) Số hóa quy trình Phê duyệt đa cấp (PO, Tạm ứng, Nghỉ phép) & Task Kanban — Primary KW: "quy trình phê duyệt đa cấp erp" -> Target: /erp
+- [SEO-14] (Enterprise ERP 5.0 | BOFU | Commercial) Payroll Engine tự động tính công, hoa hồng, thuế TNCN & xuất phiếu lương PDF — Primary KW: "phần mềm tính lương tự động xuất pdf" -> Target: /erp
+- [SEO-15] (Enterprise ERP 5.0 | MOFU | Informational) Quản trị KPI & OKR liên phòng ban gắn liền kết quả thực thi Task Kanban — Primary KW: "quản trị kpi phòng ban trên erp" -> Target: /erp
+- [SEO-16] (Enterprise ERP 5.0 | MOFU | Commercial) Hệ thống kiểm soát Chi phí Vận hành & Purchase Order chống chi vượt ngân sách — Primary KW: "quản lý chi phí doanh nghiệp purchase order" -> Target: /erp
+- [SEO-17] (Enterprise ERP 5.0 | MOFU | Commercial) Xây dựng cổng E-Learning & Kho Tài liệu Nội bộ đào tạo Sale/Nhân sự mới — Primary KW: "hệ thống e-learning đào tạo sale nội bộ" -> Target: /erp
+- [SEO-18] (Enterprise ERP 5.0 | BOFU | Transactional) Chi phí xây dựng ERP May Đo cho doanh nghiệp 20–300 nhân sự là bao nhiêu? — Primary KW: "chi phí triển khai erp may đo cho doanh nghiệp vừa" -> Target: /erp
+- [SEO-19] (CRM 360° & Bán Hàng | BOFU | Commercial) Phễu tuyển sinh MBA & Giáo dục dài ngày: Nâng quy mô 300% & Giảm 30% CPA — Primary KW: "phần mềm crm tuyển sinh giáo dục" -> Target: /crm
+- [SEO-20] (CRM 360° & Bán Hàng | BOFU | Commercial) Chống sót lịch hẹn & tự động nhắc tái khám Nha khoa đa chi nhánh — Primary KW: "crm nha khoa nhắc lịch tái khám" -> Target: /crm
+- [SEO-21] (CRM 360° & Bán Hàng | BOFU | Commercial) Đồng bộ đơn hàng E-commerce & Hóa đơn điện tử MISA hai chiều từ CRM 360° — Primary KW: "đồng bộ crm với kế toán misa" -> Target: /crm
+- [SEO-22] (CRM 360° & Bán Hàng | MOFU | Informational) Pipeline Kanban 8 nấc & Rào cản TTL1 chống Sale bỏ sót khách hàng trên CRM — Primary KW: "crm pipeline kanban 8 bước" -> Target: /crm
+- [SEO-23] (CRM 360° & Bán Hàng | BOFU | Commercial) Quản lý Giỏ hàng Sản phẩm Real-Time & Chia Hoa hồng Cộng tác viên/Đại lý — Primary KW: "quản lý giỏ hàng bất động sản real-time" -> Target: /crm
+- [SEO-24] (CRM 360° & Bán Hàng | TOFU | Informational) Hồ sơ Khách hàng 360° (CDP): Gom lịch sử Web, Zalo, Email, Mua hàng vào 1 màn hình — Primary KW: "hồ sơ khách hàng 360 độ crm" -> Target: /crm
+- [SEO-25] (CRM 360° & Bán Hàng | MOFU | Informational) Xây dựng Ma trận Nhiệt độ Nóng/Ấm/Lạnh giúp Sale tập trung đúng 20% khách sắp chốt — Primary KW: "phân loại khách hàng nóng ấm lạnh crm" -> Target: /crm
+- [SEO-26] (CRM 360° & Bán Hàng | BOFU | Comparison) So sánh DOMATION CRM 360° với CRM đóng gói phổ thông cho doanh nghiệp Việt — Primary KW: "so sánh crm may đo và crm đóng gói" -> Target: /crm
+- [SEO-27] (Automation, Email & ZNS | BOFU | Commercial) Đồng bộ POS Chuỗi 30+ Cửa Hàng F&B với Zalo ZNS & Voucher Hub đạt ROAS 5+ — Primary KW: "tự động hóa zalo zns chuỗi f&b" -> Target: /automation
+- [SEO-28] (Automation, Email & ZNS | BOFU | Commercial) Phễu thu Lead Nhượng quyền 1.600+ hồ sơ bằng Survey & Lead Score tự động — Primary KW: "phễu thu lead nhượng quyền thương hiệu" -> Target: /automation
+- [SEO-29] (Automation, Email & ZNS | MOFU | Informational) Đo lường chuyển đổi Offline-to-Online (O2O) bằng QR Code Tracking & Heatmap — Primary KW: "qr code tracking chiến dịch o2o" -> Target: /automation
+- [SEO-30] (Automation, Email & ZNS | BOFU | Commercial) Email Marketing Amazon SES đạt 98% Inbox & Flow nuôi dưỡng IF/ELSE theo hành vi — Primary KW: "email marketing amazon ses 98% inbox" -> Target: /automation
+- [SEO-31] (Automation, Email & ZNS | MOFU | Informational) Thiết kế kịch bản Zalo ZNS hậu mãi & nhắc thanh toán định kỳ không làm phiền khách — Primary KW: "kịch bản gửi zalo zns tự động cho doanh nghiệp" -> Target: /automation
+- [SEO-32] (Automation, Email & ZNS | TOFU | Informational) Visual Flow Builder: Cách vẽ 5 kịch bản Automation bắt buộc có của mọi doanh nghiệp — Primary KW: "kịch bản marketing automation cho doanh nghiệp" -> Target: /automation
+- [SEO-33] (Automation, Email & ZNS | MOFU | Commercial) Web Behavior Tracking: Nhận diện khách hàng ẩn danh quay lại xem bảng giá — Primary KW: "web tracking hành vi khách hàng ẩn danh" -> Target: /automation
+- [SEO-34] (Automation, Email & ZNS | MOFU | Informational) Tự động hóa Gamification & Phát mã Voucher sinh nhật giữ chân khách VIP — Primary KW: "tự động tặng voucher sinh nhật khách hàng" -> Target: /automation
+- [SEO-35] (Multi-Agent AI & RAG | MOFU | Informational) AI RAG Agent tư vấn 24/7 từ PDF bảng giá: Cách chống AI bịa số liệu & chuyển Sale — Primary KW: "ai rag chatbot doanh nghiệp" -> Target: /automation
+- [SEO-36] (Multi-Agent AI & RAG | MOFU | Informational) Triển khai Multi-Agent AI Prepress 208 SKU 3D CAD: Kinh nghiệm từ INKICA Studio — Primary KW: "multi-agent ai prepress 3d cad" -> Target: /portfolio
+- [SEO-37] (Multi-Agent AI & RAG | BOFU | Commercial) Triển khai Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media) — Primary KW: "triển khai multi-agent ai doanh nghiệp" -> Target: /#multi-agent
+- [SEO-38] (Multi-Agent AI & RAG | MOFU | Commercial) AI Space theo Phòng ban: Tách riêng bộ não AI cho Sales, Pháp lý, Kế toán & HR — Primary KW: "xây dựng trợ lý ai riêng cho từng phòng ban" -> Target: /automation
+- [SEO-39] (Multi-Agent AI & RAG | BOFU | Commercial) Tích hợp AI Chatbot đồng nhất trên Website, Zalo OA, Facebook Messenger & Telegram — Primary KW: "chatbot ai đa kênh zalo facebook website" -> Target: /automation
+- [SEO-40] (Multi-Agent AI & RAG | BOFU | Commercial) Xây dựng Trợ lý AI Sale Bất Động Sản trực dự án 24/7 (Mô hình EcoLife AI Portal) — Primary KW: "trợ lý ai tư vấn bất động sản" -> Target: /portfolio
+- [SEO-41] (Multi-Agent AI & RAG | MOFU | Informational) Tự động tóm tắt cuộc hội thoại AI & gắn thẻ nhu cầu trước khi bàn giao Sale — Primary KW: "ai tóm tắt hội thoại chuyển crm" -> Target: /automation
+- [SEO-42] (Multi-Agent AI & RAG | MOFU | Informational) Checklist bảo mật dữ liệu doanh nghiệp khi triển khai Gemini & RAG nội bộ — Primary KW: "bảo mật dữ liệu khi làm ai doanh nghiệp" -> Target: /automation
+- [SEO-43] (Web 3D, Meta Ads BI & SEO | BOFU | Commercial) Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Tối ưu FPS Mobile & Tracking CRM — Primary KW: "thiết kế web 3d sa bàn bất động sản" -> Target: /web-design
+- [SEO-44] (Web 3D, Meta Ads BI & SEO | BOFU | Commercial) Bẫy chỉ số CPL ảo trên Meta Ads: Đối chiếu Graph API với Doanh thu thực CRM — Primary KW: "báo cáo meta ads realtime đối chiếu crm" -> Target: /meta-report
+- [SEO-45] (Web 3D, Meta Ads BI & SEO | TOFU | Informational) Phân tích Video Hook Rate 3s & Creative Fatigue để tắt/Scale ngân sách Meta Ads — Primary KW: "video hook rate meta ads" -> Target: /meta-report
+- [SEO-46] (Web 3D, Meta Ads BI & SEO | TOFU | Informational) Chiến lược SEO & GEO (Generative Engine Optimization) 2026 cho Doanh nghiệp B2B — Primary KW: "chiến lược seo và geo cho doanh nghiệp b2b" -> Target: /boost
+- [SEO-47] (Web 3D, Meta Ads BI & SEO | BOFU | Transactional) Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury & Tracking Server-side từ 12M₫ — Primary KW: "thiết kế website doanh nghiệp chuẩn seo chuyển đổi" -> Target: /web-design
+- [SEO-48] (Web 3D, Meta Ads BI & SEO | MOFU | Informational) Bộ tiêu chuẩn Audit Website B2B trước khi chạy ngân sách quảng cáo lớn — Primary KW: "checklist audit website trước khi chạy ads" -> Target: /web-design
+- [SEO-49] (Web 3D, Meta Ads BI & SEO | MOFU | Informational) Phát hiện Khung Giờ Vàng chốt đơn & Giám sát Admin Audit Log trên Meta Ads — Primary KW: "khung giờ vàng chốt đơn meta ads" -> Target: /meta-report
+- [SEO-50] (Web 3D, Meta Ads BI & SEO | TOFU | Commercial) Bản đồ Chuyển đổi số Toàn diện cho Doanh nghiệp Việt: Từ Lead <5s tới ERP & Multi-Agent — Primary KW: "lộ trình chuyển đổi số doanh nghiệp sme việt nam" -> Target: /boost
+
+---
+
+## Keyword Clusters Summary (10 Silos)
+- 01. Thương Hiệu & Thực Thể Doanh Nghiệp (Brand & GEO Entity) (/): DOMATION, công ty công nghệ marketing automation việt nam, hệ điều hành doanh nghiệp may đo bespoke os, huỳnh trọng phúc turniodev domation
+- 02. Auto Chia Data, ZaloBot & Chống Trùng Lead (/data): auto chia data zalobot, chia data đại lý f1 bất động sản, chống ôm lead bỏ sót khách hàng, lọc trùng lead đa kênh 6 tháng, phần mềm chia số round robin cho đội sale
+- 03. Meta CAPI SHA-256 & Báo Cáo Meta Ads Realtime (/meta-report): meta capi sha-256, cách giảm lead rác quảng cáo facebook, báo cáo meta ads realtime đối chiếu crm, video hook rate meta ads là gì
+- 04. Enterprise ERP 5.0, Chấm Công GPS & Payroll PDF (/erp): triển khai erp may đo doanh nghiệp, erp thay thế excel cho doanh nghiệp vừa và nhỏ, chấm công gps selfie ai chống fake vị trí, phần mềm tính lương tự động xuất pdf, quy trình phê duyệt đa cấp purchase order
+- 05. CRM 360°, Pipeline Bán Hàng & Đồng Bộ MISA (/crm): đồng bộ crm với kế toán misa, crm 360 độ quản trị bán hàng, phần mềm crm tuyển sinh giáo dục, crm nha khoa nhắc lịch tái khám
+- 06. Marketing Automation, Email Amazon SES & Zalo ZNS (/automation): email marketing amazon ses 98% inbox, tự động hóa zalo zns chuỗi f&b, phễu thu lead nhượng quyền thương hiệu, qr code tracking chiến dịch o2o
+- 07. Multi-Agent AI, Chatbot RAG & 3D Prepress Automation (/automation): ai rag chatbot doanh nghiệp, triển khai multi-agent ai doanh nghiệp, multi-agent ai prepress 3d cad, chatbot ai đa kênh zalo facebook website
+- 08. Thiết Kế Website Chuyển Đổi, Sa Bàn 3D WebGL & Dự Toán (/web-design): thiết kế web 3d sa bàn bất động sản, thiết kế website doanh nghiệp chuẩn seo chuyển đổi, website sở hữu source code vĩnh viễn
+- 09. SEO Tổng Thể, Topic Cluster & GEO (Generative Engine Optimization) (/boost): chiến lược seo và geo cho doanh nghiệp b2b, bộ từ khóa seo ngành công nghệ phần mềm b2b, cách đưa thương hiệu lên google ai overview
+- 10. Bộ Từ Khóa Nỗi Đau Theo Từng Ngành Nghề (Industry Pain Points) (/boost#pain-points): tại sao chạy quảng cáo bđs ra nhiều lead nhưng không chốt được, cách kéo khách hàng cũ quay lại chuỗi nhà hàng f&b, giảm tỷ lệ khách đặt lịch nha khoa nhưng không đến
