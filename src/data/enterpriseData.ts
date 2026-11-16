@@ -65,6 +65,7 @@ export interface CaseStudySpotlightItem {
   company: string;
   sector: string;
   logo: string;
+  secondaryLogo?: string;
   result: string;
   cost: string;
   impact: string;
@@ -751,6 +752,7 @@ export const CASE_STUDY_SPOTLIGHTS: CaseStudySpotlightItem[] = [
     company: 'Capital House • EcoLife Signature',
     sector: 'Bất Động Sản Xanh EDGE • Đà Nẵng',
     logo: '/assets/partners/logo_capital_house.webp',
+    secondaryLogo: '/assets/partners/logo_ecolife_ngang.webp',
     result: '8 Mẫu Căn Hộ 3D',
     cost: 'Trợ Lý AI Sale',
     impact: '3 Đại Lý F1',
@@ -790,7 +792,7 @@ export const CASE_STUDY_SPOTLIGHTS: CaseStudySpotlightItem[] = [
   },
   {
     id: 'phucloctho',
-    company: 'Phúc Lộc Thọ & Ampersand',
+    company: 'Phúc Lộc Thọ',
     sector: 'Chuỗi F&B & Nhượng Quyền 30+ Cửa Hàng',
     logo: '/assets/partners/logo_phucloctho.webp',
     result: '20+ Cửa Hàng Mới',

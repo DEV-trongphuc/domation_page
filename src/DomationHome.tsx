@@ -37,6 +37,8 @@ import {
   MULTI_AGENT_NODES,
 } from './data/enterpriseData';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
+import { handleSpaLinkClick } from './utils/navigation';
+import { usePageSeo } from './utils/seo';
 
 const DEDICATED_APP_LINKS = [
   { label: 'ERP 5.0', href: '/erp' },
@@ -45,12 +47,51 @@ const DEDICATED_APP_LINKS = [
   { label: 'Auto Data', href: '/data' },
   { label: 'Meta Ads BI', href: '/meta-report' },
   { label: 'Thiết Kế Web', href: '/web-design' },
+  { label: 'Portfolio', href: '/portfolio' },
+  { label: 'Tri Thức /boost', href: '/boost' },
 ];
+
+const CASE_ARTICLE_MAP: Record<string, string> = {
+  ecolife: '/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife',
+  inkica: '/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica',
+  ideas: '/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa',
+  phucloctho: '/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5',
+};
 
 const AGENT_ICONS = [Workflow, Bot, Cpu, Layers];
 const PILLAR_ICONS = [Building2, Workflow, Database, Globe];
 
 export const DomationHome: React.FC = () => {
+  usePageSeo({
+    title: 'DOMATION | Công Ty Công Nghệ Marketing × App × AI Cho Doanh Nghiệp',
+    description:
+      'Công ty TNHH DOMATION Việt Nam — Kiến tạo hệ điều hành tăng trưởng doanh nghiệp: Auto Chia Data ZaloBot <5s, Meta CAPI HTTP 200, ERP 5.0 (12 Phân hệ), CRM MISA, Marketing Automation AI RAG 24/7 & Web 3D.',
+    path: '/',
+    keywords: [
+      'DOMATION',
+      'domation.net',
+      'Auto Chia Data ZaloBot',
+      'Meta CAPI SHA-256',
+      'Enterprise ERP 5.0',
+      'CRM 360 MISA',
+      'Multi-Agent AI RAG',
+      'Thiết kế Website 3D WebGL',
+    ],
+    ogImage: '/imgs/home.jpg',
+    breadcrumbs: [{ name: 'Trang Chủ', url: '/' }],
+    faqs: [
+      {
+        question: 'DOMATION cung cấp những hệ thống phần mềm và công nghệ nào cho doanh nghiệp?',
+        answer:
+          'DOMATION thiết kế kiến trúc doanh nghiệp may đo gồm: Auto Chia Data ZaloBot <5s & Meta CAPI (/data), Enterprise ERP 5.0 12 phân hệ (/erp), CRM 360° & Hóa đơn MISA (/crm), Marketing Automation & AI RAG (/automation), Meta Ad Realtime Report (/meta-report) và Website 3D WebGL (/web-design).',
+      },
+      {
+        question: 'Chi phí các gói phần mềm SaaS và Thiết kế Website tại DOMATION là bao nhiêu?',
+        answer:
+          'Nền tảng SaaS khởi điểm từ 2.990.000₫/tháng (Starter), 4.990.000₫/tháng (Growth) và gói Bespoke Enterprise thiết kế riêng. Dịch vụ Thiết kế Website chuẩn SEO trọn gói khởi điểm từ 12.000.000₫ thanh toán 1 lần, sở hữu vĩnh viễn source code.',
+      },
+    ],
+  });
   const [inspectionOpen, setInspectionOpen] = useState(false);
   const [inspectionTab, setInspectionTab] = useState<InspectionTabId>('erp');
   const [estimatorOpen, setEstimatorOpen] = useState(false);
@@ -533,9 +574,19 @@ export const DomationHome: React.FC = () => {
                   <span className="text-gradient-inkica">Tại Doanh Nghiệp Đối Tác</span>
                 </h2>
               </div>
-              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
-                Mỗi dự án được thiết kế riêng từ luồng dữ liệu, trợ lý AI đến giao diện vận hành để giải quyết đúng bài toán ngành.
-              </p>
+              <div className="flex flex-col items-start md:items-end gap-2">
+                <p className="text-sm text-slate-600 max-w-md leading-relaxed md:text-right">
+                  Mỗi dự án được thiết kế riêng từ luồng dữ liệu, trợ lý AI đến giao diện vận hành để giải quyết đúng bài toán ngành.
+                </p>
+                <a
+                  href="/portfolio"
+                  onClick={(e) => handleSpaLinkClick(e, '/portfolio')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E40FF] hover:text-cyan-600 transition-colors"
+                >
+                  <span>Xem toàn bộ Portfolio &amp; Case Study</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
             </div>
 
             <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/75 overflow-hidden">
@@ -551,13 +602,24 @@ export const DomationHome: React.FC = () => {
                     <div>
                       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3.5">
-                          <div className="h-11 px-3 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-1.5 shrink-0">
+                          <div className="h-11 px-3 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
                             <img
                               src={cs.logo}
                               alt={cs.company}
                               loading="lazy"
                               className="h-6 max-w-[115px] object-contain"
                             />
+                            {cs.secondaryLogo && (
+                              <>
+                                <span className="h-4 w-px bg-slate-200 shrink-0" />
+                                <img
+                                  src={cs.secondaryLogo}
+                                  alt={cs.company}
+                                  loading="lazy"
+                                  className="h-6 max-w-[105px] object-contain"
+                                />
+                              </>
+                            )}
                             {isInkica && (
                               <span className="text-sm font-bold tracking-tight text-slate-900">
                                 inkica<span className="text-[#1E40FF]">.</span>
@@ -594,6 +656,16 @@ export const DomationHome: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-4">
+                        {CASE_ARTICLE_MAP[cs.id] && (
+                          <a
+                            href={CASE_ARTICLE_MAP[cs.id]}
+                            onClick={(e) => handleSpaLinkClick(e, CASE_ARTICLE_MAP[cs.id])}
+                            className="text-xs font-semibold text-slate-700 hover:text-[#1E40FF] flex items-center gap-1"
+                          >
+                            <span>Phân tích triển khai</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </a>
+                        )}
                         {cs.inspectionTab && (
                           <button
                             type="button"
@@ -883,6 +955,24 @@ export const DomationHome: React.FC = () => {
                 <li>
                   <a href="/web-design" className="hover:text-white transition-colors">
                     Thiết Kế Website Thương Hiệu
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/portfolio"
+                    onClick={(e) => handleSpaLinkClick(e, '/portfolio')}
+                    className="hover:text-white transition-colors text-cyan-200 font-semibold"
+                  >
+                    Portfolio &amp; Case Study Đa Ngành
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/boost"
+                    onClick={(e) => handleSpaLinkClick(e, '/boost')}
+                    className="hover:text-white transition-colors text-cyan-200 font-semibold"
+                  >
+                    Boost Hub • 24+ Bài SEO &amp; 50 Chủ Đề
                   </a>
                 </li>
               </ul>
