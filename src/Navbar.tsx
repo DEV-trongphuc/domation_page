@@ -33,6 +33,7 @@ export interface NavbarProps {
   onOpenContact?: () => void;
   onOpenShowcase?: () => void;
   contactLabel?: string;
+  mobileContactLabel?: string;
 }
 
 const HOME_ANCHORS = [
@@ -109,6 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activePage = 'home',
   onOpenContact,
   contactLabel = 'Tư Vấn Ngay',
+  mobileContactLabel,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -149,23 +151,23 @@ export const Navbar: React.FC<NavbarProps> = ({
       <header
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'py-2.5 bg-white/90 backdrop-blur-2xl border-b border-slate-200/80 shadow-[0_8px_32px_-12px_rgba(30,64,255,0.1)]'
-            : 'py-3.5 bg-white/75 backdrop-blur-xl border-b border-white/60'
+            ? 'py-2.5 bg-white/95 sm:bg-white/90 sm:backdrop-blur-2xl border-b border-slate-200/80 shadow-[0_8px_32px_-12px_rgba(30,64,255,0.1)]'
+            : 'py-3 bg-white/90 sm:bg-white/75 sm:backdrop-blur-xl border-b border-white/60'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-2.5">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2">
           {/* Left: Brand SVG Monogram D Logo */}
           <a
             href="/"
             onClick={(e) => handleSpaLinkClick(e, '/')}
-            className="flex items-center gap-2.5 shrink-0 group"
+            className="flex items-center gap-2 sm:gap-2.5 shrink-0 group min-w-0"
           >
-            <DomationLogoMark className="w-9 h-9 shadow-sm rounded-xl group-hover:scale-105 transition-transform" />
-            <div className="flex flex-col leading-none">
-              <span className="text-base sm:text-lg font-bold tracking-tight text-slate-900">
+            <DomationLogoMark className="w-8 h-8 sm:w-9 sm:h-9 shadow-sm rounded-xl group-hover:scale-105 transition-transform shrink-0" />
+            <div className="flex flex-col leading-none min-w-0">
+              <span className="text-[15px] sm:text-lg font-bold tracking-tight text-slate-900 truncate">
                 DOMATION<span className="text-[#1E40FF]">.NET</span>
               </span>
-              <span className="text-[9px] font-semibold tracking-[0.16em] uppercase text-slate-500 mt-0.5">
+              <span className="text-[7.5px] sm:text-[9px] font-semibold tracking-[0.11em] sm:tracking-[0.16em] uppercase text-slate-500 mt-0.5 truncate">
                 Enterprise Technology
               </span>
             </div>
@@ -324,21 +326,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right: Contact CTA + Mobile Toggle */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               type="button"
               onClick={triggerContact}
-              className="btn-inkica-primary px-3 sm:px-4 py-2 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
+              className="btn-inkica-primary px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap rounded-xl"
             >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-200" />
-              <span>{contactLabel}</span>
+              <Sparkles className="hidden sm:inline w-3.5 h-3.5 text-cyan-200 shrink-0" />
+              <span className="sm:hidden">{mobileContactLabel || contactLabel}</span>
+              <span className="hidden sm:inline">{contactLabel}</span>
             </button>
 
             <button
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Menu di động"
-              className="lg:hidden w-9 h-9 rounded-xl bg-white/90 border border-slate-200 text-slate-700 flex items-center justify-center cursor-pointer"
+              className="lg:hidden w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/95 border border-slate-200 text-slate-700 flex items-center justify-center cursor-pointer shrink-0"
             >
               {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>

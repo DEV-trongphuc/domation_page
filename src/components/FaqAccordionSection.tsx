@@ -12,7 +12,7 @@ interface FaqAccordionSectionProps {
 
 export const FaqAccordionSection: React.FC<FaqAccordionSectionProps> = ({
   faqs,
-  eyebrow = 'CÂU HỎI THƯỜNG GẶP • GEO FAQ',
+  eyebrow = 'FAQ & GIẢI ĐÁP',
   heading = 'Giải Đáp Nhanh Về Hệ Thống & Chi Phí',
   subtitle,
   className = '',
@@ -28,20 +28,20 @@ export const FaqAccordionSection: React.FC<FaqAccordionSectionProps> = ({
   return (
     <section
       id="faq"
-      className={`scroll-mt-28 py-14 px-4 sm:px-6 relative z-10 ${className}`}
+      className={`scroll-mt-28 py-10 sm:py-14 px-4 sm:px-6 relative z-10 ${className}`}
     >
       <div className="max-w-5xl mx-auto">
-        <div className="rounded-[28px] bg-white/90 backdrop-blur-xl border border-slate-200/85 p-6 sm:p-9 shadow-[0_20px_54px_-24px_rgba(15,23,42,0.08)] space-y-6">
-          <div className="space-y-2">
-            <div className="ql-eyebrow">
-              <HelpCircle className="w-3.5 h-3.5 text-[#1E40FF]" />
+        <div className="rounded-2xl sm:rounded-[28px] bg-white/95 sm:bg-white/90 sm:backdrop-blur-xl border border-slate-200/85 p-4 sm:p-9 shadow-[0_20px_54px_-24px_rgba(15,23,42,0.08)] space-y-5 sm:space-y-6">
+          <div className="space-y-2 text-center md:text-left">
+            <div className="ql-eyebrow mx-auto md:mx-0">
+              <HelpCircle className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
               <span>{eyebrow}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            <h2 className="text-xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               {heading}
             </h2>
             {subtitle && (
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto md:mx-0">
                 {subtitle}
               </p>
             )}
