@@ -25,27 +25,46 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
   const nodeRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
   const nodes: SphereNode[] = useMemo(() => {
-    const flagship: SphereNode[] = FLAGSHIP_PARTNERS.map((p) => ({
-      id: p.id,
-      name: p.name,
-      logo: p.logo,
-      url: p.url,
-      tier: 'flagship',
-    }));
-    const f1: SphereNode[] = F1_AGENCY_PARTNERS.map((p) => ({
-      id: p.id,
-      name: p.name,
-      logo: p.logo,
-      tier: 'f1',
-    }));
-    const eco: SphereNode[] = ECOSYSTEM_PARTNERS.slice(0, 18).map((p, idx) => ({
-      id: `eco-${idx}`,
-      name: p.name,
-      logo: p.image,
-      url: p.website,
-      tier: 'ecosystem',
-    }));
-    return [...flagship, ...f1, ...eco];
+    const list: SphereNode[] = [];
+    const seenLogos = new Set<string>();
+
+    const pushUnique = (item: SphereNode) => {
+      const normalized = item.logo.trim();
+      if (!normalized || seenLogos.has(normalized)) return;
+      seenLogos.add(normalized);
+      list.push(item);
+    };
+
+    FLAGSHIP_PARTNERS.forEach((p) => {
+      pushUnique({
+        id: p.id,
+        name: p.name,
+        logo: p.logo,
+        url: p.url,
+        tier: 'flagship',
+      });
+    });
+
+    F1_AGENCY_PARTNERS.forEach((p) => {
+      pushUnique({
+        id: p.id,
+        name: p.name,
+        logo: p.logo,
+        tier: 'f1',
+      });
+    });
+
+    ECOSYSTEM_PARTNERS.forEach((p, idx) => {
+      pushUnique({
+        id: `eco-${idx}`,
+        name: p.name,
+        logo: p.image,
+        url: p.website && p.website !== '#' ? p.website : undefined,
+        tier: 'ecosystem',
+      });
+    });
+
+    return list;
   }, []);
 
   // Precompute Fibonacci unit sphere points
@@ -98,7 +117,7 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
         }
 
         const w = box.clientWidth || 380;
-        const radius = Math.min(w * 0.44, 240);
+        const radius = Math.min(w * 0.45, 250);
         const cosY = Math.cos(state.ry);
         const sinY = Math.sin(state.ry);
         const cosX = Math.cos(state.rx);
@@ -117,7 +136,7 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
           const z2 = z1 * cosX + p.y * sinX;
 
           const depth = (z2 + 1) / 2; // 0 (back) -> 1 (front)
-          const scale = 0.68 + depth * 0.48;
+          const scale = 0.64 + depth * 0.44;
           const tx = x1 * radius;
           const ty = y2 * radius;
           const opacity = 0.42 + depth * 0.58;
@@ -180,10 +199,10 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
       <div className="pointer-events-none absolute w-[350px] h-[350px] sm:w-[470px] sm:h-[470px] lg:w-[530px] lg:h-[530px] rounded-full border border-slate-200/70" />
 
       {/* Radial soft glow behind DOMATION core */}
-      <div className="pointer-events-none absolute w-52 h-52 sm:w-68 sm:h-68 rounded-full bg-gradient-to-br from-[#1E40FF]/14 via-sky-400/12 to-cyan-300/16 blur-2xl" />
+      <div className="pointer-events-none absolute w-52 h-52 sm:w-72 sm:h-72 rounded-full bg-gradient-to-br from-[#1E40FF]/14 via-sky-400/12 to-cyan-300/16 blur-2xl" />
 
       {/* Center DOMATION Core Hub */}
-      <div className="relative z-20 w-22 h-22 sm:w-26 sm:h-26 lg:w-28 lg:h-28 rounded-3xl bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-[0_20px_50px_-10px_rgba(30,64,255,0.22)] flex flex-col items-center justify-center p-2 pointer-events-none">
+      <div className="relative z-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-3xl bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-[0_20px_50px_-10px_rgba(30,64,255,0.22)] flex flex-col items-center justify-center p-2 pointer-events-none">
         <DomationLogoMark className="w-11 h-11 sm:w-12 sm:h-12" />
         <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#1E40FF] mt-1">
           DOMATION
@@ -209,10 +228,10 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
           style={{ left: '50%', top: '50%' }}
           className={`absolute rounded-2xl bg-white/95 border border-slate-200/85 shadow-sm flex items-center justify-center p-1.5 transition-shadow duration-200 hover:shadow-[0_10px_28px_rgba(30,64,255,0.2)] ${
             node.tier === 'flagship'
-              ? 'w-14 h-14 sm:w-[68px] sm:h-[68px] shadow-md'
+              ? 'w-12 h-12 sm:w-16 sm:h-16 shadow-md'
               : node.tier === 'f1'
-              ? 'w-12 h-12 sm:w-15 sm:h-15'
-              : 'w-11 h-11 sm:w-[52px] sm:h-[52px]'
+              ? 'w-11 h-11 sm:w-14 sm:h-14'
+              : 'w-10 h-10 sm:w-12 sm:h-12'
           }`}
           title={node.name}
           aria-label={node.name}
