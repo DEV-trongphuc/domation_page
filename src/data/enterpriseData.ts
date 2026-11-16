@@ -916,11 +916,13 @@ export const ECOSYSTEM_PARTNERS: EcosystemBrand[] = [
   { name: 'Swiss UMEF', image: '/assets/partners/partner_swissumef.webp', website: 'https://www.umef.ch/', industry: 'Education / University' },
   { name: 'IDEAS Business', image: '/assets/partners/partner_ideasinstitute.webp', website: 'https://ideas.edu.vn/', industry: 'Education / Research' },
   { name: 'Navastore', image: '/assets/partners/partner_navastore.webp', website: 'https://navastore.vn/', industry: 'Retail / Ecommerce' },
+  { name: 'Navatek', image: '/assets/partners/logo_navatek.webp', website: 'https://navatek.vn/', industry: 'Industrial & Tech / Retail' },
   { name: 'Nha khoa Flora', image: '/assets/partners/partner_flora.webp', website: 'https://nhakhoaflora.com', industry: 'Dental / Clinic' },
   { name: 'Brandson', image: '/assets/partners/partner_brandson.webp', website: 'https://brandson.vn', industry: 'Branding / Agency' },
   { name: 'Ampersand', image: '/assets/partners/partner_ampersand.jpg', website: 'https://www.ampersand.vn/', industry: 'FNB / Management' },
   { name: 'Implantswiss', image: '/assets/partners/partner_implantswiss.png', website: 'https://implantswiss.vn/', industry: 'Dental / Implant' },
   { name: 'Rich Land', image: '/assets/partners/partner_richland.webp', website: 'https://rich-land.vercel.app/', industry: 'Real Estate / PropTech' },
+  { name: 'MINTH Store', image: '/assets/partners/logo_minth.webp', website: 'https://minth-store.vercel.app/', industry: 'Cosmetics & Perfume / Retail' },
 ];
 
 export const DOMATION_SAAS_PLANS = [
