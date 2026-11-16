@@ -878,8 +878,19 @@ export const ErpLanding: React.FC = () => {
             <a href="/web-design" className="hover:text-[#1E40FF] transition-colors">Web &amp; Landing Page</a>
           </div>
 
-          <div className="text-center md:text-right text-[11px] text-slate-500">
-            © {new Date().getFullYear()} DOMATION.NET • Enterprise Ecosystem.
+          <div className="text-center md:text-right text-[11px] text-slate-500 space-y-1">
+            <div>© {new Date().getFullYear()} DOMATION.NET • Enterprise Ecosystem.</div>
+            <div>
+              Powered by{' '}
+              <a
+                href="https://turnio.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#1E40FF] hover:underline font-semibold"
+              >
+                Turnio DEV
+              </a>
+            </div>
           </div>
         </div>
       </footer>

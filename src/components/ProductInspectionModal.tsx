@@ -15,7 +15,7 @@ interface ProductInspectionModalProps {
 const TAB_LABELS: { id: InspectionTabId; short: string; count: string }[] = [
   { id: 'data-capi', short: 'Auto Data & CAPI', count: '8' },
   { id: 'erp', short: 'ERP 5.0 Suite', count: '16' },
-  { id: 'crm', short: 'CRM & MISA', count: '10' },
+  { id: 'crm', short: 'CRM 360°', count: '10' },
   { id: 'autoflow', short: 'AI & Automation', count: '9' },
   { id: 'meta-report', short: 'Meta Ad Report', count: '6 + Video' },
   { id: 'web-3d', short: 'Web 3D & Landing', count: '9' },
@@ -86,8 +86,8 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
           )
         }
       >
-        {/* Switcher Tabs */}
-        <div className="flex flex-wrap gap-1.5 pb-4 mb-5 border-b border-slate-100">
+        {/* Switcher Tabs — Single Compact Row */}
+        <div className="flex items-center lg:justify-between gap-1.5 pb-3.5 mb-5 border-b border-slate-100 overflow-x-auto flex-nowrap">
           {TAB_LABELS.map((tab) => {
             const active = activeTab === tab.id;
             return (
@@ -98,7 +98,7 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
                   setActiveTab(tab.id);
                   setErpCategory('Tất cả');
                 }}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                   active
                     ? 'ql-pill-tab-active'
                     : 'ql-pill-tab'
@@ -130,10 +130,10 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
                   key={cat}
                   type="button"
                   onClick={() => setErpCategory(cat)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${
+                  className={`px-3 py-1 rounded-full text-[11px] font-bold transition-colors cursor-pointer whitespace-nowrap ${
                     selected
                       ? 'bg-[#1E40FF] text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   {cat}
@@ -173,7 +173,7 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
               key={`${activeTab}-${idx}-${item.src}`}
               type="button"
               onClick={() => setZoomedItem(item)}
-              className="group text-left rounded-2xl border border-slate-200/85 bg-white hover:border-[#1E40FF]/50 hover:shadow-[0_14px_32px_-12px_rgba(30,64,255,0.2)] transition-all overflow-hidden flex flex-col cursor-pointer"
+              className="group text-left rounded-2xl border border-slate-200/85 bg-white hover:border-slate-300 hover:shadow-[0_14px_32px_-12px_rgba(15,23,42,0.12)] transition-all overflow-hidden flex flex-col cursor-pointer"
             >
               <div className="relative aspect-[16/10] w-full bg-slate-100 overflow-hidden">
                 <img

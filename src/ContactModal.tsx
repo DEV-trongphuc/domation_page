@@ -27,7 +27,7 @@ export interface ContactModalProps {
 const SERVICE_OPTIONS = [
   'Hệ thống Auto Chia Data ZaloBot & Meta CAPI',
   'Enterprise ERP 5.0 (12 Phân hệ • Chấm công GPS & Payroll)',
-  'CRM 360° & Đồng bộ Kế toán MISA',
+  'CRM 360° & Quản trị Bán hàng',
   'Marketing Automation & Trợ lý AI Phòng ban (RAG)',
   'Website Chuyên Nghiệp & Sa bàn 3D WebGL (Từ 12.0M₫)',
   'Tư vấn Chuyển đổi số & Hạ tầng Dữ liệu Riêng',

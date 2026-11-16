@@ -1,11 +1,13 @@
 import React, { useId } from 'react';
 
 export interface ChannelLogoStripProps {
-  variant?: 'compact' | 'strip' | 'platforms';
+  variant?: 'compact' | 'strip' | 'platforms' | 'autodata';
+  bare?: boolean;
   className?: string;
 }
 
 const ZALO_FAVICON = 'https://stc-zpl.zdn.vn/favicon.ico';
+const GMAIL_LOGO = '/assets/brands/gmail-logo.webp';
 
 const WebsiteLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
@@ -16,6 +18,26 @@ const WebsiteLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4
     <path d="M4.5 16.5h15" stroke="#38BDF8" strokeWidth="1.3" strokeLinecap="round" />
   </svg>
 );
+
+const TelegramLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => {
+  const uid = useId();
+  const gradId = `tg-grad-${uid}`;
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id={gradId} x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#2AABEE" />
+          <stop offset="100%" stopColor="#229ED9" />
+        </linearGradient>
+      </defs>
+      <circle cx="12" cy="12" r="10" fill={`url(#${gradId})`} />
+      <path
+        d="M17.2 7.5 6.4 11.7c-.73.29-.72.7-.13.88l2.77.86 6.42-4.05c.3-.18.58-.08.35.12l-5.2 4.69-.2 2.91c.29 0 .42-.13.58-.29l1.4-1.36 2.91 2.15c.54.3.92.14 1.06-.5l1.91-9c.19-.79-.3-1.15-.87-.91Z"
+        fill="#FFFFFF"
+      />
+    </svg>
+  );
+};
 
 const MessengerLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => {
   const uid = useId();
@@ -42,16 +64,6 @@ const MessengerLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h
   );
 };
 
-const EmailLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
-  <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-    <rect x="2.5" y="4.5" width="19" height="15" rx="3" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.2" />
-    <path d="M3 7.5 12 13.8 21 7.5" stroke="#EA4335" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M3 16.5V8.2l5 3.6v6.7H4.8A1.8 1.8 0 0 1 3 16.5Z" fill="#4285F4" />
-    <path d="M21 16.5V8.2l-5 3.6v6.7h3.2a1.8 1.8 0 0 0 1.8-1.8Z" fill="#34A853" />
-    <path d="M16 11.8 21 8.2V6.8a2 2 0 0 0-2-2l-7 5-7-5a2 2 0 0 0-2 2v1.4l5 3.6 4 2.8 4-2.8Z" fill="#FBBC05" opacity="0.92" />
-  </svg>
-);
-
 const MetaLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
     <path
@@ -76,16 +88,10 @@ const SheetsLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4'
   </svg>
 );
 
-const MisaLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+const EInvoiceLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-    <rect x="2.5" y="2.5" width="19" height="19" rx="5" fill="#1D4ED8" />
-    <path
-      d="M6.5 16.5V7.8l5.5 5.2 5.5-5.2v8.7"
-      stroke="#FFFFFF"
-      strokeWidth="2.1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <rect x="4" y="2.5" width="16" height="19" rx="3" fill="#1D4ED8" />
+    <path d="M8 8h8M8 12h8M8 16h5" stroke="#FFFFFF" strokeWidth="1.9" strokeLinecap="round" />
   </svg>
 );
 
@@ -105,6 +111,7 @@ const WebhookLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4
 
 export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
   variant = 'compact',
+  bare = false,
   className = '',
 }) => {
   const isCompact = variant === 'compact';
@@ -129,6 +136,13 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
           className="w-4 h-4 rounded-full object-contain"
         />
       ),
+    },
+    {
+      id: 'telegram',
+      title: 'Telegram Bot Báo Số & Điều Hành Tức Thì',
+      shortTag: 'Tele',
+      fullLabel: 'Telegram',
+      renderIcon: () => <TelegramLogoSvg className="w-4 h-4" />,
     },
     {
       id: 'zalo-oa',
@@ -168,7 +182,13 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       title: 'Email Automation & Amazon SES',
       shortTag: '',
       fullLabel: 'Email SES',
-      renderIcon: () => <EmailLogoSvg className="w-4 h-4" />,
+      renderIcon: () => (
+        <img
+          src={GMAIL_LOGO}
+          alt="Email SES"
+          className="w-4 h-4 object-contain"
+        />
+      ),
     },
   ];
 
@@ -180,10 +200,10 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       renderIcon: () => <MetaLogoSvg className="w-4 h-4" />,
     },
     {
-      id: 'misa',
-      title: 'Kế Toán & Hóa Đơn Điện Tử MISA',
-      fullLabel: 'MISA',
-      renderIcon: () => <MisaLogoSvg className="w-4 h-4" />,
+      id: 'einvoice',
+      title: 'Kế Toán & Hóa Đơn Điện Tử',
+      fullLabel: 'Hóa đơn ĐT',
+      renderIcon: () => <EInvoiceLogoSvg className="w-4 h-4" />,
     },
     {
       id: 'sheets',
@@ -199,6 +219,41 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
     },
   ];
 
+  if (variant === 'autodata') {
+    const autodataIds = new Set([
+      'website',
+      'zalobot',
+      'telegram',
+      'zalo-oa',
+      'email',
+      'meta-capi',
+      'sheets',
+      'webhook',
+    ]);
+    const autodataItems = [...channels, ...enterprisePlatforms].filter((item) =>
+      autodataIds.has(item.id)
+    );
+    return (
+      <div className={`grid grid-cols-2 sm:grid-cols-4 gap-2.5 ${className}`}>
+        {autodataItems.map((item) => (
+          <span
+            key={item.id}
+            title={item.title}
+            aria-label={item.title}
+            className={
+              bare
+                ? 'inline-flex items-center justify-center sm:justify-start gap-2 h-9 px-2 text-xs font-semibold text-slate-700 whitespace-nowrap'
+                : 'inline-flex items-center justify-start gap-2 h-9 px-3 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-xs font-medium text-slate-700 whitespace-nowrap'
+            }
+          >
+            <span className="shrink-0">{item.renderIcon()}</span>
+            <span className="truncate">{item.fullLabel}</span>
+          </span>
+        ))}
+      </div>
+    );
+  }
+
   if (variant === 'platforms') {
     const allItems = [...channels, ...enterprisePlatforms];
     return (
@@ -208,10 +263,14 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
             key={item.id}
             title={item.title}
             aria-label={item.title}
-            className="inline-flex items-center gap-2 h-9 px-3 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-xs font-medium text-slate-700"
+            className={
+              bare
+                ? 'inline-flex items-center justify-start gap-2 h-8 px-2 text-xs font-medium text-slate-700 whitespace-nowrap'
+                : 'inline-flex items-center justify-start gap-2 h-9 px-3.5 rounded-xl bg-white/95 border border-slate-200/80 shadow-[0_2px_8px_rgba(15,23,42,0.03)] text-xs font-medium text-slate-700 whitespace-nowrap'
+            }
           >
-            {item.renderIcon()}
-            <span>{item.fullLabel}</span>
+            <span className="shrink-0">{item.renderIcon()}</span>
+            <span className="truncate">{item.fullLabel}</span>
           </span>
         ))}
       </div>
@@ -219,7 +278,7 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
   }
 
   return (
-    <div className={`flex flex-wrap items-center gap-1.5 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
       {channels.map((ch) => (
         <span
           key={ch.id}
@@ -227,14 +286,14 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
           aria-label={ch.title}
           className={
             isCompact
-              ? 'inline-flex items-center gap-1 h-7 px-2 rounded-lg bg-white border border-slate-200/80 shadow-[0_1px_4px_rgba(15,23,42,0.04)]'
+              ? 'inline-flex items-center gap-1 h-7 px-1 text-slate-600'
               : 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/95 border border-slate-200/80 shadow-xs text-[11px] font-medium text-slate-700'
           }
         >
           {ch.renderIcon()}
           {isCompact ? (
             ch.shortTag ? (
-              <span className="text-[10px] font-semibold tracking-tight text-slate-600">
+              <span className="text-[11px] font-semibold tracking-tight text-slate-600">
                 {ch.shortTag}
               </span>
             ) : null

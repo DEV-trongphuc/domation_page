@@ -673,6 +673,17 @@ export const WebDesignPricing: React.FC = () => {
                         </span>
                     </div>
                     <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
+                    <p className="text-slate-400 text-xs">
+                        Powered by{' '}
+                        <a
+                            href="https://turnio.vercel.app/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#1E40FF] hover:underline font-semibold"
+                        >
+                            Turnio DEV
+                        </a>
+                    </p>
                 </div>
             </footer>
 

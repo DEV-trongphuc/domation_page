@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -9,6 +9,7 @@ import {
   Car,
   Check,
   CheckCircle2,
+  ChevronDown,
   Clock,
   Compass,
   Copy,
@@ -22,6 +23,7 @@ import {
   Hand,
   HeartPulse,
   KeyRound,
+  Layers,
   Loader2,
   LogOut,
   Mail,
@@ -32,21 +34,29 @@ import {
   Share2,
   ShieldBan,
   ShieldCheck,
-  ShoppingBag,
   SlidersHorizontal,
   Sparkles,
   Table2,
+  Upload,
   UserCheck,
   Users,
   Wallet,
   Webhook,
   X,
 } from 'lucide-react';
-import { AutoDataHelpTrigger } from './AutoDataHelpTour';
+import {
+  AutoDataHelpTrigger,
+  AutoDataSpotlightTour,
+  type SpotlightTourStep,
+} from './AutoDataHelpTour';
 import { AutoDataZaloBotGuide } from './AutoDataZaloBotGuide';
+import { DomationLogoMark } from '../DomationLogoMark';
+import { LuxuryGoldBackdrop } from '../../LuxuryGoldBackdrop';
 import {
   buildGoogleAppsScriptSnippet,
   buildPersonalLeadsCsvContent,
+  parsePersonalLeadsCsvContent,
+  type AuthenticatedAccountUser,
   type ClientBillingCatalog,
   type ClientBillingPlan,
   type ClientBillingTransaction,
@@ -55,6 +65,7 @@ import {
   type LegalDocTab,
   type PersonalSaleLeadItem,
   type SetupModalIntent,
+  type WorkspaceSummaryItem,
   type ZaloBotSavedState,
 } from './autodataTypes';
 
@@ -62,6 +73,7 @@ interface AutoDataFullScreenSetupProps {
   open: boolean;
   initialIntent: SetupModalIntent;
   catalog: ClientBillingCatalog;
+  googleClientId?: string | null;
   session: ClientSessionState | null;
   onSessionChange: (nextSession: ClientSessionState | null) => void;
   onClose: () => void;
@@ -164,16 +176,9 @@ const BUSINESS_DOMAINS: BusinessDomainOption[] = [
     pipelineName: 'Phễu Tư Vấn Giải Pháp & Ký Hợp Đồng B2B',
   },
   {
-    key: 'ecommerce',
-    label: 'Thương Mại & Chuỗi Bán Lẻ',
-    subtitle: 'Chia đơn chốt sale đa kênh Landing Page, TikTok, Facebook',
-    icon: ShoppingBag,
-    pipelineName: 'Phễu Chốt Đơn & Chăm Sóc Khách Hàng VIP',
-  },
-  {
     key: 'automotive',
     label: 'Showroom Ô Tô & Tài Chính Bảo Hiểm',
-    subtitle: 'Phân bổ đăng ký lái thử, thẩm định hồ sơ vay nhanh < 4s',
+    subtitle: 'Phân bổ đăng ký lái thử, thẩm định hồ sơ vay tức thì',
     icon: Car,
     pipelineName: 'Phễu Đăng Ký Lái Thử & Bàn Giao Xe',
   },
@@ -249,8 +254,8 @@ const CHANNEL_OPTIONS: ChannelOption[] = [
   },
   {
     key: 'zalobot',
-    title: 'ZaloBot Báo Số Từng Sale (< 4s)',
-    desc: 'Nhận thông báo khách mới qua Zalo cá nhân/nhóm bằng mã /chatid (Có thể cài sau).',
+    title: 'ZaloBot & Telegram Bot Báo Số Sale',
+    desc: 'Nhận thông báo khách mới qua Zalo hoặc Telegram cá nhân/nhóm dưới 4 giây (Có thể cài sau).',
     required: false,
     helpTopic: 'zalobot_chatid',
     icon: Bot,
@@ -281,6 +286,142 @@ const CHANNEL_OPTIONS: ChannelOption[] = [
   },
 ];
 
+interface WizardTourStep extends SpotlightTourStep {
+  stepNumber: 1 | 2 | 3;
+}
+
+interface WorkspaceTourStep extends SpotlightTourStep {
+  tabKey: WorkspaceTabKey;
+}
+
+const WIZARD_TOUR_STEPS: WizardTourStep[] = [
+  {
+    id: 'wiz_stepper',
+    target: 'setup-stepper',
+    stepNumber: 1,
+    eyebrow: 'BẮT BUỘC VS TÙY CHỌN',
+    title: '3 bước rõ ràng — Cài nhanh trong 60 giây',
+    description:
+      'Chỉ Bước 1 là bắt buộc để khởi tạo không gian đội Sale. Bước 2 và Bước 3 đã cài sẵn cấu hình tối ưu, bạn có thể giữ nguyên hoặc bỏ qua bất cứ lúc nào.',
+    chips: ['Bước 1: Bắt buộc (30 giây)', 'Bước 2–3: Tùy chọn', 'Miễn phí 1 tháng đầu'],
+    topics: ['billing_3m_900k'],
+  },
+  {
+    id: 'wiz_org_form',
+    target: 'setup-org-form',
+    stepNumber: 1,
+    eyebrow: 'KHỞI TẠO KHÔNG GIAN',
+    title: 'Thông tin Doanh nghiệp & Tài khoản Quản trị',
+    description:
+      'Điền Tên đội Sale, người phụ trách, Email và Mật khẩu. Hệ thống tự tạo địa chỉ không gian làm việc riêng và kích hoạt gói dùng thử 1 tháng miễn phí.',
+    chips: ['Gói Standard: 5 Sale & 3 Quản lý', 'Tự sinh cổng tiếp nhận riêng'],
+  },
+  {
+    id: 'wiz_router_internal',
+    target: 'setup-router-internal',
+    stepNumber: 2,
+    eyebrow: 'SALE NỘI BỘ MẶC ĐỊNH',
+    title: 'Chia thẳng cho từng Sale nội bộ (hiển thị đủ SĐT)',
+    description:
+      'Mặc định hệ thống giao khách trực tiếp cho từng chuyên viên Sale trong công ty để gọi ngay tức thì. Khi có CTV / Đại lý ngoài, bạn chỉ cần gạt nút bật chế độ che số.',
+    chips: ['Sale nội bộ: Thấy đủ SĐT', 'Tùy chọn bật Đại lý F1 (che số)'],
+    topics: ['internal_sale_default'],
+  },
+  {
+    id: 'wiz_router_algo',
+    target: 'setup-router-algo',
+    stepNumber: 2,
+    eyebrow: 'LUẬT CHIA & CHỐNG TRÙNG',
+    title: 'Chia thẳng vòng theo năng lực & Lọc trùng 90 ngày',
+    description:
+      'Mặc định chia thẳng về Zalo cho Sale đang bật Online ngay khi có khách, không thu hồi phức tạp. Khách cũ quay lại trong 90 ngày tự trả về đúng Sale phụ trách.',
+    chips: ['Chia thẳng không thu hồi', 'Nhận Zalo tức thì', 'Lọc trùng 90 ngày'],
+    topics: ['round_robin_formula', 'dedupe_90d', 'sla_recall'],
+  },
+  {
+    id: 'wiz_channels',
+    target: 'setup-channels',
+    stepNumber: 3,
+    eyebrow: 'KẾT NỐI ĐA KÊNH',
+    title: 'Cổng nhận khách cấp sẵn — Kênh ngoài tùy chọn',
+    description:
+      'Cổng nhận dữ liệu trung tâm đã bật sẵn. Bạn có thể chọn thêm đồng bộ Google Sheets 2 chiều cho từng Sale hoặc phản hồi hiệu quả về Meta Ads ngay tại đây.',
+    chips: ['Đồng bộ Google Sheets 2 chiều', 'Tối ưu Meta Ads', 'Không chặn kích hoạt'],
+    topics: ['apps_script', 'meta_capi'],
+  },
+  {
+    id: 'wiz_zalo',
+    target: 'setup-zalo-guide',
+    stepNumber: 3,
+    eyebrow: 'THÔNG BÁO ZALO A–Z',
+    title: 'Kết nối Zalo Bot báo số tức thì — Có thể bỏ qua ngay',
+    description:
+      'Nếu đã có Bot Token & Chat ID, bạn bấm Kiểm tra để nhận tin thử về Zalo ngay. Chưa kịp chuẩn bị? Bấm "Tùy chọn — Tạm bỏ qua & vào setup ngay" để bắt đầu làm việc trước.',
+    chips: ['4 bước lấy Token & /chatid', 'Test bắn tin thật ngay', 'Bỏ qua không mất dữ liệu'],
+    topics: ['zalobot_chatid'],
+    actionLabel: 'Bắt đầu thiết lập',
+  },
+];
+
+const WORKSPACE_TOUR_STEPS: WorkspaceTourStep[] = [
+  {
+    id: 'ws_webhook',
+    target: 'ws-webhook-panel',
+    tabKey: 'router',
+    eyebrow: 'CỔNG TIẾP NHẬN KHÁCH',
+    title: 'Địa chỉ tiếp nhận tự động & Đồng bộ Google Sheets',
+    description:
+      'Sao chép đường dẫn riêng của công ty để gắn vào LadiPage, Website, Facebook Lead Ads hoặc Google Sheets của từng nhân viên Sale.',
+    chips: ['Hoạt động 24/7', 'Nhận dữ liệu tức thì'],
+    topics: ['apps_script'],
+  },
+  {
+    id: 'ws_test',
+    target: 'ws-test-lead',
+    tabKey: 'router',
+    eyebrow: 'KIỂM TRA THỰC TẾ',
+    title: 'Gửi thử một khách hàng để xem vòng chia chạy thật',
+    description:
+      'Nhập tên và số điện thoại thử rồi bấm Gửi để quan sát hệ thống chọn đúng Sale theo tỷ lệ, lọc trùng SĐT và bắn thông báo Zalo ngay lập tức.',
+    chips: ['Kiểm tra Sale nhận số', 'Thử lại cùng SĐT để test chống trùng'],
+    topics: ['round_robin_formula', 'internal_sale_default', 'dedupe_90d', 'sla_recall'],
+  },
+  {
+    id: 'ws_sale_port',
+    target: 'ws-sale-port',
+    tabKey: 'sale_port',
+    eyebrow: 'CỔNG SALE CÁ NHÂN',
+    title: 'Tự nhập / Import danh sách khách riêng không tốn lượt',
+    description:
+      'Khách hàng do chính Sale khai thác sẽ đi thẳng vào giỏ riêng, không qua vòng chia chung, không trừ định mức quảng cáo và xuất CSV có dấu tiếng Việt.',
+    chips: ['0 Quota quảng cáo', 'Sở hữu giỏ khách riêng', 'Xuất CSV chuẩn Excel'],
+    topics: ['sale_port_personal'],
+  },
+  {
+    id: 'ws_zalo',
+    target: 'ws-zalo-guide',
+    tabKey: 'zalo_connect',
+    eyebrow: 'KẾT NỐI ZALO BOT',
+    title: 'Cài đặt & Xác thực Zalo Bot báo khách tức thì',
+    description:
+      'Làm theo 4 bước ngắn từ tạo Bot, lấy mã nhận tin cá nhân (/chatid) đến bấm Kiểm tra để đảm bảo mỗi Sale nhận số ngay trên điện thoại.',
+    chips: ['Tùy chọn bật/tắt', 'Bắn tin kiểm chứng trực tiếp'],
+    topics: ['zalobot_chatid'],
+  },
+  {
+    id: 'ws_billing',
+    target: 'ws-billing-plans',
+    tabKey: 'billing',
+    eyebrow: 'GÓI DỊCH VỤ & VÍ TOPUP',
+    title: 'Gói Standard (5 Sale • 3 Quản lý), Gói Pro (25 Sale • 10 Quản lý)',
+    description:
+      'Dùng thử trọn vẹn 1 tháng 0đ. Khi gia hạn sớm hoặc nạp Ví Topup, hệ thống cộng dồn 100% số ngày còn lại — nâng cấp lên CRM/ERP giữ nguyên toàn bộ dữ liệu.',
+    chips: ['Standard: 5 Sale & 3 Quản lý', 'Pro: 25 Sale & 10 Quản lý', 'Mua năm giảm 15%'],
+    topics: ['billing_3m_900k', 'meta_capi'],
+    actionLabel: 'Hoàn tất Tour',
+  },
+];
+
 function slugifyVietnamese(input: string): string {
   return input
     .toLowerCase()
@@ -292,20 +433,188 @@ function slugifyVietnamese(input: string): string {
     .slice(0, 36);
 }
 
+const RECENT_GOOGLE_ACCOUNTS_KEY = 'domation_recent_google_accounts_v1';
+
+interface RecentGoogleAccountItem {
+  email: string;
+  full_name: string;
+  updated_at: string;
+}
+
+function loadRecentGoogleAccounts(): RecentGoogleAccountItem[] {
+  try {
+    const raw = window.localStorage.getItem(RECENT_GOOGLE_ACCOUNTS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter(
+        (it): it is RecentGoogleAccountItem =>
+          Boolean(it && typeof it === 'object' && typeof (it as RecentGoogleAccountItem).email === 'string')
+      )
+      .slice(0, 6);
+  } catch {
+    return [];
+  }
+}
+
+function rememberRecentGoogleAccount(email: string, fullName: string): RecentGoogleAccountItem[] {
+  const cleanEmail = email.trim().toLowerCase();
+  if (!cleanEmail || !cleanEmail.includes('@')) return loadRecentGoogleAccounts();
+  const cleanName = fullName.trim() || cleanEmail.split('@')[0] || 'Quản trị viên';
+  const nextList: RecentGoogleAccountItem[] = [
+    { email: cleanEmail, full_name: cleanName, updated_at: new Date().toISOString() },
+    ...loadRecentGoogleAccounts().filter((item) => item.email !== cleanEmail),
+  ].slice(0, 6);
+  try {
+    window.localStorage.setItem(RECENT_GOOGLE_ACCOUNTS_KEY, JSON.stringify(nextList));
+  } catch {
+    // Ignore storage quota issues
+  }
+  return nextList;
+}
+
+const INDUSTRY_LABELS: Record<string, string> = {
+  general: 'Đa Ngành / Tổng Hợp',
+  real_estate: 'Bất Động Sản',
+  healthcare: 'Thẩm Mỹ & Y Tế',
+  education: 'Giáo Dục & Đào Tạo',
+  b2b: 'Dịch Vụ B2B & SaaS',
+  automotive: 'Ô Tô & Tài Chính',
+};
+
+function GoogleLogoMark({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"
+      />
+    </svg>
+  );
+}
+
+interface BridgeAuthApiResponse {
+  success?: boolean;
+  bridge_mode?: 'upstream_rls_postgres' | 'vercel_serverless_engine';
+  upstream_app_url?: string | null;
+  data?: {
+    has_workspace?: boolean;
+    auth_provider?: 'password' | 'google';
+    access_token: string;
+    tenant?: {
+      slug: string;
+      name: string;
+      subscription: ClientSessionState['subscription'];
+      settings?: { is_external_agency?: boolean };
+    };
+    user: {
+      full_name?: string;
+      email: string;
+      avatar_url?: string | null;
+    };
+    webhook_url?: string;
+    webhook_token?: string;
+    workspaces?: WorkspaceSummaryItem[];
+  };
+  error?: { message?: string };
+}
+
+function mapBridgeAuthToSession(
+  json: BridgeAuthApiResponse,
+  fallbacks?: { isExternalAgency?: boolean; zaloBot?: ZaloBotSavedState | null }
+): ClientSessionState | null {
+  const data = json.data;
+  if (!data?.tenant) return null;
+  return {
+    access_token: data.access_token,
+    tenant_slug: data.tenant.slug,
+    company_name: data.tenant.name,
+    admin_email: data.user.email,
+    user_name: data.user.full_name || data.user.email,
+    auth_provider: data.auth_provider || 'password',
+    webhook_url: data.webhook_url || '',
+    webhook_token: data.webhook_token || '',
+    is_external_agency: Boolean(
+      data.tenant.settings?.is_external_agency ?? fallbacks?.isExternalAgency ?? false
+    ),
+    zalo_bot: fallbacks?.zaloBot ?? null,
+    bridge_mode: json.bridge_mode || 'vercel_serverless_engine',
+    upstream_app_url: json.upstream_app_url || null,
+    subscription: data.tenant.subscription,
+    workspaces: Array.isArray(data.workspaces) ? data.workspaces : [],
+  };
+}
+
+interface GoogleOauthTokenResponse {
+  access_token?: string;
+  error?: string;
+}
+
+interface GoogleIdentityWindow extends Window {
+  google?: {
+    accounts?: {
+      oauth2?: {
+        initTokenClient: (config: {
+          client_id: string;
+          scope: string;
+          callback: (resp: GoogleOauthTokenResponse) => void;
+          error_callback?: () => void;
+        }) => { requestAccessToken: () => void };
+      };
+    };
+  };
+}
+
+async function ensureGoogleGsiScript(): Promise<void> {
+  const gWin = window as GoogleIdentityWindow;
+  if (gWin.google?.accounts?.oauth2) return;
+  await new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>('script[data-domation-gsi="true"]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error('Không thể tải Google Identity.')), { once: true });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.dataset.domationGsi = 'true';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Không thể kết nối Google Sign-In SDK.'));
+    document.head.appendChild(script);
+  });
+}
+
 export default function AutoDataFullScreenSetup({
   open,
   initialIntent,
   catalog,
+  googleClientId,
   session,
   onSessionChange,
   onClose,
   onOpenLegal,
-  onOpenTour,
 }: AutoDataFullScreenSetupProps) {
   const [authMode, setAuthMode] = useState<'register' | 'login'>(
     initialIntent === 'login' ? 'login' : 'register'
   );
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [tourOpen, setTourOpen] = useState(false);
+  const [tourStepIdx, setTourStepIdx] = useState(0);
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTabKey>(() => {
     if (initialIntent === 'workspace_crm_erp') return 'crm_erp';
     if (initialIntent === 'workspace_sale_port') return 'sale_port';
@@ -314,23 +623,69 @@ export default function AutoDataFullScreenSetup({
     return 'router';
   });
 
+  const activeTourSteps = session ? WORKSPACE_TOUR_STEPS : WIZARD_TOUR_STEPS;
+
+  const syncUiToTourStep = (nextIdx: number, stepsList: Array<WizardTourStep | WorkspaceTourStep>) => {
+    const targetStep = stepsList[nextIdx];
+    if (!targetStep) return;
+    if ('stepNumber' in targetStep) {
+      setAuthMode('register');
+      setStep(targetStep.stepNumber);
+    } else if ('tabKey' in targetStep) {
+      setWorkspaceTab(targetStep.tabKey);
+    }
+  };
+
+  const openInAppTour = (topic?: HelpTopicKey) => {
+    const list = session ? WORKSPACE_TOUR_STEPS : WIZARD_TOUR_STEPS;
+    let nextIdx = 0;
+    if (topic) {
+      const foundIdx = list.findIndex((s) => s.topics?.includes(topic));
+      if (foundIdx >= 0) nextIdx = foundIdx;
+    } else if (!session) {
+      const currentWizardIdx = list.findIndex(
+        (s) => 'stepNumber' in s && s.stepNumber === step
+      );
+      if (currentWizardIdx >= 0) nextIdx = currentWizardIdx;
+    } else {
+      const currentWsIdx = list.findIndex(
+        (s) => 'tabKey' in s && s.tabKey === workspaceTab
+      );
+      if (currentWsIdx >= 0) nextIdx = currentWsIdx;
+    }
+    syncUiToTourStep(nextIdx, list);
+    setTourStepIdx(nextIdx);
+    setTourOpen(true);
+  };
+
+  const handleTourStepChange = (nextIdx: number) => {
+    const bounded = Math.max(0, Math.min(activeTourSteps.length - 1, nextIdx));
+    syncUiToTourStep(bounded, activeTourSteps);
+    setTourStepIdx(bounded);
+  };
+
   // Registration Step 1 state (Required core fields)
+  const [autoSlugSalt, setAutoSlugSalt] = useState<string>(() => {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID().replace(/-/g, '').slice(0, 6);
+    }
+    return Math.random().toString(36).replace(/[^a-z0-9]/g, '').slice(0, 6) || 'kx9vm2';
+  });
   const [companyName, setCompanyName] = useState('');
   const [tenantSlug, setTenantSlug] = useState('');
-  const [slugTouched, setSlugTouched] = useState(false);
-  const [slugStatus, setSlugStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
   const [domainKey, setDomainKey] = useState<string>('general');
   const [adminName, setAdminName] = useState('');
   const [workEmail, setWorkEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   // Registration Step 2 state — Individual Internal Sale is strictly DEFAULT (is_external_agency = false)
   const [routerMode, setRouterMode] = useState<RouterModeOption['key']>('weighted_round_robin');
   const [dedupPolicy, setDedupPolicy] = useState<DedupPolicyOption['key']>('route_to_existing_owner');
   const [dedupDays, setDedupDays] = useState<number>(90);
   const [isExternalAgency, setIsExternalAgency] = useState<boolean>(false);
-  const [slaAutoRecall, setSlaAutoRecall] = useState<boolean>(true);
+  const [slaAutoRecall, setSlaAutoRecall] = useState<boolean>(false);
 
   // Registration Step 3 state (Channels + Optional Zalo Bot preview)
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
@@ -340,10 +695,28 @@ export default function AutoDataFullScreenSetup({
   ]);
   const [pendingZaloBot, setPendingZaloBot] = useState<ZaloBotSavedState | null>(null);
 
-  // Login state
-  const [loginSlug, setLoginSlug] = useState('');
+  // Login & Multi-Workspace Discovery state (No Slug required!)
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [authDiscovery, setAuthDiscovery] = useState<{
+    user: AuthenticatedAccountUser;
+    accessToken: string;
+    workspaces: WorkspaceSummaryItem[];
+    candidateSession?: ClientSessionState;
+  } | null>(null);
+  const [googleModalOpen, setGoogleModalOpen] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleInputEmail, setGoogleInputEmail] = useState('');
+  const [googleInputName, setGoogleInputName] = useState('');
+  const [recentGoogleAccounts, setRecentGoogleAccounts] = useState<RecentGoogleAccountItem[]>(() =>
+    loadRecentGoogleAccounts()
+  );
+  const [googleProvisionToken, setGoogleProvisionToken] = useState<string | null>(null);
+  const [quickWorkspaceCompany, setQuickWorkspaceCompany] = useState('');
+  const [quickWorkspacePhone, setQuickWorkspacePhone] = useState('');
+  const [quickWorkspaceIndustry, setQuickWorkspaceIndustry] = useState('general');
+  const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
+  const [switchingSlug, setSwitchingSlug] = useState<string | null>(null);
 
   // Async action feedback
   const [submitting, setSubmitting] = useState(false);
@@ -381,8 +754,9 @@ export default function AutoDataFullScreenSetup({
   const [pLeadPhone, setPLeadPhone] = useState('');
   const [pLeadOwner, setPLeadOwner] = useState('Chuyên viên Sale Nội Bộ #01');
   const [pLeadInterest, setPLeadInterest] = useState('Khách cá nhân tự tìm kiếm');
-  const [pLeadNote, setPLeadNote] = useState('Đi thẳng vào giỏ riêng, miễn thu hồi SLA');
+  const [pLeadNote, setPLeadNote] = useState('Đi thẳng vào giỏ riêng của Sale, không qua vòng chia');
   const [pSheetSync, setPSheetSync] = useState(true);
+  const csvFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Billing & Upgrade UI state inside Connected Workspace
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual');
@@ -415,7 +789,7 @@ export default function AutoDataFullScreenSetup({
     };
   }, [open, onClose]);
 
-  // Real-time HTTP check-slug debounce
+  // Real-time HTTP check-slug debounce — auto re-roll salt if collision occurs
   useEffect(() => {
     if (!open || session || authMode !== 'register') return;
     const clean = tenantSlug.trim();
@@ -425,18 +799,21 @@ export default function AutoDataFullScreenSetup({
       try {
         const res = await fetch(`/api/autodata?action=check-slug&slug=${encodeURIComponent(clean)}`);
         const json = (await res.json()) as { data?: { available?: boolean } };
-        if (!cancelled) {
-          setSlugStatus(json.data?.available ? 'available' : 'taken');
+        if (!cancelled && json.data?.available === false) {
+          const nextSalt = Math.random().toString(36).replace(/[^a-z0-9]/g, '').slice(0, 6) || Date.now().toString(36).slice(-6);
+          setAutoSlugSalt(nextSalt);
+          const base = slugifyVietnamese(companyName) || 'ws';
+          setTenantSlug(`${base.slice(0, 27)}-${nextSalt}`);
         }
       } catch {
-        if (!cancelled) setSlugStatus('idle');
+        // Ignore network errors during background uniqueness check
       }
     }, 320);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [open, session, authMode, tenantSlug]);
+  }, [open, session, authMode, tenantSlug, companyName]);
 
   // Fetch live tenant overview when authenticated
   useEffect(() => {
@@ -466,6 +843,7 @@ export default function AutoDataFullScreenSetup({
             is_external_agency?: boolean;
             webhook_url?: string;
             webhook_token?: string;
+            workspaces?: WorkspaceSummaryItem[];
           };
         };
         if (!active || !json.success || !json.data) return;
@@ -492,6 +870,7 @@ export default function AutoDataFullScreenSetup({
             is_external_agency: json.data.is_external_agency ?? session.is_external_agency ?? false,
             zalo_bot: json.data.zalo_bot ?? session.zalo_bot ?? null,
             subscription: json.data.subscription,
+            workspaces: Array.isArray(json.data.workspaces) ? json.data.workspaces : session.workspaces,
           });
         }
       } catch {
@@ -509,18 +888,14 @@ export default function AutoDataFullScreenSetup({
 
   const handleCompanyNameChange = (val: string) => {
     setCompanyName(val);
-    if (!slugTouched) {
-      const generated = slugifyVietnamese(val);
-      setTenantSlug(generated);
-      setSlugStatus(generated.length >= 2 ? 'checking' : 'idle');
+    const trimmed = val.trim();
+    if (!trimmed) {
+      setTenantSlug('');
+      return;
     }
-  };
-
-  const handleSlugInput = (val: string) => {
-    setSlugTouched(true);
-    const normalized = slugifyVietnamese(val);
-    setTenantSlug(normalized);
-    setSlugStatus(normalized.length >= 2 ? 'checking' : 'idle');
+    const base = slugifyVietnamese(trimmed) || 'ws';
+    const generated = `${base.slice(0, 27)}-${autoSlugSalt}`;
+    setTenantSlug(generated);
   };
 
   const toggleChannel = (key: string) => {
@@ -531,21 +906,28 @@ export default function AutoDataFullScreenSetup({
   };
 
   const validateStep1 = (): boolean => {
-    if (!companyName.trim() || tenantSlug.trim().length < 2) {
-      setErrorMsg('Vui lòng nhập Tên doanh nghiệp/đội Sale và Mã định danh (tối thiểu 2 ký tự).');
+    if (!companyName.trim()) {
+      setErrorMsg('Vui lòng nhập Tên doanh nghiệp / Đội Sale.');
       return false;
     }
-    if (slugStatus === 'taken') {
-      setErrorMsg('Mã định danh tổ chức này đã tồn tại. Vui lòng chọn tên định danh khác.');
-      return false;
+    if (tenantSlug.trim().length < 2) {
+      const base = slugifyVietnamese(companyName.trim()) || 'ws';
+      setTenantSlug(`${base.slice(0, 27)}-${autoSlugSalt}`);
     }
     if (!adminName.trim() || !workEmail.includes('@') || phone.replace(/\D/g, '').length < 9) {
       setErrorMsg('Vui lòng điền Họ tên quản trị viên, Email công việc và Số điện thoại hợp lệ.');
       return false;
     }
-    if (password.length < 8) {
-      setErrorMsg('Mật khẩu quản trị cần tối thiểu 8 ký tự để bảo mật không gian dữ liệu.');
-      return false;
+    const skipPasswordForGoogle = Boolean(googleProvisionToken && password.length === 0 && confirmPassword.length === 0);
+    if (!skipPasswordForGoogle) {
+      if (password.length < 8) {
+        setErrorMsg('Mật khẩu quản trị cần tối thiểu 8 ký tự để bảo mật không gian dữ liệu.');
+        return false;
+      }
+      if (password !== confirmPassword) {
+        setErrorMsg('Mật khẩu xác nhận chưa khớp. Vui lòng nhập lại chính xác.');
+        return false;
+      }
     }
     setErrorMsg(null);
     return true;
@@ -560,9 +942,13 @@ export default function AutoDataFullScreenSetup({
     setErrorMsg(null);
     try {
       const selectedDomain = BUSINESS_DOMAINS.find((d) => d.key === domainKey) || BUSINESS_DOMAINS[0];
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (googleProvisionToken) {
+        headers.Authorization = `Bearer ${googleProvisionToken}`;
+      }
       const res = await fetch('/api/autodata?action=register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           company_name: companyName.trim(),
           tenant_slug: tenantSlug.trim(),
@@ -570,10 +956,12 @@ export default function AutoDataFullScreenSetup({
           work_email: workEmail.trim(),
           phone: phone.trim(),
           password,
+          google_account_token: googleProvisionToken || undefined,
           industry: domainKey,
           seed_demo_leads: false,
           custom_pipeline_name: selectedDomain.pipelineName,
           selected_channels: selectedChannels,
+          zalo_bot: pendingZaloBot,
           custom_settings: {
             distribution_mode: routerMode,
             duplicate_lead_action: dedupPolicy,
@@ -591,23 +979,7 @@ export default function AutoDataFullScreenSetup({
           },
         }),
       });
-      const json = (await res.json()) as {
-        success?: boolean;
-        bridge_mode?: 'upstream_rls_postgres' | 'vercel_serverless_engine';
-        upstream_app_url?: string | null;
-        data?: {
-          access_token: string;
-          tenant: {
-            slug: string;
-            name: string;
-            subscription: ClientSessionState['subscription'];
-          };
-          user: { email: string };
-          webhook_url: string;
-          webhook_token: string;
-        };
-        error?: { message?: string };
-      };
+      const json = (await res.json()) as BridgeAuthApiResponse;
 
       if (!res.ok || !json.success || !json.data) {
         setErrorMsg(
@@ -616,19 +988,18 @@ export default function AutoDataFullScreenSetup({
         return;
       }
 
-      const nextSession: ClientSessionState = {
-        access_token: json.data.access_token,
-        tenant_slug: json.data.tenant.slug,
-        company_name: json.data.tenant.name,
-        admin_email: json.data.user.email,
-        webhook_url: json.data.webhook_url,
-        webhook_token: json.data.webhook_token,
-        is_external_agency: isExternalAgency,
-        zalo_bot: pendingZaloBot,
-        bridge_mode: json.bridge_mode || 'vercel_serverless_engine',
-        upstream_app_url: json.upstream_app_url || null,
-        subscription: json.data.tenant.subscription,
-      };
+      const nextSession = mapBridgeAuthToSession(json, {
+        isExternalAgency,
+        zaloBot: pendingZaloBot,
+      });
+      if (!nextSession) {
+        setErrorMsg('Phản hồi khởi tạo Workspace chưa đầy đủ. Vui lòng thử lại.');
+        return;
+      }
+
+      setRecentGoogleAccounts(rememberRecentGoogleAccount(nextSession.admin_email, nextSession.user_name || adminName));
+      setGoogleProvisionToken(null);
+      setAuthDiscovery(null);
       onSessionChange(nextSession);
       setWorkspaceTab('router');
       setSuccessBanner(
@@ -643,6 +1014,32 @@ export default function AutoDataFullScreenSetup({
     }
   };
 
+  const handleAuthDiscoveryResponse = (
+    json: BridgeAuthApiResponse,
+    provider: 'password' | 'google'
+  ): boolean => {
+    if (!json.success || !json.data) return false;
+    const email = json.data.user.email;
+    const fullName = json.data.user.full_name || email;
+    setRecentGoogleAccounts(rememberRecentGoogleAccount(email, fullName));
+
+    const workspaces = Array.isArray(json.data.workspaces) ? json.data.workspaces : [];
+    const candidateSession = mapBridgeAuthToSession(json) || undefined;
+
+    setAuthDiscovery({
+      user: {
+        email,
+        full_name: fullName,
+        avatar_url: json.data.user.avatar_url || null,
+        auth_provider: provider,
+      },
+      accessToken: json.data.access_token,
+      workspaces,
+      candidateSession,
+    });
+    return true;
+  };
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -652,58 +1049,257 @@ export default function AutoDataFullScreenSetup({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tenant_slug: loginSlug.trim(),
           email: loginEmail.trim(),
           password: loginPassword,
         }),
       });
-      const json = (await res.json()) as {
-        success?: boolean;
-        bridge_mode?: 'upstream_rls_postgres' | 'vercel_serverless_engine';
-        upstream_app_url?: string | null;
-        data?: {
-          access_token: string;
-          tenant: {
-            slug: string;
-            name: string;
-            subscription: ClientSessionState['subscription'];
-            settings?: { is_external_agency?: boolean };
-          };
-          user: { email: string };
-          webhook_url: string;
-          webhook_token: string;
-        };
-        error?: { message?: string };
-      };
-      if (!res.ok || !json.success || !json.data) {
+      const json = (await res.json()) as BridgeAuthApiResponse;
+      if (!res.ok || !handleAuthDiscoveryResponse(json, 'password')) {
         setErrorMsg(
-          json.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra Slug, Email và Mật khẩu.'
+          json.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra Email và Mật khẩu.'
         );
         return;
       }
-
-      const nextSession: ClientSessionState = {
-        access_token: json.data.access_token,
-        tenant_slug: json.data.tenant.slug,
-        company_name: json.data.tenant.name,
-        admin_email: json.data.user.email,
-        webhook_url: json.data.webhook_url,
-        webhook_token: json.data.webhook_token,
-        is_external_agency: Boolean(json.data.tenant.settings?.is_external_agency ?? false),
-        bridge_mode: json.bridge_mode || 'vercel_serverless_engine',
-        upstream_app_url: json.upstream_app_url || null,
-        subscription: json.data.tenant.subscription,
-      };
-      onSessionChange(nextSession);
-      if (nextSession.subscription.is_expired) {
-        setWorkspaceTab('billing');
-      }
-      setSuccessBanner(`Chào mừng quay trở lại không gian "${nextSession.company_name}".`);
+      setSuccessBanner(null);
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Không thể kết nối tới máy chủ xác thực.');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const executeGoogleLogin = async (payload: {
+    access_token?: string;
+    id_token?: string;
+    dev_google_email?: string;
+    dev_google_name?: string;
+  }) => {
+    setGoogleLoading(true);
+    setErrorMsg(null);
+    try {
+      const res = await fetch('/api/autodata?action=google-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = (await res.json()) as BridgeAuthApiResponse;
+      if (!res.ok || !handleAuthDiscoveryResponse(json, 'google')) {
+        setErrorMsg(json.error?.message || 'Đăng nhập bằng Google thất bại.');
+        return;
+      }
+      setGoogleModalOpen(false);
+      setSuccessBanner(null);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối xác thực Google.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleButtonClick = async () => {
+    setErrorMsg(null);
+    const activeClientId = (
+      googleClientId ||
+      (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ||
+      ''
+    ).trim();
+
+    if (!activeClientId) {
+      setGoogleInputEmail((prev) => prev || loginEmail.trim() || workEmail.trim());
+      setGoogleInputName((prev) => prev || adminName.trim());
+      setGoogleModalOpen(true);
+      return;
+    }
+
+    setGoogleLoading(true);
+    try {
+      await ensureGoogleGsiScript();
+      const gWin = window as GoogleIdentityWindow;
+      const oauth2 = gWin.google?.accounts?.oauth2;
+      if (!oauth2) {
+        setGoogleLoading(false);
+        setGoogleModalOpen(true);
+        return;
+      }
+      const tokenClient = oauth2.initTokenClient({
+        client_id: activeClientId,
+        scope: 'openid email profile',
+        callback: (resp) => {
+          if (resp.error || !resp.access_token) {
+            setGoogleLoading(false);
+            setErrorMsg('Bạn đã hủy hoặc chưa cấp quyền Google OAuth.');
+            return;
+          }
+          void executeGoogleLogin({ access_token: resp.access_token });
+        },
+        error_callback: () => {
+          setGoogleLoading(false);
+          setErrorMsg('Trình duyệt đã chặn cửa sổ bật lên Google. Vui lòng cho phép popup.');
+        },
+      });
+      tokenClient.requestAccessToken();
+    } catch (err: unknown) {
+      setGoogleLoading(false);
+      setErrorMsg(err instanceof Error ? err.message : 'Không thể khởi chạy Google Sign-In.');
+    }
+  };
+
+  const handleSelectDiscoveredWorkspace = async (slug: string) => {
+    if (!authDiscovery) return;
+    setErrorMsg(null);
+    if (authDiscovery.candidateSession && authDiscovery.candidateSession.tenant_slug === slug) {
+      const chosen = authDiscovery.candidateSession;
+      setAuthDiscovery(null);
+      onSessionChange(chosen);
+      if (chosen.subscription.is_expired) {
+        setWorkspaceTab('billing');
+      } else {
+        setWorkspaceTab('router');
+      }
+      setSuccessBanner(`Chào mừng quay trở lại không gian "${chosen.company_name}".`);
+      return;
+    }
+
+    setSwitchingSlug(slug);
+    try {
+      const res = await fetch('/api/autodata?action=switch-workspace', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authDiscovery.accessToken}`,
+        },
+        body: JSON.stringify({ tenant_slug: slug }),
+      });
+      const json = (await res.json()) as BridgeAuthApiResponse;
+      const nextSession = mapBridgeAuthToSession(json);
+      if (!res.ok || !nextSession) {
+        setErrorMsg(json.error?.message || 'Không thể mở Workspace đã chọn.');
+        return;
+      }
+      setAuthDiscovery(null);
+      onSessionChange(nextSession);
+      setWorkspaceTab(nextSession.subscription.is_expired ? 'billing' : 'router');
+      setSuccessBanner(`Đã truy cập không gian "${nextSession.company_name}".`);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối khi mở Workspace.');
+    } finally {
+      setSwitchingSlug(null);
+    }
+  };
+
+  const handleSwitchWorkspaceFromConsole = async (slug: string) => {
+    if (!session || slug === session.tenant_slug) {
+      setWorkspaceMenuOpen(false);
+      return;
+    }
+    setSwitchingSlug(slug);
+    setErrorMsg(null);
+    try {
+      const res = await fetch('/api/autodata?action=switch-workspace', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ tenant_slug: slug }),
+      });
+      const json = (await res.json()) as BridgeAuthApiResponse;
+      const nextSession = mapBridgeAuthToSession(json);
+      if (!res.ok || !nextSession) {
+        setErrorMsg(json.error?.message || 'Không thể chuyển Workspace.');
+        return;
+      }
+      setWorkspaceMenuOpen(false);
+      onSessionChange(nextSession);
+      setWorkspaceTab(nextSession.subscription.is_expired ? 'billing' : 'router');
+      setSuccessBanner(`Đã chuyển sang Workspace "${nextSession.company_name}".`);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối khi chuyển Workspace.');
+    } finally {
+      setSwitchingSlug(null);
+    }
+  };
+
+  const handleQuickCreateFirstWorkspace = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authDiscovery) return;
+    if (!quickWorkspaceCompany.trim()) {
+      setErrorMsg('Vui lòng nhập Tên doanh nghiệp hoặc Đội Sale để khởi tạo Workspace.');
+      return;
+    }
+    setSubmitting(true);
+    setErrorMsg(null);
+    try {
+      const selectedDomain =
+        BUSINESS_DOMAINS.find((d) => d.key === quickWorkspaceIndustry) || BUSINESS_DOMAINS[0];
+      const autoSlug = `${slugifyVietnamese(quickWorkspaceCompany.trim()) || 'ws'}-${autoSlugSalt}`;
+      const res = await fetch('/api/autodata?action=register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authDiscovery.accessToken}`,
+        },
+        body: JSON.stringify({
+          company_name: quickWorkspaceCompany.trim(),
+          tenant_slug: autoSlug,
+          admin_name: authDiscovery.user.full_name,
+          work_email: authDiscovery.user.email,
+          phone: quickWorkspacePhone.trim() || '0900000000',
+          password: '',
+          google_account_token: authDiscovery.accessToken,
+          industry: quickWorkspaceIndustry,
+          seed_demo_leads: false,
+          custom_pipeline_name: selectedDomain.pipelineName,
+          selected_channels: selectedChannels,
+          custom_settings: {
+            distribution_mode: 'weighted_round_robin',
+            duplicate_lead_action: 'route_to_existing_owner',
+            duplicate_action: 'route_to_previous_sale',
+            duplicate_threshold_days: 90,
+            is_external_agency: false,
+            mask_pii_for_external: false,
+            pii_masking_enabled: false,
+            sla_auto_recall_enabled: true,
+          },
+        }),
+      });
+      const json = (await res.json()) as BridgeAuthApiResponse;
+      const nextSession = mapBridgeAuthToSession(json);
+      if (!res.ok || !nextSession) {
+        setErrorMsg(json.error?.message || 'Không thể khởi tạo Workspace mới.');
+        return;
+      }
+      setAuthDiscovery(null);
+      setQuickWorkspaceCompany('');
+      setQuickWorkspacePhone('');
+      onSessionChange(nextSession);
+      setWorkspaceTab('router');
+      setSuccessBanner(
+        `Đã khởi tạo Workspace "${nextSession.company_name}" liên kết với ${authDiscovery.user.email}!`
+      );
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối khi khởi tạo Workspace.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleStartCreateWorkspaceFromUser = (
+    user: { email: string; full_name: string; auth_provider?: 'password' | 'google' },
+    token?: string
+  ) => {
+    setAuthDiscovery(null);
+    setWorkspaceMenuOpen(false);
+    setAdminName(user.full_name || '');
+    setWorkEmail(user.email || '');
+    setCompanyName('');
+    setTenantSlug('');
+    setPassword('');
+    setConfirmPassword('');
+    setGoogleProvisionToken(user.auth_provider === 'google' && token ? token : null);
+    setAuthMode('register');
+    setStep(1);
+    onSessionChange(null);
   };
 
   const handleFireRealWebhookTest = async (e: React.FormEvent) => {
@@ -803,6 +1399,75 @@ export default function AutoDataFullScreenSetup({
       );
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối Cổng Sale Cá Nhân.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleImportPersonalCsvFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !session) return;
+
+    setSubmitting(true);
+    setErrorMsg(null);
+    try {
+      const rawText = await file.text();
+      const drafts = parsePersonalLeadsCsvContent(
+        rawText,
+        pLeadOwner.trim() || 'Chuyên viên Sale Nội Bộ #01'
+      );
+      if (drafts.length === 0) {
+        setErrorMsg(
+          'File CSV chưa có dòng dữ liệu hợp lệ (cần có Họ tên và Số điện thoại tối thiểu 9 chữ số).'
+        );
+        return;
+      }
+
+      const res = await fetch(
+        `/api/autodata?action=personal-lead&slug=${encodeURIComponent(session.tenant_slug)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+            'X-Tenant-Slug': session.tenant_slug,
+          },
+          body: JSON.stringify({
+            items: drafts,
+            sale_owner_name: pLeadOwner.trim() || 'Chuyên viên Sale Nội Bộ #01',
+            sheet_sync_enabled: pSheetSync,
+          }),
+        }
+      );
+      const json = (await res.json()) as {
+        success?: boolean;
+        data?: {
+          item?: PersonalSaleLeadItem;
+          items?: PersonalSaleLeadItem[];
+          imported_count?: number;
+          policy_summary?: string;
+        };
+        error?: { message?: string };
+      };
+      if (!res.ok || !json.success || !json.data) {
+        setErrorMsg(json.error?.message || 'Không thể import danh sách CSV cá nhân.');
+        return;
+      }
+      const imported = Array.isArray(json.data.items)
+        ? json.data.items
+        : json.data.item
+          ? [json.data.item]
+          : [];
+      if (imported.length > 0) {
+        setPersonalLeads((prev) => [...imported, ...prev]);
+      }
+      setSuccessBanner(
+        json.data.policy_summary ||
+          `Đã import ${imported.length} khách hàng riêng từ file "${file.name}" (0 Quota • Giỏ riêng độc lập)!`
+      );
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Không thể đọc file CSV đã chọn.');
     } finally {
       setSubmitting(false);
     }
@@ -969,7 +1634,7 @@ export default function AutoDataFullScreenSetup({
       }
       setTransactions((prev) => [json.data!.transaction, ...prev]);
       setSuccessBanner(
-        'Đã ghi nhận yêu cầu nâng cấp từ Bản Lite lên Hệ sinh thái DOMATION (Giữ nguyên 100% dữ liệu Lead & Sale hiện có)!'
+        'Đã ghi nhận yêu cầu mở rộng lên Hệ sinh thái DOMATION (Giữ nguyên 100% dữ liệu Lead & Sale hiện có)!'
       );
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : 'Lỗi kết nối máy chủ.');
@@ -983,44 +1648,152 @@ export default function AutoDataFullScreenSetup({
       role="dialog"
       aria-modal="true"
       aria-label="Không gian khởi tạo và kết nối Auto Data"
-      className="fixed inset-0 z-[120] w-screen h-screen bg-[#FAFAFA] text-slate-900 flex flex-col overflow-hidden"
+      className="fixed inset-0 z-[120] w-screen h-screen bg-[#F8F9FA] text-slate-900 flex flex-col overflow-hidden"
     >
-      {/* Top Full-Screen Minimal App Bar */}
-      <header className="shrink-0 h-16 px-4 sm:px-8 border-b border-slate-200/80 bg-white flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm tracking-normal shrink-0">
-            AD
-          </div>
+      <LuxuryGoldBackdrop />
+
+      {/* Top Full-Screen Minimal App Bar — Aligned 100% with DOMATION Brand */}
+      <header className="relative z-20 shrink-0 h-16 px-4 sm:px-8 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0 relative">
+          <DomationLogoMark className="w-9 h-9 rounded-xl shadow-sm shrink-0" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm sm:text-base text-slate-900 truncate">
-                DOMATION AUTO DATA
+              <span className="font-bold text-sm sm:text-base text-slate-900 tracking-tight truncate">
+                DOMATION<span className="text-[#1E40FF]">.NET</span>
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700 whitespace-nowrap">
-                Bản Lite • Sale &amp; Chia Data
+              <span className="hidden lg:inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[11px] font-semibold text-[#1E40FF] whitespace-nowrap">
+                Auto Data
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 truncate">
-              {session
-                ? `Tổ chức: ${session.company_name} (${session.tenant_slug})`
-                : `Miễn phí ${catalog.trial_duration_months} tháng đầu • Gia hạn từ ${(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k/tháng (-${catalog.annual_discount_pct}%/năm)`}
-            </p>
+            {session ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setWorkspaceMenuOpen((prev) => !prev)}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer max-w-[230px] sm:max-w-[300px]"
+                >
+                  <Building2 className="w-3 h-3 text-[#1E40FF] shrink-0" />
+                  <span className="truncate">{session.company_name}</span>
+                  {(session.workspaces?.length ?? 0) > 1 && (
+                    <span className="rounded-full bg-slate-100 border border-slate-200 px-1.5 py-0.2 text-[10px] font-bold text-slate-600 shrink-0">
+                      {session.workspaces?.length}
+                    </span>
+                  )}
+                  <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
+                </button>
+
+                {workspaceMenuOpen && (
+                  <div className="absolute left-0 top-full mt-2 w-80 max-w-[88vw] rounded-2xl bg-white/95 backdrop-blur-xl border border-slate-200 shadow-xl p-2 z-50 space-y-1.5">
+                    <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                          Các Workspace của bạn
+                        </div>
+                        <div className="text-xs font-medium text-slate-700 truncate">
+                          {session.admin_email}
+                        </div>
+                      </div>
+                      {session.auth_provider === 'google' && (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-700 shrink-0">
+                          <GoogleLogoMark className="w-3 h-3" />
+                          <span>Google</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="max-h-56 overflow-y-auto space-y-1">
+                      {(session.workspaces && session.workspaces.length > 0
+                        ? session.workspaces
+                        : [
+                            {
+                              slug: session.tenant_slug,
+                              company_name: session.company_name,
+                              industry: 'general',
+                              plan_tier: session.subscription.plan_tier,
+                              plan_name: session.subscription.plan_name,
+                              role: 'tenant_admin',
+                              days_remaining: session.subscription.days_remaining,
+                              is_in_trial: session.subscription.is_in_trial,
+                              is_expired: session.subscription.is_expired,
+                            },
+                          ]
+                      ).map((ws) => {
+                        const isCurrent = ws.slug === session.tenant_slug;
+                        return (
+                          <button
+                            key={ws.slug}
+                            type="button"
+                            disabled={switchingSlug === ws.slug}
+                            onClick={() => void handleSwitchWorkspaceFromConsole(ws.slug)}
+                            className={`w-full text-left rounded-xl px-3 py-2 flex items-center justify-between gap-2 transition-colors cursor-pointer ${
+                              isCurrent
+                                ? 'bg-blue-50/90 border border-blue-200 text-slate-900'
+                                : 'hover:bg-slate-50 border border-transparent text-slate-700'
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="text-xs font-bold truncate">{ws.company_name}</div>
+                              <div className="text-[10px] text-slate-500 truncate">
+                                {ws.plan_name} • Còn {ws.days_remaining} ngày
+                              </div>
+                            </div>
+                            {switchingSlug === ws.slug ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1E40FF] shrink-0" />
+                            ) : isCurrent ? (
+                              <Check className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                            ) : (
+                              <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="pt-1 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleStartCreateWorkspaceFromUser(
+                            {
+                              email: session.admin_email,
+                              full_name: session.user_name || session.admin_email,
+                              auth_provider: session.auth_provider,
+                            },
+                            session.access_token
+                          )
+                        }
+                        className="w-full rounded-xl px-3 py-2 text-xs font-semibold text-[#1E40FF] hover:bg-blue-50/70 flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <PlusCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>Tạo thêm Workspace mới</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-[11px] text-slate-500 truncate">
+                {`Miễn phí ${catalog.trial_duration_months} tháng đầu • Gia hạn từ ${(catalog.base_monthly_price_vnd / 1000).toFixed(0)}k/tháng (-${catalog.annual_discount_pct}%/năm)`}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Center Mode Switcher or Workspace Tabs */}
         {!session ? (
-          <div className="hidden md:flex items-center gap-1.5 bg-slate-100 p-1 rounded-full shrink-0">
+          <div className="hidden md:flex items-center gap-1.5 bg-slate-100/80 border border-slate-200/70 p-1 rounded-full shrink-0">
             <button
               type="button"
               onClick={() => {
+                setAuthDiscovery(null);
+                setGoogleProvisionToken(null);
                 setAuthMode('register');
                 setErrorMsg(null);
               }}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                authMode === 'register'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                authMode === 'register' && !authDiscovery
+                  ? 'ql-pill-tab-active'
+                  : 'text-slate-600 hover:text-[#1E40FF]'
               }`}
             >
               Khởi tạo mới ({catalog.trial_duration_months} tháng 0đ)
@@ -1028,20 +1801,22 @@ export default function AutoDataFullScreenSetup({
             <button
               type="button"
               onClick={() => {
+                setAuthDiscovery(null);
+                setGoogleProvisionToken(null);
                 setAuthMode('login');
                 setErrorMsg(null);
               }}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                authMode === 'login'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                authMode === 'login' || Boolean(authDiscovery)
+                  ? 'ql-pill-tab-active'
+                  : 'text-slate-600 hover:text-[#1E40FF]'
               }`}
             >
               Đăng nhập Workspace
             </button>
           </div>
         ) : (
-          <div className="hidden xl:flex items-center gap-1.5 bg-slate-100 p-1 rounded-full shrink-0">
+          <div className="hidden xl:flex items-center gap-1.5 bg-slate-100/80 border border-slate-200/70 p-1 rounded-full shrink-0">
             {[
               { id: 'router' as const, label: '1. Webhook & Chia Vòng' },
               { id: 'sale_port' as const, label: '2. Cổng Sale & Sheets 2 Chiều' },
@@ -1054,12 +1829,13 @@ export default function AutoDataFullScreenSetup({
                 type="button"
                 onClick={() => {
                   setWorkspaceTab(tab.id);
+                  setWorkspaceMenuOpen(false);
                   setErrorMsg(null);
                 }}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   workspaceTab === tab.id
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'ql-pill-tab-active'
+                    : 'text-slate-600 hover:text-[#1E40FF]'
                 }`}
               >
                 {tab.label}
@@ -1069,26 +1845,27 @@ export default function AutoDataFullScreenSetup({
         )}
 
         <div className="flex items-center gap-2 shrink-0">
-          {onOpenTour && (
-            <button
-              type="button"
-              onClick={onOpenTour}
-              className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors cursor-pointer whitespace-nowrap"
-            >
-              <Compass className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden sm:inline">Tour A–Z</span>
-              <span className="sm:hidden">?</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => openInAppTour()}
+            className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50/90 px-3 py-1.5 text-xs font-semibold text-[#1E40FF] hover:bg-blue-100 transition-colors cursor-pointer whitespace-nowrap"
+          >
+            <Compass className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden sm:inline">Tour hướng dẫn</span>
+            <span className="sm:hidden">?</span>
+          </button>
           {session && (
             <button
               type="button"
               onClick={() => {
+                setWorkspaceMenuOpen(false);
+                setAuthDiscovery(null);
+                setGoogleProvisionToken(null);
                 onSessionChange(null);
                 setSuccessBanner(null);
                 setTransferOrderInfo(null);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-rose-600 hover:border-rose-200 transition-colors cursor-pointer whitespace-nowrap"
+              className="ql-btn-outline rounded-full px-3 py-1.5 text-xs hover:text-rose-600 hover:border-rose-200 cursor-pointer whitespace-nowrap"
             >
               <LogOut className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">Đăng xuất</span>
@@ -1098,7 +1875,7 @@ export default function AutoDataFullScreenSetup({
             type="button"
             onClick={onClose}
             aria-label="Đóng cửa sổ thiết lập"
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer whitespace-nowrap"
+            className="ql-btn-outline rounded-full px-3.5 py-1.5 text-xs cursor-pointer whitespace-nowrap"
           >
             <X className="w-4 h-4 shrink-0" />
             <span>Đóng</span>
@@ -1108,28 +1885,36 @@ export default function AutoDataFullScreenSetup({
 
       {/* Sub-bar Switcher on Mobile / Tablet */}
       {!session ? (
-        <div className="md:hidden shrink-0 px-4 py-2 bg-white border-b border-slate-200 flex gap-2">
+        <div className="relative z-10 md:hidden shrink-0 px-4 py-2 bg-white/85 backdrop-blur-md border-b border-slate-200 flex gap-2">
           <button
             type="button"
-            onClick={() => setAuthMode('register')}
+            onClick={() => {
+              setAuthDiscovery(null);
+              setGoogleProvisionToken(null);
+              setAuthMode('register');
+            }}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold whitespace-nowrap ${
-              authMode === 'register' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
+              authMode === 'register' && !authDiscovery ? 'ql-pill-tab-active rounded-xl' : 'bg-slate-100 text-slate-600'
             }`}
           >
             Tạo mới ({catalog.trial_duration_months} tháng 0đ)
           </button>
           <button
             type="button"
-            onClick={() => setAuthMode('login')}
+            onClick={() => {
+              setAuthDiscovery(null);
+              setGoogleProvisionToken(null);
+              setAuthMode('login');
+            }}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold whitespace-nowrap ${
-              authMode === 'login' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
+              authMode === 'login' || Boolean(authDiscovery) ? 'ql-pill-tab-active rounded-xl' : 'bg-slate-100 text-slate-600'
             }`}
           >
             Đăng nhập
           </button>
         </div>
       ) : (
-        <div className="xl:hidden shrink-0 px-4 py-2 bg-white border-b border-slate-200 flex gap-2 overflow-x-auto">
+        <div className="relative z-10 xl:hidden shrink-0 px-4 py-2 bg-white/85 backdrop-blur-md border-b border-slate-200 flex gap-2 overflow-x-auto">
           {[
             { id: 'router' as const, label: '1. Webhook & Chia Vòng' },
             { id: 'sale_port' as const, label: '2. Cổng Sale & Sheets' },
@@ -1142,7 +1927,7 @@ export default function AutoDataFullScreenSetup({
               type="button"
               onClick={() => setWorkspaceTab(tab.id)}
               className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer ${
-                workspaceTab === tab.id ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
+                workspaceTab === tab.id ? 'ql-pill-tab-active rounded-xl' : 'bg-slate-100 text-slate-600'
               }`}
             >
               {tab.label}
@@ -1152,7 +1937,7 @@ export default function AutoDataFullScreenSetup({
       )}
 
       {/* Main Scrollable Canvas */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="relative z-10 flex-1 overflow-y-auto">
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-7 sm:py-10 space-y-6">
           {errorMsg && (
             <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 flex items-center justify-between gap-3">
@@ -1186,14 +1971,17 @@ export default function AutoDataFullScreenSetup({
           {/* ================================================================
               MODE A: UNAUTHENTICATED -> REGISTER WIZARD OR LOGIN
              ================================================================ */}
-          {!session && authMode === 'register' && (
+          {!session && authMode === 'register' && !authDiscovery && (
             <div className="space-y-8">
-              {/* Stepper Indicator with explicit Bắt buộc vs Tùy chọn badges */}
-              <div className="flex items-center justify-between gap-2 max-w-3xl mx-auto overflow-x-auto py-1">
+              {/* Stepper Indicator — Unified DOMATION Swiss Glass Bar with Subtle Dot Badges */}
+              <div
+                data-tour="setup-stepper"
+                className="flex items-center justify-between gap-3 max-w-3xl mx-auto overflow-x-auto rounded-2xl bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-xs px-4 sm:px-6 py-3.5"
+              >
                 {[
-                  { n: 1 as const, label: 'Tài khoản & Tổ chức', reqLabel: 'Bắt buộc', reqTone: 'bg-rose-100 text-rose-800' },
-                  { n: 2 as const, label: 'Quy tắc Chia Vòng', reqLabel: 'Tùy chọn', reqTone: 'bg-amber-100 text-amber-800' },
-                  { n: 3 as const, label: 'Zalo Bot & Kênh ngoài', reqLabel: 'Tùy chọn', reqTone: 'bg-amber-100 text-amber-800' },
+                  { n: 1 as const, label: 'Tài khoản & Tổ chức', reqLabel: 'Bắt buộc', dotTone: 'bg-rose-500', reqTone: 'bg-rose-50/55 border border-rose-200/60 text-rose-700' },
+                  { n: 2 as const, label: 'Quy tắc Chia Vòng', reqLabel: 'Tùy chọn', dotTone: 'bg-amber-500', reqTone: 'bg-amber-50/55 border border-amber-200/60 text-amber-800' },
+                  { n: 3 as const, label: 'Zalo Bot & Kênh ngoài', reqLabel: 'Tùy chọn', dotTone: 'bg-emerald-500', reqTone: 'bg-emerald-50/60 border border-emerald-200/65 text-emerald-700' },
                 ].map((s, idx) => {
                   const active = step === s.n;
                   const done = step > s.n;
@@ -1204,15 +1992,15 @@ export default function AutoDataFullScreenSetup({
                         onClick={() => {
                           if (s.n === 1 || validateStep1()) setStep(s.n);
                         }}
-                        className="flex items-center gap-2.5 text-left cursor-pointer group shrink-0"
+                        className="flex items-center gap-3 text-left cursor-pointer group shrink-0"
                       >
                         <span
-                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors shrink-0 ${
+                          className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold transition-all shrink-0 ${
                             done
-                              ? 'bg-emerald-600 text-white'
+                              ? 'bg-emerald-600 text-white shadow-2xs'
                               : active
-                                ? 'bg-blue-600 text-white ring-4 ring-blue-100'
-                                : 'bg-slate-200 text-slate-600'
+                                ? 'bg-[#1E40FF] text-white ring-4 ring-blue-100/80 shadow-sm'
+                                : 'bg-slate-100 text-slate-500 border border-slate-200/70'
                           }`}
                         >
                           {done ? <Check className="w-4 h-4" /> : s.n}
@@ -1226,13 +2014,14 @@ export default function AutoDataFullScreenSetup({
                             {s.label}
                           </span>
                           <span
-                            className={`self-start rounded-full px-2 py-0.5 text-[10px] font-bold whitespace-nowrap mt-0.5 ${s.reqTone}`}
+                            className={`self-start inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap mt-0.5 ${s.reqTone}`}
                           >
-                            {s.reqLabel}
+                            <span className={`w-1.5 h-1.5 rounded-full ${s.dotTone} shrink-0`} />
+                            <span>{s.reqLabel}</span>
                           </span>
                         </div>
                       </button>
-                      {idx < 2 && <div className="flex-1 min-w-6 h-px bg-slate-200 mx-2 hidden sm:block" />}
+                      {idx < 2 && <div className="flex-1 min-w-6 h-px bg-slate-200/80 mx-2 hidden sm:block" />}
                     </React.Fragment>
                   );
                 })}
@@ -1240,34 +2029,22 @@ export default function AutoDataFullScreenSetup({
 
               {/* STEP 1: Required Organization & Admin Info + Optional Domain Preset */}
               {step === 1 && (
-                <div className="space-y-7">
-                  <div className="text-center max-w-2xl mx-auto space-y-2.5">
-                    <div className="inline-flex items-center gap-2">
-                      <span className="rounded-full bg-rose-50 border border-rose-200 px-3 py-1 text-[11px] font-bold text-rose-700 whitespace-nowrap">
-                        BƯỚC 1: BẮT BUỘC • TẠO KHÔNG GIAN RIÊNG
-                      </span>
-                      <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={onOpenTour} />
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
-                      Khởi tạo không gian Auto Data riêng cho đội Sale
-                    </h2>
-                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                      Dùng thử miễn phí trọn vẹn tính năng trong{' '}
-                      <strong className="text-slate-900">
-                        {catalog.trial_duration_months} tháng đầu ({catalog.trial_duration_days} ngày)
-                      </strong>
-                      . Điền xong bước này bạn có thể vào setup ngay lập tức!
-                    </p>
-                  </div>
-
-                  <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
-                    <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                <div className="space-y-6">
+                  <div
+                    data-tour="setup-org-form"
+                    className="inkica-glass-card rounded-[28px] p-5 sm:p-8 space-y-6"
+                  >
+                    <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-200/75">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
                         Thông tin khởi tạo tài khoản Quản trị
                       </span>
-                      <span className="rounded-full bg-rose-50 border border-rose-200 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 whitespace-nowrap">
-                        Bắt buộc (*)
-                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={openInAppTour} />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50/55 border border-rose-200/60 px-2.5 py-0.5 text-[10px] font-semibold text-rose-700 whitespace-nowrap">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                          <span>Bắt buộc (*)</span>
+                        </span>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1279,42 +2056,9 @@ export default function AutoDataFullScreenSetup({
                           type="text"
                           value={companyName}
                           onChange={(e) => handleCompanyNameChange(e.target.value)}
-                          placeholder="VD: Phòng Kinh Doanh Á Châu"
-                          className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          placeholder="Nhập tên doanh nghiệp hoặc tên đội Sale của bạn"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <label className="text-xs font-semibold text-slate-700">
-                            Mã định danh Workspace (Slug) *
-                          </label>
-                          {slugStatus === 'checking' && (
-                            <span className="text-[11px] text-slate-500 whitespace-nowrap">Đang kiểm tra...</span>
-                          )}
-                          {slugStatus === 'available' && (
-                            <span className="text-[11px] font-semibold text-emerald-600 whitespace-nowrap">
-                              ✓ Khả dụng
-                            </span>
-                          )}
-                          {slugStatus === 'taken' && (
-                            <span className="text-[11px] font-semibold text-rose-600 whitespace-nowrap">
-                              ✕ Đã tồn tại
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 focus-within:border-blue-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
-                          <span className="text-xs text-slate-400 select-none mr-1 whitespace-nowrap">
-                            domation.net/t/
-                          </span>
-                          <input
-                            type="text"
-                            value={tenantSlug}
-                            onChange={(e) => handleSlugInput(e.target.value)}
-                            placeholder="phong-sale-a-chau"
-                            className="w-full bg-transparent text-sm font-mono text-slate-900 focus:outline-none"
-                          />
-                        </div>
                       </div>
 
                       <div className="space-y-1.5">
@@ -1323,8 +2067,8 @@ export default function AutoDataFullScreenSetup({
                           type="text"
                           value={adminName}
                           onChange={(e) => setAdminName(e.target.value)}
-                          placeholder="Nguyễn Minh Quân"
-                          className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          placeholder="Nhập họ và tên người phụ trách quản trị"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
@@ -1334,8 +2078,8 @@ export default function AutoDataFullScreenSetup({
                           type="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          placeholder="0912345678"
-                          className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          placeholder="Nhập số điện thoại hoặc Zalo đang sử dụng"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
@@ -1345,33 +2089,70 @@ export default function AutoDataFullScreenSetup({
                           type="email"
                           value={workEmail}
                           onChange={(e) => setWorkEmail(e.target.value)}
-                          placeholder="admin@doanhnghiep.vn"
-                          className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          placeholder="Nhập email nhận thông tin tài khoản và cảnh báo"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-slate-700">
-                          Mật khẩu khởi tạo (tối thiểu 8 ký tự) *
+                          {googleProvisionToken
+                            ? 'Mật khẩu dự phòng (tùy chọn — đã xác thực Google)'
+                            : 'Mật khẩu khởi tạo (tối thiểu 8 ký tự) *'}
                         </label>
                         <input
                           type="password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••••••"
-                          className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          placeholder={
+                            googleProvisionToken
+                              ? 'Có thể để trống hoặc đặt thêm mật khẩu riêng'
+                              : 'Nhập mật khẩu đăng nhập (ít nhất 8 ký tự)'
+                          }
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="text-xs font-semibold text-slate-700">
+                            {googleProvisionToken
+                              ? 'Xác nhận mật khẩu dự phòng (tùy chọn)'
+                              : 'Xác nhận mật khẩu khởi tạo *'}
+                          </label>
+                          {confirmPassword.length > 0 && (
+                            <span
+                              className={`text-[11px] font-semibold whitespace-nowrap ${
+                                password === confirmPassword ? 'text-emerald-600' : 'text-rose-600'
+                              }`}
+                            >
+                              {password === confirmPassword ? '✓ Khớp' : '✕ Chưa khớp'}
+                            </span>
+                          )}
+                        </div>
+                        <input
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder={
+                            googleProvisionToken
+                              ? 'Nhập lại nếu bạn đặt mật khẩu dự phòng'
+                              : 'Nhập lại mật khẩu khởi tạo để xác nhận'
+                          }
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
                     </div>
 
                     {/* Optional Business Preset Picker */}
-                    <div className="pt-3 border-t border-slate-100 space-y-3">
+                    <div className="pt-4 border-t border-slate-200/75 space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <label className="text-xs font-semibold text-slate-700">
                           Mẫu phễu gợi ý ban đầu (Mặc định: Đa ngành / Đội Sale Nội Bộ)
                         </label>
-                        <span className="rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[11px] font-bold text-amber-800 whitespace-nowrap">
-                          Tùy chọn • Đổi tự do sau
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50/55 border border-amber-200/60 px-2.5 py-0.5 text-[10px] font-semibold text-amber-800 whitespace-nowrap">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                          <span>Tùy chọn • Đổi tự do sau</span>
                         </span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1385,16 +2166,18 @@ export default function AutoDataFullScreenSetup({
                               onClick={() => setDomainKey(item.key)}
                               className={`rounded-2xl border p-4 text-left transition-all cursor-pointer flex items-start gap-3.5 ${
                                 selected
-                                  ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-100'
-                                  : 'border-slate-200 bg-white hover:border-slate-300'
+                                  ? 'border-[#1E40FF] bg-[#F4F8FF]/90 ring-2 ring-blue-100/80 shadow-2xs'
+                                  : 'border-slate-200/80 bg-white/95 hover:border-slate-300'
                               }`}
                             >
                               <div
                                 className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                                  selected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'
+                                  selected
+                                    ? 'bg-[#1E40FF] text-white shadow-2xs'
+                                    : 'bg-slate-50 border border-slate-200/75 text-slate-700'
                                 }`}
                               >
-                                <Icon className="w-5 h-5" />
+                                <Icon className="w-4 h-4" />
                               </div>
                               <div className="min-w-0">
                                 <div className="text-sm font-semibold text-slate-900 leading-snug">
@@ -1440,25 +2223,29 @@ export default function AutoDataFullScreenSetup({
                 <div className="space-y-7">
                   <div className="text-center max-w-2xl mx-auto space-y-2.5">
                     <div className="inline-flex flex-wrap items-center justify-center gap-2">
-                      <span className="rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-800 whitespace-nowrap">
-                        BƯỚC 2: TÙY CHỌN • ĐÃ CÀI SẴN MẶC ĐỊNH TỐI ƯU
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50/55 border border-amber-200/60 px-3 py-1 text-[11px] font-semibold text-amber-800 whitespace-nowrap">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                        <span>BƯỚC 2: TÙY CHỌN • ĐÃ CÀI SẴN MẶC ĐỊNH TỐI ƯU</span>
                       </span>
-                      <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={onOpenTour} />
+                      <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={openInAppTour} />
                     </div>
                     <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
                       Quy tắc Vòng Chia Số — Mặc định cho từng Sale nội bộ
                     </h2>
                     <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                      Hệ thống mặc định chia cho từng nhân viên Sale cá nhân trong công ty. Bạn có thể giữ nguyên hoặc bấm bỏ qua để vào Workspace ngay.
+                      Hệ thống mặc định chia thẳng cho từng nhân viên Sale trong công ty. Bạn có thể giữ nguyên hoặc bấm bỏ qua để vào Workspace ngay.
                     </p>
                   </div>
 
-                  <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-8">
+                  <div className="inkica-glass-card rounded-[28px] p-5 sm:p-8 space-y-8">
                     {/* Default Individual Internal Sale vs Optional External Agency F1 */}
-                    <div className="rounded-2xl border-2 border-blue-100 bg-blue-50/40 p-5 space-y-4">
+                    <div
+                      data-tour="setup-router-internal"
+                      className="rounded-2xl border border-blue-200/80 bg-[#F4F8FF]/75 p-5 space-y-4"
+                    >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+                          <div className="w-10 h-10 rounded-xl bg-[#1E40FF] text-white flex items-center justify-center shrink-0">
                             <Users className="w-5 h-5" />
                           </div>
                           <div>
@@ -1466,13 +2253,14 @@ export default function AutoDataFullScreenSetup({
                               <span className="text-sm font-bold text-slate-950">
                                 Đối tượng nhận Lead mặc định: Từng Chuyên Viên Sale Nội Bộ
                               </span>
-                              <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 whitespace-nowrap">
-                                Mặc định (is_external_agency = false)
+                              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50/75 border border-emerald-200/70 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700 whitespace-nowrap">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                                <span>Mặc định tối ưu</span>
                               </span>
-                              <AutoDataHelpTrigger topic="internal_sale_default" onOpenTour={onOpenTour} />
+                              <AutoDataHelpTrigger topic="internal_sale_default" onOpenTour={openInAppTour} />
                             </div>
                             <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                              Sale nội bộ nhận trực tiếp khách hàng kèm đầy đủ Số Điện Thoại (VD: 0912 888 678) để gọi tư vấn ngay dưới 4 giây.
+                              Sale nội bộ nhận trực tiếp khách hàng kèm đầy đủ Số Điện Thoại để gọi tư vấn ngay tức thì qua Zalo.
                             </p>
                           </div>
                         </div>
@@ -1491,8 +2279,8 @@ export default function AutoDataFullScreenSetup({
                           onClick={() => setIsExternalAgency((v) => !v)}
                           className={`self-start sm:self-center rounded-full px-4 py-2 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                             isExternalAgency
-                              ? 'bg-slate-900 text-white'
-                              : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50'
+                              ? 'ql-pill-tab-active rounded-full'
+                              : 'ql-btn-outline rounded-full'
                           }`}
                         >
                           {isExternalAgency
@@ -1502,12 +2290,12 @@ export default function AutoDataFullScreenSetup({
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div data-tour="setup-router-algo" className="space-y-3 rounded-2xl p-1">
                       <div className="flex items-center gap-2">
                         <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                           1. Thuật toán phân bổ khách hàng mới
                         </label>
-                        <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={onOpenTour} />
+                        <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={openInAppTour} />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         {ROUTER_MODES.map((m) => {
@@ -1548,13 +2336,13 @@ export default function AutoDataFullScreenSetup({
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div data-tour="setup-router-algo" className="space-y-3 rounded-2xl p-1">
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-2">
                           <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                             2. Chính sách xử lý trùng Số Điện Thoại
                           </label>
-                          <AutoDataHelpTrigger topic="dedupe_90d" onOpenTour={onOpenTour} />
+                          <AutoDataHelpTrigger topic="dedupe_90d" onOpenTour={openInAppTour} />
                         </div>
                         <div className="flex items-center gap-2 text-xs">
                           <span className="text-slate-600">Chu kỳ quét trùng:</span>
@@ -1606,7 +2394,7 @@ export default function AutoDataFullScreenSetup({
                         type="button"
                         onClick={() => setSlaAutoRecall((v) => !v)}
                         className={`w-full rounded-2xl border p-4 text-left flex items-start gap-3.5 cursor-pointer transition-all ${
-                          slaAutoRecall ? 'border-slate-900 bg-slate-50' : 'border-slate-200 bg-white'
+                          slaAutoRecall ? 'border-[#1E40FF] bg-blue-50/50 ring-2 ring-blue-100' : 'border-slate-200 bg-white'
                         }`}
                       >
                         <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
@@ -1616,20 +2404,20 @@ export default function AutoDataFullScreenSetup({
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
                               <span className="text-sm font-semibold text-slate-900">
-                                Tự động thu hồi SLA quá hạn (15 phút) đối với Lead Ads công ty
+                                Tùy chọn thu hồi SLA nếu Sale bỏ sót (Mặc định Tắt — Chia thẳng qua Zalo)
                               </span>
-                              <AutoDataHelpTrigger topic="sla_recall" onOpenTour={onOpenTour} />
+                              <AutoDataHelpTrigger topic="sla_recall" onOpenTour={openInAppTour} />
                             </div>
                             <span
                               className={`text-xs font-bold whitespace-nowrap ${
-                                slaAutoRecall ? 'text-emerald-600' : 'text-slate-400'
+                                slaAutoRecall ? 'text-emerald-600' : 'text-slate-500'
                               }`}
                             >
-                              {slaAutoRecall ? 'ĐANG BẬT' : 'TẮT'}
+                              {slaAutoRecall ? 'ĐANG BẬT' : 'TẮT (CHIA THẲNG)'}
                             </span>
                           </div>
                           <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                            Quá 15 phút Sale chưa tiếp nhận, Router tự thu hồi chuyển Sale kế tiếp (Lưu ý: Lead cá nhân tự nhập tại Cổng Sale được miễn thu hồi 100%).
+                            Mặc định chia là giao thẳng qua Zalo cho Sale tới lượt, không thu hồi. Chỉ bật tùy chọn này nếu đội ngũ cần kiểm soát thu hồi tự động khi Sale không phản hồi.
                           </p>
                         </div>
                       </button>
@@ -1642,19 +2430,23 @@ export default function AutoDataFullScreenSetup({
               {step === 3 && (
                 <div className="space-y-7">
                   <div className="text-center max-w-2xl mx-auto space-y-2.5">
-                    <span className="inline-block rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-800 whitespace-nowrap">
-                      BƯỚC 3: TÙY CHỌN • KẾT NỐI KÊNH NGOÀI &amp; ZALO BOT
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50/60 border border-emerald-200/65 px-3 py-1 text-[11px] font-semibold text-emerald-700 whitespace-nowrap">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                      <span>BƯỚC 3: TÙY CHỌN • KẾT NỐI KÊNH NGOÀI &amp; ZALO BOT</span>
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
-                      Kênh kết nối (Bắt buộc vs Tùy chọn) &amp; Xác thực Zalo Bot
+                      Kênh kết nối &amp; Xác thực Zalo Bot
                     </h2>
                     <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                      Cổng Webhook trung tâm được cấp tự động. Các kênh Zalo Bot, Meta CAPI và Google Sheets là tùy chọn — bạn có thể test ngay bên dưới hoặc tạm bỏ qua để vào hệ thống!
+                      Cổng Webhook trung tâm được cấp tự động. Các kênh Zalo Bot, Meta CAPI, REST API và Google Sheets là tùy chọn — bạn có thể kiểm tra ngay bên dưới hoặc vào thẳng hệ thống!
                     </p>
                   </div>
 
-                  <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="inkica-glass-card rounded-[28px] p-5 sm:p-8 space-y-6">
+                    <div
+                      data-tour="setup-channels"
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 rounded-2xl p-1"
+                    >
                       {CHANNEL_OPTIONS.map((ch) => {
                         const Icon = ch.icon;
                         const active = selectedChannels.includes(ch.key);
@@ -1666,32 +2458,37 @@ export default function AutoDataFullScreenSetup({
                               ch.required ? 'cursor-default' : 'cursor-pointer'
                             } ${
                               active
-                                ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-100'
-                                : 'border-slate-200 bg-white hover:border-slate-300'
+                                ? 'border-[#1E40FF] bg-[#F4F8FF]/90 ring-2 ring-blue-100/80'
+                                : 'border-slate-200/80 bg-white/95 hover:border-slate-300'
                             }`}
                           >
                             <div
                               className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                                active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'
+                                active ? 'bg-[#1E40FF] text-white shadow-2xs' : 'bg-slate-50 border border-slate-200/75 text-slate-700'
                               }`}
                             >
-                              <Icon className="w-5 h-5" />
+                              <Icon className="w-4 h-4" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 flex-wrap">
                                 <span className="text-sm font-semibold text-slate-900">{ch.title}</span>
                                 <div className="flex items-center gap-1.5">
                                   <span
-                                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${
+                                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap border ${
                                       ch.required
-                                        ? 'bg-rose-100 text-rose-800'
-                                        : 'bg-amber-100 text-amber-800'
+                                        ? 'bg-rose-50/55 border-rose-200/60 text-rose-700'
+                                        : 'bg-amber-50/55 border-amber-200/60 text-amber-800'
                                     }`}
                                   >
-                                    {ch.required ? 'Bắt buộc • Cấp sẵn' : 'Tùy chọn'}
+                                    <span
+                                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                        ch.required ? 'bg-rose-500' : 'bg-amber-500'
+                                      }`}
+                                    />
+                                    <span>{ch.required ? 'Bắt buộc • Cấp sẵn' : 'Tùy chọn'}</span>
                                   </span>
                                   {ch.helpTopic && (
-                                    <AutoDataHelpTrigger topic={ch.helpTopic} onOpenTour={onOpenTour} />
+                                    <AutoDataHelpTrigger topic={ch.helpTopic} onOpenTour={openInAppTour} />
                                   )}
                                 </div>
                               </div>
@@ -1703,14 +2500,16 @@ export default function AutoDataFullScreenSetup({
                     </div>
 
                     {/* A-Z Zalo Bot Step-by-Step Guide & Live Verification Test */}
-                    <AutoDataZaloBotGuide
-                      compact
-                      savedZaloBot={pendingZaloBot}
-                      onVerified={(saved) => setPendingZaloBot(saved)}
-                      onFastSkip={() => void handleRegisterSubmit(true)}
-                      fastSkipLabel="Tùy chọn — Tạm bỏ qua & vào setup ngay"
-                      onOpenTour={onOpenTour}
-                    />
+                    <div data-tour="setup-zalo-guide">
+                      <AutoDataZaloBotGuide
+                        compact
+                        savedZaloBot={pendingZaloBot}
+                        onVerified={(saved) => setPendingZaloBot(saved)}
+                        onFastSkip={() => void handleRegisterSubmit(true)}
+                        fastSkipLabel="Tùy chọn — Tạm bỏ qua & vào setup ngay"
+                        onOpenTour={openInAppTour}
+                      />
+                    </div>
 
                     {/* Transparent Trial & Post-Trial Step Policy Card */}
                     <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-5 space-y-2.5">
@@ -1719,7 +2518,7 @@ export default function AutoDataFullScreenSetup({
                           <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0" />
                           <span>Chính sách Dùng Thử &amp; Gia Hạn Minh Bạch DOMATION</span>
                         </div>
-                        <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={onOpenTour} />
+                        <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={openInAppTour} />
                       </div>
                       <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700 pt-1">
                         <li className="rounded-xl bg-white p-3.5 border border-blue-100">
@@ -1727,7 +2526,7 @@ export default function AutoDataFullScreenSetup({
                             01. Miễn phí {catalog.trial_duration_months} tháng đầu
                           </div>
                           <div className="text-slate-500 mt-1 leading-relaxed">
-                            Trọn vẹn {catalog.trial_duration_days} ngày sử dụng Bản Lite không giới hạn tính năng.
+                            Trọn vẹn {catalog.trial_duration_days} ngày trải nghiệm đầy đủ tính năng Auto Data.
                           </div>
                         </li>
                         <li className="rounded-xl bg-white p-3.5 border border-blue-100">
@@ -1753,67 +2552,330 @@ export default function AutoDataFullScreenSetup({
             </div>
           )}
 
-          {/* LOGIN EXISTING WORKSPACE */}
-          {!session && authMode === 'login' && (
-            <form
-              onSubmit={handleLoginSubmit}
-              className="max-w-md mx-auto bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-5 mt-6"
-            >
+          {/* MULTI-WORKSPACE DISCOVERY AFTER SIGN-IN (EMAIL OR GOOGLE) */}
+          {!session && authDiscovery && (
+            <div className="max-w-3xl mx-auto space-y-6 mt-4">
+              {/* Authenticated Account Header Strip */}
+              <div className="inkica-glass-card rounded-2xl p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  {authDiscovery.user.avatar_url ? (
+                    <img
+                      src={authDiscovery.user.avatar_url}
+                      alt={authDiscovery.user.full_name}
+                      className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white text-sm font-bold flex items-center justify-center shrink-0">
+                      {(authDiscovery.user.full_name || authDiscovery.user.email).slice(0, 1).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-bold text-slate-900 truncate">
+                        {authDiscovery.user.full_name}
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 whitespace-nowrap">
+                        {authDiscovery.user.auth_provider === 'google' ? (
+                          <>
+                            <GoogleLogoMark className="w-3 h-3" />
+                            <span>Google Account</span>
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-3 h-3 text-[#1E40FF]" />
+                            <span>Email Workspace</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 truncate">{authDiscovery.user.email}</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthDiscovery(null);
+                    setAuthMode('login');
+                    setErrorMsg(null);
+                  }}
+                  className="ql-btn-outline rounded-full px-3.5 py-1.5 text-xs cursor-pointer whitespace-nowrap self-start sm:self-center"
+                >
+                  Đổi tài khoản khác
+                </button>
+              </div>
+
+              {authDiscovery.workspaces.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+                        Các Workspace của bạn ({authDiscovery.workspaces.length})
+                      </h2>
+                      <p className="text-xs sm:text-sm text-slate-500">
+                        Chọn không gian làm việc muốn truy cập — không cần nhập mã Slug.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleStartCreateWorkspaceFromUser(authDiscovery.user, authDiscovery.accessToken)
+                      }
+                      className="ql-btn-outline rounded-full px-4 py-2 text-xs cursor-pointer whitespace-nowrap self-start sm:self-center"
+                    >
+                      <PlusCircle className="w-3.5 h-3.5 text-[#1E40FF]" />
+                      <span>Tạo Workspace mới</span>
+                    </button>
+                  </div>
+
+                  <div
+                    className={
+                      authDiscovery.workspaces.length === 1
+                        ? 'grid grid-cols-1 max-w-xl mx-auto gap-4'
+                        : 'grid grid-cols-1 md:grid-cols-2 gap-4'
+                    }
+                  >
+                    {authDiscovery.workspaces.map((ws) => {
+                      const isOpening = switchingSlug === ws.slug;
+                      const industryLabel = INDUSTRY_LABELS[ws.industry] || 'Đa Ngành / Tổng Hợp';
+                      return (
+                        <div
+                          key={ws.slug}
+                          className="inkica-glass-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-5 transition-all hover:border-[#1E40FF]/45"
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-200/80 text-[#1E40FF] flex items-center justify-center shrink-0">
+                                  <Building2 className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0">
+                                  <h3 className="text-base font-bold text-slate-900 truncate">
+                                    {ws.company_name}
+                                  </h3>
+                                  <p className="text-xs text-slate-500 truncate">{industryLabel}</p>
+                                </div>
+                              </div>
+
+                              <span
+                                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold whitespace-nowrap shrink-0 ${
+                                  ws.is_expired
+                                    ? 'bg-rose-50/60 border-rose-200/70 text-rose-700'
+                                    : ws.is_in_trial
+                                      ? 'bg-blue-50/60 border-blue-200/70 text-[#1E40FF]'
+                                      : 'bg-emerald-50/60 border-emerald-200/70 text-emerald-700'
+                                }`}
+                              >
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                    ws.is_expired
+                                      ? 'bg-rose-500'
+                                      : ws.is_in_trial
+                                        ? 'bg-[#1E40FF]'
+                                        : 'bg-emerald-500'
+                                  }`}
+                                />
+                                <span>
+                                  {ws.is_expired ? 'Hết hạn' : `Còn ${ws.days_remaining} ngày`}
+                                </span>
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
+                              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 font-medium">
+                                <Layers className="w-3 h-3 text-slate-500" />
+                                <span>{ws.plan_name}</span>
+                              </span>
+                              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 font-medium">
+                                <UserCheck className="w-3 h-3 text-slate-500" />
+                                <span>Quản trị viên</span>
+                              </span>
+                              {(ws.selected_channels?.length ?? 0) > 0 && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 font-medium">
+                                  <span>{ws.selected_channels?.length} kênh kết nối</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="pt-3 border-t border-slate-200/70 flex items-center justify-between gap-3">
+                            <span className="text-[11px] font-mono text-slate-400 truncate">
+                              {ws.slug}
+                            </span>
+                            <button
+                              type="button"
+                              disabled={Boolean(switchingSlug)}
+                              onClick={() => void handleSelectDiscoveredWorkspace(ws.slug)}
+                              className="btn-inkica-primary rounded-full px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap shrink-0"
+                            >
+                              {isOpening ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              )}
+                              <span>Vào Workspace</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleQuickCreateFirstWorkspace}
+                  className="max-w-lg mx-auto inkica-glass-card rounded-3xl p-6 sm:p-8 space-y-5"
+                >
+                  <div className="space-y-1.5 text-center">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-[#1E40FF] flex items-center justify-center mx-auto mb-2">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-xl font-bold text-slate-900">
+                      Tạo Workspace đầu tiên trong 10 giây
+                    </h2>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      Tài khoản Google <strong>{authDiscovery.user.email}</strong> chưa có Workspace nào. Nhập tên doanh nghiệp để kích hoạt miễn phí {catalog.trial_duration_months} tháng ngay.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-slate-700">
+                      Tên doanh nghiệp / Đội Sale *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={quickWorkspaceCompany}
+                      onChange={(e) => setQuickWorkspaceCompany(e.target.value)}
+                      placeholder="Nhập tên doanh nghiệp hoặc đội nhóm của bạn"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-700">
+                        Số điện thoại / Zalo
+                      </label>
+                      <input
+                        type="tel"
+                        value={quickWorkspacePhone}
+                        onChange={(e) => setQuickWorkspacePhone(e.target.value)}
+                        placeholder="090x xxx xxx (tùy chọn)"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-700">Ngành nghề</label>
+                      <select
+                        value={quickWorkspaceIndustry}
+                        onChange={(e) => setQuickWorkspaceIndustry(e.target.value)}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                      >
+                        {BUSINESS_DOMAINS.map((d) => (
+                          <option key={d.key} value={d.key}>
+                            {d.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-inkica-primary w-full py-3 px-5 text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                  >
+                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                    <span>Tạo Workspace &amp; Vào Ngay</span>
+                  </button>
+
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleStartCreateWorkspaceFromUser(authDiscovery.user, authDiscovery.accessToken)
+                      }
+                      className="text-xs font-semibold text-[#1E40FF] hover:underline cursor-pointer"
+                    >
+                      Hoặc tùy chỉnh chi tiết 3 bước (Chia vòng, Zalo Bot) →
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* LOGIN EXISTING WORKSPACE — NO SLUG INPUT, GOOGLE + EMAIL AUTO WORKSPACE DISCOVERY */}
+          {!session && authMode === 'login' && !authDiscovery && (
+            <div className="max-w-md mx-auto inkica-glass-card rounded-3xl p-6 sm:p-8 space-y-5 mt-6">
               <div className="space-y-1.5 text-center">
-                <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white shadow-[0_8px_20px_-4px_rgba(30,64,255,0.3)] flex items-center justify-center mx-auto mb-3">
                   <KeyRound className="w-6 h-6" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900">Đăng nhập không gian Auto Data</h2>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Kết nối trực tiếp để mở Cổng Sale Cá Nhân, kiểm tra Webhook, Zalo Bot, nạp Topup hoặc nâng cấp gói.
+                  Chỉ cần Email hoặc Google — hệ thống tự hiển thị toàn bộ Workspace của bạn (không cần nhập Slug).
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Mã định danh tổ chức (Slug)</label>
-                <input
-                  type="text"
-                  required
-                  value={loginSlug}
-                  onChange={(e) => setLoginSlug(slugifyVietnamese(e.target.value))}
-                  placeholder="vd: nha-khoa-flora"
-                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-mono focus:border-blue-600 focus:outline-none"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Email quản trị</label>
-                <input
-                  type="email"
-                  required
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="admin@doanhnghiep.vn"
-                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Mật khẩu</label>
-                <input
-                  type="password"
-                  required
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-blue-600 focus:outline-none"
-                />
-              </div>
-
               <button
-                type="submit"
-                disabled={submitting}
-                className="w-full rounded-xl bg-slate-900 text-white py-3 px-5 text-sm font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                type="button"
+                disabled={googleLoading || submitting}
+                onClick={() => void handleGoogleButtonClick()}
+                className="w-full rounded-full border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-800 font-semibold text-sm py-2.5 px-5 shadow-2xs flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-60 whitespace-nowrap"
               >
-                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                <span>Kết nối vào Workspace</span>
+                {googleLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-[#1E40FF]" />
+                ) : (
+                  <GoogleLogoMark className="w-4 h-4 shrink-0" />
+                )}
+                <span>Tiếp tục với Google</span>
               </button>
-            </form>
+
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-slate-200/80" />
+                <span className="text-[11px] font-medium text-slate-400 whitespace-nowrap">
+                  Hoặc đăng nhập bằng Email
+                </span>
+                <div className="h-px flex-1 bg-slate-200/80" />
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700">Email quản trị</label>
+                  <input
+                    type="email"
+                    required
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    placeholder="Nhập địa chỉ email đã đăng ký Workspace"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700">Mật khẩu</label>
+                  <input
+                    type="password"
+                    required
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder="Nhập mật khẩu đăng nhập"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting || googleLoading}
+                  className="btn-inkica-primary w-full py-3 px-5 text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                >
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                  <span>Đăng nhập &amp; Hiện Workspace</span>
+                </button>
+              </form>
+            </div>
           )}
 
           {/* ================================================================
@@ -1825,21 +2887,32 @@ export default function AutoDataFullScreenSetup({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-2xl bg-white border border-slate-200 p-5 space-y-1.5">
                   <div className="flex items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                    <span>TRẠNG THÁI GÓI LITE</span>
+                    <span>TRẠNG THÁI GÓI DỊCH VỤ</span>
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap ${
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold whitespace-nowrap ${
                         session.subscription.is_expired
-                          ? 'bg-rose-100 text-rose-700'
+                          ? 'bg-rose-50/55 border-rose-200/60 text-rose-700'
                           : session.subscription.is_in_trial
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-emerald-100 text-emerald-700'
+                            ? 'bg-blue-50/60 border-blue-200/70 text-[#1E40FF]'
+                            : 'bg-emerald-50/60 border-emerald-200/65 text-emerald-700'
                       }`}
                     >
-                      {session.subscription.is_expired
-                        ? 'Hết hạn'
-                        : session.subscription.is_in_trial
-                          ? `Dùng thử ${catalog.trial_duration_months} tháng`
-                          : 'Đang hoạt động'}
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                          session.subscription.is_expired
+                            ? 'bg-rose-500'
+                            : session.subscription.is_in_trial
+                              ? 'bg-[#1E40FF]'
+                              : 'bg-emerald-500'
+                        }`}
+                      />
+                      <span>
+                        {session.subscription.is_expired
+                          ? 'Hết hạn'
+                          : session.subscription.is_in_trial
+                            ? `Dùng thử ${catalog.trial_duration_months} tháng`
+                            : 'Đang hoạt động'}
+                      </span>
                     </span>
                   </div>
                   <div className="text-base font-bold text-slate-900">{session.subscription.plan_name}</div>
@@ -1908,7 +2981,7 @@ export default function AutoDataFullScreenSetup({
                         : `Thời hạn gói hiện tại còn ${session.subscription.days_remaining} ngày — Gia hạn sớm cộng dồn trọn vẹn số ngày còn lại:`}
                     </div>
                     <div className="text-xs opacity-90 leading-relaxed">
-                      Gia hạn gói Lite từ <strong>{catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng</strong>{' '}
+                      Gia hạn gói Auto Data từ <strong>{catalog.base_monthly_price_vnd.toLocaleString('vi-VN')}₫/tháng</strong>{' '}
                       (mua năm <strong>tiết kiệm {catalog.annual_discount_pct}%</strong>) hoặc nâng cấp lên{' '}
                       <strong>Automation / CRM 360° / ERP 5.0</strong>.
                     </div>
@@ -1939,7 +3012,10 @@ export default function AutoDataFullScreenSetup({
               {/* TAB 1: REAL WEBHOOK & LIVE ROUTER TEST */}
               {workspaceTab === 'router' && (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
+                  <div
+                    data-tour="ws-webhook-panel"
+                    className="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 space-y-5"
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -1951,7 +3027,7 @@ export default function AutoDataFullScreenSetup({
                             label="Mã Apps Script"
                             webhookUrl={session.webhook_url}
                             saleEmail={session.admin_email}
-                            onOpenTour={onOpenTour}
+                            onOpenTour={openInAppTour}
                           />
                         </div>
                         <h3 className="text-lg font-bold text-slate-900">
@@ -1963,10 +3039,10 @@ export default function AutoDataFullScreenSetup({
                       </div>
                     </div>
 
-                    <div className="rounded-2xl bg-slate-900 text-slate-100 p-4 space-y-2.5">
-                      <div className="flex items-center justify-between gap-2 text-[11px] text-slate-400">
+                    <div className="rounded-2xl bg-slate-900 text-slate-100 p-3.5 sm:p-4 space-y-2.5">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
                         <span className="whitespace-nowrap">POST • JSON / FORM</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <button
                             type="button"
                             onClick={() => void copyAppsScriptCode()}
@@ -1989,12 +3065,16 @@ export default function AutoDataFullScreenSetup({
                       <div className="font-mono text-xs break-all text-blue-300">{session.webhook_url}</div>
                     </div>
 
-                    <form onSubmit={handleFireRealWebhookTest} className="space-y-3.5 pt-2 border-t border-slate-100">
+                    <form
+                      data-tour="ws-test-lead"
+                      onSubmit={handleFireRealWebhookTest}
+                      className="space-y-3.5 pt-2 border-t border-slate-100 rounded-2xl p-1"
+                    >
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                           Bắn thử Lead thật qua Auto Data Router
                         </span>
-                        <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={onOpenTour} />
+                        <AutoDataHelpTrigger topic="round_robin_formula" onOpenTour={openInAppTour} />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -2136,21 +3216,33 @@ export default function AutoDataFullScreenSetup({
               {workspaceTab === 'sale_port' && (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
+                    <div
+                      data-tour="ws-sale-port"
+                      className="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 space-y-5"
+                    >
                       <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 whitespace-nowrap">
-                            Bypass Vòng Chia • 0 Quota • Miễn SLA Recall
+                            Giỏ Riêng Độc Lập • 0 Quota
                           </span>
-                          <AutoDataHelpTrigger topic="sale_port_personal" onOpenTour={onOpenTour} />
+                          <AutoDataHelpTrigger topic="sale_port_personal" onOpenTour={openInAppTour} />
                         </div>
                         <h3 className="text-lg font-bold text-slate-900">
                           Cổng Sale Cá Nhân — Tự nhập / Import Data riêng
                         </h3>
                         <p className="text-xs text-slate-500 leading-relaxed">
-                          Khách hàng do chính Sale tự tìm kiếm sẽ đi thẳng vào giỏ riêng của Sale đó: không qua vòng chia chung, không tính vào quota nhận số Ads và không bị thu hồi SLA 15 phút.
+                          Khách hàng do chính Sale tự tìm kiếm sẽ đi thẳng vào giỏ riêng của Sale đó: không qua vòng chia chung và không tính vào quota nhận số Ads.
                         </p>
                       </div>
+
+                      <input
+                        ref={csvFileInputRef}
+                        type="file"
+                        accept=".csv,text/csv,.txt"
+                        onChange={(e) => void handleImportPersonalCsvFile(e)}
+                        data-testid="personal-csv-file-input"
+                        className="hidden"
+                      />
 
                       <form onSubmit={handleAddPersonalLead} className="space-y-3.5">
                         <div>
@@ -2160,8 +3252,8 @@ export default function AutoDataFullScreenSetup({
                             required
                             value={pLeadName}
                             onChange={(e) => setPLeadName(e.target.value)}
-                            placeholder="VD: Chị Lan Anh (Khách tự giới thiệu)"
-                            className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                            placeholder="Nhập họ tên đầy đủ của khách hàng cá nhân"
+                            className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                           />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2172,8 +3264,8 @@ export default function AutoDataFullScreenSetup({
                               required
                               value={pLeadPhone}
                               onChange={(e) => setPLeadPhone(e.target.value)}
-                              placeholder="0909123456"
-                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-mono"
+                              placeholder="Nhập số điện thoại liên hệ của khách"
+                              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                             />
                           </div>
                           <div>
@@ -2182,7 +3274,8 @@ export default function AutoDataFullScreenSetup({
                               type="text"
                               value={pLeadOwner}
                               onChange={(e) => setPLeadOwner(e.target.value)}
-                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                              placeholder="Nhập tên Sale giữ khách hàng này"
+                              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                             />
                           </div>
                         </div>
@@ -2193,7 +3286,8 @@ export default function AutoDataFullScreenSetup({
                               type="text"
                               value={pLeadInterest}
                               onChange={(e) => setPLeadInterest(e.target.value)}
-                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                              placeholder="Nhập sản phẩm hoặc dịch vụ khách cần"
+                              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                             />
                           </div>
                           <div>
@@ -2202,7 +3296,8 @@ export default function AutoDataFullScreenSetup({
                               type="text"
                               value={pLeadNote}
                               onChange={(e) => setPLeadNote(e.target.value)}
-                              className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm"
+                              placeholder="Nhập ghi chú lịch sử trao đổi riêng"
+                              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                             />
                           </div>
                         </div>
@@ -2215,32 +3310,52 @@ export default function AutoDataFullScreenSetup({
                           />
                           <span>Tự động đồng bộ 2 chiều sang Google Sheet cá nhân của Sale</span>
                         </label>
-                        <button
-                          type="submit"
-                          disabled={submitting}
-                          className="w-full rounded-xl bg-slate-900 hover:bg-blue-600 text-white py-3 px-5 text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
-                        >
-                          {submitting ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <PlusCircle className="w-4 h-4" />
-                          )}
-                          <span>Lưu Vào Giỏ Cá Nhân (Không Qua Vòng Chia)</span>
-                        </button>
+                        <div className="flex flex-col gap-2.5 pt-1">
+                          <button
+                            type="submit"
+                            disabled={submitting}
+                            className="btn-inkica-primary w-full py-3 px-3.5 sm:px-5 text-xs sm:text-sm cursor-pointer whitespace-nowrap disabled:opacity-60"
+                          >
+                            {submitting ? (
+                              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                            ) : (
+                              <PlusCircle className="w-4 h-4 shrink-0" />
+                            )}
+                            <span>Lưu Vào Giỏ Cá Nhân (Bypass Vòng Chia)</span>
+                          </button>
+                          <button
+                            type="button"
+                            disabled={submitting}
+                            onClick={() => csvFileInputRef.current?.click()}
+                            className="w-full rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-blue-800 py-2.5 px-3.5 sm:px-5 text-xs sm:text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap disabled:opacity-60"
+                          >
+                            <Upload className="w-4 h-4 shrink-0" />
+                            <span>Import Hàng Loạt Từ File CSV (.csv)</span>
+                          </button>
+                        </div>
                       </form>
                     </div>
 
-                    <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 space-y-5">
+                    <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 space-y-5">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <h3 className="text-lg font-bold text-slate-900">
                             Danh sách Lead Cá Nhân &amp; Đồng bộ Google Sheets 2 Chiều
                           </h3>
                           <p className="text-xs text-slate-500">
-                            Xuất file CSV chuẩn tiếng Việt hoặc sao chép mã Apps Script đồng bộ Sheet riêng cho từng Sale.
+                            Import/Xuất file CSV chuẩn tiếng Việt hoặc sao chép mã Apps Script đồng bộ Sheet riêng cho từng Sale.
                           </p>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                        <div className="flex flex-wrap items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            disabled={submitting}
+                            onClick={() => csvFileInputRef.current?.click()}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3.5 py-2 text-xs font-semibold text-blue-800 cursor-pointer whitespace-nowrap disabled:opacity-60"
+                          >
+                            <Upload className="w-3.5 h-3.5 shrink-0" />
+                            <span>Import CSV Riêng</span>
+                          </button>
                           <button
                             type="button"
                             onClick={handleDownloadPersonalCsv}
@@ -2278,7 +3393,7 @@ export default function AutoDataFullScreenSetup({
                                 {item.sale_owner_name}
                               </span>
                               <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 whitespace-nowrap">
-                                0 Quota • Miễn SLA Recall
+                                0 Quota • Giỏ Riêng Độc Lập
                               </span>
                             </div>
                           </div>
@@ -2297,7 +3412,7 @@ export default function AutoDataFullScreenSetup({
                           label="Xem mã Script"
                           webhookUrl={session.webhook_url}
                           saleEmail={session.admin_email}
-                          onOpenTour={onOpenTour}
+                          onOpenTour={openInAppTour}
                         />
                       </div>
                     </div>
@@ -2307,20 +3422,22 @@ export default function AutoDataFullScreenSetup({
 
               {/* TAB 3: OPTIONAL ZALO BOT A-Z GUIDE & LIVE CONNECTION VERIFICATION */}
               {workspaceTab === 'zalo_connect' && (
-                <AutoDataZaloBotGuide
-                  accessToken={session.access_token}
-                  tenantSlug={session.tenant_slug}
-                  savedZaloBot={session.zalo_bot}
-                  onVerified={(saved) =>
-                    onSessionChange({
-                      ...session,
-                      zalo_bot: saved,
-                    })
-                  }
-                  onFastSkip={() => setWorkspaceTab('router')}
-                  fastSkipLabel="Tùy chọn — Tạm bỏ qua & quay lại Webhook"
-                  onOpenTour={onOpenTour}
-                />
+                <div data-tour="ws-zalo-guide">
+                  <AutoDataZaloBotGuide
+                    accessToken={session.access_token}
+                    tenantSlug={session.tenant_slug}
+                    savedZaloBot={session.zalo_bot}
+                    onVerified={(saved) =>
+                      onSessionChange({
+                        ...session,
+                        zalo_bot: saved,
+                      })
+                    }
+                    onFastSkip={() => setWorkspaceTab('router')}
+                    fastSkipLabel="Tùy chọn — Tạm bỏ qua & quay lại Webhook"
+                    onOpenTour={openInAppTour}
+                  />
+                </div>
               )}
 
               {/* TAB 4: STEP RENEWAL PLANS & WALLET TOPUP */}
@@ -2365,14 +3482,17 @@ export default function AutoDataFullScreenSetup({
                     </div>
                   )}
 
-                  <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-6">
+                  <div
+                    data-tour="ws-billing-plans"
+                    className="bg-white rounded-3xl border border-slate-200 p-6 space-y-6"
+                  >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="text-lg font-bold text-slate-900">
                             Các gói gia hạn sau {catalog.trial_duration_months} tháng miễn phí
                           </h3>
-                          <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={onOpenTour} />
+                          <AutoDataHelpTrigger topic="billing_3m_900k" onOpenTour={openInAppTour} />
                         </div>
                         <p className="text-xs text-slate-500 mt-1">
                           Gia hạn sớm được cộng dồn trực tiếp vào số ngày dùng thử còn lại — không mất ngày nào.
@@ -2411,21 +3531,21 @@ export default function AutoDataFullScreenSetup({
                             key={plan.code}
                             className={`rounded-2xl border p-5 flex flex-col justify-between ${
                               plan.is_enterprise_upgrade
-                                ? 'bg-slate-900 text-white border-slate-900'
+                                ? 'bg-gradient-to-br from-blue-50/90 via-white to-cyan-50/70 text-slate-900 border-blue-300 shadow-sm'
                                 : 'bg-white text-slate-900 border-slate-200'
                             }`}
                           >
-                            <div className="space-y-3">
+                            <div data-tour="setup-router-algo" className="space-y-3 rounded-2xl p-1">
                               <div className="flex items-center justify-between gap-2">
-                                <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1E40FF] whitespace-nowrap">
                                   Step 0{plan.step_order}
                                 </span>
                                 {plan.badge && (
                                   <span
                                     className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap ${
                                       plan.is_enterprise_upgrade
-                                        ? 'bg-white/15 text-white'
-                                        : 'bg-blue-50 text-blue-700'
+                                        ? 'bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white'
+                                        : 'bg-blue-50 text-[#1E40FF]'
                                     }`}
                                   >
                                     {plan.badge}
@@ -2434,26 +3554,22 @@ export default function AutoDataFullScreenSetup({
                               </div>
                               <div className="text-base font-bold">{plan.name}</div>
                               <div>
-                                <span className="text-2xl font-extrabold font-mono">
+                                <span className="text-2xl font-extrabold font-mono text-slate-900">
                                   {perMonth.toLocaleString('vi-VN')}₫
                                 </span>
-                                <span className="text-xs opacity-70"> / tháng</span>
+                                <span className="text-xs text-slate-500"> / tháng</span>
                                 {billingCycle === 'annual' && (
-                                  <div
-                                    className={`text-[11px] font-semibold mt-0.5 ${
-                                      plan.is_enterprise_upgrade ? 'text-emerald-300' : 'text-emerald-700'
-                                    }`}
-                                  >
+                                  <div className="text-[11px] font-semibold mt-0.5 text-emerald-700">
                                     Cả năm: {plan.annual_total_vnd.toLocaleString('vi-VN')}₫ (Tiết kiệm{' '}
                                     {plan.annual_saved_vnd.toLocaleString('vi-VN')}₫)
                                   </div>
                                 )}
                               </div>
-                              <ul className="space-y-1.5 pt-2 border-t border-slate-200/20 text-xs">
+                              <ul className="space-y-1.5 pt-2 border-t border-slate-200/70 text-xs">
                                 {plan.features.slice(0, 4).map((f, i) => (
                                   <li key={i} className="flex items-start gap-2">
-                                    <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-500" />
-                                    <span className="opacity-90 leading-relaxed">{f}</span>
+                                    <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#1E40FF]" />
+                                    <span className="text-slate-700 leading-relaxed">{f}</span>
                                   </li>
                                 ))}
                               </ul>
@@ -2463,10 +3579,8 @@ export default function AutoDataFullScreenSetup({
                               type="button"
                               disabled={submitting}
                               onClick={() => void handleSubscribePlan(plan)}
-                              className={`mt-5 w-full rounded-xl py-2.5 px-4 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap ${
-                                plan.is_enterprise_upgrade
-                                  ? 'bg-white text-slate-900 hover:bg-blue-50'
-                                  : 'bg-slate-900 text-white hover:bg-blue-600'
+                              className={`mt-5 w-full py-2.5 px-4 text-xs font-bold cursor-pointer whitespace-nowrap ${
+                                plan.is_enterprise_upgrade ? 'btn-inkica-primary' : 'ql-btn-outline'
                               }`}
                             >
                               {session.subscription.wallet_balance_vnd >= totalPayable
@@ -2559,7 +3673,7 @@ export default function AutoDataFullScreenSetup({
                 </div>
               )}
 
-              {/* TAB 5: UPGRADE FROM LITE TO AUTOMATION / FULL CRM 360 / ENTERPRISE ERP 5.0 */}
+              {/* TAB 5: UPGRADE TO AUTOMATION / FULL CRM 360 / ENTERPRISE ERP 5.0 */}
               {workspaceTab === 'crm_erp' && (
                 <form
                   onSubmit={handleRequestCrmErpUpgrade}
@@ -2569,10 +3683,10 @@ export default function AutoDataFullScreenSetup({
                     <div className="space-y-1.5 max-w-xl">
                       <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600">
                         <Sparkles className="w-4 h-4 shrink-0" />
-                        <span>LỘ TRÌNH NÂNG CẤP TỪ BẢN LITE (/DATA)</span>
+                        <span>LỘ TRÌNH MỞ RỘNG HỆ SINH THÁI DOMATION</span>
                       </div>
                       <h3 className="text-xl font-bold text-slate-900 leading-snug">
-                        Mở rộng từ Bản Lite Chia Data lên Marketing Automation, Full CRM 360° &amp; ERP 5.0
+                        Mở rộng lên Marketing Automation, Full CRM 360° &amp; ERP 5.0
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                         Giữ nguyên 100% danh sách Lead công ty, dữ liệu Cổng Sale cá nhân, cấu trúc nhân sự và cổng Webhook đang chạy.
@@ -2619,7 +3733,7 @@ export default function AutoDataFullScreenSetup({
                       {
                         id: 'crm' as const,
                         title: 'Full DOMATION CRM 360° (/crm)',
-                        desc: 'Quản trị phễu Kanban 8 nấc chuyên sâu, CSKH đa điểm chạm, Báo giá, Hợp đồng & Hóa đơn MISA.',
+                        desc: 'Quản trị phễu Kanban 8 nấc chuyên sâu, CSKH đa điểm chạm, Báo giá, Hợp đồng & Hóa đơn điện tử.',
                       },
                       {
                         id: 'erp' as const,
@@ -2658,8 +3772,8 @@ export default function AutoDataFullScreenSetup({
                         required
                         value={upgradePhone}
                         onChange={(e) => setUpgradePhone(e.target.value)}
-                        placeholder="0912345678"
-                        className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm"
+                        placeholder="Nhập số điện thoại người phụ trách nhận tư vấn"
+                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                       />
                     </div>
                     <div>
@@ -2668,8 +3782,8 @@ export default function AutoDataFullScreenSetup({
                         type="text"
                         value={upgradeNote}
                         onChange={(e) => setUpgradeNote(e.target.value)}
-                        placeholder="VD: Đồng bộ 35 nhân sự Sale + Automation CSKH"
-                        className="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm"
+                        placeholder="Nhập số lượng nhân sự và phân hệ cần mở rộng"
+                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                       />
                     </div>
                   </div>
@@ -2677,7 +3791,7 @@ export default function AutoDataFullScreenSetup({
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="rounded-xl bg-slate-900 text-white px-6 py-3 text-sm font-semibold hover:bg-blue-600 transition-colors inline-flex items-center gap-2 cursor-pointer whitespace-nowrap"
+                    className="btn-inkica-primary px-6 py-3 text-sm cursor-pointer whitespace-nowrap"
                   >
                     {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                     <span>Gửi Yêu Cầu Nâng Cấp Hệ Sinh Thái</span>
@@ -2690,35 +3804,35 @@ export default function AutoDataFullScreenSetup({
       </div>
 
       {/* Sticky Bottom Action Bar for 3-Step Registration Wizard — With Fast-Skip CTA */}
-      {!session && authMode === 'register' && (
-        <footer className="shrink-0 border-t border-slate-200 bg-white px-4 sm:px-8 py-3.5">
-          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <div className="flex items-center justify-between sm:justify-start gap-3">
+      {!session && authMode === 'register' && !authDiscovery && (
+        <footer className="relative z-10 shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-8 py-3">
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="flex items-center justify-between md:justify-start gap-3">
               {step > 1 ? (
                 <button
                   type="button"
                   onClick={() => setStep((s) => (s === 3 ? 2 : 1))}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer whitespace-nowrap"
+                  className="ql-btn-outline px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
                 >
                   <ArrowLeft className="w-4 h-4 shrink-0" />
                   <span>Quay lại</span>
                 </button>
               ) : (
-                <span className="text-xs text-slate-500 hidden md:inline whitespace-nowrap">
-                  Bước 1/3 (Bắt buộc) • Mặc định chia cho từng Sale nội bộ
+                <span className="text-xs font-medium text-slate-500 hidden xl:inline whitespace-nowrap">
+                  Bước 1/3
                 </span>
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-end gap-2 sm:gap-2.5">
               {/* Fast-Skip Optional Steps CTA */}
               <button
                 type="button"
                 disabled={submitting}
                 onClick={() => void handleRegisterSubmit(true)}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors cursor-pointer whitespace-nowrap disabled:opacity-60"
+                className="ql-btn-outline px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap disabled:opacity-60"
               >
-                <span>Tùy chọn — Tạm bỏ qua &amp; vào setup ngay</span>
+                <span>Bỏ qua &amp; vào ngay</span>
               </button>
 
               {step < 3 ? (
@@ -2729,9 +3843,9 @@ export default function AutoDataFullScreenSetup({
                     setErrorMsg(null);
                     setStep((s) => (s === 1 ? 2 : 3));
                   }}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-600 transition-colors cursor-pointer whitespace-nowrap"
+                  className="btn-inkica-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
                 >
-                  <span>Tiếp theo ({step === 1 ? 'Tùy chọn Chia Vòng' : 'Tùy chọn Kênh'})</span>
+                  <span>Tiếp theo</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               ) : (
@@ -2739,20 +3853,143 @@ export default function AutoDataFullScreenSetup({
                   type="button"
                   disabled={submitting}
                   onClick={() => void handleRegisterSubmit(false)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-700 transition-colors cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                  className="btn-inkica-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin shrink-0" />
                   ) : (
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
                   )}
-                  <span>Kích Hoạt ({catalog.trial_duration_months} Tháng Miễn Phí)</span>
+                  <span>Kích hoạt ngay</span>
                 </button>
               )}
             </div>
           </div>
         </footer>
       )}
+
+      {/* GOOGLE ACCOUNT CHOOSER OVERLAY (WHEN GOOGLE_CLIENT_ID IS NOT CONFIGURED ON LOCAL/PREVIEW) */}
+      {googleModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Chọn tài khoản Google"
+          className="fixed inset-0 z-[135] bg-slate-900/45 backdrop-blur-xs flex items-center justify-center p-4"
+        >
+          <div className="w-full max-w-md rounded-3xl bg-white border border-slate-200 shadow-2xl p-6 sm:p-7 space-y-5">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+                  <GoogleLogoMark className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">Đăng nhập bằng Google</h3>
+                  <p className="text-xs text-slate-500">
+                    Chọn tài khoản để tự động mở các Workspace của bạn
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setGoogleModalOpen(false)}
+                aria-label="Đóng chọn tài khoản Google"
+                className="rounded-full p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {recentGoogleAccounts.length > 0 && (
+              <div className="space-y-2">
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                  Tài khoản gần đây trên trình duyệt
+                </div>
+                <div className="space-y-1.5 max-h-44 overflow-y-auto">
+                  {recentGoogleAccounts.map((acc) => (
+                    <button
+                      key={acc.email}
+                      type="button"
+                      disabled={googleLoading}
+                      onClick={() =>
+                        void executeGoogleLogin({
+                          dev_google_email: acc.email,
+                          dev_google_name: acc.full_name,
+                        })
+                      }
+                      className="w-full rounded-2xl border border-slate-200 hover:border-[#1E40FF] hover:bg-blue-50/50 px-3.5 py-2.5 flex items-center justify-between gap-3 transition-all cursor-pointer text-left disabled:opacity-60"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                          {acc.full_name.slice(0, 1).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-slate-900 truncate">{acc.full_name}</div>
+                          <div className="text-[11px] text-slate-500 truncate">{acc.email}</div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void executeGoogleLogin({
+                  dev_google_email: googleInputEmail.trim(),
+                  dev_google_name: googleInputName.trim() || undefined,
+                });
+              }}
+              className="space-y-3 pt-2 border-t border-slate-100"
+            >
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                {recentGoogleAccounts.length > 0
+                  ? 'Hoặc dùng tài khoản Google khác'
+                  : 'Nhập tài khoản Google / Gmail công việc'}
+              </div>
+              <div className="space-y-1.5">
+                <input
+                  type="email"
+                  required
+                  value={googleInputEmail}
+                  onChange={(e) => setGoogleInputEmail(e.target.value)}
+                  placeholder="tenban@gmail.com hoặc email Google Workspace"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <input
+                  type="text"
+                  value={googleInputName}
+                  onChange={(e) => setGoogleInputName(e.target.value)}
+                  placeholder="Họ và tên hiển thị (tùy chọn)"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={googleLoading}
+                className="btn-inkica-primary w-full py-2.5 px-4 text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
+              >
+                {googleLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleLogoMark className="w-4 h-4" />}
+                <span>Tiếp tục với Google</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* IN-APP SPOTLIGHT HIGHLIGHT + FLOATING COACHMARK TOUR */}
+      <AutoDataSpotlightTour
+        open={open && tourOpen}
+        steps={activeTourSteps}
+        activeStepIndex={tourStepIdx}
+        onStepChange={handleTourStepChange}
+        onClose={() => setTourOpen(false)}
+        onFinish={() => setTourOpen(false)}
+      />
     </div>
   );
 }

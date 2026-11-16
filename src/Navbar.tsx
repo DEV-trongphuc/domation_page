@@ -28,6 +28,7 @@ export interface NavbarProps {
     | 'ideas';
   onOpenContact?: () => void;
   onOpenShowcase?: () => void;
+  contactLabel?: string;
 }
 
 const HOME_ANCHORS = [
@@ -56,8 +57,8 @@ const ECOSYSTEM_ROUTES = [
   {
     id: 'crm',
     href: '/crm',
-    label: 'CRM 360° & MISA',
-    desc: 'Kanban 8 nấc & hóa đơn MISA',
+    label: 'CRM 360°',
+    desc: 'Kanban 8 nấc & hóa đơn điện tử',
     icon: Layers,
   },
   {
@@ -87,6 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activePage = 'home',
   onOpenContact,
   onOpenShowcase,
+  contactLabel = 'Tư Vấn Ngay',
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -252,7 +254,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="btn-inkica-primary px-3 sm:px-4 py-2 text-[11px] sm:text-xs cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-cyan-200" />
-              <span>Tư Vấn Ngay</span>
+              <span>{contactLabel}</span>
             </button>
 
             <button

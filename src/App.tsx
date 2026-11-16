@@ -652,7 +652,7 @@ const Landing: React.FC = () => {
                             { name: 'Meta Messenger', icon: LOGOS.meta },
                             { name: 'Google Sheets', icon: 'https://mailmeteor.com/logos/assets/PNG/Google_Sheets_Logo_512px.png' },
                             { name: 'Gemini AI', icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Google_Gemini_icon_2025.svg/250px-Google_Gemini_icon_2025.svg.png' },
-                            { name: 'MISA CRM', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlIpztniIEN5ZYvLlwwqBvhzdodvu2NfPSbg&s' }
+                            { name: 'DOMATION CRM', icon: '/domation-logo.svg' }
                         ].map((plat) => (
                             <div key={plat.name} className="flex items-center gap-2 hover:-translate-y-0.5 transition-transform duration-300">
                                 <img loading="lazy" decoding="async" src={plat.icon} alt={plat.name} className="h-7 md:h-8 object-contain rounded-md" />
@@ -1702,6 +1702,20 @@ const Landing: React.FC = () => {
                             </div>
                         ))}
                     </div>
+                </div>
+                <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+                    <span>© {new Date().getFullYear()} DOMATION.NET • Marketing Automation.</span>
+                    <span>
+                        Powered by{' '}
+                        <a
+                            href="https://turnio.vercel.app/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#1E40FF] hover:underline font-semibold"
+                        >
+                            Turnio DEV
+                        </a>
+                    </span>
                 </div>
             </footer>
 

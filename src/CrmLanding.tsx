@@ -215,7 +215,7 @@ export const CrmLanding: React.FC = () => {
               className="ql-eyebrow mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              ENTERPRISE CRM &amp; MISA SYNC
+              ENTERPRISE CRM 360° &amp; QUẢN TRỊ BÁN HÀNG
             </motion.div>
 
             <motion.h1
@@ -235,7 +235,7 @@ export const CrmLanding: React.FC = () => {
               className="text-slate-600 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-9 font-medium"
             >
               Số hóa toàn diện quy trình làm việc. Từ Sales Pipeline 8 nấc, quản lý khách hàng (CRM), tồn kho (Inventory)
-              đến đồng bộ hóa đơn MISA &amp; Ticket hỗ trợ trên một nền tảng duy nhất.
+              đến đồng bộ hóa đơn chứng từ &amp; Ticket hỗ trợ trên một nền tảng duy nhất.
             </motion.p>
 
             <motion.div
@@ -333,7 +333,7 @@ export const CrmLanding: React.FC = () => {
                   </p>
                   <ul className="space-y-3.5">
                     {[
-                      'Tự động tạo báo giá (Quotes) & hóa đơn MISA chuyên nghiệp trong 2 click',
+                      'Tự động tạo báo giá (Quotes) & hóa đơn điện tử chuyên nghiệp trong 2 click',
                       'Kết nối trực tiếp Contact và Company vào mỗi Deal',
                       'Nhắc nhở tự động khi có Deal đến hạn (Deadlines)',
                     ].map((pain, idx) => (
@@ -548,7 +548,7 @@ export const CrmLanding: React.FC = () => {
                     {[
                       'Mọi tính năng của Starter',
                       'Quản lý Sản phẩm & Tồn kho',
-                      'Tạo Báo giá (Quotes) & Hóa đơn MISA',
+                      'Tạo Báo giá (Quotes) & Hóa đơn điện tử',
                       'Quản lý Support Tickets',
                       'Dashboard phân tích chi tiết',
                       'Phân quyền Role đa cấp độ',
@@ -612,6 +612,17 @@ export const CrmLanding: React.FC = () => {
         </div>
         <p className="text-slate-500 text-xs font-medium">
           © {new Date().getFullYear()} DOMATION.NET • Nền tảng số hóa doanh nghiệp toàn diện.
+        </p>
+        <p className="text-slate-400 text-[11px] mt-1.5">
+          Powered by{' '}
+          <a
+            href="https://turnio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#1E40FF] hover:underline font-semibold"
+          >
+            Turnio DEV
+          </a>
         </p>
       </footer>
 

@@ -98,7 +98,7 @@ export interface MultiAgentNode {
 
 export interface CoreOperationPillar {
   id: 'erp' | 'crm-flow' | 'data-capi' | 'web-brand';
-  step: string;
+  pillarTag: string;
   tabLabel: string;
   eyebrow: string;
   title: string;
@@ -165,7 +165,7 @@ export const MULTI_AGENT_NODES: MultiAgentNode[] = [
 export const CORE_OPERATION_PILLARS: CoreOperationPillar[] = [
   {
     id: 'erp',
-    step: '01',
+    pillarTag: 'TRỤ CỘT NỘI BỘ',
     tabLabel: 'Vận Hành ERP 5.0',
     eyebrow: 'QUẢN TRỊ NỘI BỘ MAY ĐO',
     title: 'Task Kanban, Nhân Sự GPS &',
@@ -180,14 +180,14 @@ export const CORE_OPERATION_PILLARS: CoreOperationPillar[] = [
   },
   {
     id: 'crm-flow',
-    step: '02',
+    pillarTag: 'TRỤ CỘT CHĂM SÓC',
     tabLabel: 'CRM & Flow Rẽ Nhánh',
     eyebrow: 'CHĂM SÓC & NUÔI DƯỠNG TỰ ĐỘNG',
     title: 'Phễu CRM 360° & Kịch Bản',
     accent: 'Điều Kiện IF / ELSE',
     summary:
-      'Thiết kế bước phễu bán hàng sát thực tế, tự động rẽ nhánh chăm sóc qua Email SES và Zalo ZNS theo hành vi mở mail, bấm link và đồng bộ kế toán MISA.',
-    keyTags: ['Pipeline Bán Hàng Riêng', 'Flow Rẽ Nhánh IF / ELSE', 'Đồng Bộ Hóa Đơn MISA'],
+      'Thiết kế bước phễu bán hàng sát thực tế, tự động rẽ nhánh chăm sóc qua Email SES và Zalo ZNS theo hành vi mở mail, bấm link và đồng bộ hóa đơn bán hàng.',
+    keyTags: ['Pipeline Bán Hàng Riêng', 'Flow Rẽ Nhánh IF / ELSE', 'Đồng Bộ Hóa Đơn Điện Tử'],
     image: '/imgs/enterprise/sol-flow-branching.webp',
     inspectionTab: 'autoflow',
     routeUrl: '/crm',
@@ -195,14 +195,14 @@ export const CORE_OPERATION_PILLARS: CoreOperationPillar[] = [
   },
   {
     id: 'data-capi',
-    step: '03',
+    pillarTag: 'TRỤ CỘT TĂNG TRƯỞNG',
     tabLabel: 'Auto Data & Ads BI',
     eyebrow: 'PHÂN BỔ LEAD & ĐO LƯỜNG ROI',
     title: 'Chia Data Dưới 5 Giây &',
     accent: 'Meta CAPI HTTP 200',
     summary:
-      'Thu nhận khách hàng đa nguồn, lọc trùng 6 tháng, chia vòng công bằng qua ZaloBot và đối chiếu ngân sách quảng cáo với doanh thu thực tế.',
-    keyTags: ['Chia Số ZaloBot < 5s', 'Meta CAPI Chuẩn SHA-256', 'Báo Cáo ROI Realtime'],
+      'Thu nhận khách hàng đa nguồn, lọc trùng 6 tháng, chia vòng công bằng qua ZaloBot & Telegram Bot, đối chiếu ngân sách quảng cáo với doanh thu thực tế.',
+    keyTags: ['ZaloBot & Telegram < 5s', 'Meta CAPI Chuẩn SHA-256', 'Báo Cáo ROI Realtime'],
     image: '/imgs/enterprise/sol-data-capi.webp',
     inspectionTab: 'data-capi',
     routeUrl: '/data',
@@ -210,7 +210,7 @@ export const CORE_OPERATION_PILLARS: CoreOperationPillar[] = [
   },
   {
     id: 'web-brand',
-    step: '04',
+    pillarTag: 'TRỤ CỘT HIỆN DIỆN SỐ',
     tabLabel: 'Website Thương Hiệu',
     eyebrow: 'KHÔNG GIAN SỐ CHUYỂN ĐỔI CAO',
     title: 'Website Thiết Kế Riêng &',
@@ -237,8 +237,8 @@ export const COMPANY_STRENGTHS: CompanyStrength[] = [
   {
     num: '02',
     title: 'CRM Chăm Sóc & Auto Chia Data',
-    subtitle: 'Pipeline 8 Nấc • ZaloBot < 5s • MISA',
-    desc: 'Phễu chăm sóc khách hàng 360°, chia số Round-Robin 5 cổng qua ZaloBot và đồng bộ kế toán MISA.',
+    subtitle: 'Pipeline 8 Nấc • ZaloBot & Telegram < 5s • CRM 360°',
+    desc: 'Phễu chăm sóc khách hàng 360°, chia số Round-Robin 5 cổng qua ZaloBot & Telegram và đồng bộ doanh thu bán hàng.',
     metric: 'Chia Data < 5s • Meta CAPI 200',
     decorImg: DECOR_PNGS.funnel,
   },
@@ -321,7 +321,7 @@ export const OPERATIONAL_HIGHLIGHT_TRACKS: OperationalHighlightTrack[] = [
     highlights: [
       'Setup AI Training từ PDF bảng giá, hợp đồng & quy trình doanh nghiệp',
       'AI Space phân quyền riêng cho Sales, Marketing, HR & CSKH 24/7',
-      'Kết nối đa kênh: Website Live Chat, ZaloBot, Zalo OA & Facebook Messenger',
+      'Kết nối đa kênh: Website Live Chat, ZaloBot, Telegram Bot, Zalo OA & Facebook Messenger',
       'Đồng bộ kịch bản phản hồi sang Zalo ZNS & Email giao dịch tự động',
     ],
   },
@@ -335,14 +335,14 @@ export const SOLUTION_PILLARS: SolutionPillar[] = [
     title: 'Auto Chia Data &',
     editorialAccent: 'Meta CAPI HTTP 200',
     summary:
-      'Thu Lead tức thì, lọc trùng 6 tháng, chia đều qua ZaloBot < 5s và phản hồi Meta CAPI 24/7.',
+      'Thu Lead tức thì, lọc trùng 6 tháng, chia đều qua ZaloBot & Telegram Bot < 5s và phản hồi Meta CAPI 24/7.',
     illustration: '/imgs/enterprise/sol-data-capi.webp',
     decorPng: DECOR_PNGS.funnel,
     highlights: [
       'Round-Robin 5 cổng & Van chống ôm Lead quá 2 phút',
       'Bắn Meta CAPI cả Qualified & Notlead chuẩn SHA-256',
       'Đối soát bù Ticket lỗi giữa các Sàn F1 minh bạch',
-      'Báo cáo Zalo Bot cuối ngày tự động cho Quản lý',
+      'Báo cáo ZaloBot & Telegram cuối ngày tự động cho Quản lý',
     ],
     routeUrl: '/data',
     liveDemoUrl: 'https://ideas-data.vercel.app/demo',
@@ -371,17 +371,17 @@ export const SOLUTION_PILLARS: SolutionPillar[] = [
   {
     id: 'crm',
     num: '03',
-    badge: 'CRM 360° & MISA',
+    badge: 'CRM 360° & BÁN HÀNG',
     title: 'CRM Chăm Sóc &',
-    editorialAccent: 'Đồng Bộ Kế Toán MISA',
+    editorialAccent: 'Quản Trị Bán Hàng 360°',
     summary:
-      'Pipeline Kanban 8 nấc, Hồ sơ 360°, Giỏ hàng real-time và xuất hóa đơn thẳng MISA.',
+      'Pipeline Kanban 8 nấc, Hồ sơ 360°, Giỏ hàng real-time và xuất hóa đơn bán hàng.',
     illustration: '/imgs/enterprise/sol-crm-misa.webp',
     decorPng: DECOR_PNGS.prism,
     highlights: [
       'Pipeline Kanban 8 nấc từ Tiếp nhận đến Booking & Đặt cọc',
       'Giỏ hàng sản phẩm live & Hợp tác số chia hoa hồng 100%',
-      'Đồng bộ dữ liệu 2 chiều sang hệ thống kế toán MISA',
+      'Đồng bộ dữ liệu 2 chiều qua Webhook & hệ thống hóa đơn điện tử',
       'Nhắc việc tự động, ma trận nhiệt độ & rào cản chống sót Lead',
     ],
     routeUrl: '/crm',
@@ -396,14 +396,14 @@ export const SOLUTION_PILLARS: SolutionPillar[] = [
     title: 'Marketing Flow Rẽ Nhánh &',
     editorialAccent: 'AI Training Đa Kênh',
     summary:
-      'Kịch bản Email SES & ZNS rẽ nhánh IF/ELSE theo điều kiện hành vi; Chatbot AI kết nối Web, ZaloBot, OA, Mess, Mail.',
+      'Kịch bản Email SES & ZNS rẽ nhánh IF/ELSE theo điều kiện hành vi; Chatbot AI kết nối Web, ZaloBot, Telegram, OA, Mess, Mail.',
     illustration: '/imgs/enterprise/sol-flow-branching.webp',
     decorPng: DECOR_PNGS.torus,
     highlights: [
       'Flow Builder rẽ nhánh IF / ELSE & Condition theo click/scroll/score',
       'Email Drag & Drop Amazon SES (98% Inbox) + Zalo ZNS + Voucher Hub',
       'Setup AI Training từ PDF bảng giá, kịch bản & chính sách nội bộ',
-      'AI Chatbot kết nối trực tiếp Website, ZaloBot, Zalo OA, Mess, ZNS & Mail',
+      'AI Chatbot kết nối trực tiếp Website, ZaloBot, Telegram, Zalo OA, Mess & Mail',
     ],
     routeUrl: '/automation',
     screenCountLabel: 'Xem 9 màn hình Automation',
@@ -469,7 +469,7 @@ export const ECOSYSTEM_18_MODULES = [
   { id: 'crm-360', group: 'CRM & ERP', name: 'CRM Chăm Sóc 8 Nấc', tag: 'Pipeline', desc: 'Pipeline 360°, giỏ hàng live & chống sót Lead.' },
   { id: 'erp-suite', group: 'CRM & ERP', name: 'ERP Task & Phê Duyệt', tag: 'ERP 5.0', desc: 'Task Kanban, KPI & duyệt đơn từ/chi phí đa cấp.' },
   { id: 'gps-payroll', group: 'CRM & ERP', name: 'Nhân Sự GPS & Payroll', tag: 'HRM', desc: 'Chấm công GPS Selfie AI & xuất phiếu lương PDF.' },
-  { id: 'api-triggers', group: 'CRM & ERP', name: 'MISA & Webhook 2 Chiều', tag: 'Sync', desc: 'Đồng bộ hóa đơn MISA, Sheets & hệ ngoại vi.' },
+  { id: 'api-triggers', group: 'CRM & ERP', name: 'Hóa đơn ĐT & Webhook 2 Chiều', tag: 'Sync', desc: 'Đồng bộ hóa đơn điện tử, Sheets & hệ ngoại vi.' },
 
   { id: 'ai-training', group: 'AI & Web 3D', name: 'Setup AI Training PDF', tag: 'Knowledge', desc: 'Nạp PDF bảng giá, quy trình & tri thức nội bộ.' },
   { id: 'ai-space', group: 'AI & Web 3D', name: 'AI Chatbot Đa Kênh', tag: '24/7 Bot', desc: 'Trợ lý AI kết nối Web, ZaloBot, OA, Mess, ZNS & Mail.' },
@@ -664,8 +664,8 @@ export const MODAL_SCREEN_GALLERIES: Record<
     ],
   },
   crm: {
-    title: 'DOMATION CRM 360° & Đồng Bộ MISA — 10 Màn Hình',
-    subtitle: 'Trọn bộ giao diện Sales Pipeline Kanban, Hồ sơ 360°, Giỏ hàng live, Hóa đơn & Kết nối kế toán MISA.',
+    title: 'DOMATION CRM 360° & Quản Trị Bán Hàng — 10 Màn Hình',
+    subtitle: 'Trọn bộ giao diện Sales Pipeline Kanban, Hồ sơ 360°, Giỏ hàng live, Hóa đơn & Chăm sóc khách hàng.',
     liveUrl: 'https://crm-domation.vercel.app/',
     liveLabel: 'Mở Demo CRM 4.0',
     items: [
@@ -678,7 +678,7 @@ export const MODAL_SCREEN_GALLERIES: Record<
       { src: '/assets/domation/crm_7.webp', badge: 'CRM #07', title: 'Lọc Trùng Số Điện Thoại Đa Chiến Dịch', desc: 'Chống xung đột data giữa các nhóm Sales và chi nhánh.' },
       { src: '/assets/domation/crm_8.webp', badge: 'CRM #08', title: 'Đồng Bộ Webhook Hai Chiều CRM <-> Meta', desc: 'Phản hồi tự động trạng thái Thiện chí / Chốt đơn sang Meta CAPI.' },
       { src: '/assets/domation/crm_9.webp', badge: 'CRM #09', title: 'Quản Trị Giỏ Hàng & Chính Sách Bán Hàng', desc: 'Cập nhật rổ hàng căn hộ / dịch vụ và chiết khấu theo thời gian thực.' },
-      { src: '/assets/domation/crm_10.webp', badge: 'CRM #10', title: 'Lịch Sử Tương Tác & Kết Nối MISA', desc: 'Xuất hóa đơn và đồng bộ chứng từ về phần mềm kế toán MISA.' },
+      { src: '/assets/domation/crm_10.webp', badge: 'CRM #10', title: 'Lịch Sử Tương Tác & Kết Nối Hóa Đơn', desc: 'Xuất hóa đơn và đồng bộ chứng từ doanh thu bán hàng tức thì.' },
     ],
   },
   autoflow: {
@@ -776,7 +776,7 @@ export const CASE_STUDY_SPOTLIGHTS: CaseStudySpotlightItem[] = [
   },
   {
     id: 'ideas',
-    company: 'IDEAS Institute',
+    company: 'IDEAS Business',
     sector: 'Giáo Dục Sau Đại Học • MBA Quốc Tế',
     logo: '/assets/partners/logo_ideas.webp',
     result: '+300% Quy Mô',
@@ -838,6 +838,17 @@ export const FLAGSHIP_PARTNERS: FlagshipPartner[] = [
     badge: 'AI.INKICA.COM',
     metrics: ['6 AI Prepress Agents', '208 SKU AOP 3D'],
   },
+  {
+    id: 'ideas-business',
+    name: 'IDEAS Business',
+    role: 'ĐỐI TÁC GIÁO DỤC • MULTI-AGENT AI',
+    subtitle:
+      'Vận hành hệ thống Multi-Agent AI phối hợp xuyên suốt cùng ERP 5.0, CRM tuyển sinh và tự động chia vòng Lead cho đội ngũ tư vấn.',
+    logo: '/assets/partners/logo_ideas.webp',
+    url: 'https://ideas.edu.vn/mba',
+    badge: 'IDEAS.EDU.VN • MULTI-AGENT',
+    metrics: ['Multi-Agent AI 24/7', 'ERP 5.0 & CRM'],
+  },
 ];
 
 export const F1_AGENCY_PARTNERS: F1AgencyPartner[] = [
@@ -888,7 +899,7 @@ export const ECOSYSTEM_PARTNERS: EcosystemBrand[] = [
   { name: 'VTCI Edu', image: '/assets/partners/partner_vtciedu.webp', website: 'https://vtc.edu.vn/', industry: 'Education / Training' },
   { name: 'College de Paris', image: '/assets/partners/partner_collegedeparis.webp', website: 'https://collegedeparis.vn/', industry: 'Education / University' },
   { name: 'Swiss UMEF', image: '/assets/partners/partner_swissumef.webp', website: 'https://www.umef.ch/', industry: 'Education / University' },
-  { name: 'IDEAS Institute', image: '/assets/partners/partner_ideasinstitute.webp', website: 'https://ideas.edu.vn/', industry: 'Education / Research' },
+  { name: 'IDEAS Business', image: '/assets/partners/partner_ideasinstitute.webp', website: 'https://ideas.edu.vn/', industry: 'Education / Research' },
   { name: 'Navastore', image: '/assets/partners/partner_navastore.webp', website: 'https://navastore.vn/', industry: 'Retail / Ecommerce' },
   { name: 'Nha khoa Flora', image: '/assets/partners/partner_flora.webp', website: 'https://nhakhoaflora.com', industry: 'Dental / Clinic' },
   { name: 'Brandson', image: '/assets/partners/partner_brandson.webp', website: 'https://brandson.vn', industry: 'Branding / Agency' },
@@ -933,7 +944,7 @@ export const DOMATION_SAAS_PLANS = [
     popular: true,
     features: [
       'Thiết kế riêng ERP 5.0, cấp phê duyệt & phễu CRM đặc thù',
-      'Hệ Multi-Agent liên phòng ban & tích hợp API / MISA / CAPI',
+      'Hệ Multi-Agent liên phòng ban & tích hợp API / Webhook / CAPI',
       'Hạ tầng Server riêng biệt, phân quyền RLS & cam kết SLA 99.9%',
     ],
   },

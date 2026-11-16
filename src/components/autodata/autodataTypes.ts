@@ -10,6 +10,8 @@ export interface ClientBillingPlan {
   annual_total_vnd: number;
   annual_monthly_equivalent_vnd: number;
   annual_saved_vnd: number;
+  max_sales?: number;
+  max_managers?: number;
   max_users: number;
   max_rounds: number;
   monthly_lead_quota: number;
@@ -116,11 +118,35 @@ export interface PersonalSaleLeadItem {
   created_at: string;
 }
 
+export interface WorkspaceSummaryItem {
+  slug: string;
+  company_name: string;
+  industry: string;
+  plan_tier: 'starter' | 'growth' | 'enterprise';
+  plan_name: string;
+  role: string;
+  days_remaining: number;
+  is_in_trial: boolean;
+  is_expired: boolean;
+  is_external_agency?: boolean;
+  selected_channels?: string[];
+  created_at?: string;
+}
+
+export interface AuthenticatedAccountUser {
+  email: string;
+  full_name: string;
+  avatar_url?: string | null;
+  auth_provider: 'password' | 'google';
+}
+
 export interface ClientSessionState {
   access_token: string;
   tenant_slug: string;
   company_name: string;
   admin_email: string;
+  user_name?: string;
+  auth_provider?: 'password' | 'google';
   webhook_url: string;
   webhook_token: string;
   is_external_agency?: boolean;
@@ -128,6 +154,7 @@ export interface ClientSessionState {
   bridge_mode: 'upstream_rls_postgres' | 'vercel_serverless_engine';
   upstream_app_url: string | null;
   subscription: ClientSubscriptionSnapshot;
+  workspaces?: WorkspaceSummaryItem[];
 }
 
 export type SetupModalIntent =
@@ -161,21 +188,47 @@ export interface CookieConsentPreferences {
 
 export const COOKIE_CONSENT_STORAGE_KEY = 'domation_cookie_consent_v1';
 
+export interface PersonalLeadImportDraft {
+  name: string;
+  phone: string;
+  sale_owner_name?: string;
+  product_interest?: string;
+  note?: string;
+}
+
 export function buildGoogleAppsScriptSnippet(webhookUrl?: string, saleEmail?: string): string {
   const targetUrl =
     webhookUrl && webhookUrl.trim().length > 0
       ? webhookUrl.trim()
       : 'https://domation.net/api/autodata?action=webhook-test&slug=ten-cong-ty&token=whsec_xxx';
   const ownerHint = saleEmail && saleEmail.trim().length > 0 ? saleEmail.trim() : 'sale01@doanhnghiep.vn';
+  const safeUrlLiteral = JSON.stringify(targetUrl);
+  const safeOwnerLiteral = JSON.stringify(ownerHint);
 
   return `/**
- * DOMATION Auto Data — Google Apps Script Đồng Bộ 2 Chiều (Inbound Lead & Per-Sale Sheet Sync)
- * Hướng dẫn: Mở Google Sheet -> Tiện ích mở rộng -> Apps Script -> Dán mã -> Lưu & Cài Trigger onEdit / onFormSubmit
+ * DOMATION Auto Data — Google Apps Script Đồng Bộ 2 Chiều (Auto Data <-> Google Sheet Riêng Từng Sale)
+ * Hướng dẫn: Mở Google Sheet -> Tiện ích mở rộng -> Apps Script -> Dán mã -> Triển khai Web App (doPost) & Cài Trigger onEdit / onFormSubmit
  */
-const DOMATION_WEBHOOK_URL = '${targetUrl}';
-const SALE_OWNER_EMAIL = '${ownerHint}';
+const DOMATION_WEBHOOK_URL = ${safeUrlLiteral};
+const SALE_OWNER_EMAIL = ${safeOwnerLiteral};
 
-// Chiều 1: Tự động bắn dòng Lead mới từ Google Form / Sheet vào Auto Data Router (< 4s)
+// Chiều 1 (Auto Data -> Sheet riêng của Sale): Nhận Lead mới từ Auto Data và tự động ghi/cập nhật dòng trên Google Sheet
+function doPost(e) {
+  const body = e && e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : {};
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  sheet.appendRow([
+    new Date(),
+    body.name || 'Khách hàng mới',
+    String(body.phone || '').trim(),
+    body.utm_source || 'autodata_router',
+    body.product_interest || 'Tư vấn trực tiếp',
+    body.sale_status || 'Mới phân bổ',
+    body.note || ''
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Chiều 2A (Google Form / Sheet -> Auto Data): Tự động bắn dòng Lead mới vào Auto Data Router (< 4s)
 function onFormSubmit(e) {
   const row = e && e.values ? e.values : [];
   const payload = {
@@ -193,7 +246,7 @@ function onFormSubmit(e) {
   });
 }
 
-// Chiều 2: Khi Sale cập nhật Trạng thái (Cột F) hoặc Ghi chú (Cột G) trên Sheet riêng -> Đồng bộ ngược về Auto Data
+// Chiều 2B (Sheet riêng của Sale -> Auto Data): Khi Sale sửa Trạng thái (Cột F) hoặc Ghi chú (Cột G) -> Đồng bộ ngược & kích hoạt Meta CAPI
 function onEdit(e) {
   if (!e || !e.range) return;
   const col = e.range.getColumn();
@@ -217,6 +270,24 @@ function onEdit(e) {
 }`;
 }
 
+function sanitizeCsvFormulaValue(raw: string, isPhoneColumn = false): string {
+  const str = String(raw ?? '');
+  if (isPhoneColumn) {
+    const trimmed = str.trim();
+    if (/^\+84\d+/.test(trimmed.replace(/\s+/g, ''))) {
+      return `0${trimmed.replace(/\s+/g, '').slice(3)}`;
+    }
+    if (/^[=+\-@]/.test(trimmed)) {
+      return `'${trimmed}`;
+    }
+    return trimmed;
+  }
+  if (/^[=+\-@\t\r]/.test(str)) {
+    return `'${str}`;
+  }
+  return str;
+}
+
 export function buildPersonalLeadsCsvContent(items: PersonalSaleLeadItem[]): string {
   const header = [
     'Mã Lead',
@@ -229,7 +300,8 @@ export function buildPersonalLeadsCsvContent(items: PersonalSaleLeadItem[]): str
     'Đồng bộ Google Sheets',
     'Thời gian tạo',
   ];
-  const escapeCell = (val: string) => `"${String(val ?? '').replace(/"/g, '""')}"`;
+  const escapeCell = (val: string, isPhone = false) =>
+    `"${sanitizeCsvFormulaValue(val, isPhone).replace(/"/g, '""')}"`;
   const rows = items.map((item) => [
     item.id,
     item.name,
@@ -237,20 +309,111 @@ export function buildPersonalLeadsCsvContent(items: PersonalSaleLeadItem[]): str
     item.sale_owner_name,
     item.product_interest,
     item.note,
-    'Cá nhân (Bypass Vòng Chia • Miễn SLA Recall)',
+    'Cá nhân (Bỏ qua Vòng Chia • Sở hữu riêng)',
     item.sheet_sync_status,
     new Date(item.created_at).toLocaleString('vi-VN'),
   ]);
-  const lines = [header, ...rows].map((row) => row.map(escapeCell).join(','));
+  const lines = [
+    header.map((h) => escapeCell(h, false)).join(','),
+    ...rows.map((row) => row.map((cell, colIdx) => escapeCell(cell, colIdx === 2)).join(',')),
+  ];
   return `\uFEFF${lines.join('\r\n')}`;
+}
+
+function splitCsvRow(line: string, delimiter: string): string[] {
+  const cells: string[] = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        cur += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === delimiter && !inQuotes) {
+      cells.push(cur.trim().replace(/^'+/, ''));
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  cells.push(cur.trim().replace(/^'+/, ''));
+  return cells;
+}
+
+export function parsePersonalLeadsCsvContent(
+  rawCsv: string,
+  defaultOwner = 'Chuyên viên Sale Nội Bộ #01'
+): PersonalLeadImportDraft[] {
+  const cleaned = rawCsv.replace(/^\uFEFF/, '').trim();
+  if (!cleaned) return [];
+  const rawLines = cleaned
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+  if (rawLines.length === 0) return [];
+
+  const firstLine = rawLines[0];
+  const delimiter =
+    firstLine.includes('\t') && !firstLine.includes(',')
+      ? '\t'
+      : firstLine.split(';').length > firstLine.split(',').length
+        ? ';'
+        : ',';
+
+  const parsedRows = rawLines.map((line) => splitCsvRow(line, delimiter));
+  const headerProbe = parsedRows[0].map((c) => c.toLowerCase());
+  const hasHeader = headerProbe.some(
+    (c) =>
+      c.includes('họ tên') ||
+      c.includes('số điện thoại') ||
+      c.includes('mã lead') ||
+      c === 'name' ||
+      c === 'phone' ||
+      c === 'sdt'
+  );
+
+  const dataRows = hasHeader ? parsedRows.slice(1) : parsedRows;
+  const isExportFormat =
+    hasHeader &&
+    (headerProbe[0]?.includes('mã lead') || headerProbe[0] === 'id') &&
+    parsedRows[0].length >= 5;
+
+  const results: PersonalLeadImportDraft[] = [];
+  for (const cols of dataRows) {
+    if (cols.length < 2) continue;
+    const name = isExportFormat ? cols[1] || '' : cols[0] || '';
+    const phone = isExportFormat ? cols[2] || '' : cols[1] || '';
+    const owner = isExportFormat ? cols[3] || defaultOwner : cols[4] || defaultOwner;
+    const interest = isExportFormat
+      ? cols[4] || 'Khách hàng Import CSV cá nhân'
+      : cols[2] || 'Khách hàng Import CSV cá nhân';
+    const note = isExportFormat
+      ? cols[5] || 'Import từ file CSV vào Cổng Sale Cá Nhân'
+      : cols[3] || 'Import từ file CSV vào Cổng Sale Cá Nhân';
+
+    if (name.trim() && phone.replace(/\D/g, '').length >= 9) {
+      results.push({
+        name: name.trim(),
+        phone: phone.trim(),
+        sale_owner_name: owner.trim() || defaultOwner,
+        product_interest: interest.trim(),
+        note: note.trim(),
+      });
+    }
+  }
+  return results;
 }
 
 export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
   currency: 'VND',
-  trial_duration_months: 3,
-  trial_duration_days: 90,
+  trial_duration_months: 1,
+  trial_duration_days: 30,
   trial_warning_days: 14,
-  base_monthly_price_vnd: 900_000,
+  base_monthly_price_vnd: 1_500_000,
   annual_discount_pct: 15,
   min_topup_vnd: 100_000,
   post_trial_policy: 'step_renewal_or_upgrade',
@@ -260,79 +423,81 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
   payment_bank_info: {
     bank_name: 'Techcombank (TCB)',
     account_number: '19038889996868',
-    account_holder: 'CONG TY GIAI PHAP CONG NGHE DOMATION',
+    account_holder: 'CONG TY TNHH DOM MARKETING',
     transfer_prefix: 'DOMDATA',
   },
   plans: [
     {
       code: 'autodata_standard',
       step_order: 1,
-      name: 'Auto Data Lite Standard',
-      tagline: 'Bản Lite chuyên cho Sale & Chia Data — Mặc định sau 3 tháng dùng thử 0đ.',
+      name: 'Auto Data Standard',
+      tagline: 'Gói tiêu chuẩn cho đội Sale nội bộ — Mặc định sau 1 tháng 0đ.',
       badge: 'Mặc Định • Phổ Biến Nhất',
       plan_tier: 'starter',
-      monthly_price_vnd: 900_000,
+      monthly_price_vnd: 1_500_000,
       annual_discount_pct: 15,
-      annual_total_vnd: 9_180_000,
-      annual_monthly_equivalent_vnd: 765_000,
-      annual_saved_vnd: 1_620_000,
-      max_users: 25,
+      annual_total_vnd: 15_300_000,
+      annual_monthly_equivalent_vnd: 1_275_000,
+      annual_saved_vnd: 2_700_000,
+      max_sales: 5,
+      max_managers: 3,
+      max_users: 8,
       max_rounds: 5,
       monthly_lead_quota: 15_000,
       is_enterprise_upgrade: false,
       features: [
-        'Mặc định chia trực tiếp tới từng Sale nội bộ < 4s (Round-Robin / Trọng số)',
-        'Cổng Sale cá nhân: Tự nhập/Import Lead riêng (không tính quota), Xuất CSV & Đồng bộ Sheets 2 chiều',
-        'Kết nối Webhook đa kênh, báo số ZaloBot cá nhân & phản hồi Meta CAPI v21.0 (HTTP 200)',
-        'Công tắc Online / Nghỉ phép, Thu hồi SLA 15 phút & Tùy chọn bật thêm Đại lý F1 (che SĐT)',
-        'Quản lý tới 25 nhân sự Sale nhận số & 5 vòng định tuyến song song',
+        'Chia số trực tiếp về Sale tức thì (1:1 hoặc năng lực)',
+        'Cổng Sale riêng: tự nhập khách, xuất CSV & bật/tắt ca trực',
+        'Báo khách qua ZaloBot & đồng bộ Google Sheets, API 2 chiều',
+        'Phản hồi tín hiệu chất lượng về Meta Ads (CAPI)',
       ],
     },
     {
       code: 'autodata_growth',
       step_order: 2,
-      name: 'Auto Data Scale Pro',
-      tagline: 'Mở rộng đa phòng ban Sale, đa chi nhánh & Dual-Send Meta CAPI nâng cao.',
-      badge: 'Đội Sale Quy Mô Lớn',
+      name: 'Auto Data Pro',
+      tagline: 'Mở rộng đa đội Sale, chi nhánh & tối ưu quảng cáo chuyên sâu.',
+      badge: 'Đội Sale Mở Rộng',
       plan_tier: 'growth',
-      monthly_price_vnd: 1_800_000,
+      monthly_price_vnd: 3_000_000,
       annual_discount_pct: 15,
-      annual_total_vnd: 18_360_000,
-      annual_monthly_equivalent_vnd: 1_530_000,
-      annual_saved_vnd: 3_240_000,
-      max_users: 100,
+      annual_total_vnd: 30_600_000,
+      annual_monthly_equivalent_vnd: 2_550_000,
+      annual_saved_vnd: 5_400_000,
+      max_sales: 25,
+      max_managers: 10,
+      max_users: 35,
       max_rounds: 30,
       monthly_lead_quota: 100_000,
       is_enterprise_upgrade: false,
       features: [
-        'Toàn bộ tính năng gói Lite Standard + Đa phễu Pipeline độc lập theo dòng sản phẩm',
-        'Routing Rules chuyên sâu theo UTM Source, Chiến dịch, Khu vực & Khung giờ trực ca',
-        'Dual-Send Meta CAPI 2 Dataset song song + Đồng bộ Google Sheets 2 chiều không giới hạn',
-        'Đền bù tự động 1-đổi-1 khi duyệt Ticket số rác & Báo cáo đối soát công bằng Gini',
-        'Quản lý tới 100 nhân sự Sale nội bộ (kèm tùy chọn Đại lý F1) & 100.000 Leads / tháng',
+        'Toàn bộ gói Standard + đa phễu độc lập theo từng sản phẩm',
+        'Chia số theo chiến dịch, khu vực & khung giờ trực ca',
+        'Tối ưu Ads đa kênh + Google Sheets & REST API không giới hạn',
+        'Đền bù 1-đổi-1 khi duyệt số rác & báo cáo hiệu suất Lãnh Đạo',
       ],
     },
     {
       code: 'domation_crm_erp',
       step_order: 3,
-      name: 'Nâng Cấp Automation / CRM 360° / ERP 5.0',
-      tagline: 'Lộ trình nâng cấp liền mạch từ Bản Lite lên Marketing Automation, Full CRM 360° & ERP 5.0.',
+      name: 'Automation • CRM 360° • ERP 5.0',
+      tagline: 'Mở rộng liền mạch lên Automation, CRM 360° & ERP 5.0.',
       badge: 'Hệ Sinh Thái Toàn Diện',
       plan_tier: 'enterprise',
-      monthly_price_vnd: 3_600_000,
+      monthly_price_vnd: 6_000_000,
       annual_discount_pct: 15,
-      annual_total_vnd: 36_720_000,
-      annual_monthly_equivalent_vnd: 3_060_000,
-      annual_saved_vnd: 6_480_000,
+      annual_total_vnd: 61_200_000,
+      annual_monthly_equivalent_vnd: 5_100_000,
+      annual_saved_vnd: 10_800_000,
       max_users: 9_999,
       max_rounds: 999,
       monthly_lead_quota: 1_000_000,
       is_enterprise_upgrade: true,
       features: [
-        'Giữ nguyên 100% danh sách Lead, dữ liệu Sale cá nhân, Timeline & nhân sự hiện có',
-        'Marketing Automation (/automation): Flow rẽ nhánh IF/ELSE, Email kéo thả, Zalo ZNS & AI 24/7',
-        'Full CRM 360° (/crm): Kanban 8 nấc chuyên sâu, Báo giá, Hợp đồng & Hóa đơn MISA',
-        'Enterprise ERP 5.0 (/erp): 12 phân hệ HRM Chấm công GPS AI, Lương KPI, Tài chính & Kho vận',
+        'Giữ nguyên 100% Lead, lịch sử Timeline & đội ngũ hiện có',
+        'Automation: Flow rẽ nhánh IF/ELSE, Email kéo thả, Zalo ZNS & AI 24/7',
+        'CRM 360°: Kanban 8 nấc, Báo giá, Hợp đồng & Hóa đơn điện tử',
+        'ERP 5.0: 12 phân hệ HRM GPS AI, Lương KPI, Tài chính & Kho vận',
       ],
     },
   ],
@@ -340,15 +505,15 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
     {
       id: 'topup_1m',
       label: 'Gói Topup 1 Tháng',
-      amount_vnd: 900_000,
+      amount_vnd: 1_500_000,
       bonus_vnd: 0,
-      equivalent_months_note: 'Đủ gia hạn ngay 1 tháng gói Lite Standard',
+      equivalent_months_note: 'Đủ gia hạn ngay 1 tháng gói Auto Data Standard',
       highlight: false,
     },
     {
       id: 'topup_3m',
       label: 'Gói Topup 3 Tháng',
-      amount_vnd: 2_700_000,
+      amount_vnd: 4_500_000,
       bonus_vnd: 0,
       equivalent_months_note: 'Đủ gia hạn 1 quý (3 tháng) liên tục',
       highlight: false,
@@ -356,17 +521,17 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
     {
       id: 'topup_6m',
       label: 'Gói Topup 6 Tháng (+5% Bonus)',
-      amount_vnd: 5_400_000,
-      bonus_vnd: 270_000,
-      equivalent_months_note: 'Tặng thêm 270.000₫ vào ví gia hạn',
+      amount_vnd: 9_000_000,
+      bonus_vnd: 450_000,
+      equivalent_months_note: 'Tặng thêm 450.000₫ vào ví gia hạn',
       highlight: false,
     },
     {
       id: 'topup_12m',
       label: 'Gói Topup Năm (Tiết kiệm 15%)',
-      amount_vnd: 9_180_000,
+      amount_vnd: 15_300_000,
       bonus_vnd: 0,
-      equivalent_months_note: 'Đủ mua gói Năm (-15%), chỉ 765.000₫/tháng',
+      equivalent_months_note: 'Đủ mua gói Năm (-15%), chỉ 1.275.000₫/tháng',
       highlight: true,
     },
   ],

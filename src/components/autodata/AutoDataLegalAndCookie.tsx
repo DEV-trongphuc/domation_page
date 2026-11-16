@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Check, Cookie, FileText, ShieldCheck, SlidersHorizontal, X } from 'lucide-react';
 import {
   COOKIE_CONSENT_STORAGE_KEY,
@@ -28,29 +29,29 @@ export function AutoDataLegalModal({
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label={activeTab === 'terms' ? 'Điều khoản sử dụng DOMATION Auto Data' : 'Chính sách bảo mật DOMATION Auto Data'}
       onClick={onClose}
-      className="fixed inset-0 z-[165] bg-slate-950/70 backdrop-blur-sm p-4 flex items-center justify-center"
+      className="fixed inset-0 z-[165] bg-slate-950/70 backdrop-blur-sm p-3 sm:p-4 flex items-center justify-center"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-3xl rounded-3xl border border-slate-200 bg-white text-slate-900 shadow-2xl overflow-hidden max-h-[88vh] flex flex-col"
       >
-        <div className="px-5 sm:px-7 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-x-auto">
+        <div className="px-4 sm:px-7 py-3.5 sm:py-4 bg-gradient-to-r from-blue-50/70 via-white to-cyan-50/60 border-b border-blue-100 flex items-center justify-between gap-2.5 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto">
             <button
               type="button"
               onClick={() => onTabChange('terms')}
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'terms'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
+                  ? 'ql-pill-tab-active rounded-full'
+                  : 'ql-pill-tab'
               }`}
             >
               <FileText className="w-3.5 h-3.5 shrink-0" />
@@ -59,10 +60,10 @@ export function AutoDataLegalModal({
             <button
               type="button"
               onClick={() => onTabChange('privacy')}
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 text-[11px] sm:text-xs font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                 activeTab === 'privacy'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
+                  ? 'ql-pill-tab-active rounded-full'
+                  : 'ql-pill-tab'
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
@@ -80,7 +81,7 @@ export function AutoDataLegalModal({
           </button>
         </div>
 
-        <div className="p-5 sm:p-7 overflow-y-auto space-y-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div className="p-4 sm:p-7 overflow-y-auto space-y-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
           {activeTab === 'terms' ? (
             <>
               <div>
@@ -93,9 +94,9 @@ export function AutoDataLegalModal({
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-bold text-slate-900">1. Phạm vi dịch vụ &amp; Định vị Bản Lite</h4>
+                <h4 className="font-bold text-slate-900">1. Phạm vi dịch vụ DOMATION Auto Data</h4>
                 <p>
-                  DOMATION Auto Data là phiên bản Lite chuyên biệt cho đội ngũ Sale và tự động phân bổ dữ liệu khách hàng đa kênh (Webhook, Facebook Lead Ads, TikTok, Google Sheets, ZaloBot, Meta CAPI). Khi doanh nghiệp phát sinh nhu cầu mở rộng, tài khoản có thể nâng cấp liền mạch lên Marketing Automation (/automation), Full CRM 360° (/crm) hoặc Enterprise ERP 5.0 (/erp).
+                  DOMATION Auto Data là nền tảng chuyên biệt cho đội ngũ Sale và tự động phân bổ dữ liệu khách hàng đa kênh (REST API / Webhook, Facebook Lead Ads, TikTok, Google Sheets, ZaloBot, Meta CAPI). Khi doanh nghiệp phát sinh nhu cầu mở rộng, tài khoản có thể nâng cấp liền mạch lên Marketing Automation (/automation), Full CRM 360° (/crm) hoặc Enterprise ERP 5.0 (/erp).
                 </p>
               </div>
 
@@ -107,9 +108,9 @@ export function AutoDataLegalModal({
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-bold text-slate-900">3. Chính sách Dùng thử 3 Tháng 0đ, Gia hạn &amp; Ví Topup</h4>
+                <h4 className="font-bold text-slate-900">3. Chính sách Dùng thử 1 Tháng 0đ, Gia hạn &amp; Ví Topup</h4>
                 <p>
-                  Mọi tổ chức khởi tạo mới được cấp 03 tháng (90 ngày) dùng thử miễn phí đầy đủ tính năng. Sau thời gian dùng thử, doanh nghiệp tự chủ lựa chọn gia hạn gói tiêu chuẩn từ 900.000₫/tháng (ưu đãi giảm 15% khi thanh toán theo năm còn 765.000₫/tháng). Các giao dịch gia hạn sớm đều được cộng dồn trọn vẹn số ngày còn lại.
+                  Mọi tổ chức khởi tạo mới được cấp 01 tháng (30 ngày) dùng thử miễn phí đầy đủ tính năng. Sau thời gian dùng thử, doanh nghiệp tự chủ lựa chọn gia hạn gói tiêu chuẩn từ 1.500.000₫/tháng (ưu đãi giảm 15% khi thanh toán theo năm còn 1.275.000₫/tháng — 15.300.000₫/năm). Các giao dịch gia hạn sớm đều được cộng dồn trọn vẹn số ngày còn lại.
                 </p>
               </div>
 
@@ -134,7 +135,7 @@ export function AutoDataLegalModal({
               <div className="space-y-2">
                 <h4 className="font-bold text-slate-900">1. Cơ chế bảo vệ dữ liệu SĐT &amp; Phân quyền Sale</h4>
                 <p>
-                  Mặc định hệ thống phân phối dữ liệu cho nhân viên Sale nội bộ được ủy quyền của doanh nghiệp (is_external_agency = false). Khi doanh nghiệp bật tùy chọn chia sẻ cho Đại lý liên kết / Cộng tác viên F1 bên ngoài, hệ thống hỗ trợ che giấu SĐT tự động dạng 0912***678 ngay từ tầng API. Dữ liệu Lead cá nhân tại Cổng Sale được tách biệt khỏi vòng chia chung.
+                  Mặc định hệ thống phân phối dữ liệu trực tiếp cho nhân viên Sale nội bộ được ủy quyền của doanh nghiệp. Khi doanh nghiệp bật tùy chọn chia sẻ cho Đại lý liên kết / Cộng tác viên F1 bên ngoài, hệ thống hỗ trợ che giấu SĐT tự động dạng 0912***678 ngay từ tầng bảo mật. Dữ liệu Lead cá nhân tại Cổng Sale được tách biệt khỏi vòng chia chung.
                 </p>
               </div>
 
@@ -162,20 +163,21 @@ export function AutoDataLegalModal({
           )}
         </div>
 
-        <div className="px-5 sm:px-7 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
+        <div className="px-4 sm:px-7 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3">
           <span className="text-[11px] text-slate-500">
-            Công ty TNHH Giải pháp Công nghệ DOMATION Việt Nam
+            CÔNG TY TNHH DOM MARKETING
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full bg-slate-900 text-white px-5 py-2 text-xs font-semibold hover:bg-blue-600 transition-colors cursor-pointer whitespace-nowrap"
+            className="btn-inkica-primary rounded-full px-4 sm:px-5 py-2 text-xs cursor-pointer whitespace-nowrap shrink-0"
           >
             Đóng tài liệu
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -244,7 +246,7 @@ export function AutoDataCookieConsent({
   return (
     <aside
       aria-label="Tùy chọn Cookie và Quyền riêng tư"
-      className="fixed bottom-4 left-3 right-3 sm:left-5 sm:right-auto sm:max-w-[440px] z-[85] rounded-2xl border border-slate-200 bg-white/98 backdrop-blur-md p-4 sm:p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.22)] space-y-3.5"
+      className="fixed bottom-3 left-3 right-[4.5rem] sm:bottom-5 sm:left-5 sm:right-auto sm:max-w-[440px] z-[65] rounded-2xl border border-slate-200 bg-white/95 backdrop-blur-md p-3.5 sm:p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.22)] space-y-3"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-900">
@@ -317,7 +319,7 @@ export function AutoDataCookieConsent({
           <button
             type="button"
             onClick={() => persistChoice(analyticsEnabled, marketingEnabled)}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+            className="btn-inkica-primary rounded-xl px-3.5 sm:px-4 py-2 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
           >
             <Check className="w-3.5 h-3.5 shrink-0" />
             <span>Lưu tùy chọn</span>
@@ -326,7 +328,7 @@ export function AutoDataCookieConsent({
           <button
             type="button"
             onClick={() => persistChoice(true, true)}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 hover:bg-blue-600 text-white px-4 py-2 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+            className="btn-inkica-primary rounded-xl px-3.5 sm:px-4 py-2 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
           >
             <Check className="w-3.5 h-3.5 shrink-0" />
             <span>Chấp nhận tất cả</span>
@@ -336,7 +338,7 @@ export function AutoDataCookieConsent({
         <button
           type="button"
           onClick={() => persistChoice(false, false)}
-          className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+          className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 px-3 sm:px-3.5 py-2 text-[11px] sm:text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
         >
           Chỉ thiết yếu
         </button>
@@ -345,7 +347,7 @@ export function AutoDataCookieConsent({
           <button
             type="button"
             onClick={() => setCustomizing(true)}
-            className="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 px-3 py-2 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 px-2.5 sm:px-3 py-2 text-[11px] sm:text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
           >
             <SlidersHorizontal className="w-3 h-3 shrink-0" />
             <span>Tùy chỉnh</span>

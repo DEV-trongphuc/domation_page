@@ -45,8 +45,8 @@ const STARTER_SUGGESTIONS: StarterSuggestion[] = [
     prompt: 'Hệ thống phân bổ Lead < 5 giây, lọc trùng và tự động bắn Meta CAPI hoạt động như thế nào?',
   },
   {
-    label: 'ERP 5.0 & CRM MISA',
-    prompt: 'DOMATION ERP 5.0 gồm những phân hệ nào và CRM có đồng bộ hóa đơn MISA không?',
+    label: 'ERP 5.0 & CRM 360°',
+    prompt: 'DOMATION ERP 5.0 gồm những phân hệ nào và CRM có hỗ trợ quản trị bán hàng, hóa đơn không?',
   },
   {
     label: 'Case Study & Tư vấn Zalo',
@@ -773,7 +773,7 @@ export const AiDomationChatbot: React.FC = () => {
               <div className="flex-1 flex flex-col justify-between gap-6">
                 <div className="max-w-[92%] rounded-2xl rounded-tl-md bg-white border border-slate-200/90 px-4 py-3.5 shadow-[0_2px_10px_rgba(15,23,42,0.03)]">
                   <p className="text-[13.5px] leading-relaxed text-slate-700 m-0">
-                    Chào bạn! Tôi là <strong className="text-slate-900">DOMATION AI</strong> — trợ lý chuyên trách tư vấn hệ sinh thái giải pháp <strong className="text-slate-900">Auto Data CAPI, ERP 5.0, CRM MISA, AI Automation & Thiết kế Web 3D</strong> của DOMATION.NET. Bạn cần tư vấn phân hệ hay báo giá nào hôm nay?
+                    Chào bạn! Tôi là <strong className="text-slate-900">DOMATION AI</strong> — trợ lý chuyên trách tư vấn hệ sinh thái giải pháp <strong className="text-slate-900">Auto Data CAPI, ERP 5.0, CRM 360°, AI Automation & Thiết kế Web 3D</strong> của DOMATION.NET. Bạn cần tư vấn phân hệ hay báo giá nào hôm nay?
                   </p>
                 </div>
 

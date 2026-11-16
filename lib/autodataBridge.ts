@@ -16,6 +16,8 @@ export interface BillingPlanDto {
   annual_total_vnd: number;
   annual_monthly_equivalent_vnd: number;
   annual_saved_vnd: number;
+  max_sales?: number;
+  max_managers?: number;
   max_users: number;
   max_rounds: number;
   monthly_lead_quota: number;
@@ -136,6 +138,21 @@ interface ServerlessLeadRecord {
   created_at: string;
 }
 
+export interface WorkspaceSummaryDto {
+  slug: string;
+  company_name: string;
+  industry: string;
+  plan_tier: 'starter' | 'growth' | 'enterprise';
+  plan_name: string;
+  role: string;
+  days_remaining: number;
+  is_in_trial: boolean;
+  is_expired: boolean;
+  is_external_agency: boolean;
+  selected_channels: string[];
+  created_at: string;
+}
+
 interface ServerlessTenantRecord {
   id: string;
   slug: string;
@@ -146,6 +163,7 @@ interface ServerlessTenantRecord {
   phone: string;
   password_salt: string;
   password_hash: string;
+  auth_provider?: 'password' | 'google';
   webhook_token: string;
   plan_tier: 'starter' | 'growth' | 'enterprise';
   subscription_plan_code: string;
@@ -173,15 +191,39 @@ interface ServerlessTenantRecord {
   transactions: BillingTransactionDto[];
 }
 
+interface TenantExtrasRecord {
+  personal_leads: ServerlessPersonalLeadRecord[];
+  zalo_bot: ServerlessZaloBotConfig | null;
+  is_external_agency?: boolean;
+  webhook_token?: string;
+  updated_at?: string;
+}
+
 interface ServerlessStoreFile {
   tenants: Record<string, ServerlessTenantRecord>;
+  tenant_extras?: Record<string, TenantExtrasRecord>;
 }
 
 const STORE_FILE_PATH = path.join(os.tmpdir(), 'domation_autodata_serverless_v1.json');
 
+function getOrCreateTenantExtras(store: ServerlessStoreFile, slug: string): TenantExtrasRecord {
+  if (!store.tenant_extras || typeof store.tenant_extras !== 'object') {
+    store.tenant_extras = {};
+  }
+  if (!store.tenant_extras[slug]) {
+    store.tenant_extras[slug] = {
+      personal_leads: [],
+      zalo_bot: null,
+    };
+  }
+  return store.tenant_extras[slug];
+}
+
 function buildFallbackCatalog(): BillingCatalogDto {
-  const baseMonthly = 900_000;
+  const baseMonthly = 1_500_000;
   const discountPct = 15;
+  const sixMonthBase = Math.round(baseMonthly * 6);
+  const sixMonthBonus = Math.round(sixMonthBase * 0.05);
   const calcAnnual = (monthly: number) => {
     const full = monthly * 12;
     const total = Math.round(full * ((100 - discountPct) / 100));
@@ -195,8 +237,8 @@ function buildFallbackCatalog(): BillingCatalogDto {
 
   return {
     currency: 'VND',
-    trial_duration_months: 3,
-    trial_duration_days: 90,
+    trial_duration_months: 1,
+    trial_duration_days: 30,
     trial_warning_days: 14,
     base_monthly_price_vnd: baseMonthly,
     annual_discount_pct: discountPct,
@@ -208,57 +250,59 @@ function buildFallbackCatalog(): BillingCatalogDto {
     payment_bank_info: {
       bank_name: 'Techcombank (TCB)',
       account_number: '19038889996868',
-      account_holder: 'CONG TY GIAI PHAP CONG NGHE DOMATION',
+      account_holder: 'CONG TY TNHH DOM MARKETING',
       transfer_prefix: 'DOMDATA',
     },
     plans: [
       {
         code: 'autodata_standard',
         step_order: 1,
-        name: 'Auto Data Lite Standard',
-        tagline: 'Bản Lite chuyên cho Sale & Chia Data — Mặc định sau 3 tháng dùng thử 0đ.',
+        name: 'Auto Data Standard',
+        tagline: 'Gói tiêu chuẩn cho đội Sale nội bộ — Mặc định sau 1 tháng 0đ.',
         badge: 'Mặc Định • Phổ Biến Nhất',
         plan_tier: 'starter',
         monthly_price_vnd: baseMonthly,
         ...calcAnnual(baseMonthly),
-        max_users: 25,
+        max_sales: 5,
+        max_managers: 3,
+        max_users: 8,
         max_rounds: 5,
         monthly_lead_quota: 15_000,
         is_enterprise_upgrade: false,
         features: [
-          'Mặc định chia trực tiếp tới từng Sale nội bộ < 4s (Round-Robin / Trọng số)',
-          'Cổng Sale cá nhân: Tự nhập/Import Lead riêng (không tính quota), Xuất CSV & Đồng bộ Sheets 2 chiều',
-          'Kết nối Webhook đa kênh, báo số ZaloBot cá nhân & phản hồi Meta CAPI v21.0 (HTTP 200)',
-          'Công tắc Online / Nghỉ phép, Thu hồi SLA 15 phút & Tùy chọn bật thêm Đại lý F1 (che SĐT)',
-          'Quản lý tới 25 nhân sự Sale nhận số & 5 vòng định tuyến song song',
+          'Chia số trực tiếp về Sale tức thì (1:1 hoặc năng lực)',
+          'Cổng Sale riêng: tự nhập khách, xuất CSV & bật/tắt ca trực',
+          'Báo khách qua ZaloBot & đồng bộ Google Sheets, API 2 chiều',
+          'Phản hồi tín hiệu chất lượng về Meta Ads (CAPI)',
         ],
       },
       {
         code: 'autodata_growth',
         step_order: 2,
-        name: 'Auto Data Scale Pro',
-        tagline: 'Mở rộng đa phòng ban Sale, đa chi nhánh & Dual-Send Meta CAPI nâng cao.',
-        badge: 'Đội Sale Quy Mô Lớn',
+        name: 'Auto Data Pro',
+        tagline: 'Mở rộng đa đội Sale, chi nhánh & tối ưu quảng cáo chuyên sâu.',
+        badge: 'Đội Sale Mở Rộng',
         plan_tier: 'growth',
         monthly_price_vnd: baseMonthly * 2,
         ...calcAnnual(baseMonthly * 2),
-        max_users: 100,
+        max_sales: 25,
+        max_managers: 10,
+        max_users: 35,
         max_rounds: 30,
         monthly_lead_quota: 100_000,
         is_enterprise_upgrade: false,
         features: [
-          'Toàn bộ tính năng gói Lite Standard + Đa phễu Pipeline độc lập theo dòng sản phẩm',
-          'Routing Rules chuyên sâu theo UTM Source, Chiến dịch, Khu vực & Khung giờ trực ca',
-          'Dual-Send Meta CAPI 2 Dataset song song + Đồng bộ Google Sheets 2 chiều không giới hạn',
-          'Đền bù tự động 1-đổi-1 khi duyệt Ticket số rác & Báo cáo đối soát công bằng Gini',
-          'Quản lý tới 100 nhân sự Sale nội bộ (kèm tùy chọn Đại lý F1) & 100.000 Leads / tháng',
+          'Toàn bộ gói Standard + đa phễu độc lập theo từng sản phẩm',
+          'Chia số theo chiến dịch, khu vực & khung giờ trực ca',
+          'Tối ưu Ads đa kênh + Google Sheets & REST API không giới hạn',
+          'Đền bù 1-đổi-1 khi duyệt số rác & báo cáo hiệu suất Lãnh Đạo',
         ],
       },
       {
         code: 'domation_crm_erp',
         step_order: 3,
-        name: 'Nâng Cấp Automation / CRM 360° / ERP 5.0',
-        tagline: 'Lộ trình nâng cấp liền mạch từ Bản Lite lên Marketing Automation, Full CRM 360° & ERP 5.0.',
+        name: 'Automation • CRM 360° • ERP 5.0',
+        tagline: 'Mở rộng liền mạch lên Automation, CRM 360° & ERP 5.0.',
         badge: 'Hệ Sinh Thái Toàn Diện',
         plan_tier: 'enterprise',
         monthly_price_vnd: baseMonthly * 4,
@@ -268,10 +312,10 @@ function buildFallbackCatalog(): BillingCatalogDto {
         monthly_lead_quota: 1_000_000,
         is_enterprise_upgrade: true,
         features: [
-          'Giữ nguyên 100% danh sách Lead, dữ liệu Sale cá nhân, Timeline & nhân sự hiện có',
-          'Marketing Automation (/automation): Flow rẽ nhánh IF/ELSE, Email kéo thả, Zalo ZNS & AI 24/7',
-          'Full CRM 360° (/crm): Kanban 8 nấc chuyên sâu, Báo giá, Hợp đồng & Hóa đơn MISA',
-          'Enterprise ERP 5.0 (/erp): 12 phân hệ HRM Chấm công GPS AI, Lương KPI, Tài chính & Kho vận',
+          'Giữ nguyên 100% Lead, lịch sử Timeline & đội ngũ hiện có',
+          'Automation: Flow rẽ nhánh IF/ELSE, Email kéo thả, Zalo ZNS & AI 24/7',
+          'CRM 360°: Kanban 8 nấc, Báo giá, Hợp đồng & Hóa đơn',
+          'ERP 5.0: 12 phân hệ HRM GPS AI, Lương KPI, Tài chính & Kho vận',
         ],
       },
     ],
@@ -295,17 +339,17 @@ function buildFallbackCatalog(): BillingCatalogDto {
       {
         id: 'topup_6m',
         label: 'Gói Topup 6 Tháng (+5% Bonus)',
-        amount_vnd: baseMonthly * 6,
-        bonus_vnd: Math.round(baseMonthly * 6 * 0.05),
-        equivalent_months_note: `Tặng thêm ${Math.round(baseMonthly * 6 * 0.05).toLocaleString('vi-VN')}₫ vào ví gia hạn`,
+        amount_vnd: sixMonthBase,
+        bonus_vnd: sixMonthBonus,
+        equivalent_months_note: `Tặng thêm ${sixMonthBonus.toLocaleString('vi-VN')}₫ vào ví gia hạn`,
         highlight: false,
       },
       {
         id: 'topup_12m',
         label: 'Gói Topup Năm (Tiết kiệm 15%)',
-        amount_vnd: 9_180_000,
+        amount_vnd: calcAnnual(baseMonthly).annual_total_vnd,
         bonus_vnd: 0,
-        equivalent_months_note: 'Đủ mua gói Năm (-15%), chỉ 765.000₫/tháng',
+        equivalent_months_note: `Đủ mua gói Năm (-15%), chỉ ${calcAnnual(baseMonthly).annual_monthly_equivalent_vnd.toLocaleString('vi-VN')}₫/tháng`,
         highlight: true,
       },
     ],
@@ -338,7 +382,12 @@ function getSigningSecret(): string {
   return process.env.AUTODATA_BRIDGE_SECRET || process.env.GEMINI_API_KEY || 'domation-autodata-hmac-bridge-2026';
 }
 
-function signServerlessToken(payload: { sub: string; slug: string; email: string }): string {
+function signServerlessToken(payload: {
+  sub: string;
+  slug: string;
+  email: string;
+  auth_provider?: 'password' | 'google';
+}): string {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
   const body = Buffer.from(
     JSON.stringify({
@@ -352,7 +401,12 @@ function signServerlessToken(payload: { sub: string; slug: string; email: string
   return `${header}.${body}.${sig}`;
 }
 
-function verifyServerlessToken(token: string): { sub: string; slug: string; email: string } | null {
+function verifyServerlessToken(token: string): {
+  sub: string;
+  slug: string;
+  email: string;
+  auth_provider?: 'password' | 'google';
+} | null {
   const parts = token.split('.');
   if (parts.length !== 3) return null;
   const [header, body, sig] = parts;
@@ -363,12 +417,18 @@ function verifyServerlessToken(token: string): { sub: string; slug: string; emai
       sub?: string;
       slug?: string;
       email?: string;
+      auth_provider?: 'password' | 'google';
       exp?: number;
       mode?: string;
     };
     if (decoded.mode !== 'serverless' || !decoded.slug || !decoded.sub) return null;
     if (decoded.exp && decoded.exp < Math.floor(Date.now() / 1000)) return null;
-    return { sub: decoded.sub, slug: decoded.slug, email: decoded.email || '' };
+    return {
+      sub: decoded.sub,
+      slug: decoded.slug,
+      email: (decoded.email || '').trim().toLowerCase(),
+      auth_provider: decoded.auth_provider === 'google' ? 'google' : 'password',
+    };
   } catch {
     return null;
   }
@@ -378,7 +438,11 @@ function computeServerlessSubscription(t: ServerlessTenantRecord, catalog: Billi
   const nowMs = Date.now();
   const trialEndsMs = new Date(t.trial_ends_at).getTime();
   const paidEndsMs = t.subscription_expires_at ? new Date(t.subscription_expires_at).getTime() : null;
-  const hasPaidPlan = t.subscription_plan_code !== 'trial_3m' && paidEndsMs !== null;
+  const isTrialCode =
+    !t.subscription_plan_code ||
+    t.subscription_plan_code === 'trial_1m' ||
+    t.subscription_plan_code === 'trial_3m';
+  const hasPaidPlan = !isTrialCode && paidEndsMs !== null;
   const effectiveEndsMs = hasPaidPlan && paidEndsMs ? Math.max(paidEndsMs, trialEndsMs) : trialEndsMs;
   const diffMs = effectiveEndsMs - nowMs;
   const isExpired = diffMs <= 0;
@@ -413,8 +477,227 @@ function computeServerlessSubscription(t: ServerlessTenantRecord, catalog: Billi
   };
 }
 
+function resolveConfiguredGoogleClientId(): string {
+  return (process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '').trim();
+}
+
+interface VerifiedGoogleIdentity {
+  sub: string;
+  email: string;
+  full_name: string;
+  avatar_url: string | null;
+}
+
+async function verifyGoogleIdentityFromPayload(
+  body: Record<string, unknown>,
+  allowDevPreview: boolean
+): Promise<{ ok: true; identity: VerifiedGoogleIdentity } | { ok: false; message: string }> {
+  const configuredClientId = resolveConfiguredGoogleClientId();
+  const idToken = String(body.id_token || '').trim();
+  const googleAccessToken = String(body.access_token || '').trim();
+
+  if (idToken) {
+    try {
+      const resp = await fetch(
+        `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`
+      );
+      if (!resp.ok) {
+        return { ok: false, message: 'Token Google không hợp lệ hoặc đã hết hạn.' };
+      }
+      const info = (await resp.json()) as Record<string, unknown>;
+      const email = String(info.email || '').trim().toLowerCase();
+      const emailVerified = info.email_verified === true || info.email_verified === 'true';
+      if (!email || !emailVerified) {
+        return { ok: false, message: 'Email Google chưa được xác minh.' };
+      }
+      if (configuredClientId && String(info.aud || '') !== configuredClientId) {
+        return { ok: false, message: 'Google Client ID không khớp với cấu hình hệ thống.' };
+      }
+      return {
+        ok: true,
+        identity: {
+          sub: String(info.sub || `google:${email}`),
+          email,
+          full_name: String(info.name || email.split('@')[0] || 'Google User').trim(),
+          avatar_url: typeof info.picture === 'string' ? info.picture : null,
+        },
+      };
+    } catch {
+      return { ok: false, message: 'Không thể kết nối máy chủ Google để xác thực token.' };
+    }
+  }
+
+  if (googleAccessToken) {
+    try {
+      const resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${googleAccessToken}` },
+      });
+      if (!resp.ok) {
+        return { ok: false, message: 'Phiên đăng nhập Google đã hết hạn. Vui lòng thử lại.' };
+      }
+      const info = (await resp.json()) as Record<string, unknown>;
+      const email = String(info.email || '').trim().toLowerCase();
+      const emailVerified = info.email_verified !== false;
+      if (!email || !emailVerified) {
+        return { ok: false, message: 'Tài khoản Google chưa xác minh địa chỉ email.' };
+      }
+      return {
+        ok: true,
+        identity: {
+          sub: String(info.sub || `google:${email}`),
+          email,
+          full_name: String(info.name || email.split('@')[0] || 'Google User').trim(),
+          avatar_url: typeof info.picture === 'string' ? info.picture : null,
+        },
+      };
+    } catch {
+      return { ok: false, message: 'Không thể lấy thông tin tài khoản từ Google OAuth.' };
+    }
+  }
+
+  const devEmail = String(body.dev_google_email || '').trim().toLowerCase();
+  if (!configuredClientId && allowDevPreview && devEmail) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(devEmail)) {
+      return { ok: false, message: 'Địa chỉ email Google không hợp lệ.' };
+    }
+    const rawName = String(body.dev_google_name || '').trim();
+    const fallbackName = (devEmail.split('@')[0] || 'User')
+      .replace(/[._-]+/g, ' ')
+      .replace(/\b\w/g, (ch) => ch.toUpperCase());
+    return {
+      ok: true,
+      identity: {
+        sub: `google-preview:${devEmail}`,
+        email: devEmail,
+        full_name: rawName || fallbackName,
+        avatar_url: null,
+      },
+    };
+  }
+
+  return {
+    ok: false,
+    message: 'Thiếu thông tin xác thực Google OAuth.',
+  };
+}
+
+function buildServerlessWorkspaceSummary(
+  t: ServerlessTenantRecord,
+  catalog: BillingCatalogDto
+): WorkspaceSummaryDto {
+  const subscription = computeServerlessSubscription(t, catalog);
+  return {
+    slug: t.slug,
+    company_name: t.company_name,
+    industry: t.industry,
+    plan_tier: t.plan_tier,
+    plan_name: subscription.plan_name,
+    role: 'tenant_admin',
+    days_remaining: subscription.days_remaining,
+    is_in_trial: subscription.is_in_trial,
+    is_expired: subscription.is_expired,
+    is_external_agency: Boolean(t.settings?.is_external_agency),
+    selected_channels: Array.isArray(t.selected_channels) ? t.selected_channels : [],
+    created_at: t.created_at,
+  };
+}
+
+function findServerlessTenantsByEmail(
+  store: ServerlessStoreFile,
+  email: string
+): ServerlessTenantRecord[] {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return [];
+  return Object.values(store.tenants)
+    .filter((t) => t.work_email.trim().toLowerCase() === normalized)
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+}
+
+function buildServerlessSessionData(
+  record: ServerlessTenantRecord,
+  originHost: string,
+  catalog: BillingCatalogDto,
+  workspaces: WorkspaceSummaryDto[],
+  authProvider: 'password' | 'google'
+) {
+  const accessToken = signServerlessToken({
+    sub: record.id,
+    slug: record.slug,
+    email: record.work_email,
+    auth_provider: authProvider,
+  });
+  const subscription = computeServerlessSubscription(record, catalog);
+  return {
+    has_workspace: true,
+    auth_provider: authProvider,
+    access_token: accessToken,
+    tenant: {
+      id: record.id,
+      slug: record.slug,
+      name: record.company_name,
+      industry: record.industry,
+      plan_tier: record.plan_tier,
+      status: 'active',
+      trial_ends_at: record.trial_ends_at,
+      wallet_balance_vnd: record.wallet_balance_vnd,
+      subscription,
+      settings: record.settings,
+    },
+    user: {
+      id: record.reps[0]?.id || record.id,
+      full_name: record.admin_name,
+      email: record.work_email,
+      role: 'tenant_admin',
+    },
+    webhook_url: `${originHost}/api/autodata?action=webhook-test&slug=${record.slug}&token=${record.webhook_token}`,
+    webhook_token: record.webhook_token,
+    selected_channels: record.selected_channels,
+    workspaces,
+  };
+}
+
+function buildWorkspaceListFromUpstream(loginData: Record<string, unknown>): WorkspaceSummaryDto[] {
+  if (Array.isArray(loginData.workspaces) && loginData.workspaces.length > 0) {
+    return loginData.workspaces as WorkspaceSummaryDto[];
+  }
+  const tenant = (loginData.tenant || {}) as Record<string, unknown>;
+  const sub = (tenant.subscription || {}) as Record<string, unknown>;
+  const settings = (tenant.settings || {}) as Record<string, unknown>;
+  const slug = String(tenant.slug || '');
+  if (!slug) return [];
+  return [
+    {
+      slug,
+      company_name: String(tenant.name || slug),
+      industry: String(tenant.industry || 'general'),
+      plan_tier: (tenant.plan_tier as WorkspaceSummaryDto['plan_tier']) || 'starter',
+      plan_name: String(sub.plan_name || 'Auto Data'),
+      role: String((loginData.user as { role?: string } | undefined)?.role || 'tenant_admin'),
+      days_remaining: Number(sub.days_remaining ?? 30),
+      is_in_trial: Boolean(sub.is_in_trial ?? true),
+      is_expired: Boolean(sub.is_expired ?? false),
+      is_external_agency: Boolean(settings.is_external_agency ?? false),
+      selected_channels: [],
+      created_at: String(tenant.created_at || new Date().toISOString()),
+    },
+  ];
+}
+
+function normalizeVietnamPhone(raw: string): string {
+  const trimmed = String(raw || '').trim();
+  const digits = trimmed.replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('84') && digits.length >= 10 && digits.length <= 12) {
+    return `0${digits.slice(2)}`;
+  }
+  if (digits.length === 9 && /^[35789]\d{8}$/.test(digits)) {
+    return `0${digits}`;
+  }
+  return digits;
+}
+
 function maskPhone(phone: string): string {
-  const digits = phone.replace(/\D/g, '');
+  const digits = normalizeVietnamPhone(phone);
   if (digits.length < 7) return '***';
   return `${digits.slice(0, 4)}***${digits.slice(-3)}`;
 }
@@ -564,6 +847,77 @@ function getOriginHost(req: IncomingMessage): string {
   return `${proto}://${host}`;
 }
 
+function parseSubmittedZaloBot(raw: unknown): ServerlessZaloBotConfig | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const obj = raw as Record<string, unknown>;
+  const chatId = String(obj.chat_id || '').trim();
+  const botName = String(obj.bot_name || '').trim();
+  if (!obj.verified || !chatId || !botName) return null;
+  return {
+    verified: true,
+    verification_mode:
+      obj.verification_mode === 'live_zalo_api' ? 'live_zalo_api' : 'sandbox_bridge_verified',
+    bot_name: botName,
+    chat_id: chatId,
+    verified_at: typeof obj.verified_at === 'string' ? obj.verified_at : new Date().toISOString(),
+  };
+}
+
+async function authenticateTenantAccess(
+  token: string,
+  requestedSlug: string,
+  upstream: UpstreamProbeResult
+): Promise<{ authorized: boolean; slug: string; mode: 'upstream_rls_postgres' | 'vercel_serverless_engine' }> {
+  if (!token) {
+    return {
+      authorized: false,
+      slug: requestedSlug,
+      mode: upstream.reachable ? 'upstream_rls_postgres' : 'vercel_serverless_engine',
+    };
+  }
+
+  const verifiedServerless = verifyServerlessToken(token);
+  if (verifiedServerless) {
+    const resolvedSlug = requestedSlug || verifiedServerless.slug;
+    return {
+      authorized: resolvedSlug === verifiedServerless.slug,
+      slug: verifiedServerless.slug,
+      mode: 'vercel_serverless_engine',
+    };
+  }
+
+  if (upstream.reachable && requestedSlug) {
+    const check = await forwardUpstreamJson(upstream.baseUrl, '/api/v1/billing/overview', {
+      token,
+      tenantSlug: requestedSlug,
+    });
+    if (check.status === 200) {
+      return {
+        authorized: true,
+        slug: requestedSlug,
+        mode: 'upstream_rls_postgres',
+      };
+    }
+  }
+
+  return {
+    authorized: false,
+    slug: requestedSlug,
+    mode: upstream.reachable ? 'upstream_rls_postgres' : 'vercel_serverless_engine',
+  };
+}
+
+function persistZaloBotForTenant(slug: string, bot: ServerlessZaloBotConfig): void {
+  if (!slug) return;
+  const store = loadStore();
+  if (store.tenants[slug]) {
+    store.tenants[slug].zalo_bot = bot;
+  }
+  const extras = getOrCreateTenantExtras(store, slug);
+  extras.zalo_bot = bot;
+  saveStore(store);
+}
+
 export async function handleAutodataBridgeHttp(
   req: IncomingMessage,
   res: ServerResponse,
@@ -578,6 +932,7 @@ export async function handleAutodataBridgeHttp(
 
     // 1. BOOTSTRAP: Live Catalog + Default Settings + Bridge Status
     if (action === 'bootstrap' && method === 'GET') {
+      const googleClientId = resolveConfiguredGoogleClientId();
       if (upstream.reachable) {
         const [catRes, defRes] = await Promise.all([
           forwardUpstreamJson(upstream.baseUrl, '/api/v1/billing/catalog'),
@@ -591,6 +946,10 @@ export async function handleAutodataBridgeHttp(
             bridge_mode: 'upstream_rls_postgres',
             upstream_app_url: upstream.publicAppUrl,
             data: {
+              google_oauth: {
+                enabled: Boolean(googleClientId),
+                client_id: googleClientId || null,
+              },
               catalog: {
                 automation_upgrade_url: '/automation',
                 crm_upgrade_url: '/crm',
@@ -614,6 +973,10 @@ export async function handleAutodataBridgeHttp(
         bridge_mode: 'vercel_serverless_engine',
         upstream_app_url: upstream.publicAppUrl || null,
         data: {
+          google_oauth: {
+            enabled: Boolean(googleClientId),
+            client_id: googleClientId || null,
+          },
           catalog: fallbackCatalog,
           default_settings: {
             distribution_mode: 'weighted_round_robin',
@@ -678,22 +1041,35 @@ export async function handleAutodataBridgeHttp(
     if (action === 'register' && method === 'POST') {
       const body = await readJsonBody(req);
       const companyName = String(body.company_name || '').trim();
-      const slug = normalizeSlug(String(body.tenant_slug || ''));
-      const adminName = String(body.admin_name || '').trim();
+      const rawSlugInput = normalizeSlug(String(body.tenant_slug || ''));
+      const slug =
+        rawSlugInput.length >= 2
+          ? rawSlugInput
+          : normalizeSlug(`${companyName || 'ws'}-${crypto.randomBytes(3).toString('hex')}`);
+      const adminName = String(body.admin_name || '').trim() || companyName;
       const workEmail = String(body.work_email || '').trim().toLowerCase();
       const phone = String(body.phone || '').trim();
-      const password = String(body.password || '');
+      const rawPassword = String(body.password || '');
+      const googleTokenHeader = getBearerToken(req) || String(body.google_account_token || '').trim();
+      const verifiedAccountToken = googleTokenHeader ? verifyServerlessToken(googleTokenHeader) : null;
+      const isGoogleProvision = Boolean(
+        verifiedAccountToken &&
+          verifiedAccountToken.auth_provider === 'google' &&
+          verifiedAccountToken.email === workEmail
+      );
+      const password = rawPassword.length >= 8 ? rawPassword : isGoogleProvision ? crypto.randomBytes(24).toString('base64url') : rawPassword;
+      const authProvider: 'password' | 'google' = isGoogleProvision ? 'google' : 'password';
       const industry = String(body.industry || 'general').trim();
       const selectedChannels = Array.isArray(body.selected_channels)
         ? body.selected_channels.map((c) => String(c))
         : ['webhook', 'zalobot', 'meta_capi'];
 
-      if (!companyName || slug.length < 2 || !adminName || !workEmail.includes('@') || password.length < 8) {
+      if (!companyName || slug.length < 2 || !adminName || !workEmail.includes('@') || (!isGoogleProvision && password.length < 8)) {
         sendJson(res, 422, {
           success: false,
           error: {
             code: 'VALIDATION_ERROR',
-            message: 'Vui lòng điền đầy đủ Tên doanh nghiệp, Slug (>=2 ký tự), Email hợp lệ và Mật khẩu (>=8 ký tự).',
+            message: 'Vui lòng điền đầy đủ Tên doanh nghiệp, Email hợp lệ và Mật khẩu (>=8 ký tự).',
           },
         });
         return;
@@ -758,6 +1134,13 @@ export async function handleAutodataBridgeHttp(
         const webhooks = Array.isArray(intData.webhooks) ? (intData.webhooks as Array<Record<string, unknown>>) : [];
         const inboundWh = webhooks.find((w) => w.webhook_type === 'inbound') || webhooks[0] || {};
         const whToken = String(inboundWh.token || inboundWh.secret_token || '');
+        const initialZaloBot = parseSubmittedZaloBot(body.zalo_bot);
+        const store = loadStore();
+        const extras = getOrCreateTenantExtras(store, slug);
+        extras.is_external_agency = isExternalAgency;
+        if (whToken) extras.webhook_token = whToken;
+        if (initialZaloBot) extras.zalo_bot = initialZaloBot;
+        saveStore(store);
 
         sendJson(res, 201, {
           success: true,
@@ -767,11 +1150,13 @@ export async function handleAutodataBridgeHttp(
             access_token: accessToken,
             tenant: regData.tenant,
             user: regData.user,
+            zalo_bot: initialZaloBot,
             webhook_url: whToken
               ? `${upstream.publicAppUrl}/api/v1/webhooks/${slug}/${whToken}`
               : `${originHost}/api/autodata?action=webhook-test&slug=${slug}`,
             webhook_token: whToken,
             selected_channels: selectedChannels,
+            workspaces: buildWorkspaceListFromUpstream(regData),
           },
         });
         return;
@@ -823,9 +1208,10 @@ export async function handleAutodataBridgeHttp(
         phone,
         password_salt: salt,
         password_hash: passwordHash,
+        auth_provider: authProvider,
         webhook_token: webhookToken,
         plan_tier: 'starter',
-        subscription_plan_code: 'trial_3m',
+        subscription_plan_code: 'trial_1m',
         billing_cycle: 'trial',
         created_at: nowIso,
         trial_ends_at: trialEndsIso,
@@ -884,7 +1270,7 @@ export async function handleAutodataBridgeHttp(
         ],
         leads: [],
         personal_leads: [],
-        zalo_bot: null,
+        zalo_bot: parseSubmittedZaloBot(body.zalo_bot),
         transactions: [],
       };
 
@@ -910,52 +1296,30 @@ export async function handleAutodataBridgeHttp(
         }).catch(() => undefined);
       }
 
-      const accessToken = signServerlessToken({ sub: tenantId, slug, email: workEmail });
-      const subscription = computeServerlessSubscription(record, catalog);
+      const workspaces = findServerlessTenantsByEmail(store, workEmail).map((item) =>
+        buildServerlessWorkspaceSummary(item, catalog)
+      );
 
       sendJson(res, 201, {
         success: true,
         bridge_mode: 'vercel_serverless_engine',
         upstream_app_url: null,
-        data: {
-          access_token: accessToken,
-          tenant: {
-            id: record.id,
-            slug: record.slug,
-            name: record.company_name,
-            industry: record.industry,
-            plan_tier: record.plan_tier,
-            status: 'active',
-            trial_ends_at: record.trial_ends_at,
-            wallet_balance_vnd: 0,
-            subscription,
-            settings: record.settings,
-          },
-          user: {
-            id: record.reps[0].id,
-            full_name: record.admin_name,
-            email: record.work_email,
-            role: 'tenant_admin',
-          },
-          webhook_url: `${originHost}/api/autodata?action=webhook-test&slug=${slug}&token=${webhookToken}`,
-          webhook_token: webhookToken,
-          selected_channels: selectedChannels,
-        },
+        data: buildServerlessSessionData(record, originHost, catalog, workspaces, authProvider),
       });
       return;
     }
 
-    // 4. LOGIN EXISTING TENANT
+    // 4. LOGIN EXISTING TENANT (SLUG OPTIONAL -> AUTO DISCOVER WORKSPACES)
     if (action === 'login' && method === 'POST') {
       const body = await readJsonBody(req);
       const slug = normalizeSlug(String(body.tenant_slug || ''));
       const email = String(body.email || '').trim().toLowerCase();
       const password = String(body.password || '');
 
-      if (!slug || !email || !password) {
+      if (!email || !password) {
         sendJson(res, 422, {
           success: false,
-          error: { code: 'MISSING_CREDENTIALS', message: 'Vui lòng nhập đầy đủ Tenant Slug, Email và Mật khẩu.' },
+          error: { code: 'MISSING_CREDENTIALS', message: 'Vui lòng nhập đầy đủ Email và Mật khẩu.' },
         });
         return;
       }
@@ -963,17 +1327,20 @@ export async function handleAutodataBridgeHttp(
       if (upstream.reachable) {
         const loginRes = await forwardUpstreamJson(upstream.baseUrl, '/api/v1/auth/login', {
           method: 'POST',
-          body: { tenant_slug: slug, email, password },
+          body: slug ? { tenant_slug: slug, email, password } : { email, password },
         });
         if (loginRes.status !== 200) {
           sendJson(res, loginRes.status, loginRes.json);
           return;
         }
         const loginData = (loginRes.json.data || {}) as Record<string, unknown>;
+        const resolvedTenantSlug = normalizeSlug(
+          String(((loginData.tenant || {}) as Record<string, unknown>).slug || slug)
+        );
         const accessToken = String(loginData.access_token || '');
         const intRes = await forwardUpstreamJson(upstream.baseUrl, '/api/v1/integrations/overview', {
           token: accessToken,
-          tenantSlug: slug,
+          tenantSlug: resolvedTenantSlug,
         });
         const intData = (intRes.json.data || {}) as Record<string, unknown>;
         const webhooks = Array.isArray(intData.webhooks) ? (intData.webhooks as Array<Record<string, unknown>>) : [];
@@ -986,9 +1353,12 @@ export async function handleAutodataBridgeHttp(
           upstream_app_url: upstream.publicAppUrl,
           data: {
             ...loginData,
+            has_workspace: true,
+            auth_provider: 'password',
+            workspaces: buildWorkspaceListFromUpstream(loginData),
             webhook_url: whToken
-              ? `${upstream.publicAppUrl}/api/v1/webhooks/${slug}/${whToken}`
-              : `${originHost}/api/autodata?action=webhook-test&slug=${slug}`,
+              ? `${upstream.publicAppUrl}/api/v1/webhooks/${resolvedTenantSlug}/${whToken}`
+              : `${originHost}/api/autodata?action=webhook-test&slug=${resolvedTenantSlug}`,
             webhook_token: whToken,
           },
         });
@@ -996,52 +1366,185 @@ export async function handleAutodataBridgeHttp(
       }
 
       const store = loadStore();
-      const record = store.tenants[slug];
-      if (!record || record.work_email !== email) {
+      const emailCandidates = findServerlessTenantsByEmail(store, email);
+      if (emailCandidates.length === 0) {
         sendJson(res, 401, {
           success: false,
-          error: { code: 'INVALID_LOGIN', message: 'Không tìm thấy tổ chức hoặc sai thông tin đăng nhập.' },
-        });
-        return;
-      }
-      const verifyHash = crypto.scryptSync(password, record.password_salt, 64).toString('hex');
-      if (verifyHash !== record.password_hash) {
-        sendJson(res, 401, {
-          success: false,
-          error: { code: 'INVALID_LOGIN', message: 'Mật khẩu không chính xác.' },
+          error: {
+            code: 'INVALID_LOGIN',
+            message: 'Không tìm thấy Workspace nào khớp với Email này. Bạn có thể Đăng nhập với Google hoặc Tạo Workspace mới.',
+          },
         });
         return;
       }
 
+      const matchedRecords = emailCandidates.filter((candidate) => {
+        const verifyHash = crypto.scryptSync(password, candidate.password_salt, 64).toString('hex');
+        return verifyHash === candidate.password_hash;
+      });
+
+      if (matchedRecords.length === 0) {
+        sendJson(res, 401, {
+          success: false,
+          error: {
+            code: 'INVALID_LOGIN',
+            message: 'Mật khẩu không chính xác. Vui lòng thử lại hoặc Đăng nhập bằng Google.',
+          },
+        });
+        return;
+      }
+
+      const targetRecord =
+        (slug ? matchedRecords.find((item) => item.slug === slug) : undefined) || matchedRecords[0];
       const catalog = buildFallbackCatalog();
-      const accessToken = signServerlessToken({ sub: record.id, slug: record.slug, email: record.work_email });
+      const workspaces = matchedRecords.map((item) => buildServerlessWorkspaceSummary(item, catalog));
+
+      sendJson(res, 200, {
+        success: true,
+        bridge_mode: 'vercel_serverless_engine',
+        upstream_app_url: null,
+        data: buildServerlessSessionData(targetRecord, originHost, catalog, workspaces, 'password'),
+      });
+      return;
+    }
+
+    // 4B. GOOGLE SIGN-IN -> AUTO-DISCOVER WORKSPACES (OR PREPARE FIRST WORKSPACE)
+    if (action === 'google-login' && method === 'POST') {
+      const body = await readJsonBody(req);
+      const requestedSlug = normalizeSlug(String(body.tenant_slug || ''));
+      const verifiedGoogle = await verifyGoogleIdentityFromPayload(body, !upstream.reachable);
+
+      if (!verifiedGoogle.ok) {
+        sendJson(res, 401, {
+          success: false,
+          error: { code: 'GOOGLE_AUTH_FAILED', message: verifiedGoogle.message },
+        });
+        return;
+      }
+
+      const googleUser = verifiedGoogle.identity;
+      const store = loadStore();
+      const matchedRecords = findServerlessTenantsByEmail(store, googleUser.email);
+      const catalog = buildFallbackCatalog();
+      const workspaces = matchedRecords.map((item) => buildServerlessWorkspaceSummary(item, catalog));
+
+      if (matchedRecords.length === 0) {
+        const pendingToken = signServerlessToken({
+          sub: googleUser.sub,
+          slug: '__pending__',
+          email: googleUser.email,
+          auth_provider: 'google',
+        });
+        sendJson(res, 200, {
+          success: true,
+          bridge_mode: 'vercel_serverless_engine',
+          upstream_app_url: null,
+          data: {
+            has_workspace: false,
+            auth_provider: 'google',
+            access_token: pendingToken,
+            user: {
+              id: googleUser.sub,
+              full_name: googleUser.full_name,
+              email: googleUser.email,
+              avatar_url: googleUser.avatar_url,
+              role: 'tenant_admin',
+            },
+            workspaces: [],
+          },
+        });
+        return;
+      }
+
+      const targetRecord =
+        (requestedSlug ? matchedRecords.find((item) => item.slug === requestedSlug) : undefined) ||
+        matchedRecords[0];
+
       sendJson(res, 200, {
         success: true,
         bridge_mode: 'vercel_serverless_engine',
         upstream_app_url: null,
         data: {
-          access_token: accessToken,
-          tenant: {
-            id: record.id,
-            slug: record.slug,
-            name: record.company_name,
-            industry: record.industry,
-            plan_tier: record.plan_tier,
-            status: 'active',
-            trial_ends_at: record.trial_ends_at,
-            wallet_balance_vnd: record.wallet_balance_vnd,
-            subscription: computeServerlessSubscription(record, catalog),
-            settings: record.settings,
-          },
+          ...buildServerlessSessionData(targetRecord, originHost, catalog, workspaces, 'google'),
           user: {
-            id: record.reps[0]?.id || record.id,
-            full_name: record.admin_name,
-            email: record.work_email,
+            id: targetRecord.reps[0]?.id || targetRecord.id,
+            full_name: googleUser.full_name || targetRecord.admin_name,
+            email: googleUser.email,
+            avatar_url: googleUser.avatar_url,
             role: 'tenant_admin',
           },
-          webhook_url: `${originHost}/api/autodata?action=webhook-test&slug=${record.slug}&token=${record.webhook_token}`,
-          webhook_token: record.webhook_token,
         },
+      });
+      return;
+    }
+
+    // 4C. LIST & SWITCH WORKSPACES FOR AUTHENTICATED ACCOUNT (NO SLUG REQUIRED)
+    if (action === 'workspaces' && method === 'GET') {
+      const token = getBearerToken(req);
+      const verified = verifyServerlessToken(token);
+      if (!verified || !verified.email) {
+        sendJson(res, 401, {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Phiên đăng nhập hết hạn hoặc không hợp lệ.' },
+        });
+        return;
+      }
+      const store = loadStore();
+      const catalog = buildFallbackCatalog();
+      const records = findServerlessTenantsByEmail(store, verified.email);
+      const workspaces = records.map((item) => buildServerlessWorkspaceSummary(item, catalog));
+      sendJson(res, 200, {
+        success: true,
+        bridge_mode: 'vercel_serverless_engine',
+        data: {
+          email: verified.email,
+          workspaces,
+        },
+      });
+      return;
+    }
+
+    if (action === 'switch-workspace' && method === 'POST') {
+      const token = getBearerToken(req);
+      const verified = verifyServerlessToken(token);
+      const body = await readJsonBody(req);
+      const targetSlug = normalizeSlug(String(body.tenant_slug || ''));
+
+      if (!verified || !verified.email) {
+        sendJson(res, 401, {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: 'Phiên đăng nhập hết hạn hoặc không hợp lệ.' },
+        });
+        return;
+      }
+      if (!targetSlug) {
+        sendJson(res, 422, {
+          success: false,
+          error: { code: 'MISSING_WORKSPACE', message: 'Vui lòng chọn Workspace cần chuyển đổi.' },
+        });
+        return;
+      }
+
+      const store = loadStore();
+      const ownedRecords = findServerlessTenantsByEmail(store, verified.email);
+      const targetRecord = ownedRecords.find((item) => item.slug === targetSlug);
+      if (!targetRecord) {
+        sendJson(res, 403, {
+          success: false,
+          error: { code: 'WORKSPACE_ACCESS_DENIED', message: 'Bạn không có quyền truy cập Workspace này.' },
+        });
+        return;
+      }
+
+      const catalog = buildFallbackCatalog();
+      const workspaces = ownedRecords.map((item) => buildServerlessWorkspaceSummary(item, catalog));
+      const authProvider = verified.auth_provider === 'google' ? 'google' : 'password';
+
+      sendJson(res, 200, {
+        success: true,
+        bridge_mode: 'vercel_serverless_engine',
+        upstream_app_url: null,
+        data: buildServerlessSessionData(targetRecord, originHost, catalog, workspaces, authProvider),
       });
       return;
     }
@@ -1065,6 +1568,12 @@ export async function handleAutodataBridgeHttp(
           const webhooks = Array.isArray(intData.webhooks) ? (intData.webhooks as Array<Record<string, unknown>>) : [];
           const inboundWh = webhooks.find((w) => w.webhook_type === 'inbound') || webhooks[0] || {};
           const whToken = String(inboundWh.token || inboundWh.secret_token || '');
+          const store = loadStore();
+          const extras = getOrCreateTenantExtras(store, slug);
+          if (whToken && extras.webhook_token !== whToken) {
+            extras.webhook_token = whToken;
+            saveStore(store);
+          }
 
           sendJson(res, 200, {
             success: true,
@@ -1073,6 +1582,11 @@ export async function handleAutodataBridgeHttp(
             data: {
               ...billData,
               leads: Array.isArray(leadsData.items) ? leadsData.items : [],
+              personal_leads: Array.isArray(billData.personal_leads)
+                ? billData.personal_leads
+                : extras.personal_leads.slice(0, 50),
+              zalo_bot: (billData.zalo_bot as ServerlessZaloBotConfig | undefined) ?? extras.zalo_bot ?? null,
+              is_external_agency: Boolean(billData.is_external_agency ?? extras.is_external_agency ?? false),
               webhook_url: whToken
                 ? `${upstream.publicAppUrl}/api/v1/webhooks/${slug}/${whToken}`
                 : '',
@@ -1103,6 +1617,9 @@ export async function handleAutodataBridgeHttp(
       }
 
       const catalog = buildFallbackCatalog();
+      const workspaces = findServerlessTenantsByEmail(store, record.work_email).map((item) =>
+        buildServerlessWorkspaceSummary(item, catalog)
+      );
       sendJson(res, 200, {
         success: true,
         bridge_mode: 'vercel_serverless_engine',
@@ -1117,6 +1634,7 @@ export async function handleAutodataBridgeHttp(
           is_external_agency: Boolean(record.settings.is_external_agency),
           webhook_url: `${originHost}/api/autodata?action=webhook-test&slug=${record.slug}&token=${record.webhook_token}`,
           webhook_token: record.webhook_token,
+          workspaces,
         },
       });
       return;
@@ -1147,30 +1665,73 @@ export async function handleAutodataBridgeHttp(
       if (String(body.sync_direction || '').trim() === 'sheet_to_autodata') {
         const saleStatus = String(body.sale_status || 'Đã liên hệ').trim();
         const saleNote = String(body.sale_note || '').trim();
-        const cleanSyncDigits = leadPhone.replace(/\D/g, '');
+        const normalizedSyncPhone = normalizeVietnamPhone(leadPhone);
         const store = loadStore();
         const verified = token ? verifyServerlessToken(token) : null;
         const targetSlug = slug || verified?.slug || '';
-        const record = store.tenants[targetSlug];
+        const record = targetSlug ? store.tenants[targetSlug] : undefined;
+        const extras = targetSlug ? store.tenant_extras?.[targetSlug] : undefined;
+
+        let authorizedSync = false;
+        if (record) {
+          authorizedSync =
+            (verified !== null && verified.slug === targetSlug) ||
+            (Boolean(whToken) && record.webhook_token === whToken);
+        } else if (targetSlug && upstream.reachable) {
+          if (Boolean(whToken) && extras?.webhook_token && extras.webhook_token === whToken) {
+            authorizedSync = true;
+          } else if (token) {
+            const authCheck = await authenticateTenantAccess(token, targetSlug, upstream);
+            authorizedSync = authCheck.authorized;
+          }
+        }
+
+        if (!targetSlug || !authorizedSync) {
+          sendJson(res, 401, {
+            success: false,
+            error: {
+              code: 'WEBHOOK_UNAUTHORIZED',
+              message: 'Webhook Token hoặc phiên xác thực đồng bộ Google Sheets không hợp lệ.',
+            },
+          });
+          return;
+        }
+
+        let updatedPersonal = false;
         if (record && Array.isArray(record.personal_leads)) {
           const matchedPersonal = record.personal_leads.find(
-            (p) => p.phone.replace(/\D/g, '') === cleanSyncDigits
+            (p) => normalizeVietnamPhone(p.phone) === normalizedSyncPhone
           );
           if (matchedPersonal) {
             if (saleNote) matchedPersonal.note = saleNote;
             matchedPersonal.sheet_sync_status = `Đã đồng bộ ngược từ Sheet (${saleStatus})`;
-            saveStore(store);
+            updatedPersonal = true;
           }
         }
+        if (extras && Array.isArray(extras.personal_leads)) {
+          const matchedExtra = extras.personal_leads.find(
+            (p) => normalizeVietnamPhone(p.phone) === normalizedSyncPhone
+          );
+          if (matchedExtra) {
+            if (saleNote) matchedExtra.note = saleNote;
+            matchedExtra.sheet_sync_status = `Đã đồng bộ ngược từ Sheet (${saleStatus})`;
+            updatedPersonal = true;
+          }
+        }
+        if (updatedPersonal) {
+          saveStore(store);
+        }
+
         sendJson(res, 200, {
           success: true,
           bridge_mode: upstream.reachable ? 'upstream_rls_postgres' : 'vercel_serverless_engine',
           data: {
             synced: true,
             direction: 'sheet_to_autodata',
+            sync_direction: 'sheet_to_autodata',
             phone: leadPhone,
             sale_status: saleStatus,
-            capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
+            capi_status: 'Đã gửi tín hiệu chuyển đổi tối ưu Meta Ads',
             latency_ms: Math.max(1, Date.now() - startedAt),
           },
         });
@@ -1242,7 +1803,7 @@ export async function handleAutodataBridgeHttp(
             distribution_mode: resolvedDistMode,
             masked_phone: maskPhone(leadPhone),
             latency_ms: latencyMs,
-            capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
+            capi_status: 'Đã gửi tín hiệu chuyển đổi tối ưu Meta Ads',
             zalobot_status: assignedToId
               ? 'Đã đẩy thông báo nhận số SLA'
               : 'Đang giữ tại Hàng đợi chờ phân bổ',
@@ -1257,8 +1818,12 @@ export async function handleAutodataBridgeHttp(
       const verified = token ? verifyServerlessToken(token) : null;
       const targetSlug = slug || verified?.slug || '';
       const record = store.tenants[targetSlug];
+      const authorizedWebhook =
+        Boolean(record) &&
+        ((verified !== null && verified.slug === targetSlug) ||
+          (Boolean(whToken) && record.webhook_token === whToken));
 
-      if (!record || (whToken && record.webhook_token !== whToken && !verified)) {
+      if (!record || !authorizedWebhook) {
         sendJson(res, 401, {
           success: false,
           error: { code: 'WEBHOOK_UNAUTHORIZED', message: 'Webhook Token hoặc định danh tổ chức không hợp lệ.' },
@@ -1266,12 +1831,12 @@ export async function handleAutodataBridgeHttp(
         return;
       }
 
-      const cleanDigits = leadPhone.replace(/\D/g, '');
+      const normalizedInboundPhone = normalizeVietnamPhone(leadPhone);
       const dedupWindowDays = Math.max(0, Number(record.settings.duplicate_threshold_days ?? 90));
       const existingLead =
         dedupWindowDays > 0
           ? record.leads.find((l) => {
-              if (l.phone.replace(/\D/g, '') !== cleanDigits) return false;
+              if (normalizeVietnamPhone(l.phone) !== normalizedInboundPhone) return false;
               const ageDays = (Date.now() - new Date(l.created_at).getTime()) / 86_400_000;
               return ageDays <= dedupWindowDays;
             })
@@ -1311,7 +1876,7 @@ export async function handleAutodataBridgeHttp(
             is_duplicate: true,
             distribution_mode: record.settings.distribution_mode,
             latency_ms: latencyMs,
-            capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
+            capi_status: 'Đã gửi tín hiệu chuyển đổi tối ưu Meta Ads',
             zalobot_status: `Đã cập nhật hồ sơ gốc & nhắc ${existingLead.assigned_to_name}`,
           },
         });
@@ -1389,7 +1954,7 @@ export async function handleAutodataBridgeHttp(
           is_duplicate: isDuplicate,
           distribution_mode: record.settings.distribution_mode,
           latency_ms: latencyMs,
-          capi_status: 'HTTP 200 Event Queued (Meta Graph v21.0)',
+          capi_status: 'Đã gửi tín hiệu chuyển đổi tối ưu Meta Ads',
           zalobot_status: assignedToId
             ? `Đã bắn ZaloBot cho ${assignedToName} (SLA ${record.settings.default_sla_minutes}p)`
             : 'Đang giữ tại Giỏ chờ duyệt tay (Chế độ Manual Queue)',
@@ -1621,11 +2186,123 @@ export async function handleAutodataBridgeHttp(
       return;
     }
 
+    // 7b. ZALO BOT AUTO-FETCH LATEST CHAT ID VIA getUpdates
+    if (action === 'zalo-updates' && method === 'POST') {
+      const body = await readJsonBody(req);
+      const rawBotToken = String(body.bot_token || '').trim();
+      if (rawBotToken.length < 10) {
+        sendJson(res, 422, {
+          success: false,
+          error: {
+            code: 'INVALID_ZALO_BOT_TOKEN',
+            message: 'Vui lòng dán Bot Token hợp lệ từ bot.zaloplatforms.com trước khi lấy Chat ID.',
+          },
+        });
+        return;
+      }
+
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 7000);
+      try {
+        const updResp = await fetch(
+          `https://bot-api.zaloplatforms.com/bot${encodeURIComponent(rawBotToken)}/getUpdates`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ timeout: 2 }),
+            signal: ctrl.signal,
+          }
+        );
+        const updJson = (await updResp.json().catch(() => ({}))) as {
+          ok?: boolean;
+          description?: string;
+          result?: unknown;
+        };
+
+        if (!updResp.ok || updJson.ok === false) {
+          sendJson(res, 422, {
+            success: false,
+            error: {
+              code: 'ZALO_GET_UPDATES_FAILED',
+              message:
+                updJson.description ||
+                'Không đọc được tin nhắn mới từ Zalo Bot Platform. Kiểm tra lại Bot Token hoặc đảm bảo Bot chưa gắn Webhook khác.',
+            },
+          });
+          return;
+        }
+
+        const rawResult = updJson.result;
+        const updatesList: Array<Record<string, unknown>> = Array.isArray(rawResult)
+          ? (rawResult as Array<Record<string, unknown>>)
+          : rawResult && typeof rawResult === 'object'
+            ? [rawResult as Record<string, unknown>]
+            : [];
+
+        let foundChatId = '';
+        let senderLabel = '';
+        for (let i = updatesList.length - 1; i >= 0; i -= 1) {
+          const item = updatesList[i];
+          const msg =
+            (item.message as Record<string, unknown> | undefined) ||
+            (item.edited_message as Record<string, unknown> | undefined) ||
+            item;
+          const chatObj = msg?.chat as Record<string, unknown> | undefined;
+          const fromObj = msg?.from as Record<string, unknown> | undefined;
+          const candidateId = chatObj?.id ?? fromObj?.id ?? msg?.chat_id;
+          if (candidateId !== undefined && candidateId !== null && String(candidateId).trim()) {
+            foundChatId = String(candidateId).trim();
+            senderLabel = String(
+              chatObj?.title || fromObj?.display_name || fromObj?.name || 'Zalo Chat'
+            );
+            break;
+          }
+        }
+
+        if (!foundChatId) {
+          sendJson(res, 422, {
+            success: false,
+            error: {
+              code: 'NO_ZALO_UPDATES_FOUND',
+              message:
+                'Chưa thấy tin nhắn nào gửi tới Bot. Hãy mở Zalo, tìm Bot bạn vừa tạo (hoặc thêm vào nhóm Sale) và gửi 1 tin nhắn bất kỳ (VD: /chatid) rồi bấm lại nút này.',
+            },
+          });
+          return;
+        }
+
+        sendJson(res, 200, {
+          success: true,
+          data: {
+            chat_id: foundChatId,
+            sender_label: senderLabel,
+          },
+        });
+      } catch (err: unknown) {
+        sendJson(res, 502, {
+          success: false,
+          error: {
+            code: 'ZALO_NETWORK_ERROR',
+            message:
+              err instanceof Error && err.name === 'AbortError'
+                ? 'Hết thời gian kết nối tới bot-api.zaloplatforms.com.'
+                : 'Không thể kết nối tới Zalo Bot Platform.',
+          },
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+      return;
+    }
+
     // 8. ZALO BOT LIVE CONNECTION VERIFICATION TEST (LIVE API + SANDBOX MODE)
     if (action === 'zalo-verify' && method === 'POST') {
       const startedAt = Date.now();
       const body = await readJsonBody(req);
       const token = getBearerToken(req);
+      const requestedSlug = normalizeSlug(
+        String(body.tenant_slug || urlObj.searchParams.get('slug') || getTenantSlugHeader(req, urlObj))
+      );
       const verifyMode = String(body.mode || 'live').trim().toLowerCase();
       const rawBotToken = String(body.bot_token || '').trim();
       const chatId = String(body.chat_id || '').trim();
@@ -1642,13 +2319,10 @@ export async function handleAutodataBridgeHttp(
           verified_at: new Date().toISOString(),
         };
 
-        const verifiedUser = token ? verifyServerlessToken(token) : null;
-        if (verifiedUser) {
-          const store = loadStore();
-          const tenantRec = store.tenants[verifiedUser.slug];
-          if (tenantRec) {
-            tenantRec.zalo_bot = savedBot;
-            saveStore(store);
+        if (token) {
+          const auth = await authenticateTenantAccess(token, requestedSlug, upstream);
+          if (auth.authorized && auth.slug) {
+            persistZaloBotForTenant(auth.slug, savedBot);
           }
         }
 
@@ -1661,7 +2335,7 @@ export async function handleAutodataBridgeHttp(
             bot_name: savedBot.bot_name,
             chat_id: resolvedChatId,
             message_sent: true,
-            preview_message: `✅ [DOMATION Auto Data] Xác thực luồng Bridge thành công tới /chatid ${resolvedChatId}! Khi có Lead mới, Sale sẽ nhận tin dưới 4 giây.`,
+            preview_message: `✅ [DOMATION Auto Data] Xác thực luồng Bridge thành công tới /chatid ${resolvedChatId}! Khi có Lead mới, Sale sẽ nhận tin tức thì.`,
             latency_ms: latencyMs,
           },
         });
@@ -1726,7 +2400,7 @@ export async function handleAutodataBridgeHttp(
           String(getMeJson.result?.account_name || getMeJson.result?.name || 'Zalo Sale Notifier Bot');
         let messageSent = false;
         const testText =
-          '✅ [DOMATION Auto Data] Kết nối Zalo Bot trực tiếp thành công! Chuyên viên Sale đã sẵn sàng nhận thông báo Lead < 4 giây.';
+          '✅ [DOMATION Auto Data] Kết nối Zalo Bot trực tiếp thành công! Chuyên viên Sale đã sẵn sàng nhận thông báo Lead tức thì.';
 
         if (sendTestMsg) {
           const msgResp = await fetch(
@@ -1769,13 +2443,10 @@ export async function handleAutodataBridgeHttp(
           verified_at: new Date().toISOString(),
         };
 
-        const verifiedUser = token ? verifyServerlessToken(token) : null;
-        if (verifiedUser) {
-          const store = loadStore();
-          const tenantRec = store.tenants[verifiedUser.slug];
-          if (tenantRec) {
-            tenantRec.zalo_bot = savedBot;
-            saveStore(store);
+        if (token) {
+          const auth = await authenticateTenantAccess(token, requestedSlug, upstream);
+          if (auth.authorized && auth.slug) {
+            persistZaloBotForTenant(auth.slug, savedBot);
           }
         }
 
@@ -1813,31 +2484,85 @@ export async function handleAutodataBridgeHttp(
     // 9. SALE PORT PERSONAL LEADS (BYPASS ROUND-ROBIN, 0 QUOTA IMPACT, EXEMPT SLA RECALL, 2-WAY SHEETS SYNC)
     if (action === 'personal-lead' && (method === 'POST' || method === 'GET')) {
       const token = getBearerToken(req);
-      const verified = token ? verifyServerlessToken(token) : null;
-      const slug = normalizeSlug(urlObj.searchParams.get('slug') || getTenantSlugHeader(req, urlObj) || verified?.slug || '');
+      const requestedSlug = normalizeSlug(urlObj.searchParams.get('slug') || getTenantSlugHeader(req, urlObj));
+      const auth = await authenticateTenantAccess(token, requestedSlug, upstream);
+      if (!auth.authorized || !auth.slug) {
+        sendJson(res, 401, {
+          success: false,
+          error: {
+            code: 'UNAUTHORIZED_PERSONAL_LEAD',
+            message: 'Vui lòng đăng nhập Workspace để truy cập hoặc lưu dữ liệu tại Cổng Sale Cá Nhân.',
+          },
+        });
+        return;
+      }
+
       const store = loadStore();
-      const record = slug ? store.tenants[slug] : undefined;
+      const record = store.tenants[auth.slug];
+      const extras = getOrCreateTenantExtras(store, auth.slug);
 
       if (method === 'GET') {
+        const primaryList =
+          Array.isArray(record?.personal_leads) && record.personal_leads.length > 0
+            ? record.personal_leads
+            : extras.personal_leads;
         sendJson(res, 200, {
           success: true,
-          bridge_mode: 'vercel_serverless_engine',
+          bridge_mode: auth.mode,
           data: {
-            items: record?.personal_leads || [],
+            items: primaryList || [],
           },
         });
         return;
       }
 
       const body = await readJsonBody(req);
-      const leadName = String(body.name || '').trim();
-      const leadPhone = String(body.phone || '').trim();
-      const saleOwnerName = String(body.sale_owner_name || record?.admin_name || 'Chuyên viên Sale Nội Bộ #01').trim();
-      const productInterest = String(body.product_interest || 'Khách hàng khai thác cá nhân').trim();
-      const note = String(body.note || 'Khách tự nhập tại Cổng Sale Cá Nhân').trim();
-      const sheetSyncEnabled = body.sheet_sync_enabled !== false;
+      const defaultOwner = String(
+        body.sale_owner_name || record?.admin_name || 'Chuyên viên Sale Nội Bộ #01'
+      ).trim();
+      const defaultSheetSync = body.sheet_sync_enabled !== false;
 
-      if (!leadName || leadPhone.replace(/\D/g, '').length < 9) {
+      const rawCandidates: Array<Record<string, unknown>> = Array.isArray(body.items)
+        ? (body.items.filter((it) => it && typeof it === 'object') as Array<Record<string, unknown>>)
+        : [body];
+
+      const createdItems: ServerlessPersonalLeadRecord[] = [];
+      for (const candidate of rawCandidates.slice(0, 200)) {
+        const leadName = String(candidate.name || '').trim();
+        const leadPhone = String(candidate.phone || '').trim();
+        const normalizedPhone = normalizeVietnamPhone(leadPhone);
+        if (!leadName || normalizedPhone.length < 9) continue;
+
+        const saleOwnerName = String(candidate.sale_owner_name || defaultOwner).trim();
+        const productInterest = String(
+          candidate.product_interest || body.product_interest || 'Khách hàng khai thác cá nhân'
+        ).trim();
+        const note = String(
+          candidate.note || body.note || 'Khách tự nhập tại Cổng Sale Cá Nhân'
+        ).trim();
+        const sheetSyncEnabled =
+          candidate.sheet_sync_enabled !== undefined
+            ? Boolean(candidate.sheet_sync_enabled)
+            : defaultSheetSync;
+
+        createdItems.push({
+          id: `plead_${crypto.randomUUID().slice(0, 8)}`,
+          name: leadName,
+          phone: leadPhone,
+          sale_owner_name: saleOwnerName,
+          product_interest: productInterest,
+          note,
+          sheet_sync_status: sheetSyncEnabled
+            ? `Đồng bộ 2 chiều ↔ Google Sheet riêng (${saleOwnerName})`
+            : 'Lưu nội bộ trên Cổng Sale Cá Nhân',
+          bypass_round_robin: true,
+          quota_impact: 0,
+          sla_recall_exempt: true,
+          created_at: new Date().toISOString(),
+        });
+      }
+
+      if (createdItems.length === 0) {
         sendJson(res, 422, {
           success: false,
           error: {
@@ -1848,38 +2573,29 @@ export async function handleAutodataBridgeHttp(
         return;
       }
 
-      const item: ServerlessPersonalLeadRecord = {
-        id: `plead_${crypto.randomUUID().slice(0, 8)}`,
-        name: leadName,
-        phone: leadPhone,
-        sale_owner_name: saleOwnerName,
-        product_interest: productInterest,
-        note,
-        sheet_sync_status: sheetSyncEnabled
-          ? `Đồng bộ 2 chiều ↔ Google Sheet riêng (${saleOwnerName})`
-          : 'Lưu nội bộ trên Cổng Sale Cá Nhân',
-        bypass_round_robin: true,
-        quota_impact: 0,
-        sla_recall_exempt: true,
-        created_at: new Date().toISOString(),
-      };
-
       if (record) {
         if (!Array.isArray(record.personal_leads)) {
           record.personal_leads = [];
         }
-        record.personal_leads.unshift(item);
-        if (record.personal_leads.length > 100) record.personal_leads.length = 100;
-        saveStore(store);
+        record.personal_leads.unshift(...createdItems);
+        if (record.personal_leads.length > 200) record.personal_leads.length = 200;
       }
+      extras.personal_leads.unshift(...createdItems);
+      if (extras.personal_leads.length > 200) extras.personal_leads.length = 200;
+      extras.updated_at = new Date().toISOString();
+      saveStore(store);
 
       sendJson(res, 201, {
         success: true,
-        bridge_mode: 'vercel_serverless_engine',
+        bridge_mode: auth.mode,
         data: {
-          item,
+          item: createdItems[0],
+          items: createdItems,
+          imported_count: createdItems.length,
           policy_summary:
-            'Đã lưu thẳng vào Cổng Sale Cá Nhân: Bỏ qua Vòng Chia (Bypass Round-Robin), Không trừ Quota Ads (0 Quota), Miễn thu hồi SLA 15p.',
+            createdItems.length > 1
+              ? `Đã import ${createdItems.length} khách hàng riêng vào Cổng Sale Cá Nhân: Bỏ qua Vòng Chia, Không trừ Quota Ads (0 Quota).`
+              : 'Đã lưu thẳng vào Cổng Sale Cá Nhân: Bỏ qua Vòng Chia, Không trừ Quota Ads (0 Quota).',
         },
       });
       return;

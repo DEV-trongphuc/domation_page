@@ -114,7 +114,7 @@ export const IdeasLanding: React.FC = () => {
     if (metaDesc) {
       metaDesc.setAttribute(
         'content',
-        'Trang tổng hợp liên kết truy cập các ứng dụng phần mềm được tùy biến chuyên biệt dành cho Viện IDEAS: Marketing Automation, Meta Report, Chia data Auto, Misa CRM Report.'
+        'Trang tổng hợp liên kết truy cập các ứng dụng phần mềm được tùy biến chuyên biệt dành cho Viện IDEAS: Marketing Automation, Meta Report, Chia data Auto, CRM Report.'
       );
     }
   }, []);
@@ -277,12 +277,12 @@ export const IdeasLanding: React.FC = () => {
         <p className="text-slate-400 text-[10px] uppercase tracking-[0.2em]">
           Powered by{' '}
           <a
-            href="https://fb.com/turni0"
+            href="https://turnio.vercel.app/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="text-[#1E40FF] hover:underline font-bold"
           >
-            TurnioDEV
+            Turnio DEV
           </a>
         </p>
       </footer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, ExternalLink, Sparkles } from 'lucide-react';
+import { Award, Sparkles } from 'lucide-react';
 import {
   F1_AGENCY_PARTNERS,
   FLAGSHIP_PARTNERS,
@@ -67,7 +67,7 @@ export const PartnersTrustSection: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Crisp Pills + Link */}
+                {/* Crisp Pills */}
                 <div className="lg:col-span-3 flex flex-wrap items-center lg:justify-end gap-2">
                   {partner.metrics.map((metric) => (
                     <span
@@ -77,18 +77,6 @@ export const PartnersTrustSection: React.FC = () => {
                       {metric}
                     </span>
                   ))}
-
-                  {partner.url && (
-                    <a
-                      href={partner.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E40FF] hover:text-cyan-600 ml-1 shrink-0"
-                    >
-                      <span>Live</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  )}
                 </div>
               </div>
             );
