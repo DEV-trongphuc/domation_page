@@ -1,6 +1,7 @@
 import React from 'react';
 import { Award, Sparkles } from 'lucide-react';
 import {
+  ECOSYSTEM_PARTNERS,
   F1_AGENCY_PARTNERS,
   FLAGSHIP_PARTNERS,
 } from '../data/enterpriseData';
@@ -37,12 +38,18 @@ export const PartnersTrustSection: React.FC = () => {
               >
                 {/* Logo & Name */}
                 <div className="lg:col-span-4 flex items-center gap-4">
-                  <div className="h-14 w-36 sm:w-40 px-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center gap-2 shrink-0">
+                  <div className="h-16 w-40 sm:w-44 px-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center gap-2 shrink-0 overflow-hidden">
                     <img
                       src={partner.logo}
                       alt={partner.name}
                       loading="lazy"
-                      className="h-8 max-w-[115px] object-contain"
+                      className={
+                        partner.id === 'ideas-business'
+                          ? 'h-11 max-w-[138px] object-contain'
+                          : partner.id === 'richland'
+                            ? 'h-10 max-w-[120px] object-contain'
+                            : 'h-9 max-w-[125px] object-contain'
+                      }
                     />
                     {isInkica && (
                       <span className="text-base font-bold tracking-tight text-slate-900 select-none">
@@ -117,6 +124,43 @@ export const PartnersTrustSection: React.FC = () => {
                   <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">{f1.note}</p>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Ecosystem Brand Logos — All Cooperating Enterprises */}
+        <div className="mt-7 rounded-[24px] bg-white/80 backdrop-blur-xl border border-slate-200/80 p-5 sm:p-7">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3.5 border-b border-slate-200/70">
+            <div className="text-xs font-semibold uppercase tracking-wider text-slate-800">
+              CÁC DOANH NGHIỆP &amp; THƯƠNG HIỆU ĐÃ HỢP TÁC
+            </div>
+            <span className="text-[11px] font-medium text-slate-500">
+              {ECOSYSTEM_PARTNERS.length}+ Thương hiệu Đa Ngành (F&amp;B • BĐS • Giáo dục • Y tế • Bán lẻ)
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            {ECOSYSTEM_PARTNERS.map((brand) => (
+              <a
+                key={brand.name}
+                href={brand.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`${brand.name} • ${brand.industry}`}
+                className="group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 p-3.5 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
+              >
+                <div className="h-10 w-full flex items-center justify-center">
+                  <img
+                    src={brand.image}
+                    alt={brand.name}
+                    loading="lazy"
+                    className="max-h-9 max-w-[110px] w-auto object-contain grayscale-[15%] group-hover:grayscale-0 transition-all"
+                  />
+                </div>
+                <span className="text-[11px] font-semibold text-slate-700 group-hover:text-[#1E40FF] truncate w-full">
+                  {brand.name}
+                </span>
+              </a>
             ))}
           </div>
         </div>
