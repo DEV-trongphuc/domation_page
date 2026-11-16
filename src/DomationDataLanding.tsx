@@ -433,7 +433,7 @@ export function DomationDataLanding() {
         mobileContactLabel={session ? 'Workspace' : 'Dùng thử'}
       />
 
-      <main className="relative z-10 pt-22 sm:pt-28 md:pt-32">
+      <main className="relative z-10 pt-28 sm:pt-32 md:pt-36">
         {/* ====================================================================
             HERO SECTION — DOMATION Clean Glass & Royal-to-Sky Aesthetics
            ==================================================================== */}
@@ -536,7 +536,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           REAL PARTNERS STRIP (#partners)
          ==================================================================== */}
-      <section id="partners" className="py-10 sm:py-18 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/65 sm:bg-white/55 sm:backdrop-blur-md">
+      <section id="partners" className="py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/65 sm:bg-white/55 sm:backdrop-blur-md">
         <div className="max-w-7xl mx-auto space-y-6 sm:space-y-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 text-center md:text-left">
             <div className="max-w-2xl mx-auto md:mx-0">
@@ -611,7 +611,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           INDUSTRIES FIT (#industries) — Mobile SlideDots + Desktop Swiss Grid
          ==================================================================== */}
-      <section id="industries" className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8">
+      <section id="industries" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-12 text-center md:text-left">
             <div className="max-w-2xl mx-auto md:mx-0">
@@ -811,7 +811,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           DEEP AUTO DATA ROUTER MECHANICS (#router-engine) — Mobile SlideDots + Swiss Grid
          ==================================================================== */}
-      <section id="router-engine" className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-white/60 sm:bg-white/40 sm:backdrop-blur-sm">
+      <section id="router-engine" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-white/60 sm:bg-white/40 sm:backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-10 text-center md:text-left">
             <div className="max-w-2xl mx-auto md:mx-0">
@@ -938,7 +938,7 @@ export function DomationDataLanding() {
          ==================================================================== */}
       <section
         id="ai-quality-compensation"
-        className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-gradient-to-b from-white/75 via-[#F4F8FF]/55 to-white/60 sm:backdrop-blur-sm"
+        className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-gradient-to-b from-white/75 via-[#F4F8FF]/55 to-white/60 sm:backdrop-blur-sm"
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-12 text-center md:text-left">
@@ -1129,7 +1129,7 @@ export function DomationDataLanding() {
          ==================================================================== */}
       <section
         id="sale-port"
-        className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/60 sm:bg-white/45 sm:backdrop-blur-sm"
+        className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/60 sm:bg-white/45 sm:backdrop-blur-sm"
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-5 mb-6 sm:mb-12 text-center lg:text-left">
@@ -1336,7 +1336,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           OMNI-CHANNEL FLOW (#omni-channel) — Mobile SlideDots + Desktop Hub
          ==================================================================== */}
-      <section id="omni-channel" className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8">
+      <section id="omni-channel" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-12 text-center md:text-left">
             <div className="max-w-2xl mx-auto md:mx-0">
@@ -1514,7 +1514,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           EXECUTIVE ONBOARDING PROMISE (#zalo-connect-guide) — Mobile SlideDots + Swiss Grid
          ==================================================================== */}
-      <section id="zalo-connect-guide" className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/60 sm:bg-white/55 sm:backdrop-blur-sm">
+      <section id="zalo-connect-guide" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/60 sm:bg-white/55 sm:backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-5 mb-6 sm:mb-12 text-center lg:text-left">
             <div className="max-w-2xl mx-auto lg:mx-0">
@@ -1639,7 +1639,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           REAL PRODUCT SCREENSHOTS GALLERY (#screenshots)
          ==================================================================== */}
-      <section id="screenshots" className="py-12 sm:py-22 px-4 sm:px-6 lg:px-8 border-b border-slate-200/70">
+      <section id="screenshots" className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200/70">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-12 text-center md:text-left">
             <div className="max-w-2xl mx-auto md:mx-0">
@@ -1726,7 +1726,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           LIVE DYNAMIC PRICING (#pricing) — Mobile SlideDots + Desktop Hairline Matrix
          ==================================================================== */}
-      <section id="pricing" className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8">
+      <section id="pricing" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 sm:mb-12 text-center md:text-left">
             <div className="max-w-2xl mx-auto md:mx-0">
@@ -2039,7 +2039,7 @@ export function DomationDataLanding() {
       {/* ====================================================================
           ECOSYSTEM UPGRADE PATHS (#crm-erp-upgrade) — Mobile SlideDots + Desktop Grid
          ==================================================================== */}
-      <section id="crm-erp-upgrade" className="scroll-mt-24 py-12 sm:py-22 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-white/60 sm:bg-white/45 sm:backdrop-blur-sm">
+      <section id="crm-erp-upgrade" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-white/60 sm:bg-white/45 sm:backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-5 mb-6 sm:mb-12 text-center lg:text-left">
             <div className="max-w-2xl mx-auto lg:mx-0">
