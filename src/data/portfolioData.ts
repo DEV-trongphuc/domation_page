@@ -113,7 +113,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     category: 'Y Tế & Nha Khoa',
     year: '2026',
     logo: '/assets/partners/partner_flora.webp',
-    previewImage: '/assets/flora/flora_architecture.webp',
+    previewImage: '/assets/flora/flora_admin_dashboard.webp',
     liveUrl: 'https://nhakhoaflora.com',
     problem:
       'Xây dựng mạng lưới Affiliate KOL & Bác sĩ giới thiệu gói dịch vụ nha khoa (Care Plus, White Up, Implant), tự động đối soát thanh toán VietQR ACB và chi trả hoa hồng minh bạch.',
