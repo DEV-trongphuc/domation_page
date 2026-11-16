@@ -19,7 +19,6 @@ import { DomationFooter } from './components/DomationFooter';
 import { BOOST_ARTICLES } from './data/boostArticles';
 import { BOOST_PILLAR_META, INDUSTRY_PAIN_PLAYBOOK } from './data/boostSeoData';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
-import { BoostSeoClusterSection } from './components/BoostSeoClusterSection';
 import { BOOST_FAQS, getBoostHubSeoConfig } from './data/boostRouteSeo';
 import { DOMATION_NAV_EVENT, handleSpaLinkClick } from './utils/navigation';
 import { usePageSeo } from './utils/seo';
@@ -140,7 +139,7 @@ export const BoostHubPage: React.FC = () => {
               <div className="space-y-2.5 max-w-3xl">
                 <div className="ql-eyebrow">
                   <BookOpen className="w-3.5 h-3.5 text-[#1E40FF]" />
-                  <span>BLOG DOMATION • 74+ BÀI SEO, VIBECODE, AI 5.0 &amp; ERP MAY ĐO</span>
+                  <span>BLOG DOMATION • ERP MAY ĐO, VIBECODE &amp; AI 5.0</span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl xl:text-[42px] font-extrabold text-slate-900 leading-[1.2] tracking-tight">
                   Blog DOMATION &amp;{' '}
@@ -160,14 +159,8 @@ export const BoostHubPage: React.FC = () => {
                   href="#articles"
                   className="btn-inkica-primary px-5 py-2.5 text-xs sm:text-sm"
                 >
-                  <span>74+ Bài Blog SEO</span>
+                  <span>74+ Bài Chuyên Sâu</span>
                   <ArrowRight className="w-4 h-4" />
-                </a>
-                <a
-                  href="#seo-clusters"
-                  className="ql-btn-outline px-4 py-2.5 text-xs sm:text-sm"
-                >
-                  <span>Cụm Từ Khóa SEO</span>
                 </a>
                 <a
                   href="#pain-points"
@@ -438,12 +431,7 @@ export const BoostHubPage: React.FC = () => {
           </section>
 
           {/* ================================================================ */}
-          {/* 3. CONTENT SEO CLUSTERS & 74-TOPIC KEYWORD MATRIX                */}
-          {/* ================================================================ */}
-          <BoostSeoClusterSection />
-
-          {/* ================================================================ */}
-          {/* 4. INDUSTRY PRACTICAL CHALLENGES & SOLUTIONS                     */}
+          {/* 3. INDUSTRY PRACTICAL CHALLENGES & SOLUTIONS                     */}
           {/* ================================================================ */}
           <section id="pain-points" className="space-y-6 scroll-mt-24 pt-2">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -631,8 +619,8 @@ export const BoostHubPage: React.FC = () => {
             <FaqAccordionSection
               faqs={BOOST_FAQS}
               className="!px-0 !py-0"
-              heading="Câu Hỏi Thường Gặp Về Blog, SEO & ERP May Đo"
-              subtitle="Giải đáp nhanh về nội dung chuyên mục, chiến lược SEO Cluster và cách đặt lịch tư vấn ERP may đo cùng DOMATION."
+              heading="Câu Hỏi Thường Gặp Về Blog & ERP May Đo"
+              subtitle="Giải đáp nhanh về nội dung chuyên mục, lộ trình triển khai và cách đặt lịch tư vấn ERP may đo cùng DOMATION."
             />
           </div>
 

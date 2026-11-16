@@ -112,46 +112,6 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     sector: 'Đại lý F1 Bất động sản',
     logo: '/assets/partners/logo_ihd_group.webp',
   },
-  {
-    name: 'Phúc Lộc Thọ',
-    sector: 'Chuỗi F&B & Nhượng quyền',
-    logo: '/assets/partners/partner_phucloctho.webp',
-  },
-  {
-    name: 'Kiwami Ramen',
-    sector: 'F&B • Ẩm thực Nhật Bản',
-    logo: '/assets/partners/logo_kiwami.webp',
-  },
-  {
-    name: 'MINTH Store',
-    sector: 'Bán lẻ Mỹ phẩm & Nước hoa',
-    logo: '/assets/partners/logo_minth.webp',
-  },
-  {
-    name: 'Navatek',
-    sector: 'Công nghệ & Công nghiệp',
-    logo: '/assets/partners/logo_navatek.webp',
-  },
-  {
-    name: 'ESTIAM Paris',
-    sector: 'Giáo dục & Công nghệ Quốc tế',
-    logo: '/assets/partners/logo_estiam.webp',
-  },
-  {
-    name: 'ISTEC Paris',
-    sector: 'Trường Kinh doanh Quốc tế',
-    logo: '/assets/partners/logo_istec.webp',
-  },
-  {
-    name: 'Bếp Nhà SON',
-    sector: 'F&B & Dịch vụ Ẩm thực',
-    logo: '/assets/partners/logo_son_fnb.webp',
-  },
-  {
-    name: 'Mystery Tarot',
-    sector: 'Nền tảng AI & Trải nghiệm Số',
-    logo: '/assets/partners/logo_mystery_tarot.webp',
-  },
 ];
 
 interface ScreenshotItem {

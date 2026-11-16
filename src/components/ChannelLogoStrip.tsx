@@ -89,13 +89,6 @@ const SheetsLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4'
   </svg>
 );
 
-const EInvoiceLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
-  <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-    <rect x="4" y="2.5" width="16" height="19" rx="3" fill="#1D4ED8" />
-    <path d="M8 8h8M8 12h8M8 16h5" stroke="#FFFFFF" strokeWidth="1.9" strokeLinecap="round" />
-  </svg>
-);
-
 const WebhookLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
     <circle cx="12" cy="6.5" r="2.6" stroke="#1E40FF" strokeWidth="1.9" />
@@ -200,12 +193,6 @@ export const ChannelLogoStrip: React.FC<ChannelLogoStripProps> = ({
       title: 'Meta Conversions API & Graph API',
       fullLabel: 'Meta CAPI',
       renderIcon: () => <MetaLogoSvg className={iconCls} />,
-    },
-    {
-      id: 'einvoice',
-      title: 'Kế Toán & Hóa Đơn Điện Tử',
-      fullLabel: 'Hóa đơn ĐT',
-      renderIcon: () => <EInvoiceLogoSvg className={iconCls} />,
     },
     {
       id: 'sheets',

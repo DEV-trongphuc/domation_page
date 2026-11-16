@@ -482,6 +482,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreeTerms, setAgreeTerms] = useState(true);
 
   // Registration Step 2 state — Individual Internal Sale is strictly DEFAULT (is_external_agency = false)
   const [routerMode, setRouterMode] = useState<RouterModeOption['key']>('weighted_round_robin');
@@ -745,6 +746,10 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
         setErrorMsg('Mật khẩu xác nhận chưa khớp. Vui lòng nhập lại chính xác.');
         return false;
       }
+    }
+    if (!agreeTerms) {
+      setErrorMsg('Vui lòng bật đồng ý Điều khoản sử dụng và Chính sách bảo mật dữ liệu của DOMATION.');
+      return false;
     }
     setErrorMsg(null);
     return true;
@@ -1219,63 +1224,75 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700">
-                          Tên doanh nghiệp / Đội Sale *
-                        </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+                      <div className="flex flex-col justify-between gap-1.5">
+                        <div className="flex items-center justify-between gap-2 min-h-[18px]">
+                          <label className="text-xs font-semibold leading-4 text-slate-700">
+                            Tên doanh nghiệp / Đội Sale *
+                          </label>
+                        </div>
                         <input
                           type="text"
                           value={companyName}
                           onChange={(e) => handleCompanyNameChange(e.target.value)}
                           placeholder="Nhập tên doanh nghiệp hoặc tên đội Sale của bạn"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-sm leading-5 focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700">
-                          Họ tên Quản trị viên *
-                        </label>
+                      <div className="flex flex-col justify-between gap-1.5">
+                        <div className="flex items-center justify-between gap-2 min-h-[18px]">
+                          <label className="text-xs font-semibold leading-4 text-slate-700">
+                            Họ tên Quản trị viên *
+                          </label>
+                        </div>
                         <input
                           type="text"
                           value={adminName}
                           onChange={(e) => setAdminName(e.target.value)}
                           placeholder="Nhập họ và tên người phụ trách quản trị"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-sm leading-5 focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700">
-                          Số điện thoại liên hệ / Zalo *
-                        </label>
+                      <div className="flex flex-col justify-between gap-1.5">
+                        <div className="flex items-center justify-between gap-2 min-h-[18px]">
+                          <label className="text-xs font-semibold leading-4 text-slate-700">
+                            Số điện thoại liên hệ / Zalo *
+                          </label>
+                        </div>
                         <input
                           type="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder="Nhập số điện thoại hoặc Zalo đang sử dụng"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-sm leading-5 focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700">Email quản trị *</label>
+                      <div className="flex flex-col justify-between gap-1.5">
+                        <div className="flex items-center justify-between gap-2 min-h-[18px]">
+                          <label className="text-xs font-semibold leading-4 text-slate-700">
+                            Email quản trị *
+                          </label>
+                        </div>
                         <input
                           type="email"
                           value={workEmail}
                           onChange={(e) => setWorkEmail(e.target.value)}
                           placeholder="Nhập email nhận thông tin tài khoản và cảnh báo"
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-sm leading-5 focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-slate-700">
-                          {accountTokenForWizard
-                            ? 'Mật khẩu dự phòng (tùy chọn — đã xác thực Google)'
-                            : 'Mật khẩu khởi tạo (tối thiểu 8 ký tự) *'}
-                        </label>
+                      <div className="flex flex-col justify-between gap-1.5">
+                        <div className="flex items-center justify-between gap-2 min-h-[18px]">
+                          <label className="text-xs font-semibold leading-4 text-slate-700">
+                            {accountTokenForWizard
+                              ? 'Mật khẩu dự phòng (tùy chọn — đã xác thực Google)'
+                              : 'Mật khẩu khởi tạo (tối thiểu 8 ký tự) *'}
+                          </label>
+                        </div>
                         <input
                           type="password"
                           value={password}
@@ -1285,20 +1302,20 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                               ? 'Có thể để trống hoặc đặt thêm mật khẩu riêng'
                               : 'Nhập mật khẩu đăng nhập (ít nhất 8 ký tự)'
                           }
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-sm leading-5 focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <label className="text-xs font-semibold text-slate-700">
+                      <div className="flex flex-col justify-between gap-1.5">
+                        <div className="flex items-center justify-between gap-2 min-h-[18px]">
+                          <label className="text-xs font-semibold leading-4 text-slate-700">
                             {accountTokenForWizard
                               ? 'Xác nhận mật khẩu dự phòng (tùy chọn)'
                               : 'Xác nhận mật khẩu khởi tạo *'}
                           </label>
                           {confirmPassword.length > 0 && (
                             <span
-                              className={`text-[11px] font-semibold whitespace-nowrap ${
+                              className={`text-[11px] font-semibold leading-4 whitespace-nowrap ${
                                 password === confirmPassword ? 'text-emerald-600' : 'text-rose-600'
                               }`}
                             >
@@ -1315,7 +1332,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                               ? 'Nhập lại nếu bạn đặt mật khẩu dự phòng'
                               : 'Nhập lại mật khẩu khởi tạo để xác nhận'
                           }
-                          className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+                          className="w-full h-11 rounded-xl border border-slate-200 bg-white px-3.5 text-sm leading-5 focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
                         />
                       </div>
                     </div>
@@ -1369,27 +1386,58 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                       </div>
                     </div>
 
-                    {onOpenLegal && (
-                      <p className="text-xs text-slate-500 pt-1 leading-relaxed">
-                        Bằng việc khởi tạo không gian làm việc, bạn đồng ý với{' '}
+                    <div className="pt-2 border-t border-slate-200/75">
+                      <div className="flex items-center gap-3 pt-2">
                         <button
                           type="button"
-                          onClick={() => onOpenLegal('terms')}
-                          className="font-semibold text-blue-600 hover:underline cursor-pointer"
+                          role="switch"
+                          aria-checked={agreeTerms}
+                          aria-label="Đồng ý với Điều khoản sử dụng và Chính sách bảo mật dữ liệu của DOMATION"
+                          onClick={() => setAgreeTerms((prev) => !prev)}
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                            agreeTerms ? 'bg-[#1E40FF]' : 'bg-slate-300'
+                          }`}
                         >
-                          Điều khoản sử dụng
-                        </button>{' '}
-                        và{' '}
-                        <button
-                          type="button"
-                          onClick={() => onOpenLegal('privacy')}
-                          className="font-semibold text-blue-600 hover:underline cursor-pointer"
-                        >
-                          Chính sách bảo mật dữ liệu
-                        </button>{' '}
-                        của DOMATION.
-                      </p>
-                    )}
+                          <span
+                            aria-hidden="true"
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${
+                              agreeTerms ? 'translate-x-5' : 'translate-x-0'
+                            }`}
+                          />
+                        </button>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          Bằng việc khởi tạo không gian làm việc, bạn đồng ý với{' '}
+                          {onOpenLegal ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => onOpenLegal('terms')}
+                                className="font-semibold text-blue-600 hover:underline cursor-pointer"
+                              >
+                                Điều khoản sử dụng
+                              </button>{' '}
+                              và{' '}
+                              <button
+                                type="button"
+                                onClick={() => onOpenLegal('privacy')}
+                                className="font-semibold text-blue-600 hover:underline cursor-pointer"
+                              >
+                                Chính sách bảo mật dữ liệu
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <span className="font-semibold text-blue-600">Điều khoản sử dụng</span>{' '}
+                              và{' '}
+                              <span className="font-semibold text-blue-600">
+                                Chính sách bảo mật dữ liệu
+                              </span>
+                            </>
+                          )}{' '}
+                          của DOMATION.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

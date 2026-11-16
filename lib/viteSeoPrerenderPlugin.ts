@@ -14,7 +14,6 @@ import { BOOST_ARTICLES_PART_2 } from '../src/data/boostArticlesPart2.ts';
 import { BOOST_ARTICLES_PART_3 } from '../src/data/boostArticlesPart3.ts';
 import { BOOST_ARTICLES_PART_4 } from '../src/data/boostArticlesPart4.ts';
 import { BOOST_ARTICLES_PART_5 } from '../src/data/boostArticlesPart5.ts';
-import { BOOST_KEYWORD_CLUSTERS } from '../src/data/boostSeoData.ts';
 import type { BoostArticle } from '../src/data/boostTypes.ts';
 import {
   FOUNDER_PRIMARY_URL,
@@ -266,14 +265,7 @@ function renderStaticRouteBodyHtml(
       config.description
     )}</p><img src="${escapeHtmlAttr(heroImg)}" alt="${escapeHtmlAttr(
       config.ogImageAlt || config.title
-    )}" width="1376" height="768" /></section><section><h2>12 Cụm Từ Khóa SEO Cluster (Ngắn &amp; Dài, Chính &amp; Phụ)</h2><ul>${BOOST_KEYWORD_CLUSTERS.map(
-      (c) =>
-        `<li><strong>${escapeHtmlText(c.name)}</strong> (${escapeHtmlText(
-          c.hubUrl
-        )}): ${escapeHtmlText(
-          [...(c.shortTailTerms || []), ...(c.longTailTerms || [])].join(', ')
-        )}</li>`
-    ).join('')}</ul></section><section><h2>74+ Bài Viết Chuyên Sâu Chuẩn SEO &amp; GEO</h2><ul>${allArticles
+    )}" width="1376" height="768" /></section><section><h2>74+ Bài Viết Chuyên Sâu &amp; Case Study Triển Khai</h2><ul>${allArticles
       .map(
         (a) =>
           `<li><article><h3><a href="/boost/${escapeHtmlAttr(

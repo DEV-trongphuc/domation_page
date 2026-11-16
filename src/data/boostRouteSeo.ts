@@ -28,7 +28,7 @@ export const BOOST_FAQS: PageFaqItem[] = [
   {
     question: 'Blog DOMATION (/boost) tập trung chia sẻ những chủ đề chuyên sâu nào?',
     answer:
-      'Blog DOMATION tổng hợp 74+ bài phân tích thực chiến và kế hoạch 12 Topic Cluster về: Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO, chiến dịch Automation và SEO/GEO 100 điểm.',
+      'Blog DOMATION tổng hợp 74+ bài phân tích thực chiến về Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO và chiến dịch Automation.',
   },
   {
     question: 'Tại sao DOMATION định vị là hệ thống vận hành custom may đo cho doanh nghiệp thời đại mới?',
@@ -36,9 +36,9 @@ export const BOOST_FAQS: PageFaqItem[] = [
       'Thay vì ép doanh nghiệp cắt gọt quy trình để vừa với phần mềm đóng gói, DOMATION sử dụng lõi 12 phân hệ ERP 5.0 kết hợp Vibecode và Visual Flow Builder để thiết kế luồng phê duyệt, chia data ZaloBot <5s, tính hoa hồng, CRM MISA và Multi-Agent AI khớp 100% cơ cấu tổ chức thực tế.',
   },
   {
-    question: 'Doanh nghiệp có thể tham khảo bộ từ khóa SEO Cluster và đặt lịch tư vấn triển khai 1-1 không?',
+    question: 'Doanh nghiệp có thể đặt lịch tư vấn thiết kế hệ thống & khảo sát 1-1 không?',
     answer:
-      'Có. Ngay trên trang Blog /boost có sẵn bản đồ 12 Content SEO Clusters (từ khóa chính–phụ, ngắn–dài) kèm nút xuất Excel và nút Đặt Lịch Khảo Sát 1-1 cùng Solution Architect của DOMATION.',
+      'Có. Bạn có thể bấm nút Tư Vấn Triển Khai hoặc Đặt Lịch Khảo Sát 1-1 ngay trên trang Blog /boost để đội ngũ Solution Architect của DOMATION khảo sát luồng vận hành và đề xuất kiến trúc ERP/CRM may đo phù hợp.',
   },
 ];
 
@@ -103,7 +103,7 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
   return {
     title: 'Blog DOMATION | ERP May Đo, Vibecode & AI Doanh Nghiệp 5.0',
     description:
-      'Blog kiến thức DOMATION: 74+ bài SEO chuyên sâu về ERP may đo, Vibecode, AI 5.0, logic vận hành, tối ưu quảng cáo, Landing Page & chiến dịch.',
+      'Blog kiến thức DOMATION: 74+ bài phân tích chuyên sâu về ERP may đo, Vibecode, AI 5.0, logic vận hành, tối ưu quảng cáo, Landing Page & chiến dịch.',
     path: '/boost',
     keywords: [
       'blog domation',
@@ -134,9 +134,9 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
         '@context': 'https://schema.org',
         '@type': 'Blog',
         '@id': blogId,
-        name: 'Blog DOMATION — Kiến Thức Vận Hành Doanh Nghiệp 5.0, ERP May Đo, Vibecode & Growth SEO',
+        name: 'Blog DOMATION — Kiến Thức Vận Hành Doanh Nghiệp 5.0, ERP May Đo, Vibecode & Chuyển Đổi Số',
         description:
-          'Blog chuyên sâu 74+ bài viết và 12 Content SEO Clusters của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
+          'Blog chuyên sâu 74+ bài viết của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
         url: `${SITE_URL}/boost`,
         inLanguage: 'vi-VN',
         publisher: { '@id': ORG_ID },

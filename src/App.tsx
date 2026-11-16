@@ -245,7 +245,7 @@ const WebDesignSection = () => {
                             onClick={(e) => handleSpaLinkClick(e, '/boost')}
                             className="ql-btn-outline px-4 py-2 text-xs"
                         >
-                            Đọc 74+ Bài Blog SEO &amp; Triển Khai
+                            Đọc 74+ Bài Blog Chuyên Sâu
                         </a>
                     </div>
                 </FadeIn>
