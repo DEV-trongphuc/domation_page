@@ -13,6 +13,7 @@ import type { HelpTopicKey } from './autodataTypes';
 export interface SpotlightTourStep {
   id: string;
   target: string;
+  selector?: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -123,7 +124,19 @@ export function AutoDataSpotlightTour({
       const vh = window.innerHeight;
       setViewport({ w: vw, h: vh });
 
-      const el = document.querySelector(`[data-tour="${current.target}"]`) as HTMLElement | null;
+      const findVisibleEl = (sel: string): HTMLElement | null => {
+        const list = Array.from(document.querySelectorAll(sel)) as HTMLElement[];
+        return (
+          list.find((node) => {
+            const r = node.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+          }) || null
+        );
+      };
+
+      const el =
+        findVisibleEl(`[data-tour="${current.target}"]`) ||
+        (current.selector ? findVisibleEl(current.selector) : null);
       if (!el) {
         setTargetRect(null);
         return;
@@ -241,7 +254,7 @@ export function AutoDataSpotlightTour({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] pointer-events-none"
+      className="fixed inset-0 z-[140] pointer-events-none"
       role="dialog"
       aria-modal="true"
       aria-label={`Hướng dẫn bước ${safeIndex + 1}: ${current.title}`}

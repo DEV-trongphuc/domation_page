@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Calculator, CheckSquare, ExternalLink, Sparkles, Square } from 'lucide-react';
 import { GlassModal } from './GlassModal';
 import { DOMATION_WEB_ADDONS, DOMATION_WEB_MODULES } from '../data/enterpriseData';
+import { handleSpaLinkClick } from '../utils/navigation';
 
 interface WebEstimatorModalProps {
   isOpen: boolean;
@@ -206,6 +207,10 @@ export const WebEstimatorModal: React.FC<WebEstimatorModalProps> = ({
 
               <a
                 href="/web-design"
+                onClick={(e) => {
+                  onClose();
+                  handleSpaLinkClick(e, '/web-design');
+                }}
                 className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold flex items-center justify-center gap-1.5 border border-white/15 transition-colors"
               >
                 <span>Mở Trang Bảng Giá Đầy Đủ</span>

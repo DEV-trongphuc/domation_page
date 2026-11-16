@@ -14,6 +14,9 @@ import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
+import { handleSpaLinkClick } from './utils/navigation';
+import { getAutomationSeoConfig } from './data/coreRouteSeo';
+import { usePageSeo } from './utils/seo';
 
 // ─── Constants ────────────────────────────────────────────────
 const LOGOS = {
@@ -211,9 +214,9 @@ const TestimonialSection = () => {
 
 const WebDesignSection = () => {
     const projects = [
-        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://navastore.vn/', color: 'from-[#1E40FF] to-[#06B6D4]', icon: Monitor },
-        { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', color: 'from-[#0284C7] to-[#2563EB]', icon: Monitor },
-        { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio cá nhân cao cấp.', link: 'https://portfo-turnio.vercel.app/', color: 'from-[#0EA5E9] to-[#10B981]', icon: Monitor },
+        { name: 'Nava Store', desc: 'E-commerce Website, giao diện hiện đại tối ưu mua hàng.', link: 'https://navastore.vn/', preview: '/landingpage_avatar/nava.webp', badge: 'E-Commerce' },
+        { name: 'Viện IDEAS MBA', desc: 'Landing Page giáo dục, tuyển sinh khóa học MBA.', link: 'https://ideas.edu.vn/mba', preview: '/landingpage_avatar/ideasmba.webp', badge: 'Education MBA' },
+        { name: 'Turnio Portfolio', desc: 'Creative Agency / Portfolio kiến trúc hệ thống cao cấp.', link: '/portfolio', preview: '/landingpage_avatar/portfolio.webp', badge: 'Portfolio' },
     ];
 
     return (
@@ -226,27 +229,57 @@ const WebDesignSection = () => {
                     <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
                         Thiết Kế <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Website &amp; Landing Page</span>
                     </h2>
-                    <p className="text-slate-600 max-w-2xl mx-auto text-base md:text-lg">
+                    <p className="text-slate-600 max-w-2xl mx-auto text-base md:text-lg mb-6">
                         Không chỉ cung cấp nền tảng Automation, DOMATION còn mang đến giải pháp xây dựng hình ảnh thương hiệu trực tuyến với thiết kế hiện đại, chuẩn SEO và tỷ lệ chuyển đổi cao.
                     </p>
+                    <div className="flex flex-wrap items-center justify-center gap-3">
+                        <a
+                            href="/portfolio"
+                            onClick={(e) => handleSpaLinkClick(e, '/portfolio')}
+                            className="ql-btn-outline px-4 py-2 text-xs"
+                        >
+                            Xem Toàn Bộ Portfolio
+                        </a>
+                        <a
+                            href="/boost"
+                            onClick={(e) => handleSpaLinkClick(e, '/boost')}
+                            className="ql-btn-outline px-4 py-2 text-xs"
+                        >
+                            Đọc 24+ Bài Triển Khai &amp; SEO
+                        </a>
+                    </div>
                 </FadeIn>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {projects.map((p, i) => (
                         <FadeIn key={i} delay={i * 0.1} className="h-full">
-                            <a href={p.link} target={p.link.startsWith('/') ? '_self' : '_blank'} rel="noreferrer" className="group block inkica-glass-card rounded-2xl overflow-hidden transition-all border border-white/90 hover:border-blue-300 hover:-translate-y-2 h-full shadow-[0_14px_36px_rgba(30,64,255,0.08)] hover:shadow-[0_22px_50px_rgba(30,64,255,0.16)]">
+                            <a
+                                href={p.link}
+                                target={p.link.startsWith('/') ? undefined : '_blank'}
+                                rel={p.link.startsWith('/') ? undefined : 'noreferrer'}
+                                onClick={p.link.startsWith('/') ? (e) => handleSpaLinkClick(e, p.link) : undefined}
+                                className="group block inkica-glass-card rounded-2xl overflow-hidden transition-all border border-white/90 hover:border-blue-300 hover:-translate-y-2 h-full shadow-[0_14px_36px_rgba(30,64,255,0.08)] hover:shadow-[0_22px_50px_rgba(30,64,255,0.16)]"
+                            >
                                 <div className="relative p-6 flex flex-col h-full">
-                                    <div className={`w-full h-40 rounded-xl mb-6 flex flex-col items-center justify-center bg-gradient-to-br ${p.color} overflow-hidden relative shadow-md`}>
-                                        <p.icon className="w-12 h-12 text-white group-hover:scale-110 transition-transform duration-500 drop-shadow-md z-10" />
-                                        <div className="mt-3 text-white text-sm font-bold z-10 flex items-center gap-1.5 opacity-95 group-hover:opacity-100 transition-opacity">
-                                            Xem Dự Án <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                                        </div>
+                                    <div className="w-full h-44 rounded-xl mb-6 overflow-hidden relative border border-slate-200 bg-slate-100 shadow-sm">
+                                        <img
+                                            src={p.preview}
+                                            alt={`${p.name} - Thiết kế Website DOMATION`}
+                                            loading="lazy"
+                                            className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200 text-[10px] font-bold text-[#1E40FF]">
+                                            {p.badge}
+                                        </span>
                                     </div>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-2">{p.name}</h3>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#1E40FF] transition-colors">{p.name}</h3>
                                     <p className="text-sm text-slate-600 mb-6 flex-1">{p.desc}</p>
-                                    <div className="mt-auto flex items-center text-xs text-slate-500 group-hover:text-[#1E40FF] transition-colors font-semibold">
-                                        <Globe className="w-3.5 h-3.5 mr-1.5" />
-                                        {p.link.replace('https://', '')}
+                                    <div className="mt-auto flex items-center justify-between text-xs text-slate-500 group-hover:text-[#1E40FF] transition-colors font-semibold">
+                                        <span className="inline-flex items-center">
+                                            <Globe className="w-3.5 h-3.5 mr-1.5" />
+                                            {p.link.replace('https://', '')}
+                                        </span>
+                                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                                     </div>
                                 </div>
                             </a>
@@ -274,7 +307,11 @@ const MetaAdReportFeatureSection = () => {
                         <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                             Nền tảng báo cáo real-time độc lập, phân tích dữ liệu chuyên sâu bằng AI. Khám phá Khung Giờ Vàng chốt sale, theo dõi Admin Log chi tiết và tối ưu chiến dịch quảng cáo chưa từng có.
                         </p>
-                        <a href="/meta-report" className="inline-flex items-center gap-2 px-8 py-4 rounded-full btn-inkica-primary text-white font-bold transition-all shadow-[0_12px_30px_rgba(30,64,255,0.28)] hover:-translate-y-1">
+                        <a
+                            href="/meta-report"
+                            onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
+                            className="inline-flex items-center gap-2 px-8 py-4 rounded-full btn-inkica-primary text-white font-bold transition-all shadow-[0_12px_30px_rgba(30,64,255,0.28)] hover:-translate-y-1"
+                        >
                             Khám Phá Ngay <ArrowRight className="w-5 h-5" />
                         </a>
                     </FadeIn>
@@ -365,7 +402,11 @@ const DomationDataSection = () => {
                         </div>
                         
                         <div className="flex">
-                            <a href="/data" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition-all shadow-[0_12px_28px_rgba(16,185,129,0.28)] hover:-translate-y-1">
+                            <a
+                                href="/data"
+                                onClick={(e) => handleSpaLinkClick(e, '/data')}
+                                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition-all shadow-[0_12px_28px_rgba(16,185,129,0.28)] hover:-translate-y-1"
+                            >
                                 <Monitor className="w-5 h-5" /> Trải Nghiệm Demo Tính Năng
                             </a>
                         </div>
@@ -436,6 +477,7 @@ const ALL_MODULES = [
 
 // ─── Main Component ─────────────────────────────────────────────
 const Landing: React.FC = () => {
+    usePageSeo(getAutomationSeoConfig());
     const [isYearly, setIsYearly] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
@@ -1690,13 +1732,21 @@ const Landing: React.FC = () => {
                         {[
                             { title: 'Công Cụ Marketing', links: [['#builder', 'Email Builder Kéo Thả'], ['#flow', 'Automation Flow'], ['#survey', 'Tạo Khảo Sát (Survey)'], ['#voucher', 'Smart Voucher Hub']] },
                             { title: 'Tracking & Phân Tích', links: [['#campaign-tracking', 'Web Tracking Pixel'], ['#analytics', 'Web Analytics Tracking'], ['#ai-segment', 'AI Phân Tích (Lead)'], ['#dashboard', 'Báo Cáo Tăng Trưởng']] },
-                            { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['#pricing', 'Bảng Giá Hệ Thống']] },
+                            { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['/#pricing', 'Bảng Giá Hệ Thống']] },
                         ].map((col) => (
                             <div key={col.title}>
                                 <h4 className="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">{col.title}</h4>
                                 <ul className="space-y-3">
                                     {col.links.map(([href, l]) => (
-                                        <li key={l}><a href={href} className="text-sm text-slate-600 hover:text-[#1E40FF] transition-colors duration-200">{l}</a></li>
+                                        <li key={l}>
+                                            <a
+                                                href={href}
+                                                onClick={href.startsWith('/') ? (e) => handleSpaLinkClick(e, href) : undefined}
+                                                className="text-sm text-slate-600 hover:text-[#1E40FF] transition-colors duration-200"
+                                            >
+                                                {l}
+                                            </a>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>

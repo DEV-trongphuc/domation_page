@@ -119,6 +119,7 @@ export interface PersonalSaleLeadItem {
 }
 
 export interface WorkspaceSummaryItem {
+  id?: string;
   slug: string;
   company_name: string;
   industry: string;
@@ -140,6 +141,109 @@ export interface AuthenticatedAccountUser {
   auth_provider: 'password' | 'google';
 }
 
+export interface LiveLeadStageRef {
+  id: string;
+  key: string;
+  name: string;
+  color: string;
+  capi_event?: string;
+}
+
+export interface LiveLeadItem {
+  id: string;
+  name: string;
+  phone: string;
+  masked_phone?: string;
+  email?: string | null;
+  source?: string;
+  utm_source?: string;
+  campaign?: string | null;
+  product_interest?: string;
+  status?: string;
+  quality_status?: string;
+  is_accepted?: boolean;
+  is_duplicate?: boolean;
+  is_duplicate_reminder?: boolean;
+  sla_breached?: boolean;
+  stage?: LiveLeadStageRef | null;
+  assigned_sale?: { id: string; name: string; email?: string } | null;
+  assigned_to_name?: string;
+  distribution_mode?: string;
+  created_at?: string;
+}
+
+export interface LeadSummaryStats {
+  total_leads: number;
+  assigned_leads: number;
+  unassigned_leads: number;
+  accepted_leads: number;
+  acceptance_rate_pct: number;
+  sla_compliance_pct?: number;
+  won_leads: number;
+  duplicate_reminders?: number;
+  capi_200_count: number;
+  sla_target_seconds?: number;
+  by_stage: Array<{
+    id: string;
+    pipeline_id?: string;
+    stage_name: string;
+    color_hex: string;
+    capi_event_mapping?: string;
+    count: number;
+  }>;
+  by_source: Array<{ source: string; count: number }>;
+}
+
+export interface ConsultantMemberItem {
+  id: string;
+  full_name: string;
+  email: string;
+  phone?: string | null;
+  role: string;
+  is_external_agency: boolean;
+  total_assigned_leads: number;
+  round_quota: {
+    receive_ratio: number;
+    data_per_turn: number;
+    leads_received_in_round: number;
+    compensation_count: number;
+  };
+  profile: {
+    status: string;
+    is_available: boolean;
+    vacation_mode: boolean;
+    skipped_credit?: number;
+    zalo_chat_id?: string | null;
+  };
+}
+
+export interface WorkspaceEditableSettings {
+  distribution_mode: 'weighted_round_robin' | 'strict_round_robin' | 'least_loaded' | 'manual_only';
+  duplicate_action: 'route_to_previous_sale' | 'update_existing' | 'round_robin' | 'reject_duplicate';
+  duplicate_threshold_days: number;
+  sla_auto_recall_enabled: boolean;
+  default_sla_minutes: number;
+  sla_target_seconds: number;
+  pii_masking_enabled: boolean;
+  pii_mask_all_sales: boolean;
+  pii_mask_before_accept: boolean;
+  dual_capi_enabled: boolean;
+  enforce_work_schedule: boolean;
+  work_schedule_start: string;
+  work_schedule_end: string;
+}
+
+export interface TelegramIntegrationState {
+  status: string;
+  enabled: boolean;
+  silent_mode: boolean;
+  server_silent_enforced: boolean;
+  chat_id: string;
+  bot_token_masked: string;
+  webhook_url: string;
+  updated_at?: string | null;
+}
+
 export interface ClientSessionState {
   access_token: string;
   tenant_slug: string;
@@ -151,10 +255,78 @@ export interface ClientSessionState {
   webhook_token: string;
   is_external_agency?: boolean;
   zalo_bot?: ZaloBotSavedState | null;
-  bridge_mode: 'upstream_rls_postgres' | 'vercel_serverless_engine';
+  bridge_mode: 'upstream_rls_postgres';
   upstream_app_url: string | null;
   subscription: ClientSubscriptionSnapshot;
   workspaces?: WorkspaceSummaryItem[];
+}
+
+export const SESSION_V2_STORAGE_KEY = 'domation_autodata_session_v2';
+
+export type WorkspaceScreenKey =
+  | 'dashboard'
+  | 'data_list'
+  | 'ads_performance'
+  | 'tickets'
+  | 'gatekeeper'
+  | 'rounds'
+  | 'fair_share'
+  | 'routing_rules'
+  | 'integrations'
+  | 'consultants'
+  | 'accounts'
+  | 'settings'
+  | 'billing'
+  | 'report_data'
+  | 'settings_processing'
+  | 'settings_communications'
+  | 'settings_report'
+  | 'settings_duplicate_check'
+  | 'settings_ai'
+  | 'settings_billing';
+
+export type SettingsSubTabKey =
+  | 'processing'
+  | 'communications'
+  | 'report'
+  | 'duplicate_check'
+  | 'ai'
+  | 'billing';
+
+export type SettingsTourDeckKey =
+  | 'settings_processing'
+  | 'settings_communications'
+  | 'settings_report'
+  | 'settings_duplicate_check'
+  | 'settings_ai'
+  | 'settings_billing';
+
+export type SalePortalTabKey =
+  | 'dashboard'
+  | 'data'
+  | 'personal'
+  | 'calendar'
+  | 'fair-share'
+  | 'tickets'
+  | 'managers'
+  | 'schedule';
+
+export interface TenantSessionV2 {
+  access_token: string;
+  refresh_token?: string;
+  account_token?: string;
+  tenant_slug: string;
+  company_name: string;
+  industry?: string;
+  admin_email: string;
+  user_id?: string;
+  user_name?: string;
+  role?: 'tenant_admin' | 'manager' | 'sale' | string;
+  is_external_agency?: boolean;
+  auth_provider?: 'password' | 'google';
+  subscription?: ClientSubscriptionSnapshot;
+  workspaces?: WorkspaceSummaryItem[];
+  screen_tours?: Record<string, boolean>;
 }
 
 export type SetupModalIntent =
@@ -173,7 +345,7 @@ export type HelpTopicKey =
   | 'sla_recall'
   | 'meta_capi'
   | 'zalobot_chatid'
-  | 'billing_3m_900k'
+  | 'billing_1m_trial'
   | 'internal_sale_default'
   | 'sale_port_personal';
 
@@ -446,10 +618,10 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
       monthly_lead_quota: 15_000,
       is_enterprise_upgrade: false,
       features: [
-        'Chia số trực tiếp về Sale tức thì (1:1 hoặc năng lực)',
-        'Cổng Sale riêng: tự nhập khách, xuất CSV & bật/tắt ca trực',
-        'Báo khách qua ZaloBot & đồng bộ Google Sheets, API 2 chiều',
-        'Phản hồi tín hiệu chất lượng về Meta Ads (CAPI)',
+        'Phân phối lead đa kênh tức thì',
+        'Cổng tư vấn viên chuyên biệt',
+        'Tích hợp Zalo Bot và Telegram',
+        'Đồng bộ Google Sheets và CAPI',
       ],
     },
     {
@@ -471,10 +643,10 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
       monthly_lead_quota: 100_000,
       is_enterprise_upgrade: false,
       features: [
-        'Toàn bộ gói Standard + đa phễu độc lập theo từng sản phẩm',
-        'Chia số theo chiến dịch, khu vực & khung giờ trực ca',
-        'Tối ưu Ads đa kênh + Google Sheets & REST API không giới hạn',
-        'Đền bù 1-đổi-1 khi duyệt số rác & báo cáo hiệu suất Lãnh Đạo',
+        'Toàn bộ tính năng gói Standard',
+        'Đa phễu theo từng chiến dịch',
+        'Chia số theo khu vực ca trực',
+        'Báo cáo hiệu suất thời gian thực',
       ],
     },
     {
@@ -494,10 +666,10 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
       monthly_lead_quota: 1_000_000,
       is_enterprise_upgrade: true,
       features: [
-        'Giữ nguyên 100% Lead, lịch sử Timeline & đội ngũ hiện có',
-        'Automation: Flow rẽ nhánh IF/ELSE, Email kéo thả, Zalo ZNS & AI 24/7',
-        'CRM 360°: Kanban 8 nấc, Báo giá, Hợp đồng & Hóa đơn điện tử',
-        'ERP 5.0: 12 phân hệ HRM GPS AI, Lương KPI, Tài chính & Kho vận',
+        'Bảo lưu toàn bộ dữ liệu hiện có',
+        'Automation đa kênh và AI 24/7',
+        'CRM 360 độ và hợp đồng số',
+        'ERP 5.0 quản trị toàn diện',
       ],
     },
   ],

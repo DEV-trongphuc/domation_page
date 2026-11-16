@@ -62,9 +62,12 @@ export function AutoDataZaloBotGuide({
     setFetchingChatId(true);
     setVerifyError(null);
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+      if (tenantSlug) headers['X-Tenant-Slug'] = tenantSlug;
       const res = await fetch('/api/autodata?action=zalo-updates', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ bot_token: botToken.trim() }),
       });
       const json = (await res.json()) as {
@@ -171,7 +174,7 @@ export function AutoDataZaloBotGuide({
               TÙY CHỌN • CÓ THỂ CÀI ĐẶT SAU
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 px-3 py-1 text-[11px] font-bold text-[#1E40FF] whitespace-nowrap">
-              <Bot className="w-3.5 h-3.5 shrink-0" />
+              <img src="https://zalobot.vn/favicon.ico" alt="ZaloBot" className="w-3.5 h-3.5 rounded-full object-contain shrink-0" />
               <span>Zalo Bot A–Z &amp; Live Test</span>
             </span>
             {onOpenTour && (

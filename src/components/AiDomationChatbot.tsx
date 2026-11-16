@@ -9,6 +9,7 @@ import {
   X,
 } from 'lucide-react';
 import { DomationLogoMark } from './DomationLogoMark';
+import { handleSpaLinkClick, navigateTo } from '../utils/navigation';
 
 export interface RetrievedSource {
   id: string;
@@ -103,13 +104,15 @@ function renderInlineMarkdown(text: string): React.ReactNode[] {
     } else if (token.startsWith('[')) {
       const linkMatch = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(token);
       if (linkMatch && isSafeHref(linkMatch[2])) {
-        const external = /^https?:\/\//i.test(linkMatch[2]);
+        const href = linkMatch[2];
+        const external = /^https?:\/\//i.test(href);
         tokens.push(
           <a
             key={`a-${keyIdx++}`}
-            href={linkMatch[2]}
+            href={href}
             target={external ? '_blank' : undefined}
             rel={external ? 'noopener noreferrer' : undefined}
+            onClick={!external ? (e) => handleSpaLinkClick(e, href) : undefined}
             className="text-[#1E40FF] underline decoration-[#1E40FF]/35 hover:decoration-[#1E40FF] font-medium inline-flex items-center gap-0.5"
           >
             {linkMatch[1]}
@@ -591,17 +594,8 @@ export const AiDomationChatbot: React.FC = () => {
 
   const handleSourceNavigate = useCallback(
     (src: RetrievedSource) => {
-      if (src.url && src.url.startsWith('/') && !src.url.startsWith('/#')) {
-        window.location.href = src.url;
-        return;
-      }
-      if (src.url && src.url.startsWith('/#')) {
-        if (window.location.pathname !== '/') {
-          window.location.href = src.url;
-          return;
-        }
-        const targetId = src.url.slice(2);
-        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+      if (src.url && src.url.startsWith('/')) {
+        navigateTo(src.url);
         if (isMobile) setIsOpen(false);
         return;
       }

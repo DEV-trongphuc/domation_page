@@ -1,12 +1,374 @@
 {
+  "headers": [
+    {
+      "source": "/llms.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/llms-full.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    }
+  ],
   "rewrites": [
-    { "source": "/crm", "destination": "/index.html" },
-    { "source": "/erp", "destination": "/index.html" },
-    { "source": "/data", "destination": "/index.html" },
-    { "source": "/automation", "destination": "/index.html" },
-    { "source": "/meta-report", "destination": "/index.html" },
-    { "source": "/web-design", "destination": "/index.html" },
-    { "source": "/ideas", "destination": "/index.html" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/crm",
+      "destination": "/crm/index.html"
+    },
+    {
+      "source": "/crm/",
+      "destination": "/crm/index.html"
+    },
+    {
+      "source": "/erp",
+      "destination": "/erp/index.html"
+    },
+    {
+      "source": "/erp/",
+      "destination": "/erp/index.html"
+    },
+    {
+      "source": "/data",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/data/",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/data/:slug",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/data/:slug/",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/data/:slug/:subpath*",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/api/v1/:path*",
+      "destination": "/api/autodata?__v1_path=:path*"
+    },
+    {
+      "source": "/v1/:path*",
+      "destination": "/api/autodata?__raw_v1_path=:path*"
+    },
+    {
+      "source": "/automation",
+      "destination": "/automation/index.html"
+    },
+    {
+      "source": "/automation/",
+      "destination": "/automation/index.html"
+    },
+    {
+      "source": "/meta-report",
+      "destination": "/meta-report/index.html"
+    },
+    {
+      "source": "/meta-report/",
+      "destination": "/meta-report/index.html"
+    },
+    {
+      "source": "/web-design",
+      "destination": "/web-design/index.html"
+    },
+    {
+      "source": "/web-design/",
+      "destination": "/web-design/index.html"
+    },
+    {
+      "source": "/ideas",
+      "destination": "/ideas/index.html"
+    },
+    {
+      "source": "/ideas/",
+      "destination": "/ideas/index.html"
+    },
+    {
+      "source": "/portfolio",
+      "destination": "/portfolio/index.html"
+    },
+    {
+      "source": "/portfolio/",
+      "destination": "/portfolio/index.html"
+    },
+    {
+      "source": "/boost",
+      "destination": "/boost/index.html"
+    },
+    {
+      "source": "/boost/",
+      "destination": "/boost/index.html"
+    },
+    {
+      "source": "/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds",
+      "destination": "/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds/index.html"
+    },
+    {
+      "source": "/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds/",
+      "destination": "/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds/index.html"
+    },
+    {
+      "source": "/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife",
+      "destination": "/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife/index.html"
+    },
+    {
+      "source": "/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife/",
+      "destination": "/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife/index.html"
+    },
+    {
+      "source": "/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm",
+      "destination": "/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm/index.html"
+    },
+    {
+      "source": "/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm/",
+      "destination": "/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm/index.html"
+    },
+    {
+      "source": "/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac",
+      "destination": "/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac/index.html"
+    },
+    {
+      "source": "/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac/",
+      "destination": "/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac/index.html"
+    },
+    {
+      "source": "/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa",
+      "destination": "/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa/index.html"
+    },
+    {
+      "source": "/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa/",
+      "destination": "/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa/index.html"
+    },
+    {
+      "source": "/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao",
+      "destination": "/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao/index.html"
+    },
+    {
+      "source": "/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao/",
+      "destination": "/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao/index.html"
+    },
+    {
+      "source": "/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi",
+      "destination": "/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi/index.html"
+    },
+    {
+      "source": "/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi/",
+      "destination": "/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi/index.html"
+    },
+    {
+      "source": "/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5",
+      "destination": "/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5/index.html"
+    },
+    {
+      "source": "/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5/",
+      "destination": "/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5/index.html"
+    },
+    {
+      "source": "/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score",
+      "destination": "/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score/index.html"
+    },
+    {
+      "source": "/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score/",
+      "destination": "/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score/index.html"
+    },
+    {
+      "source": "/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap",
+      "destination": "/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap/index.html"
+    },
+    {
+      "source": "/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap/",
+      "destination": "/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap/index.html"
+    },
+    {
+      "source": "/boost/chong-sot-lich-hen-tu-dong-nhac-tai-kham-nha-khoa-flow-if-else",
+      "destination": "/boost/chong-sot-lich-hen-tu-dong-nhac-tai-kham-nha-khoa-flow-if-else/index.html"
+    },
+    {
+      "source": "/boost/chong-sot-lich-hen-tu-dong-nhac-tai-kham-nha-khoa-flow-if-else/",
+      "destination": "/boost/chong-sot-lich-hen-tu-dong-nhac-tai-kham-nha-khoa-flow-if-else/index.html"
+    },
+    {
+      "source": "/boost/bao-mat-du-lieu-benh-an-phan-quyen-rls-chi-nhanh-meta-ads",
+      "destination": "/boost/bao-mat-du-lieu-benh-an-phan-quyen-rls-chi-nhanh-meta-ads/index.html"
+    },
+    {
+      "source": "/boost/bao-mat-du-lieu-benh-an-phan-quyen-rls-chi-nhanh-meta-ads/",
+      "destination": "/boost/bao-mat-du-lieu-benh-an-phan-quyen-rls-chi-nhanh-meta-ads/index.html"
+    },
+    {
+      "source": "/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica",
+      "destination": "/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica/index.html"
+    },
+    {
+      "source": "/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica/",
+      "destination": "/boost/trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica/index.html"
+    },
+    {
+      "source": "/boost/dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360",
+      "destination": "/boost/dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360/index.html"
+    },
+    {
+      "source": "/boost/dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360/",
+      "destination": "/boost/dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360/index.html"
+    },
+    {
+      "source": "/boost/vi-sao-70-du-an-erp-dong-goi-that-bai-o-sme-viet-nam",
+      "destination": "/boost/vi-sao-70-du-an-erp-dong-goi-that-bai-o-sme-viet-nam/index.html"
+    },
+    {
+      "source": "/boost/vi-sao-70-du-an-erp-dong-goi-that-bai-o-sme-viet-nam/",
+      "destination": "/boost/vi-sao-70-du-an-erp-dong-goi-that-bai-o-sme-viet-nam/index.html"
+    },
+    {
+      "source": "/boost/chong-gian-lan-cham-cong-ho-gps-ban-kinh-selfie-ai",
+      "destination": "/boost/chong-gian-lan-cham-cong-ho-gps-ban-kinh-selfie-ai/index.html"
+    },
+    {
+      "source": "/boost/chong-gian-lan-cham-cong-ho-gps-ban-kinh-selfie-ai/",
+      "destination": "/boost/chong-gian-lan-cham-cong-ho-gps-ban-kinh-selfie-ai/index.html"
+    },
+    {
+      "source": "/boost/so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban",
+      "destination": "/boost/so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban/index.html"
+    },
+    {
+      "source": "/boost/so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban/",
+      "destination": "/boost/so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban/index.html"
+    },
+    {
+      "source": "/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm",
+      "destination": "/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm/index.html"
+    },
+    {
+      "source": "/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm/",
+      "destination": "/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm/index.html"
+    },
+    {
+      "source": "/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads",
+      "destination": "/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads/index.html"
+    },
+    {
+      "source": "/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads/",
+      "destination": "/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads/index.html"
+    },
+    {
+      "source": "/boost/loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84",
+      "destination": "/boost/loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84/index.html"
+    },
+    {
+      "source": "/boost/loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84/",
+      "destination": "/boost/loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84/index.html"
+    },
+    {
+      "source": "/boost/chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview",
+      "destination": "/boost/chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview/index.html"
+    },
+    {
+      "source": "/boost/chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview/",
+      "destination": "/boost/chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview/index.html"
+    },
+    {
+      "source": "/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi",
+      "destination": "/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi/index.html"
+    },
+    {
+      "source": "/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi/",
+      "destination": "/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi/index.html"
+    },
+    {
+      "source": "/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side",
+      "destination": "/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side/index.html"
+    },
+    {
+      "source": "/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side/",
+      "destination": "/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side/index.html"
+    },
+    {
+      "source": "/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat",
+      "destination": "/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat/index.html"
+    },
+    {
+      "source": "/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat/",
+      "destination": "/boost/trien-khai-multi-agent-ai-lien-phong-ban-checklist-bao-mat/index.html"
+    },
+    {
+      "source": "/boost/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/bai-viet",
+      "destination": "/boost/index.html"
+    },
+    {
+      "source": "/bai-viet/",
+      "destination": "/boost/index.html"
+    },
+    {
+      "source": "/bai-viet/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/boost/index.html"
+    },
+    {
+      "source": "/blog/",
+      "destination": "/boost/index.html"
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api/|imgs/|assets/|uploads/|ERP-Product/|landingpage_avatar/|crm_imgs/|meta/|CHIA(?:%20|\\s)DATA/|domation-logo\\.svg|favicon\\.svg|icons\\.svg|magnific_proxy\\.php|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|crm/index\\.html|data/index\\.html|erp/index\\.html|automation/index\\.html|meta-report/index\\.html|web-design/index\\.html|ideas/index\\.html|portfolio/index\\.html|boost/.*index\\.html).*)",
+      "destination": "/index.html"
+    }
   ]
 }

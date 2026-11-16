@@ -28,6 +28,9 @@ import { ContactModal } from './ContactModal';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
+import { handleSpaLinkClick } from './utils/navigation';
+import { getErpSeoConfig } from './data/coreRouteSeo';
+import { usePageSeo } from './utils/seo';
 
 interface ErpImageItem {
   id: string;
@@ -187,6 +190,7 @@ const ERP_GALLERY: ErpImageItem[] = [
 ];
 
 export const ErpLanding: React.FC = () => {
+  usePageSeo(getErpSeoConfig());
   const [activeTab, setActiveTab] = useState<'all' | 'lead' | 'crm' | 'hr' | 'finance' | 'settings'>('all');
   const [lightboxImg, setLightboxImg] = useState<ErpImageItem | null>(null);
   const [showContactModal, setShowContactModal] = useState(false);
@@ -869,13 +873,13 @@ export const ErpLanding: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-[11px] font-medium">
-            <a href="/" className="hover:text-[#1E40FF] transition-colors">Trang chủ</a>
-            <a href="/erp" className="text-[#1E40FF] font-bold">Hệ thống ERP</a>
-            <a href="/crm" className="hover:text-[#1E40FF] transition-colors">Hệ thống CRM</a>
-            <a href="/data" className="hover:text-[#1E40FF] transition-colors">Auto Data Lead</a>
-            <a href="/automation" className="hover:text-[#1E40FF] transition-colors">Marketing Automation</a>
-            <a href="/meta-report" className="hover:text-[#1E40FF] transition-colors">Meta-Report Ads</a>
-            <a href="/web-design" className="hover:text-[#1E40FF] transition-colors">Web &amp; Landing Page</a>
+            <a href="/" onClick={(e) => handleSpaLinkClick(e, '/')} className="hover:text-[#1E40FF] transition-colors">Trang chủ</a>
+            <a href="/erp" onClick={(e) => handleSpaLinkClick(e, '/erp')} className="text-[#1E40FF] font-bold">Hệ thống ERP</a>
+            <a href="/crm" onClick={(e) => handleSpaLinkClick(e, '/crm')} className="hover:text-[#1E40FF] transition-colors">Hệ thống CRM</a>
+            <a href="/data" onClick={(e) => handleSpaLinkClick(e, '/data')} className="hover:text-[#1E40FF] transition-colors">Auto Data Lead</a>
+            <a href="/automation" onClick={(e) => handleSpaLinkClick(e, '/automation')} className="hover:text-[#1E40FF] transition-colors">Marketing Automation</a>
+            <a href="/meta-report" onClick={(e) => handleSpaLinkClick(e, '/meta-report')} className="hover:text-[#1E40FF] transition-colors">Meta-Report Ads</a>
+            <a href="/web-design" onClick={(e) => handleSpaLinkClick(e, '/web-design')} className="hover:text-[#1E40FF] transition-colors">Web &amp; Landing Page</a>
           </div>
 
           <div className="text-center md:text-right text-[11px] text-slate-500 space-y-1">

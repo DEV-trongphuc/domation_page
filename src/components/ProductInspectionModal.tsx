@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ExternalLink, Layers, PlayCircle, ZoomIn } from 'lucide-react';
 import { GlassModal, ImageZoomModal } from './GlassModal';
 import { MODAL_SCREEN_GALLERIES, type SolutionPillar } from '../data/enterpriseData';
+import { handleSpaLinkClick } from '../utils/navigation';
 
 export type InspectionTabId = SolutionPillar['id'] | 'inkica';
 
@@ -78,6 +79,14 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
               href={currentGallery.liveUrl}
               target={currentGallery.liveUrl.startsWith('/') ? undefined : '_blank'}
               rel={currentGallery.liveUrl.startsWith('/') ? undefined : 'noopener noreferrer'}
+              onClick={
+                currentGallery.liveUrl.startsWith('/')
+                  ? (e) => {
+                      onClose();
+                      handleSpaLinkClick(e, currentGallery.liveUrl!);
+                    }
+                  : undefined
+              }
               className="btn-inkica-primary px-3.5 py-2 text-xs hidden sm:inline-flex"
             >
               <span>{currentGallery.liveLabel || 'Xem Demo'}</span>
@@ -215,6 +224,14 @@ export const ProductInspectionModal: React.FC<ProductInspectionModalProps> = ({
                 href={currentGallery.liveUrl}
                 target={currentGallery.liveUrl.startsWith('/') ? undefined : '_blank'}
                 rel={currentGallery.liveUrl.startsWith('/') ? undefined : 'noopener noreferrer'}
+                onClick={
+                  currentGallery.liveUrl.startsWith('/')
+                    ? (e) => {
+                        onClose();
+                        handleSpaLinkClick(e, currentGallery.liveUrl!);
+                      }
+                    : undefined
+                }
                 className="ql-btn-outline px-4 py-2 text-xs sm:hidden"
               >
                 <span>{currentGallery.liveLabel || 'Mở Demo'}</span>

@@ -12,6 +12,8 @@ import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
+import { getIdeasSeoConfig } from './data/coreRouteSeo';
+import { usePageSeo } from './utils/seo';
 
 interface ToolCardProps {
   title: string;
@@ -106,17 +108,10 @@ const ToolCard: React.FC<ToolCardProps> = ({
 export const IdeasLanding: React.FC = () => {
   const [showContactModal, setShowContactModal] = useState(false);
 
+  usePageSeo(getIdeasSeoConfig());
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'IDEAS Company Ecosystem | DOMATION';
-
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute(
-        'content',
-        'Trang tổng hợp liên kết truy cập các ứng dụng phần mềm được tùy biến chuyên biệt dành cho Viện IDEAS: Marketing Automation, Meta Report, Chia data Auto, CRM Report.'
-      );
-    }
   }, []);
 
   const ideasLogoUrl =

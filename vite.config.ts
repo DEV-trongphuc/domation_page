@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { ragChatApiPlugin } from './lib/viteChatMiddleware'
 import { autodataBridgePlugin } from './lib/viteAutodataMiddleware'
+import { seoPrerenderPlugin } from './lib/viteSeoPrerenderPlugin'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -12,6 +13,7 @@ export default defineConfig(({ mode }) => {
       react(),
       ragChatApiPlugin(env.GEMINI_API_KEY),
       autodataBridgePlugin(env.AUTODATA_API_URL),
+      seoPrerenderPlugin(),
     ],
     base: '/',
     build: {

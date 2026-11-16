@@ -9,6 +9,8 @@ import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
+import { getWebDesignSeoConfig } from './data/coreRouteSeo';
+import { usePageSeo } from './utils/seo';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
@@ -101,6 +103,7 @@ const FadeIn = ({ children, delay = 0, className = '', from = 'bottom' }: {
 };
 
 export const WebDesignPricing: React.FC = () => {
+    usePageSeo(getWebDesignSeoConfig());
     const [addons, setAddons] = React.useState({
         sales: false,
         payment: false,

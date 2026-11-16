@@ -25,6 +25,8 @@ import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
+import { getMetaReportSeoConfig } from './data/coreRouteSeo';
+import { usePageSeo } from './utils/seo';
 
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -72,6 +74,7 @@ const FadeIn = ({
 };
 
 export const MetaAdReport: React.FC = () => {
+  usePageSeo(getMetaReportSeoConfig());
   const [isYearly, setIsYearly] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ email: '', phone: '', message: '' });

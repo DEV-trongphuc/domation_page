@@ -4,8 +4,16 @@ import { Download, Link as LinkIcon, Image as ImageIcon, CheckCircle2, AlertCirc
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
+import { handleSpaLinkClick } from './utils/navigation';
+import { usePageSeo } from './utils/seo';
 
 export const MagnificDownloader = () => {
+  usePageSeo({
+    title: 'Magnific & Asset Preview Tool | DOMATION.NET',
+    description: 'Công cụ hỗ trợ xem trước và trích xuất ảnh tài nguyên phục vụ đội ngũ thiết kế nội bộ DOMATION.',
+    path: '/?page=magnific-downloader',
+    noindex: true,
+  });
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -227,6 +235,7 @@ export const MagnificDownloader = () => {
         <div className="mb-8 flex justify-start">
           <a
             href="/"
+            onClick={(e) => handleSpaLinkClick(e, '/')}
             className="ql-btn-outline inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold"
           >
             <ArrowLeft className="w-3.5 h-3.5" />

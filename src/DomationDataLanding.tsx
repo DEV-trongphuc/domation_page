@@ -111,26 +111,6 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     sector: 'Đại lý F1 Bất động sản',
     logo: '/assets/partners/logo_ihd_group.webp',
   },
-  {
-    name: 'MINTH Store',
-    sector: 'Nước hoa & Mỹ phẩm Retail',
-    logo: '/assets/partners/logo_minth.webp',
-  },
-  {
-    name: 'Navatek',
-    sector: 'Công nghiệp & Công nghệ',
-    logo: '/assets/partners/logo_navatek.webp',
-  },
-  {
-    name: 'Mystery Tarot',
-    sector: 'AI Tâm linh & Giải trí',
-    logo: '/assets/partners/logo_mystery_tarot.webp',
-  },
-  {
-    name: 'Bếp Nhà SON',
-    sector: 'F&B • Bếp Nhà Đãi Khách',
-    logo: '/assets/partners/logo_son_fnb.webp',
-  },
 ];
 
 interface ScreenshotItem {
@@ -142,40 +122,40 @@ interface ScreenshotItem {
 
 const SYSTEM_SCREENSHOTS: ScreenshotItem[] = [
   {
-    title: 'Bảng Điều Khiển Vòng Chia Số Real-Time',
+    title: 'Bảng Điều Khiển Phân Bổ Data Real-Time',
     badge: 'Router Console',
-    desc: 'Theo dõi trực quan lưu lượng Lead đổ về từ các chiến dịch, tốc độ tiếp nhận SLA và trạng thái Online từng nhân viên Sale.',
-    src: '/CHIA DATA/chia_data (1).png',
+    desc: 'Theo dõi trực quan lưu lượng Lead đổ về từ các chiến dịch, tỷ lệ chia vòng và hiệu suất từng Sale / Đại lý F1.',
+    src: '/imgs/autodata/showcase/screen_dashboard.jpg',
   },
   {
-    title: 'Ma Trận Trọng Số & Công Tắc Online / Nghỉ Phép',
-    badge: 'Fair-Share Matrix',
-    desc: 'Cấu hình hệ số nhận khách cho từng Sale nội bộ (Senior x3, Junior x1), bảo lưu lượt khi nghỉ phép và tùy chọn bật thêm CTV F1.',
-    src: '/CHIA DATA/chia_data (22).png',
+    title: 'Quản Lý Data & Preview Bài Quảng Cáo',
+    badge: 'Lead Management',
+    desc: 'Quản lý danh sách khách hàng đa kênh, bảo mật SĐT (PII Masking), xem trước mẫu quảng cáo và dòng thời gian chăm sóc.',
+    src: '/imgs/autodata/showcase/screen_datalist.jpg',
   },
   {
-    title: 'Cổng Sale Cá Nhân & Dòng Thời Gian Chăm Sóc',
-    badge: 'Sale Port & SLA',
-    desc: 'Mỗi Sale quản lý giỏ khách được chia cùng tệp khách cá nhân tự nhập (miễn thu hồi SLA), xuất CSV và đồng bộ Google Sheets 2 chiều.',
-    src: '/CHIA DATA/chia_data (20).png',
-  },
-  {
-    title: 'Đồng Bộ Ngược Tín Hiệu Meta CAPI v21.0',
+    title: 'Hiệu Suất Meta Ads & Tỷ Lệ Chuyển Đổi',
     badge: 'Meta Conversion API',
-    desc: 'Khi nhân sự xác nhận khách chất lượng hoặc chốt đơn, hệ thống tự động phản hồi tín hiệu chuyển đổi để tối ưu máy học quảng cáo.',
-    src: '/CHIA DATA/chia_data (16).png',
-  },
-  {
-    title: 'Cơ Chế Duyệt Lỗi & Đền Bù Tự Động 1-Đổi-1',
-    badge: 'Compensation Engine',
-    desc: 'Nhân sự báo số rác/sai đối tượng ngay trên ZaloBot; Admin duyệt 1 chạm tự động cộng bù định mức ở vòng kế tiếp.',
-    src: '/CHIA DATA/chia_data (14).png',
+    desc: 'Đo lường CPL, CPQL theo từng Ad ID kết hợp dữ liệu Thiện chí, Hẹn gặp, Booking, Đặt cọc từ đội ngũ Sale.',
+    src: '/imgs/autodata/showcase/screen_ads.jpg',
   },
   {
     title: 'Báo Cáo Đối Soát Độ Công Bằng Gini',
     badge: 'Fairness Audit',
-    desc: 'Đo lường độ lệch phân bổ dữ liệu giữa các nhân viên Sale, phòng ban và nguồn chiến dịch hoàn toàn minh bạch.',
-    src: '/CHIA DATA/chia_data (19).png',
+    desc: 'Kiểm toán toán học chỉ số Gini và độ lệch chuẩn để đảm bảo phân bổ data công bằng tuyệt đối giữa các nhân sự.',
+    src: '/imgs/autodata/showcase/screen_fairshare.jpg',
+  },
+  {
+    title: 'Vòng Phân Bổ Round-Robin & Bù Data',
+    badge: 'Fair-Share Matrix',
+    desc: 'Cấu hình nhiều vòng chia độc lập theo dự án/nguồn, trọng số nhận số và đền bù lượt tự động.',
+    src: '/imgs/autodata/showcase/screen_rounds.jpg',
+  },
+  {
+    title: 'Tích Hợp Google Sheets 2 Chiều & API',
+    badge: 'Omnichannel Sync',
+    desc: 'Mapping cột Google Sheets tự do, kết nối Landing Page API, Telegram Bot, Zalo Bot và đồng bộ trạng thái real-time.',
+    src: '/imgs/autodata/showcase/screen_integrations.jpg',
   },
 ];
 
