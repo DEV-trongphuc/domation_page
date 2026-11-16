@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import {
   Activity,
   ArrowRight,
@@ -45,24 +45,24 @@ import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import { handleSpaLinkClick } from './utils/navigation';
-import {
-  buildSoftwareAppSchema,
-  type PageFaqItem,
-  usePageSeo,
-} from './utils/seo';
-import AutoDataFullScreenSetup from './components/autodata/AutoDataFullScreenSetup';
+import { AUTODATA_FAQS, getDataSeoConfig } from './data/coreRouteSeo';
+import { usePageSeo } from './utils/seo';
+import { AutoDataAuthModal } from './components/autodata/AutoDataAuthModal';
+const AutoDataWorkspaceApp = React.lazy(() => import('./components/autodata/AutoDataWorkspaceApp'));
+import { purgeLegacyAutodataStorage } from './components/autodata/autodataApi';
 import { AutoDataCookieConsent, AutoDataLegalModal } from './components/autodata/AutoDataLegalAndCookie';
 import {
   DEFAULT_CLIENT_CATALOG,
+  SESSION_V2_STORAGE_KEY,
   buildPersonalLeadsCsvContent,
   type ClientBillingCatalog,
-  type ClientSessionState,
   type LegalDocTab,
   type PersonalSaleLeadItem,
   type SetupModalIntent,
+  type TenantSessionV2,
 } from './components/autodata/autodataTypes';
 
-const SESSION_STORAGE_KEY = 'domation_autodata_session_v1';
+const SESSION_STORAGE_KEY = SESSION_V2_STORAGE_KEY;
 
 interface PartnerBrand {
   name: string;
@@ -77,7 +77,7 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     logo: '/assets/partners/logo_ideas.webp',
   },
   {
-    name: 'RichLand',
+    name: 'Rich Land',
     sector: 'Phát triển & Phân phối BĐS',
     logo: '/assets/partners/partner_richland.webp',
   },
@@ -110,6 +110,11 @@ const PARTNER_BRANDS: PartnerBrand[] = [
     name: 'IHD Group',
     sector: 'Đại lý F1 Bất động sản',
     logo: '/assets/partners/logo_ihd_group.webp',
+  },
+  {
+    name: 'MINTH Store',
+    sector: 'Nước hoa & Mỹ phẩm Retail',
+    logo: '/assets/partners/logo_minth.webp',
   },
 ];
 
@@ -188,11 +193,12 @@ const DEMO_PERSONAL_LEADS_CSV: PersonalSaleLeadItem[] = [
   },
 ];
 
-function readSavedSession(): ClientSessionState | null {
+function readSavedSession(): TenantSessionV2 | null {
+  purgeLegacyAutodataStorage();
   try {
     const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as ClientSessionState;
+    const parsed = JSON.parse(raw) as TenantSessionV2;
     if (parsed && parsed.access_token && parsed.tenant_slug) {
       return parsed;
     }
@@ -218,89 +224,56 @@ function detectInitialLegalModal(): { open: boolean; tab: LegalDocTab } {
   return { open: false, tab: 'terms' };
 }
 
-const AUTODATA_FAQS: PageFaqItem[] = [
-  {
-    question: 'DOMATION Auto Data chia Lead về máy Sale trong bao lâu?',
-    answer:
-      'Lead từ Meta Instant Form, TikTok, Ladipage hoặc Website được lọc trùng 180 ngày và phân bổ Round-Robin qua ZaloBot / Telegram Bot trong dưới 5 giây.',
-  },
-  {
-    question: 'Cơ chế đền bù Ticket lỗi 1:1 và Van SLA 120s hoạt động như thế nào?',
-    answer:
-      'Nếu quá 120 giây Sale chưa nhận số, hệ thống tự thu hồi chuyển vòng để không rớt khách. Khi Sale hoặc Đại lý F1 báo số lỗi được Admin duyệt, hệ thống tự động bù +1 lượt mới ở vòng kế tiếp.',
-  },
-  {
-    question: 'Chi phí sử dụng DOMATION Auto Data và Meta CAPI là bao nhiêu?',
-    answer:
-      'Gói tiêu chuẩn từ 1.500.000₫/tháng kèm 1 tháng dùng thử thực tế, bao gồm chia vòng 5 cổng, lọc trùng 6 tháng và tự động bắn Meta CAPI SHA-256 đạt HTTP 200.',
-  },
-];
+function detectWorkspacePathSlug(): string | null {
+  if (typeof window === 'undefined') return null;
+  const pathname = window.location.pathname.replace(/\/+$/, '');
+  const match = pathname.match(/^\/data\/([^/]+)$/i);
+  if (match && match[1]) {
+    const slug = match[1].toLowerCase();
+    if (slug !== 'privacy' && slug !== 'terms') return slug;
+  }
+  if (/^data\./i.test(window.location.hostname)) {
+    const subMatch = pathname.match(/^\/([^/]+)$/);
+    if (subMatch && subMatch[1]) {
+      const slug = subMatch[1].toLowerCase();
+      if (slug !== 'data' && slug !== 'privacy' && slug !== 'terms') return slug;
+    }
+  }
+  return null;
+}
+
+function syncWorkspaceUrlSlug(slug: string | null): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const isSubdomain = /^data\./i.test(window.location.hostname);
+    const targetPath = slug ? (isSubdomain ? `/${slug}` : `/data/${slug}`) : isSubdomain ? '/' : '/data';
+    if (window.location.pathname !== targetPath) {
+      window.history.replaceState(null, '', targetPath);
+    }
+  } catch {
+    // Ignore history replace errors
+  }
+}
 
 export function DomationDataLanding() {
-  usePageSeo({
-    title: 'DOMATION Auto Data | Chia Lead ZaloBot < 5s, Lọc Trùng 6 Tháng & Meta CAPI',
-    description:
-      'Hệ thống điều phối & chia vòng khách hàng tự động dưới 5 giây qua ZaloBot & Telegram, lọc trùng 180 ngày, đền bù Ticket lỗi 1:1 và bắn Meta CAPI chuẩn SHA-256 HTTP 200.',
-    path: '/data',
-    keywords: [
-      'Auto Chia Data ZaloBot',
-      'Meta CAPI SHA-256',
-      'Chia Lead Round-Robin',
-      'Lọc trùng Lead 6 tháng',
-      'Đền bù Ticket lỗi 1:1',
-    ],
-    ogImage: '/imgs/enterprise/sol-data-capi.webp',
-    breadcrumbs: [
-      { name: 'Trang Chủ', url: '/' },
-      { name: 'Auto Data & Meta CAPI', url: '/data' },
-    ],
-    faqs: AUTODATA_FAQS,
-    jsonLd: [
-      buildSoftwareAppSchema({
-        name: 'DOMATION Auto Data & Meta CAPI Router',
-        description:
-          'Phần mềm tự động chia Lead < 5 giây qua ZaloBot & Telegram, lọc trùng 6 tháng và bắn Meta Conversions API SHA-256.',
-        path: '/data',
-        screenshot: '/imgs/domation_v2/data_v2_overview.webp',
-        featureList: [
-          'Chia vòng Round-Robin 5 cổng dưới 5 giây qua ZaloBot & Telegram',
-          'Chuẩn hóa SĐT +84 & lọc trùng Lead đa kênh 180 ngày',
-          'Van SLA 120s chống ôm số & Đền bù Ticket lỗi 1:1',
-          'Bắn sự kiện Meta CAPI SHA-256 (Qualified/DisqualifiedLead) HTTP 200',
-        ],
-        offers: [
-          {
-            name: 'Auto Data Standard',
-            price: '1500000',
-            description: '1.500.000₫/tháng (tối đa 5 Sale, 3 Quản lý, 15.000 Lead/tháng) • Dùng thử 30 ngày 0đ',
-            url: '/data#pricing',
-          },
-          {
-            name: 'Auto Data Pro',
-            price: '3000000',
-            description: '3.000.000₫/tháng (tối đa 25 Sale, 10 Quản lý, 100.000 Lead/tháng)',
-            url: '/data#pricing',
-          },
-          {
-            name: 'Automation • CRM 360° • ERP 5.0',
-            price: '6000000',
-            description: '6.000.000₫/tháng • Nâng cấp trọn bộ Automation, CRM 360° & ERP 5.0',
-            url: '/data#pricing',
-          },
-        ],
-      }),
-    ],
-  });
+  usePageSeo(getDataSeoConfig());
   const [catalog, setCatalog] = useState<ClientBillingCatalog>(DEFAULT_CLIENT_CATALOG);
   const [googleClientId, setGoogleClientId] = useState<string | null>(() => {
     const viteClientId = (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim();
-    return viteClientId || null;
+    return viteClientId || '641158233158-nsg8a8tdsj3fdgb34dc9tugm8god7tho.apps.googleusercontent.com';
   });
-  const [session, setSession] = useState<ClientSessionState | null>(() => readSavedSession());
+  const [session, setSession] = useState<TenantSessionV2 | null>(() => readSavedSession());
 
-  // Full-screen setup app state
-  const [setupOpen, setSetupOpen] = useState(false);
-  const [setupIntent, setSetupIntent] = useState<SetupModalIntent>('register');
+  // Full-screen setup app state (auto-open if URL targets /data/:slug or data.domation.net/:slug)
+  const initialPathSlug = detectWorkspacePathSlug();
+  const [setupOpen, setSetupOpen] = useState<boolean>(() => Boolean(initialPathSlug));
+  const [setupIntent, setSetupIntent] = useState<SetupModalIntent>(() =>
+    initialPathSlug && readSavedSession()?.tenant_slug === initialPathSlug
+      ? 'workspace_router'
+      : initialPathSlug
+        ? 'login'
+        : 'register'
+  );
   const [setupModalKey, setSetupModalKey] = useState(0);
 
   // Legal Docs & Cookie Consent state
@@ -350,8 +323,9 @@ export function DomationDataLanding() {
     };
   }, []);
 
-  const handleSessionChange = (nextSession: ClientSessionState | null) => {
+  const handleSessionChange = (nextSession: TenantSessionV2 | null) => {
     setSession(nextSession);
+    syncWorkspaceUrlSlug(nextSession ? nextSession.tenant_slug : null);
     try {
       if (nextSession) {
         window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(nextSession));
@@ -367,6 +341,9 @@ export function DomationDataLanding() {
     setSetupIntent(intent);
     setSetupModalKey((k) => k + 1);
     setSetupOpen(true);
+    if (session && intent.startsWith('workspace_')) {
+      syncWorkspaceUrlSlug(session.tenant_slug);
+    }
   };
 
   const openLegalDoc = (tab: LegalDocTab) => {
@@ -502,7 +479,7 @@ export function DomationDataLanding() {
               >
                 <span>
                   {session
-                    ? `Quản lý Gói & Ví (${session.subscription.days_remaining} ngày)`
+                    ? `Quản lý Gói & Ví (${session.subscription?.days_remaining ?? 30} ngày)`
                     : 'Đăng nhập Workspace'}
                 </span>
               </button>
@@ -2044,17 +2021,59 @@ export function DomationDataLanding() {
         </button>
       )}
 
-      {/* FULL-SCREEN (100vw x 100vh) REAL CONNECT & WORKSPACE APP */}
-      <AutoDataFullScreenSetup
+      {/* FULL-SCREEN UNIFIED WORKSPACE APP OR AUTH MODAL */}
+      {setupOpen && session && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#F8F9FA]">
+          <Suspense
+            fallback={
+              <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-medium">
+                Đang tải không gian vận hành AutoData...
+              </div>
+            }
+          >
+            <AutoDataWorkspaceApp
+              key={`${session.tenant_slug}-${setupModalKey}`}
+              session={session}
+              initialView={
+                typeof window !== 'undefined' && window.location.pathname.endsWith('/report-data')
+                  ? 'report_data'
+                  : setupIntent === 'workspace_billing'
+                    ? 'billing'
+                    : setupIntent === 'workspace_zalo'
+                      ? 'integrations'
+                      : 'dashboard'
+              }
+              onSessionUpdated={(next) => handleSessionChange(next)}
+              onSwitchWorkspaceRequested={() => {
+                handleSessionChange(null);
+                setSetupIntent('login');
+                setSetupOpen(true);
+              }}
+              onNavigateSlug={(slug) => syncWorkspaceUrlSlug(slug)}
+              onLoggedOut={() => {
+                setSetupOpen(false);
+                handleSessionChange(null);
+              }}
+            />
+          </Suspense>
+        </div>
+      )}
+
+      <AutoDataAuthModal
         key={setupModalKey}
-        open={setupOpen}
-        initialIntent={setupIntent}
+        isOpen={setupOpen && !session}
+        initialMode={setupIntent === 'register' ? 'register' : 'login'}
         catalog={catalog}
         googleClientId={googleClientId}
-        session={session}
-        onSessionChange={handleSessionChange}
-        onClose={() => setSetupOpen(false)}
         onOpenLegal={(t) => openLegalDoc(t)}
+        onClose={() => {
+          setSetupOpen(false);
+          syncWorkspaceUrlSlug(null);
+        }}
+        onAuthenticated={(next) => {
+          handleSessionChange(next);
+          setSetupOpen(true);
+        }}
       />
     </div>
   );
