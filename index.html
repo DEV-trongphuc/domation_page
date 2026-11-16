@@ -48,7 +48,7 @@
   <meta name="twitter:image" content="https://domation.net/imgs/home.jpg" />
 
   <!-- Structured Data JSON-LD (Base GEO Entity Graph) -->
-  <script type="application/ld+json">
+  <script type="application/ld+json" data-domation-seo="true">
     {
       "@context": "https://schema.org",
       "@graph": [
@@ -58,7 +58,10 @@
           "name": "Công Ty TNHH DOMATION Việt Nam",
           "alternateName": ["DOMATION", "DOMATION.NET", "DOMARKETING"],
           "url": "https://domation.net/",
-          "logo": "https://domation.net/domation-logo.svg",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://domation.net/domation-logo.svg"
+          },
           "email": "turniodev@gmail.com",
           "telephone": "+84378859736",
           "areaServed": ["VN", "TP. Hồ Chí Minh", "Đà Nẵng", "Hà Nội"],
@@ -92,27 +95,30 @@
           "publisher": { "@id": "https://domation.net/#organization" },
           "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://domation.net/boost?q={search_term_string}",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://domation.net/boost?q={search_term_string}"
+            },
             "query-input": "required name=search_term_string"
           }
         }
       ]
     }
   </script>
-  <script type="module" crossorigin src="/assets/LuxuryGoldBackdrop-BaP9rWQ4.js"></script>
-  <script type="module" crossorigin src="/assets/filter-props--llFN9Or.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-right-7H9K_bGF.js"></script>
-  <script type="module" crossorigin src="/assets/seo-RgcmYRzr.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-BKRPmV-C.js"></script>
-  <script type="module" crossorigin src="/assets/enterpriseData-BZEqTYdh.js"></script>
-  <script type="module" crossorigin src="/assets/ProductInspectionModal-B8L5uYFL.js"></script>
-  <script type="module" crossorigin src="/assets/bot-CSl1ObG1.js"></script>
-  <script type="module" crossorigin src="/assets/building-2-wurAZU_5.js"></script>
-  <script type="module" crossorigin src="/assets/globe-BDNZdfmw.js"></script>
-  <script type="module" crossorigin src="/assets/network-BtMMYGAx.js"></script>
-  <script type="module" crossorigin src="/assets/ChannelLogoStrip-B4vSO5Po.js"></script>
-  <script type="module" crossorigin src="/assets/main-cvGnbeyk.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-48fhAunm.css">
+  <script type="module" crossorigin src="/assets/seo-DakU6s3S.js"></script>
+  <script type="module" crossorigin src="/assets/filter-props-CT0K5ytr.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-right-CLte9LRO.js"></script>
+  <script type="module" crossorigin src="/assets/Navbar-CSnr1cal.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-Bl9X23qX.js"></script>
+  <script type="module" crossorigin src="/assets/enterpriseData-C34GZpaZ.js"></script>
+  <script type="module" crossorigin src="/assets/ProductInspectionModal-CB8mpxei.js"></script>
+  <script type="module" crossorigin src="/assets/bot-B1lPIMWl.js"></script>
+  <script type="module" crossorigin src="/assets/building-2-Jady7Ojh.js"></script>
+  <script type="module" crossorigin src="/assets/FaqAccordionSection-CxPSkJdZ.js"></script>
+  <script type="module" crossorigin src="/assets/globe-BihFk5kw.js"></script>
+  <script type="module" crossorigin src="/assets/network-BRmzUuqp.js"></script>
+  <script type="module" crossorigin src="/assets/main-B9eVTVxE.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-DTT4KAdS.css">
 </head>
 
 <body class="bg-[#F8F9FA] text-[#0F172A] antialiased selection:bg-blue-100 selection:text-[#1E40FF]">
