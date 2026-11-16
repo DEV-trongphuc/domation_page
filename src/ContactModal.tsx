@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  ArrowUpRight,
   CheckCircle2,
   Clock,
   Loader2,
@@ -24,13 +25,13 @@ export interface ContactModalProps {
   defaultNote?: string;
 }
 
-const SERVICE_OPTIONS = [
-  'Hệ thống Auto Chia Data ZaloBot & Meta CAPI',
-  'Enterprise ERP 5.0 (12 Phân hệ • Chấm công GPS & Payroll)',
-  'CRM 360° & Quản trị Bán hàng',
-  'Marketing Automation & Trợ lý AI Phòng ban (RAG)',
-  'Website Chuyên Nghiệp & Sa bàn 3D WebGL (Từ 12.0M₫)',
-  'Tư vấn Chuyển đổi số & Hạ tầng Dữ liệu Riêng',
+const SERVICE_OPTIONS: Array<{ label: string; value: string }> = [
+  { label: 'Auto Chia Data & Meta CAPI', value: 'Hệ thống Auto Chia Data ZaloBot & Meta CAPI' },
+  { label: 'Enterprise ERP 5.0', value: 'Enterprise ERP 5.0 (12 Phân hệ • Chấm công GPS & Payroll)' },
+  { label: 'CRM 360° & Bán Hàng', value: 'CRM 360° & Quản trị Bán hàng' },
+  { label: 'Automation & AI RAG', value: 'Marketing Automation & Trợ lý AI Phòng ban (RAG)' },
+  { label: 'Website & Sa bàn 3D', value: 'Website Chuyên Nghiệp & Sa bàn 3D WebGL (Từ 12.0M₫)' },
+  { label: 'Hạ tầng Dữ liệu Riêng', value: 'Tư vấn Chuyển đổi số & Hạ tầng Dữ liệu Riêng' },
 ];
 
 export const ContactModal: React.FC<ContactModalProps> = ({
@@ -42,7 +43,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [company, setCompany] = useState('');
-  const [service, setService] = useState(defaultService || SERVICE_OPTIONS[0]);
+  const [service, setService] = useState(defaultService || SERVICE_OPTIONS[0].value);
   const [message, setMessage] = useState(defaultNote || '');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -105,97 +106,102 @@ export const ContactModal: React.FC<ContactModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       eyebrow="KẾT NỐI TRỰC TIẾP ĐỘI NGŨ KIẾN TRÚC DOMATION"
-      title="Đặt Lịch Demo & Tư Vấn Giải Pháp Doanh Nghiệp"
-      subtitle="Trao đổi trực tiếp 1-1 với Founder & Lead Engineer về kiến trúc hệ thống, chi phí triển khai và lộ trình bàn giao thực tế."
+      title="Đặt Lịch Demo & Tư Vấn Giải Pháp"
+      subtitle="Trao đổi trực tiếp 1-1 với Solution Architect về quy trình triển khai, chi phí và lộ trình bàn giao thực tế."
       maxWidthClass="max-w-4xl"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Direct Channels & Guarantee */}
-        <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl p-5 bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white border border-blue-400/20">
-          <div>
-            <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/10">
-              <DomationLogoMark className="w-11 h-11 shrink-0 shadow-md" />
-              <div>
-                <div className="text-sm font-extrabold tracking-tight">DOMATION Enterprise</div>
-                <div className="text-[11px] text-cyan-300 font-semibold">
-                  Huỳnh Trọng Phúc • Solution Architect
+      <div className="rounded-[24px] border border-slate-200/85 bg-white/90 shadow-xs overflow-hidden grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/80">
+        {/* Left: Light Swiss Glass Architect & Direct Channels */}
+        <div className="lg:col-span-5 p-5 sm:p-6 bg-gradient-to-br from-[#F4F8FF]/90 via-white to-slate-50/80 flex flex-col justify-between gap-5">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-200/80">
+              <div className="flex items-center gap-3 min-w-0">
+                <DomationLogoMark className="w-10 h-10 shrink-0 shadow-xs" />
+                <div className="min-w-0">
+                  <div className="text-sm font-extrabold text-slate-900 truncate">
+                    DOMATION Enterprise
+                  </div>
+                  <div className="text-[11px] font-semibold text-[#1E40FF] truncate">
+                    Huỳnh Trọng Phúc • Solution Architect
+                  </div>
                 </div>
               </div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Online
+              </span>
             </div>
 
-            <div className="space-y-2.5 mb-5">
+            <div className="space-y-2">
               <a
                 href="https://zalo.me/0378859736"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 rounded-xl bg-white/10 hover:bg-blue-500/30 border border-white/15 transition-all group"
+                className="flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-200/90 hover:border-[#0068FF]/50 hover:shadow-sm transition-all group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-[#0068FF] text-white font-black text-xs flex items-center justify-center shrink-0">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-[#0068FF] text-white font-black text-[11px] flex items-center justify-center shrink-0">
                     Zalo
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-white">Chat Zalo Trực Tiếp</div>
-                    <div className="text-[11px] text-cyan-200 font-mono">0378.859.736</div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-slate-900">Chat Zalo Trực Tiếp</div>
+                    <div className="text-[11px] text-slate-500 font-mono">0378.859.736</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-bold text-cyan-300 group-hover:translate-x-0.5 transition-transform">
-                  Mở Zalo →
-                </span>
+                <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#0068FF] transition-colors shrink-0" />
               </a>
 
               <a
                 href="https://www.facebook.com/turni0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 rounded-xl bg-white/10 hover:bg-sky-500/25 border border-white/15 transition-all group"
+                className="flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-200/90 hover:border-[#1E40FF]/50 hover:shadow-sm transition-all group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#0084FF] to-[#00C6FF] text-white flex items-center justify-center shrink-0">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 text-[#1E40FF] flex items-center justify-center shrink-0">
                     <MessageCircle className="w-4 h-4" />
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-white">Facebook Messenger</div>
-                    <div className="text-[11px] text-slate-300">fb.com/turni0</div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-slate-900">Facebook Messenger</div>
+                    <div className="text-[11px] text-slate-500">fb.com/turni0</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-bold text-cyan-300 group-hover:translate-x-0.5 transition-transform">
-                  Nhắn tin →
-                </span>
+                <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#1E40FF] transition-colors shrink-0" />
               </a>
 
-              <a
-                href="mailto:turniodev@gmail.com"
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-              >
-                <Mail className="w-4 h-4 text-cyan-300 shrink-0" />
-                <span className="text-xs text-slate-200 font-medium">turniodev@gmail.com</span>
-              </a>
-
-              <a
-                href="tel:0378859736"
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-              >
-                <Phone className="w-4 h-4 text-emerald-300 shrink-0" />
-                <span className="text-xs text-slate-200 font-mono font-semibold">0378.859.736</span>
-              </a>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 pt-1">
+                <a
+                  href="mailto:turniodev@gmail.com"
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/80 border border-slate-200/80 hover:border-blue-200 text-xs text-slate-700 font-medium transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                  <span className="truncate">turniodev@gmail.com</span>
+                </a>
+                <a
+                  href="tel:0378859736"
+                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/80 border border-slate-200/80 hover:border-emerald-200 text-xs text-slate-800 font-mono font-semibold transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>0378.859.736</span>
+                </a>
+              </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-white/10 space-y-2 text-[11px] text-slate-300">
+          <div className="pt-4 border-t border-slate-200/80 space-y-2 text-[11px] text-slate-600">
             <div className="flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-cyan-300 shrink-0" />
+              <Clock className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
               <span>Phản hồi nhanh trong 15 phút (giờ hành chính)</span>
             </div>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>Bảo mật NDA 100% dữ liệu & ý tưởng doanh nghiệp</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>Bảo mật NDA 100% dữ liệu &amp; ý tưởng doanh nghiệp</span>
             </div>
           </div>
         </div>
 
-        {/* Right: Quick Lead Request Form */}
-        <div className="lg:col-span-7">
+        {/* Right: Clean Pill-Based Lead Request Form */}
+        <div className="lg:col-span-7 p-5 sm:p-6 bg-white">
           {status === 'success' ? (
             <div className="h-full min-h-[340px] rounded-2xl border border-emerald-200 bg-emerald-50/70 p-6 sm:p-8 flex flex-col items-center justify-center text-center">
               <div className="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/25 mb-4">
@@ -207,7 +213,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               <p className="text-sm text-slate-600 mt-2 max-w-md leading-relaxed">
                 Thông tin của anh/chị đã được gửi thẳng về hệ thống điều phối DOMATION. Đội ngũ kỹ sư sẽ liên hệ qua Zalo hoặc Điện thoại trong thời gian sớm nhất.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-3 justify-center">
                 <button
                   type="button"
                   onClick={() => setStatus('idle')}
@@ -228,7 +234,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Họ và Tên <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -237,11 +243,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="VD: Nguyễn Minh Anh"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:bg-white transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                     Số Điện Thoại / Zalo <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -250,53 +256,59 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="VD: 09xx xxx xxx"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:bg-white transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Doanh Nghiệp / Thương Hiệu
-                  </label>
-                  <input
-                    type="text"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    placeholder="VD: Công ty BĐS / Chuỗi F&B..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:bg-white transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Giải Pháp Quan Tâm
-                  </label>
-                  <select
-                    value={service}
-                    onChange={(e) => setService(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 focus:outline-none focus:border-[#1E40FF] focus:bg-white transition-all"
-                  >
-                    {SERVICE_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Doanh Nghiệp / Thương Hiệu
+                </label>
+                <input
+                  type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  placeholder="VD: Công ty BĐS / Nha khoa / Chuỗi bán lẻ..."
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  Giải Pháp Quan Tâm
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {SERVICE_OPTIONS.map((opt) => {
+                    const active = service === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setService(opt.value)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                          active
+                            ? 'bg-[#1E40FF] text-white border-[#1E40FF] shadow-xs'
+                            : 'bg-slate-50/80 text-slate-700 border-slate-200/90 hover:border-blue-300 hover:bg-blue-50/40'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Mô Tả Nhu Cầu Hoặc Mục Tiêu Triển Khai
                 </label>
                 <textarea
                   rows={3}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="VD: Cần chia data tự động từ Meta Form về 3 đội Sale qua ZaloBot và đồng bộ CAPI..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:bg-white transition-all resize-none"
+                  placeholder="VD: Cần chia data tự động từ Meta Form về đội Sale qua ZaloBot và đồng bộ CAPI..."
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all resize-none"
                 />
               </div>
 
@@ -319,7 +331,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    <span>Gửi Yêu Cầu Demo & Nhận Báo Giá</span>
+                    <span>Gửi Yêu Cầu Demo &amp; Nhận Báo Giá</span>
                     <Sparkles className="w-4 h-4 text-cyan-200" />
                   </>
                 )}
