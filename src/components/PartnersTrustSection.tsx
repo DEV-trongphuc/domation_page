@@ -135,7 +135,7 @@ export const PartnersTrustSection: React.FC = () => {
               CÁC DOANH NGHIỆP &amp; THƯƠNG HIỆU ĐÃ HỢP TÁC
             </div>
             <span className="text-[11px] font-medium text-slate-500">
-              {ECOSYSTEM_PARTNERS.length}+ Thương hiệu Đa Ngành (F&amp;B • BĐS • Giáo dục • Y tế • Bán lẻ)
+              {Math.max(38, ECOSYSTEM_PARTNERS.length)}+ Thương hiệu Đa Ngành (F&amp;B • BĐS • Giáo dục • Y tế • Bán lẻ)
             </span>
           </div>
 

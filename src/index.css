@@ -20,39 +20,41 @@
   --font-editorial: 'Be Vietnam Pro', 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-  font-variant-numeric: lining-nums tabular-nums;
-  font-feature-settings: "lnum" 1, "tnum" 1;
-}
+@layer base {
+  * {
+    box-sizing: border-box;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+  }
 
-html {
-  scroll-behavior: smooth;
-  background-color: var(--surface-canvas);
-  color: var(--text-primary);
-  overflow-x: clip;
-  font-family: var(--font-sans);
-}
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--surface-canvas);
+    color: var(--text-primary);
+    overflow-x: clip;
+    font-family: var(--font-sans);
+  }
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--surface-canvas);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  line-height: 1.65;
-  letter-spacing: 0.004em;
-  overflow-x: clip;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--surface-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    letter-spacing: 0.004em;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-h1, h2, h3, h4, .font-display {
-  font-family: var(--font-display);
-  color: var(--text-primary);
-  text-wrap: balance;
-  line-height: 1.32;
-  letter-spacing: -0.015em;
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    text-wrap: balance;
+    line-height: 1.32;
+    letter-spacing: -0.015em;
+  }
 }
 
 .font-editorial {
@@ -348,4 +350,14 @@ code, pre, .font-mono {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@media (max-width: 767px) {
+  .glass-card,
+  .inkica-glass-card,
+  .card-luxury-glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.94);
+  }
 }
