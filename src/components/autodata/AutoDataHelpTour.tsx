@@ -135,7 +135,7 @@ export function AutoDataSpotlightTour({
       };
 
       const el =
-        findVisibleEl(`[data-tour~="${current.target}"], [data-tour="${current.target}"]`) ||
+        findVisibleEl(`[data-tour="${current.target}"]`) ||
         (current.selector ? findVisibleEl(current.selector) : null);
       if (!el) {
         setTargetRect(null);

@@ -165,27 +165,27 @@ export function AutoDataZaloBotGuide({
   };
 
   return (
-    <div className="inkica-glass-card rounded-2xl p-4 sm:p-5 space-y-4">
+    <div className="inkica-glass-card rounded-3xl p-4 sm:p-7 space-y-6">
       {/* Header with explicit Optional badge + Fast Skip CTA */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-200/70">
-        <div className="space-y-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 whitespace-nowrap">
-              TÙY CHỌN • CÀI ĐẶT SAU ĐƯỢC
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200/70">
+        <div className="space-y-1.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-[11px] font-bold text-amber-800 whitespace-nowrap">
+              TÙY CHỌN • CÓ THỂ CÀI ĐẶT SAU
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 px-2.5 py-0.5 text-[10px] font-bold text-[#1E40FF] whitespace-nowrap">
-              <Bot className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200 px-3 py-1 text-[11px] font-bold text-[#1E40FF] whitespace-nowrap">
+              <img src="https://zalobot.vn/favicon.ico" alt="ZaloBot" className="w-3.5 h-3.5 rounded-full object-contain shrink-0" />
               <span>Zalo Bot A–Z &amp; Live Test</span>
             </span>
             {onOpenTour && (
               <AutoDataHelpTrigger topic="zalobot_chatid" onOpenTour={onOpenTour} />
             )}
           </div>
-          <h3 className={`${compact ? 'text-sm sm:text-base' : 'text-base sm:text-lg'} font-bold text-slate-900 leading-snug`}>
-            Kết nối Zalo Bot (<span className="whitespace-nowrap">A–Z</span>) &amp; Kiểm tra trực tiếp
+          <h3 className={`${compact ? 'text-base sm:text-lg' : 'text-lg sm:text-xl'} font-bold text-slate-900 leading-snug`}>
+            Hướng dẫn kết nối Zalo Bot từ A–Z &amp; Kiểm tra kết nối trực tiếp
           </h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Nhận thông báo Lead mới tức thì qua Zalo cho Sale nội bộ. Chưa tạo Bot? Có thể bỏ qua để vào hệ thống ngay.
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Giúp từng nhân viên Sale nội bộ nhận thông báo Lead mới ngay trên điện thoại Zalo tức thì. Chưa có Bot? Bạn hoàn toàn có thể bỏ qua bước này để vào dùng hệ thống ngay.
           </p>
         </div>
 
@@ -193,7 +193,7 @@ export function AutoDataZaloBotGuide({
           <button
             type="button"
             onClick={onFastSkip}
-            className="ql-btn-outline self-start lg:self-center px-3 py-1.5 text-[11px] font-semibold cursor-pointer whitespace-nowrap shrink-0"
+            className="ql-btn-outline self-start lg:self-center px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold cursor-pointer whitespace-nowrap shrink-0 max-w-full"
           >
             <span>{fastSkipLabel}</span>
             <ArrowRight className="w-3.5 h-3.5 shrink-0 text-[#1E40FF]" />
@@ -201,79 +201,77 @@ export function AutoDataZaloBotGuide({
         )}
       </div>
 
-      {/* 4-Step Compact Visual Guide (zero overflow across narrow modal columns) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-        <div className="rounded-xl border border-slate-200/80 bg-white/90 p-3 flex flex-col justify-between gap-1.5 min-w-0 overflow-hidden">
-          <div className="space-y-1">
-            <span className="inline-block rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] px-2 py-0.5 text-[10px] font-bold">
+      {/* 4-Step A-Z Visual Guide */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="rounded-2xl border border-slate-200/80 bg-white/85 p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <span className="rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap">
               BƯỚC 1 • TẠO BOT
             </span>
-            <div className="text-xs font-bold text-slate-900">Tạo Bot &amp; Lấy Token</div>
-            <p className="text-[11px] text-slate-600 leading-snug">
-              Vào <strong>Zalo Bot Creator</strong>, chọn <strong>Tạo Bot mới</strong> rồi sao chép <strong>Bot Token</strong>.
-            </p>
-          </div>
-          <a
-            href="https://bot.zaloplatforms.com"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1E40FF] hover:underline truncate max-w-full"
-          >
-            <span className="truncate">bot.zaloplatforms.com</span>
-            <ExternalLink className="w-3 h-3 shrink-0" />
-          </a>
-        </div>
-
-        <div className="rounded-xl border border-slate-200/80 bg-white/90 p-3 flex flex-col justify-between gap-1.5 min-w-0 overflow-hidden">
-          <div className="space-y-1">
-            <span className="inline-block rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] px-2 py-0.5 text-[10px] font-bold">
-              BƯỚC 2 • MỞ LUỒNG ZALO
-            </span>
-            <div className="text-xs font-bold text-slate-900">Nhắn 1 tin cho Bot</div>
-            <p className="text-[11px] text-slate-600 leading-snug">
-              Quét QR hoặc mời Bot vào nhóm Sale và gửi lệnh <code className="font-mono font-bold text-[#1E40FF]">/chatid</code>.
-            </p>
-          </div>
-          <div>
-            <button
-              type="button"
-              onClick={() => void handleCopyChatIdCmd()}
-              className="inline-flex items-center gap-1 rounded-md bg-slate-50 border border-slate-200 px-2 py-0.5 text-[11px] font-mono font-semibold text-slate-800 hover:border-[#1E40FF] cursor-pointer"
+            <a
+              href="https://bot.zaloplatforms.com"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1E40FF] hover:underline whitespace-nowrap"
             >
-              {copiedCmd ? <Check className="w-3 h-3 text-emerald-600 shrink-0" /> : <Copy className="w-3 h-3 shrink-0" />}
-              <span>{copiedCmd ? 'Đã chép' : 'Copy /chatid'}</span>
-            </button>
+              <span>bot.zaloplatforms.com</span>
+              <ExternalLink className="w-3 h-3 shrink-0" />
+            </a>
           </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200/80 bg-white/90 p-3 space-y-1 min-w-0 overflow-hidden">
-          <span className="inline-block rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] px-2 py-0.5 text-[10px] font-bold">
-            BƯỚC 3 • LẤY CHAT ID
-          </span>
-          <div className="text-xs font-bold text-slate-900">Dán Token &amp; Quét ID</div>
-          <p className="text-[11px] text-slate-600 leading-snug">
-            Dán <strong>Bot Token</strong> xuống dưới và bấm <strong>Lấy Chat ID tự động</strong>.
+          <div className="text-xs sm:text-sm font-bold text-slate-900">Tạo Bot &amp; Lấy Bot Token</div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Đăng nhập Zalo tại <strong>Zalo Bot Creator</strong>, chọn <strong>Tạo Bot mới</strong>, đặt tên (VD: <em>Sale Lead Bot</em>) và sao chép mã <strong>Bot Token</strong>.
           </p>
         </div>
 
-        <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50/90 to-cyan-50/70 p-3 space-y-1 min-w-0 overflow-hidden">
-          <span className="inline-block rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white px-2 py-0.5 text-[10px] font-bold">
+        <div className="rounded-2xl border border-slate-200/80 bg-white/85 p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <span className="rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap">
+              BƯỚC 2 • MỞ ZALO NHẮN TIN
+            </span>
+            <button
+              type="button"
+              onClick={() => void handleCopyChatIdCmd()}
+              className="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2 py-0.5 text-[11px] font-mono font-semibold text-slate-800 hover:border-[#1E40FF] cursor-pointer whitespace-nowrap"
+            >
+              {copiedCmd ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+              <span>{copiedCmd ? 'Đã chép' : '/chatid'}</span>
+            </button>
+          </div>
+          <div className="text-xs sm:text-sm font-bold text-slate-900">Nhắn 1 tin mở luồng cho Bot</div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Quét QR hoặc tìm tên Bot trên Zalo (nhắn 1-1 hoặc mời Bot vào <strong>nhóm Sale</strong>) rồi gửi 1 tin bất kỳ (VD: <code className="font-mono font-bold text-[#1E40FF]">/chatid</code>).
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200/80 bg-white/85 p-4 space-y-2">
+          <span className="inline-block rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap">
+            BƯỚC 3 • LẤY CHAT ID
+          </span>
+          <div className="text-xs sm:text-sm font-bold text-slate-900">Dán Token &amp; Lấy Chat ID</div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Dán <strong>Bot Token</strong> vào ô bên dưới, bấm nút <strong>Lấy Chat ID tự động</strong> để hệ thống tự đọc mã nhận tin từ Zalo Bot Platform.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50/90 to-cyan-50/70 p-4 space-y-2">
+          <span className="inline-block rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap">
             BƯỚC 4 • LIVE VERIFY
           </span>
-          <div className="text-xs font-bold text-slate-900">Xác Thực &amp; Gửi Tin Test</div>
-          <p className="text-[11px] text-slate-700 leading-snug">
-            Bấm <strong>Xác thực Zalo Bot Thật</strong> để kiểm tra <code>getMe</code> &amp; nhận tin test.
+          <div className="text-xs sm:text-sm font-bold text-slate-900">Xác Thực &amp; Gửi Tin Test</div>
+          <p className="text-xs text-slate-700 leading-relaxed">
+            Bấm <strong>Xác thực Zalo Bot Thật</strong> để kiểm tra quyền Bot (<code>getMe</code>) và nhận tin test thật về Zalo ngay lập tức.
           </p>
         </div>
       </div>
 
       {/* Live Connection Verification Test Inputs & Buttons */}
-      <div className="rounded-xl border border-slate-200/90 bg-white/90 p-3.5 sm:p-4 space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="space-y-1">
+      <div className="rounded-2xl border border-slate-200/90 bg-white/85 p-4 sm:p-5 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-700 flex items-center justify-between gap-2">
               <span>Zalo Bot Access Token (Tùy chọn)</span>
-              <span className="text-[10px] font-normal text-slate-400">bot.zaloplatforms.com</span>
+              <span className="text-[11px] font-normal text-slate-400">Từ bot.zaloplatforms.com</span>
             </label>
             <input
               type="text"
@@ -282,12 +280,12 @@ export function AutoDataZaloBotGuide({
               spellCheck={false}
               value={botToken}
               onChange={(e) => setBotToken(e.target.value)}
-              placeholder="Dán Bot Access Token..."
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-mono focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+              placeholder="Dán chuỗi Bot Access Token từ bot.zaloplatforms.com"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-mono focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-700 flex items-center justify-between gap-2">
               <span>Mã Zalo Chat ID nhận tin</span>
               <button
@@ -306,23 +304,23 @@ export function AutoDataZaloBotGuide({
               spellCheck={false}
               value={chatId}
               onChange={(e) => setChatId(e.target.value)}
-              placeholder="Bấm 'Lấy Chat ID tự động' hoặc nhập tay"
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-mono focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
+              placeholder="Bấm 'Lấy Chat ID tự động' hoặc nhập thủ công"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-mono focus:border-[#1E40FF] focus:outline-none focus:ring-2 focus:ring-blue-100"
             />
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-1">
           <button
             type="button"
             disabled={verifyingMode !== null}
             onClick={() => void runVerification('live')}
-            className="btn-inkica-primary px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap"
+            className="btn-inkica-primary px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
           >
             {verifyingMode === 'live' ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
             ) : (
-              <Send className="w-3.5 h-3.5 shrink-0" />
+              <Send className="w-4 h-4 shrink-0" />
             )}
             <span>Xác thực Zalo Bot Thật (Live API)</span>
           </button>
@@ -331,42 +329,42 @@ export function AutoDataZaloBotGuide({
             type="button"
             disabled={verifyingMode !== null}
             onClick={() => void runVerification('sandbox')}
-            className="ql-btn-outline px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap"
+            className="ql-btn-outline px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
           >
             {verifyingMode === 'sandbox' ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
             ) : (
-              <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <Zap className="w-4 h-4 text-amber-500 shrink-0" />
             )}
             <span>Test thử luồng Bridge (Sandbox)</span>
           </button>
         </div>
 
         {verifyError && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-800 leading-relaxed">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs sm:text-sm text-rose-800 leading-relaxed">
             {verifyError}
           </div>
         )}
 
         {verifyResult && (
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 space-y-1.5 text-xs">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 space-y-2 text-xs sm:text-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="inline-flex items-center gap-1.5 font-bold text-emerald-900">
+              <div className="inline-flex items-center gap-2 font-bold text-emerald-900">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
                   Kết nối thành công: {verifyResult.bot_name}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="rounded-full bg-white border border-emerald-200 px-2 py-0.5 text-[10px] font-mono font-bold text-emerald-700 whitespace-nowrap">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-white border border-emerald-200 px-2.5 py-0.5 text-[11px] font-mono font-bold text-emerald-700 whitespace-nowrap">
                   {verifyResult.latency_ms} ms
                 </span>
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800 whitespace-nowrap">
+                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 whitespace-nowrap">
                   {verifyResult.verification_mode === 'live_zalo_api' ? 'Zalo Live API' : 'Bridge Verified'}
                 </span>
               </div>
             </div>
-            <div className="text-[11px] text-slate-700 leading-snug">
+            <div className="text-xs text-slate-700 leading-relaxed">
               Chat ID đích: <code className="font-mono font-bold text-slate-900">{verifyResult.chat_id}</code> —{' '}
               {verifyResult.preview_message}
             </div>

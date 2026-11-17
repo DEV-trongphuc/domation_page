@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Building2, Plus, RefreshCw, Trash2, UserCheck, UserPlus, Users, X } from 'lucide-react';
 import { apiRequest, getErrorMessage } from '../autodataApi';
-import { useAuth } from '../cloned/contexts/AuthContext';
 
 interface ConsultantRow {
   id: string;
@@ -31,12 +30,6 @@ interface ConsultantsViewProps {
 }
 
 export const ConsultantsView: React.FC<ConsultantsViewProps> = ({ token, tenantSlug }) => {
-  let maxCoManagers = 3;
-  try {
-    maxCoManagers = Math.max(0, Number(useAuth().tenantSettings?.max_co_managers_per_consultant ?? 3));
-  } catch {
-    maxCoManagers = 3;
-  }
   const [users, setUsers] = useState<ConsultantRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
@@ -270,7 +263,7 @@ export const ConsultantsView: React.FC<ConsultantsViewProps> = ({ token, tenantS
           <div className="flex h-full w-full max-w-md flex-col bg-white p-6 shadow-2xl">
             <div className="flex items-start justify-between border-b border-slate-100 pb-4">
               <div>
-                <p className="text-xs font-bold uppercase text-[#0284C7]">Người Đồng Quản Lý (Tối đa {maxCoManagers})</p>
+                <p className="text-xs font-bold uppercase text-[#0284C7]">Người Đồng Quản Lý (Tối đa 3)</p>
                 <h3 className="text-lg font-bold text-slate-900">{cmUser.full_name}</h3>
               </div>
               <button type="button" onClick={() => setCmUser(null)} className="rounded-lg p-1 hover:bg-slate-100">
@@ -284,10 +277,10 @@ export const ConsultantsView: React.FC<ConsultantsViewProps> = ({ token, tenantS
               <input type="tel" value={cmPhone} onChange={(e) => setCmPhone(e.target.value)} placeholder="SĐT Zalo" className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2" />
               <button
                 type="submit"
-                disabled={maxCoManagers <= 0 || coManagers.length >= maxCoManagers}
+                disabled={coManagers.length >= 3}
                 className="btn-inkica-primary flex w-full items-center justify-center gap-1 rounded-xl py-2 font-semibold text-white disabled:opacity-50"
               >
-                <Plus className="h-4 w-4" /> Thêm Người Đồng Quản Lý ({coManagers.length}/{maxCoManagers})
+                <Plus className="h-4 w-4" /> Thêm Người Đồng Quản Lý ({coManagers.length}/3)
               </button>
             </form>
 

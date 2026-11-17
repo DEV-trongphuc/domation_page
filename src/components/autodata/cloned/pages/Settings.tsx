@@ -1,8 +1,7 @@
-/* eslint-disable react-refresh/only-export-components, @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { Mail, Settings2, Save, Send, Server, Database, Activity, ChevronDown, ChevronUp, Zap, Shield, MessageCircle, RefreshCw, Settings as SettingsIcon, BarChart2, Clock, Calendar, Users, CheckCircle, Plus, Trash2, Edit2, FileSpreadsheet, Upload, Download, X, Search, UserCheck, Bell, Network, Lock, Globe, GitBranch, FileText } from 'lucide-react';
+import { Mail, Settings2, Save, Send, Server, Database, Activity, ChevronDown, ChevronUp, Zap, Shield, MessageCircle, RefreshCw, Settings as SettingsIcon, BarChart2, Clock, Calendar, Users, CheckCircle, Plus, Trash2, Edit2, FileSpreadsheet, Upload, Download, X, Search, UserCheck, Bell } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { CustomModal } from '../components/ui/CustomModal';
@@ -15,22 +14,10 @@ import { BillingView } from '../../pages/BillingView';
 import { useAuth } from '../contexts/AuthContext';
 import { CreditCard, Bot, Link2 } from 'lucide-react';
 import { AutoDataWebhookGuide } from '../../AutoDataWebhookGuide';
-import {
-  AutoDataEmailGuide,
-  STANDARD_GOOGLE_SHEET_APPSCRIPT_CODE,
-} from '../../AutoDataEmailGuide';
+import { AutoDataEmailGuide } from '../../AutoDataEmailGuide';
 import { AutoDataTelegramBotGuide } from '../../AutoDataTelegramBotGuide';
 import { AutoDataZaloBotGuide } from '../../AutoDataZaloBotGuide';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
-import { SettingsProcessingSections } from '../components/settings/SettingsProcessingSections';
-import { SettingsCommunicationsSections } from '../components/settings/SettingsCommunicationsSections';
-import { SettingsReportSections, SettingsAiGlobalSection } from '../components/settings/SettingsReportSections';
-import { DEFAULT_PIPELINE_CAPI_STAGES, type TenantSettingsDto } from '../utils/pipelineConfig';
-import { useEntitlement } from '../contexts/EntitlementContext';
-import { SaasSettingsHub, type SaasEngineTabKey } from '../modules/settings-saas/SaasSettingsHub';
-import type { SettingsSubTabKey } from '../../autodataTypes';
-
-const loadXlsx = async () => await import('xlsx');
+import * as XLSX from 'xlsx';
 
 const thStyle: React.CSSProperties = {
   position: 'sticky',
@@ -88,56 +75,16 @@ const DEFAULT_REPORT_REASONS = [
 
 const SettingsInner = () => {
   const { t } = useLanguage();
-  const {
-    token,
-    tenantSlug,
-    companyName,
-    tenantSettings: authTenantSettings,
-    refreshTenantSettings,
-    updateTenantSettingsLocal,
-  } = useAuth();
-  const [canonicalSettings, setCanonicalSettings] = useState<TenantSettingsDto>(() => authTenantSettings || {});
-  const updateCanonicalSetting = <K extends keyof TenantSettingsDto>(
-    key: K,
-    val: TenantSettingsDto[K]
-  ) => {
-    setCanonicalSettings((prev) => ({ ...(prev || {}), [key]: val }));
-  };
+  const { token, tenantSlug } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
 
-  const { hasModule } = useEntitlement();
-  const hasCrmRouting = hasModule('rounds');
-
   // Tab State
-  const [activeTab, setActiveTab] = useState<SettingsSubTabKey>(() => {
-    if (typeof window !== 'undefined') {
-      const tabParam = new URLSearchParams(window.location.search).get('tab') as SettingsSubTabKey | null;
-      if (
-        tabParam &&
-        [
-          'org_structure',
-          'rbac_matrix',
-          'terminology',
-          'pipeline_rules',
-          'policy_docs',
-          'processing',
-          'communications',
-          'report',
-          'duplicate_check',
-          'ai',
-          'billing',
-        ].includes(tabParam)
-      ) {
-        return tabParam;
-      }
-    }
-    return hasCrmRouting ? 'processing' : 'org_structure';
-  });
+  const [activeTab, setActiveTab] = useState<'processing' | 'communications' | 'report' | 'duplicate_check' | 'ai' | 'billing'>('processing');
   const [guideModal, setGuideModal] = useState<'webhook' | 'email' | 'telegram' | 'zalo' | null>(null);
 
-  const handleTabChange = (tab: SettingsSubTabKey) => {
+  const handleTabChange = (tab: 'processing' | 'communications' | 'report' | 'duplicate_check' | 'ai' | 'billing') => {
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -147,19 +94,10 @@ const SettingsInner = () => {
   };
 
   const tabOptions = [
-    { value: 'org_structure', label: t('Sơ đồ Tổ chức & GPS'), icon: <Network size={16} /> },
-    { value: 'rbac_matrix', label: t('Ma trận Phân quyền (7×11)'), icon: <Lock size={16} /> },
-    { value: 'terminology', label: t('Từ điển Đa ngành'), icon: <Globe size={16} /> },
-    { value: 'pipeline_rules', label: t('Pipeline & Luật chuyển bước'), icon: <GitBranch size={16} /> },
-    { value: 'policy_docs', label: t('Nội quy & Mẫu biểu'), icon: <FileText size={16} /> },
-    ...(hasCrmRouting
-      ? [{ value: 'processing', label: t('Cấu hình Xử lý'), icon: <SettingsIcon size={16} /> }]
-      : []),
+    { value: 'processing', label: t('Cấu hình Xử lý'), icon: <SettingsIcon size={16} /> },
     { value: 'communications', label: t('Cấu hình Gửi tin & Email'), icon: <Send size={16} /> },
     { value: 'report', label: t('Báo cáo'), icon: <BarChart2 size={16} /> },
-    ...(hasCrmRouting
-      ? [{ value: 'duplicate_check', label: t('Ánh xạ dữ liệu cũ'), icon: <FileSpreadsheet size={16} /> }]
-      : []),
+    { value: 'duplicate_check', label: t('Ánh xạ dữ liệu cũ'), icon: <FileSpreadsheet size={16} /> },
     { value: 'ai', label: t('Cấu hình Trợ lý AI'), icon: <Zap size={16} /> },
     { value: 'billing', label: t('Gói cước & Ví'), icon: <CreditCard size={16} /> }
   ];
@@ -168,18 +106,17 @@ const SettingsInner = () => {
   const [geminiApiKey, setGeminiApiKey] = useState('');
   const [geminiModel, setGeminiModel] = useState('gemini-3.5-flash-lite');
   const [pipelineCapiStages, setPipelineCapiStages] = useState<
-    Array<{
-      key: string;
-      label: string;
-      short_label?: string;
-      color: string;
-      group?: 'positive' | 'neutral' | 'negative';
-      is_qualified: boolean;
-      capi_event: string;
-      enabled: boolean;
-      order?: number;
-    }>
-  >(() => DEFAULT_PIPELINE_CAPI_STAGES);
+    Array<{ key: string; label: string; color: string; is_qualified: boolean; capi_event: string; enabled: boolean }>
+  >([
+    { key: 'Qualified', label: 'Thiện Chí (Qualified)', color: '#10B981', is_qualified: true, capi_event: 'Lead', enabled: true },
+    { key: 'Booked', label: 'Đã hẹn gặp / Xem mẫu', color: '#8B5CF6', is_qualified: true, capi_event: 'Schedule', enabled: true },
+    { key: 'Booking', label: 'Booking (Giữ chỗ)', color: '#EC4899', is_qualified: true, capi_event: 'InitiateCheckout', enabled: true },
+    { key: 'Deposited', label: 'Đặt cọc (Cọc)', color: '#F59E0B', is_qualified: true, capi_event: 'Purchase', enabled: true },
+    { key: 'Closed', label: 'Chốt thành công (Chốt)', color: '#059669', is_qualified: true, capi_event: 'Purchase', enabled: true },
+    { key: 'Badtiming', label: 'Hẹn liên hệ lại (Bad Timing)', color: '#EAB308', is_qualified: false, capi_event: 'None', enabled: true },
+    { key: 'NoAnswer', label: 'Không liên lạc được (No Answer)', color: '#3B82F6', is_qualified: false, capi_event: 'None', enabled: true },
+    { key: 'Notlead', label: 'Không đúng đối tượng (Not Lead)', color: '#EF4444', is_qualified: false, capi_event: 'None', enabled: true },
+  ]);
   const [capiFireOnAssign, setCapiFireOnAssign] = useState(true);
   const [capiDualSend, setCapiDualSend] = useState(true);
 
@@ -194,7 +131,6 @@ const SettingsInner = () => {
   // States
   const [provider, setProvider] = useState('appscript');
   const [appscriptUrl, setAppscriptUrl] = useState('');
-  const [appscriptSecret, setAppscriptSecret] = useState('');
   const [frontendUrl, setFrontendUrl] = useState('');
 
   const [sesHost, setSesHost] = useState('');
@@ -389,7 +325,6 @@ const SettingsInner = () => {
           }
         }
         if (json.data.appscript_webhook_url) setAppscriptUrl(json.data.appscript_webhook_url);
-        if (json.data.appscript_secret) setAppscriptSecret(json.data.appscript_secret);
         if (json.data.frontend_url) setFrontendUrl(json.data.frontend_url);
         if (json.data.ses_host) setSesHost(json.data.ses_host);
         if (json.data.ses_username) setSesUser(json.data.ses_username);
@@ -459,18 +394,8 @@ const SettingsInner = () => {
         }
         if (json.data.gemini_api_key) setGeminiApiKey(json.data.gemini_api_key);
         if (json.data.gemini_model) setGeminiModel(json.data.gemini_model);
-        const tsObj = (
-          json.data.tenant_settings && typeof json.data.tenant_settings === 'object'
-            ? json.data.tenant_settings
-            : json.data
-        ) as TenantSettingsDto;
-        setCanonicalSettings(tsObj);
-        updateTenantSettingsLocal(tsObj);
-        const loadedStages = Array.isArray(tsObj.pipeline_capi_stages)
-          ? tsObj.pipeline_capi_stages
-          : json.data.pipeline_capi_stages;
-        if (Array.isArray(loadedStages) && loadedStages.length > 0) {
-          setPipelineCapiStages(loadedStages);
+        if (Array.isArray(json.data.pipeline_capi_stages) && json.data.pipeline_capi_stages.length > 0) {
+          setPipelineCapiStages(json.data.pipeline_capi_stages);
         }
         if (json.data.capi_rules && typeof json.data.capi_rules === 'object') {
           setCapiFireOnAssign(json.data.capi_rules.fire_on_assign !== false);
@@ -517,23 +442,8 @@ const SettingsInner = () => {
     fetchSettings();
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (
-      tabParam &&
-      [
-        'org_structure',
-        'rbac_matrix',
-        'terminology',
-        'pipeline_rules',
-        'policy_docs',
-        'processing',
-        'communications',
-        'report',
-        'duplicate_check',
-        'ai',
-        'billing',
-      ].includes(tabParam)
-    ) {
-      setActiveTab(tabParam as SettingsSubTabKey);
+    if (tabParam && ['processing', 'mail', 'zalo', 'report', 'duplicate_check', 'ai'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
       if (window.location.hash === '#auto-approve') {
         setTimeout(() => {
           const el = document.getElementById('auto-approve');
@@ -541,7 +451,7 @@ const SettingsInner = () => {
         }, 300);
       }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (activeTab === 'duplicate_check') {
@@ -552,10 +462,8 @@ const SettingsInner = () => {
   const handleSave = async () => {
     setSaving(true);
     const payload = {
-      ...canonicalSettings,
       email_provider: provider,
       appscript_webhook_url: appscriptUrl,
-      appscript_secret: appscriptSecret,
       frontend_url: frontendUrl,
       ses_host: sesHost,
       ses_username: sesUser,
@@ -613,12 +521,6 @@ const SettingsInner = () => {
           method: 'POST',
           body: JSON.stringify({ admin_ids: ticketNotifyAdmins })
         });
-        updateTenantSettingsLocal({
-          ...canonicalSettings,
-          pipeline_capi_stages: pipelineCapiStages as any,
-          capi_rules: payload.capi_rules,
-        });
-        await refreshTenantSettings();
         toast.success(t("Đã lưu cấu hình thành công!"));
       }
       else toast.error(t("Lỗi khi lưu cấu hình!"));
@@ -635,20 +537,10 @@ const SettingsInner = () => {
     try {
       const json = await fetchAPI('test_email', {
         method: 'POST',
-        body: JSON.stringify({
-          email: testEmail,
-          type: testType,
-          email_provider: provider,
-          appscript_webhook_url: appscriptUrl,
-          appscript_secret: appscriptSecret,
-          frontend_url: frontendUrl,
-        })
+        body: JSON.stringify({ email: testEmail, type: testType })
       });
-      if (json.success) {
-        toast.success(json.message || t("Gửi mail test thành công! Vui lòng kiểm tra hộp thư đến."));
-      } else {
-        toast.error(json.message || t("Gửi mail thất bại. Vui lòng kiểm tra lại cấu hình SMTP/AppScript."));
-      }
+      if (json.success) toast.success(t("Gửi mail test thành công! Vui lòng kiểm tra hộp thư đến."));
+      else toast.error(t("Gửi mail thất bại. Vui lòng kiểm tra lại cấu hình SMTP/AppScript."));
     } catch {
       toast.error(t("Lỗi kết nối khi gửi mail test"));
     }
@@ -696,9 +588,8 @@ const SettingsInner = () => {
     if (!file) return;
     setLocalFile(file);
     const reader = new FileReader();
-    reader.onload = async (evt) => {
+    reader.onload = (evt) => {
       try {
-        const XLSX = await loadXlsx();
         const bstr = evt.target?.result;
         const wb = XLSX.read(bstr, { type: 'binary' });
         const wsname = wb.SheetNames[0];
@@ -767,9 +658,8 @@ const SettingsInner = () => {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = async (evt) => {
+    reader.onload = (evt) => {
       try {
-        const XLSX = await loadXlsx();
         const bstr = evt.target?.result;
         const wb = XLSX.read(bstr, { type: 'binary' });
         const wsname = wb.SheetNames[0];
@@ -788,7 +678,7 @@ const SettingsInner = () => {
               if (val.includes('@') && /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(val)) {
                 foundContacts.push(val);
               } else {
-                const cleanedPhone = val.replace(/[\s.\-()]/g, '');
+                const cleanedPhone = val.replace(/[\s\.\-\(\)]/g, '');
                 if (/^\+?\d{8,15}$/.test(cleanedPhone)) {
                   foundContacts.push(cleanedPhone);
                 }
@@ -965,33 +855,27 @@ const SettingsInner = () => {
     setImporting(false);
   };
 
-  const handleExportResults = async () => {
+  const handleExportResults = () => {
     if (!checkedResults || checkedResults.length === 0) return;
-    try {
-      const XLSX = await loadXlsx();
 
-      // Combine original rows with checking results
-      const exportData = checkedResults.map((res, idx) => {
-        const original = selectedSheetId === 'local' ? (localRows[idx] || {}) : { [t('Họ và tên')]: res.name, [t('Số điện thoại')]: res.phone, [t('Email')]: res.email };
-        return {
-          ...original,
-          [t('Trạng thái CRM')]: res.has_record ? t('TRÙNG LẶP') : t('MỚI HOÀN TOÀN'),
-          [t('Đại lý cũ sở hữu')]: res.consultant_name || '',
-          [t('Trạng thái Đại lý cũ')]: res.consultant_status === 'active' ? t('Đang hoạt động') : (res.consultant_status === 'leave' ? t('Nghỉ phép') : t('Ngưng hoạt động')),
-          [t('Thời gian tương tác cuối')]: res.last_interaction_date || '',
-          [t('Số tháng kể từ tương tác cuối')]: res.months_since_last_interaction !== null ? Number(res.months_since_last_interaction).toFixed(1) : ''
-        };
-      });
+    // Combine original rows with checking results
+    const exportData = checkedResults.map((res, idx) => {
+      const original = selectedSheetId === 'local' ? (localRows[idx] || {}) : { [t('Họ và tên')]: res.name, [t('Số điện thoại')]: res.phone, [t('Email')]: res.email };
+      return {
+        ...original,
+        [t('Trạng thái CRM')]: res.has_record ? t('TRÙNG LẶP') : t('MỚI HOÀN TOÀN'),
+        [t('Đại lý cũ sở hữu')]: res.consultant_name || '',
+        [t('Trạng thái Đại lý cũ')]: res.consultant_status === 'active' ? t('Đang hoạt động') : (res.consultant_status === 'leave' ? t('Nghỉ phép') : t('Ngưng hoạt động')),
+        [t('Thời gian tương tác cuối')]: res.last_interaction_date || '',
+        [t('Số tháng kể từ tương tác cuối')]: res.months_since_last_interaction !== null ? Number(res.months_since_last_interaction).toFixed(1) : ''
+      };
+    });
 
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, t("Kết quả lọc trùng"));
-      XLSX.writeFile(workbook, `Ket_qua_loc_trung_${formatDateYYYYMMDD_VN()}.xlsx`);
-      toast.success(t("Đã xuất file kết quả lọc trùng thành công!"));
-    } catch (err: any) {
-      console.error('Failed to export xlsx:', err);
-      toast.error(t("Không thể xuất file Excel: ") + (err?.message || t("Lỗi tải thư viện")));
-    }
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, t("Kết quả lọc trùng"));
+    XLSX.writeFile(workbook, `Ket_qua_loc_trung_${formatDateYYYYMMDD_VN()}.xlsx`);
+    toast.success(t("Đã xuất file kết quả lọc trùng thành công!"));
   };
 
   return (
@@ -1016,7 +900,6 @@ const SettingsInner = () => {
           <p className="page-subtitle">{t('Cấu hình Email, Webhooks và các tích hợp nâng cao.')}</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <ScreenHelpButton screenKey={activeTab ? `settings_${activeTab}` : 'settings'} />
           {dbVersion && (
             <span style={{
               fontSize: '0.8125rem',
@@ -1034,7 +917,7 @@ const SettingsInner = () => {
               {t('Phiên bản')} v{dbVersion}
             </span>
           )}
-          <button className="btn primary" onClick={handleSave} disabled={saving || loading} data-tour="settings-save">
+          <button className="btn primary" onClick={handleSave} disabled={saving || loading}>
             {saving ? <Activity size={16} className="spin" /> : <Save size={16} />}
             <span className="hide-on-mobile">{t('Lưu cấu hình')}</span>
           </button>
@@ -1051,45 +934,46 @@ const SettingsInner = () => {
         />
       </div>
 
-      <div className="mobile-filter-tabs hide-on-mobile" data-tour="settings-tabs" style={{ display: 'flex', gap: '0.35rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)', overflowX: 'auto', paddingBottom: 2 }}>
-        {tabOptions.map((opt) => {
-          const isTabActive = activeTab === opt.value;
-          return (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => handleTabChange(opt.value as SettingsSubTabKey)}
-              style={{
-                padding: '0.7rem 0.95rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                fontSize: '0.86rem',
-                fontWeight: isTabActive ? 700 : 600,
-                background: isTabActive ? 'rgba(30, 64, 255, 0.06)' : 'transparent',
-                borderRadius: '10px 10px 0 0',
-                border: 'none',
-                borderBottom: isTabActive ? '2.5px solid var(--color-primary)' : '2.5px solid transparent',
-                color: isTabActive ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                flexShrink: 0,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {opt.icon} {opt.label}
-            </button>
-          );
-        })}
+      <div className="mobile-filter-tabs hide-on-mobile" style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
+        <button
+          onClick={() => handleTabChange('processing')}
+          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'processing' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'processing' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
+        >
+          <SettingsIcon size={18} /> {t('Cấu hình Xử lý')}
+        </button>
+        <button
+          onClick={() => handleTabChange('communications')}
+          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'communications' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'communications' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
+        >
+          <Send size={18} /> {t('Cấu hình Gửi tin & Email')}
+        </button>
+        <button
+          onClick={() => handleTabChange('report')}
+          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'report' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'report' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
+        >
+          <BarChart2 size={18} /> Báo cáo
+        </button>
+        <button
+          onClick={() => handleTabChange('duplicate_check')}
+          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'duplicate_check' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'duplicate_check' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
+        >
+          <FileSpreadsheet size={18} /> Ánh xạ dữ liệu cũ
+        </button>
+        <button
+          onClick={() => handleTabChange('ai')}
+          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'ai' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'ai' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
+        >
+          <Zap size={18} /> Cấu hình Trợ lý AI
+        </button>
+        <button
+          onClick={() => handleTabChange('billing')}
+          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'billing' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'billing' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
+        >
+          <CreditCard size={18} /> Gói cước & Ví
+        </button>
       </div>
 
-      {(['org_structure', 'rbac_matrix', 'terminology', 'pipeline_rules', 'policy_docs'] as const).includes(
-        activeTab as SaasEngineTabKey
-      ) ? (
-        <div className="subtab-enter-active">
-          <SaasSettingsHub activeEngineTab={activeTab as SaasEngineTabKey} />
-        </div>
-      ) : activeTab === 'billing' ? (
+      {activeTab === 'billing' ? (
         <div data-tour="settings-bill-kpis" className="subtab-enter-active card" style={{ padding: '1.5rem' }}>
           <BillingView token={token || ''} tenantSlug={tenantSlug} />
         </div>
@@ -1165,35 +1049,13 @@ const SettingsInner = () => {
                     {t('Mặc định sử dụng')} <strong>gemini-3.5-flash-lite</strong> {t('(hoặc bạn có thể chỉ định mô hình tương thích khác như')} <code>gemini-2.5-flash</code> {t('nếu cần).')}
                   </span>
                 </div>
-
-                <div data-tour="settings-ai-rules" style={{ marginTop: '1rem', paddingTop: '1.25rem', borderTop: '1px solid var(--color-border)' }}>
-                  <label style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-light)', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                    <Shield size={14} color="var(--color-primary)" />
-                    {t('Tiêu chuẩn Thẩm định Lead AI (AI Screener Prompt)')}
-                  </label>
-                  <textarea
-                    className="form-input"
-                    rows={3}
-                    placeholder={t("Ví dụ: Chỉ nhận khách có nhu cầu mua căn hộ từ 2 phòng ngủ trở lên, loại khách tìm việc hoặc spam...")}
-                    value={aiScreenerRules}
-                    onChange={e => setAiScreenerRules(e.target.value)}
-                    style={{ width: '100%', resize: 'vertical', fontSize: '0.875rem' }}
-                  />
-                  <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4, display: 'block' }}>
-                    {t('Mô tả tiêu chuẩn chất lượng lead bằng ngôn ngữ tự nhiên. AI Gemini sẽ căn cứ vào đây để phân loại ý định mua.')}
-                  </span>
-                </div>
               </div>
 
-              <SettingsAiGlobalSection
-                settings={canonicalSettings}
-                updateSetting={updateCanonicalSetting}
-                t={t}
-              />
+
             </div>
 
             <div style={{ display: activeTab === 'duplicate_check' ? 'block' : 'none' }} className="subtab-enter-active">
-              <div data-tour="settings-dup-upload settings-import" className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div data-tour="settings-dup-upload" className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {checkedResults.length > 0 ? (
                   // Screen 1: Checked Results Table
                   (() => {
@@ -1547,7 +1409,7 @@ const SettingsInner = () => {
 
                     {/* Column Mapping */}
                     {headers.length > 0 && (
-                      <div data-tour="settings-dup-mapping" style={{ background: 'var(--color-bg)', padding: '1.25rem', borderRadius: 10, border: '1px solid var(--color-border)' }}>
+                      <div style={{ background: 'var(--color-bg)', padding: '1.25rem', borderRadius: 10, border: '1px solid var(--color-border)' }}>
                         <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-text)', margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: 6 }}>
                           <SettingsIcon size={14} /> {t('Ánh xạ cột lọc trùng')}
                         </h4>
@@ -1701,7 +1563,7 @@ const SettingsInner = () => {
                     const paginatedHistory = importHistory;
 
                     return (
-                      <div data-tour="settings-dup-history" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                         {/* History Header */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '1rem' }}>
                           <div>
@@ -2009,7 +1871,6 @@ const SettingsInner = () => {
                   </button>
                   <button
                     type="button"
-                    data-tour="settings-comm-telegram"
                     onClick={() => setGuideModal('telegram')}
                     className="flex items-center gap-3 rounded-2xl border border-cyan-200 bg-cyan-50/40 p-3.5 text-left hover:bg-cyan-100/60 hover:border-cyan-600 transition cursor-pointer"
                   >
@@ -2057,32 +1918,14 @@ const SettingsInner = () => {
 
                   {provider === 'appscript' && (
                     <div style={{ animation: 'fadeIn 0.3s', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 12, padding: '1.25rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: 8 }}>
-                        <h4 style={{ fontSize: '0.9375rem', fontWeight: 600, margin: 0, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <Server size={18} color="#10b981" /> {t('Cấu hình Google Sheets & Apps Script (Tất cả thể loại Email)')}
-                        </h4>
-                        <button
-                          type="button"
-                          className="btn outline"
-                          style={{ padding: '5px 12px', fontSize: '0.75rem' }}
-                          onClick={() => {
-                            if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                              void navigator.clipboard.writeText(STANDARD_GOOGLE_SHEET_APPSCRIPT_CODE);
-                              toast.success(t('Đã sao chép mã Apps Script chuẩn!'));
-                            }
-                          }}
-                        >
-                          Sao chép Code Apps Script
-                        </button>
-                      </div>
+                      <h4 style={{ fontSize: '0.9375rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Server size={18} color="#10b981" /> {t('Cấu hình Webhook Apps Script')}
+                      </h4>
 
                       <div style={{ marginBottom: '1rem' }}>
-                        <label className="form-label">{t('Mã Code Apps Script Chuẩn All-in-One (Hỗ trợ log tab Email_Logs trên Google Sheets)')}</label>
-                        <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem', lineHeight: 1.55 }}>
-                          {t('Mở Google Sheets bất kỳ -> Tiện ích mở rộng (Extensions) -> Apps Script -> Dán mã bên dưới -> Chọn')}{' '}
-                          <strong>Deploy &gt; New deployment &gt; Web app</strong> (<em>Execute as: Me</em>,{' '}
-                          <strong style={{ color: '#e11d48' }}>Who has access: Anyone / Bất kỳ ai</strong>), rồi dán URL{' '}
-                          <code>.../exec</code> vào ô bên dưới.
+                        <label className="form-label">{t('Mã Code Apps Script Gửi Email (Copy 1 lần duy nhất)')}</label>
+                        <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>
+                          {t('Mã dưới đây dùng để kích hoạt tính năng')} <strong>{t('Gửi Email')}</strong> {t('qua Google. Copy mã này vào Apps Script, chọn')} <strong>Deploy as web app</strong> {t('(Quyền truy cập: Anyone), lấy URL dán vào ô bên dưới.')}
                         </p>
 
                         {/* Collapsible Script Block */}
@@ -2091,42 +1934,53 @@ const SettingsInner = () => {
                             style={{ padding: '0.75rem 1rem', background: 'var(--color-bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                             onClick={() => setShowInputScript(!showInputScript)}
                           >
-                            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text)' }}>
-                              {showInputScript ? t('Thu gọn mã Apps Script chuẩn') : t('Xem mã Apps Script chuẩn (hỗ trợ tất cả 9 thể loại Email)')}
-                            </span>
+                            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text)' }}>{t('Xem mã Apps Script')}</span>
                             {showInputScript ? <ChevronUp size={16} color="var(--color-text-muted)" /> : <ChevronDown size={16} color="var(--color-text-muted)" />}
                           </div>
 
                           {showInputScript && (
                             <pre style={{
-                              background: '#0f172a', color: '#34d399', padding: '1rem', margin: 0,
-                              fontSize: '0.75rem', overflowX: 'auto', maxHeight: 320, fontFamily: 'monospace', lineHeight: 1.5
+                              background: '#1e293b', color: '#dadada', padding: '1rem', margin: 0,
+                              fontSize: '0.75rem', overflowX: 'auto', fontFamily: 'monospace', lineHeight: 1.5
                             }}>
-                              {STANDARD_GOOGLE_SHEET_APPSCRIPT_CODE}
+                              {`// ==========================================
+// ĐOẠN MÃ XỬ LÝ GỬI EMAIL (DEPLOY AS WEB APP)
+// ==========================================
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    if (data.type === "custom") {
+      var options = {
+        to: data.email,
+        subject: data.subject,
+        htmlBody: data.htmlBody
+      };
+      if (data.cc) {
+        options.cc = data.cc;
+      }
+      MailApp.sendEmail(options);
+      return ContentService.createTextOutput(JSON.stringify({"success": true}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({"success": false}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`}
                             </pre>
                           )}
                         </div>
                       </div>
 
-                      <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.85rem' }}>
-                        <div>
-                          <label className="form-label">{t('URL Web App Google Apps Script (doPost / exec)')}</label>
-                          <input
-                            className="form-input"
-                            placeholder="https://script.google.com/macros/s/AKfycbw.../exec"
-                            value={appscriptUrl}
-                            onChange={e => setAppscriptUrl(e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <label className="form-label">{t('Mã Secret Key bảo vệ (Tùy chọn)')}</label>
-                          <input
-                            className="form-input"
-                            placeholder="Khớp var SECRET_KEY trong Code.gs"
-                            value={appscriptSecret}
-                            onChange={e => setAppscriptSecret(e.target.value)}
-                          />
-                        </div>
+                      <div>
+                        <label className="form-label">{t('URL Webhook của Google Apps Script (doPost)')}</label>
+                        <input
+                          className="form-input"
+                          placeholder="https://script.google.com/macros/s/AKfycbw.../exec"
+                          value={appscriptUrl}
+                          onChange={e => setAppscriptUrl(e.target.value)}
+                        />
                       </div>
                     </div>
                   )}
@@ -2246,13 +2100,6 @@ const SettingsInner = () => {
                   </div>
                 </div>
               </div>
-
-              <SettingsCommunicationsSections
-                settings={canonicalSettings}
-                updateSetting={updateCanonicalSetting}
-                companyName={companyName}
-                t={t}
-              />
             </div>
 
             {/* ===== TAB: BÁO CÁO NGÀY ===== */}
@@ -2284,7 +2131,7 @@ const SettingsInner = () => {
                 </div>
 
                 {/* Báo cáo Tuần */}
-                <div className="card" style={{ padding: '1.5rem' }}>
+                <div data-tour="settings-comm-zalo" className="card" style={{ padding: '1.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ display: 'inline-flex', background: '#1E40FF', color: 'white', padding: 4, borderRadius: 6 }}><BarChart2 size={16} /></span>
                     {t('Lịch gửi Báo cáo Tuần (cho Sale)')}
@@ -2325,7 +2172,7 @@ const SettingsInner = () => {
                 </div>
 
                 {/* Báo cáo Tháng */}
-                <div className="card" style={{ padding: '1.5rem' }}>
+                <div data-tour="settings-comm-zalo" className="card" style={{ padding: '1.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ display: 'inline-flex', background: '#ec4899', color: 'white', padding: 4, borderRadius: 6 }}><Calendar size={16} /></span>
                     {t('Lịch gửi Báo cáo Tháng (cho Sale)')}
@@ -2362,7 +2209,7 @@ const SettingsInner = () => {
                 </div>
 
                 {/* Chọn Admin nhận báo cáo */}
-                <div className="card" style={{ padding: '1.5rem' }}>
+                <div data-tour="settings-comm-zalo" className="card" style={{ padding: '1.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '0.25rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ display: 'inline-flex', background: '#0ea5e9', color: 'white', padding: 4, borderRadius: 6 }}><Users size={16} /></span>
                     {t('Admin nhận Báo cáo')}
@@ -2435,7 +2282,7 @@ const SettingsInner = () => {
                 </div>
 
                 {/* Thông báo Ticket & Cảnh báo Admin */}
-                <div className="card" style={{ padding: '1.5rem' }}>
+                <div data-tour="settings-comm-zalo" className="card" style={{ padding: '1.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ display: 'inline-flex', background: '#f97316', color: 'white', padding: 4, borderRadius: 6 }}><Bell size={16} /></span>
                     {t('Thông báo Ticket & Cảnh báo Admin')}
@@ -2528,17 +2375,11 @@ const SettingsInner = () => {
                   </div>
                 </div>
               </div>
-
-              <SettingsReportSections
-                settings={canonicalSettings}
-                updateSetting={updateCanonicalSetting}
-                t={t}
-              />
             </div>
 
             {/* Fallback & Blacklist Configs (Processing Tab) */}
             <div style={{ display: activeTab === 'processing' ? 'block' : 'none' }} className="subtab-enter-active">
-              <div data-tour="settings-proc-mode" className="card" style={{ padding: '1.5rem', marginTop: 0 }}>
+              <div data-tour="settings-proc-sla" className="card" style={{ padding: '1.5rem', marginTop: 0 }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ display: 'inline-flex', background: '#ef4444', color: 'white', padding: 4, borderRadius: 6 }}>
                     <Zap size={16} />
@@ -2695,7 +2536,7 @@ const SettingsInner = () => {
               </div>
 
               {/* Cấu hình Tự động duyệt Ticket */}
-              <div id="auto-approve" data-tour="settings-rep-autoapprove" className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
+              <div id="auto-approve" className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ display: 'inline-flex', background: '#10b981', color: 'white', padding: 4, borderRadius: 6 }}>
                     <CheckCircle size={16} />
@@ -2899,7 +2740,7 @@ const SettingsInner = () => {
               </div>
 
               {/* Cấu hình Lọc trùng */}
-              <div data-tour="settings-proc-dedup" className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ display: 'inline-flex', background: 'var(--color-primary)', color: 'white', padding: 4, borderRadius: 6 }}>
                     <RefreshCw size={16} />
@@ -2944,7 +2785,7 @@ const SettingsInner = () => {
               </div>
 
               {/* Cấu hình Ticket / Báo cáo lỗi */}
-              <div data-tour="settings-rep-reasons" className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ display: 'inline-flex', background: '#ef4444', color: 'white', padding: 4, borderRadius: 6 }}>
                     <Shield size={16} />
@@ -3085,7 +2926,7 @@ const SettingsInner = () => {
               </div>
 
               {/* Cấu hình Bù Lượt Thiếu (Fairness Starvation Prevention) */}
-              <div data-tour="settings-proc-sla" className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ display: 'inline-flex', background: 'var(--color-primary)', color: 'white', padding: 4, borderRadius: 6 }}>
                     <Activity size={16} />
@@ -3498,7 +3339,7 @@ const SettingsInner = () => {
               </div>
 
               {/* Pipeline Stages & Meta CAPI Firing Rules (No Hardcode) */}
-              <div data-tour="settings-ai-capi" className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="card" style={{ padding: '1.5rem', marginTop: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
                   <div>
                     <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
@@ -3517,13 +3358,10 @@ const SettingsInner = () => {
                         {
                           key: `Stage_${Date.now().toString(36)}`,
                           label: 'Giai đoạn mới',
-                          short_label: 'GĐ mới',
                           color: '#2563EB',
-                          group: 'positive',
                           is_qualified: true,
                           capi_event: 'Lead',
                           enabled: true,
-                          order: prev.length + 1,
                         },
                       ])
                     }
@@ -3551,13 +3389,10 @@ const SettingsInner = () => {
                       <tr style={{ background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
                         <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>{t('Mã / Key')}</th>
                         <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>{t('Tên hiển thị Pipeline')}</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>{t('Tên ngắn')}</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>{t('Nhóm')}</th>
                         <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>{t('Màu')}</th>
                         <th style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>{t('Sự kiện Meta CAPI')}</th>
                         <th style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 600 }}>{t('Qualified')}</th>
                         <th style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 600 }}>{t('Bật')}</th>
-                        <th style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 600 }}>{t('Xóa')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -3573,7 +3408,7 @@ const SettingsInner = () => {
                                   prev.map((item, i) => (i === idx ? { ...item, key: e.target.value } : item))
                                 )
                               }
-                              style={{ padding: '5px 8px', fontSize: '0.75rem', fontFamily: 'monospace', minWidth: '100px' }}
+                              style={{ padding: '5px 8px', fontSize: '0.75rem', fontFamily: 'monospace', minWidth: '110px' }}
                             />
                           </td>
                           <td style={{ padding: '8px 10px' }}>
@@ -3586,36 +3421,8 @@ const SettingsInner = () => {
                                   prev.map((item, i) => (i === idx ? { ...item, label: e.target.value } : item))
                                 )
                               }
-                              style={{ padding: '5px 8px', fontSize: '0.8125rem', minWidth: '150px' }}
+                              style={{ padding: '5px 8px', fontSize: '0.8125rem', minWidth: '170px' }}
                             />
-                          </td>
-                          <td style={{ padding: '8px 10px' }}>
-                            <input
-                              type="text"
-                              className="form-input"
-                              value={st.short_label || st.label.slice(0, 12)}
-                              onChange={(e) =>
-                                setPipelineCapiStages((prev) =>
-                                  prev.map((item, i) => (i === idx ? { ...item, short_label: e.target.value } : item))
-                                )
-                              }
-                              style={{ padding: '5px 8px', fontSize: '0.8125rem', minWidth: '100px' }}
-                            />
-                          </td>
-                          <td style={{ padding: '8px 10px' }}>
-                            <select
-                              value={st.group || (st.is_qualified ? 'positive' : 'neutral')}
-                              onChange={(e) =>
-                                setPipelineCapiStages((prev) =>
-                                  prev.map((item, i) => (i === idx ? { ...item, group: e.target.value as any } : item))
-                                )
-                              }
-                              style={{ padding: '5px 24px 5px 8px', fontSize: '0.78rem', minWidth: '105px' }}
-                            >
-                              <option value="positive">{t('Tích cực')}</option>
-                              <option value="neutral">{t('Trung tính')}</option>
-                              <option value="negative">{t('Không đạt')}</option>
-                            </select>
                           </td>
                           <td style={{ padding: '8px 10px' }}>
                             <input
@@ -3637,16 +3444,13 @@ const SettingsInner = () => {
                                   prev.map((item, i) => (i === idx ? { ...item, capi_event: e.target.value } : item))
                                 )
                               }
-                              style={{ padding: '5px 28px 5px 10px', fontSize: '0.8rem', minWidth: '130px' }}
+                              style={{ padding: '5px 28px 5px 10px', fontSize: '0.8rem', minWidth: '140px' }}
                             >
                               <option value="None">{t('Không bắn CAPI')}</option>
                               <option value="Lead">Lead</option>
-                              <option value="ViewContent">ViewContent</option>
                               <option value="CompleteRegistration">CompleteRegistration</option>
                               <option value="Schedule">Schedule</option>
-                              <option value="AddToCart">AddToCart</option>
                               <option value="InitiateCheckout">InitiateCheckout</option>
-                              <option value="AddPaymentInfo">AddPaymentInfo</option>
                               <option value="Purchase">Purchase</option>
                             </select>
                           </td>
@@ -3672,30 +3476,12 @@ const SettingsInner = () => {
                               }
                             />
                           </td>
-                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
-                            <button
-                              type="button"
-                              disabled={pipelineCapiStages.length <= 1}
-                              onClick={() =>
-                                setPipelineCapiStages((prev) => prev.filter((_, i) => i !== idx))
-                              }
-                              style={{ border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: 6, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: pipelineCapiStages.length <= 1 ? 'not-allowed' : 'pointer', opacity: pipelineCapiStages.length <= 1 ? 0.4 : 1 }}
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               </div>
-
-              <SettingsProcessingSections
-                settings={canonicalSettings}
-                updateSetting={updateCanonicalSetting}
-                t={t}
-              />
             </div>
           </div>
 
@@ -4079,13 +3865,6 @@ const SettingsInner = () => {
             tenantSlug={tenantSlug}
             accessToken={token || ''}
             currentProvider={provider as any}
-            initialWebhookUrl={appscriptUrl}
-            initialSecret={appscriptSecret}
-            onSaved={(savedCfg) => {
-              setProvider(savedCfg.email_provider);
-              setAppscriptUrl(savedCfg.appscript_webhook_url);
-              setAppscriptSecret(savedCfg.appscript_secret);
-            }}
             onClose={() => setGuideModal(null)}
           />
         )}

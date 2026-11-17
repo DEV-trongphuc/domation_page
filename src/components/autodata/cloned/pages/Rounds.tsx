@@ -12,7 +12,6 @@ import { Avatar } from '../components/ui/Avatar';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 const AVATAR_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#10b981', '#0ea5e9',
@@ -556,7 +555,6 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Zap size={24} color="var(--color-primary)" />
             {t("Vòng Phân Bổ")}
-            <ScreenHelpButton screenKey="rounds" />
             <button
               onClick={() => setShowInfoModal(true)}
               style={{
@@ -703,7 +701,6 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
 
             {/* Thêm Vòng Button */}
             <button
-              data-tour="rounds-header"
               type="button"
               onClick={openAddModal}
               style={{
@@ -734,7 +731,6 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
         </div>
       ) : (
         <div
-          data-tour="rounds-list"
           className={viewMode === 'grid' ? 'rounds-grid' : ''}
           style={viewMode === 'grid' ? {} : {
             display: 'flex',
@@ -999,7 +995,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                     )}
                   </div>
 
-                  <div data-tour="rounds-toggle" style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem', display: 'flex', gap: '0.75rem' }}>
+                  <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem', display: 'flex', gap: '0.75rem' }}>
                     <button className="btn outline sm" onClick={() => openEditModal(r)} style={{ flex: 1, padding: '0.5rem' }}>
                       <Info size={13} /> {t("Chi tiết")}
                     </button>

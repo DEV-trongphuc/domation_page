@@ -16,8 +16,6 @@ import toast from 'react-hot-toast';
 import { KpiCardSkeleton, Skeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 interface FairShareAuditProps {
   forceActive?: boolean;
@@ -25,8 +23,6 @@ interface FairShareAuditProps {
 
 const FairShareAuditInner = ({ forceActive = false, isActive: propActive, searchParams }: FairShareAuditProps & { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
   const { t } = useLanguage();
-  const { tenantSettings } = useAuth();
-  const fairnessWarnThreshold = Number(tenantSettings?.fairness_warning_threshold_pct ?? 75);
   const isActive = forceActive || propActive;
   const [data, setData] = useState<any>(null);
   const [rounds, setRounds] = useState<any[]>([]);
@@ -404,9 +400,8 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   };
 
   const getFairnessLevel = (index: number) => {
-    const highThreshold = Math.min(98, Math.max(fairnessWarnThreshold + 15, 90));
-    if (index >= highThreshold) return { label: t('Rất công bằng'), color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)', desc: '' };
-    if (index >= fairnessWarnThreshold) return { label: t('Bình thường'), color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)', desc: t('Có sự chênh lệch nhẹ (thường do tỷ lệ thiết lập hoặc Sale tạm vắng).') };
+    if (index >= 90) return { label: t('Rất công bằng'), color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)', desc: '' };
+    if (index >= 75) return { label: t('Bình thường'), color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)', desc: t('Có sự chênh lệch nhẹ (thường do tỷ lệ thiết lập hoặc Sale tạm vắng).') };
     return { label: t('Cần điều chỉnh'), color: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)', desc: t('Độ lệch phân phối cao. Vui lòng rà soát lại cấu hình lượt và ca làm việc.') };
   };
 
@@ -926,7 +921,6 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
           <p className="page-subtitle">{t("Kiểm tra toán học & đo lường độ lệch chuẩn, chỉ số Gini để đảm bảo data được chia công bằng.")}</p>
         </div>
         <div className="mobile-w-full" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <ScreenHelpButton screenKey="fair_share" />
           <div className="mobile-flex-1" style={{ position: 'relative', zIndex: 100, width: 180 }}>
             <CustomSelect
               options={roundOptions}
@@ -1131,7 +1125,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       </div>
 
       {/* KPI Cards */}
-      <div data-tour="fairshare-gini" className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
         {loading && !activeData ? (
           Array.from({ length: 4 }).map((_, i) => <KpiCardSkeleton key={i} />)
         ) : (
@@ -1422,7 +1416,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       )}
 
       {/* Detail Table */}
-      <div data-tour="fairshare-sim" className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: '2rem', border: '1px solid var(--color-border)', position: 'relative' }}>
+      <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: '2rem', border: '1px solid var(--color-border)', position: 'relative' }}>
         {isSimulating && (
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--color-primary)', zIndex: 5, animation: 'pulse 2s infinite' }} />
         )}
@@ -1463,7 +1457,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
           </span>
         </div>
 
-        <div data-tour="fairshare-compensate" className="responsive-table-wrap">
+        <div className="responsive-table-wrap">
           {loading && !activeData ? (
             <div style={{ padding: '1.25rem' }}>
               <Skeleton width="100%" height={24} style={{ marginBottom: 12 }} />

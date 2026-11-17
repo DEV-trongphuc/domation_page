@@ -6,12 +6,10 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchAPI } from '../utils/api';
-import { useAuth } from '../contexts/AuthContext';
 import { CustomSelect } from './ui/CustomSelect';
 import { CustomModal } from './ui/CustomModal';
 import { Avatar } from './ui/Avatar';
 import { Skeleton, KpiCardSkeleton } from './ui/Skeleton';
-import { ScreenHelpButton } from './ui/ScreenHelpButton';
 
 interface CapiCustomEvent {
   name: string;
@@ -178,18 +176,15 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
   const [retryingLogId, setRetryingLogId] = useState<number | null>(null);
   const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
 
-  const { tenantSettings } = useAuth();
-  const defaultClosedDealVnd = Number(tenantSettings?.default_closed_deal_value_vnd || 50000000);
-
   // Settings State (Single Active Primary Pixel only)
   const [capiEnabled, setCapiEnabled] = useState<boolean>(true);
-  const [pixelId, setPixelId] = useState<string>('');
+  const [pixelId, setPixelId] = useState<string>('28880383748283391');
   const [onlyMetaLeads, setOnlyMetaLeads] = useState<boolean>(true);
   const [capiTokenInput, setCapiTokenInput] = useState<string>('');
   const [hasCustomToken, setHasCustomToken] = useState<boolean>(false);
   const [maskedToken, setMaskedToken] = useState<string>('');
   const [hasMetaAdsToken, setHasMetaAdsToken] = useState<boolean>(false);
-  const [closedValueVnd, setClosedValueVnd] = useState<string>(String(defaultClosedDealVnd));
+  const [closedValueVnd, setClosedValueVnd] = useState<string>('50000000');
   const [eventTriggers, setEventTriggers] = useState<Record<string, string>>(DEFAULT_PRESET_TRIGGERS);
   const [customEvents, setCustomEvents] = useState<CapiCustomEvent[]>([]);
 
@@ -215,7 +210,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       if (res.success && res.config) {
         const cfg = res.config;
         setCapiEnabled(!!cfg.capi_enabled);
-        setPixelId(cfg.capi_pixel_id || '');
+        setPixelId(cfg.capi_pixel_id || '28880383748283391');
         setOnlyMetaLeads(!!cfg.capi_only_meta_leads);
         setHasCustomToken(!!cfg.has_custom_capi_token);
         setMaskedToken(cfg.capi_access_token_masked || '');
@@ -584,7 +579,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       </div>
 
       {/* Unified Toolbar Bar: Active Primary Dataset + Sync + Settings Modal Trigger */}
-      <div data-tour="capi-account-select" style={{
+      <div style={{
         background: 'var(--color-surface)',
         border: '1px solid rgba(30, 64, 255, 0.28)',
         borderRadius: 13,
@@ -596,7 +591,6 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
         gap: '0.75rem'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <ScreenHelpButton screenKey="ads_capi" size="sm" />
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -678,7 +672,6 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
 
           <button
             type="button"
-            data-tour="capi-stage-mapping"
             onClick={() => setSettingsModalOpen(true)}
             style={{
               display: 'inline-flex',
@@ -702,7 +695,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       </div>
 
       {/* FULL-WIDTH CAPI AUDIT LOGS PANEL (Matches AdsPerformance.tsx Style & Pagination) */}
-      <div data-tour="capi-live-logs" style={{
+      <div style={{
         background: 'var(--color-surface)',
         border: '1px solid var(--color-border)',
         borderRadius: 13,
@@ -1213,7 +1206,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
               </button>
             </div>
 
-            <div data-tour="capi-stage-mapping" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8 }}>
               {PIPELINE_CAPI_STAGES.map(st => {
                 const badgeColor = st.group === 'positive' ? '#16a34a' : (st.group === 'negative' ? '#dc2626' : '#64748b');
                 const currentEv = eventTriggers[st.key] || 'Skip';

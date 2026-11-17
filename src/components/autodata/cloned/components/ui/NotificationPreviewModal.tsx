@@ -3,8 +3,6 @@ import { CustomModal } from './CustomModal';
 import { Mail, MessageCircle, Send } from 'lucide-react';
 import { fetchAPI } from '../../utils/api';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { renderClientTemplate, resolveTenantBrandName } from '../../utils/pipelineConfig';
 
 interface NotificationPreviewModalProps {
   isOpen: boolean;
@@ -48,7 +46,6 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
   aiStatus = ''
 }) => {
   const { t } = useLanguage();
-  const { tenantSettings, companyName } = useAuth();
   const isEmail = type === 'email';
   const modalTitle = isEmail 
     ? "Xem chi tiết Mẫu Email đã gửi cho Đại lý"
@@ -207,32 +204,14 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
     }
   };
 
-  // 2. EMAIL SUBJECT (Dynamic Tenant Template / Fallback)
-  const effectiveSettings = { ...(tenantSettings || {}), ...(settings?.tenant_settings || {}), ...(settings || {}) };
-  const brandDisplayName = resolveTenantBrandName(effectiveSettings, companyName);
-  const brandAccentColor = effectiveSettings?.brand_email_accent_color || effectiveSettings?.brand_primary_color || '#1E40FF';
-  const brandLogoUrl = effectiveSettings?.brand_logo_url || '/imgs/autodata/domation_ai_icon.svg';
-  const brandFooterText = effectiveSettings?.brand_email_footer_text || 'Hệ thống phân phối Lead tự động';
-  const supportEmailAddr = effectiveSettings?.ses_sender_email || effectiveSettings?.support_email || 'noreply@domation.net';
-
+  // 2. EMAIL SUBJECT (Matches mailer.php)
   const getEmailSubject = () => {
     if (isReminder) {
       return `Khách hàng cũ đăng ký lại — ${leadName}`;
+    } else {
+      const roundStr = displayRound ? ` vòng ${displayRound}` : '';
+      return `Bạn vừa nhận được Lead ${leadName}${roundStr}`;
     }
-    const tpl = effectiveSettings?.notification_templates?.assign_email_subject;
-    if (tpl) {
-      return renderClientTemplate(tpl, {
-        brand_name: brandDisplayName,
-        customer_name: leadName,
-        phone: leadPhone,
-        source: displaySource,
-        round_name: displayRound,
-        sale_name: assignedToName,
-        lead_id: `#${leadId || '0'}`,
-      });
-    }
-    const roundStr = displayRound ? ` vòng ${displayRound}` : '';
-    return `[${brandDisplayName}] Bạn vừa nhận được Lead ${leadName}${roundStr}`;
   };
 
   const getEmailContent = () => {
@@ -507,7 +486,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#64748b', width: '70px', fontWeight: 600 }}>{t("Từ:")}</span>
                   <span style={{ color: '#0f172a' }}>
-                    {brandDisplayName} &lt;{supportEmailAddr}&gt;
+                    {settings?.ses_sender_name || 'ECOLIFE DATA'} &lt;{settings?.ses_sender_email || 'noreply@domation.net'}&gt;
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -545,20 +524,20 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                   overflow: 'hidden',
                   marginBottom: '24px'
                 }}>
-                  {/* Email Top Brand Accent Gradient (Dynamic Tenant White-Label) */}
+                  {/* Email Top Brand Accent Gradient matching mailer.php */}
                   <div style={{
-                    background: `linear-gradient(135deg, ${brandAccentColor}, #0f172a)`,
+                    background: 'linear-gradient(135deg, #eab308, #ea580c)',
                     padding: '32px 20px',
                     textAlign: 'center'
                   }}>
                     <div style={{ marginBottom: '12px', textAlign: 'center' }}>
                       <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.25)', borderRadius: '50%', width: '48px', height: '48px', lineHeight: '48px', textAlign: 'center', verticalAlign: 'middle' }}>
-                        <img src={brandLogoUrl} alt={`${brandDisplayName} Logo`} style={{ width: '28px', height: '28px', verticalAlign: 'middle', display: 'inline-block', borderRadius: '50%', objectFit: 'cover' }} />
+                        <img src="/imgs/autodata/domation_ai_icon.svg" alt="EcoLife Logo" style={{ width: '28px', height: '28px', verticalAlign: 'middle', display: 'inline-block', borderRadius: '50%' }} />
                       </div>
                     </div>
-                    <h1 style={{ color: '#ffffff', fontSize: '24px', margin: 0, fontWeight: 900, letterSpacing: '1.5px', textAlign: 'center', fontFamily: "'Inter', Helvetica, Arial, sans-serif" }}>{brandDisplayName.toUpperCase()}</h1>
+                    <h1 style={{ color: '#ffffff', fontSize: '24px', margin: 0, fontWeight: 900, letterSpacing: '2px', textAlign: 'center', fontFamily: "'Inter', Helvetica, Arial, sans-serif" }}>ECOLIFE DATA</h1>
                     <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '12px', margin: '4px 0 0', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'center' }}>
-                      {isReminder ? 'DATA ROUTING ENGINE' : brandFooterText}
+                      {isReminder ? 'DATA ROUTING ENGINE' : 'CÓ DATA MỚI VỀ!'}
                     </p>
                   </div>
 

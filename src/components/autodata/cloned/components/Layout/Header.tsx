@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, Activity, Sun, Moon, Keyboard, ChevronDown, User, CreditCard, Compass, Building2, Plus, LogOut, Menu, Sparkles, Check } from 'lucide-react';
+import { Search, Command, Activity, Sun, Moon, Keyboard, ChevronDown, User, CreditCard, Compass, Building2, Plus, LogOut, Menu } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useEntitlement } from '../../contexts/EntitlementContext';
-import { SAAS_PACKAGES_CATALOG } from '../../contexts/entitlementConstants';
-import type { SaasPackageCode } from '../../../autodataTypes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Avatar } from '../ui/Avatar';
 import { useNavigate } from 'react-router-dom';
@@ -33,9 +30,7 @@ const maskPhone = (phone: string) => {
 
 export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedClick: () => void; onMenuClick?: () => void }) => {
   const { user, logout, companyName, tenantSlug, workspaces, switchWorkspace, openBilling, openTour, openSwitchWorkspaceModal } = useAuth();
-  const { packageCode, packageMeta, hasModule, switchPackage, switchingPackage, terminology } = useEntitlement();
   const [isWsOpen, setIsWsOpen] = useState(false);
-  const [isPkgOpen, setIsPkgOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -53,14 +48,19 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
   }, [isLangOpen]);
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const localTheme = typeof window !== 'undefined' ? (localStorage.getItem('domation_theme') as 'light' | 'dark' | null) : null;
-    if (localTheme) return localTheme;
-    return (typeof document !== 'undefined' && (document.documentElement.getAttribute('data-theme') as 'light' | 'dark')) || 'light';
+    return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
   });
 
-  // Sync DOM attribute and listen to external theme changes
+  // Listen to system changes if theme is not set and sync with external theme changes
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    const localTheme = localStorage.getItem('domation_theme') as 'light' | 'dark';
+    if (localTheme) {
+      setTheme(localTheme);
+      document.documentElement.setAttribute('data-theme', localTheme);
+    } else {
+      setTheme('light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
 
     const handleThemeChange = () => {
       const nextTheme = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -71,16 +71,13 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
     return () => {
       window.removeEventListener('theme-change', handleThemeChange);
     };
-  }, [theme]);
+  }, []);
 
   const toggleTheme = (event?: React.MouseEvent) => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
-    const docWithTransition = document as Document & {
-      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
-    };
 
     // Check if View Transition is supported and user does not prefer reduced motion
-    if (!docWithTransition.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!(document as any).startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setTheme(nextTheme);
       document.documentElement.setAttribute('data-theme', nextTheme);
       localStorage.setItem('domation_theme', nextTheme);
@@ -97,7 +94,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
       Math.max(y, window.innerHeight - y)
     );
 
-    const transition = docWithTransition.startViewTransition(() => {
+    const transition = (document as any).startViewTransition(() => {
       setTheme(nextTheme);
       document.documentElement.setAttribute('data-theme', nextTheme);
       localStorage.setItem('domation_theme', nextTheme);
@@ -147,17 +144,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [leadResults, setLeadResults] = useState<Array<{
-    id: string | number;
-    name?: string;
-    lead_name?: string;
-    phone?: string;
-    email?: string;
-    note?: string;
-    source?: string;
-    consultant_name?: string;
-    assigned_to_name?: string;
-  }>>([]);
+  const [leadResults, setLeadResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
 
   // Listen to Cmd+K or Ctrl+K
@@ -187,6 +174,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
   // Search logic for Lead Data with 200ms debounce
   useEffect(() => {
     if (!searchQuery.trim()) {
+      setLeadResults([]);
       return;
     }
 
@@ -207,25 +195,21 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
-  const navItems: Array<{ name: string; path: string; description: string; shortcut: string; moduleKey?: string; adminOnly?: boolean; superAdminOnly?: boolean; action?: () => void }> = [
+  const navItems: Array<{ name: string; path: string; description: string; shortcut: string; adminOnly?: boolean; superAdminOnly?: boolean; action?: () => void }> = [
     { name: t('Dashboard'), path: '/', description: t('Trang tổng quan thống kê hệ thống'), shortcut: 'Alt + D' },
-    ...(hasModule('leads') ? [{ name: t('Nhật ký Lead (Data Log)'), path: '/data', description: t('Xem logs danh sách lead và trạng thái cuộc gọi'), shortcut: 'Alt + L', moduleKey: 'leads' }] : []),
-    ...(hasModule('audiences') ? [{ name: `${terminology.customerLabel} & Tệp Data / Logic`, path: '/audiences', description: 'Quản trị Tệp Data tĩnh & Tệp Logic AND/OR real-time', shortcut: 'Alt + M', moduleKey: 'audiences' }] : []),
-    ...(hasModule('growth_attribution') ? [{ name: 'Doanh thu & ROAS Xuyên Phễu', path: '/growth-attribution', description: 'Đối soát chi phí Ads/Email -> Chia Sale -> Doanh thu thực', shortcut: 'Alt + G', moduleKey: 'growth_attribution' }] : []),
+    { name: t('Nhật ký Lead (Data Log)'), path: '/data', description: t('Xem logs danh sách lead và trạng thái cuộc gọi'), shortcut: 'Alt + L' },
     { name: t('Bản tin hoạt động hệ thống'), path: '#feed', description: t('Bản tin các hoạt động và phân bổ lead gần đây'), shortcut: 'Alt + H', action: () => window.dispatchEvent(new CustomEvent('open-activity-feed')) },
-    { name: t('Vòng xoay chia số (Rounds)'), path: '/rounds', description: t('Cấu hình danh sách các vòng chia lead cho Đại lý'), adminOnly: true, shortcut: 'Alt + R', moduleKey: 'rounds' },
-    { name: t('Quy tắc chia số (Rules)'), path: '/rules', description: t('Thiết lập logic điều phối và skip interval'), adminOnly: true, shortcut: 'Alt + W', moduleKey: 'routing_rules' },
-    { name: t('Quản lý Đại lý'), path: '/consultants', description: t('Quản lý danh sách Đại lý và trạng thái trực ca'), adminOnly: true, shortcut: 'Alt + C', moduleKey: 'consultants' },
-    { name: t('Ticket báo lỗi data'), path: '/tickets', description: t('Phê duyệt đền bù lead lỗi hoặc trùng'), adminOnly: true, shortcut: 'Alt + T', moduleKey: 'tickets_data' },
-    { name: t('Đối soát công bằng (Fair Share)'), path: '/fair-share', description: t('Đo lường độ lệch phân phối lead'), adminOnly: true, shortcut: 'Alt + S', moduleKey: 'fair_share' },
-    { name: t('Tích hợp API & Google Sheets'), path: '/integrations', description: t('Kết nối webhook và đồng bộ trang tính'), adminOnly: true, shortcut: 'Alt + I', moduleKey: 'integrations_autodata' },
-    { name: 'Kết nối AWS SES, DKIM/SPF & Zalo ZNS', path: '/marketing-connect', description: 'Kho khóa kênh gửi Marketing & Web SDK', adminOnly: true, shortcut: 'Alt + K', moduleKey: 'integrations_marketing' },
-    { name: t('Cài đặt hệ thống'), path: '/settings', description: t('Sơ đồ Tổ chức, Phân quyền RBAC, Từ điển & Chính sách'), adminOnly: true, shortcut: 'Alt + O', moduleKey: 'settings' },
-    { name: t('Quản lý tài khoản'), path: '/accounts', description: t('Phân quyền tài khoản quản trị và trợ lý'), superAdminOnly: true, shortcut: 'Alt + A', moduleKey: 'org_rbac' }
+    { name: t('Vòng xoay chia số (Rounds)'), path: '/rounds', description: t('Cấu hình danh sách các vòng chia lead cho Đại lý'), adminOnly: true, shortcut: 'Alt + R' },
+    { name: t('Quy tắc chia số (Rules)'), path: '/rules', description: t('Thiết lập logic điều phối và skip interval'), adminOnly: true, shortcut: 'Alt + W' },
+    { name: t('Quản lý Đại lý'), path: '/consultants', description: t('Quản lý danh sách Đại lý và trạng thái trực ca'), adminOnly: true, shortcut: 'Alt + C' },
+    { name: t('Ticket báo lỗi data'), path: '/tickets', description: t('Phê duyệt đền bù lead lỗi hoặc trùng'), adminOnly: true, shortcut: 'Alt + T' },
+    { name: t('Đối soát công bằng (Fair Share)'), path: '/fair-share', description: t('Đo lường độ lệch phân phối lead'), adminOnly: true, shortcut: 'Alt + S' },
+    { name: t('Tích hợp API & Google Sheets'), path: '/integrations', description: t('Kết nối webhook và đồng bộ trang tính'), adminOnly: true, shortcut: 'Alt + I' },
+    { name: t('Cài đặt hệ thống'), path: '/settings', description: t('Cài đặt quy chuẩn và dọn dẹp dữ liệu'), adminOnly: true, shortcut: 'Alt + O' },
+    { name: t('Quản lý tài khoản'), path: '/accounts', description: t('Phân quyền tài khoản quản trị và trợ lý'), superAdminOnly: true, shortcut: 'Alt + A' }
   ];
 
   const visibleNavItems = navItems.filter(item => {
-    if (item.moduleKey && !hasModule(item.moduleKey)) return false;
     if (item.superAdminOnly && user?.role !== 'superadmin') return false;
     if (item.adminOnly && user?.role !== 'admin' && user?.role !== 'superadmin') return false;
     return true;
@@ -397,125 +381,12 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
             </div>
           )}
         </div>
-
-        {/* 4-Package Ecosystem Quick Switcher Badge */}
-        <div style={{ position: 'relative' }} className="responsive-hide-mobile">
-          <button
-            type="button"
-            onClick={() => setIsPkgOpen((v) => !v)}
-            disabled={switchingPackage}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              height: 34,
-              padding: '0 12px',
-              borderRadius: 9999,
-              background: 'rgba(30, 64, 255, 0.08)',
-              border: '1px solid rgba(30, 64, 255, 0.22)',
-              color: '#1E40FF',
-              fontSize: '0.74rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-            }}
-            title="Chuyển đổi / Nâng cấp Gói SaaS tức thì (0s Migrate)"
-          >
-            <Sparkles size={13} />
-            <span>{packageMeta.shortName}</span>
-            <ChevronDown size={12} />
-          </button>
-
-          {isPkgOpen && (
-            <div
-              style={{
-                position: 'absolute',
-                top: 'calc(100% + 6px)',
-                left: 0,
-                width: 310,
-                zIndex: 85,
-                background: '#FFFFFF',
-                border: '1px solid #E2E8F0',
-                borderRadius: 14,
-                padding: 8,
-                boxShadow: '0 14px 36px rgba(15, 23, 42, 0.16)',
-              }}
-            >
-              <div style={{ padding: '4px 8px 6px 8px', fontSize: '0.68rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Hệ sinh thái 4 Gói SaaS (1-Click Unlock)
-              </div>
-              {(Object.keys(SAAS_PACKAGES_CATALOG) as SaasPackageCode[]).map((code) => {
-                const pkg = SAAS_PACKAGES_CATALOG[code];
-                const isActivePkg = packageCode === code;
-                return (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => {
-                      setIsPkgOpen(false);
-                      if (!isActivePkg) {
-                        void switchPackage(code);
-                        navigate('/');
-                      }
-                    }}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      justifyContent: 'space-between',
-                      gap: 8,
-                      padding: '8px 10px',
-                      borderRadius: 10,
-                      border: 'none',
-                      cursor: 'pointer',
-                      background: isActivePkg ? 'rgba(30, 64, 255, 0.08)' : 'transparent',
-                      textAlign: 'left',
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: isActivePkg ? '#1E40FF' : '#0F172A' }}>
-                        {pkg.shortName}
-                      </div>
-                      <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 1 }}>
-                        {pkg.badge}
-                      </div>
-                    </div>
-                    {isActivePkg && <Check size={14} color="#1E40FF" style={{ flexShrink: 0, marginTop: 2 }} />}
-                  </button>
-                );
-              })}
-              <div style={{ borderTop: '1px solid #F1F5F9', margin: '6px 0' }} />
-              <button
-                type="button"
-                onClick={() => {
-                  setIsPkgOpen(false);
-                  openBilling();
-                }}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '7px 10px',
-                  borderRadius: 8,
-                  border: 'none',
-                  cursor: 'pointer',
-                  background: 'transparent',
-                  color: '#1E40FF',
-                  fontSize: '0.76rem',
-                  fontWeight: 700,
-                }}
-              >
-                <CreditCard size={13} /> Mở bảng Gói cước & Ví chi tiết
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
         {/* Tour màn hình này */}
         <button
-          onClick={() => openTour()}
+          onClick={openTour}
           style={{
             width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'var(--color-text-light)', borderRadius: 8, border: 'none', background: 'none', cursor: 'pointer'
@@ -958,7 +829,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
                       <div
                         key={lead.id}
                         onClick={() => {
-                          navigate(`/data?search=${encodeURIComponent(lead.phone || lead.lead_name || lead.name || '')}`);
+                          navigate(`/data?search=${encodeURIComponent(lead.phone || lead.lead_name)}`);
                           setIsSearchOpen(false);
                         }}
                         className="search-result-item"

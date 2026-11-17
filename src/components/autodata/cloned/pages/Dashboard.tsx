@@ -23,9 +23,6 @@ import {
   VN_TIMEZONE
 } from '../utils/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
-import { resolveTenantPipelines } from '../utils/pipelineConfig';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 import toast from 'react-hot-toast';
 import { KpiCardSkeleton, Skeleton } from '../components/ui/Skeleton';
 
@@ -36,7 +33,6 @@ const parseServerDate = (dateStr: string) => parseServerDateVN(dateStr) || new D
 
 const DashboardInner = ({ isActive }: { isActive: boolean }) => {
   const { t, language } = useLanguage();
-  const { tenantSlug, tenantSettings } = useAuth();
   const daysOfWeek = [
     t('Thứ 2'),
     t('Thứ 3'),
@@ -61,8 +57,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
   const [loading, setLoading] = useState(true);
   const [showWarRoom, setShowWarRoom] = useState(false);
   const [aiScreenerEnabled, setAiScreenerEnabled] = useState<boolean>(() => {
-    const key = `${tenantSlug || 'default'}_ai_screener_enabled`;
-    const cached = localStorage.getItem(key) ?? localStorage.getItem('ai_screener_enabled');
+    const cached = localStorage.getItem('ai_screener_enabled');
     return cached === null ? true : cached === '1';
   });
   const [dateFilter, setDateFilter] = useState(() => {
@@ -232,7 +227,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
         setStats(statsJson.data);
         const isEnabled = statsJson.data.ai_screener_enabled === 1 || statsJson.data.ai_screener_enabled === '1' || statsJson.data.ai_screener_enabled === true;
         setAiScreenerEnabled(isEnabled);
-        localStorage.setItem(`${tenantSlug || 'default'}_ai_screener_enabled`, isEnabled ? '1' : '0');
+        localStorage.setItem('ai_screener_enabled', isEnabled ? '1' : '0');
       } else {
         console.error('Lỗi tải thống kê:', statsJson?.message);
       }
@@ -574,14 +569,11 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
 
       {/* Header */}
       <div className="page-header" style={{ animation: 'slideUp 0.4s ease-out both', animationDelay: '50ms' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div>
-            <h1 className="page-title" style={{ fontSize: '1.75rem', fontWeight: 800 }}>{t("Tổng quan Phân bổ Data")}</h1>
-            <p className="page-subtitle">{t("Phân tích hiệu suất giao data theo thời gian thực — Hệ thống đang hoạt động trơn tru.")}</p>
-          </div>
-          <ScreenHelpButton screenKey="dashboard" />
+        <div>
+          <h1 className="page-title" style={{ fontSize: '1.75rem', fontWeight: 800 }}>{t("Tổng quan Phân bổ Data")}</h1>
+          <p className="page-subtitle">{t("Phân tích hiệu suất giao data theo thời gian thực — Hệ thống đang hoạt động trơn tru.")}</p>
         </div>
-        <div className="mobile-w-full" data-tour="dash-date-filter" style={{ display: 'flex', gap: '8px', alignItems: 'center', width: 'auto' }}>
+        <div className="mobile-w-full" style={{ display: 'flex', gap: '8px', alignItems: 'center', width: 'auto' }}>
           <div className="mobile-flex-1" style={{ position: 'relative', zIndex: 100, width: 200 }}>
             <CustomSelect
               options={dateOptions}
@@ -782,7 +774,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
       )}
 
       {/* KPI Cards */}
-      <div className="dashboard-kpi-grid" data-tour="dash-kpis">
+      <div className="dashboard-kpi-grid">
         {loading && !stats ? (
           Array.from({ length: 4 }).map((_, i) => (
             <div
@@ -900,7 +892,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
 
       {/* Chart + List row */}
       {loading && !stats ? (
-        <div className="responsive-grid-6-4" data-tour="dash-charts" style={{ display: 'grid', gridTemplateColumns: '6fr 4fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+        <div className="responsive-grid-6-4" style={{ display: 'grid', gridTemplateColumns: '6fr 4fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
           <div className="card" style={{ padding: '1.25rem', animation: 'slideUp 0.4s ease-out both', animationDelay: '300ms' }}>
             <Skeleton width={220} height={16} style={{ marginBottom: 8 }} />
             <Skeleton width={300} height={11} style={{ marginBottom: 24 }} />
@@ -921,7 +913,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
           </div>
         </div>
       ) : (
-        <div className="responsive-grid-6-4" data-tour="dash-charts" style={{ display: 'grid', gridTemplateColumns: '6fr 4fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+        <div className="responsive-grid-6-4" style={{ display: 'grid', gridTemplateColumns: '6fr 4fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
           <div className="card" style={{ padding: '1.25rem', minWidth: 0, animation: 'slideUp 0.4s ease-out both', animationDelay: '300ms', position: 'relative' }}>
             <div style={{
               display: 'flex',
@@ -1457,20 +1449,16 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
               const stages = activePipelineData.stages;
               const totalLeads = activePipelineData.total;
 
-              const resolvedStages = resolveTenantPipelines(tenantSettings);
               const stageList = [
-                ...resolvedStages.map((st) => ({
-                  key: st.key,
-                  label: t(st.label),
-                  shortLabel: t(st.shortLabel),
-                  count: stages[st.key] || 0,
-                  color: st.color,
-                  bg: st.bg,
-                  group: st.group,
-                  isQualified: st.isQualified,
-                  desc: t(st.desc),
-                })),
-                { key: 'unrated', label: t('Chưa đánh giá'), shortLabel: t('Chưa đánh giá'), count: stages.unrated || 0, color: '#94A3B8', bg: 'rgba(148, 163, 184, 0.12)', group: 'neutral' as const, isQualified: false, desc: t('Sale & Đại lý chưa gửi phản hồi chất lượng') }
+                { key: 'Qualified', label: t('Thiện Chí (Qualified)'), shortLabel: t('Thiện Chí'), count: stages.Qualified || 0, color: '#10B981', bg: 'rgba(16, 185, 129, 0.12)', desc: t('Khách đúng nhu cầu, thiện chí quan tâm') },
+                { key: 'Booked', label: t('Đã hẹn gặp / Xem mẫu'), shortLabel: t('Đã hẹn gặp'), count: stages.Booked || 0, color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.12)', desc: t('Đã chốt lịch hẹn tư vấn hoặc đi xem thực tế') },
+                { key: 'Booking', label: t('Booking (Giữ chỗ)'), shortLabel: t('Booking'), count: stages.Booking || 0, color: '#EC4899', bg: 'rgba(236, 72, 153, 0.14)', desc: t('Khách đã vào tiền Booking giữ chỗ thiện chí') },
+                { key: 'Deposited', label: t('Đặt cọc (Cọc)'), shortLabel: t('Cọc'), count: stages.Deposited || 0, color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.15)', desc: t('Khách đã xuống tiền đặt cọc giữ chỗ') },
+                { key: 'Closed', label: t('Chốt thành công (Chốt)'), shortLabel: t('Chốt'), count: stages.Closed || 0, color: '#059669', bg: 'rgba(5, 150, 105, 0.18)', desc: t('Giao dịch thành công, đã ký hợp đồng') },
+                { key: 'Badtiming', label: t('Hẹn liên hệ lại (Bad Timing)'), shortLabel: t('Hẹn gọi lại'), count: stages.Badtiming || 0, color: '#EAB308', bg: 'rgba(234, 179, 8, 0.12)', desc: t('Quan tâm nhưng bận/hẹn sau') },
+                { key: 'NoAnswer', label: t('Không liên lạc được (No Answer)'), shortLabel: t('Ko liên lạc được'), count: stages.NoAnswer || 0, color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)', desc: t('Thuê bao / máy bận / không nghe máy') },
+                { key: 'Notlead', label: t('Không đúng đối tượng (Not Lead)'), shortLabel: t('Sai số / Rác'), count: stages.Notlead || 0, color: '#EF4444', bg: 'rgba(239, 68, 68, 0.12)', desc: t('Sai số, nhầm dự án, môi giới, data ảo') },
+                { key: 'unrated', label: t('Chưa đánh giá'), shortLabel: t('Chưa đánh giá'), count: stages.unrated || 0, color: '#94A3B8', bg: 'rgba(148, 163, 184, 0.12)', desc: t('Sale & Đại lý chưa gửi phản hồi chất lượng') }
               ];
 
               const chartItems = stageList.filter(s => s.count > 0).map(s => ({
@@ -1480,9 +1468,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
                 color: s.color
               }));
 
-              const positiveLeads = resolvedStages
-                .filter((st) => st.group === 'positive' && !['Booking', 'Deposited', 'Closed'].includes(st.key))
-                .reduce((sum, st) => sum + (stages[st.key] || 0), 0);
+              const positiveLeads = (stages.Qualified || 0) + (stages.Booked || 0);
               const positivePercent = totalLeads > 0 ? Math.round((positiveLeads / totalLeads) * 100) : 0;
 
               const closedLeads = (stages.Booking || 0) + (stages.Deposited || 0) + (stages.Closed || 0);
@@ -2658,12 +2644,15 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
                       const total = pip.total || Math.max(1, (pip.Qualified || 0) + (pip.Badtiming || 0) + (pip.NoAnswer || 0) + (pip.Notlead || 0) + (pip.Booked || 0) + (pip.unrated || 0));
 
                       const items = [
-                        ...resolveTenantPipelines(tenantSettings).map((st) => ({
-                          label: t(st.label),
-                          count: (pip as any)[st.key] || 0,
-                          color: st.color,
-                        })),
-                        { label: t('Chưa đánh giá'), count: pip.unrated || 0, color: '#94A3B8' },
+                        { label: t('Thiện Chí (Qualified)'), count: pip.Qualified || 0, color: '#10B981' },
+                        { label: t('Đã hẹn gặp / Xem mẫu'), count: pip.Booked || 0, color: '#8B5CF6' },
+                        { label: t('Booking (Giữ chỗ)'), count: pip.Booking || 0, color: '#EC4899' },
+                        { label: t('Đặt cọc (Cọc)'), count: pip.Deposited || 0, color: '#F59E0B' },
+                        { label: t('Chốt thành công (Chốt)'), count: pip.Closed || 0, color: '#059669' },
+                        { label: t('Hẹn liên hệ lại'), count: pip.Badtiming || 0, color: '#EAB308' },
+                        { label: t('Không liên lạc được (No Answer)'), count: pip.NoAnswer || 0, color: '#3B82F6' },
+                        { label: t('Không đúng (Notlead)'), count: pip.Notlead || 0, color: '#EF4444' },
+                        { label: t('Chưa đánh giá'), count: pip.unrated || 0, color: '#94A3B8' }
                       ];
 
                       return (
@@ -3241,16 +3230,9 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
                       <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>Database Schema Status</span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                         {stats?.db_needs_migration ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowHealthModal(false);
-                              navigate('/settings');
-                            }}
-                            style={{ background: 'none', border: 'none', padding: 0, color: 'var(--color-warning)', textDecoration: 'underline', fontWeight: 600, cursor: 'pointer' }}
-                          >
-                            {t("Cần cập nhật cấu trúc DB. Mở Cài đặt ngay.")}
-                          </button>
+                          <a href="/data/sale_data/api.php" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-warning)', textDecoration: 'underline', fontWeight: 600 }}>
+                            {t("Cần cập nhật cấu trúc DB. Click để chạy ngay.")}
+                          </a>
                         ) : (
                           t("Cơ sở dữ liệu đã ở phiên bản mới nhất")
                         )}

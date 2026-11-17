@@ -1,22 +1,10 @@
-export type SaasPackageCode =
-  | 'autodata_crm'
-  | 'marketing_standalone'
-  | 'growth_combo'
-  | 'domation_promax';
-
-export type ExtendedPlanTier =
-  | 'starter'
-  | 'growth'
-  | 'enterprise'
-  | SaasPackageCode;
-
 export interface ClientBillingPlan {
   code: string;
   step_order: number;
   name: string;
   tagline: string;
   badge?: string;
-  plan_tier: ExtendedPlanTier;
+  plan_tier: 'starter' | 'growth' | 'enterprise';
   monthly_price_vnd: number;
   annual_discount_pct: number;
   annual_total_vnd: number;
@@ -65,7 +53,7 @@ export interface ClientBillingCatalog {
 export interface ClientSubscriptionSnapshot {
   plan_code: string;
   plan_name: string;
-  plan_tier: ExtendedPlanTier;
+  plan_tier: 'starter' | 'growth' | 'enterprise';
   billing_cycle: string;
   is_in_trial: boolean;
   trial_duration_months: number;
@@ -135,7 +123,7 @@ export interface WorkspaceSummaryItem {
   slug: string;
   company_name: string;
   industry: string;
-  plan_tier: ExtendedPlanTier;
+  plan_tier: 'starter' | 'growth' | 'enterprise';
   plan_name: string;
   role: string;
   days_remaining: number;
@@ -277,31 +265,8 @@ export const SESSION_V2_STORAGE_KEY = 'domation_autodata_session_v2';
 
 export type WorkspaceScreenKey =
   | 'dashboard'
-  | 'mkt_dashboard'
-  | 'growth_attribution'
-  | 'audiences'
-  | 'marketing_connect'
-  | 'mkt_templates'
-  | 'mkt_forms'
-  | 'mkt_surveys'
-  | 'mkt_campaigns'
-  | 'mkt_flows'
-  | 'mkt_vouchers'
-  | 'mkt_web_tracking'
-  | 'mkt_social_bot'
-  | 'erp_hrm'
-  | 'erp_attendance'
-  | 'erp_payroll'
-  | 'erp_approvals'
-  | 'erp_projects'
-  | 'erp_workchat'
-  | 'erp_finance'
-  | 'erp_cloud_files'
-  | 'erp_education'
-  | 'dom_agent'
   | 'data_list'
   | 'ads_performance'
-  | 'ads_capi'
   | 'tickets'
   | 'gatekeeper'
   | 'rounds'
@@ -318,12 +283,7 @@ export type WorkspaceScreenKey =
   | 'settings_report'
   | 'settings_duplicate_check'
   | 'settings_ai'
-  | 'settings_billing'
-  | 'settings_org_structure'
-  | 'settings_rbac_matrix'
-  | 'settings_terminology'
-  | 'settings_pipeline_rules'
-  | 'settings_policy_docs';
+  | 'settings_billing';
 
 export type SettingsSubTabKey =
   | 'processing'
@@ -331,12 +291,7 @@ export type SettingsSubTabKey =
   | 'report'
   | 'duplicate_check'
   | 'ai'
-  | 'billing'
-  | 'org_structure'
-  | 'rbac_matrix'
-  | 'terminology'
-  | 'pipeline_rules'
-  | 'policy_docs';
+  | 'billing';
 
 export type SettingsTourDeckKey =
   | 'settings_processing'
@@ -344,12 +299,7 @@ export type SettingsTourDeckKey =
   | 'settings_report'
   | 'settings_duplicate_check'
   | 'settings_ai'
-  | 'settings_billing'
-  | 'settings_org_structure'
-  | 'settings_rbac_matrix'
-  | 'settings_terminology'
-  | 'settings_pipeline_rules'
-  | 'settings_policy_docs';
+  | 'settings_billing';
 
 export type SalePortalTabKey =
   | 'dashboard'
@@ -368,15 +318,6 @@ export interface TenantSessionV2 {
   tenant_slug: string;
   company_name: string;
   industry?: string;
-  industry_key?: string;
-  package_code?: SaasPackageCode;
-  plan_tier?: ExtendedPlanTier;
-  enabled_modules?: string[];
-  entitlements?: Record<string, unknown>;
-  terminology?: Record<string, string>;
-  effective_permissions?: Record<string, { data_scope?: string; scope?: string; actions?: Record<string, boolean> }>;
-  is_tenant_owner?: boolean;
-  settings?: Record<string, unknown>;
   admin_email: string;
   user_id?: string;
   user_name?: string;

@@ -4,8 +4,7 @@ import {
   AlertTriangle, ChevronDown, ChevronUp,
   DollarSign, Users, Award,
   Sparkles, Layers, Filter, KeyRound, Check, Copy,
-  ChevronLeft, ChevronRight, BarChart3, GitCompare, X, Zap, Send,
-  Plus, Trash2, Edit2, Pause, Play
+  ChevronLeft, ChevronRight, BarChart3, GitCompare, X, Zap, Send
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchAPI, getDefaultDateFilter, normalizeGlobalDateFilter } from '../utils/api';
@@ -18,9 +17,6 @@ import { AdPreviewModal } from '../components/AdPreviewModal';
 import { AdsAnalyticsPanel, AdsCompareModal } from '../components/AdsAnalyticsPanel';
 import { AdsCapiPanel } from '../components/AdsCapiPanel';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { useAuth } from '../contexts/AuthContext';
-import { resolveTenantPipelines } from '../utils/pipelineConfig';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 interface AdLeadItem {
   id: number;
@@ -177,14 +173,17 @@ const AdThumbnail: React.FC<{
   size?: number;
   borderRadius?: number;
   onClick?: (e: React.MouseEvent) => void;
-}> = ({ src, alt = 'Ad', size = 42, borderRadius = 8, onClick }) => {
-  const [imgSrc, setImgSrc] = useState<string>(src || '');
-  const [failed, setFailed] = useState<boolean>(!src);
+}> = ({ adId, src, alt = 'Ad', size = 42, borderRadius = 8, onClick }) => {
+  const proxyUrl = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(adId)}`;
+  const [imgSrc, setImgSrc] = useState<string>(src || proxyUrl);
+  const [triedProxy, setTriedProxy] = useState<boolean>(!src || src.includes('action=ad_thumb'));
+  const [failed, setFailed] = useState<boolean>(false);
 
   useEffect(() => {
-    setImgSrc(src || '');
-    setFailed(!src);
-  }, [src]);
+    setImgSrc(src || proxyUrl);
+    setTriedProxy(!src || src.includes('action=ad_thumb'));
+    setFailed(false);
+  }, [adId, src, proxyUrl]);
 
   return (
     <div
@@ -208,7 +207,14 @@ const AdThumbnail: React.FC<{
         <img
           src={imgSrc}
           alt={alt}
-          onError={() => setFailed(true)}
+          onError={() => {
+            if (!triedProxy && adId) {
+              setTriedProxy(true);
+              setImgSrc(proxyUrl);
+            } else {
+              setFailed(true);
+            }
+          }}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       ) : (
@@ -380,30 +386,6 @@ const normalizeAdsDateFilter = (val: string | null | undefined): string => {
 };
 
 const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
-  const { tenantSlug, tenantSettings } = useAuth();
-  const pipelineColumns = useMemo(
-    () => [
-      ...resolveTenantPipelines(tenantSettings).map((st) => ({
-        key: st.key as keyof AdPerformanceRow['pipeline'],
-        label: st.shortLabel || st.label,
-        shortLabel: st.shortLabel,
-        color: st.color,
-        bg: st.bg,
-        border: st.border,
-        group: st.group,
-      })),
-      {
-        key: 'unrated' as keyof AdPerformanceRow['pipeline'],
-        label: 'Chưa ĐG',
-        shortLabel: 'Chưa ĐG',
-        color: '#64748b',
-        bg: 'rgba(100, 116, 139, 0.1)',
-        border: 'rgba(100, 116, 139, 0.22)',
-        group: 'neutral' as const,
-      },
-    ],
-    [tenantSettings]
-  );
   const [dateFilter, setDateFilter] = useState<string>(() => {
     return normalizeAdsDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
   });
@@ -445,58 +427,14 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     leadName?: string | null;
   } | null>(null);
 
-  // Meta Token Config Modal State (Multi-Account Vault)
+  // Meta Token Config Modal State
   const [configModalOpen, setConfigModalOpen] = useState<boolean>(false);
-  const [adAccountId, setAdAccountId] = useState<string>('');
+  const [accessToken, setAccessToken] = useState<string>('');
+  const [adAccountId, setAdAccountId] = useState<string>('302787476028580');
   const [lastSyncAt, setLastSyncAt] = useState<string>('');
   const [cachedAdsCount, setCachedAdsCount] = useState<number>(0);
-  const [metaAccounts, setMetaAccounts] = useState<Array<{
-    id: string;
-    name: string;
-    ad_account_id: string;
-    has_token: boolean;
-    access_token_masked: string;
-    pixel_id: string;
-    is_active: boolean;
-    last_sync: string | null;
-    synced_ads_count: number;
-    last_error: string | null;
-  }>>([]);
-  const [adAccountFilter, setAdAccountFilter] = useState<string>('all');
-  const [showAccountForm, setShowAccountForm] = useState<boolean>(false);
-  const [editingAccountId, setEditingAccountId] = useState<string | null>(null);
-  const [accountFormName, setAccountFormName] = useState<string>('');
-  const [accountFormId, setAccountFormId] = useState<string>('');
-  const [accountFormToken, setAccountFormToken] = useState<string>('');
-  const [accountFormPixel, setAccountFormPixel] = useState<string>('');
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [purgeOnDelete, setPurgeOnDelete] = useState<boolean>(false);
-  const [syncingAccountId, setSyncingAccountId] = useState<string | null>(null);
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  // Meta Token Asset Discovery State (Ad Accounts & Pixels Dropdown)
-  const [discoveringMetaAssets, setDiscoveringMetaAssets] = useState<boolean>(false);
-  const [discoveredAdAccounts, setDiscoveredAdAccounts] = useState<Array<{
-    id: string;
-    ad_account_id: string;
-    name: string;
-    account_status: number;
-    status_label: string;
-    currency: string;
-    business_name?: string | null;
-    pixels: Array<{ id: string; name: string; last_fired_time?: string | null }>;
-  }>>([]);
-  const [discoveredPixels, setDiscoveredPixels] = useState<Array<{
-    id: string;
-    name: string;
-    source_account_id?: string;
-    source_account_name?: string;
-  }>>([]);
-  const [discoverStatusMsg, setDiscoverStatusMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [manualAdAccountMode, setManualAdAccountMode] = useState<boolean>(false);
-  const [manualPixelMode, setManualPixelMode] = useState<boolean>(false);
-  const [lastAutoDiscoveredToken, setLastAutoDiscoveredToken] = useState<string>('');
 
   const handleUpdateDateFilter = (val: string) => {
     setDateFilter(val);
@@ -523,12 +461,10 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     setAdsPage(1);
     setLeadsPage(1);
     setDrawerPages({});
-  }, [searchTerm, tierFilter, pipelineFilter, dateFilter, goalFilter, adAccountFilter, viewMode]);
+  }, [searchTerm, tierFilter, pipelineFilter, dateFilter, goalFilter, viewMode]);
 
   const loadDashboard = async (silent = false) => {
-    const accQuery = adAccountFilter !== 'all' ? `&ad_account_id=${encodeURIComponent(adAccountFilter)}` : '';
-    const tenantPrefix = tenantSlug || 'default';
-    const cacheKey = `${tenantPrefix}_ads_dash_${dateFilter}_${goalFilter}_${adAccountFilter}`;
+    const cacheKey = `ecolife_ads_dash_${dateFilter}_${goalFilter}`;
     if (!silent) {
       try {
         const cached = sessionStorage.getItem(cacheKey);
@@ -548,7 +484,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     }
     try {
       const res = await fetchAPI(
-        `get_ads_performance_dashboard&date=${encodeURIComponent(dateFilter)}&goal=${encodeURIComponent(goalFilter)}${accQuery}`
+        `get_ads_performance_dashboard&date=${encodeURIComponent(dateFilter)}&goal=${encodeURIComponent(goalFilter)}`
       );
       if (res?.success) {
         setAds(Array.isArray(res.ads) ? res.ads : []);
@@ -556,12 +492,8 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
         setDailyTrend(Array.isArray(res.daily_trend) ? res.daily_trend : []);
         setGoalBreakdown(Array.isArray(res.goal_breakdown) ? res.goal_breakdown : []);
         if (res.meta_config) {
-          setAdAccountId(res.meta_config.ad_account_id || '');
+          setAdAccountId(res.meta_config.ad_account_id || '302787476028580');
           setLastSyncAt(res.meta_config.last_sync || '');
-          setCachedAdsCount(res.meta_config.cached_ads_count || 0);
-          if (Array.isArray(res.meta_config.accounts)) {
-            setMetaAccounts(res.meta_config.accounts);
-          }
         }
         try {
           sessionStorage.setItem(cacheKey, JSON.stringify({
@@ -584,9 +516,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
   };
 
   const loadAnalyticsBreakdowns = async (forceRefresh = false) => {
-    const accQuery = adAccountFilter !== 'all' ? `&ad_account_id=${encodeURIComponent(adAccountFilter)}` : '';
-    const tenantPrefix = tenantSlug || 'default';
-    const cacheKey = `${tenantPrefix}_ads_analytics_${dateFilter}_${goalFilter}_${adAccountFilter}`;
+    const cacheKey = `ecolife_ads_analytics_${dateFilter}_${goalFilter}`;
     if (!forceRefresh) {
       try {
         const cached = sessionStorage.getItem(cacheKey);
@@ -603,7 +533,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     setLoadingAnalytics(true);
     try {
       const res = await fetchAPI(
-        `get_ads_analytics_breakdowns&date=${encodeURIComponent(dateFilter)}&goal=${encodeURIComponent(goalFilter)}${accQuery}${forceRefresh ? '&refresh=1' : ''}`
+        `get_ads_analytics_breakdowns&date=${encodeURIComponent(dateFilter)}&goal=${encodeURIComponent(goalFilter)}${forceRefresh ? '&refresh=1' : ''}`
       );
       if (res?.success) {
         setAnalyticsData(res);
@@ -624,12 +554,10 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     try {
       const res = await fetchAPI('get_meta_ads_config');
       if (res?.success && res.data) {
-        setAdAccountId(res.data.ad_account_id || '');
+        setAccessToken(res.data.access_token || '');
+        setAdAccountId(res.data.ad_account_id || '302787476028580');
         setLastSyncAt(res.data.last_sync || '');
         setCachedAdsCount(res.data.cached_ads_count || 0);
-        if (Array.isArray(res.data.accounts)) {
-          setMetaAccounts(res.data.accounts);
-        }
       }
     } catch (e) {
       // ignore
@@ -669,133 +597,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
       loadMetaConfig();
       loadAnalyticsBreakdowns(false);
     }
-  }, [isActive, dateFilter, goalFilter, adAccountFilter]);
-
-  const resetDiscoveryState = () => {
-    setDiscoveredAdAccounts([]);
-    setDiscoveredPixels([]);
-    setDiscoverStatusMsg(null);
-    setManualAdAccountMode(false);
-    setManualPixelMode(false);
-    setLastAutoDiscoveredToken('');
-  };
-
-  const discoverAssetsFromToken = async (opts?: { tokenOverride?: string; accountIdOverride?: string | null; adAccountOverride?: string }) => {
-    const tokenToUse = (opts?.tokenOverride !== undefined ? opts.tokenOverride : accountFormToken).trim();
-    const accRef = opts?.accountIdOverride !== undefined ? opts.accountIdOverride : editingAccountId;
-    if (!tokenToUse && !accRef) {
-      toast.error('Vui lòng dán Meta Access Token trước khi tải danh sách Ad Account & Pixel.');
-      return;
-    }
-
-    setDiscoveringMetaAssets(true);
-    setDiscoverStatusMsg(null);
-    try {
-      const res = await fetchAPI('discover_meta_assets', {
-        method: 'POST',
-        body: JSON.stringify({
-          access_token: tokenToUse || undefined,
-          account_id: accRef || undefined,
-          ad_account_id: opts?.adAccountOverride || accountFormId || undefined,
-        }),
-      });
-      if (res?.success) {
-        const accs = Array.isArray(res.ad_accounts) ? res.ad_accounts : [];
-        const pxs = Array.isArray(res.pixels) ? res.pixels : [];
-        setDiscoveredAdAccounts(accs);
-        setDiscoveredPixels(pxs);
-        if (tokenToUse) setLastAutoDiscoveredToken(tokenToUse);
-        setManualAdAccountMode(accs.length === 0);
-        setManualPixelMode(false);
-        setDiscoverStatusMsg({
-          ok: true,
-          text: res.message || `Tìm thấy ${accs.length} Tài khoản QC và ${pxs.length} Pixel.`,
-        });
-
-        // Auto-select first active account + its primary pixel when adding a new account
-        if (accs.length > 0 && !editingAccountId && !accountFormId.trim()) {
-          const preferred = accs.find((a: any) => a.account_status === 1) || accs[0];
-          setAccountFormId(preferred.ad_account_id);
-          if (!accountFormName.trim()) {
-            setAccountFormName(preferred.name);
-          }
-          const firstPx = preferred.pixels?.[0]?.id || pxs[0]?.id || '';
-          if (firstPx && !accountFormPixel.trim()) {
-            setAccountFormPixel(firstPx);
-          }
-        }
-      } else {
-        setDiscoveredAdAccounts([]);
-        setDiscoveredPixels([]);
-        setDiscoverStatusMsg({
-          ok: false,
-          text: res?.message || res?.error || 'Không thể lấy danh sách từ Token này.',
-        });
-      }
-    } catch (err: any) {
-      setDiscoverStatusMsg({
-        ok: false,
-        text: err?.message || 'Lỗi kết nối Meta Graph API khi kiểm tra Token.',
-      });
-    } finally {
-      setDiscoveringMetaAssets(false);
-    }
-  };
-
-  useEffect(() => {
-    const cleanToken = accountFormToken.trim();
-    if (!configModalOpen || (!showAccountForm && metaAccounts.length > 0)) return;
-    if (cleanToken.length < 40 || cleanToken === '__KEEP_EXISTING__' || cleanToken.includes('...')) return;
-    if (cleanToken === lastAutoDiscoveredToken) return;
-    const timer = setTimeout(() => {
-      void discoverAssetsFromToken({ tokenOverride: cleanToken });
-    }, 550);
-    return () => clearTimeout(timer);
-  }, [accountFormToken, configModalOpen, showAccountForm, metaAccounts.length, lastAutoDiscoveredToken]);
-
-  const availableDiscoverPixels = useMemo(() => {
-    const selectedAcc = discoveredAdAccounts.find((a) => a.ad_account_id === accountFormId.trim());
-    const prioritized = selectedAcc?.pixels || [];
-    const seen = new Set<string>();
-    const combined: Array<{ id: string; name: string; sub: string }> = [];
-    for (const p of prioritized) {
-      if (!seen.has(p.id)) {
-        seen.add(p.id);
-        combined.push({ id: p.id, name: p.name, sub: `Pixel ID: ${p.id} (Thuộc TK đã chọn)` });
-      }
-    }
-    for (const p of discoveredPixels) {
-      if (!seen.has(p.id)) {
-        seen.add(p.id);
-        combined.push({
-          id: p.id,
-          name: p.name,
-          sub: `Pixel ID: ${p.id}${p.source_account_name ? ` • ${p.source_account_name}` : ''}`,
-        });
-      }
-    }
-    return combined;
-  }, [discoveredAdAccounts, discoveredPixels, accountFormId]);
-
-  const openAddAccountForm = () => {
-    setEditingAccountId(null);
-    setAccountFormName('');
-    setAccountFormId('');
-    setAccountFormToken('');
-    setAccountFormPixel('');
-    resetDiscoveryState();
-    setShowAccountForm(true);
-  };
-
-  const openEditAccountForm = (acc: (typeof metaAccounts)[number]) => {
-    setEditingAccountId(acc.id);
-    setAccountFormName(acc.name || '');
-    setAccountFormId(acc.ad_account_id || '');
-    setAccountFormToken('');
-    setAccountFormPixel(acc.pixel_id || '');
-    resetDiscoveryState();
-    setShowAccountForm(true);
-  };
+  }, [isActive, dateFilter, goalFilter]);
 
   const handleSyncMetaAds = async () => {
     setSyncing(true);
@@ -803,11 +605,11 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     try {
       const res = await fetchAPI('sync_meta_ads_data', {
         method: 'POST',
-        body: JSON.stringify(adAccountFilter !== 'all' ? { ad_account_id: adAccountFilter } : {})
+        body: JSON.stringify({})
       });
       if (res?.success) {
         toast.success(
-          res.message || `Đã đồng bộ ${res.synced_ads || 0} bài quảng cáo!`,
+          `Đã đồng bộ ${res.synced_ads || 0} bài quảng cáo!`,
           { id: toastId }
         );
         await loadDashboard(true);
@@ -825,123 +627,48 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     }
   };
 
-  const handleSaveMetaAccount = async (andSync = false) => {
-    const cleanId = accountFormId.trim().replace(/^act_/i, '').replace(/\s+/g, '');
-    if (!cleanId || !/^\d{5,}$/.test(cleanId)) {
-      toast.error('Ad Account ID không hợp lệ (chỉ gồm chữ số từ 5 ký tự, VD: 302787476028580).');
+  const handleSaveMetaConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accessToken.trim()) {
+      toast.error('Vui lòng nhập Meta Access Token');
       return;
     }
-    if (!editingAccountId && !accountFormToken.trim()) {
-      toast.error('Vui lòng nhập Meta Access Token cho tài khoản mới.');
+    if (!adAccountId.trim()) {
+      toast.error('Vui lòng nhập Ad Account ID');
       return;
     }
-
     setSavingConfig(true);
-    const toastId = toast.loading(andSync ? 'Đang lưu & đồng bộ Meta Graph API...' : 'Đang lưu tài khoản Meta Ads...');
+    const toastId = toast.loading('Đang lưu cấu hình & đồng bộ Meta API...');
     try {
-      const action = editingAccountId ? 'update_meta_ad_account' : 'add_meta_ad_account';
-      const saveRes = await fetchAPI(action, {
+      const saveRes = await fetchAPI('save_meta_ads_config', {
         method: 'POST',
         body: JSON.stringify({
-          id: editingAccountId || undefined,
-          name: accountFormName.trim() || undefined,
-          ad_account_id: cleanId,
-          access_token: accountFormToken.trim() ? accountFormToken.trim() : '__KEEP_EXISTING__',
-          pixel_id: accountFormPixel.trim(),
+          access_token: accessToken.trim(),
+          ad_account_id: adAccountId.trim()
         })
       });
       if (!saveRes?.success) {
-        toast.error(saveRes?.error || saveRes?.message || 'Không thể lưu tài khoản Meta Ads', { id: toastId });
+        toast.error(saveRes?.error || saveRes?.message || 'Không thể lưu cấu hình', { id: toastId });
         setSavingConfig(false);
         return;
       }
 
-      if (andSync) {
-        const syncRes = await fetchAPI('sync_meta_ads_data', {
-          method: 'POST',
-          body: JSON.stringify({ account_id: saveRes.account?.id || cleanId })
-        });
-        if (syncRes?.success) {
-          toast.success(syncRes.message || `Đã lưu & đồng bộ ${syncRes.synced_ads || 0} bài quảng cáo!`, { id: toastId });
-        } else {
-          toast.error(syncRes?.error || syncRes?.message || 'Đã lưu TK nhưng đồng bộ Meta lỗi.', { id: toastId });
-        }
+      const syncRes = await fetchAPI('sync_meta_ads_data', {
+        method: 'POST',
+        body: JSON.stringify({})
+      });
+      if (syncRes?.success) {
+        toast.success(`Đã cập nhật Token & đồng bộ ${syncRes.synced_ads || 0} bài quảng cáo!`, { id: toastId });
+        setConfigModalOpen(false);
+        await loadDashboard(true);
+        await loadMetaConfig();
       } else {
-        toast.success(saveRes.message || 'Đã lưu tài khoản Meta Ads vào Vault!', { id: toastId });
+        toast.error(syncRes?.error || syncRes?.message || 'Đã lưu Token nhưng lỗi khi gọi Meta API.', { id: toastId });
       }
-
-      setShowAccountForm(false);
-      setEditingAccountId(null);
-      setAccountFormToken('');
-      await loadMetaConfig();
-      await loadDashboard(true);
     } catch (err: any) {
-      toast.error('Lỗi lưu tài khoản: ' + (err.message || ''), { id: toastId });
+      toast.error('Lỗi lưu cấu hình: ' + (err.message || ''), { id: toastId });
     } finally {
       setSavingConfig(false);
-    }
-  };
-
-  const handleToggleMetaAccount = async (acc: (typeof metaAccounts)[number]) => {
-    try {
-      const res = await fetchAPI('toggle_meta_ad_account', {
-        method: 'POST',
-        body: JSON.stringify({ id: acc.id, is_active: !acc.is_active })
-      });
-      if (res?.success) {
-        toast.success(res.message);
-        await loadMetaConfig();
-      } else {
-        toast.error(res?.message || 'Không thể đổi trạng thái');
-      }
-    } catch {
-      toast.error('Lỗi kết nối Server');
-    }
-  };
-
-  const handleSyncSingleAccount = async (acc: (typeof metaAccounts)[number]) => {
-    setSyncingAccountId(acc.id);
-    const toastId = toast.loading(`Đang đồng bộ ${acc.name} (act_${acc.ad_account_id})...`);
-    try {
-      const res = await fetchAPI('sync_meta_ads_data', {
-        method: 'POST',
-        body: JSON.stringify({ account_id: acc.id })
-      });
-      if (res?.success) {
-        toast.success(res.message || `Đã đồng bộ ${res.synced_ads || 0} bài QC!`, { id: toastId });
-        await loadMetaConfig();
-        await loadDashboard(true);
-      } else {
-        toast.error(res?.message || 'Đồng bộ thất bại', { id: toastId });
-      }
-    } catch (err: any) {
-      toast.error(err?.message || 'Lỗi đồng bộ', { id: toastId });
-    } finally {
-      setSyncingAccountId(null);
-    }
-  };
-
-  const handleDeleteMetaAccount = async (id: string) => {
-    try {
-      const target = metaAccounts.find((a) => a.id === id);
-      const res = await fetchAPI('delete_meta_ad_account', {
-        method: 'POST',
-        body: JSON.stringify({ id, purge_insights: purgeOnDelete })
-      });
-      if (res?.success) {
-        toast.success(res.message);
-        setConfirmDeleteId(null);
-        setPurgeOnDelete(false);
-        if (target && adAccountFilter === target.ad_account_id) {
-          setAdAccountFilter('all');
-        }
-        await loadMetaConfig();
-        await loadDashboard(true);
-      } else {
-        toast.error(res?.message || 'Không thể xóa tài khoản');
-      }
-    } catch {
-      toast.error('Lỗi kết nối Server');
     }
   };
 
@@ -1154,23 +881,11 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
             <Megaphone size={18} />
           </div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-text)', letterSpacing: '-0.02em' }}>
-                Hiệu Suất Quảng Cáo & Đối Chiếu Lead
-              </h1>
-              <ScreenHelpButton screenKey={viewMode === 'capi' ? 'ads_capi' : 'ads_performance'} size="sm" />
-            </div>
+            <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-text)', letterSpacing: '-0.02em' }}>
+              Hiệu Suất Quảng Cáo & Đối Chiếu Lead
+            </h1>
             <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-              {metaAccounts.length === 0 ? (
-                <span style={{ color: '#d97706', fontWeight: 600 }}>Chưa kết nối Tài khoản Meta Ads</span>
-              ) : metaAccounts.length === 1 ? (
-                <span>TK: <strong style={{ color: 'var(--color-text)' }}>{metaAccounts[0].name} (act_{metaAccounts[0].ad_account_id})</strong></span>
-              ) : (
-                <span>
-                  Đang kết nối <strong style={{ color: 'var(--color-text)' }}>{metaAccounts.filter(a => a.is_active).length}/{metaAccounts.length} TK Meta Ads</strong>
-                  {adAccountFilter !== 'all' && ` • Đang lọc: act_${adAccountFilter}`}
-                </span>
-              )}
+              <span>TK: <strong style={{ color: 'var(--color-text)' }}>act_{adAccountId}</strong></span>
               {lastSyncAt && (
                 <>
                   <span>•</span>
@@ -1182,23 +897,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
         </div>
 
         {/* Actions */}
-        <div data-tour="ads-export" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          {metaAccounts.length > 0 && (
-            <div style={{ minWidth: 195 }}>
-              <CustomSelect
-                value={adAccountFilter}
-                onChange={(val) => setAdAccountFilter(String(val))}
-                options={[
-                  { value: 'all', label: `Tất cả TK QC (${metaAccounts.length})` },
-                  ...metaAccounts.map((acc) => ({
-                    value: acc.ad_account_id,
-                    label: `${acc.name} (${acc.ad_account_id.slice(-6)})`
-                  }))
-                ]}
-              />
-            </div>
-          )}
-
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <div style={{ minWidth: 165 }}>
             <CustomSelect
               value={dateFilter}
@@ -1262,13 +961,13 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
             }}
           >
             <KeyRound size={14} />
-            Quản lý TK Meta ({metaAccounts.length})
+            Token Meta
           </button>
         </div>
       </div>
 
       {/* KPI Summary Cards */}
-      <div data-tour="ads-summary" style={{
+      <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
         gap: '0.75rem',
@@ -1592,7 +1291,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
           >
             Tất cả ({summary?.total_ad_leads ?? 0})
           </button>
-          {pipelineColumns.map((col) => {
+          {PIPELINE_COLUMNS.map((col) => {
             const count = summary?.pipeline_totals?.[col.key] ?? 0;
             const active = pipelineFilter === col.key;
             return (
@@ -1686,7 +1385,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
           </div>
         </div>
       ) : viewMode === 'pipeline' ? (
-        <div data-tour="ads-table" style={{
+        <div style={{
           background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
           borderRadius: 14,
@@ -1699,7 +1398,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
               <col style={{ width: '26%' }} />
               <col style={{ width: '14%' }} />
               <col style={{ width: '5.5%' }} />
-              {pipelineColumns.map((col) => (
+              {PIPELINE_COLUMNS.map((col) => (
                 <col key={col.key} style={{ width: '5.2%' }} />
               ))}
               <col style={{ width: '7.7%' }} />
@@ -1715,7 +1414,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                 <th style={{ padding: '10px 4px', textAlign: 'center', fontSize: '0.67rem', fontWeight: 800, color: 'var(--color-text)', textTransform: 'uppercase', borderLeft: '1px solid var(--color-border-light)' }}>
                   Tổng
                 </th>
-                {pipelineColumns.map((col) => (
+                {PIPELINE_COLUMNS.map((col) => (
                   <th
                     key={col.key}
                     title={col.label}
@@ -1996,7 +1695,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                         </td>
 
                         {/* 9 Pipeline Columns */}
-                        {pipelineColumns.map((col) => {
+                        {PIPELINE_COLUMNS.map((col) => {
                           const val = ad.pipeline[col.key] || 0;
                           return (
                             <td
@@ -2269,7 +1968,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
         />
       ) : (
         /* View Mode 2: Lead-by-Lead Cross-Reference Table (Zero Overflow + Paginated) */
-        <div data-tour="ads-table" style={{
+        <div style={{
           background: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
           borderRadius: 14,
@@ -2449,596 +2148,111 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
         </div>
       )}
 
-      {/* Multi-Account Meta Token & Ad Account Manager Modal */}
+      {/* Meta Token & Ad Account Configuration Modal */}
       <CustomModal
         isOpen={configModalOpen}
-        onClose={() => {
-          setConfigModalOpen(false);
-          setShowAccountForm(false);
-          setConfirmDeleteId(null);
-        }}
-        title="Quản Lý Tài Khoản & Token Meta Ads (Multi-Account Vault)"
-        width="min(780px, 95vw)"
+        onClose={() => setConfigModalOpen(false)}
+        title="Cấu Hình Meta Ads"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
-          {/* Summary + Add Button */}
+        <form onSubmit={handleSaveMetaConfig} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 6 }}>
+              Ad Account ID
+            </label>
+            <input
+              type="text"
+              value={adAccountId}
+              onChange={(e) => setAdAccountId(e.target.value)}
+              placeholder="VD: 302787476028580"
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-bg)',
+                color: 'var(--color-text)',
+                fontSize: '0.86rem',
+                fontWeight: 700,
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 6 }}>
+              Meta Access Token
+            </label>
+            <textarea
+              rows={4}
+              value={accessToken}
+              onChange={(e) => setAccessToken(e.target.value)}
+              placeholder="Nhập Access Token..."
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-bg)',
+                color: 'var(--color-text)',
+                fontSize: '0.8rem',
+                fontFamily: 'monospace',
+                resize: 'vertical',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+
           <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 10,
-            padding: '0.7rem 0.9rem',
-            borderRadius: 12,
+            padding: '0.6rem 0.85rem',
+            borderRadius: 10,
             background: 'var(--color-bg)',
             border: '1px solid var(--color-border-light)',
-            fontSize: '0.78rem',
+            fontSize: '0.75rem',
             color: 'var(--color-text-muted)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-              <span>Tổng TK: <strong style={{ color: 'var(--color-text)' }}>{metaAccounts.length}</strong></span>
-              <span>Đang bật: <strong style={{ color: '#059669' }}>{metaAccounts.filter(a => a.is_active).length}</strong></span>
-              <span>Tổng QC đã đồng bộ: <strong style={{ color: 'var(--color-text)' }}>{cachedAdsCount} bài QC</strong></span>
-              {adAccountId && <span>Mặc định: <strong style={{ color: 'var(--color-text)' }}>act_{adAccountId}</strong></span>}
-            </div>
-            <button
-              type="button"
-              onClick={openAddAccountForm}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '7px 13px',
-                borderRadius: 9,
-                border: 'none',
-                background: 'linear-gradient(135deg, #1E40FF 0%, #1E3A8A 100%)',
-                color: '#fff',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              <Plus size={14} /> Thêm Tài Khoản Meta
-            </button>
+            <span>Đã đồng bộ: <strong style={{ color: 'var(--color-text)' }}>{cachedAdsCount} bài QC</strong></span>
+            <span>Cập nhật: <strong style={{ color: 'var(--color-text)' }}>{lastSyncAt || 'Chưa đồng bộ'}</strong></span>
           </div>
 
-          {/* Add / Edit Inline Form */}
-          {(showAccountForm || metaAccounts.length === 0) && (
-            <div style={{
-              padding: '1rem',
-              borderRadius: 12,
-              border: '1px solid rgba(30, 64, 255, 0.25)',
-              background: 'rgba(30, 64, 255, 0.03)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.75rem'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                  {editingAccountId ? 'Chỉnh Sửa Tài Khoản Meta Ads' : 'Thêm Tài Khoản Meta Ads Mới'}
-                </div>
-                {metaAccounts.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAccountForm(false);
-                      setEditingAccountId(null);
-                    }}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: 'var(--color-text-muted)',
-                      cursor: 'pointer',
-                      padding: 4
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
-
-              {/* Step 1: Meta Access Token First (Auto-discovers Ad Accounts & Pixels) */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                  <label style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                    1. Meta Access Token {editingAccountId ? '(Để trống nếu giữ nguyên Token đã mã hóa AES-256)' : <span style={{ color: '#ef4444' }}>*</span>}
-                  </label>
-                  <button
-                    type="button"
-                    disabled={discoveringMetaAssets || (!accountFormToken.trim() && !editingAccountId)}
-                    onClick={() => void discoverAssetsFromToken()}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 5,
-                      padding: '4px 10px',
-                      borderRadius: 7,
-                      border: '1px solid rgba(30, 64, 255, 0.35)',
-                      background: 'var(--color-surface)',
-                      color: '#1E40FF',
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      cursor: discoveringMetaAssets ? 'wait' : 'pointer',
-                      opacity: discoveringMetaAssets || (!accountFormToken.trim() && !editingAccountId) ? 0.6 : 1
-                    }}
-                  >
-                    <RefreshCw size={12} className={discoveringMetaAssets ? 'spin' : ''} />
-                    {discoveringMetaAssets ? 'Đang quét TK & Pixel...' : 'Tải danh sách Ad ID & Pixel'}
-                  </button>
-                </div>
-                <textarea
-                  rows={3}
-                  value={accountFormToken}
-                  onChange={(e) => setAccountFormToken(e.target.value)}
-                  placeholder={editingAccountId
-                    ? 'Nhập Token mới để thay thế, hoặc bấm "Tải danh sách Ad ID & Pixel" để lấy từ Token đã lưu...'
-                    : 'Dán Meta Access Token (EAAG...) — hệ thống tự động tải danh sách Ad Account ID & Pixel để bạn chọn...'}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: 8,
-                    border: '1px solid var(--color-border)',
-                    background: 'var(--color-surface)',
-                    color: 'var(--color-text)',
-                    fontSize: '0.78rem',
-                    fontFamily: 'monospace',
-                    resize: 'vertical',
-                    boxSizing: 'border-box'
-                  }}
-                />
-                {discoverStatusMsg && (
-                  <div style={{
-                    marginTop: 6,
-                    padding: '6px 10px',
-                    borderRadius: 8,
-                    fontSize: '0.73rem',
-                    fontWeight: 600,
-                    background: discoverStatusMsg.ok ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                    border: `1px solid ${discoverStatusMsg.ok ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
-                    color: discoverStatusMsg.ok ? '#047857' : '#b91c1c'
-                  }}>
-                    {discoverStatusMsg.text}
-                  </div>
-                )}
-              </div>
-
-              {/* Step 2: Select or Enter Ad Account ID, Pixel ID, and Friendly Name */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 6 }}>
-                    <label style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                      2. Ad Account ID <span style={{ color: '#ef4444' }}>*</span>
-                    </label>
-                    {discoveredAdAccounts.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setManualAdAccountMode(!manualAdAccountMode)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          padding: 0,
-                          color: '#1E40FF',
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          cursor: 'pointer'
-                        }}
-                      >
-                        {manualAdAccountMode ? `Chọn từ Token (${discoveredAdAccounts.length})` : 'Nhập ID thủ công'}
-                      </button>
-                    )}
-                  </div>
-                  {discoveredAdAccounts.length > 0 && !manualAdAccountMode ? (
-                    <CustomSelect
-                      searchable={true}
-                      width="100%"
-                      value={accountFormId.trim()}
-                      placeholder="Chọn Tài khoản QC..."
-                      options={discoveredAdAccounts.map((a) => ({
-                        value: a.ad_account_id,
-                        label: `${a.name} (act_${a.ad_account_id})`,
-                        sublabel: `${a.currency} • ${a.status_label}${a.pixels.length > 0 ? ` • ${a.pixels.length} Pixel` : ''}`,
-                      }))}
-                      onChange={(val) => {
-                        const chosenId = String(val || '');
-                        const prevMatch = discoveredAdAccounts.find((a) => a.ad_account_id === accountFormId.trim());
-                        const nextMatch = discoveredAdAccounts.find((a) => a.ad_account_id === chosenId);
-                        setAccountFormId(chosenId);
-                        if (nextMatch && (!accountFormName.trim() || (prevMatch && accountFormName.trim() === prevMatch.name))) {
-                          setAccountFormName(nextMatch.name);
-                        }
-                        if (nextMatch?.pixels && nextMatch.pixels.length > 0) {
-                          setAccountFormPixel(nextMatch.pixels[0].id);
-                        }
-                      }}
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={accountFormId}
-                      onChange={(e) => setAccountFormId(e.target.value)}
-                      placeholder="VD: 123456789012345 hoặc act_..."
-                      style={{
-                        width: '100%',
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        border: '1px solid var(--color-border)',
-                        background: 'var(--color-surface)',
-                        color: 'var(--color-text)',
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, gap: 6 }}>
-                    <label style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                      3. Pixel ID liên kết (Tùy chọn)
-                    </label>
-                    {availableDiscoverPixels.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setManualPixelMode(!manualPixelMode)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          padding: 0,
-                          color: '#1E40FF',
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          cursor: 'pointer'
-                        }}
-                      >
-                        {manualPixelMode ? `Chọn từ Token (${availableDiscoverPixels.length})` : 'Nhập Pixel thủ công'}
-                      </button>
-                    )}
-                  </div>
-                  {availableDiscoverPixels.length > 0 && !manualPixelMode ? (
-                    <CustomSelect
-                      searchable={true}
-                      width="100%"
-                      value={accountFormPixel.trim()}
-                      placeholder="Chọn Pixel ID..."
-                      options={[
-                        { value: '', label: '-- Không gắn Pixel --', sublabel: 'Có thể chọn sau' },
-                        ...availableDiscoverPixels.map((px) => ({
-                          value: px.id,
-                          label: `${px.name} (${px.id})`,
-                          sublabel: px.sub,
-                        })),
-                      ]}
-                      onChange={(val) => setAccountFormPixel(String(val || ''))}
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={accountFormPixel}
-                      onChange={(e) => setAccountFormPixel(e.target.value)}
-                      placeholder="VD: 987654321098765 (hoặc bỏ trống)"
-                      style={{
-                        width: '100%',
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        border: '1px solid var(--color-border)',
-                        background: 'var(--color-surface)',
-                        color: 'var(--color-text)',
-                        fontSize: '0.8rem',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 4 }}>
-                    Tên gợi nhớ tài khoản
-                  </label>
-                  <input
-                    type="text"
-                    value={accountFormName}
-                    onChange={(e) => setAccountFormName(e.target.value)}
-                    placeholder="VD: Tài khoản QC Chính / Brand"
-                    style={{
-                      width: '100%',
-                      padding: '8px 10px',
-                      borderRadius: 8,
-                      border: '1px solid var(--color-border)',
-                      background: 'var(--color-surface)',
-                      color: 'var(--color-text)',
-                      fontSize: '0.8rem',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, flexWrap: 'wrap' }}>
-                {metaAccounts.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAccountForm(false);
-                      setEditingAccountId(null);
-                    }}
-                    style={{
-                      padding: '8px 14px',
-                      borderRadius: 9,
-                      border: '1px solid var(--color-border)',
-                      background: 'var(--color-surface)',
-                      color: 'var(--color-text)',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Hủy
-                  </button>
-                )}
-                <button
-                  type="button"
-                  disabled={savingConfig}
-                  onClick={() => void handleSaveMetaAccount(false)}
-                  style={{
-                    padding: '8px 14px',
-                    borderRadius: 9,
-                    border: '1px solid rgba(30, 64, 255, 0.35)',
-                    background: 'var(--color-surface)',
-                    color: '#1E40FF',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    cursor: savingConfig ? 'not-allowed' : 'pointer',
-                    opacity: savingConfig ? 0.7 : 1
-                  }}
-                >
-                  Lưu Tài Khoản
-                </button>
-                <button
-                  type="button"
-                  disabled={savingConfig}
-                  onClick={() => void handleSaveMetaAccount(true)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: 9,
-                    border: 'none',
-                    background: 'linear-gradient(135deg, #1E40FF 0%, #1E3A8A 100%)',
-                    color: '#fff',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    cursor: savingConfig ? 'not-allowed' : 'pointer',
-                    opacity: savingConfig ? 0.7 : 1
-                  }}
-                >
-                  {savingConfig ? 'Đang xử lý...' : 'Lưu & Đồng Bộ Ngay'}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Configured Accounts List */}
-          {metaAccounts.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', maxHeight: '45vh', overflowY: 'auto', paddingRight: 2 }}>
-              {metaAccounts.map((acc) => {
-                const isDeleting = confirmDeleteId === acc.id;
-                const isSyncingOne = syncingAccountId === acc.id;
-                return (
-                  <div
-                    key={acc.id}
-                    style={{
-                      padding: '0.8rem 0.95rem',
-                      borderRadius: 12,
-                      border: '1px solid var(--color-border)',
-                      background: 'var(--color-surface)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.5rem'
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, flexWrap: 'wrap' }}>
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                            {acc.name}
-                          </span>
-                          <span style={{
-                            padding: '2px 8px',
-                            borderRadius: 999,
-                            fontSize: '0.68rem',
-                            fontWeight: 700,
-                            background: acc.is_active ? 'rgba(16, 185, 129, 0.12)' : 'rgba(100, 116, 139, 0.14)',
-                            color: acc.is_active ? '#059669' : '#64748b'
-                          }}>
-                            {acc.is_active ? 'Đang bật đồng bộ' : 'Tạm ngưng'}
-                          </span>
-                          <span style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--color-text-muted)' }}>
-                            act_{acc.ad_account_id}
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 4, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-                          <span>Token: <code style={{ color: 'var(--color-text)' }}>{acc.access_token_masked || 'Chưa có'}</code></span>
-                          {acc.pixel_id && <span>Pixel: <code style={{ color: 'var(--color-text)' }}>{acc.pixel_id}</code></span>}
-                          <span>Bài QC: <strong style={{ color: 'var(--color-text)' }}>{acc.synced_ads_count}</strong></span>
-                          <span>Đồng bộ cuối: <strong style={{ color: 'var(--color-text)' }}>{acc.last_sync || 'Chưa'}</strong></span>
-                        </div>
-                        {acc.last_error && (
-                          <div style={{ marginTop: 5, fontSize: '0.72rem', color: '#dc2626', fontWeight: 600 }}>
-                            Lỗi đồng bộ: {acc.last_error}
-                          </div>
-                        )}
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                        <button
-                          type="button"
-                          title="Đồng bộ riêng tài khoản này"
-                          disabled={isSyncingOne}
-                          onClick={() => void handleSyncSingleAccount(acc)}
-                          style={{
-                            padding: '6px 9px',
-                            borderRadius: 8,
-                            border: '1px solid var(--color-border)',
-                            background: 'var(--color-bg)',
-                            color: 'var(--color-text)',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            cursor: isSyncingOne ? 'not-allowed' : 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4
-                          }}
-                        >
-                          <RefreshCw size={12} className={isSyncingOne ? 'spin' : ''} /> Đồng bộ
-                        </button>
-                        <button
-                          type="button"
-                          title={acc.is_active ? 'Tạm ngưng đồng bộ' : 'Bật đồng bộ'}
-                          onClick={() => void handleToggleMetaAccount(acc)}
-                          style={{
-                            padding: '6px 9px',
-                            borderRadius: 8,
-                            border: '1px solid var(--color-border)',
-                            background: 'var(--color-bg)',
-                            color: acc.is_active ? '#d97706' : '#059669',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4
-                          }}
-                        >
-                          {acc.is_active ? <Pause size={12} /> : <Play size={12} />}
-                          {acc.is_active ? 'Tạm ngưng' : 'Bật'}
-                        </button>
-                        <button
-                          type="button"
-                          title="Sửa tài khoản & Token"
-                          onClick={() => openEditAccountForm(acc)}
-                          style={{
-                            padding: '6px 9px',
-                            borderRadius: 8,
-                            border: '1px solid var(--color-border)',
-                            background: 'var(--color-bg)',
-                            color: '#1E40FF',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4
-                          }}
-                        >
-                          <Edit2 size={12} /> Sửa
-                        </button>
-                        <button
-                          type="button"
-                          title="Xóa tài khoản"
-                          onClick={() => {
-                            setConfirmDeleteId(isDeleting ? null : acc.id);
-                            setPurgeOnDelete(false);
-                          }}
-                          style={{
-                            padding: '6px 9px',
-                            borderRadius: 8,
-                            border: '1px solid rgba(239, 68, 68, 0.35)',
-                            background: 'rgba(239, 68, 68, 0.08)',
-                            color: '#dc2626',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4
-                          }}
-                        >
-                          <Trash2 size={12} /> Xóa
-                        </button>
-                      </div>
-                    </div>
-
-                    {isDeleting && (
-                      <div style={{
-                        padding: '0.6rem 0.75rem',
-                        borderRadius: 9,
-                        background: 'rgba(239, 68, 68, 0.06)',
-                        border: '1px solid rgba(239, 68, 68, 0.25)',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: 8,
-                        fontSize: '0.75rem'
-                      }}>
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', color: '#991b1b', fontWeight: 600 }}>
-                          <input
-                            type="checkbox"
-                            checked={purgeOnDelete}
-                            onChange={(e) => setPurgeOnDelete(e.target.checked)}
-                          />
-                          Xóa luôn lịch sử số liệu QC đã lưu của act_{acc.ad_account_id}
-                        </label>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(null)}
-                            style={{
-                              padding: '5px 10px',
-                              borderRadius: 7,
-                              border: '1px solid var(--color-border)',
-                              background: 'var(--color-surface)',
-                              color: 'var(--color-text)',
-                              fontSize: '0.72rem',
-                              fontWeight: 600,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Hủy
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => void handleDeleteMetaAccount(acc.id)}
-                            style={{
-                              padding: '5px 12px',
-                              borderRadius: 7,
-                              border: 'none',
-                              background: '#dc2626',
-                              color: '#fff',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Xác nhận Xóa TK
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 4 }}>
             <button
               type="button"
               onClick={() => setConfigModalOpen(false)}
               style={{
-                padding: '8px 18px',
+                padding: '9px 16px',
                 borderRadius: 10,
                 border: '1px solid var(--color-border)',
                 background: 'var(--color-surface)',
                 color: 'var(--color-text)',
-                fontSize: '0.8rem',
+                fontSize: '0.82rem',
                 fontWeight: 700,
                 cursor: 'pointer'
               }}
             >
               Đóng
             </button>
+            <button
+              type="submit"
+              disabled={savingConfig}
+              style={{
+                padding: '9px 18px',
+                borderRadius: 10,
+                border: 'none',
+                background: 'linear-gradient(135deg, #1E40FF 0%, #1E3A8A 100%)',
+                color: '#fff',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                cursor: savingConfig ? 'not-allowed' : 'pointer',
+                opacity: savingConfig ? 0.7 : 1
+              }}
+            >
+              {savingConfig ? 'Đang lưu...' : 'Lưu & Đồng bộ'}
+            </button>
           </div>
-        </div>
+        </form>
       </CustomModal>
 
       {/* Floating Multi-Ad Selection Summary Bar + Side-by-Side Compare (DOMATION_META selection_bar.js) */}
