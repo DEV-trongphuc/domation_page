@@ -17,11 +17,19 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
-  AutoDataLoadingModal,
   Badge,
   Card,
   EmptyState,
 } from '../../components/ui/AutoDataLoadingModal';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { ChatDynamicChart } from '../../chat/ChatDynamicChart';
+import { ActionProposalCard } from '../../chat/ActionProposalCard';
+import {
+  parseActionProposal,
+  parseChartDataTag,
+  type ActionProposalSpec,
+  type DynamicChartSpec,
+} from '../../chat/actionProposalUtils';
 import { apiRequest, formatShortDate, getErrorMessage } from '../../../autodataApi';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import {
@@ -52,6 +60,8 @@ interface ChatTurnApiPayload {
   assistant_message: DomMessageItem;
   tool_executions: DomToolExecutionRecord[];
   citations: DomRagCitationItem[];
+  chart_data?: DynamicChartSpec | null;
+  action_proposal?: ActionProposalSpec | null;
   engine_mode: string;
 }
 
@@ -207,7 +217,9 @@ export const DomAgentChatTab: React.FC<DomAgentChatTabProps> = ({
       setDraftInput('');
       if (onClearInitialPrompt) onClearInitialPrompt();
 
-      const optimisticId = `temp_${Date.now()}`;
+      const nowTs = Date.now();
+      const optimisticId = `temp_user_${nowTs}`;
+      const streamAssistantId = `temp_stream_${nowTs}`;
       const optimisticUserMsg: DomMessageItem = {
         id: optimisticId,
         thread_id: activeThreadId || '',
@@ -216,11 +228,125 @@ export const DomAgentChatTab: React.FC<DomAgentChatTabProps> = ({
         tool_calls: [],
         citations: [],
         latency_ms: 0,
-        created_at: new Date().toISOString(),
+        created_at: new Date(nowTs).toISOString(),
       };
-      setMessages((prev) => [...prev, optimisticUserMsg]);
+      const streamingAssistantMsg: DomMessageItem = {
+        id: streamAssistantId,
+        thread_id: activeThreadId || '',
+        role: 'assistant',
+        content: '',
+        tool_calls: [],
+        citations: [],
+        chart_data: null,
+        action_proposal: null,
+        latency_ms: 0,
+        created_at: new Date(nowTs).toISOString(),
+      };
+      setMessages((prev) => [...prev, optimisticUserMsg, streamingAssistantMsg]);
 
       try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        if (tenantSlug) headers['X-Tenant-Slug'] = tenantSlug;
+
+        const streamResp = await fetch('/api/v1/dom-agent/chat/stream', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            thread_id: activeThreadId,
+            specialist_key: activeSpecialist.key,
+            message: clean,
+          }),
+        });
+
+        const contentType = streamResp.headers.get('content-type') || '';
+        if (streamResp.ok && contentType.includes('text/event-stream') && streamResp.body) {
+          const reader = streamResp.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+          let finalDonePayload: ChatTurnApiPayload | null = null;
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            const blocks = buffer.split('\n\n');
+            buffer = blocks.pop() || '';
+
+            for (const block of blocks) {
+              const lines = block.split('\n');
+              let evtName = 'message';
+              let dataRaw = '';
+              for (const l of lines) {
+                if (l.startsWith('event:')) evtName = l.slice(6).trim();
+                else if (l.startsWith('data:')) dataRaw += l.slice(5).trim();
+              }
+              if (!dataRaw) continue;
+              try {
+                const parsed = JSON.parse(dataRaw) as Record<string, unknown>;
+                if (evtName === 'delta' && typeof parsed.delta === 'string') {
+                  const chunkText = parsed.delta;
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === streamAssistantId ? { ...m, content: m.content + chunkText } : m
+                    )
+                  );
+                } else if (evtName === 'tool') {
+                  const toolRec = parsed as unknown as DomToolExecutionRecord;
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === streamAssistantId
+                        ? { ...m, tool_calls: [...m.tool_calls, toolRec] }
+                        : m
+                    )
+                  );
+                } else if (evtName === 'chart') {
+                  const chartSpec = parsed as unknown as DynamicChartSpec;
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === streamAssistantId ? { ...m, chart_data: chartSpec } : m
+                    )
+                  );
+                } else if (evtName === 'proposal') {
+                  const propSpec = parsed as unknown as ActionProposalSpec;
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === streamAssistantId ? { ...m, action_proposal: propSpec } : m
+                    )
+                  );
+                } else if (evtName === 'done') {
+                  finalDonePayload = parsed as unknown as ChatTurnApiPayload;
+                }
+              } catch {
+                // ignore malformed SSE frame
+              }
+            }
+          }
+
+          if (finalDonePayload) {
+            const doneOut = finalDonePayload;
+            setActiveThreadId(doneOut.thread.id);
+            setThreads((prev) => {
+              const others = prev.filter((t) => t.id !== doneOut.thread.id);
+              return [doneOut.thread, ...others];
+            });
+            setMessages((prev) => [
+              ...prev.filter((m) => m.id !== optimisticId && m.id !== streamAssistantId),
+              doneOut.user_message,
+              {
+                ...doneOut.assistant_message,
+                chart_data: doneOut.chart_data ?? doneOut.assistant_message.chart_data ?? null,
+                action_proposal:
+                  doneOut.action_proposal ?? doneOut.assistant_message.action_proposal ?? null,
+              },
+            ]);
+            onRefreshAuditLogs();
+            return;
+          }
+        }
+
+        // Fallback to standard JSON turn if SSE stream endpoint returned JSON error or wasn't streamed
         const out = await apiRequest<ChatTurnApiPayload>('/dom-agent/chat', {
           method: 'POST',
           token,
@@ -238,13 +364,20 @@ export const DomAgentChatTab: React.FC<DomAgentChatTabProps> = ({
           return [out.thread, ...others];
         });
         setMessages((prev) => [
-          ...prev.filter((m) => m.id !== optimisticId),
+          ...prev.filter((m) => m.id !== optimisticId && m.id !== streamAssistantId),
           out.user_message,
-          out.assistant_message,
+          {
+            ...out.assistant_message,
+            chart_data: out.chart_data ?? out.assistant_message.chart_data ?? null,
+            action_proposal:
+              out.action_proposal ?? out.assistant_message.action_proposal ?? null,
+          },
         ]);
         onRefreshAuditLogs();
       } catch (err: unknown) {
-        setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
+        setMessages((prev) =>
+          prev.filter((m) => m.id !== optimisticId && m.id !== streamAssistantId)
+        );
         setDraftInput(clean);
         toast.error(getErrorMessage(err, 'Không thể gửi câu hỏi cho DOM Agent.'));
       } finally {
@@ -634,12 +767,11 @@ export const DomAgentChatTab: React.FC<DomAgentChatTabProps> = ({
             }}
           >
             {loadingMessages ? (
-              <AutoDataLoadingModal
-                inline
-                isOpen
-                message="Đang tải lịch sử hội thoại..."
-                subMessage=""
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '0.5rem' }}>
+                <Skeleton width="45%" height={42} borderRadius={16} style={{ alignSelf: 'flex-end' }} />
+                <Skeleton width="78%" height={84} borderRadius={16} />
+                <Skeleton width="62%" height={56} borderRadius={16} />
+              </div>
             ) : messages.length === 0 ? (
               <div style={{ margin: 'auto 0' }}>
                 <EmptyState
@@ -713,10 +845,34 @@ export const DomAgentChatTab: React.FC<DomAgentChatTabProps> = ({
                           {msg.content}
                         </div>
                       ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                          <div>{renderSimpleMarkdownLines(msg.content)}</div>
+                        (() => {
+                          const parsedProp = parseActionProposal(msg.content);
+                          const parsedChart = parseChartDataTag(parsedProp.cleanContent);
+                          const cleanMarkdown = parsedChart.cleanContent;
+                          const resolvedChart = msg.chart_data || parsedChart.chart;
+                          const resolvedProposal = msg.action_proposal || parsedProp.proposal;
 
-                          {/* Rich Tool Execution Cards */}
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                              {cleanMarkdown ? (
+                                <div>{renderSimpleMarkdownLines(cleanMarkdown)}</div>
+                              ) : sending ? (
+                                <Skeleton width={220} height={18} borderRadius={8} />
+                              ) : null}
+
+                              {resolvedChart && <ChatDynamicChart chart={resolvedChart} />}
+
+                              {resolvedProposal && (
+                                <ActionProposalCard
+                                  proposal={resolvedProposal}
+                                  messageId={msg.id}
+                                  token={token}
+                                  tenantSlug={tenantSlug}
+                                  onExecuted={() => onRefreshAuditLogs()}
+                                />
+                              )}
+
+                              {/* Rich Tool Execution Cards */}
                           {Array.isArray(msg.tool_calls) && msg.tool_calls.length > 0 && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                               {msg.tool_calls.map((tc, tIdx) => {
@@ -863,7 +1019,9 @@ export const DomAgentChatTab: React.FC<DomAgentChatTabProps> = ({
                               ))}
                             </div>
                           )}
-                        </div>
+                            </div>
+                          );
+                        })()
                       )}
                     </div>
                   </div>

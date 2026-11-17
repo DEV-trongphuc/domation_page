@@ -31,6 +31,7 @@ import { KpiCardSkeleton, Skeleton } from '../components/ui/Skeleton';
 
 import { Avatar } from '../components/ui/Avatar';
 import { WarRoomFlightDeck } from '../components/Dashboard/WarRoomFlightDeck';
+import { ModularPackageDashboardDeck } from '../components/Dashboard/ModularPackageDashboardDeck';
 
 const parseServerDate = (dateStr: string) => parseServerDateVN(dateStr) || new Date();
 
@@ -780,6 +781,8 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
           )
         )
       )}
+
+      <ModularPackageDashboardDeck />
 
       {/* KPI Cards */}
       <div className="dashboard-kpi-grid" data-tour="dash-kpis">

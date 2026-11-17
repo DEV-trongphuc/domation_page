@@ -24,6 +24,7 @@ import {
 import toast from 'react-hot-toast';
 import { CustomModal } from '../../components/ui/CustomModal';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
+import { StudioBuilderSkeleton } from '../../components/ui/Skeleton';
 import {
   Badge,
   Card,
@@ -33,7 +34,7 @@ import {
   Table,
   type TableColumn,
 } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest, formatShortDate, formatVnd } from '../../../autodataApi';
+import { apiRequest, formatShortDate, formatVnd, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import { maskPiiEmail, maskPiiPhone } from '../../contexts/entitlementConstants';
@@ -259,6 +260,7 @@ export const AudiencesPage: React.FC = () => {
   };
 
   const handleDeleteAudience = async (aud: AudienceItem) => {
+    const prevAudiences = audiences;
     setAudiences((prev) => prev.filter((x) => x.id !== aud.id));
     try {
       await apiRequest(`/audiences/${aud.id}`, {
@@ -267,8 +269,9 @@ export const AudiencesPage: React.FC = () => {
         tenantSlug,
       });
       toast.success(`Đã xóa tệp "${aud.name}".`);
-    } catch {
-      toast.success(`Đã xóa tệp "${aud.name}".`);
+    } catch (err) {
+      setAudiences(prevAudiences);
+      toast.error(getErrorMessage(err, `Không thể xóa tệp "${aud.name}".`));
     }
   };
 
@@ -306,26 +309,13 @@ export const AudiencesPage: React.FC = () => {
         );
       }
       toast.success(`Đã thêm ${terminology.customerLabel} vào kho Nuôi dưỡng Marketing (không chia nhầm Sale)!`);
-    } catch {
-      const fallbackRow: MasterContactRow = {
-        id: `contact_${Date.now()}`,
-        name: payload.name,
-        phone: payload.phone,
-        email: payload.email,
-        source: payload.source,
-        status: 'marketing_nurture',
-        lifecycle_stage: 'subscriber',
-        lead_score: 15,
-        email_consent: 'subscribed',
-        created_at: new Date().toISOString(),
-      };
-      setContacts((prev) => [fallbackRow, ...prev]);
-      toast.success(`Đã thêm ${terminology.customerLabel} nuôi dưỡng Marketing!`);
+      setQcName('');
+      setQcPhone('');
+      setQcEmail('');
+      setQuickContactOpen(false);
+    } catch (err) {
+      toast.error(getErrorMessage(err, `Không thể thêm ${terminology.customerLabel} vào kho Nuôi dưỡng Marketing.`));
     }
-    setQcName('');
-    setQcPhone('');
-    setQcEmail('');
-    setQuickContactOpen(false);
   };
 
   const handleCreateTag = async (e: React.FormEvent) => {
@@ -341,17 +331,13 @@ export const AudiencesPage: React.FC = () => {
       setTags((prev) => [created, ...prev]);
       setNewTagName('');
       toast.success('Đã tạo nhãn phân loại mới!');
-    } catch {
-      setTags((prev) => [
-        { id: `tag_${Date.now()}`, name: newTagName.trim(), color_hex: newTagColor, usage_count: 0 },
-        ...prev,
-      ]);
-      setNewTagName('');
-      toast.success('Đã tạo nhãn phân loại!');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tạo nhãn phân loại mới.'));
     }
   };
 
   const handleDeleteTag = async (tagId: string) => {
+    const prevTags = tags;
     setTags((prev) => prev.filter((t) => t.id !== tagId));
     try {
       await apiRequest(`/audiences/tags/${tagId}`, {
@@ -359,8 +345,10 @@ export const AudiencesPage: React.FC = () => {
         token,
         tenantSlug,
       });
-    } catch {
-      // ignore
+      toast.success('Đã xóa nhãn phân loại!');
+    } catch (err) {
+      setTags(prevTags);
+      toast.error(getErrorMessage(err, 'Không thể xóa nhãn phân loại.'));
     }
   };
 
@@ -372,14 +360,16 @@ export const AudiencesPage: React.FC = () => {
     }
     try {
       const targetAud = staticAudiences[0] || dynamicAudiences[0];
-      if (targetAud) {
-        await apiRequest(`/audiences/${targetAud.id}/push-to-sale`, {
-          method: 'POST',
-          token,
-          tenantSlug,
-          body: { lead_ids: selectedLeadIds },
-        });
+      if (!targetAud) {
+        toast.error('Cần có ít nhất 1 Tệp Data/Tệp Logic hoặc đẩy trực tiếp từ Vòng chia Sale.');
+        return;
       }
+      await apiRequest(`/audiences/${targetAud.id}/push-to-sale`, {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: { lead_ids: selectedLeadIds },
+      });
       setContacts((prev) =>
         prev.map((c) =>
           selectedLeadIds.includes(c.id) ? { ...c, status: 'unassigned_pending' } : c
@@ -387,14 +377,8 @@ export const AudiencesPage: React.FC = () => {
       );
       toast.success(`Đã chuyển ${selectedLeadIds.length} hồ sơ sang Vòng chia Sale Fair-Share!`);
       setSelectedLeadIds([]);
-    } catch {
-      setContacts((prev) =>
-        prev.map((c) =>
-          selectedLeadIds.includes(c.id) ? { ...c, status: 'unassigned_pending' } : c
-        )
-      );
-      toast.success(`Đã đẩy ${selectedLeadIds.length} hồ sơ sang hàng đợi chia Sale!`);
-      setSelectedLeadIds([]);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể đẩy khách hàng vào Vòng chia Sale.'));
     }
   };
 
@@ -495,6 +479,10 @@ export const AudiencesPage: React.FC = () => {
       ),
     },
   ];
+
+  if (loading && audiences.length === 0 && contacts.length === 0) {
+    return <StudioBuilderSkeleton />;
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem' }}>

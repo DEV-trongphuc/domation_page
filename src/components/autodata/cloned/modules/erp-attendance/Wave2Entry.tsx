@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AlertTriangle,
   Camera,
   CheckCircle2,
+  ClipboardCheck,
   Clock,
   FileWarning,
   Grid,
@@ -13,10 +15,11 @@ import {
   Plus,
   RefreshCw,
   Settings,
+  ShieldCheck,
+  Wifi,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
-  AutoDataLoadingModal,
   Badge,
   Card,
   FormCard,
@@ -24,6 +27,7 @@ import {
   Table,
   type TableColumn,
 } from '../../components/ui/AutoDataLoadingModal';
+import { HrmTimesheetSkeleton } from '../../components/ui/Skeleton';
 import { CustomModal } from '../../components/ui/CustomModal';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
 import { apiRequest, formatShortDate, getErrorMessage } from '../../../autodataApi';
@@ -32,14 +36,20 @@ import { useEntitlement } from '../../contexts/EntitlementContext';
 import {
   calcClientHaversineMeters,
   EXPLANATION_TYPE_LABELS,
+  type AttendanceBulkRequestDto,
+  type AttendanceConfirmationBatchDto,
+  type AttendanceConfirmationItemDto,
   type AttendanceExplanationDto,
   type AttendanceLogDto,
   type AttendanceOverviewDto,
+  type AttendancePolicyDto,
+  type GeofenceMode,
   type ShiftDto,
   type TimesheetMatrixDto,
 } from './attendanceTypes';
+import { AttendanceConfirmationsPanel } from './AttendanceConfirmationsPanel';
 
-type AttendanceTabKey = 'checkin' | 'timesheet' | 'shifts' | 'explanations';
+type AttendanceTabKey = 'checkin' | 'timesheet' | 'confirmations' | 'shifts' | 'explanations';
 
 const INPUT_STYLE: React.CSSProperties = {
   width: '100%',
@@ -62,7 +72,7 @@ const LABEL_STYLE: React.CSSProperties = {
 };
 
 export const ErpAttendanceWave2Entry: React.FC = () => {
-  const { token, tenantSlug, user } = useAuth();
+  const { token, tenantSlug } = useAuth();
   const { can, scope, packageMeta } = useEntitlement();
 
   const canCheckIn = can('erp_attendance', 'create');
@@ -75,16 +85,33 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
 
   const [overview, setOverview] = useState<AttendanceOverviewDto | null>(null);
+  const [policy, setPolicy] = useState<AttendancePolicyDto>({
+    geofence_mode: 'flexible',
+    require_gps: false,
+    require_selfie: false,
+    max_gps_accuracy_meters: 150,
+    grace_late_minutes: 15,
+    grace_early_minutes: 15,
+    allow_any_branch_checkin: false,
+    allow_remote_with_approved_leave: true,
+    holiday_schedules_json: [],
+  });
   const [shifts, setShifts] = useState<ShiftDto[]>([]);
   const [logs, setLogs] = useState<AttendanceLogDto[]>([]);
   const [timesheet, setTimesheet] = useState<TimesheetMatrixDto | null>(null);
   const [explanations, setExplanations] = useState<AttendanceExplanationDto[]>([]);
+  const [batches, setBatches] = useState<AttendanceConfirmationBatchDto[]>([]);
+  const [myPendingConfirmation, setMyPendingConfirmation] = useState<AttendanceConfirmationItemDto | null>(null);
+  const [bulkRequests, setBulkRequests] = useState<AttendanceBulkRequestDto[]>([]);
 
   // Live GPS + Selfie Widget State
   const [selectedBranchId, setSelectedBranchId] = useState<string>('');
   const [gpsLat, setGpsLat] = useState<number | null>(null);
   const [gpsLng, setGpsLng] = useState<number | null>(null);
+  const [gpsAccuracyMeters, setGpsAccuracyMeters] = useState<number | null>(null);
+  const [gpsError, setGpsError] = useState<string | null>(null);
   const [gpsStatusText, setGpsStatusText] = useState('Chưa lấy vị trí GPS');
+  const [checkInNote, setCheckInNote] = useState('');
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraFallbackNote, setCameraFallbackNote] = useState('');
   const [selfieDataUrl, setSelfieDataUrl] = useState<string | null>(null);
@@ -126,25 +153,57 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
 
   const loadAllAttendance = useCallback(async () => {
     try {
-      const [ovRes, shRes, lgRes, tsRes, exRes] = await Promise.all([
+      const [ovRes, polRes, shRes, lgRes, tsRes, exRes, confRes, bulkRes] = await Promise.all([
         apiRequest<AttendanceOverviewDto>('/attendance/overview', { token, tenantSlug }).catch(() => null),
+        apiRequest<AttendancePolicyDto>('/attendance/policy', { token, tenantSlug }).catch(() => null),
         apiRequest<ShiftDto[]>('/attendance/shifts', { token, tenantSlug }).catch(() => []),
         apiRequest<AttendanceLogDto[]>(`/attendance/logs?month=${selectedMonth}`, { token, tenantSlug }).catch(() => []),
         apiRequest<TimesheetMatrixDto>(`/attendance/timesheet?month=${selectedMonth}`, { token, tenantSlug }).catch(
           () => null
         ),
         apiRequest<AttendanceExplanationDto[]>('/attendance/explanations', { token, tenantSlug }).catch(() => []),
+        apiRequest<{
+          batches?: AttendanceConfirmationBatchDto[];
+          items?: AttendanceConfirmationItemDto[];
+          my_pending?: AttendanceConfirmationItemDto | null;
+          my_confirmation?: AttendanceConfirmationItemDto | null;
+        } | AttendanceConfirmationBatchDto[]>('/attendance/confirmations', { token, tenantSlug }).catch(() => null),
+        apiRequest<AttendanceBulkRequestDto[]>('/attendance/bulk-requests', { token, tenantSlug }).catch(() => []),
       ]);
       if (ovRes) {
         setOverview(ovRes);
+        if (ovRes.policy) {
+          setPolicy((prev) => ({ ...prev, ...ovRes.policy }));
+        }
         if (ovRes.active_branch?.id) {
           setSelectedBranchId((prev) => prev || ovRes.active_branch!.id);
         }
+      }
+      if (polRes) {
+        setPolicy((prev) => ({ ...prev, ...polRes }));
       }
       setShifts(Array.isArray(shRes) ? shRes : []);
       setLogs(Array.isArray(lgRes) ? lgRes : []);
       if (tsRes) setTimesheet(tsRes);
       setExplanations(Array.isArray(exRes) ? exRes : []);
+      if (Array.isArray(confRes)) {
+        setBatches(confRes);
+      } else if (confRes && typeof confRes === 'object') {
+        const itemsList = Array.isArray(confRes.items) ? confRes.items : [];
+        const rawBatches = Array.isArray(confRes.batches) ? confRes.batches : [];
+        const enrichedBatches = rawBatches.map((b) => ({
+          ...b,
+          items: b.items || itemsList.filter((it) => it.batch_id === b.id),
+        }));
+        setBatches(enrichedBatches);
+        const derivedMyPending =
+          confRes.my_pending ??
+          confRes.my_confirmation ??
+          itemsList.find((it) => it.status === 'pending' || it.status === 'disputed') ??
+          null;
+        setMyPendingConfirmation(derivedMyPending);
+      }
+      setBulkRequests(Array.isArray(bulkRes) ? bulkRes : []);
     } finally {
       setLoading(false);
     }
@@ -179,65 +238,48 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
 
   const requestBrowserGps = () => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      if (activeBranch?.gps_lat !== null && activeBranch?.gps_lat !== undefined && activeBranch.gps_lng !== null) {
-        setGpsLat(activeBranch.gps_lat);
-        setGpsLng(activeBranch.gps_lng);
-        setGpsStatusText('Trình duyệt không hỗ trợ Geolocation — đã nạp tọa độ chuẩn Chi nhánh để kiểm thử.');
-      } else {
-        setGpsStatusText('Thiết bị không hỗ trợ định vị GPS.');
-      }
+      setGpsLat(null);
+      setGpsLng(null);
+      setGpsAccuracyMeters(null);
+      const msg = 'Thiết bị hoặc trình duyệt không hỗ trợ định vị GPS.';
+      setGpsError(msg);
+      setGpsStatusText(msg);
       return;
     }
 
-    setGpsStatusText('Đang xác thực vệ tinh GPS...');
+    setGpsError(null);
+    setGpsStatusText('Đang xác thực vệ tinh GPS (enableHighAccuracy)...');
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        const acc = Math.round(pos.coords.accuracy);
         setGpsLat(Number(pos.coords.latitude.toFixed(6)));
         setGpsLng(Number(pos.coords.longitude.toFixed(6)));
-        setGpsStatusText(`Đã khóa vị trí GPS (±${Math.round(pos.coords.accuracy)}m)`);
+        setGpsAccuracyMeters(acc);
+        setGpsError(null);
+        setGpsStatusText(`Đã khóa tọa độ GPS thật (±${acc}m)`);
       },
-      () => {
-        if (activeBranch?.gps_lat !== null && activeBranch?.gps_lat !== undefined && activeBranch.gps_lng !== null) {
-          setGpsLat(activeBranch.gps_lat);
-          setGpsLng(activeBranch.gps_lng);
-          setGpsStatusText('Quyền vị trí trình duyệt đang tắt — dùng chế độ mô phỏng tọa độ Chi nhánh.');
-        } else {
-          setGpsStatusText('Chưa cấp quyền vị trí trình duyệt (có thể nhập tọa độ hoặc gửi giải trình).');
-        }
+      (err) => {
+        setGpsLat(null);
+        setGpsLng(null);
+        setGpsAccuracyMeters(null);
+        const msg =
+          err.code === err.PERMISSION_DENIED
+            ? 'Quyền định vị trình duyệt đang bị từ chối. Vui lòng bật quyền Location để xác thực GPS thật.'
+            : 'Không lấy được tín hiệu GPS từ thiết bị. Vui lòng thử lại ở khu vực thoáng sóng.';
+        setGpsError(msg);
+        setGpsStatusText(msg);
       },
-      { enableHighAccuracy: true, timeout: 6000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
-  };
-
-  const generateFallbackStampDataUrl = (): string => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 360;
-    canvas.height = 220;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = '#EEF2FF';
-      ctx.fillRect(0, 0, 360, 220);
-      ctx.strokeStyle = '#1E40FF';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(10, 10, 340, 200);
-      ctx.fillStyle = '#1E40FF';
-      ctx.font = 'bold 16px sans-serif';
-      ctx.fillText('XÁC THỰC CHẤM CÔNG SỐ', 64, 80);
-      ctx.fillStyle = '#0F172A';
-      ctx.font = '14px sans-serif';
-      ctx.fillText(user?.name || 'Nhân sự DOMATION', 64, 115);
-      ctx.fillStyle = '#475569';
-      ctx.font = '12px monospace';
-      ctx.fillText(new Date().toLocaleString('vi-VN'), 64, 148);
-    }
-    return canvas.toDataURL('image/png');
   };
 
   const startWebRtcSelfie = async () => {
     setCameraFallbackNote('');
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-      setSelfieDataUrl(generateFallbackStampDataUrl());
-      setCameraFallbackNote('Thiết bị không có Camera WebRTC — đã tạo tem xác thực thời gian thực dự phòng.');
+      setSelfieDataUrl(null);
+      setCameraFallbackNote(
+        'Trình duyệt không hỗ trợ Camera WebRTC. Nếu quy chế yêu cầu Selfie, vui lòng dùng thiết bị có Camera hợp lệ.'
+      );
       return;
     }
     try {
@@ -253,8 +295,10 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
         }
       });
     } catch {
-      setSelfieDataUrl(generateFallbackStampDataUrl());
-      setCameraFallbackNote('Camera trình duyệt đang bận hoặc chưa cấp quyền — sử dụng ảnh xác thực số dự phòng.');
+      setSelfieDataUrl(null);
+      setCameraFallbackNote(
+        'Camera trình duyệt đang bận hoặc chưa cấp quyền — vui lòng bật quyền Camera để chụp ảnh Selfie thật.'
+      );
     }
   };
 
@@ -267,18 +311,79 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
       if (ctx) {
         ctx.drawImage(videoRef.current, 0, 0);
         setSelfieDataUrl(canvas.toDataURL('image/jpeg', 0.82));
+        setCameraFallbackNote('');
       }
     } else {
-      setSelfieDataUrl(generateFallbackStampDataUrl());
+      setSelfieDataUrl(null);
+      setCameraFallbackNote('Chưa nhận được khung hình từ Camera — vui lòng thử mở lại Camera.');
+      toast.error('Chưa chụp được ảnh từ Camera. Vui lòng thử lại.');
     }
     stopCameraStream();
     setCameraActive(false);
   };
 
+  const geofenceMode: GeofenceMode = policy?.geofence_mode || 'flexible';
+  const maxAccuracyMeters = Number(policy?.max_gps_accuracy_meters || 150);
+  const exemption = overview?.effective_exemption || overview?.exemption;
+  const isIpWhitelisted = Boolean(
+    overview?.ip_whitelist_matched || exemption?.ip_whitelisted || overview?.client_ip_whitelisted
+  );
+  const isExemptFromGps = Boolean(
+    exemption?.exempt_checkin ||
+      exemption?.exempt_gps ||
+      overview?.approved_remote_leave ||
+      exemption?.approved_remote_leave ||
+      isIpWhitelisted
+  );
+
+  const withinFencePreview =
+    liveDistanceMeters !== null && activeBranch
+      ? liveDistanceMeters <= activeBranch.gps_radius_meters
+      : null;
+
+  const accuracyOk =
+    gpsAccuracyMeters === null ? false : gpsAccuracyMeters <= maxAccuracyMeters;
+
+  const strictBlockReason = useMemo(() => {
+    if (geofenceMode !== 'strict_radius' || isExemptFromGps) return null;
+    if (gpsLat === null || gpsLng === null) {
+      return 'Chế độ Nghiêm ngặt (strict_radius): Bắt buộc lấy tọa độ GPS thật từ trình duyệt trước khi Check-in / Check-out.';
+    }
+    if (gpsAccuracyMeters !== null && gpsAccuracyMeters > maxAccuracyMeters) {
+      return `Sai số GPS hiện tại (±${gpsAccuracyMeters}m) vượt ngưỡng tối đa cho phép (${maxAccuracyMeters}m).`;
+    }
+    if (
+      activeBranch &&
+      activeBranch.gps_lat !== null &&
+      activeBranch.gps_lng !== null &&
+      liveDistanceMeters !== null &&
+      liveDistanceMeters > activeBranch.gps_radius_meters
+    ) {
+      return `Vị trí hiện tại cách Chi nhánh ${liveDistanceMeters}m, vượt quá bán kính cho phép (${activeBranch.gps_radius_meters}m).`;
+    }
+    return null;
+  }, [geofenceMode, isExemptFromGps, gpsLat, gpsLng, gpsAccuracyMeters, maxAccuracyMeters, activeBranch, liveDistanceMeters]);
+
   const handleCheckInOrOut = async (mode: 'check-in' | 'check-out') => {
+    if (strictBlockReason) {
+      toast.error(strictBlockReason);
+      return;
+    }
+    if (
+      geofenceMode === 'warn_with_explanation' &&
+      !isExemptFromGps &&
+      withinFencePreview === false &&
+      !checkInNote.trim()
+    ) {
+      toast.error('Bạn đang ở ngoài bán kính Chi nhánh — vui lòng nhập ghi chú giải trình trước khi chấm công.');
+      return;
+    }
+    if (mode === 'check-in' && policy.require_selfie && !exemption?.exempt_selfie && !selfieDataUrl) {
+      toast.error('Chính sách doanh nghiệp yêu cầu chụp ảnh Selfie trực tiếp bằng Camera trước khi Check-in.');
+      return;
+    }
     setCheckingAction(true);
     try {
-      const finalSelfie = selfieDataUrl || generateFallbackStampDataUrl();
       await apiRequest(`/attendance/${mode}`, {
         method: 'POST',
         token,
@@ -287,11 +392,16 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
           branch_id: activeBranch?.id || undefined,
           latitude: gpsLat,
           longitude: gpsLng,
-          selfie_data_url: finalSelfie,
+          accuracy_meters: gpsAccuracyMeters,
+          selfie_data_url: selfieDataUrl || undefined,
+          note: checkInNote.trim() || undefined,
           device_info: typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 160) : 'Web Workspace',
         },
       });
       toast.success(mode === 'check-in' ? 'Đã ghi nhận Check-in thành công!' : 'Đã ghi nhận Check-out cuối ca!');
+      setCheckInNote('');
+      setSelfieDataUrl(null);
+      setCameraFallbackNote('');
       await loadAllAttendance();
     } catch (err) {
       toast.error(getErrorMessage(err, 'Không thể thực hiện chấm công.'));
@@ -457,20 +567,8 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
   );
 
   if (loading) {
-    return (
-      <AutoDataLoadingModal
-        inline
-        isOpen
-        message="Đang đồng bộ Hệ thống Chấm công GPS Đa tầng & Selfie..."
-        subMessage="Đối chiếu tọa độ Chi nhánh & Quy chế Ca làm việc động"
-      />
-    );
+    return <HrmTimesheetSkeleton />;
   }
-
-  const withinFencePreview =
-    liveDistanceMeters !== null && activeBranch
-      ? liveDistanceMeters <= activeBranch.gps_radius_meters
-      : null;
 
   return (
     <div style={{ background: '#F8F9FA', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -589,17 +687,73 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
         tabs={[
           { key: 'checkin', label: 'Trạm Check-in GPS & Selfie', icon: <MapPin size={15} /> },
           { key: 'timesheet', label: `Bảng công Tháng ${selectedMonth}`, icon: <Grid size={15} />, count: timesheet?.rows.length },
+          {
+            key: 'confirmations',
+            label: 'Đối soát & Xác nhận Công',
+            icon: <ClipboardCheck size={15} />,
+            count: batches.length || (myPendingConfirmation ? 1 : 0),
+          },
           { key: 'shifts', label: 'Thiết kế Ca & Quy chế Động', icon: <Settings size={15} />, count: shifts.length },
           { key: 'explanations', label: 'Giải trình Chấm công', icon: <FileWarning size={15} />, count: explanations.length },
         ]}
       />
+
+      {/* Geofence Compliance & Exemption Status Banner */}
+      <div
+        style={{
+          padding: '0.85rem 1.15rem',
+          borderRadius: 14,
+          background: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 10,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          {geofenceMode === 'flexible' && (
+            <Badge tone="success" icon={<CheckCircle2 size={12} />}>
+              Chế độ thoải mái — Không khóa GPS
+            </Badge>
+          )}
+          {geofenceMode === 'warn_with_explanation' && (
+            <Badge tone="warning" icon={<AlertTriangle size={12} />}>
+              Chế độ cảnh báo — Ngoài bán kính cần ghi chú giải trình
+            </Badge>
+          )}
+          {geofenceMode === 'strict_radius' && (
+            <Badge tone="primary" icon={<ShieldCheck size={12} />}>
+              Chế độ nghiêm ngặt — Tuân thủ bán kính GPS & Độ chính xác ≤ {maxAccuracyMeters}m
+            </Badge>
+          )}
+
+          {exemption?.exempt_checkin && (
+            <Badge tone="purple">Miễn chấm công (Theo quy tắc tổ chức)</Badge>
+          )}
+          {!exemption?.exempt_checkin && isExemptFromGps && (
+            <Badge tone="info" icon={<Wifi size={12} />}>
+              {exemption?.approved_remote_leave
+                ? 'Miễn GPS: Đơn WFH / Công tác đã duyệt'
+                : isIpWhitelisted
+                  ? 'Miễn GPS: IP Văn phòng hợp lệ (Whitelist)'
+                  : `Miễn GPS: ${exemption?.reason_label || 'Quy tắc miễn trừ nhân sự'}`}
+            </Badge>
+          )}
+          {exemption?.exempt_selfie && <Badge tone="neutral">Miễn Selfie</Badge>}
+        </div>
+        <div style={{ fontSize: '0.76rem', color: '#64748B' }}>
+          Cài đặt chính sách chấm công & miễn trừ tại <strong>Cài đặt → Chấm công, Ca trực & GPS</strong>
+        </div>
+      </div>
 
       {/* Tab 1: Live GPS + Selfie Check-In Widget */}
       {activeTab === 'checkin' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.25rem' }}>
           <Card
             title="Xác thực Tọa độ GPS Đa Tầng & Ảnh Selfie"
-            subtitle="Hệ thống đo khoảng cách Haversine so với tâm bán kính Chi nhánh làm việc"
+            subtitle="Hệ thống đo khoảng cách Haversine trực tiếp với tâm Chi nhánh — 100% không dùng tọa độ giả lập"
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
@@ -607,6 +761,7 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
                 <select
                   value={activeBranch?.id || ''}
                   onChange={(e) => setSelectedBranchId(e.target.value)}
+                  disabled={!policy.allow_any_branch_checkin && Boolean(overview?.active_branch?.id)}
                   style={INPUT_STYLE}
                 >
                   {(overview?.branches || []).length === 0 ? (
@@ -625,22 +780,24 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
                 style={{
                   padding: '0.9rem 1rem',
                   borderRadius: 14,
-                  background: '#F8FAFF',
-                  border: '1px solid #DBEAFE',
+                  background: strictBlockReason ? '#FEF2F2' : '#F8FAFF',
+                  border: strictBlockReason ? '1px solid #FECACA' : '1px solid #DBEAFE',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 8,
+                  gap: 10,
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0F172A' }}>{gpsStatusText}</span>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: gpsError ? '#DC2626' : '#0F172A' }}>
+                    {gpsStatusText}
+                  </span>
                   <button
                     type="button"
                     onClick={requestBrowserGps}
                     className="btn secondary"
                     style={{ height: 36, color: '#1E40FF', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: 5 }}
                   >
-                    <Navigation size={13} /> Lấy tọa độ GPS ngay
+                    <Navigation size={13} /> Lấy tọa độ GPS thật
                   </button>
                 </div>
 
@@ -649,15 +806,66 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
                     <Badge tone="neutral">
                       Lat: {gpsLat}, Lng: {gpsLng}
                     </Badge>
-                    {liveDistanceMeters !== null && (
+                    {gpsAccuracyMeters !== null && (
+                      <Badge tone={accuracyOk ? 'success' : 'danger'}>
+                        Độ chính xác GPS: ±{gpsAccuracyMeters}m / Tối đa {maxAccuracyMeters}m
+                      </Badge>
+                    )}
+                    {liveDistanceMeters !== null && activeBranch && (
                       <Badge tone={withinFencePreview ? 'success' : 'warning'}>
-                        Khoảng cách tới Chi nhánh: {liveDistanceMeters}m (
-                        {withinFencePreview ? 'Hợp lệ trong vùng Geofence' : 'Ngoài vùng Geofence'})
+                        Khoảng cách: {liveDistanceMeters}m / Bán kính {activeBranch.gps_radius_meters}m
                       </Badge>
                     )}
                   </div>
                 )}
+
+                {/* Live Haversine Distance Gauge */}
+                {activeBranch && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', fontWeight: 700, color: '#475569' }}>
+                      <span>Thước đo khoảng cách Haversine</span>
+                      <span style={{ color: withinFencePreview === false ? '#DC2626' : '#1E40FF' }}>
+                        {liveDistanceMeters !== null
+                          ? `Còn ${liveDistanceMeters}m / Bán kính ${activeBranch.gps_radius_meters}m`
+                          : `Bán kính chuẩn: ${activeBranch.gps_radius_meters}m`}
+                      </span>
+                    </div>
+                    <div style={{ height: 8, borderRadius: 999, background: '#E2E8F0', overflow: 'hidden' }}>
+                      <div
+                        style={{
+                          height: '100%',
+                          width:
+                            liveDistanceMeters !== null
+                              ? `${Math.min(100, Math.round((liveDistanceMeters / Math.max(1, activeBranch.gps_radius_meters)) * 100))}%`
+                              : '0%',
+                          background: withinFencePreview === false ? '#DC2626' : '#1E40FF',
+                          transition: 'width 0.3s ease',
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {strictBlockReason && (
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#DC2626', display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                    <AlertTriangle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
+                    <span>{strictBlockReason}</span>
+                  </div>
+                )}
               </div>
+
+              {(geofenceMode === 'warn_with_explanation' || checkInNote) && (
+                <div>
+                  <label style={LABEL_STYLE}>Ghi chú giải trình vị trí (Khi chấm công ngoài vùng)</label>
+                  <input
+                    type="text"
+                    value={checkInNote}
+                    onChange={(e) => setCheckInNote(e.target.value)}
+                    placeholder="VD: Gặp khách hàng tại Quận 1 / Công tác đối tác..."
+                    style={INPUT_STYLE}
+                  />
+                </div>
+              )}
 
               {/* WebRTC Camera / Selfie Preview */}
               <div
@@ -735,13 +943,13 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <button
                     type="button"
-                    disabled={checkingAction}
+                    disabled={checkingAction || Boolean(strictBlockReason)}
                     onClick={() => void handleCheckInOrOut('check-in')}
                     style={{
                       height: 46,
                       borderRadius: 12,
                       border: 'none',
-                      background: '#1E40FF',
+                      background: strictBlockReason ? '#94A3B8' : '#1E40FF',
                       color: '#FFFFFF',
                       fontWeight: 800,
                       fontSize: '0.88rem',
@@ -749,29 +957,29 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: 8,
-                      cursor: 'pointer',
-                      boxShadow: '0 6px 18px rgba(30, 64, 255, 0.22)',
+                      cursor: strictBlockReason || checkingAction ? 'not-allowed' : 'pointer',
+                      boxShadow: strictBlockReason ? 'none' : '0 6px 18px rgba(30, 64, 255, 0.22)',
                     }}
                   >
                     <LogIn size={17} /> Check-in Vào Ca
                   </button>
                   <button
                     type="button"
-                    disabled={checkingAction}
+                    disabled={checkingAction || Boolean(strictBlockReason)}
                     onClick={() => void handleCheckInOrOut('check-out')}
                     style={{
                       height: 46,
                       borderRadius: 12,
-                      border: '1px solid #1E40FF',
-                      background: '#FFFFFF',
-                      color: '#1E40FF',
+                      border: strictBlockReason ? '1px solid #CBD5E1' : '1px solid #1E40FF',
+                      background: strictBlockReason ? '#F1F5F9' : '#FFFFFF',
+                      color: strictBlockReason ? '#94A3B8' : '#1E40FF',
                       fontWeight: 800,
                       fontSize: '0.88rem',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: 8,
-                      cursor: 'pointer',
+                      cursor: strictBlockReason || checkingAction ? 'not-allowed' : 'pointer',
                     }}
                   >
                     <LogOut size={17} /> Check-out Tan Ca
@@ -930,7 +1138,22 @@ export const ErpAttendanceWave2Entry: React.FC = () => {
         </Card>
       )}
 
-      {/* Tab 3: Shifts & Attendance Policy Designer */}
+      {/* Tab 3: Confirmation Batches & Disputes */}
+      {activeTab === 'confirmations' && (
+        <AttendanceConfirmationsPanel
+          token={token}
+          tenantSlug={tenantSlug}
+          canApprove={canApprove}
+          canManageConfig={canManageShifts}
+          myPendingConfirmation={myPendingConfirmation}
+          batches={batches}
+          bulkRequests={bulkRequests}
+          selectedMonth={selectedMonth}
+          onReload={loadAllAttendance}
+        />
+      )}
+
+      {/* Tab 4: Shifts & Attendance Policy Designer */}
       {activeTab === 'shifts' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>

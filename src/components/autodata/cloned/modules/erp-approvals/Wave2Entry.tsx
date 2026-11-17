@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CheckCircle2,
+  CheckSquare,
   Clock,
   Edit2,
   Eye,
@@ -8,6 +9,7 @@ import {
   GitBranch,
   Inbox,
   Lock,
+  PenTool,
   Plus,
   RefreshCw,
   Search,
@@ -15,10 +17,10 @@ import {
   Settings,
   Trash2,
   UserCheck,
+  XCircle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
-  AutoDataLoadingModal,
   Badge,
   Card,
   EmptyState,
@@ -27,6 +29,7 @@ import {
   Table,
   type TableColumn,
 } from '../../components/ui/AutoDataLoadingModal';
+import { ApprovalsTabSkeleton } from '../../components/ui/Skeleton';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
 import { apiRequest, formatShortDate, formatVnd, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
@@ -42,12 +45,13 @@ import {
   type ApprovalWorkflowDto,
 } from './approvalTypes';
 import {
-  ApprovalRequestDetailModal,
   DelegationCreateModal,
   NewApprovalRequestModal,
+  RequestSlaInlineBadge,
   StepTimelineInlineBadge,
-  WorkflowBuilderModal,
 } from './ApprovalModals';
+import { ApprovalDetailDrawer } from './ApprovalDetailDrawer';
+import { ApprovalRuleBuilderModal } from './ApprovalRuleBuilderModal';
 
 type ApprovalsTabKey = 'inbox' | 'mine' | 'all' | 'workflows' | 'delegations';
 
@@ -62,6 +66,8 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<ApprovalsTabKey>('inbox');
   const [loading, setLoading] = useState(true);
+  const [nowMs, setNowMs] = useState<number>(() => new Date().getTime());
+
   const [overview, setOverview] = useState<ApprovalsOverviewDto | null>(null);
   const [workflows, setWorkflows] = useState<ApprovalWorkflowDto[]>([]);
   const [inboxRequests, setInboxRequests] = useState<ApprovalRequestDto[]>([]);
@@ -72,12 +78,22 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
-  // Modals
+  // Batch Multi-Select State on Pending Inbox
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [batchComment, setBatchComment] = useState('');
+  const [batchBusy, setBatchBusy] = useState(false);
+
+  // Slide-over Drawer & Studio Modals
   const [newReqOpen, setNewReqOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<ApprovalRequestDto | null>(null);
   const [wfBuilderOpen, setWfBuilderOpen] = useState(false);
   const [editingWorkflow, setEditingWorkflow] = useState<ApprovalWorkflowDto | null>(null);
   const [delegationModalOpen, setDelegationModalOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNowMs(new Date().getTime()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const loadAllData = useCallback(async () => {
     try {
@@ -91,10 +107,12 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
       ]);
       if (ovRes) setOverview(ovRes);
       setWorkflows(Array.isArray(wfRes) ? wfRes : []);
-      setInboxRequests(Array.isArray(inbRes) ? inbRes : []);
+      const nextInbox = Array.isArray(inbRes) ? inbRes : [];
+      setInboxRequests(nextInbox);
       setMyRequests(Array.isArray(mineRes) ? mineRes : []);
       setAllRequests(Array.isArray(allRes) ? allRes : []);
       setDelegations(Array.isArray(delRes) ? delRes : []);
+      setSelectedIds((prev) => prev.filter((id) => nextInbox.some((r) => r.id === id && r.status === 'pending')));
     } finally {
       setLoading(false);
     }
@@ -104,21 +122,58 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
     void loadAllData();
   }, [loadAllData]);
 
-  const handleQuickDecide = async (reqItem: ApprovalRequestDto, decision: 'approve' | 'reject') => {
+  const handleQuickDecide = useCallback(
+    async (reqItem: ApprovalRequestDto, decision: 'approve' | 'reject') => {
+      try {
+        await apiRequest(`/approvals/requests/${reqItem.id}/decide`, {
+          method: 'POST',
+          token,
+          tenantSlug,
+          body: {
+            decision,
+            comment: decision === 'approve' ? 'Phê duyệt nhanh tại Hộp thư chờ duyệt' : 'Từ chối nhanh',
+          },
+        });
+        toast.success(
+          decision === 'approve' ? `Đã phê duyệt ${reqItem.request_code}!` : `Đã từ chối ${reqItem.request_code}.`
+        );
+        await loadAllData();
+      } catch (err) {
+        toast.error(getErrorMessage(err, 'Không thể xử lý phê duyệt nhanh.'));
+      }
+    },
+    [token, tenantSlug, loadAllData]
+  );
+
+  const handleBatchDecide = async (decision: 'approve' | 'reject') => {
+    if (selectedIds.length === 0) return;
+    setBatchBusy(true);
     try {
-      await apiRequest(`/approvals/requests/${reqItem.id}/decide`, {
+      const res = await apiRequest<{ processed_count?: number }>('/approvals/requests/batch-decide', {
         method: 'POST',
         token,
         tenantSlug,
         body: {
+          request_ids: selectedIds,
           decision,
-          comment: decision === 'approve' ? 'Phê duyệt nhanh trên Hộp thư chờ duyệt' : 'Từ chối nhanh',
+          comment:
+            batchComment.trim() ||
+            (decision === 'approve' ? 'Phê duyệt hàng loạt (Batch Approve)' : 'Từ chối hàng loạt (Batch Reject)'),
         },
       });
-      toast.success(decision === 'approve' ? `Đã duyệt ${reqItem.request_code}!` : `Đã từ chối ${reqItem.request_code}`);
+      const count = res?.processed_count ?? selectedIds.length;
+      toast.success(
+        decision === 'approve'
+          ? `Đã phê duyệt hàng loạt ${count} tờ trình thành công!`
+          : `Đã từ chối hàng loạt ${count} tờ trình!`
+      );
+      setSelectedIds([]);
+      setBatchComment('');
       await loadAllData();
     } catch (err) {
-      toast.error(getErrorMessage(err, 'Không thể xử lý phê duyệt nhanh.'));
+      toast.error(getErrorMessage(err, 'Không thể xử lý phê duyệt hàng loạt.'));
+    } finally {
+      setBatchBusy(false);
     }
   };
 
@@ -137,19 +192,40 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
     }
   };
 
-  const handleDeleteDelegation = async (id: string) => {
-    try {
-      await apiRequest(`/approvals/delegations/${id}`, {
-        method: 'DELETE',
-        token,
-        tenantSlug,
-      });
-      toast.success('Đã thu hồi ủy quyền phê duyệt.');
-      await loadAllData();
-    } catch (err) {
-      toast.error(getErrorMessage(err, 'Không thể thu hồi ủy quyền.'));
-    }
-  };
+  const handleToggleDelegation = useCallback(
+    async (del: ApprovalDelegationDto) => {
+      try {
+        await apiRequest(`/approvals/delegations/${del.id}`, {
+          method: 'PATCH',
+          token,
+          tenantSlug,
+          body: { is_active: !del.is_active },
+        });
+        toast.success(del.is_active ? 'Đã tạm tắt lịch ủy quyền.' : 'Đã bật lại lịch ủy quyền.');
+        await loadAllData();
+      } catch (err) {
+        toast.error(getErrorMessage(err, 'Không thể cập nhật trạng thái ủy quyền.'));
+      }
+    },
+    [token, tenantSlug, loadAllData]
+  );
+
+  const handleDeleteDelegation = useCallback(
+    async (id: string) => {
+      try {
+        await apiRequest(`/approvals/delegations/${id}`, {
+          method: 'DELETE',
+          token,
+          tenantSlug,
+        });
+        toast.success('Đã thu hồi ủy quyền phê duyệt.');
+        await loadAllData();
+      } catch (err) {
+        toast.error(getErrorMessage(err, 'Không thể thu hồi ủy quyền.'));
+      }
+    },
+    [token, tenantSlug, loadAllData]
+  );
 
   const displayedRequests = useMemo(() => {
     const source =
@@ -165,15 +241,82 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
     });
   }, [activeTab, inboxRequests, myRequests, allRequests, categoryFilter, searchQuery]);
 
-  const requestColumns = useMemo<ReadonlyArray<TableColumn<ApprovalRequestDto>>>(
-    () => [
+  const actionableInboxIds = useMemo(
+    () =>
+      displayedRequests
+        .filter((r) => activeTab === 'inbox' && r.status === 'pending' && r.can_current_user_act)
+        .map((r) => r.id),
+    [displayedRequests, activeTab]
+  );
+
+  const allActionableSelected =
+    actionableInboxIds.length > 0 && actionableInboxIds.every((id) => selectedIds.includes(id));
+
+  const toggleSelectRow = useCallback((id: string) => {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }, []);
+
+  const toggleSelectAll = useCallback(() => {
+    if (allActionableSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(actionableInboxIds);
+    }
+  }, [allActionableSelected, actionableInboxIds]);
+
+  const selectedTotalVnd = useMemo(
+    () =>
+      inboxRequests
+        .filter((r) => selectedIds.includes(r.id))
+        .reduce((sum, r) => sum + Number(r.amount_vnd || 0), 0),
+    [inboxRequests, selectedIds]
+  );
+
+  const requestColumns = useMemo<ReadonlyArray<TableColumn<ApprovalRequestDto>>>(() => {
+    const cols: TableColumn<ApprovalRequestDto>[] = [];
+
+    if (activeTab === 'inbox' && canApprove) {
+      cols.push({
+        key: 'select',
+        width: 46,
+        align: 'center',
+        header: (
+          <input
+            type="checkbox"
+            checked={allActionableSelected}
+            onChange={toggleSelectAll}
+            title="Chọn tất cả tờ trình chờ duyệt"
+            style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#1E40FF' }}
+          />
+        ),
+        render: (row) => {
+          const disabled = !(row.status === 'pending' && row.can_current_user_act);
+          return (
+            <div onClick={(e) => e.stopPropagation()}>
+              <input
+                type="checkbox"
+                disabled={disabled}
+                checked={selectedIds.includes(row.id)}
+                onChange={() => toggleSelectRow(row.id)}
+                style={{ width: 16, height: 16, cursor: disabled ? 'not-allowed' : 'pointer', accentColor: '#1E40FF' }}
+              />
+            </div>
+          );
+        },
+      });
+    }
+
+    cols.push(
       {
         key: 'code',
-        header: 'Mã & Tờ trình',
+        header: 'Mã & Tờ trình Chứng từ Gốc',
         render: (row) => (
           <div>
-            <div style={{ fontWeight: 800, color: '#0F172A' }}>{row.title}</div>
-            <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 2 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              <span style={{ fontWeight: 800, color: '#0F172A' }}>{row.title}</span>
+              <RequestSlaInlineBadge req={row} nowMs={nowMs} />
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 3 }}>
               <span style={{ color: '#1E40FF', fontWeight: 700 }}>{row.request_code}</span> •{' '}
               {row.workflow_name || CATEGORY_LABELS[row.category]} • {formatShortDate(row.created_at)}
             </div>
@@ -205,7 +348,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
       },
       {
         key: 'steps',
-        header: 'Lộ trình N Bước',
+        header: 'Lộ trình N Bước & OOO',
         render: (row) => <StepTimelineInlineBadge req={row} />,
       },
       {
@@ -225,15 +368,12 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         header: 'Thao tác',
         align: 'right',
         render: (row) => (
-          <div
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
             {canApprove && row.status === 'pending' && row.can_current_user_act && (
               <>
                 <button
                   type="button"
-                  onClick={() => handleQuickDecide(row, 'approve')}
+                  onClick={() => void handleQuickDecide(row, 'approve')}
                   style={{
                     height: 34,
                     padding: '0 10px',
@@ -250,7 +390,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleQuickDecide(row, 'reject')}
+                  onClick={() => void handleQuickDecide(row, 'reject')}
                   style={{
                     height: 34,
                     padding: '0 10px',
@@ -273,15 +413,24 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
               className="btn secondary"
               style={{ height: 34, padding: '0 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: 4 }}
             >
-              <Eye size={13} /> Chi tiết
+              <Eye size={13} color="#1E40FF" /> Chi tiết 360°
             </button>
           </div>
         ),
-      },
-    ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [canApprove, token, tenantSlug]
-  );
+      }
+    );
+
+    return cols;
+  }, [
+    activeTab,
+    canApprove,
+    allActionableSelected,
+    toggleSelectAll,
+    selectedIds,
+    toggleSelectRow,
+    nowMs,
+    handleQuickDecide,
+  ]);
 
   const delegationColumns = useMemo<ReadonlyArray<TableColumn<ApprovalDelegationDto>>>(
     () => [
@@ -292,8 +441,24 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
       },
       {
         key: 'delegate',
-        header: 'Người duyệt thay',
+        header: 'Người duyệt thay (OOO)',
         render: (d) => <Badge tone="primary">{d.delegate_name || d.delegate_email}</Badge>,
+      },
+      {
+        key: 'scope',
+        header: 'Phạm vi áp dụng',
+        render: (d) =>
+          !d.categories || d.categories.length === 0 ? (
+            <Badge tone="info">Toàn bộ phân loại</Badge>
+          ) : (
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+              {d.categories.map((c) => (
+                <Badge key={c} tone="neutral">
+                  {CATEGORY_LABELS[c as ApprovalCategory] || c}
+                </Badge>
+              ))}
+            </div>
+          ),
       },
       {
         key: 'period',
@@ -305,39 +470,45 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         ),
       },
       {
-        key: 'reason',
-        header: 'Lý do',
-        render: (d) => <span>{d.reason || '—'}</span>,
+        key: 'st',
+        header: 'Trạng thái',
+        render: (d) => (
+          <Badge tone={d.is_active ? 'success' : 'neutral'}>
+            {d.is_active ? 'Đang kích hoạt' : 'Tạm ngưng'}
+          </Badge>
+        ),
       },
       {
         key: 'act',
         header: '',
         align: 'right',
         render: (d) => (
-          <button
-            type="button"
-            onClick={() => handleDeleteDelegation(d.id)}
-            className="btn secondary"
-            style={{ height: 34, padding: '0 10px', color: '#DC2626' }}
-          >
-            <Trash2 size={14} />
-          </button>
+          <div style={{ display: 'inline-flex', gap: 6 }}>
+            <button
+              type="button"
+              onClick={() => void handleToggleDelegation(d)}
+              className="btn secondary"
+              style={{ height: 34, padding: '0 10px', fontSize: '0.76rem' }}
+            >
+              {d.is_active ? 'Tạm tắt' : 'Bật lại'}
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleDeleteDelegation(d.id)}
+              className="btn secondary"
+              style={{ height: 34, padding: '0 10px', color: '#DC2626' }}
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
         ),
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [token, tenantSlug]
+    [handleToggleDelegation, handleDeleteDelegation]
   );
 
   if (loading) {
-    return (
-      <AutoDataLoadingModal
-        inline
-        isOpen
-        message="Đang khởi tạo Trung tâm Phê duyệt Đa cấp Động..."
-        subMessage="Đồng bộ Sơ đồ Tổ chức, Ma trận Ngưỡng tiền & Hộp thư Phê duyệt RLS"
-      />
-    );
+    return <ApprovalsTabSkeleton />;
   }
 
   return (
@@ -363,12 +534,12 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                 justifyContent: 'center',
               }}
             >
-              <img src="/imgs/autodata/ICON.png" alt="Logo robot" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <img src="/imgs/autodata/ICON.png" alt="DOMATION" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <h1 style={{ fontSize: '1.18rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
-                  Trung Tâm Phê Duyệt Đa Cấp Động (N Bước)
+                  Trung Tâm Phê Duyệt Đa Cấp Động, Liên Kết Chứng Từ Gốc & SLA
                 </h1>
                 <Badge tone="primary">{packageMeta.shortName}</Badge>
                 <Badge tone="success" icon={<Lock size={11} />}>
@@ -376,7 +547,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                 </Badge>
               </div>
               <p style={{ fontSize: '0.82rem', color: '#64748B', margin: '4px 0 0' }}>
-                Giải quyết người duyệt tự động theo Sơ đồ Tổ chức, ngưỡng ngân sách động & ủy quyền duyệt thay có thời hạn
+                Xem trước Đặt cọc VietQR, Chi phí VAT, Quỹ phép năm, PO/SO ngay trên ngăn kéo phê duyệt • Duyệt hàng loạt & Nhánh điều kiện động
               </p>
             </div>
           </div>
@@ -425,42 +596,45 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#1E40FF', marginTop: 4 }}>
             {overview?.summary.pending_to_approve ?? inboxRequests.length}
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Tờ trình đang chờ ở bước của bạn</div>
+          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Hỗ trợ chọn nhiều đơn duyệt hàng loạt</div>
         </Card>
         <Card padding="1.05rem 1.25rem">
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>TỜ TRÌNH TÔI GỬI ĐANG CHỜ</div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0F172A', marginTop: 4 }}>
             {overview?.summary.my_pending_requests ?? 0}
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Theo dõi thời gian thực từng bước</div>
+          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Giám sát cảnh báo SLA từng bước</div>
         </Card>
         <Card padding="1.05rem 1.25rem">
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>ĐÃ PHÊ DUYỆT HOÀN TẤT</div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#059669', marginTop: 4 }}>
             {overview?.summary.approved_requests ?? 0}
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Đồng bộ tự động sang HR & Chấm công</div>
+          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Đồng bộ tự động sang HR, Công & Quỹ</div>
         </Card>
         <Card padding="1.05rem 1.25rem">
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>LUỒNG ĐỘNG & ỦY QUYỀN</div>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>LUỒNG ĐỘNG & ỦY QUYỀN OOO</div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#0284C7', marginTop: 4 }}>
             {workflows.filter((w) => w.is_active).length} / {delegations.filter((d) => d.is_active).length}
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Quy trình đang bật / Ủy quyền vắng mặt</div>
+          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Quy trình nhánh điều kiện / Ủy quyền bật</div>
         </Card>
       </div>
 
-      {/* Navigation Tabs */}
+      {/* Navigation Tabs & Filters */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <PillTabs<ApprovalsTabKey>
           activeKey={activeTab}
-          onChange={setActiveTab}
+          onChange={(k) => {
+            setActiveTab(k);
+            setSelectedIds([]);
+          }}
           tabs={[
             { key: 'inbox', label: 'Hộp thư cần tôi duyệt', icon: <Inbox size={15} />, count: inboxRequests.length },
             { key: 'mine', label: 'Tờ trình của tôi', icon: <Send size={15} />, count: myRequests.length },
             { key: 'all', label: 'Toàn bộ tờ trình', icon: <FileCheck2 size={15} />, count: allRequests.length },
-            { key: 'workflows', label: 'Thiết kế Luồng N Bước', icon: <GitBranch size={15} />, count: workflows.length },
-            { key: 'delegations', label: 'Ủy quyền Vắng mặt', icon: <UserCheck size={15} />, count: delegations.length },
+            { key: 'workflows', label: 'Thiết kế Nhánh Điều kiện', icon: <GitBranch size={15} />, count: workflows.length },
+            { key: 'delegations', label: 'Ủy quyền Vắng mặt (OOO)', icon: <UserCheck size={15} />, count: delegations.length },
           ]}
         />
 
@@ -507,7 +681,101 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         )}
       </div>
 
-      {/* Tab Content */}
+      {/* Sticky Batch Approve / Reject Action Bar */}
+      {activeTab === 'inbox' && selectedIds.length > 0 && (
+        <div
+          style={{
+            position: 'sticky',
+            top: 8,
+            zIndex: 30,
+            padding: '0.85rem 1.25rem',
+            borderRadius: 16,
+            background: '#FFFFFF',
+            border: '1.5px solid #1E40FF',
+            boxShadow: '0 12px 28px rgba(30, 64, 255, 0.18)',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <Badge tone="primary" icon={<CheckSquare size={12} />}>
+              Đã chọn {selectedIds.length} tờ trình
+            </Badge>
+            {selectedTotalVnd > 0 && (
+              <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#0F172A' }}>
+                Tổng ngân sách: <span style={{ color: '#1E40FF' }}>{formatVnd(selectedTotalVnd)}</span>
+              </span>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', flex: '1 1 360px', justifyContent: 'flex-end' }}>
+            <input
+              type="text"
+              value={batchComment}
+              onChange={(e) => setBatchComment(e.target.value)}
+              placeholder="Ghi chú phê duyệt / từ chối hàng loạt..."
+              style={{
+                height: 40,
+                padding: '0 0.85rem',
+                borderRadius: 10,
+                border: '1px solid #CBD5E1',
+                background: '#F8F9FA',
+                fontSize: '0.82rem',
+                minWidth: 210,
+                flex: '1 1 210px',
+                maxWidth: 320,
+              }}
+            />
+            <button
+              type="button"
+              disabled={batchBusy}
+              onClick={() => void handleBatchDecide('reject')}
+              style={{
+                height: 40,
+                padding: '0 1rem',
+                borderRadius: 10,
+                border: '1px solid rgba(220, 38, 38, 0.3)',
+                background: 'rgba(220, 38, 38, 0.08)',
+                color: '#DC2626',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                cursor: 'pointer',
+              }}
+            >
+              <XCircle size={15} /> Từ chối hàng loạt ({selectedIds.length})
+            </button>
+            <button
+              type="button"
+              disabled={batchBusy}
+              onClick={() => void handleBatchDecide('approve')}
+              style={{
+                height: 40,
+                padding: '0 1.2rem',
+                borderRadius: 10,
+                border: 'none',
+                background: '#1E40FF',
+                color: '#FFFFFF',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                cursor: 'pointer',
+              }}
+            >
+              <CheckCircle2 size={15} /> {batchBusy ? 'Đang xử lý...' : `Duyệt hàng loạt (${selectedIds.length})`}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Request Table Tabs */}
       {(activeTab === 'inbox' || activeTab === 'mine' || activeTab === 'all') && (
         <Table<ApprovalRequestDto>
           columns={requestColumns}
@@ -519,7 +787,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
               ? 'Tuyệt vời! Bạn đã xử lý hết tờ trình chờ duyệt'
               : 'Chưa có tờ trình phê duyệt nào'
           }
-          emptyDescription="Khởi tạo tờ trình mới để hệ thống tự động định tuyến đến cấp quản lý theo Sơ đồ Tổ chức."
+          emptyDescription="Khởi tạo tờ trình mới để hệ thống tự động định tuyến đến cấp quản lý theo Sơ đồ Tổ chức & Nhánh hạn mức."
           emptyAction={
             canCreate ? (
               <button
@@ -543,11 +811,12 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         />
       )}
 
+      {/* Condition-Branch Workflow Studio Tab */}
       {activeTab === 'workflows' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            <div style={{ fontSize: '0.86rem', color: '#475569' }}>
-              Mỗi doanh nghiệp có thể cấu hình không giới hạn số bước duyệt, vai trò duyệt và hạn mức kích hoạt riêng biệt.
+            <div style={{ fontSize: '0.85rem', color: '#475569' }}>
+              Thiết lập chuỗi N bước duyệt với điều kiện rẽ nhánh `≥ hạn mức tối thiểu` / `≤ hạn mức trần`, thời gian SLA và bắt buộc ký số.
             </div>
             {canManageConfig && (
               <button
@@ -571,18 +840,18 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                <Settings size={15} /> Thiết kế quy trình N bước mới
+                <Settings size={15} /> Thiết kế quy trình điều kiện mới
               </button>
             )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(330px, 1fr))', gap: '1rem' }}>
             {workflows.map((wf) => (
               <FormCard
                 key={wf.id}
                 icon={<GitBranch size={19} />}
                 title={wf.name}
-                description={wf.description || CATEGORY_LABELS[wf.category as ApprovalCategory]}
+                description={wf.description || CATEGORY_LABELS[wf.category]}
                 badge={
                   <Badge tone={wf.is_active ? 'success' : 'neutral'}>
                     {wf.is_active ? 'Đang hoạt động' : 'Tạm ngưng'}
@@ -597,7 +866,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                       <div style={{ display: 'flex', gap: 6 }}>
                         <button
                           type="button"
-                          onClick={() => handleToggleWorkflow(wf)}
+                          onClick={() => void handleToggleWorkflow(wf)}
                           className="btn secondary"
                           style={{ height: 34, padding: '0 10px', fontSize: '0.76rem' }}
                         >
@@ -612,7 +881,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                           className="btn secondary"
                           style={{ height: 34, padding: '0 10px', fontSize: '0.76rem', color: '#1E40FF', display: 'inline-flex', alignItems: 'center', gap: 4 }}
                         >
-                          <Edit2 size={13} /> Cấu hình
+                          <Edit2 size={13} /> Nhánh điều kiện
                         </button>
                       </div>
                     )}
@@ -624,24 +893,33 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                     <div
                       key={`${wf.id}-${s.step_order}`}
                       style={{
-                        padding: '0.45rem 0.7rem',
+                        padding: '0.5rem 0.75rem',
                         borderRadius: 10,
                         background: '#F8F9FA',
-                        fontSize: '0.78rem',
+                        fontSize: '0.77rem',
                         display: 'flex',
+                        flexWrap: 'wrap',
                         justifyContent: 'space-between',
-                        gap: 8,
+                        alignItems: 'center',
+                        gap: 6,
                       }}
                     >
                       <span>
                         <strong>B{s.step_order}:</strong> {s.step_name} (
                         {APPROVER_TYPE_LABELS[s.approver_type] || s.approver_type})
                       </span>
-                      {s.min_amount_threshold > 0 ? (
-                        <Badge tone="warning">≥ {formatVnd(s.min_amount_threshold)}</Badge>
-                      ) : (
-                        <Badge tone="info">Mọi hạn mức</Badge>
-                      )}
+                      <div style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
+                        {s.require_signature && <PenTool size={12} color="#7E22CE" />}
+                        <Badge tone="neutral">{s.sla_hours}h SLA</Badge>
+                        {s.min_amount_threshold > 0 || (s.max_amount_threshold && s.max_amount_threshold > 0) ? (
+                          <Badge tone="warning">
+                            ≥ {formatVnd(s.min_amount_threshold)}
+                            {s.max_amount_threshold ? ` ≤ ${formatVnd(s.max_amount_threshold)}` : ''}
+                          </Badge>
+                        ) : (
+                          <Badge tone="info">Mọi hạn mức</Badge>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -651,11 +929,12 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         </div>
       )}
 
+      {/* Out-of-Office Delegation Tab */}
       {activeTab === 'delegations' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
             <div style={{ fontSize: '0.85rem', color: '#475569' }}>
-              Khi người quản lý vắng mặt / đi công tác, mọi tờ trình trong thời hạn hiệu lực sẽ tự động định tuyến sang người nhận ủy quyền.
+              Khi lãnh đạo / trưởng bộ phận đi công tác hoặc nghỉ phép, hệ thống tự động chuyển quyền duyệt sang người nhận ủy quyền trong thời hạn hiệu lực.
             </div>
             {canCreate && (
               <button
@@ -676,7 +955,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                <Clock size={15} /> Thiết lập ủy quyền mới
+                <Clock size={15} /> Thiết lập ủy quyền OOO mới
               </button>
             )}
           </div>
@@ -684,8 +963,8 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
           {delegations.length === 0 ? (
             <EmptyState
               icon={<CheckCircle2 size={24} />}
-              title="Chưa có lịch ủy quyền vắng mặt nào đang bật"
-              description="Thiết lập ủy quyền có thời hạn để không làm gián đoạn tiến độ phê duyệt nội bộ khi đi công tác."
+              title="Chưa có lịch ủy quyền vắng mặt (Out-of-Office) nào"
+              description="Thiết lập ủy quyền có thời hạn để không làm gián đoạn SLA phê duyệt khi đi công tác."
             />
           ) : (
             <Table<ApprovalDelegationDto>
@@ -697,7 +976,7 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         </div>
       )}
 
-      {/* Modals */}
+      {/* Drawers & Modals */}
       <NewApprovalRequestModal
         isOpen={newReqOpen}
         onClose={() => setNewReqOpen(false)}
@@ -707,8 +986,9 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
         onCreated={() => void loadAllData()}
       />
 
-      <ApprovalRequestDetailModal
+      <ApprovalDetailDrawer
         request={selectedRequest}
+        workflows={workflows}
         onClose={() => setSelectedRequest(null)}
         canApprove={canApprove}
         token={token}
@@ -717,8 +997,8 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
       />
 
       {wfBuilderOpen && (
-        <WorkflowBuilderModal
-          key={editingWorkflow?.id || 'new-wf'}
+        <ApprovalRuleBuilderModal
+          key={editingWorkflow?.id || 'new-rule-wf'}
           isOpen={wfBuilderOpen}
           onClose={() => setWfBuilderOpen(false)}
           editingWorkflow={editingWorkflow}
@@ -742,4 +1022,5 @@ export const ErpApprovalsWave2Entry: React.FC = () => {
   );
 };
 
+export const Wave2Entry = ErpApprovalsWave2Entry;
 export default ErpApprovalsWave2Entry;

@@ -1527,7 +1527,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
               <div style={{ minWidth: 185 }} title="Lọc theo Meta Optimization Goal (adset.optimization_goal)">
                 <CustomSelect
                   value={goalFilter}
-                  onChange={setGoalFilter}
+                  onChange={(v) => setGoalFilter(String(v))}
                   options={[
                     { value: 'Lead Form', label: 'Meta Goal: Lead Form' },
                     { value: 'all', label: 'Meta Goal: Tất cả' },
@@ -1545,7 +1545,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
               <div style={{ minWidth: 185 }}>
                 <CustomSelect
                   value={tierFilter}
-                  onChange={setTierFilter}
+                  onChange={(v) => setTierFilter(String(v))}
                   options={[
                     { value: 'with_leads', label: 'Bài QC có sinh Lead' },
                     { value: 'all', label: 'Tất cả bài QC' },

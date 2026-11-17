@@ -1,23 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Calendar,
+  Camera,
   CheckCircle2,
   Copy,
-  Edit2,
   ExternalLink,
   FileSignature,
+  FolderTree,
   Laptop,
   Lock,
   PenTool,
   Plus,
   RefreshCw,
   Search,
+  UserCheck,
   UserPlus,
   Users,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
-  AutoDataLoadingModal,
   Badge,
   Card,
   EmptyState,
@@ -26,6 +27,7 @@ import {
   Table,
   type TableColumn,
 } from '../../components/ui/AutoDataLoadingModal';
+import { HrmTimesheetSkeleton } from '../../components/ui/Skeleton';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
 import { apiRequest, formatVnd, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
@@ -44,15 +46,17 @@ import {
   AssetHandoverModal,
   BookingLinkCreateModal,
   ContractCreateModal,
-  EmployeeFormModal,
   PublicBookingInteractivePreviewModal,
   SignaturePadModal,
 } from './HrmModals';
+import { AccountDetailDrawer } from './AccountDetailDrawer';
+import { SmartCheckInModal } from './SmartCheckInModal';
+import { OrgChartTreeView } from './OrgChartTreeView';
 
-type HrmTabKey = 'employees' | 'contracts' | 'assets' | 'booking';
+type HrmTabKey = 'org_chart' | 'employees' | 'contracts' | 'assets' | 'booking';
 
 export const ErpHrmWave2Entry: React.FC = () => {
-  const { token, tenantSlug } = useAuth();
+  const { token, tenantSlug, companyName } = useAuth();
   const { can, scope, packageMeta } = useEntitlement();
 
   const canCreate = can('erp_hrm_org', 'create');
@@ -71,9 +75,11 @@ export const ErpHrmWave2Entry: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [deptFilter, setDeptFilter] = useState('all');
 
-  // Modals
-  const [empModalOpen, setEmpModalOpen] = useState(false);
-  const [editingEmployee, setEditingEmployee] = useState<HrEmployeeDto | null>(null);
+  // Slide-over 360° Drawer & Modals
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerEmployee, setDrawerEmployee] = useState<HrEmployeeDto | null>(null);
+  const [smartCheckInOpen, setSmartCheckInOpen] = useState(false);
+
   const [sigTarget, setSigTarget] = useState<
     | { kind: 'employee'; id: string; title: string }
     | { kind: 'contract'; id: string; title: string }
@@ -108,6 +114,11 @@ export const ErpHrmWave2Entry: React.FC = () => {
   useEffect(() => {
     void loadAllHrm();
   }, [loadAllHrm]);
+
+  const openEmployeeDrawer = useCallback((emp: HrEmployeeDto | null) => {
+    setDrawerEmployee(emp);
+    setDrawerOpen(true);
+  }, []);
 
   const handleSyncWorkspaceUsers = async () => {
     try {
@@ -145,20 +156,23 @@ export const ErpHrmWave2Entry: React.FC = () => {
     await loadAllHrm();
   };
 
-  const handleReturnAsset = async (assetId: string) => {
-    try {
-      await apiRequest(`/hrm/assets/${assetId}`, {
-        method: 'PATCH',
-        token,
-        tenantSlug,
-        body: { status: 'returned' },
-      });
-      toast.success('Đã xác nhận thu hồi tài sản bàn giao!');
-      await loadAllHrm();
-    } catch (err) {
-      toast.error(getErrorMessage(err, 'Không thể cập nhật trạng thái tài sản.'));
-    }
-  };
+  const handleReturnAsset = useCallback(
+    async (assetId: string) => {
+      try {
+        await apiRequest(`/hrm/assets/${assetId}`, {
+          method: 'PATCH',
+          token,
+          tenantSlug,
+          body: { status: 'returned' },
+        });
+        toast.success('Đã xác nhận thu hồi tài sản bàn giao!');
+        await loadAllHrm();
+      } catch (err) {
+        toast.error(getErrorMessage(err, 'Không thể cập nhật trạng thái tài sản.'));
+      }
+    },
+    [token, tenantSlug, loadAllHrm]
+  );
 
   const filteredEmployees = useMemo(() => {
     return employees.filter((e) => {
@@ -265,24 +279,19 @@ export const ErpHrmWave2Entry: React.FC = () => {
             >
               <PenTool size={13} color="#1E40FF" /> Ký số
             </button>
-            {canEdit && (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingEmployee(row);
-                  setEmpModalOpen(true);
-                }}
-                className="btn secondary"
-                style={{ height: 34, padding: '0 10px', fontSize: '0.76rem', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-              >
-                <Edit2 size={13} /> Hồ sơ
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => openEmployeeDrawer(row)}
+              className="btn secondary"
+              style={{ height: 34, padding: '0 10px', fontSize: '0.76rem', color: '#1E40FF', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+            >
+              <UserCheck size={13} /> Hồ sơ 360°
+            </button>
           </div>
         ),
       },
     ],
-    [canEdit]
+    [openEmployeeDrawer]
   );
 
   const contractColumns = useMemo<ReadonlyArray<TableColumn<HrContractDto>>>(
@@ -393,8 +402,7 @@ export const ErpHrmWave2Entry: React.FC = () => {
           ) : null,
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [canEdit, token, tenantSlug]
+    [canEdit, handleReturnAsset]
   );
 
   const appointmentColumns = useMemo<ReadonlyArray<TableColumn<BookingAppointmentDto>>>(
@@ -444,14 +452,7 @@ export const ErpHrmWave2Entry: React.FC = () => {
   );
 
   if (loading) {
-    return (
-      <AutoDataLoadingModal
-        inline
-        isOpen
-        message="Đang tải Phân hệ Nhân sự 360° & Đặt lịch 1-1 Thông minh..."
-        subMessage="Đồng bộ Hồ sơ Nhân sự, Hợp đồng, Chữ ký số & Lịch hẹn RLS"
-      />
-    );
+    return <HrmTimesheetSkeleton />;
   }
 
   return (
@@ -477,12 +478,12 @@ export const ErpHrmWave2Entry: React.FC = () => {
                 justifyContent: 'center',
               }}
             >
-              <img src="/imgs/autodata/ICON.png" alt="Logo robot" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <img src="/imgs/autodata/ICON.png" alt="DOMATION" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <h1 style={{ fontSize: '1.18rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
-                  Nhân Sự 360° (HRM), Hợp Đồng, Chữ Ký Số & Đặt Lịch 1-1
+                  Nhân Sự 360° (HRM), Sơ Đồ Tổ Chức, Chữ Ký Số & Đặt Lịch 1-1
                 </h1>
                 <Badge tone="primary">{packageMeta.shortName}</Badge>
                 <Badge tone="success" icon={<Lock size={11} />}>
@@ -490,19 +491,37 @@ export const ErpHrmWave2Entry: React.FC = () => {
                 </Badge>
               </div>
               <p style={{ fontSize: '0.82rem', color: '#64748B', margin: '4px 0 0' }}>
-                Quản trị trọn vòng đời nhân sự gắn Sơ đồ Tổ chức, tài sản cấp phát, chữ ký số & trang đặt hẹn 1-1 kiểu Calendly
+                Quản trị trọn vòng đời nhân sự gắn Sơ đồ Tổ chức trực quan, hợp đồng ký số, tài sản cấp phát & chấm công AI Camera
               </p>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <ScreenHelpButton screenKey="erp_hrm" />
+            <button
+              type="button"
+              onClick={() => setSmartCheckInOpen(true)}
+              className="btn secondary"
+              style={{
+                height: 44,
+                padding: '0 1rem',
+                borderColor: '#1E40FF',
+                color: '#1E40FF',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: '0.83rem',
+              }}
+            >
+              <Camera size={15} /> Chấm công nhanh (AI Camera)
+            </button>
             {canCreate && (
               <button
                 type="button"
                 onClick={() => void handleSyncWorkspaceUsers()}
                 className="btn secondary"
-                style={{ height: 44, padding: '0 1rem', color: '#1E40FF', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.83rem' }}
+                style={{ height: 44, padding: '0 1rem', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.83rem' }}
               >
                 <RefreshCw size={14} /> Đồng bộ từ Tài khoản
               </button>
@@ -510,10 +529,7 @@ export const ErpHrmWave2Entry: React.FC = () => {
             {canCreate && (
               <button
                 type="button"
-                onClick={() => {
-                  setEditingEmployee(null);
-                  setEmpModalOpen(true);
-                }}
+                onClick={() => openEmployeeDrawer(null)}
                 style={{
                   height: 44,
                   padding: '0 1.25rem',
@@ -553,7 +569,7 @@ export const ErpHrmWave2Entry: React.FC = () => {
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#059669', marginTop: 4 }}>
             {overview?.summary.active_contracts ?? contracts.length}
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Hỗ trợ ký số điện tử nội bộ</div>
+          <div style={{ fontSize: '0.76rem', color: '#64748B', marginTop: 2 }}>Hỗ trợ ký số điện tử HTML5 Canvas</div>
         </Card>
         <Card padding="1.05rem 1.25rem">
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>TÀI SẢN ĐANG CẤP PHÁT</div>
@@ -573,16 +589,32 @@ export const ErpHrmWave2Entry: React.FC = () => {
         </Card>
       </div>
 
-      {/* Tabs & Filters */}
+      {/* 5 Tabs & Filters */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <PillTabs<HrmTabKey>
           activeKey={activeTab}
           onChange={setActiveTab}
           tabs={[
-            { key: 'employees', label: 'Hồ sơ Nhân sự 360°', icon: <Users size={15} />, count: employees.length },
-            { key: 'contracts', label: 'Hợp đồng Lao động', icon: <FileSignature size={15} />, count: contracts.length },
-            { key: 'assets', label: 'Tài sản Bàn giao', icon: <Laptop size={15} />, count: assets.length },
-            { key: 'booking', label: 'Đặt lịch Hẹn 1-1 Thông minh', icon: <Calendar size={15} />, count: bookingLinks.length },
+            {
+              key: 'org_chart',
+              label: 'Sơ đồ Tổ chức Trực quan',
+              icon: <FolderTree size={15} />,
+              count: (overview?.org.departments || []).length,
+            },
+            { key: 'employees', label: 'Danh bạ Nhân sự 360°', icon: <Users size={15} />, count: employees.length },
+            {
+              key: 'contracts',
+              label: 'Hợp đồng & Chữ ký số',
+              icon: <FileSignature size={15} />,
+              count: contracts.length,
+            },
+            { key: 'assets', label: 'Tài sản Cấp phát', icon: <Laptop size={15} />, count: assets.length },
+            {
+              key: 'booking',
+              label: 'Lịch hẹn 1-1 Smart Booking',
+              icon: <Calendar size={15} />,
+              count: bookingLinks.length,
+            },
           ]}
         />
 
@@ -695,17 +727,23 @@ export const ErpHrmWave2Entry: React.FC = () => {
       </div>
 
       {/* Tab Views */}
+      {activeTab === 'org_chart' && (
+        <OrgChartTreeView
+          companyName={companyName}
+          org={overview?.org}
+          employees={employees}
+          onSelectEmployee={(emp) => openEmployeeDrawer(emp)}
+        />
+      )}
+
       {activeTab === 'employees' && (
         <Table<HrEmployeeDto>
           columns={employeeColumns}
           rows={filteredEmployees}
           rowKey={(r) => r.id}
-          onRowClick={(r) => {
-            setEditingEmployee(r);
-            setEmpModalOpen(true);
-          }}
+          onRowClick={(r) => openEmployeeDrawer(r)}
           emptyTitle="Chưa có hồ sơ nhân sự 360°"
-          emptyDescription="Bấm 'Đồng bộ từ Tài khoản' hoặc 'Thêm hồ sơ nhân sự' để quản lý lương, phép năm và chữ ký số."
+          emptyDescription="Bấm 'Đồng bộ từ Tài khoản' hoặc 'Thêm hồ sơ nhân sự' để quản lý lương, phép năm, tài sản và chữ ký số."
         />
       )}
 
@@ -735,12 +773,12 @@ export const ErpHrmWave2Entry: React.FC = () => {
             <EmptyState
               icon={<Calendar size={24} />}
               title="Chưa tạo trang Đặt lịch 1-1 Thông minh nào"
-              description="Tạo link chia sẻ kiểu Calendly cho Phỏng vấn Tuyển dụng, Tư vấn Khách hàng VIP hoặc Demo B2B 1-1."
+              description="Tạo link chia sẻ cho Phỏng vấn Tuyển dụng, Tư vấn Khách hàng VIP hoặc Demo B2B 1-1."
             />
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))', gap: '1rem' }}>
               {bookingLinks.map((bl) => {
-                const publicApiUrl = `${window.location.origin}/api/v1/hrm/public-booking/${bl.slug}`;
+                const publicApiUrl = `${window.location.origin}/booking/${bl.slug}`;
                 return (
                   <FormCard
                     key={bl.id}
@@ -801,19 +839,20 @@ export const ErpHrmWave2Entry: React.FC = () => {
         </div>
       )}
 
-      {/* Modals */}
-      {empModalOpen && (
-        <EmployeeFormModal
-          key={editingEmployee?.id || 'new-emp'}
-          isOpen={empModalOpen}
-          onClose={() => setEmpModalOpen(false)}
-          editingEmployee={editingEmployee}
-          org={overview?.org}
-          token={token}
-          tenantSlug={tenantSlug}
-          onSaved={() => void loadAllHrm()}
-        />
-      )}
+      {/* Drawers & Modals */}
+      <AccountDetailDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        employee={drawerEmployee}
+        org={overview?.org}
+        onSaved={() => void loadAllHrm()}
+      />
+
+      <SmartCheckInModal
+        isOpen={smartCheckInOpen}
+        onClose={() => setSmartCheckInOpen(false)}
+        onSuccess={() => void loadAllHrm()}
+      />
 
       <SignaturePadModal
         isOpen={Boolean(sigTarget)}
@@ -857,4 +896,5 @@ export const ErpHrmWave2Entry: React.FC = () => {
   );
 };
 
+export const Wave2Entry = ErpHrmWave2Entry;
 export default ErpHrmWave2Entry;

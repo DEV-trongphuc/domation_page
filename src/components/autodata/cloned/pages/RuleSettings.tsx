@@ -807,7 +807,7 @@ const RuleSettingsInner = () => {
                 ...connections.map(c => ({ value: c.id, label: c.sheet_name, icon: <FileSpreadsheet size={14} color="#10b981" /> }))
               ]}
               value={connectionId}
-              onChange={(v) => setConnectionId(v)}
+              onChange={(v) => setConnectionId(Array.isArray(v) ? v : [])}
             />
           </div>
 

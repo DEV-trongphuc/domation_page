@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Badge, Card, EmptyState } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest, formatShortDate } from '../../../autodataApi';
+import { apiRequest, formatShortDate, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { renderClientTemplate } from '../../utils/pipelineConfig';
 import {
@@ -103,15 +103,10 @@ export const PolicyDocumentsSettingsTab: React.FC<PolicyDocumentsSettingsTabProp
           body,
         });
       }
-    } catch {
-      savedDoc = {
-        id: selectedId !== 'new' ? selectedId : `pol_${Date.now()}`,
-        title: body.title,
-        category: body.category,
-        content: body.content,
-        is_active: true,
-        updated_at: new Date().toISOString(),
-      };
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể lưu văn bản chính sách doanh nghiệp.'));
+      setSaving(false);
+      return;
     }
 
     if (syncAgentAfterSave) {
@@ -122,18 +117,19 @@ export const PolicyDocumentsSettingsTab: React.FC<PolicyDocumentsSettingsTabProp
           token,
           tenantSlug,
         });
-      } catch {
-        // local optimistic RAG state
+        savedDoc = {
+          ...savedDoc,
+          synced_to_dom_agent: true,
+          sync_to_dom_agent: true,
+          last_synced_at: new Date().toISOString(),
+          last_synced_dom_agent_at: new Date().toISOString(),
+        };
+        toast.success('Đã lưu & huấn luyện chính sách riêng cho DOM Agent (Zero Cross-Tenant RAG)!');
+      } catch (err) {
+        toast.error(getErrorMessage(err, 'Đã lưu văn bản nhưng đồng bộ tri thức DOM Agent thất bại.'));
+      } finally {
+        setSyncingId(null);
       }
-      savedDoc = {
-        ...savedDoc,
-        synced_to_dom_agent: true,
-        sync_to_dom_agent: true,
-        last_synced_at: new Date().toISOString(),
-        last_synced_dom_agent_at: new Date().toISOString(),
-      };
-      setSyncingId(null);
-      toast.success('Đã lưu & huấn luyện chính sách riêng cho DOM Agent (Zero Cross-Tenant RAG)!');
     } else {
       toast.success('Đã lưu văn bản chính sách doanh nghiệp!');
     }
@@ -148,12 +144,15 @@ export const PolicyDocumentsSettingsTab: React.FC<PolicyDocumentsSettingsTabProp
   };
 
   const handleDeletePolicy = async (id: string) => {
+    const prevPolicies = policies;
     setPolicies((prev) => prev.filter((p) => p.id !== id));
     if (selectedId === id) startNewDoc();
     try {
       await apiRequest(`/org-rbac/policies/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã xóa văn bản chính sách.');
+    } catch (err) {
+      setPolicies(prevPolicies);
+      toast.error(getErrorMessage(err, 'Không thể xóa văn bản chính sách.'));
     }
   };
 

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { Avatar } from '../components/ui/Avatar';
 import { fetchAPI } from '../utils/api';
+import { apiRequest, getErrorMessage } from '../../autodataApi';
 import { TableRowSkeleton } from '../components/ui/Skeleton';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { CustomSelect } from '../components/ui/CustomSelect';
@@ -183,6 +184,69 @@ const ConsultantsInner = () => {
   const [statsDateMode, setStatsDateMode] = useState<string>('this_month');
   const [statsStartDate, setStatsStartDate] = useState<string>('');
   const [statsEndDate, setStatsEndDate] = useState<string>('');
+
+  const { token, tenantSlug } = useAuth();
+  const [consViewTab, setConsViewTab] = useState<'list' | 'shifts_leaves'>('list');
+  const [shiftsCatalog, setShiftsCatalog] = useState<Array<{ id: string; name: string; start_time: string; end_time: string }>>([]);
+  const [shiftAssignments, setShiftAssignments] = useState<Array<{ id: string; user_id: string; user_name?: string; shift_id: string; shift_name?: string; effective_from?: string }>>([]);
+  const [pendingLeaveRequests, setPendingLeaveRequests] = useState<Array<{ id: string; title: string; requester_name?: string; status: string; created_at: string }>>([]);
+  const [shiftsLoading, setShiftsLoading] = useState(false);
+  const [assignUserId, setAssignUserId] = useState('');
+  const [assignShiftId, setAssignShiftId] = useState('');
+
+  const loadShiftsAndLeaves = async () => {
+    setShiftsLoading(true);
+    try {
+      const [shRes, saRes, lrRes] = await Promise.all([
+        apiRequest<Array<{ id: string; name: string; start_time: string; end_time: string }>>('/attendance/shifts', { token, tenantSlug }).catch(() => []),
+        apiRequest<Array<{ id: string; user_id: string; user_name?: string; shift_id: string; shift_name?: string; effective_from?: string }>>('/attendance/shift-assignments', { token, tenantSlug }).catch(() => []),
+        apiRequest<Array<{ id: string; title: string; requester_name?: string; status: string; created_at: string }>>('/approvals/requests?category=leave', { token, tenantSlug }).catch(() => []),
+      ]);
+      const sh = Array.isArray(shRes) ? shRes : [];
+      setShiftsCatalog(sh);
+      setShiftAssignments(Array.isArray(saRes) ? saRes : []);
+      setPendingLeaveRequests(Array.isArray(lrRes) ? lrRes : []);
+      if (sh.length > 0 && !assignShiftId) setAssignShiftId(sh[0].id);
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể tải dữ liệu Ca trực & Nghỉ phép')));
+    } finally {
+      setShiftsLoading(false);
+    }
+  };
+
+  const handleAssignShift = async () => {
+    if (!assignUserId || !assignShiftId) {
+      toast.error(t('Vui lòng chọn Nhân sự và Ca làm việc'));
+      return;
+    }
+    try {
+      await apiRequest('/attendance/shift-assignments', {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: { user_id: assignUserId, shift_id: assignShiftId },
+      });
+      toast.success(t('Đã phân ca trực cho nhân sự'));
+      await loadShiftsAndLeaves();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể phân ca trực')));
+    }
+  };
+
+  const handleDecideLeave = async (reqId: string, decision: 'approve' | 'reject') => {
+    try {
+      await apiRequest(`/approvals/requests/${reqId}/decide`, {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: { decision },
+      });
+      toast.success(decision === 'approve' ? t('Đã duyệt đơn nghỉ phép') : t('Đã từ chối đơn nghỉ phép'));
+      await loadShiftsAndLeaves();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể xử lý đơn nghỉ phép')));
+    }
+  };
 
   const [scheduleMode, setScheduleMode] = useState<'daily' | 'custom'>('daily');
   const [formData, setFormData] = useState<{
@@ -694,7 +758,172 @@ const ConsultantsInner = () => {
         </div>
       </div>
 
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+        <button
+          type="button"
+          onClick={() => setConsViewTab('list')}
+          style={{
+            padding: '0.55rem 1rem',
+            borderRadius: 10,
+            border: consViewTab === 'list' ? '1px solid #1E40FF' : '1px solid var(--color-border)',
+            background: consViewTab === 'list' ? '#1E40FF' : 'var(--color-surface)',
+            color: consViewTab === 'list' ? '#FFFFFF' : 'var(--color-text)',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          <Users size={14} style={{ display: 'inline', marginRight: 6 }} />
+          {t('Danh sách Đại lý & TVV')} ({users.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setConsViewTab('shifts_leaves');
+            void loadShiftsAndLeaves();
+          }}
+          style={{
+            padding: '0.55rem 1rem',
+            borderRadius: 10,
+            border: consViewTab === 'shifts_leaves' ? '1px solid #1E40FF' : '1px solid var(--color-border)',
+            background: consViewTab === 'shifts_leaves' ? '#1E40FF' : 'var(--color-surface)',
+            color: consViewTab === 'shifts_leaves' ? '#FFFFFF' : 'var(--color-text)',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          <Clock size={14} style={{ display: 'inline', marginRight: 6 }} />
+          {t('Phân Ca trực & Duyệt Nghỉ phép')}
+        </button>
+      </div>
+
+      {consViewTab === 'shifts_leaves' && (
+        <div className="card" style={{ padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+            <div style={{ padding: '1rem', borderRadius: 12, border: '1px solid var(--color-border)', background: '#F8FAFC' }}>
+              <h3 style={{ margin: '0 0 0.75rem', fontSize: '0.92rem', fontWeight: 800 }}>
+                {t('Phân Ca trực Nhân sự & Đại lý')}
+              </h3>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                <select
+                  value={assignUserId}
+                  onChange={(e) => setAssignUserId(e.target.value)}
+                  className="form-input"
+                  style={{ flex: 1, minWidth: 150, height: 38, fontSize: '0.8rem' }}
+                >
+                  <option value="">-- {t('Chọn nhân sự')} --</option>
+                  {users.map((u: any) => (
+                    <option key={u.id} value={String(u.user_id || u.id)}>
+                      {u.name}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={assignShiftId}
+                  onChange={(e) => setAssignShiftId(e.target.value)}
+                  className="form-input"
+                  style={{ flex: 1, minWidth: 140, height: 38, fontSize: '0.8rem' }}
+                >
+                  <option value="">-- {t('Chọn ca trực')} --</option>
+                  {shiftsCatalog.map((sh) => (
+                    <option key={sh.id} value={sh.id}>
+                      {sh.name} ({sh.start_time}-{sh.end_time})
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => void handleAssignShift()}
+                  className="btn primary"
+                  style={{ height: 38, padding: '0 14px', background: '#1E40FF', fontSize: '0.8rem' }}
+                >
+                  + {t('Gán ca')}
+                </button>
+              </div>
+              {shiftsLoading ? (
+                <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t('Đang tải lịch ca trực...')}</div>
+              ) : shiftAssignments.length === 0 ? (
+                <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t('Chưa có phân công ca trực riêng.')}</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 220, overflowY: 'auto' }}>
+                  {shiftAssignments.map((sa) => (
+                    <div key={sa.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', borderRadius: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', fontSize: '0.78rem' }}>
+                      <span>
+                        <strong>{sa.user_name || sa.user_id}</strong> → {sa.shift_name || sa.shift_id}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await apiRequest(`/attendance/shift-assignments/${sa.id}`, { method: 'DELETE', token, tenantSlug });
+                            toast.success(t('Đã gỡ phân ca'));
+                            await loadShiftsAndLeaves();
+                          } catch (err) {
+                            toast.error(getErrorMessage(err, t('Không thể gỡ phân ca')));
+                          }
+                        }}
+                        style={{ border: 'none', background: 'transparent', color: '#DC2626', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                      >
+                        {t('Gỡ')}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={{ padding: '1rem', borderRadius: 12, border: '1px solid var(--color-border)', background: '#F8FAFC' }}>
+              <h3 style={{ margin: '0 0 0.75rem', fontSize: '0.92rem', fontWeight: 800 }}>
+                {t('Đơn xin Nghỉ phép Chờ duyệt & Lịch Nghỉ TVV')}
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 260, overflowY: 'auto' }}>
+                {pendingLeaveRequests.map((req) => (
+                  <div key={req.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', borderRadius: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', fontSize: '0.78rem', gap: 8 }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{req.requester_name || t('Nhân sự')}: {req.title}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748B' }}>{req.status}</div>
+                    </div>
+                    {req.status === 'pending' && (
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button
+                          type="button"
+                          onClick={() => void handleDecideLeave(req.id, 'approve')}
+                          style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#1E40FF', color: '#FFF', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          {t('Duyệt')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleDecideLeave(req.id, 'reject')}
+                          style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid #FECACA', background: '#FEF2F2', color: '#DC2626', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          {t('Từ chối')}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {users
+                  .filter((u: any) => u.status === 'leave' || u.leave_start)
+                  .map((u: any) => (
+                    <div key={`lv-${u.id}`} style={{ padding: '8px 10px', borderRadius: 8, background: '#FFFBEB', border: '1px solid #FDE68A', fontSize: '0.78rem' }}>
+                      <strong>{u.name}</strong> • {u.leave_start || '?'} → {u.leave_end || '?'}
+                    </div>
+                  ))}
+                {pendingLeaveRequests.length === 0 && users.filter((u: any) => u.status === 'leave' || u.leave_start).length === 0 && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                    {t('Không có đơn nghỉ phép chờ duyệt. Nhấn "Sửa" vào từng nhân sự để thiết lập lịch nghỉ phép.')}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
+      {consViewTab === 'list' && (
       <div className="card" style={{ overflow: 'hidden' }}>
         <div className="table-wrap mobile-card-table" style={{ border: 'none', borderRadius: 0 }}>
           <table className="mobile-table-compact">
@@ -1134,6 +1363,7 @@ const ConsultantsInner = () => {
           </table>
         </div>
       </div>
+      )}
 
       {/* QUICK ADD CO-MANAGER MODAL FOR ADMIN */}
       {quickAddMgrAgency && typeof document !== 'undefined' && createPortal(

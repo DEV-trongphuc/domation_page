@@ -9,10 +9,11 @@ import {
   Trash2,
   Zap,
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { CustomModal } from '../../components/ui/CustomModal';
 import { ToggleSwitch } from '../../components/ui/ToggleSwitch';
 import { Badge, Card } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest } from '../../../autodataApi';
+import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import { maskPiiEmail, maskPiiPhone } from '../../contexts/entitlementConstants';
@@ -264,23 +265,10 @@ export const SegmentRuleBuilderModal: React.FC<SegmentRuleBuilderModalProps> = (
         ...saved,
         cached_member_count: saved.cached_member_count ?? previewCount,
       });
+      toast.success(initialAudience ? 'Đã cập nhật Tệp Logic!' : 'Đã tạo Tệp Logic thành công!');
       onClose();
-    } catch {
-      const localSaved: AudienceItem = {
-        id: initialAudience?.id || `aud_logic_${Date.now()}`,
-        name: payload.name,
-        description: payload.description,
-        audience_type: 'dynamic_logic',
-        filter_branches: branches,
-        cached_member_count: previewCount,
-        auto_push_to_sale_round: payload.auto_push_to_sale_round,
-        target_round_id: payload.target_round_id,
-        target_round_name: rounds.find((r) => r.id === payload.target_round_id)?.name || null,
-        color_hex: colorHex,
-        updated_at: new Date().toISOString(),
-      };
-      onSaved(localSaved);
-      onClose();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể lưu Tệp Logic.'));
     } finally {
       setSaving(false);
     }

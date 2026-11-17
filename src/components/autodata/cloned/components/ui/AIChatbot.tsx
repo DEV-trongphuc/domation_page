@@ -26,7 +26,7 @@ export const AIChatbot: React.FC = () => {
     }
   ]);
   const [inputValue, setInputValue] = useState('');
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<Record<string, string | number> | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -141,7 +141,7 @@ export const AIChatbot: React.FC = () => {
     }
   };
 
-  const generateResponse = (input: string, currentStats: any): string => {
+  const generateResponse = (input: string, currentStats: Record<string, string | number> | null): string => {
     const q = input.toLowerCase().trim();
     
     // 1. Check for statistics questions
@@ -157,11 +157,11 @@ export const AIChatbot: React.FC = () => {
 * ⚠️ **Data lỗi / Ticket**: **{ticket}** data
 
 *Hiệu số tăng trưởng hoặc chi tiết cụ thể bạn có thể xem trực tiếp ở trang chủ (Dashboard).*`)
-                         .replace('{total}', currentStats.total_today)
-                         .replace('{assigned}', currentStats.distributed_today)
-                         .replace('{dup}', currentStats.duplicates)
-                         .replace('{blacklist}', currentStats.blacklists)
-                         .replace('{ticket}', currentStats.ticket_count);
+                         .replace('{total}', String(currentStats.total_today ?? 0))
+                         .replace('{assigned}', String(currentStats.distributed_today ?? 0))
+                         .replace('{dup}', String(currentStats.duplicates ?? 0))
+                         .replace('{blacklist}', String(currentStats.blacklists ?? 0))
+                         .replace('{ticket}', String(currentStats.ticket_count ?? 0));
         } else {
           return t(`Tôi đang tải số liệu thống kê từ hệ thống. Bạn vui lòng đợi một chút hoặc thử lại nhé!`);
         }
@@ -662,7 +662,7 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
             >
               {stats ? (
                 statsConfig.map((item, idx) => {
-                  const value = stats[item.key] !== undefined ? stats[item.key] : 0;
+                  const value = stats?.[item.key] !== undefined ? stats[item.key] : 0;
                   return (
                     <div
                       key={idx}

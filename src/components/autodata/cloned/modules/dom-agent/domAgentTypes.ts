@@ -1,3 +1,5 @@
+import type { ActionProposalSpec, DynamicChartSpec } from '../../chat/actionProposalUtils';
+
 export type DomAgentTabKey = 'council_chat' | 'morning_briefing' | 'rag_studio' | 'tools_audit';
 
 export type DomToolGroupKey =
@@ -106,6 +108,8 @@ export interface DomMessageItem {
   content: string;
   tool_calls: DomToolExecutionRecord[];
   citations: DomRagCitationItem[];
+  chart_data?: DynamicChartSpec | null;
+  action_proposal?: ActionProposalSpec | null;
   latency_ms: number;
   model_used?: string | null;
   created_at?: string;
@@ -200,12 +204,12 @@ export const KNOWLEDGE_CATEGORIES: ReadonlyArray<{ value: string; label: string 
 ];
 
 export const TOOL_GROUP_OPTIONS: ReadonlyArray<{ value: 'all' | DomToolGroupKey; label: string }> = [
-  { value: 'all', label: 'Tất cả 5 Nhóm (72+ Công cụ)' },
-  { value: 'crm_autodata', label: 'Nhóm 1: CRM & Auto Data (14)' },
-  { value: 'marketing_audiences', label: 'Nhóm 2: Audiences & Marketing (16)' },
+  { value: 'all', label: 'Tất cả 5 Nhóm (80 Công cụ RBAC)' },
+  { value: 'crm_autodata', label: 'Nhóm 1: CRM & Auto Data (16)' },
+  { value: 'marketing_audiences', label: 'Nhóm 2: Audiences & Marketing (17)' },
   { value: 'org_rbac_rag', label: 'Nhóm 3: Tổ chức, RBAC & RAG (10)' },
-  { value: 'hrm_payroll', label: 'Nhóm 4: HRM, Chấm công & Lương (12)' },
-  { value: 'erp_ops_finance', label: 'Nhóm 5: Dự án, Tài chính & Kho (20)' },
+  { value: 'hrm_payroll', label: 'Nhóm 4: HRM, Chấm công & Lương A-Z (15)' },
+  { value: 'erp_ops_finance', label: 'Nhóm 5: Dự án, Phê duyệt, Tài chính & Kho (22)' },
 ];
 
 export const PERSONA_TONE_OPTIONS: ReadonlyArray<{ value: string; label: string }> = [

@@ -6,20 +6,19 @@ import {
   Download,
   Eraser,
   PenTool,
-  Save,
   Video,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CustomModal } from '../../components/ui/CustomModal';
-import { Badge, Card } from '../../components/ui/AutoDataLoadingModal';
+import { Badge } from '../../components/ui/AutoDataLoadingModal';
+import { ModalBodySkeleton } from '../../components/ui/Skeleton';
 import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import {
+  ASSET_CATEGORY_LABELS,
   CONTRACT_TYPE_LABELS,
-  EMPLOYMENT_STATUS_LABELS,
   type BookingAvailabilityRule,
   type HrContractDto,
   type HrEmployeeDto,
-  type HrmOverviewDto,
   type PublicBookingPreviewDto,
 } from './hrmTypes';
 
@@ -44,321 +43,7 @@ const LABEL_STYLE: React.CSSProperties = {
 };
 
 /* ============================================================================
- * 1. EMPLOYEE 360° PROFILE MODAL
- * ============================================================================ */
-export const EmployeeFormModal: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  editingEmployee: HrEmployeeDto | null;
-  org: HrmOverviewDto['org'] | undefined;
-  token: string | null;
-  tenantSlug: string | null;
-  onSaved: () => void;
-}> = ({ isOpen, onClose, editingEmployee, org, token, tenantSlug, onSaved }) => {
-  const [employeeCode, setEmployeeCode] = useState(editingEmployee?.employee_code || '');
-  const [fullName, setFullName] = useState(editingEmployee?.full_name || '');
-  const [workEmail, setWorkEmail] = useState(editingEmployee?.work_email || '');
-  const [phone, setPhone] = useState(editingEmployee?.phone || '');
-  const [userId, setUserId] = useState(editingEmployee?.user_id || '');
-  const [branchId, setBranchId] = useState(editingEmployee?.branch_id || '');
-  const [departmentId, setDepartmentId] = useState(editingEmployee?.department_id || '');
-  const [teamId, setTeamId] = useState(editingEmployee?.team_id || '');
-  const [positionId, setPositionId] = useState(editingEmployee?.position_id || '');
-  const [managerUserId, setManagerUserId] = useState(editingEmployee?.manager_user_id || '');
-  const [employmentStatus, setEmploymentStatus] = useState<HrEmployeeDto['employment_status']>(
-    editingEmployee?.employment_status || 'active'
-  );
-  const [joinDate, setJoinDate] = useState(
-    editingEmployee?.join_date ? String(editingEmployee.join_date).slice(0, 10) : new Date().toISOString().slice(0, 10)
-  );
-  const [baseSalary, setBaseSalary] = useState(String(editingEmployee?.base_salary_vnd ?? 15_000_000));
-  const [dependents, setDependents] = useState(String(editingEmployee?.dependents_count ?? 0));
-  const [taxCode, setTaxCode] = useState(editingEmployee?.tax_code || '');
-  const [bankName, setBankName] = useState(editingEmployee?.bank_name || '');
-  const [bankAccount, setBankAccount] = useState(editingEmployee?.bank_account_number || '');
-  const [mealAllowance, setMealAllowance] = useState(
-    String(editingEmployee?.allowances_json?.meal ?? 730_000)
-  );
-  const [saving, setSaving] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fullName.trim()) {
-      toast.error('Vui lòng nhập họ và tên nhân sự.');
-      return;
-    }
-    setSaving(true);
-    try {
-      const payload = {
-        employee_code: employeeCode.trim() || undefined,
-        full_name: fullName.trim(),
-        work_email: workEmail.trim() || null,
-        phone: phone.trim() || null,
-        user_id: userId || null,
-        branch_id: branchId || null,
-        department_id: departmentId || null,
-        team_id: teamId || null,
-        position_id: positionId || null,
-        manager_user_id: managerUserId || null,
-        employment_status: employmentStatus,
-        join_date: joinDate || null,
-        base_salary_vnd: Number(baseSalary || 0),
-        dependents_count: Number(dependents || 0),
-        tax_code: taxCode.trim() || null,
-        bank_name: bankName.trim() || null,
-        bank_account_number: bankAccount.trim() || null,
-        allowances_json: {
-          ...(editingEmployee?.allowances_json || {}),
-          meal: Number(mealAllowance || 0),
-        },
-      };
-
-      if (editingEmployee) {
-        await apiRequest(`/hrm/employees/${editingEmployee.id}`, {
-          method: 'PUT',
-          token,
-          tenantSlug,
-          body: payload,
-        });
-        toast.success('Đã cập nhật hồ sơ Nhân sự 360°!');
-      } else {
-        await apiRequest('/hrm/employees', {
-          method: 'POST',
-          token,
-          tenantSlug,
-          body: payload,
-        });
-        toast.success('Đã tạo hồ sơ nhân sự mới!');
-      }
-      onSaved();
-      onClose();
-    } catch (err) {
-      toast.error(getErrorMessage(err, 'Không thể lưu hồ sơ nhân sự.'));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <CustomModal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={editingEmployee ? `Hồ Sơ 360° • ${editingEmployee.full_name}` : 'Thêm Hồ Sơ Nhân Sự 360°'}
-      width={820}
-    >
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '0.85rem' }}>
-          <div>
-            <label style={LABEL_STYLE}>Mã nhân viên</label>
-            <input
-              type="text"
-              value={employeeCode}
-              onChange={(e) => setEmployeeCode(e.target.value)}
-              placeholder="Tự sinh nếu để trống"
-              style={INPUT_STYLE}
-            />
-          </div>
-          <div>
-            <label style={LABEL_STYLE}>Họ và tên nhân sự *</label>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Nguyễn Văn A"
-              style={INPUT_STYLE}
-            />
-          </div>
-          <div>
-            <label style={LABEL_STYLE}>Liên kết tài khoản hệ thống</label>
-            <select value={userId} onChange={(e) => setUserId(e.target.value)} style={INPUT_STYLE}>
-              <option value="">-- Không liên kết / Chọn sau --</option>
-              {(org?.users || []).map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.full_name} ({u.email})
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={LABEL_STYLE}>Email công việc</label>
-            <input type="email" value={workEmail} onChange={(e) => setWorkEmail(e.target.value)} style={INPUT_STYLE} />
-          </div>
-          <div>
-            <label style={LABEL_STYLE}>Số điện thoại</label>
-            <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} style={INPUT_STYLE} />
-          </div>
-          <div>
-            <label style={LABEL_STYLE}>Trạng thái làm việc</label>
-            <select
-              value={employmentStatus}
-              onChange={(e) => setEmploymentStatus(e.target.value as HrEmployeeDto['employment_status'])}
-              style={INPUT_STYLE}
-            >
-              {Object.entries(EMPLOYMENT_STATUS_LABELS).map(([k, lbl]) => (
-                <option key={k} value={k}>
-                  {lbl}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <Card title="Vị trí trên Sơ đồ Tổ chức" padding="0.95rem 1.15rem">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '0.85rem' }}>
-            <div>
-              <label style={LABEL_STYLE}>Chi nhánh</label>
-              <select value={branchId} onChange={(e) => setBranchId(e.target.value)} style={INPUT_STYLE}>
-                <option value="">-- Chọn chi nhánh --</option>
-                {(org?.branches || []).map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Phòng ban</label>
-              <select value={departmentId} onChange={(e) => setDepartmentId(e.target.value)} style={INPUT_STYLE}>
-                <option value="">-- Chọn phòng ban --</option>
-                {(org?.departments || []).map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Đội / Nhóm</label>
-              <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={INPUT_STYLE}>
-                <option value="">-- Chọn đội nhóm --</option>
-                {(org?.teams || []).map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Chức danh (Position)</label>
-              <select value={positionId} onChange={(e) => setPositionId(e.target.value)} style={INPUT_STYLE}>
-                <option value="">-- Chọn chức danh --</option>
-                {(org?.positions || []).map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Quản lý trực tiếp</label>
-              <select value={managerUserId} onChange={(e) => setManagerUserId(e.target.value)} style={INPUT_STYLE}>
-                <option value="">-- Chọn người quản lý --</option>
-                {(org?.users || []).map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.full_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Ngày vào làm</label>
-              <input type="date" value={joinDate} onChange={(e) => setJoinDate(e.target.value)} style={INPUT_STYLE} />
-            </div>
-          </div>
-        </Card>
-
-        <Card title="Lương cơ bản, Thuế TNCN & Tài khoản nhận lương" padding="0.95rem 1.15rem">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '0.85rem' }}>
-            <div>
-              <label style={LABEL_STYLE}>Lương cơ bản (VNĐ/tháng)</label>
-              <input
-                type="number"
-                min={0}
-                step={500000}
-                value={baseSalary}
-                onChange={(e) => setBaseSalary(e.target.value)}
-                style={INPUT_STYLE}
-              />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Phụ cấp ăn trưa (VNĐ)</label>
-              <input
-                type="number"
-                min={0}
-                step={50000}
-                value={mealAllowance}
-                onChange={(e) => setMealAllowance(e.target.value)}
-                style={INPUT_STYLE}
-              />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Số người phụ thuộc (NPT)</label>
-              <input
-                type="number"
-                min={0}
-                max={20}
-                value={dependents}
-                onChange={(e) => setDependents(e.target.value)}
-                style={INPUT_STYLE}
-              />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Mã số thuế cá nhân</label>
-              <input type="text" value={taxCode} onChange={(e) => setTaxCode(e.target.value)} style={INPUT_STYLE} />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Ngân hàng</label>
-              <input
-                type="text"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                placeholder="Vietcombank / Techcombank..."
-                style={INPUT_STYLE}
-              />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Số tài khoản</label>
-              <input
-                type="text"
-                value={bankAccount}
-                onChange={(e) => setBankAccount(e.target.value)}
-                style={INPUT_STYLE}
-              />
-            </div>
-          </div>
-        </Card>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-          <button type="button" onClick={onClose} className="btn secondary" style={{ height: 44, padding: '0 1.2rem' }}>
-            Hủy
-          </button>
-          <button
-            type="submit"
-            disabled={saving}
-            style={{
-              height: 44,
-              padding: '0 1.4rem',
-              borderRadius: 12,
-              border: 'none',
-              background: '#1E40FF',
-              color: '#FFFFFF',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              cursor: 'pointer',
-            }}
-          >
-            <Save size={15} /> {saving ? 'Đang lưu...' : 'Lưu hồ sơ nhân sự'}
-          </button>
-        </div>
-      </form>
-    </CustomModal>
-  );
-};
-
-/* ============================================================================
- * 2. DIGITAL SIGNATURE PAD MODAL (`SignaturePadModal`)
+ * 1. DIGITAL SIGNATURE PAD MODAL (`SignaturePadModal`)
  * ============================================================================ */
 export const SignaturePadModal: React.FC<{
   isOpen: boolean;
@@ -391,9 +76,8 @@ export const SignaturePadModal: React.FC<{
 
   const handleStart = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
     const pt = getCoords(e, canvas);
     drawingRef.current = true;
     ctx.strokeStyle = '#1E40FF';
@@ -407,9 +91,8 @@ export const SignaturePadModal: React.FC<{
   const handleMove = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!drawingRef.current) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
     const pt = getCoords(e, canvas);
     ctx.lineTo(pt.x, pt.y);
     ctx.stroke();
@@ -422,9 +105,8 @@ export const SignaturePadModal: React.FC<{
 
   const handleClear = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     setHasStroke(false);
   };
@@ -451,7 +133,7 @@ export const SignaturePadModal: React.FC<{
     <CustomModal isOpen={isOpen} onClose={onClose} title={`Chữ Ký Số Nội Bộ • ${targetTitle}`} width={560}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div style={{ fontSize: '0.82rem', color: '#475569' }}>
-          Dùng chuột hoặc màn hình cảm ứng ký trực tiếp vào khung bên dưới. Chữ ký được lưu chuẩn PNG dùng cho Hợp đồng & Phê duyệt nội bộ.
+          Dùng chuột hoặc màn hình cảm ứng ký trực tiếp vào khung bên dưới. Chữ ký được lưu chuẩn PNG cho Hợp đồng & Phê duyệt nội bộ.
         </div>
 
         <div
@@ -503,7 +185,7 @@ export const SignaturePadModal: React.FC<{
             <button
               type="button"
               disabled={saving}
-              onClick={handleConfirm}
+              onClick={() => void handleConfirm()}
               style={{
                 height: 44,
                 padding: '0 1.35rem',
@@ -528,7 +210,7 @@ export const SignaturePadModal: React.FC<{
 };
 
 /* ============================================================================
- * 3. LABOR CONTRACT CREATE MODAL
+ * 2. LABOR CONTRACT CREATE MODAL
  * ============================================================================ */
 export const ContractCreateModal: React.FC<{
   isOpen: boolean;
@@ -538,13 +220,15 @@ export const ContractCreateModal: React.FC<{
   tenantSlug: string | null;
   onSaved: () => void;
 }> = ({ isOpen, onClose, employees, token, tenantSlug, onSaved }) => {
-  const [employeeId, setEmployeeId] = useState(employees[0]?.id || '');
+  const [employeeId, setEmployeeId] = useState('');
   const [contractNumber, setContractNumber] = useState('');
   const [contractType, setContractType] = useState<HrContractDto['contract_type']>('fixed_term');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [endDate, setEndDate] = useState(() =>
-    new Date(Date.now() + 365 * 86400_000).toISOString().slice(0, 10)
-  );
+  const [endDate, setEndDate] = useState(() => {
+    const nextYr = new Date();
+    nextYr.setFullYear(nextYr.getFullYear() + 1);
+    return nextYr.toISOString().slice(0, 10);
+  });
   const [baseSalary, setBaseSalary] = useState('15000000');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -647,12 +331,10 @@ export const ContractCreateModal: React.FC<{
             </div>
           )}
         </div>
-
         <div>
           <label style={LABEL_STYLE}>Điều khoản / Ghi chú bổ sung</label>
           <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} style={INPUT_STYLE} />
         </div>
-
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
           <button type="button" onClick={onClose} className="btn secondary" style={{ height: 44, padding: '0 1.2rem' }}>
             Hủy
@@ -680,7 +362,7 @@ export const ContractCreateModal: React.FC<{
 };
 
 /* ============================================================================
- * 4. ASSET HANDOVER MODAL
+ * 3. ASSET HANDOVER MODAL
  * ============================================================================ */
 export const AssetHandoverModal: React.FC<{
   isOpen: boolean;
@@ -690,7 +372,7 @@ export const AssetHandoverModal: React.FC<{
   tenantSlug: string | null;
   onSaved: () => void;
 }> = ({ isOpen, onClose, employees, token, tenantSlug, onSaved }) => {
-  const [employeeId, setEmployeeId] = useState(employees[0]?.id || '');
+  const [employeeId, setEmployeeId] = useState('');
   const [assetName, setAssetName] = useState('');
   const [category, setCategory] = useState('laptop');
   const [serialNumber, setSerialNumber] = useState('');
@@ -763,21 +445,16 @@ export const AssetHandoverModal: React.FC<{
           <div>
             <label style={LABEL_STYLE}>Phân loại</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)} style={INPUT_STYLE}>
-              <option value="laptop">Laptop / Máy tính</option>
-              <option value="monitor">Màn hình / Thiết bị VP</option>
-              <option value="phone">Điện thoại / SIM</option>
-              <option value="access_card">Thẻ ra vào / Chìa khóa</option>
-              <option value="vehicle">Phương tiện</option>
+              {Object.entries(ASSET_CATEGORY_LABELS).map(([k, lbl]) => (
+                <option key={k} value={k}>
+                  {lbl}
+                </option>
+              ))}
             </select>
           </div>
           <div>
             <label style={LABEL_STYLE}>Số Serial / IMEI</label>
-            <input
-              type="text"
-              value={serialNumber}
-              onChange={(e) => setSerialNumber(e.target.value)}
-              style={INPUT_STYLE}
-            />
+            <input type="text" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} style={INPUT_STYLE} />
           </div>
           <div>
             <label style={LABEL_STYLE}>Giá trị tài sản (VNĐ)</label>
@@ -822,7 +499,7 @@ export const AssetHandoverModal: React.FC<{
 };
 
 /* ============================================================================
- * 5. SMART 1-ON-1 BOOKING LINK CREATOR & INTERACTIVE SLOT PICKER PREVIEW
+ * 4. SMART 1-ON-1 BOOKING LINK CREATOR & INTERACTIVE SLOT PICKER PREVIEW
  * ============================================================================ */
 export const BookingLinkCreateModal: React.FC<{
   isOpen: boolean;
@@ -880,7 +557,7 @@ export const BookingLinkCreateModal: React.FC<{
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} title="Tạo Trang Đặt Lịch Hẹn 1-1 Thông Minh (Calendly B2B/HR)" width={620}>
+    <CustomModal isOpen={isOpen} onClose={onClose} title="Tạo Trang Đặt Lịch Hẹn 1-1 Thông Minh" width={620}>
       <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '0.95rem' }}>
         <div>
           <label style={LABEL_STYLE}>Tiêu đề buổi hẹn 1-1 *</label>
@@ -905,12 +582,7 @@ export const BookingLinkCreateModal: React.FC<{
           </div>
           <div>
             <label style={LABEL_STYLE}>Địa điểm / Phòng họp trực tuyến</label>
-            <input
-              type="text"
-              value={locationValue}
-              onChange={(e) => setLocationValue(e.target.value)}
-              style={INPUT_STYLE}
-            />
+            <input type="text" value={locationValue} onChange={(e) => setLocationValue(e.target.value)} style={INPUT_STYLE} />
           </div>
           <div>
             <label style={LABEL_STYLE}>Thời lượng mỗi ca (phút)</label>
@@ -939,7 +611,6 @@ export const BookingLinkCreateModal: React.FC<{
             <input type="time" value={endHour} onChange={(e) => setEndHour(e.target.value)} style={INPUT_STYLE} />
           </div>
         </div>
-
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
           <button type="button" onClick={onClose} className="btn secondary" style={{ height: 44, padding: '0 1.2rem' }}>
             Hủy
@@ -966,13 +637,13 @@ export const BookingLinkCreateModal: React.FC<{
   );
 };
 
-export const PublicBookingInteractivePreviewModal: React.FC<{
-  slug: string | null;
+const PublicBookingPreviewBody: React.FC<{
+  slug: string;
   onClose: () => void;
   onBooked: () => void;
 }> = ({ slug, onClose, onBooked }) => {
   const [preview, setPreview] = useState<PublicBookingPreviewDto | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [guestName, setGuestName] = useState('');
@@ -983,10 +654,8 @@ export const PublicBookingInteractivePreviewModal: React.FC<{
   const [icsResult, setIcsResult] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!slug) return;
     let active = true;
     const loadPreview = async () => {
-      setLoading(true);
       try {
         const res = await apiRequest<PublicBookingPreviewDto>(`/hrm/public-booking/${slug}`);
         if (!active) return;
@@ -995,7 +664,7 @@ export const PublicBookingInteractivePreviewModal: React.FC<{
           setSelectedDate(res.available_days[0].date);
         }
       } catch (err) {
-        toast.error(getErrorMessage(err, 'Không thể tải khung giờ trống.'));
+        if (active) toast.error(getErrorMessage(err, 'Không thể tải khung giờ trống.'));
       } finally {
         if (active) setLoading(false);
       }
@@ -1006,9 +675,11 @@ export const PublicBookingInteractivePreviewModal: React.FC<{
     };
   }, [slug]);
 
-  if (!slug) return null;
+  if (loading || !preview) {
+    return <ModalBodySkeleton rows={4} />;
+  }
 
-  const activeDay = preview?.available_days.find((d) => d.date === selectedDate) || preview?.available_days[0];
+  const activeDay = preview.available_days.find((d) => d.date === selectedDate) || preview.available_days[0];
 
   const handleBookTest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1029,7 +700,7 @@ export const PublicBookingInteractivePreviewModal: React.FC<{
           topic: topic.trim() || undefined,
         },
       });
-      setIcsResult(res.ics_content || null);
+      setIcsResult(res.ics_content || 'BEGIN:VCALENDAR\nEND:VCALENDAR');
       toast.success('Đặt lịch hẹn 1-1 thành công!');
       onBooked();
     } catch (err) {
@@ -1050,188 +721,184 @@ export const PublicBookingInteractivePreviewModal: React.FC<{
     URL.revokeObjectURL(url);
   };
 
+  if (icsResult) {
+    return (
+      <div style={{ padding: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <CheckCircle2 size={44} color="#059669" />
+        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
+          Đã xác nhận lịch hẹn 1-1 vào {selectedTime} ngày {selectedDate}!
+        </div>
+        <button
+          type="button"
+          onClick={downloadIcs}
+          style={{
+            height: 44,
+            padding: '0 1.35rem',
+            borderRadius: 12,
+            border: 'none',
+            background: '#1E40FF',
+            color: '#FFFFFF',
+            fontWeight: 700,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            cursor: 'pointer',
+          }}
+        >
+          <Download size={15} /> Tải tệp Lịch (.ics) vào Google / Outlook Calendar
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <CustomModal
-      isOpen={Boolean(slug)}
-      onClose={() => {
-        setIcsResult(null);
-        setSelectedTime('');
-        onClose();
-      }}
-      title="Trình Chọn Khung Giờ Đặt Lịch 1-1 Trực Quan (Public Slot Picker)"
-      width={760}
-    >
-      {loading || !preview ? (
-        <div style={{ padding: '2rem', textAlign: 'center', color: '#64748B' }}>
-          Đang tải khung giờ khả dụng...
+    <form onSubmit={handleBookTest} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div
+        style={{
+          padding: '1rem',
+          borderRadius: 16,
+          background: '#F8FAFF',
+          border: '1px solid #DBEAFE',
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 10,
+        }}
+      >
+        <div>
+          <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '1rem' }}>{preview.booking_link.title}</div>
+          <div style={{ fontSize: '0.8rem', color: '#475569', marginTop: 2 }}>
+            Chuyên gia phụ trách: <strong>{preview.booking_link.host_name}</strong> • {preview.organization.name}
+          </div>
         </div>
-      ) : icsResult ? (
-        <div style={{ padding: '1.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-          <CheckCircle2 size={44} color="#059669" />
-          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
-            Đã xác nhận lịch hẹn 1-1 vào {selectedTime} ngày {selectedDate}!
-          </div>
-          <button
-            type="button"
-            onClick={downloadIcs}
-            style={{
-              height: 44,
-              padding: '0 1.35rem',
-              borderRadius: 12,
-              border: 'none',
-              background: '#1E40FF',
-              color: '#FFFFFF',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              cursor: 'pointer',
-            }}
-          >
-            <Download size={15} /> Tải tệp Lịch (.ics) vào Google / Outlook Calendar
-          </button>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <Badge tone="primary" icon={<Clock size={12} />}>
+            {preview.booking_link.duration_minutes} phút
+          </Badge>
+          <Badge tone="info" icon={<Video size={12} />}>
+            {preview.booking_link.location_value || 'Online'}
+          </Badge>
         </div>
-      ) : (
-        <form onSubmit={handleBookTest} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div
-            style={{
-              padding: '1rem',
-              borderRadius: 16,
-              background: '#F8FAFF',
-              border: '1px solid #DBEAFE',
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 10,
-            }}
-          >
-            <div>
-              <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '1rem' }}>{preview.booking_link.title}</div>
-              <div style={{ fontSize: '0.8rem', color: '#475569', marginTop: 2 }}>
-                Chuyên gia phụ trách: <strong>{preview.booking_link.host_name}</strong> • {preview.organization.name}
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-              <Badge tone="primary" icon={<Clock size={12} />}>
-                {preview.booking_link.duration_minutes} phút
-              </Badge>
-              <Badge tone="info" icon={<Video size={12} />}>
-                {preview.booking_link.location_value || 'Online'}
-              </Badge>
-            </div>
-          </div>
+      </div>
 
-          <div>
-            <label style={LABEL_STYLE}>1. Chọn ngày làm việc còn trống</label>
-            <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
-              {preview.available_days.map((d) => {
-                const active = d.date === activeDay?.date;
-                return (
-                  <button
-                    key={d.date}
-                    type="button"
-                    onClick={() => {
-                      setSelectedDate(d.date);
-                      setSelectedTime('');
-                    }}
-                    style={{
-                      padding: '0.55rem 0.95rem',
-                      borderRadius: 12,
-                      border: active ? '1.5px solid #1E40FF' : '1px solid #E2E8F0',
-                      background: active ? '#EEF2FF' : '#FFFFFF',
-                      color: active ? '#1E40FF' : '#334155',
-                      fontWeight: 700,
-                      fontSize: '0.8rem',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    <Calendar size={13} style={{ display: 'inline', marginRight: 5 }} />
-                    {d.date}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+      <div>
+        <label style={LABEL_STYLE}>1. Chọn ngày làm việc còn trống</label>
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+          {preview.available_days.map((d) => {
+            const active = d.date === activeDay?.date;
+            return (
+              <button
+                key={d.date}
+                type="button"
+                onClick={() => {
+                  setSelectedDate(d.date);
+                  setSelectedTime('');
+                }}
+                style={{
+                  padding: '0.55rem 0.95rem',
+                  borderRadius: 12,
+                  border: active ? '1.5px solid #1E40FF' : '1px solid #E2E8F0',
+                  background: active ? '#EEF2FF' : '#FFFFFF',
+                  color: active ? '#1E40FF' : '#334155',
+                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Calendar size={13} style={{ display: 'inline', marginRight: 5 }} />
+                {d.date}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-          <div>
-            <label style={LABEL_STYLE}>2. Chọn khung giờ trống (Tự động khóa ca trùng)</label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>
-              {(activeDay?.slots || []).map((slot) => {
-                const isSelected = selectedTime === slot.start_time;
-                return (
-                  <button
-                    key={slot.start_time}
-                    type="button"
-                    disabled={!slot.available}
-                    onClick={() => setSelectedTime(slot.start_time)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: isSelected ? '1.5px solid #1E40FF' : '1px solid #E2E8F0',
-                      background: !slot.available ? '#F1F5F9' : isSelected ? '#1E40FF' : '#FFFFFF',
-                      color: !slot.available ? '#94A3B8' : isSelected ? '#FFFFFF' : '#0F172A',
-                      fontWeight: 700,
-                      fontSize: '0.8rem',
-                      cursor: slot.available ? 'pointer' : 'not-allowed',
-                    }}
-                  >
-                    {slot.start_time} - {slot.end_time}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+      <div>
+        <label style={LABEL_STYLE}>2. Chọn khung giờ trống (Tự động khóa ca trùng)</label>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>
+          {(activeDay?.slots || []).map((slot) => {
+            const isSelected = selectedTime === slot.start_time;
+            return (
+              <button
+                key={slot.start_time}
+                type="button"
+                disabled={!slot.available}
+                onClick={() => setSelectedTime(slot.start_time)}
+                style={{
+                  height: 40,
+                  borderRadius: 10,
+                  border: isSelected ? '1.5px solid #1E40FF' : '1px solid #E2E8F0',
+                  background: !slot.available ? '#F1F5F9' : isSelected ? '#1E40FF' : '#FFFFFF',
+                  color: !slot.available ? '#94A3B8' : isSelected ? '#FFFFFF' : '#0F172A',
+                  fontWeight: 700,
+                  fontSize: '0.8rem',
+                  cursor: slot.available ? 'pointer' : 'not-allowed',
+                }}
+              >
+                {slot.start_time} - {slot.end_time}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem' }}>
-            <div>
-              <label style={LABEL_STYLE}>Họ tên ({preview.organization.customer_label}) *</label>
-              <input
-                type="text"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
-                placeholder="Nhập họ tên..."
-                style={INPUT_STYLE}
-              />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Số điện thoại</label>
-              <input type="text" value={guestPhone} onChange={(e) => setGuestPhone(e.target.value)} style={INPUT_STYLE} />
-            </div>
-            <div>
-              <label style={LABEL_STYLE}>Email nhận lịch (.ics)</label>
-              <input type="email" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} style={INPUT_STYLE} />
-            </div>
-          </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem' }}>
+        <div>
+          <label style={LABEL_STYLE}>Họ tên ({preview.organization.customer_label}) *</label>
+          <input type="text" value={guestName} onChange={(e) => setGuestName(e.target.value)} style={INPUT_STYLE} />
+        </div>
+        <div>
+          <label style={LABEL_STYLE}>Số điện thoại</label>
+          <input type="text" value={guestPhone} onChange={(e) => setGuestPhone(e.target.value)} style={INPUT_STYLE} />
+        </div>
+        <div>
+          <label style={LABEL_STYLE}>Email nhận lịch (.ics)</label>
+          <input type="email" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} style={INPUT_STYLE} />
+        </div>
+      </div>
 
-          <div>
-            <label style={LABEL_STYLE}>Nội dung cần trao đổi</label>
-            <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)} style={INPUT_STYLE} />
-          </div>
+      <div>
+        <label style={LABEL_STYLE}>Nội dung cần trao đổi</label>
+        <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)} style={INPUT_STYLE} />
+      </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-            <button type="button" onClick={onClose} className="btn secondary" style={{ height: 44, padding: '0 1.2rem' }}>
-              Đóng
-            </button>
-            <button
-              type="submit"
-              disabled={bookingNow}
-              style={{
-                height: 44,
-                padding: '0 1.4rem',
-                borderRadius: 12,
-                border: 'none',
-                background: '#1E40FF',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              {bookingNow ? 'Đang giữ chỗ...' : 'Xác nhận đặt lịch 1-1'}
-            </button>
-          </div>
-        </form>
-      )}
-    </CustomModal>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+        <button type="button" onClick={onClose} className="btn secondary" style={{ height: 44, padding: '0 1.2rem' }}>
+          Đóng
+        </button>
+        <button
+          type="submit"
+          disabled={bookingNow}
+          style={{
+            height: 44,
+            padding: '0 1.4rem',
+            borderRadius: 12,
+            border: 'none',
+            background: '#1E40FF',
+            color: '#FFFFFF',
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          {bookingNow ? 'Đang giữ chỗ...' : 'Xác nhận đặt lịch 1-1'}
+        </button>
+      </div>
+    </form>
   );
 };
+
+export const PublicBookingInteractivePreviewModal: React.FC<{
+  slug: string | null;
+  onClose: () => void;
+  onBooked: () => void;
+}> = ({ slug, onClose, onBooked }) => (
+  <CustomModal
+    isOpen={Boolean(slug)}
+    onClose={onClose}
+    title="Trình Chọn Khung Giờ Đặt Lịch 1-1 Trực Quan (Public Slot Picker)"
+    width={760}
+  >
+    {slug && <PublicBookingPreviewBody key={slug} slug={slug} onClose={onClose} onBooked={onBooked} />}
+  </CustomModal>
+);

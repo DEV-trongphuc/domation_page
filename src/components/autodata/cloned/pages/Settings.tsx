@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { Mail, Settings2, Save, Send, Server, Database, Activity, ChevronDown, ChevronUp, Zap, Shield, MessageCircle, RefreshCw, Settings as SettingsIcon, BarChart2, Clock, Calendar, Users, CheckCircle, Plus, Trash2, Edit2, FileSpreadsheet, Upload, Download, X, Search, UserCheck, Bell, Network, Lock, Globe, GitBranch, FileText } from 'lucide-react';
+import { Mail, Settings2, Save, Send, Server, Database, Activity, ChevronDown, ChevronUp, Zap, Shield, MessageCircle, RefreshCw, Settings as SettingsIcon, BarChart2, Clock, Calendar, Users, CheckCircle, Plus, Trash2, Edit2, FileSpreadsheet, Upload, Download, X, Search, UserCheck, Bell, Network, Lock, Globe, GitBranch } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { CustomModal } from '../components/ui/CustomModal';
@@ -27,8 +27,12 @@ import { SettingsCommunicationsSections } from '../components/settings/SettingsC
 import { SettingsReportSections, SettingsAiGlobalSection } from '../components/settings/SettingsReportSections';
 import { DEFAULT_PIPELINE_CAPI_STAGES, type TenantSettingsDto } from '../utils/pipelineConfig';
 import { useEntitlement } from '../contexts/EntitlementContext';
-import { SaasSettingsHub, type SaasEngineTabKey } from '../modules/settings-saas/SaasSettingsHub';
-import type { SettingsSubTabKey } from '../../autodataTypes';
+import { SaasSettingsHub } from '../modules/settings-saas/SaasSettingsHub';
+import {
+  SETTINGS_10_GROUPS,
+  resolveLegacyTabToGroup,
+  type SettingsGroupKey,
+} from '../modules/settings-saas/settingsGroupsMeta';
 
 const loadXlsx = async () => await import('xlsx');
 
@@ -107,37 +111,22 @@ const SettingsInner = () => {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
 
-  const { hasModule } = useEntitlement();
+  const { hasModule, can } = useEntitlement();
   const hasCrmRouting = hasModule('rounds');
 
-  // Tab State
-  const [activeTab, setActiveTab] = useState<SettingsSubTabKey>(() => {
+  // Tab State — Unified 10 Bright Royal Sapphire Settings Groups
+  const [activeTab, setActiveTab] = useState<SettingsGroupKey>(() => {
     if (typeof window !== 'undefined') {
-      const tabParam = new URLSearchParams(window.location.search).get('tab') as SettingsSubTabKey | null;
-      if (
-        tabParam &&
-        [
-          'org_structure',
-          'rbac_matrix',
-          'terminology',
-          'pipeline_rules',
-          'policy_docs',
-          'processing',
-          'communications',
-          'report',
-          'duplicate_check',
-          'ai',
-          'billing',
-        ].includes(tabParam)
-      ) {
-        return tabParam;
+      const tabParam = new URLSearchParams(window.location.search).get('tab');
+      if (tabParam) {
+        return resolveLegacyTabToGroup(tabParam);
       }
     }
-    return hasCrmRouting ? 'processing' : 'org_structure';
+    return hasCrmRouting ? 'lead_distribution' : 'org_branding';
   });
   const [guideModal, setGuideModal] = useState<'webhook' | 'email' | 'telegram' | 'zalo' | null>(null);
 
-  const handleTabChange = (tab: SettingsSubTabKey) => {
+  const handleTabChange = (tab: SettingsGroupKey) => {
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -146,23 +135,38 @@ const SettingsInner = () => {
     }
   };
 
-  const tabOptions = [
-    { value: 'org_structure', label: t('Sơ đồ Tổ chức & GPS'), icon: <Network size={16} /> },
-    { value: 'rbac_matrix', label: t('Ma trận Phân quyền (7×11)'), icon: <Lock size={16} /> },
-    { value: 'terminology', label: t('Từ điển Đa ngành'), icon: <Globe size={16} /> },
-    { value: 'pipeline_rules', label: t('Pipeline & Luật chuyển bước'), icon: <GitBranch size={16} /> },
-    { value: 'policy_docs', label: t('Nội quy & Mẫu biểu'), icon: <FileText size={16} /> },
-    ...(hasCrmRouting
-      ? [{ value: 'processing', label: t('Cấu hình Xử lý'), icon: <SettingsIcon size={16} /> }]
-      : []),
-    { value: 'communications', label: t('Cấu hình Gửi tin & Email'), icon: <Send size={16} /> },
-    { value: 'report', label: t('Báo cáo'), icon: <BarChart2 size={16} /> },
-    ...(hasCrmRouting
-      ? [{ value: 'duplicate_check', label: t('Ánh xạ dữ liệu cũ'), icon: <FileSpreadsheet size={16} /> }]
-      : []),
-    { value: 'ai', label: t('Cấu hình Trợ lý AI'), icon: <Zap size={16} /> },
-    { value: 'billing', label: t('Gói cước & Ví'), icon: <CreditCard size={16} /> }
-  ];
+  const groupIconMap: Record<SettingsGroupKey, React.ReactNode> = {
+    org_branding: <Network size={16} />,
+    rbac_screens: <Lock size={16} />,
+    terminology_tabs: <Globe size={16} />,
+    pipelines_scoring: <GitBranch size={16} />,
+    approvals_rules: <Shield size={16} />,
+    attendance_policy: <Clock size={16} />,
+    lead_distribution: <SettingsIcon size={16} />,
+    comms_notifications: <Send size={16} />,
+    ai_knowledge: <Zap size={16} />,
+    data_cron_billing: <CreditCard size={16} />,
+  };
+
+  const tabOptions = SETTINGS_10_GROUPS.filter((g) => {
+    if (g.key === 'pipelines_scoring') {
+      return hasModule('leads') || hasModule('deals') || hasModule('pipelines');
+    }
+    if (g.key === 'approvals_rules') {
+      return hasModule('erp_approvals') || hasModule('tickets_data') || can('settings', 'view');
+    }
+    if (g.requiredModule && !hasModule(g.requiredModule)) {
+      return false;
+    }
+    if (g.requiredAction) {
+      return can(g.requiredAction.module, g.requiredAction.action) || can('settings', 'view');
+    }
+    return true;
+  }).map((g) => ({
+    value: g.key,
+    label: t(g.label),
+    icon: groupIconMap[g.key],
+  }));
 
   // States for Gemini API Connection
   const [geminiApiKey, setGeminiApiKey] = useState('');
@@ -517,23 +521,8 @@ const SettingsInner = () => {
     fetchSettings();
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (
-      tabParam &&
-      [
-        'org_structure',
-        'rbac_matrix',
-        'terminology',
-        'pipeline_rules',
-        'policy_docs',
-        'processing',
-        'communications',
-        'report',
-        'duplicate_check',
-        'ai',
-        'billing',
-      ].includes(tabParam)
-    ) {
-      setActiveTab(tabParam as SettingsSubTabKey);
+    if (tabParam) {
+      setActiveTab(resolveLegacyTabToGroup(tabParam));
       if (window.location.hash === '#auto-approve') {
         setTimeout(() => {
           const el = document.getElementById('auto-approve');
@@ -544,7 +533,7 @@ const SettingsInner = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (activeTab === 'duplicate_check') {
+    if (activeTab === 'data_cron_billing') {
       fetchImportHistory(historyPage, historySearch);
     }
   }, [activeTab, historyPage, historySearch]);
@@ -1046,7 +1035,7 @@ const SettingsInner = () => {
         <CustomSelect
           options={tabOptions}
           value={activeTab}
-          onChange={(val) => handleTabChange(val as any)}
+          onChange={(val) => handleTabChange(val as SettingsGroupKey)}
           width="100%"
         />
       </div>
@@ -1058,7 +1047,7 @@ const SettingsInner = () => {
             <button
               key={opt.value}
               type="button"
-              onClick={() => handleTabChange(opt.value as SettingsSubTabKey)}
+              onClick={() => handleTabChange(opt.value as SettingsGroupKey)}
               style={{
                 padding: '0.7rem 0.95rem',
                 display: 'flex',
@@ -1083,15 +1072,46 @@ const SettingsInner = () => {
         })}
       </div>
 
-      {(['org_structure', 'rbac_matrix', 'terminology', 'pipeline_rules', 'policy_docs'] as const).includes(
-        activeTab as SaasEngineTabKey
-      ) ? (
+          {(
+            [
+              'org_branding',
+              'rbac_screens',
+              'terminology_tabs',
+              'pipelines_scoring',
+              'approvals_rules',
+              'attendance_policy',
+            ] as readonly SettingsGroupKey[]
+          ).includes(activeTab) ? (
         <div className="subtab-enter-active">
-          <SaasSettingsHub activeEngineTab={activeTab as SaasEngineTabKey} />
-        </div>
-      ) : activeTab === 'billing' ? (
-        <div data-tour="settings-bill-kpis" className="subtab-enter-active card" style={{ padding: '1.5rem' }}>
-          <BillingView token={token || ''} tenantSlug={tenantSlug} />
+          <SaasSettingsHub
+            activeEngineTab={activeTab}
+            ticketAutoApproveEnabled={ticketAutoApproveEnabled}
+            onChangeTicketAutoApproveEnabled={setTicketAutoApproveEnabled}
+            ticketAutoApproveRules={ticketAutoApproveRules}
+            onOpenTicketRuleModal={() => {
+              setEditingRule(null);
+              setRuleName('');
+              setRuleActive(true);
+              setRuleRounds(['all']);
+              setRuleSales(['all']);
+              setRuleConnections(['all']);
+              setRuleKeywords('');
+              setRuleModalOpen(true);
+            }}
+            onEditTicketRule={(rule) => {
+              setEditingRule(rule);
+              setRuleName(rule.name || rule.label || '');
+              setRuleActive(rule.active !== false);
+              setRuleRounds((rule as Record<string, unknown>).rounds as string[] || ['all']);
+              setRuleSales((rule as Record<string, unknown>).sales as string[] || ['all']);
+              setRuleConnections((rule as Record<string, unknown>).connections as string[] || ['all']);
+              setRuleKeywords(Array.isArray(rule.keywords) ? rule.keywords.join(', ') : '');
+              setRuleModalOpen(true);
+            }}
+            onDeleteTicketRule={(idx) => {
+              setTicketAutoApproveRules((prev) => prev.filter((_, i) => i !== idx));
+            }}
+          />
         </div>
       ) : loading ? (
         <div className="responsive-flex-row" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
@@ -1101,10 +1121,23 @@ const SettingsInner = () => {
           <div style={{ flex: 1, minWidth: 0 }}><CardSkeleton height={200} /></div>
         </div>
       ) : (
-        <div className="responsive-flex-row" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-          <div style={{ flex: (activeTab === 'duplicate_check' || activeTab === 'ai') ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1.5rem', minWidth: 0, width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {(activeTab === 'comms_notifications' ||
+            activeTab === 'ai_knowledge' ||
+            activeTab === 'data_cron_billing') && (
+            <div className="subtab-enter-active" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <SaasSettingsHub activeEngineTab={activeTab} />
+              {activeTab === 'data_cron_billing' && (
+                <div data-tour="settings-bill-kpis" className="card" style={{ padding: '1.5rem' }}>
+                  <BillingView token={token || ''} tenantSlug={tenantSlug} />
+                </div>
+              )}
+            </div>
+          )}
+          <div className="responsive-flex-row" style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+          <div style={{ flex: (activeTab === 'data_cron_billing' || activeTab === 'ai_knowledge') ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1.5rem', minWidth: 0, width: '100%' }}>
             {/* AI Assistant Tab Content */}
-            <div style={{ display: activeTab === 'ai' ? 'block' : 'none' }} className="subtab-enter-active">
+            <div style={{ display: activeTab === 'ai_knowledge' ? 'block' : 'none' }} className="subtab-enter-active">
               <div data-tour="settings-ai-key" className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ display: 'inline-flex', background: 'var(--color-primary)', color: 'white', padding: 6, borderRadius: 6 }}>
@@ -1192,7 +1225,7 @@ const SettingsInner = () => {
               />
             </div>
 
-            <div style={{ display: activeTab === 'duplicate_check' ? 'block' : 'none' }} className="subtab-enter-active">
+            <div style={{ display: activeTab === 'data_cron_billing' ? 'block' : 'none' }} className="subtab-enter-active">
               <div data-tour="settings-dup-upload settings-import" className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {checkedResults.length > 0 ? (
                   // Screen 1: Checked Results Table
@@ -1964,7 +1997,7 @@ const SettingsInner = () => {
             </div>
 
             {/* Cấu hình Gửi tin & Email */}
-            <div style={{ display: activeTab === 'communications' ? 'block' : 'none' }} className="subtab-enter-active">
+            <div style={{ display: activeTab === 'comms_notifications' ? 'block' : 'none' }} className="subtab-enter-active">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {/* Visual Bot & Integration Guides Toolbar */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -2256,7 +2289,7 @@ const SettingsInner = () => {
             </div>
 
             {/* ===== TAB: BÁO CÁO NGÀY ===== */}
-            <div style={{ display: activeTab === 'report' ? 'block' : 'none' }} className="subtab-enter-active">
+            <div style={{ display: activeTab === 'comms_notifications' ? 'block' : 'none' }} className="subtab-enter-active">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
                 {/* Giờ gửi */}
@@ -2537,10 +2570,10 @@ const SettingsInner = () => {
             </div>
 
             {/* Fallback & Blacklist Configs (Processing Tab) */}
-            <div style={{ display: activeTab === 'processing' ? 'block' : 'none' }} className="subtab-enter-active">
+            <div style={{ display: activeTab === 'lead_distribution' ? 'block' : 'none' }} className="subtab-enter-active">
               <div data-tour="settings-proc-mode" className="card" style={{ padding: '1.5rem', marginTop: 0 }}>
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ display: 'inline-flex', background: '#ef4444', color: 'white', padding: 4, borderRadius: 6 }}>
+                  <span style={{ display: 'inline-flex', background: '#1E40FF', color: 'white', padding: 4, borderRadius: 6 }}>
                     <Zap size={16} />
                   </span>
                   {t('Cấu hình Xử lý Fallback (Khi không khớp luật)')}
@@ -3700,7 +3733,7 @@ const SettingsInner = () => {
           </div>
 
           {/* Right Column: Testing */}
-          {activeTab !== 'duplicate_check' && activeTab !== 'ai' && (
+          {activeTab !== 'data_cron_billing' && activeTab !== 'ai_knowledge' && (
             <div style={{
               flex: 1,
               display: 'flex',
@@ -3758,6 +3791,7 @@ const SettingsInner = () => {
               </div>
             </div>
           )}
+          </div>
         </div>
       )}
       {/* Custom Modal for Auto-Approve Rule */}
@@ -3787,7 +3821,7 @@ const SettingsInner = () => {
               label={t("Áp dụng cho Vòng phân bổ")}
               options={roundOptions}
               value={ruleRounds}
-              onChange={setRuleRounds}
+              onChange={(v) => setRuleRounds(Array.isArray(v) ? v : [])}
               multiple={true}
               searchable={true}
               placeholder={t("Chọn vòng phân bổ...")}
@@ -3800,7 +3834,7 @@ const SettingsInner = () => {
               label={t("Áp dụng cho Đại lý")}
               options={saleOptions}
               value={ruleSales}
-              onChange={setRuleSales}
+              onChange={(v) => setRuleSales(Array.isArray(v) ? v : [])}
               multiple={true}
               searchable={true}
               placeholder={t("Chọn Đại lý...")}
@@ -3813,7 +3847,7 @@ const SettingsInner = () => {
               label={t("Áp dụng cho Nguồn dữ liệu (Sources)")}
               options={connectionOptions}
               value={ruleConnections}
-              onChange={setRuleConnections}
+              onChange={(v) => setRuleConnections(Array.isArray(v) ? v : [])}
               multiple={true}
               searchable={true}
               placeholder={t("Chọn nguồn dữ liệu...")}
@@ -4023,7 +4057,7 @@ const SettingsInner = () => {
       </ConfirmModal>
 
       {/* Floating Save Button on Mobile */}
-      {!loading && activeTab !== 'duplicate_check' && (
+      {!loading && activeTab !== 'data_cron_billing' && (
         <div className="mobile-only" style={{
           position: 'fixed',
           bottom: '2rem',

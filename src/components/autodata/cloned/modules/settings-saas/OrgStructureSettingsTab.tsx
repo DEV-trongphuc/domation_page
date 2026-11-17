@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Badge, Card, EmptyState, PillTabs } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest } from '../../../autodataApi';
+import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import type {
   OrgBranch,
@@ -59,6 +59,7 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
   const [bLat, setBLat] = useState('');
   const [bLng, setBLng] = useState('');
   const [bRadius, setBRadius] = useState('150');
+  const [bIpWhitelist, setBIpWhitelist] = useState('');
   const [bHq, setBHq] = useState(true);
 
   // Department Form
@@ -107,6 +108,10 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
       gps_lat: bLat ? Number(bLat) : null,
       gps_lng: bLng ? Number(bLng) : null,
       gps_radius_meters: Number(bRadius || 150),
+      branch_ip_whitelist: bIpWhitelist
+        .split(/[\n,;]+/)
+        .map((ip) => ip.trim())
+        .filter(Boolean),
       is_headquarters: bHq,
     };
 
@@ -118,24 +123,29 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
         body: payload,
       });
       setBranches((prev) => [...prev, created]);
+      setBName('');
+      setBAddress('');
+      setBIpWhitelist('');
       toast.success('Đã tạo Chi nhánh / Pháp nhân & lưu tọa độ GPS!');
-    } catch {
-      setBranches((prev) => [...prev, { id: `br_${Date.now()}`, ...payload }]);
-      toast.success('Đã lưu Chi nhánh / Pháp nhân!');
+      setBName('');
+      setBLegal('');
+      setBTax('');
+      setBRepName('');
+      setBAddress('');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tạo Chi nhánh / Pháp nhân.'));
     }
-    setBName('');
-    setBLegal('');
-    setBTax('');
-    setBRepName('');
-    setBAddress('');
   };
 
   const handleDeleteBranch = async (id: string) => {
+    const prevBranches = branches;
     setBranches((prev) => prev.filter((b) => b.id !== id));
     try {
       await apiRequest(`/org-rbac/branches/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // optimistic delete preserved
+      toast.success('Đã xóa Chi nhánh.');
+    } catch (err) {
+      setBranches(prevBranches);
+      toast.error(getErrorMessage(err, 'Không thể xóa Chi nhánh.'));
     }
   };
 
@@ -158,20 +168,22 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
       });
       setDepartments((prev) => [...prev, created]);
       toast.success('Đã thêm Phòng ban vào sơ đồ tổ chức!');
-    } catch {
-      setDepartments((prev) => [...prev, { id: `dept_${Date.now()}`, ...payload }]);
-      toast.success('Đã thêm Phòng ban!');
+      setDName('');
+      setDCode('');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể thêm Phòng ban.'));
     }
-    setDName('');
-    setDCode('');
   };
 
   const handleDeleteDepartment = async (id: string) => {
+    const prevDepts = departments;
     setDepartments((prev) => prev.filter((d) => d.id !== id));
     try {
       await apiRequest(`/org-rbac/departments/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã xóa Phòng ban.');
+    } catch (err) {
+      setDepartments(prevDepts);
+      toast.error(getErrorMessage(err, 'Không thể xóa Phòng ban.'));
     }
   };
 
@@ -191,19 +203,21 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
       });
       setTeams((prev) => [...prev, created]);
       toast.success('Đã tạo Đội nhóm chuyên môn!');
-    } catch {
-      setTeams((prev) => [...prev, { id: `team_${Date.now()}`, ...payload }]);
-      toast.success('Đã tạo Đội nhóm!');
+      setTName('');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tạo Đội nhóm.'));
     }
-    setTName('');
   };
 
   const handleDeleteTeam = async (id: string) => {
+    const prevTeams = teams;
     setTeams((prev) => prev.filter((t) => t.id !== id));
     try {
       await apiRequest(`/org-rbac/teams/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã xóa Đội nhóm.');
+    } catch (err) {
+      setTeams(prevTeams);
+      toast.error(getErrorMessage(err, 'Không thể xóa Đội nhóm.'));
     }
   };
 
@@ -224,19 +238,21 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
       });
       setPositions((prev) => [...prev, created]);
       toast.success('Đã thêm Chức danh & Cấp bậc phê duyệt!');
-    } catch {
-      setPositions((prev) => [...prev, { id: `pos_${Date.now()}`, ...payload }]);
-      toast.success('Đã thêm Chức danh!');
+      setPName('');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể thêm Chức danh.'));
     }
-    setPName('');
   };
 
   const handleDeletePosition = async (id: string) => {
+    const prevPos = positions;
     setPositions((prev) => prev.filter((p) => p.id !== id));
     try {
       await apiRequest(`/org-rbac/positions/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã xóa Chức danh.');
+    } catch (err) {
+      setPositions(prevPos);
+      toast.error(getErrorMessage(err, 'Không thể xóa Chức danh.'));
     }
   };
 
@@ -363,6 +379,16 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
                     onChange={(e) => setBRadius(e.target.value)}
                   />
                 </div>
+                <div className="form-group" style={{ minWidth: 220 }}>
+                  <label className="form-label">IP Whitelist Văn phòng (phân cách bằng dấu phẩy)</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="VD: 113.161.1.10, 10.10.0.0/24"
+                    value={bIpWhitelist}
+                    onChange={(e) => setBIpWhitelist(e.target.value)}
+                  />
+                </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button
                     type="button"
@@ -437,6 +463,11 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
                       <MapPin size={13} />
                       GPS: {br.gps_lat && br.gps_lng ? `${br.gps_lat}, ${br.gps_lng} (R=${br.gps_radius_meters || 150}m)` : 'Chưa gắn tọa độ'}
                     </div>
+                    {Array.isArray(br.branch_ip_whitelist) && br.branch_ip_whitelist.length > 0 && (
+                      <div style={{ fontSize: '0.74rem', color: '#059669', fontFamily: 'monospace' }}>
+                        IP Wi-Fi Whitelist: {br.branch_ip_whitelist.join(', ')}
+                      </div>
+                    )}
                   </div>
                 </Card>
               ))}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Inbox } from 'lucide-react';
 import { useOptionalAuth } from '../../contexts/AuthContext';
+import { TableSkeleton } from './Skeleton';
 
 export interface AutoDataLoadingModalProps {
   isOpen?: boolean;
@@ -743,7 +744,7 @@ export function Table<T>({
   dataTour,
 }: TableProps<T>) {
   if (loading) {
-    return <AutoDataLoadingModal inline isOpen message="Đang tải danh sách dữ liệu..." subMessage="" />;
+    return <TableSkeleton rows={5} cols={Math.max(3, Math.min(columns.length || 4, 6))} />;
   }
 
   if (rows.length === 0) {

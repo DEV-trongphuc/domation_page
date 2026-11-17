@@ -11,7 +11,7 @@ import {
 import toast from 'react-hot-toast';
 import { Badge, Card, EmptyState, PillTabs } from '../../components/ui/AutoDataLoadingModal';
 import { ToggleSwitch } from '../../components/ui/ToggleSwitch';
-import { apiRequest } from '../../../autodataApi';
+import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { DEFAULT_PIPELINE_CAPI_STAGES } from '../../utils/pipelineConfig';
 import {
@@ -119,8 +119,8 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
         },
       });
       toast.success(`Đã lưu nhóm phễu & điểm cộng (${st.score_delta >= 0 ? `+${st.score_delta}` : st.score_delta}) cho "${st.name}"!`);
-    } catch {
-      toast.success(`Đã cập nhật cấu hình bước "${st.name}"!`);
+    } catch (err) {
+      toast.error(getErrorMessage(err, `Không thể lưu cấu hình bước "${st.name}".`));
     }
   };
 
@@ -157,24 +157,27 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
       });
       setStageRules((prev) => [created, ...prev]);
       toast.success('Đã tạo Luật chuyển bước Pipeline động!');
-    } catch {
-      setStageRules((prev) => [{ id: `srule_${Date.now()}`, ...payload }, ...prev]);
-      toast.success('Đã lưu Luật chuyển bước Pipeline!');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tạo Luật chuyển bước Pipeline.'));
     }
   };
 
   const handleDeleteRule = async (id: string) => {
+    const prevRules = stageRules;
     setStageRules((prev) => prev.filter((r) => r.id !== id));
     try {
       await apiRequest(`/org-rbac/stage-rules/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã xóa Luật chuyển bước.');
+    } catch (err) {
+      setStageRules(prevRules);
+      toast.error(getErrorMessage(err, 'Không thể xóa Luật chuyển bước.'));
     }
   };
 
   const handleAddQuickTab = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTabLabel.trim()) return;
+    const prevTabs = pipelineTabs;
     const nextTab: PipelineQuickTab = {
       id: `ptab_${Date.now()}`,
       key: newTabLabel.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_'),
@@ -184,7 +187,6 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
     };
     const updated = [...pipelineTabs, nextTab];
     setPipelineTabs(updated);
-    setNewTabLabel('');
     try {
       await apiRequest('/org-rbac/terminology', {
         method: 'PUT',
@@ -192,13 +194,16 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
         tenantSlug,
         body: { pipeline_tabs: updated },
       });
+      setNewTabLabel('');
       toast.success('Đã thêm Tab lọc nhanh tùy biến!');
-    } catch {
-      toast.success('Đã thêm Tab lọc nhanh!');
+    } catch (err) {
+      setPipelineTabs(prevTabs);
+      toast.error(getErrorMessage(err, 'Không thể lưu Tab lọc nhanh mới.'));
     }
   };
 
   const handleToggleQuickTab = async (id: string, enabled: boolean) => {
+    const prevTabs = pipelineTabs;
     const updated = pipelineTabs.map((t) => (t.id === id ? { ...t, enabled } : t));
     setPipelineTabs(updated);
     try {
@@ -208,8 +213,9 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
         tenantSlug,
         body: { pipeline_tabs: updated },
       });
-    } catch {
-      // ignore
+    } catch (err) {
+      setPipelineTabs(prevTabs);
+      toast.error(getErrorMessage(err, 'Không thể cập nhật trạng thái Tab lọc nhanh.'));
     }
   };
 

@@ -11,12 +11,12 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
-  AutoDataLoadingModal,
   Badge,
   Card,
   PillTabs,
   type PillTabItem,
 } from '../../components/ui/AutoDataLoadingModal';
+import { SplitChatPanelSkeleton } from '../../components/ui/Skeleton';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
 import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
@@ -156,15 +156,7 @@ const Wave2Entry: React.FC = () => {
   }, []);
 
   if (loading) {
-    return (
-      <AutoDataLoadingModal
-        inline
-        isOpen
-        brandLogoUrl={config.avatar_url}
-        message={`Đang khởi tạo Hội đồng Trợ lý ${config.agent_name}...`}
-        subMessage="Đồng bộ 72 Công cụ RBAC • Kho Tri thức RAG Cô lập Doanh nghiệp"
-      />
-    );
+    return <SplitChatPanelSkeleton />;
   }
 
   const resolvedAvatar =
@@ -191,9 +183,9 @@ const Wave2Entry: React.FC = () => {
     },
     {
       key: 'tools_audit',
-      label: '72 Công Cụ & Nhật Ký RBAC',
+      label: '80 Công Cụ & Nhật Ký RBAC',
       icon: <Wrench size={15} />,
-      count: tools.length || 72,
+      count: tools.length || 80,
     },
   ];
 
@@ -262,7 +254,7 @@ const Wave2Entry: React.FC = () => {
                 </Badge>
               </div>
               <p style={{ fontSize: '0.82rem', color: '#64748B', marginTop: 4, marginBottom: 0 }}>
-                {tools.length || 72} công cụ tự hành kiểm soát nghiêm ngặt theo Gói cước + Quyền RBAC cá nhân • Kho tri thức RAG cô lập tuyệt đối theo doanh nghiệp & phòng ban
+                {tools.length || 80} công cụ tự hành kiểm soát nghiêm ngặt theo Gói cước + Quyền RBAC cá nhân • Streaming thời gian thực • Kho tri thức RAG cô lập tuyệt đối theo doanh nghiệp & phòng ban
               </p>
             </div>
           </div>

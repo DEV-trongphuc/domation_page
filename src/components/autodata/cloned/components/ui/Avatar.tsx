@@ -42,7 +42,7 @@ const getColorFromName = (name: string) => {
 };
 
 export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 'md', className = '', style, title, color, aiScreened }) => {
-  const [hasError, setHasError] = React.useState(false);
+  const [failedSrc, setFailedSrc] = React.useState<string | null>(null);
   const sizeMap = {
     sm: 24,
     md: 32,
@@ -65,10 +65,7 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 'md', classNam
     }
   }
 
-  // Reset error state if resolvedSrc changes
-  React.useEffect(() => {
-    setHasError(false);
-  }, [resolvedSrc]);
+  const hasError = Boolean(resolvedSrc && failedSrc === resolvedSrc);
 
   const avatarEl = (
     <div 
@@ -87,7 +84,7 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 'md', classNam
           src={resolvedSrc} 
           alt={name} 
           className={styles.image} 
-          onError={() => setHasError(true)} 
+          onError={() => setFailedSrc(resolvedSrc || null)} 
         />
       ) : (
         <span className={styles.initials}>{initials}</span>

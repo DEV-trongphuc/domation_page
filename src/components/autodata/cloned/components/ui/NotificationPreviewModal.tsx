@@ -27,6 +27,24 @@ interface NotificationPreviewModalProps {
   aiStatus?: string;
 }
 
+import type { TenantSettingsDto } from '../../utils/pipelineConfig';
+
+interface NotificationPreviewSettingsDto extends Partial<TenantSettingsDto> {
+  tenant_settings?: Partial<TenantSettingsDto>;
+}
+
+interface NotificationPreviewConsultantDto {
+  id?: number | string;
+  name?: string;
+  email?: string;
+}
+
+interface NotificationPreviewRoundDto {
+  id?: number | string;
+  round_name?: string;
+  cc_emails?: string;
+}
+
 export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> = ({
   isOpen,
   onClose,
@@ -55,50 +73,59 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
     : "Xem chi tiết Mẫu Zalo đã gửi cho Đại lý";
 
   // State for dynamic settings, consultant, and round
-  const [settings, setSettings] = useState<any>(null);
-  const [consultant, setConsultant] = useState<any>(null);
-  const [round, setRound] = useState<any>(null);
+  const [settings, setSettings] = useState<NotificationPreviewSettingsDto | null>(null);
+  const [consultant, setConsultant] = useState<NotificationPreviewConsultantDto | null>(null);
+  const [round, setRound] = useState<NotificationPreviewRoundDto | null>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      // 1. Fetch system settings
-      fetchAPI('get_settings')
-        .then(res => {
-          if (res && res.success && res.data) {
-            setSettings(res.data);
-          }
-        })
-        .catch(err => console.error("Error fetching settings:", err));
+    if (!isOpen) return undefined;
+    let cancelled = false;
 
-      // 2. Fetch consultants to find the email of the assigned sale
-      fetchAPI('get_consultants')
-        .then(res => {
-          if (res && res.success && Array.isArray(res.data)) {
-            const found = res.data.find((c: any) => c?.name === assignedToName);
-            if (found) {
-              setConsultant(found);
-            }
-          }
-        })
-        .catch(err => console.error("Error fetching consultants:", err));
+    // 1. Fetch system settings
+    fetchAPI('get_settings')
+      .then(res => {
+        if (!cancelled && res && res.success && res.data) {
+          setSettings(res.data as NotificationPreviewSettingsDto);
+        }
+      })
+      .catch(err => console.error("Error fetching settings:", err));
 
-      // 3. Fetch rounds to get cc_emails
-      fetchAPI('get_rounds')
-        .then(res => {
-          if (res && res.success && Array.isArray(res.data)) {
-            const found = res.data.find((r: any) => r?.round_name === roundName || r?.id === roundId);
-            if (found) {
-              setRound(found);
-            }
+    // 2. Fetch consultants to find the email of the assigned sale
+    fetchAPI('get_consultants')
+      .then(res => {
+        if (!cancelled && res && res.success && Array.isArray(res.data)) {
+          const found = (res.data as NotificationPreviewConsultantDto[]).find(
+            (c) => c?.name === assignedToName
+          );
+          if (found) {
+            setConsultant(found);
           }
-        })
-        .catch(err => console.error("Error fetching rounds:", err));
-    } else {
-      setSettings(null);
-      setConsultant(null);
-      setRound(null);
-    }
+        }
+      })
+      .catch(err => console.error("Error fetching consultants:", err));
+
+    // 3. Fetch rounds to get cc_emails
+    fetchAPI('get_rounds')
+      .then(res => {
+        if (!cancelled && res && res.success && Array.isArray(res.data)) {
+          const found = (res.data as NotificationPreviewRoundDto[]).find(
+            (r) => r?.round_name === roundName || r?.id === roundId
+          );
+          if (found) {
+            setRound(found);
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching rounds:", err));
+
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen, assignedToName, roundName, roundId]);
+
+  const activeSettings = isOpen ? settings : null;
+  const activeConsultant = isOpen ? consultant : null;
+  const activeRound = isOpen ? round : null;
 
   // Dynamic values
   const displayRound = roundName || leadType || 'Form';
@@ -110,7 +137,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
   // App base URL construct
   const appBaseUrl = typeof window !== 'undefined' ? `${window.location.origin}/data` : 'https://domation.net/data';
   const portalUrl = `${appBaseUrl}/sale-portal`;
-  const reportUrl = `${appBaseUrl}/report-data?lead_id=${leadId}&sale_id=${assignedToId || consultant?.id || 0}&round_id=${roundId || round?.id || 0}`;
+  const reportUrl = `${appBaseUrl}/report-data?lead_id=${leadId}&sale_id=${assignedToId || activeConsultant?.id || 0}&round_id=${roundId || activeRound?.id || 0}`;
 
   // Helper to parse leadNote for custom key-value pairs (like mailer.php)
   const parseLeadNoteToRows = (noteText: string) => {
@@ -208,7 +235,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
   };
 
   // 2. EMAIL SUBJECT (Dynamic Tenant Template / Fallback)
-  const effectiveSettings = { ...(tenantSettings || {}), ...(settings?.tenant_settings || {}), ...(settings || {}) };
+  const effectiveSettings = { ...(tenantSettings || {}), ...(activeSettings?.tenant_settings || {}), ...(activeSettings || {}) };
   const brandDisplayName = resolveTenantBrandName(effectiveSettings, companyName);
   const brandAccentColor = effectiveSettings?.brand_email_accent_color || effectiveSettings?.brand_primary_color || '#1E40FF';
   const brandLogoUrl = effectiveSettings?.brand_logo_url || '/imgs/autodata/domation_ai_icon.svg';
@@ -513,13 +540,13 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#64748b', width: '70px', fontWeight: 600 }}>{t("Tới:")}</span>
                   <span style={{ color: '#0f172a', fontWeight: 500 }}>
-                    {assignedToName} &lt;{consultant?.email || 'sale@domation.net'}&gt;
+                    {assignedToName} &lt;{activeConsultant?.email || 'sale@domation.net'}&gt;
                   </span>
                 </div>
-                {round?.cc_emails && (
+                {activeRound?.cc_emails && (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <span style={{ color: '#64748b', width: '70px', fontWeight: 600 }}>Cc:</span>
-                    <span style={{ color: '#0f172a' }}>{round.cc_emails}</span>
+                    <span style={{ color: '#0f172a' }}>{activeRound.cc_emails}</span>
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center' }}>

@@ -24,6 +24,7 @@ import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
 import { LeadQualityBadge } from '../components/LeadQualityBadge';
 import { AdPreviewModal } from '../components/AdPreviewModal';
+import { apiRequest, getErrorMessage } from '../../autodataApi';
 import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 
@@ -62,6 +63,31 @@ type Lead = {
   ad_creative_title?: string | null;
   ad_creative_body?: string | null;
   ad_story_id?: string | null;
+  custom_fields?: Record<string, unknown> | null;
+};
+
+type CustomFieldColumn = {
+  id: string;
+  field_key: string;
+  field_label: string;
+  show_in_table?: boolean;
+};
+
+type DatabankPoolItem = {
+  id: string;
+  lead_id: string | number;
+  name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  source?: string | null;
+  campaign?: string | null;
+  product_interest?: string | null;
+  lead_score?: number | null;
+  status: 'available' | 'claimed' | 'blocked' | 'restored' | string;
+  reason?: string | null;
+  released_by_name?: string | null;
+  claimed_by_name?: string | null;
+  released_at?: string | null;
 };
 
 import {
@@ -315,8 +341,8 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
 };
 
 const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
-  const { user, tenantSettings } = useAuth();
-  const { hasModule } = useEntitlement();
+  const { user, tenantSettings, token, tenantSlug } = useAuth();
+  const { hasModule, can } = useEntitlement();
   const { language, t } = useLanguage();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -519,7 +545,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           ad_image_url: item.ad_image_url || null,
           ad_creative_title: item.ad_creative_title || null,
           ad_creative_body: item.ad_creative_body || null,
-          ad_story_id: item.ad_story_id || null
+          ad_story_id: item.ad_story_id || null,
+          custom_fields: item.custom_fields || null
         }));
         setLeads(mappedLeads);
         setTotalCount(json.total_count ?? mappedLeads.length);
@@ -782,8 +809,139 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const [isBlocking, setIsBlocking] = useState<boolean>(false);
   const isTicketLead = selectedLead?.status === 'error' || selectedLead?.report_status === 'approved' || selectedLead?.report_status === 'pending';
 
-  // Calendar View Mode States
-  const viewMode = location.pathname === '/calendar' ? 'calendar' : 'list';
+  // Calendar & Public Databank View Mode States
+  const viewParam = searchParams.get('view');
+  const viewMode: 'list' | 'calendar' | 'databank' =
+    location.pathname === '/calendar'
+      ? 'calendar'
+      : viewParam === 'databank'
+        ? 'databank'
+        : 'list';
+  const [customFieldCols, setCustomFieldCols] = useState<CustomFieldColumn[]>([]);
+  const [databankItems, setDatabankItems] = useState<DatabankPoolItem[]>([]);
+  const [databankStats, setDatabankStats] = useState({ available: 0, claimed: 0, blocked: 0, restored: 0, total: 0 });
+  const [databankLoading, setDatabankLoading] = useState(false);
+  const [databankStatusFilter, setDatabankStatusFilter] = useState<'available' | 'claimed' | 'blocked' | 'all'>('available');
+  const [databankPage, setDatabankPage] = useState(1);
+  const [databankTotalPages, setDatabankTotalPages] = useState(1);
+  const [databankTotalCount, setDatabankTotalCount] = useState(0);
+  const [actingDatabankId, setActingDatabankId] = useState<string | null>(null);
+  const [releasingLeadId, setReleasingLeadId] = useState<number | string | null>(null);
+  const [confirmReleaseOpen, setConfirmReleaseOpen] = useState(false);
+
+  const fetchCustomFieldColumns = async () => {
+    try {
+      const cols = await apiRequest<CustomFieldColumn[]>('/org-rbac/custom-fields?entity_type=lead', {
+        token,
+        tenantSlug,
+      });
+      if (Array.isArray(cols)) {
+        setCustomFieldCols(cols.filter((c) => c.show_in_table !== false));
+      }
+    } catch {
+      // Optional enrichment column fetch
+    }
+  };
+
+  const fetchDatabankLeads = async (targetPage = databankPage, targetStatus = databankStatusFilter) => {
+    setDatabankLoading(true);
+    try {
+      const qs = new URLSearchParams({
+        status: targetStatus,
+        page: String(targetPage),
+        limit: '50',
+      });
+      if (searchTerm.trim()) qs.set('search', searchTerm.trim());
+      const res = await apiRequest<{
+        items?: DatabankPoolItem[];
+        stats?: { available: number; claimed: number; blocked: number; restored: number; total: number };
+        pagination?: { total: number; page: number; total_pages: number };
+      }>(`/leads/databank?${qs.toString()}`, { token, tenantSlug });
+      setDatabankItems(Array.isArray(res?.items) ? res.items : []);
+      if (res?.stats) setDatabankStats(res.stats);
+      setDatabankTotalCount(Number(res?.pagination?.total ?? (res?.items?.length || 0)));
+      setDatabankTotalPages(Math.max(1, Number(res?.pagination?.total_pages || 1)));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể tải Kho dữ liệu chung (Databank)')));
+    } finally {
+      setDatabankLoading(false);
+    }
+  };
+
+  const handleReleaseToDatabank = async (leadId: number | string) => {
+    setReleasingLeadId(leadId);
+    try {
+      await apiRequest('/leads/databank/release', {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: { lead_id: String(leadId) },
+      });
+      toast.success(t('Đã nhả khách hàng về Kho dữ liệu chung (Databank)'));
+      setConfirmReleaseOpen(false);
+      setSelectedLead(null);
+      fetchLeads();
+      if (viewMode === 'databank') {
+        void fetchDatabankLeads();
+      }
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể nhả khách hàng về Kho chung')));
+    } finally {
+      setReleasingLeadId(null);
+    }
+  };
+
+  const handleClaimDatabankLead = async (item: DatabankPoolItem) => {
+    setActingDatabankId(item.id);
+    try {
+      await apiRequest(`/leads/databank/${item.id}/claim`, {
+        method: 'POST',
+        token,
+        tenantSlug,
+      });
+      toast.success(t(`Đã nhận "${item.name || 'Khách hàng'}" từ Kho chung về danh sách của bạn!`));
+      await fetchDatabankLeads();
+      fetchLeads();
+      window.dispatchEvent(new CustomEvent('lead-claimed'));
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể nhận khách hàng từ Kho chung')));
+    } finally {
+      setActingDatabankId(null);
+    }
+  };
+
+  const handleDatabankModeration = async (poolId: string, action: 'block' | 'unblock' | 'restore') => {
+    setActingDatabankId(poolId);
+    try {
+      await apiRequest(`/leads/databank/${poolId}/${action}`, {
+        method: 'POST',
+        token,
+        tenantSlug,
+      });
+      toast.success(
+        action === 'block'
+          ? t('Đã khóa số khỏi Kho chung')
+          : action === 'unblock'
+            ? t('Đã mở khóa số trong Kho chung')
+            : t('Đã khôi phục số về trạng thái sẵn sàng')
+      );
+      await fetchDatabankLeads();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Thao tác Kho chung thất bại')));
+    } finally {
+      setActingDatabankId(null);
+    }
+  };
+
+  useEffect(() => {
+    void fetchCustomFieldColumns();
+  }, []);
+
+  useEffect(() => {
+    if (isActive && viewMode === 'databank') {
+      void fetchDatabankLeads(databankPage, databankStatusFilter);
+    }
+  }, [isActive, viewMode, databankPage, databankStatusFilter, searchTerm]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarData, setCalendarData] = useState<any>({});
   const [calendarLoading, setCalendarLoading] = useState(false);
@@ -1298,6 +1456,28 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               >
                 <Calendar size={13} /> <span className="hide-on-mobile">{t('Lịch biểu')}</span>
               </button>
+              <button
+                type="button"
+                className={`btn-toggle-view ${viewMode === 'databank' ? 'active' : ''}`}
+                onClick={() => navigate('/data?view=databank')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '4px 10px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewMode === 'databank' ? 'var(--color-primary)' : 'transparent',
+                  color: viewMode === 'databank' ? 'white' : 'var(--color-text-muted)',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  height: '28px'
+                }}
+              >
+                <Database size={13} /> <span className="hide-on-mobile">{t('Kho chung')}</span>
+              </button>
             </div>
 
             {/* Separator line */}
@@ -1552,7 +1732,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         </div>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-          {t('Tổng cộng')}: <strong style={{ color: 'var(--color-text)', marginLeft: 4 }}>{totalCount}</strong> {t('data')}
+          {t('Tổng cộng')}: <strong style={{ color: 'var(--color-text)', marginLeft: 4 }}>{viewMode === 'databank' ? databankTotalCount : totalCount}</strong> {t('data')}
         </div>
       </div>
 
@@ -1682,6 +1862,251 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               </div>
             </div>
           </div>
+        </div>
+      ) : viewMode === 'databank' ? (
+        <div className="card fade-in-view" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: 0 }}>
+          <div style={{ padding: '0.85rem 1.25rem', borderBottom: '1px solid var(--color-border)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', background: '#F8FAFC' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              {[
+                { key: 'available' as const, label: t('Sẵn sàng nhận'), count: databankStats.available },
+                { key: 'claimed' as const, label: t('Đã có Sale nhận'), count: databankStats.claimed },
+                { key: 'blocked' as const, label: t('Đang khóa'), count: databankStats.blocked },
+                { key: 'all' as const, label: t('Tất cả Kho chung'), count: databankStats.total },
+              ].map((pill) => {
+                const active = databankStatusFilter === pill.key;
+                return (
+                  <button
+                    key={pill.key}
+                    type="button"
+                    onClick={() => {
+                      setDatabankStatusFilter(pill.key);
+                      setDatabankPage(1);
+                    }}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: 999,
+                      border: active ? '1px solid #1E40FF' : '1px solid var(--color-border)',
+                      background: active ? '#1E40FF' : '#FFFFFF',
+                      color: active ? '#FFFFFF' : 'var(--color-text)',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {pill.label} ({pill.count})
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => void fetchDatabankLeads()}
+              className="btn outline"
+              style={{ height: 34, padding: '0 12px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+            >
+              <RefreshCw size={13} className={databankLoading ? 'spin' : ''} /> {t('Làm mới Kho')}
+            </button>
+          </div>
+
+          <div style={{ flex: 1, overflow: 'auto' }} className="table-wrap custom-scrollbar">
+            {databankLoading ? (
+              <div style={{ padding: '1.5rem' }}>
+                <TableSkeleton rows={6} cols={6} />
+              </div>
+            ) : databankItems.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--color-text-muted)' }}>
+                <Database size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.4 }} />
+                <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>{t('Kho dữ liệu chung trống')}</div>
+                <div style={{ fontSize: '0.82rem', marginTop: 4 }}>
+                  {t('Chưa có hồ sơ khách hàng nào trong trạng thái này.')}
+                </div>
+              </div>
+            ) : (
+              <table style={{ width: '100%', minWidth: 960, borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: '#F8FAFC', borderBottom: '1px solid var(--color-border)' }}>
+                  <tr>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Khách hàng')}</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Liên hệ')}</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Nguồn / Nhu cầu')}</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Người thả / Ghi chú')}</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Trạng thái')}</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Hành động')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {databankItems.map((item) => {
+                    const busy = actingDatabankId === item.id;
+                    const canManageDatabank = (user?.role === 'admin' || user?.role === 'superadmin' || can('leads', 'edit'));
+                    return (
+                      <tr key={item.id} style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <Avatar name={item.name || 'KH'} size={32} />
+                            <div>
+                              <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>{item.name || t('Khách hàng')}</div>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
+                                Score: {item.lead_score ?? 0}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ fontWeight: 600, fontFamily: 'monospace' }}>{item.phone || '—'}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{item.email || '—'}</div>
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <div style={{ fontWeight: 600 }}>{item.source || 'Databank'}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{item.product_interest || item.campaign || '—'}</div>
+                        </td>
+                        <td style={{ padding: '12px 16px', maxWidth: 260 }}>
+                          <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>{item.released_by_name || item.claimed_by_name || 'Hệ thống'}</div>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)' }}>{item.reason || '—'}</div>
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <span
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: 999,
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              background:
+                                item.status === 'available'
+                                  ? '#DCFCE7'
+                                  : item.status === 'blocked'
+                                    ? '#FEE2E2'
+                                    : '#EFF6FF',
+                              color:
+                                item.status === 'available'
+                                  ? '#166534'
+                                  : item.status === 'blocked'
+                                    ? '#991B1B'
+                                    : '#1E40FF',
+                            }}
+                          >
+                            {item.status === 'available'
+                              ? t('Sẵn sàng')
+                              : item.status === 'claimed'
+                                ? `${t('Đã nhận')}${item.claimed_by_name ? `: ${item.claimed_by_name}` : ''}`
+                                : item.status === 'blocked'
+                                  ? t('Đang khóa')
+                                  : item.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                          <div style={{ display: 'inline-flex', gap: 6 }}>
+                            {item.status === 'available' && (
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void handleClaimDatabankLead(item)}
+                                style={{
+                                  padding: '6px 12px',
+                                  borderRadius: 8,
+                                  border: 'none',
+                                  background: '#1E40FF',
+                                  color: '#FFFFFF',
+                                  fontWeight: 700,
+                                  fontSize: '0.76rem',
+                                  cursor: busy ? 'not-allowed' : 'pointer',
+                                }}
+                              >
+                                {busy ? t('Đang nhận...') : t('Nhận khách')}
+                              </button>
+                            )}
+                            {canManageDatabank && item.status !== 'blocked' && (
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void handleDatabankModeration(item.id, 'block')}
+                                style={{
+                                  padding: '6px 10px',
+                                  borderRadius: 8,
+                                  border: '1px solid #FECACA',
+                                  background: '#FEF2F2',
+                                  color: '#DC2626',
+                                  fontWeight: 600,
+                                  fontSize: '0.75rem',
+                                  cursor: busy ? 'not-allowed' : 'pointer',
+                                }}
+                              >
+                                {t('Khóa')}
+                              </button>
+                            )}
+                            {canManageDatabank && item.status === 'blocked' && (
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void handleDatabankModeration(item.id, 'unblock')}
+                                style={{
+                                  padding: '6px 10px',
+                                  borderRadius: 8,
+                                  border: '1px solid #BBF7D0',
+                                  background: '#F0FDF4',
+                                  color: '#15803D',
+                                  fontWeight: 600,
+                                  fontSize: '0.75rem',
+                                  cursor: busy ? 'not-allowed' : 'pointer',
+                                }}
+                              >
+                                {t('Mở khóa')}
+                              </button>
+                            )}
+                            {canManageDatabank && item.status === 'claimed' && (
+                              <button
+                                type="button"
+                                disabled={busy}
+                                onClick={() => void handleDatabankModeration(item.id, 'restore')}
+                                style={{
+                                  padding: '6px 10px',
+                                  borderRadius: 8,
+                                  border: '1px solid #BFDBFE',
+                                  background: '#EFF6FF',
+                                  color: '#1E40FF',
+                                  fontWeight: 600,
+                                  fontSize: '0.75rem',
+                                  cursor: busy ? 'not-allowed' : 'pointer',
+                                }}
+                              >
+                                {t('Hoàn về Kho')}
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {databankTotalPages > 1 && (
+            <div style={{ padding: '0.85rem 1.25rem', borderTop: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                {t('Trang')} {databankPage} / {databankTotalPages}
+              </span>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <button
+                  type="button"
+                  disabled={databankPage <= 1}
+                  onClick={() => setDatabankPage((p) => Math.max(1, p - 1))}
+                  className="btn outline"
+                  style={{ height: 32, padding: '0 10px' }}
+                >
+                  <ChevronLeft size={14} />
+                </button>
+                <button
+                  type="button"
+                  disabled={databankPage >= databankTotalPages}
+                  onClick={() => setDatabankPage((p) => Math.min(databankTotalPages, p + 1))}
+                  className="btn outline"
+                  style={{ height: 32, padding: '0 10px' }}
+                >
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="card fade-in-view mobile-flat-container" data-tour="datalist-table" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -1879,6 +2304,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>{t('Đánh giá chất lượng')}</th>
                     {user?.role !== 'sale' && <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>{t('Bài Quảng Cáo')}</th>}
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>{t('Phân bổ cho')}</th>
+                    {customFieldCols.map((cf) => (
+                      <th key={cf.id} style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>
+                        {cf.field_label}
+                      </th>
+                    ))}
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)' }}>{t('Thời gian nhận')}</th>
                   </tr>
                 </thead>
@@ -2048,12 +2478,20 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                             <span style={{ color: 'var(--color-text-muted)' }}>-</span>
                           )}
                         </td>
+                        {customFieldCols.map((cf) => {
+                          const rawVal = lead.custom_fields?.[cf.field_key];
+                          return (
+                            <td key={cf.id} style={{ padding: '1rem', fontSize: '0.8rem', color: 'var(--color-text-light)', whiteSpace: 'nowrap' }}>
+                              {rawVal === undefined || rawVal === null || rawVal === '' ? '—' : String(rawVal)}
+                            </td>
+                          );
+                        })}
                         <td style={{ padding: '1rem', fontSize: '0.8125rem', color: 'var(--color-text-light)' }}>{lead.created_at}</td>
                       </tr>
                     );
                   }) : (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
+                      <td colSpan={7 + customFieldCols.length} style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
                         {t('Không tìm thấy dữ liệu phù hợp.')}
                       </td>
                     </tr>
@@ -2293,6 +2731,23 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                       </>
                     )}
  
+                    {selectedLead.status !== 'in_databank' && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmReleaseOpen(true)}
+                        title={t("Nhả khách hàng về Kho dữ liệu chung (Databank)")}
+                        className="detail-action-btn"
+                        style={{
+                          background: 'rgba(30, 64, 255, 0.08)',
+                          border: '1px solid var(--color-primary-light)',
+                          color: '#1E40FF',
+                        }}
+                      >
+                        <Database size={14} />
+                        {t('Nhả về Kho')}
+                      </button>
+                    )}
+
                     {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
                       <button
                         onClick={() => {
@@ -3802,6 +4257,40 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               </div>
             </div>
 
+          </div>
+        )}
+      </CustomModal>
+
+      <CustomModal
+        isOpen={confirmReleaseOpen && Boolean(selectedLead)}
+        onClose={() => setConfirmReleaseOpen(false)}
+        title={t('Nhả khách hàng về Kho chung (Databank)')}
+        width={480}
+      >
+        {selectedLead && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-light)', lineHeight: 1.5 }}>
+              {t('Bạn có chắc chắn muốn nhả khách hàng')} <strong>&quot;{selectedLead.name}&quot;</strong> {t('về Kho dữ liệu chung để các chuyên viên khác có thể nhận chăm sóc không?')}
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button
+                type="button"
+                className="btn outline"
+                onClick={() => setConfirmReleaseOpen(false)}
+                disabled={Boolean(releasingLeadId)}
+              >
+                {t('Hủy')}
+              </button>
+              <button
+                type="button"
+                className="btn primary"
+                style={{ background: '#1E40FF', color: '#FFFFFF' }}
+                disabled={Boolean(releasingLeadId)}
+                onClick={() => void handleReleaseToDatabank(selectedLead.lead_id || selectedLead.id)}
+              >
+                {releasingLeadId ? t('Đang xử lý...') : t('Xác nhận nhả về Kho')}
+              </button>
+            </div>
           </div>
         )}
       </CustomModal>

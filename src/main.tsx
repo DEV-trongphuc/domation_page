@@ -92,9 +92,27 @@ const SinglePostPage = lazy(() =>
 const PortfolioPage = lazy(() =>
   import('./PortfolioPage').then((m) => ({ default: m.PortfolioPage }))
 );
+const PublicStandaloneGateway = lazy(() =>
+  import('./components/autodata/cloned/modules/registry').then((m) => ({
+    default: m.PublicStandaloneGateway,
+  }))
+);
 const NotFoundPage = lazy(() =>
   import('./NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
+
+function isPublicEcosystemPath(path: string): boolean {
+  return (
+    path === '/docs/api-v1' ||
+    /^\/booking\/[^/]+$/.test(path) ||
+    /^\/public-booking\/1on1\/[^/]+$/.test(path) ||
+    /^\/s\/[^/]+$/.test(path) ||
+    /^\/s\/[^/]+\/[^/]+$/.test(path) ||
+    /^\/claim\/[^/]+$/.test(path) ||
+    /^\/schedule\/[^/]+$/.test(path) ||
+    /^\/public-schedule\/[^/]+$/.test(path)
+  );
+}
 
 const PageLoader = () => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8F9FA] text-slate-700">
@@ -133,14 +151,17 @@ const Main = () => {
 
   const isWebDesign = path === '/web-design' || search.includes('page=web-design');
   const isMagnific = search.includes('page=magnific-downloader');
+  const isPublicEcosystemRoute = isPublicEcosystemPath(path);
 
   const isDataSubdomain =
     typeof window !== 'undefined' && /^data\./i.test(window.location.hostname);
-  const isHome = !isDataSubdomain && (path === '' || path === '/');
-  const isPortfolio = path === '/portfolio' || search.includes('page=portfolio');
-  const isBoostHub = path === '/boost' || path === '/bai-viet' || path === '/blog';
+  const isHome = !isDataSubdomain && !isPublicEcosystemRoute && (path === '' || path === '/');
+  const isPortfolio = !isPublicEcosystemRoute && (path === '/portfolio' || search.includes('page=portfolio'));
+  const isBoostHub = !isPublicEcosystemRoute && (path === '/boost' || path === '/bai-viet' || path === '/blog');
 
-  const singlePostMatch = path.match(/^\/(?:boost|bai-viet|blog)\/([^/]+)$/);
+  const singlePostMatch = isPublicEcosystemRoute
+    ? null
+    : path.match(/^\/(?:boost|bai-viet|blog)\/([^/]+)$/);
   const singlePostSlug = singlePostMatch
     ? (() => {
         try {
@@ -151,41 +172,54 @@ const Main = () => {
       })()
     : null;
 
-  const isAutomation = path === '/automation';
-  const isMetaReport = path === '/meta-report';
-  const isCrm = path === '/crm';
+  const isAutomation = !isPublicEcosystemRoute && path === '/automation';
+  const isMetaReport = !isPublicEcosystemRoute && path === '/meta-report';
+  const isCrm = !isPublicEcosystemRoute && path === '/crm';
   const isData =
-    path === '/data' ||
-    path.startsWith('/data/') ||
-    search.includes('page=data') ||
-    (isDataSubdomain && !isPortfolio && !isBoostHub && !singlePostSlug);
-  const isIdeas = path === '/ideas' || search.includes('page=ideas');
+    !isPublicEcosystemRoute &&
+    (path === '/data' ||
+      path.startsWith('/data/') ||
+      search.includes('page=data') ||
+      (isDataSubdomain && !isPortfolio && !isBoostHub && !singlePostSlug));
+  const isIdeas = !isPublicEcosystemRoute && (path === '/ideas' || search.includes('page=ideas'));
   const isErp =
-    path === '/erp' ||
-    path === '/ideas-erp' ||
-    search.includes('page=erp') ||
-    search.includes('page=ideas-erp');
+    !isPublicEcosystemRoute &&
+    (path === '/erp' ||
+      path === '/ideas-erp' ||
+      search.includes('page=erp') ||
+      search.includes('page=ideas-erp'));
 
   if (isHome) return <DomationHome />;
 
   return (
     <Suspense fallback={<PageLoader />}>
-      {singlePostSlug && <SinglePostPage key={singlePostSlug} slug={singlePostSlug} />}
-      {!singlePostSlug && isBoostHub && <BoostHubPage />}
-      {!singlePostSlug && !isBoostHub && isPortfolio && <PortfolioPage />}
-      {!singlePostSlug && !isBoostHub && !isPortfolio && isErp && <ErpLanding />}
-      {!singlePostSlug && !isBoostHub && !isPortfolio && !isErp && isWebDesign && <WebDesignPricing />}
-      {!singlePostSlug && !isBoostHub && !isPortfolio && !isErp && !isWebDesign && isMagnific && (
-        <MagnificDownloader />
+      {isPublicEcosystemRoute && <PublicStandaloneGateway initialPath={locationKey} />}
+      {!isPublicEcosystemRoute && singlePostSlug && (
+        <SinglePostPage key={singlePostSlug} slug={singlePostSlug} />
       )}
-      {!singlePostSlug &&
+      {!isPublicEcosystemRoute && !singlePostSlug && isBoostHub && <BoostHubPage />}
+      {!isPublicEcosystemRoute && !singlePostSlug && !isBoostHub && isPortfolio && <PortfolioPage />}
+      {!isPublicEcosystemRoute && !singlePostSlug && !isBoostHub && !isPortfolio && isErp && <ErpLanding />}
+      {!isPublicEcosystemRoute && !singlePostSlug && !isBoostHub && !isPortfolio && !isErp && isWebDesign && (
+        <WebDesignPricing />
+      )}
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
+        !isBoostHub &&
+        !isPortfolio &&
+        !isErp &&
+        !isWebDesign &&
+        isMagnific && <MagnificDownloader />}
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
         !isBoostHub &&
         !isPortfolio &&
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
         isMetaReport && <MetaAdReport />}
-      {!singlePostSlug &&
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
         !isBoostHub &&
         !isPortfolio &&
         !isErp &&
@@ -193,7 +227,8 @@ const Main = () => {
         !isMagnific &&
         !isMetaReport &&
         isCrm && <CrmLanding />}
-      {!singlePostSlug &&
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
         !isBoostHub &&
         !isPortfolio &&
         !isErp &&
@@ -202,7 +237,8 @@ const Main = () => {
         !isMetaReport &&
         !isCrm &&
         isData && <DomationDataLanding />}
-      {!singlePostSlug &&
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
         !isBoostHub &&
         !isPortfolio &&
         !isErp &&
@@ -212,7 +248,8 @@ const Main = () => {
         !isCrm &&
         !isData &&
         isAutomation && <App />}
-      {!singlePostSlug &&
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
         !isBoostHub &&
         !isPortfolio &&
         !isErp &&
@@ -223,7 +260,8 @@ const Main = () => {
         !isData &&
         !isAutomation &&
         isIdeas && <IdeasLanding />}
-      {!singlePostSlug &&
+      {!isPublicEcosystemRoute &&
+        !singlePostSlug &&
         !isBoostHub &&
         !isPortfolio &&
         !isErp &&
@@ -239,21 +277,33 @@ const Main = () => {
 };
 
 const ConditionalAiChatbot = () => {
-  const [hidden, setHidden] = useState(() =>
-    typeof document !== 'undefined' &&
-    document.documentElement.getAttribute('data-autodata-workspace') === 'active'
-  );
+  const [hidden, setHidden] = useState(() => {
+    if (typeof document === 'undefined') return false;
+    const isWorkspace =
+      document.documentElement.getAttribute('data-autodata-workspace') === 'active';
+    const curPath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') || '/' : '/';
+    return isWorkspace || isPublicEcosystemPath(curPath);
+  });
 
   useEffect(() => {
     const sync = () => {
-      setHidden(document.documentElement.getAttribute('data-autodata-workspace') === 'active');
+      const isWorkspace =
+        document.documentElement.getAttribute('data-autodata-workspace') === 'active';
+      const curPath = window.location.pathname.replace(/\/$/, '') || '/';
+      setHidden(isWorkspace || isPublicEcosystemPath(curPath));
     };
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-autodata-workspace'],
     });
-    return () => observer.disconnect();
+    window.addEventListener('popstate', sync);
+    window.addEventListener(DOMATION_NAV_EVENT, sync);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener(DOMATION_NAV_EVENT, sync);
+    };
   }, []);
 
   if (hidden) return null;

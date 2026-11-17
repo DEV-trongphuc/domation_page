@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Shield, Plus, Edit3, Trash2, KeyRound, UserCog, Send, X, Link2Off, Check, RefreshCw, History, ChevronLeft, ChevronRight, Camera, RotateCcw } from 'lucide-react';
+import { Shield, Plus, Edit3, Trash2, KeyRound, UserCog, Send, X, Link2Off, Check, RefreshCw, History, ChevronLeft, ChevronRight, Camera, RotateCcw, Lock, Unlock } from 'lucide-react';
 import { CustomModal } from '../components/ui/CustomModal';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { Avatar } from '../components/ui/Avatar';
 import { fetchAPI } from '../utils/api';
+import { apiRequest, getErrorMessage } from '../../autodataApi';
+import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { TableSkeleton } from '../components/ui/Skeleton';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -14,6 +16,46 @@ import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 const AccountsInner = () => {
   const { t } = useLanguage();
+  const { token, tenantSlug } = useAuth();
+  const [secActingId, setSecActingId] = useState<string | number | null>(null);
+
+  const handleToggleAccountStatus = async (acc: any) => {
+    const isSuspended = acc.status === 'suspended' || acc.is_active === false;
+    setSecActingId(acc.id);
+    try {
+      await apiRequest(`/users/${acc.id}/admin-status`, {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: { status: isSuspended ? 'active' : 'suspended', is_active: isSuspended },
+      });
+      toast.success(isSuspended ? t('Đã mở khóa tài khoản') : t('Đã khóa tạm thời tài khoản'));
+      await fetchAccounts();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể thay đổi trạng thái khóa tài khoản')));
+    } finally {
+      setSecActingId(null);
+    }
+  };
+
+  const handleToggle2Fa = async (acc: any) => {
+    const next2fa = !acc.two_factor_enabled;
+    setSecActingId(acc.id);
+    try {
+      await apiRequest(`/users/${acc.id}`, {
+        method: 'PATCH',
+        token,
+        tenantSlug,
+        body: { two_factor_enabled: next2fa },
+      });
+      toast.success(next2fa ? t('Đã bật yêu cầu xác thực 2 bước (2FA)') : t('Đã đặt lại (Reset) 2FA cho tài khoản'));
+      await fetchAccounts();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể cập nhật 2FA tài khoản')));
+    } finally {
+      setSecActingId(null);
+    }
+  };
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
   });
@@ -536,7 +578,33 @@ const AccountsInner = () => {
                         )}
                       </td>
                       <td data-label={t('Thao tác')} style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, alignItems: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, alignItems: 'center' }}>
+                          <button
+                            type="button"
+                            disabled={secActingId === acc.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void handleToggle2Fa(acc);
+                            }}
+                            className="btn ghost"
+                            style={{ padding: 8, color: acc.two_factor_enabled ? '#059669' : '#64748B' }}
+                            title={acc.two_factor_enabled ? t('2FA Đang bật — Nhấn để Reset 2FA') : t('Bật yêu cầu 2FA TOTP')}
+                          >
+                            <Shield size={15} />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={secActingId === acc.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void handleToggleAccountStatus(acc);
+                            }}
+                            className="btn ghost"
+                            style={{ padding: 8, color: acc.status === 'suspended' || acc.is_active === false ? '#DC2626' : '#1E40FF' }}
+                            title={acc.status === 'suspended' || acc.is_active === false ? t('Mở khóa tài khoản') : t('Khóa tài khoản')}
+                          >
+                            {acc.status === 'suspended' || acc.is_active === false ? <Lock size={15} /> : <Unlock size={15} />}
+                          </button>
                           <button onClick={(e) => { e.stopPropagation(); openEditModal(acc); }} className="btn ghost" style={{ padding: 8, color: 'var(--color-primary)' }} title={t("Sửa")}>
                             <Edit3 size={16} />
                           </button>

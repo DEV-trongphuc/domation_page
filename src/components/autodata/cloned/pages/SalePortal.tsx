@@ -15,8 +15,9 @@ import {
   Clock3, GitBranch, ArrowUpRight, ShieldAlert, Send,
   Sun, Moon, ChevronDown, AlertTriangle, ChevronLeft, ChevronRight,
   LayoutDashboard, Database, Ticket, Calendar, RefreshCw, Menu, Tag, Server, Scale, Settings, Info, Check, Loader2, Sparkles,
-  MessageSquare, UserPlus, Users, Trash2, Mail, Link2, Unlink, Copy, ExternalLink
+  MessageSquare, UserPlus, Users, Trash2, Mail, Link2, Unlink, Copy, ExternalLink, Briefcase, ShieldCheck
 } from 'lucide-react';
+import { apiRequest, getErrorMessage } from '../../autodataApi';
 import { WarRoomFlightDeck } from '../components/Dashboard/WarRoomFlightDeck';
 import {
   Bar, XAxis, YAxis, CartesianGrid,
@@ -556,7 +557,7 @@ const LeadQualityEditor: React.FC<LeadQualityEditorProps> = ({
 
 const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
   const navigate = useNavigate();
-  const { user, token, login, logout, companyName, tenantSettings } = useAuth();
+  const { user, token, tenantSlug, login, logout, companyName, tenantSettings } = useAuth();
   const tenantDefaultSchedule = resolveTenantDefaultSchedule(tenantSettings);
   const { language, setLanguage, t } = useLanguage();
 
@@ -704,7 +705,39 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
   const [loadingTimeline, setLoadingTimeline] = useState(false);
 
   // Tab & Layout states
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'data' | 'tickets' | 'schedule' | 'managers' | 'calendar' | 'fair-share'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'data' | 'workspace' | 'tickets' | 'schedule' | 'managers' | 'calendar' | 'fair-share'>('dashboard');
+  const [wsLoading, setWsLoading] = useState(false);
+  const [wsTasks, setWsTasks] = useState<Array<{ id: string; title: string; status: string; due_date?: string | null; priority?: string }>>([]);
+  const [wsDatabankLeads, setWsDatabankLeads] = useState<Array<{ id: string; name?: string | null; phone?: string | null; source?: string | null; lead_score?: number | null }>>([]);
+  const [wsShiftInfo, setWsShiftInfo] = useState<{ name?: string; start_time?: string; end_time?: string } | null>(null);
+  const [claimingWsId, setClaimingWsId] = useState<string | null>(null);
+
+  const loadWorkspacePortal = async () => {
+    setWsLoading(true);
+    try {
+      const [bootRes, dbRes, attRes] = await Promise.all([
+        apiRequest<{ my_tasks?: Array<{ id: string; title: string; status: string; due_date?: string | null; priority?: string }> }>(
+          '/workspace/bootstrap',
+          { token, tenantSlug }
+        ).catch(() => null),
+        apiRequest<{ items?: Array<{ id: string; name?: string | null; phone?: string | null; source?: string | null; lead_score?: number | null }> }>(
+          '/leads/databank?status=available&limit=10',
+          { token, tenantSlug }
+        ).catch(() => null),
+        apiRequest<{ active_shift?: { name?: string; start_time?: string; end_time?: string } | null }>(
+          '/attendance/overview',
+          { token, tenantSlug }
+        ).catch(() => null),
+      ]);
+      if (bootRes?.my_tasks) setWsTasks(bootRes.my_tasks);
+      if (dbRes?.items) setWsDatabankLeads(dbRes.items);
+      if (attRes?.active_shift) setWsShiftInfo(attRes.active_shift);
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('Không thể tải dữ liệu Workspace cá nhân')));
+    } finally {
+      setWsLoading(false);
+    }
+  };
   const [sourceViewMode, setSourceViewMode] = useState<'connection' | 'lead'>('connection');
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -4472,6 +4505,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             {[
               { name: 'Dashboard', key: 'dashboard', icon: LayoutDashboard },
               { name: 'Nhật ký Data', key: 'data', icon: Database },
+              { name: 'Bàn làm việc & Ca trực', key: 'workspace', icon: Briefcase },
               { name: 'Lịch biểu', key: 'calendar', icon: Calendar },
               { name: 'Đối soát công bằng', key: 'fair-share', icon: Scale },
               { name: 'Ticket Lỗi Data', key: 'tickets', icon: Ticket, badgeCount: data.stats.tickets_pending }
@@ -4482,6 +4516,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
                   key={key}
                   onClick={() => {
                     setActiveTab(key as any);
+                    if (key === 'workspace') void loadWorkspacePortal();
                     setIsMobileSidebarOpen(false);
                   }}
                   data-active={isActive ? "true" : "false"}
@@ -5001,6 +5036,116 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             <div key={activeTab} className="subtab-enter-active">
               {activeTab === 'dashboard' && renderDashboardView()}
               {activeTab === 'data' && renderDataView()}
+              {activeTab === 'workspace' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                    <div className="card" style={{ padding: '1.25rem', border: '1px solid #DBEAFE', background: '#FFFFFF' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B' }}>{t('CA LÀM VIỆC & CHẤM CÔNG')}</span>
+                        <Clock size={18} color="#1E40FF" />
+                      </div>
+                      <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A' }}>
+                        {wsShiftInfo ? `${wsShiftInfo.name} (${wsShiftInfo.start_time} - ${wsShiftInfo.end_time})` : t('Ca Hành chính mặc định')}
+                      </div>
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                        <button
+                          type="button"
+                          onClick={() => navigate('/erp/attendance')}
+                          style={{ padding: '7px 14px', borderRadius: 9, border: 'none', background: '#1E40FF', color: '#FFF', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          {t('Mở Chấm công & Ca trực')}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="card" style={{ padding: '1.25rem', border: '1px solid #E2E8F0', background: '#FFFFFF' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#64748B' }}>{t('BẢO MẬT TÀI KHOẢN (2FA)')}</span>
+                        <ShieldCheck size={18} color="#059669" />
+                      </div>
+                      <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A' }}>
+                        {t('Hồ sơ & Xác thực 2 bước')}
+                      </div>
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                        <button
+                          type="button"
+                          onClick={() => navigate('/account')}
+                          style={{ padding: '7px 14px', borderRadius: 9, border: '1px solid #1E40FF', background: '#EFF6FF', color: '#1E40FF', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                        >
+                          {t('Cấu hình 2FA & Tài khoản')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1rem' }}>
+                    <div className="card" style={{ padding: '1.25rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                        <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800 }}>{t('Nhiệm vụ Cá nhân')} ({wsTasks.length})</h3>
+                        <button type="button" onClick={() => navigate('/workspace')} style={{ border: 'none', background: 'transparent', color: '#1E40FF', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}>
+                          {t('Mở Workspace đầy đủ')} →
+                        </button>
+                      </div>
+                      {wsLoading ? (
+                        <div style={{ fontSize: '0.8rem', color: '#64748B' }}>{t('Đang tải nhiệm vụ...')}</div>
+                      ) : wsTasks.length === 0 ? (
+                        <div style={{ fontSize: '0.82rem', color: '#64748B' }}>{t('Chưa có công việc nào được giao cho bạn.')}</div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {wsTasks.slice(0, 8).map((tsk) => (
+                            <div key={tsk.id} style={{ padding: '8px 12px', borderRadius: 9, border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontWeight: 600, fontSize: '0.82rem' }}>{tsk.title}</span>
+                              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#1E40FF', background: '#EFF6FF', padding: '2px 8px', borderRadius: 99 }}>{tsk.status}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="card" style={{ padding: '1.25rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                        <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800 }}>{t('Kho số chung (Public Databank)')}</h3>
+                        <button type="button" onClick={() => navigate('/data?view=databank')} style={{ border: 'none', background: 'transparent', color: '#1E40FF', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}>
+                          {t('Xem toàn bộ Kho')} →
+                        </button>
+                      </div>
+                      {wsDatabankLeads.length === 0 ? (
+                        <div style={{ fontSize: '0.82rem', color: '#64748B' }}>{t('Hiện chưa có số sẵn sàng trong Kho chung.')}</div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {wsDatabankLeads.slice(0, 6).map((db) => (
+                            <div key={db.id} style={{ padding: '8px 12px', borderRadius: 9, border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                              <div>
+                                <div style={{ fontWeight: 700, fontSize: '0.82rem' }}>{db.name || t('Khách hàng')}</div>
+                                <div style={{ fontSize: '0.72rem', color: '#64748B' }}>{db.phone || '—'} • {db.source || 'Databank'}</div>
+                              </div>
+                              <button
+                                type="button"
+                                disabled={claimingWsId === db.id}
+                                onClick={async () => {
+                                  setClaimingWsId(db.id);
+                                  try {
+                                    await apiRequest(`/leads/databank/${db.id}/claim`, { method: 'POST', token, tenantSlug });
+                                    toast.success(t('Đã nhận khách hàng từ Kho chung!'));
+                                    await loadWorkspacePortal();
+                                  } catch (err) {
+                                    toast.error(getErrorMessage(err, t('Không thể nhận khách hàng')));
+                                  } finally {
+                                    setClaimingWsId(null);
+                                  }
+                                }}
+                                style={{ padding: '5px 12px', borderRadius: 8, border: 'none', background: '#1E40FF', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                              >
+                                {claimingWsId === db.id ? t('Đang nhận...') : t('Nhận khách')}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
               {activeTab === 'calendar' && renderCalendarView()}
               {activeTab === 'fair-share' && <FairShareAudit forceActive={true} />}
               {activeTab === 'tickets' && renderTicketsView()}

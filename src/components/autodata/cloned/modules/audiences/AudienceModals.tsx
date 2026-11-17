@@ -13,8 +13,9 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CustomModal } from '../../components/ui/CustomModal';
+import { TableSkeleton } from '../../components/ui/Skeleton';
 import { Badge, Card, PillTabs } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest } from '../../../autodataApi';
+import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import { maskPiiEmail, maskPiiPhone } from '../../contexts/entitlementConstants';
@@ -112,20 +113,8 @@ export const StaticAudienceFormModal: React.FC<StaticAudienceFormModalProps> = (
       onSaved(saved);
       toast.success(initialAudience ? 'Đã cập nhật Tệp Data!' : 'Đã tạo Tệp Data thành công!');
       onClose();
-    } catch {
-      const localItem: AudienceItem = {
-        id: initialAudience?.id || `aud_data_${Date.now()}`,
-        name: body.name,
-        description: body.description,
-        audience_type: audienceType,
-        sync_source_url: body.sync_source_url,
-        cached_member_count: initialAudience?.cached_member_count ?? initialLeadIds.length,
-        color_hex: colorHex,
-        updated_at: new Date().toISOString(),
-      };
-      onSaved(localItem);
-      toast.success('Đã lưu Tệp Data!');
-      onClose();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể lưu Tệp Data.'));
     } finally {
       setSaving(false);
     }
@@ -363,23 +352,8 @@ export const ImportAudienceCsvModal: React.FC<ImportAudienceCsvModalProps> = ({
       onImported(createdLocal, audience.id);
       toast.success(`Đã nạp & khử trùng ${parsedPreview.length} hồ sơ vào "${audience.name}"!`);
       onClose();
-    } catch {
-      const createdLocal: MasterContactRow[] = parsedPreview.map((r, i) => ({
-        id: `imp_${Date.now()}_${i}`,
-        name: r.name,
-        phone: r.phone || null,
-        email: r.email || null,
-        source: r.source || defaultSource,
-        product_interest: r.product_interest || null,
-        status: canRouteToSale ? importMode : 'marketing_nurture',
-        lifecycle_stage: 'lead',
-        lead_score: 20,
-        email_consent: 'subscribed',
-        created_at: new Date().toISOString(),
-      }));
-      onImported(createdLocal, audience.id);
-      toast.success(`Đã nhập ${parsedPreview.length} hồ sơ vào "${audience.name}"!`);
-      onClose();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể nhập danh sách CSV vào Tệp Data.'));
     } finally {
       setImporting(false);
     }
@@ -573,27 +547,8 @@ export const SplitAudienceModal: React.FC<SplitAudienceModalProps> = ({
       }
       toast.success(`Đã tách ngẫu nhiên thành Nhóm A (${ratioA}%) & Nhóm B (${ratioB}%)!`);
       onClose();
-    } catch {
-      const countA = Math.round((audience.cached_member_count * ratioA) / 100);
-      const countB = Math.max(0, audience.cached_member_count - countA);
-      onSplitCreated([
-        {
-          id: `split_a_${Date.now()}`,
-          name: `${prefix || audience.name} (Nhóm A - ${ratioA}%)`,
-          audience_type: 'static_data',
-          cached_member_count: countA,
-          color_hex: '#1E40FF',
-        },
-        {
-          id: `split_b_${Date.now() + 1}`,
-          name: `${prefix || audience.name} (Nhóm B - ${ratioB}%)`,
-          audience_type: 'static_data',
-          cached_member_count: countB,
-          color_hex: '#0284C7',
-        },
-      ]);
-      toast.success(`Đã tách tệp A/B (${ratioA}% / ${ratioB}%)!`);
-      onClose();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tách tệp A/B.'));
     } finally {
       setSplitting(false);
     }
@@ -745,6 +700,7 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
 
   const handleRemoveMember = async (leadId: string) => {
     if (!audience) return;
+    const prevMembers = members;
     setMembers((prev) => prev.filter((m) => m.id !== leadId));
     try {
       await apiRequest(`/audiences/${audience.id}/members/${leadId}`, {
@@ -752,9 +708,11 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
         token,
         tenantSlug,
       });
+      toast.success('Đã gỡ thành viên khỏi tệp.');
       onChanged();
-    } catch {
-      // optimistic local update preserved
+    } catch (err) {
+      setMembers(prevMembers);
+      toast.error(getErrorMessage(err, 'Không thể gỡ thành viên khỏi tệp.'));
     }
   };
 
@@ -790,24 +748,14 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
       setExclInput('');
       toast.success('Đã thêm vào danh sách loại trừ của tệp!');
       onChanged();
-    } catch {
-      setExclusions((prev) => [
-        {
-          id: `exc_${Date.now()}`,
-          email: isEmail ? val : null,
-          phone: !isEmail ? val : null,
-          reason: exclReason.trim(),
-          created_at: new Date().toISOString(),
-        },
-        ...prev,
-      ]);
-      setExclInput('');
-      toast.success('Đã thêm vào danh sách loại trừ!');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể thêm vào danh sách loại trừ.'));
     }
   };
 
   const handleRemoveExclusion = async (excId: string) => {
     if (!audience) return;
+    const prevExclusions = exclusions;
     setExclusions((prev) => prev.filter((x) => x.id !== excId));
     try {
       await apiRequest(`/audiences/${audience.id}/exclusions/${excId}`, {
@@ -815,9 +763,11 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
         token,
         tenantSlug,
       });
+      toast.success('Đã gỡ khỏi danh sách loại trừ.');
       onChanged();
-    } catch {
-      // ignore
+    } catch (err) {
+      setExclusions(prevExclusions);
+      toast.error(getErrorMessage(err, 'Không thể gỡ khỏi danh sách loại trừ.'));
     }
   };
 
@@ -837,8 +787,8 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
         `Đã đẩy ${res.promoted_count ?? res.pushed_count ?? members.length} ${terminology.customerLabel} sang Vòng chia Sale!`
       );
       onChanged();
-    } catch {
-      toast.success(`Đã kích hoạt đẩy tệp "${audience.name}" sang hàng đợi chia số Sale!`);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể đẩy tệp sang Vòng chia Sale.'));
     }
   };
 
@@ -855,8 +805,8 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
       );
       toast.success(`Đã đồng bộ Tệp Logic: ${res.total_count ?? members.length} thành viên khớp!`);
       onChanged();
-    } catch {
-      toast.success('Đã làm mới thành viên Tệp Logic!');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể đánh giá lại Tệp Logic.'));
     }
   };
 
@@ -940,6 +890,9 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
         </div>
 
         {subTab === 'members' ? (
+          loading ? (
+            <TableSkeleton rows={5} cols={4} />
+          ) : (
           <div style={{ maxHeight: 380, overflowY: 'auto', border: '1px solid #E2E8F0', borderRadius: 16 }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
               <thead>
@@ -992,6 +945,7 @@ export const AudienceMembersAndExclusionsModal: React.FC<AudienceMembersModalPro
               </tbody>
             </table>
           </div>
+          )
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
             <form

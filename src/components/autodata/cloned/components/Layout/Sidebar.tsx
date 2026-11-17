@@ -3,38 +3,52 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Bot,
   Briefcase,
+  Building2,
+  Calculator,
+  Calendar,
   CheckSquare,
   ChevronLeft,
   ClipboardCheck,
+  Compass,
+  Contact,
   Database,
   DollarSign,
   FileCheck2,
+  FileSpreadsheet,
   FileText,
   Filter,
   FolderKanban,
   GitBranch,
   Globe,
   GraduationCap,
+  Handshake,
   Layers,
   LayoutDashboard,
+  LifeBuoy,
   Link2,
   Mail,
   MapPin,
   Megaphone,
   MessageCircle,
   MessageSquare,
+  Newspaper,
+  Package,
   Plus,
   QrCode,
+  Receipt,
   Scale,
   Send,
   Settings,
   ShieldCheck,
   Ticket,
   TrendingUp,
+  Truck,
+  UserCog,
   Users,
   Wallet,
   Webhook,
   Workflow,
+  Boxes,
   type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -49,9 +63,9 @@ interface SidebarNavItem {
   icon: LucideIcon;
   section: string;
   moduleKey: string;
+  screenKey: string;
   end?: boolean;
-  adminOnly?: boolean;
-  superAdminOnly?: boolean;
+  ownerRecovery?: boolean;
   badgeKey?: 'tickets' | 'gatekeeper';
 }
 
@@ -66,8 +80,18 @@ export const Sidebar = ({
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
 }) => {
-  const { user, companyName, tenantSlug, tenantSettings } = useAuth();
-  const { packageCode, packageMeta, hasModule, educationAddon, terminology, can } = useEntitlement();
+  const { companyName, tenantSlug, tenantSettings } = useAuth();
+  const {
+    packageCode,
+    packageMeta,
+    hasModule,
+    educationAddon,
+    terminology,
+    can,
+    canScreen,
+    canQuickAction,
+    isTenantOwner,
+  } = useEntitlement();
   const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -81,6 +105,8 @@ export const Sidebar = ({
   const navContainerRef = useRef<HTMLDivElement>(null);
 
   const hasSaleTickets = hasModule('tickets_data');
+  const canPollModerationCounters =
+    isTenantOwner || can('tickets_data', 'approve') || canScreen('tickets') || canScreen('gatekeeper');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -99,10 +125,9 @@ export const Sidebar = ({
     return () => clearTimeout(timer);
   }, [location.pathname, isCollapsed, packageCode]);
 
-  // Poll pending ticket count every 60s ONLY when AutoData CRM Tickets module is unlocked
+  // Poll pending ticket count every 60s when moderation screens are permitted
   useEffect(() => {
-    if (!hasSaleTickets) return;
-    if (user?.role !== 'admin' && user?.role !== 'superadmin') return;
+    if (!hasSaleTickets || !canPollModerationCounters) return;
     const fetchPending = async () => {
       try {
         const [resReports, resHeld] = await Promise.all([
@@ -139,7 +164,7 @@ export const Sidebar = ({
       clearInterval(interval);
       window.removeEventListener('ticket-resolved', onResolved);
     };
-  }, [user, hasSaleTickets]);
+  }, [hasSaleTickets, canPollModerationCounters]);
 
   const navItems = useMemo<SidebarNavItem[]>(() => {
     const isMktOnly = packageCode === 'marketing_standalone';
@@ -153,6 +178,7 @@ export const Sidebar = ({
           icon: LayoutDashboard,
           section: 'Marketing Automation',
           moduleKey: 'mkt_dashboard',
+          screenKey: 'mkt_dashboard',
           end: true,
         },
         {
@@ -161,6 +187,7 @@ export const Sidebar = ({
           icon: Layers,
           section: 'Marketing Automation',
           moduleKey: 'audiences',
+          screenKey: 'audiences',
         },
         {
           name: 'Email Templates',
@@ -168,6 +195,7 @@ export const Sidebar = ({
           icon: Mail,
           section: 'Marketing Automation',
           moduleKey: 'email_templates',
+          screenKey: 'mkt_templates',
         },
         {
           name: 'Form Builder & Form Cards',
@@ -175,6 +203,7 @@ export const Sidebar = ({
           icon: FileText,
           section: 'Marketing Automation',
           moduleKey: 'forms_triggers',
+          screenKey: 'mkt_forms',
         },
         {
           name: 'Surveys & Quiz',
@@ -182,6 +211,7 @@ export const Sidebar = ({
           icon: ClipboardCheck,
           section: 'Marketing Automation',
           moduleKey: 'surveys_quiz',
+          screenKey: 'mkt_surveys',
         },
         {
           name: 'Chiến dịch Email / ZNS',
@@ -189,6 +219,7 @@ export const Sidebar = ({
           icon: Send,
           section: 'Marketing Automation',
           moduleKey: 'campaigns',
+          screenKey: 'mkt_campaigns',
         },
         {
           name: 'Automation Flows',
@@ -196,6 +227,7 @@ export const Sidebar = ({
           icon: Workflow,
           section: 'Marketing Automation',
           moduleKey: 'automation_flows',
+          screenKey: 'mkt_flows',
         },
         {
           name: 'Voucher & QR',
@@ -203,6 +235,7 @@ export const Sidebar = ({
           icon: QrCode,
           section: 'Marketing Automation',
           moduleKey: 'vouchers_qr',
+          screenKey: 'mkt_vouchers',
         },
         {
           name: 'Web Tracking',
@@ -210,6 +243,7 @@ export const Sidebar = ({
           icon: Globe,
           section: 'Marketing Automation',
           moduleKey: 'web_tracking',
+          screenKey: 'mkt_web_tracking',
         },
         {
           name: 'Social Bot',
@@ -217,6 +251,7 @@ export const Sidebar = ({
           icon: MessageCircle,
           section: 'Marketing Automation',
           moduleKey: 'social_bot',
+          screenKey: 'mkt_social_bot',
         },
         {
           name: 'Kết nối SES / ZNS / SDK',
@@ -224,15 +259,24 @@ export const Sidebar = ({
           icon: ShieldCheck,
           section: 'Kết nối & Hệ thống',
           moduleKey: 'integrations_marketing',
-          adminOnly: true,
+          screenKey: 'marketing_connect',
+        },
+        {
+          name: 'Tài khoản Cá nhân',
+          href: '/account',
+          icon: UserCog,
+          section: 'Kết nối & Hệ thống',
+          moduleKey: 'settings',
+          screenKey: 'account',
         },
         {
           name: 'Quản lý Tài khoản',
           href: '/accounts',
           icon: Users,
           section: 'Kết nối & Hệ thống',
-          moduleKey: 'org_rbac',
-          superAdminOnly: true,
+          moduleKey: 'users',
+          screenKey: 'accounts',
+          ownerRecovery: true,
         },
         {
           name: 'Cài đặt hệ thống',
@@ -240,21 +284,32 @@ export const Sidebar = ({
           icon: Settings,
           section: 'Kết nối & Hệ thống',
           moduleKey: 'settings',
-          adminOnly: true,
+          screenKey: 'settings',
+          ownerRecovery: true,
         }
       );
     } else {
       // Gói 1 (autodata_crm), Gói 3 (growth_combo), Gói 4 (domation_promax)
-      items.push(
-        {
-          name: 'Dashboard',
-          href: '/',
-          icon: LayoutDashboard,
+      items.push({
+        name: 'Dashboard',
+        href: '/',
+        icon: LayoutDashboard,
+        section: 'Auto Data & CRM',
+        moduleKey: 'crm_dashboard',
+        screenKey: 'dashboard',
+        end: true,
+      });
+
+      if (hasModule('erp_projects_tasks')) {
+        items.push({
+          name: 'Bàn làm việc Cá nhân',
+          href: '/workspace',
+          icon: Compass,
           section: 'Auto Data & CRM',
-          moduleKey: 'crm_dashboard',
-          end: true,
-        }
-      );
+          moduleKey: 'erp_projects_tasks',
+          screenKey: 'workspace',
+        });
+      }
 
       if (hasModule('growth_attribution')) {
         items.push({
@@ -263,6 +318,7 @@ export const Sidebar = ({
           icon: TrendingUp,
           section: 'Auto Data & CRM',
           moduleKey: 'growth_attribution',
+          screenKey: 'growth_attribution',
         });
       }
 
@@ -273,6 +329,47 @@ export const Sidebar = ({
           icon: Database,
           section: 'Auto Data & CRM',
           moduleKey: 'leads',
+          screenKey: 'data_list',
+        },
+        {
+          name: 'Lịch hẹn & Hôm nay',
+          href: '/calendar',
+          icon: Calendar,
+          section: 'Auto Data & CRM',
+          moduleKey: 'leads',
+          screenKey: 'calendar',
+        },
+        {
+          name: 'Khách hàng 360°',
+          href: '/contacts',
+          icon: Contact,
+          section: 'Auto Data & CRM',
+          moduleKey: 'leads',
+          screenKey: 'contacts',
+        },
+        {
+          name: 'Pipeline Deals Kanban',
+          href: '/deals',
+          icon: Briefcase,
+          section: 'Auto Data & CRM',
+          moduleKey: 'deals',
+          screenKey: 'deals',
+        },
+        {
+          name: 'Doanh nghiệp B2B',
+          href: '/companies',
+          icon: Building2,
+          section: 'Auto Data & CRM',
+          moduleKey: 'companies',
+          screenKey: 'companies',
+        },
+        {
+          name: 'Hoạt động & Nhắc việc',
+          href: '/activities',
+          icon: CheckSquare,
+          section: 'Auto Data & CRM',
+          moduleKey: 'leads',
+          screenKey: 'activities',
         },
         {
           name: 'Hiệu suất Quảng cáo',
@@ -280,6 +377,7 @@ export const Sidebar = ({
           icon: Megaphone,
           section: 'Auto Data & CRM',
           moduleKey: 'ads_capi',
+          screenKey: 'ads_performance',
         },
         {
           name: 'Ticket Lỗi Data',
@@ -287,7 +385,7 @@ export const Sidebar = ({
           icon: Ticket,
           section: 'Auto Data & CRM',
           moduleKey: 'tickets_data',
-          adminOnly: true,
+          screenKey: 'tickets',
           badgeKey: 'tickets',
         },
         {
@@ -296,7 +394,7 @@ export const Sidebar = ({
           icon: Filter,
           section: 'Auto Data & CRM',
           moduleKey: 'gatekeeper',
-          adminOnly: true,
+          screenKey: 'gatekeeper',
           badgeKey: 'gatekeeper',
         },
         {
@@ -305,7 +403,7 @@ export const Sidebar = ({
           icon: GitBranch,
           section: 'Auto Data & CRM',
           moduleKey: 'rounds',
-          adminOnly: true,
+          screenKey: 'rounds',
         },
         {
           name: 'Đối soát công bằng',
@@ -313,7 +411,7 @@ export const Sidebar = ({
           icon: Scale,
           section: 'Auto Data & CRM',
           moduleKey: 'fair_share',
-          adminOnly: true,
+          screenKey: 'fair_share',
         },
         {
           name: 'Logic xử lý',
@@ -321,7 +419,7 @@ export const Sidebar = ({
           icon: Webhook,
           section: 'Auto Data & CRM',
           moduleKey: 'routing_rules',
-          adminOnly: true,
+          screenKey: 'routing_rules',
         },
         {
           name: terminology.consultantLabel || 'Sale & Đại lý',
@@ -329,7 +427,7 @@ export const Sidebar = ({
           icon: Users,
           section: 'Auto Data & CRM',
           moduleKey: 'consultants',
-          adminOnly: true,
+          screenKey: 'consultants',
         }
       );
 
@@ -342,6 +440,7 @@ export const Sidebar = ({
             icon: LayoutDashboard,
             section: 'Marketing Automation',
             moduleKey: 'mkt_dashboard',
+            screenKey: 'mkt_dashboard',
           },
           {
             name: `${terminology.customerLabel} & Tệp Data/Logic`,
@@ -349,6 +448,7 @@ export const Sidebar = ({
             icon: Layers,
             section: 'Marketing Automation',
             moduleKey: 'audiences',
+            screenKey: 'audiences',
           },
           {
             name: 'Email Templates',
@@ -356,6 +456,7 @@ export const Sidebar = ({
             icon: Mail,
             section: 'Marketing Automation',
             moduleKey: 'email_templates',
+            screenKey: 'mkt_templates',
           },
           {
             name: 'Form Builder & Form Cards',
@@ -363,6 +464,7 @@ export const Sidebar = ({
             icon: FileText,
             section: 'Marketing Automation',
             moduleKey: 'forms_triggers',
+            screenKey: 'mkt_forms',
           },
           {
             name: 'Surveys & Quiz',
@@ -370,6 +472,7 @@ export const Sidebar = ({
             icon: ClipboardCheck,
             section: 'Marketing Automation',
             moduleKey: 'surveys_quiz',
+            screenKey: 'mkt_surveys',
           },
           {
             name: 'Chiến dịch Email / ZNS',
@@ -377,6 +480,7 @@ export const Sidebar = ({
             icon: Send,
             section: 'Marketing Automation',
             moduleKey: 'campaigns',
+            screenKey: 'mkt_campaigns',
           },
           {
             name: 'Automation Flows',
@@ -384,6 +488,7 @@ export const Sidebar = ({
             icon: Workflow,
             section: 'Marketing Automation',
             moduleKey: 'automation_flows',
+            screenKey: 'mkt_flows',
           },
           {
             name: 'Voucher & QR',
@@ -391,6 +496,7 @@ export const Sidebar = ({
             icon: QrCode,
             section: 'Marketing Automation',
             moduleKey: 'vouchers_qr',
+            screenKey: 'mkt_vouchers',
           },
           {
             name: 'Web Tracking',
@@ -398,6 +504,7 @@ export const Sidebar = ({
             icon: Globe,
             section: 'Marketing Automation',
             moduleKey: 'web_tracking',
+            screenKey: 'mkt_web_tracking',
           },
           {
             name: 'Social Bot',
@@ -405,12 +512,18 @@ export const Sidebar = ({
             icon: MessageCircle,
             section: 'Marketing Automation',
             moduleKey: 'social_bot',
+            screenKey: 'mkt_social_bot',
           }
         );
       }
 
-      // ERP PROMAX 9 Core Groups + Education Add-on
-      if (packageCode === 'domation_promax') {
+      // ERP PROMAX Full Suite + Finance/HRM/WorkChat/Education
+      if (
+        packageCode === 'domation_promax' ||
+        hasModule('erp_hrm_org') ||
+        hasModule('erp_projects_tasks') ||
+        hasModule('erp_finance_inventory')
+      ) {
         items.push(
           {
             name: 'DOM Agent (AI Điều hành)',
@@ -418,34 +531,23 @@ export const Sidebar = ({
             icon: Bot,
             section: 'Quản trị ERP PROMAX',
             moduleKey: 'dom_agent',
+            screenKey: 'dom_agent',
           },
           {
-            name: 'Nhân sự & Sơ đồ tổ chức',
-            href: '/erp/hrm',
-            icon: Briefcase,
+            name: 'Bảng tin Nội bộ (Feed)',
+            href: '/feed',
+            icon: Newspaper,
             section: 'Quản trị ERP PROMAX',
-            moduleKey: 'erp_hrm_org',
+            moduleKey: 'erp_workchat',
+            screenKey: 'feed',
           },
           {
-            name: 'Chấm công GPS / Selfie',
-            href: '/erp/attendance',
-            icon: MapPin,
+            name: 'WorkChat & Kênh nhóm',
+            href: '/erp/workchat',
+            icon: MessageSquare,
             section: 'Quản trị ERP PROMAX',
-            moduleKey: 'erp_attendance',
-          },
-          {
-            name: 'Bảng lương & Thuế',
-            href: '/erp/payroll',
-            icon: Wallet,
-            section: 'Quản trị ERP PROMAX',
-            moduleKey: 'erp_payroll',
-          },
-          {
-            name: 'Phê duyệt đa cấp',
-            href: '/erp/approvals',
-            icon: CheckSquare,
-            section: 'Quản trị ERP PROMAX',
-            moduleKey: 'erp_approvals',
+            moduleKey: 'erp_workchat',
+            screenKey: 'erp_workchat',
           },
           {
             name: `${terminology.projectLabel} Kanban / Gantt`,
@@ -453,20 +555,159 @@ export const Sidebar = ({
             icon: FolderKanban,
             section: 'Quản trị ERP PROMAX',
             moduleKey: 'erp_projects_tasks',
+            screenKey: 'erp_projects',
           },
           {
-            name: 'WorkChat & Bảng tin',
-            href: '/erp/workchat',
-            icon: MessageSquare,
+            name: 'Helpdesk CSKH (SLA)',
+            href: '/support-tickets',
+            icon: LifeBuoy,
             section: 'Quản trị ERP PROMAX',
-            moduleKey: 'erp_workchat',
+            moduleKey: 'erp_projects_tasks',
+            screenKey: 'support_tickets',
           },
           {
-            name: 'Tài chính, SO/PO & Kho',
+            name: 'Phê duyệt đa cấp',
+            href: '/erp/approvals',
+            icon: CheckSquare,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_approvals',
+            screenKey: 'erp_approvals',
+          },
+          {
+            name: 'Nhân sự & Sơ đồ tổ chức',
+            href: '/erp/hrm',
+            icon: Users,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_hrm_org',
+            screenKey: 'erp_hrm',
+          },
+          {
+            name: 'Chấm công GPS / Selfie',
+            href: '/erp/attendance',
+            icon: MapPin,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_attendance',
+            screenKey: 'erp_attendance',
+          },
+          {
+            name: 'Bảng lương & Thuế',
+            href: '/erp/payroll',
+            icon: Wallet,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_payroll',
+            screenKey: 'erp_payroll',
+          },
+          {
+            name: 'Phiếu lương Cá nhân',
+            href: '/my-payslips',
+            icon: FileSpreadsheet,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_payroll',
+            screenKey: 'my_payslips',
+          },
+          {
+            name: 'Phiếu Hợp tác Hoa hồng',
+            href: '/cooperation-slips',
+            icon: Handshake,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_payroll',
+            screenKey: 'cooperation_slips',
+          },
+          {
+            name: 'Tài chính Tổng hợp',
             href: '/erp/finance',
             icon: DollarSign,
-            section: 'Quản trị ERP PROMAX',
+            section: 'Tài chính & Kho vận',
             moduleKey: 'erp_finance_inventory',
+            screenKey: 'erp_finance',
+          },
+          {
+            name: 'Báo giá (Quotes)',
+            href: '/quotes',
+            icon: FileText,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'quotes',
+          },
+          {
+            name: 'Đơn bán hàng (SO)',
+            href: '/sales-orders',
+            icon: FileSpreadsheet,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'sales_orders',
+          },
+          {
+            name: 'Đặt cọc & Thu tiền',
+            href: '/deposits',
+            icon: Wallet,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'deposits',
+          },
+          {
+            name: 'Chi phí & Tạm ứng',
+            href: '/expenses',
+            icon: Receipt,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'expenses',
+          },
+          {
+            name: 'Dòng tiền (Cash Flow)',
+            href: '/cash-flow',
+            icon: TrendingUp,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'cash_flow',
+          },
+          {
+            name: 'Kế toán A-Z',
+            href: '/accounting-az',
+            icon: Calculator,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'accounting_az',
+          },
+          {
+            name: 'Hóa đơn & Công nợ',
+            href: '/invoices',
+            icon: FileCheck2,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'invoices',
+          },
+          {
+            name: 'Sản phẩm / Dịch vụ (SKU)',
+            href: '/products',
+            icon: Package,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'products',
+          },
+          {
+            name: 'Nhà cung cấp',
+            href: '/suppliers',
+            icon: Truck,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'suppliers',
+          },
+          {
+            name: 'Kho vận FIFO',
+            href: '/inventory',
+            icon: Boxes,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'inventory',
+          },
+          {
+            name: 'Đơn mua hàng (PO)',
+            href: '/purchase-orders',
+            icon: ClipboardCheck,
+            section: 'Tài chính & Kho vận',
+            moduleKey: 'erp_finance_inventory',
+            screenKey: 'purchase_orders',
           },
           {
             name: 'Tài liệu Cloud OCR',
@@ -474,6 +715,7 @@ export const Sidebar = ({
             icon: FileCheck2,
             section: 'Quản trị ERP PROMAX',
             moduleKey: 'erp_cloud_ocr',
+            screenKey: 'erp_cloud_files',
           }
         );
 
@@ -484,6 +726,7 @@ export const Sidebar = ({
             icon: GraduationCap,
             section: 'Quản trị ERP PROMAX',
             moduleKey: 'education_addon',
+            screenKey: 'erp_education',
           });
         }
       }
@@ -495,7 +738,7 @@ export const Sidebar = ({
         icon: Link2,
         section: 'Cài đặt hệ thống',
         moduleKey: 'integrations_autodata',
-        adminOnly: true,
+        screenKey: 'integrations',
       });
 
       if (hasModule('integrations_marketing')) {
@@ -505,18 +748,27 @@ export const Sidebar = ({
           icon: ShieldCheck,
           section: 'Cài đặt hệ thống',
           moduleKey: 'integrations_marketing',
-          adminOnly: true,
+          screenKey: 'marketing_connect',
         });
       }
 
       items.push(
         {
+          name: 'Tài khoản Cá nhân',
+          href: '/account',
+          icon: UserCog,
+          section: 'Cài đặt hệ thống',
+          moduleKey: 'settings',
+          screenKey: 'account',
+        },
+        {
           name: 'Quản lý Tài khoản',
           href: '/accounts',
           icon: ShieldCheck,
           section: 'Cài đặt hệ thống',
-          moduleKey: 'org_rbac',
-          superAdminOnly: true,
+          moduleKey: 'users',
+          screenKey: 'accounts',
+          ownerRecovery: true,
         },
         {
           name: 'Cài đặt hệ thống',
@@ -524,19 +776,31 @@ export const Sidebar = ({
           icon: Settings,
           section: 'Cài đặt hệ thống',
           moduleKey: 'settings',
-          adminOnly: true,
+          screenKey: 'settings',
+          ownerRecovery: true,
         }
       );
     }
 
     return items.filter((item) => {
+      if (item.ownerRecovery && isTenantOwner) return true;
+      if (item.screenKey === 'account') return canScreen('account');
       if (!hasModule(item.moduleKey)) return false;
       if (!can(item.moduleKey, 'view')) return false;
-      if (item.superAdminOnly && user?.role !== 'superadmin') return false;
-      if (item.adminOnly && user?.role !== 'admin' && user?.role !== 'superadmin') return false;
+      if (!canScreen(item.screenKey)) return false;
       return true;
     });
-  }, [packageCode, terminology.customerLabel, terminology.consultantLabel, terminology.projectLabel, educationAddon, hasModule, can, user?.role]);
+  }, [
+    packageCode,
+    terminology.customerLabel,
+    terminology.consultantLabel,
+    terminology.projectLabel,
+    educationAddon,
+    hasModule,
+    can,
+    canScreen,
+    isTenantOwner,
+  ]);
 
   const rawBrandLogo =
     typeof tenantSettings?.brand_logo_url === 'string' && tenantSettings.brand_logo_url.trim()
@@ -716,7 +980,7 @@ export const Sidebar = ({
             borderBottom: '1px solid var(--color-border-light)',
           }}
         >
-          {user?.role === 'sale' ? null : isCollapsed ? (
+          {!canQuickAction(packageCode === 'marketing_standalone' ? 'create_audience' : 'quick_add_lead') ? null : isCollapsed ? (
             <button
               type="button"
               onClick={handlePrimaryQuickAction}

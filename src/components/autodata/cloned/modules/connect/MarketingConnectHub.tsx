@@ -1,24 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   CheckCircle2,
-  Code2,
   Copy,
-  Globe,
-  KeyRound,
   Link2,
-  Mail,
-  MessageCircle,
   Send,
   ShieldCheck,
-  Smartphone,
-  Sparkles,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Badge, Card, FormCard, PillTabs } from '../../components/ui/AutoDataLoadingModal';
 import { BrandChannelLogo } from '../../components/ui/BrandChannelLogo';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
-import { apiRequest } from '../../../autodataApi';
+import { StudioBuilderSkeleton } from '../../components/ui/Skeleton';
+import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 
@@ -30,7 +24,50 @@ export const MarketingConnectHub: React.FC = () => {
   const navigate = useNavigate();
 
   const [activeWizard, setActiveWizard] = useState<WizardKey>('ses_smtp');
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await apiRequest<{
+          vault_integrations?: Array<{ integration_type?: string; config?: Record<string, unknown> }>;
+          email_config?: { provider?: string; host?: string; port?: number | string; sender_email?: string; sender_name?: string };
+        }>('/integrations/overview', { token, tenantSlug }).catch(() => null);
+        if (cancelled || !res) return;
+        if (res.email_config) {
+          if (res.email_config.host) setSmtpHost(res.email_config.host);
+          if (res.email_config.port) setSmtpPort(String(res.email_config.port));
+          if (res.email_config.sender_email) setFromEmail(res.email_config.sender_email);
+          if (res.email_config.sender_name) setFromName(res.email_config.sender_name);
+        }
+        if (Array.isArray(res.vault_integrations)) {
+          const dkim = res.vault_integrations.find((v) => v.integration_type === 'custom_domain_dkim');
+          if (dkim?.config?.domain) {
+            setSendingDomain(String(dkim.config.domain));
+            setDnsVerified(Boolean(dkim.config.verified));
+          }
+          const zalo = res.vault_integrations.find((v) => v.integration_type === 'zalo_zns');
+          if (zalo?.config) {
+            if (zalo.config.oaId) setOaId(String(zalo.config.oaId));
+            if (zalo.config.zaloAppId) setZaloAppId(String(zalo.config.zaloAppId));
+            if (zalo.config.znsWelcomeTplId) setZnsWelcomeTplId(String(zalo.config.znsWelcomeTplId));
+          }
+          const sms = res.vault_integrations.find((v) => v.integration_type === 'sms_brandname');
+          if (sms?.config) {
+            if (sms.config.smsProvider) setSmsProvider(String(sms.config.smsProvider));
+            if (sms.config.smsBrandname) setSmsBrandname(String(sms.config.smsBrandname));
+          }
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token, tenantSlug]);
 
   // 1. SES / SMTP State
   const [mailMode, setMailMode] = useState<'aws_ses' | 'smtp'>('aws_ses');
@@ -85,7 +122,7 @@ export const MarketingConnectHub: React.FC = () => {
     integrationType: string,
     configPayload: Record<string, unknown>,
     label: string
-  ) => {
+  ): Promise<boolean> => {
     setSaving(true);
     try {
       await apiRequest(`/integrations/vault/${encodeURIComponent(integrationType)}`, {
@@ -95,8 +132,10 @@ export const MarketingConnectHub: React.FC = () => {
         body: configPayload,
       });
       toast.success(`Đã mã hóa AES-256-GCM & lưu cấu hình ${label} riêng cho Workspace!`);
-    } catch {
-      toast.success(`Đã lưu cấu hình ${label} vào Kho Khóa Vault của Tenant!`);
+      return true;
+    } catch (err) {
+      toast.error(getErrorMessage(err, `Không thể lưu cấu hình ${label} vào Vault.`));
+      return false;
     } finally {
       setSaving(false);
     }
@@ -115,6 +154,10 @@ export const MarketingConnectHub: React.FC = () => {
       ? [{ key: 'enterprise_vault' as const, label: 'Hóa đơn Điện tử & AI BYOK', icon: <BrandChannelLogo brand="gemini" size={17} /> }]
       : []),
   ];
+
+  if (loading) {
+    return <StudioBuilderSkeleton />;
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -295,9 +338,11 @@ export const MarketingConnectHub: React.FC = () => {
               </div>
               <button
                 type="button"
+                disabled={saving}
                 onClick={() => {
-                  setDnsVerified(true);
-                  void saveVaultIntegration('custom_domain_dkim', { domain: sendingDomain, verified: true }, 'Domain DKIM/SPF');
+                  void saveVaultIntegration('custom_domain_dkim', { domain: sendingDomain, verified: true }, 'Domain DKIM/SPF').then((ok) => {
+                    if (ok) setDnsVerified(true);
+                  });
                 }}
                 className="btn-inkica-primary"
                 style={{ height: 44, padding: '0 1.25rem', borderRadius: 14, border: 'none', color: '#FFFFFF', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}

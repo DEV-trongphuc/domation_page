@@ -3979,7 +3979,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                 label={t("Áp dụng cho Vòng phân bổ")}
                 options={roundOptions}
                 value={ruleRounds}
-                onChange={setRuleRounds}
+                onChange={(v) => setRuleRounds(Array.isArray(v) ? v : [])}
                 multiple={true}
                 searchable={true}
                 placeholder={t("Chọn vòng phân bổ...")}
@@ -3992,7 +3992,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                 label={t("Áp dụng cho Đại lý")}
                 options={saleOptions}
                 value={ruleSales}
-                onChange={setRuleSales}
+                onChange={(v) => setRuleSales(Array.isArray(v) ? v : [])}
                 multiple={true}
                 searchable={true}
                 placeholder={t("Chọn Đại lý...")}
@@ -4005,7 +4005,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                 label={t("Áp dụng cho Nguồn dữ liệu (Sources)")}
                 options={connectionOptions}
                 value={ruleConnections}
-                onChange={setRuleConnections}
+                onChange={(v) => setRuleConnections(Array.isArray(v) ? v : [])}
                 multiple={true}
                 searchable={true}
                 placeholder={t("Chọn nguồn dữ liệu...")}

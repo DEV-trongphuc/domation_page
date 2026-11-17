@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { registerLoadedTranslations } from '../utils/api';
 
@@ -11,9 +12,13 @@ interface LanguageContextType {
 }
 
 const GLOBAL_LANG_CTX_KEY = '__DOMATION_AUTODATA_LANGUAGE_CONTEXT__';
+const langGlobalStore = globalThis as unknown as Record<
+  string,
+  React.Context<LanguageContextType | undefined> | undefined
+>;
 const LanguageContext: React.Context<LanguageContextType | undefined> =
-  ((globalThis as any)[GLOBAL_LANG_CTX_KEY] as React.Context<LanguageContextType | undefined>) ||
-  ((globalThis as any)[GLOBAL_LANG_CTX_KEY] = createContext<LanguageContextType | undefined>(undefined));
+  langGlobalStore[GLOBAL_LANG_CTX_KEY] ||
+  (langGlobalStore[GLOBAL_LANG_CTX_KEY] = createContext<LanguageContextType | undefined>(undefined));
 
 const viOverrides: Record<string, string> = {
   "Hoạt động (Nhật ký)": "Hoạt động"
@@ -25,23 +30,18 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   });
 
   const [loadedTranslations, setLoadedTranslations] = useState<Record<string, Record<string, string>> | null>(null);
-  const [isTranslationLoading, setIsTranslationLoading] = useState(false);
+  const [translationLoadFailed, setTranslationLoadFailed] = useState(false);
 
   // Lazy-load translations bundle on-demand
   useEffect(() => {
-    if (language === 'vi') {
-      setIsTranslationLoading(false);
-      return;
+    if (language === 'vi' || loadedTranslations) {
+      return undefined;
     }
 
-    if (loadedTranslations) {
-      setIsTranslationLoading(false);
-      return;
-    }
-
-    setIsTranslationLoading(true);
+    let cancelled = false;
     import('../utils/translations')
       .then((module) => {
+        if (cancelled) return;
         const dicts = {
           en: module.en,
           ja: module.ja,
@@ -49,13 +49,21 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         };
         registerLoadedTranslations(dicts);
         setLoadedTranslations(dicts);
-        setIsTranslationLoading(false);
+        setTranslationLoadFailed(false);
       })
       .catch((err) => {
-        console.error('Failed to load translations dynamically:', err);
-        setIsTranslationLoading(false);
+        if (!cancelled) {
+          console.error('Failed to load translations dynamically:', err);
+          setTranslationLoadFailed(true);
+        }
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [language, loadedTranslations]);
+
+  const isTranslationLoading = language !== 'vi' && loadedTranslations === null && !translationLoadFailed;
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);

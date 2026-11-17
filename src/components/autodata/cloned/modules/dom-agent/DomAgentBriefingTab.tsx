@@ -10,12 +10,12 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
-  AutoDataLoadingModal,
   Badge,
   Card,
   EmptyState,
   FormCard,
 } from '../../components/ui/AutoDataLoadingModal';
+import { CardSkeleton, KpiCardSkeleton } from '../../components/ui/Skeleton';
 import { apiRequest, formatShortDate, formatVnd, getErrorMessage } from '../../../autodataApi';
 import type { DomMorningBriefingPayload } from './domAgentTypes';
 
@@ -95,12 +95,14 @@ export const DomAgentBriefingTab: React.FC<DomAgentBriefingTabProps> = ({
 
   if (loading && !briefing) {
     return (
-      <AutoDataLoadingModal
-        inline
-        isOpen
-        message={`${agentName} đang tổng hợp Bản tin Điều hành buổi sáng...`}
-        subMessage="Quét dữ liệu trực tiếp theo gói cước SaaS & phạm vi RBAC của bạn"
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <CardSkeleton height={150} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+          <KpiCardSkeleton />
+          <KpiCardSkeleton />
+          <KpiCardSkeleton />
+        </div>
+      </div>
     );
   }
 

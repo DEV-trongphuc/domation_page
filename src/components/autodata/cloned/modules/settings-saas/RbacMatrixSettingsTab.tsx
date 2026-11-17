@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Badge, Card, PillTabs } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest } from '../../../autodataApi';
+import { apiRequest, getErrorMessage } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   DATA_SCOPES_CATALOG,
@@ -28,6 +28,7 @@ import {
   type PermissionMatrixEntry,
   type UserPermissionOverride,
 } from './saasSettingsTypes';
+import { RoleScreenQuickActionPanel } from './RoleScreenQuickActionPanel';
 
 interface RbacMatrixSettingsTabProps {
   roles: OrgRole[];
@@ -132,8 +133,8 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
         body: { permissions: currentMatrixRows },
       });
       toast.success('Đã lưu Ma trận Phân quyền 7 Scopes × 11 Actions thành công!');
-    } catch {
-      toast.success('Đã áp dụng Ma trận Phân quyền!');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể lưu Ma trận Phân quyền.'));
     } finally {
       setSavingMatrix(false);
     }
@@ -166,22 +167,22 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
       setRoles((prev) => [...prev, created]);
       setSelectedRoleId(created.id);
       toast.success(`Đã tạo vai trò tùy chỉnh "${created.name}"!`);
-    } catch {
-      const fallback: OrgRole = { id: `role_${Date.now()}`, ...payload };
-      setRoles((prev) => [...prev, fallback]);
-      setSelectedRoleId(fallback.id);
-      toast.success(`Đã tạo vai trò "${fallback.name}"!`);
+      setNewRoleName('');
+      setNewRoleDesc('');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tạo vai trò tùy chỉnh.'));
     }
-    setNewRoleName('');
-    setNewRoleDesc('');
   };
 
   const handleDeleteRole = async (roleId: string) => {
+    const prevRoles = roles;
     setRoles((prev) => prev.filter((r) => r.id !== roleId));
     try {
       await apiRequest(`/org-rbac/roles/${roleId}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã xóa vai trò.');
+    } catch (err) {
+      setRoles(prevRoles);
+      toast.error(getErrorMessage(err, 'Không thể xóa vai trò.'));
     }
   };
 
@@ -205,30 +206,21 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
       });
       setUserOverrides((prev) => [created, ...prev]);
       toast.success('Đã thiết lập quyền ngoại lệ cá nhân (Zero Short-Circuit)!');
-    } catch {
-      setUserOverrides((prev) => [
-        {
-          id: `ov_${Date.now()}`,
-          user_id: body.user_id,
-          user_label: body.user_id,
-          module_key: body.module_key,
-          effect: body.effect,
-          data_scope: body.data_scope,
-          actions: body.actions,
-        },
-        ...prev,
-      ]);
-      toast.success('Đã lưu quyền ngoại lệ cá nhân!');
+      setOvUserId('');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể thiết lập quyền ngoại lệ cá nhân.'));
     }
-    setOvUserId('');
   };
 
   const handleDeleteOverride = async (id: string) => {
+    const prevOv = userOverrides;
     setUserOverrides((prev) => prev.filter((o) => o.id !== id));
     try {
       await apiRequest(`/org-rbac/user-overrides/${id}`, { method: 'DELETE', token, tenantSlug });
-    } catch {
-      // ignore
+      toast.success('Đã gỡ quyền ngoại lệ cá nhân.');
+    } catch (err) {
+      setUserOverrides(prevOv);
+      toast.error(getErrorMessage(err, 'Không thể gỡ quyền ngoại lệ cá nhân.'));
     }
   };
 
@@ -478,6 +470,18 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
             </table>
           </div>
         </Card>
+      )}
+
+      {mode === 'roles' && roles.length > 0 && (
+        <RoleScreenQuickActionPanel
+          roles={roles}
+          selectedRoleId={selectedRoleId || roles[0]?.id || ''}
+          onSelectRole={setSelectedRoleId}
+          onRoleSaved={(updated) => {
+            setRoles((prev) => prev.map((r) => (r.id === updated.id ? updated : r)));
+          }}
+          canManage={true}
+        />
       )}
 
       {mode === 'overrides' && (

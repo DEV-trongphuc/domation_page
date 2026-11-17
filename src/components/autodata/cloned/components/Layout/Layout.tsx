@@ -10,9 +10,9 @@ import { ProfileModal } from '../ProfileModal';
 import { CustomModal } from '../ui/CustomModal';
 import { CustomSelect } from '../ui/CustomSelect';
 import { Avatar } from '../ui/Avatar';
+import { TimelineSkeleton } from '../ui/Skeleton';
 import { AIChatbot } from '../ui/AIChatbot';
 import { LuxuryBackgroundDecor } from '../ui/LuxuryBackgroundDecor';
-import { useAuth } from '../../contexts/AuthContext';
 import { fetchAPI, parseServerDateVN, VN_TIMEZONE } from '../../utils/api';
 import { 
   Ticket as TicketIcon, 
@@ -23,7 +23,6 @@ import {
   AlertTriangle, 
   Settings, 
   LogIn, 
-  RefreshCw, 
   ChevronDown, 
   ChevronUp, 
   Copy, 
@@ -42,9 +41,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   // Notification states
-  const { user } = useAuth();
-  const { hasModule } = useEntitlement();
+  const { hasModule, can, canScreen, isTenantOwner } = useEntitlement();
   const hasTicketsModule = hasModule('tickets_data');
+  const hasGatekeeperModule = hasModule('gatekeeper');
   const navigate = useNavigate();
   const [pendingTicketsCount, setPendingTicketsCount] = useState<number>(0);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState<boolean>(false);
@@ -223,8 +222,16 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (!hasTicketsModule) return;
-    if (user?.role === 'admin' || user?.role === 'superadmin') {
+    const canModerateTickets =
+      hasTicketsModule &&
+      (isTenantOwner || can('tickets_data', 'approve') || canScreen('tickets'));
+    const canModerateGatekeeper =
+      hasGatekeeperModule &&
+      (isTenantOwner || can('gatekeeper', 'approve') || canScreen('gatekeeper'));
+
+    if (!canModerateTickets && !canModerateGatekeeper) return;
+
+    if (canModerateTickets) {
       fetchAPI('get_reports&status=pending&date=all&pageSize=1')
         .then(res => {
           if (res.success) {
@@ -236,7 +243,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           }
         })
         .catch(err => console.error('Error loading ticket notification:', err));
+    }
 
+    if (canModerateGatekeeper) {
       fetchAPI('get_held_leads&pageSize=1&date=all')
         .then(res => {
           if (res.success) {
@@ -249,7 +258,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         })
         .catch(err => console.error('Error loading held leads notification:', err));
     }
-  }, [user, hasTicketsModule]);
+  }, [hasTicketsModule, hasGatekeeperModule, isTenantOwner, can, canScreen]);
 
   const handleViewTickets = () => {
     setIsTicketModalOpen(false);
@@ -925,7 +934,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                       { value: 'email', label: 'Email', icon: <Mail size={12} style={{ color: 'var(--color-info)' }} /> }
                     ]}
                     value={notifFilterChannel}
-                    onChange={(val) => setNotifFilterChannel(val)}
+                    onChange={(val) => setNotifFilterChannel(String(val))}
                   />
                 </div>
 
@@ -941,7 +950,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                       { value: 'admin', label: t('Tin Admin check'), icon: <ShieldAlert size={12} style={{ color: 'var(--color-danger)' }} /> }
                     ]}
                     value={notifFilterType}
-                    onChange={(val) => setNotifFilterType(val)}
+                    onChange={(val) => setNotifFilterType(String(val))}
                   />
                 </div>
 
@@ -961,7 +970,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                       }))
                     ]}
                     value={notifFilterSale}
-                    onChange={(val) => setNotifFilterSale(val)}
+                    onChange={(val) => setNotifFilterSale(String(val))}
                     showAvatars={true}
                     searchable={true}
                     placeholder={t("Chọn Đại lý...")}
@@ -973,10 +982,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               {/* Logs Content list */}
               <div style={{ flex: 1, overflowY: 'auto', paddingRight: 4 }}>
                 {isNotifLogsLoading ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 12 }}>
-                    <RefreshCw size={32} className="spin" style={{ color: 'var(--color-primary)' }} />
-                    <span style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>{t('Đang tải log thông báo...')}</span>
-                  </div>
+                  <TimelineSkeleton count={4} />
                 ) : notifLogs.length > 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {notifLogs.map((log) => {

@@ -9,9 +9,14 @@ export interface OrgBranch {
   representative_name?: string;
   representative_title?: string;
   address?: string;
+  bank_name?: string;
+  bank_account?: string;
+  bank_holder?: string;
+  vietqr_template?: string;
   gps_lat?: number | null;
   gps_lng?: number | null;
   gps_radius_meters?: number;
+  branch_ip_whitelist?: string[];
   is_headquarters?: boolean;
 }
 
@@ -49,6 +54,9 @@ export interface OrgRole {
   role_key: string;
   description?: string;
   default_data_scope?: DataScopeKey;
+  default_route?: string | null;
+  screen_access?: Record<string, boolean>;
+  quick_actions?: Record<string, boolean>;
   is_system?: boolean;
 }
 
@@ -117,6 +125,136 @@ export interface PolicyDocumentItem {
   last_synced_at?: string | null;
   last_synced_dom_agent_at?: string | null;
   updated_at?: string;
+}
+
+export interface CustomFieldDef {
+  id: string;
+  entity_type: string;
+  field_key: string;
+  field_label: string;
+  field_type: 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'checkbox' | 'url' | 'email' | 'phone' | 'textarea';
+  options_json: string[];
+  is_required: boolean;
+  is_filterable: boolean;
+  show_in_table: boolean;
+  default_value?: string | null;
+  placeholder?: string | null;
+  sort_order: number;
+  is_active: boolean;
+}
+
+export interface EntityTabDef {
+  id: string;
+  entity_type: string;
+  tab_key: string;
+  label: string;
+  icon_name: string;
+  tab_type: 'fields' | 'timeline' | 'files' | 'checklist' | 'embed';
+  config_json: Record<string, unknown>;
+  allowed_role_ids: string[];
+  sort_order: number;
+  is_active: boolean;
+}
+
+export interface LeadScoringRuleDef {
+  id: string;
+  name: string;
+  description?: string | null;
+  trigger_type: 'field_match' | 'stage_reached' | 'email_opened' | 'form_submitted' | 'web_visit';
+  condition_json: { field?: string; operator?: string; value?: string };
+  score_delta: number;
+  max_applications: number;
+  priority: number;
+  is_active: boolean;
+}
+
+export interface CustomKpiDef {
+  id: string;
+  kpi_key: string;
+  name: string;
+  description?: string | null;
+  module_key: string;
+  source_entity: string;
+  metric_op: 'COUNT' | 'SUM' | 'AVG' | 'MIN' | 'MAX' | 'CONVERSION_RATE';
+  target_field?: string | null;
+  target_value: number;
+  unit: string;
+  color_hex: string;
+  is_active: boolean;
+  computed_value?: number | null;
+}
+
+export interface NotificationRuleDef {
+  id: string;
+  event_key: string;
+  name: string;
+  description?: string | null;
+  recipient_strategy: 'assigned_and_managers' | 'role_based' | 'department_based' | 'all_admins';
+  target_roles_json: string[];
+  target_departments_json: string[];
+  include_owner: boolean;
+  include_team_leader: boolean;
+  channels_json: {
+    in_app: boolean;
+    email: boolean;
+    zalo: boolean;
+    telegram: boolean;
+  };
+  is_active: boolean;
+}
+
+export interface SystemEmailTemplateDef {
+  id: string;
+  template_key: string;
+  name: string;
+  category: string;
+  subject_template: string;
+  body_html: string;
+  body_text?: string | null;
+  variables_json: string[];
+  is_system?: boolean;
+  is_active: boolean;
+}
+
+export interface CronStatusJob {
+  id?: string;
+  subroutine_key: string;
+  label?: string;
+  schedule?: string;
+  status: 'success' | 'running' | 'failed' | 'idle';
+  items_processed: number;
+  duration_ms: number;
+  last_run_at?: string | null;
+  started_at?: string | null;
+  error_message?: string | null;
+}
+
+export interface WorkflowTaskTemplateDef {
+  id: string;
+  name: string;
+  trigger_stage_id?: string | null;
+  task_title: string;
+  due_hours: number;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  assignee_strategy: 'lead_owner' | 'team_leader' | 'specific_role';
+  is_active: boolean;
+}
+
+export interface ApprovalWorkflowStepDef {
+  step_order: number;
+  approver_type: 'department_manager' | 'team_leader' | 'role' | 'position_rank' | 'specific_user';
+  target_id?: string | null;
+  label?: string;
+}
+
+export interface ApprovalWorkflowDto {
+  id: string;
+  name: string;
+  entity_type: string;
+  min_amount: number;
+  max_amount?: number | null;
+  steps_json: ApprovalWorkflowStepDef[];
+  is_active: boolean;
 }
 
 export interface OrgRbacBootstrapPayload {

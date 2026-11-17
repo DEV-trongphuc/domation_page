@@ -2,10 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   Send, CheckCircle2, AlertTriangle, RefreshCw,
   Settings2, Database, RotateCcw, Eye, ShieldAlert,
-  Plus, Search, ChevronLeft, ChevronRight, Check
+  Plus, Search, ChevronLeft, ChevronRight, Check,
+  Play, ShieldCheck, Sliders, Upload, Users
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchAPI } from '../utils/api';
+import { apiRequest, getErrorMessage } from '../../autodataApi';
 import { useAuth } from '../contexts/AuthContext';
 import { CustomSelect } from './ui/CustomSelect';
 import { CustomModal } from './ui/CustomModal';
@@ -178,8 +180,65 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
   const [retryingLogId, setRetryingLogId] = useState<number | null>(null);
   const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
 
-  const { tenantSettings } = useAuth();
+  const { tenantSettings, token, tenantSlug } = useAuth();
   const defaultClosedDealVnd = Number(tenantSettings?.default_closed_deal_value_vnd || 50000000);
+
+  // +5 Wave A CAPI Growth Modules State
+  const [capiSubTab, setCapiSubTab] = useState<'logs' | 'backfill_audiences' | 'adsets_phone_farm'>('logs');
+  const [bfFromDate, setBfFromDate] = useState(() => {
+    const d = new Date(Date.now() - 7 * 86400_000);
+    return d.toISOString().slice(0, 10);
+  });
+  const [bfToDate, setBfToDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [bfPreview, setBfPreview] = useState<{
+    from_date: string;
+    to_date: string;
+    total_eligible: number;
+    within_7d_count: number;
+    by_event: Record<string, number>;
+    sample_leads: Array<{
+      lead_id: string;
+      name: string;
+      stage_name: string | null;
+      event_name: string;
+      within_7d: boolean;
+      created_at: string;
+    }>;
+  } | null>(null);
+  const [loadingBf, setLoadingBf] = useState(false);
+  const [runningBfRun, setRunningBfRun] = useState(false);
+
+  const [audPreview, setAudPreview] = useState<{
+    total_contacts: number;
+    valid_phone_count: number;
+    valid_email_count: number;
+    schema: string[];
+    estimated_match_rate_pct: number;
+  } | null>(null);
+  const [audName, setAudName] = useState('DOMATION Qualified Audience');
+  const [syncingAud, setSyncingAud] = useState(false);
+  const [audSyncResult, setAudSyncResult] = useState<{
+    custom_audience_id: string;
+    audience_name: string;
+    synced_count: number;
+  } | null>(null);
+
+  const [adsetList, setAdsetList] = useState<Array<{ id: string; name: string; campaign_name?: string; status?: string }>>([]);
+  const [manualAdsetId, setManualAdsetId] = useState('');
+  const [optimizeBudgetVnd, setOptimizeBudgetVnd] = useState('500000');
+  const [optimizeReason, setOptimizeReason] = useState('Tối ưu ROAS theo tín hiệu CAPI');
+  const [optimizingAdsetId, setOptimizingAdsetId] = useState<string | null>(null);
+
+  const [pfStats, setPfStats] = useState<{
+    total_blocked: number;
+    synced_count: number;
+    pending_sync_count: number;
+    matched_leads_count: number;
+  } | null>(null);
+  const [pfPhonesInput, setPfPhonesInput] = useState('');
+  const [pfReasonInput, setPfReasonInput] = useState('Phone Farm / Virtual SIM Spam Exclusion');
+  const [importingPf, setImportingPf] = useState(false);
+  const [syncingPfMeta, setSyncingPfMeta] = useState(false);
 
   // Settings State (Single Active Primary Pixel only)
   const [capiEnabled, setCapiEnabled] = useState<boolean>(true);
@@ -195,7 +254,18 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
 
   // Discovery & Metrics
   const [availablePixels, setAvailablePixels] = useState<AvailablePixel[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<{
+    total_sent_ok?: number;
+    positive_sent_ok?: number;
+    spam_sent_ok?: number;
+    pending_backfill_total?: number;
+    pending_backfill_positive?: number;
+    pending_backfill_spam?: number;
+    leads_with_meta_id?: number;
+    leads_with_fbclid?: number;
+    leads_with_ad_id?: number;
+    failed_count?: number;
+  } | null>(null);
   const [logs, setLogs] = useState<CapiLogItem[]>([]);
 
   // Add Custom Event Inline (inside Settings Modal)
@@ -229,20 +299,45 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       } else {
         toast.error(res.message || 'Không tải được dữ liệu CAPI');
       }
-    } catch (e: any) {
-      toast.error(e.message || 'Lỗi kết nối máy chủ');
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, 'Lỗi kết nối máy chủ'));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadCapiDashboard();
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetchAPI('get_capi_dashboard');
+        if (!active) return;
+        if (res.success && res.config) {
+          const cfg = res.config;
+          setCapiEnabled(!!cfg.capi_enabled);
+          setPixelId(cfg.capi_pixel_id || '');
+          setOnlyMetaLeads(!!cfg.capi_only_meta_leads);
+          setHasCustomToken(!!cfg.has_custom_capi_token);
+          setMaskedToken(cfg.capi_access_token_masked || '');
+          setHasMetaAdsToken(!!cfg.has_meta_ads_token);
+          setClosedValueVnd(String(cfg.capi_closed_value_vnd || defaultClosedDealVnd));
+          setEventTriggers(cfg.capi_event_triggers || DEFAULT_PRESET_TRIGGERS);
+          setCustomEvents(Array.isArray(cfg.capi_custom_events) ? cfg.capi_custom_events : []);
+          setAvailablePixels(Array.isArray(res.available_pixels) ? res.available_pixels : []);
+          setStats(res.stats || null);
+          setLogs(Array.isArray(res.logs) ? res.logs : []);
+        }
+      } catch (e: unknown) {
+        if (active) toast.error(getErrorMessage(e, 'Lỗi kết nối máy chủ'));
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    setLogPage(1);
-  }, [logFilter, logSearch]);
 
   const handleSaveSettings = async (
     overrideTriggers?: Record<string, string>,
@@ -251,7 +346,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
   ) => {
     setSaving(true);
     try {
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         capi_enabled: capiEnabled,
         capi_pixel_id: pixelId.trim(),
         capi_secondary_pixel_id: '',
@@ -282,8 +377,8 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       } else {
         toast.error(res.message || 'Lỗi lưu cấu hình CAPI');
       }
-    } catch (e: any) {
-      toast.error(e.message || 'Lỗi kết nối');
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, 'Lỗi kết nối'));
     } finally {
       setSaving(false);
     }
@@ -346,8 +441,8 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       } else {
         toast.error(res.message || 'Đồng bộ định danh thất bại');
       }
-    } catch (e: any) {
-      toast.error(e.message || 'Lỗi kết nối');
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, 'Lỗi kết nối'));
     } finally {
       setSyncingIds(false);
     }
@@ -371,37 +466,221 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
       }
       await loadCapiDashboard(true);
       if (onSyncCompleted) onSyncCompleted();
-    } catch (e: any) {
-      toast.error(e.message || 'Lỗi đồng bộ CAPI');
+    } catch (e: unknown) {
+      toast.error(getErrorMessage(e, 'Lỗi đồng bộ CAPI'));
     } finally {
       setSyncingCapi(false);
     }
   };
 
   const handleRetryLog = async (log: CapiLogItem) => {
-    if (!log.lead_id) return;
     setRetryingLogId(log.id);
     try {
-      const res = await fetchAPI('send_single_lead_capi', {
+      await apiRequest(`/integrations/capi/retry/${log.id}`, {
         method: 'POST',
-        body: JSON.stringify({
-          lead_id: log.lead_id,
-          stage: log.quality_status || undefined,
-          force_retry: true
-        })
+        token,
+        tenantSlug,
       });
-      if (res.success) {
-        toast.success(`Đã gửi lại sự kiện ${res.event_name} cho Lead #${log.lead_id}`);
-      } else {
-        const firstErr = res.results?.[0]?.response?.error?.message || res.reason || res.message || 'Gửi lại thất bại';
-        toast.error(firstErr);
-      }
+      toast.success(`Đã gửi lại sự kiện ${log.event_name} cho Lead #${log.lead_id}`);
       await loadCapiDashboard(true);
       if (onSyncCompleted) onSyncCompleted();
-    } catch (e: any) {
-      toast.error(e.message || 'Lỗi kết nối');
+    } catch (apiErr) {
+      // Fallback to legacy single retry by lead_id if numeric legacy row ID differs
+      if (log.lead_id) {
+        try {
+          const res = await fetchAPI('send_single_lead_capi', {
+            method: 'POST',
+            body: JSON.stringify({
+              lead_id: log.lead_id,
+              stage: log.quality_status || undefined,
+              force_retry: true
+            })
+          });
+          if (res.success) {
+            toast.success(`Đã gửi lại sự kiện ${res.event_name} cho Lead #${log.lead_id}`);
+            await loadCapiDashboard(true);
+            if (onSyncCompleted) onSyncCompleted();
+            return;
+          }
+          toast.error(res.reason || res.message || getErrorMessage(apiErr, 'Gửi lại CAPI thất bại'));
+        } catch (err) {
+          toast.error(getErrorMessage(err, 'Lỗi kết nối khi gửi lại CAPI'));
+        }
+      } else {
+        toast.error(getErrorMessage(apiErr, 'Không thể gửi lại sự kiện CAPI'));
+      }
     } finally {
       setRetryingLogId(null);
+    }
+  };
+
+  const loadBackfillAndAudiencePreview = async () => {
+    setLoadingBf(true);
+    try {
+      const [bfRes, audRes] = await Promise.all([
+        apiRequest<typeof bfPreview>(
+          `/integrations/capi/backfill/preview?from_date=${encodeURIComponent(bfFromDate)}&to_date=${encodeURIComponent(bfToDate)}`,
+          { token, tenantSlug }
+        ),
+        apiRequest<typeof audPreview>('/integrations/capi/audiences/preview', { token, tenantSlug }),
+      ]);
+      if (bfRes) setBfPreview(bfRes);
+      if (audRes) setAudPreview(audRes);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tải dữ liệu Backfill & Custom Audience Preview'));
+    } finally {
+      setLoadingBf(false);
+    }
+  };
+
+  const handleRunCapiBackfill = async () => {
+    setRunningBfRun(true);
+    try {
+      const res = await apiRequest<{ processed: number; succeeded: number; failed: number }>(
+        '/integrations/capi/backfill/run',
+        {
+          method: 'POST',
+          token,
+          tenantSlug,
+          body: { from_date: bfFromDate, to_date: bfToDate, limit: 200 },
+        }
+      );
+      toast.success(
+        `Đã chạy Backfill CAPI: xử lý ${res?.processed ?? 0} lead (thành công ${res?.succeeded ?? 0}, lỗi ${res?.failed ?? 0})`
+      );
+      await Promise.all([loadBackfillAndAudiencePreview(), loadCapiDashboard(true)]);
+      if (onSyncCompleted) onSyncCompleted();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Chạy Backfill CAPI thất bại'));
+    } finally {
+      setRunningBfRun(false);
+    }
+  };
+
+  const handleSyncCustomAudience = async () => {
+    if (!audName.trim()) {
+      toast.error('Vui lòng nhập Tên Custom Audience');
+      return;
+    }
+    setSyncingAud(true);
+    try {
+      const res = await apiRequest<{ custom_audience_id: string; audience_name: string; synced_count: number }>(
+        '/integrations/capi/audiences/sync',
+        {
+          method: 'POST',
+          token,
+          tenantSlug,
+          body: { audience_name: audName.trim() },
+        }
+      );
+      setAudSyncResult(res);
+      toast.success(`Đã đồng bộ ${res?.synced_count ?? 0} hồ sơ lên Audience "${res?.audience_name || audName}"`);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể đồng bộ Custom Audience lên Meta'));
+    } finally {
+      setSyncingAud(false);
+    }
+  };
+
+  const loadAdsetsAndPhoneFarm = async () => {
+    try {
+      const [pfRes, perfRes] = await Promise.all([
+        apiRequest<typeof pfStats>('/integrations/capi/phone-farm/stats', { token, tenantSlug }),
+        apiRequest<{ ads?: Array<{ adset_id?: string; adset_name?: string; campaign_name?: string; effective_status?: string }> }>(
+          '/analytics/ads-performance',
+          { token, tenantSlug }
+        ).catch(() => null),
+      ]);
+      if (pfRes) setPfStats(pfRes);
+      if (perfRes && Array.isArray(perfRes.ads)) {
+        const seen = new Set<string>();
+        const extracted: Array<{ id: string; name: string; campaign_name?: string; status?: string }> = [];
+        for (const ad of perfRes.ads) {
+          const aid = String(ad.adset_id || '').trim();
+          if (!aid || seen.has(aid)) continue;
+          seen.add(aid);
+          extracted.push({
+            id: aid,
+            name: ad.adset_name || aid,
+            campaign_name: ad.campaign_name,
+            status: ad.effective_status || 'ACTIVE',
+          });
+        }
+        setAdsetList(extracted);
+      }
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể tải dữ liệu AdSet Optimizer & Phone Farm'));
+    }
+  };
+
+  const handleOptimizeAdset = async (adsetId: string, action: 'adjust_budget' | 'pause' | 'enable') => {
+    if (!adsetId.trim()) {
+      toast.error('Vui lòng chọn hoặc nhập AdSet ID');
+      return;
+    }
+    setOptimizingAdsetId(adsetId);
+    try {
+      await apiRequest(`/integrations/capi/adsets/${encodeURIComponent(adsetId.trim())}/optimize`, {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: {
+          action,
+          daily_budget_vnd: action === 'adjust_budget' ? Number(optimizeBudgetVnd || 500000) : undefined,
+          reason: optimizeReason.trim() || undefined,
+        },
+      });
+      toast.success(`Đã áp dụng tối ưu "${action}" cho AdSet ${adsetId}`);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Tối ưu AdSet thất bại'));
+    } finally {
+      setOptimizingAdsetId(null);
+    }
+  };
+
+  const handleImportPhoneFarm = async () => {
+    const phones = pfPhonesInput
+      .split(/[\n,;]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (phones.length === 0) {
+      toast.error('Vui lòng nhập hoặc dán ít nhất 1 số điện thoại cần chặn');
+      return;
+    }
+    setImportingPf(true);
+    try {
+      const res = await apiRequest<{ imported: number; matched_leads_count: number }>(
+        '/integrations/capi/phone-farm/import',
+        {
+          method: 'POST',
+          token,
+          tenantSlug,
+          body: { phones, reason: pfReasonInput.trim() || 'Phone Farm Anti-Spam', source: 'manual_import' },
+        }
+      );
+      toast.success(`Đã nạp ${res?.imported ?? phones.length} SĐT chặn Phone Farm (khớp ${res?.matched_leads_count ?? 0} Lead)!`);
+      setPfPhonesInput('');
+      await loadAdsetsAndPhoneFarm();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể nạp danh sách Phone Farm'));
+    } finally {
+      setImportingPf(false);
+    }
+  };
+
+  const handleSyncPhoneFarmMeta = async () => {
+    setSyncingPfMeta(true);
+    try {
+      const res = await apiRequest<{ synced_count: number; exclusion_audience_id: string }>(
+        '/integrations/capi/phone-farm/sync-meta',
+        { method: 'POST', token, tenantSlug, body: {} }
+      );
+      toast.success(`Đã đẩy ${res?.synced_count ?? 0} số chặn lên Exclusion Audience ${res?.exclusion_audience_id || ''}`);
+      await loadAdsetsAndPhoneFarm();
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Không thể đồng bộ loại trừ Phone Farm lên Meta'));
+    } finally {
+      setSyncingPfMeta(false);
     }
   };
 
@@ -672,7 +951,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
               }}
             >
               <Send size={13} />
-              {syncingCapi ? 'Đang đồng bộ...' : `Đồng Bộ (${stats.pending_backfill_total} Lead)`}
+              {syncingCapi ? 'Đang đồng bộ...' : `Đồng Bộ (${stats?.pending_backfill_total ?? 0} Lead)`}
             </button>
           )}
 
@@ -701,7 +980,406 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
         </div>
       </div>
 
+      {/* Wave A CAPI Growth Sub-Navigation (Royal Sapphire) */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '6px', borderRadius: 12, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+        {[
+          { id: 'logs' as const, label: 'Nhật ký CAPI & Retry Từng Sự kiện', icon: <RotateCcw size={14} /> },
+          { id: 'backfill_audiences' as const, label: 'Backfill Preview/Run & Custom Audience Sync', icon: <Users size={14} /> },
+          { id: 'adsets_phone_farm' as const, label: 'AdSet Optimizer & Chặn Phone Farm Anti-Spam', icon: <ShieldCheck size={14} /> },
+        ].map((item) => {
+          const active = capiSubTab === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => {
+                setCapiSubTab(item.id);
+                if (item.id === 'backfill_audiences' && !bfPreview) {
+                  void loadBackfillAndAudiencePreview();
+                } else if (item.id === 'adsets_phone_farm' && !pfStats) {
+                  void loadAdsetsAndPhoneFarm();
+                }
+              }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '7px 14px',
+                borderRadius: 9,
+                border: active ? '1px solid #1E40FF' : '1px solid transparent',
+                background: active ? '#1E40FF' : 'transparent',
+                color: active ? '#FFFFFF' : '#475569',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              {item.icon} {item.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* SUBTAB 2: BACKFILL PREVIEW/RUN & CUSTOM AUDIENCE SYNC */}
+      {capiSubTab === 'backfill_audiences' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '0.9rem' }}>
+          {/* Module 1: Backfill Preview & Run */}
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 14, padding: '1.15rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: '#0F172A' }}>
+                  CAPI Backfill Preview & Run (≤ 7 Ngày Meta)
+                </h3>
+                <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#64748B' }}>
+                  Kiểm tra danh sách Lead đủ điều kiện trước khi bắn bù sự kiện lên Meta Conversions API.
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={runningBfRun}
+                onClick={() => void handleRunCapiBackfill()}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '8px 14px', borderRadius: 10, border: 'none',
+                  background: '#1E40FF', color: '#FFFFFF', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                <Play size={13} /> {runningBfRun ? 'Đang chạy Backfill...' : 'Chạy Backfill ngay'}
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <input
+                type="date"
+                value={bfFromDate}
+                onChange={(e) => setBfFromDate(e.target.value)}
+                className="form-input"
+                style={{ height: 38, fontSize: '0.78rem' }}
+              />
+              <span style={{ fontSize: '0.78rem', color: '#64748B' }}>đến</span>
+              <input
+                type="date"
+                value={bfToDate}
+                onChange={(e) => setBfToDate(e.target.value)}
+                className="form-input"
+                style={{ height: 38, fontSize: '0.78rem' }}
+              />
+              <button
+                type="button"
+                disabled={loadingBf}
+                onClick={() => void loadBackfillAndAudiencePreview()}
+                className="btn outline"
+                style={{ height: 38, padding: '0 12px', fontSize: '0.76rem' }}
+              >
+                <RefreshCw size={13} className={loadingBf ? 'spin' : ''} /> Xem trước
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div style={{ padding: '10px 12px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
+                  Tổng Lead hợp lệ
+                </div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1E40FF', fontVariantNumeric: 'tabular-nums' }}>
+                  {bfPreview?.total_eligible ?? 0}
+                </div>
+              </div>
+              <div style={{ padding: '10px 12px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>
+                  Trong cửa sổ ≤ 7 ngày
+                </div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>
+                  {bfPreview?.within_7d_count ?? 0}
+                </div>
+              </div>
+            </div>
+
+            {bfPreview?.sample_leads && bfPreview.sample_leads.length > 0 && (
+              <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #E2E8F0', borderRadius: 10 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem' }}>
+                  <thead>
+                    <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', textAlign: 'left', color: '#475569' }}>
+                      <th style={{ padding: '7px 10px' }}>Khách hàng</th>
+                      <th style={{ padding: '7px 10px' }}>Bước</th>
+                      <th style={{ padding: '7px 10px' }}>Sự kiện CAPI</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bfPreview.sample_leads.slice(0, 15).map((item) => (
+                      <tr key={item.lead_id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                        <td style={{ padding: '7px 10px', fontWeight: 600 }}>{item.name}</td>
+                        <td style={{ padding: '7px 10px', color: '#64748B' }}>{item.stage_name || '—'}</td>
+                        <td style={{ padding: '7px 10px', fontWeight: 700, color: '#1E40FF' }}>{item.event_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Module 2: Custom Audience Preview & Push Sync */}
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 14, padding: '1.15rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: '#0F172A' }}>
+                Custom Audience Preview & Push Sync lên Meta
+              </h3>
+              <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#64748B' }}>
+                Chuẩn hóa & băm SHA-256 SĐT + Email thành tệp Seed / Exclusion đồng bộ trực tiếp sang Meta Custom Audience.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              <div style={{ padding: '10px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748B' }}>TỔNG HỒ SƠ</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
+                  {audPreview?.total_contacts ?? 0}
+                </div>
+              </div>
+              <div style={{ padding: '10px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748B' }}>SĐT / EMAIL HỢP LỆ</div>
+                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1E40FF', fontVariantNumeric: 'tabular-nums' }}>
+                  {audPreview?.valid_phone_count ?? 0} / {audPreview?.valid_email_count ?? 0}
+                </div>
+              </div>
+              <div style={{ padding: '10px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748B' }}>TỶ LỆ KHỚP DỰ KIẾN</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>
+                  {audPreview?.estimated_match_rate_pct ?? 0}%
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                value={audName}
+                onChange={(e) => setAudName(e.target.value)}
+                placeholder="Tên tệp Meta Custom Audience..."
+                className="form-input"
+                style={{ flex: 1, height: 40, fontSize: '0.8rem' }}
+              />
+              <button
+                type="button"
+                disabled={syncingAud}
+                onClick={() => void handleSyncCustomAudience()}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '0 14px', height: 40, borderRadius: 10, border: 'none',
+                  background: '#1E40FF', color: '#FFFFFF', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                <Database size={13} /> {syncingAud ? 'Đang đẩy Meta...' : 'Push Sync lên Meta'}
+              </button>
+            </div>
+
+            {audSyncResult && (
+              <div style={{ padding: '10px 12px', borderRadius: 10, background: '#EFF6FF', border: '1px solid #BFDBFE', fontSize: '0.78rem', color: '#1E3A8A' }}>
+                Đã đồng bộ <strong>{audSyncResult.synced_count}</strong> khách hàng vào Audience{' '}
+                <code>{audSyncResult.custom_audience_id}</code> ({audSyncResult.audience_name}).
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB 3: ADSET OPTIMIZER & PHONE FARM ANTI-SPAM */}
+      {capiSubTab === 'adsets_phone_farm' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '0.9rem' }}>
+          {/* Module 3: AdSet Optimizer */}
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 14, padding: '1.15rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Sliders size={15} color="#1E40FF" /> Tối Ưu AdSet Theo Tín hiệu CAPI
+                </h3>
+                <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#64748B' }}>
+                  Điều chỉnh ngân sách ngày, tạm dừng nhóm quảng cáo kém hiệu quả hoặc kích hoạt lại trực tiếp.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void loadAdsetsAndPhoneFarm()}
+                className="btn outline"
+                style={{ height: 34, padding: '0 10px', fontSize: '0.75rem' }}
+              >
+                <RefreshCw size={12} /> Làm mới
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <input
+                value={manualAdsetId}
+                onChange={(e) => setManualAdsetId(e.target.value)}
+                placeholder="Nhập AdSet ID hoặc chọn bên dưới"
+                className="form-input"
+                style={{ height: 38, fontSize: '0.78rem', fontFamily: 'monospace' }}
+              />
+              <input
+                type="number"
+                min={0}
+                value={optimizeBudgetVnd}
+                onChange={(e) => setOptimizeBudgetVnd(e.target.value)}
+                placeholder="Ngân sách ngày (VND)"
+                className="form-input"
+                style={{ height: 38, fontSize: '0.78rem' }}
+              />
+            </div>
+            <input
+              value={optimizeReason}
+              onChange={(e) => setOptimizeReason(e.target.value)}
+              placeholder="Ghi chú lý do tối ưu AdSet..."
+              className="form-input"
+              style={{ height: 38, fontSize: '0.78rem' }}
+            />
+
+            {manualAdsetId.trim() && (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  disabled={optimizingAdsetId === manualAdsetId}
+                  onClick={() => void handleOptimizeAdset(manualAdsetId, 'adjust_budget')}
+                  style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: '#1E40FF', color: '#FFFFFF', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  Cập nhật Ngân sách
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleOptimizeAdset(manualAdsetId, 'pause')}
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #FECACA', background: '#FEF2F2', color: '#DC2626', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  Tạm dừng AdSet
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleOptimizeAdset(manualAdsetId, 'enable')}
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #BBF7D0', background: '#F0FDF4', color: '#15803D', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  Kích hoạt AdSet
+                </button>
+              </div>
+            )}
+
+            <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #E2E8F0', borderRadius: 10 }}>
+              {adsetList.length === 0 ? (
+                <div style={{ padding: '1rem', textAlign: 'center', fontSize: '0.78rem', color: '#64748B' }}>
+                  Chưa phát hiện AdSet từ luồng Ads đồng bộ — nhập AdSet ID ở trên để tối ưu trực tiếp.
+                </div>
+              ) : (
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem' }}>
+                  <thead>
+                    <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', textAlign: 'left', color: '#475569' }}>
+                      <th style={{ padding: '7px 10px' }}>AdSet</th>
+                      <th style={{ padding: '7px 10px', textAlign: 'right' }}>Tối ưu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {adsetList.map((as) => (
+                      <tr key={as.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                        <td style={{ padding: '7px 10px' }}>
+                          <div style={{ fontWeight: 700 }}>{as.name}</div>
+                          <div style={{ fontSize: '0.7rem', color: '#64748B', fontFamily: 'monospace' }}>
+                            {as.id} • {as.campaign_name || 'Meta Campaign'}
+                          </div>
+                        </td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                          <button
+                            type="button"
+                            disabled={optimizingAdsetId === as.id}
+                            onClick={() => void handleOptimizeAdset(as.id, 'adjust_budget')}
+                            style={{ padding: '5px 10px', borderRadius: 7, border: 'none', background: '#1E40FF', color: '#FFFFFF', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                          >
+                            {optimizingAdsetId === as.id ? 'Đang chạy...' : 'Tối ưu'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+
+          {/* Module 4: Phone Farm Anti-Spam Exclusion */}
+          <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 14, padding: '1.15rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <ShieldAlert size={15} color="#1E40FF" /> Khiên Chặn Phone Farm & Loại trừ Quảng cáo
+                </h3>
+                <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#64748B' }}>
+                  Ngăn SIM rác / click ảo phá ngân sách quảng cáo và tránh bắn nhầm tín hiệu rác vào Pixel CAPI.
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={syncingPfMeta}
+                onClick={() => void handleSyncPhoneFarmMeta()}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '8px 12px', borderRadius: 9, border: 'none',
+                  background: '#1E40FF', color: '#FFFFFF', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                <ShieldCheck size={13} /> {syncingPfMeta ? 'Đang đẩy Meta...' : 'Sync Exclusion lên Meta'}
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              <div style={{ padding: '10px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748B' }}>SĐT ĐÃ CHẶN</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1E40FF', fontVariantNumeric: 'tabular-nums' }}>
+                  {pfStats?.total_blocked ?? 0}
+                </div>
+              </div>
+              <div style={{ padding: '10px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748B' }}>ĐÃ SYNC META</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>
+                  {pfStats?.synced_count ?? 0}
+                </div>
+              </div>
+              <div style={{ padding: '10px', borderRadius: 10, background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748B' }}>CHỜ ĐỒNG BỘ</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#D97706', fontVariantNumeric: 'tabular-nums' }}>
+                  {pfStats?.pending_sync_count ?? 0}
+                </div>
+              </div>
+            </div>
+
+            <textarea
+              rows={3}
+              value={pfPhonesInput}
+              onChange={(e) => setPfPhonesInput(e.target.value)}
+              placeholder="Dán danh sách số điện thoại rác / Phone Farm (mỗi dòng 1 số hoặc cách nhau bằng dấu phẩy)..."
+              className="form-input"
+              style={{ width: '100%', padding: '10px', fontSize: '0.78rem', fontFamily: 'monospace' }}
+            />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                value={pfReasonInput}
+                onChange={(e) => setPfReasonInput(e.target.value)}
+                placeholder="Lý do chặn"
+                className="form-input"
+                style={{ flex: 1, height: 38, fontSize: '0.78rem' }}
+              />
+              <button
+                type="button"
+                disabled={importingPf}
+                onClick={() => void handleImportPhoneFarm()}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '0 14px', height: 38, borderRadius: 9, border: '1px solid #1E40FF',
+                  background: '#FFFFFF', color: '#1E40FF', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer',
+                }}
+              >
+                <Upload size={13} /> {importingPf ? 'Đang nạp...' : 'Import Số Chặn'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* FULL-WIDTH CAPI AUDIT LOGS PANEL (Matches AdsPerformance.tsx Style & Pagination) */}
+      {capiSubTab === 'logs' && (
       <div data-tour="capi-live-logs" style={{
         background: 'var(--color-surface)',
         border: '1px solid var(--color-border)',
@@ -740,7 +1418,10 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setLogFilter(tab.id as any)}
+                  onClick={() => {
+                    setLogFilter(tab.id as 'all' | 'ok' | 'error' | 'positive' | 'spam');
+                    setLogPage(1);
+                  }}
                   style={{
                     padding: '4px 10px',
                     borderRadius: 16,
@@ -764,7 +1445,10 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
               <input
                 type="text"
                 value={logSearch}
-                onChange={(e) => setLogSearch(e.target.value)}
+                onChange={(e) => {
+                  setLogSearch(e.target.value);
+                  setLogPage(1);
+                }}
                 placeholder="Tìm khách, SĐT, bài QC, event..."
                 style={{
                   width: '100%', padding: '5px 10px 5px 29px', borderRadius: 8,
@@ -1069,6 +1753,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
           </div>
         )}
       </div>
+      )}
 
       {/* CAPI CONNECTION & PIPELINE MAPPING POPUP MODAL */}
       <CustomModal
@@ -1209,7 +1894,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
                 }}
               >
                 <RotateCcw size={11} />
-                Khôi phục chuẩn BĐS
+                Khôi phục mặc định
               </button>
             </div>
 

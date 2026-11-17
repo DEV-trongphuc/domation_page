@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, Activity, Sun, Moon, Keyboard, ChevronDown, User, CreditCard, Compass, Building2, Plus, LogOut, Menu, Sparkles, Check } from 'lucide-react';
+import { Search, Command, Activity, Sun, Moon, Keyboard, ChevronDown, User, CreditCard, Compass, Building2, Plus, LogOut, Menu, Sparkles, Check, Bell, Shield } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import { SAAS_PACKAGES_CATALOG } from '../../contexts/entitlementConstants';
@@ -8,8 +8,6 @@ import type { SaasPackageCode } from '../../../autodataTypes';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Avatar } from '../ui/Avatar';
 import { useNavigate } from 'react-router-dom';
-import { CustomModal } from '../ui/CustomModal';
-import { fetchAPI } from '../../utils/api';
 import vnFlag from '../../assets/vn.svg';
 import usFlag from '../../assets/us.svg';
 import jpFlag from '../../assets/jp.svg';
@@ -22,18 +20,9 @@ const languagesList = [
   { code: 'zh', name: '简体中文', flag: cnFlag }
 ] as const;
 
-const maskPhone = (phone: string) => {
-  if (!phone || phone === '-') return phone;
-  const clean = phone.replace(/[^\d+]/g, '');
-  if (clean.length < 8) return phone;
-  const start = clean.slice(0, clean.length - 6);
-  const end = clean.slice(-3);
-  return `${start}***${end}`;
-};
-
 export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedClick: () => void; onMenuClick?: () => void }) => {
   const { user, logout, companyName, tenantSlug, workspaces, switchWorkspace, openBilling, openTour, openSwitchWorkspaceModal } = useAuth();
-  const { packageCode, packageMeta, hasModule, switchPackage, switchingPackage, terminology } = useEntitlement();
+  const { packageCode, packageMeta, switchPackage, switchingPackage, can, canScreen, isTenantOwner } = useEntitlement();
   const [isWsOpen, setIsWsOpen] = useState(false);
   const [isPkgOpen, setIsPkgOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
@@ -133,115 +122,21 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
     }
   };
 
+  const canViewSystemActivity =
+    isTenantOwner || can('org_rbac', 'view') || canScreen('settings') || canScreen('tickets');
+
   const handleProfileClick = () => {
-    if (user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') {
-      window.dispatchEvent(new CustomEvent('open-profile-modal'));
-    }
+    window.dispatchEvent(new CustomEvent('open-profile-modal'));
   };
 
   const handleActivityClick = () => {
-    if (user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') {
+    if (canViewSystemActivity) {
       window.dispatchEvent(new CustomEvent('open-profile-modal', { detail: { tab: 'activity' } }));
     }
   };
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [leadResults, setLeadResults] = useState<Array<{
-    id: string | number;
-    name?: string;
-    lead_name?: string;
-    phone?: string;
-    email?: string;
-    note?: string;
-    source?: string;
-    consultant_name?: string;
-    assigned_to_name?: string;
-  }>>([]);
-  const [searching, setSearching] = useState(false);
-
-  // Listen to Cmd+K or Ctrl+K
-  useEffect(() => {
-    const handleSearchKeyDown = (e: KeyboardEvent) => {
-      const activeEl = document.activeElement;
-      const isInputActive = activeEl && (
-        activeEl.tagName === 'INPUT' ||
-        activeEl.tagName === 'TEXTAREA' ||
-        activeEl.tagName === 'SELECT' ||
-        activeEl.hasAttribute('contenteditable')
-      );
-
-      if (isInputActive) {
-        return;
-      }
-
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(prev => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleSearchKeyDown);
-    return () => window.removeEventListener('keydown', handleSearchKeyDown);
-  }, []);
-
-  // Search logic for Lead Data with 200ms debounce
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      return;
-    }
-
-    const delayDebounce = setTimeout(async () => {
-      setSearching(true);
-      try {
-        const json = await fetchAPI(`get_logs&search=${encodeURIComponent(searchQuery)}&page=1&pageSize=5`);
-        if (json.success && Array.isArray(json.data)) {
-          setLeadResults(json.data.slice(0, 5));
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setSearching(false);
-      }
-    }, 200);
-
-    return () => clearTimeout(delayDebounce);
-  }, [searchQuery]);
-
-  const navItems: Array<{ name: string; path: string; description: string; shortcut: string; moduleKey?: string; adminOnly?: boolean; superAdminOnly?: boolean; action?: () => void }> = [
-    { name: t('Dashboard'), path: '/', description: t('Trang tổng quan thống kê hệ thống'), shortcut: 'Alt + D' },
-    ...(hasModule('leads') ? [{ name: t('Nhật ký Lead (Data Log)'), path: '/data', description: t('Xem logs danh sách lead và trạng thái cuộc gọi'), shortcut: 'Alt + L', moduleKey: 'leads' }] : []),
-    ...(hasModule('audiences') ? [{ name: `${terminology.customerLabel} & Tệp Data / Logic`, path: '/audiences', description: 'Quản trị Tệp Data tĩnh & Tệp Logic AND/OR real-time', shortcut: 'Alt + M', moduleKey: 'audiences' }] : []),
-    ...(hasModule('growth_attribution') ? [{ name: 'Doanh thu & ROAS Xuyên Phễu', path: '/growth-attribution', description: 'Đối soát chi phí Ads/Email -> Chia Sale -> Doanh thu thực', shortcut: 'Alt + G', moduleKey: 'growth_attribution' }] : []),
-    { name: t('Bản tin hoạt động hệ thống'), path: '#feed', description: t('Bản tin các hoạt động và phân bổ lead gần đây'), shortcut: 'Alt + H', action: () => window.dispatchEvent(new CustomEvent('open-activity-feed')) },
-    { name: t('Vòng xoay chia số (Rounds)'), path: '/rounds', description: t('Cấu hình danh sách các vòng chia lead cho Đại lý'), adminOnly: true, shortcut: 'Alt + R', moduleKey: 'rounds' },
-    { name: t('Quy tắc chia số (Rules)'), path: '/rules', description: t('Thiết lập logic điều phối và skip interval'), adminOnly: true, shortcut: 'Alt + W', moduleKey: 'routing_rules' },
-    { name: t('Quản lý Đại lý'), path: '/consultants', description: t('Quản lý danh sách Đại lý và trạng thái trực ca'), adminOnly: true, shortcut: 'Alt + C', moduleKey: 'consultants' },
-    { name: t('Ticket báo lỗi data'), path: '/tickets', description: t('Phê duyệt đền bù lead lỗi hoặc trùng'), adminOnly: true, shortcut: 'Alt + T', moduleKey: 'tickets_data' },
-    { name: t('Đối soát công bằng (Fair Share)'), path: '/fair-share', description: t('Đo lường độ lệch phân phối lead'), adminOnly: true, shortcut: 'Alt + S', moduleKey: 'fair_share' },
-    { name: t('Tích hợp API & Google Sheets'), path: '/integrations', description: t('Kết nối webhook và đồng bộ trang tính'), adminOnly: true, shortcut: 'Alt + I', moduleKey: 'integrations_autodata' },
-    { name: 'Kết nối AWS SES, DKIM/SPF & Zalo ZNS', path: '/marketing-connect', description: 'Kho khóa kênh gửi Marketing & Web SDK', adminOnly: true, shortcut: 'Alt + K', moduleKey: 'integrations_marketing' },
-    { name: t('Cài đặt hệ thống'), path: '/settings', description: t('Sơ đồ Tổ chức, Phân quyền RBAC, Từ điển & Chính sách'), adminOnly: true, shortcut: 'Alt + O', moduleKey: 'settings' },
-    { name: t('Quản lý tài khoản'), path: '/accounts', description: t('Phân quyền tài khoản quản trị và trợ lý'), superAdminOnly: true, shortcut: 'Alt + A', moduleKey: 'org_rbac' }
-  ];
-
-  const visibleNavItems = navItems.filter(item => {
-    if (item.moduleKey && !hasModule(item.moduleKey)) return false;
-    if (item.superAdminOnly && user?.role !== 'superadmin') return false;
-    if (item.adminOnly && user?.role !== 'admin' && user?.role !== 'superadmin') return false;
-    return true;
-  });
-  
-  const filteredNavItems = searchQuery.trim()
-    ? visibleNavItems.filter(item => 
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : visibleNavItems;
-
   const handleOpenSearch = () => {
-    setSearchQuery('');
-    setLeadResults([]);
-    setIsSearchOpen(true);
+    window.dispatchEvent(new CustomEvent('open-command-palette'));
   };
 
   return (
@@ -731,7 +626,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
               gap: '0.625rem',
               paddingLeft: '0.875rem',
               borderLeft: '1px solid var(--color-border)',
-              cursor: (user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') ? 'pointer' : 'default',
+              cursor: 'pointer',
               padding: '4px 8px',
               borderRadius: '6px',
               transition: 'background 0.2s',
@@ -741,7 +636,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
             <Avatar src={user?.avatar} name={user?.name} size={32} />
             <div className="responsive-hide-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text)' }}>{user?.name || 'User'}</span>
-              <span style={{ fontSize: '0.7rem', color: 'var(--color-text-light)' }}>{getRoleLabel(user?.role)}</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--color-text-light)' }}>{user?.role_name || getRoleLabel(user?.role)}</span>
             </div>
           </div>
 
@@ -764,61 +659,110 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '2px',
-                  minWidth: '150px',
+                  minWidth: '185px',
                   zIndex: 50,
                   transformOrigin: 'top right'
                 }}
               >
-                {(user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') && (
-                  <>
-                    <button
-                      onClick={handleProfileClick}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        width: '100%',
-                        padding: '8px 10px',
-                        border: 'none',
-                        background: 'transparent',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        color: 'var(--color-text)',
-                        fontSize: '0.8125rem',
-                        textAlign: 'left',
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <User size={14} />
-                      {t('Thông tin')}
-                    </button>
-                    <button
-                      onClick={handleActivityClick}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        width: '100%',
-                        padding: '8px 10px',
-                        border: 'none',
-                        background: 'transparent',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        color: 'var(--color-text)',
-                        fontSize: '0.8125rem',
-                        textAlign: 'left',
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <Activity size={14} />
-                      {t('Hoạt động (Nhật ký)')}
-                    </button>
-                  </>
+                <button
+                  onClick={() => { setIsProfileMenuOpen(false); handleProfileClick(); }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    width: '100%',
+                    padding: '8px 10px',
+                    border: 'none',
+                    background: 'transparent',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    color: 'var(--color-text)',
+                    fontSize: '0.8125rem',
+                    textAlign: 'left',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <User size={14} />
+                  {t('Thông tin')}
+                </button>
+                {canViewSystemActivity && (
+                  <button
+                    onClick={() => { setIsProfileMenuOpen(false); handleActivityClick(); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      padding: '8px 10px',
+                      border: 'none',
+                      background: 'transparent',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      color: 'var(--color-text)',
+                      fontSize: '0.8125rem',
+                      textAlign: 'left',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <Activity size={14} />
+                    {t('Hoạt động (Nhật ký)')}
+                  </button>
                 )}
+                {canScreen('account') && (
+                  <button
+                    onClick={() => { setIsProfileMenuOpen(false); navigate('/account'); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      padding: '8px 10px',
+                      border: 'none',
+                      background: 'transparent',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      color: 'var(--color-text)',
+                      fontSize: '0.8125rem',
+                      textAlign: 'left',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <Shield size={14} style={{ color: '#1E40FF' }} />
+                    {t('Tài khoản & Bảo mật')}
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setIsProfileMenuOpen(false);
+                    window.dispatchEvent(new CustomEvent('open-notification-settings'));
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    width: '100%',
+                    padding: '8px 10px',
+                    border: 'none',
+                    background: 'transparent',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    color: 'var(--color-text)',
+                    fontSize: '0.8125rem',
+                    textAlign: 'left',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Bell size={14} style={{ color: '#1E40FF' }} />
+                  {t('Cấu hình Thông báo')}
+                </button>
 
                 <button
                   onClick={() => { setIsProfileMenuOpen(false); openBilling(); }}
@@ -862,167 +806,6 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
           </AnimatePresence>
         </div>
       </div>
-
-    {/* Global Command/Search Palette Modal */}
-    <CustomModal
-      isOpen={isSearchOpen}
-      onClose={() => setIsSearchOpen(false)}
-      title={t("Tìm kiếm toàn hệ thống")}
-      width="600px"
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {/* Search Input Group */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: '10px', padding: '8px 12px' }}>
-          <Search size={18} style={{ color: 'var(--color-text-muted)' }} />
-          <input
-            autoFocus
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("Nhập tên, số điện thoại, email hoặc trang cần tìm...")}
-            style={{
-              flex: 1,
-              border: 'none',
-              background: 'transparent',
-              outline: 'none',
-              color: 'var(--color-text)',
-              fontSize: '0.9375rem',
-              padding: '4px 0'
-            }}
-          />
-          {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery('')}
-              style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', fontWeight: 600 }}
-            >
-              {t("Xóa")}
-            </button>
-          )}
-        </div>
-
-        {/* Results Area */}
-        <div style={{ maxHeight: '380px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingRight: '4px' }}>
-          {/* 1. Pages/Navigation Results */}
-          {filteredNavItems.length > 0 && (
-            <div>
-              <h5 style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.05em' }}>
-                {t("Liên kết nhanh")} ({filteredNavItems.length})
-              </h5>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {filteredNavItems.map((item) => (
-                    <div
-                      key={item.path}
-                      onClick={() => {
-                        if (item.action) {
-                          item.action();
-                        } else {
-                          navigate(item.path);
-                        }
-                        setIsSearchOpen(false);
-                      }}
-                      className="search-result-item"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '10px 12px',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        border: '1px solid transparent'
-                      }}
-                    >
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>{item.name}</span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{item.description}</span>
-                      </div>
-                      {item.shortcut && (
-                        <kbd className="shortcuts-kbd" style={{ fontSize: '0.6875rem', padding: '2px 6px' }}>{item.shortcut}</kbd>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 2. Lead Results */}
-            {searchQuery.trim() !== '' && (
-              <div>
-                <h5 style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  {t("Kết quả Dữ liệu Lead")}
-                  {searching && <span style={{ fontSize: '0.6875rem', textTransform: 'none', fontWeight: 500, color: 'var(--color-primary)' }}>{t("Đang tìm...")}</span>}
-                </h5>
-                {leadResults.length > 0 ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {leadResults.map((lead) => (
-                      <div
-                        key={lead.id}
-                        onClick={() => {
-                          navigate(`/data?search=${encodeURIComponent(lead.phone || lead.lead_name || lead.name || '')}`);
-                          setIsSearchOpen(false);
-                        }}
-                        className="search-result-item"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '10px 12px',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          border: '1px solid transparent'
-                        }}
-                      >
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                            {lead.lead_name || t('Ẩn danh')}
-                          </span>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--color-text-light)' }}>
-                            SĐT: {lead.phone ? maskPhone(lead.phone) : '-'} | Email: {lead.email || '-'}
-                          </span>
-                          {lead.note && (
-                            <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '400px' }}>
-                              {t('Ghi chú')}: {lead.note}
-                            </span>
-                          )}
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-                          <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--color-primary)', background: 'var(--color-primary-light)', padding: '2px 8px', borderRadius: '4px' }}>
-                            {lead.source || t('Nguồn khác')}
-                          </span>
-                          <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>
-                            {lead.assigned_to_name ? `${t('Đại lý')}: ${lead.assigned_to_name}` : t('Chưa giao')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  !searching && (
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', padding: '12px', textAlign: 'center', background: 'var(--color-bg)', borderRadius: '8px' }}>
-                      {t("Không tìm thấy lead nào khớp với từ khóa")} "{searchQuery}"
-                    </div>
-                  )
-                )}
-              </div>
-            )}
-
-            {/* 3. Empty Search Helper */}
-            {!searchQuery.trim() && filteredNavItems.length === 0 && (
-              <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', padding: '16px', textAlign: 'center' }}>
-                {t("Bắt đầu gõ để tìm kiếm trang quản trị hoặc thông tin lead...")}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <style>{`
-          .search-result-item:hover {
-            background: var(--color-primary-light) !important;
-            border-color: rgba(30, 64, 255, 0.15) !important;
-          }
-        `}</style>
-      </CustomModal>
     </header>
   );
 };

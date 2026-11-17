@@ -1,3 +1,103 @@
+export type GeofenceMode = 'flexible' | 'warn_with_explanation' | 'strict_radius';
+
+export interface HolidayScheduleItem {
+  id?: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+}
+
+export interface AttendancePolicyDto {
+  id?: string;
+  geofence_mode: GeofenceMode;
+  require_gps: boolean;
+  require_selfie: boolean;
+  max_gps_accuracy_meters: number;
+  grace_late_minutes: number;
+  grace_early_minutes: number;
+  allow_any_branch_checkin: boolean;
+  allow_remote_with_approved_leave: boolean;
+  holiday_schedules_json: HolidayScheduleItem[];
+}
+
+export interface AttendanceExemptionStatusDto {
+  exempt_checkin: boolean;
+  exempt_gps: boolean;
+  exempt_selfie: boolean;
+  custom_grace_late_minutes?: number | null;
+  exclude_from_absent_report?: boolean;
+  approved_remote_leave?: boolean;
+  ip_whitelisted?: boolean;
+  reason_label?: string | null;
+  matched_rule_id?: string | null;
+}
+
+export interface AttendanceExemptionRuleDto {
+  id: string;
+  scope_type: 'role' | 'department' | 'team' | 'position' | 'user';
+  target_id: string;
+  target_name?: string;
+  exempt_checkin: boolean;
+  exempt_gps: boolean;
+  exempt_selfie: boolean;
+  custom_grace_late_minutes?: number | null;
+  exclude_from_absent_report: boolean;
+  effective_from?: string | null;
+  effective_to?: string | null;
+  note?: string | null;
+  is_active?: boolean;
+}
+
+export interface AttendanceConfirmationItemDto {
+  id: string;
+  batch_id: string;
+  batch_title?: string;
+  period_from?: string;
+  period_to?: string;
+  deadline_at?: string;
+  user_id: string;
+  user_name?: string;
+  department_name?: string | null;
+  actual_work_units: number;
+  standard_days: number;
+  late_count: number;
+  overtime_hours: number;
+  leave_days: number;
+  status: 'pending' | 'confirmed' | 'auto_confirmed' | 'disputed';
+  dispute_reason?: string | null;
+  confirmed_at?: string | null;
+}
+
+export interface AttendanceConfirmationBatchDto {
+  id: string;
+  title: string;
+  period_from: string;
+  period_to: string;
+  standard_days: number;
+  deadline_at: string;
+  status: 'open' | 'closed';
+  total_count?: number;
+  confirmed_count?: number;
+  disputed_count?: number;
+  pending_count?: number;
+  items?: AttendanceConfirmationItemDto[];
+  created_at?: string;
+}
+
+export interface AttendanceBulkRequestDto {
+  id: string;
+  title: string;
+  work_date: string;
+  request_type: 'company_event' | 'wfh_all' | 'system_outage_credit' | 'holiday_duty';
+  work_units: number;
+  target_department_id?: string | null;
+  target_department_name?: string | null;
+  affected_count?: number;
+  status: 'pending' | 'applied' | 'rejected';
+  note?: string | null;
+  created_at?: string;
+}
+
 export interface BranchGpsInfo {
   id: string;
   code: string;
@@ -6,6 +106,7 @@ export interface BranchGpsInfo {
   gps_lat: number | null;
   gps_lng: number | null;
   gps_radius_meters: number;
+  branch_ip_whitelist?: string[];
   is_headquarters?: boolean;
 }
 
@@ -48,6 +149,7 @@ export interface AttendanceLogDto {
   check_out_at?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  accuracy_meters?: number | null;
   distance_meters: number | null;
   within_geofence: boolean;
   selfie_data_url?: string | null;
@@ -65,6 +167,13 @@ export interface AttendanceOverviewDto {
   active_shift: ShiftDto | null;
   active_branch: BranchGpsInfo | null;
   branches: BranchGpsInfo[];
+  policy?: AttendancePolicyDto;
+  exemption?: AttendanceExemptionStatusDto;
+  effective_exemption?: AttendanceExemptionStatusDto;
+  client_ip_whitelisted?: boolean;
+  ip_whitelist_matched?: boolean;
+  approved_remote_leave?: boolean;
+  client_ip?: string | null;
   summary: {
     my_month_work_units: number;
     my_month_late_days: number;

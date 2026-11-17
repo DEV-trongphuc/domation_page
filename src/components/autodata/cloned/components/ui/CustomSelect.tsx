@@ -17,10 +17,12 @@ export interface SelectOption {
   disabledType?: 'round' | 'sale';
 }
 
-interface CustomSelectProps {
+export type CustomSelectValue = string | number | boolean | Array<string | number>;
+
+export interface CustomSelectProps {
   options: SelectOption[];
-  value: any;
-  onChange: (value: any) => void;
+  value: CustomSelectValue | null | undefined;
+  onChange(value: CustomSelectValue): void;
   placeholder?: string;
   label?: string;
   searchable?: boolean;
@@ -66,26 +68,28 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && searchable) {
+      const frame = requestAnimationFrame(() => {
+        searchInputRef.current?.focus({ preventScroll: true });
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+    return undefined;
+  }, [isOpen, searchable]);
+
+  const handleToggleTrigger = () => {
+    const nextOpen = !isOpen;
+    if (nextOpen) {
       if (align === 'right') {
         setComputedAlign('right');
       } else if (containerRef.current && typeof window !== 'undefined') {
         const rect = containerRef.current.getBoundingClientRect();
         const spaceRight = window.innerWidth - rect.left;
-        if (spaceRight < 280 && rect.right > 280) {
-          setComputedAlign('right');
-        } else {
-          setComputedAlign('left');
-        }
-      }
-      if (searchable) {
-        const frame = requestAnimationFrame(() => {
-          searchInputRef.current?.focus({ preventScroll: true });
-        });
-        return () => cancelAnimationFrame(frame);
+        setComputedAlign(spaceRight < 280 && rect.right > 280 ? 'right' : 'left');
       }
     }
-  }, [isOpen, align, searchable]);
+    setIsOpen(nextOpen);
+  };
 
   const selectedOption = multiple ? null : options.find(opt => opt.value == value);
   const filtered = searchable ? options.filter(o =>
@@ -206,7 +210,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       {label && <label className={styles.label}>{t(label)}</label>}
       <div
         className={`${styles.trigger} ${isOpen ? styles.open : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleTrigger}
         style={{
           ...(size === 'sm' ? {
             minHeight: '32px',
