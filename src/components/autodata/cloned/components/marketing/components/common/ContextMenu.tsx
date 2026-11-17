@@ -1,0 +1,125 @@
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { getMktPortalRoot } from '../../utils/portalRoot';
+
+export interface ContextMenuItem {
+    id: string;
+    label: string;
+    icon?: React.ElementType;
+    onClick: () => void;
+    danger?: boolean;
+    divider?: boolean;
+}
+
+interface ContextMenuProps {
+    x: number;
+    y: number;
+    items: ContextMenuItem[];
+    onClose: () => void;
+    align?: 'left' | 'right' | 'auto';
+}
+
+export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, items, onClose, align = 'auto' }) => {
+    const menuRef = useRef<HTMLDivElement>(null);
+    const [pos, setPos] = useState(() => {
+        const estimatedW = 220;
+        let initialX = x;
+        if (typeof window !== 'undefined') {
+            if (align === 'right' || x + estimatedW > window.innerWidth - 16) {
+                initialX = Math.max(16, x - estimatedW);
+            }
+        }
+        return { top: y, left: initialX };
+    });
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+                onClose();
+            }
+        };
+
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+
+        // Capture event on capture phase to ensure it runs before other handlers
+        document.addEventListener('click', handleClickOutside, true);
+        document.addEventListener('contextmenu', handleClickOutside, true);
+        document.addEventListener('keydown', handleEscape, true);
+        
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+            document.removeEventListener('contextmenu', handleClickOutside, true);
+            document.removeEventListener('keydown', handleEscape, true);
+        };
+    }, [onClose]);
+
+    useLayoutEffect(() => {
+        if (!menuRef.current) return;
+        const rect = menuRef.current.getBoundingClientRect();
+        let newX = x;
+        let newY = y;
+
+        if (align === 'right' || x + rect.width > window.innerWidth - 16) {
+            newX = Math.max(16, x - rect.width);
+            if (newX + rect.width > window.innerWidth - 16) {
+                newX = Math.max(16, window.innerWidth - rect.width - 16);
+            }
+        }
+        if (newY + rect.height > window.innerHeight - 16) {
+            newY = Math.max(16, window.innerHeight - rect.height - 16);
+        }
+
+        setPos({ top: newY, left: newX });
+    }, [x, y, align]);
+
+    return createPortal(
+        <div 
+            className="fixed inset-0 z-[2147483647] pointer-events-none"
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 2147483647 }}
+        >
+            <div
+                ref={menuRef}
+                className="absolute bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl py-2 min-w-[200px] pointer-events-auto animate-in fade-in zoom-in-95 duration-200"
+                style={{ top: pos.top, left: pos.left }}
+                onContextMenu={(e) => {
+                    e.preventDefault(); // Prevent default right click on the menu itself
+                    e.stopPropagation();
+                }}
+            >
+                {items.map((item, index) => {
+                    if (item.divider) {
+                        return <div key={`div-${index}`} className="my-1.5 border-t border-slate-100 dark:border-slate-800" />;
+                    }
+
+                    const Icon = item.icon;
+                    return (
+                        <button
+                            key={item.id}
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                item.onClick();
+                                onClose();
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-colors
+                                ${item.danger 
+                                    ? 'text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20' 
+                                    : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                }
+                            `}
+                        >
+                            {Icon && <Icon className="w-4 h-4" />}
+                            {item.label}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>,
+        getMktPortalRoot()
+    );
+};
+
+// Dual value declarations for verbatimModuleSyntax compatibility
+export const ContextMenuItem: any = undefined;

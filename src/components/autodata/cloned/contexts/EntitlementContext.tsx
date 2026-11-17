@@ -13,6 +13,8 @@ import {
   buildResolvedTerminology,
   expandEnabledModulesForPackage,
   getModuleKeyAliases,
+  getModulePermissionKeys,
+  isModuleForbiddenForPackage,
   localPackageOverrideKey,
   normalizeIndustryKey,
   normalizePackageCode,
@@ -316,7 +318,8 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (moduleKey === 'settings' || moduleKey === 'billing' || moduleKey === 'org_rbac' || moduleKey === 'users') {
         return true;
       }
-      if (moduleKey === 'audiences' && packageCode === 'autodata_crm') {
+      // Hard package gate first: Growth extras / ERP keys can never resolve on lower packages
+      if (isModuleForbiddenForPackage(packageCode, moduleKey)) {
         return false;
       }
       if (moduleKey === 'education_addon' || moduleKey === 'education') {
@@ -340,7 +343,7 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const direct =
         effectivePermissions[moduleKey] ?? effectivePermissions[toBackendModuleKey(moduleKey)];
       if (direct) return direct;
-      for (const alias of getModuleKeyAliases(moduleKey)) {
+      for (const alias of getModulePermissionKeys(moduleKey)) {
         if (effectivePermissions[alias]) return effectivePermissions[alias];
       }
       return undefined;
@@ -714,7 +717,7 @@ export const useEntitlement = (): EntitlementContextValue => {
       packageMeta: defaultPkg,
       packagesCatalog: SAAS_PACKAGES_CATALOG,
       enabledModules: new Set(defaultPkg.defaultModules),
-      hasModule: (m) => defaultPkg.defaultModules.includes(m),
+      hasModule: (m) => !isModuleForbiddenForPackage('autodata_crm', m) && defaultPkg.defaultModules.includes(m),
       educationAddon: false,
       enableIdeasMascot: false,
       industryKey: 'general',

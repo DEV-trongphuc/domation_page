@@ -1,0 +1,440 @@
+import React from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AlertTriangle, Info, X, RefreshCw } from 'lucide-react';
+import { useUIStore } from '../../store/uiStore';
+import { numberToVietnameseText } from '../../utils/numberToText';
+import { pushOverlay } from '../../utils/overlayStack';
+
+export const GlobalConfirmModal: React.FC = () => {
+  const { confirmModal, closeConfirm } = useUIStore();
+  const { 
+    isOpen, 
+    title, 
+    message, 
+    confirmText = 'Xác nhận', 
+    cancelText = 'Hủy', 
+    extraText, 
+    isDanger, 
+    impactInfo, 
+    requireWordMatch, 
+    requirePromptInput, 
+    optionalPromptInput, 
+    promptPlaceholder, 
+    promptDefaultValue,
+    onConfirm, 
+    onCancel, 
+    onExtra 
+  } = confirmModal;
+
+  const [matchInput, setMatchInput] = React.useState('');
+  const [promptInput, setPromptInput] = React.useState('');
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setMatchInput('');
+      const defaultVal = confirmModal.promptDefaultValue !== undefined
+        ? confirmModal.promptDefaultValue
+        : (confirmModal.promptPlaceholder && !confirmModal.promptPlaceholder.toLowerCase().startsWith('nhập') && !confirmModal.promptPlaceholder.toLowerCase().startsWith('ví dụ') && !confirmModal.promptPlaceholder.includes('...'))
+          ? confirmModal.promptPlaceholder
+          : '';
+      setPromptInput(defaultVal);
+      setIsSubmitting(false);
+    }
+  }, [isOpen, confirmModal.promptDefaultValue, confirmModal.promptPlaceholder]);
+
+  const numericPromptVal = React.useMemo(() => {
+    const digitsOnly = promptInput.replace(/[^0-9]/g, '');
+    if (!digitsOnly || digitsOnly.length < 4) return null;
+    const num = parseInt(digitsOnly, 10);
+    if (isNaN(num) || num <= 0) return null;
+    return num;
+  }, [promptInput]);
+
+  const isLocked = !!(requireWordMatch && matchInput !== requireWordMatch) || !!(requirePromptInput && !promptInput.trim());
+
+  const handleConfirm = async () => {
+    if (isLocked || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const res: any = onConfirm((requirePromptInput || optionalPromptInput) ? promptInput : undefined);
+      if (res && typeof res.then === 'function') {
+        await res;
+      }
+    } catch (err) {
+      console.error('Error executing confirm action:', err);
+    } finally {
+      setIsSubmitting(false);
+      closeConfirm();
+    }
+  };
+
+  const handleCancel = React.useCallback(() => {
+    if (isSubmitting) return;
+    if (onCancel) onCancel();
+    closeConfirm();
+  }, [isSubmitting, onCancel, closeConfirm]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    return pushOverlay('global-confirm-modal', handleCancel, 2147483646);
+  }, [isOpen, handleCancel]);
+
+  const renderMessage = (text: string) => {
+    if (!text) return null;
+    return text.split('\n').map((line, idx) => {
+      const trimmed = line.trim();
+      if (!trimmed) return <div key={idx} style={{ height: '8px' }} />;
+      if (trimmed.startsWith('•')) {
+        return (
+          <div key={idx} style={{ display: 'flex', gap: '8px', marginTop: '6px', paddingLeft: '4px' }}>
+            <span style={{ color: isDanger ? '#ef4444' : 'var(--color-primary)', fontWeight: 'bold', fontSize: '1rem', lineHeight: '1.2rem' }}>•</span>
+            <span style={{ fontSize: '0.825rem', color: 'var(--color-text-light)', lineHeight: 1.5 }}>
+              {trimmed.substring(1).trim()}
+            </span>
+          </div>
+        );
+      }
+      return (
+        <p key={idx} style={{ fontSize: '0.875rem', color: 'var(--color-text-light)', lineHeight: 1.5, margin: '0 0 8px 0' }}>
+          {line}
+        </p>
+      );
+    });
+  };
+
+  const modalContent = (
+    <AnimatePresence>
+      {isOpen && (
+        <div 
+          className="modal-backdrop modal-above-drawer"
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+            zIndex: 2147483646, ...({ '--modal-z': 2147483646 } as any), display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1.5rem',
+            contain: 'strict',
+            willChange: 'opacity'
+          }} 
+          onClick={handleCancel}
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.97, y: 6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 6 }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] as any }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'var(--color-surface)', width: '100%', maxWidth: '480px',
+              borderRadius: '16px', 
+              boxShadow: '0 24px 48px -12px rgba(0, 0, 0, 0.18), 0 8px 16px -8px rgba(0, 0, 0, 0.08)',
+              border: '1px solid var(--color-border-light)',
+              overflow: 'hidden', display: 'flex', flexDirection: 'column',
+              position: 'relative',
+              willChange: 'transform, opacity',
+              transform: 'translate3d(0, 0, 0)',
+              contain: 'layout style'
+            }}
+          >
+            {/* Close button top right */}
+            <button 
+              onClick={handleCancel}
+              style={{
+                position: 'absolute',
+                top: '18px',
+                right: '18px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--color-text-muted)',
+                cursor: 'pointer',
+                padding: '6px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease',
+                zIndex: 10
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              <X size={16} />
+            </button>
+
+            {/* Header & Content */}
+            <div style={isMobile ? {
+              padding: '2rem 1.5rem 1.25rem 1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              width: '100%'
+            } : {
+              padding: '2rem',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '1.25rem'
+            }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: '12px', flexShrink: 0,
+                background: isDanger ? 'rgba(239, 68, 68, 0.08)' : 'rgba(30, 64, 255, 0.08)',
+                border: isDanger ? '1px solid rgba(239, 68, 68, 0.15)' : '1px solid rgba(30, 64, 255, 0.15)',
+                color: isDanger ? '#ef4444' : 'var(--color-primary)',
+                boxShadow: isDanger ? '0 0 16px rgba(239, 68, 68, 0.06)' : '0 0 16px rgba(30, 64, 255, 0.06)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: isMobile ? '1rem' : 0
+              }}>
+                {isDanger ? <AlertTriangle size={22} /> : <Info size={22} />}
+              </div>
+              
+              <div style={{
+                flex: 1,
+                paddingRight: isMobile ? 0 : '12px',
+                width: isMobile ? '100%' : undefined,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: isMobile ? 'center' : 'flex-start',
+                textAlign: isMobile ? 'center' : 'left'
+              }}>
+                <h3 style={{
+                  fontSize: isMobile ? '1.05rem' : '1.125rem',
+                  fontWeight: 800,
+                  color: 'var(--color-text)',
+                  marginBottom: '0.5rem',
+                  lineHeight: 1.3,
+                  textAlign: isMobile ? 'center' : 'left'
+                }}>
+                  {title}
+                </h3>
+                
+                <div style={{
+                  marginTop: '0.25rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: isMobile ? 'center' : 'flex-start',
+                  textAlign: isMobile ? 'center' : 'left',
+                  width: '100%'
+                }}>
+                  {renderMessage(message)}
+                </div>
+
+                {impactInfo && (
+                  <div style={{ 
+                    background: 'rgba(245, 158, 11, 0.04)', 
+                    border: '1px solid rgba(245, 158, 11, 0.12)', 
+                    padding: '0.75rem 1rem', 
+                    borderRadius: '10px',
+                    display: 'flex',
+                    gap: '8px',
+                    marginTop: '1rem',
+                    marginBottom: '0.5rem'
+                  }}>
+                    <AlertTriangle size={14} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span style={{ fontSize: '0.75rem', color: '#b45309', fontWeight: 600, lineHeight: 1.4 }}>{impactInfo}</span>
+                  </div>
+                )}
+
+                {requireWordMatch && (
+                  <div style={{ marginTop: '1rem', width: '100%' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', display: 'block', marginBottom: '6px' }}>
+                      Nhập <span style={{ color: 'var(--color-danger)', fontFamily: 'monospace' }}>"{requireWordMatch}"</span> để xác nhận
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder={`Nhập ${requireWordMatch}...`}
+                      value={matchInput}
+                      onChange={(e) => setMatchInput(e.target.value)}
+                      style={{ 
+                        textAlign: 'center', 
+                        letterSpacing: '0.05em', 
+                        fontWeight: 600,
+                        fontSize: '0.8125rem',
+                        borderColor: matchInput === requireWordMatch ? 'var(--color-success)' : 'var(--color-border)',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        width: '100%'
+                      }}
+                    />
+                  </div>
+                )}
+
+                {(requirePromptInput || optionalPromptInput) && (
+                  <div style={{ marginTop: '1rem', width: '100%' }}>
+                    <textarea
+                      className="form-input"
+                      placeholder={promptPlaceholder || 'Nhập giá trị...'}
+                      value={promptInput}
+                      onChange={(e) => setPromptInput(e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                      autoFocus
+                      rows={3}
+                      style={{ 
+                        fontSize: '0.875rem',
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        width: '100%',
+                        background: 'var(--color-bg)',
+                        color: 'var(--color-text)',
+                        border: '1px solid var(--color-border)',
+                        outline: 'none',
+                        resize: 'vertical',
+                        minHeight: '80px',
+                        fontFamily: 'inherit'
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey && (!requirePromptInput || promptInput.trim())) {
+                          e.preventDefault();
+                          handleConfirm();
+                        }
+                      }}
+                    />
+                    {numericPromptVal !== null && (
+                      <div style={{
+                        marginTop: '8px',
+                        padding: '8px 12px',
+                        background: 'rgba(16, 185, 129, 0.08)',
+                        border: '1px solid rgba(16, 185, 129, 0.25)',
+                        borderRadius: '8px',
+                        fontSize: '0.8125rem',
+                        color: 'var(--color-text)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '3px'
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 600 }}>Quy đổi thành tiền:</span>
+                          <span style={{ fontWeight: 800, color: '#059669', fontSize: '0.9375rem' }}>
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(numericPromptVal)}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
+                          ({numberToVietnameseText(numericPromptVal)})
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+          {/* Footer actions */}
+          <div style={{ 
+            padding: isMobile ? '1rem 1.5rem' : '1.25rem 2rem', 
+            background: 'var(--color-surface-hover, #f8fafc)',
+            borderTop: '1px solid var(--color-border-light)', 
+            display: 'flex', 
+            justifyContent: isMobile ? 'center' : 'flex-end', 
+            gap: '0.75rem'
+          }}>
+            <button 
+              className="btn sm"
+              onClick={handleCancel}
+              style={{ 
+                fontWeight: 700, 
+                padding: '9px 18px', 
+                borderRadius: '10px', 
+                fontSize: '0.84rem',
+                background: 'var(--color-bg, #f1f5f9)',
+                border: '1px solid var(--color-border, #cbd5e1)',
+                color: 'var(--color-text-light, #475569)',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                flex: isMobile ? 1 : 'none',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg-hover, #e2e8f0)';
+                e.currentTarget.style.color = 'var(--color-text, #0f172a)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg, #f1f5f9)';
+                e.currentTarget.style.color = 'var(--color-text-light, #475569)';
+              }}
+            >
+              {cancelText}
+            </button>
+            {extraText && (
+              <button 
+                className="btn outline sm"
+                onClick={() => {
+                  if (onExtra) onExtra();
+                  closeConfirm();
+                }}
+                style={{ 
+                  fontWeight: 700, 
+                  padding: '8px 16px', 
+                  borderRadius: '10px', 
+                  fontSize: '0.8125rem', 
+                  borderColor: 'var(--color-border)',
+                  flex: isMobile ? 1 : 'none',
+                  textAlign: 'center'
+                }}
+              >
+                {extraText}
+              </button>
+            )}
+            <button 
+              className="btn sm"
+              onClick={handleConfirm}
+              disabled={isLocked || isSubmitting}
+              style={{ 
+                minWidth: isMobile ? 'unset' : '100px', 
+                flex: isMobile ? 1 : 'none',
+                opacity: (isLocked || isSubmitting) ? 0.5 : 1,
+                cursor: (isLocked || isSubmitting) ? 'not-allowed' : 'pointer',
+                fontWeight: 700,
+                padding: '8px 16px',
+                borderRadius: '10px',
+                fontSize: '0.8125rem',
+                background: isDanger ? '#ef4444' : 'var(--color-primary)',
+                borderColor: isDanger ? '#ef4444' : 'var(--color-primary)',
+                color: 'white',
+                boxShadow: isDanger ? '0 4px 12px rgba(239, 68, 68, 0.18)' : '0 4px 12px rgba(30, 64, 255, 0.18)',
+                transition: 'all 0.15s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px'
+              }}
+              onMouseEnter={(e) => {
+                if (!isLocked && !isSubmitting && !isMobile) {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = isDanger ? '0 6px 16px rgba(239, 68, 68, 0.25)' : '0 6px 16px rgba(30, 64, 255, 0.25)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isLocked && !isSubmitting && !isMobile) {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = isDanger ? '0 4px 12px rgba(239, 68, 68, 0.18)' : '0 4px 12px rgba(30, 64, 255, 0.18)';
+                }
+              }}
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw size={14} className="spin" />
+                  <span>{confirmText}...</span>
+                </>
+              ) : (
+                confirmText
+              )}
+            </button>
+          </div>
+        </motion.div>
+      </div>
+      )}
+    </AnimatePresence>
+  );
+
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : null;
+};

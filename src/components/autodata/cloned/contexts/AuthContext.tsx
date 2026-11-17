@@ -13,22 +13,54 @@ import type {
   SaasPackageCode,
 } from '../../autodataTypes';
 import type { TenantSettingsDto } from '../utils/pipelineConfig';
+import { useAuthStore } from '../store/authStore';
+import { useChatStore } from '../store/chatStore';
 
-export type ClonedUserRole = 'superadmin' | 'admin' | 'assistant' | 'viewer' | 'sale';
+export type ClonedUserRole =
+  | 'superadmin'
+  | 'admin'
+  | 'manager'
+  | 'director'
+  | 'assistant'
+  | 'viewer'
+  | 'sale'
+  | 'hr'
+  | 'accountant'
+  | 'marketing'
+  | (string & {});
+
+export interface EffectiveModulePermission {
+  data_scope?: string;
+  scope?: string;
+  actions?: Record<string, boolean>;
+}
 
 export interface ClonedUser {
-  id?: string;
+  id?: string | number;
   username: string;
   name: string;
+  full_name?: string;
   role: ClonedUserRole;
   role_id?: string | null;
   role_name?: string | null;
   email?: string;
   consultant_id?: string | number;
   avatar?: string;
+  avatar_url?: string;
+  signature_url?: string | null;
+  manager_behavior_mode?: string;
+  two_factor_enabled?: number;
+  two_factor_type?: string;
+  job_title?: string;
+  department?: string;
+  address?: string;
+  team_id?: number | null;
+  erp_profile?: any;
+  bio?: string | null;
   is_tenant_owner?: boolean;
   screen_access?: Record<string, boolean>;
   quick_actions?: Record<string, boolean>;
+  effective_permissions?: Record<string, EffectiveModulePermission>;
   default_route?: string | null;
   tenant?: {
     slug?: string;
@@ -90,12 +122,6 @@ export interface BootstrapRoundItem {
   is_active?: boolean;
 }
 
-export interface EffectiveModulePermission {
-  data_scope?: string;
-  scope?: string;
-  actions?: Record<string, boolean>;
-}
-
 export interface WorkspaceBootstrapPayload {
   tenant?: {
     id?: string;
@@ -120,6 +146,10 @@ export interface WorkspaceBootstrapPayload {
     role_name?: string | null;
     is_tenant_owner?: boolean;
     avatar_url?: string;
+    signature_url?: string | null;
+    job_title?: string;
+    department?: string;
+    team_id?: string | number | null;
     effective_permissions?: Record<string, EffectiveModulePermission>;
     screen_access?: Record<string, boolean>;
     quick_actions?: Record<string, boolean>;
@@ -155,33 +185,99 @@ export interface WorkspaceBootstrapPayload {
 }
 
 function mapRole(role?: string | null): ClonedUserRole {
-  if (role === 'tenant_admin' || role === 'superadmin') return 'superadmin';
-  if (role === 'manager' || role === 'admin') return 'admin';
-  if (role === 'assistant' || role === 'viewer') return role;
-  return 'sale';
+  if (!role) return 'sale';
+  if (role === 'tenant_admin' || role === 'super_admin' || role === 'superadmin') return 'superadmin';
+  if (role === 'sales') return 'sale';
+  return role as ClonedUserRole;
 }
 
-function sessionToUser(sess: ExtendedTenantSession | null): ClonedUser | null {
+function sessionToUser(
+  sess: ExtendedTenantSession | null,
+  boot?: WorkspaceBootstrapPayload | null
+): ClonedUser | null {
   if (!sess || !sess.access_token) return null;
-  const role = mapRole(sess.role);
+  const role = mapRole(boot?.user?.role || sess.role);
+  const fullName = boot?.user?.full_name || sess.user_name || sess.company_name || sess.admin_email;
+  const avatarUrl = boot?.user?.avatar_url || '';
   return {
-    id: sess.user_id,
+    id: boot?.user?.id || sess.user_id,
     username: sess.admin_email,
-    name: sess.user_name || sess.company_name || sess.admin_email,
+    name: fullName,
+    full_name: fullName,
     role,
-    role_id: sess.role_id ?? null,
-    role_name: sess.role_name ?? null,
-    email: sess.admin_email,
+    role_id: boot?.user?.role_id ?? sess.role_id ?? null,
+    role_name: boot?.user?.role_name ?? sess.role_name ?? null,
+    email: boot?.user?.email || sess.admin_email,
+    avatar: avatarUrl,
+    avatar_url: avatarUrl,
+    signature_url: boot?.user?.signature_url ?? null,
+    job_title: boot?.user?.job_title || '',
+    department: boot?.user?.department || '',
+    team_id: (boot?.user?.team_id != null && !Number.isNaN(Number(boot.user.team_id)) ? Number(boot.user.team_id) : null),
     consultant_id: role === 'sale' ? sess.user_id : undefined,
-    is_tenant_owner: sess.is_tenant_owner ?? role === 'superadmin',
-    screen_access: sess.screen_access,
-    quick_actions: sess.quick_actions,
-    default_route: sess.default_route ?? null,
+    is_tenant_owner: boot?.user?.is_tenant_owner ?? sess.is_tenant_owner ?? role === 'superadmin',
+    screen_access: boot?.user?.screen_access ?? boot?.rbac?.screen_access ?? boot?.screen_access ?? sess.screen_access,
+    quick_actions: boot?.user?.quick_actions ?? boot?.rbac?.quick_actions ?? boot?.quick_actions ?? sess.quick_actions,
+    effective_permissions:
+      boot?.user?.effective_permissions ??
+      boot?.rbac?.effective_permissions ??
+      boot?.effective_permissions ??
+      (sess.effective_permissions as Record<string, EffectiveModulePermission> | undefined),
+    default_route: boot?.user?.default_route ?? boot?.rbac?.default_route ?? boot?.default_route ?? sess.default_route ?? null,
     tenant: {
       slug: sess.tenant_slug,
-      name: sess.company_name || sess.tenant_slug,
+      name: boot?.tenant?.name || sess.company_name || sess.tenant_slug,
     },
   };
+}
+
+function syncExternalStores(
+  user: ClonedUser | null,
+  token: string | null,
+  session: ExtendedTenantSession | null
+) {
+  if (typeof window === 'undefined') return;
+  if (token && user) {
+    try {
+      localStorage.setItem('Ideas_token', token);
+      localStorage.setItem('access_token', token);
+      localStorage.setItem('domation_token', token);
+      localStorage.setItem('Ideas_user', JSON.stringify(user));
+      if (session?.tenant_slug) {
+        localStorage.setItem('domation_tenant_slug', session.tenant_slug);
+      }
+      if (session?.refresh_token) {
+        localStorage.setItem('refresh_token', session.refresh_token);
+      }
+    } catch {}
+    useAuthStore.setState({
+      user: {
+        id: user.id ?? 1,
+        email: user.email || user.username,
+        full_name: user.full_name || user.name,
+        name: user.name,
+        role: user.role,
+        role_id: user.role_id,
+        role_name: user.role_name,
+        avatar_url: user.avatar_url || user.avatar || null,
+        signature_url: user.signature_url ?? null,
+        bio: user.bio ?? null,
+        tenant_id: (session as any)?.tenant_id ?? 1,
+        tenant_name: session?.company_name || session?.tenant_slug || 'DOMATION',
+        tenant_slug: session?.tenant_slug || '',
+        team_id: user.team_id ?? null,
+        is_tenant_owner: user.is_tenant_owner,
+        screen_access: user.screen_access,
+        quick_actions: user.quick_actions,
+        effective_permissions: user.effective_permissions,
+        default_route: user.default_route ?? null,
+        job_title: user.job_title,
+      },
+      accessToken: token,
+      refreshToken: session?.refresh_token || null,
+      isAuthenticated: true,
+    });
+  }
 }
 
 export interface AuthContextType {
@@ -197,8 +293,9 @@ export interface AuthContextType {
   updateTenantSettingsLocal: (patch: Partial<TenantSettingsDto>) => void;
   updateSessionLocal: (patch: Partial<ExtendedTenantSession>) => void;
   v2Session: ExtendedTenantSession;
-  login: (newToken: string, newUser: ClonedUser) => void;
+  login: (newToken: string, newUser: ClonedUser, refreshToken?: string) => void;
   logout: () => void;
+  updateUser: (updatedUser: Partial<ClonedUser>) => void;
   switchWorkspace: (slug: string) => Promise<void>;
   openBilling: () => void;
   openTour: (deckKey?: string) => void;
@@ -242,8 +339,8 @@ export const AuthProvider: React.FC<{
     if (authOverride && authOverride.forSlug === session.tenant_slug) {
       return authOverride.user;
     }
-    return sessionToUser(session);
-  }, [authOverride, session]);
+    return sessionToUser(session as ExtendedTenantSession, bootstrapData);
+  }, [authOverride, session, bootstrapData]);
 
   const token = useMemo(() => {
     if (authOverride && authOverride.forSlug === session.tenant_slug) {
@@ -251,6 +348,12 @@ export const AuthProvider: React.FC<{
     }
     return session.access_token || null;
   }, [authOverride, session.access_token, session.tenant_slug]);
+
+  // Synchronous initial sync + ongoing effect sync for standalone MYERP stores (Zustand & localStorage)
+  syncExternalStores(user, token, session as ExtendedTenantSession);
+  useEffect(() => {
+    syncExternalStores(user, token, session as ExtendedTenantSession);
+  }, [user, token, session]);
 
   const workspaces = useMemo(
     () => bootstrapData?.workspaces || session.workspaces || [],
@@ -425,7 +528,7 @@ export const AuthProvider: React.FC<{
         onSessionUpdated(updated);
       })
       .catch(() => {
-        // ignore silent bootstrap refresh fail so offline/demo mode never crashes
+        // ignore silent bootstrap refresh fail
       });
     return () => {
       cancelled = true;
@@ -433,7 +536,7 @@ export const AuthProvider: React.FC<{
   }, [session.access_token, session.tenant_slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const login = useCallback(
-    (newToken: string, newUser: ClonedUser) => {
+    (newToken: string, newUser: ClonedUser, refreshToken?: string) => {
       setAuthOverride({
         forSlug: session.tenant_slug,
         token: newToken,
@@ -443,13 +546,34 @@ export const AuthProvider: React.FC<{
       const next: TenantSessionV2 = {
         ...cur,
         access_token: newToken,
-        user_name: newUser.name || cur.user_name,
+        refresh_token: refreshToken || cur.refresh_token,
+        user_name: newUser.name || newUser.full_name || cur.user_name,
         admin_email: newUser.email || cur.admin_email,
       };
       saveAutodataSessionV2(next);
+      syncExternalStores(newUser, newToken, next as ExtendedTenantSession);
       onSessionUpdated(next);
     },
     [session, onSessionUpdated]
+  );
+
+  const updateUser = useCallback(
+    (updatedUser: Partial<ClonedUser>) => {
+      const merged: ClonedUser | null = user ? { ...user, ...updatedUser } : null;
+      if (!merged) return;
+      setAuthOverride({
+        forSlug: session.tenant_slug,
+        token: token || session.access_token,
+        user: merged,
+      });
+      syncExternalStores(merged, token, session as ExtendedTenantSession);
+      const cur = loadAutodataSessionV2();
+      if (cur && (updatedUser.name || updatedUser.full_name)) {
+        const nextSess = { ...cur, user_name: updatedUser.full_name || updatedUser.name || cur.user_name };
+        saveAutodataSessionV2(nextSess);
+      }
+    },
+    [user, token, session]
   );
 
   const logout = useCallback(() => {
@@ -459,8 +583,17 @@ export const AuthProvider: React.FC<{
       user: null,
     });
     clearAutodataSessionV2();
-    localStorage.removeItem('domation_token');
-    localStorage.removeItem('domation_user');
+    useAuthStore.getState().clearAuth();
+    useChatStore.getState().resetChatState();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('domation_token');
+      localStorage.removeItem('domation_user');
+      localStorage.removeItem('domation_tenant_slug');
+      localStorage.removeItem('Ideas_token');
+      localStorage.removeItem('Ideas_user');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+    }
     onLoggedOut();
   }, [onLoggedOut, session.tenant_slug]);
 
@@ -515,9 +648,10 @@ export const AuthProvider: React.FC<{
       refreshTenantSettings,
       updateTenantSettingsLocal,
       updateSessionLocal,
-      v2Session: session,
+      v2Session: session as ExtendedTenantSession,
       login,
       logout,
+      updateUser,
       switchWorkspace,
       openBilling: onOpenBilling,
       openTour: onOpenTour,
@@ -537,6 +671,7 @@ export const AuthProvider: React.FC<{
       updateSessionLocal,
       login,
       logout,
+      updateUser,
       switchWorkspace,
       onOpenBilling,
       onOpenTour,

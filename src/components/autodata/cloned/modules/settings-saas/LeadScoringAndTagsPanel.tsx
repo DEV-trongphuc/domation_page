@@ -39,7 +39,7 @@ interface TenantTagDto {
   category: string;
 }
 
-const TAG_PALETTE = ['#1E40FF', '#0284C7', '#059669', '#D97706', '#DC2626', '#7C3AED', '#475569'];
+const TAG_PALETTE = ['#1E40FF', '#0284C7', '#059669', '#D97706', '#1E40FF', '#7C3AED', '#475569'];
 
 export const LeadScoringAndTagsPanel: React.FC = () => {
   const { can } = useEntitlement();

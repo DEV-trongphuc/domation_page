@@ -1401,7 +1401,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
                           ? t('Kết nối thành công — Máy chủ phản hồi chính xác!')
                           : t('Kiểm tra thất bại — Vui lòng xem chi tiết lỗi')}
                       </h4>
-                      <p style={{ fontSize: '0.75rem', color: testResult.success ? '#166534' : '#991b1b', marginTop: 2 }}>
+                      <p style={{ fontSize: '0.75rem', color: testResult.success ? '#166534' : '#1E3A8A', marginTop: 2 }}>
                         {testResult.success
                           ? t('Kênh đã được xác thực, sẵn sàng truyền tải Lead trong môi trường thực tế.')
                           : t('Không nhận được tín hiệu phản hồi từ Chat ID hoặc Token đã bị thu hồi.')}

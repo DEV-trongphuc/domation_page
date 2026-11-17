@@ -256,7 +256,7 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
           { key: 'overrides', label: 'Ngoại lệ trên từng Cá nhân (Grant / Deny)', icon: <UserCog size={15} />, count: userOverrides.length },
         ]}
         activeKey={mode}
-        onChange={setMode}
+        onChange={(nextKey) => setMode(nextKey as MatrixMode)}
       />
 
       {mode === 'roles' && (
@@ -339,7 +339,7 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
                       type="button"
                       onClick={() => void handleDeleteRole(activeTargetId)}
                       className="btn secondary sm"
-                      style={{ height: 38, color: '#DC2626' }}
+                      style={{ height: 38, color: '#1E40FF' }}
                       title="Xóa vai trò này"
                     >
                       <Trash2 size={14} />
@@ -590,7 +590,7 @@ export const RbacMatrixSettingsTab: React.FC<RbacMatrixSettingsTabProps> = ({
                 <button
                   type="button"
                   onClick={() => void handleDeleteOverride(ov.id)}
-                  style={{ border: 'none', background: 'transparent', color: '#DC2626', cursor: 'pointer' }}
+                  style={{ border: 'none', background: 'transparent', color: '#1E40FF', cursor: 'pointer' }}
                 >
                   <Trash2 size={15} />
                 </button>

@@ -11,29 +11,86 @@ export interface SelectOption {
   label: string;
   icon?: React.ReactNode;
   avatar?: string;
+  avatarBorder?: string;
   sublabel?: string;
   disabled?: boolean;
   disabledReason?: string;
   disabledType?: 'round' | 'sale';
+  faded?: boolean;
+  badge?: {
+    count: number;
+    color?: string;
+  };
 }
 
-export type CustomSelectValue = string | number | boolean | Array<string | number>;
-
-export interface CustomSelectProps {
+interface CustomSelectProps {
   options: SelectOption[];
-  value: CustomSelectValue | null | undefined;
-  onChange(value: CustomSelectValue): void;
+  value: any;
+  onChange: (value: any) => void;
   placeholder?: string;
   label?: string;
   searchable?: boolean;
   showAvatars?: boolean;
+  avatarsOnly?: boolean;
   width?: string | number;
   direction?: 'up' | 'down';
   multiple?: boolean;
   align?: 'left' | 'right';
-  size?: 'sm' | 'md';
-  hideTriggerSublabel?: boolean;
+  size?: 'xs' | 'sm' | 'md';
+  disabled?: boolean;
+  hideSelectedSublabel?: boolean;
+  onSearchChange?: (search: string) => void;
+  allowCustomInput?: boolean;
+  customInputLabel?: string;
 }
+
+export const removeVietnameseTones = (str: string): string => {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+    .trim();
+};
+
+export const getAvatarRingStyle = (border?: string): React.CSSProperties | undefined => {
+  if (!border) return undefined;
+  const b = border.toLowerCase();
+  let ringColor = 'rgba(245, 158, 11, 0.28)';
+  let borderColor = border;
+  const isPending = b.includes('f59e0b') || b.includes('d97706') || b.includes('amber') || b.includes('orange') || b === 'pending';
+
+  if (b.includes('10b981') || b.includes('green') || b.includes('emerald') || b === 'approved') {
+    borderColor = '#10b981';
+    ringColor = 'rgba(16, 185, 129, 0.28)';
+  } else if (b.includes('ef4444') || b.includes('red') || b === 'rejected') {
+    borderColor = '#ef4444';
+    ringColor = 'rgba(239, 68, 68, 0.28)';
+  } else if (b.includes('cbd5e1') || b.includes('gray') || b.includes('slate') || b === 'not_reached' || b === 'waiting') {
+    borderColor = '#cbd5e1';
+    ringColor = 'rgba(203, 213, 225, 0.4)';
+  } else if (isPending) {
+    borderColor = '#f59e0b';
+    ringColor = 'rgba(245, 158, 11, 0.28)';
+  } else {
+    ringColor = `${border}25`;
+  }
+  return {
+    borderRadius: '50%',
+    padding: '1.5px',
+    margin: '2px 4px 2px 2px',
+    border: `2px solid ${borderColor}`,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    boxShadow: `0 0 0 2px ${ringColor}`,
+    transition: 'all 0.2s ease-in-out',
+    animation: isPending ? 'avatar-pending-glow 2.2s ease-in-out infinite' : undefined
+  };
+};
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
   options,
@@ -43,19 +100,28 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   label,
   searchable = false,
   showAvatars = false,
+  avatarsOnly = false,
   width,
   direction = 'down',
   multiple = false,
   align = 'left',
-  size = 'md',
-  hideTriggerSublabel = false
+  size = 'sm',
+  disabled = false,
+  hideSelectedSublabel = false,
+  onSearchChange,
+  allowCustomInput = false,
+  customInputLabel
 }) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [computedAlign, setComputedAlign] = useState<'left' | 'right'>(align);
   const containerRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [dropdownDirection, setDropdownDirection] = useState<'up' | 'down'>(direction);
+  const [dropdownAlign, setDropdownAlign] = useState<'left' | 'right'>(align);
+
+  useEffect(() => {
+    setDropdownAlign(align);
+  }, [align]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -68,34 +134,90 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isOpen && searchable) {
-      const frame = requestAnimationFrame(() => {
-        searchInputRef.current?.focus({ preventScroll: true });
-      });
-      return () => cancelAnimationFrame(frame);
-    }
-    return undefined;
-  }, [isOpen, searchable]);
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [isOpen]);
 
-  const handleToggleTrigger = () => {
-    const nextOpen = !isOpen;
-    if (nextOpen) {
-      if (align === 'right') {
-        setComputedAlign('right');
-      } else if (containerRef.current && typeof window !== 'undefined') {
-        const rect = containerRef.current.getBoundingClientRect();
-        const spaceRight = window.innerWidth - rect.left;
-        setComputedAlign(spaceRight < 280 && rect.right > 280 ? 'right' : 'left');
+  useEffect(() => {
+    if (onSearchChange) {
+      const handler = setTimeout(() => {
+        onSearchChange(search);
+      }, 300);
+      return () => clearTimeout(handler);
+    }
+  }, [search, onSearchChange]);
+
+  useEffect(() => {
+    if (isOpen && containerRef.current) {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const rect = containerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      
+      // On mobile for multi-select (or when space below is tight), drop up
+      // Check horizontal boundary to avoid right-edge viewport clipping
+      if (align === 'right' || (isMobile && (rect.left + 240 > window.innerWidth || rect.right > window.innerWidth - 40))) {
+        setDropdownAlign('right');
+      } else {
+        setDropdownAlign('left');
+      }
+
+      if (isMobile && (multiple || spaceBelow < 280) && spaceAbove > 160) {
+        setDropdownDirection('up');
+      } else if (spaceBelow < 260 && spaceAbove > spaceBelow) {
+        setDropdownDirection('up');
+      } else {
+        setDropdownDirection(direction);
       }
     }
-    setIsOpen(nextOpen);
-  };
+  }, [isOpen, direction, multiple]);
 
-  const selectedOption = multiple ? null : options.find(opt => opt.value == value);
-  const filtered = searchable ? options.filter(o =>
-    t(o.label).toLowerCase().includes(search.toLowerCase()) ||
-    (o.sublabel && t(o.sublabel).toLowerCase().includes(search.toLowerCase()))
-  ) : options;
+  const selectedOption = React.useMemo(() => {
+    if (multiple) return null;
+    return options.find(opt => opt.value == value);
+  }, [options, value, multiple]);
+
+  const filtered = React.useMemo(() => {
+    if (!searchable || !search.trim()) return options;
+    const searchClean = removeVietnameseTones(search);
+    const searchWords = searchClean.split(/\s+/).filter(Boolean);
+    const rawSearchLower = search.trim().toLowerCase();
+
+    return options.filter(o => {
+      const labelStr = o.label ? String(o.label) : '';
+      const sublabelStr = o.sublabel ? String(o.sublabel) : '';
+      const translatedLabel = t(labelStr) || '';
+      const translatedSublabel = t(sublabelStr) || '';
+
+      // Direct exact substring match with accents
+      const rawText = `${labelStr} ${translatedLabel} ${sublabelStr} ${translatedSublabel}`.toLowerCase();
+      if (rawText.includes(rawSearchLower)) return true;
+
+      // Unaccented continuous match
+      const labelClean = removeVietnameseTones(labelStr);
+      const transLabelClean = removeVietnameseTones(translatedLabel);
+      const sublabelClean = removeVietnameseTones(sublabelStr);
+      const transSublabelClean = removeVietnameseTones(translatedSublabel);
+      const combinedClean = `${labelClean} ${transLabelClean} ${sublabelClean} ${transSublabelClean}`;
+
+      if (combinedClean.includes(searchClean)) return true;
+
+      // Word-by-word match (e.g. typing "nguyen thien" matches "nguyen huu thien")
+      if (searchWords.length > 1) {
+        return searchWords.every(word => combinedClean.includes(word));
+      }
+
+      return false;
+    });
+  }, [options, search, searchable, t]);
 
   const isSelected = (val: string | number) => {
     if (multiple) {
@@ -109,7 +231,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     if (option.disabled) {
       const reason = option.disabledReason ||
         (option.disabledType === 'round' ? t('Vòng không hoạt động') :
-          option.disabledType === 'sale' ? t('Đại lý không hoạt động') :
+          option.disabledType === 'sale' ? t('Sale không hoạt động') :
             t('Lựa chọn này không hoạt động'));
       toast.error(reason);
       return;
@@ -134,28 +256,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   };
 
-  const renderOptionLeading = (opt: SelectOption) => {
-    if (showAvatars) {
-      if (opt.value === '') {
-        return (
-          <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', flexShrink: 0 }}>?</div>
-        );
-      }
-      if (opt.icon && !opt.avatar && (opt.value === 'all' || opt.value === '')) {
-        return (
-          <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            {opt.icon}
-          </div>
-        );
-      }
-      return <Avatar src={opt.avatar} name={t(opt.label)} size="sm" style={{ flexShrink: 0 }} />;
-    }
-    if (opt.icon) {
-      return <span style={{ display: 'flex', flexShrink: 0 }}>{opt.icon}</span>;
-    }
-    return null;
-  };
-
   const renderTriggerContent = () => {
     if (multiple) {
       const arr = Array.isArray(value) ? value : [];
@@ -163,95 +263,251 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         const allOption = options.find(o => String(o.value) === 'all');
         return (
           <span className={styles.triggerContent}>
-            {allOption?.icon && <span style={{ display: 'flex', flexShrink: 0 }}>{allOption.icon}</span>}
-            <span className={styles.triggerText}>{allOption ? t(allOption.label) : t(placeholder)}</span>
+            {allOption?.icon && <span style={{ display: 'flex' }}>{allOption.icon}</span>}
+            {allOption ? t(allOption.label) : t(placeholder)}
           </span>
         );
       }
       const selectedOpts = options.filter(o => arr.some(v => String(v) === String(o.value)));
-      if (selectedOpts.length === 1) {
+      if (selectedOpts.length > 0) {
+        if (avatarsOnly) {
+          const maxVisible = 5;
+          return (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {selectedOpts.slice(0, maxVisible).map((opt, idx) => (
+                  <div
+                    key={String(opt.value)}
+                    title={t(opt.label)}
+                    style={{
+                      marginLeft: idx === 0 ? 0 : -8,
+                      border: '2px solid var(--color-surface)',
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                      zIndex: 10 - idx,
+                      display: 'flex'
+                    }}
+                  >
+                    {opt.avatar ? (
+                      <Avatar src={opt.avatar} name={t(opt.label)} size={26} />
+                    ) : (
+                      <Avatar name={t(opt.label)} size={26} />
+                    )}
+                  </div>
+                ))}
+                {selectedOpts.length > maxVisible && (
+                  <div
+                    style={{
+                      marginLeft: -8,
+                      width: 26,
+                      height: 26,
+                      borderRadius: '50%',
+                      background: 'var(--color-primary-light, #eff6ff)',
+                      color: 'var(--color-primary)',
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '2px solid var(--color-surface)',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                      zIndex: 5
+                    }}
+                  >
+                    +{selectedOpts.length - maxVisible}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        }
+
         return (
-          <span className={styles.triggerContent}>
-            {!showAvatars && selectedOpts[0].icon && <span style={{ display: 'flex', flexShrink: 0 }}>{selectedOpts[0].icon}</span>}
-            <span className={styles.triggerText}>{t(selectedOpts[0].label)}</span>
-          </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', alignItems: 'center', width: '100%', padding: '2px 0' }}>
+            {selectedOpts.map(opt => (
+              <span
+                key={String(opt.value)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: showAvatars ? '2px 10px 2px 4px' : '3px 10px',
+                  borderRadius: '20px',
+                  background: 'var(--color-bg-light, #f8fafc)',
+                  border: '1px solid var(--color-border-light, #e2e8f0)',
+                  color: 'var(--color-text, #0f172a)',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  whiteSpace: 'nowrap',
+                  lineHeight: 1.3,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+                }}
+              >
+                {showAvatars ? (
+                  opt.avatar ? (
+                    <Avatar src={opt.avatar} name={t(opt.label)} size={20} />
+                  ) : opt.icon ? (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{opt.icon}</span>
+                  ) : (
+                    <Avatar name={t(opt.label)} size={20} />
+                  )
+                ) : (
+                  opt.icon && <span style={{ display: 'flex', fontSize: '12px' }}>{opt.icon}</span>
+                )}
+                <span style={{ color: 'var(--color-text, #0f172a)', fontWeight: 600 }}>{t(opt.label)}</span>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelect(opt, e);
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                    color: 'var(--color-text-muted, #64748b)',
+                    marginLeft: '2px',
+                    fontSize: '0.9rem',
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    transition: 'all 0.15s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.color = 'var(--color-danger)';
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.color = 'var(--color-text-muted, #64748b)';
+                    e.currentTarget.style.background = 'transparent';
+                  }}
+                >
+                  ×
+                </span>
+              </span>
+            ))}
+          </div>
         );
       }
-      return (
-        <span className={styles.triggerContent}>
-          <span className={styles.triggerText}>{t('Đã chọn')} ({selectedOpts.length})</span>
-        </span>
-      );
     }
     return selectedOption ? (
-      <span className={styles.triggerContent}>
-        {renderOptionLeading(selectedOption)}
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          <span className={styles.triggerText}>{t(selectedOption.label)}</span>
-          {!hideTriggerSublabel && selectedOption.sublabel && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>({t(selectedOption.sublabel)})</span>
+      <span className={styles.triggerContent} style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'space-between', minWidth: 0, overflow: 'visible' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0, overflow: 'visible', flex: 1 }}>
+          {showAvatars && (
+            selectedOption.value === '' ? (
+              <div style={{ width: size === 'xs' ? 18 : 24, height: size === 'xs' ? 18 : 24, borderRadius: '50%', background: 'var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size === 'xs' ? '0.625rem' : '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', flexShrink: 0 }}>?</div>
+            ) : selectedOption.icon ? (
+              <span style={{ display: 'flex', flexShrink: 0 }}>{selectedOption.icon}</span>
+            ) : selectedOption.avatarBorder ? (
+              <div style={getAvatarRingStyle(selectedOption.avatarBorder)}>
+                <Avatar src={selectedOption.avatar} name={t(selectedOption.label)} size={size === 'xs' ? 16 : "sm"} />
+              </div>
+            ) : (
+              <Avatar src={selectedOption.avatar} name={t(selectedOption.label)} size={size === 'xs' ? 18 : "sm"} />
+            )
           )}
+          {!showAvatars && selectedOption.icon && <span style={{ display: 'flex' }}>{selectedOption.icon}</span>}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: size === 'xs' ? 4 : 6, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flexShrink: 1, fontSize: size === 'xs' ? '0.75rem' : undefined }}>{t(selectedOption.label)}</span>
+            {!hideSelectedSublabel && selectedOption.sublabel && <span style={{ fontSize: size === 'xs' ? '0.65rem' : '0.75rem', color: 'var(--color-text-muted)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flexShrink: 1 }}>({t(selectedOption.sublabel)})</span>}
+          </span>
         </span>
+        {selectedOption.badge && selectedOption.badge.count > 0 && (
+          <span style={{
+            background: selectedOption.badge.color || 'var(--color-danger)',
+            color: 'white',
+            borderRadius: '10px',
+            padding: size === 'xs' ? '1px 4px' : '2px 6px',
+            fontSize: size === 'xs' ? '0.625rem' : '0.7rem',
+            fontWeight: 700,
+            minWidth: size === 'xs' ? '14px' : '18px',
+            textAlign: 'center',
+            lineHeight: 1,
+            marginLeft: 'auto'
+          }}>
+            {selectedOption.badge.count}
+          </span>
+        )}
       </span>
-    ) : (
-      <span className={styles.triggerText}>{t(placeholder)}</span>
-    );
+    ) : (value && typeof value === 'string' && value.trim() && value !== '__CUSTOM_FOREIGN__' ? (
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: size === 'xs' ? 4 : 6, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, fontWeight: 650 }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flexShrink: 1, fontSize: size === 'xs' ? '0.75rem' : undefined }}>{value}</span>
+      </span>
+    ) : t(placeholder));
   };
 
-  const wrapperStyle: React.CSSProperties =
-    typeof width === 'number'
-      ? { minWidth: width, width: 'auto', maxWidth: Math.max(width + 120, 300) }
-      : width
-      ? { width }
-      : {};
-
   return (
-    <div className={styles.wrapper} ref={containerRef} style={wrapperStyle}>
+    <div className={styles.wrapper} ref={containerRef} style={{ width, maxWidth: '100%' }}>
       {label && <label className={styles.label}>{t(label)}</label>}
       <div
         className={`${styles.trigger} ${isOpen ? styles.open : ''}`}
-        onClick={handleToggleTrigger}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
         style={{
-          ...(size === 'sm' ? {
-            minHeight: '32px',
-            padding: '4px 10px',
-            fontSize: '0.8rem',
+          cursor: disabled ? 'default' : 'pointer',
+          opacity: 1,
+          backgroundColor: disabled ? 'transparent' : undefined,
+          border: disabled ? 'none' : undefined,
+          boxShadow: disabled ? 'none' : undefined,
+          padding: disabled ? '0' : undefined,
+          maxWidth: '100%',
+          overflow: 'visible',
+          boxSizing: 'border-box',
+          ...(size === 'xs' ? {
+            minHeight: disabled ? 'auto' : '34px',
+            height: disabled ? 'auto' : (multiple ? 'auto' : '34px'),
+            padding: disabled ? '0' : (multiple ? '2px 6px' : '3px 8px'),
+            fontSize: '0.75rem',
+            borderRadius: 'var(--radius-md)'
+          } : size === 'sm' ? {
+            minHeight: disabled ? 'auto' : '38px',
+            height: disabled ? 'auto' : (multiple ? 'auto' : '38px'),
+            padding: disabled ? '0' : (multiple ? '4px 12px' : '6px 12px'),
+            fontSize: '0.875rem',
             borderRadius: 'var(--radius-md)'
           } : {}),
-          ...((size === 'sm' && isOpen) ? {
+          ...((size === 'xs' && isOpen) ? {
+            boxShadow: '0 0 0 2px rgba(30, 64, 255, 0.12)'
+          } : (size === 'sm' && isOpen) ? {
             boxShadow: '0 0 0 3px rgba(30, 64, 255, 0.1)'
           } : {})
         }}
       >
-        <span className={(multiple && Array.isArray(value) && value.length > 0) || selectedOption ? styles.selectedValue : styles.placeholder}>
+        <span 
+          className={(multiple && Array.isArray(value) && value.length > 0) || selectedOption ? styles.selectedValue : styles.placeholder}
+          style={multiple ? { whiteSpace: 'normal', overflow: 'visible', display: 'block', width: '100%' } : { overflow: 'visible', minWidth: 0, display: 'flex', alignItems: 'center', flex: 1 }}
+        >
           {renderTriggerContent()}
         </span>
-        <ChevronDown size={size === 'sm' ? 14 : 16} className={`${styles.icon} ${isOpen ? styles.iconOpen : ''}`} />
+        {!disabled && <ChevronDown size={size === 'xs' ? 12 : (size === 'sm' ? 14 : 16)} className={`${styles.icon} ${isOpen ? styles.iconOpen : ''}`} />}
       </div>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: direction === 'down' ? -18 : 18, scale: 0.96 }}
+            initial={{ opacity: 0, y: dropdownDirection === 'down' ? -8 : 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: direction === 'down' ? -18 : 18, scale: 0.96 }}
-            transition={{ type: "spring", duration: 0.32, bounce: 0.05 }}
+            exit={{ opacity: 0, y: dropdownDirection === 'down' ? -8 : 8, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] as any }}
             className={styles.dropdown}
             style={{
-              top: direction === 'down' ? 'calc(100% + 0.5rem)' : 'auto',
-              bottom: direction === 'up' ? 'calc(100% + 0.5rem)' : 'auto',
-              left: computedAlign === 'right' ? 'auto' : 0,
-              right: computedAlign === 'right' ? 0 : 'auto',
-              minWidth: (searchable || showAvatars) ? 'max(100%, 240px)' : '100%',
-              transformOrigin: direction === 'down' ? 'top' : 'bottom'
+              top: dropdownDirection === 'down' ? 'calc(100% + 0.35rem)' : 'auto',
+              bottom: dropdownDirection === 'up' ? 'calc(100% + 0.35rem)' : 'auto',
+              left: dropdownAlign === 'right' ? 'auto' : 0,
+              right: dropdownAlign === 'right' ? 0 : 'auto',
+              transformOrigin: dropdownDirection === 'down' ? 'top' : 'bottom',
+              willChange: 'transform, opacity',
+              contain: 'layout style'
             }}
           >
             {searchable && (
               <div className={styles.searchBox}>
                 <Search size={14} className={styles.searchIcon} />
                 <input
-                  ref={searchInputRef}
                   type="text"
+                  autoFocus
                   placeholder={t("Tìm kiếm...")}
                   value={search}
                   onChange={e => setSearch(e.target.value)}
@@ -265,19 +521,79 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                 <div
                   key={option.value}
                   className={`${styles.option} ${isSelected(option.value) ? styles.optionSelected : ''} ${option.disabled ? styles.optionDisabled : ''}`}
+                  style={{ opacity: option.faded ? 0.45 : 1 }}
                   onClick={(e) => handleSelect(option, e)}
                 >
                   <div className={styles.optionLabel}>
-                    {renderOptionLeading(option)}
-                    <div className={styles.optionText}>
-                      <span className={styles.optionMainLabel}>{t(option.label)}</span>
-                      {option.sublabel && <span className={styles.optionSublabel}>{t(option.sublabel)}</span>}
+                    {showAvatars ? (
+                      option.value === '' ? (
+                        <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', flexShrink: 0 }}>?</div>
+                      ) : option.icon ? (
+                        <span style={{ display: 'flex', flexShrink: 0 }}>{option.icon}</span>
+                      ) : option.avatarBorder ? (
+                        <div style={getAvatarRingStyle(option.avatarBorder)}>
+                          <Avatar src={option.avatar} name={t(option.label)} size="sm" />
+                        </div>
+                      ) : (
+                        <Avatar src={option.avatar} name={t(option.label)} size="sm" />
+                      )
+                    ) : (
+                      option.icon && <span style={{ display: 'flex', flexShrink: 0 }}>{option.icon}</span>
+                    )}
+                    <div className={styles.optionText} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'space-between', flex: 1 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className={styles.optionMainLabel}>{t(option.label)}</span>
+                        {option.sublabel && <span className={styles.optionSublabel}>{t(option.sublabel)}</span>}
+                      </div>
+                      {option.badge && option.badge.count > 0 && (
+                        <span style={{
+                          background: option.badge.color || 'var(--color-danger)',
+                          color: 'white',
+                          borderRadius: '10px',
+                          padding: '2px 6px',
+                          fontSize: '0.7rem',
+                          fontWeight: 700,
+                          minWidth: '18px',
+                          textAlign: 'center',
+                          lineHeight: 1,
+                          marginLeft: 'auto'
+                        }}>
+                          {option.badge.count}
+                        </span>
+                      )}
                     </div>
                   </div>
                   {isSelected(option.value) && <Check size={14} className={styles.checkIcon} />}
                 </div>
               )) : (
                 <div className={styles.empty}>{t("Không tìm thấy")}</div>
+              )}
+              {allowCustomInput && search.trim() && !filtered.some(o => removeVietnameseTones(o.label) === removeVietnameseTones(search.trim()) || String(o.value).toLowerCase() === search.trim().toLowerCase()) && (
+                <div
+                  className={styles.option}
+                  style={{
+                    borderTop: filtered.length > 0 ? '1px dashed var(--color-border)' : 'none',
+                    background: 'rgba(59, 130, 246, 0.05)',
+                    color: 'var(--color-primary)',
+                    fontWeight: 700,
+                    padding: '9px 12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange(search.trim());
+                    setIsOpen(false);
+                    setSearch('');
+                  }}
+                >
+                  <span style={{ fontSize: '0.95rem', lineHeight: 1 }}>➕</span>
+                  <span style={{ fontSize: '0.8rem' }}>
+                    {customInputLabel ? `${customInputLabel}: "${search.trim()}"` : `${t('Sử dụng')}: "${search.trim()}"`}
+                  </span>
+                </div>
               )}
             </div>
           </motion.div>
@@ -286,3 +602,4 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     </div>
   );
 };
+

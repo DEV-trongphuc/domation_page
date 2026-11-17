@@ -267,7 +267,7 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
             { key: 'positions', label: 'Chức danh & Cấp bậc (Level Rank)', icon: <Award size={15} />, count: positions.length },
           ]}
           activeKey={subView}
-          onChange={setSubView}
+          onChange={(nextKey) => setSubView(nextKey as SubView)}
         />
       </div>
 
@@ -449,7 +449,7 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
                       <button
                         type="button"
                         onClick={() => void handleDeleteBranch(br.id)}
-                        style={{ border: 'none', background: 'transparent', color: '#DC2626', cursor: 'pointer' }}
+                        style={{ border: 'none', background: 'transparent', color: '#1E40FF', cursor: 'pointer' }}
                       >
                         <Trash2 size={15} />
                       </button>
@@ -599,7 +599,7 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
                           <button
                             type="button"
                             onClick={() => void handleDeleteDepartment(dept.id)}
-                            style={{ border: 'none', background: 'transparent', color: '#DC2626', cursor: 'pointer' }}
+                            style={{ border: 'none', background: 'transparent', color: '#1E40FF', cursor: 'pointer' }}
                           >
                             <Trash2 size={15} />
                           </button>
@@ -674,7 +674,7 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
                   <button
                     type="button"
                     onClick={() => void handleDeleteTeam(tm.id)}
-                    style={{ border: 'none', background: 'transparent', color: '#DC2626', cursor: 'pointer' }}
+                    style={{ border: 'none', background: 'transparent', color: '#1E40FF', cursor: 'pointer' }}
                   >
                     <Trash2 size={14} />
                   </button>
@@ -756,7 +756,7 @@ export const OrgStructureSettingsTab: React.FC<OrgStructureSettingsTabProps> = (
                 <button
                   type="button"
                   onClick={() => void handleDeletePosition(pos.id)}
-                  style={{ border: 'none', background: 'transparent', color: '#DC2626', cursor: 'pointer' }}
+                  style={{ border: 'none', background: 'transparent', color: '#1E40FF', cursor: 'pointer' }}
                 >
                   <Trash2 size={14} />
                 </button>

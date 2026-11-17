@@ -1,0 +1,225 @@
+import { create } from 'zustand';
+import toast from 'react-hot-toast';
+import React from 'react';
+
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export interface Toast {
+  id: string;
+  type: ToastType;
+  message: string | React.ReactElement;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+}
+
+export interface ConfirmModalState {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  extraText?: string;
+  isDanger?: boolean;
+  impactInfo?: string; // e.g. "Ảnh hưởng đến 45 khách hàng"
+  requireWordMatch?: string; // e.g. "DELETE"
+  requirePromptInput?: boolean;
+  optionalPromptInput?: boolean;
+  promptPlaceholder?: string;
+  promptDefaultValue?: string;
+  onConfirm: (promptValue?: string) => void | Promise<void>;
+  onCancel?: () => void;
+  onExtra?: () => void;
+}
+
+interface UIStore {
+  toasts: Toast[];
+  addToast: (message: string | React.ReactElement, type?: ToastType, action?: Toast['action']) => void;
+  removeToast: (id: string) => void;
+  showPOS: boolean | { id: number; [key: string]: any }; // POS can be open for a specific contact
+  setShowPOS: (show: boolean | { id: number; [key: string]: any }) => void;
+  confirmModal: ConfirmModalState;
+  showConfirm: (titleOrOptions: string | Partial<ConfirmModalState>, message?: string, onConfirm?: () => void) => void;
+  closeConfirm: () => void;
+  callModal: { isOpen: boolean; phone: string };
+  showCall: (phone: string) => void;
+  closeCall: () => void;
+  customerDrawer: { isOpen: boolean; contact: any | null; initialTab?: string };
+  openCustomerDrawer: (contactOrId: any, initialTab?: string) => void;
+  closeCustomerDrawer: () => void;
+  taskDrawer: { isOpen: boolean; task: any | null };
+  openTaskDrawer: (taskOrId: any) => void;
+  closeTaskDrawer: () => void;
+  expenseDrawer: { isOpen: boolean; expenseId: number | null };
+  openExpenseDrawer: (expenseId: number) => void;
+  closeExpenseDrawer: () => void;
+  approvalDrawer: { isOpen: boolean; item: any | null };
+  openApprovalDrawer: (itemOrId: any, type?: string) => void;
+  closeApprovalDrawer: () => void;
+  depositDrawer: { isOpen: boolean; deposit: any | null };
+  openDepositDrawer: (depositOrId: any) => void;
+  closeDepositDrawer: () => void;
+  closeAllDrawers: () => void;
+}
+
+const recentToastTimestamps = new Map<string, number>();
+const TOAST_DEDUPE_WINDOW_MS = 1200;
+
+export const useUIStore = create<UIStore>((set) => ({
+  toasts: [],
+  showPOS: false,
+  setShowPOS: (show) => set({ showPOS: show }),
+  confirmModal: {
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+  },
+  showConfirm: (titleOrOptions: any, message?: string, onConfirm?: () => void) => {
+    if (typeof titleOrOptions === 'object') {
+      set({ confirmModal: { ...titleOrOptions, isOpen: true } });
+    } else {
+      set({ 
+        confirmModal: { 
+          title: titleOrOptions, 
+          message: message || '', 
+          onConfirm: onConfirm || (() => {}), 
+          isOpen: true 
+        } 
+      });
+    }
+  },
+  closeConfirm: () => set((state) => ({ confirmModal: { ...state.confirmModal, isOpen: false } })),
+  callModal: { isOpen: false, phone: '' },
+  showCall: (phone: string) => set({ callModal: { isOpen: true, phone } }),
+  closeCall: () => set((state) => ({ callModal: { ...state.callModal, isOpen: false } })),
+  customerDrawer: { isOpen: false, contact: null, initialTab: 'info' },
+  openCustomerDrawer: (contactOrId: any, initialTab = 'info') => {
+    const contactObj = (typeof contactOrId === 'object' && contactOrId !== null) 
+      ? contactOrId 
+      : { id: Number(contactOrId) };
+    set({ 
+      customerDrawer: { isOpen: true, contact: contactObj, initialTab },
+      expenseDrawer: { isOpen: false, expenseId: null },
+      approvalDrawer: { isOpen: false, item: null },
+      depositDrawer: { isOpen: false, deposit: null }
+    });
+  },
+  closeCustomerDrawer: () => set({ customerDrawer: { isOpen: false, contact: null, initialTab: 'info' } }),
+  taskDrawer: { isOpen: false, task: null },
+  openTaskDrawer: (taskOrId: any) => {
+    const taskObj = (typeof taskOrId === 'object' && taskOrId !== null)
+      ? taskOrId
+      : { id: Number(taskOrId) };
+    set({ 
+      taskDrawer: { isOpen: true, task: taskObj },
+      expenseDrawer: { isOpen: false, expenseId: null },
+      approvalDrawer: { isOpen: false, item: null },
+      depositDrawer: { isOpen: false, deposit: null }
+    });
+  },
+  closeTaskDrawer: () => set({ taskDrawer: { isOpen: false, task: null } }),
+  expenseDrawer: { isOpen: false, expenseId: null },
+  openExpenseDrawer: (expenseId: number) => {
+    set({ 
+      expenseDrawer: { isOpen: true, expenseId: Number(expenseId) },
+      customerDrawer: { isOpen: false, contact: null, initialTab: 'info' },
+      taskDrawer: { isOpen: false, task: null },
+      approvalDrawer: { isOpen: false, item: null },
+      depositDrawer: { isOpen: false, deposit: null }
+    });
+  },
+  closeExpenseDrawer: () => set({ expenseDrawer: { isOpen: false, expenseId: null } }),
+  approvalDrawer: { isOpen: false, item: null },
+  openApprovalDrawer: (itemOrId: any, type = 'leave') => {
+    let itemObj: any = null;
+    if (typeof itemOrId === 'object' && itemOrId !== null) {
+      itemObj = itemOrId;
+    } else {
+      itemObj = { id: Number(itemOrId), type: type || 'leave' };
+    }
+    set({ 
+      approvalDrawer: { isOpen: true, item: itemObj },
+      customerDrawer: { isOpen: false, contact: null, initialTab: 'info' },
+      taskDrawer: { isOpen: false, task: null },
+      expenseDrawer: { isOpen: false, expenseId: null },
+      depositDrawer: { isOpen: false, deposit: null }
+    });
+  },
+  closeApprovalDrawer: () => set({ approvalDrawer: { isOpen: false, item: null } }),
+  depositDrawer: { isOpen: false, deposit: null },
+  openDepositDrawer: (depositOrId: any) => {
+    const depObj = (typeof depositOrId === 'object' && depositOrId !== null)
+      ? depositOrId
+      : { id: Number(depositOrId) };
+    set({
+      depositDrawer: { isOpen: true, deposit: depObj },
+      customerDrawer: { isOpen: false, contact: null, initialTab: 'info' },
+      taskDrawer: { isOpen: false, task: null },
+      expenseDrawer: { isOpen: false, expenseId: null },
+      approvalDrawer: { isOpen: false, item: null }
+    });
+  },
+  closeDepositDrawer: () => set({ depositDrawer: { isOpen: false, deposit: null } }),
+  closeAllDrawers: () => set({
+    customerDrawer: { isOpen: false, contact: null, initialTab: 'info' },
+    taskDrawer: { isOpen: false, task: null },
+    expenseDrawer: { isOpen: false, expenseId: null },
+    approvalDrawer: { isOpen: false, item: null },
+    depositDrawer: { isOpen: false, deposit: null }
+  }),
+  addToast: (message, type = 'info', action) => {
+    // Deduplication check for string messages
+    if (typeof message === 'string') {
+      const key = `${type}::${message}`;
+      const now = Date.now();
+      const last = recentToastTimestamps.get(key);
+      if (last && now - last < TOAST_DEDUPE_WINDOW_MS) {
+        return; // Suppress duplicate spam
+      }
+      recentToastTimestamps.set(key, now);
+      if (recentToastTimestamps.size > 50) {
+        for (const [k, ts] of recentToastTimestamps.entries()) {
+          if (now - ts > 10000) recentToastTimestamps.delete(k);
+        }
+      }
+    }
+
+    if (action) {
+      toast((t) => (
+        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+          React.createElement('span', null, message),
+          React.createElement('button', {
+            onClick: () => {
+              action.onClick();
+              toast.dismiss(t.id);
+            },
+            style: {
+              padding: '2px 8px',
+              backgroundColor: '#1D4ED8',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontWeight: 'bold'
+            }
+          }, action.label)
+        )
+      ), { id: Math.random().toString(), duration: 4000 });
+    } else {
+      if (type === 'success') {
+        toast.success(message);
+      } else if (type === 'error') {
+        toast.error(message);
+      } else if (type === 'warning') {
+        toast(message, { icon: '⚠️', duration: 3000 });
+      } else {
+        toast(message, { duration: 3000 });
+      }
+    }
+  },
+  removeToast: () => {}
+}));
+

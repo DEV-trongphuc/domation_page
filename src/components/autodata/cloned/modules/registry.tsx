@@ -1,14 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { MemoryRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import {
-  Sparkles,
-  Layers,
-  ArrowRight,
-  Lock,
-  CheckCircle2,
-  ExternalLink,
-} from 'lucide-react';
+import { Sparkles, Layers, ArrowRight, Lock, CheckCircle2, ExternalLink } from 'lucide-react';
 import { useEntitlement } from '../contexts/EntitlementContext';
 import { PublicRouteSkeleton, RouteTabSkeleton } from '../components/ui/Skeleton';
 import {
@@ -18,152 +11,38 @@ import {
   type EcosystemRouteDescriptor,
 } from './registryMeta';
 
+const LazyPublicSurveyPage = lazy(() => import('../pages/marketing/PublicSurveyPage'));
+const LazyPublicVoucherClaimPage = lazy(() => import('../pages/marketing/PublicVoucherClaimPage'));
+const LazyPublicBooking1on1Page = lazy(() =>
+  import('../pages/PublicBooking1on1Page').then((m) => ({
+    default: (m as any).default || (m as any).PublicBooking1on1Page,
+  }))
+);
+const LazyPublicSchedulePage = lazy(() =>
+  import('../pages/PublicSchedulePage').then((m) => ({
+    default: (m as any).default || (m as any).PublicSchedulePage,
+  }))
+);
+const LazyApiV1DocumentationPage = lazy(() =>
+  import('../pages/ApiV1DocumentationPage').then((m) => ({
+    default: (m as any).default || (m as any).ApiV1DocumentationPage,
+  }))
+);
+
 type LazyComponentImport = () => Promise<Record<string, unknown>>;
 
-const prebuiltWave2LazyMap = import.meta.glob('./*/Wave2Entry.tsx') as Record<
+const prebuiltSettingsGlobs = import.meta.glob('./settings-saas/*.tsx') as Record<
   string,
   LazyComponentImport
 >;
 
-const prebuiltSubViewLazyMap = import.meta.glob([
-  './erp-finance/*.tsx',
-  './erp-payroll/*.tsx',
-  './erp-workchat/*.tsx',
-  './erp-projects/*.tsx',
-  './settings-saas/*.tsx',
-  './dashboards/*.tsx',
-]) as Record<string, LazyComponentImport>;
-
-const prebuiltPublicPagesMap = import.meta.glob('../public-pages/*.tsx') as Record<
-  string,
-  LazyComponentImport
->;
-
-const lazyCache = new Map<string, React.LazyExoticComponent<React.ComponentType>>();
-
-function toLazyComponent(
-  cacheKey: string,
-  loader: LazyComponentImport,
-  preferredExportNames: string[] = []
-): React.LazyExoticComponent<React.ComponentType> {
-  const cached = lazyCache.get(cacheKey);
-  if (cached) return cached;
-
-  const Wrapped = lazy(async () => {
-    const mod = await loader();
-    let Resolved = mod.default as React.ComponentType | undefined;
-
-    if (!Resolved) {
-      for (const name of preferredExportNames) {
-        if (typeof mod[name] === 'function') {
-          Resolved = mod[name] as React.ComponentType;
-          break;
-        }
-      }
-    }
-
-    if (!Resolved) {
-      const firstComponent = Object.entries(mod).find(
-        ([key, value]) => /^[A-Z]/.test(key) && typeof value === 'function'
-      );
-      if (firstComponent) {
-        Resolved = firstComponent[1] as React.ComponentType;
-      }
-    }
-
-    if (!Resolved) {
-      const EmptyFallback: React.FC = () => null;
-      return { default: EmptyFallback };
-    }
-
-    return { default: Resolved };
-  });
-
-  lazyCache.set(cacheKey, Wrapped);
-  return Wrapped;
-}
-
-const LazyAudiencesPage = toLazyComponent(
-  'audiences:AudiencesPage',
-  () => import('./audiences/AudiencesPage'),
-  ['AudiencesPage']
-);
-
-const LazyMarketingConnectHub = toLazyComponent(
-  'connect:MarketingConnectHub',
-  () => import('./connect/MarketingConnectHub'),
-  ['MarketingConnectHub']
-);
-
-const LazyMarketingDashboardOverview = toLazyComponent(
-  'dashboards:MarketingDashboardOverview',
-  () => import('./dashboards/MarketingDashboardOverview'),
-  ['MarketingDashboardOverview']
-);
-
-const LazyGrowthAttributionPage = toLazyComponent(
-  'dashboards:GrowthAttributionPage',
-  () => import('./dashboards/GrowthAttributionPage'),
-  ['GrowthAttributionPage']
-);
-
-function resolveDynamicComponent(
-  descriptor: EcosystemRouteDescriptor
-): React.ComponentType | undefined {
-  const explicit = REGISTERED_WAVE2_MODULES[descriptor.path];
-  if (explicit) return explicit;
-
-  if (descriptor.path === '/audiences') {
-    return LazyAudiencesPage;
-  }
-  if (descriptor.path === '/marketing-connect') {
-    return LazyMarketingConnectHub;
-  }
-  if (descriptor.path === '/marketing-dashboard') {
-    return LazyMarketingDashboardOverview;
-  }
-  if (descriptor.path === '/growth-attribution') {
-    return LazyGrowthAttributionPage;
-  }
-
-  if (descriptor.entrySlug) {
-    const wave2Key = `./${descriptor.entrySlug}/Wave2Entry.tsx`;
-    if (prebuiltWave2LazyMap[wave2Key]) {
-      return toLazyComponent(`wave2:${wave2Key}`, prebuiltWave2LazyMap[wave2Key], [
-        'Wave2Entry',
-      ]);
-    }
-  }
-
-  if (descriptor.subViewGlobs?.length) {
-    for (const candidate of descriptor.subViewGlobs) {
-      const key = `./${candidate}.tsx`;
-      if (prebuiltSubViewLazyMap[key]) {
-        const exportHint = candidate.split('/').pop() || '';
-        return toLazyComponent(`subview:${key}`, prebuiltSubViewLazyMap[key], [exportHint]);
-      }
-    }
-  }
-
-  if (descriptor.publicPageGlobs?.length) {
-    for (const candidate of descriptor.publicPageGlobs) {
-      const key = `../public-pages/${candidate}.tsx`;
-      if (prebuiltPublicPagesMap[key]) {
-        return toLazyComponent(`public:${key}`, prebuiltPublicPagesMap[key], [candidate]);
-      }
-    }
-  }
-
-  return undefined;
-}
-
-const PREBUILT_ROUTE_COMPONENTS: Record<string, React.ComponentType> = {};
-for (const descriptor of ECOSYSTEM_PLUGIN_ROUTES) {
-  const resolved = resolveDynamicComponent(descriptor);
-  if (resolved) {
-    PREBUILT_ROUTE_COMPONENTS[descriptor.path] = resolved;
-  }
-}
+const PUBLIC_COMPONENTS_BY_PATH: Array<{ match: (p: string) => boolean; Component: React.ComponentType }> = [
+  { match: (p) => p.startsWith('/booking/') || p.startsWith('/public-booking/'), Component: LazyPublicBooking1on1Page },
+  { match: (p) => p.startsWith('/s/'), Component: LazyPublicSurveyPage },
+  { match: (p) => p.startsWith('/claim/'), Component: LazyPublicVoucherClaimPage },
+  { match: (p) => p.startsWith('/schedule') || p.startsWith('/public-schedule'), Component: LazyPublicSchedulePage },
+  { match: (p) => p === '/docs/api-v1', Component: LazyApiV1DocumentationPage },
+];
 
 export const Wave2Slot: React.FC<{
   descriptor: EcosystemRouteDescriptor;
@@ -171,8 +50,7 @@ export const Wave2Slot: React.FC<{
   const navigate = useNavigate();
   const { hasModule, packageMeta, educationAddon, switchPackage } = useEntitlement();
 
-  const isAddonLocked =
-    descriptor.moduleKey === 'education_addon' && !educationAddon;
+  const isAddonLocked = descriptor.moduleKey === 'education_addon' && !educationAddon;
   const isUnlocked = !isAddonLocked && hasModule(descriptor.moduleKey);
 
   const recommendedPackage =
@@ -190,13 +68,7 @@ export const Wave2Slot: React.FC<{
         : 'Marketing Automation Độc lập';
 
   return (
-    <div
-      style={{
-        padding: '28px',
-        maxWidth: '960px',
-        margin: '0 auto',
-      }}
-    >
+    <div style={{ padding: '28px', maxWidth: '960px', margin: '0 auto' }}>
       <div
         style={{
           backgroundColor: '#FFFFFF',
@@ -209,67 +81,48 @@ export const Wave2Slot: React.FC<{
           gap: '20px',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '16px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div
-              style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
-                border: '1px solid #BFDBFE',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#1E40FF',
-                flexShrink: 0,
-              }}
-            >
-              {isUnlocked ? <Layers size={26} /> : <Lock size={24} />}
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <span
-                  style={{
-                    fontSize: '0.72rem',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    padding: '3px 10px',
-                    borderRadius: '999px',
-                    backgroundColor: isUnlocked ? '#EFF6FF' : '#FEF3C7',
-                    color: isUnlocked ? '#1E40FF' : '#B45309',
-                    border: isUnlocked ? '1px solid #BFDBFE' : '1px solid #FDE68A',
-                  }}
-                >
-                  {isUnlocked ? 'Module Ready' : 'Yêu cầu nâng cấp gói'}
-                </span>
-                <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 500 }}>
-                  Gói hiện tại: {packageMeta.name}
-                </span>
-              </div>
-              <h2
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
+              border: '1px solid #BFDBFE',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#1E40FF',
+              flexShrink: 0,
+            }}
+          >
+            {isUnlocked ? <Layers size={26} /> : <Lock size={24} />}
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span
                 style={{
-                  margin: '6px 0 4px',
-                  fontSize: '1.35rem',
+                  fontSize: '0.72rem',
                   fontWeight: 700,
-                  color: '#0F172A',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  padding: '3px 10px',
+                  borderRadius: '999px',
+                  backgroundColor: isUnlocked ? '#EFF6FF' : '#FEF3C7',
+                  color: isUnlocked ? '#1E40FF' : '#B45309',
+                  border: isUnlocked ? '1px solid #BFDBFE' : '1px solid #FDE68A',
                 }}
               >
-                {descriptor.title}
-              </h2>
-              <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.5 }}>
-                {descriptor.subtitle}
-              </p>
+                {isUnlocked ? 'Module Ready' : 'Yêu cầu nâng cấp gói'}
+              </span>
+              <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 500 }}>
+                Gói hiện tại: {packageMeta.name}
+              </span>
             </div>
+            <h2 style={{ margin: '6px 0 4px', fontSize: '1.35rem', fontWeight: 700, color: '#0F172A' }}>
+              {descriptor.title}
+            </h2>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.5 }}>{descriptor.subtitle}</p>
           </div>
         </div>
 
@@ -394,6 +247,16 @@ export const Wave2Slot: React.FC<{
 };
 
 export const EcosystemPluginViewport: React.FC<{ path: string }> = ({ path }) => {
+  const pubMatch = PUBLIC_COMPONENTS_BY_PATH.find((entry) => entry.match(path));
+  if (pubMatch) {
+    const PubComp = pubMatch.Component;
+    return (
+      <Suspense fallback={<PublicRouteSkeleton />}>
+        <PubComp />
+      </Suspense>
+    );
+  }
+
   const descriptor =
     matchEcosystemRoute(path) || ECOSYSTEM_PLUGIN_ROUTES.find((r) => r.path === path);
 
@@ -401,16 +264,32 @@ export const EcosystemPluginViewport: React.FC<{ path: string }> = ({ path }) =>
     return <RouteTabSkeleton path={path} />;
   }
 
-  const ResolvedModule =
-    REGISTERED_WAVE2_MODULES[descriptor.path] || PREBUILT_ROUTE_COMPONENTS[descriptor.path];
-  const fallback = <RouteTabSkeleton path={path} />;
-
-  if (ResolvedModule) {
+  const Registered = REGISTERED_WAVE2_MODULES[descriptor.path];
+  if (Registered) {
     return (
-      <Suspense fallback={fallback}>
-        <ResolvedModule />
+      <Suspense fallback={<RouteTabSkeleton path={path} />}>
+        <Registered />
       </Suspense>
     );
+  }
+
+  if (descriptor.subViewGlobs?.length) {
+    for (const candidate of descriptor.subViewGlobs) {
+      const key = `./${candidate}.tsx`;
+      const loader = prebuiltSettingsGlobs[key];
+      if (loader) {
+        const DynamicComp = lazy(async () => {
+          const mod = await loader();
+          const Comp = (mod.default || Object.values(mod).find((v) => typeof v === 'function') || (() => null)) as React.ComponentType;
+          return { default: Comp };
+        });
+        return (
+          <Suspense fallback={<RouteTabSkeleton path={path} />}>
+            <DynamicComp />
+          </Suspense>
+        );
+      }
+    }
   }
 
   return <Wave2Slot descriptor={descriptor} />;
@@ -421,20 +300,23 @@ const PublicMatchedViewport: React.FC = () => {
   return <EcosystemPluginViewport path={loc.pathname} />;
 };
 
-export const PublicStandaloneGateway: React.FC<{ initialPath: string }> = ({ initialPath }) => (
+export const PublicStandaloneGateway: React.FC<{ initialPath?: string }> = ({ initialPath = '/' }) => (
   <MemoryRouter key={initialPath} initialEntries={[initialPath || '/']}>
     <Toaster position="top-right" />
     <div className="min-h-screen bg-[#F8F9FA] text-slate-900">
       <Suspense fallback={<PublicRouteSkeleton />}>
         <Routes>
-          <Route path="/booking/:slug" element={<PublicMatchedViewport />} />
-          <Route path="/public-booking/1on1/:slug" element={<PublicMatchedViewport />} />
-          <Route path="/s/:slug" element={<PublicMatchedViewport />} />
-          <Route path="/s/:tenant/:slug" element={<PublicMatchedViewport />} />
-          <Route path="/claim/:id" element={<PublicMatchedViewport />} />
-          <Route path="/schedule/:slug" element={<PublicMatchedViewport />} />
-          <Route path="/public-schedule/:slug" element={<PublicMatchedViewport />} />
-          <Route path="/docs/api-v1" element={<PublicMatchedViewport />} />
+          <Route path="/booking/:bookingCode" element={<LazyPublicBooking1on1Page />} />
+          <Route path="/public-booking/1on1/:bookingCode" element={<LazyPublicBooking1on1Page />} />
+          <Route path="/s/:slug" element={<LazyPublicSurveyPage />} />
+          <Route path="/s/:tenant/:slug" element={<LazyPublicSurveyPage />} />
+          <Route path="/claim/:id" element={<LazyPublicVoucherClaimPage />} />
+          <Route path="/schedule/:customerId" element={<LazyPublicSchedulePage />} />
+          <Route path="/schedule/campaign/:campaignId" element={<LazyPublicSchedulePage />} />
+          <Route path="/schedule/lecturer/:lecturerId" element={<LazyPublicSchedulePage />} />
+          <Route path="/public-schedule/:customerId" element={<LazyPublicSchedulePage />} />
+          <Route path="/docs/api-v1" element={<LazyApiV1DocumentationPage />} />
+          <Route path="*" element={<PublicMatchedViewport />} />
         </Routes>
       </Suspense>
     </div>

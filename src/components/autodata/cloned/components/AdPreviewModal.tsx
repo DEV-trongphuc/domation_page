@@ -539,7 +539,7 @@ export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
                     <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: '3px' }}>
                       {adData.meta_leads || adData.meta_results || 0} <span style={{ fontSize: '0.73rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>kết quả Meta</span>
                     </div>
-                    <div style={{ fontSize: '0.67rem', color: (adData.frequency || 0) > 3.5 ? '#dc2626' : 'var(--color-text-muted)', marginTop: '2px', fontWeight: (adData.frequency || 0) > 3.5 ? 700 : 500 }}>
+                    <div style={{ fontSize: '0.67rem', color: (adData.frequency || 0) > 3.5 ? '#1E40FF' : 'var(--color-text-muted)', marginTop: '2px', fontWeight: (adData.frequency || 0) > 3.5 ? 700 : 500 }}>
                       Frequency: {Number(adData.frequency || 0).toFixed(2)} {(adData.frequency || 0) > 3.5 ? '(Tần suất cao)' : ''}
                     </div>
                   </div>

@@ -786,7 +786,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
             {stats?.total_sent_ok ?? 0} <span style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>sự kiện</span>
           </div>
           <div style={{ fontSize: '0.71rem', color: 'var(--color-text-muted)', marginTop: 3 }}>
-            Chất lượng: <strong style={{ color: '#15803d' }}>{stats?.positive_sent_ok ?? 0}</strong> • Notlead/Spam: <strong style={{ color: '#dc2626' }}>{stats?.spam_sent_ok ?? 0}</strong>
+            Chất lượng: <strong style={{ color: '#15803d' }}>{stats?.positive_sent_ok ?? 0}</strong> • Notlead/Spam: <strong style={{ color: '#1E40FF' }}>{stats?.spam_sent_ok ?? 0}</strong>
           </div>
         </div>
 
@@ -808,7 +808,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
             {stats?.pending_backfill_total ?? 0} <span style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>Lead</span>
           </div>
           <div style={{ fontSize: '0.71rem', color: 'var(--color-text-muted)', marginTop: 3 }}>
-            Chất lượng: <strong style={{ color: '#16a34a' }}>{stats?.pending_backfill_positive ?? 0}</strong> • Notlead/Spam: <strong style={{ color: '#dc2626' }}>{stats?.pending_backfill_spam ?? 0}</strong>
+            Chất lượng: <strong style={{ color: '#16a34a' }}>{stats?.pending_backfill_positive ?? 0}</strong> • Notlead/Spam: <strong style={{ color: '#1E40FF' }}>{stats?.pending_backfill_spam ?? 0}</strong>
           </div>
         </div>
 
@@ -841,19 +841,19 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
           padding: '0.85rem 1rem'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: (stats?.failed_count ?? 0) > 0 ? '#dc2626' : 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: (stats?.failed_count ?? 0) > 0 ? '#1E40FF' : 'var(--color-text-muted)', textTransform: 'uppercase' }}>
               Lỗi Graph API
             </span>
             <div style={{
               width: 26, height: 26, borderRadius: 7,
               background: (stats?.failed_count ?? 0) > 0 ? 'rgba(220, 38, 38, 0.12)' : 'var(--color-bg)',
-              color: (stats?.failed_count ?? 0) > 0 ? '#dc2626' : 'var(--color-text-muted)',
+              color: (stats?.failed_count ?? 0) > 0 ? '#1E40FF' : 'var(--color-text-muted)',
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
               <AlertTriangle size={14} />
             </div>
           </div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: (stats?.failed_count ?? 0) > 0 ? '#dc2626' : 'var(--color-text)', lineHeight: 1.2 }}>
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: (stats?.failed_count ?? 0) > 0 ? '#1E40FF' : 'var(--color-text)', lineHeight: 1.2 }}>
             {stats?.failed_count ?? 0} <span style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>lỗi</span>
           </div>
           <div style={{ fontSize: '0.71rem', color: 'var(--color-text-muted)', marginTop: 3 }}>
@@ -1245,7 +1245,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
                 <button
                   type="button"
                   onClick={() => void handleOptimizeAdset(manualAdsetId, 'pause')}
-                  style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #FECACA', background: '#FEF2F2', color: '#DC2626', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #FECACA', background: '#FEF2F2', color: '#1E40FF', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
                 >
                   Tạm dừng AdSet
                 </button>
@@ -1576,7 +1576,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
                           fontWeight: 700,
                           fontSize: '0.7rem',
                           background: isSpam ? 'rgba(220, 38, 38, 0.1)' : 'rgba(22, 163, 74, 0.1)',
-                          color: isSpam ? '#dc2626' : '#15803d'
+                          color: isSpam ? '#1E40FF' : '#15803d'
                         }}>
                           {log.event_name}
                         </span>
@@ -1606,7 +1606,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
                           fontSize: '0.69rem',
                           fontWeight: 800,
                           background: isOk ? 'rgba(22, 163, 74, 0.12)' : 'rgba(220, 38, 38, 0.12)',
-                          color: isOk ? '#15803d' : '#dc2626'
+                          color: isOk ? '#15803d' : '#1E40FF'
                         }}>
                           {log.response_status || 0}
                         </span>
@@ -1836,7 +1836,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
                     style={{
                       padding: '0 8px', borderRadius: 8, border: '1px solid var(--color-border)',
                       background: 'var(--color-bg)', fontSize: '0.7rem', fontWeight: 700,
-                      color: '#dc2626', cursor: 'pointer'
+                      color: '#1E40FF', cursor: 'pointer'
                     }}
                   >
                     Xóa
@@ -1900,7 +1900,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
 
             <div data-tour="capi-stage-mapping" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8 }}>
               {PIPELINE_CAPI_STAGES.map(st => {
-                const badgeColor = st.group === 'positive' ? '#16a34a' : (st.group === 'negative' ? '#dc2626' : '#64748b');
+                const badgeColor = st.group === 'positive' ? '#16a34a' : (st.group === 'negative' ? '#1E40FF' : '#64748b');
                 const currentEv = eventTriggers[st.key] || 'Skip';
                 return (
                   <div key={st.key} style={{
@@ -2040,7 +2040,7 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem', color: 'var(--color-text-muted)' }}>
               <span>Dataset: <strong style={{ color: 'var(--color-text)' }}>{inspectLog.dataset_id}</strong></span>
-              <span>HTTP: <strong style={{ color: inspectLog.response_status >= 200 && inspectLog.response_status < 300 ? '#16a34a' : '#dc2626' }}>{inspectLog.response_status}</strong></span>
+              <span>HTTP: <strong style={{ color: inspectLog.response_status >= 200 && inspectLog.response_status < 300 ? '#16a34a' : '#1E40FF' }}>{inspectLog.response_status}</strong></span>
               <span>Thời gian: <strong style={{ color: 'var(--color-text)' }}>{inspectLog.sent_at}</strong></span>
             </div>
 

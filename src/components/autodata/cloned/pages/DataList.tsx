@@ -1,8 +1,7 @@
-/* eslint-disable react-refresh/only-export-components, @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect, react-hooks/exhaustive-deps, react-hooks/immutability */
-import { getApiBaseUrl } from '../utils/api';
-import { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, useRef, Fragment, useMemo, lazy, Suspense } from 'react';
+import api from '../api/axios';
 import { createPortal } from 'react-dom';
-import { Database, Search, Filter, ChevronLeft, ChevronRight, Download, RefreshCw, User, Phone, Mail, Clock, Tag, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ShieldAlert, Calendar, LayoutList, Sparkles, Check, X, Edit, Bell, Copy, CheckCircle, BarChart2, Scale, Info, Megaphone, Eye, Layers } from 'lucide-react';
+import { Database, Search, Filter, ChevronLeft, ChevronRight, Download, RefreshCw, User, Users, Phone, Mail, Clock, Tag, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ShieldAlert, Calendar, LayoutList, Sparkles, Check, X, Edit, Bell, Copy, CheckCircle, BarChart2, Scale, Info, Ban, UserPlus, Send, Plus, Eye } from 'lucide-react';
 import {
   Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
@@ -10,22 +9,29 @@ import {
 } from 'recharts';
 import { CustomModal } from '../components/ui/CustomModal';
 import { CustomSelect } from '../components/ui/CustomSelect';
-import { Avatar } from '../components/ui/Avatar';
+import { Avatar, getColorFromName } from '../components/ui/Avatar';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
+import { EmptyCard } from '../components/ui/EmptyCard';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
-import { useEntitlement } from '../contexts/EntitlementContext';
-import { resolveTenantPipelines } from '../utils/pipelineConfig';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useUIStore } from '../store/uiStore';
+import { getModulePermissionScope, hasPermission } from '../store/authStore';
+
 import { withRouterFreezer } from '../components/RouterFreezer';
 import { CalendarSkeleton, TableSkeleton, KpiCardSkeleton, CardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
 import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
-import { LeadQualityBadge } from '../components/LeadQualityBadge';
-import { AdPreviewModal } from '../components/AdPreviewModal';
-import { apiRequest, getErrorMessage } from '../../autodataApi';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
+import { RuleSettings } from './RuleSettings';
+import { TableContextMenu } from '../components/ui/TableContextMenu';
+import { getLocalDateStr } from '../utils/dateUtils';
+import { VietnameseDateInput } from '../components/ui/VietnameseDateInput';
+
+const ExpenseQuickViewDrawer = lazy(() => import('../components/ExpenseQuickViewDrawer').then(m => ({ default: m.ExpenseQuickViewDrawer })));
+const ExpenseCreateDrawer = lazy(() => import('../components/ExpenseCreateDrawer').then(m => ({ default: m.ExpenseCreateDrawer })));
+const DepositDetailDrawer = lazy(() => import('../components/DepositDetailDrawer').then(m => ({ default: m.DepositDetailDrawer })));
+
 
 
 type Lead = {
@@ -48,62 +54,23 @@ type Lead = {
   last_activity_at?: string | null;
   ai_screener_status?: string;
   ai_evaluation?: string;
-  quality_status?: string | null;
-  quality_note?: string | null;
-  quality_updated_at?: string | null;
-  ad_id?: string | null;
-  ad_name?: string | null;
-  adset_id?: string | null;
-  adset_name?: string | null;
-  campaign_id?: string | null;
-  campaign_name?: string | null;
-  ad_platform?: string | null;
-  ad_thumbnail_url?: string | null;
-  ad_image_url?: string | null;
-  ad_creative_title?: string | null;
-  ad_creative_body?: string | null;
-  ad_story_id?: string | null;
-  custom_fields?: Record<string, unknown> | null;
+  takers?: any[];
+  is_public?: number | boolean;
+  person_id?: number;
+  assigned_to?: number;
 };
 
-type CustomFieldColumn = {
-  id: string;
-  field_key: string;
-  field_label: string;
-  show_in_table?: boolean;
+import { fetchAPI, getDefaultDateFilter } from '../utils/api';
+
+const parseServerDate = (dateStr: string) => {
+  if (!dateStr) return new Date();
+  const trimmed = dateStr.trim();
+  if (trimmed.includes('T') || trimmed.includes('+') || trimmed.includes('Z')) {
+    return new Date(trimmed);
+  }
+  const isoStr = trimmed.replace(' ', 'T') + '+07:00';
+  return new Date(isoStr);
 };
-
-type DatabankPoolItem = {
-  id: string;
-  lead_id: string | number;
-  name?: string | null;
-  phone?: string | null;
-  email?: string | null;
-  source?: string | null;
-  campaign?: string | null;
-  product_interest?: string | null;
-  lead_score?: number | null;
-  status: 'available' | 'claimed' | 'blocked' | 'restored' | string;
-  reason?: string | null;
-  released_by_name?: string | null;
-  claimed_by_name?: string | null;
-  released_at?: string | null;
-};
-
-import {
-  fetchAPI,
-  normalizeNotificationStatus,
-  getDefaultDateFilter,
-  normalizeGlobalDateFilter,
-  parseServerDateVN,
-  getWeekRangeVN,
-  formatDateYYYYMMDD_VN,
-  formatDateTimeVN,
-  nowSqlDateTimeVN,
-  VN_TIMEZONE
-} from '../utils/api';
-
-const parseServerDate = (dateStr: string) => parseServerDateVN(dateStr) || new Date();
 
 const maskPhone = (phone: string) => {
   if (!phone || phone === '-') return phone;
@@ -276,16 +243,16 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
   if (!selectedLead) return null;
   if (selectedLead.ai_screener_status === 'passed' && selectedLead.ai_evaluation) {
     return {
-      avatar: "/imgs/autodata/domation_ai_icon.svg",
-      title: "DOMATION AI",
+      avatar: "/LOGO.jpg",
+      title: "IDEAS AI",
       badgeText: t("Đạt chuẩn"),
       badgeBg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
       badgeColor: '#ffffff',
       content: selectedLead.ai_evaluation,
       accentColor: '#1E40FF',
-      textAccentColor: theme === 'dark' ? '#3B82F6' : '#1E3A8A',
+      textAccentColor: theme === 'dark' ? '#a78bfa' : '#1E3A8A',
       topAccentGradient: 'linear-gradient(90deg, #1E40FF 0%, #1E40FF 100%)',
-      bgGradient: theme === 'dark' ? 'linear-gradient(135deg, rgba(30, 64, 255, 0.08) 0%, rgba(30, 64, 255, 0.08) 100%)' : 'linear-gradient(135deg, #faf5ff 0%, #FCF8EE 100%)',
+      bgGradient: theme === 'dark' ? 'linear-gradient(135deg, rgba(30, 64, 255, 0.08) 0%, rgba(30, 64, 255, 0.08) 100%)' : 'linear-gradient(135deg, #fff8f9 0%, #fff0f3 100%)',
       borderColor: theme === 'dark' ? '1px solid rgba(30, 64, 255, 0.25)' : '1px solid rgba(30, 64, 255, 0.15)',
     };
   } else if (selectedLead.status === 'pending_approval') {
@@ -296,8 +263,8 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
       return diffMins >= -2 && diffMins < 5;
     })();
     return {
-      avatar: "/imgs/autodata/warn_icon.png",
-      title: "DOMATION AI",
+      avatar: "/imgs/warn_icon.png",
+      title: "IDEAS AI",
       badgeText: t("Chờ duyệt"),
       badgeBg: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
       badgeColor: '#ffffff',
@@ -310,28 +277,28 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
     };
   } else if (selectedLead.status === 'rejected') {
     return {
-      avatar: "/imgs/autodata/domation_ai_icon.svg",
-      title: "DOMATION AI",
+      avatar: "/LOGO.jpg",
+      title: "IDEAS AI",
       badgeText: t("Từ chối"),
-      badgeBg: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+      badgeBg: 'linear-gradient(135deg, #ef4444 0%, #1E40FF 100%)',
       badgeColor: '#ffffff',
       content: selectedLead.ai_evaluation || t('Không đủ điều kiện'),
       accentColor: '#ef4444',
       textAccentColor: theme === 'dark' ? '#f87171' : '#be123c',
-      topAccentGradient: 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)',
+      topAccentGradient: 'linear-gradient(90deg, #ef4444 0%, #1E40FF 100%)',
       bgGradient: theme === 'dark' ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.08) 100%)' : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
       borderColor: theme === 'dark' ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid rgba(239, 68, 68, 0.15)',
     };
   } else if (selectedLead.status === 'blacklisted') {
     return {
-      avatar: "/imgs/autodata/angry_icon.jpg",
-      title: "DOMATION AI",
+      avatar: "/imgs/angry_icon.jpg",
+      title: "IDEAS AI",
       badgeText: t("Bị chặn"),
       badgeBg: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
       badgeColor: '#ffffff',
       content: selectedLead.ai_evaluation || t('Chặn tự động'),
       accentColor: '#ef4444',
-      textAccentColor: theme === 'dark' ? '#f87171' : '#dc2626',
+      textAccentColor: theme === 'dark' ? '#f87171' : '#1E40FF',
       topAccentGradient: 'linear-gradient(90deg, #ef4444 0%, #b91c1c 100%)',
       bgGradient: theme === 'dark' ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(185, 28, 28, 0.08) 100%)' : 'linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%)',
       borderColor: theme === 'dark' ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid rgba(239, 68, 68, 0.15)',
@@ -341,9 +308,52 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
 };
 
 const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
-  const { user, tenantSettings, token, tenantSlug } = useAuth();
-  const { hasModule, can } = useEntitlement();
+  const { user } = useAuth();
+  const userRole = user?.role as string;
+  const isAdmin = userRole === 'admin' || userRole === 'superadmin' || userRole === 'super_admin' || userRole === 'manager';
   const { language, t } = useLanguage();
+  const { showConfirm } = useUIStore();
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [teamsList, setTeamsList] = useState<any[]>([]);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; item: any } | null>(null);
+
+  useEffect(() => {
+    if (userRole === 'manager') {
+      api.get('/users?all=1').then(r => {
+        const d = r.data.data;
+        const list = Array.isArray(d) ? d : (d?.items || []);
+        setUsers(list);
+      }).catch(() => {});
+
+      api.get('/teams').then(r => {
+        setTeamsList(r.data.data || r.data || []);
+      }).catch(() => {});
+    }
+  }, [userRole]);
+
+  const filterVisibleTakers = (takers: any[] | undefined) => {
+    if (!takers) return [];
+    const currentUserRole = String(user?.role || '').toLowerCase();
+    const currentUserId = Number(user?.id || 0);
+
+    if (['admin', 'superadmin', 'super_admin', 'director'].includes(currentUserRole)) {
+      return takers;
+    }
+    if (['sale', 'sales'].includes(currentUserRole)) {
+      return [];
+    }
+    if (currentUserRole === 'manager') {
+      const managedTeamIds = teamsList.map((t: any) => Number(t.id));
+      return takers.filter((taker: any) => {
+        if (Number(taker.id) === currentUserId) return true;
+        const takerUser = users.find((u: any) => Number(u.id) === Number(taker.id));
+        return takerUser && takerUser.team_id && managedTeamIds.includes(Number(takerUser.team_id));
+      });
+    }
+    return [];
+  };
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
   });
@@ -371,21 +381,42 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const searchTerm = searchParams.get('search') || '';
   const statusFilter = searchParams.get('status') || 'all';
   const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
+    return localStorage.getItem('Ideas_global_date') || getDefaultDateFilter();
   });
 
+  const [showDateModal, setShowDateModal] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const getDisplayDateFilterText = (filter: string) => {
+    if (filter.includes('đến')) {
+      return filter.replace(/\s*đến\s*/i, ` ${t('đến')} `);
+    }
+    return t(filter);
+  };
+
   const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
+    if (val === 'Tùy chỉnh') {
+      setShowDateModal(true);
+      return;
+    }
+    setDateFilter(val);
+    localStorage.setItem('Ideas_global_date', val);
+    window.dispatchEvent(new CustomEvent('global-date-change', { detail: val }));
   };
   const consultantFilter = searchParams.get('consultant') || 'all';
   const roundFilter = searchParams.get('round') || 'all';
-  const qualityFilter = searchParams.get('quality_status') || 'all';
   const currentPage = Number(searchParams.get('page') || '1');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [sysSettings, setSysSettings] = useState<any>(null);
+  useEffect(() => {
+    fetchAPI('get_settings').then(res => {
+      if (res && res.success) {
+        setSysSettings(res.data);
+      }
+    });
+  }, []);
 
   const [searchInput, setSearchInput] = useState(searchTerm);
 
@@ -395,7 +426,6 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
   const [showDupCheckModal, setShowDupCheckModal] = useState(false);
   const [dupCheckInput, setDupCheckInput] = useState('');
-  const [previewAd, setPreviewAd] = useState<{ adId: string; adName?: string | null; thumb?: string | null; leadName?: string | null } | null>(null);
 
   // Consultant stats state for details modal
   const [statsModalOpen, setStatsModalOpen] = useState(false);
@@ -424,20 +454,41 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     } else if (filter === 'Tháng trước') {
       mode = 'last_month';
     } else if (filter === 'Tuần này') {
-      const range = getWeekRangeVN(0);
+      const now = new Date();
+      const currentDay = now.getDay();
+      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+      const monday = new Date(now);
+      monday.setDate(now.getDate() + distanceToMonday);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
       mode = 'custom';
-      start = range.start;
-      end = range.end;
+      start = getLocalDateStr(monday);
+      end = getLocalDateStr(sunday);
     } else if (filter === 'Tuần trước') {
-      const range = getWeekRangeVN(1);
+      const now = new Date();
+      const currentDay = now.getDay();
+      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+      const prevMonday = new Date(now);
+      prevMonday.setDate(now.getDate() + distanceToMonday - 7);
+      const prevSunday = new Date(prevMonday);
+      prevSunday.setDate(prevMonday.getDate() + 6);
+
       mode = 'custom';
-      start = range.start;
-      end = range.end;
+      start = getLocalDateStr(prevMonday);
+      end = getLocalDateStr(prevSunday);
     } else if (filter === 'Tuần trước nữa') {
-      const range = getWeekRangeVN(2);
+      const now = new Date();
+      const currentDay = now.getDay();
+      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+      const prev2Monday = new Date(now);
+      prev2Monday.setDate(now.getDate() + distanceToMonday - 14);
+      const prev2Sunday = new Date(prev2Monday);
+      prev2Sunday.setDate(prev2Monday.getDate() + 6);
+
       mode = 'custom';
-      start = range.start;
-      end = range.end;
+      start = getLocalDateStr(prev2Monday);
+      end = getLocalDateStr(prev2Sunday);
     } else {
       const match = filter.match(/^(\d{4}-\d{2}-\d{2})\s*(?:đến|đên|den|to|-)\s*(\d{4}-\d{2}-\d{2})$/i);
       if (match) {
@@ -460,15 +511,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         query += `&start_date=${start}&end_date=${end}`;
       }
       const json = await fetchAPI(query);
-      if (json && json.success) {
-        setStatsData({
-          ...json,
-          summary: json.summary || { successful: 0, reminder: 0, error: 0, total: 0, system_total_successful: 0 },
-          rounds: Array.isArray(json.rounds) ? json.rounds : [],
-          by_date: Array.isArray(json.by_date) ? json.by_date : [],
-          by_source: Array.isArray(json.by_source) ? json.by_source : [],
-          tickets: json.tickets || { total: 0, approved: 0, pending: 0, rejected: 0 }
-        });
+      if (json.success) {
+        setStatsData(json);
       } else {
         toast.error(json.message || t('Lỗi khi tải báo cáo thống kê'));
       }
@@ -487,6 +531,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   }, [statsModalOpen, statsConsultant, statsDateMode, statsStartDate, statsEndDate]);
   const [dupCheckLoading, setDupCheckLoading] = useState(false);
   const [dupCheckResult, setDupCheckResult] = useState<any>(null);
+  const [isExportingCSV, setIsExportingCSV] = useState(false);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -502,18 +547,29 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const [rounds, setRounds] = useState<{ id: number; round_name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
+  const leadsAbortRef = React.useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (leadsAbortRef.current) {
+        leadsAbortRef.current.abort();
+      }
+    };
+  }, []);
 
   const fetchLeads = async () => {
+    if (leadsAbortRef.current) {
+      leadsAbortRef.current.abort();
+    }
+    leadsAbortRef.current = new AbortController();
+    const signal = leadsAbortRef.current.signal;
+
     setLoading(true);
     try {
-      let apiUrl = `get_logs&page=${currentPage}&pageSize=${ITEMS_PER_PAGE}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}`;
-      if (qualityFilter && qualityFilter !== 'all') {
-        apiUrl += `&quality_status=${encodeURIComponent(qualityFilter)}`;
-      }
-      const json = await fetchAPI(apiUrl);
-      if (json && json.success) {
+      const json = await fetchAPI(`get_logs&page=${currentPage}&pageSize=${ITEMS_PER_PAGE}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}`, { signal });
+      if (json.success) {
         // Map the backend structure to the frontend structure
-        const mappedLeads = (Array.isArray(json?.data) ? json.data : []).map((item: any) => ({
+        const mappedLeads = json.data.map((item: any) => ({
           id: item.id,
           lead_id: item.lead_id,
           name: item.lead_name || t('Khách hàng ẩn danh'),
@@ -531,27 +587,16 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           last_activity_at: item.last_activity_at,
           ai_screener_status: item.ai_screener_status,
           ai_evaluation: item.ai_evaluation,
-          quality_status: item.quality_status,
-          quality_note: item.quality_note,
-          quality_updated_at: item.quality_updated_at,
-          ad_id: item.ad_id || null,
-          ad_name: item.ad_name || null,
-          adset_id: item.adset_id || null,
-          adset_name: item.adset_name || null,
-          campaign_id: item.campaign_id || null,
-          campaign_name: item.campaign_name || null,
-          ad_platform: item.ad_platform || null,
-          ad_thumbnail_url: item.ad_thumbnail_url || null,
-          ad_image_url: item.ad_image_url || null,
-          ad_creative_title: item.ad_creative_title || null,
-          ad_creative_body: item.ad_creative_body || null,
-          ad_story_id: item.ad_story_id || null,
-          custom_fields: item.custom_fields || null
+          is_public: item.is_public,
+          takers: item.takers || []
         }));
         setLeads(mappedLeads);
         setTotalCount(json.total_count ?? mappedLeads.length);
       }
     } catch (e: any) {
+      if (e.name === 'CanceledError' || e.code === 'ERR_CANCELED' || e.message === 'canceled') {
+        return; // Request was aborted due to rapid filter switch, ignore silently
+      }
       toast.error(t('Lỗi tải dữ liệu: ') + e.message);
     }
     setLoading(false);
@@ -559,23 +604,19 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
   useEffect(() => {
     if (isActive) {
-      fetchLeads();
+      const saved = localStorage.getItem('Ideas_global_date') || getDefaultDateFilter();
+      if (saved && saved !== dateFilter) {
+        setDateFilter(saved);
+      } else {
+        fetchLeads();
+      }
     }
   }, [searchParams, dateFilter, isActive]);
 
   useEffect(() => {
-    if (isActive) {
-      const saved = normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-      if (saved && saved !== dateFilter) {
-        setDateFilter(saved);
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
     if (!isActive) return;
     const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
+      const newDate = e.detail;
       if (newDate && newDate !== dateFilter) {
         setDateFilter(newDate);
       }
@@ -620,7 +661,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         if (foundLead) {
           setSelectedLead(foundLead);
           
-          setSearchParams((prev: URLSearchParams) => {
+          setSearchParams((prev: any) => {
             prev.delete('auto_open');
             prev.delete('open_id');
             return prev;
@@ -635,9 +676,9 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
       handleUpdateDateFilter(value);
       return;
     }
-    setSearchParams((prev: URLSearchParams) => {
+    setSearchParams((prev: any) => {
       const next = new URLSearchParams(prev);
-      if (value === 'all' || value === '') next.delete(key);
+      if (value === 'all' || value === '' || (key === 'view' && value === 'list')) next.delete(key);
       else next.set(key, value);
       if (key !== 'page') next.delete('page');
       return next;
@@ -677,6 +718,30 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   };
 
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const canSeeFullInfo = useMemo(() => {
+    if (!selectedLead) return false;
+    const scope = getModulePermissionScope(user, 'leads', 'read');
+    if (scope === 'all') return true;
+    if (scope === 'team') {
+      const userTeamId = (user as any).team_id || (user as any).consultant_profile?.team_id;
+      if (userTeamId && Number((selectedLead as any).team_id) === Number(userTeamId)) return true;
+    }
+    if (scope === 'own') {
+      return (
+        (selectedLead.takers && selectedLead.takers.some((t: any) => Number(t.id) === Number(user?.id) || Number(t.id) === Number(user?.consultant_id))) ||
+        Number(selectedLead.assigned_to) === Number(user?.consultant_id) ||
+        Number(selectedLead.assigned_to) === Number(user?.id)
+      );
+    }
+    if (scope === 'none') return false;
+    return (
+      user?.role === 'admin' ||
+      user?.role === 'superadmin' ||
+      (selectedLead.takers && selectedLead.takers.some((t: any) => Number(t.id) === Number(user?.id) || Number(t.id) === Number(user?.consultant_id))) ||
+      Number(selectedLead.assigned_to) === Number(user?.consultant_id) ||
+      Number(selectedLead.assigned_to) === Number(user?.id)
+    );
+  }, [selectedLead, user]);
   const [notificationStatus, setNotificationStatus] = useState<any>(null);
   const [notifLoading, setNotifLoading] = useState(false);
   const [isAdminEditingLead, setIsAdminEditingLead] = useState(false);
@@ -689,6 +754,96 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     note: ''
   });
   const [isSavingLeadFields, setIsSavingLeadFields] = useState(false);
+  const [isReleasingLead, setIsReleasingLead] = useState(false);
+
+  const handleReleaseToDatabank = (leadId: number, contactId?: number) => {
+    showConfirm({
+      title: t('Nhả khách về Kho chung'),
+      message: t('Bạn có chắc chắn muốn nhả khách hàng này về Kho chung (Databank)? Việc này sẽ thu hồi quyền sở hữu của các tư vấn viên hiện tại.'),
+      confirmText: t('Nhả về Kho chung'),
+      cancelText: t('Hủy'),
+      isDanger: true,
+      onConfirm: async () => {
+        setIsReleasingLead(true);
+        try {
+          let res;
+          if (contactId) {
+            res = await fetchAPI(`contacts/${contactId}/release-databank`, {
+              method: 'POST'
+            });
+            if (res && !res.hasOwnProperty('success')) {
+              res = { success: true, message: res.message || t('Đã nhả về Kho chung thành công!') };
+            }
+          } else {
+            res = await fetchAPI('release_to_databank', {
+              method: 'POST',
+              body: JSON.stringify({ lead_id: leadId })
+            });
+          }
+          if (res.success || res.action) {
+            toast.success(res.message || t('Đã nhả về Kho chung thành công!'));
+            setSelectedLead(null);
+            fetchLeads();
+            if (viewMode === 'databank') {
+              fetchPublicLeads();
+            }
+          } else {
+            toast.error(res.message || t('Lỗi khi nhả về Kho chung.'));
+          }
+        } catch (e: any) {
+          toast.error(t('Lỗi kết nối') + ': ' + e.message);
+        } finally {
+          setIsReleasingLead(false);
+        }
+      }
+    });
+  };
+
+  const [isDeletingClaim, setIsDeletingClaim] = useState(false);
+
+  const handleDeletePublicClaim = (personId: number, saleId: number, saleName: string) => {
+    showConfirm({
+      title: t('Xóa lượt nhận của Sale'),
+      message: t('Bạn có chắc chắn muốn xóa lượt nhận của Sale {name} cho khách hàng này không?').replace('{name}', saleName),
+      confirmText: t('Xóa'),
+      cancelText: t('Hủy'),
+      isDanger: true,
+      onConfirm: async () => {
+        setIsDeletingClaim(true);
+        try {
+          const res = await fetchAPI('delete_public_lead_claim', {
+            method: 'POST',
+            body: JSON.stringify({ person_id: personId, sale_id: saleId })
+          });
+          if (res.success) {
+            toast.success(res.message || t('Đã xóa lượt nhận thành công!'));
+            
+            // Update local modal details
+            const updatedTakers = selectedLead.takers ? selectedLead.takers.filter((t: any) => t.id !== saleId) : [];
+            setSelectedLead({
+              ...selectedLead,
+              takers: updatedTakers
+            });
+
+            // Refresh table counts
+            fetchLeads();
+            if (viewMode === 'databank') {
+              fetchPublicLeads();
+            }
+          } else {
+            toast.error(res.message || t('Lỗi khi xóa lượt nhận.'));
+          }
+        } catch (e: any) {
+          toast.error(t('Lỗi kết nối: ') + e.message);
+        } finally {
+          setIsDeletingClaim(false);
+        }
+      }
+    });
+  };
+
+
+
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [reminderChannels, setReminderChannels] = useState({ zalo: true, email: true, telegram: true });
   const [isSendingReminder, setIsSendingReminder] = useState(false);
@@ -697,14 +852,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     setNotifLoading(true);
     try {
       const json = await fetchAPI(`get_lead_notification_status&lead_id=${leadId}`);
-      if (json && json.success) {
-        setNotificationStatus(normalizeNotificationStatus(json.data));
-      } else {
-        setNotificationStatus(null);
+      if (json.success) {
+        setNotificationStatus(json.data);
       }
     } catch (err) {
       console.error("Lỗi lấy trạng thái thông báo:", err);
-      setNotificationStatus(null);
     } finally {
       setNotifLoading(false);
     }
@@ -739,7 +891,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         body: JSON.stringify({
           lead_id: selectedLead.lead_id || selectedLead.id,
           send_zalo: reminderChannels.zalo,
-          send_email: reminderChannels.email
+          send_email: reminderChannels.email,
+          send_telegram: reminderChannels.telegram
         })
       });
       if (res.success) {
@@ -809,147 +962,308 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const [isBlocking, setIsBlocking] = useState<boolean>(false);
   const isTicketLead = selectedLead?.status === 'error' || selectedLead?.report_status === 'approved' || selectedLead?.report_status === 'pending';
 
-  // Calendar & Public Databank View Mode States
-  const viewParam = searchParams.get('view');
-  const viewMode: 'list' | 'calendar' | 'databank' =
-    location.pathname === '/calendar'
-      ? 'calendar'
-      : viewParam === 'databank'
-        ? 'databank'
-        : 'list';
-  const [customFieldCols, setCustomFieldCols] = useState<CustomFieldColumn[]>([]);
-  const [databankItems, setDatabankItems] = useState<DatabankPoolItem[]>([]);
-  const [databankStats, setDatabankStats] = useState({ available: 0, claimed: 0, blocked: 0, restored: 0, total: 0 });
-  const [databankLoading, setDatabankLoading] = useState(false);
-  const [databankStatusFilter, setDatabankStatusFilter] = useState<'available' | 'claimed' | 'blocked' | 'all'>('available');
-  const [databankPage, setDatabankPage] = useState(1);
-  const [databankTotalPages, setDatabankTotalPages] = useState(1);
-  const [databankTotalCount, setDatabankTotalCount] = useState(0);
-  const [actingDatabankId, setActingDatabankId] = useState<string | null>(null);
-  const [releasingLeadId, setReleasingLeadId] = useState<number | string | null>(null);
-  const [confirmReleaseOpen, setConfirmReleaseOpen] = useState(false);
-
-  const fetchCustomFieldColumns = async () => {
-    try {
-      const cols = await apiRequest<CustomFieldColumn[]>('/org-rbac/custom-fields?entity_type=lead', {
-        token,
-        tenantSlug,
-      });
-      if (Array.isArray(cols)) {
-        setCustomFieldCols(cols.filter((c) => c.show_in_table !== false));
-      }
-    } catch {
-      // Optional enrichment column fetch
-    }
-  };
-
-  const fetchDatabankLeads = async (targetPage = databankPage, targetStatus = databankStatusFilter) => {
-    setDatabankLoading(true);
-    try {
-      const qs = new URLSearchParams({
-        status: targetStatus,
-        page: String(targetPage),
-        limit: '50',
-      });
-      if (searchTerm.trim()) qs.set('search', searchTerm.trim());
-      const res = await apiRequest<{
-        items?: DatabankPoolItem[];
-        stats?: { available: number; claimed: number; blocked: number; restored: number; total: number };
-        pagination?: { total: number; page: number; total_pages: number };
-      }>(`/leads/databank?${qs.toString()}`, { token, tenantSlug });
-      setDatabankItems(Array.isArray(res?.items) ? res.items : []);
-      if (res?.stats) setDatabankStats(res.stats);
-      setDatabankTotalCount(Number(res?.pagination?.total ?? (res?.items?.length || 0)));
-      setDatabankTotalPages(Math.max(1, Number(res?.pagination?.total_pages || 1)));
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('Không thể tải Kho dữ liệu chung (Databank)')));
-    } finally {
-      setDatabankLoading(false);
-    }
-  };
-
-  const handleReleaseToDatabank = async (leadId: number | string) => {
-    setReleasingLeadId(leadId);
-    try {
-      await apiRequest('/leads/databank/release', {
-        method: 'POST',
-        token,
-        tenantSlug,
-        body: { lead_id: String(leadId) },
-      });
-      toast.success(t('Đã nhả khách hàng về Kho dữ liệu chung (Databank)'));
-      setConfirmReleaseOpen(false);
-      setSelectedLead(null);
-      fetchLeads();
-      if (viewMode === 'databank') {
-        void fetchDatabankLeads();
-      }
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('Không thể nhả khách hàng về Kho chung')));
-    } finally {
-      setReleasingLeadId(null);
-    }
-  };
-
-  const handleClaimDatabankLead = async (item: DatabankPoolItem) => {
-    setActingDatabankId(item.id);
-    try {
-      await apiRequest(`/leads/databank/${item.id}/claim`, {
-        method: 'POST',
-        token,
-        tenantSlug,
-      });
-      toast.success(t(`Đã nhận "${item.name || 'Khách hàng'}" từ Kho chung về danh sách của bạn!`));
-      await fetchDatabankLeads();
-      fetchLeads();
-      window.dispatchEvent(new CustomEvent('lead-claimed'));
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('Không thể nhận khách hàng từ Kho chung')));
-    } finally {
-      setActingDatabankId(null);
-    }
-  };
-
-  const handleDatabankModeration = async (poolId: string, action: 'block' | 'unblock' | 'restore') => {
-    setActingDatabankId(poolId);
-    try {
-      await apiRequest(`/leads/databank/${poolId}/${action}`, {
-        method: 'POST',
-        token,
-        tenantSlug,
-      });
-      toast.success(
-        action === 'block'
-          ? t('Đã khóa số khỏi Kho chung')
-          : action === 'unblock'
-            ? t('Đã mở khóa số trong Kho chung')
-            : t('Đã khôi phục số về trạng thái sẵn sàng')
-      );
-      await fetchDatabankLeads();
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('Thao tác Kho chung thất bại')));
-    } finally {
-      setActingDatabankId(null);
-    }
-  };
-
+  // Calendar / Databank View Mode States
+  const [localViewMode, setLocalViewMode] = useState<'list' | 'calendar' | 'databank'>('list');
   useEffect(() => {
-    void fetchCustomFieldColumns();
-  }, []);
-
-  useEffect(() => {
-    if (isActive && viewMode === 'databank') {
-      void fetchDatabankLeads(databankPage, databankStatusFilter);
+    const viewParam = searchParams.get('view');
+    if (viewParam === 'databank') {
+      setLocalViewMode('databank');
+    } else if (viewParam === 'calendar') {
+      setLocalViewMode('calendar');
+    } else {
+      setLocalViewMode('list');
     }
-  }, [isActive, viewMode, databankPage, databankStatusFilter, searchTerm]);
+  }, [searchParams]);
+  const viewMode = localViewMode;
+
+  const [publicLeads, setPublicLeads] = useState<any[]>([]);
+  const [publicTotalCount, setPublicTotalCount] = useState(0);
+  const [publicLoading, setPublicLoading] = useState(false);
+  const [publicPage, setPublicPage] = useState(1);
+  const [isClaimingLeadId, setIsClaimingLeadId] = useState<number | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarData, setCalendarData] = useState<any>({});
   const [calendarLoading, setCalendarLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dayDetails, setDayDetails] = useState<any>(null);
   const [dayDetailsLoading, setDayDetailsLoading] = useState(false);
-  const [activeModalTab, setActiveModalTab] = useState<'sales' | 'tickets' | 'blacklist'>('sales');
+  const [activeModalTab, setActiveModalTab] = useState<'sales' | 'tickets' | 'blacklist' | 'so' | 'po'>('sales');
   const [expandedSales, setExpandedSales] = useState<Record<string, boolean>>({});
+  const [activePOId, setActivePOId] = useState<number | null>(null);
+  const [selectedDepForManage, setSelectedDepForManage] = useState<any | null>(null);
+  const [showManageModal, setShowManageModal] = useState(false);
+  const [financeSummary, setFinanceSummary] = useState<any>(null);
+  const [pendingOnly, setPendingOnly] = useState<boolean>(false);
+  const [showCreateExpenseModal, setShowCreateExpenseModal] = useState<boolean>(false);
+  const [selectedExpenseDate, setSelectedExpenseDate] = useState<string>('');
+  const [editingExpense, setEditingExpense] = useState<any>(null);
+
+  const usersMap = useMemo(() => {
+    const map = new Map<number, any>();
+    (users || []).forEach((u: any) => {
+      if (u?.id) map.set(Number(u.id), u);
+    });
+    return map;
+  }, [users]);
+
+  const renderWorkflowStepsAndWatchers = (item: any) => {
+    interface StepInfo {
+      stepIndex: number;
+      title: string;
+      userId?: number;
+      userName?: string;
+      userAvatar?: string | null;
+      status: 'approved' | 'rejected' | 'pending' | 'waiting';
+    }
+
+    const steps: StepInfo[] = [];
+    const overall = String(item.status || 'pending').toLowerCase();
+    const isDraft = overall === 'draft' || Boolean(item.is_draft);
+    const isPaid = Boolean(item.is_refunded) || overall === 'paid' || overall === 'refunded';
+
+    const s1 = String(item.status_level_1 || (overall === 'level1_approved' || overall === 'approved' || isPaid ? 'approved' : overall === 'rejected' ? 'rejected' : 'pending')).toLowerCase();
+    const s2 = String(item.status_level_2 || 'none').toLowerCase();
+    const s3 = String(item.status_level_3 || 'none').toLowerCase();
+
+    // Step 1
+    const app1Id = Number(item.approver_id || 0);
+    const app1User = app1Id > 0 ? usersMap.get(app1Id) : null;
+    const app1Name = item.approver_name || app1User?.full_name || app1User?.name || '';
+    const app1Avatar = item.approver_avatar || app1User?.avatar_url || app1User?.avatar || null;
+    if (app1Id > 0 || app1Name || item.approver_id_2) {
+      let stepStatus: StepInfo['status'] = 'pending';
+      if (isDraft) stepStatus = 'waiting';
+      else if (s1 === 'approved' || overall === 'approved' || isPaid || overall === 'level1_approved') stepStatus = 'approved';
+      else if (s1 === 'rejected' || (overall === 'rejected' && s1 !== 'approved')) stepStatus = 'rejected';
+      else stepStatus = 'pending';
+
+      steps.push({
+        stepIndex: 1,
+        title: 'Cấp 1',
+        userId: app1Id,
+        userName: app1Name,
+        userAvatar: app1Avatar,
+        status: stepStatus
+      });
+    }
+
+    // Step 2
+    const app2Id = Number(item.approver_id_2 || 0);
+    const app2User = app2Id > 0 ? usersMap.get(app2Id) : null;
+    const app2Name = item.approver_name_2 || app2User?.full_name || app2User?.name || '';
+    const app2Avatar = item.approver_avatar_2 || app2User?.avatar_url || app2User?.avatar || null;
+    if (app2Id > 0 || (app2Name && app2Name.trim() !== '')) {
+      let stepStatus: StepInfo['status'] = 'waiting';
+      if (isDraft) stepStatus = 'waiting';
+      else if (s2 === 'approved' || (overall === 'approved' && s2 !== 'rejected')) stepStatus = 'approved';
+      else if (s2 === 'rejected') stepStatus = 'rejected';
+      else if (s1 === 'approved' && s2 !== 'approved' && s2 !== 'rejected') stepStatus = 'pending';
+      else stepStatus = 'waiting';
+
+      steps.push({
+        stepIndex: 2,
+        title: 'Cấp 2',
+        userId: app2Id,
+        userName: app2Name,
+        userAvatar: app2Avatar,
+        status: stepStatus
+      });
+    }
+
+    // Step 3
+    const app3Id = Number(item.approver_id_3 || 0);
+    const app3User = app3Id > 0 ? usersMap.get(app3Id) : null;
+    const app3Name = item.approver_name_3 || app3User?.full_name || app3User?.name || '';
+    const app3Avatar = item.approver_avatar_3 || app3User?.avatar_url || app3User?.avatar || null;
+    if (app3Id > 0 || (app3Name && app3Name.trim() !== '')) {
+      let stepStatus: StepInfo['status'] = 'waiting';
+      if (isDraft) stepStatus = 'waiting';
+      else if (s3 === 'approved' || (overall === 'approved' && s3 !== 'rejected')) stepStatus = 'approved';
+      else if (s3 === 'rejected') stepStatus = 'rejected';
+      else if (s1 === 'approved' && (s2 === 'approved' || s2 === 'none') && s3 !== 'approved' && s3 !== 'rejected') stepStatus = 'pending';
+      else stepStatus = 'waiting';
+
+      steps.push({
+        stepIndex: 3,
+        title: 'Cấp 3',
+        userId: app3Id,
+        userName: app3Name,
+        userAvatar: app3Avatar,
+        status: stepStatus
+      });
+    }
+
+    if (steps.length === 0) {
+      steps.push({
+        stepIndex: 1,
+        title: 'Duyệt',
+        userId: app1Id,
+        userName: app1Name || 'Người duyệt',
+        userAvatar: app1Avatar,
+        status: isDraft ? 'waiting' : (overall === 'approved' || isPaid ? 'approved' : overall === 'rejected' ? 'rejected' : 'pending')
+      });
+    }
+
+    // Watchers list
+    let watchersList: Array<{ id?: number; name?: string; avatar?: string | null }> = [];
+    if (Array.isArray(item.watchers) && item.watchers.length > 0) {
+      watchersList = item.watchers;
+    } else if (item.related_user_ids) {
+      let relIds: number[] = [];
+      const rawWatchers = item.related_user_ids;
+      if (Array.isArray(rawWatchers)) {
+        relIds = rawWatchers.map((id: any) => Number(typeof id === 'object' && id !== null ? (id.id || id.user_id) : id)).filter((id: number) => id > 0);
+      } else if (typeof rawWatchers === 'string') {
+        const trimmed = rawWatchers.trim();
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+          try {
+            const parsed = JSON.parse(trimmed);
+            if (Array.isArray(parsed)) {
+              relIds = parsed.map((id: any) => Number(typeof id === 'object' && id !== null ? (id.id || id.user_id) : id)).filter((id: number) => id > 0);
+            }
+          } catch {
+            relIds = trimmed.slice(1, -1).split(',').map((id: string) => Number(id.trim().replace(/^['"]|['"]$/g, ''))).filter((id: number) => id > 0);
+          }
+        } else {
+          relIds = trimmed.split(',').map((id: string) => Number(id.trim())).filter((id: number) => id > 0);
+        }
+      }
+      watchersList = relIds.map(id => {
+        const u = usersMap.get(id);
+        return { id, name: u?.full_name || u?.name || `ID ${id}`, avatar: u?.avatar_url || u?.avatar || null };
+      });
+    }
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
+        {/* Step Approvers Chain */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          {steps.map((st, idx) => {
+            const displayName = st.userName || st.title;
+            const avatarUrl = st.userAvatar;
+
+            const isApproved = !isDraft && st.status === 'approved';
+            const isRejected = !isDraft && st.status === 'rejected';
+            const isPending = !isDraft && st.status === 'pending';
+
+            const borderColor = isApproved ? '#34C759' : isRejected ? '#1E40FF' : isPending ? '#FF9500' : 'var(--color-border)';
+            const statusText = isApproved ? 'Đã duyệt' : isRejected ? 'Từ chối' : isPending ? 'Đang chờ duyệt' : isDraft ? 'Dự kiến duyệt (Bản nháp)' : 'Chưa đến lượt';
+
+            return (
+              <Fragment key={`po-step-${st.stepIndex}`}>
+                {idx > 0 && (
+                  <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', margin: '0 1px' }}>➔</span>
+                )}
+                <div 
+                  title={`${st.title}: ${displayName} (${statusText})`}
+                  style={{
+                    position: 'relative',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{
+                    borderRadius: '50%',
+                    padding: '1.5px',
+                    border: `2px solid ${borderColor}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'var(--color-surface, #ffffff)',
+                    opacity: isDraft ? 0.95 : (st.status === 'waiting' ? 0.6 : 1)
+                  }}>
+                    <Avatar src={avatarUrl || undefined} name={displayName} size={24} />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-2px',
+                    right: '-2px',
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    background: isApproved ? '#34C759' : isRejected ? '#1E40FF' : isPending ? '#FF9500' : isDraft ? '#64748B' : '#8E8E93',
+                    border: '1.5px solid #ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    fontSize: '8px',
+                    fontWeight: 800
+                  }}>
+                    {isApproved ? '✓' : isRejected ? '✕' : isPending ? '•' : st.stepIndex}
+                  </div>
+                </div>
+              </Fragment>
+            );
+          })}
+        </div>
+
+        {/* Related Watchers Avatars */}
+        {watchersList.length > 0 && (
+          <div 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '3px',
+              marginLeft: '4px',
+              paddingLeft: '6px',
+              borderLeft: '1px solid var(--color-border)'
+            }}
+            title={`Người liên quan (${watchersList.length}): ${watchersList.map(w => w.name).join(', ')}`}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-muted)', marginRight: '1px' }}>
+              <Eye size={12} />
+            </div>
+            {watchersList.slice(0, 3).map((w, wIdx) => (
+              <Avatar
+                key={`rel-${w.id || wIdx}`}
+                src={w.avatar || undefined}
+                name={w.name || `User ${w.id}`}
+                size={22}
+              />
+            ))}
+            {watchersList.length > 3 && (
+              <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-text-muted)' }}>
+                +{watchersList.length - 3}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const handleOpenPO = (poId: number) => {
+    setActivePOId(poId);
+  };
+
+  const handleOpenSO = async (itemOrId: any) => {
+    const isObject = typeof itemOrId === 'object' && itemOrId !== null;
+    const dealId = isObject ? itemOrId.deal_id : null;
+    const invoiceId = isObject ? itemOrId.id : itemOrId;
+    const targetId = dealId || invoiceId;
+
+    if (!targetId) {
+      toast.error("Không tìm thấy thông tin phiếu cọc (SO) tương ứng.");
+      return;
+    }
+
+    const loadToastId = toast.loading("Đang tải chi tiết phiếu cọc...");
+    try {
+      const res = await fetchAPI(`deposits?id=${targetId}`);
+      if (res.success && res.data && res.data.length > 0) {
+        setSelectedDepForManage(res.data[0]);
+        setShowManageModal(true);
+        toast.dismiss(loadToastId);
+        return;
+      }
+    } catch (err) {
+      console.error("Error fetching deposit details:", err);
+    }
+    toast.dismiss(loadToastId);
+    toast.error("Không tìm thấy thông tin phiếu cọc (SO) tương ứng.");
+  };
 
   const toggleExpandSale = (saleName: string) => {
     setExpandedSales(prev => ({
@@ -958,14 +1272,72 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     }));
   };
 
+  const fetchPublicLeads = async () => {
+    setPublicLoading(true);
+    try {
+      const json = await fetchAPI(`get_public_leads&page=${publicPage}&pageSize=${ITEMS_PER_PAGE}&search=${encodeURIComponent(searchTerm)}`);
+      if (json.success) {
+        setPublicLeads(json.data || []);
+        setPublicTotalCount(json.total_count || (json.data ? json.data.length : 0));
+      } else {
+        toast.error(json.message || t('Lỗi tải dữ liệu kho data chung'));
+      }
+    } catch (e: any) {
+      toast.error(t('Lỗi tải dữ liệu kho data chung: ') + e.message);
+    }
+    setPublicLoading(false);
+  };
+
+  const handleClaimLead = (personId: number, personName?: string, onSuccess?: () => void) => {
+    const displayName = personName || t('Khách hàng này');
+    showConfirm({
+      title: t('Nhận Khách hàng'),
+      message: t(`Bạn có chắc chắn muốn nhận khách hàng "${displayName}" từ Kho Databank về danh sách quản lý của mình không?`),
+      confirmText: t('Nhận Khách'),
+      cancelText: t('Hủy'),
+      onConfirm: async () => {
+        setIsClaimingLeadId(personId);
+        try {
+          const json = await fetchAPI('claim_public_lead', {
+            method: 'POST',
+            body: JSON.stringify({ person_id: personId })
+          });
+          if (json.success) {
+            toast.success(json.message || t('Nhận data thành công!'));
+            fetchPublicLeads();
+            window.dispatchEvent(new CustomEvent('lead-claimed'));
+            if (onSuccess) onSuccess();
+          } else {
+            toast.error(json.message || t('Nhận data thất bại'));
+          }
+        } catch (e: any) {
+          toast.error(t('Lỗi: ') + e.message);
+        } finally {
+          setIsClaimingLeadId(null);
+        }
+      }
+    });
+  };
+
+
+
+
+
+  useEffect(() => {
+    if (isActive && viewMode === 'databank') {
+      fetchPublicLeads();
+    }
+  }, [isActive, viewMode, publicPage, searchTerm]);
+
   const fetchCalendarStats = async () => {
     setCalendarLoading(true);
     try {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
-      const json = await fetchAPI(`get_calendar_stats&year=${year}&month=${month}&consultant=${encodeURIComponent(consultantFilter)}`);
+      const json = await fetchAPI(`get_calendar_stats&year=${year}&month=${month}&consultant=${encodeURIComponent(consultantFilter)}&pending_only=${pendingOnly ? 1 : 0}`);
       if (json.success) {
         setCalendarData(json.data || {});
+        setFinanceSummary(json.finance_summary || null);
       }
     } catch (e: any) {
       toast.error(t('Lỗi tải dữ liệu lịch: ') + e.message);
@@ -978,9 +1350,14 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     setDayDetailsLoading(true);
     setDayDetails(null);
     try {
-      const json = await fetchAPI(`get_calendar_day_details&date=${dateStr}&consultant=${encodeURIComponent(consultantFilter)}`);
+      const json = await fetchAPI(`get_calendar_day_details&date=${dateStr}&consultant=${encodeURIComponent(consultantFilter)}&pending_only=${pendingOnly ? 1 : 0}`);
       if (json.success) {
         setDayDetails(json.data);
+        if (['accountant', 'admin', 'superadmin', 'super_admin', 'director'].includes(String(user?.role).toLowerCase())) {
+          setActiveModalTab('po' as any);
+        } else {
+          setActiveModalTab('sales');
+        }
       }
     } catch (e: any) {
       toast.error(t('Lỗi tải chi tiết ngày: ') + e.message);
@@ -992,13 +1369,13 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     if (isActive && viewMode === 'calendar') {
       fetchCalendarStats();
     }
-  }, [viewMode, currentDate, consultantFilter, isActive]);
+  }, [viewMode, currentDate, consultantFilter, isActive, pendingOnly]);
 
   useEffect(() => {
     if (isActive && selectedDate) {
       handleDateClick(selectedDate);
     }
-  }, [consultantFilter, isActive]);
+  }, [consultantFilter, isActive, pendingOnly]);
 
   const fetchConsultants = async () => {
     try {
@@ -1025,9 +1402,9 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const getUserAvatarByName = (name: string) => {
     if (!name || name === 'Hệ thống') return undefined;
     const acc = allAccounts.find(a => (a.name || a.username) === name);
-    if (acc?.avatar) return acc.avatar;
+    if (acc?.avatar || acc?.avatar_url) return acc.avatar || acc.avatar_url;
     const cons = consultants.find(c => c.name === name);
-    if (cons?.avatar) return cons.avatar;
+    if (cons?.avatar || (cons as any)?.avatar_url) return cons.avatar || (cons as any).avatar_url;
     return undefined;
   };
 
@@ -1050,14 +1427,14 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         method: 'POST',
         body: JSON.stringify({
           log_id: selectedLead.id,
-          new_consultant_id: String(reassignConsId),
+          new_consultant_id: Number(reassignConsId),
           compensate_old_sale: compensate
         })
       });
       if (res.success) {
         toast.success(compensate
-          ? t('Giao lại Đại lý & Đền bù thành công!')
-          : t('Giao lại Đại lý thành công!')
+          ? t('Giao lại Tư vấn viên & Đền bù thành công!')
+          : t('Giao lại Tư vấn viên thành công!')
         );
         setSelectedLead(null);
         setReassignConsId('');
@@ -1106,26 +1483,95 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     setIsBlocking(false);
   };
 
-  const ITEMS_PER_PAGE = Math.max(10, Math.min(200, Number(tenantSettings?.default_table_page_size || 50)));
+  const ITEMS_PER_PAGE = 50;
 
-  // BUG-05 fix: Implement CSV export using Backend Stream to prevent browser/server OOM
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
+    if (isExportingCSV) return;
+    setIsExportingCSV(true);
+    if (localStorage.getItem('IDEAS_DEMO_MODE') === 'true') {
+      toast.loading(t('Đang chuẩn bị dữ liệu xuất CSV (Demo)...'), { id: 'export' });
+      try {
+        if (leads.length === 0) {
+          toast.error(t('Không có dữ liệu để xuất!'), { id: 'export' });
+          setIsExportingCSV(false);
+          return;
+        }
+
+        const headers = [t('ID'), t('Họ Tên'), t('SĐT'), t('Email'), t('Vòng'), t('Phân bổ cho'), t('Trạng thái'), t('Nguồn'), t('Ghi chú'), t('Thời gian')];
+        const rows = leads.map(lead => [
+          lead.id,
+          lead.name,
+          lead.phone,
+          lead.email,
+          lead.round_name || '',
+          lead.assigned_to_name || t('Chưa phân bổ'),
+          lead.status === 'assigned' ? t('Đã chia') :
+            lead.status === 'compensation' ? t('Data Bù') :
+              lead.status === 'pending' ? t('Chờ chia') :
+                lead.status === 'fallback' ? t('Fallback') :
+                  lead.status === 'silent' ? t('Chỉ đồng bộ') :
+                    lead.status === 'reminder' ? t('Nhắc lại') :
+                      lead.status === 'pending_approval' ? (
+                        lead.ai_screener_status === 'pending' && (() => {
+                          const now = new Date();
+                          const created = lead.created_at ? parseServerDate(lead.created_at) : now;
+                          const diffMins = (now.getTime() - created.getTime()) / 60000;
+                          return diffMins >= -2 && diffMins < 5;
+                        })()
+                          ? t('Chờ AI đánh giá')
+                          : t('Tạm giữ')
+                      ) :
+                        lead.status === 'rejected' ? t('Dưới chuẩn') : lead.status,
+          lead.source || '',
+          lead.note || '',
+          lead.created_at
+        ]);
+
+        const csvContent = "\uFEFF" + [
+          headers.join(','),
+          ...rows.map(row => row.map(val => {
+            const str = String(val === null || val === undefined ? '' : val).replace(/"/g, '""');
+            return `"${str}"`;
+          }).join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `export_${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast.success(t('Đã tải xuống file CSV an toàn!'), { id: 'export' });
+      } catch (err) {
+        toast.error(t('Có lỗi xảy ra khi xuất dữ liệu'), { id: 'export' });
+      } finally {
+        setIsExportingCSV(false);
+      }
+      return;
+    }
+
     toast.loading(t('Đang chuẩn bị dữ liệu xuất CSV...'), { id: 'export' });
     try {
-      const token = localStorage.getItem('domation_token') || '';
-      const baseUrl = getApiBaseUrl();
-      const exportUrl = `${baseUrl}?action=export_csv&token=${encodeURIComponent(token)}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}&quality_status=${encodeURIComponent(qualityFilter)}`;
+      const token = localStorage.getItem('access_token') || localStorage.getItem('Ideas_token') || '';
+      const baseUrl = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api.php` : '/backend/api.php';
+      const exportUrl = `${baseUrl}?action=export_csv&token=${encodeURIComponent(token)}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}`;
 
       const link = document.createElement('a');
       link.href = exportUrl;
-      link.setAttribute('download', `export_${nowSqlDateTimeVN().replace(/[- :]/g, '')}.csv`);
+      link.setAttribute('download', `export_${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '')}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       toast.success(t('Đang tải xuống file CSV...'), { id: 'export' });
-    } catch {
+    } catch (err) {
       toast.error(t('Có lỗi xảy ra khi xuất dữ liệu'), { id: 'export' });
+    } finally {
+      setTimeout(() => setIsExportingCSV(false), 800);
     }
   };
 
@@ -1152,7 +1598,67 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const paginatedLeads = leads;
 
-  const getStatusBadge = (status: string, reportStatus?: string, aiScreenerStatus?: string, createdAt?: string) => {
+  const getPendingUntilTime = () => {
+    if (!sysSettings) return t('Chờ giờ làm');
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMin = now.getMinutes();
+
+    const workStart = sysSettings.global_work_start_time || '08:00';
+    const nightStart = sysSettings.night_shift_start_time || '22:00';
+    const goldenStart = sysSettings.golden_hours_start_time || '06:00';
+
+    const times = [workStart, nightStart, goldenStart];
+    let nextTimeStr = '';
+    let minDiff = Infinity;
+
+    times.forEach(tStr => {
+      const [h, m] = tStr.split(':').map(Number);
+      const targetMins = h * 60 + m;
+      const currentMins = currentHour * 60 + currentMin;
+
+      let diff = targetMins - currentMins;
+      if (diff <= 0) {
+        diff += 24 * 60;
+      }
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        nextTimeStr = tStr;
+      }
+    });
+
+    return `${t('Chờ đến')} ${nextTimeStr}`;
+  };
+
+  const getStatusBadge = (status: string, reportStatus?: string, aiScreenerStatus?: string, createdAt?: string, takers?: any[], message?: string) => {
+    const msg = (message || '').toLowerCase();
+
+    // Heuristic override from distribution log message
+    if (status === 'compensation' || msg.includes('đền bù') || msg.includes('bù lượt') || msg.includes('bù chủ động') || msg.includes('bù data')) {
+      return (
+        <span className="badge" style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8b5cf6', border: '1px solid rgba(139, 92, 246, 0.25)', fontWeight: 600 }}>
+          {t('Đã bù')}
+        </span>
+      );
+    }
+
+    if (status === 'reallocated' || msg.includes('phân bổ lại') || msg.includes('thu hồi')) {
+      return (
+        <span className="badge" style={{ background: 'rgba(245, 158, 11, 0.12)', color: '#d97706', border: '1px solid rgba(245, 158, 11, 0.25)', fontWeight: 600 }}>
+          {t('Phân bổ lại')}
+        </span>
+      );
+    }
+
+    if (status === 'reminder' || msg.includes('khách cũ đăng ký lại') || msg.includes('nhắc trùng') || msg.includes('nhắc lại')) {
+      return (
+        <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.12)', color: '#ec4899', border: '1px solid rgba(236, 72, 153, 0.25)', fontWeight: 600 }}>
+          {t('Nhắc lại')}
+        </span>
+      );
+    }
+
     if (status === 'assigned' && reportStatus === 'pending') {
       return <span className="badge" style={{ background: 'var(--color-primary-light)', color: 'var(--color-primary)', border: '1px solid var(--color-border-light)' }}>{t('Ticket Review')}</span>;
     }
@@ -1169,17 +1675,29 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     }
     switch (status) {
       case 'assigned': return <span className="badge success">{t('Đã chia')}</span>;
-      case 'compensation': return <span className="badge purple">{t('Data Bù')}</span>;
+      case 'compensation': return <span className="badge purple">{t('Đã bù')}</span>;
+      case 'reallocated': return <span className="badge warning" style={{ background: 'rgba(245, 158, 11, 0.12)', color: '#d97706', border: '1px solid rgba(245, 158, 11, 0.25)', fontWeight: 600 }}>{t('Phân bổ lại')}</span>;
       case 'pending_work_hours': return <span className="badge warm">{t('Chờ giờ làm')}</span>;
       case 'error': return <span className="badge danger">{t('Ticket')}</span>;
       case 'pending': return <span className="badge warning">{t('Chờ chia')}</span>;
-      case 'reminder': return <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.12)', color: '#ec4899' }}>{t('Nhắc lại')}</span>;
-      case 'duplicate': return <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.12)', color: '#ec4899' }}>{t('Nhắc lại')}</span>;
+      case 'reminder': return <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.12)', color: '#ec4899', border: '1px solid rgba(236, 72, 153, 0.25)' }}>{t('Nhắc lại')}</span>;
+      case 'duplicate': return <span className="badge danger">{t('Trùng lặp')}</span>;
       case 'rule_6_month': return <span className="badge cold">{t('Quy định 6 tháng')}</span>;
       case 'silent': return <span className="badge cold">{t('Chỉ đồng bộ')}</span>;
       case 'blacklisted': return <span className="badge danger">{t('Blacklist')}</span>;
       case 'pending_approval': return <span className="badge warning">{t('Tạm giữ')}</span>;
       case 'rejected': return <span className="badge danger">{t('Dưới chuẩn')}</span>;
+      case 'released_to_kho':
+      case 'databank': {
+        const cnt = takers && takers.length ? takers.length : 0;
+        if (cnt === 0) {
+          return <span className="badge" style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>{t('Public (2/2)')}</span>;
+        } else if (cnt >= 2) {
+          return <span className="badge" style={{ background: 'rgba(156,163,175,0.12)', color: '#9ca3af', border: '1px solid rgba(156,163,175,0.2)' }}>{t('Giới hạn (0/2)')}</span>;
+        } else {
+          return <span className="badge" style={{ background: 'rgba(59,130,246,0.12)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)' }}>{t(`Public (1/2)`)}</span>;
+        }
+      }
       case 'fallback': return <span className="badge" style={{ background: 'var(--color-warning-light)', color: 'var(--color-warning)', border: '1px solid var(--color-border-light)' }}>{t('Fallback')}</span>;
       default: return null;
     }
@@ -1211,7 +1729,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   for (let d = 1; d <= totalDays; d++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const dayData = calendarData[dateStr] || { distributed: 0, blacklist: 0, reminder: 0, error: 0, ticket_total: 0 };
-    const isToday = formatDateYYYYMMDD_VN() === dateStr;
+    const isToday = new Date().toDateString() === new Date(year, month, d).toDateString();
     const dayOfWeek = (startOffset + d - 1) % 7;
     const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
 
@@ -1254,8 +1772,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           {isToday && <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--color-primary)' }}>{t('Hôm nay')}</span>}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '4px', alignContent: 'end' }}>
-          {dayData.distributed > 0 && (
+        <div className="datalist-calendar-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '4px', alignContent: 'end' }}>
+          {String(user?.role).toLowerCase() !== 'accountant' && dayData.distributed > 0 && (
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -1271,7 +1789,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               <strong>{dayData.distributed}</strong>
             </div>
           )}
-          {dayData.blacklist > 0 && (
+          {String(user?.role).toLowerCase() !== 'accountant' && dayData.blacklist > 0 && (
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -1287,24 +1805,24 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               <strong>{dayData.blacklist}</strong>
             </div>
           )}
-          {dayData.ticket_total > 0 && (
+          {String(user?.role).toLowerCase() !== 'accountant' && dayData.ticket_total > 0 && (
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '2px 4px',
               borderRadius: '4px',
-              background: theme === 'dark' ? 'var(--color-primary-light)' : '#FCF8EE',
-              color: theme === 'dark' ? 'var(--color-primary)' : '#1E40FF',
+              background: theme === 'dark' ? 'var(--color-primary-light)' : '#fff5f6',
+              color: theme === 'dark' ? 'var(--color-primary)' : '#1D4ED8',
               fontSize: '0.6875rem',
               fontWeight: 600,
-              border: theme === 'dark' ? '1px solid var(--color-border)' : '1px solid #EBD9A8'
+              border: theme === 'dark' ? '1px solid var(--color-border)' : '1px solid #ddd6fe'
             }} title={t("Ticket lỗi")}>
               <span>{t('Ticket')}:</span>
               <strong>{dayData.ticket_total}</strong>
             </div>
           )}
-          {dayData.reminder > 0 && (
+          {String(user?.role).toLowerCase() !== 'accountant' && dayData.reminder > 0 && (
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -1321,7 +1839,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               <strong>{dayData.reminder}</strong>
             </div>
           )}
-          {dayData.error > 0 && (
+          {String(user?.role).toLowerCase() !== 'accountant' && dayData.error > 0 && (
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -1335,6 +1853,46 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
             }} title={t("Ticket")}>
               <span>{t('Ticket')}:</span>
               <strong>{dayData.error}</strong>
+            </div>
+          )}
+          {['accountant', 'admin', 'superadmin', 'super_admin', 'director'].includes(String(user?.role).toLowerCase()) && dayData.so_count > 0 && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '4px 6px',
+              borderRadius: '6px',
+              background: '#eff6ff',
+              color: '#1d4ed8',
+              border: '1px solid #bfdbfe',
+              gap: '2px'
+            }} title={`Sales Order: ${dayData.so_count} đơn`}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6875rem', fontWeight: 700 }}>
+                <span>SO:</span>
+                <strong>{dayData.so_count}</strong>
+              </div>
+              <div style={{ fontSize: '0.65rem', fontWeight: 800, textAlign: 'right', marginTop: '1px', borderTop: '1px dashed rgba(29, 78, 216, 0.2)', paddingTop: '2px' }}>
+                {new Intl.NumberFormat('vi-VN').format(Math.round(dayData.so_total || 0))}đ
+              </div>
+            </div>
+          )}
+          {['accountant', 'admin', 'superadmin', 'super_admin', 'director'].includes(String(user?.role).toLowerCase()) && dayData.po_count > 0 && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '4px 6px',
+              borderRadius: '6px',
+              background: '#fef3c7',
+              color: '#d97706',
+              border: '1px solid #fde68a',
+              gap: '2px'
+            }} title={`Purchase Order: ${dayData.po_count} đơn`}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6875rem', fontWeight: 700 }}>
+                <span>PO:</span>
+                <strong>{dayData.po_count}</strong>
+              </div>
+              <div style={{ fontSize: '0.65rem', fontWeight: 800, textAlign: 'right', marginTop: '1px', borderTop: '1px dashed rgba(217, 119, 6, 0.2)', paddingTop: '2px' }}>
+                {new Intl.NumberFormat('vi-VN').format(Math.round(dayData.po_total || 0))}đ
+              </div>
             </div>
           )}
         </div>
@@ -1352,261 +1910,251 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 150px)', minHeight: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: viewMode === 'calendar' ? 'auto' : 'calc(100vh - 150px)', minHeight: 0 }}>
       {/* Header */}
       <div className="page-header" style={{ marginBottom: '1.25rem', flexShrink: 0 }}>
         <div>
-          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Database size={24} color="var(--color-primary)" /> {t('Quản lý Data')}
-            <button
-              onClick={() => setShowInfoModal(true)}
-              style={{
-                background: theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
-                border: '1px solid var(--color-border)',
-                padding: '4px 10px',
-                borderRadius: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                cursor: 'pointer',
-                color: 'var(--color-text-muted)',
-                transition: 'all 0.2s',
-                marginLeft: '8px'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = 'var(--color-primary)';
-                e.currentTarget.style.borderColor = 'var(--color-primary-light)';
-                e.currentTarget.style.background = 'var(--color-primary-light)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = 'var(--color-text-muted)';
-                e.currentTarget.style.borderColor = 'var(--color-border)';
-                e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)';
-              }}
-              title={t("Giải thích ý nghĩa các trạng thái data")}
-            >
-              <Info size={14} />
-              <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{t("Giải thích trạng thái")}</span>
-            </button>
-            <ScreenHelpButton screenKey="data_list" />
-          </h1>
-          <p className="page-subtitle">{t('Xem lịch sử, theo dõi tiến trình và quản lý toàn bộ dữ liệu Khách hàng.')}</p>
-        </div>
-        <div className="data-list-actions" data-tour="datalist-actions" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: '10px',
-            padding: '3px 4px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
-            height: '38px'
-          }}>
-            {/* View Mode Toggle Buttons */}
-            <div className="view-mode-toggle-container" style={{
-              display: 'flex',
-              background: 'transparent',
-              borderRadius: '8px',
-              padding: '0',
-              height: '32px',
-              alignItems: 'center'
-            }}>
-              <button
-                type="button"
-                className={`btn-toggle-view ${viewMode === 'list' ? 'active' : ''}`}
-                onClick={() => navigate('/data')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: viewMode === 'list' ? 'var(--color-primary)' : 'transparent',
-                  color: viewMode === 'list' ? 'white' : 'var(--color-text-muted)',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  height: '28px'
-                }}
-              >
-                <LayoutList size={13} /> <span className="hide-on-mobile">{t('Danh sách')}</span>
-              </button>
-              <button
-                type="button"
-                className={`btn-toggle-view ${viewMode === 'calendar' ? 'active' : ''}`}
-                onClick={() => navigate('/calendar')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: viewMode === 'calendar' ? 'var(--color-primary)' : 'transparent',
-                  color: viewMode === 'calendar' ? 'white' : 'var(--color-text-muted)',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  height: '28px'
-                }}
-              >
-                <Calendar size={13} /> <span className="hide-on-mobile">{t('Lịch biểu')}</span>
-              </button>
-              <button
-                type="button"
-                className={`btn-toggle-view ${viewMode === 'databank' ? 'active' : ''}`}
-                onClick={() => navigate('/data?view=databank')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: viewMode === 'databank' ? 'var(--color-primary)' : 'transparent',
-                  color: viewMode === 'databank' ? 'white' : 'var(--color-text-muted)',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  height: '28px'
-                }}
-              >
-                <Database size={13} /> <span className="hide-on-mobile">{t('Kho chung')}</span>
-              </button>
-            </div>
-
-            {/* Separator line */}
-            <div style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
-
-            {/* Compact Check Duplicate Button */}
-            <button
-              type="button"
-              onClick={() => setShowDupCheckModal(true)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '0 10px',
-                borderRadius: '6px',
-                border: 'none',
-                background: 'transparent',
-                color: 'var(--color-primary)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                height: '28px'
-              }}
-              className="btn-export-csv-compact"
-            >
-              <Search size={13} /> <span>{t('Check trùng')}</span>
-            </button>
-
-            {/* Separator line */}
-            <div style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
-
-            {/* Compact Export CSV Button */}
-            <button
-              type="button"
-              onClick={handleExportCSV}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '0 10px',
-                borderRadius: '6px',
-                border: 'none',
-                background: 'transparent',
-                color: 'var(--color-primary)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                height: '28px'
-              }}
-              className="btn-export-csv-compact"
-            >
-              <Download size={13} /> <span>{t('Xuất')}<span className="hide-on-mobile"> CSV</span></span>
-            </button>
-
-            {hasModule('audiences') && (
-              <>
-                <div style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
+          {(viewMode === 'calendar' || String(user?.role).toLowerCase() === 'accountant') ? (
+            <>
+              <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Calendar size={24} color="var(--color-primary)" /> {t('Lịch trình Tài chính')}
                 <button
                   type="button"
+                  className="btn primary sm"
+                  onClick={() => navigate('/personal-calendar')}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    fontWeight: 600, 
+                    marginLeft: '12px',
+                    padding: '4px 10px',
+                    fontSize: '0.78rem',
+                    borderRadius: '6px'
+                  }}
+                >
+                  <Calendar size={13} />
+                  {t('Xem Lịch trình Cá nhân')}
+                </button>
+              </h1>
+              <p className="page-subtitle">{t('Xem lịch trình, theo dõi tiến trình phát sinh Sales Order & Purchase Order.')}</p>
+            </>
+          ) : (
+            <>
+              <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Database size={24} color="var(--color-primary)" /> {t('Quản lý Data')}
+                <button
+                  onClick={() => setShowInfoModal(true)}
+                  style={{
+                    background: theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
+                    border: '1px solid var(--color-border)',
+                    padding: '4px 10px',
+                    borderRadius: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    color: 'var(--color-text-muted)',
+                    transition: 'all 0.2s',
+                    marginLeft: '8px'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.color = 'var(--color-primary)';
+                    e.currentTarget.style.borderColor = 'var(--color-primary-light)';
+                    e.currentTarget.style.background = 'var(--color-primary-light)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.color = 'var(--color-text-muted)';
+                    e.currentTarget.style.borderColor = 'var(--color-border)';
+                    e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)';
+                  }}
+                  title={t("Giải thích ý nghĩa các trạng thái data")}
+                >
+                  <Info size={14} />
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{t("Giải thích trạng thái")}</span>
+                </button>
+              </h1>
+              <p className="page-subtitle">{t('Xem lịch sử, theo dõi tiến trình và quản lý toàn bộ dữ liệu Khách hàng.')}</p>
+            </>
+          )}
+        </div>
+        {user?.role !== 'accountant' && (
+          <div className="data-list-actions" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            {user?.role !== 'sale' ? (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '10px',
+                padding: '3px 4px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
+                height: '38px'
+              }}>
+              {/* View Mode Toggle Buttons */}
+              <div className="view-mode-toggle-container" style={{
+                display: 'flex',
+                background: 'transparent',
+                borderRadius: '8px',
+                padding: '0',
+                height: '32px',
+                alignItems: 'center'
+              }}>
+                <button
+                  type="button"
+                  className={`btn-toggle-view ${viewMode === 'list' ? 'active' : ''}`}
                   onClick={() => {
-                    const ids = (leads || []).map((l) => String(l.lead_id ?? l.id));
-                    navigate('/audiences');
-                    setTimeout(() => {
-                      window.dispatchEvent(
-                        new CustomEvent('autodata-save-crm-to-audience', { detail: { leadIds: ids } })
-                      );
-                    }, 120);
+                    setLocalViewMode('list');
+                    updateParams('view', 'list');
                   }}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
-                    padding: '0 10px',
+                    padding: '4px 10px',
                     borderRadius: '6px',
                     border: 'none',
-                    background: 'transparent',
-                    color: '#0284C7',
+                    background: viewMode === 'list' ? 'var(--color-primary)' : 'transparent',
+                    color: viewMode === 'list' ? 'white' : 'var(--color-text-muted)',
                     fontSize: '0.78rem',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: 'pointer',
-                    height: '28px',
+                    transition: 'all 0.2s',
+                    height: '28px'
                   }}
-                  title="Lưu danh sách bộ lọc CRM hiện tại thành Tệp Data nuôi dưỡng"
                 >
-                  <Layers size={13} /> <span className="hide-on-mobile">Lưu vào Tệp</span>
+                  <LayoutList size={13} /> <span className="hide-on-mobile">{t('Danh sách')}</span>
                 </button>
-              </>
-            )}
+                <button
+                  type="button"
+                  className={`btn-toggle-view ${viewMode === 'calendar' ? 'active' : ''}`}
+                  onClick={() => {
+                    setLocalViewMode('calendar');
+                    updateParams('view', 'calendar');
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: viewMode === 'calendar' ? 'var(--color-primary)' : 'transparent',
+                    color: viewMode === 'calendar' ? 'white' : 'var(--color-text-muted)',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    height: '28px'
+                  }}
+                >
+                  <Calendar size={13} /> <span className="hide-on-mobile">{t('Lịch biểu')}</span>
+                </button>
+                {/* databank tab disabled */}
+              </div>
 
-            {/* Separator line for mobile filter toggle */}
-            <div className="mobile-only" style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
+              {/* Separator line */}
+              <div style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
 
-            {/* Compact Filter Toggle Button (Mobile only) */}
-            <button
-              type="button"
-              onClick={() => setShowMobileFilters(!showMobileFilters)}
-              style={{
+              {/* Compact Export CSV Button */}
+              <button
+                type="button"
+                onClick={handleExportCSV}
+                disabled={isExportingCSV}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '0 10px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--color-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: isExportingCSV ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  height: '28px',
+                  opacity: isExportingCSV ? 0.6 : 1
+                }}
+                className="btn-export-csv-compact hover-lift"
+              >
+                {isExportingCSV ? <RefreshCw size={13} className="spin" /> : <Download size={13} />}
+                <span>{isExportingCSV ? t('Đang xuất...') : t('Xuất')}<span className="hide-on-mobile"> CSV</span></span>
+              </button>
+
+              {/* Separator line for mobile filter toggle */}
+              <div className="mobile-only" style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
+
+              {/* Compact Filter Toggle Button (Mobile only) */}
+              <button
+                type="button"
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 8px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: showMobileFilters ? 'var(--color-primary-light)' : 'transparent',
+                  color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  height: '28px',
+                  width: '32px'
+                }}
+                title={showMobileFilters ? t('Ẩn bộ lọc') : t('Hiện bộ lọc')}
+                className="mobile-only"
+              >
+                <Filter size={13} style={{ color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
+              </button>
+            </div>
+            ) : (
+              /* For Sale, only show Filter button on mobile */
+              <div className="mobile-only" style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0 8px',
-                borderRadius: '6px',
-                border: 'none',
-                background: showMobileFilters ? 'var(--color-primary-light)' : 'transparent',
-                color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                height: '28px',
-                width: '32px'
-              }}
-              title={showMobileFilters ? t('Ẩn bộ lọc') : t('Hiện bộ lọc')}
-              className="mobile-only"
-            >
-              <Filter size={13} style={{ color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
-            </button>
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '10px',
+                padding: '3px 4px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
+                height: '38px'
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setShowMobileFilters(!showMobileFilters)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '0 8px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: showMobileFilters ? 'var(--color-primary-light)' : 'transparent',
+                    color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    height: '28px',
+                    width: '32px'
+                  }}
+                >
+                  <Filter size={13} style={{ color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
+                </button>
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Filters */}
       <div
-        data-tour="datalist-filters"
         className={`responsive-filter-row ${!showMobileFilters ? 'filter-hide-on-mobile' : ''}`}
         style={{
           position: 'relative',
           zIndex: 100,
-          display: viewMode === 'calendar' ? 'none' : 'flex',
+          display: (viewMode === 'calendar') ? 'none' : 'flex',
           gap: '0.75rem',
           marginBottom: '1.25rem',
           flexShrink: 0,
@@ -1620,125 +2168,117 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         }}
       >
         <div className="responsive-filter-item" style={{ position: 'relative', width: 240 }}>
-          <Search size={16} style={{ position: 'absolute', left: 12, top: 11, color: 'var(--color-text-muted)' }} />
           <input
             className="form-input"
             placeholder={t("Tìm theo tên, SĐT, email...")}
-            style={{ paddingLeft: 36, width: '100%', height: 38, fontSize: '0.875rem' }}
+            style={{ paddingLeft: 12, width: '100%', height: 38, fontSize: '0.875rem' }}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
           />
         </div>
 
-        <div className="responsive-filter-item">
-          <CustomSelect
-            options={[
-              { value: 'all', label: t('Tất cả thời gian'), icon: <Clock size={16} /> },
-              { value: 'Hôm nay', label: t('Hôm nay') },
-              { value: 'Hôm qua', label: t('Hôm qua') },
-              { value: 'Tuần này', label: t('Tuần này') },
-              { value: 'Tuần trước', label: t('Tuần trước') },
-              { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-              { value: '7 ngày qua', label: t('7 ngày qua') },
-              { value: '30 ngày qua', label: t('30 ngày qua') },
-              { value: 'Tháng này', label: t('Tháng này') },
-              { value: 'Tháng trước', label: t('Tháng trước') }
-            ]}
-            value={dateFilter}
-            onChange={val => updateParams('date', val.toString())}
-            width={160}
-          />
-        </div>
+        {viewMode !== 'databank' && (
+          <>
+            <div className="responsive-filter-item">
+              <CustomSelect
+                options={[
+                  { value: 'all', label: t('Tất cả thời gian'), icon: <Clock size={16} /> },
+                  { value: 'Hôm nay', label: t('Hôm nay') },
+                  { value: 'Hôm qua', label: t('Hôm qua') },
+                  { value: 'Tuần này', label: t('Tuần này') },
+                  { value: 'Tuần trước', label: t('Tuần trước') },
+                  { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
+                  { value: '7 ngày qua', label: t('7 ngày qua') },
+                  { value: '30 ngày qua', label: t('30 ngày qua') },
+                  { value: 'Tháng này', label: t('Tháng này') },
+                  { value: 'Tháng trước', label: t('Tháng trước') },
+                  ...(!['all', 'Hôm nay', 'Hôm qua', 'Tuần này', 'Tuần trước', 'Tuần trước nữa', '7 ngày qua', '30 ngày qua', 'Tháng này', 'Tháng trước', 'Tùy chỉnh'].includes(dateFilter)
+                    ? [{ value: dateFilter, label: getDisplayDateFilterText(dateFilter) }]
+                    : []),
+                  { value: 'Tùy chỉnh', label: t('Tùy chỉnh...') }
+                ]}
+                value={dateFilter}
+                onChange={val => updateParams('date', val.toString())}
+                width={160}
+              />
+            </div>
 
-        <div className="responsive-filter-item">
-          <CustomSelect
-            options={[
-              { value: 'all', label: t('Tất cả trạng thái'), icon: <Filter size={16} /> },
-              { value: 'assigned', label: t('Đã chia') },
-              { value: 'compensation', label: t('Data Bù') },
-              { value: 'pending_work_hours', label: t('Chờ giờ làm') },
-              { value: 'pending', label: t('Chờ chia') },
-              { value: 'reminder', label: t('Nhắc lại') },
-              { value: 'silent', label: t('Chỉ đồng bộ') },
-              { value: 'error', label: t('Ticket') },
-              { value: 'blacklisted', label: t('Blacklist') },
-              { value: 'pending_approval', label: t('Tạm giữ') },
-              { value: 'rejected', label: t('Dưới chuẩn') }
-            ]}
-            value={statusFilter.includes(',') ? statusFilter.split(',') : [statusFilter]}
-            onChange={val => {
-              const nextVal = Array.isArray(val)
-                ? (val.includes('all') ? 'all' : val.join(','))
-                : val.toString();
-              updateParams('status', nextVal);
-            }}
-            multiple={true}
-            width={170}
-          />
-        </div>
+            <div className="responsive-filter-item">
+              <CustomSelect
+                options={[
+                  { value: 'all', label: t('Tất cả trạng thái'), icon: <Filter size={16} /> },
+                  { value: 'not_contacted', label: t('Chưa liên hệ') },
+                  { value: 'assigned', label: t('Đã chia') },
+                  { value: 'compensation', label: t('Đã bù') },
+                  { value: 'reallocated', label: t('Phân bổ lại') },
+                  { value: 'reminder', label: t('Nhắc lại') },
+                  { value: 'pending_work_hours', label: t('Chờ giờ làm') },
+                  { value: 'databank_claim', label: 'Databank Claim' },
+                  { value: 'pending', label: t('Chờ chia') },
+                  { value: 'silent', label: t('Chỉ đồng bộ') },
+                  { value: 'error', label: t('Ticket') },
+                  { value: 'blacklisted', label: t('Blacklist') },
+                  { value: 'pending_approval', label: t('Tạm giữ') },
+                  { value: 'rejected', label: t('Dưới chuẩn') }
+                ]}
+                value={statusFilter.includes(',') ? statusFilter.split(',') : [statusFilter]}
+                onChange={val => {
+                  const nextVal = Array.isArray(val)
+                    ? (val.includes('all') ? 'all' : val.join(','))
+                    : val.toString();
+                  updateParams('status', nextVal);
+                }}
+                multiple={true}
+                width={170}
+              />
+            </div>
 
-        <div className="responsive-filter-item">
-          <CustomSelect
-            options={[
-              { value: 'all', label: t('Tất cả vòng'), icon: <Tag size={16} /> },
-              ...rounds.map(r => ({
-                value: r.round_name,
-                label: r.round_name
-              }))
-            ]}
-            value={roundFilter}
-            onChange={val => updateParams('round', val.toString())}
-            width={160}
-          />
-        </div>
+            <div className="responsive-filter-item">
+              <CustomSelect
+                options={[
+                  { value: 'all', label: t('Tất cả vòng'), icon: <Tag size={16} /> },
+                  ...rounds.map(r => ({
+                    value: r.round_name,
+                    label: r.round_name
+                  }))
+                ]}
+                value={roundFilter}
+                onChange={val => updateParams('round', val.toString())}
+                searchable={true}
+                width={160}
+              />
+            </div>
 
-        <div className="responsive-filter-item">
-          <CustomSelect
-            options={[
-              { value: 'all', label: t('Tất cả Đại lý'), icon: <User size={16} /> },
-              ...consultants.map(c => ({
-                value: c.name,
-                label: c.name,
-                avatar: c.avatar
-              }))
-            ]}
-            value={consultantFilter}
-            onChange={val => updateParams('consultant', val.toString())}
-            showAvatars={true}
-            searchable={true}
-            width={180}
-          />
-        </div>
-
-        <div className="responsive-filter-item">
-          <CustomSelect
-            options={[
-              { value: 'all', label: t('Tất cả đánh giá'), icon: <Sparkles size={16} /> },
-              ...resolveTenantPipelines(tenantSettings).map((st) => ({
-                value: st.key,
-                label: t(st.label),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: st.color, display: 'inline-block' }} />,
-              })),
-              {
-                value: 'unrated',
-                label: t('Chưa đánh giá'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#94A3B8', display: 'inline-block' }} />
-              }
-            ]}
-            value={qualityFilter}
-            onChange={val => updateParams('quality_status', val.toString())}
-            width={190}
-          />
-        </div>
+            {user?.role !== 'sale' && (
+              <div className="responsive-filter-item">
+                <CustomSelect
+                  options={[
+                    { value: 'all', label: t('Tất cả TVV'), icon: <User size={16} /> },
+                    ...consultants.map(c => ({
+                      value: c.name,
+                      label: c.name,
+                      avatar: c.avatar
+                    }))
+                  ]}
+                  value={consultantFilter}
+                  onChange={val => updateParams('consultant', val.toString())}
+                  showAvatars={true}
+                  searchable={true}
+                  width={180}
+                />
+              </div>
+            )}
+          </>
+        )}
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-          {t('Tổng cộng')}: <strong style={{ color: 'var(--color-text)', marginLeft: 4 }}>{viewMode === 'databank' ? databankTotalCount : totalCount}</strong> {t('data')}
+          {t('Tổng cộng')}: <strong style={{ color: 'var(--color-text)', marginLeft: 4 }}>{viewMode === 'databank' ? publicTotalCount : totalCount}</strong> {t('data')}
         </div>
       </div>
 
       {/* Table */}
       {viewMode === 'calendar' ? (
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} className="fade-in-view">
+        <div style={{ display: 'flex', flexDirection: 'column', overflow: 'visible' }} className="fade-in-view">
           {/* Calendar Header / Control */}
           <div className="mobile-stack" style={{
             display: 'flex',
@@ -1784,51 +2324,186 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 {t('Hôm nay')}
               </button>
 
-              <CustomSelect
-                options={[
-                  { value: 'all', label: t('Tất cả Đại lý'), icon: <User size={16} /> },
-                  ...consultants.map(c => ({
-                    value: c.name,
-                    label: c.name,
-                    avatar: c.avatar
-                  }))
-                ]}
-                value={consultantFilter}
-                onChange={val => updateParams('consultant', val.toString())}
-                showAvatars={true}
-                searchable={true}
-                width={180}
-              />
+              {['accountant', 'admin', 'superadmin', 'super_admin', 'director'].includes(String(user?.role).toLowerCase()) && (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setPendingOnly(!pendingOnly)}
+                  style={{
+                    height: 36,
+                    padding: '0 0.85rem',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: pendingOnly ? 'var(--color-warning)' : 'transparent',
+                    borderColor: pendingOnly ? 'var(--color-warning)' : 'var(--color-border)',
+                    color: pendingOnly ? 'white' : 'var(--color-text)'
+                  }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: pendingOnly ? '#fff' : 'var(--color-warning)', display: 'inline-block' }} />
+                  {t('Chỉ hiện chờ thanh toán')}
+                </button>
+              )}
+
+              {String(user?.role).toLowerCase() !== 'accountant' && (
+                <CustomSelect
+                  options={[
+                    { value: 'all', label: t('Tất cả TVV'), icon: <User size={16} /> },
+                    ...consultants.map(c => ({
+                      value: c.name,
+                      label: c.name,
+                      avatar: c.avatar
+                    }))
+                  ]}
+                  value={consultantFilter}
+                  onChange={val => updateParams('consultant', val.toString())}
+                  showAvatars={true}
+                  searchable={true}
+                  width={180}
+                />
+              )}
             </div>
 
             {/* Calendar Legend */}
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', fontSize: '0.75rem', fontWeight: 600 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-success)' }}></span>
-                <span style={{ color: 'var(--color-text-muted)' }}>{t('Đã chia')}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-danger)' }}></span>
-                <span style={{ color: 'var(--color-text-muted)' }}>{t('Blacklist')}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1E40FF' }}></span>
-                <span style={{ color: 'var(--color-text-muted)' }}>{t('Ticket lỗi')}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#db2777' }}></span>
-                <span style={{ color: 'var(--color-text-muted)' }}>{t('Nhắc lại')}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-warning)' }}></span>
-                <span style={{ color: 'var(--color-text-muted)' }}>{t('Ticket')}</span>
-              </div>
+              {(viewMode === 'calendar' || String(user?.role).toLowerCase() === 'accountant') ? (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Sales Order (SO)')}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Purchase Order (PO)')}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-success)' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Đã chia')}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-danger)' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Blacklist')}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1D4ED8' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Ticket lỗi')}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#db2777' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Nhắc lại')}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-warning)' }}></span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>{t('Ticket khác')}</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
+          {/* Finance Statistics Cards for Accountant */}
+          {String(user?.role).toLowerCase() === 'accountant' && financeSummary && (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '1rem',
+              marginBottom: '1rem',
+              marginTop: '0.25rem'
+            }}>
+              {/* Card 1: Doanh thu SO */}
+              <div className="card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>TỔNG DOANH THU (SO)</span>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }}></div>
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round((financeSummary.so_paid || 0) + (financeSummary.so_pending || 0)))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem', color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border-light)', paddingTop: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Đã thu:</span>
+                    <strong style={{ color: 'var(--color-success)' }}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.so_paid || 0))}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Chờ thanh toán:</span>
+                    <strong style={{ color: 'var(--color-warning)' }}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.so_pending || 0))}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2: Chi phí PO */}
+              <div className="card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>TỔNG CHI PHÍ (PO)</span>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b' }}></div>
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round((financeSummary.po_approved || 0) + (financeSummary.po_pending || 0)))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem', color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border-light)', paddingTop: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Đã duyệt:</span>
+                    <strong style={{ color: 'var(--color-success)' }}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.po_approved || 0))}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Chờ duyệt:</span>
+                    <strong style={{ color: 'var(--color-warning)' }}>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.po_pending || 0))}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Dòng tiền thực tế */}
+              <div className="card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>DÒNG TIỀN THỰC TẾ</span>
+                  <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--color-success)', borderRadius: '4px', fontWeight: 700 }}>Thực tế</span>
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: ((financeSummary.so_paid || 0) - (financeSummary.po_approved || 0)) >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round((financeSummary.so_paid || 0) - (financeSummary.po_approved || 0)))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem', color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border-light)', paddingTop: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Thực thu:</span>
+                    <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.so_paid || 0))}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Thực chi:</span>
+                    <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.po_approved || 0))}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 4: Dự báo dòng tiền */}
+              <div className="card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>DỰ BÁO DÒNG TIỀN</span>
+                  <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--color-warning)', borderRadius: '4px', fontWeight: 700 }}>Dự báo</span>
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: ((financeSummary.so_pending || 0) - (financeSummary.po_pending || 0)) >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round((financeSummary.so_pending || 0) - (financeSummary.po_pending || 0)))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem', color: 'var(--color-text-muted)', borderTop: '1px solid var(--color-border-light)', paddingTop: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Sắp thu:</span>
+                    <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.so_pending || 0))}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Sắp chi:</span>
+                    <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(financeSummary.po_pending || 0))}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Calendar Body */}
-          <div className="responsive-table-wrap" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0, minWidth: 700, overflow: 'hidden' }}>
+          <div className="responsive-table-wrap" style={{ display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
+            <div className="card" style={{ display: 'flex', flexDirection: 'column', padding: 0, minWidth: 700, overflow: 'visible' }}>
               {/* Calendar Grid Header */}
               <div style={{
                 display: 'grid',
@@ -1848,12 +2523,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
               {/* Calendar Days */}
               <div style={{
-                flex: 1,
                 display: 'grid',
                 gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
                 gridAutoRows: 'minmax(110px, 1fr)',
-                overflowY: 'auto'
-              }} className="custom-scrollbar">
+                overflowY: 'visible'
+              }}>
                 {calendarLoading ? (
                   <div style={{ gridColumn: 'span 7' }}>
                     <CalendarSkeleton />
@@ -1864,253 +2538,366 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           </div>
         </div>
       ) : viewMode === 'databank' ? (
-        <div className="card fade-in-view" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: 0 }}>
-          <div style={{ padding: '0.85rem 1.25rem', borderBottom: '1px solid var(--color-border)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', background: '#F8FAFC' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-              {[
-                { key: 'available' as const, label: t('Sẵn sàng nhận'), count: databankStats.available },
-                { key: 'claimed' as const, label: t('Đã có Sale nhận'), count: databankStats.claimed },
-                { key: 'blocked' as const, label: t('Đang khóa'), count: databankStats.blocked },
-                { key: 'all' as const, label: t('Tất cả Kho chung'), count: databankStats.total },
-              ].map((pill) => {
-                const active = databankStatusFilter === pill.key;
-                return (
-                  <button
-                    key={pill.key}
-                    type="button"
-                    onClick={() => {
-                      setDatabankStatusFilter(pill.key);
-                      setDatabankPage(1);
-                    }}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: 999,
-                      border: active ? '1px solid #1E40FF' : '1px solid var(--color-border)',
-                      background: active ? '#1E40FF' : '#FFFFFF',
-                      color: active ? '#FFFFFF' : 'var(--color-text)',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {pill.label} ({pill.count})
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              type="button"
-              onClick={() => void fetchDatabankLeads()}
-              className="btn outline"
-              style={{ height: 34, padding: '0 12px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
-            >
-              <RefreshCw size={13} className={databankLoading ? 'spin' : ''} /> {t('Làm mới Kho')}
-            </button>
-          </div>
-
-          <div style={{ flex: 1, overflow: 'auto' }} className="table-wrap custom-scrollbar">
-            {databankLoading ? (
-              <div style={{ padding: '1.5rem' }}>
-                <TableSkeleton rows={6} cols={6} />
-              </div>
-            ) : databankItems.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--color-text-muted)' }}>
-                <Database size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.4 }} />
-                <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>{t('Kho dữ liệu chung trống')}</div>
-                <div style={{ fontSize: '0.82rem', marginTop: 4 }}>
-                  {t('Chưa có hồ sơ khách hàng nào trong trạng thái này.')}
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} className="fade-in-view">
+          <div className="card" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: 0 }}>
+            <div style={{ flex: 1, overflow: 'auto' }} className="table-wrap custom-scrollbar">
+              {publicLoading ? (
+                <div style={{ padding: '2rem' }}>
+                  <TableSkeleton />
                 </div>
-              </div>
-            ) : (
-              <table style={{ width: '100%', minWidth: 960, borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: '#F8FAFC', borderBottom: '1px solid var(--color-border)' }}>
-                  <tr>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Khách hàng')}</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Liên hệ')}</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Nguồn / Nhu cầu')}</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Người thả / Ghi chú')}</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Trạng thái')}</th>
-                    <th style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, fontSize: '0.74rem', textTransform: 'uppercase', color: '#475569' }}>{t('Hành động')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {databankItems.map((item) => {
-                    const busy = actingDatabankId === item.id;
-                    const canManageDatabank = (user?.role === 'admin' || user?.role === 'superadmin' || can('leads', 'edit'));
-                    return (
-                      <tr key={item.id} style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+              ) : publicLeads.length === 0 ? (
+                <div style={{ padding: '3rem 1rem' }}>
+                  <EmptyCard
+                    icon={<Database size={32} color="var(--color-text-muted)" />}
+                    title={t('Kho chung trống')}
+                    description={t('Không có dữ liệu trong Kho chung (Databank)')}
+                  />
+                </div>
+              ) : (
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                  <thead>
+                    <tr style={{ background: theme === 'dark' ? 'rgba(0,0,0,0.2)' : '#f8fafc', borderBottom: '1px solid var(--color-border)' }}>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700 }}>{t('Khách hàng')}</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700 }}>{t('Liên hệ')}</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700 }}>{t('Nguồn')}</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700 }}>{t('Người nhận')}</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700 }}>{t('Giải phóng lúc')}</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700 }}>
+                        {isAdmin ? t('Lượt nhận') : t('Hành động')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {publicLeads.map((lead: any) => (
+                      <tr 
+                        key={lead.id} 
+                        style={{ 
+                          borderBottom: '1px solid var(--color-border)', 
+                          transition: 'background-color 0.2s', 
+                          cursor: Number(lead.is_won) === 1 ? 'default' : ((isAdmin || (lead.takers && !lead.takers.some((t: any) => Number(t.id) === Number(user?.id) || Number(t.id) === Number(user?.consultant_id)) && lead.takers.length < 2)) ? 'pointer' : 'default')
+                        }} 
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(255,255,255,0.01)' : '#fff9fa'} 
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setContextMenu({
+                            x: e.clientX,
+                            y: e.clientY,
+                            item: {
+                              id: lead.id,
+                              name: lead.full_name || lead.name,
+                              phone: lead.phone,
+                              email: lead.email,
+                              status: lead.status
+                            }
+                          });
+                        }}
+                        onClick={() => {
+                          if (Number(lead.is_won) === 1) return;
+                          if (isAdmin) {
+                            setSelectedLead({
+                              id: lead.id,
+                              name: lead.full_name || '',
+                              phone: lead.phone || '',
+                              email: lead.email || '',
+                              source: lead.original_source || 'Databank',
+                              status: 'databank',
+                              assigned_to_name: t('Chưa ai nhận'),
+                              round_name: t('Kho chung'),
+                              created_at: lead.released_to_kho_at || '',
+                              note: '',
+                              type: '-',
+                              takers: lead.takers || []
+                            });
+                          } else {
+                            const hasClaimed = lead.takers && lead.takers.some((t: any) => Number(t.id) === Number(user?.id) || Number(t.id) === Number(user?.consultant_id));
+                            const isFull = lead.takers && lead.takers.length >= 2;
+                            if (!hasClaimed && !isFull) {
+                              handleClaimLead(lead.id, lead.full_name || lead.name);
+                            }
+                          }
+                        }}
+                      >
                         <td style={{ padding: '12px 16px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <Avatar name={item.name || 'KH'} size={32} />
-                            <div>
-                              <div style={{ fontWeight: 700, color: 'var(--color-text)' }}>{item.name || t('Khách hàng')}</div>
-                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-                                Score: {item.lead_score ?? 0}
-                              </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <Avatar name={lead.full_name || t('Khách hàng')} size={32} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.875rem' }}>{lead.full_name || t('Khách hàng')}</span>
+                              {(lead.is_referral || lead.referrer_name || lead.partner_id || lead.original_source === 'ref' || lead.original_source === 'referral' || lead.source === 'ref' || lead.source === 'referral' || lead.source === 'gioi_thieu') && (() => {
+                                const refName = lead.referrer_name || lead.partner_name || '';
+                                const refColor = refName ? getColorFromName(refName) : '#0284c7';
+                                return (
+                                  <span title={refName ? `Khách hàng giới thiệu bởi: ${refName}` : 'Khách hàng giới thiệu (Ref)'} style={{ display: 'inline-flex', color: refColor }}>
+                                    <UserPlus size={13} />
+                                  </span>
+                                );
+                              })()}
                             </div>
                           </div>
                         </td>
                         <td style={{ padding: '12px 16px' }}>
-                          <div style={{ fontWeight: 600, fontFamily: 'monospace' }}>{item.phone || '—'}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{item.email || '—'}</div>
+                          {(() => {
+                            const isRef = Boolean(lead.is_referral || lead.referrer_name || lead.partner_id || lead.original_source === 'ref' || lead.original_source === 'referral' || lead.source === 'ref' || lead.source === 'referral' || lead.source === 'gioi_thieu');
+                            const hasPhone = Boolean(lead.phone && lead.phone !== '-');
+                            const hasEmail = Boolean(lead.email && lead.email !== '-');
+                            const refName = lead.referrer_name || lead.partner_name || '';
+                            const refAvatar = lead.referrer_avatar || lead.partner_avatar || '';
+                            return (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                {hasPhone && (
+                                  <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>
+                                    {lead.phone}
+                                  </div>
+                                )}
+                                {hasEmail && (
+                                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: hasPhone ? 2 : 0 }}>{lead.email}</div>
+                                )}
+                                {isRef && (() => {
+                                  const refColor = refName ? getColorFromName(refName) : '#0284c7';
+                                  return (
+                                    <div 
+                                      style={{ 
+                                        display: 'inline-flex', 
+                                        alignItems: 'center', 
+                                        gap: '4px', 
+                                        background: `${refColor}12`, 
+                                        border: `1px solid ${refColor}33`, 
+                                        borderRadius: '12px', 
+                                        padding: '1px 6px 1px 2px', 
+                                        fontSize: '0.72rem', 
+                                        maxWidth: '100%', 
+                                        overflow: 'hidden',
+                                        marginTop: (hasPhone || hasEmail) ? '3px' : 0,
+                                        width: 'fit-content',
+                                        boxSizing: 'border-box'
+                                      }} 
+                                      title={refName ? `Được giới thiệu bởi: ${refName}` : 'Khách hàng có nguồn giới thiệu (Ref)'}
+                                    >
+                                      {refName ? (
+                                        <>
+                                          <Avatar name={refName} src={refAvatar} size={16} />
+                                          <span style={{ 
+                                            fontSize: '0.6rem', 
+                                            fontWeight: 700, 
+                                            color: refColor, 
+                                            opacity: 0.85, 
+                                            transform: 'scale(0.82)', 
+                                            transformOrigin: 'left center', 
+                                            display: 'inline-block', 
+                                            flexShrink: 0,
+                                            lineHeight: 1,
+                                            marginRight: '-2px'
+                                          }}>
+                                            REF:
+                                          </span>
+                                          <span style={{ 
+                                            fontSize: '0.72rem', 
+                                            fontWeight: 550, 
+                                            color: 'var(--color-text)', 
+                                            overflow: 'hidden', 
+                                            textOverflow: 'ellipsis', 
+                                            whiteSpace: 'nowrap',
+                                            lineHeight: 1.2
+                                          }}>
+                                            {refName}
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <UserPlus size={11} style={{ color: refColor, flexShrink: 0, marginLeft: '2px' }} />
+                                          <span style={{ 
+                                            fontSize: '0.6rem', 
+                                            fontWeight: 700, 
+                                            color: refColor, 
+                                            opacity: 0.85, 
+                                            transform: 'scale(0.82)', 
+                                            transformOrigin: 'left center', 
+                                            display: 'inline-block', 
+                                            lineHeight: 1 
+                                          }}>
+                                            REF
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+                                {!hasPhone && !hasEmail && !isRef && (
+                                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8125rem' }}>-</span>
+                                )}
+                              </div>
+                            );
+                          })()}
                         </td>
                         <td style={{ padding: '12px 16px' }}>
-                          <div style={{ fontWeight: 600 }}>{item.source || 'Databank'}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{item.product_interest || item.campaign || '—'}</div>
-                        </td>
-                        <td style={{ padding: '12px 16px', maxWidth: 260 }}>
-                          <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>{item.released_by_name || item.claimed_by_name || 'Hệ thống'}</div>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)' }}>{item.reason || '—'}</div>
-                        </td>
-                        <td style={{ padding: '12px 16px' }}>
-                          <span
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: 999,
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              background:
-                                item.status === 'available'
-                                  ? '#DCFCE7'
-                                  : item.status === 'blocked'
-                                    ? '#FEE2E2'
-                                    : '#EFF6FF',
-                              color:
-                                item.status === 'available'
-                                  ? '#166534'
-                                  : item.status === 'blocked'
-                                    ? '#991B1B'
-                                    : '#1E40FF',
-                            }}
-                          >
-                            {item.status === 'available'
-                              ? t('Sẵn sàng')
-                              : item.status === 'claimed'
-                                ? `${t('Đã nhận')}${item.claimed_by_name ? `: ${item.claimed_by_name}` : ''}`
-                                : item.status === 'blocked'
-                                  ? t('Đang khóa')
-                                  : item.status}
+                          <span className="badge" style={{ background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '12px' }}>
+                            {lead.original_source || 'Databank'}
                           </span>
                         </td>
-                        <td style={{ padding: '12px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                          <div style={{ display: 'inline-flex', gap: 6 }}>
-                            {item.status === 'available' && (
+                        <td style={{ padding: '12px 16px' }}>
+                          {(() => {
+                            const displayTakers = filterVisibleTakers(lead.takers);
+                            if (displayTakers.length > 0) {
+                              return (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  {displayTakers.map((tk: any) => (
+                                    <div 
+                                      key={tk.id} 
+                                      title={tk.name}
+                                      style={{
+                                        width: '26px', height: '26px', borderRadius: '50%',
+                                        background: 'var(--color-primary-light)',
+                                        color: 'var(--color-primary)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontWeight: 700, fontSize: '0.75rem', border: '2px solid var(--color-surface)',
+                                        overflow: 'hidden', cursor: 'help'
+                                      }}
+                                    >
+                                      {tk.avatar ? (
+                                        <img src={tk.avatar} alt={tk.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                      ) : (
+                                        tk.name.charAt(0).toUpperCase()
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            } else {
+                              return <span style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>{t('Chưa ai nhận')}</span>;
+                            }
+                          })()}
+                        </td>
+
+                        <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', fontSize: '0.8125rem' }}>{lead.released_to_kho_at || '-'}</td>
+                        <td style={{ padding: '12px 16px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+                          {Number(lead.is_won) === 1 ? (
+                            <span 
+                              className="badge" 
+                              style={{ 
+                                background: '#ffe3e8', 
+                                color: '#1E3A8A', 
+                                border: '1px solid #ffe3e8',
+                                fontWeight: 700,
+                                fontSize: '0.8rem',
+                                padding: '4px 10px',
+                                borderRadius: '20px'
+                              }}
+                            >
+                              {t('Đặt cọc')}
+                            </span>
+                          ) : isAdmin ? (
+                            <span 
+                              className="badge" 
+                              style={{ 
+                                background: !lead.takers || lead.takers.length === 0 ? 'rgba(16,185,129,0.1)' : (lead.takers.length === 1 ? 'rgba(59,130,246,0.1)' : 'rgba(156,163,175,0.1)'),
+                                color: !lead.takers || lead.takers.length === 0 ? '#10b981' : (lead.takers.length === 1 ? '#3b82f6' : '#9ca3af'),
+                                border: !lead.takers || lead.takers.length === 0 ? '1px solid rgba(16,185,129,0.2)' : (lead.takers.length === 1 ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(156,163,175,0.2)'),
+                                fontWeight: 700,
+                                fontSize: '0.8rem',
+                                padding: '4px 10px',
+                                borderRadius: '20px'
+                              }}
+                            >
+                              {Math.max(0, 2 - (lead.takers ? lead.takers.length : 0))} / 2
+                            </span>
+                          ) : (() => {
+                            const hasClaimed = lead.takers && lead.takers.some((t: any) => Number(t.id) === Number(user?.id) || Number(t.id) === Number(user?.consultant_id));
+                            const isFull = lead.takers && lead.takers.length >= 2;
+                            return (
                               <button
-                                type="button"
-                                disabled={busy}
-                                onClick={() => void handleClaimDatabankLead(item)}
+                                onClick={() => handleClaimLead(lead.id, lead.name)}
+
+                                disabled={isClaimingLeadId !== null || hasClaimed || isFull}
                                 style={{
-                                  padding: '6px 12px',
-                                  borderRadius: 8,
-                                  border: 'none',
-                                  background: '#1E40FF',
-                                  color: '#FFFFFF',
+                                  background: hasClaimed ? 'rgba(16,185,129,0.12)' : (isFull ? 'transparent' : 'linear-gradient(135deg, #1E40FF 0%, #e63946 100%)'),
+                                  border: hasClaimed ? '1px solid rgba(16,185,129,0.2)' : (isFull ? '1px solid var(--color-border)' : 'none'),
+                                  color: hasClaimed ? '#10b981' : (isFull ? 'var(--color-text-muted)' : '#ffffff'),
+                                  padding: '6px 16px',
+                                  borderRadius: '6px',
+                                  fontSize: '0.8125rem',
                                   fontWeight: 700,
-                                  fontSize: '0.76rem',
-                                  cursor: busy ? 'not-allowed' : 'pointer',
+                                  cursor: (hasClaimed || isFull) ? 'default' : 'pointer',
+                                  boxShadow: (hasClaimed || isFull) ? 'none' : '0 2px 6px rgba(30, 64, 255, 0.2)',
+                                  transition: 'all 0.2s'
                                 }}
+                                onMouseEnter={(!hasClaimed && !isFull) ? e => {
+                                  e.currentTarget.style.transform = 'translateY(-1px)';
+                                  e.currentTarget.style.boxShadow = '0 4px 10px rgba(30, 64, 255, 0.35)';
+                                } : undefined}
+                                onMouseLeave={(!hasClaimed && !isFull) ? e => {
+                                  e.currentTarget.style.transform = 'translateY(0)';
+                                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(30, 64, 255, 0.2)';
+                                } : undefined}
                               >
-                                {busy ? t('Đang nhận...') : t('Nhận khách')}
+                                {isClaimingLeadId === lead.id ? (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                                    <RefreshCw size={13} className="spin" />
+                                    {t('Đang nhận...')}
+                                  </span>
+                                ) : (hasClaimed ? t('Đã nhận') : (isFull ? t('Hết lượt') : t('Nhận Data')))}
                               </button>
-                            )}
-                            {canManageDatabank && item.status !== 'blocked' && (
-                              <button
-                                type="button"
-                                disabled={busy}
-                                onClick={() => void handleDatabankModeration(item.id, 'block')}
-                                style={{
-                                  padding: '6px 10px',
-                                  borderRadius: 8,
-                                  border: '1px solid #FECACA',
-                                  background: '#FEF2F2',
-                                  color: '#DC2626',
-                                  fontWeight: 600,
-                                  fontSize: '0.75rem',
-                                  cursor: busy ? 'not-allowed' : 'pointer',
-                                }}
-                              >
-                                {t('Khóa')}
-                              </button>
-                            )}
-                            {canManageDatabank && item.status === 'blocked' && (
-                              <button
-                                type="button"
-                                disabled={busy}
-                                onClick={() => void handleDatabankModeration(item.id, 'unblock')}
-                                style={{
-                                  padding: '6px 10px',
-                                  borderRadius: 8,
-                                  border: '1px solid #BBF7D0',
-                                  background: '#F0FDF4',
-                                  color: '#15803D',
-                                  fontWeight: 600,
-                                  fontSize: '0.75rem',
-                                  cursor: busy ? 'not-allowed' : 'pointer',
-                                }}
-                              >
-                                {t('Mở khóa')}
-                              </button>
-                            )}
-                            {canManageDatabank && item.status === 'claimed' && (
-                              <button
-                                type="button"
-                                disabled={busy}
-                                onClick={() => void handleDatabankModeration(item.id, 'restore')}
-                                style={{
-                                  padding: '6px 10px',
-                                  borderRadius: 8,
-                                  border: '1px solid #BFDBFE',
-                                  background: '#EFF6FF',
-                                  color: '#1E40FF',
-                                  fontWeight: 600,
-                                  fontSize: '0.75rem',
-                                  cursor: busy ? 'not-allowed' : 'pointer',
-                                }}
-                              >
-                                {t('Hoàn về Kho')}
-                              </button>
-                            )}
-                          </div>
+                            );
+                          })()}
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Pagination for Databank */}
+            {publicTotalCount > ITEMS_PER_PAGE && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--color-border)' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
+                  {t('Hiển thị')} <strong>{Math.min(publicTotalCount, (publicPage - 1) * ITEMS_PER_PAGE + 1)}</strong> - <strong>{Math.min(publicTotalCount, publicPage * ITEMS_PER_PAGE)}</strong> {t('trên')} <strong>{publicTotalCount}</strong>
+                </div>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button
+                    disabled={publicPage <= 1}
+                    onClick={() => setPublicPage(prev => Math.max(1, prev - 1))}
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '6px',
+                      width: '32px',
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: publicPage <= 1 ? 'not-allowed' : 'pointer',
+                      color: 'var(--color-text)'
+                    }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    disabled={publicPage * ITEMS_PER_PAGE >= publicTotalCount}
+                    onClick={() => setPublicPage(prev => prev + 1)}
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '6px',
+                      width: '32px',
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: publicPage * ITEMS_PER_PAGE >= publicTotalCount ? 'not-allowed' : 'pointer',
+                      color: 'var(--color-text)'
+                    }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
             )}
           </div>
-
-          {databankTotalPages > 1 && (
-            <div style={{ padding: '0.85rem 1.25rem', borderTop: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                {t('Trang')} {databankPage} / {databankTotalPages}
-              </span>
-              <div style={{ display: 'flex', gap: 6 }}>
-                <button
-                  type="button"
-                  disabled={databankPage <= 1}
-                  onClick={() => setDatabankPage((p) => Math.max(1, p - 1))}
-                  className="btn outline"
-                  style={{ height: 32, padding: '0 10px' }}
-                >
-                  <ChevronLeft size={14} />
-                </button>
-                <button
-                  type="button"
-                  disabled={databankPage >= databankTotalPages}
-                  onClick={() => setDatabankPage((p) => Math.min(databankTotalPages, p + 1))}
-                  className="btn outline"
-                  style={{ height: 32, padding: '0 10px' }}
-                >
-                  <ChevronRight size={14} />
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       ) : (
-        <div className="card fade-in-view mobile-flat-container" data-tour="datalist-table" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ flex: 1, overflow: isMobile ? 'visible' : 'auto' }} className="table-wrap custom-scrollbar" data-tour="datalist-table">
+        <div className="card fade-in-view mobile-flat-container" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, overflow: isMobile ? 'visible' : 'auto' }} className="table-wrap custom-scrollbar">
             {isMobile ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0.5rem 0 5rem 0' }}>
                 {loading ? (
@@ -2168,27 +2955,13 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
                         {/* Status badge */}
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                          {getStatusBadge(lead.status, lead.report_status, lead.ai_screener_status, lead.created_at)}
+                          {getStatusBadge((lead.is_public === 1 || Number(lead.is_public) === 1 || lead.status === 'released_to_kho' || lead.status === 'databank_claim') ? 'databank' : lead.status, lead.report_status, lead.ai_screener_status, lead.created_at, lead.takers, (lead as any).message)}
                           {lead.status !== 'assigned' && lead.report_status === 'pending' && (
                             <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: '0.65rem', fontWeight: 700, background: '#fef3c7', color: '#d97706', border: '1px solid #fcd34d' }}>
                               {t('Chờ duyệt')}
                             </span>
                           )}
                         </div>
-                      </div>
-
-                      {/* Lead Quality Status */}
-                      <div style={{
-                        borderTop: '1px dotted var(--color-border-light)',
-                        paddingTop: '0.5rem',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}>
-                        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-muted)' }}>
-                          {t('ĐÁNH GIÁ CHẤT LƯỢNG:')}
-                        </div>
-                        <LeadQualityBadge status={lead.quality_status} note={lead.quality_note} showNote={false} />
                       </div>
 
                       {/* Middle row: Source & Received Time */}
@@ -2210,28 +2983,6 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           {lead.created_at}
                         </div>
                       </div>
-                      {user?.role !== 'sale' && lead.ad_id && (
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPreviewAd({ adId: lead.ad_id!, adName: lead.ad_name, thumb: lead.ad_thumbnail_url || lead.ad_image_url, leadName: lead.name });
-                          }}
-                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '6px 10px', borderRadius: 10, background: 'rgba(30, 64, 255, 0.08)', border: '1px solid rgba(30, 64, 255, 0.22)', cursor: 'pointer' }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                            {(lead.ad_thumbnail_url || lead.ad_image_url) ? (
-                              <img src={lead.ad_thumbnail_url || lead.ad_image_url || ''} alt='' onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255,0.3)' }} />
-                            ) : (
-                              <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(30, 64, 255,0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0 }}><Megaphone size={13} /></div>
-                            )}
-                            <div style={{ minWidth: 0 }}>
-                              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lead.ad_name || `Ad #${lead.ad_id}`}</div>
-                              <div style={{ fontSize: '0.62rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{lead.campaign_name || `ID: ${lead.ad_id}`}</div>
-                            </div>
-                          </div>
-                          <span style={{ width: 26, height: 26, borderRadius: 7, color: '#1E40FF', background: 'rgba(30, 64, 255,0.14)', border: '1px solid rgba(30, 64, 255,0.28)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} title="Mở Iframe Bài Quảng Cáo"><Eye size={13} /></span>
-                        </div>
-                      )}
 
                       {/* Bottom row: Phân bổ cho */}
                       <div style={{
@@ -2246,38 +2997,59 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           <span style={{ color: 'var(--color-text-muted)' }}>{t('Giao cho')}:</span>
                           {lead.status === 'pending_approval' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <Avatar src="/imgs/autodata/warn_icon.png" name="DOMATION AI - Screener" size={20} />
-                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Screener</span>
+                              <Avatar src="/imgs/warn_icon.png" name="IDEAS AI - Screener" size={20} />
+                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Screener</span>
                             </div>
                           ) : lead.status === 'fallback' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI" size={20} />
-                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI</span>
+                              <Avatar src="/LOGO.jpg" name="IDEAS AI" size={20} />
+                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI</span>
                             </div>
                           ) : lead.status === 'rejected' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI - Evaluator" size={20} />
-                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Evaluator</span>
+                              <Avatar src="/LOGO.jpg" name="IDEAS AI - Evaluator" size={20} />
+                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Evaluator</span>
                             </div>
                           ) : lead.status === 'blacklisted' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <Avatar src="/imgs/autodata/angry_icon.jpg" name="DOMATION AI - Angry" size={20} />
-                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Angry</span>
+                              <Avatar src="/imgs/angry_icon.jpg" name="IDEAS AI - Angry" size={20} />
+                              <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Angry</span>
                             </div>
-                          ) : lead.assigned_to_name !== '-' ? (
+                          ) : (lead.is_public === 1 || Number(lead.is_public) === 1 || lead.status === 'released_to_kho' || lead.status === 'databank_claim' || lead.status === 'databank') ? (
+                            (() => {
+                              const displayTakers = filterVisibleTakers(lead.takers);
+                              if (displayTakers.length > 0) {
+                                return (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    {displayTakers.map((tk: any) => (
+                                      <Avatar key={tk.id} src={tk.avatar} name={tk.name} size={20} />
+                                    ))}
+                                  </div>
+                                );
+                              } else {
+                                return <span style={{ color: 'var(--color-text-muted)' }}>{t('Chưa ai nhận')}</span>;
+                              }
+                            })()
+                          ) : (lead.assigned_to_name !== '-' && lead.status !== 'pending_work_hours') ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <Avatar src={lead.assigned_to_avatar} name={lead.assigned_to_name} size={20} aiScreened={!!(lead.ai_screener_status && lead.ai_screener_status !== 'not_screened')} />
+                              <Avatar src={lead.assigned_to_avatar || '/LOGO.jpg'} name={lead.assigned_to_name} size={20} aiScreened={!!(lead.ai_screener_status && lead.ai_screener_status !== 'not_screened')} />
                               <span style={{ fontWeight: 700, color: 'var(--color-text)' }}>{lead.assigned_to_name}</span>
                             </div>
                           ) : (
-                            <span style={{ color: 'var(--color-text-muted)' }}>-</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Avatar src="/LOGO.jpg" name="IDEAS Bot" size={20} />
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '0.75rem', lineHeight: '1rem' }}>IDEAS Bot</span>
+                                <span style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', lineHeight: '0.8rem' }}>{getPendingUntilTime()}</span>
+                              </div>
+                            </div>
                           )}
                         </div>
                         {lead.round_name && lead.round_name !== '-' && (
                           <span style={{
                             padding: '2px 8px',
                             borderRadius: '6px',
-                            background: '#F6EFE0',
+                            background: '#ffe3e8',
                             color: '#1E3A8A',
                             fontSize: '0.65rem',
                             fontWeight: 700
@@ -2289,26 +3061,21 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     </div>
                   ))
                 ) : (
-                  <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
-                    {t('Không tìm thấy dữ liệu phù hợp.')}
-                  </div>
+                  <EmptyCard
+                    icon={<Database size={48} />}
+                    title={t("Không tìm thấy dữ liệu phù hợp")}
+                    description={t("Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm để xem kết quả.")}
+                  />
                 )}
               </div>
             ) : (
               <table style={{ width: '100%', minWidth: 1000, borderCollapse: 'collapse' }}>
-                <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)' }}>
+                <thead style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--color-bg)' }}>
                   <tr>
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)' }}>{t('Khách hàng')}</th>
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)' }}>{t('Liên hệ')}</th>
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)' }}>{t('Trạng thái')}</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>{t('Đánh giá chất lượng')}</th>
-                    {user?.role !== 'sale' && <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>{t('Bài Quảng Cáo')}</th>}
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>{t('Phân bổ cho')}</th>
-                    {customFieldCols.map((cf) => (
-                      <th key={cf.id} style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>
-                        {cf.field_label}
-                      </th>
-                    ))}
                     <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: '1px solid var(--color-border)' }}>{t('Thời gian nhận')}</th>
                   </tr>
                 </thead>
@@ -2317,31 +3084,28 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     <tr key={`skel-${i}`}>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--color-border)', animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--skeleton-base)', animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
                           <div>
-                            <div style={{ width: 120, height: 16, background: 'var(--color-border)', borderRadius: 4, marginBottom: 8, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                            <div style={{ width: 80, height: 12, background: 'var(--color-border-light)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                            <div style={{ width: 120, height: 16, background: 'var(--skeleton-base)', borderRadius: 4, marginBottom: 8, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                            <div style={{ width: 80, height: 12, background: 'var(--skeleton-shine)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
                           </div>
                         </div>
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 100, height: 16, background: 'var(--color-border)', borderRadius: 4, marginBottom: 8, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                        <div style={{ width: 140, height: 12, background: 'var(--color-border-light)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div style={{ width: 100, height: 16, background: 'var(--skeleton-base)', borderRadius: 4, marginBottom: 8, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div style={{ width: 140, height: 12, background: 'var(--skeleton-shine)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 80, height: 24, background: 'var(--color-border)', borderRadius: 12, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                      </td>
-                      <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 100, height: 22, background: 'var(--color-border)', borderRadius: 12, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div style={{ width: 80, height: 24, background: 'var(--skeleton-base)', borderRadius: 12, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--color-border)', animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                          <div style={{ width: 90, height: 14, background: 'var(--color-border)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                          <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--skeleton-base)', animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                          <div style={{ width: 90, height: 14, background: 'var(--skeleton-base)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
                         </div>
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 110, height: 14, background: 'var(--color-border)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div style={{ width: 110, height: 14, background: 'var(--skeleton-base)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
                       </td>
                     </tr>
                   )) : paginatedLeads.length > 0 ? paginatedLeads.map(lead => {
@@ -2355,118 +3119,199 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                         <td style={{ padding: '1rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             <Avatar name={lead.name} size={32} />
-                            <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.875rem' }}>{lead.name}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.875rem' }}>{lead.name}</span>
+                              {Boolean((lead as any).is_referral || (lead as any).referrer_name || (lead as any).partner_id || (lead as any).original_source === 'ref' || (lead as any).original_source === 'referral' || lead.source === 'ref' || lead.source === 'referral' || lead.source === 'gioi_thieu') && (
+                                <span title={(lead as any).referrer_name ? `Khách hàng giới thiệu bởi: ${(lead as any).referrer_name}` : 'Khách hàng giới thiệu (Ref)'} style={{ display: 'inline-flex', color: 'var(--color-primary, #1E40FF)' }}>
+                                  <UserPlus size={13} />
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </td>
                         <td style={{ padding: '1rem' }}>
-                          <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>
-                            {maskPhone(lead.phone)}
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{maskEmail(lead.email)}</div>
+                          {(() => {
+                            const leadAny = lead as any;
+                            const isRef = Boolean(leadAny.is_referral || leadAny.referrer_name || leadAny.partner_id || leadAny.original_source === 'ref' || leadAny.original_source === 'referral' || lead.source === 'ref' || lead.source === 'referral' || lead.source === 'gioi_thieu');
+                            const hasPhone = Boolean(lead.phone && lead.phone !== '-');
+                            const hasEmail = Boolean(lead.email && lead.email !== '-');
+                            const refName = leadAny.referrer_name || leadAny.partner_name || '';
+                            const refAvatar = leadAny.referrer_avatar || leadAny.partner_avatar || '';
+                            return (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                {hasPhone && (
+                                  <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>
+                                    {maskPhone(lead.phone)}
+                                  </div>
+                                )}
+                                {hasEmail && (
+                                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: hasPhone ? 2 : 0 }}>{maskEmail(lead.email)}</div>
+                                )}
+                                {isRef && (() => {
+                                  const refColor = refName ? getColorFromName(refName) : '#0284c7';
+                                  return (
+                                    <div 
+                                      style={{ 
+                                        display: 'inline-flex', 
+                                        alignItems: 'center', 
+                                        gap: '4px', 
+                                        background: `${refColor}12`, 
+                                        border: `1px solid ${refColor}33`, 
+                                        borderRadius: '12px', 
+                                        padding: '1px 6px 1px 2px', 
+                                        fontSize: '0.72rem', 
+                                        maxWidth: '100%', 
+                                        overflow: 'hidden',
+                                        marginTop: (hasPhone || hasEmail) ? '3px' : 0,
+                                        width: 'fit-content',
+                                        boxSizing: 'border-box'
+                                      }} 
+                                      title={refName ? `Được giới thiệu bởi: ${refName}` : 'Khách hàng có nguồn giới thiệu (Ref)'}
+                                    >
+                                      {refName ? (
+                                        <>
+                                          <Avatar name={refName} src={refAvatar} size={16} />
+                                          <span style={{ 
+                                            fontSize: '0.6rem', 
+                                            fontWeight: 700, 
+                                            color: refColor, 
+                                            opacity: 0.85, 
+                                            transform: 'scale(0.82)', 
+                                            transformOrigin: 'left center', 
+                                            display: 'inline-block', 
+                                            flexShrink: 0,
+                                            lineHeight: 1,
+                                            marginRight: '-2px'
+                                          }}>
+                                            REF:
+                                          </span>
+                                          <span style={{ 
+                                            fontSize: '0.72rem', 
+                                            fontWeight: 550, 
+                                            color: 'var(--color-text)', 
+                                            overflow: 'hidden', 
+                                            textOverflow: 'ellipsis', 
+                                            whiteSpace: 'nowrap',
+                                            lineHeight: 1.2
+                                          }}>
+                                            {refName}
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <UserPlus size={11} style={{ color: refColor, flexShrink: 0, marginLeft: '2px' }} />
+                                          <span style={{ 
+                                            fontSize: '0.6rem', 
+                                            fontWeight: 700, 
+                                            color: refColor, 
+                                            opacity: 0.85, 
+                                            transform: 'scale(0.82)', 
+                                            transformOrigin: 'left center', 
+                                            display: 'inline-block', 
+                                            lineHeight: 1 
+                                          }}>
+                                            REF
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+                                {!hasPhone && !hasEmail && !isRef && (
+                                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8125rem' }}>-</span>
+                                )}
+                              </div>
+                            );
+                          })()}
                         </td>
                         <td style={{ padding: '1rem' }}>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-start' }}>
-                            {getStatusBadge(lead.status, lead.report_status, lead.ai_screener_status, lead.created_at)}
+                            {getStatusBadge((lead.is_public === 1 || Number(lead.is_public) === 1 || lead.status === 'released_to_kho' || lead.status === 'databank_claim') ? 'databank' : lead.status, lead.report_status, lead.ai_screener_status, lead.created_at, lead.takers, (lead as any).message)}
                             {lead.status !== 'assigned' && lead.report_status === 'pending' && <span style={{ padding: '2px 8px', borderRadius: 20, fontSize: '0.65rem', fontWeight: 700, background: '#fef3c7', color: '#d97706', border: '1px solid #fcd34d' }}>{t('Đang chờ duyệt')}</span>}
+                            {Boolean((lead as any).message) && (
+                              <span
+                                style={{
+                                  fontSize: '0.7rem',
+                                  color: 'var(--color-text-muted)',
+                                  maxWidth: 200,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap'
+                                }}
+                                title={(lead as any).message}
+                              >
+                                {(lead as any).message}
+                              </span>
+                            )}
                           </div>
                         </td>
-                        <td style={{ padding: '0.75rem 1rem' }}>
-                          <LeadQualityBadge status={lead.quality_status} note={lead.quality_note} showNote={false} />
-                        </td>
-                        {user?.role !== 'sale' && (
-                          <td style={{ padding: '0.75rem 1rem', maxWidth: 230 }}>
-                            {lead.ad_id ? (
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setPreviewAd({
-                                    adId: lead.ad_id!,
-                                    adName: lead.ad_name,
-                                    thumb: lead.ad_thumbnail_url || lead.ad_image_url,
-                                    leadName: lead.name
-                                  });
-                                }}
-                                title='Nhấn để mở Iframe xem trực tiếp bài quảng cáo trên Facebook'
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  gap: 8,
-                                  padding: '5px 8px',
-                                  borderRadius: 10,
-                                  background: 'rgba(30, 64, 255, 0.08)',
-                                  border: '1px solid rgba(30, 64, 255, 0.24)',
-                                  cursor: 'pointer',
-                                  maxWidth: 215,
-                                  width: '100%',
-                                  boxSizing: 'border-box',
-                                  transition: 'all 0.15s ease'
-                                }}
-                              >
-                                {(lead.ad_thumbnail_url || lead.ad_image_url) ? (
-                                  <img
-                                    src={lead.ad_thumbnail_url || lead.ad_image_url || ''}
-                                    alt={lead.ad_name || 'Ad'}
-                                    style={{ width: 32, height: 32, borderRadius: 7, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255, 0.3)' }} onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                  />
-                                ) : (
-                                  <div style={{ width: 32, height: 32, borderRadius: 7, background: 'rgba(30, 64, 255, 0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0 }}>
-                                    <Megaphone size={14} />
-                                  </div>
-                                )}
-                                <div style={{ minWidth: 0, flex: 1 }}>
-                                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={lead.ad_name || ''}>
-                                    {lead.ad_name || `Ad #${lead.ad_id}`}
-                                  </div>
-                                  <div style={{ fontSize: '0.64rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 1 }}>
-                                    {lead.campaign_name || `ID: ${lead.ad_id}`}
-                                  </div>
-                                </div>
-                                <span style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(30, 64, 255, 0.16)', border: '1px solid rgba(30, 64, 255, 0.3)', color: '#1E40FF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} title='Mở Iframe Bài Quảng Cáo'>
-                                  <Eye size={12} />
-                                </span>
-                              </div>
-                            ) : (
-                              <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>-</span>
-                            )}
-                          </td>
-                        )}
                         <td style={{ padding: '1rem', whiteSpace: 'nowrap' }}>
                           {lead.status === 'pending_approval' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <Avatar src="/imgs/autodata/warn_icon.png" name="DOMATION AI - Screener" size={32} />
+                              <Avatar src="/imgs/warn_icon.png" name="IDEAS AI - Screener" size={32} />
                               <div>
-                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>DOMATION AI - Screener</div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>IDEAS AI - Screener</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{t('Chờ duyệt')}</div>
                               </div>
                             </div>
                           ) : lead.status === 'fallback' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI" size={32} />
+                              <Avatar src="/LOGO.jpg" name="IDEAS AI" size={32} />
                               <div>
-                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>DOMATION AI</div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>IDEAS AI</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{t('Fallback')}</div>
                               </div>
                             </div>
                           ) : lead.status === 'rejected' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI - Evaluator" size={32} />
+                              <Avatar src="/LOGO.jpg" name="IDEAS AI - Evaluator" size={32} />
                               <div>
-                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>DOMATION AI - Evaluator</div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>IDEAS AI - Evaluator</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{t('Failed')}</div>
                               </div>
                             </div>
                           ) : lead.status === 'blacklisted' ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <Avatar src="/imgs/autodata/angry_icon.jpg" name="DOMATION AI - Angry" size={32} />
+                              <Avatar src="/imgs/angry_icon.jpg" name="IDEAS AI - Angry" size={32} />
                               <div>
-                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>DOMATION AI - Angry</div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>IDEAS AI - Angry</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{t('Blacklist')}</div>
                               </div>
                             </div>
-                          ) : lead.assigned_to_name !== '-' ? (
+                          ) : (lead.is_public === 1 || Number(lead.is_public) === 1 || lead.status === 'released_to_kho' || lead.status === 'databank_claim' || lead.status === 'databank') ? (
+                            (() => {
+                              const displayTakers = filterVisibleTakers(lead.takers);
+                              if (displayTakers.length > 0) {
+                                if (displayTakers.length === 1) {
+                                  return (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <Avatar name={displayTakers[0].name} src={displayTakers[0].avatar} size={28} title={`${displayTakers[0].name} (Nhận lúc: ${displayTakers[0].claimed_at})`} />
+                                      <span style={{ fontSize: '0.875rem', fontWeight: 550, color: 'var(--color-text)' }}>{displayTakers[0].name}</span>
+                                    </div>
+                                  );
+                                } else {
+                                  return (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      {displayTakers.map((tk: any) => (
+                                        <Avatar 
+                                          key={tk.id} 
+                                          name={tk.name} 
+                                          src={tk.avatar} 
+                                          size={28} 
+                                          title={`${tk.name} (Nhận lúc: ${tk.claimed_at})`} 
+                                          style={{ border: '2px solid var(--color-surface)', cursor: 'help' }}
+                                        />
+                                      ))}
+                                    </div>
+                                  );
+                                }
+                              } else {
+                                return <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{t('Chưa ai nhận')}</span>;
+                              }
+                            })()
+                          ) : (lead.assigned_to_name !== '-' && lead.status !== 'pending_work_hours') ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <Avatar src={lead.assigned_to_avatar} name={lead.assigned_to_name} size={32} aiScreened={!!(lead.ai_screener_status && lead.ai_screener_status !== 'not_screened')} />
+                              <Avatar src={lead.assigned_to_avatar || '/LOGO.jpg'} name={lead.assigned_to_name} size={32} aiScreened={!!(lead.ai_screener_status && lead.ai_screener_status !== 'not_screened')} />
                               <div>
                                 <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>{lead.assigned_to_name}</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
@@ -2475,23 +3320,23 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                               </div>
                             </div>
                           ) : (
-                            <span style={{ color: 'var(--color-text-muted)' }}>-</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <Avatar src="/LOGO.jpg" name="IDEAS Bot" size={32} />
+                              <div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>IDEAS Bot</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                                  {getPendingUntilTime()}
+                                </div>
+                              </div>
+                            </div>
                           )}
                         </td>
-                        {customFieldCols.map((cf) => {
-                          const rawVal = lead.custom_fields?.[cf.field_key];
-                          return (
-                            <td key={cf.id} style={{ padding: '1rem', fontSize: '0.8rem', color: 'var(--color-text-light)', whiteSpace: 'nowrap' }}>
-                              {rawVal === undefined || rawVal === null || rawVal === '' ? '—' : String(rawVal)}
-                            </td>
-                          );
-                        })}
                         <td style={{ padding: '1rem', fontSize: '0.8125rem', color: 'var(--color-text-light)' }}>{lead.created_at}</td>
                       </tr>
                     );
                   }) : (
                     <tr>
-                      <td colSpan={7 + customFieldCols.length} style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
+                      <td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
                         {t('Không tìm thấy dữ liệu phù hợp.')}
                       </td>
                     </tr>
@@ -2563,11 +3408,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           setReassignConsId('');
         }}
         title={t("Chi tiết Khách hàng")}
-        width="850px"
+        width="1050px"
       >
         {selectedLead && (
           <div className="modal-body-padding">
-            <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)', gap: '1.5rem', alignItems: 'start', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '2rem', alignItems: 'start' }}>
               {/* Cột Trái: Chi Tiết */}
               <div className="sticky-column">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', width: '100%', flexWrap: 'wrap', gap: '1rem' }}>
@@ -2603,7 +3448,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           }}
                         />
                       ) : (
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text)', margin: 0, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{selectedLead.name}</h2>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>{selectedLead.name}</h2>
                       )}
                       <div style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginTop: 4 }}>ID: #{selectedLead.id}</div>
                     </div>
@@ -2731,23 +3576,6 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                       </>
                     )}
  
-                    {selectedLead.status !== 'in_databank' && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmReleaseOpen(true)}
-                        title={t("Nhả khách hàng về Kho dữ liệu chung (Databank)")}
-                        className="detail-action-btn"
-                        style={{
-                          background: 'rgba(30, 64, 255, 0.08)',
-                          border: '1px solid var(--color-primary-light)',
-                          color: '#1E40FF',
-                        }}
-                      >
-                        <Database size={14} />
-                        {t('Nhả về Kho')}
-                      </button>
-                    )}
-
                     {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
                       <button
                         onClick={() => {
@@ -2776,8 +3604,80 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           e.currentTarget.style.boxShadow = '0 2px 6px rgba(239, 68, 68, 0.05)';
                         }}
                       >
-                        <AlertTriangle size={14} />
+                        <Ban size={14} />
                         {t('Chặn')}
+                      </button>
+                    )}
+
+                    {(() => {
+                      const myTaker = selectedLead.takers && selectedLead.takers.find((t: any) => Number(t.id) === Number(user?.id) || Number(t.id) === Number(user?.consultant_id));
+                      const isClaimer = !!myTaker;
+                      const canRelease = false;
+
+                      return canRelease ? (
+                        <button
+                          onClick={() => handleReleaseToDatabank(selectedLead.lead_id || selectedLead.id, myTaker?.contact_id)}
+                          disabled={isReleasingLead}
+                          title={t("Nhả về Kho chung (Databank)")}
+                          className="detail-action-btn"
+                          style={{
+                            background: 'rgba(16, 185, 129, 0.08)',
+                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                            color: '#10b981',
+                            boxShadow: '0 2px 6px rgba(16, 185, 129, 0.05)'
+                          }}
+                          onMouseOver={e => {
+                            e.currentTarget.style.background = '#10b981';
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 15px rgba(16, 185, 129, 0.2)';
+                          }}
+                          onMouseOut={e => {
+                            e.currentTarget.style.background = 'rgba(16, 185, 129, 0.08)';
+                            e.currentTarget.style.color = '#10b981';
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.boxShadow = '0 2px 6px rgba(16, 185, 129, 0.05)';
+                          }}
+                        >
+                          <RefreshCw size={14} className={isReleasingLead ? 'animate-spin' : ''} />
+                          {isReleasingLead ? t('Đang nhả...') : t('Nhả Kho')}
+                        </button>
+                      ) : null;
+                    })()}
+
+                    {user?.role === 'sale' && 
+                     (selectedLead.is_public === 1 || Number(selectedLead.is_public) === 1 || selectedLead.status === 'released_to_kho' || selectedLead.status === 'databank_claim' || selectedLead.status === 'databank') &&
+                     !(selectedLead.takers && selectedLead.takers.some((t: any) => Number(t.id) === Number(user?.consultant_id))) &&
+                     (selectedLead.takers ? selectedLead.takers.length : 0) < 2 && (
+                      <button
+                        onClick={() => {
+                          handleClaimLead(selectedLead.person_id || selectedLead.id, selectedLead.name, () => {
+                            setSelectedLead(null);
+                            fetchLeads();
+                          });
+                        }}
+
+                        disabled={isClaimingLeadId !== null}
+                        title={t("Nhận khách hàng này về danh sách chăm sóc của bạn")}
+                        className="detail-action-btn"
+                        style={{
+                          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                          border: 'none',
+                          color: '#ffffff',
+                          fontWeight: 700,
+                          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)'
+                        }}
+                        onMouseOver={e => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.35)';
+                        }}
+                        onMouseOut={e => {
+                          e.currentTarget.style.transform = 'none';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.2)';
+                        }}
+                      >
+                        <RefreshCw size={14} className={isClaimingLeadId !== null ? 'animate-spin' : ''} />
+                        {isClaimingLeadId !== null ? t('Đang nhận...') : t('Nhận Data')}
                       </button>
                     )}
                   </div>
@@ -2785,12 +3685,12 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+                  gridTemplateColumns: '1fr 1fr',
                   gap: '0.75rem',
                   marginBottom: '1rem'
                 }}>
                   <div
-                    onClick={!isAdminEditingLead ? () => handleCopyText((user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone), t('Đã sao chép số điện thoại!'), 'phone') : undefined}
+                    onClick={!isAdminEditingLead ? () => handleCopyText(canSeeFullInfo ? selectedLead.phone : maskPhone(selectedLead.phone), t('Đã sao chép số điện thoại!'), 'phone') : undefined}
                     style={{
                       background: 'var(--color-bg)',
                       padding: '0.625rem 0.75rem',
@@ -2868,7 +3768,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                         <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }} title={selectedLead.phone}>
-                          {(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone)}
+                          {canSeeFullInfo ? selectedLead.phone : maskPhone(selectedLead.phone)}
                         </span>
                         {!isAdminEditingLead && (
                           <div
@@ -2888,7 +3788,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     )}
                   </div>
                   <div
-                    onClick={!isAdminEditingLead ? () => handleCopyText((user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email), t('Đã sao chép email!'), 'email') : undefined}
+                    onClick={!isAdminEditingLead ? () => handleCopyText(canSeeFullInfo ? selectedLead.email : maskEmail(selectedLead.email), t('Đã sao chép email!'), 'email') : undefined}
                     style={{
                       background: 'var(--color-bg)',
                       padding: '0.625rem 0.75rem',
@@ -2943,7 +3843,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                         <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }} title={selectedLead.email}>
-                          {(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email)}
+                          {canSeeFullInfo ? selectedLead.email : maskEmail(selectedLead.email)}
                         </span>
                         {!isAdminEditingLead && (
                           <div
@@ -2999,84 +3899,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                   <div style={{ background: 'var(--color-bg)', padding: '0.625rem 0.75rem', borderRadius: 10, border: '1px solid var(--color-border-light)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-text-muted)', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}><Tag size={12} /> {t('Trạng thái')}</div>
                     <div>
-                      {getStatusBadge(selectedLead.status, selectedLead.report_status, selectedLead.ai_screener_status, selectedLead.created_at)}
+                      {getStatusBadge((selectedLead.is_public === 1 || Number(selectedLead.is_public) === 1 || selectedLead.status === 'released_to_kho' || selectedLead.status === 'databank_claim') ? 'databank' : selectedLead.status, selectedLead.report_status, selectedLead.ai_screener_status, selectedLead.created_at, selectedLead.takers, (selectedLead as any).message)}
                     </div>
                   </div>
                 </div>
-                {user?.role !== 'sale' && selectedLead.ad_id && (
-                  <div
-                    onClick={() => setPreviewAd({ adId: selectedLead.ad_id!, adName: selectedLead.ad_name, thumb: selectedLead.ad_thumbnail_url || selectedLead.ad_image_url, leadName: selectedLead.name })}
-                    style={{
-                      marginBottom: '1rem',
-                      padding: '0.85rem 1rem',
-                      borderRadius: 14,
-                      background: 'linear-gradient(135deg, rgba(30, 64, 255, 0.1) 0%, rgba(30, 41, 59, 0.03) 100%)',
-                      border: '1px solid rgba(30, 64, 255, 0.28)',
-                      position: 'relative',
-                      cursor: 'pointer',
-                      maxWidth: '100%',
-                      boxSizing: 'border-box',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    <button
-                      type='button'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPreviewAd({ adId: selectedLead.ad_id!, adName: selectedLead.ad_name, thumb: selectedLead.ad_thumbnail_url || selectedLead.ad_image_url, leadName: selectedLead.name });
-                      }}
-                      title='Mở Iframe Bài Quảng Cáo'
-                      style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 10,
-                        width: 28,
-                        height: 28,
-                        borderRadius: 8,
-                        border: '1px solid rgba(30, 64, 255, 0.35)',
-                        background: 'linear-gradient(135deg, #1E40FF 0%, #1E3A8A 100%)',
-                        color: '#fff',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 8px rgba(30, 64, 255, 0.25)',
-                        flexShrink: 0,
-                        padding: 0
-                      }}
-                    >
-                      <Eye size={14} />
-                    </button>
-
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, minWidth: 0, width: '100%' }}>
-                      {(selectedLead.ad_thumbnail_url || selectedLead.ad_image_url) ? (
-                        <img
-                          src={selectedLead.ad_thumbnail_url || selectedLead.ad_image_url || ''}
-                          alt={selectedLead.ad_name || 'Ad'}
-                          style={{ width: 50, height: 50, borderRadius: 10, objectFit: 'cover', cursor: 'pointer', border: '1px solid rgba(30, 64, 255, 0.35)', flexShrink: 0, marginTop: 2 }} onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        />
-                      ) : (
-                        <div style={{ width: 50, height: 50, borderRadius: 10, background: 'rgba(30, 64, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0, marginTop: 2 }}>
-                          <Megaphone size={20} />
-                        </div>
-                      )}
-                      <div style={{ minWidth: 0, flex: 1, paddingRight: 32 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.68rem', fontWeight: 800, color: '#1E40FF', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                          <Megaphone size={12} style={{ flexShrink: 0 }} />
-                          <span>Bài Quảng Cáo Chuyển Đổi (Meta Ads)</span>
-                        </div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 3, lineHeight: 1.35, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                          {selectedLead.ad_name || `Ad ID: ${selectedLead.ad_id}`}
-                        </div>
-                        <div style={{ fontSize: '0.73rem', color: 'var(--color-text-muted)', marginTop: 4, display: 'flex', flexDirection: 'column', gap: 2, lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                          {selectedLead.campaign_name && <div>Chiến dịch: <strong style={{ color: 'var(--color-text)' }}>{selectedLead.campaign_name}</strong></div>}
-                          {selectedLead.adset_name && <div>Nhóm QC: <strong style={{ color: 'var(--color-text)' }}>{selectedLead.adset_name}</strong></div>}
-                          <div>Ad ID: <code style={{ fontSize: '0.7rem' }}>{selectedLead.ad_id}</code></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {(() => {
                   const { cleanNote, errorNotes, blacklistNotes, warningNotes, aiDecisionNotes } = parseNote(selectedLead.note || '');
@@ -3214,7 +4040,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                 }}
                               />
                             ) : (
-                              <div style={{ fontSize: '0.875rem', color: theme === 'dark' ? '#f3f4f6' : '#451a03', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: 1.5, fontWeight: 500 }}>
+                              <div style={{ fontSize: '0.875rem', color: theme === 'dark' ? '#f3f4f6' : '#451a03', whiteSpace: 'pre-wrap', lineHeight: 1.5, fontWeight: 500 }}>
                                 {cleanNote ? cleanNote : <em style={{ color: theme === 'dark' ? '#cbd5e1' : '#b45309', opacity: 0.6 }}>{t('Không có ghi chú thêm')}</em>}
                               </div>
                             )}
@@ -3254,7 +4080,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                             } else if (isFallback) {
                               cardBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.08)' : '#fffbeb';
                               cardBorder = theme === 'dark' ? '1px solid rgba(245, 158, 11, 0.15)' : '1px solid #fca5a5';
-                              iconBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.15)' : '#ffe4e6';
+                              iconBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.15)' : '#DBEAFE';
                               iconColor = 'var(--color-warning)';
                               titleColor = 'var(--color-warning)';
                               titleText = t("Xác nhận dưới chuẩn (Fallback)");
@@ -3353,16 +4179,16 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                 badgeBorder: '1px solid rgba(239, 68, 68, 0.2)',
                                 iconBg: 'rgba(239, 68, 68, 0.15)',
                               } : {
-                                gradient: 'linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%)',
+                                gradient: 'linear-gradient(135deg, #fef2f2 0%, #EFF6FF 100%)',
                                 border: '1px solid #fecaca',
                                 glow: '0 4px 15px rgba(244, 63, 94, 0.04)',
                                 accent: '#f43f5e',
                                 title: '#9f1239',
                                 text: '#be123c',
-                                badgeBg: '#ffe4e6',
+                                badgeBg: '#DBEAFE',
                                 badgeText: '#9f1239',
                                 badgeBorder: '1px solid #fca5a5',
-                                iconBg: '#ffe4e6',
+                                iconBg: '#DBEAFE',
                               }
                             );
 
@@ -3375,11 +4201,13 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                             if (!displayTime) {
                               if (selectedLead?.resolved_at) {
                                 try {
-                                  displayTime = formatDateTimeVN(selectedLead.resolved_at, {
-                                    day: '2-digit', month: '2-digit', year: 'numeric',
-                                    hour: '2-digit', minute: '2-digit', second: '2-digit'
-                                  }) || selectedLead.resolved_at;
-                                } catch {
+                                  const dt = new Date(selectedLead.resolved_at.replace(/-/g, '/'));
+                                  if (!isNaN(dt.getTime())) {
+                                    displayTime = dt.toLocaleString('vi-VN');
+                                  } else {
+                                    displayTime = selectedLead.resolved_at;
+                                  }
+                                } catch (e) {
                                   displayTime = selectedLead.resolved_at;
                                 }
                               } else {
@@ -3525,16 +4353,16 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                               badgeBorder: '1px solid rgba(239, 68, 68, 0.2)',
                               iconBg: 'rgba(239, 68, 68, 0.15)',
                             } : {
-                              gradient: 'linear-gradient(135deg, #fff1f2 0%, #fff5f5 100%)',
+                              gradient: 'linear-gradient(135deg, #EFF6FF 0%, #fff5f5 100%)',
                               border: '1px solid #fecaca',
                               glow: '0 4px 15px rgba(244, 63, 94, 0.04)',
                               accent: '#f43f5e',
                               title: '#9f1239',
                               text: '#be123c',
-                              badgeBg: '#ffe4e6',
+                              badgeBg: '#DBEAFE',
                               badgeText: '#9f1239',
                               badgeBorder: '1px solid #fca5a5',
-                              iconBg: '#ffe4e6',
+                              iconBg: '#DBEAFE',
                             };
 
                             return (
@@ -3632,66 +4460,6 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               {/* Cột Phải: Phân bổ */}
               <div className="sticky-column">
                 <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem', marginBottom: '1rem' }}>{t('Thông tin Phân bổ')}</h3>
-
-                {/* Đánh giá chất lượng từ Đại lý (Marketing Pipeline) */}
-                <div style={{
-                  marginBottom: '1.25rem',
-                  background: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '16px',
-                  padding: '1.25rem',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ width: 28, height: 28, borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981' }}>
-                        <Sparkles size={16} />
-                      </div>
-                      <div>
-                        <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
-                          {t('Đánh giá của Đại lý')}
-                        </h4>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>
-                          {t('Tiến trình chăm sóc & Đo lường Marketing')}
-                        </span>
-                      </div>
-                    </div>
-                    {selectedLead.quality_updated_at && (
-                      <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>
-                        {t('Cập nhật:')} {formatDateTimeVN(selectedLead.quality_updated_at)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: selectedLead.quality_note ? '0.75rem' : '0' }}>
-                    <LeadQualityBadge status={selectedLead.quality_status} size="lg" fullLabel={true} />
-                  </div>
-
-                  {selectedLead.quality_note ? (
-                    <div style={{
-                      background: 'var(--color-bg)',
-                      border: '1px solid var(--color-border-light)',
-                      borderRadius: '10px',
-                      padding: '0.75rem 1rem',
-                      fontSize: '0.825rem',
-                      color: 'var(--color-text)',
-                      lineHeight: 1.5,
-                      marginTop: '8px',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-word',
-                      overflowWrap: 'anywhere'
-                    }}>
-                      <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                        {t('Ghi chú của Đại lý')}:
-                      </div>
-                      {selectedLead.quality_note}
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontStyle: 'italic', marginTop: '6px' }}>
-                      {t('Đại lý chưa để lại ghi chú phản hồi cho lead này.')}
-                    </div>
-                  )}
-                </div>
 
                 {/* Đánh giá AI - Nằm bên trên người tiếp nhận */}
                 {(() => {
@@ -3818,10 +4586,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     borderRadius: 12
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                      <Avatar src="/imgs/autodata/warn_icon.png" name="DOMATION AI - Screener" size={36} />
+                      <Avatar src="/imgs/warn_icon.png" name="IDEAS AI - Screener" size={36} />
                       <div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>{t('Người tiếp nhận')}</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Screener</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Screener</div>
                       </div>
                     </div>
 
@@ -3841,10 +4609,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 ) : selectedLead.status === 'rejected' ? (
                   <div style={{ background: 'var(--color-surface)', padding: '1.25rem', borderRadius: 12, border: '1px solid var(--color-border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                      <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI - Evaluator" size={36} />
+                      <Avatar src="/LOGO.jpg" name="IDEAS AI - Evaluator" size={36} />
                       <div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>{t('Người tiếp nhận')}</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Evaluator</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Evaluator</div>
                       </div>
                     </div>
 
@@ -3864,10 +4632,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 ) : selectedLead.status === 'blacklisted' ? (
                   <div style={{ background: 'var(--color-surface)', padding: '1.25rem', borderRadius: 12, border: '1px solid var(--color-border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                      <Avatar src="/imgs/autodata/angry_icon.jpg" name="DOMATION AI - Angry" size={36} />
+                      <Avatar src="/imgs/angry_icon.jpg" name="IDEAS AI - Angry" size={36} />
                       <div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>{t('Người tiếp nhận')}</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Angry</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Angry</div>
                       </div>
                     </div>
 
@@ -3883,6 +4651,65 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                         <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>{selectedLead.created_at}</div>
                       </div>
                     </div>
+                  </div>
+                ) : (selectedLead.is_public === 1 || Number(selectedLead.is_public) === 1 || selectedLead.status === 'released_to_kho' || selectedLead.status === 'databank_claim' || selectedLead.status === 'databank') ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: 2 }}>
+                      {t('Danh sách Sale đã nhận')}
+                    </div>
+                    {selectedLead.takers && selectedLead.takers.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {selectedLead.takers.map((tk: any, idx: number) => (
+                          <div key={tk.id || idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'var(--color-surface)', padding: '0.75rem 1rem', borderRadius: 12, border: '1px solid var(--color-border)' }}>
+                            <Avatar src={tk.avatar} name={tk.name} size={32} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>{tk.name}</div>
+                              {tk.claimed_at && (
+                                <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                                  <Clock size={10} style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                                  {tk.claimed_at}
+                                </div>
+                              )}
+                            </div>
+                            {(user?.role === 'admin' || user?.role === 'superadmin') && (
+                              <button
+                                onClick={() => handleDeletePublicClaim(selectedLead.person_id || selectedLead.id, tk.id, tk.name)}
+                                disabled={isDeletingClaim}
+                                title={t('Xóa lượt nhận của Sale')}
+                                style={{
+                                  background: 'rgba(239, 68, 68, 0.08)',
+                                  border: 'none',
+                                  borderRadius: '50%',
+                                  width: '28px',
+                                  height: '28px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  color: '#ef4444',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s',
+                                  flexShrink: 0
+                                }}
+                                onMouseOver={e => {
+                                  e.currentTarget.style.background = '#ef4444';
+                                  e.currentTarget.style.color = '#ffffff';
+                                }}
+                                onMouseOut={e => {
+                                  e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
+                                  e.currentTarget.style.color = '#ef4444';
+                                }}
+                              >
+                                <X size={14} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ background: 'var(--color-bg)', padding: '1.25rem', borderRadius: 12, textAlign: 'center', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)' }}>
+                        {t('Chưa có Sale nào nhận chăm sóc khách hàng này.')}
+                      </div>
+                    )}
                   </div>
                 ) : selectedLead.assigned_to_name !== '-' ? (
                   <div style={{ background: 'var(--color-surface)', padding: '1.25rem', borderRadius: 12, border: '1px solid var(--color-border)' }}>
@@ -3950,11 +4777,12 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     </div>
 
                     {/* Tình trạng thông báo Zalo & Email */}
-                    <div style={{
-                      marginTop: '1rem',
-                      paddingTop: '1rem',
-                      borderTop: '1px dashed var(--color-border-light)'
-                    }}>
+                    {selectedLead.assigned_to_name !== '-' && selectedLead.assigned_to_name !== t('Chưa ai nhận') && selectedLead.status !== 'databank' && selectedLead.status !== 'released_to_kho' && selectedLead.status !== 'databank_claim' && selectedLead.is_public !== 1 && Number(selectedLead.is_public) !== 1 && (
+                      <div style={{
+                        marginTop: '1rem',
+                        paddingTop: '1rem',
+                        borderTop: '1px dashed var(--color-border-light)'
+                      }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-text)', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.75rem' }}>
                         <RefreshCw size={12} className={notifLoading ? "spin" : ""} style={{ color: 'var(--color-primary)' }} />
                         <span>{t('Tình trạng gửi thông báo')}</span>
@@ -3969,25 +4797,25 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           {/* Email Status */}
                           <div
                             onClick={() => {
-                              if (notificationStatus?.email?.status === 'sent') {
+                              if (notificationStatus.email.status === 'sent') {
                                 setPreviewType('email');
-                                setPreviewSentAt(notificationStatus?.email?.sent_at || '');
+                                setPreviewSentAt(notificationStatus.email.sent_at || '');
                                 setPreviewOpen(true);
                               }
                             }}
-                            title={notificationStatus?.email?.status === 'sent' ? t('Bấm để xem mẫu email đã gửi') : undefined}
+                            title={notificationStatus.email.status === 'sent' ? t('Bấm để xem mẫu email đã gửi') : undefined}
                             style={{
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               fontSize: '0.78rem',
-                              cursor: notificationStatus?.email?.status === 'sent' ? 'pointer' : 'default',
+                              cursor: notificationStatus.email.status === 'sent' ? 'pointer' : 'default',
                               padding: '4px 6px',
                               borderRadius: '6px',
                               transition: 'background 0.2s'
                             }}
                             onMouseEnter={e => {
-                              if (notificationStatus?.email?.status === 'sent') {
+                              if (notificationStatus.email.status === 'sent') {
                                 e.currentTarget.style.backgroundColor = 'var(--color-border-light)';
                               }
                             }}
@@ -3997,36 +4825,36 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           >
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
                               <img
-                                src="/imgs/autodata/gmail-icon-free-png.webp"
+                                src="/imgs/gmail-icon-free-png.webp"
                                 alt="Gmail"
                                 style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
                               />
                               <span style={{ flexShrink: 0 }}>Email:</span>
-                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus?.email?.sent_at || notificationStatus?.email?.target || ''}>
-                                {notificationStatus?.email?.status === 'sent'
-                                  ? (notificationStatus?.email?.sent_at || '-')
-                                  : ((notificationStatus?.email?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.email?.status === 'missed')) ? t('Đang chờ gửi...') : '-')}
+                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.email.sent_at || notificationStatus.email.target}>
+                                {notificationStatus.email.status === 'sent'
+                                  ? (notificationStatus.email.sent_at || '-')
+                                  : ((notificationStatus.email.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.email.status === 'missed')) ? t('Đang chờ gửi...') : '-')}
                               </span>
                             </div>
                             <div style={{ flexShrink: 0 }}>
-                              {notificationStatus?.email?.status === 'sent' && (
+                              {notificationStatus.email.status === 'sent' && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                     <Check size={8} strokeWidth={3} />
-                                  </span> {t('Đã gửi')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
+                                  </span> {t('Đã gửi')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
                                 </span>
                               )}
-                              {(notificationStatus?.email?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.email?.status === 'missed')) && (
+                              {(notificationStatus.email.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.email.status === 'missed')) && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
+                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus?.email?.status === 'failed' && (
+                              {notificationStatus.email.status === 'failed' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                  {t('Thất bại')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
+                                  {t('Thất bại')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus?.email?.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                              {notificationStatus.email.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
                                   {t('Chưa gửi')}
                                 </span>
@@ -4037,25 +4865,25 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           {/* Zalo Status */}
                           <div
                             onClick={() => {
-                              if (notificationStatus?.zalo?.status === 'sent') {
+                              if (notificationStatus.zalo.status === 'sent') {
                                 setPreviewType('zalo');
-                                setPreviewSentAt(notificationStatus?.zalo?.sent_at || '');
+                                setPreviewSentAt(notificationStatus.zalo.sent_at || '');
                                 setPreviewOpen(true);
                               }
                             }}
-                            title={notificationStatus?.zalo?.status === 'sent' ? t('Bấm để xem mẫu Zalo đã gửi') : undefined}
+                            title={notificationStatus.zalo.status === 'sent' ? t('Bấm để xem mẫu Zalo đã gửi') : undefined}
                             style={{
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               fontSize: '0.78rem',
-                              cursor: notificationStatus?.zalo?.status === 'sent' ? 'pointer' : 'default',
+                              cursor: notificationStatus.zalo.status === 'sent' ? 'pointer' : 'default',
                               padding: '4px 6px',
                               borderRadius: '6px',
                               transition: 'background 0.2s'
                             }}
                             onMouseEnter={e => {
-                              if (notificationStatus?.zalo?.status === 'sent') {
+                              if (notificationStatus.zalo.status === 'sent') {
                                 e.currentTarget.style.backgroundColor = 'var(--color-border-light)';
                               }
                             }}
@@ -4070,43 +4898,43 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                 style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
                               />
                               <span style={{ flexShrink: 0 }}>Zalo:</span>
-                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus?.zalo?.sent_at || notificationStatus?.zalo?.target || ''}>
-                                {notificationStatus?.zalo?.status === 'sent'
-                                  ? (notificationStatus?.zalo?.sent_at || '-')
-                                  : (notificationStatus?.zalo?.status === 'no_zalo_config' ? t('Chưa cấu hình ID') : ((notificationStatus?.zalo?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.zalo?.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
+                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.zalo.sent_at || notificationStatus.zalo.target}>
+                                {notificationStatus.zalo.status === 'sent'
+                                  ? (notificationStatus.zalo.sent_at || '-')
+                                  : (notificationStatus.zalo.status === 'no_zalo_config' ? t('Chưa cấu hình ID') : ((notificationStatus.zalo.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.zalo.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
                               </span>
                             </div>
                             <div style={{ flexShrink: 0 }}>
-                              {notificationStatus?.zalo?.status === 'no_zalo_config' && (
+                              {notificationStatus.zalo.status === 'no_zalo_config' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
                                   {t('Chưa cấu hình ID')}
                                 </span>
                               )}
-                              {notificationStatus?.zalo?.status === 'sent (Direct cURL)' && (
+                              {notificationStatus.zalo.status === 'sent (Direct cURL)' && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                     <Check size={8} strokeWidth={3} />
                                   </span> {t('Đã gửi (cURL)')}
                                 </span>
                               )}
-                              {notificationStatus?.zalo?.status === 'sent' && (
+                              {notificationStatus.zalo.status === 'sent' && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                     <Check size={8} strokeWidth={3} />
-                                  </span> {t('Đã gửi')} {notificationStatus?.zalo?.id && notificationStatus?.zalo?.id !== 'Log' ? `#${notificationStatus.zalo.id}` : ''}
+                                  </span> {t('Đã gửi')} {notificationStatus.zalo.id && notificationStatus.zalo.id !== 'Log' ? `#${notificationStatus.zalo.id}` : ''}
                                 </span>
                               )}
-                              {(notificationStatus?.zalo?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.zalo?.status === 'missed')) && (
+                              {(notificationStatus.zalo.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.zalo.status === 'missed')) && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus?.zalo?.id ? `#${notificationStatus.zalo.id}` : ''}
+                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus.zalo.id ? `#${notificationStatus.zalo.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus?.zalo?.status === 'failed' && (
+                              {notificationStatus.zalo.status === 'failed' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                  {t('Thất bại')} {notificationStatus?.zalo?.id ? `#${notificationStatus.zalo.id}` : ''}
+                                  {t('Thất bại')} {notificationStatus.zalo.id ? `#${notificationStatus.zalo.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus?.zalo?.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                              {notificationStatus.zalo.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
                                   {t('Chưa gửi')}
                                 </span>
@@ -4115,50 +4943,61 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           </div>
 
                           {/* Telegram Status */}
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              fontSize: '0.78rem',
-                              padding: '4px 6px',
-                              borderRadius: '6px',
-                            }}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
-                              <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, flexShrink: 0 }} fill="none" aria-hidden="true">
-                                <circle cx="12" cy="12" r="10.5" fill="#229ED9" />
-                                <path d="M16.95 7.42c.24-.88-.32-1.26-1.08-.95L6.52 10.18c-.75.29-.74.73-.13.92l2.39.75 5.55-3.48c.26-.16.5-.07.3.1l-4.5 4.08-.17 2.48c.25 0 .36-.11.5-.25l1.21-1.17 2.51 1.85c.46.26.8.12.91-.43l1.86-7.61z" fill="#FFFFFF" />
-                              </svg>
-                              <span style={{ flexShrink: 0 }}>Telegram:</span>
-                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                {notificationStatus?.telegram?.status === 'sent'
-                                  ? (notificationStatus?.telegram?.sent_at || '-')
-                                  : notificationStatus?.telegram?.status === 'pending'
-                                    ? t('Đang chờ gửi...')
-                                    : '-'}
-                              </span>
+                          {notificationStatus.telegram && (
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                fontSize: '0.78rem',
+                                padding: '4px 6px',
+                                borderRadius: '6px'
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
+                                <img
+                                  src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+                                  alt="Telegram"
+                                  style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
+                                />
+                                <span style={{ flexShrink: 0 }}>Telegram:</span>
+                                <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.telegram.sent_at || notificationStatus.telegram.target}>
+                                  {notificationStatus.telegram.status === 'sent'
+                                    ? (notificationStatus.telegram.sent_at || '-')
+                                    : (notificationStatus.telegram.status === 'no_telegram_config' ? t('Chưa cấu hình ID') : ((notificationStatus.telegram.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.telegram.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
+                                </span>
+                              </div>
+                              <div style={{ flexShrink: 0 }}>
+                                {notificationStatus.telegram.status === 'no_telegram_config' && (
+                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
+                                    {t('Chưa cấu hình ID')}
+                                  </span>
+                                )}
+                                {notificationStatus.telegram.status === 'sent' && (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
+                                      <Check size={8} strokeWidth={3} />
+                                    </span> {t('Đã gửi')}
+                                  </span>
+                                )}
+                                {(notificationStatus.telegram.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.telegram.status === 'missed')) && (
+                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
+                                    {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')}
+                                  </span>
+                                )}
+                                {notificationStatus.telegram.status === 'failed' && (
+                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
+                                    {t('Thất bại')}
+                                  </span>
+                                )}
+                                {notificationStatus.telegram.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
+                                    {t('Chưa gửi')}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <div style={{ flexShrink: 0 }}>
-                              {notificationStatus?.telegram?.status === 'sent' && (
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
-                                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
-                                    <Check size={8} strokeWidth={3} />
-                                  </span> {t('Đã gửi')}
-                                </span>
-                              )}
-                              {notificationStatus?.telegram?.status === 'pending' && (
-                                <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                  {t('Đang chờ')}
-                                </span>
-                              )}
-                              {notificationStatus?.telegram?.status === 'failed' && (
-                                <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                  {t('Thất bại')}
-                                </span>
-                              )}
-                            </div>
-                          </div>
+                          )}
                         </div>
                       ) : (
                         <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
@@ -4167,7 +5006,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                       )}
 
                       {/* Manual Reminder Button */}
-                      {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.assigned_to_name !== '-' && (
+                      {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.assigned_to_name !== '-' && selectedLead.assigned_to_name !== t('Chưa ai nhận') && selectedLead.status !== 'databank' && selectedLead.status !== 'released_to_kho' && selectedLead.is_public !== 1 && Number(selectedLead.is_public) !== 1 && (
                         <button
                           onClick={() => {
                             setReminderChannels({ zalo: true, email: true, telegram: true });
@@ -4208,7 +5047,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                         </button>
                       )}
                     </div>
-                  </div>
+                  )}
+                </div>
                 ) : (
                   <div style={{ background: 'var(--color-bg)', padding: '1.5rem', borderRadius: 12, textAlign: 'center', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)' }}>
                     {t('Chưa có thông tin phân bổ cho Khách hàng này.')}
@@ -4217,7 +5057,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 {/* Reassignment section */}
                 <div style={{ marginTop: '1.5rem', background: 'var(--color-bg)', padding: '1.25rem', borderRadius: 12, border: '1px solid var(--color-border)' }}>
                   <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <User size={16} color="var(--color-primary)" /> {t('Giao lại Đại lý')}
+                    <User size={16} color="var(--color-primary)" /> {t('Giao lại Tư vấn viên')}
                   </h4>
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
                     {t('Thay đổi người tiếp nhận (Không ảnh hưởng lượt chia).')}
@@ -4225,7 +5065,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     <CustomSelect
                       options={[
-                        { value: '', label: t('-- Chọn Đại lý --') },
+                        { value: '', label: t('-- Chọn Tư vấn viên --') },
                         ...consultants
                           .filter(c => c.name !== selectedLead?.assigned_to_name)
                           .map(c => ({
@@ -4262,40 +5102,6 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
       </CustomModal>
 
       <CustomModal
-        isOpen={confirmReleaseOpen && Boolean(selectedLead)}
-        onClose={() => setConfirmReleaseOpen(false)}
-        title={t('Nhả khách hàng về Kho chung (Databank)')}
-        width={480}
-      >
-        {selectedLead && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-text-light)', lineHeight: 1.5 }}>
-              {t('Bạn có chắc chắn muốn nhả khách hàng')} <strong>&quot;{selectedLead.name}&quot;</strong> {t('về Kho dữ liệu chung để các chuyên viên khác có thể nhận chăm sóc không?')}
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-              <button
-                type="button"
-                className="btn outline"
-                onClick={() => setConfirmReleaseOpen(false)}
-                disabled={Boolean(releasingLeadId)}
-              >
-                {t('Hủy')}
-              </button>
-              <button
-                type="button"
-                className="btn primary"
-                style={{ background: '#1E40FF', color: '#FFFFFF' }}
-                disabled={Boolean(releasingLeadId)}
-                onClick={() => void handleReleaseToDatabank(selectedLead.lead_id || selectedLead.id)}
-              >
-                {releasingLeadId ? t('Đang xử lý...') : t('Xác nhận nhả về Kho')}
-              </button>
-            </div>
-          </div>
-        )}
-      </CustomModal>
-
-      <CustomModal
         isOpen={confirmReassignOpen}
         onClose={() => setConfirmReassignOpen(false)}
         title={t("Xác nhận Giao lại Lead")}
@@ -4312,7 +5118,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               </div>
               <div>
                 <p style={{ color: 'var(--color-text)', lineHeight: 1.6, fontSize: '0.9375rem', margin: 0 }}>
-                  {t('Bạn có chắc chắn muốn chuyển quyền chăm sóc Lead')} <strong>"{selectedLead?.name}"</strong> {t('sang cho Tư vấn viên')} <strong>"{consultants.find(c => String(c.id) === String(reassignConsId))?.name}"</strong>?
+                  {t('Bạn có chắc chắn muốn chuyển quyền chăm sóc Lead')} <strong>"{selectedLead?.name}"</strong> {t('sang cho Tư vấn viên')} <strong>"{consultants.find(c => Number(c.id) === Number(reassignConsId))?.name}"</strong>?
                 </p>
                 {selectedLead?.assigned_to_name && selectedLead.assigned_to_name !== '-' && (
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: 8, marginBottom: 0 }}>
@@ -4513,10 +5319,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         onClose={() => {
           setSelectedDate(null);
           setDayDetails(null);
-          setActiveModalTab('sales');
+          setActiveModalTab(['accountant', 'admin', 'superadmin', 'super_admin', 'director'].includes(String(user?.role).toLowerCase()) ? 'po' : 'sales');
         }}
-        title={`${t('Chi tiết hoạt động ngày')} ${selectedDate ? (parseServerDateVN(selectedDate)?.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: VN_TIMEZONE }) || selectedDate) : ''}`}
-        width="900px"
+        title={`${t('Chi tiết hoạt động ngày')} ${selectedDate ? new Date(selectedDate).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}`}
+        width="1200px"
       >
         {selectedDate !== null && (
           <>
@@ -4539,117 +5345,195 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                   height: '38px',
                   alignItems: 'center'
                 }}>
-                  <button
-                    type="button"
-                    onClick={() => setActiveModalTab('sales')}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      padding: '6px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeModalTab === 'sales' ? 'var(--color-primary)' : 'transparent',
-                      color: activeModalTab === 'sales' ? 'white' : 'var(--color-text-muted)',
-                      fontSize: '0.8125rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      height: '32px',
-                      flex: 1
-                    }}
-                    className="modal-tab-button"
-                  >
-                    <span>{t('Phân bổ cho Đại lý')}</span>
-                    <span style={{
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      background: activeModalTab === 'sales' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
-                      color: activeModalTab === 'sales' ? 'white' : 'var(--color-text-muted)',
-                      padding: '1px 6px',
-                      borderRadius: '5px',
-                      transition: 'all 0.2s'
-                    }}>
-                      {dayDetails.sales?.length || 0}
-                    </span>
-                  </button>
+                  {user?.role !== 'accountant' && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setActiveModalTab('sales')}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: activeModalTab === 'sales' ? 'var(--color-primary)' : 'transparent',
+                          color: activeModalTab === 'sales' ? 'white' : 'var(--color-text-muted)',
+                          fontSize: '0.8125rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          height: '32px',
+                          flex: 1
+                        }}
+                        className="modal-tab-button"
+                      >
+                        <span>{t('Phân bổ cho Sale')}</span>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          background: activeModalTab === 'sales' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
+                          color: activeModalTab === 'sales' ? 'white' : 'var(--color-text-muted)',
+                          padding: '1px 6px',
+                          borderRadius: '5px',
+                          transition: 'all 0.2s'
+                        }}>
+                          {dayDetails.sales?.length || 0}
+                        </span>
+                      </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setActiveModalTab('tickets')}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      padding: '6px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeModalTab === 'tickets' ? 'var(--color-primary)' : 'transparent',
-                      color: activeModalTab === 'tickets' ? 'white' : 'var(--color-text-muted)',
-                      fontSize: '0.8125rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      height: '32px',
-                      flex: 1
-                    }}
-                    className="modal-tab-button"
-                  >
-                    <span>{t('Ticket Lỗi')}</span>
-                    <span style={{
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      background: activeModalTab === 'tickets' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
-                      color: activeModalTab === 'tickets' ? 'white' : 'var(--color-text-muted)',
-                      padding: '1px 6px',
-                      borderRadius: '5px',
-                      transition: 'all 0.2s'
-                    }}>
-                      {dayDetails.tickets?.length || 0}
-                    </span>
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveModalTab('tickets')}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: activeModalTab === 'tickets' ? 'var(--color-primary)' : 'transparent',
+                          color: activeModalTab === 'tickets' ? 'white' : 'var(--color-text-muted)',
+                          fontSize: '0.8125rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          height: '32px',
+                          flex: 1
+                        }}
+                        className="modal-tab-button"
+                      >
+                        <span>{t('Ticket Lỗi')}</span>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          background: activeModalTab === 'tickets' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
+                          color: activeModalTab === 'tickets' ? 'white' : 'var(--color-text-muted)',
+                          padding: '1px 6px',
+                          borderRadius: '5px',
+                          transition: 'all 0.2s'
+                        }}>
+                          {dayDetails.tickets?.length || 0}
+                        </span>
+                      </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setActiveModalTab('blacklist')}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      padding: '6px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeModalTab === 'blacklist' ? 'var(--color-primary)' : 'transparent',
-                      color: activeModalTab === 'blacklist' ? 'white' : 'var(--color-text-muted)',
-                      fontSize: '0.8125rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      height: '32px',
-                      flex: 1
-                    }}
-                    className="modal-tab-button"
-                  >
-                    <span>{t('Blacklist & Lỗi Hệ Thống')}</span>
-                    <span style={{
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      background: activeModalTab === 'blacklist' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
-                      color: activeModalTab === 'blacklist' ? 'white' : 'var(--color-text-muted)',
-                      padding: '1px 6px',
-                      borderRadius: '5px',
-                      transition: 'all 0.2s'
-                    }}>
-                      {dayDetails.blacklist_logs?.length || 0}
-                    </span>
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveModalTab('blacklist')}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: activeModalTab === 'blacklist' ? 'var(--color-primary)' : 'transparent',
+                          color: activeModalTab === 'blacklist' ? 'white' : 'var(--color-text-muted)',
+                          fontSize: '0.8125rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          height: '32px',
+                          flex: 1
+                        }}
+                        className="modal-tab-button"
+                      >
+                        <span>{t('Blacklist & Lỗi Hệ Thống')}</span>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          background: activeModalTab === 'blacklist' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
+                          color: activeModalTab === 'blacklist' ? 'white' : 'var(--color-text-muted)',
+                          padding: '1px 6px',
+                          borderRadius: '5px',
+                          transition: 'all 0.2s'
+                        }}>
+                          {dayDetails.blacklist_logs?.length || 0}
+                        </span>
+                      </button>
+                    </>
+                  )}
+                  {['accountant', 'admin', 'superadmin', 'super_admin', 'director'].includes(String(user?.role).toLowerCase()) && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setActiveModalTab('po' as any)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: (activeModalTab as string) === 'po' ? 'var(--color-primary)' : 'transparent',
+                          color: (activeModalTab as string) === 'po' ? 'white' : 'var(--color-text-muted)',
+                          fontSize: '0.8125rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          height: '32px',
+                          flex: 1
+                        }}
+                        className="modal-tab-button"
+                      >
+                        <span>PO (Chi phí)</span>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          background: (activeModalTab as string) === 'po' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
+                          color: (activeModalTab as string) === 'po' ? 'white' : 'var(--color-text-muted)',
+                          padding: '1px 6px',
+                          borderRadius: '5px',
+                          transition: 'all 0.2s'
+                        }}>
+                          {(dayDetails.expenses || []).filter((e: any) => Number(e.amount || 0) > 0).length}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveModalTab('so' as any)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: (activeModalTab as string) === 'so' ? 'var(--color-primary)' : 'transparent',
+                          color: (activeModalTab as string) === 'so' ? 'white' : 'var(--color-text-muted)',
+                          fontSize: '0.8125rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          height: '32px',
+                          flex: 1
+                        }}
+                        className="modal-tab-button"
+                      >
+                        <span>SO (Doanh thu)</span>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          background: (activeModalTab as string) === 'so' ? 'rgba(255, 255, 255, 0.25)' : 'var(--color-border-light)',
+                          color: (activeModalTab as string) === 'so' ? 'white' : 'var(--color-text-muted)',
+                          padding: '1px 6px',
+                          borderRadius: '5px',
+                          transition: 'all 0.2s'
+                        }}>
+                          {dayDetails.invoices?.length || 0}
+                        </span>
+                      </button>
+                    </>
+                  )}
                 </div>
 
                 {/* Modal Content */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.5rem 1.5rem 1.5rem' }} className="custom-scrollbar">
+                <div style={{ padding: '0 1.5rem 1.5rem 1.5rem', flex: 1, overflowY: 'auto' }}>
                   {activeModalTab === 'sales' && (
                     <div>
                       {dayDetails.sales && dayDetails.sales.length > 0 ? (
@@ -4657,7 +5541,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           <table className="premium-table">
                             <thead>
                               <tr>
-                                <th style={{ width: '45%' }}>{t('Đại lý')}</th>
+                                <th style={{ width: '45%' }}>{t('Tư vấn viên')}</th>
                                 <th style={{ width: '25%' }}>{t('Vòng')}</th>
                                 <th style={{ width: '15%' }}>{t('Trạng thái')}</th>
                                 <th style={{ width: '15%', textAlign: 'right' }}>{t('Số lượng data')}</th>
@@ -4698,9 +5582,9 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                   const group = groupedSales[name];
                                   const isExpanded = !!expandedSales[name];
 
-                                  const sortedItems = [...(group?.items || [])].sort((a, b) => {
-                                    const roundA = a?.status === 'reminder' ? 'REMINDER' : (a?.round_name || '');
-                                    const roundB = b?.status === 'reminder' ? 'REMINDER' : (b?.round_name || '');
+                                  const sortedItems = [...group.items].sort((a, b) => {
+                                    const roundA = a.status === 'reminder' ? 'REMINDER' : (a.round_name || '');
+                                    const roundB = b.status === 'reminder' ? 'REMINDER' : (b.round_name || '');
                                     return roundA.localeCompare(roundB, 'vi');
                                   });
 
@@ -4728,9 +5612,9 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                             }}>
                                               <ChevronRight size={16} />
                                             </span>
-                                            <Avatar src={group?.sale_avatar} name={group?.sale_name || name} size={30} />
+                                            <Avatar src={group.sale_avatar} name={group.sale_name} size={30} />
                                             <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                                              {group?.sale_name || name}
+                                              {group.sale_name}
                                             </span>
                                             <span style={{
                                               fontSize: '0.7rem',
@@ -4741,7 +5625,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                               marginLeft: '6px',
                                               fontWeight: 600
                                             }}>
-                                              {(group?.items || []).length} {t('nhóm')}
+                                              {group.items.length} {t('nhóm')}
                                             </span>
                                           </div>
                                         </td>
@@ -4751,15 +5635,15 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                         <td></td>
                                         <td style={{ textAlign: 'right', paddingRight: '1rem' }}>
                                           <span style={{ fontWeight: 800, color: 'var(--color-primary)', fontSize: '0.95rem' }}>
-                                            {group?.totalCount ?? 0}
+                                            {group.totalCount}
                                           </span>
                                         </td>
                                       </tr>
 
                                       {/* Detail Rows when expanded */}
                                       {isExpanded && sortedItems.map((item: any, idx: number) => {
-                                        const isReminder = item?.status === 'reminder';
-                                        const roundDisplay = isReminder ? 'REMINDER' : (item?.round_name || '-');
+                                        const isReminder = item.status === 'reminder';
+                                        const roundDisplay = isReminder ? 'REMINDER' : (item.round_name || '-');
 
                                         return (
                                           <tr key={`${name}_${idx}`} style={{ background: 'var(--color-surface)', borderBottom: '1px solid var(--color-border-light)' }}>
@@ -4814,7 +5698,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                             <thead>
                               <tr>
                                 <th style={{ width: '25%' }}>{t('Khách hàng')}</th>
-                                <th style={{ width: '22%' }}>{t('Đại lý báo cáo')}</th>
+                                <th style={{ width: '22%' }}>{t('Tư vấn viên báo cáo')}</th>
                                 <th style={{ width: '28%' }}>{t('Lý do lỗi')}</th>
                                 <th style={{ width: '13%' }}>{t('Trạng thái')}</th>
                                 <th style={{ width: '12%', textAlign: 'right' }}>{t('Thời gian báo')}</th>
@@ -4955,6 +5839,164 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                       )}
                     </div>
                   )}
+
+                  {(activeModalTab as string) === 'so' && (
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
+                        <button
+                          type="button"
+                          className="btn primary"
+                          onClick={() => {
+                            useUIStore.getState().setShowPOS(true);
+                          }}
+                          style={{ height: '32px', padding: '0 0.85rem', fontSize: '0.78rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                        >
+                          <Plus size={14} />
+                          {t('Tạo SO mới')}
+                        </button>
+                      </div>
+                      {dayDetails.invoices && dayDetails.invoices.length > 0 ? (
+                        <div className="premium-table-container">
+                          <table className="premium-table">
+                            <thead>
+                              <tr>
+                                <th>Mã đơn (SO)</th>
+                                <th>Khách hàng</th>
+                                <th>Giá trị</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                               {dayDetails.invoices.map((item: any, idx: number) => (
+                                <tr key={item.id || idx} onClick={() => handleOpenSO(item)} style={{ cursor: 'pointer' }}>
+                                  <td>
+                                    <strong style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>{item.invoice_number || `#${item.id}`}</strong>
+                                  </td>
+                                  <td>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <Avatar 
+                                        src={item.customer_avatar} 
+                                        name={item.customer_name || 'Customer'} 
+                                        size={24} 
+                                      />
+                                      <span style={{ fontWeight: 550, color: 'var(--color-text)' }}>{item.customer_name || 'N/A'}</span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <strong style={{ color: 'var(--color-text)' }}>
+                                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(item.total || 0))}
+                                    </strong>
+                                  </td>
+                                  <td>
+                                    <span className={`badge ${item.status === 'paid' ? 'success' : item.status === 'overdue' ? 'danger' : 'warning'}`}>
+                                      {item.status === 'paid' ? 'Đã thanh toán' : item.status === 'overdue' ? 'Quá hạn' : 'Chờ thanh toán'}
+                                    </span>
+                                  </td>
+                                  <td>{item.issue_date ? new Date(item.issue_date).toLocaleDateString('vi-VN') : 'N/A'}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)', background: 'var(--color-surface)', borderRadius: '12px', border: '1px dashed var(--color-border)' }}>
+                          Không có Sales Order nào trong ngày này.
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {(activeModalTab as string) === 'po' && (
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
+                        <button
+                          type="button"
+                          className="btn primary"
+                          onClick={() => {
+                            setSelectedExpenseDate(selectedDate ? getLocalDateStr(selectedDate) : getLocalDateStr());
+                            setShowCreateExpenseModal(true);
+                          }}
+                          style={{ height: '32px', padding: '0 0.85rem', fontSize: '0.78rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                        >
+                          <Plus size={14} />
+                          {t('Nhập chi phí mới')}
+                        </button>
+                      </div>
+
+                      {(() => {
+                        const poList = (dayDetails.expenses || []).filter((item: any) => Number(item.amount || 0) > 0);
+                        return poList.length > 0 ? (
+                        <div className="premium-table-container">
+                          <table className="premium-table">
+                            <thead>
+                              <tr>
+                                <th style={{ width: '105px', minWidth: '95px', whiteSpace: 'nowrap' }}>{t('Mã phiếu / Ngày')}</th>
+                                <th style={{ width: '170px', minWidth: '150px' }}>{t('Người đề xuất')}</th>
+                                <th>{t('Tiêu đề chi phí')}</th>
+                                <th style={{ whiteSpace: 'nowrap', width: '130px' }}>{t('Số tiền')}</th>
+                                <th style={{ minWidth: '220px' }}>{t('Các bước & Người liên quan')}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {poList.map((item: any, idx: number) => (
+                                <tr key={item.id || idx} onClick={() => handleOpenPO(item.id)} style={{ cursor: 'pointer' }}>
+                                  {/* 1. Mã phiếu / Ngày lập (ngắn gọn) */}
+                                  <td style={{ width: '105px', whiteSpace: 'nowrap' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', alignItems: 'flex-start' }}>
+                                      <strong style={{ color: 'var(--color-primary)', textDecoration: 'underline', fontSize: '0.8rem' }}>#EXP-{item.id}</strong>
+                                      <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
+                                        {item.date ? new Date(item.date).toLocaleDateString('vi-VN') : 'N/A'}
+                                      </span>
+                                    </div>
+                                  </td>
+
+                                  {/* 2. Người đề xuất (kế cột mã) */}
+                                  <td style={{ verticalAlign: 'middle', width: '170px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <Avatar name={item.creator_name} src={item.creator_avatar} size={24} />
+                                      <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{item.creator_name || 'N/A'}</span>
+                                    </div>
+                                  </td>
+
+                                  {/* 3. Tiêu đề chi phí */}
+                                  <td>
+                                    <span style={{ fontSize: '0.84rem', color: 'var(--color-text)', fontWeight: 500 }}>
+                                      {item.title}
+                                    </span>
+                                  </td>
+
+                                  {/* 4. Số tiền */}
+                                  <td style={{ whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                      <strong style={{ color: 'var(--color-text)', fontSize: '0.85rem' }}>
+                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(item.amount || 0))}
+                                      </strong>
+                                      {Boolean(item.is_refunded) && (
+                                        <span style={{ fontSize: '0.68rem', color: '#10b981', fontWeight: 600 }}>
+                                          ✓ {t('Đã thanh toán')}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  {/* 5. Trạng thái: Style UI step bên Quy trình */}
+                                  <td style={{ verticalAlign: 'middle', minWidth: '220px' }}>
+                                    {renderWorkflowStepsAndWatchers(item)}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)', background: 'var(--color-surface)', borderRadius: '12px', border: '1px dashed var(--color-border)' }}>
+                          {t('Không có phiếu chi phí tài chính nào trong ngày này')}
+                        </div>
+                      );
+                      })()}
+                    </div>
+                  )}
                 </div>
 
                 {/* Modal Footer */}
@@ -5044,7 +6086,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 {/* Conclusion Banner */}
                 {(() => {
                   const dupCheckMonths = dupCheckResult.duplicate_check_months || 6;
-                  const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || String(h.id) !== String(selectedLead.id));
+                  const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || Number(h.id) !== Number(selectedLead.id));
 
                   if (history.length === 0) {
                     return (
@@ -5070,9 +6112,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
                   // Calculate age of the latest matched lead
                   const latest = history[0];
-                  if (!latest) return null;
-                  const lastDateStr = latest?.last_interaction_date || latest?.created_at || '';
-                  const lastInt = lastDateStr ? parseServerDate(lastDateStr) : new Date();
+                  const lastDateStr = latest.last_interaction_date || latest.created_at;
+                  const lastInt = new Date(lastDateStr.replace(/-/g, '/'));
                   const now = new Date();
                   const diffMs = now.getTime() - lastInt.getTime();
                   const diffMins = diffMs / 60000;
@@ -5137,7 +6178,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <h4 style={{ margin: '0 0 4px 0', fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
                     {t("Lịch sử lưu vết")} ({(() => {
-                      const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || String(h.id) !== String(selectedLead.id));
+                      const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || Number(h.id) !== Number(selectedLead.id));
                       return history.length;
                     })()})
                   </h4>
@@ -5153,27 +6194,27 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("ID / Họ tên")}</th>
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Nguồn / Vòng")}</th>
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Trạng thái")}</th>
-                          <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Đại lý")}</th>
+                          <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Sale")}</th>
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Thời gian")}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {(() => {
-                          const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || String(h.id) !== String(selectedLead.id));
+                          const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || Number(h.id) !== Number(selectedLead.id));
                           return history && history.length > 0 ? (
                             history.map((h: any) => {
-                              const lastDateStr = h?.last_interaction_date || h?.created_at || '';
-                              const lastInt = lastDateStr ? parseServerDate(lastDateStr) : new Date();
+                              const lastDateStr = h.last_interaction_date || h.created_at;
+                              const lastInt = new Date(lastDateStr.replace(/-/g, '/'));
                               const now = new Date();
                               const diffMs = now.getTime() - lastInt.getTime();
                               const diffMonths = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 30));
 
                               let statusClass = 'muted';
-                              let statusText = h?.status || '-';
-                              if (h?.status === 'active') { statusClass = 'success'; statusText = t('Hoạt động'); }
-                              else if (h?.status === 'pending_approval') { statusClass = 'warning'; statusText = t('Tạm giữ'); }
-                              else if (h?.status === 'rejected') { statusClass = 'danger'; statusText = t('Dưới chuẩn'); }
-                              else if (h?.status === 'blacklisted') { statusClass = 'danger'; statusText = t('Blacklist'); }
+                              let statusText = h.status;
+                              if (h.status === 'active') { statusClass = 'success'; statusText = t('Hoạt động'); }
+                              else if (h.status === 'pending_approval') { statusClass = 'warning'; statusText = t('Tạm giữ'); }
+                              else if (h.status === 'rejected') { statusClass = 'danger'; statusText = t('Dưới chuẩn'); }
+                              else if (h.status === 'blacklisted') { statusClass = 'danger'; statusText = t('Blacklist'); }
 
                               return (
                                 <tr key={h.id} style={{ borderBottom: '1px solid var(--color-border-light)' }}>
@@ -5234,7 +6275,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
       <CustomModal
         isOpen={isReminderModalOpen}
         onClose={() => setIsReminderModalOpen(false)}
-        title={t("Xác nhận nhắc lại cho Đại lý")}
+        title={t("Xác nhận nhắc lại cho Tư vấn viên")}
         width="480px"
       >
         {isReminderModalOpen && selectedLead && (
@@ -5283,7 +6324,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img
-                    src="/imgs/autodata/gmail-icon-free-png.webp"
+                    src="/imgs/gmail-icon-free-png.webp"
                     alt="Gmail"
                     style={{ width: 16, height: 16, objectFit: 'contain' }}
                   />
@@ -5297,10 +6338,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, flexShrink: 0 }} fill="none" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10.5" fill="#229ED9" />
-                    <path d="M16.95 7.42c.24-.88-.32-1.26-1.08-.95L6.52 10.18c-.75.29-.74.73-.13.92l2.39.75 5.55-3.48c.26-.16.5-.07.3.1l-4.5 4.08-.17 2.48c.25 0 .36-.11.5-.25l1.21-1.17 2.51 1.85c.46.26.8.12.91-.43l1.86-7.61z" fill="#FFFFFF" />
-                  </svg>
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+                    alt="Telegram"
+                    style={{ width: 16, height: 16, objectFit: 'contain', borderRadius: '50%' }}
+                  />
                   <span style={{ fontSize: '0.875rem', color: 'var(--color-text)', fontWeight: 500 }}>Telegram Bot Message</span>
                 </div>
                 <ToggleSwitch
@@ -5430,9 +6472,9 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  background: theme === 'dark' ? 'rgba(147, 51, 234, 0.2)' : '#f3e8ff',
-                  color: theme === 'dark' ? '#d8b4fe' : '#7e22ce',
-                  border: theme === 'dark' ? '1px solid rgba(168, 85, 247, 0.35)' : '1px solid rgba(147, 51, 234, 0.25)',
+                  background: theme === 'dark' ? 'rgba(30, 64, 255, 0.15)' : '#fff0f3',
+                  color: theme === 'dark' ? '#a78bfa' : '#700913',
+                  border: theme === 'dark' ? '1px solid rgba(30, 64, 255, 0.25)' : '1px solid #ffccd5',
                   padding: '3px 8px',
                   borderRadius: '12px',
                   fontSize: '0.72rem',
@@ -5685,7 +6727,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                   alignItems: 'center',
                   gap: '6px',
                   background: theme === 'dark' ? 'rgba(220, 38, 38, 0.15)' : '#fee2e2',
-                  color: theme === 'dark' ? '#fca5a5' : '#991b1b',
+                  color: theme === 'dark' ? '#fca5a5' : '#1E3A8A',
                   border: theme === 'dark' ? '1px solid rgba(220, 38, 38, 0.25)' : '1px solid #fca5a5',
                   padding: '3px 8px',
                   borderRadius: '12px',
@@ -5795,6 +6837,92 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               </div>
             </div>
           </div>
+
+          {/* Group 4: Security & Deposit Cancellation */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <h4 style={{ 
+              fontSize: '0.9rem', 
+              fontWeight: 700, 
+              color: 'var(--color-primary)', 
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              paddingBottom: '6px',
+              borderBottom: '1px solid var(--color-border-light)'
+            }}>
+              <ShieldAlert size={16} /> {t("4. Bảo mật & Bể cọc (Deposit Cancellation)")}
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }} className="responsive-grid-1">
+              {/* security clock */}
+              <div style={{
+                background: theme === 'dark' ? 'rgba(255, 255, 255, 0.02)' : '#f8fafc',
+                border: '1px solid var(--color-border-light)',
+                borderRadius: '10px',
+                padding: '0.85rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                alignItems: 'flex-start'
+              }}>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'rgba(245, 158, 11, 0.1)',
+                  color: 'var(--color-warning)',
+                  border: '1px solid rgba(245, 158, 11, 0.2)',
+                  padding: '3px 8px',
+                  borderRadius: '12px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700
+                }}>
+                  <Clock size={12} />
+                  {t("Đồng hồ Bảo mật (Inactivity Expiration)")}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
+                  {t("Thời hạn chăm sóc bắt buộc cho từng TVV. Nếu hết thời gian mà TVV không tương tác ghi nhận hoạt động (gọi điện, gặp mặt, tạo note), data sẽ bị tự động thu hồi trả về Databank chung (Thời gian bảo mật Booking: ")}
+                  <strong>{sysSettings?.security_timer_booking || 120} {t("giờ")}</strong>
+                  {t(", Đã Gặp: ")}
+                  <strong>{sysSettings?.security_timer_da_gap || 72} {t("giờ")}</strong>
+                  {t(").")}
+                </span>
+              </div>
+
+              {/* deposit cancellation */}
+              <div style={{
+                background: theme === 'dark' ? 'rgba(255, 255, 255, 0.02)' : '#f8fafc',
+                border: '1px solid var(--color-border-light)',
+                borderRadius: '10px',
+                padding: '0.85rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                alignItems: 'flex-start'
+              }}>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  color: 'var(--color-danger)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  padding: '3px 8px',
+                  borderRadius: '12px',
+                  fontSize: '0.72rem',
+                  fontWeight: 700
+                }}>
+                  <AlertTriangle size={12} />
+                  {t("Cơ chế Bể cọc (Cancellation Rules)")}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
+                  {t("• Chưa có doanh thu: Hạ trạng thái về Booking/Đã Gặp, kích hoạt lại đồng hồ bảo mật và có thể bị thu hồi.")}
+                  <br />
+                  {t("• Đã có doanh thu (đóng đợt 1): Giữ nguyên trạng thái Đặt cọc để bảo vệ quyền sở hữu của Sale.")}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </CustomModal>
 
@@ -5804,8 +6932,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           onClose={() => setPreviewOpen(false)}
           type={previewType}
           leadName={selectedLead.name}
-          leadPhone={(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone)}
-          leadEmail={(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email)}
+          leadPhone={canSeeFullInfo ? selectedLead.phone : maskPhone(selectedLead.phone)}
+          leadEmail={canSeeFullInfo ? selectedLead.email : maskEmail(selectedLead.email)}
           leadSource={selectedLead.source || ''}
           leadType={selectedLead.type || ''}
           leadNote={selectedLead.note || ''}
@@ -5822,7 +6950,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
       )}
 
       {statsModalOpen && statsConsultant && typeof document !== 'undefined' && createPortal(
-        <div className="overlay-backdrop" onClick={() => setStatsModalOpen(false)}>
+        <div className="overlay-backdrop stats-modal-backdrop" onClick={() => setStatsModalOpen(false)} style={{ zIndex: 999999999 }}>
           <div
             className="card"
             style={{
@@ -5839,18 +6967,18 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
             <div className="stats-header-container" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
                 <Avatar
-                  src={statsConsultant?.avatar}
-                  name={statsConsultant?.name}
+                  src={statsConsultant.avatar}
+                  name={statsConsultant.name}
                   size={44}
                   style={{
-                    filter: (statsConsultant?.status === 'inactive' || statsConsultant?.status === 'leave' || Number(statsConsultant?.vacation_mode ?? 0) === 1) ? 'grayscale(1)' : 'none',
-                    opacity: (statsConsultant?.status === 'inactive' || statsConsultant?.status === 'leave' || Number(statsConsultant?.vacation_mode ?? 0) === 1) ? 0.5 : 1
+                    filter: (statsConsultant.status === 'inactive' || statsConsultant.status === 'leave' || Number(statsConsultant.vacation_mode) === 1) ? 'grayscale(1)' : 'none',
+                    opacity: (statsConsultant.status === 'inactive' || statsConsultant.status === 'leave' || Number(statsConsultant.vacation_mode) === 1) ? 0.5 : 1
                   }}
                 />
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>{t('Báo cáo hiệu suất Đại lý')}</h3>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>{t('Báo cáo hiệu suất TVV')}</h3>
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                    <strong>{statsConsultant?.name || '-'}</strong> • ID: {statsConsultant?.id || '-'} • {statsConsultant?.email || '-'}
+                    <strong>{statsConsultant.name}</strong> • ID: {statsConsultant.id} • {statsConsultant.email}
                   </p>
                 </div>
               </div>
@@ -5899,7 +7027,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
             </div>
 
             {/* Content Area */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.25rem 3rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative' }}>
               {statsLoading && !statsData ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   {/* KPI Cards Skeleton Row */}
@@ -5950,7 +7078,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        {t('Tổng data hệ thống tiếp nhận cho Đại lý này:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsData.summary.total}</strong> lead
+                        {t('Tổng data TVV này tiếp nhận:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsData.summary.total_received || 0}</strong> lead
                       </span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
                         * {t('Các nhóm độc lập hoàn toàn, không cộng dồn/chồng chéo')}
@@ -5959,34 +7087,34 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
                     {/* Stacked Percentage Bar */}
                     <div style={{ display: 'flex', height: 10, borderRadius: 5, overflow: 'hidden', background: 'var(--color-border-light)', position: 'relative' }}>
-                      {statsData.summary.successful > 0 && (
+                      {((statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)) > 0 && (
                         <div
                           style={{
-                            width: `${(statsData.summary.successful / Math.max(1, statsData.summary.total)) * 100}%`,
-                            background: 'linear-gradient(90deg, #3B82F6, #1E40FF)',
+                            width: `${(((statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)) / Math.max(1, statsData.summary.total_received)) * 100}%`,
+                            background: 'linear-gradient(90deg, #3b82f6, #007af5)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Thành công')}: ${statsData.summary.successful}`}
+                          title={`${t('Được chia')}: ${(statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)}`}
                         />
                       )}
-                      {(statsData.summary.reminder || 0) > 0 && (
+                      {(statsData.summary.databank_count || 0) > 0 && (
                         <div
                           style={{
-                            width: `${((statsData.summary.reminder || 0) / Math.max(1, statsData.summary.total)) * 100}%`,
+                            width: `${((statsData.summary.databank_count || 0) / Math.max(1, statsData.summary.total_received)) * 100}%`,
+                            background: 'linear-gradient(90deg, #34c759, #10b981)',
+                            transition: 'width 0.3s ease'
+                          }}
+                          title={`${t('Từ Databank')}: ${statsData.summary.databank_count}`}
+                        />
+                      )}
+                      {(statsData.summary.self_count || 0) > 0 && (
+                        <div
+                          style={{
+                            width: `${((statsData.summary.self_count || 0) / Math.max(1, statsData.summary.total_received)) * 100}%`,
                             background: 'linear-gradient(90deg, #fcd34d, #f59e0b)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Nhắc lại')}: ${statsData.summary.reminder}`}
-                        />
-                      )}
-                      {(statsData.summary.error || 0) > 0 && (
-                        <div
-                          style={{
-                            width: `${((statsData.summary.error || 0) / Math.max(1, statsData.summary.total)) * 100}%`,
-                            background: 'linear-gradient(90deg, #fca5a5, #ef4444)',
-                            transition: 'width 0.3s ease'
-                          }}
-                          title={`${t('Lỗi')}: ${statsData.summary.error}`}
+                          title={`${t('Tự nhập')}: ${statsData.summary.self_count}`}
                         />
                       )}
                     </div>
@@ -5994,82 +7122,113 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     {/* Legend explaining the numbers */}
                     <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', marginTop: 2, flexWrap: 'wrap', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-primary)' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#007af5' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Thành công (Bàn giao thực tế)')}: <strong style={{ color: 'var(--color-primary)' }}>{statsData.summary.successful}</strong> ({statsData.summary.total > 0 ? Math.round((statsData.summary.successful / statsData.summary.total) * 100) : 0}%)
+                          {t('Được chia')}: <strong style={{ color: '#007af5' }}>{(statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)}</strong> ({statsData.summary.total_received > 0 ? Math.round((((statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)) / statsData.summary.total_received) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-warning)' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#34c759' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Nhắc lại (Khách cũ gọi lại)')}: <strong style={{ color: 'var(--color-warning)' }}>{statsData.summary.reminder || 0}</strong> ({statsData.summary.total > 0 ? Math.round(((statsData.summary.reminder || 0) / statsData.summary.total) * 100) : 0}%)
+                          {t('Từ Databank')}: <strong style={{ color: '#34c759' }}>{statsData.summary.databank_count || 0}</strong> ({statsData.summary.total_received > 0 ? Math.round(((statsData.summary.databank_count || 0) / statsData.summary.total_received) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-danger)' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#f59e0b' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Lỗi / Trùng (Đã lọc bỏ)')}: <strong style={{ color: 'var(--color-danger)' }}>{statsData.summary.error || 0}</strong> ({statsData.summary.total > 0 ? Math.round(((statsData.summary.error || 0) / statsData.summary.total) * 100) : 0}%)
+                          {t('Tự nhập')}: <strong style={{ color: '#f59e0b' }}>{statsData.summary.self_count || 0}</strong> ({statsData.summary.total_received > 0 ? Math.round(((statsData.summary.self_count || 0) / statsData.summary.total_received) * 100) : 0}%)
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginLeft: 'auto', paddingLeft: '1rem', borderLeft: '1px solid var(--color-border)' }}>
+                        <span style={{ color: 'var(--color-text-muted)' }}>
+                          {t('Nhắc lại')}: <strong style={{ color: 'var(--color-warning)' }}>{statsData.summary.reminder || 0}</strong> | {t('Lỗi/Trùng')}: <strong style={{ color: 'var(--color-danger)' }}>{statsData.summary.error || 0}</strong>
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* KPI Cards Row (4 Columns) */}
-                  <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
-                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Thành công')}</span>
-                        <div className="stat-icon" style={{ color: 'var(--color-primary)', opacity: 0.8 }}><CheckCircle size={18} /></div>
+                  {/* KPI Cards Row (3 Columns) */}
+                  <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: '0.75rem' }}>
+                    {/* Card 1: Tổng khách hàng */}
+                    <div className="stat-card hover-lift total-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
+                      <div className="decor-svg" style={{ color: '#1D4ED8' }}>
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+                          <circle cx="30" cy="50" r="10" stroke="currentColor" strokeWidth="2" />
+                          <circle cx="70" cy="30" r="10" stroke="currentColor" strokeWidth="2" />
+                          <circle cx="70" cy="70" r="10" stroke="currentColor" strokeWidth="2" />
+                          <path d="M40 50 H 55 V 30 H 60 M 55 50 V 70 H 60" stroke="currentColor" strokeWidth="2" />
+                        </svg>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsData.summary.successful
-                          }</div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Data gán mới thành công')}</div>
-                        <div style={{ fontSize: '0.625rem', color: 'var(--color-primary)', fontWeight: 600, marginTop: 2 }}>{t('(Không bao gồm Nhắc lại & Lỗi)')}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tổng khách hàng')}</span>
+                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(30, 64, 255, 0.08)', color: '#1D4ED8', flexShrink: 0 }}><Users size={16} /></div>
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
+                          {statsData.summary.total_received || 0}
+                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1D4ED8', display: 'inline-block' }} />
+                            {t('Tổng data đang chăm sóc')}: {statsData.summary.total_received || 0}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Nhắc lại')}</span>
-                        <div className="stat-icon" style={{ color: 'var(--color-warning)', opacity: 0.8 }}><Clock size={18} /></div>
+                    {/* Card 2: Được chia */}
+                    <div className="stat-card hover-lift distributed-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
+                      <div className="decor-svg" style={{ color: '#007af5' }}>
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+                          <circle cx="45" cy="35" r="15" stroke="currentColor" strokeWidth="2" />
+                          <path d="M20 75 C 20 60, 31 50, 45 50 C 59 50, 70 60, 70 75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                          <path d="M75 35 H 89 M 82 28 V 42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsData.summary.reminder || 0}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Được chia')}</span>
+                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(0, 122, 245, 0.08)', color: '#007af5', flexShrink: 0 }}><Send size={16} /></div>
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
+                          {(statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)}
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Yêu cầu gọi lại')}</div>
-                        <div style={{ fontSize: '0.625rem', color: 'var(--color-warning)', fontWeight: 600, marginTop: 2 }}>{t('(Tính riêng biệt, không cộng dồn)')}</div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007af5', display: 'inline-block' }} />
+                            {t('Chia tự động')}: {statsData.summary.distributed_count || 0}
+                          </span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fbbf24', display: 'inline-block' }} />
+                            {t('Hợp tác (co.op)')}: {statsData.summary.coop_count || 0}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Lỗi')}</span>
-                        <div className="stat-icon" style={{ color: 'var(--color-danger)', opacity: 0.8 }}><AlertTriangle size={18} /></div>
+                    {/* Card 4: Tự nhập */}
+                    <div className="stat-card hover-lift out_of_hours-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
+                      <div className="decor-svg" style={{ color: '#f59e0b' }}>
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+                          <circle cx="50" cy="35" r="15" stroke="currentColor" strokeWidth="2" />
+                          <path d="M25 75 C 25 60, 36 50, 50 50 C 64 50, 75 60, 75 75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                          <path d="M75 35 H 90 M 82.5 27.5 V 42.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsData.summary.error || 0}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tự nhập')}</span>
+                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.08)', color: '#f59e0b', flexShrink: 0 }}><UserPlus size={16} /></div>
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
+                          {statsData.summary.self_count || 0}
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Trùng lặp / Lỗi chia')}</div>
-                        <div style={{ fontSize: '0.625rem', color: 'var(--color-danger)', fontWeight: 600, marginTop: 2 }}>{t('(Đã loại bỏ khỏi Thành công)')}</div>
-                      </div>
-                    </div>
-
-                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tỷ lệ')}</span>
-                        <div className="stat-icon" style={{ color: 'var(--color-success)', opacity: 0.8 }}><BarChart2 size={18} /></div>
-                      </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsData.summary.system_total_successful > 0
-                            ? Math.round((statsData.summary.successful / statsData.summary.system_total_successful) * 100)
-                            : 0}%
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
+                            {t('Tự tạo hoặc giới thiệu')}: {statsData.summary.self_count || 0}
+                          </span>
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Thành công / Tổng của tất cả Đại lý')}</div>
                       </div>
                     </div>
                   </div>
@@ -6083,8 +7242,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           <BarChart data={statsData.by_date} margin={{ left: -10, right: 5, top: 20, bottom: 0 }}>
                             <defs>
                               <linearGradient id="statsDateGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#D8B467" stopOpacity={1} />
-                                <stop offset="100%" stopColor="#1E40FF" stopOpacity={0.8} />
+                                <stop offset="0%" stopColor="#e63946" stopOpacity={1} />
+                                <stop offset="100%" stopColor="#1D4ED8" stopOpacity={0.8} />
                               </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" vertical={false} />
@@ -6111,7 +7270,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                       <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-text)' }}>{t('Tỷ lệ Trạng thái Data')}</h4>
                       {(() => {
                         const statusChartData = [
-                          { name: t('Thành công'), value: statsData.summary.successful, color: '#1E40FF' },
+                          { name: t('Thành công'), value: statsData.summary.successful, color: '#1D4ED8' },
                           { name: t('Nhắc lại'), value: statsData.summary.reminder, color: '#f59e0b' },
                           { name: t('Lỗi'), value: statsData.summary.error, color: '#ef4444' }
                         ].filter(item => item.value > 0);
@@ -6160,15 +7319,15 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     {/* Rounds breakdown chart */}
                     <div className="card" style={{ padding: '1rem 1.25rem', background: 'var(--color-surface)', border: '1px solid var(--color-border-light)' }}>
                       <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-text)' }}>{t('Phân bổ theo Vòng (Round)')}</h4>
-                      {(statsData?.rounds || []).length > 0 ? (
+                      {statsData.rounds.length > 0 ? (
                         <div style={{ height: 160, width: '100%' }}>
                           <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={statsData?.rounds || []} layout="vertical" margin={{ left: -10, right: 10, top: 0, bottom: 0 }}>
+                            <BarChart data={statsData.rounds} layout="vertical" margin={{ left: -10, right: 10, top: 0, bottom: 0 }}>
                               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--color-border-light)" />
                               <XAxis type="number" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                               <YAxis dataKey="round_name" type="category" width={90} tick={{ fontSize: 9, fontWeight: 600 }} axisLine={false} tickLine={false} />
                               <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', fontSize: '0.75rem', borderRadius: 8 }} />
-                              <Bar dataKey="successful_count" stackId="a" fill="#1E40FF" radius={[0, 0, 0, 0]} barSize={12} name={t("Thành công")} />
+                              <Bar dataKey="successful_count" stackId="a" fill="#1D4ED8" radius={[0, 0, 0, 0]} barSize={12} name={t("Thành công")} />
                               <Bar dataKey="reminder_count" stackId="a" fill="#f59e0b" radius={[0, 0, 0, 0]} barSize={12} name={t("Nhắc lại")} />
                               <Bar dataKey="error_count" stackId="a" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={12} name={t("Lỗi")} />
                             </BarChart>
@@ -6221,23 +7380,23 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                           <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', textAlign: 'center' }}>
                             <div style={{ background: 'var(--color-bg)', padding: '6px', borderRadius: 8, border: '1px solid var(--color-border-light)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', fontWeight: 700 }}>{t('GỬI ĐI')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 2 }}>{statsData.tickets?.total || 0}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 2 }}>{statsData.tickets.total}</div>
                             </div>
                             <div style={{ background: 'var(--color-success-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-success)', fontWeight: 700 }}>{t('ĐÃ BÙ')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 2 }}>{statsData.tickets?.approved || 0}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 2 }}>{statsData.tickets.approved}</div>
                             </div>
                             <div style={{ background: 'var(--color-warning-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(245, 158, 11, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-warning)', fontWeight: 700 }}>{t('ĐANG CHỜ')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 2 }}>{statsData.tickets?.pending || 0}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 2 }}>{statsData.tickets.pending}</div>
                             </div>
                             <div style={{ background: 'var(--color-danger-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-danger)', fontWeight: 700 }}>{t('TỪ CHỐI')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 2 }}>{statsData.tickets?.rejected || 0}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 2 }}>{statsData.tickets.rejected}</div>
                             </div>
                           </div>
                           <div style={{ marginTop: '10px', fontSize: '0.75rem', color: 'var(--color-text-muted)', textAlign: 'center', fontWeight: 500 }}>
-                            {t('Tổng nhận bù:')} <strong style={{ color: '#7e22ce' }}>{(statsData.tickets?.approved || 0) + (statsData.active_compensation || 0) + (statsData.blacklist_compensation || 0)}</strong> {t('data')} (Ticket: {statsData.tickets?.approved || 0}, Blacklist: {statsData.blacklist_compensation || 0}, {t('Chủ động')}: {statsData.active_compensation || 0})
+                            {t('Tổng nhận bù:')} <strong style={{ color: 'var(--color-success)' }}>{statsData.tickets.approved + (statsData.active_compensation || 0) + (statsData.blacklist_compensation || 0)}</strong> {t('data')} (Ticket: {statsData.tickets.approved}, Blacklist: {statsData.blacklist_compensation || 0}, {t('Chủ động')}: {statsData.active_compensation || 0})
                           </div>
                           <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
                             <button
@@ -6262,15 +7421,89 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                 </>
               )}
             </div>
-
-            {/* Footer */}
-            <div style={{ padding: '1rem 1.25rem', background: 'var(--color-bg)', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
-              <button type="button" className="btn primary sm" onClick={() => setStatsModalOpen(false)}>{t('Đóng')}</button>
-            </div>
           </div>
         </div>,
         document.body
       )}
+
+      <Suspense fallback={null}>
+        <ExpenseQuickViewDrawer
+          expenseId={activePOId}
+          onClose={() => setActivePOId(null)}
+          user={user}
+          onStatusChange={() => {
+            fetchCalendarStats();
+            if (selectedDate) handleDateClick(selectedDate);
+          }}
+          onEditClick={(item) => {
+            setEditingExpense(item);
+          }}
+        />
+
+        {typeof document !== 'undefined' && (showCreateExpenseModal || !!editingExpense) && createPortal(
+          <ExpenseCreateDrawer
+            isOpen={showCreateExpenseModal || !!editingExpense}
+            onClose={() => {
+              setShowCreateExpenseModal(false);
+              setEditingExpense(null);
+            }}
+            editItem={editingExpense}
+            initialDate={selectedExpenseDate}
+            onSaveSuccess={() => {
+              fetchCalendarStats();
+              if (selectedDate) handleDateClick(selectedDate);
+            }}
+            user={user}
+          />
+        , document.body)}
+
+        {showManageModal && selectedDepForManage && (
+          <DepositDetailDrawer
+            isOpen={showManageModal}
+            onClose={() => setShowManageModal(false)}
+            deposit={selectedDepForManage}
+            onSaveSuccess={() => {
+              fetchCalendarStats();
+              if (selectedDate) handleDateClick(selectedDate);
+            }}
+            zIndex={2147483640}
+          />
+        )}
+      </Suspense>
+
+      <CustomModal
+        isOpen={showDateModal}
+        onClose={() => setShowDateModal(false)}
+        title={t("Tùy chỉnh thời gian")}
+        width="400px"
+      >
+        {showDateModal && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
+            <div>
+              <label className="form-label">{t('Từ ngày')}</label>
+              <VietnameseDateInput value={startDate} onChange={val => setStartDate(val)} />
+            </div>
+            <div>
+              <label className="form-label">{t('Đến ngày')}</label>
+              <VietnameseDateInput value={endDate} onChange={val => setEndDate(val)} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
+              <button className="btn outline" onClick={() => setShowDateModal(false)}>{t('Hủy')}</button>
+              <button
+                className="btn primary"
+                onClick={() => {
+                  if (!startDate || !endDate) return toast.error(t("Vui lòng chọn đầy đủ Từ ngày và Đến ngày"));
+                  if (new Date(startDate) > new Date(endDate)) return toast.error(t("Từ ngày không được lớn hơn Đến ngày"));
+                  handleUpdateDateFilter(`${startDate} đến ${endDate}`);
+                  setShowDateModal(false);
+                }}
+              >
+                {t('Áp dụng')}
+              </button>
+            </div>
+          </div>
+        )}
+      </CustomModal>
 
       <style>{`
         @media (max-width: 768px) {
@@ -6281,10 +7514,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
             grid-column: span 1 !important;
           }
         }
-        html[data-autodata-workspace="active"] {
+        :root {
           --color-calendar-weekend: #f7f8fa81;
         }
-        html[data-autodata-workspace="active"][data-theme="dark"] {
+        [data-theme="dark"] {
           --color-calendar-weekend: #141b2d;
         }
         .spin { animation: spin 1s linear infinite; }
@@ -6310,11 +7543,13 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         .fade-in-view {
           opacity: 1;
         }
-        .calendar-day-cell div > div {
+        .datalist-calendar-stat-grid > div,
+        .datalist-stat-badge {
           transition: all 0.15s ease-in-out;
-          border-radius: 6px !important;
+          border-radius: 6px;
         }
-        .calendar-day-cell div > div:hover {
+        .datalist-calendar-stat-grid > div:hover,
+        .datalist-stat-badge:hover {
           transform: scale(1.05);
           filter: brightness(0.96);
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
@@ -6367,16 +7602,17 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           color: var(--color-primary) !important;
         }
       `}</style>
-      <AdPreviewModal
-        isOpen={!!previewAd}
-        onClose={() => setPreviewAd(null)}
-        adId={previewAd?.adId || null}
-        initialAdName={previewAd?.adName}
-        initialThumb={previewAd?.thumb}
-        leadName={previewAd?.leadName}
+
+      {/* Solid Dark Table Context Menu */}
+      <TableContextMenu
+        isOpen={!!contextMenu}
+        x={contextMenu?.x || 0}
+        y={contextMenu?.y || 0}
+        item={contextMenu?.item || null}
+        onClose={() => setContextMenu(null)}
       />
     </div>
   );
 };
 
-export const DataList = withRouterFreezer(DataListInner, (path) => path === '/data' || path === '/calendar');
+export const DataList = withRouterFreezer(DataListInner, (path) => path === '/data');

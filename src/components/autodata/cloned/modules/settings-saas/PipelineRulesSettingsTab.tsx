@@ -228,7 +228,7 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
           { key: 'tabs', label: 'Tabs Lọc Nhanh Tùy Biến', icon: <Layers size={15} />, count: pipelineTabs.length },
         ]}
         activeKey={subTab}
-        onChange={setSubTab}
+        onChange={(nextKey) => setSubTab(nextKey as typeof subTab)}
       />
 
       {subTab === 'stages' && (
@@ -277,7 +277,7 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
                         min={-100}
                         max={200}
                         className="form-input autodata-tabular-nums"
-                        style={{ height: 36, textAlign: 'right', fontWeight: 700, color: st.score_delta >= 0 ? '#059669' : '#DC2626' }}
+                        style={{ height: 36, textAlign: 'right', fontWeight: 700, color: st.score_delta >= 0 ? '#059669' : '#1E40FF' }}
                         value={st.score_delta}
                         onChange={(e) =>
                           setStageEdits((prev) => ({
@@ -431,7 +431,7 @@ export const PipelineRulesSettingsTab: React.FC<PipelineRulesSettingsTabProps> =
                       <button
                         type="button"
                         onClick={() => void handleDeleteRule(rule.id)}
-                        style={{ border: 'none', background: 'transparent', color: '#DC2626', cursor: 'pointer' }}
+                        style={{ border: 'none', background: 'transparent', color: '#1E40FF', cursor: 'pointer' }}
                       >
                         <Trash2 size={15} />
                       </button>

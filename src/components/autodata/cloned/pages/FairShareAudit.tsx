@@ -1,9 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import {
   Scale, Users, AlertTriangle, BarChart2, Info,
   TrendingUp, Sparkles, CheckCircle, Layers,
-  RotateCcw, Copy, ChevronDown, ChevronUp
+  RotateCcw, Settings, Copy, ChevronDown, ChevronUp, Zap
 } from 'lucide-react';
 import {
   Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -11,13 +11,11 @@ import {
 } from 'recharts';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
-import { fetchAPI, getDefaultDateFilter, normalizeGlobalDateFilter, formatDateTimeVN } from '../utils/api';
+import { fetchAPI, getDefaultDateFilter } from '../utils/api';
 import toast from 'react-hot-toast';
 import { KpiCardSkeleton, Skeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthContext';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 interface FairShareAuditProps {
   forceActive?: boolean;
@@ -25,21 +23,18 @@ interface FairShareAuditProps {
 
 const FairShareAuditInner = ({ forceActive = false, isActive: propActive, searchParams }: FairShareAuditProps & { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
   const { t } = useLanguage();
-  const { tenantSettings } = useAuth();
-  const fairnessWarnThreshold = Number(tenantSettings?.fairness_warning_threshold_pct ?? 75);
   const isActive = forceActive || propActive;
   const [data, setData] = useState<any>(null);
   const [rounds, setRounds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
+    return localStorage.getItem('Ideas_global_date') || getDefaultDateFilter();
   });
 
   const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
+    setDateFilter(val);
+    localStorage.setItem('Ideas_global_date', val);
+    window.dispatchEvent(new CustomEvent('global-date-change', { detail: val }));
   };
   const [roundFilter, setRoundFilter] = useState(() => {
     return searchParams.get('round_id') || '';
@@ -51,6 +46,12 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showCopyModal, setShowCopyModal] = useState(false);
   const [copyReportText, setCopyReportText] = useState('');
+
+  // Quick Active Compensation Modal State
+  const [quickCompModalOpen, setQuickCompModalOpen] = useState(false);
+  const [quickCompData, setQuickCompData] = useState<Record<number, number>>({});
+  const [quickCompReasons, setQuickCompReasons] = useState<Record<number, string>>({});
+  const [isSavingQuickComp, setIsSavingQuickComp] = useState(false);
 
   // Compensation Details Modal State
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -85,13 +86,13 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   }, [showDetailsModal]);
 
   // Simulation State
-  const [isSimulating] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
   const [simConsultants, setSimConsultants] = useState<any[]>([]);
   const [simTotalLeads, setSimTotalLeads] = useState<number>(0);
 
   // Initialize/Sync simulation consultants state when actual data changes
   useEffect(() => {
-    if (Array.isArray(data?.consultants)) {
+    if (data?.consultants) {
       setSimConsultants(data.consultants.map((c: any) => ({
         id: c.id,
         name: c.name,
@@ -128,7 +129,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   };
 
   const handleResetSimulation = () => {
-    if (!Array.isArray(data?.consultants)) return;
+    if (!data?.consultants) return;
     setSimConsultants(data.consultants.map((c: any) => ({
       id: c.id,
       name: c.name,
@@ -242,10 +243,9 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       const actualCount = c.assigned_count;
       const simCount = rawCounts[i];
 
-      const safeSources = Array.isArray(data.sources) ? data.sources : [];
-      const sourceWeights = safeSources.map((src: string) => {
+      const sourceWeights = data.sources.map((src: string) => {
         if (actualCount > 0) {
-          return (c.sources && c.sources[src]) || 0;
+          return c.sources[src] || 0;
         } else {
           return 1;
         }
@@ -253,7 +253,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
 
       const distributedSources = distributeProportionally(simCount, sourceWeights);
 
-      safeSources.forEach((src: string, sIdx: number) => {
+      data.sources.forEach((src: string, sIdx: number) => {
         simSources[src] = distributedSources[sIdx];
       });
 
@@ -301,12 +301,15 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
     }
   };
 
+  const detailsAbortRef = useRef<AbortController | null>(null);
+  const inFlightRef = useRef(false);
+
   const fetchStats = async (signal?: AbortSignal) => {
     if (!roundFilter) return; // Guard to prevent fetching before round filter is initialized
     setLoading(true);
     try {
-      const url = `get_fair_share_stats&date=${encodeURIComponent(dateFilter)}&round_id=${roundFilter}`;
-      const res = await fetchAPI(url);
+      const url = `get_fair_share_stats?date=${encodeURIComponent(dateFilter)}&round_id=${roundFilter}`;
+      const res = await fetchAPI(url, { signal });
       if (signal?.aborted) return;
 
       if (res.success) {
@@ -314,10 +317,63 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       } else {
         toast.error(res.message || t('Lỗi tải dữ liệu đối soát'));
       }
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.name === 'AbortError' || e?.name === 'CanceledError' || e?.code === 'ERR_CANCELED') return;
       console.error('Error fetching fair share stats:', e);
+    } finally {
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
-    setLoading(false);
+  };
+
+  const handleOpenQuickCompModal = (targetConsultantId?: number) => {
+    const list = activeData?.consultants || data?.consultants;
+    if (!list || list.length === 0) {
+      toast.error(t("Chưa có danh sách tư vấn viên trong vòng này"));
+      return;
+    }
+    const initialComp: Record<number, number> = {};
+    const initialReasons: Record<number, string> = {};
+    list.forEach((c: any) => {
+      initialComp[c.id] = c.pending_compensation || 0;
+      initialReasons[c.id] = '';
+    });
+    if (targetConsultantId && initialComp[targetConsultantId] !== undefined) {
+      initialComp[targetConsultantId] = (initialComp[targetConsultantId] || 0) + 1;
+    }
+    setQuickCompData(initialComp);
+    setQuickCompReasons(initialReasons);
+    setQuickCompModalOpen(true);
+  };
+
+  const handleSaveQuickComp = async () => {
+    if (!roundFilter || isSavingQuickComp || inFlightRef.current) return;
+    inFlightRef.current = true;
+    setIsSavingQuickComp(true);
+    try {
+      const payload = {
+        round_id: parseInt(roundFilter, 10),
+        compensations: quickCompData,
+        reasons: quickCompReasons
+      };
+      const res = await fetchAPI('update_compensations', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      if (res.success) {
+        toast.success(t('Đã cập nhật Bù Data thành công!'));
+        setQuickCompModalOpen(false);
+        fetchStats();
+      } else {
+        toast.error(res.message || t('Có lỗi xảy ra khi lưu bù data'));
+      }
+    } catch (e: any) {
+      toast.error(t('Lỗi: ') + (e?.message || e));
+    } finally {
+      inFlightRef.current = false;
+      setIsSavingQuickComp(false);
+    }
   };
 
   useEffect(() => {
@@ -350,7 +406,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
           }
           setDateFilter(resolvedDateFilter);
         }
-        handleOpenDetailsModal(String(openCompId), resolvedDateFilter);
+        handleOpenDetailsModal(Number(openCompId), resolvedDateFilter);
       }
     }
   }, [searchParams, isActive]);
@@ -365,12 +421,9 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
 
   useEffect(() => {
     if (isActive) {
-      const rawDate = localStorage.getItem('domation_global_date');
-      if (rawDate) {
-        const savedDate = normalizeGlobalDateFilter(rawDate);
-        if (savedDate !== dateFilter) {
-          setDateFilter(savedDate);
-        }
+      const savedDate = localStorage.getItem('Ideas_global_date');
+      if (savedDate && savedDate !== dateFilter) {
+        setDateFilter(savedDate);
       }
     }
   }, [isActive]);
@@ -378,7 +431,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   useEffect(() => {
     if (!isActive) return;
     const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
+      const newDate = e.detail;
       if (newDate && newDate !== dateFilter) {
         setDateFilter(newDate);
       }
@@ -404,9 +457,8 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   };
 
   const getFairnessLevel = (index: number) => {
-    const highThreshold = Math.min(98, Math.max(fairnessWarnThreshold + 15, 90));
-    if (index >= highThreshold) return { label: t('Rất công bằng'), color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)', desc: '' };
-    if (index >= fairnessWarnThreshold) return { label: t('Bình thường'), color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)', desc: t('Có sự chênh lệch nhẹ (thường do tỷ lệ thiết lập hoặc Sale tạm vắng).') };
+    if (index >= 90) return { label: t('Rất công bằng'), color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)', desc: '' };
+    if (index >= 75) return { label: t('Bình thường'), color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)', desc: t('Có sự chênh lệch nhẹ (thường do tỷ lệ thiết lập hoặc Sale tạm vắng).') };
     return { label: t('Cần điều chỉnh'), color: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)', desc: t('Độ lệch phân phối cao. Vui lòng rà soát lại cấu hình lượt và ca làm việc.') };
   };
 
@@ -608,9 +660,9 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
     text += `- ${t('Chỉ số Công bằng (Fairness Index)')}: ${targetData.fairnessIndex}%\n`;
     text += `- ${t('Độ lệch chuẩn (SD)')}: ±${targetData.standardDeviation} ${t('lead')}\n`;
     text += `- ${t('Số lead trung bình')}: ${targetData.mean} ${t('lead / Sale')}\n`;
-    text += `- ${t('Tổng lead thành công')}: ${targetData.totalLeads} ${t('lead')} / ${targetData.totalConsultants} ${t('Đại lý')}\n\n`;
+    text += `- ${t('Tổng lead thành công')}: ${targetData.totalLeads} ${t('lead')} / ${targetData.totalConsultants} ${t('Saleperson')}\n\n`;
 
-    text += `👥 ${t('CHI TIẾT TỪNG ĐẠI LÝ')}:\n`;
+    text += `👥 ${t('CHI TIẾT TỪNG TƯ VẤN VIÊN')}:\n`;
 
     targetData.consultants.forEach((c: any, index: number) => {
       const currentRatio = isSimulating
@@ -665,34 +717,45 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       });
   };
 
-  const handleOpenDetailsModal = async (consultantId: string | number, overrideDateFilter?: string) => {
+  const handleOpenDetailsModal = async (consultantId: number, overrideDateFilter?: string) => {
+    if (detailsAbortRef.current) {
+      detailsAbortRef.current.abort();
+    }
+    const controller = new AbortController();
+    detailsAbortRef.current = controller;
+    const { signal } = controller;
+
     setShowDetailsModal(true);
     setDetailsLoading(true);
     setCompensationDetails(null);
     try {
       const activeDateFilter = overrideDateFilter || dateFilter;
-      const url = `get_consultant_compensation_details&consultant_id=${consultantId}&date=${encodeURIComponent(activeDateFilter)}&round_id=${roundFilter}`;
-      const res = await fetchAPI(url);
+      const url = `get_consultant_compensation_details?consultant_id=${consultantId}&date=${encodeURIComponent(activeDateFilter)}&round_id=${roundFilter}`;
+      const res = await fetchAPI(url, { signal });
+      if (signal.aborted) return;
       if (res.success) {
         setCompensationDetails(res.data);
       } else {
         toast.error(res.message || t('Lỗi khi tải chi tiết đối soát bù'));
         setShowDetailsModal(false);
       }
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.name === 'AbortError' || e?.name === 'CanceledError' || e?.code === 'ERR_CANCELED') return;
       console.error('Error fetching consultant compensation details:', e);
       toast.error(t('Lỗi kết nối khi tải chi tiết đối soát bù'));
       setShowDetailsModal(false);
     } finally {
-      setDetailsLoading(false);
+      if (!signal.aborted) {
+        setDetailsLoading(false);
+      }
     }
   };
 
   // Formatting chart data for Data Source Balance
   const sourceChartData = activeData?.consultants ? activeData.consultants.map((c: any) => {
     const item: any = { name: c.name };
-    (activeData.sources || []).forEach((src: string) => {
-      item[src] = isSimulating ? Math.round((c.sources && c.sources[src]) || 0) : ((c.sources && c.sources[src]) || 0);
+    activeData.sources.forEach((src: string) => {
+      item[src] = isSimulating ? Math.round(c.sources[src] || 0) : (c.sources[src] || 0);
     });
     return item;
   }) : [];
@@ -715,7 +778,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
     };
   }) : [];
 
-  const sourceColors = ['#1E40FF', '#10b981', '#fbbf24', '#f43f5e', '#2563EB', '#06b6d4'];
+  const sourceColors = ['#1E40FF', '#334155', '#2563EB', '#64748B', '#1E3A8A', '#475569', '#60A5FA', '#94A3B8', '#1E293B', '#CBD5E1'];
 
   // Custom legend renderer for balanced charts - Styled exactly like Tỷ lệ Nguồn Data
   const renderCustomLegend = (props: any) => {
@@ -808,10 +871,9 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
     if (isSimulating && fairness >= 75) {
       return (
         <div style={{
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(16, 185, 129, 0.08) 100%)',
-          border: '1px solid rgba(16, 185, 129, 0.2)',
-          borderLeft: '4px solid #10b981',
-          borderRadius: '12px',
+          background: '#ffffff',
+          border: '1px solid #E2E8F0',
+          borderRadius: '16px',
           padding: '1.25rem',
           marginBottom: '1.5rem',
           display: 'flex',
@@ -865,15 +927,14 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
     const borderColor = 'rgba(239, 68, 68, 0.2)';
     const borderLeftColor = '#ef4444';
     const iconColor = '#ef4444';
-    const titleColor = '#991b1b';
+    const titleColor = '#1E3A8A';
     const descColor = '#b91c1c';
 
     return (
       <div style={{
-        background: bgColor,
-        border: `1px solid ${borderColor}`,
-        borderLeft: `4px solid ${borderLeftColor}`,
-        borderRadius: '12px',
+        background: '#ffffff',
+        border: '1px solid #E2E8F0',
+        borderRadius: '16px',
         padding: '1.25rem',
         marginBottom: '1.5rem',
         display: 'flex',
@@ -891,7 +952,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
             <div>
               {maxSurplusSale && (
                 <span>
-                  • {t("Đại lý")} <strong>{maxSurplusSale.name}</strong> {t("dự kiến nhận vượt chỉ tiêu")} <strong>+{Math.round(maxSurplusSale.diff)} {t('lead')}</strong> (+{maxSurplusSale.diffPercent.toFixed(0)}%).
+                  • {t("Tư vấn viên")} <strong>{maxSurplusSale.name}</strong> {t("dự kiến nhận vượt chỉ tiêu")} <strong>+{Math.round(maxSurplusSale.diff)} {t('lead')}</strong> (+{maxSurplusSale.diffPercent.toFixed(0)}%).
                 </span>
               )}
               {maxDeficitSale && (
@@ -920,13 +981,12 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1 className="page-title" style={{ fontSize: '1.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Scale size={28} color="var(--color-primary)" /> {t("Đối Soát Độ Công Bằng Phân Phối")}
           </h1>
           <p className="page-subtitle">{t("Kiểm tra toán học & đo lường độ lệch chuẩn, chỉ số Gini để đảm bảo data được chia công bằng.")}</p>
         </div>
         <div className="mobile-w-full" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <ScreenHelpButton screenKey="fair_share" />
           <div className="mobile-flex-1" style={{ position: 'relative', zIndex: 100, width: 180 }}>
             <CustomSelect
               options={roundOptions}
@@ -949,6 +1009,47 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
               width="100%"
             />
           </div>
+          <button
+            className={`btn ${isSimulating ? 'primary' : 'outline'}`}
+            onClick={() => {
+              if (!isSimulating && (!data?.consultants || data.consultants.length === 0)) {
+                toast.error(t("Không có dữ liệu tư vấn viên để chạy giả lập"));
+                return;
+              }
+              setIsSimulating(!isSimulating);
+            }}
+            style={{
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              background: isSimulating ? 'var(--color-primary)' : 'transparent',
+              color: isSimulating ? 'white' : 'var(--color-primary)',
+              boxShadow: isSimulating ? 'var(--shadow-primary)' : 'none',
+            }}
+            title={t("Bật/Tắt Bộ giả lập phân bổ Live")}
+          >
+            <Settings size={16} className={isSimulating ? 'spin' : ''} />
+            <span>{isSimulating ? t('Tắt Giả lập') : t('Giả Lập Live')}</span>
+          </button>
+          {roundFilter && (
+            <button
+              className="btn secondary"
+              onClick={() => handleOpenQuickCompModal()}
+              style={{
+                height: 40,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '0 14px',
+                fontWeight: 600
+              }}
+              title={t("Bù Data chủ động cho các TVV trong vòng")}
+            >
+              <Zap size={16} />
+              <span>{t("Bù Chủ Động")}</span>
+            </button>
+          )}
           <button
             className="btn outline"
             onClick={handleCopyReport}
@@ -1108,9 +1209,9 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
 
       {/* Intro explain card styled identically to RuleSettings */}
       <div className="hide-on-mobile responsive-hide-mobile" style={{
-        background: 'linear-gradient(135deg, rgba(30, 64, 255, 0.05) 0%, rgba(30, 64, 255, 0.1) 100%)',
-        border: '1px solid var(--color-primary-light)', borderLeft: '4px solid var(--color-primary)',
-        borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.5rem'
+        background: '#ffffff',
+        border: '1px solid #E2E8F0',
+        borderRadius: '16px', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.5rem'
       }}>
         <div style={{
           background: 'var(--color-card, #fff)',
@@ -1131,7 +1232,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       </div>
 
       {/* KPI Cards */}
-      <div data-tour="fairshare-gini" className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
         {loading && !activeData ? (
           Array.from({ length: 4 }).map((_, i) => <KpiCardSkeleton key={i} />)
         ) : (
@@ -1140,7 +1241,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
             {(() => {
               const level = getFairnessLevel(activeData?.fairnessIndex || 0);
               return (
-                <div className="stat-card hover-lift" style={{ minHeight: '135px', display: 'flex', flexDirection: 'column', borderLeft: `4px solid ${level.color}`, position: 'relative', overflow: 'hidden' }}>
+                <div className="stat-card hover-lift" style={{ minHeight: '135px', display: 'flex', flexDirection: 'column', border: '1px solid #E2E8F0', borderRadius: '16px', position: 'relative', overflow: 'hidden' }}>
                   <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: 60, height: 60, borderRadius: '50%', background: `radial-gradient(circle, ${level.color}10 0%, transparent 70%)` }} />
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', zIndex: 1 }}>
                     <span className="stat-label" style={{ fontWeight: 800 }}>{t("CHỈ SỐ CÔNG BẰNG")}</span>
@@ -1261,12 +1362,12 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
             {/* Total Audited Leads */}
             <div className="stat-card hover-lift" style={{ minHeight: '135px', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span className="stat-label" style={{ fontWeight: 800 }}>{t("TỔNG LEAD / ĐẠI LÝ")}</span>
+                <span className="stat-label" style={{ fontWeight: 800 }}>{t("TỔNG LEAD / SALEPERSONS")}</span>
                 <Users size={18} color="#3b82f6" />
               </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div className="stat-value" style={{ fontWeight: 800, color: 'var(--color-text)', fontSize: '2rem', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                  <span>{Math.round(activeData?.totalLeads || 0)} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>/ {activeData?.totalConsultants || 0} {t("Đại lý")}</span></span>
+                  <span>{Math.round(activeData?.totalLeads || 0)} <span style={{ fontSize: '1rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>/ {activeData?.totalConsultants || 0} {t("Saleperson")}</span></span>
                   {isSimulating && (
                     <span style={{ fontSize: '0.65rem', padding: '3px 8px', borderRadius: 20, background: 'var(--color-primary-light)', color: 'var(--color-primary)', fontWeight: 700, border: '1px solid var(--color-primary)20', letterSpacing: '0.05em' }}>
                       {t("GIẢ LẬP")}
@@ -1422,7 +1523,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       )}
 
       {/* Detail Table */}
-      <div data-tour="fairshare-sim" className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: '2rem', border: '1px solid var(--color-border)', position: 'relative' }}>
+      <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: '2rem', border: '1px solid var(--color-border)', position: 'relative' }}>
         {isSimulating && (
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--color-primary)', zIndex: 5, animation: 'pulse 2s infinite' }} />
         )}
@@ -1445,8 +1546,8 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                       {t("Đã chia")}
                     </span>
                     <span style={{ opacity: 0.7 }}>+</span>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#7e22ce' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9333ea' }} />
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#1E40FF' }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1E40FF' }} />
                       {t("Bù")}
                     </span>
                   </span>
@@ -1463,7 +1564,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
           </span>
         </div>
 
-        <div data-tour="fairshare-compensate" className="responsive-table-wrap">
+        <div className="responsive-table-wrap">
           {loading && !activeData ? (
             <div style={{ padding: '1.25rem' }}>
               <Skeleton width="100%" height={24} style={{ marginBottom: 12 }} />
@@ -1482,7 +1583,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                     letterSpacing: '0.04em',
                     background: isSimulating ? 'rgba(30, 64, 255, 0.06)' : 'var(--color-border-light)'
                   }}>
-                    {isSimulating ? t("Trực ca / Tư vấn viên (Nhập)") : t("Đại lý")}
+                    {isSimulating ? t("Trực ca / Tư vấn viên (Nhập)") : t("Tư vấn viên")}
                   </th>
                   <th style={{ padding: '14px 18px', fontSize: '0.72rem', color: 'var(--color-text-light)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em' }}>{t("Vòng chia")}</th>
                   <th style={{
@@ -1503,6 +1604,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                   <th style={{ padding: '14px 18px', fontSize: '0.72rem', color: 'var(--color-text-light)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em', textAlign: 'center' }}>{t("Duyệt Ticket")}</th>
                   <th style={{ padding: '14px 18px', fontSize: '0.72rem', color: 'var(--color-text-light)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em', textAlign: 'center' }}>{t("Data bù")}</th>
                   <th style={{ padding: '14px 18px', fontSize: '0.72rem', color: 'var(--color-text-light)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em', textAlign: 'right' }}>{t("Độ Lệch")}</th>
+                  <th style={{ padding: '14px 18px', fontSize: '0.72rem', color: 'var(--color-text-light)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.04em', textAlign: 'center', width: '110px' }}>{t("Hành động")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1718,7 +1820,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                       </td>
                       <td style={{ padding: '14px 18px', textAlign: 'center' }}>
                         {c.compensation_count > 0 ? (
-                          <span style={{ color: '#7e22ce', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.875rem', background: '#f3e8ff', padding: '2px 8px', borderRadius: 6, border: '1px solid rgba(147, 51, 234, 0.25)' }}>
+                          <span style={{ color: '#1E40FF', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.875rem', background: 'rgba(30, 64, 255, 0.08)', padding: '2px 8px', borderRadius: 6, border: '1px solid rgba(30, 64, 255, 0.15)' }}>
                             <RotateCcw size={12} /> {c.compensation_count}
                           </span>
                         ) : (
@@ -1729,6 +1831,17 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                         <span className={`deviation-badge ${deviationClass}`}>
                           {deviationLabel}
                         </span>
+                      </td>
+                      <td style={{ padding: '14px 18px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          className="btn secondary sm"
+                          onClick={() => handleOpenQuickCompModal(c.id)}
+                          title={t("Bù Data chủ động cho TVV này")}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '0.75rem', fontWeight: 600, borderRadius: 6 }}
+                        >
+                          <Zap size={12} /> {t("Bù Data")}
+                        </button>
                       </td>
                     </tr>
                   );
@@ -1743,6 +1856,115 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
           )}
         </div>
       </div>
+
+      {/* Quick Active Compensation Modal */}
+      {quickCompModalOpen && (
+        <CustomModal
+          isOpen={quickCompModalOpen}
+          onClose={() => setQuickCompModalOpen(false)}
+          title={t("Quản lý Bù Data Chủ Động")}
+          width="560px"
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0.5rem 0' }}>
+            <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
+              {t("Vòng:")} <strong>{rounds.find(r => String(r.id) === String(roundFilter))?.round_name || `ID ${roundFilter}`}</strong>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '55vh', overflowY: 'auto' }} className="custom-scrollbar">
+              {(activeData?.consultants || data?.consultants || []).map((c: any) => {
+                const currentVal = quickCompData[c.id] ?? (c.pending_compensation || 0);
+                const hasChanged = currentVal !== (c.pending_compensation || 0);
+                return (
+                  <div
+                    key={c.id}
+                    style={{
+                      padding: '12px 14px',
+                      borderRadius: 10,
+                      border: `1px solid ${hasChanged ? 'var(--color-primary)' : 'var(--color-border-light)'}`,
+                      background: hasChanged ? 'rgba(30, 64, 255, 0.03)' : 'var(--color-bg)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 8,
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <Avatar src={c.avatar} name={c.name} size={34} />
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-text)' }}>{c.name}</div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>ID: {c.id} • Ratio: {c.receive_ratio} • Hiện có: {c.pending_compensation || 0} suất bù</div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <button
+                          type="button"
+                          className="btn outline sm"
+                          style={{ width: 30, height: 30, padding: 0, justifyContent: 'center', fontSize: '1rem', fontWeight: 700 }}
+                          onClick={() => setQuickCompData(prev => ({ ...prev, [c.id]: Math.max(0, (prev[c.id] || 0) - 1) }))}
+                        >
+                          -
+                        </button>
+                        <span style={{ minWidth: 32, textAlign: 'center', fontWeight: 800, fontSize: '1.05rem', color: currentVal > 0 ? 'var(--color-primary)' : 'var(--color-text)' }}>
+                          {currentVal}
+                        </span>
+                        <button
+                          type="button"
+                          className="btn outline sm"
+                          style={{ width: 30, height: 30, padding: 0, justifyContent: 'center', fontSize: '1rem', fontWeight: 700 }}
+                          onClick={() => setQuickCompData(prev => ({ ...prev, [c.id]: (prev[c.id] || 0) + 1 }))}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    {currentVal > (c.pending_compensation || 0) && (
+                      <input
+                        type="text"
+                        placeholder={t("Nhập lý do bù chủ động (tùy chọn)...")}
+                        value={quickCompReasons[c.id] || ''}
+                        onChange={(e) => setQuickCompReasons(prev => ({ ...prev, [c.id]: e.target.value }))}
+                        style={{
+                          width: '100%',
+                          padding: '6px 10px',
+                          fontSize: '0.75rem',
+                          borderRadius: 6,
+                          border: '1px solid var(--color-border)',
+                          background: 'var(--color-surface)',
+                          color: 'var(--color-text)'
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--color-border)' }}>
+              <button
+                type="button"
+                className="btn outline"
+                onClick={() => setQuickCompModalOpen(false)}
+                disabled={isSavingQuickComp}
+              >
+                {t("Đóng")}
+              </button>
+              <button
+                type="button"
+                className="btn primary"
+                onClick={handleSaveQuickComp}
+                disabled={isSavingQuickComp}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                <Zap size={14} />
+                <span>{isSavingQuickComp ? t("Đang lưu...") : t("Lưu Bù Data")}</span>
+              </button>
+            </div>
+          </div>
+        </CustomModal>
+      )}
 
       {/* Custom Date Modal (from Dashboard.tsx) */}
       <CustomModal
@@ -1820,23 +2042,89 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       <CustomModal
         isOpen={showInfoModal}
         onClose={() => setShowInfoModal(false)}
-        title={t("Thuật ngữ đối soát")}
-        width="500px"
+        title={t("Hướng dẫn Cơ chế Đối soát Công bằng (Fair-Share Audit)")}
+        width="760px"
       >
         {showInfoModal && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0.5rem 0' }}>
-            <div>
-              <h4 style={{ fontWeight: 800, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.9rem' }}>
-                <BarChart2 size={16} color="#3b82f6" /> {t("Chuẩn hóa tỷ lệ phân bổ (Normalized Share)")}
-              </h4>
-              <p style={{ fontSize: '0.78rem', color: 'var(--color-text-light)', marginTop: 6, lineHeight: 1.5 }}>
-                {t("Khi một vòng phân bổ thiết lập tỷ lệ chia cho Sale A là x2 và Sale B là x1, thì việc Sale A nhận được số lead gấp đôi Sale B là hoàn toàn công bằng.")}
-                {t("Thuật toán đối soát công bằng sẽ tự động chia số lead của từng Sale cho Ratio của họ trước khi chạy tính toán Gini để đảm bảo độ chính xác tuyệt đối.")}
+          <div style={{ padding: '0.25rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 12, 
+              padding: '0.875rem 1rem', 
+              background: 'var(--color-primary-light)', 
+              border: '1px solid rgba(30, 64, 255, 0.15)', 
+              borderRadius: 12 
+            }}>
+              <Scale size={24} color="var(--color-primary)" style={{ flexShrink: 0 }} />
+              <p style={{ fontSize: '0.825rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                {t("Hệ thống Đối soát Công bằng giúp Admin giám sát và đo lường trực quan sự phân phối lead có khớp với tỉ lệ cấu hình ban đầu hay không. Các chỉ số được định nghĩa chi tiết:")}
               </p>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-              <button className="btn primary" onClick={() => setShowInfoModal(false)}>{t("Đóng")}</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {/* Normalized Share */}
+              <div style={{ 
+                display: 'flex', 
+                gap: 12, 
+                padding: '1rem', 
+                background: '#ffffff', 
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px'
+              }}>
+                <BarChart2 size={20} color="#334155" style={{ flexShrink: 0, marginTop: 2 }} />
+                <div>
+                  <h5 style={{ fontSize: '0.875rem', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--color-text)' }}>
+                    {t("1. Quy đổi công bằng theo tỉ lệ (Normalized Share)")}
+                  </h5>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
+                    {t("Hệ thống tự động điều chỉnh số lượng khách hàng tương ứng với tỉ lệ cấu hình của mỗi nhân viên. Ví dụ: Nếu Sale A được cài đặt nhận gấp đôi Sale B (tỷ lệ 2:1), hệ thống sẽ quy đổi sao cho chỉ so sánh độ chênh lệch sau khi đã bù trừ tỉ lệ chênh lệch này để đánh giá công bằng.")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Gini Coefficient */}
+              <div style={{ 
+                display: 'flex', 
+                gap: 12, 
+                padding: '1rem', 
+                background: '#ffffff', 
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px'
+              }}>
+                <TrendingUp size={20} color="#1E40FF" style={{ flexShrink: 0, marginTop: 2 }} />
+                <div>
+                  <h5 style={{ fontSize: '0.875rem', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--color-text)' }}>
+                    {t("2. Chỉ số chênh lệch chia số (Gini Coefficient)")}
+                  </h5>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
+                    {t("Chỉ số đo lường mức độ phân phối không đồng đều, dao động từ 0% (mọi sale nhận khách hàng cực kỳ đều và đúng tỷ lệ) cho đến 100% (chênh lệch hoàn toàn, chỉ 1 người nhận hết toàn bộ). Hệ thống kiểm soát để chỉ số này ở mức dưới 20% là trạng thái lý tưởng.")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Compensation queue */}
+              <div style={{ 
+                display: 'flex', 
+                gap: 12, 
+                padding: '1rem', 
+                background: '#ffffff', 
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px'
+              }}>
+                <Sparkles size={20} color="#1E40FF" style={{ flexShrink: 0, marginTop: 2 }} />
+                <div>
+                  <h5 style={{ fontSize: '0.875rem', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--color-text)' }}>
+                    {t("3. Hàng đợi đền bù ưu tiên (Compensation Queue)")}
+                  </h5>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
+                    {t("Khi một Sale báo cáo data lỗi và được duyệt đền bù, họ sẽ có tên trong hàng đợi ưu tiên. Khách hàng mới đổ về tiếp theo sẽ được giao trước cho những Sale này để bù lại số lỗi đã nhận, giúp đảm bảo không ai bị thiệt thòi.")}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem' }}>
+              <button className="btn primary" onClick={() => setShowInfoModal(false)}>{t("Đồng ý")}</button>
             </div>
           </div>
         )}
@@ -1878,9 +2166,9 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-light)', display: 'block', textTransform: 'uppercase', marginBottom: '4px' }}>{t("Thành công")}</span>
                     <span style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-primary)' }}>{compensationDetails.total_assigned}</span>
                   </div>
-                  <div style={{ background: 'rgba(147, 51, 234, 0.06)', border: '1px solid rgba(147, 51, 234, 0.22)', borderRadius: '12px', padding: '12px 16px', textAlign: 'center' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.04)', border: '1px solid rgba(16, 185, 129, 0.15)', borderRadius: '12px', padding: '12px 16px', textAlign: 'center' }}>
                     <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-text-light)', display: 'block', textTransform: 'uppercase', marginBottom: '4px' }}>{t("Data Bù Đã Nhận")}</span>
-                    <span style={{ fontSize: '1.75rem', fontWeight: 800, color: '#7e22ce' }}>{compensationDetails.total_compensation_received}</span>
+                    <span style={{ fontSize: '1.75rem', fontWeight: 800, color: '#10b981' }}>{compensationDetails.total_compensation_received}</span>
                   </div>
                 </div>
 
@@ -1925,7 +2213,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                           paddingRight: '4px'
                         }}>
                           {compensationDetails.breakdown.ticket_details.map((tkt: any, idx: number) => {
-                            const dateStr = formatDateTimeVN(tkt.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            const dateStr = new Date(tkt.created_at).toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                             return (
                               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-light)', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -1978,7 +2266,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                           paddingRight: '4px'
                         }}>
                           {compensationDetails.breakdown.blacklist_details.map((bl: any, idx: number) => {
-                            const dateStr = formatDateTimeVN(bl.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            const dateStr = new Date(bl.created_at).toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                             return (
                               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-light)', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -2031,7 +2319,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                           paddingRight: '4px'
                         }}>
                           {compensationDetails.breakdown.reassign_details.map((re: any, idx: number) => {
-                            const dateStr = formatDateTimeVN(re.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            const dateStr = new Date(re.created_at).toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                             return (
                               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-light)', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -2085,7 +2373,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
                           paddingRight: '4px'
                         }}>
                           {compensationDetails.breakdown.active_details.map((act: any, idx: number) => {
-                            const dateStr = formatDateTimeVN(act.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            const dateStr = new Date(act.created_at).toLocaleDateString('vi-VN', { hour: '2-digit', minute: '2-digit' });
                             return (
                               <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-light)', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

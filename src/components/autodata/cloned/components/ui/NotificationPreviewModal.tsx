@@ -3,8 +3,6 @@ import { CustomModal } from './CustomModal';
 import { Mail, MessageCircle, Send } from 'lucide-react';
 import { fetchAPI } from '../../utils/api';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { renderClientTemplate, resolveTenantBrandName } from '../../utils/pipelineConfig';
 
 interface NotificationPreviewModalProps {
   isOpen: boolean;
@@ -25,24 +23,6 @@ interface NotificationPreviewModalProps {
   roundName?: string;
   aiEvaluation?: string;
   aiStatus?: string;
-}
-
-import type { TenantSettingsDto } from '../../utils/pipelineConfig';
-
-interface NotificationPreviewSettingsDto extends Partial<TenantSettingsDto> {
-  tenant_settings?: Partial<TenantSettingsDto>;
-}
-
-interface NotificationPreviewConsultantDto {
-  id?: number | string;
-  name?: string;
-  email?: string;
-}
-
-interface NotificationPreviewRoundDto {
-  id?: number | string;
-  round_name?: string;
-  cc_emails?: string;
 }
 
 export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> = ({
@@ -66,66 +46,56 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
   aiStatus = ''
 }) => {
   const { t } = useLanguage();
-  const { tenantSettings, companyName } = useAuth();
   const isEmail = type === 'email';
   const modalTitle = isEmail 
-    ? "Xem chi tiết Mẫu Email đã gửi cho Đại lý"
-    : "Xem chi tiết Mẫu Zalo đã gửi cho Đại lý";
+    ? "Xem chi tiết Mẫu Email đã gửi cho Sale"
+    : "Xem chi tiết Mẫu Zalo đã gửi cho Sale";
 
   // State for dynamic settings, consultant, and round
-  const [settings, setSettings] = useState<NotificationPreviewSettingsDto | null>(null);
-  const [consultant, setConsultant] = useState<NotificationPreviewConsultantDto | null>(null);
-  const [round, setRound] = useState<NotificationPreviewRoundDto | null>(null);
+  const [settings, setSettings] = useState<any>(null);
+  const [consultant, setConsultant] = useState<any>(null);
+  const [round, setRound] = useState<any>(null);
 
   useEffect(() => {
-    if (!isOpen) return undefined;
-    let cancelled = false;
-
-    // 1. Fetch system settings
-    fetchAPI('get_settings')
-      .then(res => {
-        if (!cancelled && res && res.success && res.data) {
-          setSettings(res.data as NotificationPreviewSettingsDto);
-        }
-      })
-      .catch(err => console.error("Error fetching settings:", err));
-
-    // 2. Fetch consultants to find the email of the assigned sale
-    fetchAPI('get_consultants')
-      .then(res => {
-        if (!cancelled && res && res.success && Array.isArray(res.data)) {
-          const found = (res.data as NotificationPreviewConsultantDto[]).find(
-            (c) => c?.name === assignedToName
-          );
-          if (found) {
-            setConsultant(found);
+    if (isOpen) {
+      // 1. Fetch system settings
+      fetchAPI('get_settings')
+        .then(res => {
+          if (res && res.success && res.data) {
+            setSettings(res.data);
           }
-        }
-      })
-      .catch(err => console.error("Error fetching consultants:", err));
+        })
+        .catch(err => console.error("Error fetching settings:", err));
 
-    // 3. Fetch rounds to get cc_emails
-    fetchAPI('get_rounds')
-      .then(res => {
-        if (!cancelled && res && res.success && Array.isArray(res.data)) {
-          const found = (res.data as NotificationPreviewRoundDto[]).find(
-            (r) => r?.round_name === roundName || r?.id === roundId
-          );
-          if (found) {
-            setRound(found);
+      // 2. Fetch consultants to find the email of the assigned sale
+      fetchAPI('get_consultants')
+        .then(res => {
+          if (res && res.success && res.data) {
+            const found = res.data.find((c: any) => c.name === assignedToName);
+            if (found) {
+              setConsultant(found);
+            }
           }
-        }
-      })
-      .catch(err => console.error("Error fetching rounds:", err));
+        })
+        .catch(err => console.error("Error fetching consultants:", err));
 
-    return () => {
-      cancelled = true;
-    };
+      // 3. Fetch rounds to get cc_emails
+      fetchAPI('get_rounds')
+        .then(res => {
+          if (res && res.success && res.data) {
+            const found = res.data.find((r: any) => r.round_name === roundName || r.id === roundId);
+            if (found) {
+              setRound(found);
+            }
+          }
+        })
+        .catch(err => console.error("Error fetching rounds:", err));
+    } else {
+      setSettings(null);
+      setConsultant(null);
+      setRound(null);
+    }
   }, [isOpen, assignedToName, roundName, roundId]);
-
-  const activeSettings = isOpen ? settings : null;
-  const activeConsultant = isOpen ? consultant : null;
-  const activeRound = isOpen ? round : null;
 
   // Dynamic values
   const displayRound = roundName || leadType || 'Form';
@@ -135,9 +105,9 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
   const displayNote = leadNote && leadNote !== '-' ? leadNote : 'Không có';
   
   // App base URL construct
-  const appBaseUrl = typeof window !== 'undefined' ? `${window.location.origin}/data` : 'https://domation.net/data';
-  const portalUrl = `${appBaseUrl}/sale-portal`;
-  const reportUrl = `${appBaseUrl}/report-data?lead_id=${leadId}&sale_id=${assignedToId || activeConsultant?.id || 0}&round_id=${roundId || activeRound?.id || 0}`;
+  const appBaseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
+  const portalUrl = `${appBaseUrl}/`;
+  const reportUrl = `${appBaseUrl}/report-data?lead_id=${leadId}&sale_id=${assignedToId || consultant?.id || 0}&round_id=${roundId || round?.id || 0}`;
 
   // Helper to parse leadNote for custom key-value pairs (like mailer.php)
   const parseLeadNoteToRows = (noteText: string) => {
@@ -234,32 +204,14 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
     }
   };
 
-  // 2. EMAIL SUBJECT (Dynamic Tenant Template / Fallback)
-  const effectiveSettings = { ...(tenantSettings || {}), ...(activeSettings?.tenant_settings || {}), ...(activeSettings || {}) };
-  const brandDisplayName = resolveTenantBrandName(effectiveSettings, companyName);
-  const brandAccentColor = effectiveSettings?.brand_email_accent_color || effectiveSettings?.brand_primary_color || '#1E40FF';
-  const brandLogoUrl = effectiveSettings?.brand_logo_url || '/imgs/autodata/domation_ai_icon.svg';
-  const brandFooterText = effectiveSettings?.brand_email_footer_text || 'Hệ thống phân phối Lead tự động';
-  const supportEmailAddr = effectiveSettings?.ses_sender_email || effectiveSettings?.support_email || 'noreply@domation.net';
-
+  // 2. EMAIL SUBJECT (Matches mailer.php)
   const getEmailSubject = () => {
     if (isReminder) {
       return `Khách hàng cũ đăng ký lại — ${leadName}`;
+    } else {
+      const roundStr = displayRound ? ` vòng ${displayRound}` : '';
+      return `Bạn vừa nhận được Lead ${leadName}${roundStr}`;
     }
-    const tpl = effectiveSettings?.notification_templates?.assign_email_subject;
-    if (tpl) {
-      return renderClientTemplate(tpl, {
-        brand_name: brandDisplayName,
-        customer_name: leadName,
-        phone: leadPhone,
-        source: displaySource,
-        round_name: displayRound,
-        sale_name: assignedToName,
-        lead_id: `#${leadId || '0'}`,
-      });
-    }
-    const roundStr = displayRound ? ` vòng ${displayRound}` : '';
-    return `[${brandDisplayName}] Bạn vừa nhận được Lead ${leadName}${roundStr}`;
   };
 
   const getEmailContent = () => {
@@ -271,7 +223,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
             <div style={{
               width: '64px',
               height: '64px',
-              backgroundColor: '#F6EFE0',
+              backgroundColor: '#ffe3e8',
               borderRadius: '50%',
               display: 'inline-flex',
               alignItems: 'center',
@@ -461,11 +413,11 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
 
           {/* AI Block (purple background, purple left border) */}
           {aiStatus === 'passed' && aiEvaluation && (
-            <div style={{ backgroundColor: '#FCF8EE', borderLeft: '4px solid #1E40FF', padding: '24px', margin: '30px 0', borderRadius: '0 12px 12px 0' }}>
-              <p style={{ color: '#1E3A8A', fontSize: '16px', margin: '0 0 12px 0', fontWeight: 'bold', lineHeight: 1.6, borderBottom: '1px solid #EBD9A8', paddingBottom: '8px' }}>
+            <div style={{ backgroundColor: '#fff5f6', borderLeft: '4px solid #1D4ED8', padding: '24px', margin: '30px 0', borderRadius: '0 12px 12px 0' }}>
+              <p style={{ color: '#1E3A8A', fontSize: '16px', margin: '0 0 12px 0', fontWeight: 'bold', lineHeight: 1.6, borderBottom: '1px solid #ddd6fe', paddingBottom: '8px' }}>
                 🤖 Đánh giá AI:
               </p>
-              <p style={{ color: '#1E3A8A', fontSize: '15px', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
+              <p style={{ color: '#5b21b6', fontSize: '15px', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
                 {aiEvaluation}
               </p>
             </div>
@@ -482,24 +434,25 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
       title={t(modalTitle)}
       width={isEmail ? 680 : 520}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', maxHeight: '75vh', overflow: 'hidden' }}>
+      {isOpen && (
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', maxHeight: '75vh', overflow: 'hidden' }}>
         
         {/* Info Header */}
         <div style={{
-          background: isEmail ? '#FCF8EE' : '#e0f2fe',
-          border: isEmail ? '1px solid #F3E5C0' : '1px solid #bae6fd',
+          background: isEmail ? '#fff5f6' : '#e0f2fe',
+          border: isEmail ? '1px solid #ffccd5' : '1px solid #bae6fd',
           borderRadius: '8px',
           padding: '10px 14px',
           marginBottom: '1rem',
           fontSize: '0.8rem',
-          color: isEmail ? '#6b21a8' : '#0369a1',
+          color: isEmail ? '#700913' : '#0369a1',
           display: 'flex',
           alignItems: 'center',
           gap: 8
         }}>
-          {isEmail ? <Mail size={14} style={{ color: '#1E40FF' }} /> : <MessageCircle size={14} style={{ color: '#0068ff' }} />}
+          {isEmail ? <Mail size={14} style={{ color: '#1D4ED8' }} /> : <img src="https://stc-zpl.zdn.vn/favicon.ico" alt="Zalo" style={{ width: 14, height: 14, borderRadius: '50%' }} />}
           <span>
-            {t("Thông báo này được gửi tự động lúc")} <strong>{sentAt}</strong> {t("đến Đại lý")} <strong>{assignedToName}</strong>
+            {t("Thông báo này được gửi tự động lúc")} <strong>{sentAt}</strong> {t("đến Sale")} <strong>{assignedToName}</strong>
           </span>
         </div>
 
@@ -519,7 +472,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
             }}>
               {/* Email Headers (No MINTH CRM references) */}
               <div style={{
-                background: '#ffffff',
+                background: 'var(--color-surface)',
                 padding: '16px',
                 borderBottom: '1px solid #e2e8f0',
                 display: 'flex',
@@ -534,19 +487,19 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#64748b', width: '70px', fontWeight: 600 }}>{t("Từ:")}</span>
                   <span style={{ color: '#0f172a' }}>
-                    {brandDisplayName} &lt;{supportEmailAddr}&gt;
+                    {settings?.ses_sender_name || 'IDEAS TEAM'} &lt;{settings?.ses_sender_email || 'noreply@Ideas.net'}&gt;
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#64748b', width: '70px', fontWeight: 600 }}>{t("Tới:")}</span>
                   <span style={{ color: '#0f172a', fontWeight: 500 }}>
-                    {assignedToName} &lt;{activeConsultant?.email || 'sale@domation.net'}&gt;
+                    {assignedToName} &lt;{consultant?.email || 'sale@Ideas.net'}&gt;
                   </span>
                 </div>
-                {activeRound?.cc_emails && (
+                {round?.cc_emails && (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <span style={{ color: '#64748b', width: '70px', fontWeight: 600 }}>Cc:</span>
-                    <span style={{ color: '#0f172a' }}>{activeRound.cc_emails}</span>
+                    <span style={{ color: '#0f172a' }}>{round.cc_emails}</span>
                   </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -563,7 +516,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                 justifyContent: 'center'
               }}>
                 <div style={{
-                  background: '#ffffff',
+                  background: 'var(--color-surface)',
                   width: '100%',
                   maxWidth: '560px',
                   borderRadius: '16px',
@@ -572,20 +525,20 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                   overflow: 'hidden',
                   marginBottom: '24px'
                 }}>
-                  {/* Email Top Brand Accent Gradient (Dynamic Tenant White-Label) */}
+                  {/* Email Top Brand Accent Gradient matching mailer.php */}
                   <div style={{
-                    background: `linear-gradient(135deg, ${brandAccentColor}, #0f172a)`,
+                    background: 'linear-gradient(135deg, #eab308, #ea580c)',
                     padding: '32px 20px',
                     textAlign: 'center'
                   }}>
                     <div style={{ marginBottom: '12px', textAlign: 'center' }}>
                       <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.25)', borderRadius: '50%', width: '48px', height: '48px', lineHeight: '48px', textAlign: 'center', verticalAlign: 'middle' }}>
-                        <img src={brandLogoUrl} alt={`${brandDisplayName} Logo`} style={{ width: '28px', height: '28px', verticalAlign: 'middle', display: 'inline-block', borderRadius: '50%', objectFit: 'cover' }} />
+                        <img src={`${import.meta.env.VITE_API_URL || '/backend'}/Compress_ICON.png`} alt="IDEAS Logo" style={{ width: '28px', height: '28px', verticalAlign: 'middle', display: 'inline-block', borderRadius: '50%' }} />
                       </div>
                     </div>
-                    <h1 style={{ color: '#ffffff', fontSize: '24px', margin: 0, fontWeight: 900, letterSpacing: '1.5px', textAlign: 'center', fontFamily: "'Inter', Helvetica, Arial, sans-serif" }}>{brandDisplayName.toUpperCase()}</h1>
+                    <h1 style={{ color: '#ffffff', fontSize: '24px', margin: 0, fontWeight: 900, letterSpacing: '2px', textAlign: 'center', fontFamily: "'Inter', Helvetica, Arial, sans-serif" }}>IDEAS</h1>
                     <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '12px', margin: '4px 0 0', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 700, textAlign: 'center' }}>
-                      {isReminder ? 'DATA ROUTING ENGINE' : brandFooterText}
+                      {isReminder ? 'DATA ROUTING ENGINE' : 'CÓ DATA MỚI VỀ!'}
                     </p>
                   </div>
 
@@ -599,7 +552,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                         Xem danh sách dữ liệu tại Trang Tư vấn viên hoặc báo cáo lỗi (sai SĐT, trùng lặp...) để nhận data bù:
                       </p>
                       <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '12px' }}>
-                        <a href={portalUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', backgroundColor: '#1E40FF', color: 'white', textDecoration: 'none', padding: '10px 24px', borderRadius: '8px', fontWeight: 'bold', fontSize: '15px', boxShadow: '0 4px 6px -1px rgba(30, 64, 255, 0.2)' }}>
+                        <a href={portalUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', backgroundColor: '#1D4ED8', color: 'white', textDecoration: 'none', padding: '10px 24px', borderRadius: '8px', fontWeight: 'bold', fontSize: '15px', boxShadow: '0 4px 6px -1px rgba(30, 64, 255, 0.2)' }}>
                           DATA CỦA BẠN
                         </a>
                         <a href={reportUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', backgroundColor: '#ef4444', color: 'white', textDecoration: 'none', padding: '10px 24px', borderRadius: '8px', fontWeight: 'bold', fontSize: '15px', boxShadow: '0 4px 6px -1px rgba(239, 68, 68, 0.2)' }}>
@@ -611,14 +564,14 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
 
                   {/* Email Footer */}
                   <div style={{
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--color-surface)',
                     padding: '24px',
                     textAlign: 'center',
                     borderTop: '1px solid #e2e8f0'
                   }}>
                     <p style={{ color: '#64748b', fontSize: '12px', margin: 0, lineHeight: '1.6' }}>
-                      © 2026 DOMATION AutoData Đà Nẵng. All rights reserved.<br/>
-                      Email này được gửi tự động từ hệ thống quản trị DOMATION.
+                      © 2026 IDEAS Ecosystem. All rights reserved.<br/>
+                      Email này được gửi tự động từ hệ thống quản trị IDEAS.
                     </p>
                   </div>
                 </div>
@@ -667,7 +620,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
                   width: '32px',
                   height: '32px',
                   borderRadius: '50%',
-                  background: '#ffffff',
+                  background: 'var(--color-surface)',
                   color: '#0068ff',
                   display: 'flex',
                   alignItems: 'center',
@@ -730,7 +683,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
 
                   {/* Message Bubble */}
                   <div style={{
-                    background: '#ffffff',
+                    background: 'var(--color-surface)',
                     borderRadius: '12px',
                     borderTopLeftRadius: '2px',
                     padding: '10px 12px',
@@ -748,7 +701,7 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
 
               {/* Bottom Chat bar mockup */}
               <div style={{
-                background: '#ffffff',
+                background: 'var(--color-surface)',
                 padding: '8px 12px',
                 borderTop: '1px solid #e2e8f0',
                 display: 'flex',
@@ -798,8 +751,8 @@ export const NotificationPreviewModal: React.FC<NotificationPreviewModalProps> =
             {t("Đóng")}
           </button>
         </div>
-
       </div>
+      )}
     </CustomModal>
   );
 };

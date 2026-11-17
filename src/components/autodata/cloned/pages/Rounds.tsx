@@ -2,17 +2,21 @@ import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { Plus, Users, Zap, X, Shield, Check, LayoutGrid, List, Trash2, Search, AlertCircle, Clock, Scale, Info, Layers, HelpCircle, ArrowRight, RefreshCw } from 'lucide-react';
+import { Plus, Users, Zap, X, Shield, Check, LayoutGrid, List, Trash2, Search, AlertCircle, Clock, Scale, Info, Layers, HelpCircle, ArrowRight, RefreshCw, Globe, Building2 } from 'lucide-react';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
-import { fetchAPI, getDefaultDateFilter, normalizeGlobalDateFilter, formatDateTimeVN } from '../utils/api';
+import { fetchAPI, getDefaultDateFilter } from '../utils/api';
 import toast from 'react-hot-toast';
-import { RoundCardSkeleton } from '../components/ui/Skeleton';
+import { RoundCardSkeleton, StatRowSkeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
-import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
+import { EmptyCard } from '../components/ui/EmptyCard';
+import { useAuthStore } from '../store/authStore';
+import { DistributionNavTabs } from '../components/DistributionNavTabs';
+import { Pagination } from '../components/ui/Pagination';
+import { canManageSystemSettings } from '../utils/roleUtils';
 
 const AVATAR_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#10b981', '#0ea5e9',
@@ -28,7 +32,17 @@ const getColorForName = (name: string) => {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 };
 const RoundsInner = ({ isActive }: { isActive: boolean }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const navigate = useNavigate();
+  const user = useAuthStore(state => state.user);
+  const isReadOnly = !canManageSystemSettings(user);
   const { t } = useLanguage();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -64,17 +78,16 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
+    return localStorage.getItem('Ideas_global_date') || getDefaultDateFilter();
   });
   const [showDateModal, setShowDateModal] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
   const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
+    setDateFilter(val);
+    localStorage.setItem('Ideas_global_date', val);
+    window.dispatchEvent(new CustomEvent('global-date-change', { detail: val }));
   };
 
   const getDisplayDateFilterText = (val: string) => {
@@ -121,16 +134,21 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isActioning, setIsActioning] = useState<number | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [scopeType, setScopeType] = useState<'none' | 'project' | 'campaign'>('none');
   const [formData, setFormData] = useState({
     round_name: '',
     is_active: 1,
     cc_emails: '',
-    selected_users: [] as string[],
-    starting_consultant_id: null as string | null,
+    selected_users: [] as number[],
+    starting_consultant_id: null as number | null,
     ratios: {} as Record<string, number>,
     data_per_turns: {} as Record<string, number>,
     compensations: {} as Record<string, number>,
-    is_fallback: false
+    is_fallback: false,
+    project_id: null as number | null,
+    campaign_id: null as number | null
   });
 
   const [searchUser, setSearchUser] = useState('');
@@ -147,6 +165,14 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
 
   // Compensation Modal State
   const [compModalOpen, setCompModalOpen] = useState(false);
+
+  // Pagination States
+  const [roundsPage, setRoundsPage] = useState(1);
+  const [roundsPageSize] = useState(6);
+  const [reportsPage, setReportsPage] = useState(1);
+  const [reportsPageSize] = useState(5);
+  const [activeLogsPage, setActiveLogsPage] = useState(1);
+  const [activeLogsPageSize] = useState(5);
 
   // CC config states
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -180,50 +206,90 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
   const fetchConsultants = async () => {
     try {
       const json = await fetchAPI('get_consultants');
-      if (json && json.success) setConsultants(Array.isArray(json?.data) ? json.data : []);
+      if (json.success) setConsultants(json.data);
     } catch (e: any) {
       console.error(t('Không thể tải tư vấn viên:'), e.message);
     }
   };
 
+  const roundsAbortRef = useRef<AbortController | null>(null);
+  const activeLogsAbortRef = useRef<AbortController | null>(null);
+  const reportsAbortRef = useRef<AbortController | null>(null);
+  const inFlightRef = useRef(false);
+
   const fetchRounds = async () => {
-    try {
-      const json = await fetchAPI(`get_rounds&date=${encodeURIComponent(dateFilter)}`);
-      if (json && json.success) setRounds(Array.isArray(json?.data) ? json.data : []);
-    } catch (e: any) {
-      toast.error(t('Không thể tải dữ liệu: ') + e.message);
+    if (roundsAbortRef.current) {
+      roundsAbortRef.current.abort();
     }
-    setLoading(false);
+    const controller = new AbortController();
+    roundsAbortRef.current = controller;
+    const { signal } = controller;
+
+    try {
+      const json = await fetchAPI(`get_rounds&date=${encodeURIComponent(dateFilter)}`, { signal });
+      if (signal.aborted) return;
+      if (json.success) setRounds(json.data);
+    } catch (e: any) {
+      if (e?.name === 'AbortError' || e?.name === 'CanceledError' || e?.code === 'ERR_CANCELED') return;
+      toast.error(t('Không thể tải dữ liệu: ') + e.message);
+    } finally {
+      if (!signal.aborted) {
+        setLoading(false);
+      }
+    }
   };
 
   const fetchAccounts = async () => {
     try {
       const json = await fetchAPI('get_accounts');
-      if (json && json.success) setAccounts(Array.isArray(json?.data) ? json.data : []);
+      if (json.success) setAccounts(json.data || []);
     } catch (e: any) {
       console.error(t('Không thể tải tài khoản:'), e.message);
     }
   };
 
+  const fetchProjects = async () => {
+    try {
+      const json = await fetchAPI('projects');
+      if (json.success) setProjects(json.data || []);
+    } catch (e: any) {
+      console.error(t('Không thể tải chương trình:'), e.message);
+    }
+  };
+
+  const fetchCampaigns = async () => {
+    try {
+      const json = await fetchAPI('campaigns');
+      if (json.success) setCampaigns(json.data || []);
+    } catch (e: any) {
+      console.error(t('Không thể tải chiến dịch:'), e.message);
+    }
+  };
+
   useEffect(() => {
     if (isActive) {
+      setRoundsPage(1);
       fetchRounds();
     }
+    return () => {
+      if (roundsAbortRef.current) {
+        roundsAbortRef.current.abort();
+      }
+    };
   }, [dateFilter, isActive]);
 
   useEffect(() => {
     fetchConsultants();
     fetchAccounts();
+    fetchProjects();
+    fetchCampaigns();
   }, []);
 
   useEffect(() => {
     if (isActive) {
-      const raw = localStorage.getItem('domation_global_date');
-      if (raw) {
-        const saved = normalizeGlobalDateFilter(raw);
-        if (saved !== dateFilter) {
-          setDateFilter(saved);
-        }
+      const saved = localStorage.getItem('Ideas_global_date');
+      if (saved && saved !== dateFilter) {
+        setDateFilter(saved);
       }
     }
   }, [isActive]);
@@ -231,11 +297,8 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
   useEffect(() => {
     if (!isActive) return;
     const handleGlobalDate = (e: any) => {
-      if (e.detail) {
-        const nextDate = normalizeGlobalDateFilter(e.detail);
-        if (nextDate !== dateFilter) {
-          setDateFilter(nextDate);
-        }
+      if (e.detail && e.detail !== dateFilter) {
+        setDateFilter(e.detail);
       }
     };
     window.addEventListener('global-date-change', handleGlobalDate);
@@ -253,7 +316,8 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
 
   const openAddModal = () => {
     setEditingRound(null);
-    setFormData({ round_name: '', is_active: 1, cc_emails: '', selected_users: [], starting_consultant_id: null, ratios: {}, data_per_turns: {}, compensations: {}, is_fallback: false });
+    setScopeType('none');
+    setFormData({ round_name: '', is_active: 1, cc_emails: '', selected_users: [], starting_consultant_id: null, ratios: {}, data_per_turns: {}, compensations: {}, is_fallback: false, project_id: null, campaign_id: null });
     setSelectedAdmins([]);
     setEnableExternalCc(false);
     setExternalCcEmails('');
@@ -268,7 +332,8 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
   };
 
   const handleSaveComp = async () => {
-    if (!compRound || isSavingComp) return;
+    if (isReadOnly || !compRound || isSavingComp || inFlightRef.current) return;
+    inFlightRef.current = true;
     setIsSavingComp(true);
     try {
       const payload = {
@@ -289,28 +354,40 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
       }
     } catch (e: any) {
       toast.error(t('Lỗi: ') + e.message);
+    } finally {
+      inFlightRef.current = false;
+      setIsSavingComp(false);
     }
-    setIsSavingComp(false);
   };
 
   const openEditModal = (r: any) => {
     setEditingRound(r);
     setActiveTab('config');
-    let matchedIds: string[] = [];
+    setReports([]);
+    setActiveLogs([]);
+    setReportsPage(1);
+    setActiveLogsPage(1);
+    let matchedIds: number[] = [];
     if (r.consultant_ids) {
-      matchedIds = r.consultant_ids.split(',').map((id: string) => id.trim()).filter(Boolean);
+      matchedIds = r.consultant_ids.split(',').map((id: string) => parseInt(id, 10));
     }
+
+    const currentProjId = r.project_id ? Number(r.project_id) : null;
+    const currentCampId = r.campaign_id ? Number(r.campaign_id) : null;
+    setScopeType(currentCampId ? 'campaign' : (currentProjId ? 'project' : 'none'));
 
     setFormData({
       round_name: r.round_name,
       is_active: Number(r.is_active),
       cc_emails: r.cc_emails || '',
       selected_users: matchedIds,
-      starting_consultant_id: r.next_consultant_id ? String(r.next_consultant_id) : null,
+      starting_consultant_id: r.next_consultant_id ? parseInt(r.next_consultant_id) : null,
       ratios: r.ratios || {},
       data_per_turns: r.data_per_turns || {},
       compensations: r.compensations || {},
-      is_fallback: !!r.is_fallback
+      is_fallback: !!r.is_fallback,
+      project_id: currentProjId,
+      campaign_id: currentCampId
     });
 
     // Parse cc_emails into selected admins and external emails
@@ -318,7 +395,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
       ? r.cc_emails.split(',').map((e: string) => e.trim()).filter(Boolean)
       : [];
     const adminEmails = accounts
-      .filter(a => (a.role === 'admin' || a.role === 'superadmin' || Boolean(a.is_primary_admin)) && a.email)
+      .filter(a => (a.role === 'admin' || a.role === 'superadmin' || Number(a.id) === 1) && a.email)
       .map(a => a.email.trim().toLowerCase());
     
     const matchedAdmins = emailsList.filter((e: string) => adminEmails.includes(e.toLowerCase()));
@@ -332,31 +409,170 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
     fetchReports(r.id);
     fetchActiveLogs(r.id);
   };
+  const isManagementUser = (userId: number, memberRole?: string) => {
+    const mgmtRoles = ['admin', 'superadmin', 'super_admin', 'manager', 'director', 'assistant', 'lead', 'leader'];
+    if (memberRole && mgmtRoles.includes(String(memberRole).toLowerCase())) {
+      return true;
+    }
+    const acc = accounts.find(a => Number(a.id) === Number(userId));
+    if (acc && acc.role) {
+      const accRole = String(acc.role).toLowerCase();
+      if (mgmtRoles.includes(accRole)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleSelectProject = async (projId: number | null) => {
+    setFormData(prev => ({ ...prev, project_id: projId, campaign_id: null }));
+    if (!projId) return;
+
+    try {
+      const rosterRes = await fetchAPI(`projects/${projId}/roster`);
+      let rosterList: any[] = [];
+      if (Array.isArray(rosterRes)) {
+        rosterList = rosterRes;
+      } else if (rosterRes?.success && Array.isArray(rosterRes.data)) {
+        rosterList = rosterRes.data;
+      }
+      
+      const assignedUserIds = rosterList
+        .filter((m: any) => Number(m.is_assigned) === 1)
+        .map((m: any) => ({ id: Number(m.id || m.user_id), role: m.role }))
+        .filter((m: any) => !isManagementUser(m.id, m.role))
+        .map((m: any) => m.id);
+
+      if (assignedUserIds.length > 0) {
+        const newRatios = { ...formData.ratios };
+        const newTurns = { ...formData.data_per_turns };
+        const newComps = { ...formData.compensations };
+        assignedUserIds.forEach(id => {
+          if (newRatios[id] === undefined) newRatios[id] = 1;
+          if (newTurns[id] === undefined) newTurns[id] = 1;
+          if (newComps[id] === undefined) newComps[id] = 0;
+        });
+        setFormData(prev => ({
+          ...prev,
+          selected_users: Array.from(new Set([...prev.selected_users, ...assignedUserIds])),
+          ratios: newRatios,
+          data_per_turns: newTurns,
+          compensations: newComps
+        }));
+        const projName = projects.find(p => p.id === projId)?.name || 'Chương trình';
+        toast.success(t(`Đã tự động nạp ${assignedUserIds.length} nhân sự từ Roster của ${projName}!`));
+      } else {
+        toast(t('Chương trình này chưa có nhân sự tư vấn nào trong Roster'), { icon: 'ℹ️' });
+      }
+    } catch (e) {
+      console.error('Failed to load project roster', e);
+    }
+  };
+
+  const handleSelectCampaign = async (campId: number | null) => {
+    setFormData(prev => ({ ...prev, campaign_id: campId, project_id: null }));
+    if (!campId) return;
+
+    try {
+      const camp = campaigns.find(c => Number(c.id) === Number(campId));
+      let rawUserIds: any[] = [];
+      if (camp?.user_ids) {
+        const parsed = typeof camp.user_ids === 'string'
+          ? camp.user_ids.split(',').map((id: string) => Number(id.trim())).filter(Boolean)
+          : (Array.isArray(camp.user_ids) ? camp.user_ids.map(Number) : []);
+        rawUserIds = parsed.map((id: number) => ({ id }));
+      }
+      if (rawUserIds.length === 0 && camp?.project_id) {
+        const rosterRes = await fetchAPI(`projects/${camp.project_id}/roster`);
+        let rosterList: any[] = [];
+        if (Array.isArray(rosterRes)) {
+          rosterList = rosterRes;
+        } else if (rosterRes?.success && Array.isArray(rosterRes.data)) {
+          rosterList = rosterRes.data;
+        }
+        rawUserIds = rosterList
+          .filter((m: any) => Number(m.is_assigned) === 1)
+          .map((m: any) => ({ id: Number(m.id || m.user_id), role: m.role }));
+      }
+
+      const userIds = rawUserIds
+        .filter((m: any) => !isManagementUser(m.id, m.role))
+        .map((m: any) => m.id);
+
+      if (userIds.length > 0) {
+        const newRatios = { ...formData.ratios };
+        const newTurns = { ...formData.data_per_turns };
+        const newComps = { ...formData.compensations };
+        userIds.forEach(id => {
+          if (newRatios[id] === undefined) newRatios[id] = 1;
+          if (newTurns[id] === undefined) newTurns[id] = 1;
+          if (newComps[id] === undefined) newComps[id] = 0;
+        });
+        setFormData(prev => ({
+          ...prev,
+          selected_users: Array.from(new Set([...prev.selected_users, ...userIds])),
+          ratios: newRatios,
+          data_per_turns: newTurns,
+          compensations: newComps
+        }));
+        toast.success(t(`Đã tự động nạp ${userIds.length} nhân sự từ Roster của Chiến dịch ${camp?.name || ''}!`));
+      } else {
+        toast(t('Chiến dịch này chưa có nhân sự tư vấn nào trong Roster'), { icon: 'ℹ️' });
+      }
+    } catch (e) {
+      console.error('Failed to load campaign roster', e);
+    }
+  };
 
   const fetchActiveLogs = async (roundId: number) => {
+    if (activeLogsAbortRef.current) {
+      activeLogsAbortRef.current.abort();
+    }
+    const controller = new AbortController();
+    activeLogsAbortRef.current = controller;
+    const { signal } = controller;
+
     setLoadingActiveLogs(true);
     try {
-      const res = await fetchAPI(`get_active_compensation_logs&round_id=${roundId}`);
+      const res = await fetchAPI(`get_active_compensation_logs&round_id=${roundId}`, { signal });
+      if (signal.aborted) return;
       if (res.success) setActiveLogs(res.data || []);
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.name === 'AbortError' || e?.name === 'CanceledError' || e?.code === 'ERR_CANCELED') return;
       console.error(e);
+    } finally {
+      if (!signal.aborted) {
+        setLoadingActiveLogs(false);
+      }
     }
-    setLoadingActiveLogs(false);
   };
 
   const fetchReports = async (roundId: number) => {
+    if (reportsAbortRef.current) {
+      reportsAbortRef.current.abort();
+    }
+    const controller = new AbortController();
+    reportsAbortRef.current = controller;
+    const { signal } = controller;
+
     setLoadingReports(true);
     try {
-      const res = await fetchAPI(`get_reports&round_id=${roundId}`);
-      if (res.success) setReports(res.data);
-    } catch (e) {
+      const res = await fetchAPI(`get_reports&round_id=${roundId}`, { signal });
+      if (signal.aborted) return;
+      if (res.success) setReports(Array.isArray(res.data) ? res.data : []);
+    } catch (e: any) {
+      if (e?.name === 'AbortError' || e?.name === 'CanceledError' || e?.code === 'ERR_CANCELED') return;
       console.error(e);
+    } finally {
+      if (!signal.aborted) {
+        setLoadingReports(false);
+      }
     }
-    setLoadingReports(false);
   };
 
   const handleReportAction = async (reportId: number, action: 'approve' | 'reject') => {
-    if (isActioning) return;
+    if (isActioning || inFlightRef.current) return;
+    inFlightRef.current = true;
     setIsActioning(reportId);
     try {
       const endpoint = action === 'approve' ? 'approve_report' : 'reject_report';
@@ -373,14 +589,18 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
       }
     } catch (e: any) {
       toast.error(t('Lỗi: ') + e.message);
+    } finally {
+      inFlightRef.current = false;
+      setIsActioning(null);
     }
-    setIsActioning(null);
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isReadOnly) return;
     if (!formData.round_name) return toast.error(t("Vui lòng nhập tên vòng"));
-    if (isSaving) return;
+    if (isSaving || inFlightRef.current) return;
+    inFlightRef.current = true;
 
     setIsSaving(true);
     try {
@@ -414,27 +634,25 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
       }
     } catch (e: any) {
       toast.error(t('Lỗi: ') + e.message);
+    } finally {
+      inFlightRef.current = false;
+      setIsSaving(false);
     }
-    setIsSaving(false);
   };
 
   const toggleUserSelection = (userId: number | string) => {
-    const id = String(userId);
-    setFormData(prev => {
-      const isSelected = prev.selected_users.map(String).includes(id);
-      const nextUsers = isSelected
-        ? prev.selected_users.map(String).filter(x => x !== id)
-        : [...prev.selected_users.map(String), id];
-      return {
-        ...prev,
-        selected_users: nextUsers,
-        starting_consultant_id: isSelected && String(prev.starting_consultant_id) === id ? null : prev.starting_consultant_id
-      };
-    });
+    const id = Number(userId);
+    setFormData(prev => ({
+      ...prev,
+      selected_users: prev.selected_users.includes(id)
+        ? prev.selected_users.filter(x => x !== id)
+        : [...prev.selected_users, id]
+    }));
   };
 
   const handleDelete = async () => {
-    if (!deleteId || isDeleting) return;
+    if (isReadOnly || !deleteId || isDeleting || inFlightRef.current) return;
+    inFlightRef.current = true;
     setIsDeleting(true);
     try {
       const json = await fetchAPI(`delete_round&id=${deleteId}`);
@@ -446,18 +664,19 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
       }
     } catch (e: any) {
       toast.error(t('Lỗi: ') + e.message);
+    } finally {
+      inFlightRef.current = false;
+      setIsDeleting(false);
+      setConfirmDeleteOpen(false);
     }
-    setIsDeleting(false);
-    setConfirmDeleteOpen(false);
   };
 
   const removeUser = (userId: number | string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const id = String(userId);
+    const id = Number(userId);
     setFormData(prev => ({
       ...prev,
-      selected_users: prev.selected_users.map(String).filter(x => x !== id),
-      starting_consultant_id: String(prev.starting_consultant_id) === id ? null : prev.starting_consultant_id
+      selected_users: prev.selected_users.filter(x => x !== id)
     }));
   };
 
@@ -474,27 +693,6 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
         @media (min-width: 1200px) {
           .rounds-grid {
             grid-template-columns: repeat(3, 1fr) !important;
-          }
-        }
-        .modal-form-body {
-          overflow-y: auto;
-          overflow-x: hidden;
-        }
-        .modal-form-col {
-          overflow-y: visible;
-        }
-        .modal-form-selected-list {
-          overflow-y: visible;
-        }
-        @media (min-width: 769px) {
-          .modal-form-body {
-            overflow-y: hidden;
-          }
-          .modal-form-col {
-            overflow-y: auto;
-          }
-          .modal-form-selected-list {
-            overflow-y: auto;
           }
         }
         .compensation-report-row {
@@ -551,12 +749,12 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
           }
         }
       `}</style>
+      <DistributionNavTabs currentTab="rounds" />
       <div className="page-header">
         <div>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Zap size={24} color="var(--color-primary)" />
             {t("Vòng Phân Bổ")}
-            <ScreenHelpButton screenKey="rounds" />
             <button
               onClick={() => setShowInfoModal(true)}
               style={{
@@ -589,7 +787,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
             </button>
           </h1>
           <p className="page-subtitle">
-            {t("Quản lý vòng xoay Round-Robin và điều phối Đại lý")}
+            {t("Quản lý vòng xoay Round-Robin và điều phối Tư vấn viên")}
           </p>
         </div>
 
@@ -622,11 +820,12 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
             {/* View Mode Toggle Buttons */}
             <div style={{
               display: 'flex',
-              background: 'transparent',
+              background: 'var(--color-border-light)',
               borderRadius: '8px',
-              padding: '0',
+              padding: '2px',
               height: '32px',
-              alignItems: 'center'
+              alignItems: 'center',
+              gap: '2px'
             }}>
               <button
                 type="button"
@@ -635,16 +834,17 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '4px 10px',
+                  padding: '0 10px',
                   borderRadius: '6px',
                   border: 'none',
-                  background: viewMode === 'grid' ? 'var(--color-primary)' : 'transparent',
-                  color: viewMode === 'grid' ? 'white' : 'var(--color-text-muted)',
+                  background: viewMode === 'grid' ? 'var(--color-surface)' : 'transparent',
+                  color: viewMode === 'grid' ? 'var(--color-text)' : 'var(--color-text-light)',
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  height: '28px'
+                  height: '28px',
+                  boxShadow: viewMode === 'grid' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none'
                 }}
               >
                 <LayoutGrid size={13} /> <span className="hide-on-mobile">{t("Lưới")}</span>
@@ -656,16 +856,17 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '4px 10px',
+                  padding: '0 10px',
                   borderRadius: '6px',
                   border: 'none',
-                  background: viewMode === 'list' ? 'var(--color-primary)' : 'transparent',
-                  color: viewMode === 'list' ? 'white' : 'var(--color-text-muted)',
+                  background: viewMode === 'list' ? 'var(--color-surface)' : 'transparent',
+                  color: viewMode === 'list' ? 'var(--color-text)' : 'var(--color-text-light)',
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  height: '28px'
+                  height: '28px',
+                  boxShadow: viewMode === 'list' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none'
                 }}
               >
                 <List size={13} /> <span className="hide-on-mobile">{t("Danh sách")}</span>
@@ -687,7 +888,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                 borderRadius: '6px',
                 border: 'none',
                 background: 'transparent',
-                color: 'var(--color-primary)',
+                color: 'var(--color-text-light)',
                 fontSize: '0.78rem',
                 fontWeight: 700,
                 cursor: 'pointer',
@@ -695,35 +896,36 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                 height: '28px'
               }}
             >
-              <Scale size={13} /> <span>{t("Đối soát")}<span className="hide-on-mobile"> {t("công bằng")}</span></span>
+              <Scale size={13} style={{ color: 'var(--color-text-muted)' }} /> <span>{t("Đối soát")}<span className="hide-on-mobile"> {t("công bằng")}</span></span>
             </button>
 
             {/* Separator line */}
             <div style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
 
             {/* Thêm Vòng Button */}
-            <button
-              data-tour="rounds-header"
-              type="button"
-              onClick={openAddModal}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '0 10px',
-                borderRadius: '6px',
-                border: 'none',
-                background: 'transparent',
-                color: 'var(--color-primary)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                height: '28px'
-              }}
-            >
-              <Plus size={13} /> <span>{t("Thêm")}<span className="hide-on-mobile"> {t("Vòng")}</span></span>
-            </button>
+            {!isReadOnly && (
+              <button
+                type="button"
+                onClick={openAddModal}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '0 10px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--color-text-light)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  height: '28px'
+                }}
+              >
+                <Plus size={13} style={{ color: 'var(--color-text-muted)' }} /> <span>{t("Thêm")}<span className="hide-on-mobile"> {t("Vòng")}</span></span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -734,7 +936,6 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
         </div>
       ) : (
         <div
-          data-tour="rounds-list"
           className={viewMode === 'grid' ? 'rounds-grid' : ''}
           style={viewMode === 'grid' ? {} : {
             display: 'flex',
@@ -742,25 +943,18 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
             gap: '1.25rem'
           }}>
           {rounds.length === 0 ? (
-            <div style={{ padding: '4rem 2rem', textAlign: 'center', background: 'var(--color-surface)', borderRadius: 12, border: '1px dashed var(--color-border)', gridColumn: '1 / -1' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--color-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
-                <Zap size={32} color="var(--color-text-muted)" />
-              </div>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem' }}>{t("Chưa có Vòng Phân Bổ")}</h3>
-              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', maxWidth: 400, margin: '0 auto 1.5rem' }}>{t("Bắt đầu bằng cách thêm mới vòng phân bổ đầu tiên của bạn để chia số cho Sale.")}</p>
-              <button className="btn primary" onClick={openAddModal}><Plus size={18} /> {t("Thêm Vòng ngay")}</button>
+            <div style={{ gridColumn: '1 / -1', width: '100%' }}>
+              <EmptyCard
+                icon={<Zap size={48} />}
+                title={t("Chưa có Vòng Phân Bổ")}
+                description={t("Bắt đầu bằng cách thêm mới vòng phân bổ đầu tiên của bạn để chia số cho Sale.")}
+                actionText={isReadOnly ? undefined : t("Thêm Vòng ngay")}
+                onAction={isReadOnly ? undefined : openAddModal}
+              />
             </div>
-          ) : rounds.map((r, idx) => {
-            const consList = Array.isArray(r.consultants)
-              ? r.consultants.map((c: any) => String(typeof c === 'string' ? c : c?.name || c?.full_name || '').trim()).filter(Boolean)
-              : typeof r.consultants === 'string'
-                ? r.consultants.split(',').map((s: string) => s.trim()).filter(Boolean)
-                : [];
-            const consIds = Array.isArray(r.consultant_ids)
-              ? r.consultant_ids.map((s: any) => String(s).trim()).filter(Boolean)
-              : typeof r.consultant_ids === 'string'
-                ? r.consultant_ids.split(',').map((s: string) => s.trim()).filter(Boolean)
-                : [];
+          ) : rounds.slice((roundsPage - 1) * roundsPageSize, roundsPage * roundsPageSize).map((r, idx) => {
+            const consList = r.consultants ? r.consultants.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+            const consIds = r.consultant_ids ? r.consultant_ids.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
             const compensatedConsultants = [];
             for (let i = 0; i < consIds.length; i++) {
               const cId = consIds[i];
@@ -781,14 +975,17 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                 overflow: 'hidden', 
                 display: 'flex', 
                 flexDirection: 'column',
+                borderRadius: '12px',
+                borderTop: `4px solid ${color}`,
+                borderLeft: Number(r.is_active) !== 1 ? '1px solid var(--color-border)' : undefined,
+                borderRight: Number(r.is_active) !== 1 ? '1px solid var(--color-border)' : undefined,
+                borderBottom: Number(r.is_active) !== 1 ? '1px solid var(--color-border)' : undefined,
                 opacity: Number(r.is_active) !== 1 ? 0.75 : 1,
                 filter: Number(r.is_active) !== 1 ? 'grayscale(0.95)' : 'none',
-                border: Number(r.is_active) !== 1 ? '1px solid var(--color-border)' : undefined,
                 background: Number(r.is_active) !== 1 ? (theme === 'dark' ? '#1f2937' : '#f9fafb') : undefined
               }}>
-                <div style={{ height: 4, background: color }} />
-                <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <div style={{ width: 40, height: 40, borderRadius: 10, background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <Zap size={18} color={color} />
@@ -796,7 +993,12 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                       <div>
                         <h3 style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                           {r.round_name}
-                          {Boolean(r.is_fallback) && (
+                          {r.project_name && (
+                            <span className="badge success" style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(16, 185, 129, 0.08)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
+                              {r.project_name}
+                            </span>
+                          )}
+                          {r.is_fallback && (
                             <span className="badge danger" style={{ fontSize: '0.65rem', padding: '2px 6px' }}>
                               {t("Mặc định")}
                             </span>
@@ -868,8 +1070,8 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                     )}
                   </div>
 
-                  <div style={{ flex: 1, marginBottom: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', gap: '1rem', flexWrap: 'wrap' }}>
+                  <div style={{ flex: 1, marginBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', gap: '1rem', flexWrap: 'wrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-text-muted)', margin: 0, minWidth: 95 }}>
                           {t('{count} Thành viên').replace('{count}', String(consList.length))}
@@ -945,7 +1147,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
 
                     {compensatedConsultants.length > 0 ? (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                        <div style={{ padding: '0.5rem', background: 'var(--color-warning-light)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div style={{ padding: '0.375rem 0.5rem', background: 'var(--color-warning-light)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 6 }}>
                           <Zap size={14} color="var(--color-warning)" style={{ fill: 'var(--color-warning)', flexShrink: 0 }} />
                           <span style={{ fontSize: '0.75rem', color: '#d97706', fontWeight: 600, lineHeight: 1.4 }}>
                             {t('Đang bù data:')}{' '}
@@ -987,10 +1189,10 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                       </div>
                     ) : (
                       r.next_assigned_name && (
-                        <div style={{ padding: '0.5rem', background: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div style={{ padding: '0.375rem 0.5rem', background: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 6 }}>
                           <Zap size={14} color="var(--color-primary)" />
                           <span style={{ fontSize: '0.75rem', color: 'var(--color-primary-dark)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                            {t('Đại lý lượt tới:')}
+                            {t('Sale lượt tới:')}
                             <Avatar src={nextCons?.avatar} name={r.next_assigned_name} size={18} />
                             <span style={{ fontWeight: 700 }}>{r.next_assigned_name}</span>
                           </span>
@@ -998,23 +1200,27 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                       )
                     )}
                   </div>
-
-                  <div data-tour="rounds-toggle" style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem', display: 'flex', gap: '0.75rem' }}>
-                    <button className="btn outline sm" onClick={() => openEditModal(r)} style={{ flex: 1, padding: '0.5rem' }}>
-                      <Info size={13} /> {t("Chi tiết")}
+                  <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '0.75rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button className="btn outline sm" onClick={() => openEditModal(r)} style={{ flex: 1, padding: '0.375rem 0.5rem', justifyContent: 'center' }}>
+                      <Info size={14} /> {isReadOnly ? t("Xem chi tiết") : t("Chi tiết")}
                     </button>
-                    <button className="btn primary sm" onClick={() => openCompModal(r)} style={{ flex: 1, padding: '0.5rem' }}>
-                      <Zap size={13} /> {t("Bù Data")}
-                    </button>
-                    <button className="btn outline sm" onClick={() => { setDeleteId(r.id); setConfirmDeleteOpen(true); }} style={{ padding: '0 0.75rem', color: 'var(--color-danger)', borderColor: 'var(--color-danger-light)' }}>
-                      <Trash2 size={14} />
-                    </button>
+                    {!isReadOnly && (
+                      <button className="btn secondary sm" onClick={() => openCompModal(r)} title={t("Bù Data chủ động")} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '0.375rem 0.65rem', flexShrink: 0, justifyContent: 'center', fontWeight: 600 }}>
+                        <Zap size={14} /> <span>{t("Bù Data")}</span>
+                      </button>
+                    )}
+                    {!isReadOnly && (
+                      <button className="btn outline sm" onClick={() => { setDeleteId(r.id); setConfirmDeleteOpen(true); }} title={t("Xóa vòng")} style={{ padding: '0.375rem', width: 34, height: 32, flexShrink: 0, justifyContent: 'center', color: 'var(--color-text-muted)', borderColor: 'var(--color-border)' }}>
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
             ) : (
               <div key={r.id} className="card hover-glow responsive-flex-row responsive-height-auto" style={{
                 display: 'flex', alignItems: 'center', gap: '1.5rem', padding: '1rem 1.5rem',
+                borderRadius: '12px',
                 borderLeft: `4px solid ${Number(r.is_active) !== 1 ? '#9ca3af' : color}`,
                 opacity: Number(r.is_active) !== 1 ? 0.75 : 1,
                 filter: Number(r.is_active) !== 1 ? 'grayscale(0.95)' : 'none',
@@ -1027,6 +1233,11 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                 <div style={{ flex: 1, minWidth: 200 }}>
                   <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     {r.round_name}
+                    {r.project_name && (
+                      <span className="badge success" style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(16, 185, 129, 0.08)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
+                        {r.project_name}
+                      </span>
+                    )}
                     {r.is_fallback && (
                       <span className="badge danger" style={{ fontSize: '0.65rem', padding: '2px 6px' }}>
                         {t("Mặc định")}
@@ -1211,7 +1422,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <Zap size={12} color="var(--color-primary)" />
                         <span style={{ fontSize: '0.7rem', color: 'var(--color-primary-dark)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                          {t('Đại lý lượt tới:')}
+                          {t('Sale lượt tới:')}
                           <Avatar src={nextCons?.avatar} name={r.next_assigned_name} size={16} />
                           <span style={{ fontWeight: 700 }}>{r.next_assigned_name}</span>
                         </span>
@@ -1220,20 +1431,35 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                   )}
                 </div>
 
-                <div className="mobile-round-actions" style={{ padding: '1.25rem', borderTop: '1px solid var(--color-border)', display: 'flex', gap: '0.75rem' }}>
-                  <button onClick={() => openEditModal(r)} className="btn outline" style={{ flex: 1, padding: '0.625rem' }}>
-                    <Info size={16} /> {t("Chi tiết")}
+                <div className="mobile-round-actions" style={{ padding: '1.25rem', borderTop: '1px solid var(--color-border)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <button onClick={() => openEditModal(r)} className="btn outline" style={{ flex: 1, padding: '0.625rem', justifyContent: 'center' }}>
+                    <Info size={16} /> {isReadOnly ? t("Xem chi tiết") : t("Chi tiết")}
                   </button>
-                  <button onClick={() => openCompModal(r)} className="btn primary" style={{ flex: 1, padding: '0.625rem' }}>
-                    <Zap size={16} /> {t("Bù Data")}
-                  </button>
-                  <button onClick={() => { setDeleteId(r.id); setConfirmDeleteOpen(true); }} className="btn outline danger" style={{ padding: '0.625rem', width: 42, flexShrink: 0, justifyContent: 'center' }}>
-                    <Trash2 size={16} />
-                  </button>
+                  {!isReadOnly && (
+                    <button onClick={() => openCompModal(r)} className="btn secondary" title={t("Bù Data chủ động")} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.625rem 1rem', flexShrink: 0, justifyContent: 'center', fontWeight: 600 }}>
+                      <Zap size={16} /> <span>{t("Bù Data")}</span>
+                    </button>
+                  )}
+                  {!isReadOnly && (
+                    <button onClick={() => { setDeleteId(r.id); setConfirmDeleteOpen(true); }} className="btn outline" title={t("Xóa vòng")} style={{ padding: '0.625rem', width: 42, height: 40, flexShrink: 0, justifyContent: 'center', color: 'var(--color-text-muted)', borderColor: 'var(--color-border)' }}>
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {rounds.length > roundsPageSize && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem', paddingRight: '0.5rem' }}>
+          <Pagination
+            total={rounds.length}
+            page={roundsPage}
+            pageSize={roundsPageSize}
+            onChange={setRoundsPage}
+          />
         </div>
       )}
 
@@ -1242,7 +1468,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
         <div className="overlay-backdrop" onClick={() => { setModalOpen(false); setShowDropdown(false); }}>
           <div
             className="card"
-            style={{ width: '100%', maxWidth: 1000, minHeight: 500, maxHeight: '90vh', animation: 'slideUp 0.2s ease-out', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+            style={{ width: '100%', maxWidth: 1000, minHeight: 500, maxHeight: '90vh', animation: 'slideUp 0.2s ease-out', display: 'flex', flexDirection: 'column' }}
             onClick={e => e.stopPropagation()}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', borderBottom: '1px solid var(--color-border-light)' }}>
@@ -1255,15 +1481,15 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
             </div>
 
             {editingRound && (
-              <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border-light)', padding: '0 1.25rem', gap: '2rem', flexShrink: 0 }}>
-                <button type="button" onClick={() => setActiveTab('config')} style={{ background: 'transparent', border: 'none', borderBottom: activeTab === 'config' ? '2px solid var(--color-primary)' : '2px solid transparent', padding: '1rem 0', color: activeTab === 'config' ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: activeTab === 'config' ? 600 : 500, cursor: 'pointer' }}>{t("Cấu hình chung")}</button>
-                <button type="button" onClick={() => setActiveTab('reports')} style={{ background: 'transparent', border: 'none', borderBottom: activeTab === 'reports' ? '2px solid var(--color-danger)' : '2px solid transparent', padding: '1rem 0', color: activeTab === 'reports' ? 'var(--color-danger)' : 'var(--color-text-muted)', fontWeight: activeTab === 'reports' ? 600 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', background: 'var(--color-border-light)', borderRadius: '12px', padding: '4px', alignSelf: 'flex-start', margin: '0.75rem 1.25rem', width: 'fit-content', gap: '4px', maxWidth: 'calc(100% - 2.5rem)' }}>
+                <button type="button" onClick={() => setActiveTab('config')} style={{ padding: '8px 20px', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, border: 'none', background: activeTab === 'config' ? 'var(--color-surface)' : 'transparent', color: activeTab === 'config' ? 'var(--color-primary)' : 'var(--color-text-light)', boxShadow: activeTab === 'config' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}>{t("Cấu hình chung")}</button>
+                <button type="button" onClick={() => setActiveTab('reports')} style={{ padding: '8px 20px', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, border: 'none', background: activeTab === 'reports' ? 'var(--color-surface)' : 'transparent', color: activeTab === 'reports' ? 'var(--color-primary)' : 'var(--color-text-light)', boxShadow: activeTab === 'reports' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}>
                   {t("Data Lỗi & Đền Bù")}
                   {reports.filter(r => r.status === 'pending').length > 0 && (
                     <span style={{ background: 'var(--color-danger)', color: 'white', fontSize: '0.7rem', padding: '2px 6px', borderRadius: 10 }}>{reports.filter(r => r.status === 'pending').length}</span>
                   )}
                 </button>
-                <button type="button" onClick={() => setActiveTab('active_logs')} style={{ background: 'transparent', border: 'none', borderBottom: activeTab === 'active_logs' ? '2px solid var(--color-primary)' : '2px solid transparent', padding: '1rem 0', color: activeTab === 'active_logs' ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: activeTab === 'active_logs' ? 600 : 500, cursor: 'pointer' }}>
+                <button type="button" onClick={() => setActiveTab('active_logs')} style={{ padding: '8px 20px', borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700, border: 'none', background: activeTab === 'active_logs' ? 'var(--color-surface)' : 'transparent', color: activeTab === 'active_logs' ? 'var(--color-primary)' : 'var(--color-text-light)', boxShadow: activeTab === 'active_logs' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}>
                   {t("Log bù chủ động")}
                 </button>
               </div>
@@ -1271,393 +1497,538 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
 
             {activeTab === 'config' ? (
               <form onSubmit={handleSave} className="subtab-enter-active" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-                <div className="responsive-grid-1-1 modal-form-body" style={{ padding: '1.25rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', flex: 1, minHeight: 0 }}>
+                <fieldset disabled={isReadOnly} style={{ border: 'none', padding: 0, margin: 0, display: 'contents' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+                    <div className="responsive-grid-1-1 modal-form-body" style={{ padding: '1.25rem', display: isMobile ? 'flex' : 'grid', flexDirection: isMobile ? 'column' : undefined, gridTemplateColumns: isMobile ? undefined : '1fr 1fr', gap: '2rem', flex: 1, overflow: 'hidden', minHeight: 0 }}>
+                      {/* LEFT COLUMN */}
+                      <div className="custom-scrollbar modal-form-col" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', overflowY: 'auto', paddingRight: '4px' }}>
+                        <div className="form-group">
+                          <label className="form-label">{t("Tên Vòng")} <span style={{ color: 'var(--color-danger)' }}>*</span></label>
+                          <input
+                            className="form-input"
+                            placeholder={t("VD: Vòng 1 — Form Đăng Ký")}
+                            value={formData.round_name}
+                            onChange={e => setFormData({ ...formData, round_name: e.target.value })}
+                            required
+                            autoFocus
+                          />
+                        </div>
 
-                  {/* LEFT COLUMN */}
-                  <div className="custom-scrollbar modal-form-col" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingRight: '4px' }}>
-                    <div className="form-group">
-                      <label className="form-label">{t("Tên Vòng")} <span style={{ color: 'var(--color-danger)' }}>*</span></label>
-                      <input
-                        className="form-input"
-                        placeholder={t("VD: Vòng 1 — Form Đăng Ký")}
-                        value={formData.round_name}
-                        onChange={e => setFormData({ ...formData, round_name: e.target.value })}
-                        required
-                        autoFocus
-                      />
-                    </div>
+                        {/* Phạm vi áp dụng & Roster Scope Selector */}
+                        <div className="form-group">
+                          <label className="form-label">{t("Phạm vi áp dụng (Chương trình / Chiến dịch)")}</label>
+                          <div style={{ display: 'flex', gap: '4px', background: 'var(--color-bg)', padding: '3px', borderRadius: '10px', border: '1px solid var(--color-border-light)' }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setScopeType('none');
+                                setFormData(prev => ({ ...prev, project_id: null, campaign_id: null }));
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '6px 8px',
+                                borderRadius: '8px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                border: 'none',
+                                background: scopeType === 'none' ? 'var(--color-surface)' : 'transparent',
+                                color: scopeType === 'none' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                                boxShadow: scopeType === 'none' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              <Globe size={13} /> {t("Độc lập")}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setScopeType('project');
+                                setFormData(prev => ({ ...prev, campaign_id: null }));
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '6px 8px',
+                                borderRadius: '8px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                border: 'none',
+                                background: scopeType === 'project' ? 'var(--color-surface)' : 'transparent',
+                                color: scopeType === 'project' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                                boxShadow: scopeType === 'project' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              <Building2 size={13} /> {t("Dự Án")}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setScopeType('campaign');
+                                setFormData(prev => ({ ...prev, project_id: null }));
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: '6px 8px',
+                                borderRadius: '8px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                border: 'none',
+                                background: scopeType === 'campaign' ? 'var(--color-surface)' : 'transparent',
+                                color: scopeType === 'campaign' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                                boxShadow: scopeType === 'campaign' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              <Layers size={13} /> {t("Chiến Dịch")}
+                            </button>
+                          </div>
+                        </div>
 
-                    <div className="form-group">
-                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Users size={14} /> {t("Chọn Admin nhận CC khi chia Data")}
-                      </label>
-                      {(() => {
-                        const admins = accounts.filter(a => (a.role === 'admin' || a.role === 'superadmin' || Boolean(a.is_primary_admin)) && a.email);
-                        if (admins.length === 0) {
-                          return (
-                            <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', fontStyle: 'italic', margin: '4px 0 12px' }}>
-                              {t("Không có tài khoản Admin nào có email")}
+                        {/* Project Dropdown with Search */}
+                        {scopeType === 'project' && (
+                          <div className="form-group" style={{ animation: 'fadeIn 0.2s ease-out' }}>
+                            <label className="form-label">{t("Chọn Dự Án")}</label>
+                            <CustomSelect
+                              searchable={true}
+                              placeholder={t("Tìm kiếm và chọn Chương trình...")}
+                              value={formData.project_id || ''}
+                              onChange={(val) => handleSelectProject(val ? Number(val) : null)}
+                              options={[
+                                { value: '', label: `-- ${t("Chọn Chương trình")} --` },
+                                ...projects.map(proj => ({
+                                  value: proj.id,
+                                  label: proj.name,
+                                  sublabel: proj.code ? `Mã: ${proj.code}` : undefined
+                                }))
+                              ]}
+                            />
+                            <p style={{ fontSize: '0.68rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
+                              {t("Chọn chương trình sẽ tự động nạp danh sách TVV trong Roster chương trình sang bên phải.")}
                             </p>
-                          );
-                        }
-                        return (
-                          <div className="custom-scrollbar" style={{
-                            maxHeight: '160px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.375rem',
-                            border: '1px solid var(--color-border)', borderRadius: '10px', padding: '0.5rem', background: 'var(--color-bg)'
-                          }}>
-                            {admins.map(admin => {
-                              const isSelected = selectedAdmins.includes(admin.email);
+                          </div>
+                        )}
+
+                        {/* Campaign Dropdown with Search */}
+                        {scopeType === 'campaign' && (
+                          <div className="form-group" style={{ animation: 'fadeIn 0.2s ease-out' }}>
+                            <label className="form-label">{t("Chọn Chiến Dịch")}</label>
+                            <CustomSelect
+                              searchable={true}
+                              placeholder={t("Tìm kiếm và chọn Chiến dịch...")}
+                              value={formData.campaign_id || ''}
+                              onChange={(val) => handleSelectCampaign(val ? Number(val) : null)}
+                              options={[
+                                { value: '', label: `-- ${t("Chọn Chiến dịch")} --` },
+                                ...campaigns.map(camp => ({
+                                  value: camp.id,
+                                  label: camp.name,
+                                  sublabel: camp.code ? `Mã: ${camp.code}` : undefined
+                                }))
+                              ]}
+                            />
+                            <p style={{ fontSize: '0.68rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
+                              {t("Chọn chiến dịch sẽ tự động nạp danh sách TVV trong Roster chiến dịch sang bên phải.")}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="form-group">
+                          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Users size={14} /> {t("Chọn Admin nhận CC khi chia Data")}
+                          </label>
+                          {(() => {
+                            const admins = accounts.filter(a => (a.role === 'admin' || a.role === 'superadmin' || Number(a.id) === 1) && a.email);
+                            if (admins.length === 0) {
                               return (
-                                <div
-                                  key={admin.id}
-                                  onClick={() => {
-                                    setSelectedAdmins(prev => 
-                                      prev.includes(admin.email) 
-                                        ? prev.filter(e => e !== admin.email) 
-                                        : [...prev, admin.email]
-                                    );
-                                  }}
-                                  style={{
-                                    display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.375rem 0.5rem',
-                                    borderRadius: '6px', cursor: 'pointer', background: isSelected ? 'var(--color-primary-light)' : 'var(--color-surface)',
-                                    border: '1px solid ' + (isSelected ? 'var(--color-primary-light)' : 'var(--color-border-light)'),
-                                    transition: 'all 0.15s ease'
-                                  }}
-                                  onMouseEnter={e => {
-                                    if (!isSelected) e.currentTarget.style.background = 'var(--color-bg)';
-                                  }}
-                                  onMouseLeave={e => {
-                                    if (!isSelected) e.currentTarget.style.background = 'var(--color-surface)';
-                                  }}
-                                >
-                                  <Avatar src={admin.avatar} name={admin.name} size={24} />
-                                  <div style={{ flex: 1 }}>
-                                    <p style={{ fontSize: '0.75rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--color-primary)' : 'var(--color-text)', margin: 0 }}>
-                                      {admin.name}
-                                    </p>
-                                    <p style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', margin: 0 }}>
-                                      {admin.email}
-                                    </p>
+                                <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', fontStyle: 'italic', margin: '4px 0 12px' }}>
+                                  {t("Không có tài khoản Admin nào có email")}
+                                </p>
+                              );
+                            }
+                            return (
+                              <div className="custom-scrollbar" style={{
+                                maxHeight: '160px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.375rem',
+                                border: '1px solid var(--color-border)', borderRadius: '10px', padding: '0.5rem', background: 'var(--color-bg)'
+                              }}>
+                                {admins.map(admin => {
+                                  const isSelected = selectedAdmins.includes(admin.email);
+                                  return (
+                                    <div
+                                      key={admin.id}
+                                      onClick={() => {
+                                        setSelectedAdmins(prev => 
+                                          prev.includes(admin.email) 
+                                            ? prev.filter(e => e !== admin.email) 
+                                            : [...prev, admin.email]
+                                        );
+                                      }}
+                                      style={{
+                                        display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.375rem 0.5rem',
+                                        borderRadius: '6px', cursor: 'pointer', background: isSelected ? 'var(--color-primary-light)' : 'var(--color-surface)',
+                                        border: '1px solid ' + (isSelected ? 'var(--color-primary-light)' : 'var(--color-border-light)'),
+                                        transition: 'all 0.15s ease'
+                                      }}
+                                      onMouseEnter={e => {
+                                        if (!isSelected) e.currentTarget.style.background = 'var(--color-bg)';
+                                      }}
+                                      onMouseLeave={e => {
+                                        if (!isSelected) e.currentTarget.style.background = 'var(--color-surface)';
+                                      }}
+                                    >
+                                      <Avatar src={admin.avatar} name={admin.name} size={24} />
+                                      <div style={{ flex: 1 }}>
+                                        <p style={{ fontSize: '0.75rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--color-primary)' : 'var(--color-text)', margin: 0 }}>
+                                          {admin.name}
+                                        </p>
+                                        <p style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', margin: 0 }}>
+                                          {admin.email}
+                                        </p>
+                                      </div>
+                                      <div style={{
+                                        width: 16, height: 16, borderRadius: '4px', border: '1px solid ' + (isSelected ? 'var(--color-primary)' : 'var(--color-border)'),
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', background: isSelected ? 'var(--color-primary)' : 'transparent',
+                                        transition: 'all 0.15s ease'
+                                      }}>
+                                        {isSelected && <Check size={10} color="white" strokeWidth={3} />}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        <div className="form-group" style={{ marginTop: '-0.5rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}>
+                              {t("Nhận thêm CC email ngoài hệ thống")}
+                            </label>
+                            <ToggleSwitch
+                              checked={enableExternalCc}
+                              onChange={(checked) => setEnableExternalCc(checked)}
+                            />
+                          </div>
+                        </div>
+
+                        {enableExternalCc && (
+                          <div className="form-group" style={{ 
+                            marginTop: '-0.25rem',
+                            animation: 'fadeIn 0.2s ease-out'
+                          }}>
+                            <label className="form-label">{t("Nhập CC email ngoài hệ thống")}</label>
+                            <input
+                              className="form-input"
+                              placeholder={t("VD: giamdoc@Ideas.vn, quanly@Ideas.vn")}
+                              value={externalCcEmails}
+                              onChange={e => setExternalCcEmails(e.target.value)}
+                            />
+                            <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
+                              {t("Phân tách các email bằng dấu phẩy (,).")}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="form-group">
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}>
+                              <Shield size={14} /> {t("Trạng thái Vòng")}
+                            </label>
+                            <ToggleSwitch
+                              checked={formData.is_active === 1}
+                              onChange={(checked) => setFormData({ ...formData, is_active: checked ? 1 : 0 })}
+                            />
+                          </div>
+                        </div>
+
+                        {formData.selected_users.length > 0 && (
+                          <div className="form-group">
+                            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Zap size={14} /> {t("Chọn Sale bắt đầu / kế tiếp (Tuỳ chọn)")}</label>
+                            <div ref={startSaleDropdownRef} style={{ position: 'relative' }}>
+                              <div
+                                className="form-input"
+                                onClick={() => setShowStartSaleDropdown(!showStartSaleDropdown)}
+                                style={{ padding: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--color-bg)' }}
+                              >
+                                {formData.starting_consultant_id ? (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    {(() => {
+                                      const c = consultants.find(x => Number(x.id) === formData.starting_consultant_id);
+                                      if (!c) return t('-- Mặc định (Theo thứ tự thêm vào) --');
+                                      return (
+                                        <>
+                                          <Avatar src={c.avatar} name={c.name} size={20} />
+                                          <span style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--color-text)' }}>{c.name}</span>
+                                        </>
+                                      )
+                                    })()}
                                   </div>
-                                  <div style={{
-                                    width: 16, height: 16, borderRadius: '4px', border: '1px solid ' + (isSelected ? 'var(--color-primary)' : 'var(--color-border)'),
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', background: isSelected ? 'var(--color-primary)' : 'transparent',
-                                    transition: 'all 0.15s ease'
-                                  }}>
-                                    {isSelected && <Check size={10} color="white" strokeWidth={3} />}
+                                ) : (
+                                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{t('-- Mặc định (Theo thứ tự thêm vào) --')}</span>
+                                )}
+                                <span style={{ transform: showStartSaleDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', color: 'var(--color-text-muted)', display: 'inline-block', fontSize: '0.75rem' }}>▼</span>
+                              </div>
+
+                              {showStartSaleDropdown && (
+                                <div style={{
+                                  position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, zIndex: 50,
+                                  background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
+                                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', maxHeight: 150, overflowY: 'auto'
+                                }}>
+                                  <div
+                                    onClick={() => { setFormData({ ...formData, starting_consultant_id: null }); setShowStartSaleDropdown(false); }}
+                                    style={{ padding: '0.75rem', cursor: 'pointer', borderBottom: '1px solid var(--color-border-light)', color: 'var(--color-text-muted)', fontSize: '0.875rem', background: formData.starting_consultant_id === null ? 'var(--color-bg)' : 'transparent' }}
+                                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
+                                    onMouseLeave={e => e.currentTarget.style.background = formData.starting_consultant_id === null ? 'var(--color-bg)' : 'transparent'}
+                                  >
+                                    {t('-- Mặc định (Theo thứ tự thêm vào) --')}
+                                  </div>
+                                  {formData.selected_users.map(id => {
+                                    const c = consultants.find(x => Number(x.id) === Number(id));
+                                    if (!c) return null;
+                                    const isSelected = formData.starting_consultant_id === id;
+                                    return (
+                                      <div
+                                        key={id}
+                                        onClick={() => { setFormData({ ...formData, starting_consultant_id: id }); setShowStartSaleDropdown(false); }}
+                                        style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', background: isSelected ? 'var(--color-primary-light)' : 'transparent', transition: 'background 0.1s' }}
+                                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'var(--color-bg)'; }}
+                                        onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = 'transparent'; }}
+                                      >
+                                        <Avatar src={c.avatar} name={c.name} size={24} />
+                                        <div style={{ flex: 1, fontSize: '0.875rem', fontWeight: isSelected ? 600 : 400, color: isSelected ? 'var(--color-primary)' : 'var(--color-text)' }}>
+                                          {c.name}
+                                        </div>
+                                        {isSelected && <Check size={14} color="var(--color-primary)" />}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
+                              {t("Người được chọn sẽ là người nhận Data tiếp theo của vòng này.")}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="form-group" style={{ marginTop: '1rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}>
+                              <Zap size={14} color="var(--color-primary)" /> {t("Đặt làm Vòng phân bổ mặc định (Fallback)")}
+                            </label>
+                            <div
+                              className={`custom-toggle ${formData.is_fallback ? 'active' : ''}`}
+                              onClick={() => setFormData({ ...formData, is_fallback: !formData.is_fallback })}
+                            />
+                          </div>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
+                            {t("Nếu dữ liệu mới không khớp bất kỳ quy luật chia nào, hệ thống sẽ tự động phân phối vào vòng này. Chỉ có duy nhất 1 vòng được đặt làm mặc định.")}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* RIGHT COLUMN */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: 0, flex: 1 }}>
+                        {/* Custom Multi-Select with Avatars */}
+                        <div className="form-group" ref={dropdownRef} style={{ position: 'relative' }}>
+                          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Users size={14} /> {t("Chọn Tư vấn viên vào vòng này")}</label>
+
+                          {/* Search Input Box */}
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              className="form-input"
+                              style={{ paddingLeft: '12px', background: 'var(--color-bg)', border: '1px solid var(--color-border)' }}
+                              placeholder={t("Tìm kiếm và chọn Tư vấn viên...")}
+                              value={searchUser}
+                              onChange={e => setSearchUser(e.target.value)}
+                              onFocus={() => setShowDropdown(true)}
+                            />
+                          </div>
+
+                          {/* Dropdown Options */}
+                          {showDropdown && (
+                            <div style={{
+                              position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, zIndex: 50,
+                              background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
+                              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', maxHeight: 220, overflowY: 'auto'
+                            }}>
+                              {consultants.filter(c => c.name.toLowerCase().includes(searchUser.toLowerCase())).map(user => {
+                                const isSelected = formData.selected_users.includes(Number(user.id));
+
+                                return (
+                                  <div
+                                    key={user.id}
+                                    onClick={() => {
+                                      if (user.status !== 'active') {
+                                        toast.error(t('Sale không hoạt động'));
+                                        return;
+                                      }
+                                      toggleUserSelection(user.id);
+                                    }}
+                                    style={{
+                                      padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem',
+                                      cursor: user.status === 'active' ? 'pointer' : 'not-allowed',
+                                      background: isSelected ? 'var(--color-primary-light)' : 'transparent',
+                                      transition: 'background 0.1s',
+                                      opacity: user.status === 'active' ? 1 : 0.55,
+                                      filter: user.status === 'active' ? 'none' : 'grayscale(1)'
+                                    }}
+                                    onMouseEnter={e => { if (user.status === 'active' && !isSelected) e.currentTarget.style.background = 'var(--color-bg)'; }}
+                                    onMouseLeave={e => { if (user.status === 'active' && !isSelected) e.currentTarget.style.background = 'transparent'; }}
+                                  >
+                                    <Avatar src={user.avatar} name={user.name} size={28} />
+                                     <div style={{ flex: 1 }}>
+                                      <p style={{ fontSize: '0.875rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--color-primary)' : 'var(--color-text)', margin: 0 }}>{user.name}</p>
+                                      <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4, margin: 0 }}>
+                                        {user.email && (
+                                          <img
+                                            src="https://www.gstatic.com/images/branding/product/1x/gmail_2020q4_32dp.png"
+                                            alt="Gmail"
+                                            style={{ width: 13, height: 10, objectFit: 'contain', flexShrink: 0 }}
+                                          />
+                                        )}
+                                        <span>{user.email} • {user.status === 'active' ? t('Đang nhận data') : t('Không nhận data')}</span>
+                                      </p>
+                                    </div>
+                                    {isSelected && <Check size={16} color="var(--color-primary)" />}
+                                  </div>
+                                );
+                              })}
+                              {consultants.filter(c => c.name.toLowerCase().includes(searchUser.toLowerCase())).length === 0 && (
+                                <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                                  {t("Không tìm thấy tư vấn viên nào")}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Selected Consultants List Block */}
+                        {formData.selected_users.length > 0 && (
+                          <div className="custom-scrollbar modal-form-selected-list" style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, overflowY: 'auto', paddingRight: 4, minHeight: 0 }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 2 }}>{t("Tư vấn viên đã chọn ({count}):").replace('{count}', String(formData.selected_users.length))}</div>
+                            {formData.selected_users.map(userId => {
+                              const user = consultants.find(c => Number(c.id) === userId);
+                              if (!user) return null;
+                              return (
+                                <div key={user.id} style={{
+                                  display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem',
+                                  background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 10,
+                                  transition: 'all 0.2s'
+                                }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <Avatar src={user.avatar} name={user.name} size={28} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.12)' }} />
+                                    <div style={{ flex: 1 }}>
+                                      <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text)', display: 'flex', alignItems: 'center' }}>
+                                        {user.name}
+                                        {editingRound?.compensations?.[user.id] > 0 && (
+                                          <span className="badge danger" style={{ marginLeft: 8, fontSize: '0.65rem', padding: '2px 6px' }}>
+                                            {t("Nợ bù: {count}").replace('{count}', String(editingRound.compensations[user.id]))}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                        {user.email && (
+                                          <>
+                                            <img
+                                              src="https://www.gstatic.com/images/branding/product/1x/gmail_2020q4_32dp.png"
+                                              alt="Gmail"
+                                              style={{ width: 13, height: 10, objectFit: 'contain', flexShrink: 0 }}
+                                            />
+                                            <span>{user.email}</span>
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => removeUser(user.id, e)}
+                                      style={{
+                                        color: 'var(--color-text-muted)', padding: 4, borderRadius: 6,
+                                        border: 'none', background: 'transparent', cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        transition: 'all 0.2s'
+                                      }}
+                                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--color-danger)'; e.currentTarget.style.background = 'var(--color-danger-light)'; }}
+                                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--color-text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                                    >
+                                      <Trash2 size={14} />
+                                    </button>
+                                  </div>
+
+                                  {/* Special Rule: Ratio + Data Per Turn */}
+                                  <div style={{ borderTop: '1px dashed var(--color-border)', paddingTop: '0.5rem', marginTop: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
+                                    {/* Column 1: Data per turn */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("Nhận:")}</span>
+                                      <input
+                                        type="number"
+                                        min="1"
+                                        max="20"
+                                        value={formData.data_per_turns[user.id] || 1}
+                                        onChange={e => setFormData({ ...formData, data_per_turns: { ...formData.data_per_turns, [user.id]: Math.max(1, parseInt(e.target.value) || 1) } })}
+                                        style={{ width: 44, border: '1px solid var(--color-border)', borderRadius: 4, padding: '2px 4px', fontSize: '0.75rem', textAlign: 'center', outline: 'none', color: theme === 'dark' ? '#34d399' : '#059669', fontWeight: 700, background: theme === 'dark' ? 'rgba(16, 185, 129, 0.15)' : '#ecfdf5' }}
+                                      />
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("data / lượt")}</span>
+                                    </div>
+                                    {/* Column 2: Ratios */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("Sau:")}</span>
+                                      <input
+                                        type="number"
+                                        min="1"
+                                        max="99"
+                                        value={formData.ratios[user.id] || 1}
+                                        onChange={e => setFormData({ ...formData, ratios: { ...formData.ratios, [user.id]: Math.max(1, parseInt(e.target.value) || 1) } })}
+                                        style={{ width: 44, border: '1px solid var(--color-border)', borderRadius: 4, padding: '2px 4px', fontSize: '0.75rem', textAlign: 'center', outline: 'none', color: 'var(--color-primary)', fontWeight: 700, background: 'var(--color-bg)' }}
+                                      />
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("vòng chia")}</span>
+                                    </div>
                                   </div>
                                 </div>
                               );
                             })}
                           </div>
-                        );
-                      })()}
-                    </div>
-
-                    <div className="form-group" style={{ marginTop: '-0.5rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}>
-                          {t("Nhận thêm CC email ngoài hệ thống")}
-                        </label>
-                        <ToggleSwitch
-                          checked={enableExternalCc}
-                          onChange={(checked) => setEnableExternalCc(checked)}
-                        />
+                        )}
                       </div>
                     </div>
 
-                    {enableExternalCc && (
-                      <div className="form-group" style={{ 
-                        marginTop: '-0.25rem',
-                        animation: 'fadeIn 0.2s ease-out'
-                      }}>
-                        <label className="form-label">{t("Nhập CC email ngoài hệ thống")}</label>
-                        <input
-                          className="form-input"
-                          placeholder={t("VD: giamdoc@domation.net, quanly@domation.net")}
-                          value={externalCcEmails}
-                          onChange={e => setExternalCcEmails(e.target.value)}
-                        />
-                        <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
-                          {t("Phân tách các email bằng dấu phẩy (,).")}
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="form-group">
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}>
-                          <Shield size={14} /> {t("Trạng thái Vòng")}
-                        </label>
-                        <ToggleSwitch
-                          checked={formData.is_active === 1}
-                          onChange={(checked) => setFormData({ ...formData, is_active: checked ? 1 : 0 })}
-                        />
-                      </div>
-                    </div>
-
-                    {formData.selected_users.length > 0 && (
-                      <div className="form-group">
-                        <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Zap size={14} /> {t("Chọn Đại lý bắt đầu / kế tiếp (Tuỳ chọn)")}</label>
-                        <div ref={startSaleDropdownRef} style={{ position: 'relative' }}>
-                          <div
-                            className="form-input"
-                            onClick={() => setShowStartSaleDropdown(!showStartSaleDropdown)}
-                            style={{ padding: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--color-bg)' }}
-                          >
-                            {formData.starting_consultant_id ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                {(() => {
-                                  const c = consultants.find(x => String(x.id) === String(formData.starting_consultant_id));
-                                  if (!c) return t('-- Mặc định (Theo thứ tự thêm vào) --');
-                                  return (
-                                    <>
-                                      <Avatar src={c.avatar} name={c.name} size={20} />
-                                      <span style={{ fontWeight: 500, fontSize: '0.875rem', color: 'var(--color-text)' }}>{c.name}</span>
-                                    </>
-                                  )
-                                })()}
-                              </div>
-                            ) : (
-                              <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{t('-- Mặc định (Theo thứ tự thêm vào) --')}</span>
-                            )}
-                            <span style={{ transform: showStartSaleDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', color: 'var(--color-text-muted)', display: 'inline-block', fontSize: '0.75rem' }}>▼</span>
-                          </div>
-
-                          {showStartSaleDropdown && (
-                            <div style={{
-                              position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, zIndex: 50,
-                              background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
-                              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', maxHeight: 150, overflowY: 'auto'
-                            }}>
-                              <div
-                                onClick={() => { setFormData({ ...formData, starting_consultant_id: null }); setShowStartSaleDropdown(false); }}
-                                style={{ padding: '0.75rem', cursor: 'pointer', borderBottom: '1px solid var(--color-border-light)', color: 'var(--color-text-muted)', fontSize: '0.875rem', background: formData.starting_consultant_id === null ? 'var(--color-bg)' : 'transparent' }}
-                                onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                                onMouseLeave={e => e.currentTarget.style.background = formData.starting_consultant_id === null ? 'var(--color-bg)' : 'transparent'}
-                              >
-                                {t('-- Mặc định (Theo thứ tự thêm vào) --')}
-                              </div>
-                              {formData.selected_users.map(id => {
-                                const c = consultants.find(x => String(x.id) === String(id));
-                                if (!c) return null;
-                                const isSelected = formData.starting_consultant_id === id;
-                                return (
-                                  <div
-                                    key={id}
-                                    onClick={() => { setFormData({ ...formData, starting_consultant_id: id }); setShowStartSaleDropdown(false); }}
-                                    style={{ padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', background: isSelected ? 'var(--color-primary-light)' : 'transparent', transition: 'background 0.1s' }}
-                                    onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'var(--color-bg)'; }}
-                                    onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = 'transparent'; }}
-                                  >
-                                    <Avatar src={c.avatar} name={c.name} size={24} />
-                                    <div style={{ flex: 1, fontSize: '0.875rem', fontWeight: isSelected ? 600 : 400, color: isSelected ? 'var(--color-primary)' : 'var(--color-text)' }}>
-                                      {c.name}
-                                    </div>
-                                    {isSelected && <Check size={14} color="var(--color-primary)" />}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
-                          {t("Người được chọn sẽ là người nhận Data tiếp theo của vòng này.")}
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="form-group" style={{ marginTop: '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                        <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}>
-                          <Zap size={14} color="var(--color-primary)" /> {t("Đặt làm Vòng phân bổ mặc định (Fallback)")}
-                        </label>
-                        <div
-                          className={`custom-toggle ${formData.is_fallback ? 'active' : ''}`}
-                          onClick={() => setFormData({ ...formData, is_fallback: !formData.is_fallback })}
-                        />
-                      </div>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
-                        {t("Nếu dữ liệu mới không khớp bất kỳ quy luật chia nào, hệ thống sẽ tự động phân phối vào vòng này. Chỉ có duy nhất 1 vòng được đặt làm mặc định.")}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* RIGHT COLUMN */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: 0, flex: 1 }}>
-                    {/* Custom Multi-Select with Avatars */}
-                    <div className="form-group" ref={dropdownRef} style={{ position: 'relative' }}>
-                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Users size={14} /> {t("Chọn Đại lý vào vòng này")}</label>
-
-                      {/* Search Input Box */}
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          className="form-input"
-                          style={{ paddingLeft: '2.5rem', background: 'var(--color-bg)', border: '1px solid var(--color-border)' }}
-                          placeholder={t("Tìm kiếm và chọn Đại lý...")}
-                          value={searchUser}
-                          onChange={e => setSearchUser(e.target.value)}
-                          onFocus={() => setShowDropdown(true)}
-                        />
-                        <div style={{ position: 'absolute', left: 12, top: 10, color: '#94a3b8' }}><Search size={16} /></div>
-                      </div>
-
-                      {/* Dropdown Options */}
-                      {showDropdown && (
-                        <div style={{
-                          position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, zIndex: 50,
-                          background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)',
-                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', maxHeight: 220, overflowY: 'auto'
-                        }}>
-                          {consultants.filter(c => c.name.toLowerCase().includes(searchUser.toLowerCase())).map(user => {
-                            const isSelected = formData.selected_users.includes(String(user.id));
-
-                            return (
-                              <div
-                                key={user.id}
-                                onClick={() => {
-                                  if (user.status !== 'active') {
-                                    toast.error(t('Đại lý không hoạt động'));
-                                    return;
-                                  }
-                                  toggleUserSelection(user.id);
-                                }}
-                                style={{
-                                  padding: '0.5rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem',
-                                  cursor: user.status === 'active' ? 'pointer' : 'not-allowed',
-                                  background: isSelected ? 'var(--color-primary-light)' : 'transparent',
-                                  transition: 'background 0.1s',
-                                  opacity: user.status === 'active' ? 1 : 0.55,
-                                  filter: user.status === 'active' ? 'none' : 'grayscale(1)'
-                                }}
-                                onMouseEnter={e => { if (user.status === 'active' && !isSelected) e.currentTarget.style.background = 'var(--color-bg)'; }}
-                                onMouseLeave={e => { if (user.status === 'active' && !isSelected) e.currentTarget.style.background = 'transparent'; }}
-                              >
-                                <Avatar src={user.avatar} name={user.name} size={28} />
-                                 <div style={{ flex: 1 }}>
-                                  <p style={{ fontSize: '0.875rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--color-primary)' : 'var(--color-text)', margin: 0 }}>{user.name}</p>
-                                  <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4, margin: 0 }}>
-                                    {user.email && (
-                                      <img
-                                        src="https://www.gstatic.com/images/branding/product/1x/gmail_2020q4_32dp.png"
-                                        alt="Gmail"
-                                        style={{ width: 13, height: 10, objectFit: 'contain', flexShrink: 0 }}
-                                      />
-                                    )}
-                                    <span>{user.email} • {user.status === 'active' ? t('Đang nhận data') : t('Không nhận data')}</span>
-                                  </p>
-                                </div>
-                                {isSelected && <Check size={16} color="var(--color-primary)" />}
-                              </div>
-                            );
-                          })}
-                          {consultants.filter(c => c.name.toLowerCase().includes(searchUser.toLowerCase())).length === 0 && (
-                            <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-                              {t("Không tìm thấy Đại lý nào")}
-                            </div>
-                          )}
-                        </div>
+                    <div style={{ padding: '1.25rem', background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', marginTop: 'auto', flexShrink: 0 }}>
+                      <button type="button" className="btn outline" onClick={() => { setModalOpen(false); setShowDropdown(false); }}>{isReadOnly ? t("Đóng") : t("Hủy bỏ")}</button>
+                      {!isReadOnly && (
+                        <button type="submit" className="btn primary" disabled={isSaving}>
+                          {isSaving ? t('Đang lưu...') : (editingRound ? t('Cập nhật') : t('Thêm mới'))}
+                        </button>
                       )}
                     </div>
-
-                    {/* Selected Consultants List Block */}
-                    {formData.selected_users.length > 0 && (
-                      <div className="custom-scrollbar modal-form-selected-list" style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, paddingRight: 4, minHeight: 0 }}>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 2 }}>{t("Đại lý đã chọn ({count}):").replace('{count}', String(formData.selected_users.length))}</div>
-                        {formData.selected_users.map(userId => {
-                          const user = consultants.find(c => String(c.id) === String(userId));
-                          if (!user) return null;
-                          return (
-                            <div key={user.id} style={{
-                              display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.75rem',
-                              background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 10,
-                              transition: 'all 0.2s'
-                            }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <Avatar src={user.avatar} name={user.name} size={28} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.12)' }} />
-                                <div style={{ flex: 1 }}>
-                                  <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text)', display: 'flex', alignItems: 'center' }}>
-                                    {user.name}
-                                    {editingRound?.compensations?.[user.id] > 0 && (
-                                      <span className="badge danger" style={{ marginLeft: 8, fontSize: '0.65rem', padding: '2px 6px' }}>
-                                        {t("Nợ bù: {count}").replace('{count}', String(editingRound.compensations[user.id]))}
-                                      </span>
-                                    )}
-                                  </div>
-                                  <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                    {user.email && (
-                                      <>
-                                        <img
-                                          src="https://www.gstatic.com/images/branding/product/1x/gmail_2020q4_32dp.png"
-                                          alt="Gmail"
-                                          style={{ width: 13, height: 10, objectFit: 'contain', flexShrink: 0 }}
-                                        />
-                                        <span>{user.email}</span>
-                                      </>
-                                    )}
-                                  </div>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={(e) => removeUser(user.id, e)}
-                                  style={{
-                                    color: 'var(--color-text-muted)', padding: 4, borderRadius: 6,
-                                    border: 'none', background: 'transparent', cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    transition: 'all 0.2s'
-                                  }}
-                                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--color-danger)'; e.currentTarget.style.background = 'var(--color-danger-light)'; }}
-                                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--color-text-muted)'; e.currentTarget.style.background = 'transparent'; }}
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-
-                              {/* Special Rule: Ratio + Data Per Turn */}
-                              <div style={{ borderTop: '1px dashed var(--color-border)', paddingTop: '0.5rem', marginTop: '0.25rem' }}>
-                                {/* Row 1: Data per turn */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
-                                  <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("Nhận")}</span>
-                                  <input
-                                    type="number"
-                                    min="1"
-                                    max="20"
-                                    value={formData.data_per_turns[user.id] || 1}
-                                    onChange={e => setFormData({ ...formData, data_per_turns: { ...formData.data_per_turns, [user.id]: Math.max(1, parseInt(e.target.value) || 1) } })}
-                                    style={{ width: 44, border: '1px solid var(--color-border)', borderRadius: 4, padding: '2px 4px', fontSize: '0.75rem', textAlign: 'center', outline: 'none', color: theme === 'dark' ? '#34d399' : '#059669', fontWeight: 700, background: theme === 'dark' ? 'rgba(16, 185, 129, 0.15)' : '#ecfdf5' }}
-                                  />
-                                  <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("Data liên tiếp mỗi lượt, sau mỗi")}</span>
-                                  <input
-                                    type="number"
-                                    min="1"
-                                    max="99"
-                                    value={formData.ratios[user.id] || 1}
-                                    onChange={e => setFormData({ ...formData, ratios: { ...formData.ratios, [user.id]: Math.max(1, parseInt(e.target.value) || 1) } })}
-                                    style={{ width: 44, border: '1px solid var(--color-border)', borderRadius: 4, padding: '2px 4px', fontSize: '0.75rem', textAlign: 'center', outline: 'none', color: 'var(--color-primary)', fontWeight: 700, background: 'var(--color-bg)' }}
-                                  />
-                                  <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>{t("vòng")}</span>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
                   </div>
-                </div>
-
-                <div style={{ padding: '1.25rem', background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', marginTop: 'auto' }}>
-                  <button type="button" className="btn outline" onClick={() => { setModalOpen(false); setShowDropdown(false); }}>{t("Hủy bỏ")}</button>
-                  <button type="submit" className="btn primary" disabled={isSaving}>
-                    {isSaving ? t('Đang lưu...') : (editingRound ? t('Cập nhật') : t('Thêm mới'))}
-                  </button>
-                </div>
+                </fieldset>
               </form>
             ) : activeTab === 'reports' ? (
               <div style={{ padding: '1.25rem', flex: 1, overflowY: 'auto' }} className="custom-scrollbar subtab-enter-active">
                 {loadingReports ? (
-                  <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--color-text-muted)' }}>{t("Đang tải dữ liệu báo cáo...")}</div>
-                ) : reports.length === 0 ? (
+                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                     <StatRowSkeleton />
+                     <StatRowSkeleton />
+                     <StatRowSkeleton />
+                   </div>
+                 ) : reports.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--color-text-muted)', background: 'var(--color-bg)', borderRadius: 12 }}>
                     <AlertCircle size={48} style={{ margin: '0 auto 1rem', opacity: 0.2 }} />
                     <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '0.25rem' }}>{t("Chưa có báo cáo lỗi nào")}</p>
@@ -1665,7 +2036,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {reports.map(r => {
+                    {reports.slice((reportsPage - 1) * reportsPageSize, reportsPage * reportsPageSize).map(r => {
                       const initials = r.lead_name ? r.lead_name.split(' ').slice(-2).map((w: string) => w[0]).join('').toUpperCase() : '?';
                       return (
                         <div key={r.id} className="compensation-report-row">
@@ -1716,7 +2087,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                               </div>
                               <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
                                 <Clock size={12} style={{ opacity: 0.6 }} />
-                                <span>{t('Báo cáo:')} {formatDateTimeVN(r.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                                 <span>{t('Báo cáo:')} {new Date(r.created_at.replace(/-/g, '/')).toLocaleString('vi-VN')}</span>
                               </div>
                             </div>
                           </div>
@@ -1792,7 +2163,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                                     <Avatar src={r.resolved_by_avatar} name={r.resolved_by} size={16} />
                                     <span>
                                       {r.resolved_by} • {(() => {
-                                        const d = new Date(r.resolved_at);
+                                        const d = new Date(r.resolved_at.replace(/-/g, '/'));
                                         const pad = (n: number) => n.toString().padStart(2, '0');
                                         return `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
                                       })()}
@@ -1805,13 +2176,27 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                         </div>
                       );
                     })}
+                    {reports.length > reportsPageSize && (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem', paddingRight: '0.25rem' }}>
+                        <Pagination
+                          total={reports.length}
+                          page={reportsPage}
+                          pageSize={reportsPageSize}
+                          onChange={setReportsPage}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             ) : (
               <div style={{ padding: '1.25rem', flex: 1, overflowY: 'auto' }} className="custom-scrollbar subtab-enter-active">
                 {loadingActiveLogs ? (
-                  <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--color-text-muted)' }}>{t("Đang tải dữ liệu log...")}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <StatRowSkeleton />
+                    <StatRowSkeleton />
+                    <StatRowSkeleton />
+                  </div>
                 ) : activeLogs.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--color-text-muted)', background: 'var(--color-bg)', borderRadius: 12 }}>
                     <AlertCircle size={48} style={{ margin: '0 auto 1rem', opacity: 0.2 }} />
@@ -1820,7 +2205,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {activeLogs.map(log => {
+                    {activeLogs.slice((activeLogsPage - 1) * activeLogsPageSize, activeLogsPage * activeLogsPageSize).map(log => {
                       return (
                         <div 
                           key={log.id} 
@@ -1902,11 +2287,21 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                             border: '1px solid var(--color-border-light)'
                           }}>
                             <Clock size={11} style={{ opacity: 0.7 }} />
-                            <span>{formatDateTimeVN(log.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                             <span>{new Date(log.created_at.replace(/-/g, '/')).toLocaleString('vi-VN')}</span>
                           </div>
                         </div>
                       );
                     })}
+                    {activeLogs.length > activeLogsPageSize && (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem', paddingRight: '0.25rem' }}>
+                        <Pagination
+                          total={activeLogs.length}
+                          page={activeLogsPage}
+                          pageSize={activeLogsPageSize}
+                          onChange={setActiveLogsPage}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -1939,10 +2334,10 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
             {/* Modal Body */}
             <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, background: 'transparent' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>{t("Danh sách Đại lý trong vòng")}</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>{t("Danh sách Tư vấn viên trong vòng")}</div>
                 {compRound.consultant_ids ? compRound.consultant_ids.split(',').map((idStr: string) => {
                   const id = parseInt(idStr, 10);
-                  const user = consultants.find(c => String(c.id) === String(id));
+                  const user = consultants.find(c => Number(c.id) === id);
                   if (!user) return null;
                   const currentComp = compData[id] || 0;
                   
