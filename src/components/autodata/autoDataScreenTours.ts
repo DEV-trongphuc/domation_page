@@ -1,7 +1,7 @@
 import type { SpotlightTourStep } from './AutoDataHelpTour';
 import type { WorkspaceScreenKey } from './autodataTypes';
 
-export const SCREEN_TOUR_DECKS: Record<WorkspaceScreenKey | 'sale_portal', SpotlightTourStep[]> = {
+export const SCREEN_TOUR_DECKS: Partial<Record<WorkspaceScreenKey | 'sale_portal', SpotlightTourStep[]>> = {
   dashboard: [
     {
       id: 'dash-1',

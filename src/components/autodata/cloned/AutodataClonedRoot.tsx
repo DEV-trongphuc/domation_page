@@ -241,7 +241,8 @@ const TourController: React.FC<{
   };
 
   const screenKey = resolveEffectiveScreenKey();
-  const steps = SCREEN_TOUR_DECKS[screenKey] || SCREEN_TOUR_DECKS.settings || SCREEN_TOUR_DECKS.dashboard;
+  const steps =
+    SCREEN_TOUR_DECKS[screenKey] || SCREEN_TOUR_DECKS.settings || SCREEN_TOUR_DECKS.dashboard || [];
 
   useEffect(() => {
     setStepIdx(0);
