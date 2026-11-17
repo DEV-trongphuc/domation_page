@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CustomModal } from './ui/CustomModal';
+import { BrandChannelLogo } from './ui/BrandChannelLogo';
 import { ToggleSwitch } from './ui/ToggleSwitch';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -150,7 +151,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Zalo OA Bot',
       badge: t('Khuyên dùng cho Sale VN'),
       badgeColor: '#0284c7',
-      icon: <MessageCircle size={24} color="#0284c7" />,
+      icon: <BrandChannelLogo brand="zalo" size={26} />,
       color: '#0284c7',
       bgColor: '#f0f9ff',
       borderColor: '#bae6fd',
@@ -162,7 +163,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Telegram Bot',
       badge: t('Tech Team & Group Chat'),
       badgeColor: '#2563eb',
-      icon: <Bot size={24} color="#2563eb" />,
+      icon: <BrandChannelLogo brand="telegram" size={26} />,
       color: '#2563eb',
       bgColor: '#eff6ff',
       borderColor: '#bfdbfe',
@@ -174,7 +175,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Inbound Webhook API',
       badge: t('LadiPage & Web CRM'),
       badgeColor: '#7c3aed',
-      icon: <Zap size={24} color="#7c3aed" />,
+      icon: <BrandChannelLogo brand="webhook" size={26} />,
       color: '#7c3aed',
       bgColor: '#f5f3ff',
       borderColor: '#ddd6fe',
@@ -186,7 +187,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Google Sheets & Email Relay',
       badge: t('Apps Script 0₫'),
       badgeColor: '#059669',
-      icon: <FileSpreadsheet size={24} color="#059669" />,
+      icon: <BrandChannelLogo brand="sheets_email" size={24} />,
       color: '#059669',
       bgColor: '#ecfdf5',
       borderColor: '#a7f3d0',

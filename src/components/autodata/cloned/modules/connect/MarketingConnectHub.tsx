@@ -16,6 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Badge, Card, FormCard, PillTabs } from '../../components/ui/AutoDataLoadingModal';
+import { BrandChannelLogo } from '../../components/ui/BrandChannelLogo';
 import { ScreenHelpButton } from '../../components/ui/ScreenHelpButton';
 import { apiRequest } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
@@ -105,13 +106,13 @@ export const MarketingConnectHub: React.FC = () => {
   const isPromax = packageCode === 'domation_promax';
 
   const tabs = [
-    { key: 'ses_smtp' as const, label: 'AWS SES / SMTP', icon: <Mail size={15} /> },
-    { key: 'dkim_dns' as const, label: 'Xác thực Domain DKIM/SPF', icon: <Globe size={15} /> },
-    { key: 'zalo_zns' as const, label: 'Zalo OA & ZNS', icon: <MessageCircle size={15} /> },
-    { key: 'sms_brandname' as const, label: 'SMS Brandname', icon: <Smartphone size={15} /> },
-    { key: 'web_sdk' as const, label: 'Mã nhúng Web Form & Tracking', icon: <Code2 size={15} /> },
+    { key: 'ses_smtp' as const, label: 'AWS SES / SMTP', icon: <BrandChannelLogo brand="aws_ses" size={17} /> },
+    { key: 'dkim_dns' as const, label: 'Xác thực Domain DKIM/SPF', icon: <BrandChannelLogo brand="dkim" size={17} /> },
+    { key: 'zalo_zns' as const, label: 'Zalo OA & ZNS', icon: <BrandChannelLogo brand="zalo" size={17} /> },
+    { key: 'sms_brandname' as const, label: 'SMS Brandname', icon: <BrandChannelLogo brand="sms" size={17} /> },
+    { key: 'web_sdk' as const, label: 'Mã nhúng Web Form & Tracking', icon: <BrandChannelLogo brand="web_sdk" size={17} /> },
     ...(isPromax
-      ? [{ key: 'enterprise_vault' as const, label: 'Hóa đơn Điện tử & AI BYOK', icon: <KeyRound size={15} /> }]
+      ? [{ key: 'enterprise_vault' as const, label: 'Hóa đơn Điện tử & AI BYOK', icon: <BrandChannelLogo brand="gemini" size={17} /> }]
       : []),
   ];
 
@@ -187,7 +188,7 @@ export const MarketingConnectHub: React.FC = () => {
               <FormCard
                 selected={mailMode === 'aws_ses'}
                 onClick={() => setMailMode('aws_ses')}
-                icon={<Sparkles size={18} />}
+                icon={<BrandChannelLogo brand="aws_ses" size={22} />}
                 title="Amazon SES API / High-Throughput"
                 description="Tốc độ gửi hàng chục nghìn email/giờ, tự động bắt SNS Bounce & Complaint"
                 badge={mailMode === 'aws_ses' ? <Badge tone="primary">Đang chọn</Badge> : undefined}
@@ -195,7 +196,7 @@ export const MarketingConnectHub: React.FC = () => {
               <FormCard
                 selected={mailMode === 'smtp'}
                 onClick={() => setMailMode('smtp')}
-                icon={<Mail size={18} />}
+                icon={<BrandChannelLogo brand="gmail" size={20} />}
                 title="Chuẩn SMTP Doanh Nghiệp"
                 description="Tương thích Google Workspace, Microsoft 365, SendGrid, Postmark, Mailgun"
                 badge={mailMode === 'smtp' ? <Badge tone="primary">Đang chọn</Badge> : undefined}
