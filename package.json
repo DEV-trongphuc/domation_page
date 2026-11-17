@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "seo:generate": "node scripts/generate-seo-assets.mjs",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "deploy:direct": "python ../AUTO_DATA_TENANRT/scripts/deploy-direct.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

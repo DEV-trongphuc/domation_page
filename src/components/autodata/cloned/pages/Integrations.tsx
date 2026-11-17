@@ -13,7 +13,9 @@ import { AutoDataTelegramBotGuide } from '../../AutoDataTelegramBotGuide';
 import { AutoDataZaloBotGuide } from '../../AutoDataZaloBotGuide';
 import { AutoDataWebhookGuide } from '../../AutoDataWebhookGuide';
 import { AutoDataEmailGuide } from '../../AutoDataEmailGuide';
-import { MessageCircle, Bot, Mail } from 'lucide-react';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
+import { MessageCircle, Bot, Mail, Sparkles } from 'lucide-react';
+import { UnifiedBotSetupWizard, type BotChannelType } from '../components/UnifiedBotSetupWizard';
 
 const SYSTEM_FIELDS = [
   { value: 'phone', label: 'Số Điện Thoại' },
@@ -320,6 +322,8 @@ const IntegrationsInner = () => {
   const { language, t } = useLanguage();
   const { token, tenantSlug } = useAuth();
   const [botGuideType, setBotGuideType] = useState<'telegram' | 'zalo' | 'webhook' | 'email' | null>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardChannel, setWizardChannel] = useState<BotChannelType>('zalo');
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selected, setSelected] = useState<Connection | null>(null);
   const [mobileActiveView, setMobileActiveView] = useState<'list' | 'detail'>('list');
@@ -814,24 +818,279 @@ const IntegrationsInner = () => {
 
   return (
     <>
-      <div className="responsive-flex-row responsive-height-auto" style={{ display: 'flex', gap: '1.5rem', height: 'calc(100vh - 66px - 3rem)', minHeight: 0, animation: 'fadeIn 0.3s' }}>
-        {/* LEFT PANEL: Sheet connections list */}
-        <div className={`responsive-filter-item ${mobileActiveView === 'detail' ? 'hide-on-mobile' : ''}`} style={{ width: 300, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div>
-            <h1 className="page-title" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-text)', letterSpacing: '-0.025em', marginBottom: 4 }}>{t('Tích hợp Data')}</h1>
-            <p className="page-subtitle" style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>{t('Quản lý các nguồn đổ Data')}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', height: 'calc(100vh - 66px - 3rem)', minHeight: 0, animation: 'fadeIn 0.3s' }}>
+        {/* Top Header & 4 Interactive Bot/Channel Action Cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <div>
+              <h1 className="page-title" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-text)', letterSpacing: '-0.025em', marginBottom: 4 }}>
+                {t('Tích hợp Đa Kênh & Bot')}
+              </h1>
+              <p className="page-subtitle" style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+                {t('Quản lý các kênh tiếp nhận data, cấu hình bot Zalo/Telegram tự động và đồng bộ Google Sheets')}
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setWizardChannel('zalo');
+                  setWizardOpen(true);
+                }}
+                className="btn primary"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  height: 38,
+                  padding: '0 1.125rem',
+                  borderRadius: 10,
+                  background: 'var(--color-primary)',
+                  fontWeight: 700,
+                  boxShadow: '0 2px 6px rgba(30, 64, 255, 0.2)',
+                  cursor: 'pointer',
+                }}
+              >
+                <Sparkles size={16} /> {t('Cấu hình Bot Nhanh (5 Bước)')}
+              </button>
+              <ScreenHelpButton screenKey="integrations" />
+            </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => setShowAddConn(true)} className="btn outline" style={{ width: '100%', justifyContent: 'center', height: 40, borderRadius: 10 }}>
-              <FileSpreadsheet size={16} /> {t('Thêm kết nối Sheets')}
-            </button>
-            <button onClick={() => setShowAddApi(true)} className="btn primary" style={{ width: '100%', justifyContent: 'center', height: 40, borderRadius: 10, background: 'var(--color-primary)' }}>
-              <Zap size={16} /> {t('Thêm API Landing Page')}
-            </button>
-          </div>
+          {/* 4 Interactive Action Cards */}
+          <div data-tour="integrations-tabs" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '0.75rem' }}>
+            {/* Card 1: Zalo OA Bot */}
+            <div
+              data-tour="integrations-bots"
+              style={{
+                background: 'var(--color-surface)',
+                border: '1px solid #bae6fd',
+                borderRadius: 14,
+                padding: '0.875rem 1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.625rem',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#f0f9ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bae6fd' }}>
+                    <MessageCircle size={17} color="#0284c7" />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Zalo OA Bot</h3>
+                    <span style={{ fontSize: '0.6875rem', color: '#0284c7', fontWeight: 700 }}>Dành cho Sale VN</span>
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4, flex: 1 }}>
+                {t('Bắn tin Lead mới về Zalo điện thoại trong 1 giây, tự động quét Chat ID qua /chatid.')}
+              </p>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWizardChannel('zalo');
+                    setWizardOpen(true);
+                  }}
+                  className="btn primary sm"
+                  style={{ flex: 1, height: 32, fontSize: '0.75rem', background: '#0284c7', border: 'none', borderRadius: 8, justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  {t('Cấu hình & Test kết nối Zalo')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBotGuideType('zalo')}
+                  className="btn outline sm"
+                  style={{ height: 32, fontSize: '0.75rem', borderRadius: 8, padding: '0 8px', borderColor: '#bae6fd', color: '#0284c7', cursor: 'pointer' }}
+                  title={t('Tài liệu hướng dẫn Zalo chi tiết')}
+                >
+                  <Info size={14} />
+                </button>
+              </div>
+            </div>
 
-          <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingBottom: '1rem' }}>
+            {/* Card 2: Telegram Bot */}
+            <div
+              data-tour="integrations-bots"
+              style={{
+                background: 'var(--color-surface)',
+                border: '1px solid #bfdbfe',
+                borderRadius: 14,
+                padding: '0.875rem 1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.625rem',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfdbfe' }}>
+                    <Bot size={17} color="#2563eb" />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Telegram Bot</h3>
+                    <span style={{ fontSize: '0.6875rem', color: '#2563eb', fontWeight: 700 }}>Tech & Group Chat</span>
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4, flex: 1 }}>
+                {t('Nhận thông báo nhóm Telegram, mã hóa AES-256 Vault và đo độ trễ phản hồi <4.0s.')}
+              </p>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWizardChannel('telegram');
+                    setWizardOpen(true);
+                  }}
+                  className="btn primary sm"
+                  style={{ flex: 1, height: 32, fontSize: '0.75rem', background: '#2563eb', border: 'none', borderRadius: 8, justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  {t('Cấu hình & Test lệnh Telegram')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBotGuideType('telegram')}
+                  className="btn outline sm"
+                  style={{ height: 32, fontSize: '0.75rem', borderRadius: 8, padding: '0 8px', borderColor: '#bfdbfe', color: '#2563eb', cursor: 'pointer' }}
+                  title={t('Tài liệu hướng dẫn Telegram chi tiết')}
+                >
+                  <Info size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* Card 3: Inbound Webhook */}
+            <div
+              style={{
+                background: 'var(--color-surface)',
+                border: '1px solid #ddd6fe',
+                borderRadius: 14,
+                padding: '0.875rem 1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.625rem',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ddd6fe' }}>
+                    <Zap size={17} color="#7c3aed" />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Inbound Webhook</h3>
+                    <span style={{ fontSize: '0.6875rem', color: '#7c3aed', fontWeight: 700 }}>LadiPage & Web CRM</span>
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4, flex: 1 }}>
+                {t('Đường dẫn REST API tiếp nhận Lead tức thì từ Landing Page, xác thực chữ ký HMAC.')}
+              </p>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                <button
+                  type="button"
+                  onClick={() => setBotGuideType('webhook')}
+                  className="btn primary sm"
+                  style={{ flex: 1, height: 32, fontSize: '0.75rem', background: '#7c3aed', border: 'none', borderRadius: 8, justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  {t('Xem Endpoint & Code mẫu')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWizardChannel('webhook');
+                    setWizardOpen(true);
+                  }}
+                  className="btn outline sm"
+                  style={{ height: 32, fontSize: '0.75rem', borderRadius: 8, padding: '0 8px', borderColor: '#ddd6fe', color: '#7c3aed', cursor: 'pointer' }}
+                  title={t('Cấu hình qua Wizard')}
+                >
+                  <Sparkles size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* Card 4: Google Sheets & Email Relay */}
+            <div
+              style={{
+                background: 'var(--color-surface)',
+                border: '1px solid #a7f3d0',
+                borderRadius: 14,
+                padding: '0.875rem 1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.625rem',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #a7f3d0' }}>
+                    <FileSpreadsheet size={17} color="#059669" />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Sheets & Email Relay</h3>
+                    <span style={{ fontSize: '0.6875rem', color: '#059669', fontWeight: 700 }}>Google Apps Script 0₫</span>
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4, flex: 1 }}>
+                {t('Đồng bộ 2 chiều dữ liệu bảng tính & gửi email cảnh báo tự động không mất phí.')}
+              </p>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                <button
+                  type="button"
+                  onClick={() => setBotGuideType('email')}
+                  className="btn primary sm"
+                  style={{ flex: 1, height: 32, fontSize: '0.75rem', background: '#059669', border: 'none', borderRadius: 8, justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  {t('Cấu hình Email Relay 0₫')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setWizardChannel('email');
+                    setWizardOpen(true);
+                  }}
+                  className="btn outline sm"
+                  style={{ height: 32, fontSize: '0.75rem', borderRadius: 8, padding: '0 8px', borderColor: '#a7f3d0', color: '#059669', cursor: 'pointer' }}
+                  title={t('Cấu hình qua Wizard')}
+                >
+                  <Sparkles size={14} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM SECTION: Two Column Workspace for Sheets & Webhooks */}
+        <div className="responsive-flex-row responsive-height-auto" style={{ display: 'flex', gap: '1.5rem', flex: 1, minHeight: 0 }}>
+          {/* LEFT PANEL: Sheet connections list */}
+          <div className={`responsive-filter-item ${mobileActiveView === 'detail' ? 'hide-on-mobile' : ''}`} style={{ width: 300, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <h2 style={{ fontSize: '1.0625rem', fontWeight: 800, color: 'var(--color-text)', letterSpacing: '-0.025em', margin: 0 }}>
+                {t('Danh sách Nguồn Data')}
+              </h2>
+              <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                {t('Google Sheets & API Endpoints')}
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <button onClick={() => setShowAddConn(true)} className="btn outline" style={{ width: '100%', justifyContent: 'center', height: 38, borderRadius: 10 }}>
+                <FileSpreadsheet size={16} /> {t('Thêm kết nối Sheets')}
+              </button>
+              <button onClick={() => setShowAddApi(true)} className="btn primary" style={{ width: '100%', justifyContent: 'center', height: 38, borderRadius: 10, background: 'var(--color-primary)' }}>
+                <Zap size={16} /> {t('Thêm API Landing Page')}
+              </button>
+            </div>
+
+            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingBottom: '1rem' }}>
             {/* Virtual Connection for Master Sync */}
             <div
               onClick={() => {
@@ -1191,7 +1450,7 @@ const IntegrationsInner = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <div data-tour="integrations-test" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     {selected.last_sync_at && (
                       <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                         {t('Lần cuối:')} {parseServerDateVN(selected.last_sync_at)?.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', { timeZone: VN_TIMEZONE }) || selected.last_sync_at}
@@ -1700,6 +1959,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
           )}
         </div>
       </div>
+    </div>
 
       <CustomModal
         isOpen={showAddConn}
@@ -2480,6 +2740,16 @@ fetch("${webhookUrl(selected.webhook_token)}", {
           <AutoDataEmailGuide tenantSlug={tenantSlug} accessToken={token || ''} onClose={() => setBotGuideType(null)} />
         )}
       </CustomModal>
+
+      <UnifiedBotSetupWizard
+        isOpen={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        initialChannel={wizardChannel}
+        onSuccess={() => {
+          fetchData();
+          toast.success(t('Đã cập nhật kênh tích hợp thành công!'));
+        }}
+      />
     </>
   );
 };

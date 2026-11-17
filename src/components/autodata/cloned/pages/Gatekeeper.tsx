@@ -23,6 +23,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { TableSkeleton, Skeleton, KpiCardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
 import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 type Lead = {
   id: number;
@@ -516,7 +517,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         );
     }
   };
-  const { user } = useAuth();
+  const { user, tenantSettings } = useAuth();
   const navigate = useNavigate();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -790,7 +791,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   const [endDate, setEndDate] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = Math.max(10, Math.min(200, Number(tenantSettings?.default_table_page_size || 50)));
 
   const updateParams = (key: string, value: string) => {
     const currentValue = searchParams.get(key) || '';
@@ -1407,6 +1408,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
         {/* Header Actions */}
         <div className="mobile-flex-wrap hide-on-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <ScreenHelpButton screenKey="gatekeeper" />
 
           {/* Guide Button */}
           <button
@@ -1432,6 +1434,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
           {/* Settings Button */}
           <button
+            data-tour="gatekeeper-blacklist"
             onClick={() => {
               fetchSettings();
               setIsSettingsModalOpen(true);
@@ -1518,7 +1521,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       </div>
 
       {/* Intro explain card styled identically to FairShareAudit */}
-      <div className="hide-on-mobile" style={{
+      <div data-tour="gatekeeper-flow" className="hide-on-mobile" style={{
         background: 'linear-gradient(135deg, rgba(30, 64, 255, 0.05) 0%, rgba(30, 64, 255, 0.1) 100%)',
         border: '1px solid var(--color-primary-light)', borderLeft: '4px solid var(--color-primary)',
         borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem'
@@ -2375,6 +2378,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             <>
               {/* Desktop View Table */}
               <div
+                data-tour="gatekeeper-held"
                 className="table-wrap hide-on-mobile"
                 style={{
                   maxHeight: 'calc(100vh - 340px)',

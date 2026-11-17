@@ -27,6 +27,7 @@ import { fetchAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LuxuryBackgroundDecor } from '../components/ui/LuxuryBackgroundDecor';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 const logoHorizontal = '/imgs/autodata/domation_ai_icon.svg';
 const logoIcon = '/imgs/autodata/domation_ai_icon.svg';
 
@@ -83,7 +84,7 @@ interface ReportContext {
 export const ReportData: React.FC = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, tenantSettings } = useAuth();
 
   const [, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -165,9 +166,17 @@ export const ReportData: React.FC = () => {
           if (data.is_allowed_to_report === false) {
             setCtxError(t('Tài khoản của bạn hiện không có quyền gửi báo cáo lỗi data.'));
           } else {
+            const settingsReasons = Array.isArray(tenantSettings?.ticket_reasons)
+              ? tenantSettings!.ticket_reasons.map((r: any) => ({
+                  reason: r.label || r.value,
+                  note: r.value || r.label,
+                }))
+              : [];
             const list = (data.report_error_reasons && data.report_error_reasons.length > 0)
               ? data.report_error_reasons
-              : DEFAULT_REPORT_REASONS;
+              : settingsReasons.length > 0
+                ? settingsReasons
+                : DEFAULT_REPORT_REASONS;
             setReasons(list);
             if (list.length > 0) {
               setReason(list[0].reason);
@@ -257,16 +266,19 @@ export const ReportData: React.FC = () => {
       <div className="ambient-glow glow-2" />
       <div className="ambient-glow glow-3" />
 
-      <div className="report-main-container">
+      <div data-tour="reportdata-form" className="report-main-container">
         {/* ── LUXURY BRAND HEADER ── */}
         <header className="report-header">
-          <div className="brand-logo-container">
+          <div className="brand-logo-container" style={{ position: 'relative' }}>
             {/* Official Horizontal Brand Logo (synced with Landing Page) */}
             <img 
               src={logoHorizontal} 
               alt="DOMATION AutoData" 
               className="brand-logo-full"
             />
+            <div style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>
+              <ScreenHelpButton screenKey="report_data" />
+            </div>
           </div>
 
           <div className="header-badge-pill">

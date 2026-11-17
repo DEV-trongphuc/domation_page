@@ -14,6 +14,7 @@ import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { resolveTenantPipelines } from '../utils/pipelineConfig';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import { CalendarSkeleton, TableSkeleton, KpiCardSkeleton, CardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
@@ -21,6 +22,7 @@ import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
 import { LeadQualityBadge } from '../components/LeadQualityBadge';
 import { AdPreviewModal } from '../components/AdPreviewModal';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 
 type Lead = {
@@ -311,7 +313,7 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
 };
 
 const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
-  const { user } = useAuth();
+  const { user, tenantSettings } = useAuth();
   const { language, t } = useLanguage();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -943,7 +945,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     setIsBlocking(false);
   };
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = Math.max(10, Math.min(200, Number(tenantSettings?.default_table_page_size || 50)));
 
   // BUG-05 fix: Implement CSV export using Backend Stream to prevent browser/server OOM
   const handleExportCSV = () => {
@@ -1225,10 +1227,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
               <Info size={14} />
               <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{t("Giải thích trạng thái")}</span>
             </button>
+            <ScreenHelpButton screenKey="data_list" />
           </h1>
           <p className="page-subtitle">{t('Xem lịch sử, theo dõi tiến trình và quản lý toàn bộ dữ liệu Khách hàng.')}</p>
         </div>
-        <div className="data-list-actions" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <div className="data-list-actions" data-tour="datalist-actions" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -1380,6 +1383,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
       {/* Filters */}
       <div
+        data-tour="datalist-filters"
         className={`responsive-filter-row ${!showMobileFilters ? 'filter-hide-on-mobile' : ''}`}
         style={{
           position: 'relative',
@@ -1492,46 +1496,11 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           <CustomSelect
             options={[
               { value: 'all', label: t('Tất cả đánh giá'), icon: <Sparkles size={16} /> },
-              {
-                value: 'Qualified',
-                label: t('Thiện Chí (Qualified)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
-              },
-              {
-                value: 'Booked',
-                label: t('Đã hẹn gặp (Booked)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#8B5CF6', display: 'inline-block' }} />
-              },
-              {
-                value: 'Booking',
-                label: t('Booking (Giữ chỗ)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EC4899', display: 'inline-block' }} />
-              },
-              {
-                value: 'Deposited',
-                label: t('Đặt cọc (Cọc)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
-              },
-              {
-                value: 'Closed',
-                label: t('Chốt thành công (Chốt)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }} />
-              },
-              {
-                value: 'Badtiming',
-                label: t('Hẹn gọi lại (Bad Timing)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
-              },
-              {
-                value: 'NoAnswer',
-                label: t('Không liên lạc được (No Answer)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6', display: 'inline-block' }} />
-              },
-              {
-                value: 'Notlead',
-                label: t('Không đúng (Not Lead)'),
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EF4444', display: 'inline-block' }} />
-              },
+              ...resolveTenantPipelines(tenantSettings).map((st) => ({
+                value: st.key,
+                label: t(st.label),
+                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: st.color, display: 'inline-block' }} />,
+              })),
               {
                 value: 'unrated',
                 label: t('Chưa đánh giá'),
@@ -1677,8 +1646,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
           </div>
         </div>
       ) : (
-        <div className="card fade-in-view mobile-flat-container" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ flex: 1, overflow: isMobile ? 'visible' : 'auto' }} className="table-wrap custom-scrollbar">
+        <div className="card fade-in-view mobile-flat-container" data-tour="datalist-table" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, overflow: isMobile ? 'visible' : 'auto' }} className="table-wrap custom-scrollbar" data-tour="datalist-table">
             {isMobile ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0.5rem 0 5rem 0' }}>
                 {loading ? (
@@ -1788,7 +1757,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                             {(lead.ad_thumbnail_url || lead.ad_image_url) ? (
-                              <img src={lead.ad_thumbnail_url || lead.ad_image_url || ''} alt='' onError={(e) => { const f = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(lead.ad_id || '')}`; if (!e.currentTarget.src.includes('action=ad_thumb')) e.currentTarget.src = f; else e.currentTarget.style.display = 'none'; }} style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255,0.3)' }} />
+                              <img src={lead.ad_thumbnail_url || lead.ad_image_url || ''} alt='' onError={(e) => { e.currentTarget.style.display = 'none'; }} style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255,0.3)' }} />
                             ) : (
                               <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(30, 64, 255,0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0 }}><Megaphone size={13} /></div>
                             )}
@@ -1970,7 +1939,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                   <img
                                     src={lead.ad_thumbnail_url || lead.ad_image_url || ''}
                                     alt={lead.ad_name || 'Ad'}
-                                    style={{ width: 32, height: 32, borderRadius: 7, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255, 0.3)' }} onError={(e) => { const f = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(lead.ad_id || '')}`; if (!e.currentTarget.src.includes('action=ad_thumb')) e.currentTarget.src = f; else e.currentTarget.style.display = 'none'; }}
+                                    style={{ width: 32, height: 32, borderRadius: 7, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255, 0.3)' }} onError={(e) => { e.currentTarget.style.display = 'none'; }}
                                   />
                                 ) : (
                                   <div style={{ width: 32, height: 32, borderRadius: 7, background: 'rgba(30, 64, 255, 0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0 }}>
@@ -2591,7 +2560,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                         <img
                           src={selectedLead.ad_thumbnail_url || selectedLead.ad_image_url || ''}
                           alt={selectedLead.ad_name || 'Ad'}
-                          style={{ width: 50, height: 50, borderRadius: 10, objectFit: 'cover', cursor: 'pointer', border: '1px solid rgba(30, 64, 255, 0.35)', flexShrink: 0, marginTop: 2 }} onError={(e) => { const f = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(selectedLead.ad_id || '')}`; if (!e.currentTarget.src.includes('action=ad_thumb')) e.currentTarget.src = f; else e.currentTarget.style.display = 'none'; }}
+                          style={{ width: 50, height: 50, borderRadius: 10, objectFit: 'cover', cursor: 'pointer', border: '1px solid rgba(30, 64, 255, 0.35)', flexShrink: 0, marginTop: 2 }} onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                       ) : (
                         <div style={{ width: 50, height: 50, borderRadius: 10, background: 'rgba(30, 64, 255, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0, marginTop: 2 }}>

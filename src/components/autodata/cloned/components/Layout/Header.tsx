@@ -386,7 +386,7 @@ export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedCli
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
         {/* Tour màn hình này */}
         <button
-          onClick={openTour}
+          onClick={() => openTour()}
           style={{
             width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'var(--color-text-light)', borderRadius: 8, border: 'none', background: 'none', cursor: 'pointer'

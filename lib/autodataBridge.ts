@@ -88,6 +88,7 @@ function resolveUpstreamTarget(reqUrl: string, baseUrl: string): string | null {
     'zalo-updates': '/api/v1/integrations/zalo/updates',
     'zalo-verify': '/api/v1/integrations/zalo/verify',
     'webhook-test': '/api/v1/leads/quick-test',
+    consultation: '/api/v1/public/consultation',
   };
 
   const mappedPath = actionMap[action];

@@ -10,6 +10,9 @@ import { TableRowSkeleton } from '../components/ui/Skeleton';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { resolveTenantDefaultSchedule } from '../utils/pipelineConfig';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 import { useNavigate } from 'react-router-dom';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -59,6 +62,8 @@ const formatScheduleTooltip = (schedule: any, t: any): string => {
 
 const ConsultantsInner = () => {
   const { t } = useLanguage();
+  const { tenantSettings } = useAuth();
+  const tenantDefaultSchedule = resolveTenantDefaultSchedule(tenantSettings);
   const navigate = useNavigate();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -206,7 +211,7 @@ const ConsultantsInner = () => {
 
   const handleDayChange = (dayKey: string, field: 'active' | 'start' | 'end', value: any) => {
     setFormData(prev => {
-      const currentSchedule = prev.work_schedule || DEFAULT_SCHEDULE;
+      const currentSchedule = prev.work_schedule || tenantDefaultSchedule;
       const updatedDayConfig = {
         ...currentSchedule[dayKey],
         [field]: value
@@ -638,13 +643,16 @@ const ConsultantsInner = () => {
     <div>
       {/* Header */}
       <div className="page-header">
-        <div>
-          <h1 className="page-title">{t('Quản lý Đại lý')}</h1>
-          <p className="page-subtitle">
-            {t('Danh sách nhân sự tiếp nhận và xử lý data từ hệ thống')}
-          </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div>
+            <h1 className="page-title">{t('Quản lý Đại lý')}</h1>
+            <p className="page-subtitle">
+              {t('Danh sách nhân sự tiếp nhận và xử lý data từ hệ thống')}
+            </p>
+          </div>
+          <ScreenHelpButton screenKey="consultants" />
         </div>
-        <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
+        <div data-tour="consultants-header" style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
           <button 
             onClick={() => setSheetModalOpen(true)} 
             className="btn secondary responsive-btn-full" 
@@ -667,7 +675,7 @@ const ConsultantsInner = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="responsive-grid-4" data-tour="consultants-kpis" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
         <div className="stat-card hover-lift">
           <div className="stat-label">{t('Tổng Đại lý')}</div>
           <div className="stat-value">{users.length}</div>
@@ -749,6 +757,7 @@ const ConsultantsInner = () => {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: 3, flexWrap: 'wrap' }}>
                               <span
+                                data-tour="consultants-zalo"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   const sid = String(u.id).slice(0, 8).toUpperCase();
@@ -819,6 +828,7 @@ const ConsultantsInner = () => {
 
                               {mgrCount < 3 && (
                                 <button
+                                  data-tour="consultants-comanagers"
                                   type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -1647,7 +1657,7 @@ const ConsultantsInner = () => {
                           onClick={() => {
                             setScheduleMode('custom');
                             if (!formData.work_schedule) {
-                              setFormData(prev => ({ ...prev, work_schedule: DEFAULT_SCHEDULE }));
+                              setFormData(prev => ({ ...prev, work_schedule: tenantDefaultSchedule }));
                             }
                           }}
                           style={{
@@ -1711,8 +1721,8 @@ const ConsultantsInner = () => {
                         // Weekly Schedule Custom Configuration
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--color-bg)', padding: '12px', borderRadius: 12, maxHeight: '180px', overflowY: 'auto' }}>
                           {Object.entries(dayNames).map(([dayKey, dayLabel]) => {
-                            const schedule = formData.work_schedule || DEFAULT_SCHEDULE;
-                            const dayConfig = schedule[dayKey] || { active: true, start: '08:00', end: '17:30' };
+                            const schedule = formData.work_schedule || tenantDefaultSchedule;
+                            const dayConfig = schedule[dayKey] || tenantDefaultSchedule[dayKey] || { active: true, start: '08:30', end: '18:00' };
 
                             return (
                               <div key={dayKey} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '6px 0', borderBottom: theme === 'dark' ? '1px solid var(--color-border)' : '1px solid var(--color-border-light)' }}>

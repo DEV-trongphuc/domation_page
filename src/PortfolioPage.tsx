@@ -110,7 +110,7 @@ export const PortfolioPage: React.FC = () => {
                   {[
                     { num: '30+', label: 'Doanh nghiệp đồng hành' },
                     { num: '10', label: 'Flagship Case Study sâu' },
-                    { num: '74+', label: 'Bài phân tích chuẩn SEO' },
+                    { num: 'Chuẩn SEO', label: 'Thư viện kiến thức thực chiến' },
                     { num: '< 5s', label: 'SLA Chia Lead thực chiến' },
                   ].map((stat) => (
                     <div

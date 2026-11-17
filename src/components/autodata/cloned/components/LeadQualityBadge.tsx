@@ -1,4 +1,6 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { resolvePipelineStageByKey } from '../utils/pipelineConfig';
 
 export interface MarketingPipelineStage {
   id: string;
@@ -122,7 +124,27 @@ export const LeadQualityBadge: React.FC<LeadQualityBadgeProps> = ({
   size = 'md',
   fullLabel = false
 }) => {
-  const config = (status && MARKETING_PIPELINES[status]) || UNRATED_PIPELINE;
+  let tenantSettings: any = undefined;
+  try {
+    // Allow isolated storybook/test renders without AuthProvider if needed
+    tenantSettings = useAuth().tenantSettings;
+  } catch {
+    tenantSettings = undefined;
+  }
+  const resolved = resolvePipelineStageByKey(status, tenantSettings);
+  const config: MarketingPipelineStage =
+    resolved.key === 'unrated' && status && MARKETING_PIPELINES[status]
+      ? MARKETING_PIPELINES[status]
+      : {
+          id: resolved.key,
+          label: resolved.label,
+          shortLabel: resolved.shortLabel,
+          dotColor: resolved.color,
+          bg: resolved.bg,
+          border: resolved.border,
+          color: resolved.color,
+          desc: resolved.desc,
+        };
 
   const fontSizes = {
     sm: '0.6875rem',

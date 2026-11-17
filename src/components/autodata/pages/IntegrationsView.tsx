@@ -284,7 +284,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
                 required
                 value={whName}
                 onChange={(e) => setWhName(e.target.value)}
-                placeholder="vd: Landing Page EcoLife"
+                placeholder="vd: Landing Page Doanh nghiệp"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs"
               />
             </div>

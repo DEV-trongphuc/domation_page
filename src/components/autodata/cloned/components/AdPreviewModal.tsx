@@ -267,12 +267,7 @@ export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
                     src={displayThumb}
                     alt={displayTitle}
                     onError={(e) => {
-                      const fallbackUrl = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(adId)}`;
-                      if (!e.currentTarget.src.includes('action=ad_thumb')) {
-                        e.currentTarget.src = fallbackUrl;
-                      } else {
-                        e.currentTarget.style.display = 'none';
-                      }
+                      e.currentTarget.style.display = 'none';
                     }}
                     style={{ maxWidth: '100%', maxHeight: '320px', borderRadius: '12px', objectFit: 'cover', border: '1px solid var(--color-border)' }}
                   />
@@ -406,12 +401,7 @@ export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
                       src={displayThumb}
                       alt={displayTitle}
                       onError={(e) => {
-                        const fallbackUrl = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(adId)}`;
-                        if (!e.currentTarget.src.includes('action=ad_thumb')) {
-                          e.currentTarget.src = fallbackUrl;
-                        } else {
-                          e.currentTarget.style.display = 'none';
-                        }
+                        e.currentTarget.style.display = 'none';
                       }}
                       style={{
                         width: 58,

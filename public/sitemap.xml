@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://domation.net/</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,17 +21,17 @@
   </url>
   <url>
     <loc>https://domation.net/boost</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <image:image>
       <image:loc>https://domation.net/imgs/boost/boost-hero-growth-hub.jpg</image:loc>
-      <image:title>Blog DOMATION — 74+ Bài Chuẩn SEO &amp; 74 Chủ Đề Vận Hành 5.0</image:title>
+      <image:title>Blog DOMATION — Bài Viết Chuẩn SEO &amp; Chủ Đề Vận Hành 5.0</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://domation.net/portfolio</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -49,7 +49,7 @@
   </url>
   <url>
     <loc>https://domation.net/data</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -63,7 +63,7 @@
   </url>
   <url>
     <loc>https://domation.net/erp</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -77,7 +77,7 @@
   </url>
   <url>
     <loc>https://domation.net/crm</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -91,7 +91,7 @@
   </url>
   <url>
     <loc>https://domation.net/automation</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -105,7 +105,7 @@
   </url>
   <url>
     <loc>https://domation.net/meta-report</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -119,7 +119,7 @@
   </url>
   <url>
     <loc>https://domation.net/web-design</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -129,7 +129,7 @@
   </url>
   <url>
     <loc>https://domation.net/ideas</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
     <image:image>
@@ -1206,7 +1206,7 @@
     <image:image>
       <image:loc>https://domation.net/imgs/boost/boost-hero-growth-hub.jpg</image:loc>
       <image:title>Kỹ Thuật Xây Dựng Content SEO Topic Cluster &amp; Bộ Từ Khóa Ngắn – Dài Đẩy Top Google Bền Vững — Giao diện thực tế</image:title>
-      <image:caption>Mô hình Hub &amp; Spoke kết nối 12 Cluster và 74 bài viết chuyên sâu trên Blog DOMATION.</image:caption>
+      <image:caption>Mô hình Hub &amp; Spoke kết nối các cụm Cluster và bài viết chuyên sâu trên Blog DOMATION.</image:caption>
     </image:image>
   </url>
   <url>

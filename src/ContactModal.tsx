@@ -13,9 +13,7 @@ import {
 } from 'lucide-react';
 import { GlassModal } from './components/GlassModal';
 import { DomationLogoMark } from './components/DomationLogoMark';
-
-const APPS_SCRIPT_ENDPOINT =
-  'https://script.google.com/macros/s/AKfycbw3rzpfXvneN7mAVgvUFAmrP0BvkdU1yK1JCyiCAJp49bI_HRTr1Lkp07Q4BahEzYko2w/exec';
+import { submitDomationConsultation } from './utils/domationLeadSubmit';
 
 export interface ContactModalProps {
   isOpen: boolean;
@@ -42,6 +40,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
   const [service, setService] = useState(defaultService || SERVICE_OPTIONS[0].value);
   const [message, setMessage] = useState(defaultNote || '');
@@ -63,8 +62,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanPhone = phone.replace(/\s+/g, '');
-    if (!name.trim() || cleanPhone.length < 9) {
-      setErrorMsg('Vui lòng nhập Họ tên và Số điện thoại / Zalo hợp lệ để đội ngũ liên hệ.');
+    const cleanEmail = email.trim();
+    if (!name.trim() || (!cleanEmail && cleanPhone.length < 9)) {
+      setErrorMsg('Vui lòng nhập Họ tên cùng Số điện thoại / Zalo hoặc Email hợp lệ để đội ngũ liên hệ.');
       return;
     }
 
@@ -72,31 +72,28 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setErrorMsg('');
 
     try {
-      const payload = {
+      await submitDomationConsultation({
         name: name.trim(),
+        email: cleanEmail,
         phone: cleanPhone,
         company: company.trim() || 'Chưa cung cấp',
         service,
         message: message.trim() || 'Yêu cầu tư vấn kiến trúc giải pháp DOMATION Enterprise',
-        source: 'domation.net',
-        submittedAt: new Date().toISOString(),
-      };
-
-      await fetch(APPS_SCRIPT_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload),
+        source_form: 'ContactModal',
       });
 
       setStatus('success');
       setName('');
       setPhone('');
+      setEmail('');
       setCompany('');
       setMessage('');
-    } catch {
+    } catch (err) {
       setStatus('error');
       setErrorMsg(
-        'Kết nối gián đoạn tạm thời. Anh/chị vui lòng bấm kết nối Zalo trực tiếp 0378.859.736 để được hỗ trợ tức thì!'
+        err instanceof Error && err.message
+          ? err.message
+          : 'Kết nối gián đoạn tạm thời. Anh/chị vui lòng bấm kết nối Zalo trực tiếp 0378.859.736 để được hỗ trợ tức thì!'
       );
     }
   };
@@ -152,7 +149,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               </a>
 
               <a
-                href="https://www.facebook.com/turni0"
+                href="https://www.facebook.com/domation.net/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-200/90 hover:border-[#1E40FF]/50 hover:shadow-sm transition-all group"
@@ -162,8 +159,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                     <MessageCircle className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-slate-900">Facebook Messenger</div>
-                    <div className="text-[11px] text-slate-500">fb.com/turni0</div>
+                    <div className="text-xs font-bold text-slate-900">Facebook Fanpage</div>
+                    <div className="text-[11px] text-slate-500">fb.com/domation.net</div>
                   </div>
                 </div>
                 <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#1E40FF] transition-colors shrink-0" />
@@ -171,11 +168,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 pt-1">
                 <a
-                  href="mailto:turniodev@gmail.com"
+                  href="mailto:domation.net@gmail.com"
                   className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/80 border border-slate-200/80 hover:border-blue-200 text-xs text-slate-700 font-medium transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-                  <span className="truncate">turniodev@gmail.com</span>
+                  <span className="truncate">domation.net@gmail.com</span>
                 </a>
                 <a
                   href="tel:0378859736"
@@ -261,17 +258,31 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Doanh Nghiệp / Thương Hiệu
-                </label>
-                <input
-                  type="text"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  placeholder="VD: Công ty BĐS / Nha khoa / Chuỗi bán lẻ..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Email nhận Báo giá &amp; Xác nhận
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Doanh Nghiệp / Thương Hiệu
+                  </label>
+                  <input
+                    type="text"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                    placeholder="VD: BĐS / Nha khoa / Chuỗi..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  />
+                </div>
               </div>
 
               <div>

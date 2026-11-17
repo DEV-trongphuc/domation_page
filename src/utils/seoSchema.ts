@@ -133,7 +133,7 @@ export function buildFounderSchema(): Record<string, unknown> {
     sameAs: [
       FOUNDER_PRIMARY_URL,
       FOUNDER_PORTFOLIO_URL,
-      'https://www.facebook.com/turni0',
+      'https://www.facebook.com/domation.net/',
       'https://zalo.me/0378859736',
     ],
   };
@@ -157,7 +157,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       contentUrl: BRAND_LOGO_URL,
       caption: 'DOMATION.NET Logo',
     },
-    email: 'turniodev@gmail.com',
+    email: 'domation.net@gmail.com',
     telephone: '+84378859736',
     address: {
       '@type': 'PostalAddress',
@@ -168,7 +168,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       {
         '@type': 'ContactPoint',
         telephone: '+84378859736',
-        email: 'turniodev@gmail.com',
+        email: 'domation.net@gmail.com',
         contactType: 'sales',
         areaServed: 'VN',
         availableLanguage: ['vi', 'en'],
@@ -185,7 +185,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       '@id': FOUNDER_ID,
     },
     sameAs: [
-      'https://www.facebook.com/turni0',
+      'https://www.facebook.com/domation.net/',
       FOUNDER_PRIMARY_URL,
       FOUNDER_PORTFOLIO_URL,
       'https://zalo.me/0378859736',

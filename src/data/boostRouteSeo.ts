@@ -28,7 +28,7 @@ export const BOOST_FAQS: PageFaqItem[] = [
   {
     question: 'Blog DOMATION (/boost) tập trung chia sẻ những chủ đề chuyên sâu nào?',
     answer:
-      'Blog DOMATION tổng hợp 74+ bài phân tích thực chiến về Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO và chiến dịch Automation.',
+      'Blog DOMATION tổng hợp các bài phân tích thực chiến về Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO và chiến dịch Automation.',
   },
   {
     question: 'Tại sao DOMATION định vị là hệ thống vận hành custom may đo cho doanh nghiệp thời đại mới?',
@@ -103,7 +103,7 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
   return {
     title: 'Blog DOMATION | ERP May Đo, Vibecode & AI Doanh Nghiệp 5.0',
     description:
-      'Blog kiến thức DOMATION: 74+ bài phân tích chuyên sâu về ERP may đo, Vibecode, AI 5.0, logic vận hành, tối ưu quảng cáo, Landing Page & chiến dịch.',
+      'Blog kiến thức DOMATION: bài phân tích chuyên sâu về ERP may đo, Vibecode, AI 5.0, logic vận hành, tối ưu quảng cáo, Landing Page & chiến dịch.',
     path: '/boost',
     keywords: [
       'blog domation',
@@ -136,7 +136,7 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
         '@id': blogId,
         name: 'Blog DOMATION — Kiến Thức Vận Hành Doanh Nghiệp 5.0, ERP May Đo, Vibecode & Chuyển Đổi Số',
         description:
-          'Blog chuyên sâu 74+ bài viết của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
+          'Blog chuyên sâu của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
         url: `${SITE_URL}/boost`,
         inLanguage: 'vi-VN',
         publisher: { '@id': ORG_ID },
@@ -159,7 +159,7 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         '@id': itemListId,
-        name: `Danh sách ${BOOST_ALL_ARTICLES.length} bài Blog DOMATION`,
+        name: 'Danh sách bài viết Blog DOMATION',
         numberOfItems: BOOST_ALL_ARTICLES.length,
         itemListElement: BOOST_ALL_ARTICLES.map((art, index) => ({
           '@type': 'ListItem',

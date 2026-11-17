@@ -186,7 +186,7 @@ function renderStaticRouteBodyHtml(
     .map((l) => `<a href="${l.href}">${escapeHtmlText(l.label)}</a>`)
     .join(' | ')}</nav></header>`;
 
-  const footerHtml = `<footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer>`;
+  const footerHtml = `<footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer>`;
 
   const slugMatch = config.path.match(/^\/boost\/([^/]+)$/);
   const matchedArticle = slugMatch ? articlesBySlug.get(slugMatch[1]) : undefined;
@@ -265,7 +265,7 @@ function renderStaticRouteBodyHtml(
       config.description
     )}</p><img src="${escapeHtmlAttr(heroImg)}" alt="${escapeHtmlAttr(
       config.ogImageAlt || config.title
-    )}" width="1376" height="768" /></section><section><h2>74+ Bài Viết Chuyên Sâu &amp; Case Study Triển Khai</h2><ul>${allArticles
+    )}" width="1376" height="768" /></section><section><h2>Bài Viết Chuyên Sâu &amp; Case Study Triển Khai</h2><ul>${allArticles
       .map(
         (a) =>
           `<li><article><h3><a href="/boost/${escapeHtmlAttr(

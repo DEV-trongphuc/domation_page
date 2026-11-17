@@ -927,7 +927,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
       },
       {
         step: '03',
-        title: 'Xây dựng Hệ Sinh Thái 12 Cụm Cluster & 74+ Bài Blog Liên Kết Nội Bộ',
+        title: 'Xây dựng Hệ Sinh Thái Topic Cluster & Bài Blog Liên Kết Nội Bộ',
         detail: 'Mỗi bài viết giải quyết một nỗi đau ngành nghề cụ thể và trỏ liên kết nội bộ về đúng chuyên trang giải pháp.',
         techStack: 'Hub & Spoke Internal Linking',
       },
@@ -944,13 +944,13 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
       },
     ],
     metricsOutcome: [
-      { label: 'Chủ đề SEO quy hoạch', value: '74 Chủ đề chuẩn' },
+      { label: 'Quy hoạch nội dung SEO', value: 'Topic Cluster Silos' },
       { label: 'Chuẩn AI Crawler', value: 'llms.txt + JSON-LD' },
       { label: 'Độ phủ Intent', value: 'TOFU • MOFU • BOFU' },
     ],
     relatedPortfolioId: 'turnio-executive-portal',
     relatedModuleUrl: '/boost',
-    relatedModuleLabel: 'Xem Trọn Bộ 74 Chủ Đề & 12 Cụm SEO Trên Blog /boost',
+    relatedModuleLabel: 'Khám Phá Thư Viện SEO & Blog /boost',
     faqs: [
       {
         question: 'GEO (Generative Engine Optimization) khác gì so với SEO truyền thống?',
@@ -958,7 +958,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
           'SEO tập trung tối ưu từ khóa và kỹ thuật web để xếp hạng cao trên danh sách link Google. GEO bổ sung cấu trúc dữ liệu, bằng chứng định lượng, tóm tắt Direct-Answer và file `llms.txt` để các AI như ChatGPT, Perplexity và Google AI Overview trích dẫn trực tiếp thương hiệu của bạn.',
       },
       {
-        question: 'Bao lâu thì chiến lược 12 Cụm Cluster & 74 chủ đề SEO theo nỗi đau ngành phát huy hiệu quả?',
+        question: 'Bao lâu thì chiến lược Topic Cluster theo nỗi đau ngành phát huy hiệu quả?',
         answer:
           'Các từ khóa ngách giải quyết nỗi đau cụ thể (Long-tail Pain Point) thường bắt đầu lên trang 1 sau 4–8 tuần nếu hạ tầng kỹ thuật SEO sạch và liên kết nội bộ chặt chẽ.',
       },

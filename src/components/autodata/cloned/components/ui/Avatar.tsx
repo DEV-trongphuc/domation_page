@@ -57,10 +57,7 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 'md', classNam
     resolvedSrc = `/${src}`;
   }
 
-  // Nếu name là "Hệ thống" / "System" / "HT" hoặc đang trỏ tới ecolife_logo.png cũ, gán ảnh biểu tượng tròn chuẩn
-  if (resolvedSrc && resolvedSrc.endsWith('ecolife_logo.png')) {
-    resolvedSrc = logoIcon;
-  }
+  // Nếu name là "Hệ thống" / "System" / "HT", gán ảnh biểu tượng tròn chuẩn
   if (!resolvedSrc && name) {
     const trimmedName = name.trim().toLowerCase();
     if (trimmedName === 'hệ thống' || trimmedName === 'system' || trimmedName === 'ht') {

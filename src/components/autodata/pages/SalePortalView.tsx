@@ -16,6 +16,7 @@ import {
   Users,
 } from 'lucide-react';
 import { apiRequest, formatShortDate, getErrorMessage } from '../autodataApi';
+import { useOptionalAuth } from '../cloned/contexts/AuthContext';
 import {
   buildPersonalLeadsCsvContent,
   parsePersonalLeadsCsvContent,
@@ -92,7 +93,7 @@ const SALE_TABS: Array<{ key: SalePortalTabKey; label: string; icon: React.React
   { key: 'calendar', label: '4. Lịch Hẹn', icon: <Calendar className="h-3.5 w-3.5" /> },
   { key: 'fair-share', label: '5. Đối Soát Công Bằng', icon: <Scale className="h-3.5 w-3.5" /> },
   { key: 'tickets', label: '6. Ticket Báo Lỗi', icon: <AlertCircle className="h-3.5 w-3.5" /> },
-  { key: 'managers', label: '7. Đồng Quản Lý (Max 3)', icon: <UserCheck className="h-3.5 w-3.5" /> },
+  { key: 'managers', label: '7. Đồng Quản Lý', icon: <UserCheck className="h-3.5 w-3.5" /> },
   { key: 'schedule', label: '8. Trạng Thái & Ca Trực', icon: <Clock className="h-3.5 w-3.5" /> },
 ];
 
@@ -104,6 +105,11 @@ export const SalePortalView: React.FC<SalePortalViewProps> = ({
   userEmail,
   stages,
 }) => {
+  const optionalAuth = useOptionalAuth();
+  const maxCoManagers = Math.max(
+    0,
+    Number(optionalAuth?.tenantSettings?.max_co_managers_per_consultant ?? 3)
+  );
   const [tab, setTab] = useState<SalePortalTabKey>('dashboard');
   const [leads, setLeads] = useState<SaleLeadItem[]>([]);
   const [personalLeads, setPersonalLeads] = useState<PersonalLeadRow[]>([]);
@@ -589,13 +595,13 @@ export const SalePortalView: React.FC<SalePortalViewProps> = ({
 
       {tab === 'managers' && (
         <div className="inkica-glass-card space-y-4 rounded-2xl border border-slate-200 bg-white p-5 text-xs">
-          <h2 className="text-sm font-bold text-slate-900">Người Đồng Quản Lý Nhận Thông Báo ({coManagers.length}/3)</h2>
+          <h2 className="text-sm font-bold text-slate-900">Người Đồng Quản Lý Nhận Thông Báo ({coManagers.length}/{maxCoManagers})</h2>
           <form onSubmit={handleAddManager} className="grid grid-cols-1 gap-2.5 md:grid-cols-4">
             <input type="text" required value={cmName} onChange={(e) => setCmName(e.target.value)} placeholder="Họ tên" className="rounded-xl border border-slate-200 px-3 py-2" />
             <input type="email" required value={cmEmail} onChange={(e) => setCmEmail(e.target.value)} placeholder="Email CC" className="rounded-xl border border-slate-200 px-3 py-2" />
             <input type="tel" value={cmPhone} onChange={(e) => setCmPhone(e.target.value)} placeholder="Số Zalo" className="rounded-xl border border-slate-200 px-3 py-2" />
-            <button type="submit" disabled={coManagers.length >= 3} className="btn-inkica-primary rounded-xl px-4 py-2 font-semibold text-white disabled:opacity-50">
-              + Thêm ({coManagers.length}/3)
+            <button type="submit" disabled={maxCoManagers <= 0 || coManagers.length >= maxCoManagers} className="btn-inkica-primary rounded-xl px-4 py-2 font-semibold text-white disabled:opacity-50">
+              + Thêm ({coManagers.length}/{maxCoManagers})
             </button>
           </form>
           <div className="space-y-2">

@@ -205,13 +205,25 @@ const AppTabs: React.FC = () => {
 const TourController: React.FC<{
   open: boolean;
   onClose: () => void;
-}> = ({ open, onClose }) => {
+  deckKey?: string | null;
+}> = ({ open, onClose, deckKey }) => {
   const { user, v2Session } = useAuth();
   const location = useLocation();
   const [stepIdx, setStepIdx] = useState(0);
 
   const resolveEffectiveScreenKey = (): WorkspaceScreenKey | 'sale_portal' => {
+    if (deckKey && (SCREEN_TOUR_DECKS as Record<string, any>)[deckKey]) {
+      return deckKey as WorkspaceScreenKey | 'sale_portal';
+    }
     const baseKey = mapPathToScreenKey(location.pathname, user?.role);
+    if (baseKey === 'ads_performance') {
+      const isCapi =
+        typeof document !== 'undefined' &&
+        !!document.querySelector('[data-tour="capi-account-select"]');
+      if (isCapi && SCREEN_TOUR_DECKS.ads_capi) {
+        return 'ads_capi';
+      }
+    }
     if (baseKey === 'settings') {
       const searchParams = new URLSearchParams(location.search);
       const tabParam = searchParams.get('tab');
@@ -220,9 +232,9 @@ const TourController: React.FC<{
           ? document.querySelector('[data-settings-subtab]')?.getAttribute('data-settings-subtab')
           : null;
       const subtab = tabParam || domSubtab || 'processing';
-      const deckKey = `settings_${subtab}` as WorkspaceScreenKey;
-      if (SCREEN_TOUR_DECKS[deckKey]) {
-        return deckKey;
+      const settingDeckKey = `settings_${subtab}` as WorkspaceScreenKey;
+      if (SCREEN_TOUR_DECKS[settingDeckKey]) {
+        return settingDeckKey;
       }
     }
     return baseKey;
@@ -233,7 +245,7 @@ const TourController: React.FC<{
 
   useEffect(() => {
     setStepIdx(0);
-  }, [location.pathname, location.search, open]);
+  }, [location.pathname, location.search, open, deckKey]);
 
   const handleFinish = async () => {
     onClose();
@@ -387,6 +399,21 @@ export const AutodataClonedRoot: React.FC<AutodataClonedRootProps> = ({
 }) => {
   const [billingModalOpen, setBillingModalOpen] = useState(initialView === 'billing');
   const [tourOpen, setTourOpen] = useState(false);
+  const [activeTourDeck, setActiveTourDeck] = useState<string | null>(null);
+
+  const handleOpenTour = (deckKey?: string) => {
+    setActiveTourDeck(deckKey || null);
+    setTourOpen(true);
+  };
+
+  useEffect(() => {
+    const handleCustomOpenTour = (e: any) => {
+      const key = e.detail?.screenKey;
+      handleOpenTour(key);
+    };
+    window.addEventListener('autodata-open-tour', handleCustomOpenTour);
+    return () => window.removeEventListener('autodata-open-tour', handleCustomOpenTour);
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-autodata-workspace', 'active');
@@ -426,7 +453,7 @@ export const AutodataClonedRoot: React.FC<AutodataClonedRootProps> = ({
             onNavigateSlug={onNavigateSlug}
             onSwitchWorkspaceRequested={onSwitchWorkspaceRequested}
             onOpenBilling={() => setBillingModalOpen(true)}
-            onOpenTour={() => setTourOpen(true)}
+            onOpenTour={handleOpenTour}
           >
             <Toaster
               position="top-right"
@@ -455,7 +482,14 @@ export const AutodataClonedRoot: React.FC<AutodataClonedRootProps> = ({
                   </Route>
                 </Routes>
                 <KeyboardShortcutsController />
-                <TourController open={tourOpen} onClose={() => setTourOpen(false)} />
+                <TourController
+                  open={tourOpen}
+                  deckKey={activeTourDeck}
+                  onClose={() => {
+                    setTourOpen(false);
+                    setActiveTourDeck(null);
+                  }}
+                />
               </Suspense>
             </MemoryRouter>
 

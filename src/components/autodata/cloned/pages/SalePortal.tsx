@@ -2,6 +2,12 @@ import { getApiBaseUrl } from '../utils/api';
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import {
+  getBlockedPhoneSequences,
+  resolvePipelineStageByKey,
+  resolveTenantDefaultSchedule,
+  resolveTenantPipelines,
+} from '../utils/pipelineConfig';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import {
   LogOut, Search, Filter, AlertCircle, CheckCircle2,
@@ -29,6 +35,7 @@ import { FairShareAudit } from './FairShareAudit';
 import { DomationLogoMark } from '../../../DomationLogoMark';
 const logoIcon = '/imgs/autodata/domation_ai_icon.svg';
 import { LuxuryBackgroundDecor } from '../components/ui/LuxuryBackgroundDecor';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 import vnFlag from '../assets/vn.svg';
 import usFlag from '../assets/us.svg';
 import jpFlag from '../assets/jp.svg';
@@ -80,7 +87,11 @@ const parseServerDate = (dateStr: string) => {
 };
 
 
-export const isInvalidPhoneFormat = (phone: string): { isInvalid: boolean; reason?: string } => {
+export const isInvalidPhoneFormat = (
+  phone: string,
+  blockedSeqsOverride?: string[],
+  mobilePrefixesOverride?: string[]
+): { isInvalid: boolean; reason?: string } => {
   const raw = String(phone || '').trim();
   if (!raw) return { isInvalid: true, reason: 'Số điện thoại để trống' };
   if (/[a-zA-Z]/.test(raw)) return { isInvalid: true, reason: 'Chứa ký tự chữ cái' };
@@ -98,10 +109,15 @@ export const isInvalidPhoneFormat = (phone: string): { isInvalid: boolean; reaso
   const isLandline = prefix2 === '02';
   if (len < 10) return { isInvalid: true, reason: `Thiếu số (chỉ có ${len}/10 số)` };
   if ((!isLandline && len > 10) || (isLandline && len > 11)) return { isInvalid: true, reason: `Thừa số (${len} số)` };
-  const validMobile = ['03', '05', '07', '08', '09'];
-  if (!isLandline && !validMobile.includes(prefix2)) return { isInvalid: true, reason: `Đầu số không hợp lệ (${prefix2})` };
+  const validMobile =
+    Array.isArray(mobilePrefixesOverride) && mobilePrefixesOverride.length > 0
+      ? mobilePrefixesOverride
+      : ['03', '05', '07', '08', '09'];
+  if (!isLandline && !validMobile.some((pref) => clean.startsWith(pref))) {
+    return { isInvalid: true, reason: `Đầu số không hợp lệ (${prefix2})` };
+  }
   if (/^(\d)\1+$/.test(clean)) return { isInvalid: true, reason: 'Số điện thoại ảo (toàn số trùng nhau)' };
-  const fakeSeqs = ['0123456789', '0987654321', '1234567890', '0912345678', '0901234567'];
+  const fakeSeqs = Array.isArray(blockedSeqsOverride) ? blockedSeqsOverride : getBlockedPhoneSequences();
   if (fakeSeqs.includes(clean)) return { isInvalid: true, reason: 'Dãy số ảo liên tiếp' };
   return { isInvalid: false };
 };
@@ -188,14 +204,29 @@ interface LeadQualityBadgeProps {
 }
 
 const LeadQualityBadge: React.FC<LeadQualityBadgeProps> = ({ status, note, showNote = false, onClick }) => {
-  const config = (status && MARKETING_PIPELINES[status]) || {
-    label: 'Chưa đánh giá',
-    dotColor: '#94A3B8',
-    bg: 'var(--color-bg)',
-    border: '1px dashed var(--color-border)',
-    color: 'var(--color-text-muted)',
-    desc: 'Chưa đánh giá chất lượng'
-  };
+  const { tenantSettings } = useAuth();
+  const resolved = resolvePipelineStageByKey(status, tenantSettings);
+  const fallbackLegacy = status ? MARKETING_PIPELINES[status] : null;
+  const config =
+    resolved.key === 'unrated' && fallbackLegacy
+      ? fallbackLegacy
+      : resolved.key !== 'unrated'
+        ? {
+            label: resolved.label,
+            dotColor: resolved.color,
+            bg: resolved.bg,
+            border: resolved.border,
+            color: resolved.color,
+            desc: resolved.desc,
+          }
+        : {
+            label: 'Chưa đánh giá',
+            dotColor: '#94A3B8',
+            bg: 'var(--color-bg)',
+            border: '1px dashed var(--color-border)',
+            color: 'var(--color-text-muted)',
+            desc: 'Chưa đánh giá chất lượng',
+          };
 
   return (
     <div
@@ -304,7 +335,24 @@ const LeadQualityEditor: React.FC<LeadQualityEditorProps> = ({
     setNote(initialNote || '');
   };
 
-  const currentPipeline = selectedStatus ? MARKETING_PIPELINES[selectedStatus] : null;
+  const { tenantSettings } = useAuth();
+  const dynamicStages = resolveTenantPipelines(tenantSettings);
+  const currentPipeline = selectedStatus
+    ? (() => {
+        const found = resolvePipelineStageByKey(selectedStatus, tenantSettings);
+        if (found.key !== 'unrated') {
+          return {
+            label: found.label,
+            dotColor: found.color,
+            bg: found.bg,
+            border: `1px solid ${found.border}`,
+            color: found.color,
+            desc: found.desc,
+          };
+        }
+        return MARKETING_PIPELINES[selectedStatus] || null;
+      })()
+    : null;
 
   return (
     <div
@@ -347,54 +395,12 @@ const LeadQualityEditor: React.FC<LeadQualityEditorProps> = ({
                 label: '-- Chọn giai đoạn đánh giá Lead --',
                 icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#94A3B8', display: 'inline-block' }} />
               },
-              {
-                value: 'Qualified',
-                label: 'Thiện Chí (Qualified)',
-                sublabel: 'Đúng nhu cầu, thiện chí quan tâm & đủ năng lực tài chính',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
-              },
-              {
-                value: 'Booked',
-                label: 'Đã hẹn gặp / Xem mẫu (Booked)',
-                sublabel: 'Đã chốt lịch hẹn tư vấn hoặc đi xem thực tế',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#8B5CF6', display: 'inline-block' }} />
-              },
-              {
-                value: 'Booking',
-                label: 'Booking (Giữ chỗ)',
-                sublabel: 'Khách đã vào tiền Booking giữ chỗ thiện chí',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EC4899', display: 'inline-block' }} />
-              },
-              {
-                value: 'Deposited',
-                label: 'Đặt cọc (Cọc)',
-                sublabel: 'Khách đã xuống tiền đặt cọc giữ chỗ / căn hộ',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
-              },
-              {
-                value: 'Closed',
-                label: 'Chốt thành công (Chốt)',
-                sublabel: 'Giao dịch thành công, đã ký hợp đồng mua bán',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }} />
-              },
-              {
-                value: 'Badtiming',
-                label: 'Hẹn liên hệ lại (Bad Timing)',
-                sublabel: 'Quan tâm nhưng bận/hẹn sau',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
-              },
-              {
-                value: 'NoAnswer',
-                label: 'Không liên lạc được (No Answer)',
-                sublabel: 'Thuê bao / máy bận / không nghe máy',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6', display: 'inline-block' }} />
-              },
-              {
-                value: 'Notlead',
-                label: 'Không đúng đối tượng (Not Lead)',
-                sublabel: 'Sai số, nhầm dự án, môi giới, data ảo',
-                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EF4444', display: 'inline-block' }} />
-              }
+              ...dynamicStages.map((st) => ({
+                value: st.key,
+                label: st.label,
+                sublabel: st.desc,
+                icon: <span style={{ width: 8, height: 8, borderRadius: '50%', background: st.color, display: 'inline-block' }} />
+              }))
             ]}
             value={selectedStatus}
             onChange={val => setSelectedStatus(String(val))}
@@ -550,7 +556,8 @@ const LeadQualityEditor: React.FC<LeadQualityEditorProps> = ({
 
 const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
   const navigate = useNavigate();
-  const { user, token, login, logout, companyName } = useAuth();
+  const { user, token, login, logout, companyName, tenantSettings } = useAuth();
+  const tenantDefaultSchedule = resolveTenantDefaultSchedule(tenantSettings);
   const { language, setLanguage, t } = useLanguage();
 
   const [isLangOpen, setIsLangOpen] = useState(false);
@@ -751,9 +758,9 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
   // Profile settings states
   const [editName, setEditName] = useState('');
   const [editAvatar, setEditAvatar] = useState('');
-  const [editWorkStartTime, setEditWorkStartTime] = useState('08:00');
-  const [editWorkEndTime, setEditWorkEndTime] = useState('17:30');
-  const [editWorkSchedule, setEditWorkSchedule] = useState<any>(DEFAULT_SCHEDULE);
+  const [editWorkStartTime, setEditWorkStartTime] = useState(tenantSettings?.work_schedule_start || '08:30');
+  const [editWorkEndTime, setEditWorkEndTime] = useState(tenantSettings?.work_schedule_end || '18:00');
+  const [editWorkSchedule, setEditWorkSchedule] = useState<any>(() => tenantDefaultSchedule);
   const [scheduleMode, setScheduleMode] = useState<'daily' | 'custom'>('daily');
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
@@ -977,7 +984,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
         setEditWorkSchedule(schedule);
         setScheduleMode('custom');
       } else {
-        setEditWorkSchedule(DEFAULT_SCHEDULE);
+        setEditWorkSchedule(tenantDefaultSchedule);
         setScheduleMode('daily');
       }
     }
@@ -1797,7 +1804,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
         )}
 
         {/* KPI Cards Grid */}
-        <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: '1.25rem' }}>
+        <div data-tour="saleportal-kpis" className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: '1.25rem' }}>
           {kpis.map((kpi, idx) => {
             const Icon = kpi.icon;
             return (
@@ -2339,7 +2346,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             </span>
           </div>
 
-          <div className="table-wrap responsive-table-wrap mobile-card-table" style={{
+          <div data-tour="saleportal-table" className="table-wrap responsive-table-wrap mobile-card-table" style={{
             overflowX: isMobile ? 'visible' : 'auto',
             maxHeight: isMobile ? 'none' : '520px',
             overflowY: isMobile ? 'visible' : 'auto'
@@ -2804,7 +2811,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             </span>
           </div>
 
-          <div className="table-wrap responsive-table-wrap mobile-card-table" style={{
+          <div data-tour="saleportal-table" className="table-wrap responsive-table-wrap mobile-card-table" style={{
             overflowX: isMobile ? 'visible' : 'auto',
             maxHeight: isMobile ? 'none' : '520px',
             overflowY: isMobile ? 'visible' : 'auto'
@@ -3229,7 +3236,15 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
     }
 
     const coManagersCount = Array.isArray(data.consultant_managers) ? data.consultant_managers.length : 0;
-    const isMaxCoManagers = coManagersCount >= 3;
+    const maxCoManagers = Math.max(
+      0,
+      Number(
+        (data as any)?.max_co_managers_per_consultant ??
+          tenantSettings?.max_co_managers_per_consultant ??
+          3
+      )
+    );
+    const isMaxCoManagers = maxCoManagers <= 0 || coManagersCount >= maxCoManagers;
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', padding: '1.5rem 0' }}>
@@ -3240,7 +3255,9 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
               {t('NGƯỜI QUẢN LÝ & NHẬN THÔNG BÁO')}
             </h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--color-text-light)', margin: 0 }}>
-              {t('Quản lý danh sách người phụ trách có toàn quyền truy cập Cổng Đại Lý và nhận đồng thời 100% thông báo Lead mới (tối đa 3 người phụ trách thêm).')}
+              {maxCoManagers > 0
+                ? t(`Quản lý danh sách người phụ trách có toàn quyền truy cập Cổng Đại Lý và nhận đồng thời 100% thông báo Lead mới (tối đa ${maxCoManagers} người phụ trách thêm).`)
+                : t('Tính năng thêm người đồng quản lý hiện đang tạm tắt theo cấu hình Workspace.')}
             </p>
           </div>
 
@@ -3248,10 +3265,20 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             type="button"
             className="btn primary"
             disabled={isMaxCoManagers}
-            title={isMaxCoManagers ? 'Đã đạt giới hạn tối đa 3 người phụ trách thêm' : 'Thêm người phụ trách mới'}
+            title={
+              maxCoManagers <= 0
+                ? 'Đã tắt tính năng đồng quản lý trong Cài đặt'
+                : isMaxCoManagers
+                  ? `Đã đạt giới hạn tối đa ${maxCoManagers} người phụ trách thêm`
+                  : 'Thêm người phụ trách mới'
+            }
             onClick={() => {
+              if (maxCoManagers <= 0) {
+                toast.error('Tính năng đồng quản lý đang tắt theo cấu hình Workspace.');
+                return;
+              }
               if (isMaxCoManagers) {
-                toast.error('Mỗi đại lý chỉ được thêm tối đa 3 người phụ trách.');
+                toast.error(`Mỗi đại lý chỉ được thêm tối đa ${maxCoManagers} người phụ trách.`);
                 return;
               }
               setAddMgrModalOpen(true);
@@ -3272,12 +3299,18 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             }}
           >
             <UserPlus size={17} />
-            <span>{isMaxCoManagers ? 'Đã đạt tối đa (3/3)' : `Thêm người phụ trách (${coManagersCount}/3)`}</span>
+            <span>
+              {maxCoManagers <= 0
+                ? 'Đang tắt đồng quản lý'
+                : isMaxCoManagers
+                  ? `Đã đạt tối đa (${maxCoManagers}/${maxCoManagers})`
+                  : `Thêm người phụ trách (${coManagersCount}/${maxCoManagers})`}
+            </span>
           </button>
         </div>
 
         {/* CO-MANAGERS CARD */}
-        <div className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid rgba(30, 64, 255, 0.28)' }}>
+        <div data-tour="saleportal-comanagers" className="card" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', border: '1px solid rgba(30, 64, 255, 0.28)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
             <div>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-text)', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -3291,7 +3324,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
                   background: 'rgba(30, 64, 255, 0.12)',
                   color: 'var(--color-primary)'
                 }}>
-                  {coManagersCount}/3 người phụ trách thêm
+                  {coManagersCount}/{maxCoManagers} người phụ trách thêm
                 </span>
               </h3>
               <p style={{ fontSize: '0.83rem', color: 'var(--color-text-muted)', marginTop: 6, marginBottom: 0, lineHeight: 1.5 }}>
@@ -4157,7 +4190,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
                   onClick={() => {
                     setScheduleMode('custom');
                     if (!editWorkSchedule) {
-                      setEditWorkSchedule(DEFAULT_SCHEDULE);
+                      setEditWorkSchedule(tenantDefaultSchedule);
                     }
                   }}
                   style={{
@@ -4661,6 +4694,9 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
               </div>
             )}
 
+            {/* Screen Help Button */}
+            <ScreenHelpButton screenKey="sale_portal" />
+
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -5034,7 +5070,11 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
                   <div style={{ marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                     <strong>{t('Số điện thoại:')}</strong> <span style={{ color: '#d97706', fontWeight: 700 }}>{selectedLead.phone}</span>
                     {(() => {
-                      const chk = isInvalidPhoneFormat(selectedLead.phone);
+                      const chk = isInvalidPhoneFormat(
+                        selectedLead.phone,
+                        tenantSettings?.blocked_phone_sequences,
+                        tenantSettings?.vn_mobile_prefixes
+                      );
                       if (chk.isInvalid) {
                         return (
                           <span style={{ fontSize: '0.72rem', background: 'rgba(239, 68, 68, 0.12)', color: '#dc2626', padding: '2px 8px', borderRadius: '4px', fontWeight: 700, border: '1px solid rgba(239, 68, 68, 0.3)' }}>

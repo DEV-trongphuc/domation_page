@@ -890,6 +890,11 @@ export const ErpLanding: React.FC = () => {
 
           <div className="text-center md:text-right text-[11px] text-slate-500 space-y-1">
             <div>© {new Date().getFullYear()} DOMATION.NET • Enterprise Ecosystem.</div>
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2.5">
+              <a href="mailto:domation.net@gmail.com" className="hover:text-[#1E40FF] font-medium transition-colors">domation.net@gmail.com</a>
+              <span className="text-slate-300">•</span>
+              <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-medium transition-colors">fb.com/domation.net</a>
+            </div>
             <div>
               Powered by{' '}
               <a

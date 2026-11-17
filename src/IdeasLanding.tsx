@@ -270,6 +270,11 @@ export const IdeasLanding: React.FC = () => {
         <p className="text-slate-500 text-xs mb-1.5">
           © {new Date().getFullYear()} Nền tảng số hóa doanh nghiệp toàn diện.
         </p>
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600 mb-2">
+          <a href="mailto:domation.net@gmail.com" className="hover:text-[#1E40FF] font-medium transition-colors">domation.net@gmail.com</a>
+          <span className="text-slate-300">•</span>
+          <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-medium transition-colors">fb.com/domation.net</a>
+        </div>
         <p className="text-slate-400 text-[10px] uppercase tracking-[0.2em]">
           Powered by{' '}
           <a

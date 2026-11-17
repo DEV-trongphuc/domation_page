@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ArrowUpRight, Check, CreditCard, RefreshCw, Sparkles, Wallet } from 'lucide-react';
 import { apiRequest, formatVnd, getErrorMessage } from '../autodataApi';
 import { DEFAULT_CLIENT_CATALOG, type ClientBillingCatalog, type ClientSubscriptionSnapshot } from '../autodataTypes';
+import { ScreenHelpButton } from '../cloned/components/ui/ScreenHelpButton';
 
 interface BillingTransactionRow {
   id: string;
@@ -198,25 +199,31 @@ export const BillingView: React.FC<BillingViewProps> = ({
               <p className="text-xs text-slate-500">Mặc định dùng thử 1 tháng (30 ngày) 0₫ • Nâng cấp liền mạch lên CRM 360° & ERP 5.0</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => void reload()}
-            className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 transition"
-            title="Làm mới trạng thái gói cước"
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
+          <div className="flex items-center gap-2">
+            <ScreenHelpButton screenKey="billing" />
+            <button
+              type="button"
+              onClick={() => void reload()}
+              className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 transition"
+              title="Làm mới trạng thái gói cước"
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
         </div>
       ) : (
         <div className="flex items-center justify-between border-b border-slate-100 pb-2 text-xs text-slate-500">
           <p>Mặc định dùng thử 30 ngày 0₫ • Nâng cấp liền mạch lên CRM 360° & ERP 5.0</p>
-          <button
-            type="button"
-            onClick={() => void reload()}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} /> Làm mới
-          </button>
+          <div className="flex items-center gap-2">
+            <ScreenHelpButton screenKey="billing" size="sm" />
+            <button
+              type="button"
+              onClick={() => void reload()}
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} /> Làm mới
+            </button>
+          </div>
         </div>
       )}
 
@@ -227,7 +234,7 @@ export const BillingView: React.FC<BillingViewProps> = ({
       )}
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div data-tour="settings-bill-kpis" className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Card 1: Gói Hiện Tại */}
         <div className="inkica-glass-card flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5">
           <div>
@@ -311,7 +318,7 @@ export const BillingView: React.FC<BillingViewProps> = ({
       </div>
 
       {/* Package Catalog Cards */}
-      <div data-tour="billing-catalog" className="space-y-4">
+      <div data-tour="billing-catalog settings-bill-catalog" className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-bold text-slate-900">Bảng Gói Dịch Vụ SaaS</h2>
@@ -383,7 +390,7 @@ export const BillingView: React.FC<BillingViewProps> = ({
       </div>
 
       {/* Quick Topup Section */}
-      <div data-tour="billing-topup" className="inkica-glass-card rounded-2xl border border-slate-200 bg-white p-5">
+      <div data-tour="billing-topup settings-bill-wallet" className="inkica-glass-card rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="mb-1 text-sm font-bold text-slate-900">Nạp Ví Thanh Toán Nhanh</h2>
         <p className="mb-3 text-xs text-slate-500">Số dư ví dùng để tự động gia hạn gói cước hàng tháng hoặc hàng năm</p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

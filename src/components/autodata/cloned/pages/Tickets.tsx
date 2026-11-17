@@ -18,6 +18,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 import { useNavigate } from 'react-router-dom';
 
 type Lead = {
@@ -377,7 +378,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const [ruleConnections, setRuleConnections] = useState<any[]>(['all']);
   const [ruleKeywords, setRuleKeywords] = useState('');
 
-  const { user } = useAuth();
+  const { user, tenantSettings } = useAuth();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [notificationStatus, setNotificationStatus] = useState<any>(null);
   const [notifLoading, setNotifLoading] = useState(false);
@@ -540,7 +541,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const [compensateBlock, setCompensateBlock] = useState<boolean>(false);
   const [isBlocking, setIsBlocking] = useState<boolean>(false);
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = Math.max(10, Math.min(200, Number(tenantSettings?.default_table_page_size || 50)));
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const isTicketLead = selectedLead?.status === 'error' || selectedLead?.report_status === 'approved' || selectedLead?.report_status === 'pending';
 
@@ -981,6 +982,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         <div>
           <h1 className="page-title" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 10, margin: 0 }}>
             <TicketIcon size={28} color="var(--color-primary)" /> {t('Ticket Lỗi Data')}
+            <ScreenHelpButton screenKey="tickets" />
             <button
               onClick={() => setShowInfoModal(true)}
               style={{
@@ -1018,7 +1020,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         </div>
 
         {/* Filters right aligned on same row as title on desktop */}
-        <div className="responsive-hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div data-tour="tickets-filters" className="responsive-hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Sale filter */}
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <CustomSelect
@@ -1136,7 +1138,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         </div>
       </div>
 
-      <div className="mobile-filter-tabs hide-on-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+      <div data-tour="tickets-kpis" className="mobile-filter-tabs hide-on-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
         {FILTER_TABS.map(tab => (
           <button key={tab.key} onClick={() => updateParams('status', tab.key)} style={{ padding: '6px 14px', borderRadius: 20, fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', border: '1px solid', borderColor: activeFilter === tab.key ? tab.color : 'var(--color-border)', background: activeFilter === tab.key ? tab.bg : 'transparent', color: activeFilter === tab.key ? tab.color : 'var(--color-text-muted)', transition: 'all 0.15s' }}>
             {t(tab.label)} {`(${stats[tab.key]})`}
@@ -1444,7 +1446,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         ) : (
           <>
             {/* Desktop View Table */}
-            <div className="table-wrap hide-on-mobile" style={{ maxHeight: 'calc(100vh - 340px)', overflowY: 'auto' }}>
+            <div data-tour="tickets-table" className="table-wrap hide-on-mobile" style={{ maxHeight: 'calc(100vh - 340px)', overflowY: 'auto' }}>
               <table className="mobile-table-compact" style={{ width: '100%', minWidth: 900, borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: 'var(--color-bg)' }}>

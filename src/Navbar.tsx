@@ -95,7 +95,7 @@ const GROWTH_ROUTES = [
     id: 'boost',
     href: '/boost',
     label: 'Blog DOMATION • Triển Khai & SEO',
-    desc: '74+ bài chuyên sâu: ERP may đo, Vibecode, AI 5.0 & tối ưu Ads',
+    desc: 'Bài viết chuyên sâu: ERP may đo, Vibecode, AI 5.0 & tối ưu Ads',
     icon: BookOpen,
   },
   {

@@ -159,7 +159,7 @@ export const BoostHubPage: React.FC = () => {
                   href="#articles"
                   className="btn-inkica-primary px-5 py-2.5 text-xs sm:text-sm"
                 >
-                  <span>74+ Bài Chuyên Sâu</span>
+                  <span>Bài Viết Chuyên Sâu</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
                 <a

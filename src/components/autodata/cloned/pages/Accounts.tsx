@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { TableSkeleton } from '../components/ui/Skeleton';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 const AccountsInner = () => {
   const { t } = useLanguage();
@@ -381,9 +382,12 @@ const AccountsInner = () => {
           </h1>
           <p className="page-subtitle" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>{t('Quản trị hệ thống và phân quyền truy cập cho nhân viên.')}</p>
         </div>
-        <button onClick={openAddModal} className="btn primary responsive-btn-full" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.25rem', fontSize: '0.875rem' }}>
-          <Plus size={18} /> <span>{t('Thêm')}<span className="hide-on-mobile"> {t('tài khoản')}</span></span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <ScreenHelpButton screenKey="accounts" />
+          <button onClick={openAddModal} className="btn primary responsive-btn-full" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.25rem', fontSize: '0.875rem' }}>
+            <Plus size={18} /> <span>{t('Thêm')}<span className="hide-on-mobile"> {t('tài khoản')}</span></span>
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -409,6 +413,7 @@ const AccountsInner = () => {
           <UserCog size={16} /> <span><span className="hide-on-mobile">{t('Danh sách')} </span>{t('Tài khoản')}</span>
         </button>
         <button 
+          data-tour="accounts-audit"
           onClick={() => setActiveTab('logs')}
           style={{
             padding: '0.75rem 1rem',
@@ -435,7 +440,7 @@ const AccountsInner = () => {
           {loading ? (
             <TableSkeleton cols={6} rows={5} />
           ) : (
-            <div className="table-wrap responsive-table-wrap mobile-card-table" style={{ border: 'none', borderRadius: 0 }}>
+            <div data-tour="accounts-list" className="table-wrap responsive-table-wrap mobile-card-table" style={{ border: 'none', borderRadius: 0 }}>
               <table className="mobile-table-compact" style={{ width: '100%', minWidth: 850, borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>

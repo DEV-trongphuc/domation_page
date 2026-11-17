@@ -241,18 +241,18 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     previewImage: '/landingpage_avatar/portfolio.webp',
     liveUrl: 'https://portfo-turnio.vercel.app/',
     problem:
-      'Xây dựng kiến trúc cổng thông tin doanh nghiệp tích hợp trợ lý AI RAG nội bộ, 74+ bài Blog DOMATION chuẩn SEO/GEO và bản đồ 12 cụm từ khóa tăng trưởng B2B.',
+      'Xây dựng kiến trúc cổng thông tin doanh nghiệp tích hợp trợ lý AI RAG nội bộ, Blog DOMATION chuẩn SEO/GEO và bản đồ cụm từ khóa tăng trưởng B2B.',
     implementationPain:
       'Ứng dụng React SPA dễ gặp lỗi trùng lặp thẻ Canonical/Title ở các trang con, Soft-404 và thiếu chuẩn dữ liệu `llms.txt` cho AI Search.',
     architecture:
       'Dynamic SEO & JSON-LD Engine (`src/utils/seo.ts`) + Prerender HTML/Blog + RAG Hybrid Vector Search + `/boost` Blog SEO Hub + `/boost/:slug` Singlepost + `sitemap.xml` & `llms.txt`.',
     deliverables: [
       'Cổng thông tin Đa chuyên trang DOMATION.NET',
-      'Blog DOMATION /boost (74+ Bài SEO, 74 Chủ đề, 12 Keyword Clusters)',
+      'Blog DOMATION /boost (SEO/GEO & Topic Cluster)',
       'Trợ lý AI RAG tư vấn giải pháp & báo giá 24/7',
       'Chuẩn hóa GEO llms.txt & Dynamic Schema.org',
     ],
-    metrics: ['74+ Bài Blog SEO', '12 Keyword Clusters', '404 & Prerender 100%', 'Full GEO llms.txt'],
+    metrics: ['Chuẩn SEO/GEO', 'Topic Clusters', '404 & Prerender 100%', 'Full GEO llms.txt'],
     relatedArticleSlug: 'chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview',
     inspectionTab: 'web-3d',
   },

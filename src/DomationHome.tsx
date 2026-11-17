@@ -612,6 +612,15 @@ export const DomationHome: React.FC = () => {
                         </div>
                       </div>
 
+                      {cs.highlight && (
+                        <div className="mb-3 inline-flex items-start sm:items-center gap-2 rounded-xl bg-gradient-to-r from-[#1E40FF]/[0.06] via-sky-500/[0.06] to-cyan-400/[0.08] border border-blue-200/80 px-3.5 py-2 shadow-sm">
+                          <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0 mt-0.5 sm:mt-0" />
+                          <span className="text-[13px] sm:text-sm font-bold leading-snug text-gradient-inkica">
+                            {cs.highlight}
+                          </span>
+                        </div>
+                      )}
+
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                         {cs.summary}
                       </p>

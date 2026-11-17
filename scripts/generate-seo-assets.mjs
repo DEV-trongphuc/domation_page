@@ -63,7 +63,7 @@ const CORE_ROUTES = [
     images: [
       {
         src: '/imgs/boost/boost-hero-growth-hub.jpg',
-        title: `Blog DOMATION — ${ALL_ARTICLES.length}+ Bài Chuẩn SEO & ${BOOST_74_SEO_TOPICS.length} Chủ Đề Vận Hành 5.0`,
+        title: 'Blog DOMATION — Bài Viết Chuẩn SEO & Chủ Đề Vận Hành 5.0',
       },
     ],
   },
@@ -302,7 +302,7 @@ const llmsCoreBody = `# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI &
 - [Meta Ad Realtime Report](${SITE_URL}/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.
 - [Portfolio Dự Án & Case Study](${SITE_URL}/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore, RichLand, ImplantSwiss.
-- [Blog DOMATION & SEO/GEO Cluster Hub](${SITE_URL}/boost): ${ALL_ARTICLES.length} bài viết chuyên sâu chuẩn SEO, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO, ${BOOST_KEYWORD_CLUSTERS.length} cụm từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và ${INDUSTRY_PAIN_PLAYBOOK.length} cẩm nang ngành nghề.
+- [Blog DOMATION & SEO/GEO Cluster Hub](${SITE_URL}/boost): Kiến thức chuyên sâu chuẩn SEO về từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và cẩm nang ngành nghề.
 - [IDEAS Company Ecosystem Portal](${SITE_URL}/ideas): Cổng ứng dụng tùy biến riêng cho Viện IDEAS (Marketing Automation, Meta Realtime Report & Auto Lead Router).
 
 ## Verified Pricing & Plans (VND)
@@ -313,23 +313,23 @@ const llmsCoreBody = `# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI &
 - **Thiết kế Website & Sa bàn 3D WebGL (/web-design)**: Gói Core 8 Module từ 12.000.000₫ thanh toán 1 lần, sở hữu source code vĩnh viễn.
 - **Enterprise ERP 5.0 (/erp)**: Thiết kế may đo theo quy mô 12 phân hệ (tư vấn & báo giá trực tiếp).
 
-## Featured Implementation Articles (Singlepost — ${ALL_ARTICLES.length} Guides)
+## Featured Implementation Articles (Singlepost Guides)
 ${ALL_ARTICLES.map(
   (art) =>
-    `- [#${art.number} ${art.title}](${SITE_URL}/boost/${art.slug}): ${art.metaDescription}`
+    `- [${art.title}](${SITE_URL}/boost/${art.slug}): ${art.metaDescription}`
 ).join('\n')}
 
 ## Contact & Entity Verification
 - Website: ${SITE_URL}/
 - Founder & Solution Architect: Huỳnh Trọng Phúc (TurnioDEV) — https://turnio.vercel.app/ | Portfolio: https://portfo-turnio.vercel.app/
 - Hotline / Zalo: +84 378 859 736 (https://zalo.me/0378859736)
-- Email: turniodev@gmail.com
-- Facebook: https://www.facebook.com/turni0`;
+- Email: domation.net@gmail.com
+- Facebook: https://www.facebook.com/domation.net/`;
 
 const llmsTxt = `${llmsCoreBody}
 
 ## Optional
-- [Full GEO Reference (llms-full.txt)](${SITE_URL}/llms-full.txt): Tài liệu chi tiết gồm ${PORTFOLIO_PROJECTS.length} Case Study Portfolio, ${INDUSTRY_PAIN_PLAYBOOK.length} Industry Playbooks, TL;DR & Fix kỹ thuật ${ALL_ARTICLES.length} bài viết, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO và ${BOOST_KEYWORD_CLUSTERS.length} Keyword Silos.
+- [Full GEO Reference (llms-full.txt)](${SITE_URL}/llms-full.txt): Tài liệu chi tiết Case Study Portfolio, Industry Playbooks, TL;DR & Fix kỹ thuật bài viết Blog DOMATION và Keyword Silos.
 - [XML Sitemap](${SITE_URL}/sitemap.xml): Toàn bộ ${CORE_ROUTES.length + ALL_ARTICLES.length} URLs chuẩn canonical và Image Sitemap.
 - [Robots Policy](${SITE_URL}/robots.txt): Quyền thu thập dữ liệu cho Search & AI Crawlers.
 `;
@@ -370,9 +370,9 @@ ${INDUSTRY_PAIN_PLAYBOOK.map(
 
 ---
 
-## Complete Implementation Guides (${ALL_ARTICLES.length} Singlepost Deep Dives)
+## Complete Implementation Guides (Singlepost Deep Dives)
 ${ALL_ARTICLES.map(
-  (art) => `### #${art.number} ${art.title}
+  (art) => `### ${art.title}
 - URL: ${SITE_URL}/boost/${art.slug}
 - Pillar: ${art.pillarLabel} | Industry: ${art.industry} | Intent: ${art.searchIntent} | Updated: ${art.updatedAt}
 - Focus Keyword: "${art.focusKeyword}" | Secondary: ${art.secondaryKeywords.join(', ')}
@@ -386,7 +386,7 @@ ${ALL_ARTICLES.map(
 
 ---
 
-## ${BOOST_74_SEO_TOPICS.length} Curated Enterprise SEO Topics for DOMATION
+## Curated Enterprise SEO Topics for DOMATION
 ${BOOST_74_SEO_TOPICS.map(
   (t) =>
     `- [${t.code}] (${t.pillarLabel} | ${t.funnelStage} | ${t.searchIntent}) ${t.title} — Primary KW: "${t.primaryKeyword}" -> Target: ${SITE_URL}${t.targetLandingPage}${t.linkedArticleSlug ? ` | Article: ${SITE_URL}/boost/${t.linkedArticleSlug}` : ''}`
@@ -394,7 +394,7 @@ ${BOOST_74_SEO_TOPICS.map(
 
 ---
 
-## Keyword Clusters Summary (${BOOST_KEYWORD_CLUSTERS.length} Silos — Short/Long & Primary/Secondary)
+## Keyword Clusters Summary (Short/Long & Primary/Secondary Silos)
 ${BOOST_KEYWORD_CLUSTERS.map(
   (c) =>
     `- ${c.name} (${SITE_URL}${c.hubUrl}) | Short-tail: ${(c.shortTailTerms || []).join(', ')} | Long-tail: ${(c.longTailTerms || []).join(', ')} | Keywords: ${c.keywords.map((k) => `${k.keyword} [${k.lsiVariants.join('; ')}]`).join(' | ')}`

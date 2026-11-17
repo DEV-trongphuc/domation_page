@@ -19,6 +19,7 @@ import { fetchAPI } from '../utils/api';
 import { CardSkeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
 import { useLanguage } from '../contexts/LanguageContext';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 const OP_LABELS: Record<string, string> = {
   contains: 'Có chứa từ khóa',
@@ -127,7 +128,7 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
             </div>
 
             <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>{t("Điều kiện kích hoạt")}</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div data-tour="rules-builder" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {(() => {
                 let parsed = [];
                 if (rule.conditions_json) {
@@ -658,6 +659,7 @@ const RuleSettingsInner = () => {
         <div>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Filter size={24} color="var(--color-primary)" /> {t("Quy tắc Định tuyến (Routing Rules)")}
+            <ScreenHelpButton screenKey="routing_rules" />
           </h1>
           <p className="page-subtitle">{t("Hệ thống Rule Engine tự động phân tích Data Inbound và điều phối cho Đại lý.")}</p>
         </div>
@@ -672,7 +674,7 @@ const RuleSettingsInner = () => {
           <button className="btn outline" onClick={openSimulateModal} style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>
             <Play size={16} style={{ fill: 'currentColor' }} /> {t("Thử nghiệm Định tuyến")}
           </button>
-          <button className="btn primary" onClick={openAddModal}>
+          <button data-tour="rules-header" className="btn primary" onClick={openAddModal}>
             <Plus size={18} /> {t("Thêm Quy tắc mới")}
           </button>
         </div>
@@ -741,7 +743,7 @@ const RuleSettingsInner = () => {
         )}
       </div>
 
-      <div className="card" style={{ overflow: 'visible', paddingBottom: '2rem' }}>
+      <div data-tour="rules-priority" className="card" style={{ overflow: 'visible', paddingBottom: '2rem' }}>
         {loading ? (
           <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[1, 2, 3].map(i => <CardSkeleton key={i} height={90} />)}
@@ -823,7 +825,7 @@ const RuleSettingsInner = () => {
                   )}
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div data-tour="rules-builder" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {branch.conditions.map((c: any, i: number) => {
                     const isNoValueOp = c.op === 'is_empty' || c.op === 'is_not_empty';
                     const isLast = i === branch.conditions.length - 1;
@@ -1471,7 +1473,7 @@ const RuleSettingsInner = () => {
                       <h5 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--color-text-light)', margin: '0 0 10px', textTransform: 'uppercase' }}>
                         {t("Chi tiết quy trình quét quy tắc (Trace Logs)")}
                       </h5>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div data-tour="rules-builder" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         {simulateResult.trace && simulateResult.trace.map((traceItem: any, idx: number) => {
                           const isMatched = traceItem.status === 'matched';
                           const isSkipped = traceItem.status === 'skipped';
