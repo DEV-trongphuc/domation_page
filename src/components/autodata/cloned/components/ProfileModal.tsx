@@ -1,23 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { User, Key, Eye, EyeOff, Save, ShieldAlert, Shield, Mail, Activity, Clock, Settings, ChevronDown, ChevronUp, LogOut, Check, X, RefreshCw } from 'lucide-react';
+import { User, Key, Eye, EyeOff, Save, ShieldAlert, Mail, Activity, Clock, Settings, ChevronDown, ChevronUp } from 'lucide-react';
 import { fetchAPI } from '../utils/api';
-import { compressToWebP } from '../utils/imageCompress';
 import { useAuth } from '../contexts/AuthContext';
 import { CustomModal } from './ui/CustomModal';
 import { Avatar } from './ui/Avatar';
 import toast from 'react-hot-toast';
-import { StatRowSkeleton } from './ui/Skeleton';
 
 export const ProfileModal = () => {
   const { t } = useLanguage();
-  const { user, login, logout } = useAuth();
+  const { user, login } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'activity'>('profile');
   
   // Profile State
-  const [profileData, setProfileData] = useState({ name: '', email: '', avatar: '', bio: '' });
+  const [profileData, setProfileData] = useState({ name: '', email: '', avatar: '' });
   
   // Password State
   const [showOldPass, setShowOldPass] = useState(false);
@@ -54,8 +52,7 @@ export const ProfileModal = () => {
       setProfileData({ 
         name: user?.name || '', 
         email: user?.email || user?.username || '',
-        avatar: user?.avatar || '',
-        bio: user?.bio || ''
+        avatar: user?.avatar || ''
       });
       setPassData({ oldPassword: '', newPassword: '', confirmPassword: '' });
       const targetTab = e?.detail?.tab || 'profile';
@@ -104,9 +101,8 @@ export const ProfileModal = () => {
 
     setIsUploadingAvatar(true);
     try {
-      const compressedFile = await compressToWebP(file);
       const fd = new FormData();
-      fd.append('avatar', compressedFile);
+      fd.append('avatar', file);
 
       const oldAvatar = profileData.avatar || '';
       const query = `upload_avatar&old_avatar=${encodeURIComponent(oldAvatar)}`;
@@ -139,13 +135,13 @@ export const ProfileModal = () => {
     try {
       const res = await fetchAPI('update_profile', {
         method: 'POST',
-        body: JSON.stringify({ name: profileData.name, avatar: profileData.avatar, bio: profileData.bio })
+        body: JSON.stringify({ name: profileData.name, avatar: profileData.avatar })
       });
       if (res.success) {
         toast.success(t('Cập nhật thông tin thành công!'));
-        const token = localStorage.getItem('access_token') || localStorage.getItem('Ideas_token') || '';
+        const token = localStorage.getItem('domation_token') || '';
         if (user) {
-          login(token, { ...user, name: profileData.name, avatar: profileData.avatar, bio: profileData.bio } as any);
+          login(token, { ...user, name: profileData.name, avatar: profileData.avatar } as any);
         }
         setIsOpen(false);
       } else {
@@ -167,11 +163,8 @@ export const ProfileModal = () => {
       toast.error(t('Mật khẩu mới không khớp'));
       return;
     }
-    const isLongEnough = passData.newPassword.length >= 8;
-    const hasLetter = /[A-Za-z]/.test(passData.newPassword);
-    const hasDigit = /\d/.test(passData.newPassword);
-    if (!isLongEnough || !hasLetter || !hasDigit) {
-      toast.error(t('Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm cả chữ và số'));
+    if (passData.newPassword.length < 6) {
+      toast.error(t('Mật khẩu mới phải có ít nhất 6 ký tự'));
       return;
     }
     setLoading(true);
@@ -199,9 +192,7 @@ export const ProfileModal = () => {
       title={t("Thông tin Tài khoản")}
       width="760px"
     >
-      {isOpen && (
-        <>
-          <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border)', marginBottom: '1.5rem', gap: '0.75rem', padding: '0 1rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border)', marginBottom: '1.5rem', gap: '0.75rem', padding: '0 1rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
         <button
           onClick={() => setActiveTab('profile')}
           style={{
@@ -294,197 +285,113 @@ export const ProfileModal = () => {
 
             <div className="form-group">
               <label>{t('Tên hiển thị')}</label>
-              <input
-                type="text"
-                className="form-control"
-                value={profileData.name}
-                onChange={e => setProfileData({ ...profileData, name: e.target.value })}
-                placeholder={t("Nhập tên hiển thị...")}
-              />
+              <div style={{ position: 'relative' }}>
+                <User size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profileData.name}
+                  onChange={e => setProfileData({ ...profileData, name: e.target.value })}
+                  placeholder={t("Nhập tên hiển thị...")}
+                  style={{ paddingLeft: 42 }}
+                />
+              </div>
             </div>
             
             <div className="form-group">
-              <label>{t('Giới thiệu bản thân (Bio)')}</label>
-              <textarea
-                className="form-control"
-                rows={3}
-                style={{ resize: 'none' }}
-                value={profileData.bio}
-                onChange={e => setProfileData({ ...profileData, bio: e.target.value })}
-                placeholder={t("Nhập một vài dòng giới thiệu về bản thân...")}
-              />
-            </div>
-
-            <div className="form-group">
               <label>{t('Email / Username đăng nhập')}</label>
-              <input
-                type="text"
-                className="form-control"
-                value={profileData.email}
-                disabled
-                placeholder={t("Email đăng nhập...")}
-                style={{ cursor: 'not-allowed', backgroundColor: 'var(--color-border-light)', color: 'var(--color-text-muted)' }}
-              />
+              <div style={{ position: 'relative' }}>
+                <Mail size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profileData.email}
+                  disabled
+                  placeholder={t("Email đăng nhập...")}
+                  style={{ paddingLeft: 42, cursor: 'not-allowed', backgroundColor: 'var(--color-border-light)', color: 'var(--color-text-muted)' }}
+                />
+              </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', gap: '10px' }}>
-              <button
-                type="button"
-                className="btn outline danger icon-only"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', padding: 0, flexShrink: 0 }}
-                onClick={() => {
-                  setIsOpen(false);
-                  logout();
-                  window.location.href = '/login';
-                }}
-                title={t('Đăng xuất')}
-              >
-                <LogOut size={16} />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button type="submit" className="btn primary" disabled={loading}>
+                {loading ? t('Đang xử lý...') : <><Save size={18} /> {t('Cập nhật Thông tin')}</>}
               </button>
-
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  className="btn outline hover-lift"
-                  disabled={loading}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px', height: '38px', padding: '0 14px', fontSize: '0.8rem', fontWeight: 700, whiteSpace: 'nowrap' }}
-                  onClick={() => {
-                    setIsOpen(false);
-                    window.location.href = '/account';
-                  }}
-                >
-                  {t('Mở trang chi tiết')} →
-                </button>
-                
-                <button type="submit" className="btn primary hover-lift" style={{ height: '38px', padding: '0 14px', fontSize: '0.8rem', fontWeight: 700, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '6px' }} disabled={loading}>
-                  {loading ? <><RefreshCw size={14} className="spin" /> {t('Đang xử lý...')}</> : <><Save size={14} /> {t('Cập nhật Thông tin')}</>}
-                </button>
-              </div>
             </div>
           </form>
         )}
 
-        {activeTab === 'password' && (() => {
-          const newPass = passData.newPassword || '';
-          const confirmPass = passData.confirmPassword || '';
-          const isLongEnough = newPass.length >= 8;
-          const hasLetter = /[A-Za-z]/.test(newPass);
-          const hasDigit = /\d/.test(newPass);
-          const isStrong = isLongEnough && hasLetter && hasDigit;
-
-          const isConfirmTouched = confirmPass.length > 0;
-          const isConfirmMatch = isConfirmTouched && confirmPass === newPass;
-
-          return (
-            <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '10px 14px', borderRadius: '8px' }}>
-                <p style={{ color: 'var(--color-text)', fontSize: '0.8rem', margin: '0 0 6px 0', fontWeight: 600 }}>
-                  {t('Quy định mật khẩu: Tối thiểu 8 ký tự, bao gồm cả chữ cái và chữ số')}
+        {activeTab === 'password' && (
+          <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ background: 'var(--color-danger-light)', borderLeft: '4px solid var(--color-danger)', padding: '12px 16px', borderRadius: 8, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <ShieldAlert size={20} color="var(--color-danger)" style={{ marginTop: 2, flexShrink: 0 }} />
+              <div>
+                <h4 style={{ color: 'var(--color-danger)', fontSize: '0.875rem', fontWeight: 700, margin: '0 0 4px 0' }}>{t('Bảo mật tài khoản')}</h4>
+                <p style={{ color: 'var(--color-text-light)', fontSize: '0.8125rem', margin: 0, lineHeight: 1.5 }}>
+                  {t('Nếu bạn quên mật khẩu, vui lòng Đăng xuất và sử dụng chức năng')} <strong>{t('Quên mật khẩu')}</strong> tại màn hình Đăng nhập để khôi phục qua Email.
                 </p>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', fontSize: '0.72rem' }}>
-                  <span style={{ color: isLongEnough ? '#059669' : '#64748b', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600, background: isLongEnough ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.04)', padding: '2px 8px', borderRadius: '4px' }}>
-                    {isLongEnough ? <Check size={12} color="#059669" /> : '○'} {t('Tối thiểu 8 ký tự')}
-                  </span>
-                  <span style={{ color: hasLetter ? '#059669' : '#64748b', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600, background: hasLetter ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.04)', padding: '2px 8px', borderRadius: '4px' }}>
-                    {hasLetter ? <Check size={12} color="#059669" /> : '○'} {t('Chứa chữ cái (a-z, A-Z)')}
-                  </span>
-                  <span style={{ color: hasDigit ? '#059669' : '#64748b', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600, background: hasDigit ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.04)', padding: '2px 8px', borderRadius: '4px' }}>
-                    {hasDigit ? <Check size={12} color="#059669" /> : '○'} {t('Chứa chữ số (0-9)')}
-                  </span>
-                </div>
               </div>
+            </div>
 
-              <div className="form-group">
-                <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>{t('Mật khẩu hiện tại')} <span style={{ color: '#ef4444' }}>*</span></label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type={showOldPass ? 'text' : 'password'}
-                    className="form-control"
-                    value={passData.oldPassword}
-                    onChange={e => setPassData({ ...passData, oldPassword: e.target.value })}
-                    placeholder={t("Nhập mật khẩu hiện tại...")}
-                    style={{ paddingRight: 40 }}
-                  />
-                  <button type="button" className="no-active-scale" onMouseDown={(e) => e.preventDefault()} onClick={() => setShowOldPass(!showOldPass)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
-                    {showOldPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
+            <div className="form-group">
+              <label>{t('Mật khẩu hiện tại')}</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showOldPass ? 'text' : 'password'}
+                  className="form-control"
+                  value={passData.oldPassword}
+                  onChange={e => setPassData({ ...passData, oldPassword: e.target.value })}
+                  placeholder={t("Nhập mật khẩu cũ...")}
+                  style={{ paddingRight: 40 }}
+                />
+                <button type="button" onClick={() => setShowOldPass(!showOldPass)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
+                  {showOldPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
+            </div>
 
-              <div className="form-group">
-                <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>{t('Mật khẩu mới')} <span style={{ color: '#ef4444' }}>*</span></label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type={showNewPass ? 'text' : 'password'}
-                    className="form-control"
-                    value={passData.newPassword}
-                    onChange={e => setPassData({ ...passData, newPassword: e.target.value })}
-                    placeholder={t("≥ 8 ký tự gồm cả chữ & số...")}
-                    style={{
-                      paddingRight: 40,
-                      borderColor: newPass.length > 0 ? (isStrong ? '#10b981' : '#f59e0b') : undefined
-                    }}
-                  />
-                  <button type="button" className="no-active-scale" onMouseDown={(e) => e.preventDefault()} onClick={() => setShowNewPass(!showNewPass)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
-                    {showNewPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>{t('Xác nhận mật khẩu mới')} <span style={{ color: '#ef4444' }}>*</span></label>
+            <div className="form-group">
+              <label>{t('Mật khẩu mới')}</label>
+              <div style={{ position: 'relative' }}>
                 <input
                   type={showNewPass ? 'text' : 'password'}
                   className="form-control"
-                  value={passData.confirmPassword}
-                  onChange={e => setPassData({ ...passData, confirmPassword: e.target.value })}
-                  placeholder={t("Nhập lại mật khẩu mới...")}
-                  style={{
-                    borderColor: isConfirmTouched ? (isConfirmMatch ? '#10b981' : '#ef4444') : undefined,
-                    boxShadow: isConfirmTouched ? (isConfirmMatch ? '0 0 0 1px #10b981' : '0 0 0 1px #ef4444') : undefined
-                  }}
+                  value={passData.newPassword}
+                  onChange={e => setPassData({ ...passData, newPassword: e.target.value })}
+                  placeholder={t("Nhập mật khẩu mới...")}
+                  style={{ paddingRight: 40 }}
                 />
-                {isConfirmTouched && (
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    marginTop: '4px',
-                    color: isConfirmMatch ? '#059669' : '#1E40FF'
-                  }}>
-                    {isConfirmMatch ? (
-                      <><Check size={13} color="#059669" /> {t('Mật khẩu xác nhận trùng khớp')}</>
-                    ) : (
-                      <><X size={13} color="#1E40FF" /> {t('Mật khẩu xác nhận không khớp')}</>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                <button
-                  type="submit"
-                  className="btn primary hover-lift"
-                  disabled={loading || !passData.oldPassword || !isStrong || !isConfirmMatch}
-                  style={{ background: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                >
-                  {loading ? <><RefreshCw size={16} className="spin" /> {t('Đang xử lý...')}</> : <><Save size={18} /> {t('Đổi Mật Khẩu')}</>}
+                <button type="button" onClick={() => setShowNewPass(!showNewPass)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
+                  {showNewPass ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-            </form>
-          );
-        })()}
+            </div>
+
+            <div className="form-group">
+              <label>{t('Xác nhận mật khẩu mới')}</label>
+              <input
+                type={showNewPass ? 'text' : 'password'}
+                className="form-control"
+                value={passData.confirmPassword}
+                onChange={e => setPassData({ ...passData, confirmPassword: e.target.value })}
+                placeholder={t("Nhập lại mật khẩu mới...")}
+              />
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <button type="submit" className="btn primary" disabled={loading} style={{ background: '#10b981' }}>
+                {loading ? t('Đang xử lý...') : <><Save size={18} /> {t('Đổi Mật Khẩu')}</>}
+              </button>
+            </div>
+          </form>
+        )}
 
         {activeTab === 'activity' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '380px', overflowY: 'auto', paddingRight: '4px' }}>
               {loadingLogs ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <StatRowSkeleton />
-                  <StatRowSkeleton />
-                  <StatRowSkeleton />
+                <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                  {t('Đang tải lịch sử hoạt động...')}
                 </div>
               ) : activityLogs.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
@@ -709,8 +616,6 @@ export const ProfileModal = () => {
           </div>
         )}
       </div>
-    </>
-  )}
-</CustomModal>
+    </CustomModal>
   );
 };

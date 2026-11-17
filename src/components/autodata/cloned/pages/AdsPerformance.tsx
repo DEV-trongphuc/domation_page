@@ -149,7 +149,7 @@ const PIPELINE_COLUMNS: Array<{
   { key: 'Closed', label: 'Đã chốt', shortLabel: 'Đã chốt', color: '#9333ea', bg: 'rgba(147, 51, 234, 0.12)', border: 'rgba(147, 51, 234, 0.3)', group: 'positive' },
   { key: 'Badtiming', label: 'Hẹn gọi lại', shortLabel: 'Gọi lại', color: '#ca8a04', bg: 'rgba(202, 138, 4, 0.1)', border: 'rgba(202, 138, 4, 0.25)', group: 'neutral' },
   { key: 'NoAnswer', label: 'KNM / Thuê bao', shortLabel: 'KNM', color: '#ea580c', bg: 'rgba(234, 88, 12, 0.1)', border: 'rgba(234, 88, 12, 0.25)', group: 'negative' },
-  { key: 'Notlead', label: 'Notlead', shortLabel: 'Notlead', color: '#1E40FF', bg: 'rgba(220, 38, 38, 0.1)', border: 'rgba(220, 38, 38, 0.25)', group: 'negative' },
+  { key: 'Notlead', label: 'Notlead', shortLabel: 'Notlead', color: '#dc2626', bg: 'rgba(220, 38, 38, 0.1)', border: 'rgba(220, 38, 38, 0.25)', group: 'negative' },
   { key: 'unrated', label: 'Chưa ĐG', shortLabel: 'Chưa ĐG', color: '#64748b', bg: 'rgba(100, 116, 139, 0.1)', border: 'rgba(100, 116, 139, 0.22)', group: 'neutral' },
 ];
 
@@ -1342,14 +1342,14 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
               minWidth: 0
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#1E40FF', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#dc2626', textTransform: 'uppercase' }}>
                   KNM & Sai Đối Tượng
                 </span>
-                <div style={{ width: 26, height: 26, borderRadius: 7, background: 'rgba(220, 38, 38, 0.1)', color: '#1E40FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 26, height: 26, borderRadius: 7, background: 'rgba(220, 38, 38, 0.1)', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <AlertTriangle size={14} />
                 </div>
               </div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1E40FF', lineHeight: 1.2 }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#dc2626', lineHeight: 1.2 }}>
                 {summary?.total_negative_leads ?? 0} <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>Lead</span>
               </div>
               <div style={{ fontSize: '0.71rem', color: 'var(--color-text-muted)', marginTop: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -1527,7 +1527,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
               <div style={{ minWidth: 185 }} title="Lọc theo Meta Optimization Goal (adset.optimization_goal)">
                 <CustomSelect
                   value={goalFilter}
-                  onChange={(v) => setGoalFilter(String(v))}
+                  onChange={setGoalFilter}
                   options={[
                     { value: 'Lead Form', label: 'Meta Goal: Lead Form' },
                     { value: 'all', label: 'Meta Goal: Tất cả' },
@@ -1545,7 +1545,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
               <div style={{ minWidth: 185 }}>
                 <CustomSelect
                   value={tierFilter}
-                  onChange={(v) => setTierFilter(String(v))}
+                  onChange={setTierFilter}
                   options={[
                     { value: 'with_leads', label: 'Bài QC có sinh Lead' },
                     { value: 'all', label: 'Tất cả bài QC' },
@@ -1933,7 +1933,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                                 b.key === 'scale' || b.key === 'best'
                                   ? { bg: 'rgba(22, 163, 74, 0.1)', color: '#16a34a', border: 'rgba(22, 163, 74, 0.25)' }
                                   : b.key === 'review'
-                                  ? { bg: 'rgba(220, 38, 38, 0.1)', color: '#1E40FF', border: 'rgba(220, 38, 38, 0.25)' }
+                                  ? { bg: 'rgba(220, 38, 38, 0.1)', color: '#dc2626', border: 'rgba(220, 38, 38, 0.25)' }
                                   : b.key === 'fatigue'
                                   ? { bg: 'rgba(217, 119, 6, 0.1)', color: '#d97706', border: 'rgba(217, 119, 6, 0.25)' }
                                   : b.key === 'learning'
@@ -2170,7 +2170,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                                                 fontSize: '0.6rem',
                                                 fontWeight: 700,
                                                 background: (l.capi_last_status ?? 0) >= 200 && (l.capi_last_status ?? 0) < 300 ? 'rgba(22, 163, 74, 0.12)' : 'rgba(220, 38, 38, 0.12)',
-                                                color: (l.capi_last_status ?? 0) >= 200 && (l.capi_last_status ?? 0) < 300 ? '#15803d' : '#1E40FF'
+                                                color: (l.capi_last_status ?? 0) >= 200 && (l.capi_last_status ?? 0) < 300 ? '#15803d' : '#dc2626'
                                               }}
                                             >
                                               CAPI: {l.capi_last_event}
@@ -2399,7 +2399,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                               fontSize: '0.62rem',
                               fontWeight: 700,
                               background: (item.capi_last_status ?? 0) >= 200 && (item.capi_last_status ?? 0) < 300 ? 'rgba(22, 163, 74, 0.12)' : 'rgba(220, 38, 38, 0.12)',
-                              color: (item.capi_last_status ?? 0) >= 200 && (item.capi_last_status ?? 0) < 300 ? '#15803d' : '#1E40FF'
+                              color: (item.capi_last_status ?? 0) >= 200 && (item.capi_last_status ?? 0) < 300 ? '#15803d' : '#dc2626'
                             }}
                           >
                             CAPI: {item.capi_last_event} ({item.capi_last_status})
@@ -2862,7 +2862,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                           <span>Đồng bộ cuối: <strong style={{ color: 'var(--color-text)' }}>{acc.last_sync || 'Chưa'}</strong></span>
                         </div>
                         {acc.last_error && (
-                          <div style={{ marginTop: 5, fontSize: '0.72rem', color: '#1E40FF', fontWeight: 600 }}>
+                          <div style={{ marginTop: 5, fontSize: '0.72rem', color: '#dc2626', fontWeight: 600 }}>
                             Lỗi đồng bộ: {acc.last_error}
                           </div>
                         )}
@@ -2943,7 +2943,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                             borderRadius: 8,
                             border: '1px solid rgba(239, 68, 68, 0.35)',
                             background: 'rgba(239, 68, 68, 0.08)',
-                            color: '#1E40FF',
+                            color: '#dc2626',
                             fontSize: '0.72rem',
                             fontWeight: 700,
                             cursor: 'pointer',
@@ -2970,7 +2970,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                         gap: 8,
                         fontSize: '0.75rem'
                       }}>
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', color: '#1E3A8A', fontWeight: 600 }}>
+                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', color: '#991b1b', fontWeight: 600 }}>
                           <input
                             type="checkbox"
                             checked={purgeOnDelete}
@@ -3002,7 +3002,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
                               padding: '5px 12px',
                               borderRadius: 7,
                               border: 'none',
-                              background: '#1E40FF',
+                              background: '#dc2626',
                               color: '#fff',
                               fontSize: '0.72rem',
                               fontWeight: 700,

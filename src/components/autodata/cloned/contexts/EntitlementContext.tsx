@@ -3,18 +3,14 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 import toast from 'react-hot-toast';
 import { apiRequest } from '../../autodataApi';
 import type { SaasPackageCode, ClientSubscriptionSnapshot } from '../../autodataTypes';
-import { useAuth, type EffectiveModulePermission, type ExtendedTenantSession } from './AuthContext';
+import { useAuth, type EffectiveModulePermission } from './AuthContext';
 import { AutoDataLoadingModal } from '../components/ui/AutoDataLoadingModal';
 import {
   SAAS_PACKAGES_CATALOG,
   INDUSTRY_PRESETS,
-  SCREEN_ACCESS_CATALOG,
-  QUICK_ACTIONS_CATALOG,
   buildResolvedTerminology,
   expandEnabledModulesForPackage,
   getModuleKeyAliases,
-  getModulePermissionKeys,
-  isModuleForbiddenForPackage,
   localPackageOverrideKey,
   normalizeIndustryKey,
   normalizePackageCode,
@@ -34,9 +30,6 @@ interface LocalEntitlementPatch {
   industryKey?: IndustryPresetKey;
   terminology?: Record<string, string>;
   effectivePermissions?: Record<string, EffectiveModulePermission>;
-  screenAccess?: Record<string, boolean>;
-  quickActions?: Record<string, boolean>;
-  defaultRoute?: string | null;
 }
 
 interface SwitchPackageResponse {
@@ -46,9 +39,6 @@ interface SwitchPackageResponse {
   entitlements?: Record<string, unknown>;
   terminology?: Record<string, string>;
   effective_permissions?: Record<string, EffectiveModulePermission>;
-  screen_access?: Record<string, boolean>;
-  quick_actions?: Record<string, boolean>;
-  default_route?: string | null;
   subscription?: ClientSubscriptionSnapshot;
 }
 
@@ -65,13 +55,7 @@ export interface EntitlementContextValue {
   term: (key: keyof TerminologyDictionary | string, fallback?: string) => string;
   isTenantOwner: boolean;
   effectivePermissions: Record<string, EffectiveModulePermission>;
-  screenAccess: Record<string, boolean>;
-  quickActions: Record<string, boolean>;
-  defaultRoute: string;
   can: (moduleKey: string, action?: RbacActionKey) => boolean;
-  canScreen: (screenKey: string) => boolean;
-  canQuickAction: (actionKey: string) => boolean;
-  getDefaultRoute: () => string;
   scope: (moduleKey: string) => DataScopeKey;
   switchingPackage: boolean;
   switchPackage: (
@@ -85,7 +69,6 @@ export interface EntitlementContextValue {
     enableIdeasMascot?: boolean;
   }) => void;
   setGlobalLoadingModal: (state: { open: boolean; message?: string; subMessage?: string }) => void;
-  refreshEntitlements: () => Promise<void>;
 }
 
 const EntitlementContext = createContext<EntitlementContextValue | undefined>(undefined);
@@ -238,8 +221,8 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const isTenantOwner: boolean =
     typeof user?.is_tenant_owner === 'boolean'
       ? user.is_tenant_owner
-      : typeof (v2Session as ExtendedTenantSession).is_tenant_owner === 'boolean'
-      ? Boolean((v2Session as ExtendedTenantSession).is_tenant_owner)
+      : typeof v2Session.is_tenant_owner === 'boolean'
+      ? v2Session.is_tenant_owner
       : user?.role === 'superadmin';
 
   const effectivePermissions = useMemo<Record<string, EffectiveModulePermission>>(() => {
@@ -259,79 +242,18 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     v2Session.effective_permissions,
   ]);
 
-  const screenAccess = useMemo<Record<string, boolean>>(() => {
-    const extSess = v2Session as ExtendedTenantSession;
-    return (
-      localPatch.screenAccess ||
-      bootstrapData?.user?.screen_access ||
-      bootstrapData?.rbac?.screen_access ||
-      bootstrapData?.screen_access ||
-      extSess.screen_access ||
-      {}
-    );
-  }, [
-    localPatch.screenAccess,
-    bootstrapData?.user?.screen_access,
-    bootstrapData?.rbac?.screen_access,
-    bootstrapData?.screen_access,
-    v2Session,
-  ]);
-
-  const quickActions = useMemo<Record<string, boolean>>(() => {
-    const extSess = v2Session as ExtendedTenantSession;
-    return (
-      localPatch.quickActions ||
-      bootstrapData?.user?.quick_actions ||
-      bootstrapData?.rbac?.quick_actions ||
-      bootstrapData?.quick_actions ||
-      extSess.quick_actions ||
-      {}
-    );
-  }, [
-    localPatch.quickActions,
-    bootstrapData?.user?.quick_actions,
-    bootstrapData?.rbac?.quick_actions,
-    bootstrapData?.quick_actions,
-    v2Session,
-  ]);
-
-  const rawDefaultRoute = useMemo<string>(() => {
-    const extSess = v2Session as ExtendedTenantSession;
-    return String(
-      localPatch.defaultRoute ??
-        bootstrapData?.user?.default_route ??
-        bootstrapData?.rbac?.default_route ??
-        bootstrapData?.default_route ??
-        extSess.default_route ??
-        ''
-    ).trim();
-  }, [
-    localPatch.defaultRoute,
-    bootstrapData?.user?.default_route,
-    bootstrapData?.rbac?.default_route,
-    bootstrapData?.default_route,
-    v2Session,
-  ]);
-
   const hasModule = useCallback(
     (moduleKey: string): boolean => {
-      if (moduleKey === 'settings' || moduleKey === 'billing' || moduleKey === 'org_rbac' || moduleKey === 'users') {
+      if (moduleKey === 'settings' || moduleKey === 'billing' || moduleKey === 'org_rbac') {
         return true;
       }
-      // Hard package gate first: Growth extras / ERP keys can never resolve on lower packages
-      if (isModuleForbiddenForPackage(packageCode, moduleKey)) {
+      if (moduleKey === 'audiences' && packageCode === 'autodata_crm') {
         return false;
       }
       if (moduleKey === 'education_addon' || moduleKey === 'education') {
         return packageCode === 'domation_promax' && educationAddon;
       }
-      if (enabledModules.has(moduleKey) || enabledModules.has(toBackendModuleKey(moduleKey))) {
-        return true;
-      }
-      for (const alias of getModuleKeyAliases(moduleKey)) {
-        if (enabledModules.has(alias)) return true;
-      }
-      return false;
+      return enabledModules.has(moduleKey) || enabledModules.has(toBackendModuleKey(moduleKey));
     },
     [enabledModules, packageCode, educationAddon]
   );
@@ -343,7 +265,7 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const direct =
         effectivePermissions[moduleKey] ?? effectivePermissions[toBackendModuleKey(moduleKey)];
       if (direct) return direct;
-      for (const alias of getModulePermissionKeys(moduleKey)) {
+      for (const alias of getModuleKeyAliases(moduleKey)) {
         if (effectivePermissions[alias]) return effectivePermissions[alias];
       }
       return undefined;
@@ -381,104 +303,23 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
         }
         return action === 'view';
       }
-      // Safe fallback only when backend custom matrix has not loaded yet
-      if (action === 'unmask_phone') {
-        return tenantSettings.pii_masking_enabled === false && !tenantSettings.pii_mask_all_sales;
-      }
-      if (Object.keys(effectivePermissions).length === 0) {
-        return action === 'view' || (user?.role === 'admin' && action !== 'delete');
-      }
-      return action === 'view' && Boolean(screenAccess[moduleKey]);
-    },
-    [hasModule, isTenantOwner, resolveEffectivePermission, effectivePermissions, screenAccess, user?.role, tenantSettings.pii_masking_enabled, tenantSettings.pii_mask_all_sales]
-  );
-
-  const canScreen = useCallback(
-    (screenKey: string): boolean => {
-      const normalized = String(screenKey || '').trim();
-      if (!normalized) return true;
-      const descriptor = SCREEN_ACCESS_CATALOG.find(
-        (s) => s.screenKey === normalized || s.path === normalized
-      );
-      const moduleKey = descriptor?.moduleKey;
-      if (moduleKey && !hasModule(moduleKey)) return false;
-
-      // Owner recovery safeguard on core workspace + settings/accounts
-      if (isTenantOwner) return true;
-
-      // Explicit RBAC screen_access matrix check (supports screenKey, path, or moduleKey keys)
-      const candidates = [normalized, descriptor?.screenKey, descriptor?.path, moduleKey].filter(
-        (k): k is string => Boolean(k)
-      );
-      for (const candidate of candidates) {
-        if (typeof screenAccess[candidate] === 'boolean') {
-          return screenAccess[candidate];
+      // Safe fallback before custom matrix loads
+      if (user?.role === 'admin') {
+        if (action === 'unmask_phone') {
+          return tenantSettings.pii_masking_enabled === false;
         }
-      }
-
-      if (normalized === 'account' || descriptor?.screenKey === 'account') {
         return true;
       }
-
-      if (moduleKey) {
-        return can(moduleKey, 'view');
+      if (user?.role === 'sale') {
+        if (action === 'unmask_phone') {
+          return !tenantSettings.pii_masking_enabled && !tenantSettings.pii_mask_all_sales;
+        }
+        return action === 'view' || action === 'create' || action === 'edit';
       }
-      return true;
+      return action === 'view';
     },
-    [hasModule, isTenantOwner, screenAccess, can]
+    [hasModule, isTenantOwner, resolveEffectivePermission, user?.role, tenantSettings.pii_masking_enabled, tenantSettings.pii_mask_all_sales]
   );
-
-  const canQuickAction = useCallback(
-    (actionKey: string): boolean => {
-      const normalized = String(actionKey || '').trim();
-      if (!normalized) return false;
-      const meta = QUICK_ACTIONS_CATALOG.find((q) => q.key === normalized);
-      if (meta && !hasModule(meta.moduleKey)) return false;
-      if (isTenantOwner) return true;
-      if (typeof quickActions[normalized] === 'boolean') {
-        return quickActions[normalized];
-      }
-      if (meta) {
-        return can(meta.moduleKey, meta.requiredAction);
-      }
-      return true;
-    },
-    [hasModule, isTenantOwner, quickActions, can]
-  );
-
-  const getDefaultRoute = useCallback((): string => {
-    if (rawDefaultRoute && rawDefaultRoute.startsWith('/')) {
-      const desc = SCREEN_ACCESS_CATALOG.find((s) => s.path === rawDefaultRoute);
-      if (!desc || canScreen(desc.screenKey)) {
-        return rawDefaultRoute;
-      }
-    }
-    if (packageCode === 'marketing_standalone') {
-      return '/';
-    }
-    if (canScreen('dashboard')) {
-      return '/';
-    }
-    if (canScreen('sale_portal')) {
-      return '/sale-portal';
-    }
-    const preferredOrder = [
-      '/workspace',
-      '/data',
-      '/contacts',
-      '/audiences',
-      '/erp/attendance',
-      '/erp/projects',
-    ];
-    for (const p of preferredOrder) {
-      const desc = SCREEN_ACCESS_CATALOG.find((s) => s.path === p);
-      if (desc && canScreen(desc.screenKey)) return desc.path;
-    }
-    const firstAllowed = SCREEN_ACCESS_CATALOG.find((s) => canScreen(s.screenKey));
-    return firstAllowed?.path || '/';
-  }, [rawDefaultRoute, packageCode, canScreen]);
-
-  const defaultRoute = useMemo(() => getDefaultRoute(), [getDefaultRoute]);
 
   const term = useCallback(
     (key: keyof TerminologyDictionary | string, fallback?: string): string => {
@@ -581,9 +422,6 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
           industryKey: nextInd,
           ...(res?.terminology ? { terminology: res.terminology } : {}),
           ...(res?.effective_permissions ? { effectivePermissions: res.effective_permissions } : {}),
-          ...(res?.screen_access ? { screenAccess: res.screen_access } : {}),
-          ...(res?.quick_actions ? { quickActions: res.quick_actions } : {}),
-          ...(res?.default_route !== undefined ? { defaultRoute: res.default_route } : {}),
         };
 
         setPatchByTenant((prev) => {
@@ -599,9 +437,6 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
             education_addon: nextPatch.educationAddon,
             enable_ideas_mascot: enableIdeasMascot,
           },
-          ...(res?.screen_access ? { screen_access: res.screen_access } : {}),
-          ...(res?.quick_actions ? { quick_actions: res.quick_actions } : {}),
-          ...(res?.default_route !== undefined ? { default_route: res.default_route } : {}),
           ...(res?.subscription ? { subscription: res.subscription } : {}),
         });
 
@@ -635,10 +470,6 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     []
   );
 
-  const refreshEntitlements = useCallback(async () => {
-    await refreshTenantSettings();
-  }, [refreshTenantSettings]);
-
   const value = useMemo<EntitlementContextValue>(
     () => ({
       packageCode,
@@ -653,19 +484,12 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       term,
       isTenantOwner,
       effectivePermissions,
-      screenAccess,
-      quickActions,
-      defaultRoute,
       can,
-      canScreen,
-      canQuickAction,
-      getDefaultRoute,
       scope,
       switchingPackage,
       switchPackage,
       applyTerminologyLocal,
       setGlobalLoadingModal,
-      refreshEntitlements,
     }),
     [
       packageCode,
@@ -678,19 +502,12 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       term,
       isTenantOwner,
       effectivePermissions,
-      screenAccess,
-      quickActions,
-      defaultRoute,
       can,
-      canScreen,
-      canQuickAction,
-      getDefaultRoute,
       scope,
       switchingPackage,
       switchPackage,
       applyTerminologyLocal,
       setGlobalLoadingModal,
-      refreshEntitlements,
     ]
   );
 
@@ -717,7 +534,7 @@ export const useEntitlement = (): EntitlementContextValue => {
       packageMeta: defaultPkg,
       packagesCatalog: SAAS_PACKAGES_CATALOG,
       enabledModules: new Set(defaultPkg.defaultModules),
-      hasModule: (m) => !isModuleForbiddenForPackage('autodata_crm', m) && defaultPkg.defaultModules.includes(m),
+      hasModule: (m) => defaultPkg.defaultModules.includes(m),
       educationAddon: false,
       enableIdeasMascot: false,
       industryKey: 'general',
@@ -725,19 +542,12 @@ export const useEntitlement = (): EntitlementContextValue => {
       term: (k, fb) => defaultDict[k] || fb || String(k),
       isTenantOwner: false,
       effectivePermissions: {},
-      screenAccess: {},
-      quickActions: {},
-      defaultRoute: '/',
       can: () => true,
-      canScreen: () => true,
-      canQuickAction: () => true,
-      getDefaultRoute: () => '/',
       scope: () => 'company',
       switchingPackage: false,
       switchPackage: async () => {},
       applyTerminologyLocal: () => {},
       setGlobalLoadingModal: () => {},
-      refreshEntitlements: async () => {},
     };
   }
   return ctx;

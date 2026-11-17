@@ -1,56 +1,44 @@
-import { motion } from 'framer-motion';
-
 interface ToggleSwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   small?: boolean;
-  disabled?: boolean;
 }
 
-export const ToggleSwitch = ({ checked, onChange, small = false, disabled = false }: ToggleSwitchProps) => {
+export const ToggleSwitch = ({ checked, onChange, small = false }: ToggleSwitchProps) => {
   const width = small ? 32 : 44;
   const height = small ? 18 : 24;
+  const borderRadius = small ? 18 : 24;
   const knobSize = small ? 14 : 20;
+  const leftPos = checked ? (small ? 16 : 22) : 2;
 
   return (
-    <motion.div
-      onClick={(e) => {
-        e.stopPropagation();
-        if (!disabled) onChange(!checked);
-      }}
-      className="flex items-center select-none shrink-0"
-      animate={{
-        backgroundColor: checked ? 'var(--color-success)' : 'var(--color-border)'
-      }}
+    <div
+      onClick={() => onChange(!checked)}
       style={{
         width,
         height,
-        borderRadius: 999,
-        padding: '2px',
+        borderRadius,
+        background: checked ? '#10b981' : '#cbd5e1',
         position: 'relative',
-        display: 'flex',
-        justifyContent: checked ? 'flex-end' : 'flex-start',
-        border: '1px solid rgba(0,0,0,0.04)',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.6 : 1
+        cursor: 'pointer',
+        transition: 'background 0.2s',
+        flexShrink: 0,
+        userSelect: 'none'
       }}
-      transition={{ duration: 0.2 }}
     >
-      <motion.div
-        layout
-        transition={{
-          type: "spring",
-          stiffness: 700,
-          damping: 35
-        }}
+      <div
         style={{
           width: knobSize,
           height: knobSize,
-          borderRadius: 999,
-          background: 'var(--color-surface)',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.12)'
+          borderRadius: '50%',
+          background: '#fff',
+          position: 'absolute',
+          top: 2,
+          left: leftPos,
+          transition: 'left 0.2s',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
         }}
       />
-    </motion.div>
+    </div>
   );
 };

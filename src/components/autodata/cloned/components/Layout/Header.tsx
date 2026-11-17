@@ -1,28 +1,15 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, Activity, Sun, Moon, Keyboard, ChevronDown, User, AlertTriangle, LogOut, Menu, LayoutGrid, LayoutDashboard, Users, Building2, Clock, Truck, Boxes, Receipt, Settings, CheckCircle2, Fingerprint, Bell, MessageSquare, Info, Trash2, Check, Eye, EyeOff, CheckSquare, FileText, ArrowLeft, ShieldAlert, Laptop, RefreshCw, Code, Star, X, Sparkles, Compass, CreditCard } from 'lucide-react';
+import { Search, Command, Activity, Sun, Moon, Keyboard, ChevronDown, User, CreditCard, Compass, Building2, Plus, LogOut, Menu, Sparkles, Check } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import { SAAS_PACKAGES_CATALOG } from '../../contexts/entitlementConstants';
 import type { SaasPackageCode } from '../../../autodataTypes';
-import { getUserDisplayRoleOrTitle } from '../../utils/roleUtils';
-import { ToggleSwitch } from '../ui/ToggleSwitch';
-import { useUIStore } from '../../store/uiStore';
-import { toast } from 'react-hot-toast';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { SIDEBAR_GROUPS } from './Sidebar';
-import { AppIcon } from '../common/AppIcons';
 import { Avatar } from '../ui/Avatar';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CustomModal } from '../ui/CustomModal';
-import { NotificationSettingsModal } from '../ui/NotificationSettingsModal';
-import { useChatStore } from '../../store/chatStore';
-import { FeatureIntroModal } from '../chat/FeatureIntroModal';
-import { BrandChatIcon } from '../chat/BrandChatIcon';
 import { fetchAPI } from '../../utils/api';
-import { cleanNotificationText } from '../../utils/textUtils';
-import { prewarmSmartCheckInGPS } from '../ui/SmartCheckInModal';
 import vnFlag from '../../assets/vn.svg';
 import usFlag from '../../assets/us.svg';
 import jpFlag from '../../assets/jp.svg';
@@ -44,1409 +31,18 @@ const maskPhone = (phone: string) => {
   return `${start}***${end}`;
 };
 
-const getNotifMeta = (notif: any) => {
-  const type = (notif.type || '').toLowerCase();
-  const title = (notif.title || '').toLowerCase();
-  const body = (notif.body || '').toLowerCase();
-
-  // 1. Databank Claim
-  if (type === 'databank_claim' || title.includes('kho dữ liệu') || title.includes('nhận data') || body.includes('kho dữ liệu')) {
-    return {
-      icon: '🏢',
-      badge: 'KHO DỮ LIỆU',
-      badgeBg: '#fef3c7',
-      badgeColor: '#b45309',
-      borderColor: '#fde68a',
-      leftPill: '#f59e0b',
-      ctaText: 'Mở chi tiết Lead →'
-    };
-  }
-
-  // 2. Lead Reassignment / Transfer
-  if (type === 'lead_reassignment' || title.includes('chuyển giao lead') || title.includes('chuyển quyền')) {
-    return {
-      icon: '🔄',
-      badge: 'CHUYỂN GIAO LEAD',
-      badgeBg: '#f3e8ff',
-      badgeColor: '#7e22ce',
-      borderColor: '#e9d5ff',
-      leftPill: '#a855f7',
-      ctaText: 'Mở chi tiết Lead →'
-    };
-  }
-
-  // 2.5 Pipeline Transition
-  if (type === 'pipeline_transition' || type === 'pipeline' || title.includes('chuyển pipeline') || title.includes('pipeline') || body.includes('chuyển khách hàng') || body.includes('chuyển pipeline')) {
-    return {
-      icon: '📊',
-      badge: 'CHUYỂN PIPELINE',
-      badgeBg: '#eff6ff',
-      badgeColor: '#1d4ed8',
-      borderColor: '#bfdbfe',
-      leftPill: '#2563eb',
-      ctaText: 'Mở chi tiết Khách hàng →'
-    };
-  }
-
-  // 3. New Lead Assignment / Contact
-  if (type === 'lead_assignment' || type === 'contact' || type === 'lead' || title.includes('lead') || title.includes('khách hàng') || body.includes('lead:')) {
-    return {
-      icon: '🎯',
-      badge: 'LEAD MỚI',
-      badgeBg: '#ecfdf5',
-      badgeColor: '#047857',
-      borderColor: '#a7f3d0',
-      leftPill: '#10b981',
-      ctaText: 'Mở chi tiết Lead →'
-    };
-  }
-
-  // 4. Approval & Gatekeeper
-  if (type === 'approval_request' || type === 'approval' || title.includes('phê duyệt') || title.includes('kiểm duyệt') || title.includes('duyệt')) {
-    return {
-      icon: '🛡️',
-      badge: 'PHÊ DUYỆT',
-      badgeBg: '#fef2f2',
-      badgeColor: '#b91c1c',
-      borderColor: '#fecaca',
-      leftPill: '#1E40FF',
-      ctaText: 'Xem yêu cầu →'
-    };
-  }
-
-  // 5. Attendance
-  if (type === 'attendance_update' || type === 'attendance' || title.includes('chấm công') || title.includes('công')) {
-    return {
-      icon: '⏰',
-      badge: 'CHẤM CÔNG',
-      badgeBg: '#fefce8',
-      badgeColor: '#a16207',
-      borderColor: '#fef08a',
-      leftPill: '#eab308',
-      ctaText: 'Xem bảng công →'
-    };
-  }
-
-  // 6. Warning
-  if (type === 'warning' || title.includes('cảnh báo') || title.includes('trùng số') || title.includes('rửa nguồn')) {
-    return {
-      icon: '⚠️',
-      badge: 'CẢNH BÁO',
-      badgeBg: '#EFF6FF',
-      badgeColor: '#be123c',
-      borderColor: '#fecdd3',
-      leftPill: '#f43f5e',
-      ctaText: 'Kiểm tra ngay →'
-    };
-  }
-
-  // 7. Tasks & Activities
-  if (type === 'task_assignment' || type === 'task_participant' || type === 'mention' || title.includes('công việc') || title.includes('task')) {
-    return {
-      icon: '📋',
-      badge: 'CÔNG VIỆC',
-      badgeBg: '#eff6ff',
-      badgeColor: '#1d4ed8',
-      borderColor: '#bfdbfe',
-      leftPill: '#3b82f6',
-      ctaText: 'Mở công việc →'
-    };
-  }
-
-  // 8. Documents & Comments
-  if (type.includes('document') || type.includes('comment') || title.includes('tài liệu') || title.includes('bình luận')) {
-    return {
-      icon: '💬',
-      badge: 'THẢO LUẬN',
-      badgeBg: '#f0fdf4',
-      badgeColor: '#15803d',
-      borderColor: '#bbf7d0',
-      leftPill: '#22c55e',
-      ctaText: 'Xem thảo luận →'
-    };
-  }
-
-  // 9. Default
-  return {
-    icon: '🔔',
-    badge: 'THÔNG BÁO',
-    badgeBg: '#f1f5f9',
-    badgeColor: '#334155',
-    borderColor: '#e2e8f0',
-    leftPill: '#64748b',
-    ctaText: 'Xem chi tiết →'
-  };
-};
-
-export const Header = ({ 
-  onActivityFeedClick, 
-  onMenuClick, 
-  version,
-  pendingInboxCount,
-  onUnifiedInboxClick,
-  requireCheckout = false,
-  todayCheckIn = null,
-  isCheckInLoading,
-  consultantProfile = null,
-  sysSettings = null,
-  isWorkspace
-}: { 
-  onActivityFeedClick: () => void; 
-  onMenuClick?: () => void; 
-  version?: string;
-  pendingInboxCount?: number;
-  onUnifiedInboxClick?: () => void;
-  requireCheckout?: boolean;
-  todayCheckIn?: any;
-  isCheckInLoading?: boolean;
-  consultantProfile?: any;
-  sysSettings?: any;
-  isWorkspace?: boolean;
-}) => {
-  const isDemo = localStorage.getItem('IDEAS_DEMO_MODE') === 'true';
+export const Header = ({ onActivityFeedClick, onMenuClick }: { onActivityFeedClick: () => void; onMenuClick?: () => void }) => {
   const { user, logout, companyName, tenantSlug, workspaces, switchWorkspace, openBilling, openTour, openSwitchWorkspaceModal } = useAuth();
-  const { packageMeta, packageCode, switchPackage } = useEntitlement();
-  const { showConfirm } = useUIStore();
-  const { language, setLanguage, t } = useLanguage();
-  const [isLangOpen, setIsLangOpen] = useState(false);
+  const { packageCode, packageMeta, hasModule, switchPackage, switchingPackage, terminology } = useEntitlement();
   const [isWsOpen, setIsWsOpen] = useState(false);
   const [isPkgOpen, setIsPkgOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+  const [isLangOpen, setIsLangOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const isWs = isWorkspace ?? (location.pathname === '/workspace' || location.pathname === '/portal');
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { openChat, unreadTotal, isOpen: isChatOpen } = useChatStore();
-  const [showFeatureIntro, setShowFeatureIntro] = useState(false);
-
-  useEffect(() => {
-    const handleOpenIntro = () => setShowFeatureIntro(true);
-    window.addEventListener('open-workchat-intro', handleOpenIntro);
-    window.addEventListener('open-ideas-si-intro', handleOpenIntro);
-    (window as any).openWorkChatIntro = handleOpenIntro;
-    (window as any).openIdeasSiIntro = handleOpenIntro;
-
-    if (user) {
-      const hasSeen = localStorage.getItem('has_seen_ideas_si_intro_v1');
-      if (!hasSeen) {
-        const timer = setTimeout(() => {
-          setShowFeatureIntro(true);
-          try {
-            localStorage.setItem('has_seen_ideas_si_intro_v1', 'true');
-          } catch (e) {}
-        }, 1200);
-        return () => {
-          clearTimeout(timer);
-          window.removeEventListener('open-workchat-intro', handleOpenIntro);
-          window.removeEventListener('open-ideas-si-intro', handleOpenIntro);
-        };
-      }
-    }
-    return () => {
-      window.removeEventListener('open-workchat-intro', handleOpenIntro);
-      window.removeEventListener('open-ideas-si-intro', handleOpenIntro);
-    };
-  }, [user]);
-
-  // Compute shift schedule and work hours for today
-  const todayScheduleInfo = useMemo(() => {
-    const now = new Date();
-    let dayOfWeek = now.getDay();
-    if (dayOfWeek === 0) dayOfWeek = 7;
-
-    let rawSchedule = consultantProfile?.work_schedule || (user as any)?.work_schedule;
-    if (!rawSchedule && sysSettings?.global_work_schedule) {
-      try {
-        rawSchedule = typeof sysSettings.global_work_schedule === 'string' 
-          ? JSON.parse(sysSettings.global_work_schedule) 
-          : sysSettings.global_work_schedule;
-      } catch (e) {}
-    }
-
-    let isDayOff = false;
-    let dayConfig: any = null;
-
-    if (rawSchedule) {
-      try {
-        const scheduleObj = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule;
-        dayConfig = scheduleObj?.[String(dayOfWeek)] || scheduleObj?.[dayOfWeek];
-        if (!dayConfig) {
-          // Ngày này hoàn toàn không có trong cấu hình làm việc -> Không có set lịch làm việc
-          isDayOff = true;
-        } else if (dayConfig.active === false || dayConfig.active === 'false' || dayConfig.active === 0 || dayConfig.active === '0') {
-          // Ngày này được đánh dấu nghỉ / không active
-          isDayOff = true;
-        } else if (!dayConfig.start && !dayConfig.end && !dayConfig.end_afternoon) {
-          // Không có giờ làm việc nào được set
-          isDayOff = true;
-        }
-      } catch (e) {
-        isDayOff = dayOfWeek === 7;
-      }
-    } else {
-      // Mặc định nếu chưa cấu hình lịch làm việc, Chủ Nhật là ngày nghỉ
-      isDayOff = dayOfWeek === 7;
-    }
-
-    const morningStart = String(dayConfig?.start || consultantProfile?.work_start_time || (user as any)?.work_start_time || sysSettings?.global_work_start_time || '08:00').substring(0, 5);
-    const afternoonEnd = String(dayConfig?.end_afternoon || dayConfig?.end || consultantProfile?.work_end_time || (user as any)?.work_end_time || sysSettings?.global_work_end_time || '17:00').substring(0, 5);
-
-    const curHM = now.toTimeString().substring(0, 5);
-    const isPastShiftEnd = !isDayOff && curHM >= afternoonEnd;
-    const isBeforeMorningStart = curHM < morningStart;
-
-    return {
-      isDayOff,
-      morningStart,
-      afternoonEnd,
-      curHM,
-      isPastShiftEnd,
-      isBeforeMorningStart
-    };
-  }, [consultantProfile, user, sysSettings]);
-
-
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const [headerVacationMode, setHeaderVacationMode] = useState<boolean>(false);
-  const [headerCheckIn, setHeaderCheckIn] = useState<any>(null);
-  const [internalCheckInLoading, setInternalCheckInLoading] = useState<boolean>(true);
-  const [headerNightShiftRegistered, setHeaderNightShiftRegistered] = useState<boolean>(false);
-  const managerBehaviorMode = user?.manager_behavior_mode || 'combined';
-  const isSales = user?.role && !['admin', 'superadmin', 'super_admin', 'director'].includes(user.role.toLowerCase());
-  const currentHour = new Date().getHours();
-  const isOvertime = (currentHour >= 18 && currentHour < 22) || (currentHour >= 0 && currentHour < 6);
-
-
-  const [uncontactedCount, setUncontactedCount] = useState(() => {
-    return Number(sessionStorage.getItem('sale-uncontacted-count')) || 0;
-  });
-
-  useEffect(() => {
-    const handleUncontactedCountChanged = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      setUncontactedCount(Number(detail) || 0);
-    };
-
-    window.addEventListener('uncontacted-count-changed', handleUncontactedCountChanged);
-    return () => {
-      window.removeEventListener('uncontacted-count-changed', handleUncontactedCountChanged);
-    };
-  }, []);
-  // --- Notifications State & Logic ---
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [notifAvatars, setNotifAvatars] = useState<any>({});
-  const notifAvatarsRef = useRef<any>({});
-  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
-
-  // --- Tab Title Flashing & Browser Push notifications ---
-  const prevNotifIds = useRef<Set<number>>(new Set());
-  const flashIntervalRef = useRef<any>(null);
-  const isWindowFocused = useRef(true);
-  const handleNotifClickRef = useRef<(notif: any) => Promise<void>>((() => {}) as any);
-  const showNotificationToastRef = useRef<(notif: any) => void>((() => {}) as any);
-
-  // Stop title flashing
-  const stopFlashingTitle = () => {
-    if (flashIntervalRef.current) {
-      clearInterval(flashIntervalRef.current);
-      flashIntervalRef.current = null;
-    }
-    let cleanTitle = document.title;
-    if (cleanTitle.startsWith('🔴 ') || cleanTitle.startsWith('🔔 ')) {
-      cleanTitle = cleanTitle.replace(/^(🔴|🔔)\s*(?:\(\d+\)\s*)?/, '');
-    }
-    document.title = cleanTitle;
-  };
-
-  // Start title flashing
-  const startFlashingTitle = (count: number) => {
-    stopFlashingTitle(); // Reset first
-    if (count <= 0) return;
-    
-    let isRedDot = true;
-    const baseTitle = document.title.replace(/^(🔴|🔔)\s*(?:\(\d+\)\s*)?/, '');
-    
-    flashIntervalRef.current = setInterval(() => {
-      if (isRedDot) {
-        document.title = `🔴 (${count}) ${baseTitle}`;
-      } else {
-        document.title = `🔔 (${count}) ${baseTitle}`;
-      }
-      isRedDot = !isRedDot;
-    }, 1000);
-  };
-
-  // Web Audio API synthesized notification chime
-  const playNotificationChime = () => {
-    try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
-      const ctx = new AudioContextClass();
-      const now = ctx.currentTime;
-      
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, now);
-      osc.frequency.exponentialRampToValueAtTime(1320, now + 0.12);
-      
-      gain.gain.setValueAtTime(0.18, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-      
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      
-      osc.start(now);
-      osc.stop(now + 0.35);
-    } catch (e) {
-      // Autoplay or browser policy restriction
-    }
-  };
-
-  // Window Focus Events
-  useEffect(() => {
-    const handleFocus = () => {
-      isWindowFocused.current = true;
-      stopFlashingTitle();
-      fetchNotifications();
-    };
-    const handleBlur = () => {
-      isWindowFocused.current = false;
-    };
-    
-    window.addEventListener('focus', handleFocus);
-    window.addEventListener('blur', handleBlur);
-    
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('blur', handleBlur);
-      if (flashIntervalRef.current) {
-        clearInterval(flashIntervalRef.current);
-      }
-    };
-  }, []);
-
-  // Request browser permission for notifications
-  const requestBrowserNotificationPermission = () => {
-    if ('Notification' in window) {
-      Notification.requestPermission().then(permission => {
-        // Trigger state refresh to update settings UI
-        setNotifications(prev => [...prev]);
-        if (permission === 'granted') {
-          toast.success('Đã kích hoạt thông báo trình duyệt thành công!');
-          try {
-            new Notification('IDEAS', {
-              body: 'Bạn đã kích hoạt nhận thông báo trình duyệt thành công.',
-              icon: '/LOGO.webp'
-            });
-          } catch (err) {
-            console.warn('Desktop notifications not supported:', err);
-          }
-        } else {
-          toast('Bạn đã từ chối nhận thông báo trình duyệt.', { icon: '⚠️' });
-        }
-      });
-    }
-  };
-
-  // Auto-request or check on mount (only once to avoid prompt spam)
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      const alreadyAsked = localStorage.getItem('asked_browser_notifications');
-      if (!alreadyAsked) {
-        Notification.requestPermission().then(() => {
-          localStorage.setItem('asked_browser_notifications', '1');
-        });
-      }
-    }
-  }, []);
-
-  // Watch pendingInboxCount for new gatekeeper/approval hold requests (for managers/admins)
-  const prevPendingInboxCount = useRef<number | undefined>(undefined);
-  useEffect(() => {
-    if (pendingInboxCount !== undefined) {
-      const prev = prevPendingInboxCount.current;
-      prevPendingInboxCount.current = pendingInboxCount;
-      if (prev !== undefined && pendingInboxCount > prev) {
-        if ('Notification' in window && Notification.permission === 'granted') {
-          try {
-            new Notification('Hộp kiểm duyệt IDEAS', {
-              body: `Có dữ liệu mới đang chờ xử lý trong Hộp kiểm duyệt (${pendingInboxCount} yêu cầu).`,
-              icon: '/LOGO.webp'
-            });
-          } catch (err) {
-            console.warn('Desktop notifications not supported:', err);
-          }
-        }
-        if (!isWindowFocused.current) {
-          startFlashingTitle(unreadCount + pendingInboxCount);
-        }
-      }
-    }
-  }, [pendingInboxCount, unreadCount]);
-
-  // When notification modal opens, stop flashing title and immediately fetch fresh notifications
-  useEffect(() => {
-    if (isNotifModalOpen) {
-      stopFlashingTitle();
-      fetchNotifications();
-    }
-  }, [isNotifModalOpen]);
-  const [notifFilter, setNotifFilter] = useState<'all' | 'unread' | 'read'>('all');
-
-  const [showNotifSettings, setShowNotifSettings] = useState(false);
-  const [isMatrixModalOpen, setIsMatrixModalOpen] = useState(false);
-  const [notifPrefs, setNotifPrefs] = useState<any>({
-    email_warning: 1,
-    email_mention: 1,
-    email_approval_request: 1,
-    email_project_document: 0,
-    email_project_comment: 0,
-    email_project_roster: 0,
-    email_info: 0
-  });
-
-  const isFetchingNotifsRef = useRef(false);
-  const lastFetchNotifsTimeRef = useRef(0);
-
-  const fetchNotifications = async (force = false) => {
-    const now = Date.now();
-    if (!force && now - lastFetchNotifsTimeRef.current < 2500) {
-      return;
-    }
-    if (isFetchingNotifsRef.current) return;
-    isFetchingNotifsRef.current = true;
-    lastFetchNotifsTimeRef.current = now;
-    try {
-      const res = await fetchAPI('notifications');
-      if (res.success && res.data) {
-        const items = res.data.items || [];
-        const newUnreadCount = res.data.unread_count || 0;
-        
-        setNotifications(items);
-        setUnreadCount(newUnreadCount);
-        const avs = res.data.avatars || {};
-        setNotifAvatars(avs);
-        notifAvatarsRef.current = avs;
-        
-        if (newUnreadCount === 0) {
-          stopFlashingTitle();
-        }
-
-        // Real-time interactive toast and browser push notification trigger logic
-        if (items.length > 0) {
-          const isFirstLoad = prevNotifIds.current.size === 0;
-          const newUnreadItems: any[] = [];
-          
-          items.forEach((item) => {
-            if (!prevNotifIds.current.has(item.id)) {
-              prevNotifIds.current.add(item.id);
-              if (!isFirstLoad && !item.is_read) {
-                newUnreadItems.push(item);
-              }
-            }
-          });
-          
-          if (newUnreadItems.length > 0) {
-            // Play pleasing audio chime
-            playNotificationChime();
-
-            // Trigger desktop notification for the latest notification
-            if ('Notification' in window && Notification.permission === 'granted') {
-              try {
-                const latest = newUnreadItems[0];
-                new Notification(latest.title || 'Thông báo IDEAS', {
-                  body: latest.body || 'Bạn có thông báo mới.',
-                  icon: '/LOGO.webp'
-                });
-              } catch (err) {
-                console.warn('Desktop notifications not supported:', err);
-              }
-            }
-            
-            // Pop rich interactive toast notifications for all incoming unread notifications
-            const itemsToShow = newUnreadItems.slice(0, 4);
-            itemsToShow.forEach((item, idx) => {
-              setTimeout(() => {
-                showNotificationToastRef.current?.(item);
-              }, idx * 280);
-            });
-
-            if (newUnreadItems.length > 4) {
-              setTimeout(() => {
-                toast(`🔔 Và còn ${newUnreadItems.length - 4} thông báo mới khác`, {
-                  duration: 6000,
-                  position: 'top-right'
-                });
-              }, 4 * 280);
-            }
-
-            // Dispatch event for auto-refreshing other active components
-            window.dispatchEvent(new CustomEvent('new-notification-received', { detail: { items: newUnreadItems } }));
-            
-            // Trigger tab title flash if not focused
-            if (!isWindowFocused.current) {
-              startFlashingTitle(newUnreadCount);
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching notifications:", err);
-    } finally {
-      isFetchingNotifsRef.current = false;
-    }
-  };
-
-  const fetchNotifPrefs = async () => {
-    try {
-      const res = await fetchAPI('notifications/settings');
-      if (res.success && res.data) {
-        const settingsData = res.data.settings || res.data;
-        setNotifPrefs({
-          email_warning: settingsData.email_warning ?? 1,
-          email_mention: settingsData.email_mention ?? 1,
-          email_approval_request: settingsData.email_approval_request ?? 1,
-          email_project_document: settingsData.email_project_document ?? 0,
-          email_project_comment: settingsData.email_project_comment ?? 0,
-          email_project_roster: settingsData.email_project_roster ?? 0,
-          email_info: settingsData.email_info ?? 0,
-        });
-      }
-    } catch (err) {
-      console.error("Error fetching notification settings:", err);
-    }
-  };
-
-  const handleTogglePref = async (key: string, value: number) => {
-    const updated = { ...notifPrefs, [key]: value };
-    setNotifPrefs(updated);
-    try {
-      await fetchAPI('notifications/settings', {
-        method: 'PATCH',
-        body: JSON.stringify(updated)
-      });
-      toast.success('Đã lưu cấu hình');
-    } catch (err) {
-      console.error("Error updating notification setting:", err);
-      toast.error('Không thể lưu cấu hình');
-    }
-  };
-
-  useEffect(() => {
-    fetchNotifications(true);
-    fetchNotifPrefs();
-    const interval = setInterval(() => {
-      if (!document.hidden) {
-        fetchNotifications();
-      }
-    }, 30000); // Polling every 30s only when tab is active (SSE handles real-time)
-    
-    const handleNotificationTrigger = () => {
-      fetchNotifications();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchNotifications();
-      }
-    };
-
-    const handleManualToastTest = (e: any) => {
-      if (e.detail) {
-        showNotificationToastRef.current?.(e.detail);
-      }
-    };
-
-    window.addEventListener('notification-trigger', handleNotificationTrigger);
-    window.addEventListener('test-notification-toast', handleManualToastTest);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('notification-trigger', handleNotificationTrigger);
-      window.removeEventListener('test-notification-toast', handleManualToastTest);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []);
-
-  const handleMarkRead = (id: number, isReadVal: number = 1) => {
-    // Optimistic UI: Update notification state immediately (0ms)
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: isReadVal } : n));
-    setUnreadCount(prev => Math.max(0, isReadVal === 1 ? prev - 1 : prev + 1));
-    toast.success(isReadVal === 1 ? 'Đã đánh dấu đã đọc' : 'Đã đánh dấu chưa đọc');
-
-    fetchAPI(`notifications/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ is_read: isReadVal })
-    }).then(res => {
-      if (!res.success) fetchNotifications();
-    }).catch(err => {
-      console.error("Error updating notification status:", err);
-      fetchNotifications();
-    });
-  };
-
-  const handleMarkAllRead = () => {
-    // Optimistic UI: Update notification state immediately (0ms)
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
-    setUnreadCount(0);
-    toast.success('Đã đánh dấu tất cả là đã đọc');
-
-    fetchAPI('notifications', {
-      method: 'PATCH'
-    }).then(res => {
-      if (!res.success) fetchNotifications();
-    }).catch(err => {
-      console.error("Error marking all read:", err);
-      fetchNotifications();
-    });
-  };
-
-  const handleDeleteNotif = async (id: number) => {
-    try {
-      const res = await fetchAPI(`notifications/${id}`, {
-        method: 'DELETE'
-      });
-      if (res.success) {
-        fetchNotifications();
-        toast.success('Đã xóa thông báo');
-      }
-    } catch (err) {
-      console.error("Error deleting notification:", err);
-    }
-  };
-
-  const handleClearAllNotif = async () => {
-    showConfirm({
-      title: 'Xóa toàn bộ thông báo',
-      message: 'Bạn có chắc chắn muốn xóa toàn bộ thông báo không? Hành động này không thể hoàn tác.',
-      confirmText: 'Xóa tất cả',
-      isDanger: true,
-      onConfirm: async () => {
-        try {
-          const res = await fetchAPI('notifications', {
-            method: 'DELETE'
-          });
-          if (res.success) {
-            fetchNotifications();
-            toast.success('Đã xóa toàn bộ thông báo');
-          }
-        } catch (err) {
-          console.error("Error clearing notifications:", err);
-        }
-      }
-    });
-  };
-
-  const handleNotifClick = async (notif: any) => {
-    if (!notif.is_read) {
-      // Optimistic UI: Update state immediately (0ms)
-      setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, is_read: 1 } : n));
-      setUnreadCount(prev => Math.max(0, prev - 1));
-      fetchAPI(`notifications/${notif.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ is_read: 1 })
-      }).catch(err => console.error(err));
-    }
-    setIsNotifModalOpen(false);
-
-    // 1. Direct link resolution if link is already provided
-    if (notif.link) {
-      let targetLink = String(notif.link).trim();
-
-      // Note link resolution: /notes/123 -> resolve target entity while preserving query params
-      const noteMatch = targetLink.match(/^\/notes\/(\d+)(?:\?(.*))?$/);
-      if (noteMatch) {
-        try {
-          const noteId = noteMatch[1];
-          const existingNoteParams = new URLSearchParams(noteMatch[2] || '');
-          const commentId = existingNoteParams.get('highlight_comment_id') || existingNoteParams.get('comment_id');
-          const commentQuery = commentId ? `&highlight_comment_id=${encodeURIComponent(commentId)}` : '';
-          const res = await fetchAPI(`notes/${noteId}`);
-          if (res.success && res.data) {
-            const note = res.data;
-            if (note.entity_type === 'contact') {
-              targetLink = `/contacts?open_contact_id=${note.entity_id}&tab=timeline&highlight_note_id=${noteId}${commentQuery}`;
-            } else if (note.entity_type === 'deal') {
-              targetLink = `/deals?open_deal_id=${note.entity_id}&highlight_note_id=${noteId}${commentQuery}`;
-            } else if (note.entity_type === 'company') {
-              targetLink = `/companies?id=${note.entity_id}&highlight_note_id=${noteId}${commentQuery}`;
-            } else if (note.entity_type === 'project') {
-              targetLink = `/projects?open_project_id=${note.entity_id}&highlight_note_id=${noteId}${commentQuery}`;
-            }
-          }
-        } catch (e) {
-          console.error("Error resolving note redirect link:", e);
-        }
-      }
-
-      // Activity link resolution: /activities/123 -> resolve task vs related contact/deal
-      const activityMatch = targetLink.match(/^\/activities\/(\d+)(?:\?.*)?$/) || targetLink.match(/\/activities\?(?:task_id|id)=(\d+)/);
-      if (activityMatch) {
-        try {
-          const actId = activityMatch[1];
-          const actUrlObj = new URL(targetLink, window.location.origin);
-          const commentId = actUrlObj.searchParams.get('comment_id') || actUrlObj.searchParams.get('highlight_comment_id');
-          const subtaskId = actUrlObj.searchParams.get('subtask_id');
-          let extraQuery = '';
-          if (commentId) extraQuery += `&highlight_comment_id=${encodeURIComponent(commentId)}`;
-          if (subtaskId) extraQuery += `&subtask_id=${encodeURIComponent(subtaskId)}`;
-
-          const res = await fetchAPI(`activities/${actId}`);
-          if (res.success && res.data) {
-            const act = res.data;
-            const notifTypeLower = String(notif.type || '').toLowerCase();
-            const isTaskActivity =
-              String(act.type || '').toLowerCase() === 'task' ||
-              notifTypeLower.includes('task') ||
-              Boolean(subtaskId) ||
-              String(act.body || '').includes('[ERP_TASK_META]');
-
-            if (isTaskActivity) {
-              targetLink = `/workspace?task_id=${actId}${extraQuery}`;
-            } else if (act.contact_id) {
-              targetLink = `/contacts?open_contact_id=${act.contact_id}&tab=timeline&highlight_activity_id=${actId}${extraQuery}`;
-            } else if (act.related_type === 'contact' && act.related_id) {
-              targetLink = `/contacts?open_contact_id=${act.related_id}&tab=timeline&highlight_activity_id=${actId}${extraQuery}`;
-            } else if (act.related_type === 'deal' && act.related_id) {
-              targetLink = `/deals?open_deal_id=${act.related_id}&highlight_activity_id=${actId}${extraQuery}`;
-            } else {
-              targetLink = `/workspace?task_id=${actId}${extraQuery}`;
-            }
-          } else {
-            targetLink = `/workspace?task_id=${actId}${extraQuery}`;
-          }
-        } catch (e) {
-          console.error("Error resolving activity redirect link:", e);
-        }
-      }
-
-      const urlObj = new URL(targetLink, window.location.origin);
-
-      // Normalize legacy / backend routes while preserving 100% of query params:
-      if (urlObj.pathname.startsWith('/tickets')) {
-        const isSupportTicket =
-          notif.type === 'support_ticket' ||
-          notif.type === 'ticket_assignment' ||
-          /ticket hỗ trợ|phiếu hỗ trợ|yêu cầu hỗ trợ/i.test(String(notif.title || ''));
-        if (isSupportTicket) {
-          urlObj.pathname = '/support-tickets';
-          targetLink = urlObj.pathname + urlObj.search;
-        }
-      } else if (urlObj.pathname.startsWith('/cooperations')) {
-        urlObj.pathname = '/cooperation-slips';
-        targetLink = urlObj.pathname + urlObj.search;
-      } else if (urlObj.pathname === '/marketing-tasks') {
-        urlObj.pathname = '/projects';
-        if (!urlObj.searchParams.get('sub')) {
-          urlObj.searchParams.set('sub', 'campaigns');
-        }
-        targetLink = urlObj.pathname + '?' + urlObj.searchParams.toString();
-      } else if (urlObj.pathname.startsWith('/inventory/purchase-orders')) {
-        const poId = urlObj.searchParams.get('po_id') || urlObj.searchParams.get('id') || urlObj.searchParams.get('open_id');
-        urlObj.pathname = '/inventory';
-        urlObj.searchParams.set('tab', 'purchase_orders');
-        if (poId) urlObj.searchParams.set('open_id', poId);
-        targetLink = urlObj.pathname + '?' + urlObj.searchParams.toString();
-      }
-
-      if (urlObj.pathname.startsWith('/chat')) {
-        const convId = urlObj.searchParams.get('conversation_id') || urlObj.searchParams.get('id');
-        window.dispatchEvent(new CustomEvent('myerp:open-chat-conversation', {
-          detail: { conversationId: convId ? (Number(convId) || convId) : undefined }
-        }));
-        return;
-      }
-
-      // Clean all existing global drawers before routing
-      useUIStore.getState().closeAllDrawers();
-
-      // Route based strictly on target URL path:
-      if (urlObj.pathname.startsWith('/workspace') || urlObj.pathname.startsWith('/tasks')) {
-        const taskId = urlObj.searchParams.get('task_id') || urlObj.searchParams.get('open_task_id') || urlObj.searchParams.get('id');
-        const numTaskId = Number(taskId);
-        urlObj.pathname = '/workspace';
-        if (taskId && !isNaN(numTaskId) && numTaskId > 0) {
-          urlObj.searchParams.set('task_id', String(numTaskId));
-        }
-        const normalizedWorkspaceLink = urlObj.pathname + (urlObj.searchParams.toString() ? '?' + urlObj.searchParams.toString() : '');
-        const currentFullUrl = window.location.pathname + window.location.search;
-
-        // Only dispatch 'open-task-drawer' manually if already on the exact same URL (otherwise SalePortal's useEffect([loc.search]) handles it)
-        if (
-          taskId &&
-          !isNaN(numTaskId) &&
-          numTaskId > 0 &&
-          currentFullUrl === normalizedWorkspaceLink
-        ) {
-          window.dispatchEvent(new CustomEvent('open-task-drawer', {
-            detail: {
-              id: numTaskId,
-              taskId: numTaskId,
-              highlightCommentId: urlObj.searchParams.get('highlight_comment_id') || urlObj.searchParams.get('comment_id') || undefined,
-              subtaskId: urlObj.searchParams.get('subtask_id') || undefined
-            }
-          }));
-        }
-        navigate(normalizedWorkspaceLink, { state: { timestamp: Date.now(), openTaskId: numTaskId || undefined } });
-        return;
-      }
-
-      if (urlObj.pathname.startsWith('/contacts')) {
-        const idFromParam =
-          urlObj.searchParams.get('open_contact_id') ||
-          urlObj.searchParams.get('id') ||
-          urlObj.searchParams.get('contact_id');
-        let contactId: number | null = null;
-        if (idFromParam && !isNaN(Number(idFromParam)) && Number(idFromParam) > 0) {
-          contactId = Number(idFromParam);
-        } else {
-          const pathMatch = urlObj.pathname.match(/^\/contacts\/(\d+)/);
-          if (pathMatch) contactId = Number(pathMatch[1]);
-        }
-
-        if (!contactId && notif.contact_id && !isNaN(Number(notif.contact_id))) {
-          contactId = Number(notif.contact_id);
-        }
-        if (!contactId && notif.entity_id && !isNaN(Number(notif.entity_id)) && (notif.type === 'customer' || notif.type === 'contact')) {
-          contactId = Number(notif.entity_id);
-        }
-
-        if (contactId) {
-          urlObj.pathname = '/contacts';
-          urlObj.searchParams.set('open_contact_id', String(contactId));
-          targetLink = urlObj.pathname + '?' + urlObj.searchParams.toString();
-
-          if (window.location.pathname.startsWith('/contacts')) {
-            window.dispatchEvent(new CustomEvent('open-contact-drawer', {
-              detail: {
-                id: contactId,
-                contactId,
-                tab: urlObj.searchParams.get('tab') || undefined,
-                highlight_note_id: urlObj.searchParams.get('highlight_note_id') || undefined,
-                highlight_activity_id: urlObj.searchParams.get('highlight_activity_id') || undefined,
-                highlight_comment_id: urlObj.searchParams.get('highlight_comment_id') || urlObj.searchParams.get('comment_id') || undefined,
-                open_deposit_id: urlObj.searchParams.get('open_deposit_id') || undefined
-              }
-            }));
-          }
-        }
-        navigate(targetLink, { state: { timestamp: Date.now(), openContactId: contactId || undefined } });
-        return;
-      }
-
-      if (urlObj.pathname.startsWith('/approvals') || urlObj.pathname.startsWith('/expenses')) {
-        const openId = urlObj.searchParams.get('open_id') || urlObj.searchParams.get('id') || urlObj.searchParams.get('expense_id');
-        const tabParam = (urlObj.searchParams.get('tab') || '').toLowerCase();
-        const tabTypeMap: Record<string, string> = {
-          leave: 'leave',
-          overtime: 'leave',
-          advance: 'advance',
-          advances: 'advance',
-          attendance: 'attendance_bulk',
-          kpi: 'kpi',
-          expenses: 'expense',
-          expense: 'expense',
-          po: 'po'
-        };
-        const openType =
-          urlObj.searchParams.get('open_type') ||
-          urlObj.searchParams.get('type') ||
-          tabTypeMap[tabParam] ||
-          (notif.type === 'leave' ? 'leave' : notif.type === 'attendance_update' ? 'attendance_bulk' : 'expense');
-        const openStatus = urlObj.searchParams.get('open_status');
-        const highlightCommentId = urlObj.searchParams.get('highlight_comment_id') || urlObj.searchParams.get('comment_id');
-        const numOpenId = Number(openId);
-
-        navigate(targetLink, {
-          state: {
-            timestamp: Date.now(),
-            openDrawer: true,
-            openId: numOpenId || undefined,
-            openType,
-            highlightCommentId: highlightCommentId || undefined
-          }
-        });
-
-        if (openId && !isNaN(numOpenId) && numOpenId > 0) {
-          if (urlObj.pathname.startsWith('/approvals') && window.location.pathname.startsWith('/approvals')) {
-            const evtDetail = {
-              id: numOpenId,
-              type: openType,
-              status: openStatus || undefined,
-              highlight_comment_id: highlightCommentId || undefined
-            };
-            window.dispatchEvent(new CustomEvent('open-approval-drawer', { detail: evtDetail }));
-            window.dispatchEvent(new CustomEvent('open-approval-item', { detail: evtDetail }));
-          } else if (urlObj.pathname.startsWith('/expenses') && window.location.pathname.startsWith('/expenses')) {
-            window.dispatchEvent(new CustomEvent('open-expense-drawer', {
-              detail: {
-                id: numOpenId,
-                expenseId: numOpenId,
-                highlight_comment_id: highlightCommentId || undefined
-              }
-            }));
-          }
-        }
-        return;
-      }
-
-      if (urlObj.pathname.startsWith('/deposits')) {
-        const openId = urlObj.searchParams.get('open_id') || urlObj.searchParams.get('id') || urlObj.searchParams.get('open_deposit_id');
-        const highlightCommentId = urlObj.searchParams.get('highlight_comment_id') || urlObj.searchParams.get('comment_id');
-        const numOpenId = Number(openId);
-        if (openId && !isNaN(numOpenId) && numOpenId > 0) {
-          urlObj.searchParams.set('open_id', String(numOpenId));
-          targetLink = urlObj.pathname + '?' + urlObj.searchParams.toString();
-          if (window.location.pathname.startsWith('/deposits')) {
-            window.dispatchEvent(new CustomEvent('open-deposit-drawer', {
-              detail: {
-                id: numOpenId,
-                depositId: numOpenId,
-                highlight_comment_id: highlightCommentId || undefined
-              }
-            }));
-          }
-        }
-        navigate(targetLink, { state: { timestamp: Date.now(), openDepositId: numOpenId || undefined } });
-        return;
-      }
-
-      if (urlObj.pathname.startsWith('/deals')) {
-        const dealId = urlObj.searchParams.get('open_deal_id') || urlObj.searchParams.get('id') || urlObj.searchParams.get('deal_id');
-        const numDealId = Number(dealId);
-        if (dealId && !isNaN(numDealId) && numDealId > 0) {
-          urlObj.searchParams.set('open_deal_id', String(numDealId));
-          targetLink = urlObj.pathname + '?' + urlObj.searchParams.toString();
-          if (window.location.pathname.startsWith('/deals')) {
-            window.dispatchEvent(new CustomEvent('open-deal-drawer', {
-              detail: {
-                id: numDealId,
-                dealId: numDealId,
-                highlight_note_id: urlObj.searchParams.get('highlight_note_id') || undefined,
-                highlight_activity_id: urlObj.searchParams.get('highlight_activity_id') || undefined,
-                highlight_comment_id: urlObj.searchParams.get('highlight_comment_id') || urlObj.searchParams.get('comment_id') || undefined
-              }
-            }));
-          }
-        }
-        navigate(targetLink, { state: { timestamp: Date.now() } });
-        return;
-      }
-
-      // Any other link (e.g. /projects, /cooperations, /tickets, /attendance, /settings) - keep urlObj.pathname + urlObj.search intact
-      navigate(targetLink, { state: { timestamp: Date.now() } });
-      return;
-    }
-
-    // 2. Structured fallback when notif.link is missing
-    useUIStore.getState().closeAllDrawers();
-    const notifType = (notif.type || '').toLowerCase();
-    if (notifType.includes('attendance')) {
-      navigate('/attendance');
-      return;
-    }
-
-    if (notifType.startsWith('task') || notifType === 'activity' || notifType === 'subtask') {
-      const taskId = notif.task_id || notif.activity_id || notif.entity_id;
-      if (taskId && !isNaN(Number(taskId))) {
-        const targetUrl = `/workspace?task_id=${taskId}`;
-        if (window.location.pathname + window.location.search === targetUrl) {
-          window.dispatchEvent(new CustomEvent('open-task-drawer', {
-            detail: { id: Number(taskId), taskId: Number(taskId) }
-          }));
-        }
-        navigate(targetUrl);
-        return;
-      }
-      navigate('/workspace');
-      return;
-    }
-
-    if (['expense', 'leave', 'approval', 'po', 'purchase_order'].includes(notifType)) {
-      const openId = notif.entity_id || notif.expense_id || notif.approval_id;
-      const openType = notifType === 'leave' ? 'leave' : 'expense';
-      if (openId && !isNaN(Number(openId))) {
-        if (window.location.pathname.startsWith('/approvals')) {
-          window.dispatchEvent(new CustomEvent('open-approval-drawer', {
-            detail: { id: Number(openId), type: openType }
-          }));
-        }
-        navigate(`/approvals?open_type=${openType}&open_id=${openId}`);
-        return;
-      }
-      navigate('/approvals');
-      return;
-    }
-
-    if (['contact', 'lead', 'customer'].includes(notifType)) {
-      const cid = notif.contact_id || notif.entity_id;
-      if (cid && !isNaN(Number(cid))) {
-        if (window.location.pathname.startsWith('/contacts')) {
-          window.dispatchEvent(new CustomEvent('open-contact-drawer', {
-            detail: { id: Number(cid), contactId: Number(cid) }
-          }));
-        }
-        navigate(`/contacts?open_contact_id=${cid}`);
-        return;
-      }
-      navigate('/contacts');
-      return;
-    }
-
-    if (['deposit', 'sales_order'].includes(notifType)) {
-      const depId = notif.deposit_id || notif.entity_id;
-      if (depId && !isNaN(Number(depId))) {
-        if (window.location.pathname.startsWith('/deposits')) {
-          window.dispatchEvent(new CustomEvent('open-deposit-drawer', {
-            detail: { id: Number(depId), depositId: Number(depId) }
-          }));
-        }
-        navigate(`/deposits?open_id=${depId}`);
-        return;
-      }
-      navigate('/deposits');
-      return;
-    }
-
-    if (['deal', 'pipeline_deal', 'opportunity'].includes(notifType)) {
-      const dealId = notif.deal_id || notif.entity_id;
-      if (dealId && !isNaN(Number(dealId))) {
-        if (window.location.pathname.startsWith('/deals')) {
-          window.dispatchEvent(new CustomEvent('open-deal-drawer', {
-            detail: { id: Number(dealId), dealId: Number(dealId) }
-          }));
-        }
-        navigate(`/deals?open_deal_id=${dealId}`);
-        return;
-      }
-      navigate('/deals');
-      return;
-    }
-
-    // Default fallback
-    navigate('/');
-  };
-
-  handleNotifClickRef.current = handleNotifClick;
-
-  // Real-time interactive toast notification renderer
-  const showNotificationToast = (item: any) => {
-    const meta = getNotifMeta(item);
-
-    let actorName = item.actor_name;
-    let actorAvatar = item.actor_avatar || (actorName ? (notifAvatars?.[actorName] || notifAvatarsRef.current?.[actorName]) : undefined);
-
-    if (!actorName && item.body) {
-      const clean = item.body
-        .replace(/^(?:\[[^\]]+\]\s*)+/g, '')
-        .replace(/^(?:Nhân viên|Nhân sự|Đồng nghiệp|Quản lý|Trưởng nhóm|Admin|Kế toán|Giám đốc)\s+/gi, '')
-        .trim();
-      const m = clean.match(/^(.+?)(?:\s*\([^)]*\))?\s+(?:đã|vừa|gửi|báo|có|check-in|nhắc|tạo|yêu cầu)\s+/i);
-      if (m && m[1] && m[1].trim().length >= 2) {
-        actorName = m[1].trim();
-        if (!actorAvatar) {
-          actorAvatar = notifAvatars?.[actorName] || notifAvatarsRef.current?.[actorName];
-        }
-      }
-    }
-
-    toast.custom((t) => (
-      <div
-        onClick={() => {
-          toast.dismiss(t.id);
-          handleNotifClickRef.current(item);
-        }}
-        className="realtime-notif-toast"
-        style={{
-          animation: t.visible
-            ? 'notifToastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-            : 'notifToastSlideOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-          background: '#ffffff',
-          borderRadius: '16px',
-          border: '1px solid #e2e8f0',
-          borderLeft: `6px solid ${meta.leftPill || meta.badgeColor}`,
-          boxShadow: '0 14px 34px -6px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.05)',
-          padding: '14px 18px 12px 18px',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-
-        {/* Top Header Row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '18px', lineHeight: 1 }}>{meta.icon}</span>
-            <span
-              style={{
-                padding: '3px 8px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '0.4px',
-                background: meta.badgeBg,
-                color: meta.badgeColor,
-                border: `1px solid ${meta.borderColor}`
-              }}
-            >
-              {meta.badge}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginLeft: '2px' }}>
-              <span
-                style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  background: '#10b981',
-                  boxShadow: '0 0 6px rgba(16, 185, 129, 0.6)'
-                }}
-              />
-              <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 500 }}>Vừa xong</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              toast.dismiss(t.id);
-            }}
-            title="Đóng thông báo"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#94a3b8',
-              cursor: 'pointer',
-              padding: '4px 6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '6px',
-              fontSize: '13px',
-              lineHeight: 1,
-              transition: 'all 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#0f172a';
-              e.currentTarget.style.background = '#f1f5f9';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#94a3b8';
-              e.currentTarget.style.background = 'transparent';
-            }}
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Middle Content: Title & Body */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
-          <div
-            style={{
-              color: '#0f172a',
-              fontWeight: 700,
-              fontSize: '13.5px',
-              lineHeight: 1.35,
-              wordBreak: 'break-word'
-            }}
-          >
-            {cleanNotificationText(item.title) || 'Thông báo mới'}
-          </div>
-          {item.body && (
-            <div
-              style={{
-                color: '#475569',
-                fontSize: '12px',
-                lineHeight: 1.45,
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                wordBreak: 'break-word'
-              }}
-            >
-              {cleanNotificationText(item.body)}
-            </div>
-          )}
-        </div>
-
-        {/* Footer Action Bar */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: '8px',
-            borderTop: '1px solid #f1f5f9',
-            fontSize: '11.5px',
-            gap: '8px'
-          }}
-        >
-          {actorName ? (
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', minWidth: 0, overflow: 'hidden' }}>
-              <Avatar 
-                src={actorAvatar || undefined} 
-                name={actorName} 
-                size={22} 
-                style={{ flexShrink: 0, border: '1.5px solid #ffffff', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }} 
-              />
-              <span style={{ color: '#334155', fontWeight: 600, fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {actorName}
-              </span>
-            </div>
-          ) : (
-            <span style={{ color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 500 }}>
-              Nhấn vào để mở
-            </span>
-          )}
-          <span
-            style={{
-              color: 'var(--color-primary, #1E40FF)',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              flexShrink: 0
-            }}
-          >
-            {meta.ctaText}
-          </span>
-        </div>
-      </div>
-    ), {
-      duration: 8000,
-      position: 'top-right'
-    });
-  };
-
-  showNotificationToastRef.current = showNotificationToast;
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
-  };
-
-  const fetchHeaderPortalData = async () => {
-    if (!isSales) return;
-    try {
-      const nightRes = await fetchAPI('get_night_shift_status');
-      if (nightRes && nightRes.success) {
-        setHeaderNightShiftRegistered(nightRes.registered);
-      }
-    } catch (err) {
-      console.error("Error fetching night shift status in Header:", err);
-    }
-    try {
-      const res = await fetchAPI('check-ins&today_only=1');
-      if (res.success) {
-        setHeaderCheckIn(res.data);
-      }
-    } catch (err) {
-      console.error("Error fetching check-in in Header:", err);
-    } finally {
-      setInternalCheckInLoading(false);
-    }
-    try {
-      const json = await fetchAPI('get_sale_portal_data');
-      if (json.success) {
-        if (json.vacation_mode !== undefined) {
-          setHeaderVacationMode(Boolean(Number(json.vacation_mode)));
-        }
-        if (json.uncontacted_count !== undefined) {
-          const count = Number(json.uncontacted_count) || 0;
-          setUncontactedCount(count);
-          sessionStorage.setItem('sale-uncontacted-count', String(count));
-          window.dispatchEvent(new CustomEvent('uncontacted-count-changed', { detail: count }));
-        } else if (json.leads) {
-          const count = json.leads.filter((l: any) => 
-            Number(l.is_accepted) === 1 && 
-            l.contact_id && 
-            !l.contact_last_contact && 
-            l.status !== 'reminder'
-          ).length;
-          setUncontactedCount(count);
-          sessionStorage.setItem('sale-uncontacted-count', String(count));
-          window.dispatchEvent(new CustomEvent('uncontacted-count-changed', { detail: count }));
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching vacation mode in Header:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchHeaderPortalData();
-  }, [user, isSales]);
-
-  useEffect(() => {
-    const handleVacationChange = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      setHeaderVacationMode(customEvent.detail);
-    };
-    const handleCheckInChange = () => {
-      fetchHeaderPortalData();
-    };
-    const handleContactUpdate = () => {
-      fetchHeaderPortalData();
-    };
-    window.addEventListener('vacation-status-changed', handleVacationChange);
-    window.addEventListener('checkin-status-changed', handleCheckInChange);
-    window.addEventListener('contact-updated', handleContactUpdate);
-    window.addEventListener('lead-claimed', handleContactUpdate);
-    window.addEventListener('lead-added', handleContactUpdate);
-    return () => {
-      window.removeEventListener('vacation-status-changed', handleVacationChange);
-      window.removeEventListener('checkin-status-changed', handleCheckInChange);
-      window.removeEventListener('contact-updated', handleContactUpdate);
-      window.removeEventListener('lead-claimed', handleContactUpdate);
-      window.removeEventListener('lead-added', handleContactUpdate);
-    };
-  }, [user]);
-
-  const handleToggleHeaderVacation = async () => {
-    const isCurrentlyReceiving = !headerVacationMode;
-    const title = isCurrentlyReceiving ? 'Tạm ngưng nhận data?' : 'Bật nhận data?';
-    const message = isCurrentlyReceiving 
-      ? 'Hậu quả khi TẠM NGƯNG nhận data:\n\n• Bạn sẽ bị LOẠI khỏi vòng xoay phân bổ khách hàng (Round-Robin) ngay lập tức.\n• Hệ thống sẽ KHÔNG chia thêm bất kỳ data mới nào từ Landing Page, Ads, v.v. cho bạn.\n• Cơ hội và khách hàng tiềm năng lẽ ra thuộc về bạn sẽ chuyển cho các tư vấn viên khác đang hoạt động.\n• Điều này có thể ảnh hưởng trực tiếp đến doanh thu và chỉ tiêu KPI cá nhân của bạn.'
-      : 'Yêu cầu và nghĩa vụ khi BẬT NHẬN DATA:\n\n• Bạn sẽ quay trở lại danh sách phân bổ khách hàng của vòng xoay Round-Robin.\n• Hệ thống sẽ tự động phân bổ data khách hàng mới cho bạn khi đến lượt.\n• Bạn CẦN đảm bảo trực máy và thực hiện cuộc gọi tương tác/gặp mặt khách hàng trong vòng thời gian quy định.\n• Nếu không tương tác kịp thời, tài khoản của bạn sẽ bị cộng dồn chỉ số "chưa tương tác" và có thể bị khóa nhận số tự động.';
-
-    showConfirm({
-      title,
-      message,
-      confirmText: isCurrentlyReceiving ? 'Tạm ngưng nhận' : 'Bật nhận data',
-      cancelText: 'Hủy bỏ',
-      isDanger: isCurrentlyReceiving,
-      onConfirm: async () => {
-        try {
-          const json = await fetchAPI('toggle_consultant_vacation', {
-            method: 'POST',
-            body: JSON.stringify({ id: user?.consultant_id })
-          });
-          if (json.success) {
-            const nextMode = Boolean(Number(json.vacation_mode));
-            setHeaderVacationMode(nextMode);
-            toast.success(t('Đã thay đổi trạng thái Tạm ngưng'));
-            window.dispatchEvent(new CustomEvent('vacation-status-changed', { detail: nextMode }));
-          } else {
-            toast.error(json.message || t('Lỗi thay đổi trạng thái'));
-          }
-        } catch (e: any) {
-          toast.error(t('Lỗi thay đổi trạng thái: ') + e.message);
-        }
-      }
-    });
   };
 
   useEffect(() => {
@@ -1457,19 +53,14 @@ export const Header = ({
   }, [isLangOpen]);
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
+    const localTheme = typeof window !== 'undefined' ? (localStorage.getItem('domation_theme') as 'light' | 'dark' | null) : null;
+    if (localTheme) return localTheme;
+    return (typeof document !== 'undefined' && (document.documentElement.getAttribute('data-theme') as 'light' | 'dark')) || 'light';
   });
 
-  // Listen to system changes if theme is not set and sync with external theme changes
+  // Sync DOM attribute and listen to external theme changes
   useEffect(() => {
-    const localTheme = localStorage.getItem('Ideas_theme') as 'light' | 'dark';
-    if (localTheme) {
-      setTheme(localTheme);
-      document.documentElement.setAttribute('data-theme', localTheme);
-    } else {
-      setTheme('light');
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
+    document.documentElement.setAttribute('data-theme', theme);
 
     const handleThemeChange = () => {
       const nextTheme = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -1480,16 +71,19 @@ export const Header = ({
     return () => {
       window.removeEventListener('theme-change', handleThemeChange);
     };
-  }, []);
+  }, [theme]);
 
   const toggleTheme = (event?: React.MouseEvent) => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
+    const docWithTransition = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    };
 
     // Check if View Transition is supported and user does not prefer reduced motion
-    if (!(document as any).startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!docWithTransition.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setTheme(nextTheme);
       document.documentElement.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('Ideas_theme', nextTheme);
+      localStorage.setItem('domation_theme', nextTheme);
       window.dispatchEvent(new Event('theme-change'));
       return;
     }
@@ -1503,10 +97,10 @@ export const Header = ({
       Math.max(y, window.innerHeight - y)
     );
 
-    const transition = (document as any).startViewTransition(() => {
+    const transition = docWithTransition.startViewTransition(() => {
       setTheme(nextTheme);
       document.documentElement.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('Ideas_theme', nextTheme);
+      localStorage.setItem('domation_theme', nextTheme);
       window.dispatchEvent(new Event('theme-change'));
     });
 
@@ -1530,163 +124,108 @@ export const Header = ({
 
   const getRoleLabel = (role?: string) => {
     switch (role) {
-      case 'superadmin':
-      case 'super_admin': return t('Super Admin');
+      case 'superadmin': return t('Super Admin');
       case 'admin': return t('Quản trị viên');
       case 'assistant': return t('Trợ lý');
       case 'viewer': return t('Người xem');
-      case 'sale':
-      case 'sales': return t('Tư vấn viên');
-      case 'director': return t('Giám đốc');
-      case 'manager': return t('Quản lý');
-      case 'hr': return t('Nhân sự');
-      case 'accountant': return t('Kế toán');
-      case 'marketing': return t('Marketing');
-      case 'academic': return t('Học vụ - Học thuật');
-      case 'sale_admin':
-      case 'saleadmin': return t('Sale Admin');
+      case 'sale': return t('Đại lý');
       default: return t('Người dùng');
     }
   };
 
   const handleProfileClick = () => {
-    setIsProfileMenuOpen(false);
-    navigate('/account');
-    window.dispatchEvent(new CustomEvent('reset-account-tab'));
+    if (user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') {
+      window.dispatchEvent(new CustomEvent('open-profile-modal'));
+    }
   };
 
   const handleActivityClick = () => {
-    window.dispatchEvent(new CustomEvent('open-profile-modal', { detail: { tab: 'activity' } }));
+    if (user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') {
+      window.dispatchEvent(new CustomEvent('open-profile-modal', { detail: { tab: 'activity' } }));
+    }
   };
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isAppLauncherOpen, setIsAppLauncherOpen] = useState(false);
-  const [launcherSearch, setLauncherSearch] = useState('');
-  const [launcherTopTab, setLauncherTopTab] = useState<'favorites' | 'recent'>('favorites');
-  const [isCustomizingLauncher, setIsCustomizingLauncher] = useState(false);
-  const favStorageKey = `myerp_launcher_favs_${user?.id || 'default'}`;
-  const recentStorageKey = `myerp_launcher_recent_${user?.id || 'default'}`;
-
-  const [favoriteShortcutNames, setFavoriteShortcutNames] = useState<string[] | null>(() => {
-    try {
-      const raw = localStorage.getItem(`myerp_launcher_favs_${user?.id || 'default'}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed.filter((x): x is string => typeof x === 'string');
-      }
-    } catch {}
-    return null;
-  });
-
-  const [recentVisitedNames, setRecentVisitedNames] = useState<string[]>(() => {
-    try {
-      const raw = localStorage.getItem(`myerp_launcher_recent_${user?.id || 'default'}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed.filter((x): x is string => typeof x === 'string');
-      }
-    } catch {}
-    return [];
-  });
-
-  // Sync user-scoped storage when user.id resolves
-  useEffect(() => {
-    try {
-      const rawFav = localStorage.getItem(favStorageKey);
-      if (rawFav) {
-        const parsed = JSON.parse(rawFav);
-        if (Array.isArray(parsed)) setFavoriteShortcutNames(parsed.filter((x): x is string => typeof x === 'string'));
-      }
-      const rawRec = localStorage.getItem(recentStorageKey);
-      if (rawRec) {
-        const parsed = JSON.parse(rawRec);
-        if (Array.isArray(parsed)) setRecentVisitedNames(parsed.filter((x): x is string => typeof x === 'string'));
-      }
-    } catch {}
-  }, [favStorageKey, recentStorageKey]);
-
-  const recordLauncherVisit = (itemName: string) => {
-    if (!itemName) return;
-    setRecentVisitedNames(prev => {
-      const next = [itemName, ...(Array.isArray(prev) ? prev : []).filter(n => n !== itemName)].slice(0, 14);
-      try {
-        localStorage.setItem(recentStorageKey, JSON.stringify(next));
-      } catch {}
-      return next;
-    });
-  };
-
-  // Automatically record page visits when navigating across routes
-  useEffect(() => {
-    if (!location.pathname) return;
-    const allItems = SIDEBAR_GROUPS.flatMap(g => g.items);
-    const matched = allItems.find((it: any) => it.href === location.pathname);
-    if (matched?.name) {
-      recordLauncherVisit(matched.name);
-    }
-  }, [location.pathname, recentStorageKey]);
-
-  const [activeCategory, setActiveCategory] = useState('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
-  const [leadResults, setLeadResults] = useState<any[]>([]);
+  const [leadResults, setLeadResults] = useState<Array<{
+    id: string | number;
+    name?: string;
+    lead_name?: string;
+    phone?: string;
+    email?: string;
+    note?: string;
+    source?: string;
+    consultant_name?: string;
+    assigned_to_name?: string;
+  }>>([]);
   const [searching, setSearching] = useState(false);
 
-  // Listen to open-quick-menu event from sidebar logo click
+  // Listen to Cmd+K or Ctrl+K
   useEffect(() => {
-    const handleOpenQuickMenu = () => {
-      setIsAppLauncherOpen(true);
+    const handleSearchKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const isInputActive = activeEl && (
+        activeEl.tagName === 'INPUT' ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT' ||
+        activeEl.hasAttribute('contenteditable')
+      );
+
+      if (isInputActive) {
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
+      }
     };
-    window.addEventListener('open-quick-menu', handleOpenQuickMenu);
-    return () => window.removeEventListener('open-quick-menu', handleOpenQuickMenu);
+    window.addEventListener('keydown', handleSearchKeyDown);
+    return () => window.removeEventListener('keydown', handleSearchKeyDown);
   }, []);
 
   // Search logic for Lead Data with 200ms debounce
   useEffect(() => {
     if (!searchQuery.trim()) {
-      setLeadResults([]);
       return;
     }
 
-    const controller = new AbortController();
     const delayDebounce = setTimeout(async () => {
       setSearching(true);
       try {
-        const json = await fetchAPI(`get_logs&search=${encodeURIComponent(searchQuery.trim())}&page=1&pageSize=5`, { signal: controller.signal });
-        if (controller.signal.aborted) return;
+        const json = await fetchAPI(`get_logs&search=${encodeURIComponent(searchQuery)}&page=1&pageSize=5`);
         if (json.success && Array.isArray(json.data)) {
           setLeadResults(json.data.slice(0, 5));
         }
-      } catch (err: any) {
-        if (controller.signal.aborted || err?.name === 'AbortError' || err?.name === 'CanceledError') return;
+      } catch (err) {
         console.error(err);
       } finally {
-        if (!controller.signal.aborted) {
-          setSearching(false);
-        }
+        setSearching(false);
       }
     }, 200);
 
-    return () => {
-      controller.abort();
-      clearTimeout(delayDebounce);
-    };
+    return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
-  const navItems: Array<{ name: string; path: string; description: string; shortcut: string; adminOnly?: boolean; superAdminOnly?: boolean; action?: () => void }> = [
+  const navItems: Array<{ name: string; path: string; description: string; shortcut: string; moduleKey?: string; adminOnly?: boolean; superAdminOnly?: boolean; action?: () => void }> = [
     { name: t('Dashboard'), path: '/', description: t('Trang tổng quan thống kê hệ thống'), shortcut: 'Alt + D' },
-    { name: t('Nhật ký Lead (Data Log)'), path: '/data', description: t('Xem logs danh sách lead và trạng thái cuộc gọi'), shortcut: 'Alt + L' },
+    ...(hasModule('leads') ? [{ name: t('Nhật ký Lead (Data Log)'), path: '/data', description: t('Xem logs danh sách lead và trạng thái cuộc gọi'), shortcut: 'Alt + L', moduleKey: 'leads' }] : []),
+    ...(hasModule('audiences') ? [{ name: `${terminology.customerLabel} & Tệp Data / Logic`, path: '/audiences', description: 'Quản trị Tệp Data tĩnh & Tệp Logic AND/OR real-time', shortcut: 'Alt + M', moduleKey: 'audiences' }] : []),
+    ...(hasModule('growth_attribution') ? [{ name: 'Doanh thu & ROAS Xuyên Phễu', path: '/growth-attribution', description: 'Đối soát chi phí Ads/Email -> Chia Sale -> Doanh thu thực', shortcut: 'Alt + G', moduleKey: 'growth_attribution' }] : []),
     { name: t('Bản tin hoạt động hệ thống'), path: '#feed', description: t('Bản tin các hoạt động và phân bổ lead gần đây'), shortcut: 'Alt + H', action: () => window.dispatchEvent(new CustomEvent('open-activity-feed')) },
-    { name: t('Vòng xoay chia số (Rounds)'), path: '/rounds', description: t('Cấu hình danh sách các vòng chia lead cho sale'), adminOnly: true, shortcut: 'Alt + R' },
-    { name: t('Quy tắc chia số (Rules)'), path: '/rules', description: t('Thiết lập logic điều phối và skip interval'), adminOnly: true, shortcut: 'Alt + W' },
-    { name: t('Quản lý Tư vấn viên (Consultants)'), path: '/consultants', description: t('Quản lý danh sách sale reps và trạng thái trực ca'), adminOnly: true, shortcut: 'Alt + C' },
-    { name: t('Ticket báo lỗi data'), path: '/tickets', description: t('Phê duyệt đền bù lead lỗi hoặc trùng'), adminOnly: true, shortcut: 'Alt + T' },
-    { name: t('Đối soát công bằng (Fair Share)'), path: '/fair-share', description: t('Đo lường độ lệch phân phối lead'), adminOnly: true, shortcut: 'Alt + S' },
-    { name: t('Tích hợp API & Google Sheets'), path: '/integrations', description: t('Kết nối webhook và đồng bộ trang tính'), adminOnly: true, shortcut: 'Alt + I' },
-    { name: t('Cài đặt hệ thống'), path: '/settings', description: t('Cài đặt quy chuẩn và dọn dẹp dữ liệu'), adminOnly: true, shortcut: 'Alt + O' },
-    { name: t('Quản lý tài khoản'), path: '/accounts', description: t('Phân quyền tài khoản quản trị và trợ lý'), superAdminOnly: true, shortcut: 'Alt + A' }
+    { name: t('Vòng xoay chia số (Rounds)'), path: '/rounds', description: t('Cấu hình danh sách các vòng chia lead cho Đại lý'), adminOnly: true, shortcut: 'Alt + R', moduleKey: 'rounds' },
+    { name: t('Quy tắc chia số (Rules)'), path: '/rules', description: t('Thiết lập logic điều phối và skip interval'), adminOnly: true, shortcut: 'Alt + W', moduleKey: 'routing_rules' },
+    { name: t('Quản lý Đại lý'), path: '/consultants', description: t('Quản lý danh sách Đại lý và trạng thái trực ca'), adminOnly: true, shortcut: 'Alt + C', moduleKey: 'consultants' },
+    { name: t('Ticket báo lỗi data'), path: '/tickets', description: t('Phê duyệt đền bù lead lỗi hoặc trùng'), adminOnly: true, shortcut: 'Alt + T', moduleKey: 'tickets_data' },
+    { name: t('Đối soát công bằng (Fair Share)'), path: '/fair-share', description: t('Đo lường độ lệch phân phối lead'), adminOnly: true, shortcut: 'Alt + S', moduleKey: 'fair_share' },
+    { name: t('Tích hợp API & Google Sheets'), path: '/integrations', description: t('Kết nối webhook và đồng bộ trang tính'), adminOnly: true, shortcut: 'Alt + I', moduleKey: 'integrations_autodata' },
+    { name: 'Kết nối AWS SES, DKIM/SPF & Zalo ZNS', path: '/marketing-connect', description: 'Kho khóa kênh gửi Marketing & Web SDK', adminOnly: true, shortcut: 'Alt + K', moduleKey: 'integrations_marketing' },
+    { name: t('Cài đặt hệ thống'), path: '/settings', description: t('Sơ đồ Tổ chức, Phân quyền RBAC, Từ điển & Chính sách'), adminOnly: true, shortcut: 'Alt + O', moduleKey: 'settings' },
+    { name: t('Quản lý tài khoản'), path: '/accounts', description: t('Phân quyền tài khoản quản trị và trợ lý'), superAdminOnly: true, shortcut: 'Alt + A', moduleKey: 'org_rbac' }
   ];
 
   const visibleNavItems = navItems.filter(item => {
+    if (item.moduleKey && !hasModule(item.moduleKey)) return false;
     if (item.superAdminOnly && user?.role !== 'superadmin') return false;
     if (item.adminOnly && user?.role !== 'admin' && user?.role !== 'superadmin') return false;
     return true;
@@ -1700,42 +239,33 @@ export const Header = ({
     : visibleNavItems;
 
   const handleOpenSearch = () => {
-    window.dispatchEvent(new CustomEvent('open-command-palette'));
+    setSearchQuery('');
+    setLeadResults([]);
+    setIsSearchOpen(true);
   };
 
   return (
     <header style={{
-      position: 'relative',
       height: 66,
-      background: isWs 
-        ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.42) 100%)'
-        : 'var(--color-surface)',
-      backdropFilter: isWs ? 'blur(24px) saturate(180%) contrast(110%)' : 'none',
-      WebkitBackdropFilter: isWs ? 'blur(24px) saturate(180%) contrast(110%)' : 'none',
-      borderBottom: isWs 
-        ? '1px solid rgba(255, 255, 255, 0.14)'
-        : '1px solid var(--color-border)',
-      boxShadow: isWs 
-        ? '0 8px 32px 0 rgba(0, 0, 0, 0.3)' 
-        : 'none',
-      transition: 'background 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
+      background: 'var(--color-surface)',
+      borderBottom: '1px solid var(--color-border)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: isMobile ? '0 0.625rem' : '0 1.25rem',
+      padding: '0 1.25rem',
       flexShrink: 0,
       zIndex: 40
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.45rem' : '0.875rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
         {/* Mobile menu trigger */}
         <button 
-          onClick={() => setIsAppLauncherOpen(true)}
+          onClick={onMenuClick}
           style={{
             width: 36,
             height: 36,
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--color-primary)',
+            color: 'var(--color-text-light)',
             borderRadius: 8,
             border: 'none',
             background: 'none',
@@ -1747,96 +277,7 @@ export const Header = ({
           className="mobile-menu-btn"
           title={t("Menu")}
         >
-          <LayoutGrid size={24} />
-        </button>
-
-        {/* App Launcher Button (4-frame icon) */}
-        <button 
-          onClick={() => setIsAppLauncherOpen(true)}
-          style={{
-            width: 36,
-            height: 36,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: isWs ? '#ffffff' : 'var(--color-text-muted)',
-            borderRadius: 8,
-            border: 'none',
-            background: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            outline: 'none',
-            filter: isWs ? 'drop-shadow(0 1px 3px rgba(0,0,0,0.7))' : 'none'
-          }}
-          className="responsive-hide-mobile"
-          title={t("Menu điều hướng nhanh")}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = '#ffffff';
-            e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.03)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-text-muted)';
-            e.currentTarget.style.background = 'none';
-          }}
-         >
-          <LayoutGrid size={20} />
-        </button>
-
-        {/* Search trigger */}
-        <button 
-          onClick={handleOpenSearch}
-          title={t("Tìm kiếm toàn hệ thống...")}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: isMobile ? 'center' : 'flex-start',
-            gap: '0.5rem',
-            background: isWs
-              ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.06) 100%)'
-              : 'var(--color-bg)',
-            border: isWs
-              ? '1px solid rgba(255, 255, 255, 0.28)'
-              : '1px solid var(--color-border)',
-            borderRadius: 9999,
-            padding: isMobile ? '0' : '0.4rem 0.875rem',
-            color: isWs ? '#ffffff' : 'var(--color-text-light)',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            width: isMobile ? 36 : 320,
-            height: isMobile ? 36 : undefined,
-            maxWidth: '100%',
-            flexShrink: 0,
-            backdropFilter: isWs ? 'blur(10px)' : 'none',
-            WebkitBackdropFilter: isWs ? 'blur(10px)' : 'none',
-            boxShadow: isWs ? '0 2px 10px rgba(0, 0, 0, 0.25)' : 'none',
-            textShadow: isWs ? '0 1px 3px rgba(0, 0, 0, 0.8)' : 'none'
-          }} 
-          className="responsive-search-box"
-        >
-          <Search size={16} style={{ color: isWs ? '#ffffff' : 'currentColor', filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' : 'none', flexShrink: 0 }} />
-          {!isMobile && (
-            <span style={{ color: isWs ? '#ffffff' : 'inherit', textShadow: isWs ? '0 1px 3px rgba(0, 0, 0, 0.8)' : 'none', fontWeight: isWs ? 500 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {t("Tìm kiếm toàn hệ thống...")}
-            </span>
-          )}
-          {!isMobile && (
-            <span className="responsive-hide-mobile" style={{
-              marginLeft: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              background: isWs ? 'rgba(255, 255, 255, 0.18)' : 'var(--color-border)',
-              border: isWs ? '1px solid rgba(255, 255, 255, 0.25)' : 'none',
-              color: isWs ? '#ffffff' : 'var(--color-text-muted)',
-              textShadow: isWs ? '0 1px 2px rgba(0, 0, 0, 0.8)' : 'none',
-              padding: '1px 6px',
-              borderRadius: 4,
-              fontSize: '0.7rem'
-            }}>
-              <Command size={12} />K
-            </span>
-          )}
+          <Menu size={24} />
         </button>
 
         {/* Keyboard Shortcuts Trigger Button */}
@@ -1848,622 +289,282 @@ export const Header = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-muted)',
+            color: 'var(--color-text-muted)',
             borderRadius: 8,
             border: 'none',
             background: 'none',
             cursor: 'pointer',
-            transition: 'all 0.2s',
-            outline: 'none',
-            filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' : 'none'
+            transition: 'color 0.2s',
+            outline: 'none'
           }}
           className="responsive-hide-mobile"
           title={t("Bảng phím tắt điều hướng nhanh (?)")}
           onMouseEnter={e => {
-            e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-primary)';
-            e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)';
+            e.currentTarget.style.color = 'var(--color-primary)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.color = isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-muted)';
-            e.currentTarget.style.background = 'none';
+            e.currentTarget.style.color = 'var(--color-text-muted)';
           }}
-        >
+         >
           <Keyboard size={20} />
         </button>
 
-        {/* DOMATION Workspace Switcher */}
-        {!isMobile && (
-          <div className="responsive-hide-mobile" style={{ position: 'relative' }}>
-            <button
-              type="button"
-              onClick={() => { setIsWsOpen((v) => !v); setIsPkgOpen(false); }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                height: 32,
-                padding: '0 10px',
-                borderRadius: 8,
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-surface)',
-                color: 'var(--color-text)',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-              title="Chuyển Workspace"
-            >
-              <Building2 size={14} style={{ color: '#1E40FF' }} />
-              <span style={{ maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {companyName || tenantSlug}
-              </span>
-              <ChevronDown size={12} />
-            </button>
-            {isWsOpen && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '110%',
-                  left: 0,
-                  minWidth: 210,
-                  background: '#FFFFFF',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: 10,
-                  padding: 6,
-                  boxShadow: '0 10px 28px rgba(15, 23, 42, 0.14)',
-                  zIndex: 80,
-                }}
-              >
-                {workspaces.map((ws) => (
-                  <button
-                    key={ws.slug}
-                    type="button"
-                    onClick={() => { setIsWsOpen(false); void switchWorkspace(ws.slug); }}
-                    style={{
-                      display: 'flex',
-                      width: '100%',
-                      justifyContent: 'space-between',
-                      padding: '7px 10px',
-                      borderRadius: 6,
-                      border: 'none',
-                      background: ws.slug === tenantSlug ? '#EFF6FF' : 'transparent',
-                      color: ws.slug === tenantSlug ? '#1E40FF' : '#0F172A',
-                      fontWeight: ws.slug === tenantSlug ? 700 : 500,
-                      fontSize: '0.78rem',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                    }}
-                  >
-                    <span>{ws.company_name || (ws as any).name || ws.slug}</span>
-                    {ws.slug === tenantSlug && <Check size={14} />}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => { setIsWsOpen(false); openSwitchWorkspaceModal(); }}
-                  style={{
-                    display: 'flex',
-                    width: '100%',
-                    padding: '7px 10px',
-                    marginTop: 4,
-                    borderTop: '1px solid #F1F5F9',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#1E40FF',
-                    fontWeight: 600,
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  + Quản lý / Tạo Workspace khác
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* DOMATION Package Switcher Pill */}
-        {!isMobile && (
-          <div className="responsive-hide-mobile" style={{ position: 'relative' }}>
-            <button
-              type="button"
-              onClick={() => { setIsPkgOpen((v) => !v); setIsWsOpen(false); }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                height: 32,
-                padding: '0 10px',
-                borderRadius: 8,
-                border: '1px solid #BFDBFE',
-                background: '#EFF6FF',
-                color: '#1E40FF',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-              title="Chuyển gói SaaS / Billing"
-            >
-              <Sparkles size={13} />
-              <span>{packageMeta.shortName}</span>
-              <ChevronDown size={12} />
-            </button>
-            {isPkgOpen && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '110%',
-                  left: 0,
-                  minWidth: 250,
-                  background: '#FFFFFF',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: 12,
-                  padding: 6,
-                  boxShadow: '0 10px 28px rgba(15, 23, 42, 0.14)',
-                  zIndex: 80,
-                }}
-              >
-                {(Object.keys(SAAS_PACKAGES_CATALOG) as SaasPackageCode[]).map((code) => {
-                  const meta = SAAS_PACKAGES_CATALOG[code];
-                  const active = code === packageCode;
-                  return (
-                    <button
-                      key={code}
-                      type="button"
-                      onClick={() => {
-                        setIsPkgOpen(false);
-                        if (!active) {
-                          void switchPackage(code);
-                          navigate('/');
-                        }
-                      }}
-                      style={{
-                        display: 'flex',
-                        width: '100%',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        border: 'none',
-                        background: active ? '#EFF6FF' : 'transparent',
-                        color: active ? '#1E40FF' : '#0F172A',
-                        fontWeight: active ? 700 : 500,
-                        fontSize: '0.78rem',
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                    >
-                      <span>{meta.shortName}</span>
-                      {active && <Check size={14} />}
-                    </button>
-                  );
-                })}
-                <button
-                  type="button"
-                  onClick={() => { setIsPkgOpen(false); openBilling(); }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    width: '100%',
-                    padding: '8px 10px',
-                    marginTop: 4,
-                    borderTop: '1px solid #F1F5F9',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#1E40FF',
-                    fontWeight: 700,
-                    fontSize: '0.76rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <CreditCard size={13} /> Mở Billing & Gói cước
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="header-actions-right" style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '0.35rem' : '0.875rem' }}>
-        {isDemo && (
-          <div className="responsive-hide-mobile" style={{
-            background: 'linear-gradient(to right, #f59e0b, #d97706)',
-            color: 'white',
-            padding: '4px 10px',
-            borderRadius: 20,
-            fontSize: '0.7rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 4,
-            boxShadow: '0 2px 8px rgba(217, 119, 6, 0.2)'
-          }}>
-            DEMO MODE
-          </div>
-        )}
-        
-        {/* Sales widgets for check-in (Hidden on mobile) */}
-        {isSales && !isMobile && (
-          <div className="responsive-hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '8px' }}>
-            {(() => {
-              const activeCheckIn = todayCheckIn || headerCheckIn;
-              const isStillLoadingCheckIn = !activeCheckIn && (isCheckInLoading !== undefined ? isCheckInLoading : internalCheckInLoading);
-              if (isStillLoadingCheckIn) return null;
-
-              const isPendingApproval = activeCheckIn && (activeCheckIn.status === 'pending_approval' || Boolean(activeCheckIn.pending_explanation_today));
-              const isNotCheckedIn = (!activeCheckIn || activeCheckIn.status === 'rejected') && !isPendingApproval;
-              const isPastShiftEndWithoutCheckIn = isNotCheckedIn && todayScheduleInfo.isPastShiftEnd && !activeCheckIn?.pending_explanation_today;
-
-              if (isPastShiftEndWithoutCheckIn) {
-                const todayStr = new Date().toISOString().split('T')[0];
-                return (
-                  <div 
-                    onClick={() => navigate(`/approvals?create=attendance_bulk&date=${todayStr}`)}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '5px', 
-                      background: 'rgba(139, 92, 246, 0.1)', 
-                      border: '1px solid rgba(139, 92, 246, 0.3)', 
-                      color: '#7c3aed', 
-                      borderRadius: '8px', 
-                      padding: '4px 10px', 
-                      height: '36px', 
-                      fontSize: '0.72rem', 
-                      fontWeight: 700, 
-                      whiteSpace: 'nowrap', 
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(124, 58, 237, 0.12)'
-                    }}
-                    title={t('Đã quá giờ tan ca hôm nay - Click để tạo phiếu Cập nhật công')}
-                  >
-                    <FileText size={13} color="#7c3aed" />
-                    <span>{t('Cập nhật công hôm nay')}</span>
-                  </div>
-                );
-              }
-
-              if (activeCheckIn && activeCheckIn.status === 'approved') {
-                return (
-                  <div 
-                    onMouseEnter={prewarmSmartCheckInGPS}
-                    onTouchStart={prewarmSmartCheckInGPS}
-                    onClick={() => {
-                      navigate('/attendance?user_id=' + (user?.id || ''));
-                    }}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '4px', 
-                      background: activeCheckIn.check_out_time ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)', 
-                      border: activeCheckIn.check_out_time ? '1px solid rgba(59, 130, 246, 0.2)' : '1px solid rgba(16, 185, 129, 0.2)', 
-                      color: activeCheckIn.check_out_time ? '#2563eb' : 'var(--color-success)', 
-                      borderRadius: '8px', 
-                      padding: '4px 10px', 
-                      height: '36px', 
-                      fontSize: '0.72rem', 
-                      fontWeight: 700, 
-                      whiteSpace: 'nowrap', 
-                      cursor: 'pointer' 
-                    }}
-                    title={requireCheckout && !activeCheckIn.check_out_time ? t('Click để Chấm công Ra ca') : t('Click để Xem bảng chấm công cá nhân')}
-                  >
-                    <CheckCircle2 size={12} color={activeCheckIn.check_out_time ? '#2563eb' : undefined} />
-                    <span>
-                      {activeCheckIn.check_out_time 
-                        ? `${t('Đã Ra ca')} (${activeCheckIn.check_out_time.substring(11, 16) || activeCheckIn.check_out_time.substring(0, 5)})` 
-                        : `${t('Đã Vào ca')} (${activeCheckIn.check_in_time.substring(0, 5)})`
-                      }
-                    </span>
-                  </div>
-                );
-              }
-
-              if (activeCheckIn && (activeCheckIn.status === 'pending_approval' || activeCheckIn.pending_explanation_today)) {
-                const isBulk = Boolean(activeCheckIn.is_bulk_pending || activeCheckIn.id === 0);
-                const timeStr = activeCheckIn.check_in_time ? activeCheckIn.check_in_time.substring(0, 5) : '';
-                return (
-                  <div 
-                    onClick={() => navigate(isBulk ? '/approvals' : ('/attendance?user_id=' + (user?.id || '')))}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '4px', 
-                      background: 'rgba(245, 158, 11, 0.1)', 
-                      border: '1px solid rgba(245, 158, 11, 0.25)', 
-                      color: 'var(--color-warning)', 
-                      borderRadius: '8px', 
-                      padding: '4px 10px', 
-                      height: '36px', 
-                      fontSize: '0.72rem', 
-                      fontWeight: 700, 
-                      whiteSpace: 'nowrap', 
-                      cursor: 'pointer' 
-                    }}
-                    title={isBulk 
-                      ? `${t('Đang có Đơn bổ sung công')} (#${activeCheckIn.bulk_request_id || ''}) ${t('chờ Quản lý duyệt - Click để xem đơn')}` 
-                      : t('Click để Xem bảng chấm công cá nhân')
-                    }
-                  >
-                    <Clock size={12} />
-                    <span>
-                      {isBulk 
-                        ? `${t('Đơn bổ sung')} (${timeStr || '08:00'})` 
-                        : (timeStr ? `${t('Chờ duyệt')} (${timeStr})` : t('Chờ duyệt công'))
-                      }
-                    </span>
-                  </div>
-                );
-              }
-
-              return null;
-            })()}
-          </div>
-        )}
-
-
-
-        {/* Live Activity Feed Button */}
-        {user?.role !== 'sale' && (
-          <button 
-            onClick={onActivityFeedClick}
-            className="responsive-hide-mobile"
-            style={{
-              width: 36,
-              height: 36,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)',
-              borderRadius: 8,
-              border: 'none',
-              background: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              position: 'relative',
-              outline: 'none',
-              filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' : 'none'
-            }}
-            title={t("Bản tin hoạt động hệ thống")}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.1)' : 'var(--color-bg)';
-              e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-primary)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'none';
-              e.currentTarget.style.color = isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)';
-            }}
-          >
-            <Activity size={20} />
-            <span style={{
-              position: 'absolute',
-              top: 6,
-              right: 6,
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#10b981',
-              boxShadow: isWs ? '0 0 0 2px rgba(0, 0, 0, 0.5)' : '0 0 0 2px var(--color-surface)',
-              animation: 'pulse 2s infinite'
-            }} />
-          </button>
-        )}
-
-        {/* Unified Approvals/Issues Inbox Button */}
-        {!['sale', 'sales'].includes(user?.role || '') && pendingInboxCount !== undefined && (
-          <button
-            onClick={onUnifiedInboxClick}
-            style={{
-              width: 36,
-              height: 36,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: pendingInboxCount > 0 ? '#ef4444' : (isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)'),
-              borderRadius: 8,
-              border: 'none',
-              background: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              position: 'relative',
-              outline: 'none',
-              filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' : 'none'
-            }}
-            title={t("Các vấn đề cần xử lý")}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.1)' : 'var(--color-bg)';
-              if (pendingInboxCount === 0) {
-                e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-primary)';
-              }
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'none';
-              e.currentTarget.style.color = pendingInboxCount > 0 ? '#ef4444' : (isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)');
-            }}
-          >
-            <ShieldAlert size={20} className={pendingInboxCount > 0 ? "animate-pulse" : ""} style={{ color: pendingInboxCount > 0 ? '#ef4444' : 'inherit' }} />
-            {pendingInboxCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: 2,
-                right: 2,
-                minWidth: 16,
-                height: 16,
-                borderRadius: 8,
-                background: '#ef4444',
-                color: 'white',
-                fontSize: '10px',
-                fontWeight: 700,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0 4px',
-                boxShadow: isWs ? '0 0 0 1.5px rgba(0, 0, 0, 0.5)' : '0 0 0 2px var(--color-surface)',
-                lineHeight: 1
-              }}>
-                {pendingInboxCount}
-              </span>
-            )}
-          </button>
-        )}
-
-        <button
-          onClick={() => {
-            const isMobileDevice = typeof window !== 'undefined' && window.innerWidth < 900;
-            openChat(undefined, undefined, isMobileDevice ? undefined : { maximized: true });
-          }}
+        {/* Search trigger */}
+        <button 
+          onClick={handleOpenSearch}
           style={{
-            width: 36,
-            height: 36,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            color: isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)',
-            borderRadius: 8,
-            border: 'none',
-            background: 'none',
+            gap: '0.5rem',
+            background: 'var(--color-bg)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 9999,
+            padding: '0.4rem 0.875rem',
+            color: 'var(--color-text-light)',
+            fontSize: '0.875rem',
             cursor: 'pointer',
-            transition: 'all 0.2s',
-            position: 'relative',
-            outline: 'none',
-            filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' : 'none'
-          }}
-          title={t("WorkChat - Trò chuyện nội bộ & Nhãn dán IDEAS")}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.1)' : 'var(--color-bg)';
-            e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-primary)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'none';
-            e.currentTarget.style.color = isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)';
-          }}
+            transition: 'border-color 0.2s',
+            width: 320,
+            maxWidth: '100%'
+          }} 
+          className="responsive-search-box responsive-hide-mobile"
         >
-          <BrandChatIcon size={26} variant="squircle-red" />
-          {unreadTotal > 0 ? (
-            <span style={{
-              position: 'absolute',
-              top: -2,
-              right: -2,
-              minWidth: 16,
-              height: 16,
-              borderRadius: 8,
-              background: '#ef4444',
-              color: 'white',
-              fontSize: '10px',
-              fontWeight: 700,
+          <Search size={16} />
+          <span className="responsive-hide-mobile">{t("Tìm kiếm toàn hệ thống...")}</span>
+          <span className="responsive-hide-mobile" style={{
+            marginLeft: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            background: 'var(--color-border)',
+            color: 'var(--color-text-muted)',
+            padding: '1px 6px',
+            borderRadius: 4,
+            fontSize: '0.7rem'
+          }}>
+            <Command size={12} />K
+          </span>
+        </button>
+
+        {/* Subtle Multi-Tenant Workspace Switcher */}
+        <div style={{ position: 'relative' }} className="responsive-hide-mobile">
+          <button
+            onClick={() => setIsWsOpen(v => !v)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6, height: 34, padding: '0 10px',
+              borderRadius: 9999, background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+              color: 'var(--color-text)', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
+            }}
+            title={t('Chuyển đổi Workspace / Tạo tổ chức mới')}
+          >
+            <Building2 size={14} style={{ color: 'var(--color-primary)' }} />
+            <span style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{companyName || tenantSlug}</span>
+            <ChevronDown size={12} style={{ color: 'var(--color-text-muted)' }} />
+          </button>
+          {isWsOpen && (
+            <div style={{
+              position: 'absolute', top: 'calc(100% + 6px)', left: 0, minWidth: 230, zIndex: 80,
+              background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 10,
+              padding: 6, boxShadow: '0 10px 28px rgba(15, 23, 42, 0.14)'
+            }}>
+              {workspaces.map((ws) => (
+                <button
+                  key={ws.slug}
+                  onClick={() => { setIsWsOpen(false); void switchWorkspace(ws.slug); }}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '7px 10px', borderRadius: 7, border: 'none', cursor: 'pointer',
+                    background: ws.slug === tenantSlug ? 'var(--color-primary-light)' : 'transparent',
+                    color: ws.slug === tenantSlug ? 'var(--color-primary)' : 'var(--color-text)',
+                    fontSize: '0.8rem', fontWeight: ws.slug === tenantSlug ? 700 : 500, textAlign: 'left'
+                  }}
+                >
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ws.company_name || ws.slug}</span>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--color-text-muted)' }}>/{ws.slug}</span>
+                </button>
+              ))}
+              <div style={{ borderTop: '1px solid var(--color-border)', margin: '4px 0' }} />
+              <button
+                onClick={() => { setIsWsOpen(false); openSwitchWorkspaceModal(); }}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', gap: 6, padding: '7px 10px',
+                  borderRadius: 7, border: 'none', cursor: 'pointer', background: 'transparent',
+                  color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 700, textAlign: 'left'
+                }}
+              >
+                <Plus size={14} /> {t('Thêm / Chuyển Workspace')}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 4-Package Ecosystem Quick Switcher Badge */}
+        <div style={{ position: 'relative' }} className="responsive-hide-mobile">
+          <button
+            type="button"
+            onClick={() => setIsPkgOpen((v) => !v)}
+            disabled={switchingPackage}
+            style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0 4px',
-              boxShadow: isWs ? '0 0 0 1.5px rgba(0, 0, 0, 0.5)' : '0 0 0 2px var(--color-surface)',
-              lineHeight: 1
-            }}>
-              {unreadTotal > 99 ? '99+' : unreadTotal}
-            </span>
-          ) : (
+              gap: 6,
+              height: 34,
+              padding: '0 12px',
+              borderRadius: 9999,
+              background: 'rgba(30, 64, 255, 0.08)',
+              border: '1px solid rgba(30, 64, 255, 0.22)',
+              color: '#1E40FF',
+              fontSize: '0.74rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+            }}
+            title="Chuyển đổi / Nâng cấp Gói SaaS tức thì (0s Migrate)"
+          >
+            <Sparkles size={13} />
+            <span>{packageMeta.shortName}</span>
+            <ChevronDown size={12} />
+          </button>
+
+          {isPkgOpen && (
             <div
               style={{
                 position: 'absolute',
-                top: -9,
-                right: -7,
-                width: 23,
-                height: 23,
-                pointerEvents: 'none',
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.28))',
-                transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                top: 'calc(100% + 6px)',
+                left: 0,
+                width: 310,
+                zIndex: 85,
+                background: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                borderRadius: 14,
+                padding: 8,
+                boxShadow: '0 14px 36px rgba(15, 23, 42, 0.16)',
               }}
             >
-              <img
-                src="/stickers/ideas/ideas_1.webp"
-                alt="IDEAS Sticker"
+              <div style={{ padding: '4px 8px 6px 8px', fontSize: '0.68rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Hệ sinh thái 4 Gói SaaS (1-Click Unlock)
+              </div>
+              {(Object.keys(SAAS_PACKAGES_CATALOG) as SaasPackageCode[]).map((code) => {
+                const pkg = SAAS_PACKAGES_CATALOG[code];
+                const isActivePkg = packageCode === code;
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => {
+                      setIsPkgOpen(false);
+                      if (!isActivePkg) {
+                        void switchPackage(code);
+                        navigate('/');
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      gap: 8,
+                      padding: '8px 10px',
+                      borderRadius: 10,
+                      border: 'none',
+                      cursor: 'pointer',
+                      background: isActivePkg ? 'rgba(30, 64, 255, 0.08)' : 'transparent',
+                      textAlign: 'left',
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: isActivePkg ? '#1E40FF' : '#0F172A' }}>
+                        {pkg.shortName}
+                      </div>
+                      <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 1 }}>
+                        {pkg.badge}
+                      </div>
+                    </div>
+                    {isActivePkg && <Check size={14} color="#1E40FF" style={{ flexShrink: 0, marginTop: 2 }} />}
+                  </button>
+                );
+              })}
+              <div style={{ borderTop: '1px solid #F1F5F9', margin: '6px 0' }} />
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPkgOpen(false);
+                  openBilling();
+                }}
                 style={{
                   width: '100%',
-                  height: '100%',
-                  objectFit: 'contain'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '7px 10px',
+                  borderRadius: 8,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: 'transparent',
+                  color: '#1E40FF',
+                  fontSize: '0.76rem',
+                  fontWeight: 700,
                 }}
-              />
+              >
+                <CreditCard size={13} /> Mở bảng Gói cước & Ví chi tiết
+              </button>
             </div>
           )}
-        </button>
+        </div>
+      </div>
 
-        {/* Notification Bell Button */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+        {/* Tour màn hình này */}
         <button
-          onClick={() => setIsNotifModalOpen(true)}
+          onClick={() => openTour()}
+          style={{
+            width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'var(--color-text-light)', borderRadius: 8, border: 'none', background: 'none', cursor: 'pointer'
+          }}
+          title={t('Tour hướng dẫn màn hình hiện tại')}
+        >
+          <Compass size={19} />
+        </button>
+        
+        {/* Live Activity Feed Button */}
+        <button 
+          onClick={onActivityFeedClick}
           style={{
             width: 36,
             height: 36,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)',
+            color: 'var(--color-text-light)',
             borderRadius: 8,
             border: 'none',
             background: 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             position: 'relative',
-            outline: 'none',
-            filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' : 'none'
+            outline: 'none'
           }}
-          title={t("Thông báo")}
+          title={t("Bản tin hoạt động hệ thống")}
           onMouseEnter={e => {
-            e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.1)' : 'var(--color-bg)';
-            e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-primary)';
+            e.currentTarget.style.background = 'var(--color-bg)';
+            e.currentTarget.style.color = 'var(--color-primary)';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.background = 'none';
-            e.currentTarget.style.color = isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)';
+            e.currentTarget.style.color = 'var(--color-text-light)';
           }}
         >
-          <Bell size={20} />
-          {unreadCount > 0 && (
-            <span style={{
-              position: 'absolute',
-              top: 2,
-              right: 2,
-              minWidth: 16,
-              height: 16,
-              borderRadius: 8,
-              background: '#ef4444',
-              color: 'white',
-              fontSize: '10px',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0 4px',
-              boxShadow: isWs ? '0 0 0 1.5px rgba(0, 0, 0, 0.5)' : '0 0 0 2px var(--color-surface)',
-              lineHeight: 1
-            }}>
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
-          )}
-        </button>
-
-        {/* DOMATION Help Tour Button */}
-        <button
-          type="button"
-          onClick={() => openTour()}
-          style={{
-            width: 36,
-            height: 36,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)',
-            borderRadius: 8,
-            border: 'none',
-            background: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            outline: 'none',
-          }}
-          title={t('Hướng dẫn nhanh màn hình này')}
-        >
-          <Compass size={19} />
+          <Activity size={20} />
+          <span style={{
+            position: 'absolute',
+            top: 6,
+            right: 6,
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: '#10b981',
+            boxShadow: '0 0 0 2px var(--color-surface)',
+            animation: 'pulse 2s infinite'
+          }} />
         </button>
 
         {/* Theme Toggle Button */}
@@ -2475,31 +576,29 @@ export const Header = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)',
+            color: 'var(--color-text-light)',
             borderRadius: 8,
             border: 'none',
             background: 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
-            outline: 'none',
-            filter: isWs ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' : 'none'
+            outline: 'none'
           }}
           title={theme === 'light' ? t("Chuyển sang giao diện tối") : t("Chuyển sang giao diện sáng")}
           onMouseEnter={e => {
-            e.currentTarget.style.background = isWs ? 'rgba(255,255,255,0.1)' : 'var(--color-bg)';
-            e.currentTarget.style.color = isWs ? '#ffffff' : 'var(--color-primary)';
+            e.currentTarget.style.background = 'var(--color-bg)';
+            e.currentTarget.style.color = 'var(--color-primary)';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.background = 'none';
-            e.currentTarget.style.color = isWs ? 'rgba(255, 255, 255, 0.85)' : 'var(--color-text-light)';
+            e.currentTarget.style.color = 'var(--color-text-light)';
           }}
         >
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} style={{ color: '#fbbf24' }} />}
         </button>
 
-        {/* Language Selector Dropdown (Temporarily Hidden) */}
-        {false && (
-        <div className="responsive-hide-mobile" style={{ position: 'relative' }}>
+        {/* Language Selector Dropdown */}
+        <div style={{ position: 'relative' }}>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -2618,33 +717,31 @@ export const Header = ({
             )}
           </AnimatePresence>
         </div>
-        )}
 
         <div
           onMouseEnter={() => setIsProfileMenuOpen(true)}
           onMouseLeave={() => setIsProfileMenuOpen(false)}
-          style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          style={{ position: 'relative' }}
         >
-          <div style={{ width: '1px', height: '24px', background: isWs ? 'rgba(255, 255, 255, 0.2)' : 'var(--color-border)' }} />
           <div 
             onClick={handleProfileClick}
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.625rem',
-              cursor: 'pointer',
+              paddingLeft: '0.875rem',
+              borderLeft: '1px solid var(--color-border)',
+              cursor: (user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') ? 'pointer' : 'default',
               padding: '4px 8px',
               borderRadius: '6px',
               transition: 'background 0.2s',
-              background: isProfileMenuOpen ? (isWs ? 'rgba(255, 255, 255, 0.15)' : 'var(--color-bg)') : 'transparent'
+              background: isProfileMenuOpen ? 'var(--color-bg)' : 'transparent'
             }}
           >
             <Avatar src={user?.avatar} name={user?.name} size={32} />
             <div className="responsive-hide-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: isWs ? '#ffffff' : 'var(--color-text)', textShadow: isWs ? '0 1px 3px rgba(0, 0, 0, 0.7)' : 'none' }}>{user?.name || 'User'}</span>
-              <span style={{ fontSize: '0.7rem', color: isWs ? 'rgba(255, 255, 255, 0.75)' : 'var(--color-text-light)', textShadow: isWs ? '0 1px 2px rgba(0, 0, 0, 0.5)' : 'none' }}>
-                {getUserDisplayRoleOrTitle(user)}
-              </span>
+              <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text)' }}>{user?.name || 'User'}</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--color-text-light)' }}>{getRoleLabel(user?.role)}</span>
             </div>
           </div>
 
@@ -2672,85 +769,10 @@ export const Header = ({
                   transformOrigin: 'top right'
                 }}
               >
-                <>
-                  <button
-                    onClick={handleProfileClick}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      width: '100%',
-                      padding: '8px 10px',
-                      border: 'none',
-                      background: 'transparent',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      color: 'var(--color-text)',
-                      fontSize: '0.8125rem',
-                      textAlign: 'left',
-                      transition: 'background 0.2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <User size={14} />
-                    {t('Thông tin')}
-                  </button>
-                  <button
-                    onClick={handleActivityClick}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      width: '100%',
-                      padding: '8px 10px',
-                      border: 'none',
-                      background: 'transparent',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      color: 'var(--color-text)',
-                      fontSize: '0.8125rem',
-                      textAlign: 'left',
-                      transition: 'background 0.2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <Activity size={14} />
-                    {t('Hoạt động (Nhật ký)')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setIsProfileMenuOpen(false); openBilling(); }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      width: '100%',
-                      padding: '8px 10px',
-                      border: 'none',
-                      background: 'transparent',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      color: '#1E40FF',
-                      fontWeight: 600,
-                      fontSize: '0.8125rem',
-                      textAlign: 'left',
-                      transition: 'background 0.2s'
-                    }}
-                  >
-                    <CreditCard size={14} />
-                    {t('Gói cước & Billing')}
-                  </button>
-                </>
-
-                {((user?.role as any) === 'sale' || (user?.role as any) === 'sales') && (
+                {(user?.role === 'admin' || user?.role === 'assistant' || user?.role === 'superadmin') && (
                   <>
                     <button
-                      onClick={() => {
-                        navigate('/consultants?tab=teams');
-                        setIsProfileMenuOpen(false);
-                      }}
+                      onClick={handleProfileClick}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -2769,103 +791,48 @@ export const Header = ({
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
-                      <Users size={14} style={{ color: 'var(--color-primary)' }} />
-                      {t('Thông tin Team')}
+                      <User size={14} />
+                      {t('Thông tin')}
                     </button>
-                    <div style={{ borderBottom: '1px solid var(--color-border)', margin: '4px 0' }} />
+                    <button
+                      onClick={handleActivityClick}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        width: '100%',
+                        padding: '8px 10px',
+                        border: 'none',
+                        background: 'transparent',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        color: 'var(--color-text)',
+                        fontSize: '0.8125rem',
+                        textAlign: 'left',
+                        transition: 'background 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <Activity size={14} />
+                      {t('Hoạt động (Nhật ký)')}
+                    </button>
                   </>
                 )}
 
                 <button
-                  type="button"
-                  onClick={() => {
-                    navigate('/support-tickets?create=1&type=bug');
-                    setIsProfileMenuOpen(false);
-                  }}
+                  onClick={() => { setIsProfileMenuOpen(false); openBilling(); }}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 10px',
-                    border: 'none',
-                    background: 'transparent',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    color: 'var(--color-text)',
-                    fontSize: '0.8125rem',
-                    textAlign: 'left',
-                    textDecoration: 'none',
-                    transition: 'background 0.2s'
+                    display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
+                    padding: '8px 10px', border: 'none', background: 'transparent', borderRadius: '6px',
+                    cursor: 'pointer', color: 'var(--color-text)', fontSize: '0.8125rem', textAlign: 'left'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
-                  <AlertTriangle size={14} style={{ color: 'var(--color-danger)' }} />
-                  {t('Báo lỗi')}
+                  <CreditCard size={14} style={{ color: 'var(--color-primary)' }} />
+                  {t('Gói cước & Ví')}
                 </button>
 
                 <div style={{ borderBottom: '1px solid var(--color-border)', margin: '4px 0' }} />
-
-                <a
-                  href="/docs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 10px',
-                    border: 'none',
-                    background: 'transparent',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    color: 'var(--color-text)',
-                    fontSize: '0.8125rem',
-                    textAlign: 'left',
-                    textDecoration: 'none',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  onClick={() => setIsProfileMenuOpen(false)}
-                >
-                  <FileText size={14} style={{ color: 'var(--color-primary)' }} />
-                  {t('Document')}
-                </a>
-
-                <div style={{ borderBottom: '1px solid var(--color-border)', margin: '4px 0' }} />
-
-                {/* 
-                <a
-                  href="/download"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 10px',
-                    border: 'none',
-                    background: 'transparent',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    color: 'var(--color-text)',
-                    fontSize: '0.8125rem',
-                    textAlign: 'left',
-                    textDecoration: 'none',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--color-bg)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  onClick={() => setIsProfileMenuOpen(false)}
-                >
-                  <Laptop size={14} style={{ color: 'var(--color-primary)' }} />
-                  {t('Tải App Desktop')}
-                </a>
-
-                <div style={{ borderBottom: '1px solid var(--color-border)', margin: '4px 0' }} />
-                */}
 
                 <button
                   onClick={handleLogout}
@@ -2895,981 +862,6 @@ export const Header = ({
           </AnimatePresence>
         </div>
       </div>
-
-    {/* App Launcher Modal (SIDEBAR items in card format) */}
-    <CustomModal
-      isOpen={isAppLauncherOpen}
-      onClose={() => setIsAppLauncherOpen(false)}
-      title={t("Menu điều hướng nhanh")}
-      width="1160px"
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        {/* Search Input inside App Launcher */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '12px', 
-          background: 'var(--color-bg-light)', 
-          border: '1px solid var(--color-border)', 
-          borderRadius: '9999px', 
-          padding: '8px 20px',
-          height: '44px',
-          flexShrink: 0,
-          boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
-          transition: 'all 0.2s',
-          maxWidth: '600px',
-          margin: '0 auto 1rem auto',
-          width: '100%'
-        }}>
-          <Search size={18} style={{ color: 'var(--color-text-muted)' }} />
-          <input
-            type="text"
-            value={launcherSearch}
-            onChange={(e) => setLauncherSearch(e.target.value)}
-            placeholder={t("Tìm kiếm nhanh chức năng...")}
-            data-no-autofocus={isMobile ? "true" : undefined}
-            autoFocus={false}
-            style={{
-              flex: 1,
-              border: 'none',
-              background: 'transparent',
-              outline: 'none',
-              color: 'var(--color-text)',
-              fontSize: '0.9rem'
-            }}
-          />
-          {launcherSearch && (
-            <button 
-              onClick={() => setLauncherSearch('')}
-              style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', fontWeight: 600, border: 'none', background: 'transparent', cursor: 'pointer' }}
-            >
-              {t("Xóa")}
-            </button>
-          )}
-        </div>
-
-        {(() => {
-          const role = user?.role as string;
-          const isAdmin = role === 'admin' || role === 'superadmin' || role === 'super_admin';
-
-          const getItemColor = (itemName: string) => {
-            const lowercase = itemName.toLowerCase();
-            
-            // 1. Exact string matches
-            if (lowercase === 'dashboard') return { bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#ffffff' };
-            if (lowercase === 'bàn làm việc') return { bg: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff' };
-            if (lowercase === 'chấm công' || lowercase === 'quản lý chấm công' || lowercase === 'quản lý công') return { bg: 'linear-gradient(135deg, #ff7a00, #d05300)', color: '#ffffff' };
-            if (lowercase === 'báo cáo') return { bg: 'linear-gradient(135deg, #8b5cf6, #5b21b6)', color: '#ffffff' };
-            if (lowercase === 'tiềm năng' || lowercase === 'khách hàng') return { bg: 'linear-gradient(135deg, #f43f5e, #be123c)', color: '#ffffff' };
-            if (lowercase === 'pipeline') return { bg: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff' };
-            if (lowercase === 'nhật ký data') return { bg: 'linear-gradient(135deg, #0ea5e9, #0284c7)', color: '#ffffff' };
-            if (lowercase === 'thanh toán') return { bg: 'linear-gradient(135deg, #0d9488, #115e59)', color: '#ffffff' };
-            if (lowercase === 'chi phí chi tiêu' || lowercase === 'purchase order') return { bg: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff' };
-            if (lowercase === 'quy trình' || lowercase === 'quy trình phê duyệt' || lowercase === 'phê duyệt') return { bg: 'linear-gradient(135deg, #1E40FF, #1E3A8A)', color: '#ffffff' };
-            if (lowercase === 'sales order') return { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff' };
-            if (lowercase === 'nhà cung cấp') return { bg: 'linear-gradient(135deg, #0ea5e9, #0284c7)', color: '#ffffff' };
-            if (lowercase === 'đối tác kinh doanh' || lowercase === 'đối tác') return { bg: 'linear-gradient(135deg, #8b5cf6, #5b21b6)', color: '#ffffff' };
-            if (lowercase === 'chương trình') return { bg: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#ffffff' };
-            if (lowercase === 'tài liệu') return { bg: 'linear-gradient(135deg, #eab308, #a16207)', color: '#ffffff' };
-            if (lowercase === 'chiến dịch') return { bg: 'linear-gradient(135deg, #f43f5e, #be123c)', color: '#ffffff' };
-            if (lowercase === 'tài khoản cá nhân') return { bg: 'linear-gradient(135deg, #64748b, #475569)', color: '#ffffff' };
-            if (lowercase === 'phòng ban') return { bg: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#ffffff' };
-            if (lowercase === 'nhân sự công ty' || lowercase === 'nhân sự & lương') return { bg: 'linear-gradient(135deg, #8b5cf6, #5b21b6)', color: '#ffffff' };
-            if (lowercase === 'lịch trình') return { bg: 'linear-gradient(135deg, #6366f1, #4338ca)', color: '#ffffff' };
-            if (lowercase === 'phiếu lương cá nhân' || lowercase === 'phiếu lương') return { bg: 'linear-gradient(135deg, #ec4899, #be185d)', color: '#ffffff' };
-            if (lowercase === 'workchat' || lowercase === 'tin nhắn' || lowercase === 'tin nhắn nội bộ') return { bg: 'linear-gradient(135deg, #ef4444, #1E3A8A)', color: '#ffffff' };
-            if (lowercase === 'ticket hỗ trợ' || lowercase === 'helpdesk') return { bg: 'linear-gradient(135deg, #ff7a00, #d05300)', color: '#ffffff' };
-            if (lowercase === 'cài đặt hệ thống') return { bg: 'linear-gradient(135deg, #0ea5e9, #0284c7)', color: '#ffffff' };
-            if (lowercase === 'huấn luyện ai') return { bg: 'linear-gradient(135deg, #1E40FF, #8b101b)', color: '#ffffff' };
-
-            // 2. Keyword fallback checks (ordered from specific to general)
-            if (lowercase.includes('workchat') || lowercase.includes('tin nhắn') || lowercase.includes('chat')) return { bg: 'linear-gradient(135deg, #ef4444, #1E3A8A)', color: '#ffffff' };
-            if (lowercase.includes('dashboard')) return { bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#ffffff' };
-            if (lowercase.includes('chấm công')) return { bg: 'linear-gradient(135deg, #ff7a00, #d05300)', color: '#ffffff' };
-            if (lowercase.includes('bàn làm việc') || lowercase.includes('hoạt động')) return { bg: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff' };
-            if (lowercase.includes('báo cáo') || lowercase.includes('thống kê')) return { bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#ffffff' };
-            if (lowercase.includes('databank') || lowercase.includes('kho data')) return { bg: 'linear-gradient(135deg, #eab308, #a16207)', color: '#ffffff' };
-            if (lowercase.includes('khách hàng') || lowercase.includes('contacts')) return { bg: 'linear-gradient(135deg, #f43f5e, #be123c)', color: '#ffffff' };
-            if (lowercase.includes('pipeline') || lowercase.includes('chi phí') || lowercase.includes('purchase')) return { bg: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff' };
-            if (lowercase.includes('vòng phân bổ') || lowercase.includes('phân bổ') || lowercase.includes('chiến dịch')) return { bg: 'linear-gradient(135deg, #ff7a00, #d05300)', color: '#ffffff' };
-            if (lowercase.includes('định tuyến') || lowercase.includes('logic')) return { bg: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', color: '#ffffff' };
-            if (lowercase.includes('tích hợp')) return { bg: 'linear-gradient(135deg, #0d9488, #0f766e)', color: '#ffffff' };
-            if (lowercase.includes('capi')) return { bg: 'linear-gradient(135deg, #2563eb, #1e40af)', color: '#ffffff' };
-            if (lowercase.includes('cài đặt')) return { bg: 'linear-gradient(135deg, #0ea5e9, #0284c7)', color: '#ffffff' };
-            if (lowercase.includes('phòng ban')) return { bg: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#ffffff' };
-            if (lowercase.includes('tài khoản')) return { bg: 'linear-gradient(135deg, #64748b, #475569)', color: '#ffffff' };
-            if (lowercase.includes('đối soát') || lowercase.includes('phân quyền')) return { bg: 'linear-gradient(135deg, #ec4899, #be185d)', color: '#ffffff' };
-            if (lowercase.includes('huấn luyện ai')) return { bg: 'linear-gradient(135deg, #1E40FF, #8b101b)', color: '#ffffff' };
-            if (lowercase.includes('ai') || lowercase.includes('gatekeeper')) return { bg: 'linear-gradient(135deg, #14b8a6, #0f766e)', color: '#ffffff' };
-            if (lowercase.includes('ticket') || lowercase.includes('helpdesk')) return { bg: 'linear-gradient(135deg, #ff7a00, #d05300)', color: '#ffffff' };
-            if (lowercase.includes('giỏ hàng') || lowercase.includes('sản phẩm')) return { bg: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#ffffff' };
-            if (lowercase.includes('tài liệu')) return { bg: 'linear-gradient(135deg, #eab308, #a16207)', color: '#ffffff' };
-            if (lowercase.includes('chủ đầu tư')) return { bg: 'linear-gradient(135deg, #84cc16, #4d7c0f)', color: '#ffffff' };
-            if (lowercase.includes('báo giá') || lowercase.includes('hóa đơn')) return { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff' };
-            if (lowercase.includes('đặt cọc') || lowercase.includes('hợp tác') || lowercase.includes('sales order') || lowercase.includes('dự báo')) return { bg: 'linear-gradient(135deg, #14b8a6, #0f766e)', color: '#ffffff' };
-            if (lowercase.includes('lịch trình') || lowercase.includes('lịch biểu') || lowercase.includes('lịch học')) return { bg: 'linear-gradient(135deg, #6366f1, #4338ca)', color: '#ffffff' };
-            if (lowercase.includes('khóa học') || lowercase.includes('học viên')) return { bg: 'linear-gradient(135deg, #8b5cf6, #5b21b6)', color: '#ffffff' };
-            if (lowercase.includes('bảng tin')) return { bg: 'linear-gradient(135deg, #f43f5e, #be123c)', color: '#ffffff' };
-            if (lowercase.includes('chi nhánh') || lowercase.includes('team') || lowercase.includes('nhân viên') || lowercase.includes('nhân sự') || lowercase.includes('nhân sự công ty')) return { bg: 'linear-gradient(135deg, #8b5cf6, #5b21b6)', color: '#ffffff' };
-            if (lowercase.includes('dự án') || lowercase.includes('công ty')) return { bg: 'linear-gradient(135deg, #64748b, #475569)', color: '#ffffff' };
-            
-            return { bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: '#ffffff' };
-          };
-
-          const ITEM_DESC: Record<string, string> = {
-            'WorkChat': 'Nhắn tin trao đổi công việc nội bộ và chia sẻ tài liệu',
-            'Tin nhắn nội bộ': 'Nhắn tin trao đổi công việc nội bộ và chia sẻ tài liệu',
-            'Dashboard': 'Biểu đồ, chỉ số doanh thu và hiệu năng kinh doanh',
-            'Bàn làm việc': 'Lịch trình cá nhân, danh sách nhiệm vụ và chấm công',
-            'Báo cáo': 'Thống kê chi tiết, doanh thu và năng suất nhân sự',
-            'Kho Databank': 'Kho lưu trữ dữ liệu tập trung (Databank)',
-            'Khách hàng': 'Quản lý thông tin khách hàng và nhật ký liên hệ',
-            'Pipeline': 'Quy trình giao dịch và phễu chuyển đổi bán hàng',
-            'Lịch biểu': 'Xem lịch làm việc và đăng ký ngày phép',
-            'Nhật ký Data': 'Xem danh sách toàn bộ data phân bổ',
-            'Vòng phân bổ': 'Tự động phân bổ khách hàng tiềm năng cho nhân viên',
-            'Đối soát công bằng': 'Đối soát phân chia dữ liệu khách hàng công bằng',
-            'AI Pre-screener': 'Thiết lập AI Gatekeeper đánh giá khách hàng',
-            'Ticket data lỗi': 'Báo cáo lỗi dữ liệu khách hàng',
-            'Helpdesk': 'Gửi ticket yêu cầu IT hỗ trợ',
-            'Sản phẩm & Dịch vụ': 'Danh mục sản phẩm, dịch vụ và chính sách giá',
-            'Kho hàng hóa': 'Quản lý tồn kho hàng hóa, nhập xuất kho',
-            'Chiến dịch': 'Chiến dịch marketing và nguồn phân bổ',
-            'Tài liệu': 'Kho tài liệu mật và biểu mẫu của công ty',
-            'Đối tác': 'Danh mục đối tác và cộng tác viên',
-            'Nhà cung cấp': 'Quản lý thông tin nhà cung cấp và chuỗi cung ứng',
-            'Báo giá': 'Tạo và phê duyệt báo giá dịch vụ',
-            'Sales Order': 'Theo dõi tiến độ đơn đặt cọc và các đợt thanh toán',
-            'Purchase Order': 'Phê duyệt và báo cáo các khoản chi phí chi tiêu nội bộ',
-            'Quy trình': 'Quản lý phê duyệt nghỉ phép, tạm ứng, chi phí và chấm công',
-            'Tài khoản cá nhân': 'Thông tin hồ sơ và đổi mật khẩu',
-            'Phòng ban': 'Danh sách các phòng ban và phân cấp thành viên',
-            'Nhân sự công ty': 'Danh sách hồ sơ nhân sự toàn công ty',
-            'Quản lý công': 'Báo cáo check-in, bảng chấm công và xin nghỉ phép',
-            'Quản lý chấm công': 'Báo cáo check-in, bảng chấm công và xin nghỉ phép',
-            'Chấm công': 'Ghi nhận check-in và xin nghỉ phép của tôi',
-            'Nhân sự & Lương': 'Hồ sơ nhân sự, bảng lương và hợp đồng lao động',
-            'Phiếu lương': 'Xem phiếu lương chi tiết từng tháng và xác nhận nhận lương',
-            'Cài đặt hệ thống': 'Các thông số và cấu hình chung toàn hệ thống',
-            'Huấn luyện AI': 'Huấn luyện AI chatbot tư vấn và tự động hóa hỗ trợ',
-            'Quản lý tài khoản': 'Phân quyền tài khoản quản trị viên',
-            'Quy tắc định tuyến': 'Thiết lập quy định chặn, skip và check-in',
-            'Tích hợp Data': 'Cấu hình webhook và liên kết Google Sheets',
-            'CAPI': 'Cấu hình sự kiện Meta Conversion API',
-            'Marketing': 'Tổng quan phễu Marketing, chiến dịch và chuyển đổi',
-            'Automation': 'Kịch bản nuôi dưỡng tự động đa kênh theo hành vi',
-            'Chiến dịch Email': 'Quản lý gửi Email hàng loạt, A/B testing và báo cáo',
-            'Mẫu thiết kế': 'Thư viện mẫu Email kéo thả và thiết kế cá nhân hóa',
-            'Tệp liên hệ': 'Quản lý phân khúc động, danh sách tĩnh và thẻ tag',
-            'Khảo sát': 'Biểu mẫu khảo sát, bài kiểm tra năng lực và NPS',
-            'Voucher & QR': 'Chiến dịch mã ưu đãi, QR code và rút gọn link',
-            'Social & Bot': 'Tích hợp Zalo OA, Facebook Messenger và kịch bản Bot',
-            'Đào tạo AI': 'Huấn luyện tri thức AI Copilot và quản lý hội thoại',
-            'Hành trình': 'Theo dõi hành trình khách hàng trên Website và UTM',
-            'API & Triggers': 'Cổng kết nối Webhook, Form thu Lead và sự kiện OTP',
-            'Báo cáo học tập': 'Thống kê kết quả học tập, chuyên cần và tiến độ học viên',
-            'Lớp học': 'Quản lý lớp học, lịch giảng dạy và danh sách học viên',
-            'Giảng viên': 'Quản lý hồ sơ giảng viên, lịch dạy và đánh giá',
-            'Chứng chỉ': 'Quản lý cấp phát chứng chỉ và văn bằng hoàn thành khóa học'
-          };
-
-          let visibleGroups = SIDEBAR_GROUPS.map(group => {
-            const filteredItems = group.items.filter((item: any) => {
-              if (item.adminOnly && !isAdmin) return false;
-              if (item.hideForRoles && item.hideForRoles.includes(role)) return false;
-              return true;
-            });
-
-            // Reorder items in "CHƯƠNG TRÌNH" specifically for accountant
-            if (group.title === 'CHƯƠNG TRÌNH' && role === 'accountant') {
-              const order = ['Nhà cung cấp', 'Đối tác', 'Chương trình', 'Tài liệu', 'Chiến dịch'];
-              filteredItems.sort((a, b) => {
-                const idxA = order.indexOf(a.name);
-                const idxB = order.indexOf(b.name);
-                return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
-              });
-            }
-
-            return { ...group, items: filteredItems };
-          }).filter(group => group.items.length > 0);
-
-          // If accountant, move 'Helpdesk' to the 'NHÂN SỰ' group and remove 'KHÁCH HÀNG' group
-          if (role === 'accountant') {
-            let supportTicketItem: any = null;
-            
-            // Find and remove 'Helpdesk' from its original group
-            visibleGroups = visibleGroups.map(group => {
-              if (group.title === 'KHÁCH HÀNG') {
-                const itemIdx = group.items.findIndex(item => item.name === 'Helpdesk');
-                if (itemIdx !== -1) {
-                  supportTicketItem = group.items[itemIdx];
-                  const newItems = [...group.items];
-                  newItems.splice(itemIdx, 1);
-                  return { ...group, items: newItems };
-                }
-              }
-              return group;
-            }).filter(group => group.items.length > 0); // remove KHÁCH HÀNG group if empty
-            
-            // Add 'Helpdesk' to the end of the 'NHÂN SỰ' group
-            if (supportTicketItem) {
-              visibleGroups = visibleGroups.map(group => {
-                if (group.title === 'NHÂN SỰ') {
-                  return { ...group, items: [...group.items, supportTicketItem] };
-                }
-                return group;
-              });
-            }
-          }
-
-          // Ensure WorkChat is present in TỔNG QUAN for all roles in App Launcher
-          const overviewGroup = visibleGroups.find(g => g.title === 'TỔNG QUAN');
-          if (overviewGroup && !overviewGroup.items.some((it: any) => it.name === 'WorkChat')) {
-            overviewGroup.items.push({
-              name: 'WorkChat',
-              href: '#chat',
-              icon: MessageSquare,
-              isChat: true
-            });
-          }
-
-          // Dynamic Group Re-ordering based on role - Put QUY TRÌNH & PHÊ DUYỆT at the beginning
-          const GROUP_ORDER_BY_ROLE: Record<string, string[]> = {
-            admin: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-            superadmin: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-            super_admin: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-            director: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-            accountant: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-            hr: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'NHÂN SỰ', 'CHƯƠNG TRÌNH'],
-            marketing: ['MARKETING & AUTOMATION', 'QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'CÀI ĐẶT HỆ THỐNG'],
-            sale_admin: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-            saleadmin: ['QUY TRÌNH & PHÊ DUYỆT', 'TỔNG QUAN', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ']
-          };
-          const activeRole = role.toLowerCase();
-          const groupOrder = GROUP_ORDER_BY_ROLE[activeRole];
-          if (groupOrder) {
-            visibleGroups.sort((a, b) => {
-              const idxA = groupOrder.indexOf(a.title);
-              const idxB = groupOrder.indexOf(b.title);
-              return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
-            });
-          }
-
-          const allVisibleItems = visibleGroups.flatMap(g => 
-            g.items.map(item => ({ ...item, groupTitle: g.title }))
-          );
-
-          const filteredItems = launcherSearch.trim()
-            ? allVisibleItems.filter(item => 
-                 item.name.toLowerCase().includes(launcherSearch.toLowerCase()) ||
-                 (ITEM_DESC[item.name] && ITEM_DESC[item.name].toLowerCase().includes(launcherSearch.toLowerCase())) ||
-                 item.groupTitle.toLowerCase().includes(launcherSearch.toLowerCase())
-               )
-            : [];
-
-          const RECENT_TARGETS_BY_ROLE: Record<string, string[]> = {
-            admin: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Báo cáo',
-              'Tiềm năng',
-              'Pipeline',
-              'Nhật ký Data',
-              'Cài đặt hệ thống',
-              'Huấn luyện AI'
-            ],
-            superadmin: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Báo cáo',
-              'Tiềm năng',
-              'Pipeline',
-              'Nhật ký Data',
-              'Cài đặt hệ thống',
-              'Huấn luyện AI'
-            ],
-            super_admin: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Báo cáo',
-              'Tiềm năng',
-              'Pipeline',
-              'Nhật ký Data',
-              'Cài đặt hệ thống',
-              'Huấn luyện AI'
-            ],
-            director: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Báo cáo',
-              'Tiềm năng',
-              'Pipeline',
-              'Nhật ký Data',
-              'Cài đặt hệ thống',
-              'Nhân sự công ty'
-            ],
-            manager: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Tiềm năng',
-              'Pipeline',
-              'Báo cáo',
-              'Phiếu lương',
-              'Nhân sự công ty',
-              'Lịch trình'
-            ],
-            assistant: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Tiềm năng',
-              'Pipeline',
-              'Báo cáo',
-              'Phiếu lương',
-              'Nhân sự công ty'
-            ],
-            sale: [
-              'Quy trình',
-              'Quản lý công',
-              'Bàn làm việc',
-              'WorkChat',
-              'Tiềm năng',
-              'Pipeline',
-              'Phiếu lương',
-              'Lịch trình',
-              'Tài liệu',
-              'Helpdesk',
-              'Học viên'
-            ],
-            sales: [
-              'Quy trình',
-              'Quản lý công',
-              'Bàn làm việc',
-              'WorkChat',
-              'Tiềm năng',
-              'Pipeline',
-              'Phiếu lương',
-              'Lịch trình',
-              'Tài liệu',
-              'Helpdesk',
-              'Học viên'
-            ],
-            accountant: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'WorkChat',
-              'Sales Order',
-              'Purchase Order',
-              'Phiếu lương',
-              'Nhà cung cấp',
-              'Đối tác',
-              'Bàn làm việc',
-              'Tài liệu'
-            ],
-            hr: [
-              'Quy trình',
-              'Quản lý công',
-              'Nhân sự & Lương',
-              'Phiếu lương',
-              'WorkChat',
-              'Phòng ban',
-              'Nhân sự công ty',
-              'Lịch trình',
-              'Bàn làm việc',
-              'Tài khoản cá nhân'
-            ],
-            marketing: [
-              'Marketing',
-              'Automation',
-              'Chiến dịch Email',
-              'Tệp liên hệ',
-              'Social & Bot',
-              'Quy trình',
-              'Quản lý công',
-              'WorkChat',
-              'Chiến dịch',
-              'Tiềm năng',
-              'Bàn làm việc'
-            ],
-            sale_admin: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Tiềm năng',
-              'Pipeline',
-              'Phiếu lương',
-              'Lịch trình',
-              'Tài liệu'
-            ],
-            saleadmin: [
-              'Quy trình',
-              'Quản lý công',
-              'Dashboard',
-              'Bàn làm việc',
-              'WorkChat',
-              'Tiềm năng',
-              'Pipeline',
-              'Phiếu lương',
-              'Lịch trình',
-              'Tài liệu'
-            ]
-          };
-
-          const defaultRecentTargets = [
-            'Quy trình',
-            'Quản lý công',
-            'Dashboard',
-            'Bàn làm việc',
-            'WorkChat',
-            'Tiềm năng',
-            'Pipeline',
-            'Báo cáo',
-            'Phiếu lương',
-            'Lịch trình',
-            'Nhật ký Data',
-            'Tài liệu'
-          ];
-          const rawRole = (role || '').toLowerCase();
-          const targetList = RECENT_TARGETS_BY_ROLE[rawRole] || defaultRecentTargets;
-
-          const findItem = (name: string) => {
-            let found = allVisibleItems.find(item => item.name === name);
-            if (!found && (name === 'Chấm công' || name === 'Quản lý chấm công' || name === 'Quản lý công')) {
-              found = allVisibleItems.find(item => item.name === 'Quản lý công' || item.name === 'Chấm công' || item.name === 'Quản lý chấm công');
-            }
-            if (!found && (name === 'Khách hàng' || name === 'Tiềm năng')) {
-              found = allVisibleItems.find(item => item.name === 'Tiềm năng' || item.name === 'Khách hàng');
-            }
-            return found;
-          };
-
-          const maxRecent = isMobile ? 9 : 7;
-          const defaultFavItemsList: any[] = [];
-          for (const name of targetList) {
-            const item = findItem(name);
-            if (item && !defaultFavItemsList.some(it => it.name === item.name || it.href === item.href)) {
-              defaultFavItemsList.push(item);
-            }
-            if (defaultFavItemsList.length >= maxRecent) break;
-          }
-
-          if (defaultFavItemsList.length < maxRecent) {
-            for (const item of allVisibleItems) {
-              if (!defaultFavItemsList.some(it => it.name === item.name || it.href === item.href)) {
-                defaultFavItemsList.push(item);
-              }
-              if (defaultFavItemsList.length >= maxRecent) break;
-            }
-          }
-
-          const defaultFavoriteNames = defaultFavItemsList.slice(0, maxRecent).map(it => it.name);
-          const effectiveFavoriteNames = favoriteShortcutNames !== null ? favoriteShortcutNames : defaultFavoriteNames;
-
-          const favoriteItems: any[] = [];
-          for (const name of effectiveFavoriteNames) {
-            const item = findItem(name);
-            if (item && !favoriteItems.some(it => it.name === item.name || it.href === item.href)) {
-              favoriteItems.push(item);
-            }
-          }
-
-          const recentVisitedItems: any[] = [];
-          for (const name of recentVisitedNames) {
-            const item = findItem(name);
-            if (item && !recentVisitedItems.some(it => it.name === item.name || it.href === item.href)) {
-              recentVisitedItems.push(item);
-            }
-            if (recentVisitedItems.length >= maxRecent) break;
-          }
-          if (recentVisitedItems.length < maxRecent) {
-            for (const item of defaultFavItemsList) {
-              if (!recentVisitedItems.some(it => it.name === item.name || it.href === item.href)) {
-                recentVisitedItems.push(item);
-              }
-              if (recentVisitedItems.length >= maxRecent) break;
-            }
-          }
-
-          const isItemFavorited = (itemName: string) => {
-            return effectiveFavoriteNames.includes(itemName);
-          };
-
-          const handleToggleFavorite = (itemName: string, e?: React.MouseEvent) => {
-            if (e) e.stopPropagation();
-            const currentList = [...effectiveFavoriteNames];
-            const idx = currentList.indexOf(itemName);
-            let nextList: string[];
-            if (idx >= 0) {
-              nextList = currentList.filter(n => n !== itemName);
-            } else {
-              if (currentList.length >= 14) {
-                toast.error('Tối đa 14 lối tắt yêu thích');
-                return;
-              }
-              nextList = [...currentList, itemName];
-            }
-            setFavoriteShortcutNames(nextList);
-            try {
-              localStorage.setItem(favStorageKey, JSON.stringify(nextList));
-            } catch {}
-          };
-
-          const handleResetDefaultFavorites = () => {
-            setFavoriteShortcutNames(null);
-            try {
-              localStorage.removeItem(favStorageKey);
-            } catch {}
-            toast.success('Đã khôi phục lối tắt mặc định');
-          };
-
-          const handleSelectLauncherItem = (item: any) => {
-            if (isCustomizingLauncher) {
-              handleToggleFavorite(item.name);
-              return;
-            }
-            recordLauncherVisit(item.name);
-            if (item.name === 'WorkChat' || item.name === 'Tin nhắn nội bộ' || (item as any).isChat || item.href === '#chat') {
-              openChat();
-              setIsAppLauncherOpen(false);
-              return;
-            }
-            navigate(item.href);
-            setIsAppLauncherOpen(false);
-          };
-
-          const activeTopItems = launcherTopTab === 'favorites' ? favoriteItems : recentVisitedItems.slice(0, maxRecent);
-
-          return (
-            <div style={{ paddingRight: '4px' }}>
-              {launcherSearch.trim() ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <h5 style={{ fontSize: '0.8125rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
-                    {t("Kết quả tìm kiếm")} ({filteredItems.length})
-                  </h5>
-                  {filteredItems.length > 0 ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '12px 24px' }}>
-                      {filteredItems.map(item => {
-                        const desc = ITEM_DESC[item.name] || 'Xem chi tiết thông tin';
-                        const isFav = isItemFavorited(item.name);
-                        return (
-                          <div
-                            key={item.name}
-                            onClick={() => handleSelectLauncherItem(item)}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '12px',
-                              padding: '8px 12px',
-                              borderRadius: '10px',
-                              cursor: 'pointer',
-                              border: isCustomizingLauncher && isFav ? '1px solid rgba(245, 158, 11, 0.45)' : '1px solid transparent',
-                              background: isCustomizingLauncher && isFav ? 'rgba(245, 158, 11, 0.06)' : 'transparent',
-                              transition: 'all 0.2s ease-in-out',
-                            }}
-                            onMouseEnter={e => {
-                              if (!(isCustomizingLauncher && isFav)) {
-                                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)';
-                              }
-                            }}
-                            onMouseLeave={e => {
-                              if (!(isCustomizingLauncher && isFav)) {
-                                e.currentTarget.style.background = 'transparent';
-                              }
-                            }}
-                          >
-                            <div style={{
-                              width: '32px',
-                              height: '32px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                            }}>
-                              <AppIcon name={(item as any).iconKey || item.name} size={32} />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, flex: 1 }}>
-                              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-text)', lineHeight: 1.25, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {t(item.name)}
-                              </span>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {t(desc)}
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={(e) => handleToggleFavorite(item.name, e)}
-                              title={isFav ? 'Bỏ khỏi Lối tắt của tôi' : 'Thêm vào Lối tắt của tôi'}
-                              style={{
-                                width: '28px',
-                                height: '28px',
-                                borderRadius: '8px',
-                                border: 'none',
-                                background: 'transparent',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                flexShrink: 0,
-                                color: isFav ? '#f59e0b' : 'var(--color-text-muted)',
-                                opacity: isFav ? 1 : 0.45,
-                                transition: 'all 0.15s ease',
-                              }}
-                              onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.12)'; }}
-                              onMouseLeave={e => { e.currentTarget.style.opacity = isFav ? '1' : '0.45'; e.currentTarget.style.transform = 'scale(1)'; }}
-                            >
-                              <Star size={16} fill={isFav ? '#f59e0b' : 'none'} />
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-                      {t("Không tìm thấy chức năng nào phù hợp.")}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '1rem' : '1.75rem' }}>
-                  {/* Top Section: Lối tắt của tôi / Vừa truy cập + Tùy chỉnh */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', borderBottom: '1px solid var(--color-border-light)', paddingBottom: isMobile ? '1rem' : '1.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
-                      {/* Segmented Sub-tabs */}
-                      <div style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        padding: '3px',
-                        borderRadius: '10px',
-                        background: 'var(--color-bg-light)',
-                        border: '1px solid var(--color-border-light)',
-                      }}>
-                        <button
-                          type="button"
-                          onClick={() => setLauncherTopTab('favorites')}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: isMobile ? '5px 10px' : '5px 12px',
-                            borderRadius: '7px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: isMobile ? '0.74rem' : '0.78rem',
-                            fontWeight: 700,
-                            background: launcherTopTab === 'favorites' ? 'var(--color-surface, #ffffff)' : 'transparent',
-                            color: launcherTopTab === 'favorites' ? 'var(--color-primary, #1E40FF)' : 'var(--color-text-muted)',
-                            boxShadow: launcherTopTab === 'favorites' ? '0 1px 2px rgba(0, 0, 0, 0.06)' : 'none',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          <Star size={13} fill={launcherTopTab === 'favorites' ? 'currentColor' : 'none'} />
-                          {t('Lối tắt của tôi')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setLauncherTopTab('recent');
-                            if (isCustomizingLauncher) setIsCustomizingLauncher(false);
-                          }}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: isMobile ? '5px 10px' : '5px 12px',
-                            borderRadius: '7px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: isMobile ? '0.74rem' : '0.78rem',
-                            fontWeight: 700,
-                            background: launcherTopTab === 'recent' ? 'var(--color-surface, #ffffff)' : 'transparent',
-                            color: launcherTopTab === 'recent' ? 'var(--color-primary, #1E40FF)' : 'var(--color-text-muted)',
-                            boxShadow: launcherTopTab === 'recent' ? '0 1px 2px rgba(0, 0, 0, 0.06)' : 'none',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          <Clock size={13} />
-                          {t('Vừa truy cập')}
-                        </button>
-                      </div>
-
-                      {/* Right: Customize Shortcut Action */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        {isCustomizingLauncher && (
-                          <button
-                            type="button"
-                            onClick={handleResetDefaultFavorites}
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '5px',
-                              padding: '5px 10px',
-                              borderRadius: '8px',
-                              border: '1px solid var(--color-border)',
-                              background: 'transparent',
-                              color: 'var(--color-text-muted)',
-                              fontSize: '0.74rem',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                            }}
-                          >
-                            <RefreshCw size={12} />
-                            {!isMobile && t('Mặc định')}
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const next = !isCustomizingLauncher;
-                            setIsCustomizingLauncher(next);
-                            if (next) setLauncherTopTab('favorites');
-                          }}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: '5px 12px',
-                            borderRadius: '8px',
-                            border: isCustomizingLauncher ? '1px solid var(--color-primary, #1E40FF)' : '1px solid var(--color-border)',
-                            background: isCustomizingLauncher ? 'var(--color-primary, #1E40FF)' : 'var(--color-surface, #ffffff)',
-                            color: isCustomizingLauncher ? '#ffffff' : 'var(--color-text)',
-                            fontSize: isMobile ? '0.74rem' : '0.78rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease',
-                          }}
-                        >
-                          {isCustomizingLauncher ? <Check size={13} /> : <Star size={13} />}
-                          {isCustomizingLauncher ? t('Hoàn tất') : t('Tùy chỉnh')}
-                        </button>
-                      </div>
-                    </div>
-
-                    {isCustomizingLauncher && (
-                      <div style={{
-                        fontSize: '0.76rem',
-                        color: 'var(--color-text-secondary)',
-                        background: 'rgba(245, 158, 11, 0.08)',
-                        border: '1px solid rgba(245, 158, 11, 0.25)',
-                        borderRadius: '10px',
-                        padding: '8px 12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                      }}>
-                        <Star size={14} fill="#f59e0b" color="#f59e0b" style={{ flexShrink: 0 }} />
-                        <span>Nhấn vào biểu tượng ngôi sao <strong>★</strong> ở danh sách bên dưới để ghim hoặc gỡ chức năng khỏi <strong>Lối tắt của tôi</strong> ({favoriteItems.length}/14).</span>
-                      </div>
-                    )}
-
-                    {activeTopItems.length > 0 ? (
-                      <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(7, minmax(0, 1fr))',
-                        gap: isMobile ? '8px' : '14px'
-                      }}>
-                        {activeTopItems.map(item => (
-                          <div
-                            key={item.name}
-                            onClick={() => handleSelectLauncherItem(item)}
-                            style={{
-                              position: 'relative',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: isMobile ? '6px' : '10px',
-                              padding: isMobile ? '12px 8px' : '18px 12px',
-                              background: 'var(--color-bg)',
-                              border: isCustomizingLauncher ? '1px dashed var(--color-primary, #1E40FF)' : '1px solid var(--color-border-light)',
-                              borderRadius: '18px',
-                              cursor: 'pointer',
-                              textAlign: 'center',
-                              boxShadow: 'var(--shadow-sm)',
-                              transition: 'all 0.2s ease-in-out'
-                            }}
-                            onMouseEnter={e => {
-                              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.02)';
-                              if (!isCustomizingLauncher) e.currentTarget.style.borderColor = 'var(--color-border)';
-                            }}
-                            onMouseLeave={e => {
-                              e.currentTarget.style.background = 'var(--color-bg)';
-                              if (!isCustomizingLauncher) e.currentTarget.style.borderColor = 'var(--color-border-light)';
-                            }}
-                          >
-                            {launcherTopTab === 'favorites' && isCustomizingLauncher && (
-                              <button
-                                type="button"
-                                onClick={(e) => handleToggleFavorite(item.name, e)}
-                                title="Gỡ lối tắt"
-                                style={{
-                                  position: 'absolute',
-                                  top: '6px',
-                                  right: '6px',
-                                  width: '20px',
-                                  height: '20px',
-                                  borderRadius: '999px',
-                                  border: 'none',
-                                  background: 'rgba(239, 68, 68, 0.12)',
-                                  color: '#1E40FF',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                <X size={12} />
-                              </button>
-                            )}
-                            <div style={{
-                              width: isMobile ? '40px' : '52px',
-                              height: isMobile ? '40px' : '52px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0
-                            }}>
-                              <AppIcon name={(item as any).iconKey || item.name} size={isMobile ? 40 : 52} />
-                            </div>
-                            <span style={{ fontSize: isMobile ? '0.75rem' : '0.82rem', fontWeight: 800, color: 'var(--color-text)', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-                              {t(item.name)}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div style={{
-                        padding: '18px',
-                        borderRadius: '14px',
-                        border: '1px dashed var(--color-border)',
-                        textAlign: 'center',
-                        fontSize: '0.8125rem',
-                        color: 'var(--color-text-muted)',
-                      }}>
-                        Chưa có lối tắt nào được ghim. Nhấn vào biểu tượng ngôi sao <strong>☆</strong> bên cạnh chức năng bất kỳ bên dưới để thêm vào Lối tắt của tôi.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Categories */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '1.25rem' : '2rem' }}>
-                    {visibleGroups.map(group => (
-                      <div key={group.title} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <h4 style={{ fontSize: isMobile ? '0.6875rem' : '0.75rem', fontWeight: 800, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', margin: 0, whiteSpace: 'nowrap' }}>
-                            {t(group.title)}
-                          </h4>
-                          <div style={{ flex: 1, height: '1px', background: 'var(--color-border-light)' }} />
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(300px, 1fr))', gap: isMobile ? '8px' : '10px 24px' }}>
-                          {group.items.map(item => {
-                            const desc = ITEM_DESC[item.name] || 'Xem chi tiết thông tin';
-                            const isFav = isItemFavorited(item.name);
-                            return (
-                              <div
-                                key={item.name}
-                                onClick={() => handleSelectLauncherItem(item)}
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '12px',
-                                  padding: isMobile ? '10px 12px' : '8px 12px',
-                                  borderRadius: '10px',
-                                  cursor: 'pointer',
-                                  border: isCustomizingLauncher && isFav ? '1px solid rgba(245, 158, 11, 0.45)' : '1px solid transparent',
-                                  background: isCustomizingLauncher && isFav ? 'rgba(245, 158, 11, 0.06)' : 'transparent',
-                                  transition: 'all 0.2s ease-in-out',
-                                }}
-                                onMouseEnter={e => {
-                                  if (!(isCustomizingLauncher && isFav)) {
-                                    e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)';
-                                  }
-                                }}
-                                onMouseLeave={e => {
-                                  if (!(isCustomizingLauncher && isFav)) {
-                                    e.currentTarget.style.background = 'transparent';
-                                  }
-                                }}
-                              >
-                                <div style={{
-                                  width: isMobile ? '34px' : '32px',
-                                  height: isMobile ? '34px' : '32px',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
-                                }}>
-                                  <AppIcon name={(item as any).iconKey || item.name} size={isMobile ? 34 : 32} />
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, flex: 1 }}>
-                                  <span style={{ fontSize: isMobile ? '0.92rem' : '0.85rem', fontWeight: 700, color: 'var(--color-text)', lineHeight: 1.25, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {t(item.name)}
-                                  </span>
-                                  {!isMobile && (
-                                    <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                      {t(desc)}
-                                    </span>
-                                  )}
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleToggleFavorite(item.name, e)}
-                                  title={isFav ? 'Bỏ khỏi Lối tắt của tôi' : 'Thêm vào Lối tắt của tôi'}
-                                  style={{
-                                    width: '28px',
-                                    height: '28px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    cursor: 'pointer',
-                                    flexShrink: 0,
-                                    color: isFav ? '#f59e0b' : 'var(--color-text-muted)',
-                                    opacity: isFav ? 1 : 0.4,
-                                    transition: 'all 0.15s ease',
-                                  }}
-                                  onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.12)'; }}
-                                  onMouseLeave={e => { e.currentTarget.style.opacity = isFav ? '1' : '0.4'; e.currentTarget.style.transform = 'scale(1)'; }}
-                                >
-                                  <Star size={16} fill={isFav ? '#f59e0b' : 'none'} />
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })()}
-      </div>
-    </CustomModal>
 
     {/* Global Command/Search Palette Modal */}
     <CustomModal
@@ -3966,7 +958,7 @@ export const Header = ({
                       <div
                         key={lead.id}
                         onClick={() => {
-                          navigate(`/data?search=${encodeURIComponent(lead.phone || lead.lead_name)}`);
+                          navigate(`/data?search=${encodeURIComponent(lead.phone || lead.lead_name || lead.name || '')}`);
                           setIsSearchOpen(false);
                         }}
                         className="search-result-item"
@@ -3999,7 +991,7 @@ export const Header = ({
                             {lead.source || t('Nguồn khác')}
                           </span>
                           <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>
-                            {lead.assigned_to_name ? `${t('Sale')}: ${lead.assigned_to_name}` : t('Chưa giao')}
+                            {lead.assigned_to_name ? `${t('Đại lý')}: ${lead.assigned_to_name}` : t('Chưa giao')}
                           </span>
                         </div>
                       </div>
@@ -4031,931 +1023,6 @@ export const Header = ({
           }
         `}</style>
       </CustomModal>
-
-      {/* Nút Chấm Công ở Gốc (Floating Check-in Button) - Luôn hiển thị: Chưa chấm -> mở modal, Đã chấm -> nhảy sang trang chấm công cá nhân */}
-      {user && user.role !== 'viewer' && (
-        <>
-          <style>{`
-            @media (max-width: 768px) {
-              .floating-checkin-btn {
-                bottom: calc(var(--mobile-bottom-nav-height, 62px) + env(safe-area-inset-bottom, 0px) + 76px) !important;
-                right: 16px !important;
-                z-index: 9990 !important;
-              }
-            }
-            @keyframes pulse-ring {
-              0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-              70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-              100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-            }
-            .floating-checkin-uncompleted {
-              animation: pulse-ring 2.5s infinite;
-            }
-          `}</style>
-          {(() => {
-            if (isChatOpen) return null;
-            const activeCheckIn = todayCheckIn || headerCheckIn;
-            const isStillLoadingCheckIn = !activeCheckIn && (isCheckInLoading !== undefined ? isCheckInLoading : internalCheckInLoading);
-            if (isStillLoadingCheckIn) return null;
-
-            const isWeekend = new Date().getDay() === 0 || new Date().getDay() === 6;
-            if (isWeekend && (!activeCheckIn || activeCheckIn.status === 'rejected')) return null; // Thứ 7 & CN: Không hiện nút nhắc chấm công nếu chưa chấm
-
-            const isPendingApproval = activeCheckIn && (activeCheckIn.status === 'pending_approval' || Boolean(activeCheckIn.pending_explanation_today));
-            const isNotCheckedIn = (!activeCheckIn || activeCheckIn.status === 'rejected') && !isPendingApproval;
-            const isApprovedCheckIn = activeCheckIn && (activeCheckIn.status === 'approved' || Boolean(activeCheckIn.check_in_time));
-            const needsCheckOut = requireCheckout && isApprovedCheckIn && !activeCheckIn.check_out_time;
-            const isCompletedCheckIn = isApprovedCheckIn && (!requireCheckout || Boolean(activeCheckIn.check_out_time));
-
-            // Ngày không có set lịch làm việc / không cần chấm công
-            const isNoWorkScheduled = Boolean(todayScheduleInfo.isDayOff);
-
-            // Quá giờ tan ca hôm nay mà cả ngày chưa chấm công (chỉ áp dụng ngày có đi làm)
-            const isPastShiftEndWithoutCheckIn = !isNoWorkScheduled && isNotCheckedIn && todayScheduleInfo.isPastShiftEnd && !activeCheckIn?.pending_explanation_today;
-
-            const handleClick = () => {
-              if (isNoWorkScheduled && isNotCheckedIn) {
-                // Ngày không có set lịch làm việc: Bấm nhảy sang xem bảng chấm công cá nhân, không mở modal chấm công
-                navigate('/attendance?user_id=' + (user?.id || ''));
-              } else if (isPastShiftEndWithoutCheckIn) {
-                const todayStr = new Date().toISOString().split('T')[0];
-                navigate(`/approvals?create=attendance_bulk&date=${todayStr}`);
-              } else if (isPendingApproval) {
-                navigate('/attendance?user_id=' + (user?.id || ''));
-              } else if (isNotCheckedIn || needsCheckOut) {
-                prewarmSmartCheckInGPS();
-                window.dispatchEvent(new CustomEvent('trigger-checkin-modal'));
-              } else {
-                navigate('/attendance?user_id=' + (user?.id || ''));
-              }
-            };
-
-            const btnBg = isPastShiftEndWithoutCheckIn
-              ? 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
-              : (isNoWorkScheduled && isNotCheckedIn)
-                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                : isNotCheckedIn 
-                  ? 'linear-gradient(135deg, #ef4444 0%, #1E40FF 100%)'
-                  : needsCheckOut || isPendingApproval
-                    ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-                    : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-
-            const btnShadow = isPastShiftEndWithoutCheckIn
-              ? '0 10px 25px rgba(124, 58, 237, 0.45)'
-              : (isNoWorkScheduled && isNotCheckedIn)
-                ? '0 8px 20px rgba(16, 185, 129, 0.35)'
-                : isNotCheckedIn
-                  ? '0 10px 25px rgba(239, 68, 68, 0.45)'
-                  : needsCheckOut || isPendingApproval
-                    ? '0 10px 25px rgba(245, 158, 11, 0.45)'
-                    : '0 8px 20px rgba(16, 185, 129, 0.35)';
-
-            const btnTitle = (isNoWorkScheduled && isNotCheckedIn)
-              ? t('Hôm nay không có lịch làm việc - Click để xem bảng chấm công')
-              : isPastShiftEndWithoutCheckIn
-                ? t('Đã quá giờ tan ca hôm nay - Click để tạo phiếu Cập nhật công')
-                : isNotCheckedIn
-                  ? t('Chưa chấm công - Click để chấm công ngay')
-                  : needsCheckOut
-                    ? t('Đã vào ca - Click để chấm công ra về')
-                    : isPendingApproval
-                      ? t('Chấm công đang chờ duyệt - Click để xem bảng chấm công')
-                      : t('Đã hoàn tất chấm công hôm nay - Click để xem bảng chấm công');
-
-            const floatingButton = (
-              <button
-                className={`floating-checkin-btn ${isNotCheckedIn && !isPastShiftEndWithoutCheckIn && !isNoWorkScheduled ? 'floating-checkin-uncompleted' : ''}`}
-                onTouchStart={prewarmSmartCheckInGPS}
-                onClick={handleClick}
-                style={{
-                  position: 'fixed',
-                  bottom: isMobile ? 'calc(var(--mobile-bottom-nav-height, 62px) + env(safe-area-inset-bottom, 0px) + 72px)' : 86,
-                  right: isMobile ? 16 : 24,
-                  width: isMobile ? 48 : 52,
-                  height: isMobile ? 48 : 52,
-                  borderRadius: '50%',
-                  background: btnBg,
-                  color: 'white',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: btnShadow,
-                  zIndex: 990,
-                  transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  outline: 'none'
-                }}
-                title={btnTitle}
-                onMouseEnter={e => {
-                  prewarmSmartCheckInGPS();
-                  e.currentTarget.style.transform = 'scale(1.08)';
-                }}
-                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                {isPastShiftEndWithoutCheckIn ? (
-                  <FileText size={22} />
-                ) : isCompletedCheckIn ? (
-                  <CheckCircle2 size={24} />
-                ) : (
-                  <Fingerprint size={24} />
-                )}
-              </button>
-            );
-
-            return typeof document !== 'undefined' ? createPortal(floatingButton, document.body) : floatingButton;
-          })()}
-        </>
-      )}
-
-      {/* Notifications Modal */}
-      <CustomModal
-        isOpen={isNotifModalOpen}
-        onClose={() => {
-          setIsNotifModalOpen(false);
-          setShowNotifSettings(false);
-        }}
-        title={t("Thông báo hệ thống")}
-        width={700}
-        headerAction={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <button
-              onClick={() => {
-                fetchNotifications();
-                toast.success(t('Đã làm mới thông báo'));
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '2rem',
-                height: '2rem',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--color-text-light)',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s, color 0.2s',
-                outline: 'none'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = 'var(--color-bg)';
-                e.currentTarget.style.color = 'var(--color-text)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = 'var(--color-text-light)';
-              }}
-              title={t("Làm mới thông báo")}
-            >
-              <RefreshCw size={18} />
-            </button>
-            <button
-              onClick={() => {
-                if (showNotifSettings) {
-                  setShowNotifSettings(false);
-                } else {
-                  fetchNotifPrefs();
-                  setShowNotifSettings(true);
-                }
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '2rem',
-                height: '2rem',
-                borderRadius: 'var(--radius-md)',
-                color: showNotifSettings ? 'var(--color-primary)' : 'var(--color-text-light)',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s, color 0.2s',
-                outline: 'none'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = 'var(--color-bg)';
-                e.currentTarget.style.color = 'var(--color-text)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = showNotifSettings ? 'var(--color-primary)' : 'var(--color-text-light)';
-              }}
-              title={showNotifSettings ? t("Quay lại thông báo") : t("Cấu hình Email")}
-            >
-              <Settings size={20} />
-            </button>
-          </div>
-        }
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '400px', height: isMobile ? '80vh' : 'auto', maxHeight: isMobile ? '80vh' : '70vh' }}>
-          {showNotifSettings ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0.5rem 0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                  Cấu hình Email thông báo cá nhân
-                </h3>
-                <button
-                  onClick={() => setShowNotifSettings(false)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'var(--color-primary)',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    outline: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <ArrowLeft size={16} />
-                  {t("Quay lại thông báo")}
-                </button>
-              </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', overflowY: 'auto', maxHeight: '55vh', paddingRight: '4px' }} className="custom-scrollbar">
-                {/* Advanced Multi-Channel Notification Settings List Item */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    background: 'var(--color-surface)',
-                    border: '1px solid var(--color-border-light)',
-                    gap: '1rem',
-                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.01)',
-                    marginBottom: '4px'
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        Tùy chỉnh thông báo chuyên sâu
-                      </span>
-                      <span style={{
-                        fontSize: '0.625rem',
-                        fontWeight: 700,
-                        color: '#1E40FF',
-                        background: '#fef2f2',
-                        border: '1px solid #fecaca',
-                        padding: '2px 6px',
-                        borderRadius: '10px',
-                        textTransform: 'uppercase'
-                      }}>
-                        Đa kênh
-                      </span>
-                    </div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
-                      Tùy chỉnh nguồn tổng và bật/tắt Zalo, Telegram, Email cho từng sự kiện.
-                    </span>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-                    {/* Overlapping 3 Channel Logos OUTSIDE & ABOVE button */}
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3, boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }}>
-                        <img src="https://stc-zpl.zdn.vn/favicon.ico" style={{ width: 14, height: 14, objectFit: 'contain' }} alt="Zalo" />
-                      </div>
-                      <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -7, zIndex: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }}>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/3840px-Telegram_logo.svg.png" style={{ width: 14, height: 14, objectFit: 'contain' }} alt="Telegram" />
-                      </div>
-                      <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -7, zIndex: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }}>
-                        <img src="/imgs/gmail-icon-free-png.webp" style={{ width: 14, height: 14, objectFit: 'contain' }} alt="Email" />
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsNotifModalOpen(false);
-                        setIsMatrixModalOpen(true);
-                      }}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        padding: '5px 14px',
-                        background: '#1E40FF',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        boxShadow: '0 2px 6px rgba(30, 64, 255, 0.22)'
-                      }}
-                    >
-                      <Settings size={13} />
-                      <span>Cấu hình</span>
-                    </button>
-                  </div>
-                </div>
-                {/* Browser Notifications Preference */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    background: 'var(--color-surface)',
-                    border: '1px solid var(--color-border-light)',
-                    gap: '1rem',
-                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.01)',
-                    marginBottom: '4px'
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        Thông báo trình duyệt (Browser Push)
-                      </span>
-                      <span style={{
-                        fontSize: '0.625rem',
-                        fontWeight: 700,
-                        color: 'var(--color-primary)',
-                        background: 'var(--color-primary-light)',
-                        padding: '2px 6px',
-                        borderRadius: '10px',
-                        textTransform: 'uppercase'
-                      }}>
-                        Khuyên dùng
-                      </span>
-                    </div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
-                      Nhận thông báo đẩy trực tiếp trên màn hình thiết bị ngay khi có thông báo mới.
-                    </span>
-                  </div>
-                  
-                  {(() => {
-                    if (!('Notification' in window)) {
-                      return <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Không hỗ trợ</span>;
-                    }
-                    const perm = Notification.permission;
-                    if (perm === 'granted') {
-                      return (
-                        <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-success)', display: 'inline-block' }} />
-                          Đã kích hoạt
-                        </span>
-                      );
-                    }
-                    if (perm === 'denied') {
-                      return (
-                        <button
-                          type="button"
-                          onClick={() => alert('Vui lòng vào cài đặt trình duyệt để cho phép trang web này gửi thông báo.')}
-                          style={{
-                            padding: '6px 12px',
-                            background: 'rgba(239, 68, 68, 0.08)',
-                            color: '#1E40FF',
-                            border: '1px solid rgba(30, 64, 255, 0.2)',
-                            borderRadius: '8px',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Bị chặn (Xem HD)
-                        </button>
-                      );
-                    }
-                    return (
-                      <button
-                        type="button"
-                        onClick={requestBrowserNotificationPermission}
-                        style={{
-                          padding: '6px 12px',
-                          background: 'var(--color-primary-light)',
-                          color: 'var(--color-primary)',
-                          border: '1px solid var(--color-primary-hover)',
-                          borderRadius: '8px',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Bật thông báo
-                      </button>
-                    );
-                  })()}
-                </div>
-                {[
-                  { key: 'email_warning', title: 'Cảnh báo trùng số & rửa nguồn', desc: 'Cảnh báo khi có trùng số điện thoại hoặc các hành vi rửa nguồn data.', isImportant: true },
-                  { key: 'email_mention', title: 'Nhắc nhở & gắn thẻ (@)', desc: 'Khi bạn được gắn thẻ vào bình luận dự án, công việc hoặc ticket.', isImportant: true },
-                  { key: 'email_approval_request', title: 'Yêu cầu hợp tác & phê duyệt', desc: 'Khi có yêu cầu hợp tác đại lý hoặc phê duyệt data.', isImportant: true },
-                  { key: 'email_project_document', title: 'Tài liệu dự án mới', desc: 'Khi có tài liệu dự án mới được tải lên hệ thống.', isImportant: false },
-                  { key: 'email_project_comment', title: 'Thảo luận dự án', desc: 'Cho các bình luận mới trong dự án của bạn (không tag trực tiếp).', isImportant: false },
-                  { key: 'email_project_roster', title: 'Thay đổi nhân sự dự án', desc: 'Khi có thành viên mới gia nhập hoặc rời khỏi dự án.', isImportant: false },
-                  { key: 'email_info', title: 'Báo cáo hiệu suất & thông tin khác', desc: 'Báo cáo định kỳ tự động và các thông tin hệ thống chung.', isImportant: false },
-                ].map(pref => (
-                  <div
-                    key={pref.key}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '14px 16px',
-                      borderRadius: '12px',
-                      background: 'var(--color-surface)',
-                      border: '1px solid var(--color-border-light)',
-                      gap: '1rem',
-                      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.01)'
-                    }}
-                  >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1, minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                          {pref.title}
-                        </span>
-                        {pref.isImportant && (
-                          <span style={{
-                            fontSize: '0.625rem',
-                            fontWeight: 700,
-                            color: '#1E40FF',
-                            background: 'rgba(30, 64, 255, 0.08)',
-                            padding: '2px 6px',
-                            borderRadius: '10px',
-                            textTransform: 'uppercase'
-                          }}>
-                            Mặc định
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsNotifModalOpen(false);
-                            setIsMatrixModalOpen(true);
-                          }}
-                          style={{
-                            fontSize: '0.6875rem',
-                            fontWeight: 700,
-                            color: 'var(--color-text-muted)',
-                            background: 'var(--color-bg-alt)',
-                            border: '1px solid var(--color-border-light)',
-                            borderRadius: '10px',
-                            padding: '2px 8px',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            transition: 'all 0.15s ease'
-                          }}
-                          className="hover-bg-alt"
-                        >
-                          Custom
-                        </button>
-                      </div>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.4 }}>
-                        {pref.desc}
-                      </span>
-                    </div>
-                    
-                    <label style={{ position: 'relative', display: 'inline-block', width: 42, height: 22, flexShrink: 0, cursor: 'pointer' }}>
-                      <input
-                        type="checkbox"
-                        checked={notifPrefs[pref.key] === 1}
-                        onChange={e => handleTogglePref(pref.key, e.target.checked ? 1 : 0)}
-                        style={{ opacity: 0, width: 0, height: 0 }}
-                      />
-                      <span style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: notifPrefs[pref.key] === 1 ? '#1E40FF' : '#cbd5e1',
-                        transition: 'all 0.2s ease',
-                        borderRadius: '20px'
-                      }}>
-                        <span style={{
-                          position: 'absolute',
-                          height: 16,
-                          width: 16,
-                          left: notifPrefs[pref.key] === 1 ? 23 : 3,
-                          bottom: 3,
-                          backgroundColor: 'white',
-                          transition: 'all 0.2s ease',
-                          borderRadius: '50%',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                        }} />
-                      </span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <>
-              {/* Header Controls */}
-              <div style={{ 
-                display: 'flex', 
-                flexDirection: isMobile ? 'column' : 'row', 
-                justifyContent: 'space-between', 
-                alignItems: isMobile ? 'stretch' : 'center', 
-                borderBottom: '1px solid var(--color-border-light)', 
-                paddingBottom: '0.75rem', 
-                marginBottom: '1rem',
-                gap: '8px'
-              }}>
-                {/* Filter Tabs */}
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '0.5rem', 
-                  overflowX: isMobile ? 'auto' : 'visible', 
-                  scrollbarWidth: 'none',
-                  paddingBottom: isMobile ? '4px' : '0',
-                  borderBottom: isMobile ? '1px dashed var(--color-border-light)' : 'none'
-                }} className="hide-scrollbar">
-                  {(['all', 'unread', 'read'] as const).map(tab => (
-                    <button
-                      key={tab}
-                      onClick={() => setNotifFilter(tab)}
-                      style={{
-                        padding: '6px 14px',
-                        borderRadius: '20px',
-                        fontSize: '0.8125rem',
-                        fontWeight: 600,
-                        border: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        background: notifFilter === tab ? 'var(--color-primary-light)' : 'transparent',
-                        color: notifFilter === tab ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                        outline: 'none',
-                        whiteSpace: 'nowrap',
-                        flexShrink: 0
-                      }}
-                    >
-                      {tab === 'all' && t("Tất cả")}
-                      {tab === 'unread' && `${t("Chưa đọc")} (${unreadCount})`}
-                      {tab === 'read' && t("Đã đọc")}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Actions */}
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: isMobile ? 'flex-end' : 'flex-start', flexWrap: 'wrap' }}>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={handleMarkAllRead}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        padding: '4px 8px',
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--color-primary)',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        outline: 'none'
-                      }}
-                    >
-                      <Check size={14} />
-                      {t("Đọc tất cả")}
-                    </button>
-                  )}
-                  {notifications.length > 0 && (
-                    <button
-                      onClick={handleClearAllNotif}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        padding: '4px 8px',
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--color-text-muted)',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        outline: 'none'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.color = '#ef4444'}
-                      onMouseLeave={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
-                    >
-                      <Trash2 size={14} />
-                      {t("Xóa toàn bộ")}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* List area */}
-              <div style={{ flex: 1, overflowY: 'auto', paddingRight: '6px', paddingLeft: '6px', paddingTop: '6px', paddingBottom: '6px' }} className="custom-scrollbar">
-                {(() => {
-                  const filtered = notifications.filter(n => {
-                    if (notifFilter === 'unread') return !n.is_read;
-                    if (notifFilter === 'read') return !!n.is_read;
-                    return true;
-                  });
-
-                  if (filtered.length === 0) {
-                    return (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '1rem', color: 'var(--color-text-muted)' }}>
-                        <Bell size={48} style={{ opacity: 0.25 }} />
-                        <p style={{ fontSize: '0.875rem' }}>{t("Không có thông báo nào")}</p>
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      {filtered.map(notif => {
-                        const isWarning = notif.type === 'warning' || (notif.title && (notif.title.toLowerCase().includes('trùng số') || notif.title.toLowerCase().includes('rửa nguồn') || notif.title.toLowerCase().includes('cảnh báo')));
-                        const isAttendanceUpdate = notif.type === 'attendance_update' || (notif.title && notif.title.toLowerCase().includes('cập nhật công'));
-                        const isPipeline = notif.type === 'pipeline_transition' || notif.type === 'pipeline' || (notif.title && notif.title.toLowerCase().includes('pipeline'));
-                        
-                        const bgBase = notif.is_read 
-                          ? 'var(--color-surface)' 
-                          : (isWarning ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.02) 0%, rgba(239, 68, 68, 0.06) 100%)' 
-                             : isPipeline ? 'linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(37, 99, 235, 0.08) 100%)'
-                             : isAttendanceUpdate ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.02) 0%, rgba(139, 92, 246, 0.06) 100%)'
-                             : 'linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(59, 130, 246, 0.06) 100%)');
-                        
-                        const borderColor = notif.is_read
-                          ? 'var(--color-border-light)'
-                          : (isWarning ? 'rgba(239, 68, 68, 0.2)' 
-                             : isPipeline ? 'rgba(37, 99, 235, 0.3)'
-                             : isAttendanceUpdate ? 'rgba(139, 92, 246, 0.25)' 
-                             : 'rgba(59, 130, 246, 0.2)');
-
-                        return (
-                          <div
-                            key={notif.id}
-                            onClick={() => handleNotifClick(notif)}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'start',
-                              gap: '0.875rem',
-                              padding: '14px 16px',
-                              borderRadius: '12px',
-                              background: bgBase,
-                              border: `1px solid ${borderColor}`,
-                              cursor: notif.link || isWarning ? 'pointer' : 'default',
-                              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                              position: 'relative',
-                              boxShadow: notif.is_read ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.03)',
-                              opacity: notif.is_read ? 0.75 : 1
-                            }}
-                            onMouseEnter={e => {
-                              e.currentTarget.style.borderColor = isWarning ? '#ef4444' : isPipeline ? '#2563eb' : isAttendanceUpdate ? '#8b5cf6' : '#3b82f6';
-                              e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.08)';
-                              e.currentTarget.style.transform = 'translateY(-1px)';
-                              if (notif.is_read) {
-                                e.currentTarget.style.opacity = '1';
-                              }
-                            }}
-                            onMouseLeave={e => {
-                              e.currentTarget.style.borderColor = borderColor;
-                              e.currentTarget.style.boxShadow = notif.is_read ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.03)';
-                              e.currentTarget.style.transform = 'none';
-                              if (notif.is_read) {
-                                e.currentTarget.style.opacity = '0.75';
-                              }
-                            }}
-                          >
-                            <div style={{ position: 'relative', display: 'flex', flexShrink: 0, marginTop: 2 }}>
-                              {(() => {
-                                let actorName = notif.actor_name;
-                                let actorAvatar = notif.actor_avatar;
-                                if (!actorName && notif.body) {
-                                  const clean = notif.body
-                                    .replace(/^(?:\[[^\]]+\]\s*)+/g, '')
-                                    .replace(/^(?:Nhân viên|Nhân sự|Đồng nghiệp|Quản lý|Trưởng nhóm|Admin|Kế toán|Giám đốc)\s+/gi, '')
-                                    .trim();
-                                  const m = clean.match(/^(.+?)(?:\s*\([^)]*\))?\s+(?:đã|vừa|gửi|báo|có|check-in|nhắc|tạo|yêu cầu)\s+/i);
-                                  if (m && m[1] && m[1].trim().length >= 2) {
-                                    actorName = m[1].trim();
-                                  }
-                                }
-
-                                if (actorName) {
-                                  return (
-                                    /* Sale / Admin / Nhân sự gửi → avatar đúng người */
-                                    <div style={{ position: 'relative', display: 'inline-flex' }}>
-                                      <Avatar src={actorAvatar || undefined} name={actorName} size={38} />
-                                      <span style={{ 
-                                        position: 'absolute', 
-                                        bottom: -2, 
-                                        right: -2, 
-                                        width: 18, 
-                                        height: 18, 
-                                        borderRadius: '50%', 
-                                        background: (() => { 
-                                          switch (notif.type) { 
-                                            case 'warning': return '#ef4444'; 
-                                            case 'pipeline_transition': case 'pipeline': return '#2563eb'; 
-                                            case 'mention': case 'task_assignment': case 'task_participant': return '#3b82f6'; 
-                                            case 'expense': case 'approval': case 'approval_request': return '#1E40FF'; 
-                                            case 'project_roster': return '#10b981'; 
-                                            case 'project_document': case 'contact_document': return '#f59e0b'; 
-                                            case 'project_comment': case 'attendance_update': return '#8b5cf6'; 
-                                            case 'attendance': return '#eab308'; 
-                                            default: return '#6b7280'; 
-                                          } 
-                                        })(), 
-                                        border: '1.5px solid var(--color-surface, #ffffff)', 
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.15)', 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        justifyContent: 'center' 
-                                      }}>
-                                        {(() => { 
-                                          switch (notif.type) { 
-                                            case 'pipeline_transition': case 'pipeline': return <Activity size={11} style={{ color: 'white' }} />; 
-                                            case 'mention': case 'task_assignment': case 'task_participant': return <CheckSquare size={11} style={{ color: 'white' }} />; 
-                                            case 'expense': case 'approval': case 'approval_request': return <CheckSquare size={11} style={{ color: 'white' }} />; 
-                                            case 'project_roster': return <Users size={11} style={{ color: 'white' }} />; 
-                                            case 'project_document': case 'contact_document': return <FileText size={11} style={{ color: 'white' }} />; 
-                                            case 'project_comment': return <MessageSquare size={11} style={{ color: 'white' }} />; 
-                                            case 'warning': return <AlertTriangle size={11} style={{ color: 'white' }} />; 
-                                            case 'attendance_update': return <Clock size={11} style={{ color: 'white' }} />; 
-                                            default: return <Info size={11} style={{ color: 'white' }} />; 
-                                          } 
-                                        })()}
-                                      </span>
-                                    </div>
-                                  );
-                                }
-
-                                return (
-                                  /* Cảnh báo hệ thống / hoặc không có user → logo IDEAS */
-                                  <div style={{ width: 38, height: 38, borderRadius: '50%', overflow: 'hidden', border: '1px solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', flexShrink: 0 }}>
-                                    <img src="/LOGO.jpg" alt="IDEAS" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                  </div>
-                                );
-                              })()}
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '3px', position: 'relative' }}>
-                              <div style={{ paddingRight: '56px' }}>
-                                <h4 style={{
-                                  margin: 0,
-                                  fontSize: '0.875rem',
-                                  fontWeight: notif.is_read ? 700 : 800,
-                                  color: 'var(--color-text)',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  display: 'flex',
-                                  alignItems: 'center'
-                                }}>
-                                  {cleanNotificationText(notif.title)}
-                                  {!notif.is_read && (
-                                    <span style={{
-                                      width: 6,
-                                      height: 6,
-                                      borderRadius: '50%',
-                                      background: isWarning ? '#ef4444' : '#3b82f6',
-                                      display: 'inline-block',
-                                      marginLeft: '6px',
-                                      boxShadow: `0 0 6px ${isWarning ? '#ef4444' : '#3b82f6'}`
-                                    }} />
-                                  )}
-                                </h4>
-                              </div>
-
-                              <span style={{ 
-                                fontSize: '0.72rem', 
-                                color: 'var(--color-text-muted)', 
-                                fontWeight: 600, 
-                                whiteSpace: 'nowrap',
-                                marginTop: '1px'
-                              }}>
-                                {(() => {
-                                  if (!notif.created_at) return '';
-                                  const d = new Date(notif.created_at.replace(' ', 'T'));
-                                  if (isNaN(d.getTime())) return notif.created_at;
-                                  
-                                  const now = new Date();
-                                  const diffMs = now.getTime() - d.getTime();
-                                  const diffMins = Math.floor(diffMs / 60000);
-                                  
-                                  if (diffMins < 1) return t("Vừa xong");
-                                  if (diffMins < 60) return `${diffMins} ${t("phút trước")}`;
-                                  if (diffMins < 1440) {
-                                    const hrs = Math.floor(diffMins / 60);
-                                    return `${hrs} ${t("giờ trước")}`;
-                                  }
-                                  const days = Math.floor(diffMins / 1440);
-                                  return `${days} ${t("ngày trước")}`;
-                                })()}
-                              </span>
-
-                              <p style={{
-                                margin: '4px 0 0 0',
-                                fontSize: '0.8125rem',
-                                color: 'var(--color-text-muted)',
-                                lineHeight: '1.4',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 3,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden'
-                              }}>
-                                {cleanNotificationText(notif.body)}
-                              </p>
-                            </div>
-
-                            <div 
-                              className="notif-actions"
-                              style={{ 
-                                position: 'absolute',
-                                top: '10px',
-                                right: '10px',
-                                display: 'flex', 
-                                gap: '2px', 
-                                zIndex: 10
-                              }}
-                              onClick={e => e.stopPropagation()}
-                            >
-                              <button
-                                onClick={() => handleMarkRead(notif.id, notif.is_read ? 0 : 1)}
-                                style={{
-                                  padding: '6px',
-                                  background: 'none',
-                                  border: 'none',
-                                  cursor: 'pointer',
-                                  color: 'var(--color-text-light)',
-                                  borderRadius: '6px',
-                                  transition: 'all 0.2s',
-                                  outline: 'none',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center'
-                                }}
-                                title={notif.is_read ? t("Đánh dấu chưa đọc") : t("Đánh dấu đã đọc")}
-                                onMouseEnter={e => {
-                                  e.currentTarget.style.color = 'var(--color-primary)';
-                                  e.currentTarget.style.background = 'var(--color-primary-light)';
-                                }}
-                                onMouseLeave={e => {
-                                  e.currentTarget.style.color = 'var(--color-text-light)';
-                                  e.currentTarget.style.background = 'none';
-                                }}
-                              >
-                                {notif.is_read ? <EyeOff size={14} /> : <Eye size={14} />}
-                              </button>
-                              <button
-                                onClick={() => handleDeleteNotif(notif.id)}
-                                style={{
-                                  padding: '6px',
-                                  background: 'none',
-                                  border: 'none',
-                                  cursor: 'pointer',
-                                  color: 'var(--color-text-light)',
-                                  borderRadius: '6px',
-                                  transition: 'all 0.2s',
-                                  outline: 'none',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center'
-                                }}
-                                title={t("Xóa")}
-                                onMouseEnter={e => {
-                                  e.currentTarget.style.color = '#ef4444';
-                                  e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)';
-                                }}
-                                onMouseLeave={e => {
-                                  e.currentTarget.style.color = 'var(--color-text-light)';
-                                  e.currentTarget.style.background = 'none';
-                                }}
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })()}
-              </div>
-            </>
-          )}
-        </div>
-      </CustomModal>
-
-      {/* Advanced Matrix Notification Settings Modal */}
-      <NotificationSettingsModal
-        isOpen={isMatrixModalOpen}
-        onClose={() => setIsMatrixModalOpen(false)}
-        onBack={() => {
-          setIsMatrixModalOpen(false);
-          setIsNotifModalOpen(true);
-        }}
-      />
-
-      {/* WorkChat Feature Intro Modal */}
-      <FeatureIntroModal
-        isOpen={showFeatureIntro}
-        onClose={() => setShowFeatureIntro(false)}
-      />
     </header>
   );
 };

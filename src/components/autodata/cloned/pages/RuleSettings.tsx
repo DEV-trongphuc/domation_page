@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { Plus, Trash2, ShieldCheck, ArrowRight, Filter, Server, MapPin, GripVertical, Edit2, Link2, FileSpreadsheet, Zap, Keyboard, Globe, Play, XCircle, AlertCircle, RefreshCw, Mail, Info, Layers, Cpu, SlidersHorizontal } from 'lucide-react';
+import { Plus, Trash2, ShieldCheck, ArrowRight, Filter, Server, MapPin, GripVertical, Edit2, Link2, FileSpreadsheet, Zap, Keyboard, Globe, Play, XCircle, AlertCircle, RefreshCw, Mail } from 'lucide-react';
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors
 } from '@dnd-kit/core';
@@ -18,11 +18,8 @@ import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { fetchAPI } from '../utils/api';
 import { CardSkeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
-import { canManageSystemSettings } from '../utils/roleUtils';
 import { useLanguage } from '../contexts/LanguageContext';
-import { EmptyCard } from '../components/ui/EmptyCard';
-import { useAuthStore } from '../store/authStore';
-import { DistributionNavTabs } from '../components/DistributionNavTabs';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 const OP_LABELS: Record<string, string> = {
   contains: 'Có chứa từ khóa',
@@ -39,7 +36,7 @@ const OP_LABELS: Record<string, string> = {
 };
 
 // Sortable Item Component
-const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisabled, isReadOnly }: { rule: any, idx: number, connections: any[], onEdit: (r: any) => void, onDelete: (id: number) => void, isDragDisabled?: boolean, isReadOnly?: boolean }) => {
+const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisabled }: { rule: any, idx: number, connections: any[], onEdit: (r: any) => void, onDelete: (id: number) => void, isDragDisabled?: boolean }) => {
   const { t } = useLanguage();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: rule.id });
 
@@ -73,7 +70,7 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
             </div>
           )}
           <div style={{
-            width: 30, height: 30, borderRadius: '50%', background: 'var(--color-surface)', border: '1px solid var(--color-border)',
+            width: 30, height: 30, borderRadius: '50%', background: 'white', border: '1px solid var(--color-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-primary)',
             marginTop: 8, boxShadow: 'var(--shadow-sm)'
           }}>
@@ -117,7 +114,7 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
                       </span>
                     );
                   }
-                  const conn = connections.find(c => Number(c.id) === cId);
+                  const conn = connections.find(c => String(c.id) === String(cId));
                   if (conn) {
                     return (
                       <span key={cId} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.7rem', fontWeight: 700, padding: '4px 8px', background: 'var(--color-bg)', borderRadius: 4, color: 'var(--color-text-muted)' }}>
@@ -131,33 +128,34 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
             </div>
 
             <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>{t("Điều kiện kích hoạt")}</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div data-tour="rules-builder" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {(() => {
-                const parsed = (() => {
-                  if (rule.conditions_json) {
-                    try {
-                      return typeof rule.conditions_json === 'string' ? JSON.parse(rule.conditions_json) : rule.conditions_json;
-                    } catch (e) {
-                      return [{ col: rule.condition_column, op: rule.condition_operator, val: rule.condition_value }];
-                    }
+                let parsed = [];
+                if (rule.conditions_json) {
+                  try {
+                    parsed = typeof rule.conditions_json === 'string' ? JSON.parse(rule.conditions_json) : rule.conditions_json;
+                  } catch (e) {
+                    parsed = [{ col: rule.condition_column, op: rule.condition_operator, val: rule.condition_value }];
                   }
-                  return [{ col: rule.condition_column, op: rule.condition_operator, val: rule.condition_value }];
-                })();
+                } else {
+                  parsed = [{ col: rule.condition_column, op: rule.condition_operator, val: rule.condition_value }];
+                }
 
                 // Normalize to new structure: { conditions: [...] }
-                const normalizedBranches = (() => {
-                  if (Array.isArray(parsed) && parsed.length > 0) {
-                    if (parsed[0].col) {
-                      return [{ conditions: parsed }];
-                    } else if (Array.isArray(parsed[0])) {
-                      return parsed.map(b => ({ conditions: b }));
-                    } else if (parsed[0].conditions) {
-                      return parsed;
-                    }
-                    return [{ conditions: [] }];
+                let normalizedBranches = [];
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  if (parsed[0].col) {
+                    normalizedBranches = [{ conditions: parsed }];
+                  } else if (Array.isArray(parsed[0])) {
+                    normalizedBranches = parsed.map(b => ({ conditions: b }));
+                  } else if (parsed[0].conditions) {
+                    normalizedBranches = parsed;
+                  } else {
+                    normalizedBranches = [{ conditions: [] }];
                   }
-                  return [{ conditions: [] }];
-                })();
+                } else {
+                  normalizedBranches = [{ conditions: [] }];
+                }
 
                 return normalizedBranches.map((branch: any, bIndex: number) => (
                   <div key={bIndex} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -178,21 +176,12 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
                           )}
                           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem' }}>
                             <span style={{
-                              background: 'rgba(37, 99, 235, 0.08)',
-                              border: '1px solid rgba(37, 99, 235, 0.25)',
-                              padding: '4px 10px',
-                              borderRadius: 8,
-                              fontWeight: 600,
-                              color: '#2563eb',
-                              fontSize: '0.8125rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 6
+                              background: 'rgba(30, 64, 255, 0.08)', border: '1px solid var(--color-primary-light)', padding: '4px 10px', borderRadius: 8, fontWeight: 600, color: 'var(--color-primary)', fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: 6
                             }}>
-                              <SlidersHorizontal size={13} style={{ color: '#2563eb' }} /> {c.col}
+                              <Server size={12} /> {c.col}
                             </span>
                             <span style={{ color: 'var(--color-text-light)', fontSize: '0.8125rem', fontStyle: 'italic' }}>
-                              {t(OP_LABELS[c.op]) || c.op}
+                              {t(OP_LABELS[c.op || 'contains']) || c.op || 'contains'}
                             </span>
                             {c.op !== 'is_empty' && c.op !== 'is_not_empty' && (
                               <span style={{
@@ -237,26 +226,24 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
         </div>
 
         {/* Actions */}
-        {!isReadOnly && (
-          <div className="sortable-rule-actions" style={{ padding: '0 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', borderLeft: '1px dashed var(--color-border-light)' }}>
-            <button
-              onClick={() => onEdit(rule)}
-              className="btn ghost"
-              style={{ width: 40, height: 40, padding: 0, borderRadius: 10, color: 'var(--color-primary)' }}
-              title={t("Sửa quy tắc")}
-            >
-              <Edit2 size={16} />
-            </button>
-            <button
-              onClick={() => onDelete(rule.id)}
-              className="btn ghost"
-              style={{ width: 40, height: 40, padding: 0, borderRadius: 10, color: 'var(--color-danger)' }}
-              title={t("Xóa quy tắc này")}
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        )}
+        <div className="sortable-rule-actions" style={{ padding: '0 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', borderLeft: '1px dashed var(--color-border-light)' }}>
+          <button
+            onClick={() => onEdit(rule)}
+            className="btn ghost"
+            style={{ width: 40, height: 40, padding: 0, borderRadius: 10, color: 'var(--color-primary)' }}
+            title={t("Sửa quy tắc")}
+          >
+            <Edit2 size={16} />
+          </button>
+          <button
+            onClick={() => onDelete(rule.id)}
+            className="btn ghost"
+            style={{ width: 40, height: 40, padding: 0, borderRadius: 10, color: 'var(--color-danger)' }}
+            title={t("Xóa quy tắc này")}
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -264,7 +251,7 @@ const SortableRuleItem = ({ rule, idx, connections, onEdit, onDelete, isDragDisa
 
 const parseMarkdownToHtml = (markdown: string) => {
   if (!markdown) return '';
-  const html = markdown
+  let html = markdown
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -273,7 +260,7 @@ const parseMarkdownToHtml = (markdown: string) => {
     .replace(/^# (.*$)/gim, '<h2 style="font-size: 1.3rem; font-weight: 800; color: var(--color-primary); margin-top: 1.5rem; margin-bottom: 1rem;">$1</h2>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/^\s*[-*]\s+(.*$)/gim, '<li style="margin-left: 1.25rem; margin-bottom: 0.25rem; list-style-type: disc;">$1</li>')
+    .replace(/^\s*[\-\*]\s+(.*$)/gim, '<li style="margin-left: 1.25rem; margin-bottom: 0.25rem; list-style-type: disc;">$1</li>')
     .replace(/\n\n/g, '<div style="margin-bottom: 0.75rem;"></div>')
     .replace(/\n/g, '<br/>');
 
@@ -281,29 +268,10 @@ const parseMarkdownToHtml = (markdown: string) => {
 };
 
 const RuleSettingsInner = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   const { t } = useLanguage();
-  const user = useAuthStore(state => state.user);
-  const isReadOnly = !canManageSystemSettings(user);
   const [rules, setRules] = useState<any[]>([]);
   const [rounds, setRounds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [sysSettings, setSysSettings] = useState<any>(null);
-  useEffect(() => {
-    fetchAPI('get_settings').then(res => {
-      if (res && res.success) {
-        setSysSettings(res.data);
-      }
-    });
-  }, []);
 
   const navigate = useNavigate();
   // Modal states
@@ -431,11 +399,11 @@ const RuleSettingsInner = () => {
         fetchAPI('get_connections'),
         fetchAPI('get_mappings')
       ]);
-      if (connRes.success && mapRes.success) {
-        const conns = connRes.data.map((c: any) => ({
+      if (connRes && connRes.success && mapRes && mapRes.success) {
+        const conns = (Array.isArray(connRes.data) ? connRes.data : []).map((c: any) => ({
           ...c,
-          mappings: mapRes.data.filter((m: any) => Number(m.connection_id) === Number(c.id))
-        })).filter((c: any) => Number(c.is_silent) !== 1);
+          mappings: (Array.isArray(mapRes.data) ? mapRes.data : []).filter((m: any) => String(m?.connection_id) === String(c?.id))
+        })).filter((c: any) => !Boolean(Number(c?.is_silent)));
         setConnections(conns);
       }
     } catch (e: any) {
@@ -451,7 +419,7 @@ const RuleSettingsInner = () => {
   const fetchRules = async () => {
     try {
       const json = await fetchAPI('get_rules');
-      if (json.success) setRules(json.data);
+      if (json && json.success) setRules(Array.isArray(json?.data) ? json.data : []);
     } catch (e: any) {
       console.error("Failed to fetch rules", e);
     }
@@ -461,7 +429,7 @@ const RuleSettingsInner = () => {
   const fetchRounds = async () => {
     try {
       const json = await fetchAPI('get_rounds');
-      if (json.success) setRounds(json.data);
+      if (json && json.success) setRounds(Array.isArray(json?.data) ? json.data : []);
     } catch (e: any) {
       console.error("Failed to fetch rounds", e);
     }
@@ -478,7 +446,6 @@ const RuleSettingsInner = () => {
   }, [simulateConnectionType]);
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    if (isReadOnly) return;
     const { active, over } = event;
     if (active.id !== over?.id) {
       const oldIndex = rules.findIndex((r) => r.id === active.id);
@@ -562,7 +529,6 @@ const RuleSettingsInner = () => {
   };
 
   const handleSaveRule = async () => {
-    if (isReadOnly) return;
     for (const branch of branches) {
       if (!branch.conditions || branch.conditions.length === 0) return toast.error(t('Có nhánh đang trống điều kiện'));
       for (const c of branch.conditions) {
@@ -610,7 +576,7 @@ const RuleSettingsInner = () => {
   };
 
   const handleDelete = async () => {
-    if (isReadOnly || !deleteId || isDeleting) return;
+    if (!deleteId || isDeleting) return;
     setIsDeleting(true);
     try {
       const json = await fetchAPI(`delete_rule&id=${deleteId}`);
@@ -638,7 +604,7 @@ const RuleSettingsInner = () => {
       { value: 'connection_id', label: t('Tích hợp (Sheet/Webhook)') }
     ];
     if (!connectionId.includes('all') && connectionId.length === 1) {
-      const conn = connections.find(c => Number(c.id) === Number(connectionId[0]));
+      const conn = connections.find(c => String(c.id) === String(connectionId[0]));
       if (conn && conn.mappings) {
         const customFields = conn.mappings.map((m: any) => ({
           value: m.sheet_column,
@@ -665,24 +631,23 @@ const RuleSettingsInner = () => {
   ];
 
   const filteredRules = rules.filter(r => {
-    const matchConnection = (() => {
-      if (activeFilter === 'all') {
-        return true;
-      } else if (activeFilter === null) {
-        return r.connection_id === null || r.connection_id === '' || r.connection_id === 'all';
+    let matchConnection = true;
+    if (activeFilter === 'all') {
+      matchConnection = true;
+    } else if (activeFilter === null) {
+      matchConnection = r.connection_id === null || r.connection_id === '' || r.connection_id === 'all';
+    } else {
+      if (r.connection_id === null || r.connection_id === '' || r.connection_id === 'all') {
+        matchConnection = false;
       } else {
-        if (r.connection_id === null || r.connection_id === '' || r.connection_id === 'all') {
-          return false;
-        } else {
-          const cIds = r.connection_id.toString().split(',').map((id: string) => Number(id.trim()));
-          return cIds.includes(activeFilter);
-        }
+        const cIds = r.connection_id.toString().split(',').map((id: string) => Number(id.trim()));
+        matchConnection = cIds.includes(activeFilter);
       }
-    })();
+    }
 
     let matchRound = true;
     if (activeRoundFilter !== 'all') {
-      matchRound = Number(r.target_round_id) === Number(activeRoundFilter);
+      matchRound = String(r.target_round_id) === String(activeRoundFilter);
     }
 
     return matchConnection && matchRound;
@@ -690,48 +655,18 @@ const RuleSettingsInner = () => {
 
   return (
     <div style={{ animation: 'fadeIn 0.3s' }}>
-      <DistributionNavTabs currentTab="rules" />
       <div className="page-header" style={{ marginBottom: '2rem' }}>
         <div>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Filter size={24} color="var(--color-primary)" /> {t("Quy tắc Định tuyến (Routing Rules)")}
-            <button
-              onClick={() => setShowInfoModal(true)}
-              style={{
-                background: 'rgba(0, 0, 0, 0.02)',
-                border: '1px solid var(--color-border)',
-                padding: '4px 10px',
-                borderRadius: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                cursor: 'pointer',
-                color: 'var(--color-text-muted)',
-                transition: 'all 0.2s',
-                marginLeft: '8px'
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = 'var(--color-primary)';
-                e.currentTarget.style.borderColor = 'var(--color-primary-light)';
-                e.currentTarget.style.background = 'var(--color-primary-light)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = 'var(--color-text-muted)';
-                e.currentTarget.style.borderColor = 'var(--color-border)';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.02)';
-              }}
-              title={t("Xem chi tiết quy định luật định tuyến và kết nối")}
-            >
-              <Info size={14} />
-              <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{t("Giải thích cơ chế")}</span>
-            </button>
+            <ScreenHelpButton screenKey="routing_rules" />
           </h1>
-          <p className="page-subtitle">{t("Hệ thống Rule Engine tự động phân tích Data Inbound và điều phối cho Tư vấn viên.")}</p>
+          <p className="page-subtitle">{t("Hệ thống Rule Engine tự động phân tích Data Inbound và điều phối cho Đại lý.")}</p>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <button className="btn outline" onClick={handleAIEvaluateRules} style={{ borderColor: '#1D4ED8', color: '#1D4ED8', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button className="btn outline" onClick={handleAIEvaluateRules} style={{ borderColor: '#1E40FF', color: '#1E40FF', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <img 
-              src="https://crm-domation.vercel.app/LOGO.jpg" 
+              src="/imgs/autodata/domation_ai_icon.svg" 
               alt="Gemini" 
               style={{ width: '18px', height: '18px', borderRadius: '50%', objectFit: 'cover' }} 
             /> {t("AI Đánh giá Quy tắc")}
@@ -739,11 +674,9 @@ const RuleSettingsInner = () => {
           <button className="btn outline" onClick={openSimulateModal} style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>
             <Play size={16} style={{ fill: 'currentColor' }} /> {t("Thử nghiệm Định tuyến")}
           </button>
-          {!isReadOnly && (
-            <button className="btn primary" onClick={openAddModal}>
-              <Plus size={18} /> {t("Thêm Quy tắc mới")}
-            </button>
-          )}
+          <button data-tour="rules-header" className="btn primary" onClick={openAddModal}>
+            <Plus size={18} /> {t("Thêm Quy tắc mới")}
+          </button>
         </div>
       </div>
 
@@ -810,19 +743,20 @@ const RuleSettingsInner = () => {
         )}
       </div>
 
-      <div className="card" style={{ overflow: 'visible', paddingBottom: '2rem' }}>
+      <div data-tour="rules-priority" className="card" style={{ overflow: 'visible', paddingBottom: '2rem' }}>
         {loading ? (
           <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[1, 2, 3].map(i => <CardSkeleton key={i} height={90} />)}
           </div>
         ) : filteredRules.length === 0 ? (
-          <EmptyCard
-            icon={<Filter size={48} />}
-            title={t("Không tìm thấy Quy tắc nào")}
-            description={t("Thử thay đổi bộ lọc hoặc thêm quy tắc mới.")}
-            actionText={isReadOnly ? undefined : t("Thêm Quy tắc")}
-            onAction={isReadOnly ? undefined : openAddModal}
-          />
+          <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--color-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: 'var(--shadow-sm)' }}>
+              <Filter size={32} color="var(--color-text-muted)" />
+            </div>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem' }}>{t("Không tìm thấy Quy tắc nào")}</h3>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', maxWidth: 400, margin: '0 auto 1.5rem' }}>{t("Thử thay đổi bộ lọc hoặc thêm quy tắc mới.")}</p>
+            <button className="btn primary" onClick={openAddModal}><Plus size={18} /> {t("Thêm Quy tắc")}</button>
+          </div>
         ) : (
           <div style={{ padding: '0.5rem' }}>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -834,8 +768,7 @@ const RuleSettingsInner = () => {
                       key={rule.id} rule={rule} idx={originalIdx} connections={connections}
                       onEdit={openEditModal}
                       onDelete={(id) => { setDeleteId(id); setIsConfirmOpen(true); }}
-                      isDragDisabled={isReadOnly || activeFilter !== 'all'}
-                      isReadOnly={isReadOnly}
+                      isDragDisabled={activeFilter !== 'all'}
                     />
                   );
                 })}
@@ -861,7 +794,7 @@ const RuleSettingsInner = () => {
         width="800px"
       >
         {isModalOpen && (
-          <fieldset disabled={isReadOnly} style={{ border: 'none', margin: 0, display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '1rem 0' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '1rem 0' }}>
           <div>
             <label className="form-label">{t("Áp dụng cho Nguồn (Connection)")}</label>
             <CustomSelect
@@ -875,7 +808,6 @@ const RuleSettingsInner = () => {
               ]}
               value={connectionId}
               onChange={(v) => setConnectionId(v)}
-              disabled={isReadOnly}
             />
           </div>
 
@@ -893,7 +825,7 @@ const RuleSettingsInner = () => {
                   )}
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div data-tour="rules-builder" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {branch.conditions.map((c: any, i: number) => {
                     const isNoValueOp = c.op === 'is_empty' || c.op === 'is_not_empty';
                     const isLast = i === branch.conditions.length - 1;
@@ -921,7 +853,6 @@ const RuleSettingsInner = () => {
                                 setBranches(newB);
                               }}
                               placeholder={t("Chọn trường...")}
-                              disabled={isReadOnly}
                             />
                           </div>
                         </div>
@@ -935,13 +866,12 @@ const RuleSettingsInner = () => {
                                 newB[bIndex].conditions[i].op = String(val);
                                 setBranches(newB);
                               }}
-                              disabled={isReadOnly}
                             />
                           </div>
                         </div>
                         {!isNoValueOp && (
                           <div style={{ flex: 1 }}>
-                            {c.op.startsWith('date_') ? (
+                            {String(c.op || '').startsWith('date_') ? (
                               <input
                                 type="date"
                                 style={{ width: '100%', padding: '8px 16px', borderRadius: 20, border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)', fontSize: '0.875rem', outline: 'none' }}
@@ -964,7 +894,6 @@ const RuleSettingsInner = () => {
                                   newB[bIndex].conditions[i].val = String(v);
                                   setBranches(newB);
                                 }}
-                                disabled={isReadOnly}
                               />
                             ) : (
                               <input
@@ -1042,7 +971,7 @@ const RuleSettingsInner = () => {
                           width: 20,
                           height: 20,
                           borderRadius: '50%',
-                          background: 'var(--color-surface)',
+                          background: '#fff',
                           position: 'absolute',
                           top: 2,
                           left: branch.inject?.enabled ? 22 : 2,
@@ -1058,8 +987,8 @@ const RuleSettingsInner = () => {
                         {branch.inject.fields.map((f: any, fi: number) => {
                           const isCustomMode = f.isCustom || !['source', 'type', 'note', 'name', ''].includes(f.col);
                           return (
-                            <div key={fi} style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.5rem', alignItems: isMobile ? 'stretch' : 'center', flexWrap: 'wrap', borderBottom: isMobile ? '1px dashed var(--color-border)' : 'none', paddingBottom: isMobile ? '10px' : '0', marginBottom: isMobile ? '10px' : '0' }}>
-                              <div style={{ flex: isMobile ? 'none' : (isCustomMode ? '0 0 180px' : 1), width: isMobile ? '100%' : 'auto', background: 'var(--color-surface)', borderRadius: 20, border: '1px solid var(--color-border)' }}>
+                            <div key={fi} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                              <div style={{ flex: isCustomMode ? '0 0 180px' : 1, background: 'var(--color-surface)', borderRadius: 20, border: '1px solid var(--color-border)' }}>
                                 <CustomSelect
                                   options={[
                                     { value: 'source', label: t('Nguồn Khách (Source)') },
@@ -1082,12 +1011,11 @@ const RuleSettingsInner = () => {
                                     }
                                     setBranches(newB);
                                   }}
-                                  disabled={isReadOnly}
                                 />
                               </div>
 
                               {isCustomMode && (
-                                <div style={{ flex: isMobile ? 'none' : 1, width: isMobile ? '100%' : 'auto', minWidth: 120 }}>
+                                <div style={{ flex: 1, minWidth: 120 }}>
                                   <input
                                     style={{ width: '100%', padding: '8px 16px', borderRadius: 20, border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)', fontSize: '0.875rem', outline: 'none' }}
                                     placeholder={t("Tên trường custom (vd: utm_source)...")}
@@ -1101,7 +1029,7 @@ const RuleSettingsInner = () => {
                                 </div>
                               )}
 
-                              <div style={{ flex: isMobile ? 'none' : (isCustomMode ? 1.5 : 2), width: isMobile ? '100%' : 'auto', minWidth: 150 }}>
+                              <div style={{ flex: isCustomMode ? 1.5 : 2, minWidth: 150 }}>
                                 <input
                                   style={{ width: '100%', padding: '8px 16px', borderRadius: 20, border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)', fontSize: '0.875rem', outline: 'none' }}
                                   placeholder={t("Giá trị muốn gán tự động...")}
@@ -1139,17 +1067,15 @@ const RuleSettingsInner = () => {
             ))}
           </div>
 
-          {!isReadOnly && (
-            <div style={{ padding: '0', marginTop: '0', marginBottom: '0.5rem' }}>
-              <button
-                type="button"
-                onClick={() => setBranches([...branches, { conditions: [{ col: 'source', op: 'contains', val: '' }], inject: { enabled: false, fields: [] } }])}
-                style={{ width: '100%', padding: '0.875rem', background: 'transparent', border: '2px dashed var(--color-border)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer' }}
-              >
-                <Plus size={18} /> {t("Thêm Nhánh Mới")}
-              </button>
-            </div>
-          )}
+          <div style={{ padding: '0', marginTop: '0', marginBottom: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => setBranches([...branches, { conditions: [{ col: 'source', op: 'contains', val: '' }], inject: { enabled: false, fields: [] } }])}
+              style={{ width: '100%', padding: '0.875rem', background: 'transparent', border: '2px dashed var(--color-border)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer' }}
+            >
+              <Plus size={18} /> {t("Thêm Nhánh Mới")}
+            </button>
+          </div>
           <div>
             <label className="form-label">{t("Hành động: Phân bổ vào")}</label>
             <CustomSelect
@@ -1162,18 +1088,15 @@ const RuleSettingsInner = () => {
               value={targetRound.toString()}
               onChange={(v) => setTargetRound(Number(v))}
               placeholder={t("Chọn vòng phân bổ...")}
-              disabled={isReadOnly}
             />
           </div>
           <div style={{ padding: '1.25rem', background: 'var(--color-bg)', borderTop: '1px solid var(--color-border-light)', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
-            <button type="button" className="btn outline" onClick={() => setIsModalOpen(false)}>{isReadOnly ? t("Đóng") : t("Hủy bỏ")}</button>
-            {!isReadOnly && (
-              <button type="button" onClick={handleSaveRule} className="btn primary" disabled={isSaving}>
-                {isSaving ? t('Đang lưu...') : (editingRule ? t('Cập nhật') : t('Thêm mới'))}
-              </button>
-            )}
+            <button type="button" className="btn outline" onClick={() => setIsModalOpen(false)}>{t("Hủy bỏ")}</button>
+            <button type="button" onClick={handleSaveRule} className="btn primary" disabled={isSaving}>
+              {isSaving ? t('Đang lưu...') : (editingRule ? t('Cập nhật') : t('Thêm mới'))}
+            </button>
           </div>
-          </fieldset>
+          </div>
         )}
       </CustomModal>
 
@@ -1550,7 +1473,7 @@ const RuleSettingsInner = () => {
                       <h5 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--color-text-light)', margin: '0 0 10px', textTransform: 'uppercase' }}>
                         {t("Chi tiết quy trình quét quy tắc (Trace Logs)")}
                       </h5>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div data-tour="rules-builder" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         {simulateResult.trace && simulateResult.trace.map((traceItem: any, idx: number) => {
                           const isMatched = traceItem.status === 'matched';
                           const isSkipped = traceItem.status === 'skipped';
@@ -1650,12 +1573,12 @@ const RuleSettingsInner = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0.5rem 0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--color-border-light)', paddingBottom: '12px' }}>
               <img 
-                src="/LOGO.webp" 
+                src="/imgs/autodata/domation_ai_icon.svg" 
                 alt="Gemini AI Logo" 
                 style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-primary-light)', boxShadow: 'var(--shadow-sm)' }} 
               />
               <div>
-                <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1rem', color: 'var(--color-primary)' }}>{t("Trợ lý IDEAS AI Đánh giá")}</h4>
+                <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1rem', color: 'var(--color-primary)' }}>{t("Trợ lý DOMATION AI Đánh giá")}</h4>
                 <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{t("Phân tích xung đột, tối ưu thứ tự ưu tiên và phát hiện kẽ hở định tuyến")}</p>
               </div>
             </div>
@@ -1676,17 +1599,15 @@ const RuleSettingsInner = () => {
                           parsedConds = typeof r.conditions_json === 'string' ? JSON.parse(r.conditions_json) : r.conditions_json;
                         } catch (e) {}
                       }
-                      const condText = (() => {
-                        if (Array.isArray(parsedConds) && parsedConds.length > 0) {
-                          const firstBranch = parsedConds[0];
-                          const conds = firstBranch.conditions || [];
-                          let txt = conds.map((c: any) => `${c.col} ${c.op} "${c.val}"`).join(' VÀ ');
-                          if (parsedConds.length > 1) txt += ` (+ ${parsedConds.length - 1} nhánh OR)`;
-                          return txt;
-                        } else {
-                          return `${r.condition_column} ${r.condition_operator} "${r.condition_value}"`;
-                        }
-                      })();
+                      let condText = "";
+                      if (Array.isArray(parsedConds) && parsedConds.length > 0) {
+                        const firstBranch = parsedConds[0];
+                        const conds = firstBranch.conditions || [];
+                        condText = conds.map((c: any) => `${c.col} ${c.op} "${c.val}"`).join(' VÀ ');
+                        if (parsedConds.length > 1) condText += ` (+ ${parsedConds.length - 1} nhánh OR)`;
+                      } else {
+                        condText = `${r.condition_column} ${r.condition_operator} "${r.condition_value}"`;
+                      }
                       
                       return (
                         <div key={idx} style={{ 
@@ -1786,109 +1707,6 @@ const RuleSettingsInner = () => {
             )}
           </div>
         )}
-      </CustomModal>
-
-      {/* Mechanism Explanation Modal */}
-      <CustomModal
-        isOpen={showInfoModal}
-        onClose={() => setShowInfoModal(false)}
-        title={t("Cơ chế & Quy tắc Định tuyến (Routing Rules)")}
-        width="780px"
-      >
-        <div style={{ padding: '0.25rem 0', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 12, 
-            padding: '0.875rem 1rem', 
-            background: 'var(--color-primary-light)', 
-            border: '1px solid rgba(30, 64, 255, 0.15)', 
-            borderRadius: 12 
-          }}>
-            <Info size={24} color="var(--color-primary)" style={{ flexShrink: 0 }} />
-            <p style={{ fontSize: '0.825rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
-              {t("Quy tắc Định tuyến (Routing Rules) quyết định đường đi của lead từ các nguồn khác nhau đổ về hệ thống để đi vào vòng xoay phân bổ (Round-Robin) phù hợp.")}
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {/* Lớp ưu tiên */}
-            <div style={{ 
-              display: 'flex', 
-              gap: 12, 
-              padding: '1rem', 
-              background: 'rgba(59, 130, 246, 0.02)', 
-              borderLeft: '4px solid #3b82f6', 
-              borderTop: '1px solid var(--color-border-light)',
-              borderRight: '1px solid var(--color-border-light)',
-              borderBottom: '1px solid var(--color-border-light)',
-              borderRadius: '0 8px 8px 0'
-            }}>
-              <Layers size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
-              <div>
-                <h5 style={{ fontSize: '0.875rem', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--color-text)' }}>
-                  {t("1. Quét theo Thứ tự Ưu tiên (Priority Scan)")}
-                </h5>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
-                  {t("Các quy tắc được sắp xếp theo độ ưu tiên từ cao xuống thấp (kéo thả để đổi vị trí). Lead mới vào sẽ chạy qua từng Rule một; nếu khớp tất cả các điều kiện so khớp (Nguồn, Loại, Ghi chú), lead sẽ được chuyển ngay vào Vòng phân bổ chỉ định và dừng quét các Rule bên dưới.")}
-                </p>
-              </div>
-            </div>
-
-            {/* Các nguồn kết nối */}
-            <div style={{ 
-              display: 'flex', 
-              gap: 12, 
-              padding: '1rem', 
-              background: 'rgba(16, 185, 129, 0.02)', 
-              borderLeft: '4px solid #10b981', 
-              borderTop: '1px solid var(--color-border-light)',
-              borderRight: '1px solid var(--color-border-light)',
-              borderBottom: '1px solid var(--color-border-light)',
-              borderRadius: '0 8px 8px 0'
-            }}>
-              <Server size={20} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
-              <div>
-                <h5 style={{ fontSize: '0.875rem', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--color-text)' }}>
-                  {t("2. Kết nối đa nguồn (Integration Sources)")}
-                </h5>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
-                  {t("Hệ thống hỗ trợ tự động quét và lấy thông tin khách hàng mới từ trang Google Sheets của Marketing (mỗi 1 phút tự chạy qua tiến trình lập lịch duy nhất), tự động loại bỏ các dòng bị trùng bằng bộ lọc thông minh để tránh chia 2 lần cho cùng một khách hàng, hoặc đẩy ngay lập tức qua cổng kết nối API, hoặc nhập bằng tay.")}
-                </p>
-              </div>
-            </div>
-
-            {/* Chế độ Silent & Inject */}
-            <div style={{ 
-              display: 'flex', 
-              gap: 12, 
-              padding: '1rem', 
-              background: 'rgba(245, 158, 11, 0.02)', 
-              borderLeft: '4px solid #f59e0b', 
-              borderTop: '1px solid var(--color-border-light)',
-              borderRight: '1px solid var(--color-border-light)',
-              borderBottom: '1px solid var(--color-border-light)',
-              borderRadius: '0 8px 8px 0'
-            }}>
-              <Cpu size={20} color="#f59e0b" style={{ flexShrink: 0, marginTop: 2 }} />
-              <div>
-                <h5 style={{ fontSize: '0.875rem', fontWeight: 800, margin: '0 0 4px 0', color: 'var(--color-text)' }}>
-                  {t("3. Chế độ Im lặng (Silent Mode) & Ghi đè (Inject Data)")}
-                </h5>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
-                  {t("• Chế độ Im lặng: Hệ thống chỉ đồng bộ dữ liệu để kiểm tra trùng lặp (không phân phối chia số cho Sale, thời hạn kiểm tra trùng lặp là ")}
-                  <strong>{sysSettings?.duplicate_check_months || 6} {t("tháng")}</strong>
-                  {t(").")}
-                  <br />
-                  {t("• Ghi đè (Inject): Cho phép quy tắc tự động bổ sung hoặc thay đổi các trường dữ liệu của lead (vd: thêm Tag chiến dịch, đổi loại dự án) ngay khi so khớp thành công.")}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem', gap: '0.75rem', borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem' }}>
-          <button className="btn primary" onClick={() => setShowInfoModal(false)} style={{ minWidth: 100 }}>{t("Đồng ý")}</button>
-        </div>
       </CustomModal>
     </div>
   );

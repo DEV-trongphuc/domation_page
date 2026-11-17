@@ -22,32 +22,13 @@ function getTranslatedError(key: string, replacements?: Record<string, string | 
 
 let _isHandlingSessionExpiry = false;
 const pendingRequests = new Map<string, Promise<any>>();
-let settingsCachePromise: Promise<any> | null = null;
-let cachedSettingsKey: string | null = null;
-
-export function clearSettingsCache() {
-  settingsCachePromise = null;
-  cachedSettingsKey = null;
-  pendingRequests.clear();
-}
 
 export async function fetchAPI(action: string, options: RequestInit = {}, retries = 1) {
-  const method = (options.method || 'GET').toUpperCase();
-  const isGet = method === 'GET';
-
-  if (action === 'get_settings' && isGet) {
-    const v2 = loadAutodataSessionV2();
-    const cacheKey = `${v2?.tenant_slug || ''}::${v2?.access_token || ''}`;
-    if (settingsCachePromise && cachedSettingsKey === cacheKey) {
-      return settingsCachePromise;
-    }
-    cachedSettingsKey = cacheKey;
-  }
-
+  const isGet = !options.method || options.method.toUpperCase() === 'GET';
   let requestKey = '';
   if (isGet) {
     try {
-      requestKey = `${action}_${JSON.stringify({ headers: options.headers })}`;
+      requestKey = `${action}_${JSON.stringify(options)}`;
     } catch {
       requestKey = `${action}_opts`;
     }
@@ -59,16 +40,8 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
 
   const promise = (async () => {
     const v2 = loadAutodataSessionV2();
-    const token =
-      v2?.access_token ||
-      (typeof window !== 'undefined'
-        ? localStorage.getItem('Ideas_token') ||
-          localStorage.getItem('access_token') ||
-          localStorage.getItem('domation_token')
-        : null);
-    const tenantSlug =
-      v2?.tenant_slug ||
-      (typeof window !== 'undefined' ? localStorage.getItem('domation_tenant_slug') || '' : '');
+    const token = v2?.access_token || (typeof window !== 'undefined' ? localStorage.getItem('domation_token') : null);
+    const tenantSlug = v2?.tenant_slug || '';
 
     const headers: Record<string, string> = {
       ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
@@ -83,10 +56,9 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
       headers['X-Tenant-Slug'] = tenantSlug;
     }
 
-    const cleanAction = String(action || '').replace(/^\/+/, '');
-    const sepIdx = cleanAction.search(/[?&]/);
-    const actionName = sepIdx === -1 ? cleanAction : cleanAction.slice(0, sepIdx);
-    const extraQuery = sepIdx === -1 ? '' : `&${cleanAction.slice(sepIdx + 1).replace(/^\?/, '')}`;
+    const qIdx = action.indexOf('&');
+    const actionName = qIdx === -1 ? action : action.slice(0, qIdx);
+    const extraQuery = qIdx === -1 ? '' : `&${action.slice(qIdx + 1)}`;
     const url = `${getApiBaseUrl()}?action=${encodeURIComponent(actionName)}${extraQuery}`;
 
     let lastError: any;
@@ -100,8 +72,7 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
 
         if (!response.ok) {
           const errMsg = json?.error?.message || json?.message || getTranslatedError('Lỗi dữ liệu phía người dùng');
-          // Only dispatch session-expired on 401 Unauthenticated — NEVER on 403 RBAC/geofence
-          if (response.status === 401 && actionName !== 'login') {
+          if ((response.status === 401 || response.status === 403) && actionName !== 'login') {
             if (!_isHandlingSessionExpiry && typeof window !== 'undefined') {
               _isHandlingSessionExpiry = true;
               setTimeout(() => {
@@ -119,14 +90,8 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
         return json;
       } catch (err: any) {
         lastError = err;
-        if (err?.name === 'AbortError') {
-          throw err;
-        }
         const isNetworkError = err instanceof TypeError && err.message === 'Failed to fetch';
         if (!isNetworkError || attempt === retries) {
-          if (action === 'get_settings' && isGet) {
-            settingsCachePromise = null;
-          }
           throw err;
         }
         await new Promise((res) => setTimeout(res, 800 * Math.pow(2, attempt)));
@@ -134,10 +99,6 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
     }
     throw lastError;
   })();
-
-  if (action === 'get_settings' && isGet) {
-    settingsCachePromise = promise;
-  }
 
   if (isGet) {
     pendingRequests.set(requestKey, promise);
@@ -205,10 +166,6 @@ export function formatDateYYYYMMDD_VN(input: Date | number = Date.now(), offsetD
   const ms = (input instanceof Date ? input.getTime() : input) + offsetDays * 86400000;
   const { year, month, day } = getVNWallClockParts(ms);
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
-
-export function getLocalDateStr(input: Date | number = Date.now()): string {
-  return formatDateYYYYMMDD_VN(input);
 }
 
 export function nowSqlDateTimeVN(input: Date | number = Date.now()): string {
@@ -301,10 +258,7 @@ export function normalizeNotificationStatus(res: any): NormalizedNotificationSta
   const teleObj = res.telegram && typeof res.telegram === 'object' ? res.telegram : {};
 
   const emailStatus = emailObj.status || res.email_status || 'none';
-  const zaloStatus =
-    zaloObj.status ||
-    res.zalo_status ||
-    (!res.has_zalo && res.has_zalo !== undefined ? 'no_zalo_config' : 'none');
+  const zaloStatus = zaloObj.status || res.zalo_status || (!res.has_zalo && res.has_zalo !== undefined ? 'no_zalo_config' : 'none');
   const teleStatus = teleObj.status || res.telegram_status || 'none';
 
   return {
@@ -339,3 +293,4 @@ export function normalizeNotificationStatus(res: any): NormalizedNotificationSta
     has_telegram: Boolean(res.has_telegram ?? res.telegram_chat_id),
   };
 }
+

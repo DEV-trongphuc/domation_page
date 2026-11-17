@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Inbox } from 'lucide-react';
 import { useOptionalAuth } from '../../contexts/AuthContext';
-import { TableSkeleton } from './Skeleton';
 
 export interface AutoDataLoadingModalProps {
   isOpen?: boolean;
@@ -538,7 +537,7 @@ const BADGE_PALETTE: Record<BadgeTone, { bg: string; color: string; border: stri
   primary: { bg: 'rgba(30, 64, 255, 0.10)', color: '#1E40FF', border: 'rgba(30, 64, 255, 0.22)' },
   success: { bg: 'rgba(16, 185, 129, 0.10)', color: '#059669', border: 'rgba(16, 185, 129, 0.24)' },
   warning: { bg: 'rgba(217, 119, 6, 0.10)', color: '#D97706', border: 'rgba(217, 119, 6, 0.24)' },
-  danger: { bg: 'rgba(220, 38, 38, 0.10)', color: '#1E40FF', border: 'rgba(220, 38, 38, 0.24)' },
+  danger: { bg: 'rgba(220, 38, 38, 0.10)', color: '#DC2626', border: 'rgba(220, 38, 38, 0.24)' },
   info: { bg: 'rgba(2, 132, 199, 0.10)', color: '#0284C7', border: 'rgba(2, 132, 199, 0.24)' },
   neutral: { bg: '#F1F5F9', color: '#475569', border: '#E2E8F0' },
   purple: { bg: '#F3E8FF', color: '#7E22CE', border: 'rgba(126, 34, 206, 0.22)' },
@@ -744,7 +743,7 @@ export function Table<T>({
   dataTour,
 }: TableProps<T>) {
   if (loading) {
-    return <TableSkeleton rows={5} cols={Math.max(3, Math.min(columns.length || 4, 6))} />;
+    return <AutoDataLoadingModal inline isOpen message="Đang tải danh sách dữ liệu..." subMessage="" />;
   }
 
   if (rows.length === 0) {

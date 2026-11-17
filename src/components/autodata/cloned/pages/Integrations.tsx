@@ -14,8 +14,7 @@ import { AutoDataZaloBotGuide } from '../../AutoDataZaloBotGuide';
 import { AutoDataWebhookGuide } from '../../AutoDataWebhookGuide';
 import { AutoDataEmailGuide } from '../../AutoDataEmailGuide';
 import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
-import { BrandChannelLogo } from '../components/ui/BrandChannelLogo';
-import { Sparkles } from 'lucide-react';
+import { MessageCircle, Bot, Mail, Sparkles } from 'lucide-react';
 import { UnifiedBotSetupWizard, type BotChannelType } from '../components/UnifiedBotSetupWizard';
 
 const SYSTEM_FIELDS = [
@@ -877,8 +876,8 @@ const IntegrationsInner = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: '#f0f9ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bae6fd', flexShrink: 0 }}>
-                    <BrandChannelLogo brand="zalo" size={24} />
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#f0f9ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bae6fd' }}>
+                    <MessageCircle size={17} color="#0284c7" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Zalo OA Bot</h3>
@@ -929,8 +928,8 @@ const IntegrationsInner = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfdbfe', flexShrink: 0 }}>
-                    <BrandChannelLogo brand="telegram" size={24} />
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #bfdbfe' }}>
+                    <Bot size={17} color="#2563eb" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Telegram Bot</h3>
@@ -980,8 +979,8 @@ const IntegrationsInner = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ddd6fe', flexShrink: 0 }}>
-                    <BrandChannelLogo brand="webhook" size={24} />
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ddd6fe' }}>
+                    <Zap size={17} color="#7c3aed" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Inbound Webhook</h3>
@@ -1031,8 +1030,8 @@ const IntegrationsInner = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #a7f3d0', flexShrink: 0 }}>
-                    <BrandChannelLogo brand="sheets_email" size={22} />
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #a7f3d0' }}>
+                    <FileSpreadsheet size={17} color="#059669" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-text)', margin: 0 }}>Sheets & Email Relay</h3>
@@ -1084,10 +1083,10 @@ const IntegrationsInner = () => {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <button onClick={() => setShowAddConn(true)} className="btn outline" style={{ width: '100%', justifyContent: 'center', height: 38, borderRadius: 10 }}>
-                <BrandChannelLogo brand="sheets" size={17} /> {t('Thêm kết nối Sheets')}
+                <FileSpreadsheet size={16} /> {t('Thêm kết nối Sheets')}
               </button>
               <button onClick={() => setShowAddApi(true)} className="btn primary" style={{ width: '100%', justifyContent: 'center', height: 38, borderRadius: 10, background: 'var(--color-primary)' }}>
-                <BrandChannelLogo brand="webhook" size={17} /> {t('Thêm API Landing Page')}
+                <Zap size={16} /> {t('Thêm API Landing Page')}
               </button>
             </div>
 
@@ -1118,7 +1117,7 @@ const IntegrationsInner = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
                 border: selected && selected.id === -999 ? '1px solid var(--color-primary)' : '1px solid var(--color-border)'
               }}>
-                <BrandChannelLogo brand="domation" size={22} />
+                <Database size={20} color={selected && selected.id === -999 ? 'var(--color-primary)' : 'var(--color-text-muted)'} />
               </div>
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <p style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -1163,11 +1162,11 @@ const IntegrationsInner = () => {
                     border: isSelected ? '1px solid var(--color-primary)' : '1px solid var(--color-border)'
                   }} title={conn.is_silent ? t("Chỉ đồng bộ check trùng") : undefined}>
                     {conn.connection_type === 'landing_page' ? (
-                      <BrandChannelLogo brand="webhook" size={22} />
+                      <Zap size={20} color={isSelected ? 'var(--color-primary)' : 'var(--color-text-muted)'} />
                     ) : conn.is_silent ? (
                       <Copy size={20} color="#eab308" style={{ opacity: isSelected ? 1 : 0.7 }} />
                     ) : (
-                      <BrandChannelLogo brand="sheets" size={20} />
+                      <img src="https://mailmeteor.com/logos/assets/PNG/Google_Sheets_Logo_512px.png" style={{ width: 20, height: 20, objectFit: 'contain', opacity: isSelected ? 1 : 0.6 }} alt={t("Google Sheets")} />
                     )}
                   </div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -1234,7 +1233,7 @@ const IntegrationsInner = () => {
                   width: 44, height: 44, borderRadius: 12, background: 'var(--color-primary-light)', border: '1px solid var(--color-primary-hover)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}>
-                  <BrandChannelLogo brand="domation" size={26} />
+                  <Database size={24} color="var(--color-primary)" />
                 </div>
                 <div>
                   <h2 style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
@@ -1405,11 +1404,11 @@ const IntegrationsInner = () => {
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }} title={selected.is_silent ? t("Chỉ đồng bộ check trùng") : undefined}>
                       {selected.connection_type === 'landing_page' ? (
-                        <BrandChannelLogo brand="webhook" size={26} />
+                        <Zap size={24} color="var(--color-primary)" />
                       ) : selected.is_silent ? (
                         <Copy size={24} color="#eab308" />
                       ) : (
-                        <BrandChannelLogo brand="sheets" size={24} />
+                        <img src="https://mailmeteor.com/logos/assets/PNG/Google_Sheets_Logo_512px.png" style={{ width: 24, height: 24, objectFit: 'contain' }} alt={t("Google Sheets")} />
                       )}
                     </div>
                     <div>
@@ -1550,7 +1549,7 @@ const IntegrationsInner = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(59, 130, 246, 0.2)', fontSize: '0.8125rem', fontWeight: 600 }}>
                       <RefreshCw size={14} /> {selected.stats.reminder} {t('Nhắc lại')}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(239, 68, 68, 0.1)', color: '#1E40FF', padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '0.8125rem', fontWeight: 600 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '0.8125rem', fontWeight: 600 }}>
                       <AlertCircle size={14} /> {selected.stats.error} {t('Lỗi')}
                     </div>
                   </div>
@@ -1991,7 +1990,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  {t('Cấu hình Google Sheets')} <BrandChannelLogo brand="sheets" size={22} />
+                  {t('Cấu hình Google Sheets')} <div style={{ background: 'var(--color-primary)', color: 'white', padding: '2px 6px', borderRadius: 6, fontSize: '0.75rem' }}><FileSpreadsheet size={14} /></div>
                 </h2>
                 <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginTop: 4 }}>{t('Kết nối bảng tính của bạn để tự động nạp dữ liệu Khách hàng.')}</p>
               </div>
@@ -2687,7 +2686,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  {t('Kết nối Landing Page')} <BrandChannelLogo brand="webhook" size={22} />
+                  {t('Kết nối Landing Page')} <div style={{ background: 'var(--color-primary)', color: 'white', padding: '2px 6px', borderRadius: 6, fontSize: '0.75rem' }}><Zap size={14} /></div>
                 </h2>
                 <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
                   {t('Tạo một Endpoint (Đường dẫn API) để gắn vào trang đích của bạn.')}

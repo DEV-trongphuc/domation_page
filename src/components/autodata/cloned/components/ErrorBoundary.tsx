@@ -2,44 +2,27 @@ import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 import { RefreshCw } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  const handleChunkErrorBackground = async (msg: string) => {
-    if (msg && (msg.includes('Failed to fetch dynamically imported module') || msg.includes('ChunkLoadError') || msg.includes('error loading dynamically imported module'))) {
-      console.warn('[ErrorBoundary] Detected dynamic chunk fetch error in background (auto-reload suppressed):', msg);
-      // Purge CacheStorage so future retries can fetch latest assets
-      if ('caches' in window) {
-        try {
-          const keys = await caches.keys();
-          await Promise.all(keys.map(k => caches.delete(k)));
-        } catch {}
-      }
-      // Notify Service Worker to fetch fresh resources
-      if ('serviceWorker' in navigator) {
-        try {
-          const reg = await navigator.serviceWorker.getRegistration();
-          if (reg) await reg.update();
-        } catch {}
-      }
-      // NEVER call window.location.reload() automatically
-    }
-  };
-
-  window.addEventListener('error', (e) => {
-    handleChunkErrorBackground(e.message || '');
-  }, true);
-
-  window.addEventListener('unhandledrejection', (e) => {
-    const msg = e.reason?.message || String(e.reason || '');
-    handleChunkErrorBackground(msg);
-  });
-}
+const ERROR_BOUNDARY_I18N: Record<string, Record<string, string>> = {
+  en: {
+    'Đã xảy ra lỗi hệ thống': 'A system error occurred',
+    'Chúng tôi xin lỗi vì sự bất tiện này. Lỗi đã được ghi nhận. Vui lòng tải lại trang để tiếp tục.': 'We apologize for the inconvenience. The error has been logged. Please reload the page to continue.',
+    'Tải lại trang': 'Reload page',
+  },
+  ja: {
+    'Đã xảy ra lỗi hệ thống': 'システムエラーが発生しました',
+    'Chúng tôi xin lỗi vì sự bất tiện này. Lỗi đã được ghi nhận. Vui lòng tải lại trang để tiếp tục.': 'ご不便をおかけして申し訳ございません。ページを再読み込みして続行してください。',
+    'Tải lại trang': 'ページを再読み込み',
+  },
+  zh: {
+    'Đã xảy ra lỗi hệ thống': '发生系统错误',
+    'Chúng tôi xin lỗi vì sự bất tiện này. Lỗi đã được ghi nhận. Vui lòng tải lại trang để tiếp tục.': '对于给您带来的不便，我们深表歉意。请重新加载页面以继续。',
+    'Tải lại trang': '重新加载页面',
+  }
+};
 
 interface Props {
   children?: ReactNode;
   fallback?: ReactNode;
-  onReset?: () => void;
-  compact?: boolean;
-  resetKey?: string | number;
 }
 
 interface State {
@@ -56,176 +39,42 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  public componentDidUpdate(prevProps: Props) {
-    if (this.state.hasError && prevProps.resetKey !== this.props.resetKey) {
-      this.setState({ hasError: false, error: undefined });
-    }
-  }
-
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('[ErrorBoundary] Uncaught component error:', error, errorInfo);
-    
-    const errorMsg = error?.message || String(error || '');
-    const errorStack = error?.stack || '';
-    const isChunkError = 
-      errorMsg.includes('Failed to fetch dynamically imported module') ||
-      errorMsg.includes('Importing a module script failed') ||
-      errorMsg.includes('Unable to preload CSS') ||
-      errorMsg.includes('error loading dynamically imported module') ||
-      errorMsg.includes('ChunkLoadError') ||
-      error.name === 'ChunkLoadError' ||
-      errorStack.includes('Failed to fetch dynamically imported module') ||
-      errorStack.includes('ChunkLoadError');
-
-    if (isChunkError && typeof window !== 'undefined') {
-      console.warn('[ErrorBoundary] Caught chunk error in component lifecycle, purging stale caches...');
-      const now = Date.now();
-      const lastReload = parseInt(sessionStorage.getItem('myerp_chunk_boundary_reload_ts') || '0', 10);
-      const cleanup: Promise<unknown>[] = [];
-      if ('caches' in window) {
-        try {
-          cleanup.push(caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))));
-        } catch {}
-      }
-      if ('serviceWorker' in navigator) {
-        try {
-          cleanup.push(navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(r => r.update()))));
-        } catch {}
-      }
-      if (now - lastReload > 15000) {
-        sessionStorage.setItem('myerp_chunk_boundary_reload_ts', String(now));
-        Promise.allSettled(cleanup).finally(() => {
-          const url = new URL(window.location.href);
-          url.searchParams.set('_v', String(now));
-          window.location.replace(url.toString());
-        });
-      }
-    }
+    console.error('Uncaught error:', error, errorInfo);
   }
-
-  public handleReset = () => {
-    const errorMsg = this.state.error?.message || String(this.state.error || '');
-    const isChunkError =
-      errorMsg.includes('Failed to fetch dynamically imported module') ||
-      errorMsg.includes('Importing a module script failed') ||
-      errorMsg.includes('Unable to preload CSS') ||
-      errorMsg.includes('error loading dynamically imported module') ||
-      errorMsg.includes('ChunkLoadError');
-
-    if (isChunkError && typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('_v');
-      window.location.replace(url.toString());
-      return;
-    }
-
-    if (this.props.onReset) {
-      this.props.onReset();
-    }
-    this.setState({ hasError: false, error: undefined });
-  };
 
   public render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
+      const lang = localStorage.getItem('domation_lang') || 'vi';
+      const t = (key: string) => {
+        if (lang === 'vi') return key;
+        return ERROR_BOUNDARY_I18N[lang]?.[key] || ERROR_BOUNDARY_I18N.en[key] || key;
+      };
 
-      if (this.props.compact) {
-        return (
-          <div style={{
-            padding: '1.25rem',
-            background: 'var(--color-bg, #f9fafb)',
-            border: '1px solid var(--color-border-light, #e5e7eb)',
-            borderRadius: 'var(--radius-md, 8px)',
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-danger, #ef4444)' }}>
-              Không thể tải nội dung này
-            </p>
-            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-text-muted, #6b7280)' }}>
-              Đã xảy ra sự cố khi hiển thị phần này.
-            </p>
-            <button
-              onClick={this.handleReset}
-              className="btn outline sm"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}
-            >
-              <RefreshCw size={13} /> Thử lại
-            </button>
-          </div>
-        );
-      }
-
-      return (
-        <div
-          className="flex flex-col items-center justify-center min-h-[380px] p-8 text-center bg-white rounded-2xl border border-gray-100 shadow-sm max-w-lg mx-auto my-8"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '360px',
-            padding: '2rem',
-            textAlign: 'center',
-            background: 'var(--color-surface, #ffffff)',
-            border: '1px solid var(--color-border, #e2e8f0)',
-            borderRadius: '16px',
-            boxShadow: '0 4px 20px rgba(15, 23, 42, 0.06)',
-            maxWidth: '480px',
-            margin: '10vh auto',
-          }}
-        >
-          <div
-            className="w-14 h-14 mb-4 text-red-500 bg-red-50 rounded-full flex items-center justify-center shadow-inner"
-            style={{
-              width: '56px',
-              height: '56px',
-              marginBottom: '1rem',
-              borderRadius: '9999px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'var(--color-danger-light, #fee2e2)',
-            }}
-          >
-            <svg className="w-7 h-7" width={28} height={28} fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--color-danger, #ef4444)' }}>
+      return this.props.fallback || (
+        <div className="flex flex-col items-center justify-center min-h-[400px] p-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm max-w-lg mx-auto mt-8">
+          <div className="w-16 h-16 mb-6 text-red-500 bg-red-50 rounded-full flex items-center justify-center shadow-inner">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ color: 'var(--color-text, #0f172a)', fontSize: '1.25rem', fontWeight: 700, margin: '0 0 0.5rem 0' }}>Đã xảy ra sự cố hiển thị</h3>
-          <p className="text-gray-500 mb-6 max-w-md" style={{ color: 'var(--color-text-muted, #64748b)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1.5rem 0', maxWidth: '400px' }}>
-            Hệ thống đã tự động ghi nhận lỗi. Bạn có thể thử tải lại thành phần này hoặc tải lại toàn bộ trang.
+          <h2 className="text-2xl font-bold text-gray-900 mb-3" style={{ color: 'var(--color-text)' }}>{t('Đã xảy ra lỗi hệ thống')}</h2>
+          <p className="text-gray-500 mb-8 max-w-md" style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+            {t('Chúng tôi xin lỗi vì sự bất tiện này. Lỗi đã được ghi nhận. Vui lòng tải lại trang để tiếp tục.')}
           </p>
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="flex justify-center">
             <button
-              onClick={this.handleReset}
+              onClick={() => window.location.reload()}
               className="btn primary"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0 1.25rem', height: '40px', borderRadius: 'var(--radius-md, 8px)' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 2rem', height: '46px', borderRadius: 'var(--radius-lg)' }}
             >
-              <RefreshCw size={16} /> Thử lại
-            </button>
-            <button
-              onClick={() => {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('_v');
-                window.location.replace(url.toString());
-              }}
-              className="btn outline"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0 1.25rem', height: '40px', borderRadius: 'var(--radius-md, 8px)' }}
-            >
-              Tải lại trang
+              <RefreshCw size={18} /> {t('Tải lại trang')}
             </button>
           </div>
-          {this.state.error && import.meta.env.DEV && (
-            <div className="mt-6 p-3 bg-red-50 rounded text-left w-full overflow-auto max-h-48 border border-red-100" style={{ background: 'var(--color-danger-light, #fee2e2)' }}>
-              <p className="text-red-800 font-mono text-xs whitespace-pre-wrap" style={{ color: '#b91c1c', margin: 0 }}>
-                <strong>{this.state.error.toString()}</strong>
-                {this.state.error.stack && `\n\nStack Trace:\n${this.state.error.stack}`}
+          {import.meta.env.DEV && this.state.error && (
+            <div className="mt-8 p-4 bg-red-50 rounded text-left w-full overflow-auto max-h-64 border border-red-100">
+              <p className="text-red-800 font-mono text-sm whitespace-pre-wrap">
+                {this.state.error.toString()}
               </p>
             </div>
           )}

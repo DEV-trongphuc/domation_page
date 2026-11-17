@@ -130,6 +130,26 @@
       "destination": "/data/index.html"
     },
     {
+      "source": "/data/:slug",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/data/:slug/",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/data/:slug/:subpath*",
+      "destination": "/data/index.html"
+    },
+    {
+      "source": "/api/v1/:path*",
+      "destination": "/api/autodata?__v1_path=:path*"
+    },
+    {
+      "source": "/v1/:path*",
+      "destination": "/api/autodata?__raw_v1_path=:path*"
+    },
+    {
       "source": "/automation",
       "destination": "/automation/index.html"
     },

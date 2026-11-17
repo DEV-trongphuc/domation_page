@@ -15,9 +15,6 @@ export default defineConfig(({ mode }) => {
       autodataBridgePlugin(env.AUTODATA_API_URL),
       seoPrerenderPlugin(),
     ],
-    define: {
-      __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '2.6.0'),
-    },
     base: '/',
     build: {
       rollupOptions: {

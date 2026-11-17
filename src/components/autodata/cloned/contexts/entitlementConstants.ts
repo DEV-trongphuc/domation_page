@@ -1,5 +1,4 @@
 import type { SaasPackageCode } from '../../autodataTypes';
-export type { SaasPackageCode };
 
 export type IndustryPresetKey =
   | 'general'
@@ -63,7 +62,6 @@ export interface PackageCatalogMeta {
   name: string;
   badge: string;
   tagline: string;
-  priceLabel?: string;
   monthlyPriceVnd: number;
   annualMonthlyEquivalentVnd: number;
   accentColor: string;
@@ -115,138 +113,23 @@ export const RBAC_MODULES_CATALOG: ReadonlyArray<{
   { key: 'rounds', label: 'Vòng chia Sale & Định tuyến', suite: 'crm' },
   { key: 'tickets_data', label: 'Ticket Báo lỗi & Bù số', suite: 'crm' },
   { key: 'ads_capi', label: 'Hiệu quả Quảng cáo & Meta CAPI', suite: 'crm' },
-  { key: 'contacts_360', label: 'Khách hàng 360° (Contacts)', suite: 'growth' },
-  { key: 'deals', label: 'Cơ hội Bán hàng (Deals Kanban)', suite: 'growth' },
-  { key: 'companies', label: 'Doanh nghiệp & Đối tác B2B', suite: 'growth' },
-  { key: 'activities', label: 'Hoạt động & Nhắc việc', suite: 'growth' },
-  { key: 'workspace_personal', label: 'Bàn làm việc Cá nhân', suite: 'growth' },
-  { key: 'settings', label: 'Cấu hình Hệ thống & Từ điển', suite: 'core' },
-  { key: 'users', label: 'Tài khoản, Tổ chức & Phân quyền RBAC', suite: 'core' },
-  { key: 'billing', label: 'Gói cước SaaS & Ví thanh toán', suite: 'core' },
   { key: 'audiences', label: 'Tệp Data & Tệp Logic', suite: 'marketing' },
   { key: 'email_templates', label: 'Email Editor & Kho Mẫu', suite: 'marketing' },
   { key: 'forms_triggers', label: 'Form Builder, Form Cards & OTP', suite: 'marketing' },
-  { key: 'surveys_quiz', label: 'Khảo sát & Trắc nghiệm (Survey/Quiz)', suite: 'marketing' },
   { key: 'campaigns', label: 'Chiến dịch Email & Zalo ZNS', suite: 'marketing' },
   { key: 'automation_flows', label: 'Automation Flow Visual Builder', suite: 'marketing' },
-  { key: 'vouchers_qr', label: 'Voucher, Shortlink & QR Designer', suite: 'marketing' },
-  { key: 'web_tracking', label: 'Web Tracking & Bản đồ nhiệt Heatmap', suite: 'marketing' },
-  { key: 'social_bot', label: 'Social Bot (Messenger & Zalo OA)', suite: 'marketing' },
-  { key: 'ai_bot_studio', label: 'Customer AI Bot Studio (RAG)', suite: 'marketing' },
   { key: 'growth_attribution', label: 'Báo cáo Doanh thu & ROAS Xuyên phễu', suite: 'growth' },
   { key: 'erp_hrm_org', label: 'Nhân sự, Hồ sơ & Hợp đồng', suite: 'erp' },
   { key: 'erp_attendance', label: 'Chấm công GPS/Selfie & Ca trực', suite: 'erp' },
   { key: 'erp_payroll', label: 'Bảng lương, Thuế TNCN & Hoa hồng', suite: 'erp' },
   { key: 'erp_approvals', label: 'Trung tâm Phê duyệt Đa cấp', suite: 'erp' },
   { key: 'erp_projects_tasks', label: 'Dự án Kanban/Gantt & Helpdesk', suite: 'erp' },
-  { key: 'erp_workchat', label: 'WorkChat Nội bộ & Bảng tin Feed', suite: 'erp' },
   { key: 'erp_finance_inventory', label: 'Tài chính, Báo giá, SO/PO & Kho FIFO', suite: 'erp' },
   { key: 'erp_cloud_ocr', label: 'Tài liệu Cloud & AI OCR', suite: 'erp' },
   { key: 'dom_agent', label: 'Hội đồng Trợ lý AI DOM Agent', suite: 'erp' },
-  { key: 'education_addon', label: 'Đào tạo & Quản lý Học vụ (Add-on)', suite: 'erp' },
+  { key: 'org_rbac', label: 'Cài đặt Sơ đồ Tổ chức & Phân quyền', suite: 'core' },
 ];
 
-export interface ScreenAccessDescriptor {
-  screenKey: string;
-  path: string;
-  label: string;
-  moduleKey: string;
-  group: 'crm' | 'marketing' | 'growth' | 'erp' | 'core';
-}
-
-export const SCREEN_ACCESS_CATALOG: ReadonlyArray<ScreenAccessDescriptor> = [
-  { screenKey: 'dashboard', path: '/', label: 'Dashboard Tổng quan', moduleKey: 'crm_dashboard', group: 'crm' },
-  { screenKey: 'sale_portal', path: '/sale-portal', label: 'Cổng Sale Portal', moduleKey: 'sale_portal', group: 'crm' },
-  { screenKey: 'data_list', path: '/data', label: 'Quản lý Data & Lịch hẹn', moduleKey: 'leads', group: 'crm' },
-  { screenKey: 'calendar', path: '/calendar', label: 'Lịch hẹn & Sự kiện', moduleKey: 'leads', group: 'crm' },
-  { screenKey: 'contacts', path: '/contacts', label: 'Khách hàng 360° (Contacts)', moduleKey: 'contacts_360', group: 'growth' },
-  { screenKey: 'deals', path: '/deals', label: 'Pipeline Deals Kanban', moduleKey: 'deals', group: 'growth' },
-  { screenKey: 'companies', path: '/companies', label: 'Doanh nghiệp B2B (Companies)', moduleKey: 'companies', group: 'growth' },
-  { screenKey: 'activities', path: '/activities', label: 'Hoạt động & Nhắc việc', moduleKey: 'activities', group: 'growth' },
-  { screenKey: 'ads_performance', path: '/ads-performance', label: 'Hiệu suất Ads & Meta CAPI', moduleKey: 'ads_capi', group: 'crm' },
-  { screenKey: 'tickets', path: '/tickets', label: 'Ticket Lỗi Data', moduleKey: 'tickets_data', group: 'crm' },
-  { screenKey: 'gatekeeper', path: '/gatekeeper', label: 'AI Pre-screener Gatekeeper', moduleKey: 'gatekeeper', group: 'crm' },
-  { screenKey: 'rounds', path: '/rounds', label: 'Vòng phân bổ Sale', moduleKey: 'rounds', group: 'crm' },
-  { screenKey: 'fair_share', path: '/fair-share', label: 'Đối soát Công bằng (Fair-Share)', moduleKey: 'fair_share', group: 'crm' },
-  { screenKey: 'routing_rules', path: '/rules', label: 'Logic xử lý & Định tuyến', moduleKey: 'routing_rules', group: 'crm' },
-  { screenKey: 'consultants', path: '/consultants', label: 'Nhân sự Sale & Đại lý', moduleKey: 'consultants', group: 'crm' },
-  { screenKey: 'integrations', path: '/integrations', label: 'Tích hợp Webhook, Sheet & Bot', moduleKey: 'integrations_autodata', group: 'crm' },
-  { screenKey: 'mkt_dashboard', path: '/marketing-dashboard', label: 'Dashboard Marketing', moduleKey: 'mkt_dashboard', group: 'marketing' },
-  { screenKey: 'audiences', path: '/audiences', label: 'Tệp Data & Tệp Logic', moduleKey: 'audiences', group: 'marketing' },
-  { screenKey: 'mkt_templates', path: '/marketing/templates', label: 'Email Templates Editor', moduleKey: 'email_templates', group: 'marketing' },
-  { screenKey: 'mkt_forms', path: '/marketing/forms', label: 'Form Builder & OTP', moduleKey: 'forms_triggers', group: 'marketing' },
-  { screenKey: 'mkt_surveys', path: '/marketing/surveys', label: 'Surveys & Quiz', moduleKey: 'surveys_quiz', group: 'marketing' },
-  { screenKey: 'mkt_campaigns', path: '/marketing/campaigns', label: 'Chiến dịch Email / ZNS', moduleKey: 'campaigns', group: 'marketing' },
-  { screenKey: 'mkt_flows', path: '/marketing/flows', label: 'Automation Flows', moduleKey: 'automation_flows', group: 'marketing' },
-  { screenKey: 'mkt_vouchers', path: '/marketing/vouchers', label: 'Voucher & QR Designer', moduleKey: 'vouchers_qr', group: 'marketing' },
-  { screenKey: 'mkt_web_tracking', path: '/marketing/web-tracking', label: 'Web Tracking & Heatmap', moduleKey: 'web_tracking', group: 'marketing' },
-  { screenKey: 'mkt_social_bot', path: '/marketing/social-bot', label: 'Social Bot & AI Inbox', moduleKey: 'social_bot', group: 'marketing' },
-  { screenKey: 'marketing_connect', path: '/marketing-connect', label: 'Kênh gửi SES / ZNS / SDK', moduleKey: 'integrations_marketing', group: 'marketing' },
-  { screenKey: 'growth_attribution', path: '/growth-attribution', label: 'Doanh thu & ROAS Xuyên phễu', moduleKey: 'growth_attribution', group: 'growth' },
-  { screenKey: 'workspace', path: '/workspace', label: 'Bàn làm việc Cá nhân', moduleKey: 'workspace_personal', group: 'growth' },
-  { screenKey: 'feed', path: '/feed', label: 'Bảng tin Nội bộ (Feed)', moduleKey: 'erp_workchat', group: 'erp' },
-  { screenKey: 'support_tickets', path: '/support-tickets', label: 'Helpdesk CSKH (SLA)', moduleKey: 'erp_projects_tasks', group: 'erp' },
-  { screenKey: 'dom_agent', path: '/dom-agent', label: 'Hội đồng DOM Agent AI', moduleKey: 'dom_agent', group: 'erp' },
-  { screenKey: 'erp_hrm', path: '/erp/hrm', label: 'Nhân sự HRM & Hợp đồng', moduleKey: 'erp_hrm_org', group: 'erp' },
-  { screenKey: 'erp_attendance', path: '/erp/attendance', label: 'Chấm công GPS / Selfie', moduleKey: 'erp_attendance', group: 'erp' },
-  { screenKey: 'erp_payroll', path: '/erp/payroll', label: 'Bảng lương & Thuế TNCN', moduleKey: 'erp_payroll', group: 'erp' },
-  { screenKey: 'my_payslips', path: '/my-payslips', label: 'Phiếu lương Cá nhân', moduleKey: 'erp_payroll', group: 'erp' },
-  { screenKey: 'cooperation_slips', path: '/cooperation-slips', label: 'Phiếu Hợp tác Hoa hồng', moduleKey: 'erp_payroll', group: 'erp' },
-  { screenKey: 'erp_approvals', path: '/erp/approvals', label: 'Trung tâm Phê duyệt Đa cấp', moduleKey: 'erp_approvals', group: 'erp' },
-  { screenKey: 'erp_projects', path: '/erp/projects', label: 'Dự án Kanban & Gantt', moduleKey: 'erp_projects_tasks', group: 'erp' },
-  { screenKey: 'erp_workchat', path: '/erp/workchat', label: 'WorkChat Doanh nghiệp', moduleKey: 'erp_workchat', group: 'erp' },
-  { screenKey: 'erp_finance', path: '/erp/finance', label: 'Tài chính & Vận hành Thương mại', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'quotes', path: '/quotes', label: 'Báo giá (Quotes)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'sales_orders', path: '/sales-orders', label: 'Đơn bán hàng (Sales Orders)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'deposits', path: '/deposits', label: 'Đặt cọc & Thu tiền (Deposits)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'expenses', path: '/expenses', label: 'Chi phí & Tạm ứng (Expenses)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'cash_flow', path: '/cash-flow', label: 'Dòng tiền (Cash Flow)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'accounting_az', path: '/accounting-az', label: 'Kế toán & Thuế A-Z', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'invoices', path: '/invoices', label: 'Hóa đơn & Công nợ', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'products', path: '/products', label: 'Sản phẩm / Dịch vụ (SKU)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'suppliers', path: '/suppliers', label: 'Nhà cung cấp (Suppliers)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'inventory', path: '/inventory', label: 'Kho vận FIFO & Vật tư', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'purchase_orders', path: '/purchase-orders', label: 'Đơn mua hàng (Purchase Orders)', moduleKey: 'erp_finance_inventory', group: 'erp' },
-  { screenKey: 'erp_cloud_files', path: '/erp/cloud-files', label: 'Tài liệu Cloud & AI OCR', moduleKey: 'erp_cloud_ocr', group: 'erp' },
-  { screenKey: 'erp_education', path: '/erp/education', label: 'Đào tạo & Học vụ (Add-on)', moduleKey: 'education_addon', group: 'erp' },
-  { screenKey: 'students', path: '/students', label: 'Học viên (Add-on Đào tạo)', moduleKey: 'education_addon', group: 'erp' },
-  { screenKey: 'schedules', path: '/schedules', label: 'Lịch học (Add-on Đào tạo)', moduleKey: 'education_addon', group: 'erp' },
-  { screenKey: 'reports_crm', path: '/reports-crm', label: 'Báo cáo CRM & BI', moduleKey: 'reports_bi', group: 'erp' },
-  { screenKey: 'ai_training', path: '/ai-training', label: 'Huấn luyện AI (DOM Agent)', moduleKey: 'dom_agent', group: 'erp' },
-  { screenKey: 'mkt_ai_training', path: '/marketing/ai-training', label: 'Đào tạo AI Bot Studio', moduleKey: 'ai_bot_studio', group: 'marketing' },
-  { screenKey: 'mkt_api_triggers', path: '/marketing/api-triggers', label: 'API & Webhook Triggers', moduleKey: 'integrations_marketing', group: 'marketing' },
-  { screenKey: 'mkt_capi', path: '/marketing/capi', label: 'Meta CAPI & Tệp Ads', moduleKey: 'web_tracking', group: 'marketing' },
-  { screenKey: 'about_erp', path: '/about-erp', label: 'Giới thiệu Hệ thống', moduleKey: 'settings', group: 'core' },
-  { screenKey: 'account', path: '/account', label: 'Tài khoản Cá nhân & 2FA', moduleKey: 'settings', group: 'core' },
-  { screenKey: 'accounts', path: '/accounts', label: 'Quản lý Tài khoản & Nhân viên', moduleKey: 'users', group: 'core' },
-  { screenKey: 'settings', path: '/settings', label: 'Cài đặt Hệ thống (10 Nhóm)', moduleKey: 'settings', group: 'core' },
-  { screenKey: 'report_data', path: '/report-data', label: 'Báo lỗi Data Nhanh', moduleKey: 'tickets_data', group: 'crm' },
-];
-
-export const QUICK_ACTIONS_CATALOG: ReadonlyArray<{
-  key: string;
-  label: string;
-  moduleKey: string;
-  requiredAction: RbacActionKey;
-}> = [
-  { key: 'quick_add_lead', label: 'Thêm Data / Lead Nhanh', moduleKey: 'leads', requiredAction: 'create' },
-  { key: 'create_audience', label: 'Tạo Tệp Data / Tệp Logic', moduleKey: 'audiences', requiredAction: 'create' },
-  { key: 'create_deal', label: 'Tạo Cơ hội / Deal mới', moduleKey: 'deals', requiredAction: 'create' },
-  { key: 'create_task', label: 'Giao Công việc / Task mới', moduleKey: 'erp_projects_tasks', requiredAction: 'create' },
-  { key: 'create_approval', label: 'Gửi Đề xuất Phê duyệt', moduleKey: 'erp_approvals', requiredAction: 'create' },
-  { key: 'create_expense', label: 'Lập Phiếu chi / Tạm ứng', moduleKey: 'erp_finance_inventory', requiredAction: 'create' },
-  { key: 'create_deposit', label: 'Lập Phiếu Đặt cọc / POS', moduleKey: 'erp_finance_inventory', requiredAction: 'create' },
-  { key: 'open_workchat', label: 'Mở WorkChat Nhanh', moduleKey: 'erp_workchat', requiredAction: 'view' },
-  { key: 'open_qr_call', label: 'Quét QR Gọi điện Nhanh', moduleKey: 'leads', requiredAction: 'view' },
-];
-
-/**
- * Package 1 (`autodata_crm`) — classic /data distribution suite ONLY.
- * Growth extras (Contacts 360, Deals, Companies, Activities, Personal Workspace)
- * live in `GROWTH_EXTRA_MODULES` and are unlocked from Package 3 upward.
- * NOTE: `pipelines` stays here — it is the backend key for lead-status pipelines
- * of the /data suite and is intentionally NOT an alias of `deals` anymore.
- */
 const CRM_MODULES = [
   'crm_dashboard',
   'leads',
@@ -259,22 +142,11 @@ const CRM_MODULES = [
   'ads_capi',
   'consultants',
   'sale_portal',
-  'appointments',
   'integrations_autodata',
   'dom_sales_copilot',
   'settings',
-  'users',
   'org_rbac',
   'billing',
-];
-
-/** Growth extras: CRM 360 full-clone screens, included by Package 3 & Package 4 only. */
-export const GROWTH_EXTRA_MODULES: ReadonlyArray<string> = [
-  'contacts_360',
-  'deals',
-  'companies',
-  'activities',
-  'workspace_personal',
 ];
 
 const MARKETING_MODULES = [
@@ -292,7 +164,6 @@ const MARKETING_MODULES = [
   'integrations_marketing',
   'dom_marketing_copilot',
   'settings',
-  'users',
   'org_rbac',
   'billing',
 ];
@@ -301,7 +172,6 @@ const GROWTH_MODULES = Array.from(
   new Set([
     ...CRM_MODULES,
     ...MARKETING_MODULES,
-    ...GROWTH_EXTRA_MODULES,
     'growth_attribution',
     'integrations_unified',
   ])
@@ -310,13 +180,6 @@ const GROWTH_MODULES = Array.from(
 const ERP_PROMAX_MODULES = Array.from(
   new Set([
     ...GROWTH_MODULES,
-    ...GROWTH_EXTRA_MODULES,
-    'crm_b2b',
-    'enterprise_feed',
-    'helpdesk',
-    'quotes_orders',
-    'inventory_assets',
-    'reports_bi',
     'erp_hrm_org',
     'erp_attendance',
     'erp_payroll',
@@ -329,38 +192,6 @@ const ERP_PROMAX_MODULES = Array.from(
   ])
 );
 
-/** ERP-only module keys (frontend + backend canonical names) — Package 4 exclusive. */
-export const ERP_ONLY_MODULES: ReadonlyArray<string> = Array.from(
-  new Set([
-    ...ERP_PROMAX_MODULES.filter((m) => !GROWTH_MODULES.includes(m)),
-    'hrm',
-    'attendance',
-    'payroll',
-    'approvals',
-    'projects',
-    'workchat',
-    'finance',
-    'cloud_files_ocr',
-  ])
-);
-
-const GROWTH_EXTRA_SET = new Set<string>(GROWTH_EXTRA_MODULES);
-const ERP_ONLY_SET = new Set<string>(ERP_ONLY_MODULES);
-
-/**
- * Hard package gate (runs BEFORE alias expansion): a module that belongs to a higher
- * package can never be resolved on a lower package, regardless of backend aliases,
- * stale persisted `enabled_modules` arrays or `screen_access` grants.
- */
-export function isModuleForbiddenForPackage(packageCode: SaasPackageCode, moduleKey: string): boolean {
-  if (packageCode === 'domation_promax') return false;
-  if (ERP_ONLY_SET.has(moduleKey)) return true;
-  if (packageCode === 'growth_combo') return false;
-  if (GROWTH_EXTRA_SET.has(moduleKey)) return true;
-  if (packageCode === 'autodata_crm' && moduleKey === 'audiences') return true;
-  return false;
-}
-
 export const SAAS_PACKAGES_CATALOG: Record<SaasPackageCode, PackageCatalogMeta> = {
   autodata_crm: {
     code: 'autodata_crm',
@@ -369,7 +200,6 @@ export const SAAS_PACKAGES_CATALOG: Record<SaasPackageCode, PackageCatalogMeta> 
     name: 'Auto Data & CRM',
     badge: 'Chia Số Sale Tức Thì',
     tagline: 'Chia Lead công bằng theo giây, quản lý phễu Sale, AI Gatekeeper & Meta CAPI v21.0.',
-    priceLabel: '1.500.000đ / tháng',
     monthlyPriceVnd: 1_500_000,
     annualMonthlyEquivalentVnd: 1_275_000,
     accentColor: '#1E40FF',
@@ -388,7 +218,6 @@ export const SAAS_PACKAGES_CATALOG: Record<SaasPackageCode, PackageCatalogMeta> 
     name: 'Marketing Automation Standalone',
     badge: 'Nuôi Dưỡng Đa Kênh',
     tagline: 'Thu thập Lead qua Form Card, phân Tệp Data / Tệp Logic, gửi Email/ZNS & Flow tự động.',
-    priceLabel: '2.200.000đ / tháng',
     monthlyPriceVnd: 2_200_000,
     annualMonthlyEquivalentVnd: 1_870_000,
     accentColor: '#0284C7',
@@ -407,7 +236,6 @@ export const SAAS_PACKAGES_CATALOG: Record<SaasPackageCode, PackageCatalogMeta> 
     name: 'Growth Suite (CRM + Marketing)',
     badge: 'Khép Kín Doanh Thu',
     tagline: 'Hợp nhất 100% Gói 1 + Gói 2: Quảng cáo/Form -> Nuôi dưỡng -> Chia Sale -> Đo ROAS thực.',
-    priceLabel: '3.200.000đ / tháng',
     monthlyPriceVnd: 3_200_000,
     annualMonthlyEquivalentVnd: 2_720_000,
     accentColor: '#4F46E5',
@@ -426,7 +254,6 @@ export const SAAS_PACKAGES_CATALOG: Record<SaasPackageCode, PackageCatalogMeta> 
     name: 'DOMATION PROMAX — Full Suite ERP',
     badge: 'Hệ Sinh Thái Toàn Diện',
     tagline: 'Quản trị toàn diện Doanh nghiệp: Growth Suite + 9 Cụm ERP Nội bộ + Hội đồng DOM Agent.',
-    priceLabel: '6.000.000đ / tháng',
     monthlyPriceVnd: 6_000_000,
     annualMonthlyEquivalentVnd: 5_100_000,
     accentColor: '#0F172A',
@@ -439,8 +266,6 @@ export const SAAS_PACKAGES_CATALOG: Record<SaasPackageCode, PackageCatalogMeta> 
     defaultModules: ERP_PROMAX_MODULES,
   },
 };
-
-export const PACKAGE_CATALOG = SAAS_PACKAGES_CATALOG;
 
 function makeDictionary(input: {
   customerLabel: string;
@@ -724,11 +549,6 @@ export function buildResolvedTerminology(
 
 export const FRONTEND_TO_BACKEND_MODULE_MAP: Readonly<Record<string, string>> = {
   crm_dashboard: 'dashboard_crm',
-  // Growth extras: `deals` / `companies` / `workspace_personal` are canonical backend keys.
-  // `activities` is served by backend `workspace_personal` (/workspace + /activities).
-  // `contacts_360` is a frontend-only entitlement key (backend RBAC falls back to `leads`).
-  activities: 'workspace_personal',
-  users: 'org_rbac',
   fair_share: 'rounds',
   consultants: 'sale_portal',
   integrations_autodata: 'integrations_crm',
@@ -758,15 +578,6 @@ export const FRONTEND_TO_BACKEND_MODULE_MAP: Readonly<Record<string, string>> = 
 export const MODULE_KEY_ALIASES: Readonly<Record<string, readonly string[]>> = {
   crm_dashboard: ['crm_dashboard', 'dashboard_crm'],
   dashboard_crm: ['dashboard_crm', 'crm_dashboard'],
-  // Growth extras resolve ONLY among themselves — never through Package-1 keys
-  // (`leads` / `pipelines`) so `autodata_crm` can't leak them.
-  deals: ['deals'],
-  pipelines: ['pipelines'],
-  companies: ['companies'],
-  activities: ['activities', 'workspace_personal'],
-  contacts_360: ['contacts_360'],
-  users: ['users', 'org_rbac'],
-  org_rbac: ['org_rbac', 'users'],
   rounds: ['rounds', 'fair_share'],
   fair_share: ['fair_share', 'rounds'],
   sale_portal: ['sale_portal', 'consultants'],
@@ -805,9 +616,9 @@ export const MODULE_KEY_ALIASES: Readonly<Record<string, readonly string[]>> = {
   payroll: ['payroll', 'erp_payroll'],
   erp_approvals: ['erp_approvals', 'approvals'],
   approvals: ['approvals', 'erp_approvals'],
-  erp_projects_tasks: ['erp_projects_tasks', 'projects', 'helpdesk'],
+  erp_projects_tasks: ['erp_projects_tasks', 'projects', 'workspace_personal', 'helpdesk'],
   projects: ['projects', 'erp_projects_tasks'],
-  workspace_personal: ['workspace_personal', 'activities'],
+  workspace_personal: ['workspace_personal', 'erp_projects_tasks'],
   helpdesk: ['helpdesk', 'erp_projects_tasks'],
   erp_workchat: ['erp_workchat', 'workchat', 'enterprise_feed'],
   workchat: ['workchat', 'erp_workchat'],
@@ -816,7 +627,7 @@ export const MODULE_KEY_ALIASES: Readonly<Record<string, readonly string[]>> = {
   finance: ['finance', 'erp_finance_inventory'],
   quotes_orders: ['quotes_orders', 'erp_finance_inventory'],
   inventory_assets: ['inventory_assets', 'erp_finance_inventory'],
-  crm_b2b: ['crm_b2b', 'erp_finance_inventory', 'companies', 'deals'],
+  crm_b2b: ['crm_b2b', 'erp_finance_inventory'],
   reports_bi: ['reports_bi', 'erp_finance_inventory'],
   erp_cloud_ocr: ['erp_cloud_ocr', 'cloud_files_ocr'],
   cloud_files_ocr: ['cloud_files_ocr', 'erp_cloud_ocr'],
@@ -834,25 +645,6 @@ export function getModuleKeyAliases(moduleKey: string): string[] {
     return Array.from(new Set([moduleKey, toBackendModuleKey(moduleKey), ...aliases]));
   }
   return Array.from(new Set([moduleKey, toBackendModuleKey(moduleKey)]));
-}
-
-/**
- * RBAC-only fallbacks used to resolve an `effective_permissions` row for Growth-extra keys
- * whose permissions are still stored by the backend under a legacy key. NEVER used for
- * entitlement (`hasModule`) resolution, so it cannot leak modules across packages.
- */
-export const MODULE_PERMISSION_FALLBACKS: Readonly<Record<string, readonly string[]>> = {
-  contacts_360: ['contacts', 'leads'],
-  activities: ['workspace_personal', 'leads'],
-  workspace_personal: ['activities'],
-  deals: ['crm_b2b'],
-  companies: ['crm_b2b'],
-};
-
-export function getModulePermissionKeys(moduleKey: string): string[] {
-  return Array.from(
-    new Set([...getModuleKeyAliases(moduleKey), ...(MODULE_PERMISSION_FALLBACKS[moduleKey] || [])])
-  );
 }
 
 export function computeDefaultEnabledModules(
@@ -891,13 +683,6 @@ export function expandEnabledModulesForPackage(
 
   if (packageCode === 'autodata_crm') {
     merged.delete('audiences');
-  }
-
-  // Hard package gate: strip any higher-package key that slipped in via aliases / stale server arrays.
-  for (const mod of Array.from(merged)) {
-    if (isModuleForbiddenForPackage(packageCode, mod)) {
-      merged.delete(mod);
-    }
   }
 
   if (!(educationAddon && packageCode === 'domation_promax')) {

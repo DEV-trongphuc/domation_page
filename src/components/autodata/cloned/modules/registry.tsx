@@ -1,326 +1,237 @@
-import React, { Suspense, lazy } from 'react';
-import { MemoryRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { Sparkles, Layers, ArrowRight, Lock, CheckCircle2, ExternalLink } from 'lucide-react';
+import React, { lazy, Suspense } from 'react';
+import {
+  ArrowRight,
+  Bot,
+  CheckCircle2,
+  Layers,
+  Lock,
+  Settings,
+  ShieldCheck,
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import {
+  AutoDataLoadingModal,
+  Badge,
+  Card,
+  FormCard,
+} from '../components/ui/AutoDataLoadingModal';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 import { useEntitlement } from '../contexts/EntitlementContext';
-import { PublicRouteSkeleton, RouteTabSkeleton } from '../components/ui/Skeleton';
 import {
   ECOSYSTEM_PLUGIN_ROUTES,
-  REGISTERED_WAVE2_MODULES,
-  matchEcosystemRoute,
+  getRegisteredWave2Module,
   type EcosystemRouteDescriptor,
 } from './registryMeta';
 
-const LazyPublicSurveyPage = lazy(() => import('../pages/marketing/PublicSurveyPage'));
-const LazyPublicVoucherClaimPage = lazy(() => import('../pages/marketing/PublicVoucherClaimPage'));
-const LazyPublicBooking1on1Page = lazy(() =>
-  import('../pages/PublicBooking1on1Page').then((m) => ({
-    default: (m as any).default || (m as any).PublicBooking1on1Page,
+const AudiencesPage = lazy(() =>
+  import('./audiences/AudiencesPage').then((m) => ({ default: m.AudiencesPage }))
+);
+const MarketingDashboardOverview = lazy(() =>
+  import('./dashboards/MarketingDashboardOverview').then((m) => ({
+    default: m.MarketingDashboardOverview,
   }))
 );
-const LazyPublicSchedulePage = lazy(() =>
-  import('../pages/PublicSchedulePage').then((m) => ({
-    default: (m as any).default || (m as any).PublicSchedulePage,
+const GrowthAttributionPage = lazy(() =>
+  import('./dashboards/GrowthAttributionPage').then((m) => ({
+    default: m.GrowthAttributionPage,
   }))
 );
-const LazyApiV1DocumentationPage = lazy(() =>
-  import('../pages/ApiV1DocumentationPage').then((m) => ({
-    default: (m as any).default || (m as any).ApiV1DocumentationPage,
+const MarketingConnectHub = lazy(() =>
+  import('./connect/MarketingConnectHub').then((m) => ({
+    default: m.MarketingConnectHub,
   }))
 );
 
-type LazyComponentImport = () => Promise<Record<string, unknown>>;
+// Auto-discover Wave 2 parallel worker entries dropped into ./<entrySlug>/Wave2Entry.tsx at module init
+const discoveredWave2Modules = import.meta.glob<{ default: React.ComponentType }>(
+  './*/Wave2Entry.tsx'
+);
 
-const prebuiltSettingsGlobs = import.meta.glob('./settings-saas/*.tsx') as Record<
-  string,
-  LazyComponentImport
->;
+const prebuiltWave2LazyMap: Record<string, React.LazyExoticComponent<React.ComponentType>> = {};
+for (const [globKey, loader] of Object.entries(discoveredWave2Modules)) {
+  prebuiltWave2LazyMap[globKey] = lazy(loader);
+}
 
-const PUBLIC_COMPONENTS_BY_PATH: Array<{ match: (p: string) => boolean; Component: React.ComponentType }> = [
-  { match: (p) => p.startsWith('/booking/') || p.startsWith('/public-booking/'), Component: LazyPublicBooking1on1Page },
-  { match: (p) => p.startsWith('/s/'), Component: LazyPublicSurveyPage },
-  { match: (p) => p.startsWith('/claim/'), Component: LazyPublicVoucherClaimPage },
-  { match: (p) => p.startsWith('/schedule') || p.startsWith('/public-schedule'), Component: LazyPublicSchedulePage },
-  { match: (p) => p === '/docs/api-v1', Component: LazyApiV1DocumentationPage },
-];
-
-export const Wave2Slot: React.FC<{
-  descriptor: EcosystemRouteDescriptor;
-}> = ({ descriptor }) => {
+const Wave2SlotLaunchpad: React.FC<{ descriptor: EcosystemRouteDescriptor }> = ({
+  descriptor,
+}) => {
+  const { scope, packageMeta, terminology } = useEntitlement();
   const navigate = useNavigate();
-  const { hasModule, packageMeta, educationAddon, switchPackage } = useEntitlement();
-
-  const isAddonLocked = descriptor.moduleKey === 'education_addon' && !educationAddon;
-  const isUnlocked = !isAddonLocked && hasModule(descriptor.moduleKey);
-
-  const recommendedPackage =
-    descriptor.group === 'erp' || descriptor.moduleKey.startsWith('erp_')
-      ? ('domation_promax' as const)
-      : descriptor.group === 'growth'
-        ? ('growth_combo' as const)
-        : ('marketing_standalone' as const);
-
-  const targetUpgradeName =
-    recommendedPackage === 'domation_promax'
-      ? 'DOMATION PROMAX'
-      : recommendedPackage === 'growth_combo'
-        ? 'Growth Suite (CRM + Marketing)'
-        : 'Marketing Automation Độc lập';
+  const activeScope = scope(descriptor.moduleKey);
 
   return (
-    <div style={{ padding: '28px', maxWidth: '960px', margin: '0 auto' }}>
-      <div
-        style={{
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #E2E8F0',
-          borderRadius: '20px',
-          padding: '28px',
-          boxShadow: '0 8px 24px -10px rgba(15, 23, 42, 0.08)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-        }}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <Card
+        padding="1.35rem 1.5rem"
+        style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%)' }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
-              border: '1px solid #BFDBFE',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#1E40FF',
-              flexShrink: 0,
-            }}
-          >
-            {isUnlocked ? <Layers size={26} /> : <Lock size={24} />}
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span
-                style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  padding: '3px 10px',
-                  borderRadius: '999px',
-                  backgroundColor: isUnlocked ? '#EFF6FF' : '#FEF3C7',
-                  color: isUnlocked ? '#1E40FF' : '#B45309',
-                  border: isUnlocked ? '1px solid #BFDBFE' : '1px solid #FDE68A',
-                }}
-              >
-                {isUnlocked ? 'Module Ready' : 'Yêu cầu nâng cấp gói'}
-              </span>
-              <span style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 500 }}>
-                Gói hiện tại: {packageMeta.name}
-              </span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 16,
+                background: '#FFFFFF',
+                border: '1px solid #DBEAFE',
+                boxShadow: '0 6px 18px rgba(30, 64, 255, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 6,
+              }}
+            >
+              <img
+                src="/imgs/autodata/ICON.png"
+                alt="DOMATION Module"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
             </div>
-            <h2 style={{ margin: '6px 0 4px', fontSize: '1.35rem', fontWeight: 700, color: '#0F172A' }}>
-              {descriptor.title}
-            </h2>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.5 }}>{descriptor.subtitle}</p>
-          </div>
-        </div>
-
-        {descriptor.highlights && descriptor.highlights.length > 0 && (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '12px',
-            }}
-          >
-            {descriptor.highlights.map((item) => (
-              <div
-                key={item}
-                style={{
-                  padding: '12px 14px',
-                  borderRadius: '12px',
-                  backgroundColor: '#F8FAFF',
-                  border: '1px solid #E2E8F0',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  fontSize: '0.86rem',
-                  fontWeight: 600,
-                  color: '#1E293B',
-                }}
-              >
-                <CheckCircle2 size={16} color="#1E40FF" style={{ flexShrink: 0 }} />
-                <span>{item}</span>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <h1 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+                  {descriptor.title}
+                </h1>
+                <Badge tone="primary">{packageMeta.shortName}</Badge>
+                <Badge tone="success" icon={<Lock size={11} />}>
+                  RBAC Scope: {activeScope}
+                </Badge>
               </div>
-            ))}
-          </div>
-        )}
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-            paddingTop: '12px',
-            borderTop: '1px solid #F1F5F9',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748B', fontSize: '0.82rem' }}>
-            <Sparkles size={15} color="#1E40FF" />
-            <span>
-              {isUnlocked
-                ? 'Không gian module đã mở khóa quyền truy cập trên tài khoản của bạn.'
-                : `Nâng cấp lên ${targetUpgradeName} để sử dụng phân hệ này không giới hạn.`}
-            </span>
+              <p style={{ fontSize: '0.82rem', color: '#64748B', marginTop: 4 }}>
+                {descriptor.subtitle}
+              </p>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            {descriptor.fallbackPath && isUnlocked && (
-              <button
-                type="button"
-                onClick={() => navigate(descriptor.fallbackPath!)}
-                style={{
-                  height: '44px',
-                  minHeight: '44px',
-                  padding: '0 18px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  backgroundColor: '#1E40FF',
-                  color: '#FFFFFF',
-                  fontWeight: 600,
-                  fontSize: '0.88rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(30, 64, 255, 0.22)',
-                }}
-              >
-                <span>Mở không gian tổng hợp</span>
-                <ExternalLink size={16} />
-              </button>
-            )}
-
-            {!isUnlocked && (
-              <button
-                type="button"
-                onClick={() => {
-                  if (descriptor.moduleKey === 'education_addon') {
-                    void switchPackage(packageMeta.code, { educationAddon: true });
-                  } else {
-                    void switchPackage(recommendedPackage);
-                  }
-                }}
-                style={{
-                  height: '44px',
-                  minHeight: '44px',
-                  padding: '0 18px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  backgroundColor: '#1E40FF',
-                  color: '#FFFFFF',
-                  fontWeight: 600,
-                  fontSize: '0.88rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(30, 64, 255, 0.22)',
-                }}
-              >
-                <span>
-                  {descriptor.moduleKey === 'education_addon'
-                    ? 'Kích hoạt Education Add-on'
-                    : `Mở khóa ${targetUpgradeName}`}
-                </span>
-                <ArrowRight size={16} />
-              </button>
-            )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ScreenHelpButton screenKey={descriptor.screenKey} />
           </div>
         </div>
+      </Card>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+        {(descriptor.highlights || []).map((hl) => (
+          <FormCard
+            key={hl}
+            icon={<CheckCircle2 size={18} />}
+            title={hl}
+            description={`Đã kết nối sẵn sàng với lõi ${terminology.customerLabel} 360°, Sơ đồ Tổ chức & Ma trận Phân quyền RBAC.`}
+            badge={<Badge tone="info">Multi-Tenant RLS</Badge>}
+          />
+        ))}
       </div>
+
+      <Card
+        title="Liên Thông Trực Tiếp Với Các Động Cơ Nền Tảng Đang Hoạt Động"
+        subtitle="Phân hệ này đọc/ghi trực tiếp trên Master Contact Core & cấu hình Zero-Hardcode của doanh nghiệp"
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => navigate('/audiences')}
+            className="btn secondary"
+            style={{ height: 40, color: '#1E40FF', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.82rem' }}
+          >
+            <Layers size={15} /> Mở Tệp Data & Tệp Logic ({terminology.customerLabel}) <ArrowRight size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/marketing-connect')}
+            className="btn secondary"
+            style={{ height: 40, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.82rem' }}
+          >
+            <ShieldCheck size={15} color="#0284C7" /> Cấu hình Kênh gửi Vault (SES/ZNS/SDK)
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/settings?tab=org_structure')}
+            className="btn secondary"
+            style={{ height: 40, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.82rem' }}
+          >
+            <Settings size={15} /> Thiết lập Sơ đồ Tổ chức & Phân quyền
+          </button>
+          {descriptor.moduleKey === 'dom_agent' && (
+            <button
+              type="button"
+              onClick={() => navigate('/settings?tab=policy_docs')}
+              className="btn-inkica-primary"
+              style={{
+                height: 40,
+                padding: '0 1.15rem',
+                borderRadius: 12,
+                border: 'none',
+                color: '#FFFFFF',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer',
+              }}
+            >
+              <Bot size={15} /> Đồng bộ Nội quy RAG cho DOM Agent
+            </button>
+          )}
+        </div>
+      </Card>
     </div>
   );
 };
 
 export const EcosystemPluginViewport: React.FC<{ path: string }> = ({ path }) => {
-  const pubMatch = PUBLIC_COMPONENTS_BY_PATH.find((entry) => entry.match(path));
-  if (pubMatch) {
-    const PubComp = pubMatch.Component;
+  const descriptor = ECOSYSTEM_PLUGIN_ROUTES.find((r) => r.path === path);
+  const explicit = getRegisteredWave2Module(path);
+  const globLazy = descriptor?.entrySlug
+    ? prebuiltWave2LazyMap[`./${descriptor.entrySlug}/Wave2Entry.tsx`]
+    : undefined;
+  const ResolvedWave2 = explicit || globLazy;
+
+  const fallback = (
+    <AutoDataLoadingModal
+      inline
+      isOpen
+      message={`Đang mở phân hệ ${descriptor?.title || ''}...`}
+      subMessage=""
+    />
+  );
+
+  if (path === '/audiences') {
     return (
-      <Suspense fallback={<PublicRouteSkeleton />}>
-        <PubComp />
+      <Suspense fallback={fallback}>
+        <AudiencesPage />
+      </Suspense>
+    );
+  }
+  if (path === '/marketing-dashboard') {
+    return (
+      <Suspense fallback={fallback}>
+        <MarketingDashboardOverview />
+      </Suspense>
+    );
+  }
+  if (path === '/growth-attribution') {
+    return (
+      <Suspense fallback={fallback}>
+        <GrowthAttributionPage />
+      </Suspense>
+    );
+  }
+  if (path === '/marketing-connect') {
+    return (
+      <Suspense fallback={fallback}>
+        <MarketingConnectHub />
       </Suspense>
     );
   }
 
-  const descriptor =
-    matchEcosystemRoute(path) || ECOSYSTEM_PLUGIN_ROUTES.find((r) => r.path === path);
-
-  if (!descriptor) {
-    return <RouteTabSkeleton path={path} />;
-  }
-
-  const Registered = REGISTERED_WAVE2_MODULES[descriptor.path];
-  if (Registered) {
+  if (ResolvedWave2) {
     return (
-      <Suspense fallback={<RouteTabSkeleton path={path} />}>
-        <Registered />
+      <Suspense fallback={fallback}>
+        {React.createElement(ResolvedWave2)}
       </Suspense>
     );
   }
 
-  if (descriptor.subViewGlobs?.length) {
-    for (const candidate of descriptor.subViewGlobs) {
-      const key = `./${candidate}.tsx`;
-      const loader = prebuiltSettingsGlobs[key];
-      if (loader) {
-        const DynamicComp = lazy(async () => {
-          const mod = await loader();
-          const Comp = (mod.default || Object.values(mod).find((v) => typeof v === 'function') || (() => null)) as React.ComponentType;
-          return { default: Comp };
-        });
-        return (
-          <Suspense fallback={<RouteTabSkeleton path={path} />}>
-            <DynamicComp />
-          </Suspense>
-        );
-      }
-    }
-  }
-
-  return <Wave2Slot descriptor={descriptor} />;
+  if (!descriptor) return null;
+  return <Wave2SlotLaunchpad descriptor={descriptor} />;
 };
-
-const PublicMatchedViewport: React.FC = () => {
-  const loc = useLocation();
-  return <EcosystemPluginViewport path={loc.pathname} />;
-};
-
-export const PublicStandaloneGateway: React.FC<{ initialPath?: string }> = ({ initialPath = '/' }) => (
-  <MemoryRouter key={initialPath} initialEntries={[initialPath || '/']}>
-    <Toaster position="top-right" />
-    <div className="min-h-screen bg-[#F8F9FA] text-slate-900">
-      <Suspense fallback={<PublicRouteSkeleton />}>
-        <Routes>
-          <Route path="/booking/:bookingCode" element={<LazyPublicBooking1on1Page />} />
-          <Route path="/public-booking/1on1/:bookingCode" element={<LazyPublicBooking1on1Page />} />
-          <Route path="/s/:slug" element={<LazyPublicSurveyPage />} />
-          <Route path="/s/:tenant/:slug" element={<LazyPublicSurveyPage />} />
-          <Route path="/claim/:id" element={<LazyPublicVoucherClaimPage />} />
-          <Route path="/schedule/:customerId" element={<LazyPublicSchedulePage />} />
-          <Route path="/schedule/campaign/:campaignId" element={<LazyPublicSchedulePage />} />
-          <Route path="/schedule/lecturer/:lecturerId" element={<LazyPublicSchedulePage />} />
-          <Route path="/public-schedule/:customerId" element={<LazyPublicSchedulePage />} />
-          <Route path="/docs/api-v1" element={<LazyApiV1DocumentationPage />} />
-          <Route path="*" element={<PublicMatchedViewport />} />
-        </Routes>
-      </Suspense>
-    </div>
-  </MemoryRouter>
-);
-
-export default EcosystemPluginViewport;

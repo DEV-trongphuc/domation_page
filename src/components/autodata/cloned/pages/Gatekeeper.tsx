@@ -6,8 +6,7 @@ import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChar
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { fetchAPI, getDefaultDateFilter } from '../utils/api';
-import { isMarketing } from '../utils/roleUtils';
+import { fetchAPI, normalizeNotificationStatus, getDefaultDateFilter, normalizeGlobalDateFilter, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
 import toast from 'react-hot-toast';
 import {
   ShieldAlert, RefreshCw, Filter, Zap, Trash2, Plus,
@@ -15,7 +14,7 @@ import {
   Phone, Mail, Clock, Tag, XCircle,
   ExternalLink, Check, Shield, Save, Sparkles, X, Settings,
   BarChart2, Search, CheckCircle2, GitBranch, Scale, Edit, Bell, Copy,
-  Calendar, Users, Send, Database, UserPlus
+  Calendar
 } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
@@ -24,7 +23,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { TableSkeleton, Skeleton, KpiCardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
 import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
-import { getLocalDateStr } from '../utils/dateUtils';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 
 type Lead = {
   id: number;
@@ -243,13 +242,13 @@ const getResolutionDetail = (noteText: string) => {
 interface AIScreenerConfig {
   id: string;
   name: string;
-  rounds: number[];
+  rounds: (string | number)[];
   mode: 'ai' | 'manual' | 'hybrid';
   ai_rules: string;
   manual_action: 'hold' | 'skip';
   manual_rules: any[];
   below_standard_fallback_enabled?: boolean;
-  below_standard_fallback_round_id?: number | '';
+  below_standard_fallback_round_id?: string | number | '';
   below_standard_auto_approve?: boolean;
 }
 
@@ -264,7 +263,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           fontSize: '0.72rem',
           fontWeight: 600,
           background: 'rgba(30, 64, 255, 0.12)',
-          color: '#1D4ED8',
+          color: '#1E40FF',
           border: '1px solid rgba(30, 64, 255, 0.2)',
           display: 'inline-flex',
           alignItems: 'center'
@@ -315,9 +314,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             borderRadius: '20px',
             fontSize: '0.72rem',
             fontWeight: 600,
-            background: 'var(--color-primary-light)',
-            color: 'var(--color-primary)',
-            border: '1px solid var(--color-border-light)',
+            background: '#f3e8ff',
+            color: '#7e22ce',
+            border: '1px solid rgba(147, 51, 234, 0.25)',
             display: 'inline-flex',
             alignItems: 'center'
           }}>
@@ -518,23 +517,11 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         );
     }
   };
-  const { user } = useAuth();
-  const isUserAdmin = user && (['admin', 'superadmin', 'super_admin'].includes(user.role) || isMarketing(user));
-  const isReadOnly = user?.role === 'director';
+  const { user, tenantSettings } = useAuth();
   const navigate = useNavigate();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
   });
-
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -547,9 +534,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
   // Search Params
   const getInitialDateFilter = () => {
-    return localStorage.getItem('Ideas_global_date') || getDefaultDateFilter();
+    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
   };
-  const dateFilter = searchParams.get('date') || getInitialDateFilter();
+  const dateFilter = normalizeGlobalDateFilter(searchParams.get('date') || getInitialDateFilter());
 
   const currentPage = Number(searchParams.get('page') || '1');
 
@@ -599,7 +586,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   });
   const [isSavingLeadFields, setIsSavingLeadFields] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
-  const [reminderChannels, setReminderChannels] = useState({ zalo: true, email: true, telegram: true });
+  const [reminderChannels, setReminderChannels] = useState({ zalo: true, email: true });
   const [isSendingReminder, setIsSendingReminder] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewType, setPreviewType] = useState<'email' | 'zalo'>('email');
@@ -619,6 +606,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   };
 
   const handleCopyFullInfo = (lead: Lead) => {
+    const isUserAdmin = (user?.role === 'admin' || user?.role === 'superadmin');
     const displayPhone = isUserAdmin ? lead.phone : maskPhone(lead.phone);
     const displayEmail = isUserAdmin ? lead.email : maskEmail(lead.email);
     const text = [
@@ -636,11 +624,14 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     setNotifLoading(true);
     try {
       const json = await fetchAPI(`get_lead_notification_status&lead_id=${leadId}`);
-      if (json.success) {
-        setNotificationStatus(json.data);
+      if (json && json.success) {
+        setNotificationStatus(normalizeNotificationStatus(json.data));
+      } else {
+        setNotificationStatus(null);
       }
     } catch (err) {
       console.error("Lỗi lấy trạng thái thông báo:", err);
+      setNotificationStatus(null);
     } finally {
       setNotifLoading(false);
     }
@@ -675,8 +666,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         body: JSON.stringify({
           lead_id: selectedLead.lead_id || selectedLead.id,
           send_zalo: reminderChannels.zalo,
-          send_email: reminderChannels.email,
-          send_telegram: reminderChannels.telegram
+          send_email: reminderChannels.email
         })
       });
       if (res.success) {
@@ -738,8 +728,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   };
   const [heldActionModalOpen, setHeldActionModalOpen] = useState<'approve' | 'reject' | 'blacklist' | null>(null);
   const [actioningHeldLead, setActioningHeldLead] = useState<any | null>(null);
-  const [selectedApproveRoundId, setSelectedApproveRoundId] = useState<number | null>(null);
+  const [selectedApproveRoundId, setSelectedApproveRoundId] = useState<string | null>(null);
   const [heldActionReason, setHeldActionReason] = useState<string>('');
+  const [editApprovePhone, setEditApprovePhone] = useState<string>('');
   const [previewedConsultant, setPreviewedConsultant] = useState<any>(null);
   const [previewLoadingId, setPreviewLoadingId] = useState<number | null>(null);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
@@ -800,7 +791,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   const [endDate, setEndDate] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = Math.max(10, Math.min(200, Number(tenantSettings?.default_table_page_size || 50)));
 
   const updateParams = (key: string, value: string) => {
     const currentValue = searchParams.get(key) || '';
@@ -808,10 +799,12 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       return;
     }
     if (key === 'date') {
-      localStorage.setItem('Ideas_global_date', value);
-      window.dispatchEvent(new CustomEvent('global-date-change', { detail: value }));
+      const norm = normalizeGlobalDateFilter(value);
+      localStorage.setItem('domation_global_date', norm);
+      window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
+      value = norm;
     }
-    setSearchParams((prev: any) => {
+    setSearchParams((prev: URLSearchParams) => {
       const next = new URLSearchParams(prev);
       if (value === '' || (key !== 'status' && value === 'all')) next.delete(key);
       else next.set(key, value);
@@ -965,6 +958,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         if (res.admin_avatars) {
           setAdminAvatars(res.admin_avatars);
         }
+        if (data.length === 0 && !heldLeadsSearch) {
+          setIsDynamicFlowExpanded(true);
+        }
       }
     } catch (e: any) {
       toast.error(t('Lỗi tải dữ liệu AI Pre-screener: ') + e.message);
@@ -992,13 +988,16 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
   useEffect(() => {
     if (isActive) {
-      const saved = localStorage.getItem('Ideas_global_date');
-      if (saved && searchParams.get('date') !== saved) {
-        setSearchParams((prev: any) => {
-          const next = new URLSearchParams(prev);
-          next.set('date', saved);
-          return next;
-        }, { replace: true });
+      const rawSaved = localStorage.getItem('domation_global_date');
+      if (rawSaved) {
+        const saved = normalizeGlobalDateFilter(rawSaved);
+        if (searchParams.get('date') !== saved) {
+          setSearchParams((prev: URLSearchParams) => {
+            const next = new URLSearchParams(prev);
+            next.set('date', saved);
+            return next;
+          }, { replace: true });
+        }
       }
     }
   }, [isActive]);
@@ -1006,9 +1005,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   useEffect(() => {
     if (!isActive) return;
     const handleGlobalDate = (e: any) => {
-      const newDate = e.detail;
+      const newDate = normalizeGlobalDateFilter(e.detail);
       if (newDate && searchParams.get('date') !== newDate) {
-        setSearchParams((prev: any) => {
+        setSearchParams((prev: URLSearchParams) => {
           const next = new URLSearchParams(prev);
           next.set('date', newDate);
           return next;
@@ -1023,7 +1022,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     setSettingsLoading(true);
     try {
       const res = await fetchAPI('get_settings');
-      if (res.success && res.data) {
+      if (res && res.success && res.data) {
         setAiScreenerEnabled(res.data.ai_screener_enabled === '1' || res.data.ai_screener_enabled === 1);
 
         // Fetch multiple configurations
@@ -1043,8 +1042,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
         // Fallback: migrate single configuration to multi-ruleset if none exists
         if (configsArray.length === 0) {
-          const oldRounds = res.data.ai_screener_rounds
-            ? res.data.ai_screener_rounds.split(',').map(Number).filter((n: any) => !isNaN(n) && n > 0)
+          const oldRounds = typeof res.data.ai_screener_rounds === 'string'
+            ? res.data.ai_screener_rounds.split(',').map((s: string) => s.trim()).filter(Boolean)
             : [];
           if (oldRounds.length > 0 || res.data.ai_screener_rules || res.data.ai_screener_manual_rules) {
             let oldManualRules: any[] = [];
@@ -1078,7 +1077,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   const fetchRounds = async () => {
     try {
       const res = await fetchAPI('get_rounds');
-      if (res.success && Array.isArray(res.data)) {
+      if (res.success && res.data) {
         setRounds(res.data);
       }
     } catch (e) {
@@ -1089,7 +1088,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   const fetchConsultants = async () => {
     try {
       const json = await fetchAPI('get_consultants');
-      if (json.success && Array.isArray(json.data)) {
+      if (json.success) {
         setConsultants(json.data);
       }
     } catch (e: any) {
@@ -1115,41 +1114,20 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     } else if (filter === 'Tháng trước') {
       mode = 'last_month';
     } else if (filter === 'Tuần này') {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-      const monday = new Date(now);
-      monday.setDate(now.getDate() + distanceToMonday);
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-
+      const range = getWeekRangeVN(0);
       mode = 'custom';
-      start = getLocalDateStr(monday);
-      end = getLocalDateStr(sunday);
+      start = range.start;
+      end = range.end;
     } else if (filter === 'Tuần trước') {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-      const prevMonday = new Date(now);
-      prevMonday.setDate(now.getDate() + distanceToMonday - 7);
-      const prevSunday = new Date(prevMonday);
-      prevSunday.setDate(prevMonday.getDate() + 6);
-
+      const range = getWeekRangeVN(1);
       mode = 'custom';
-      start = getLocalDateStr(prevMonday);
-      end = getLocalDateStr(prevSunday);
+      start = range.start;
+      end = range.end;
     } else if (filter === 'Tuần trước nữa') {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-      const prev2Monday = new Date(now);
-      prev2Monday.setDate(now.getDate() + distanceToMonday - 14);
-      const prev2Sunday = new Date(prev2Monday);
-      prev2Sunday.setDate(prev2Monday.getDate() + 6);
-
+      const range = getWeekRangeVN(2);
       mode = 'custom';
-      start = getLocalDateStr(prev2Monday);
-      end = getLocalDateStr(prev2Sunday);
+      start = range.start;
+      end = range.end;
     } else {
       const match = filter.match(/^(\d{4}-\d{2}-\d{2})\s*(?:đến|đên|den|to|-)\s*(\d{4}-\d{2}-\d{2})$/i);
       if (match) {
@@ -1227,22 +1205,17 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     }
   }, [isActive, searchParams]);
 
-  useEffect(() => {
-    if (searchParams.get('page') && searchParams.get('page') !== '1') {
-      updateParams('page', '1');
-    }
-  }, [heldLeadsSearch]);
-
   // ── Lead Action Handlers ──
   const handleOpenApproveHeldLead = async (lead: any) => {
     setActioningHeldLead(lead);
+    setEditApprovePhone(lead.phone || '');
     setHeldActionModalOpen('approve');
     setHeldActionReason('');
-    setSelectedApproveRoundId(lead.target_round_id ? Number(lead.target_round_id) : null);
+    setSelectedApproveRoundId(lead.target_round_id ? String(lead.target_round_id) : null);
     setPreviewLoadingId(lead.id);
     setPreviewedConsultant(null);
     try {
-      const rId = lead.target_round_id ? Number(lead.target_round_id) : '';
+      const rId = lead.target_round_id ? String(lead.target_round_id) : '';
       const res = await fetchAPI(`preview_held_lead_assignment&lead_id=${lead.id}&round_id=${rId}`);
       if (res.success) {
         setPreviewedConsultant(res.consultant);
@@ -1255,8 +1228,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     setPreviewLoadingId(null);
   };
 
-  const handleApproveRoundChange = async (newRoundId: number) => {
-    setSelectedApproveRoundId(newRoundId);
+  const handleApproveRoundChange = async (newRoundId: string | number) => {
+    setSelectedApproveRoundId(String(newRoundId));
     if (!actioningHeldLead) return;
     setPreviewLoadingId(actioningHeldLead.id);
     setPreviewedConsultant(null);
@@ -1284,6 +1257,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         body: JSON.stringify({
           lead_id: currentLeadId,
           round_id: selectedApproveRoundId,
+          phone: editApprovePhone.trim(),
           reason: heldActionReason
         })
       });
@@ -1291,7 +1265,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         toast.success(t('Đã duyệt và phân bổ lead thành công!'));
         refreshHeldLeadsAndStats();
         window.dispatchEvent(new Event('ticket-resolved'));
-        window.dispatchEvent(new Event('refresh-pending-counts'));
       } else {
         toast.error(res.message || t('Lỗi khi duyệt lead'));
       }
@@ -1319,7 +1292,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         setHeldActionReason('');
         refreshHeldLeadsAndStats();
         window.dispatchEvent(new Event('ticket-resolved'));
-        window.dispatchEvent(new Event('refresh-pending-counts'));
       } else {
         toast.error(res.message || t('Lỗi khi xác nhận dưới chuẩn'));
       }
@@ -1347,7 +1319,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         setHeldActionReason('');
         refreshHeldLeadsAndStats();
         window.dispatchEvent(new Event('ticket-resolved'));
-        window.dispatchEvent(new Event('refresh-pending-counts'));
       } else {
         toast.error(res.message || t('Lỗi khi chặn lead'));
       }
@@ -1366,13 +1337,13 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           toast.error(t("Vui lòng chọn Vòng phân bổ fallback cho nhóm: ") + (cfg.name || t("Chưa đặt tên")));
           return;
         }
-        if (cfg.rounds.includes(Number(cfg.below_standard_fallback_round_id))) {
+        if (cfg.rounds.includes(String(cfg.below_standard_fallback_round_id))) {
           toast.error(t("Vòng fallback không được nằm trong các vòng áp dụng của nhóm: ") + (cfg.name || t("Chưa đặt tên")));
           return;
         }
         // Fallback round cannot be selected in the screened rounds of ANY config
         const isSelectedInConfigs = aiScreenerConfigs.some(c =>
-          c.rounds.includes(Number(cfg.below_standard_fallback_round_id))
+          c.rounds.includes(String(cfg.below_standard_fallback_round_id))
         );
         if (isSelectedInConfigs) {
           toast.error(t("Vòng fallback không được trùng với các vòng đang bật bộ lọc AI ở bất kỳ nhóm nào."));
@@ -1427,8 +1398,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       {/* ── Page Header ── */}
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <div>
-          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ display: 'inline-flex', background: 'linear-gradient(135deg, var(--color-primary) 0%, #700913 100%)', color: 'white', padding: 8, borderRadius: 12, boxShadow: '0 4px 12px rgba(30, 64, 255, 0.3)' }}>
+          <h1 className="page-title" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 10, margin: 0 }}>
+            <span style={{ display: 'inline-flex', background: 'linear-gradient(135deg, #1E40FF 0%, #1E40FF 100%)', color: 'white', padding: 8, borderRadius: 12, boxShadow: '0 4px 12px rgba(30, 64, 255, 0.3)' }}>
               <Shield size={24} />
             </span>
             {t('AI Pre-screener')}
@@ -1437,6 +1408,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
         {/* Header Actions */}
         <div className="mobile-flex-wrap hide-on-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <ScreenHelpButton screenKey="gatekeeper" />
 
           {/* Guide Button */}
           <button
@@ -1458,10 +1430,11 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             <Sparkles size={14} color="var(--color-primary)" /> {t('Hướng dẫn')}
           </button>
 
-          <div className="hide-on-mobile" style={{ width: 1, height: 16, background: 'rgba(30, 64, 255, 0.15)' }} />
+          <div className="hide-on-mobile" style={{ width: 1, height: 16, background: 'rgba(30, 64, 255,0.15)' }} />
 
           {/* Settings Button */}
           <button
+            data-tour="gatekeeper-blacklist"
             onClick={() => {
               fetchSettings();
               setIsSettingsModalOpen(true);
@@ -1485,7 +1458,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             <span className="mobile-only">{t('Cấu hình')}</span>
           </button>
 
-          <div className="hide-on-mobile" style={{ width: 1, height: 16, background: 'rgba(30, 64, 255, 0.15)' }} />
+          <div className="hide-on-mobile" style={{ width: 1, height: 16, background: 'rgba(30, 64, 255,0.15)' }} />
 
           {/* Lọc AI Toggle */}
           <div
@@ -1504,7 +1477,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               transition: 'background 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(30, 64, 255, 0.05)';
+              e.currentTarget.style.background = 'rgba(30, 64, 255,0.05)';
               const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
               if (label) label.style.color = 'var(--color-primary)';
             }}
@@ -1537,7 +1510,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             >
               <div style={{
                 position: 'absolute', top: 3, width: 14, height: 14, borderRadius: '50%',
-                background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
                 left: aiScreenerEnabled ? 19 : 3, transition: 'left 0.2s'
               }} />
             </div>
@@ -1548,11 +1521,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       </div>
 
       {/* Intro explain card styled identically to FairShareAudit */}
-      <div className="hide-on-mobile" style={{
-        background: '#ffffff',
-        border: '1px solid #E2E8F0',
-        borderRadius: '16px', padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem',
-        boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)'
+      <div data-tour="gatekeeper-flow" className="hide-on-mobile" style={{
+        background: 'linear-gradient(135deg, rgba(30, 64, 255, 0.05) 0%, rgba(30, 64, 255, 0.1) 100%)',
+        border: '1px solid var(--color-primary-light)', borderLeft: '4px solid var(--color-primary)',
+        borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem'
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', width: '100%' }}>
           <div style={{
@@ -1568,7 +1540,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               {t("Bộ Lọc AI Pre-screener hoạt động thế nào?")}
             </h4>
             <p style={{ fontSize: '0.875rem', color: 'var(--color-text)', lineHeight: 1.6, margin: 0 }}>
-              {t("Hệ thống tự động tiếp nhận dữ liệu từ webhook nguồn, chuyển qua đánh giá chất lượng tự động (IDEAS AI hoặc Luật thủ công cấu hình). Những dữ liệu không đạt chuẩn sẽ được tạm giữ phê duyệt và gửi tin báo cho Quản trị viên, giúp tiết kiệm thời gian Telesale.")}
+              {t("Hệ thống tự động tiếp nhận dữ liệu từ webhook nguồn, chuyển qua đánh giá chất lượng tự động (DOMATION AI hoặc Luật thủ công cấu hình). Những dữ liệu không đạt chuẩn sẽ được tạm giữ phê duyệt và gửi tin báo cho Quản trị viên, giúp tiết kiệm thời gian Telesale.")}
             </p>
           </div>
           <button
@@ -1576,7 +1548,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             style={{
               padding: '6px 14px',
               borderRadius: '8px',
-              border: '1px solid rgba(30, 64, 255, 0.25)',
+              border: '1px solid var(--color-primary-light)',
               background: 'var(--color-surface)',
               color: 'var(--color-primary)',
               fontSize: '0.8125rem',
@@ -1601,7 +1573,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           <div style={{
             marginTop: '0.5rem',
             paddingTop: '1.25rem',
-            borderTop: '1px dashed rgba(30, 64, 255, 0.25)',
+            borderTop: '1px dashed var(--color-primary-light)',
             animation: 'fadeIn 0.2s ease-out'
           }}>
             <h5 style={{ margin: '0 0 1rem 0', fontSize: '0.875rem', fontWeight: 800, color: 'var(--color-primary)' }}>
@@ -1632,13 +1604,13 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     padding: '2px 8px',
                     borderRadius: '20px',
                     background: 'rgba(30, 64, 255, 0.08)',
-                    color: 'var(--color-primary)',
+                    color: '#1E40FF',
                     border: '1px solid rgba(30, 64, 255, 0.15)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}>
-                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--color-primary)' }} />
+                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#1E40FF' }} />
                     {t('Thời gian thực (Realtime)')}
                   </span>
                 </div>
@@ -1663,7 +1635,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     border: aiScreenerEnabled ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(30, 64, 255, 0.2)',
                     fontSize: '0.6875rem',
                     fontWeight: 700,
-                    color: aiScreenerEnabled ? '#10b981' : 'var(--color-primary)'
+                    color: aiScreenerEnabled ? '#10b981' : '#1E40FF'
                   }}>
                     {aiScreenerEnabled ? (
                       <>
@@ -1689,7 +1661,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     </p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 2 }}>
                       {(() => {
-                        const allRounds = aiScreenerConfigs.reduce<number[]>((acc: number[], cfg: AIScreenerConfig) => [...acc, ...cfg.rounds], []);
+                        const allRounds = aiScreenerConfigs.reduce<Array<string | number>>((acc, cfg: AIScreenerConfig) => [...acc, ...cfg.rounds], []);
                         if (allRounds.length === 0) {
                           return (
                             <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)', fontWeight: 600 }}>
@@ -1698,7 +1670,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                           );
                         }
                         return rounds
-                          .filter((r: any) => allRounds.includes(Number(r.id)))
+                          .filter((r: any) => allRounds.map(String).includes(String(r.id)))
                           .map((r: any) => (
                             <span key={r.id} style={{
                               fontSize: '0.6875rem',
@@ -1769,7 +1741,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       padding: '2px 8px',
                       borderRadius: '20px',
                       background: 'rgba(30, 64, 255, 0.08)',
-                      color: 'var(--color-primary)',
+                      color: '#1E40FF',
                       border: '1px solid rgba(30, 64, 255, 0.2)',
                       whiteSpace: 'nowrap'
                     }}>
@@ -1786,7 +1758,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 110, overflowY: 'auto', paddingRight: 4 }}>
                       {aiScreenerConfigs.map((cfg: AIScreenerConfig, idx: number) => {
-                        const roundNames = rounds.filter((r: any) => cfg.rounds.includes(Number(r.id))).map((r: any) => r.round_name).join(', ');
+                        const roundNames = rounds.filter((r: any) => cfg.rounds.includes(String(r.id))).map((r: any) => r.round_name).join(', ');
                         return (
                           <div key={cfg.id} style={{
                             display: 'flex',
@@ -1880,7 +1852,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       padding: '2px 8px',
                       borderRadius: '20px',
                       background: 'rgba(30, 64, 255, 0.08)',
-                      color: 'var(--color-primary)',
+                      color: '#1E40FF',
                       border: '1px solid rgba(30, 64, 255, 0.2)',
                       whiteSpace: 'nowrap'
                     }}>
@@ -1963,8 +1935,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <img
-                  src="https://crm-domation.vercel.app/LOGO.jpg"
-                  alt="AI Logo"
+                  src="/imgs/autodata/domation_ai_icon.svg"
+                  alt="DOMATION AI Logo"
                   style={{ width: '20px', height: '20px', borderRadius: '4px', objectFit: 'cover', flexShrink: 0 }}
                 />
                 <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: 'var(--color-text)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -1986,7 +1958,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     style={{
                       width: `${aiPassedPercent}%`,
                       height: '100%',
-                      background: 'linear-gradient(90deg, var(--color-primary) 0%, #e05e6b 100%)',
+                      background: 'linear-gradient(90deg, var(--color-primary) 0%, #3B82F6 100%)',
                       transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
                     }}
                     title={`${t('Đạt chuẩn')}: ${aiPassedPercent}%`}
@@ -2080,7 +2052,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               padding: 0,
               borderRadius: 8,
               border: '1px solid var(--color-primary)',
-              background: 'rgba(30, 64, 255, 0.08)',
+              background: 'rgba(200, 160, 74, 0.08)',
               color: 'var(--color-primary)',
               cursor: 'pointer',
               display: 'flex',
@@ -2102,7 +2074,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               padding: 0,
               borderRadius: 8,
               border: '1px solid var(--color-primary)',
-              background: 'rgba(30, 64, 255, 0.08)',
+              background: 'rgba(30, 64, 255,0.08)',
               color: 'var(--color-primary)',
               cursor: 'pointer',
               display: 'flex',
@@ -2127,7 +2099,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               padding: 0,
               borderRadius: 8,
               border: '1px solid var(--color-primary)',
-              background: 'rgba(30, 64, 255, 0.08)',
+              background: 'rgba(30, 64, 255,0.08)',
               color: 'var(--color-primary)',
               cursor: 'pointer',
               display: 'flex',
@@ -2151,7 +2123,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             left: 0,
             right: 0,
             height: '3px',
-            background: 'linear-gradient(90deg, var(--color-primary) 0%, #e05e6b 50%, var(--color-primary) 100%)',
+            background: 'linear-gradient(90deg, var(--color-primary) 0%, #3B82F6 50%, var(--color-primary) 100%)',
             backgroundSize: '200% 100%',
             animation: 'loadingBar 1.5s infinite linear',
             zIndex: 100
@@ -2161,15 +2133,12 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         {/* Custom Tabs Bar */}
         <div style={{
           display: 'flex',
-          background: 'var(--color-border-light)',
-          padding: '4px',
-          borderRadius: '12px',
-          gap: '4px',
+          borderBottom: '1px solid var(--color-border)',
+          background: 'rgba(30, 64, 255, 0.02)',
+          padding: '10px 18px',
+          gap: '8px',
           alignItems: 'center',
-          width: 'fit-content',
-          margin: '10px 18px',
-          flexWrap: 'wrap',
-          maxWidth: 'calc(100% - 36px)'
+          flexWrap: 'wrap'
         }}>
           {[
             { id: 'queue', label: t('Hàng chờ duyệt'), count: tabCounts.queue, color: 'var(--color-warning)' },
@@ -2186,32 +2155,31 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '8px 20px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  background: isActiveTab ? 'var(--color-surface)' : 'transparent',
-                  color: isActiveTab ? 'var(--color-primary)' : 'var(--color-text-light)',
-                  boxShadow: isActiveTab ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  border: '1px solid',
+                  borderColor: isActiveTab ? 'var(--color-primary)' : 'var(--color-border)',
+                  background: isActiveTab ? 'var(--color-primary-light)' : 'transparent',
+                  color: isActiveTab ? 'var(--color-primary)' : 'var(--color-text-muted)',
                   cursor: 'pointer',
-                  fontWeight: 700,
-                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  fontSize: '0.825rem',
                   transition: 'all 0.2s ease',
                   outline: 'none'
                 }}
-                className={isActiveTab ? '' : 'hover-lift'}
               >
                 <span>{tab.label}</span>
                 <span style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minWidth: '20px',
-                  height: '20px',
-                  padding: '0 6px',
-                  borderRadius: '10px',
-                  background: isActiveTab ? 'rgba(30, 64, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                  color: isActiveTab ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                  fontSize: '0.72rem',
+                  minWidth: '18px',
+                  height: '18px',
+                  padding: '0 5px',
+                  borderRadius: '9px',
+                  background: tab.color,
+                  color: '#ffffff',
+                  fontSize: '0.7rem',
                   fontWeight: 700
                 }}>
                   {tab.count}
@@ -2226,15 +2194,15 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         <div className={`responsive-filter-row ${!showMobileFilters ? 'filter-hide-on-mobile' : ''}`} style={{
           position: 'relative', zIndex: 100,
           display: 'flex', gap: 12, padding: '14px 18px',
-          background: 'linear-gradient(135deg, rgba(30, 64, 255, 0.04) 0%, rgba(30, 64, 255, 0.02) 100%)',
+          background: 'linear-gradient(135deg, rgba(30, 64, 255,0.04) 0%, rgba(30, 64, 255,0.02) 100%)',
           borderBottom: '1px solid var(--color-border)',
           flexWrap: 'wrap', alignItems: 'center'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-primary)', fontWeight: 700, fontSize: '0.8125rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#1E40FF', fontWeight: 700, fontSize: '0.8125rem' }}>
             <Filter size={14} />
             <span>{t('Bộ lọc')}</span>
           </div>
-          <div className="hide-on-mobile" style={{ width: 1, height: 20, background: 'rgba(30, 64, 255, 0.2)', margin: '0 4px' }} />
+          <div className="hide-on-mobile" style={{ width: 1, height: 20, background: 'rgba(30, 64, 255,0.2)', margin: '0 4px' }} />
 
           <div className="mobile-stack" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: 1, minWidth: 260 }}>
             {/* Search Input */}
@@ -2329,7 +2297,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 >
                   <div style={{
                     position: 'absolute', top: 3, width: 14, height: 14, borderRadius: '50%',
-                    background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                    background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
                     left: aiScreenerEnabled ? 19 : 3, transition: 'left 0.2s'
                   }} />
                 </div>
@@ -2351,10 +2319,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 marginRight: '8px',
                 padding: '0 16px',
                 borderRadius: 'var(--radius-lg)',
-                background: 'linear-gradient(135deg, var(--color-primary) 0%, #700913 100%)',
+                background: 'linear-gradient(135deg, #2563EB 0%, #1E40FF 100%)',
                 color: '#fff',
                 border: 'none',
-                boxShadow: '0 2px 6px rgba(30, 64, 255, 0.25)',
+                boxShadow: '0 2px 6px rgba(200, 160, 74, 0.25)',
                 cursor: 'pointer',
                 fontWeight: 600,
                 transition: 'all 0.2s ease'
@@ -2375,7 +2343,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 gap: '6px',
                 padding: '0 16px',
                 borderRadius: 'var(--radius-lg)',
-                background: 'linear-gradient(135deg, var(--color-primary) 0%, #700913 100%)',
+                background: 'linear-gradient(135deg, #1E40FF 0%, #1E40FF 100%)',
                 color: '#fff',
                 border: 'none',
                 boxShadow: '0 2px 6px rgba(30, 64, 255, 0.25)',
@@ -2410,6 +2378,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             <>
               {/* Desktop View Table */}
               <div
+                data-tour="gatekeeper-held"
                 className="table-wrap hide-on-mobile"
                 style={{
                   maxHeight: 'calc(100vh - 340px)',
@@ -2422,14 +2391,14 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 <table className="mobile-table-compact" style={{ width: '100%', minWidth: 900, borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: 'var(--color-bg)' }}>
-                      <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, width: 240, minWidth: 240, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Thông tin Lead')}</th>
-                      <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, width: 220, minWidth: 220, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
+                      <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 240, minWidth: 240, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Thông tin Lead')}</th>
+                      <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 220, minWidth: 220, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
                         {activeTab === 'assigned' ? t('Vòng đã phân bổ') : t('Vòng phân bổ dự kiến')}
                       </th>
-                      <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
+                      <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
                         {activeTab === 'substandard' ? t('Lý do từ chối') : t('Lý do AI tạm giữ')}
                       </th>
-                      <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: 0.5, width: 280, minWidth: 280, position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Thao tác')}</th>
+                      <th style={{ padding: '1rem 1.5rem', textAlign: 'right', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 280, minWidth: 280, position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Thao tác')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2456,21 +2425,21 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                           });
                         }}
                         style={{ borderBottom: '1px solid var(--color-border)', transition: 'background 0.2s', background: 'transparent', cursor: 'pointer' }}
-                        className="table-row-hover"
+                        className="lead-row"
                       >
-                        <td style={{ padding: '1rem', width: 240, minWidth: 240, whiteSpace: 'nowrap' }}>
+                        <td style={{ padding: '1.25rem 1.5rem', width: 240, minWidth: 240, whiteSpace: 'nowrap' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                             <Avatar name={l.name} size={36} />
                             <div>
-                              <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.875rem' }}>{l.name}</div>
+                              <div style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '0.9rem' }}>{l.name}</div>
                               <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{maskPhone(l.phone)}</div>
                               <div style={{ fontSize: '0.7rem', color: 'var(--color-text-light)', marginTop: 2 }}>
-                                {new Date(l.created_at).toLocaleString('vi-VN')}
+                                {formatDateTimeVN(l.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td style={{ padding: '1rem', width: 220, minWidth: 220, whiteSpace: 'nowrap' }}>
+                        <td style={{ padding: '1.25rem 1.5rem', width: 220, minWidth: 220, whiteSpace: 'nowrap' }}>
                           {l.consultant_name ? (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                               <Avatar src={l.consultant_avatar} name={l.consultant_name} size={32} aiScreened={!!(l.ai_screener_status && l.ai_screener_status !== 'not_screened')} />
@@ -2482,12 +2451,12 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               </div>
                             </div>
                           ) : (
-                            <div style={{ display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center', gap: 5, background: 'rgba(30, 64, 255, 0.08)', color: 'var(--color-primary)', padding: '3px 10px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700 }}>
+                            <div style={{ display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center', gap: 5, background: 'rgba(30, 64, 255,0.08)', color: 'var(--color-primary)', padding: '3px 10px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 700 }}>
                               <Zap size={12} /> {l.round_name || '-'}
                             </div>
                           )}
                         </td>
-                        <td style={{ padding: '1rem' }}>
+                        <td style={{ padding: '1.25rem 1.5rem' }}>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             {activeTab !== 'assigned' && (
                               activeTab === 'ai_pending' ? (
@@ -2531,7 +2500,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                             </div>
                           </div>
                         </td>
-                        <td style={{ padding: '1rem', textAlign: 'right', whiteSpace: 'nowrap' }} onClick={e => e.stopPropagation()}>
+                        <td style={{ padding: '1.25rem 1.5rem', textAlign: 'right', whiteSpace: 'nowrap' }} onClick={e => e.stopPropagation()}>
                           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                             {activeTab === 'ai_pending' ? (
                               <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--color-primary)', fontSize: '0.825rem', fontWeight: 600 }}>
@@ -2572,7 +2541,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                   style={{ background: 'var(--color-warning)', borderColor: 'var(--color-warning)', color: '#ffffff', boxShadow: 'none' }}
                                   title={t("Không duyệt và đánh dấu dưới chuẩn")}
                                 >
-                                  {t('Dưới chuẩn')}
+                                  {t('Xác nhận dưới chuẩn')}
                                 </button>
                                 <button
                                   onClick={() => handleOpenApproveHeldLead(l)}
@@ -2747,11 +2716,11 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                         <div style={{ fontSize: '0.7rem', color: 'var(--color-text-light)', textAlign: 'right' }}>
-                          {new Date(l.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}<br />
-                          {new Date(l.created_at).toLocaleDateString('vi-VN')}
+                          {(parseServerDateVN(l.created_at) || new Date(l.created_at)).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', timeZone: VN_TIMEZONE })}<br />
+                          {(parseServerDateVN(l.created_at) || new Date(l.created_at)).toLocaleDateString('vi-VN', { timeZone: VN_TIMEZONE })}
                         </div>
                         {l.round_name && (
-                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(30, 64, 255, 0.08)', color: 'var(--color-primary)', padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 700 }}>
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(30, 64, 255,0.08)', color: 'var(--color-primary)', padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 700 }}>
                             <Zap size={10} /> {l.round_name}
                           </div>
                         )}
@@ -3035,7 +3004,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         width="950px"
       >
         {isSettingsModalOpen && (
-          <fieldset disabled={isReadOnly} style={{ border: 'none', padding: 0, margin: 0, height: '100%', width: '100%', display: 'contents' }}>
+          <>
             <style>{`
               div:has(> .settings-modal-container) {
                 overflow: hidden !important;
@@ -3054,12 +3023,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         display: 'flex', alignItems: 'flex-start', gap: '1rem', padding: '1.25rem',
                         background: 'var(--color-bg-alt)', borderRadius: '12px', border: '1px dashed var(--color-border)'
                       }}>
-                        <div style={{ opacity: isReadOnly ? 0.6 : 1, pointerEvents: isReadOnly ? 'none' : 'auto' }}>
-                          <ToggleSwitch
-                            checked={aiScreenerEnabled}
-                            onChange={setAiScreenerEnabled}
-                          />
-                        </div>
+                        <ToggleSwitch
+                          checked={aiScreenerEnabled}
+                          onChange={setAiScreenerEnabled}
+                        />
                         <div>
                           <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--color-text)' }}>
                             {t('Kích hoạt AI Pre-screener (Pre-screener Gatekeeper)')}
@@ -3118,7 +3085,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                         updated[index].name = e.target.value;
                                         setAiScreenerConfigs(updated);
                                       }}
-                                      placeholder={t("Tên nhóm cấu hình (Ví dụ: Nhóm Vòng tiếng Anh)")}
+                                      placeholder={t("Tên nhóm cấu hình (Ví dụ: Nhóm Vòng DOMATION AutoData)")}
                                       className="form-input"
                                       style={{ height: 36, fontSize: '0.875rem', fontWeight: 700, width: '100%', maxWidth: 350, border: 'none', background: 'transparent', padding: '0 4px', borderBottom: '1px dashed var(--color-border)' }}
                                     />
@@ -3142,8 +3109,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                   </label>
                                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
                                     {/* Display already selected rounds */}
-                                    {config.rounds.map((roundId: number) => {
-                                      const r = rounds.find((x: any) => Number(x.id) === roundId);
+                                    {config.rounds.map((roundId: string | number) => {
+                                      const r = rounds.find((x: any) => String(x.id) === String(roundId));
                                       if (!r) return null;
                                       return (
                                         <span
@@ -3169,7 +3136,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                             type="button"
                                             onClick={() => {
                                               const updated = [...aiScreenerConfigs];
-                                              updated[index].rounds = config.rounds.filter((id: number) => id !== roundId);
+                                              updated[index].rounds = config.rounds.filter((id: string | number) => String(id) !== String(roundId));
                                               setAiScreenerConfigs(updated);
                                             }}
                                             style={{
@@ -3261,7 +3228,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                         >
                                           {(() => {
                                             // Filter rounds that are NOT selected in this config
-                                            const availableRounds = rounds.filter((r: any) => !config.rounds.includes(Number(r.id)));
+                                            const availableRounds = rounds.filter((r: any) => !config.rounds.includes(String(r.id)));
 
                                             if (availableRounds.length === 0) {
                                               return (
@@ -3272,10 +3239,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                             }
 
                                             return availableRounds.map((r: any) => {
-                                              const roundId = Number(r.id);
+                                              const roundId = String(r.id);
                                               const isInactive = Number(r.is_active) !== 1;
                                               // Check if selected in another config
-                                              const selectedElsewhere = aiScreenerConfigs.some((cfg: AIScreenerConfig, idx: number) => idx !== index && cfg.rounds.includes(roundId)) || aiScreenerConfigs.some(cfg => cfg.below_standard_fallback_enabled && Number(roundId) === Number(cfg.below_standard_fallback_round_id));
+                                              const selectedElsewhere = aiScreenerConfigs.some((cfg: AIScreenerConfig, idx: number) => idx !== index && cfg.rounds.includes(roundId)) || aiScreenerConfigs.some(cfg => cfg.below_standard_fallback_enabled && String(roundId) === String(cfg.below_standard_fallback_round_id));
 
                                               return (
                                                 <button
@@ -3376,7 +3343,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                       { value: 'ai', label: t('Sử dụng Trí tuệ Nhân tạo (Gemini AI)') }
                                     ]}
                                     value={config.mode}
-                                    disabled={isReadOnly}
                                     onChange={val => {
                                       const updated = [...aiScreenerConfigs];
                                       updated[index].mode = val as any;
@@ -3397,7 +3363,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                     )}
                                     {config.mode === 'ai' && (
                                       <span>
-                                        {t('Chế độ AI: IDEAS AI để đánh giá theo yêu cầu cấu hình dưới.')}
+                                        {t('Chế độ AI: DOMATION AI để đánh giá theo yêu cầu cấu hình dưới.')}
                                       </span>
                                     )}
                                   </div>
@@ -3419,7 +3385,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                       rows={4}
                                       className="form-input"
                                       style={{ resize: 'vertical' }}
-                                      placeholder={t("Ví dụ: Tiếng Anh: Đạt chuẩn (đã đi làm hoặc có IELTS), Không đạt chuẩn (học sinh cấp 1, 2)...")}
+                                      placeholder={t("Ví dụ: DOMATION AutoData: Đạt chuẩn (khách quan tâm căn hộ, đầu tư BĐS, hỏi giá/mặt bằng), Không đạt chuẩn (số ảo, rác, tuyển dụng)...")}
                                     />
                                   </div>
                                 )}
@@ -3664,7 +3630,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                           value={config.below_standard_fallback_round_id ? String(config.below_standard_fallback_round_id) : ''}
                                           onChange={val => {
                                             const updated = [...aiScreenerConfigs];
-                                            updated[index].below_standard_fallback_round_id = val ? Number(val) : '';
+                                            updated[index].below_standard_fallback_round_id = val ? String(val) : '';
                                             setAiScreenerConfigs(updated);
                                           }}
                                           width="100%"
@@ -3758,22 +3724,20 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 flexShrink: 0
               }}>
                 <button className="btn outline" onClick={() => setIsSettingsModalOpen(false)}>
-                  {isReadOnly ? t("Đóng") : t("Hủy bỏ")}
+                  {t("Đóng")}
                 </button>
-                {!isReadOnly && (
-                  <button
-                    onClick={handleSaveConfig}
-                    disabled={savingSettings}
-                    className="btn primary"
-                    style={{ gap: 8, fontWeight: 700, display: 'inline-flex', alignItems: 'center', padding: '10px 24px' }}
-                  >
-                    {savingSettings ? <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={16} />}
-                    {t("Lưu cấu hình bộ lọc")}
-                  </button>
-                )}
+                <button
+                  onClick={handleSaveConfig}
+                  disabled={savingSettings}
+                  className="btn primary"
+                  style={{ gap: 8, fontWeight: 700, display: 'inline-flex', alignItems: 'center', padding: '10px 24px' }}
+                >
+                  {savingSettings ? <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={16} />}
+                  {t("Lưu cấu hình bộ lọc")}
+                </button>
               </div>
             </div>
-          </fieldset>
+          </>
         )}
       </CustomModal>
 
@@ -3803,7 +3767,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     </h4>
                     <ul style={{ paddingLeft: '1.25rem', margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
                       <li>
-                        <strong>{t('Đặt tiêu chuẩn rõ ràng:')}</strong> {t('AI hoạt động tốt nhất khi được cung cấp quy tắc dạng logic như "Tiếng Anh: Đạt chuẩn (đã đi làm hoặc sinh viên muốn IELTS), Không đạt (học sinh cấp 1, cấp 2 hoặc không nghe điện thoại)".')}
+                        <strong>{t('Đặt tiêu chuẩn rõ ràng:')}</strong> {t('AI hoạt động tốt nhất khi được cung cấp quy tắc dạng logic như "DOMATION AutoData: Đạt chuẩn (khách tìm hiểu căn hộ, đầu tư dự án, hỏi giá/tiến độ), Tạm giữ/Không đạt (spam, số ảo, phá phách, tìm việc làm)".')}
                       </li>
                       <li>
                         <strong>{t('Không cần viết code:')}</strong> {t('Hãy dùng ngôn ngữ tự nhiên bình thường. AI có khả năng đọc ghi chú, thông tin học vấn hay nguồn để suy luận rất tốt.')}
@@ -3918,7 +3882,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   {t('Bộ lọc:')}
                 </span>
                 <span style={{
-                  background: 'linear-gradient(135deg, #1D4ED8 0%, #1D4ED8 100%)',
+                  background: 'linear-gradient(135deg, #1E40FF 0%, #1E40FF 100%)',
                   color: '#fff',
                   fontSize: '0.75rem',
                   fontWeight: 700,
@@ -3972,7 +3936,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
                       <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <GitBranch size={18} color="#1D4ED8" />
+                        <GitBranch size={18} color="#1E40FF" />
                         {t('Vòng phân bổ dưới chuẩn nhiều nhất')}
                       </h4>
                     </div>
@@ -3985,7 +3949,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         statsData.rounds_breakdown?.map((item: any, idx: number) => {
                           const totalBS = statsData.stats?.total_below_standard || 1;
                           const pct = Math.round((item.count / totalBS) * 100);
-                          const colors = ['#1E40FF', '#334155', '#2563EB', '#64748B', '#1E3A8A', '#475569', '#60A5FA', '#94A3B8', '#1E293B', '#CBD5E1'];
+                          const colors = ['#1E40FF', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
                           const color = colors[idx % colors.length];
                           return (
                             <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -4027,7 +3991,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         statsData.sources_breakdown?.map((item: any, idx: number) => {
                           const totalBS = statsData.stats?.total_below_standard || 1;
                           const pct = Math.round((item.count / totalBS) * 100);
-                          const colors = ['#1E40FF', '#334155', '#2563EB', '#64748B', '#1E3A8A', '#475569', '#60A5FA', '#94A3B8', '#1E293B', '#CBD5E1'];
+                          const colors = ['#3b82f6', '#10b981', '#1E40FF', '#f59e0b', '#ef4444'];
                           const color = colors[idx % colors.length];
                           return (
                             <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -4115,7 +4079,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
                             {/* Giao lead Row */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                              <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#1D4ED8', flexShrink: 0 }} />
+                              <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#1E40FF', flexShrink: 0 }} />
                               <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>{t('Giao lead')}</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>{`${giaoLeadPctClamped}% ${t('tổng data')}`}</div>
@@ -4182,7 +4146,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                     {statusBadge}
                                   </td>
                                   <td style={{ padding: '10px 14px', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', textAlign: 'right' }}>
-                                    {new Date(l.created_at).toLocaleString('vi-VN')}
+                                    {formatDateTimeVN(l.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                   </td>
                                 </tr>
                               );
@@ -4333,13 +4297,13 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   {t('Thời gian:')}
                 </span>
                 <span style={{
-                  background: 'linear-gradient(135deg, #1E40FF 0%, #1D4ED8 100%)',
+                  background: 'linear-gradient(135deg, #2563EB 0%, #1E40FF 100%)',
                   color: '#fff',
                   fontSize: '0.75rem',
                   fontWeight: 700,
                   padding: '3px 10px',
                   borderRadius: '20px',
-                  boxShadow: '0 2px 4px rgba(30, 64, 255, 0.2)'
+                  boxShadow: '0 2px 4px rgba(200, 160, 74, 0.2)'
                 }}>
                   {getDisplayDateFilterText(dateFilter)}
                 </span>
@@ -4405,10 +4369,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         <div style={{ fontSize: '0.625rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>{t('Token phản hồi của AI')}</div>
                       </div>
 
-                      <div style={{ background: 'rgba(30, 64, 255, 0.05)', border: '1px solid rgba(30, 64, 255, 0.2)', borderRadius: '10px', padding: '12px' }}>
+                      <div style={{ background: 'rgba(200, 160, 74, 0.05)', border: '1px solid rgba(200, 160, 74, 0.2)', borderRadius: '10px', padding: '12px' }}>
                         <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--color-primary)', textTransform: 'uppercase' }}>{t('Tổng Token / Chi phí')}</div>
                         <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-primary)', marginTop: '4px' }}>{stats.total_tokens.toLocaleString('vi-VN')}</div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--color-text)', marginTop: '4px', background: 'rgba(30, 64, 255, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--color-text)', marginTop: '4px', background: 'rgba(200, 160, 74, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
                           <span>~${costUsd.toFixed(4)}</span>
                           <span>~{Math.round(costVnd).toLocaleString('vi-VN')}đ</span>
                         </div>
@@ -4597,7 +4561,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                     {Number(l.ai_total_tokens).toLocaleString('vi-VN')}
                                   </td>
                                   <td style={{ padding: '10px 14px', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', textAlign: 'right' }}>
-                                    {new Date(l.created_at).toLocaleString('vi-VN')}
+                                    {formatDateTimeVN(l.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                   </td>
                                 </tr>
                               );
@@ -4757,7 +4721,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 value={selectedApproveRoundId ? String(selectedApproveRoundId) : ''}
                 onChange={val => {
                   if (val) {
-                    handleApproveRoundChange(Number(val));
+                    handleApproveRoundChange(String(val));
                   }
                 }}
                 width="100%"
@@ -4786,7 +4750,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       {previewedConsultant.name}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
-                      {t("Nhận từ vòng:")} <strong>{rounds.find(r => Number(r.id) === selectedApproveRoundId)?.round_name || actioningHeldLead?.round_name}</strong>
+                      {t("Nhận từ vòng:")} <strong>{rounds.find(r => String(r.id) === String(selectedApproveRoundId))?.round_name || actioningHeldLead?.round_name}</strong>
                     </div>
                   </div>
                 </>
@@ -4795,6 +4759,20 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   {t("Không tìm thấy Sale hợp lệ trong vòng để nhận lead này.")}
                 </div>
               )}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-light)' }}>
+                {t("Số điện thoại (Sửa nếu SĐT sai định dạng / thiếu số)")}
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                value={editApprovePhone}
+                onChange={e => setEditApprovePhone(e.target.value)}
+                placeholder={t("Nhập SĐT chính xác (10 số)...")}
+                style={{ width: '100%', height: 38 }}
+              />
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -4863,7 +4841,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 disabled={!heldActionReason.trim() || actionLoading}
                 style={{ background: 'var(--color-warning)', borderColor: 'var(--color-warning)' }}
               >
-                {actionLoading ? t("Đang xử lý...") : t("Dưới chuẩn")}
+                {actionLoading ? t("Đang xử lý...") : t("Xác nhận dưới chuẩn")}
               </button>
             </div>
           </div>
@@ -4919,11 +4897,11 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           setSelectedLead(null);
         }}
         title={t("Chi tiết Khách hàng")}
-        width="1050px"
+        width="850px"
       >
         {selectedLead && (
           <div className="modal-body-padding">
-            <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '2rem', alignItems: 'start' }}>
+            <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)', gap: '1.5rem', alignItems: 'start', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
 
               {/* Cột Trái: Chi Tiết */}
               <div className="sticky-column">
@@ -4995,7 +4973,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         {copiedType === 'full' ? t('Đã chép') : t('Sao chép')}
                       </button>
                     )}
-                    {isUserAdmin && (
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && (
                       <>
                         {isAdminEditingLead ? (
                           <>
@@ -5088,7 +5066,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       </>
                     )}
  
-                    {isUserAdmin && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
                       <button
                         onClick={() => {
                           setSelectedLead(null);
@@ -5131,7 +5109,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   marginBottom: '1rem'
                 }}>
                   <div
-                    onClick={!isAdminEditingLead ? () => handleCopyText(isUserAdmin ? selectedLead.phone : maskPhone(selectedLead.phone), t('Đã sao chép số điện thoại!'), 'phone') : undefined}
+                    onClick={!isAdminEditingLead ? () => handleCopyText((user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone), t('Đã sao chép số điện thoại!'), 'phone') : undefined}
                     style={{
                       background: 'var(--color-bg)',
                       padding: '0.625rem 0.75rem',
@@ -5209,7 +5187,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                         <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }} title={selectedLead.phone}>
-                          {isUserAdmin ? selectedLead.phone : maskPhone(selectedLead.phone)}
+                          {(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone)}
                         </span>
                         {!isAdminEditingLead && (
                           <div
@@ -5229,7 +5207,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     )}
                   </div>
                   <div
-                    onClick={!isAdminEditingLead ? () => handleCopyText(isUserAdmin ? selectedLead.email : maskEmail(selectedLead.email), t('Đã sao chép email!'), 'email') : undefined}
+                    onClick={!isAdminEditingLead ? () => handleCopyText((user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email), t('Đã sao chép email!'), 'email') : undefined}
                     style={{
                       background: 'var(--color-bg)',
                       padding: '0.625rem 0.75rem',
@@ -5284,7 +5262,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                         <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }} title={selectedLead.email}>
-                          {isUserAdmin ? selectedLead.email : maskEmail(selectedLead.email)}
+                          {(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email)}
                         </span>
                         {!isAdminEditingLead && (
                           <div
@@ -5561,13 +5539,13 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         gap: '0.75rem'
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <Avatar src="/imgs/warn_icon.png" name="IDEAS AI - Screener" size={36} />
+                          <Avatar src="/imgs/autodata/warn_icon.png" name="DOMATION AI - Screener" size={36} />
                           <div>
                             <div style={{ fontSize: '0.72rem', color: (selectedLead.ai_screener_status === 'error' || selectedLead.ai_screener_status === 'pending') ? '#d97706' : 'var(--color-danger)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                               {(selectedLead.ai_screener_status === 'error' || selectedLead.ai_screener_status === 'pending') ? t('Lỗi AI Pre-screener') : t('Tạm giữ')}
                             </div>
                             <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                              {t('IDEAS AI - Screener')}
+                              {t('DOMATION AI - Screener')}
                             </div>
                           </div>
                         </div>
@@ -5602,7 +5580,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         style={{ width: '100%', height: 46, background: 'var(--color-warning)', borderColor: 'var(--color-warning)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: '0.9rem', fontWeight: 700 }}
                       >
                         <XCircle size={18} />
-                        {t("Dưới chuẩn")}
+                        {t("Xác nhận dưới chuẩn")}
                       </button>
 
                       <div style={{
@@ -5611,11 +5589,11 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         fontSize: '0.75rem', color: 'var(--color-text-muted)', lineHeight: 1.5
                       }}>
                         <div style={{ fontWeight: 700, color: 'var(--color-text)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <Clock size={14} color="#1D4ED8" />
+                          <Clock size={14} color="#1E40FF" />
                           {t("Thông tin thêm")}
                         </div>
                         <div>
-                          {t("Khách hàng này được đổ về từ nguồn")} <strong>{selectedLead.source}</strong> {t("vào lúc")} {new Date(selectedLead.created_at).toLocaleString('vi-VN')}. {t("Lead này đã kích hoạt đánh giá tự động và đang được giữ lại để chờ Admin phê duyệt trước khi đi vào hàng chờ phân chia số.")}
+                          {t("Khách hàng này được đổ về từ nguồn")} <strong>{selectedLead.source}</strong> {t("vào lúc")} {formatDateTimeVN(selectedLead.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}. {t("Lead này đã kích hoạt đánh giá tự động và đang được giữ lại để chờ Admin phê duyệt trước khi đi vào hàng chờ phân chia số.")}
                         </div>
                       </div>
                     </div>
@@ -5629,10 +5607,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     {selectedLead.status === 'rejected' ? (
                       <div style={{ background: 'var(--color-surface)', padding: '1.25rem', borderRadius: 12, border: '1.5px solid var(--color-primary)', boxShadow: 'var(--shadow-sm)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                          <Avatar src="https://crm-domation.vercel.app/LOGO.jpg" name="IDEAS AI - Evaluator" size={36} />
+                          <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI - Evaluator" size={36} />
                           <div>
                             <div style={{ fontSize: '0.72rem', color: 'var(--color-primary)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Đánh giá')}</div>
-                            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Evaluator</div>
+                            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Evaluator</div>
                           </div>
                         </div>
 
@@ -5652,7 +5630,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               <Clock size={12} /> {t('Thời gian nhận')}
                             </div>
                             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>
-                              {new Date(selectedLead.created_at).toLocaleString('vi-VN')}
+                              {formatDateTimeVN(selectedLead.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                           </div>
                         </div>
@@ -5660,10 +5638,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     ) : selectedLead.status === 'blacklisted' ? (
                       <div style={{ background: 'var(--color-surface)', padding: '1.25rem', borderRadius: 12, border: '1.5px solid var(--color-primary)', boxShadow: 'var(--shadow-sm)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                          <Avatar src="/imgs/angry_icon.jpg" name="IDEAS AI - Angry" size={36} />
+                          <Avatar src="/imgs/autodata/angry_icon.jpg" name="DOMATION AI - Angry" size={36} />
                           <div>
                             <div style={{ fontSize: '0.72rem', color: 'var(--color-primary)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Đánh giá')}</div>
-                            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI - Angry</div>
+                            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI - Angry</div>
                           </div>
                         </div>
 
@@ -5683,7 +5661,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               <Clock size={12} /> {t('Thời gian nhận')}
                             </div>
                             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>
-                              {new Date(selectedLead.created_at).toLocaleString('vi-VN')}
+                              {formatDateTimeVN(selectedLead.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                           </div>
                         </div>
@@ -5742,7 +5720,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               <Clock size={12} /> {t('Thời gian nhận')}
                             </div>
                             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text)' }}>
-                              {new Date(selectedLead.created_at).toLocaleString('vi-VN')}
+                              {formatDateTimeVN(selectedLead.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                           </div>
                         </div>
@@ -5767,25 +5745,25 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               {/* Email Status */}
                               <div
                                 onClick={() => {
-                                  if (notificationStatus.email.status === 'sent') {
+                                  if (notificationStatus?.email?.status === 'sent') {
                                     setPreviewType('email');
-                                    setPreviewSentAt(notificationStatus.email.sent_at || '');
+                                    setPreviewSentAt(notificationStatus?.email?.sent_at || '');
                                     setPreviewOpen(true);
                                   }
                                 }}
-                                title={notificationStatus.email.status === 'sent' ? t('Bấm để xem mẫu email đã gửi') : undefined}
+                                title={notificationStatus?.email?.status === 'sent' ? t('Bấm để xem mẫu email đã gửi') : undefined}
                                 style={{
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'space-between',
                                   fontSize: '0.78rem',
-                                  cursor: notificationStatus.email.status === 'sent' ? 'pointer' : 'default',
+                                  cursor: notificationStatus?.email?.status === 'sent' ? 'pointer' : 'default',
                                   padding: '4px 6px',
                                   borderRadius: '6px',
                                   transition: 'background 0.2s'
                                 }}
                                 onMouseEnter={e => {
-                                  if (notificationStatus.email.status === 'sent') {
+                                  if (notificationStatus?.email?.status === 'sent') {
                                     e.currentTarget.style.backgroundColor = 'var(--color-border-light)';
                                   }
                                 }}
@@ -5795,36 +5773,36 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
                                   <img
-                                    src="/imgs/gmail-icon-free-png.webp"
+                                    src="/imgs/autodata/gmail-icon-free-png.webp"
                                     alt="Gmail"
                                     style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
                                   />
                                   <span style={{ flexShrink: 0 }}>Email:</span>
-                                  <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.email.sent_at || notificationStatus.email.target}>
-                                    {notificationStatus.email.status === 'sent'
-                                      ? (notificationStatus.email.sent_at || '-')
-                                      : ((notificationStatus.email.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.email.status === 'missed')) ? t('Đang chờ gửi...') : '-')}
+                                  <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus?.email?.sent_at || notificationStatus?.email?.target || ''}>
+                                    {notificationStatus?.email?.status === 'sent'
+                                      ? (notificationStatus?.email?.sent_at || '-')
+                                      : ((notificationStatus?.email?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.email?.status === 'missed')) ? t('Đang chờ gửi...') : '-')}
                                   </span>
                                 </div>
                                 <div style={{ flexShrink: 0 }}>
-                                  {notificationStatus.email.status === 'sent' && (
+                                  {notificationStatus?.email?.status === 'sent' && (
                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                         <Check size={8} strokeWidth={3} />
-                                      </span> {t('Đã gửi')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
+                                      </span> {t('Đã gửi')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
                                     </span>
                                   )}
-                                  {(notificationStatus.email.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.email.status === 'missed')) && (
+                                  {(notificationStatus?.email?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.email?.status === 'missed')) && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                      {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
+                                      {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
                                     </span>
                                   )}
-                                  {notificationStatus.email.status === 'failed' && (
+                                  {notificationStatus?.email?.status === 'failed' && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                      {t('Thất bại')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
+                                      {t('Thất bại')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
                                     </span>
                                   )}
-                                  {notificationStatus.email.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                                  {notificationStatus?.email?.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
                                       {t('Chưa gửi')}
                                     </span>
@@ -5835,25 +5813,25 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               {/* Zalo Status */}
                               <div
                                 onClick={() => {
-                                  if (notificationStatus.zalo.status === 'sent') {
+                                  if (notificationStatus?.zalo?.status === 'sent') {
                                     setPreviewType('zalo');
-                                    setPreviewSentAt(notificationStatus.zalo.sent_at || '');
+                                    setPreviewSentAt(notificationStatus?.zalo?.sent_at || '');
                                     setPreviewOpen(true);
                                   }
                                 }}
-                                title={notificationStatus.zalo.status === 'sent' ? t('Bấm để xem mẫu Zalo đã gửi') : undefined}
+                                title={notificationStatus?.zalo?.status === 'sent' ? t('Bấm để xem mẫu Zalo đã gửi') : undefined}
                                 style={{
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'space-between',
                                   fontSize: '0.78rem',
-                                  cursor: notificationStatus.zalo.status === 'sent' ? 'pointer' : 'default',
+                                  cursor: notificationStatus?.zalo?.status === 'sent' ? 'pointer' : 'default',
                                   padding: '4px 6px',
                                   borderRadius: '6px',
                                   transition: 'background 0.2s'
                                 }}
                                 onMouseEnter={e => {
-                                  if (notificationStatus.zalo.status === 'sent') {
+                                  if (notificationStatus?.zalo?.status === 'sent') {
                                     e.currentTarget.style.backgroundColor = 'var(--color-border-light)';
                                   }
                                 }}
@@ -5868,106 +5846,49 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                     style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
                                   />
                                   <span style={{ flexShrink: 0 }}>Zalo:</span>
-                                  <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.zalo.sent_at || notificationStatus.zalo.target}>
-                                    {notificationStatus.zalo.status === 'sent'
-                                      ? (notificationStatus.zalo.sent_at || '-')
-                                      : (notificationStatus.zalo.status === 'no_zalo_config' ? t('Chưa cấu hình ID') : ((notificationStatus.zalo.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.zalo.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
+                                  <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus?.zalo?.sent_at || notificationStatus?.zalo?.target || ''}>
+                                    {notificationStatus?.zalo?.status === 'sent'
+                                      ? (notificationStatus?.zalo?.sent_at || '-')
+                                      : (notificationStatus?.zalo?.status === 'no_zalo_config' ? t('Chưa cấu hình ID') : ((notificationStatus?.zalo?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.zalo?.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
                                   </span>
                                 </div>
                                 <div style={{ flexShrink: 0 }}>
-                                  {notificationStatus.zalo.status === 'no_zalo_config' && (
+                                  {notificationStatus?.zalo?.status === 'no_zalo_config' && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
                                       {t('Chưa cấu hình ID')}
                                     </span>
                                   )}
-                                  {notificationStatus.zalo.status === 'sent (Direct cURL)' && (
+                                  {notificationStatus?.zalo?.status === 'sent (Direct cURL)' && (
                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                         <Check size={8} strokeWidth={3} />
                                       </span> {t('Đã gửi (cURL)')}
                                     </span>
                                   )}
-                                  {notificationStatus.zalo.status === 'sent' && (
+                                  {notificationStatus?.zalo?.status === 'sent' && (
                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                         <Check size={8} strokeWidth={3} />
-                                      </span> {t('Đã gửi')} {notificationStatus.zalo.id && notificationStatus.zalo.id !== 'Log' ? `#${notificationStatus.zalo.id}` : ''}
+                                      </span> {t('Đã gửi')} {notificationStatus?.zalo?.id && notificationStatus?.zalo?.id !== 'Log' ? `#${notificationStatus.zalo.id}` : ''}
                                     </span>
                                   )}
-                                  {(notificationStatus.zalo.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.zalo.status === 'missed')) && (
+                                  {(notificationStatus?.zalo?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.zalo?.status === 'missed')) && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                      {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus.zalo.id ? `#${notificationStatus.zalo.id}` : ''}
+                                      {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus?.zalo?.id ? `#${notificationStatus.zalo.id}` : ''}
                                     </span>
                                   )}
-                                  {notificationStatus.zalo.status === 'failed' && (
+                                  {notificationStatus?.zalo?.status === 'failed' && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                      {t('Thất bại')} {notificationStatus.zalo.id ? `#${notificationStatus.zalo.id}` : ''}
+                                      {t('Thất bại')} {notificationStatus?.zalo?.id ? `#${notificationStatus.zalo.id}` : ''}
                                     </span>
                                   )}
-                                  {notificationStatus.zalo.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                                  {notificationStatus?.zalo?.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
                                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
                                       {t('Chưa gửi')}
                                     </span>
                                   )}
                                 </div>
                               </div>
-
-                              {/* Telegram Status */}
-                              {notificationStatus.telegram && (
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    fontSize: '0.78rem',
-                                    padding: '4px 6px',
-                                    borderRadius: '6px'
-                                  }}
-                                >
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
-                                    <img
-                                      src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-                                      alt="Telegram"
-                                      style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
-                                    />
-                                    <span style={{ flexShrink: 0 }}>Telegram:</span>
-                                    <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.telegram.sent_at || notificationStatus.telegram.target}>
-                                      {notificationStatus.telegram.status === 'sent'
-                                        ? (notificationStatus.telegram.sent_at || '-')
-                                        : (notificationStatus.telegram.status === 'no_telegram_config' ? t('Chưa cấu hình ID') : ((notificationStatus.telegram.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.telegram.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
-                                    </span>
-                                  </div>
-                                  <div style={{ flexShrink: 0 }}>
-                                    {notificationStatus.telegram.status === 'no_telegram_config' && (
-                                      <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
-                                        {t('Chưa cấu hình ID')}
-                                      </span>
-                                    )}
-                                    {notificationStatus.telegram.status === 'sent' && (
-                                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
-                                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
-                                          <Check size={8} strokeWidth={3} />
-                                        </span> {t('Đã gửi')}
-                                      </span>
-                                    )}
-                                    {(notificationStatus.telegram.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.telegram.status === 'missed')) && (
-                                      <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                        {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')}
-                                      </span>
-                                    )}
-                                    {notificationStatus.telegram.status === 'failed' && (
-                                      <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                        {t('Thất bại')}
-                                      </span>
-                                    )}
-                                    {notificationStatus.telegram.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
-                                      <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
-                                        {t('Chưa gửi')}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           ) : (
                             <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
@@ -5977,10 +5898,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         </div>
 
                         {/* Manual Reminder Button */}
-                        {isUserAdmin && selectedLead.assigned_to_name !== '-' && (
+                        {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.assigned_to_name !== '-' && (
                           <button
                             onClick={() => {
-                              setReminderChannels({ zalo: true, email: true, telegram: true });
+                              setReminderChannels({ zalo: true, email: true });
                               setIsReminderModalOpen(true);
                             }}
                             style={{
@@ -6061,7 +5982,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                         } else if (isFallback) {
                           cardBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.08)' : '#fffbeb';
                           cardBorder = theme === 'dark' ? '1px solid rgba(245, 158, 11, 0.15)' : '1px solid #fca5a5';
-                          iconBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.15)' : '#DBEAFE';
+                          iconBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.15)' : '#ffe4e6';
                           iconColor = 'var(--color-warning)';
                           titleColor = 'var(--color-warning)';
                           titleText = t("Xác nhận dưới chuẩn (Fallback)");
@@ -6180,7 +6101,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       <CustomModal
         isOpen={isReminderModalOpen}
         onClose={() => setIsReminderModalOpen(false)}
-        title={t("Xác nhận nhắc lại cho Tư vấn viên")}
+        title={t("Xác nhận nhắc lại cho Đại lý")}
         width="480px"
       >
         {isReminderModalOpen && selectedLead && (
@@ -6229,7 +6150,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img
-                    src="/imgs/gmail-icon-free-png.webp"
+                    src="/imgs/autodata/gmail-icon-free-png.webp"
                     alt="Gmail"
                     style={{ width: 16, height: 16, objectFit: 'contain' }}
                   />
@@ -6238,21 +6159,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 <ToggleSwitch
                   checked={reminderChannels.email}
                   onChange={checked => setReminderChannels({ ...reminderChannels, email: checked })}
-                />
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-                    alt="Telegram"
-                    style={{ width: 16, height: 16, objectFit: 'contain', borderRadius: '50%' }}
-                  />
-                  <span style={{ fontSize: '0.875rem', color: 'var(--color-text)', fontWeight: 500 }}>Telegram Bot Message</span>
-                </div>
-                <ToggleSwitch
-                  checked={reminderChannels.telegram}
-                  onChange={checked => setReminderChannels({ ...reminderChannels, telegram: checked })}
                 />
               </div>
             </div>
@@ -6274,7 +6180,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
               <button
                 className="btn primary"
                 onClick={handleSendReminder}
-                disabled={isSendingReminder || (!reminderChannels.zalo && !reminderChannels.email && !reminderChannels.telegram)}
+                disabled={isSendingReminder || (!reminderChannels.zalo && !reminderChannels.email)}
                 style={{
                   borderRadius: '10px',
                   padding: '8px 18px',
@@ -6364,7 +6270,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 {/* Conclusion Banner */}
                 {(() => {
                   const dupCheckMonths = dupCheckResult.duplicate_check_months || 6;
-                  const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || Number(h.id) !== Number(selectedLead.id));
+                  const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || String(h.id) !== String(selectedLead.id));
 
                   if (history.length === 0) {
                     return (
@@ -6456,7 +6362,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <h4 style={{ margin: '0 0 4px 0', fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
                     {t("Lịch sử lưu vết")} ({(() => {
-                      const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || Number(h.id) !== Number(selectedLead.id));
+                      const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || String(h.id) !== String(selectedLead.id));
                       return history.length;
                     })()})
                   </h4>
@@ -6472,13 +6378,13 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("ID / Họ tên")}</th>
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Nguồn / Vòng")}</th>
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Trạng thái")}</th>
-                          <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Sale")}</th>
+                          <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Đại lý")}</th>
                           <th style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--color-text-muted)', fontSize: '0.7rem' }}>{t("Thời gian")}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {(() => {
-                          const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || Number(h.id) !== Number(selectedLead.id));
+                          const history = (dupCheckResult.history || []).filter((h: any) => !selectedLead || String(h.id) !== String(selectedLead.id));
                           return history && history.length > 0 ? (
                             history.map((h: any) => {
                               const lastDateStr = h.last_interaction_date || h.created_at;
@@ -6555,8 +6461,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           onClose={() => setPreviewOpen(false)}
           type={previewType}
           leadName={selectedLead.name}
-          leadPhone={isUserAdmin ? selectedLead.phone : maskPhone(selectedLead.phone)}
-          leadEmail={isUserAdmin ? selectedLead.email : maskEmail(selectedLead.email)}
+          leadPhone={(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone)}
+          leadEmail={(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email)}
           leadSource={selectedLead.source || ''}
           leadType={selectedLead.type || ''}
           leadNote={selectedLead.note || ''}
@@ -6573,7 +6479,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       )}
 
       {statsModalOpen && statsConsultant && typeof document !== 'undefined' && createPortal(
-        <div className="overlay-backdrop stats-modal-backdrop" onClick={() => setStatsModalOpen(false)} style={{ zIndex: 999999999 }}>
+        <div className="overlay-backdrop" onClick={() => setStatsModalOpen(false)}>
           <div
             className="card"
             style={{
@@ -6599,7 +6505,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   }}
                 />
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>{t('Báo cáo hiệu suất TVV')}</h3>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>{t('Báo cáo hiệu suất Đại lý')}</h3>
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                     <strong>{statsConsultant.name}</strong> • ID: {statsConsultant.id} • {statsConsultant.email}
                   </p>
@@ -6650,7 +6556,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             </div>
 
             {/* Content Area */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.25rem 3rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative' }}>
               {statsConsultantLoading && !statsConsultantData ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
@@ -6694,7 +6600,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        {t('Tổng data TVV này tiếp nhận:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsConsultantData.summary.total_received || 0}</strong> lead
+                        {t('Tổng data hệ thống tiếp nhận cho Đại lý này:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsConsultantData.summary.total}</strong> lead
                       </span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
                         * {t('Các nhóm độc lập hoàn toàn, không cộng dồn/chồng chéo')}
@@ -6703,34 +6609,34 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
                     {/* Stacked Percentage Bar */}
                     <div style={{ display: 'flex', height: 10, borderRadius: 5, overflow: 'hidden', background: 'var(--color-border-light)', position: 'relative' }}>
-                      {((statsConsultantData.summary.distributed_count || 0) + (statsConsultantData.summary.coop_count || 0)) > 0 && (
+                      {statsConsultantData.summary.successful > 0 && (
                         <div
                           style={{
-                            width: `${(((statsConsultantData.summary.distributed_count || 0) + (statsConsultantData.summary.coop_count || 0)) / Math.max(1, statsConsultantData.summary.total_received)) * 100}%`,
-                            background: 'linear-gradient(90deg, #3b82f6, #007af5)',
+                            width: `${(statsConsultantData.summary.successful / Math.max(1, statsConsultantData.summary.total)) * 100}%`,
+                            background: 'linear-gradient(90deg, #3B82F6, #1E40FF)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Được chia')}: ${(statsConsultantData.summary.distributed_count || 0) + (statsConsultantData.summary.coop_count || 0)}`}
+                          title={`${t('Thành công')}: ${statsConsultantData.summary.successful}`}
                         />
                       )}
-                      {(statsConsultantData.summary.databank_count || 0) > 0 && (
+                      {(statsConsultantData.summary.reminder || 0) > 0 && (
                         <div
                           style={{
-                            width: `${((statsConsultantData.summary.databank_count || 0) / Math.max(1, statsConsultantData.summary.total_received)) * 100}%`,
-                            background: 'linear-gradient(90deg, #34c759, #10b981)',
-                            transition: 'width 0.3s ease'
-                          }}
-                          title={`${t('Từ Databank')}: ${statsConsultantData.summary.databank_count}`}
-                        />
-                      )}
-                      {(statsConsultantData.summary.self_count || 0) > 0 && (
-                        <div
-                          style={{
-                            width: `${((statsConsultantData.summary.self_count || 0) / Math.max(1, statsConsultantData.summary.total_received)) * 100}%`,
+                            width: `${((statsConsultantData.summary.reminder || 0) / Math.max(1, statsConsultantData.summary.total)) * 100}%`,
                             background: 'linear-gradient(90deg, #fcd34d, #f59e0b)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Tự nhập')}: ${statsConsultantData.summary.self_count}`}
+                          title={`${t('Nhắc lại')}: ${statsConsultantData.summary.reminder}`}
+                        />
+                      )}
+                      {(statsConsultantData.summary.error || 0) > 0 && (
+                        <div
+                          style={{
+                            width: `${((statsConsultantData.summary.error || 0) / Math.max(1, statsConsultantData.summary.total)) * 100}%`,
+                            background: 'linear-gradient(90deg, #fca5a5, #ef4444)',
+                            transition: 'width 0.3s ease'
+                          }}
+                          title={`${t('Lỗi')}: ${statsConsultantData.summary.error}`}
                         />
                       )}
                     </div>
@@ -6738,113 +6644,82 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     {/* Legend explaining the numbers */}
                     <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', marginTop: 2, flexWrap: 'wrap', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#007af5' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-primary)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Được chia')}: <strong style={{ color: '#007af5' }}>{(statsConsultantData.summary.distributed_count || 0) + (statsConsultantData.summary.coop_count || 0)}</strong> ({statsConsultantData.summary.total_received > 0 ? Math.round((((statsConsultantData.summary.distributed_count || 0) + (statsConsultantData.summary.coop_count || 0)) / statsConsultantData.summary.total_received) * 100) : 0}%)
+                          {t('Thành công (Bàn giao thực tế)')}: <strong style={{ color: 'var(--color-primary)' }}>{statsConsultantData.summary.successful}</strong> ({statsConsultantData.summary.total > 0 ? Math.round((statsConsultantData.summary.successful / statsConsultantData.summary.total) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#34c759' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-warning)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Từ Databank')}: <strong style={{ color: '#34c759' }}>{statsConsultantData.summary.databank_count || 0}</strong> ({statsConsultantData.summary.total_received > 0 ? Math.round(((statsConsultantData.summary.databank_count || 0) / statsConsultantData.summary.total_received) * 100) : 0}%)
+                          {t('Nhắc lại (Khách cũ gọi lại)')}: <strong style={{ color: 'var(--color-warning)' }}>{statsConsultantData.summary.reminder || 0}</strong> ({statsConsultantData.summary.total > 0 ? Math.round(((statsConsultantData.summary.reminder || 0) / statsConsultantData.summary.total) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#f59e0b' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-danger)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Tự nhập')}: <strong style={{ color: '#f59e0b' }}>{statsConsultantData.summary.self_count || 0}</strong> ({statsConsultantData.summary.total_received > 0 ? Math.round(((statsConsultantData.summary.self_count || 0) / statsConsultantData.summary.total_received) * 100) : 0}%)
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginLeft: 'auto', paddingLeft: '1rem', borderLeft: '1px solid var(--color-border)' }}>
-                        <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Nhắc lại')}: <strong style={{ color: 'var(--color-warning)' }}>{statsConsultantData.summary.reminder || 0}</strong> | {t('Lỗi/Trùng')}: <strong style={{ color: 'var(--color-danger)' }}>{statsConsultantData.summary.error || 0}</strong>
+                          {t('Lỗi / Trùng (Đã lọc bỏ)')}: <strong style={{ color: 'var(--color-danger)' }}>{statsConsultantData.summary.error || 0}</strong> ({statsConsultantData.summary.total > 0 ? Math.round(((statsConsultantData.summary.error || 0) / statsConsultantData.summary.total) * 100) : 0}%)
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* KPI Cards Row (3 Columns) */}
-                  <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: '0.75rem' }}>
-                    {/* Card 1: Tổng khách hàng */}
-                    <div className="stat-card hover-lift total-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
-                      <div className="decor-svg" style={{ color: '#1D4ED8' }}>
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-                          <circle cx="30" cy="50" r="10" stroke="currentColor" strokeWidth="2" />
-                          <circle cx="70" cy="30" r="10" stroke="currentColor" strokeWidth="2" />
-                          <circle cx="70" cy="70" r="10" stroke="currentColor" strokeWidth="2" />
-                          <path d="M40 50 H 55 V 30 H 60 M 55 50 V 70 H 60" stroke="currentColor" strokeWidth="2" />
-                        </svg>
+                  {/* KPI Cards Row (4 Columns) */}
+                  <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Thành công')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-primary)', opacity: 0.8 }}><CheckCircle size={18} /></div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tổng khách hàng')}</span>
-                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(30, 64, 255, 0.08)', color: '#1D4ED8', flexShrink: 0 }}><Users size={16} /></div>
-                      </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
-                          {statsConsultantData.summary.total_received || 0}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsConsultantData.summary.successful}
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1D4ED8', display: 'inline-block' }} />
-                            {t('Tổng data đang chăm sóc')}: {statsConsultantData.summary.total_received || 0}
-                          </span>
-                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Data gán mới thành công')}</div>
+                        <div style={{ fontSize: '0.625rem', color: 'var(--color-primary)', fontWeight: 600, marginTop: 2 }}>{t('(Không bao gồm Nhắc lại & Lỗi)')}</div>
                       </div>
                     </div>
 
-                    {/* Card 2: Được chia */}
-                    <div className="stat-card hover-lift distributed-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
-                      <div className="decor-svg" style={{ color: '#007af5' }}>
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-                          <circle cx="45" cy="35" r="15" stroke="currentColor" strokeWidth="2" />
-                          <path d="M20 75 C 20 60, 31 50, 45 50 C 59 50, 70 60, 70 75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                          <path d="M75 35 H 89 M 82 28 V 42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Nhắc lại')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-warning)', opacity: 0.8 }}><Clock size={18} /></div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Được chia')}</span>
-                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(0, 122, 245, 0.08)', color: '#007af5', flexShrink: 0 }}><Send size={16} /></div>
-                      </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
-                          {(statsConsultantData.summary.distributed_count || 0) + (statsConsultantData.summary.coop_count || 0)}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsConsultantData.summary.reminder || 0}
                         </div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007af5', display: 'inline-block' }} />
-                            {t('Chia tự động')}: {statsConsultantData.summary.distributed_count || 0}
-                          </span>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fbbf24', display: 'inline-block' }} />
-                            {t('Hợp tác (co.op)')}: {statsConsultantData.summary.coop_count || 0}
-                          </span>
-                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Yêu cầu gọi lại')}</div>
+                        <div style={{ fontSize: '0.625rem', color: 'var(--color-warning)', fontWeight: 600, marginTop: 2 }}>{t('(Tính riêng biệt, không cộng dồn)')}</div>
                       </div>
                     </div>
 
-                    {/* Card 4: Tự nhập */}
-                    <div className="stat-card hover-lift out_of_hours-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
-                      <div className="decor-svg" style={{ color: '#f59e0b' }}>
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-                          <circle cx="50" cy="35" r="15" stroke="currentColor" strokeWidth="2" />
-                          <path d="M25 75 C 25 60, 36 50, 50 50 C 64 50, 75 60, 75 75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                          <path d="M75 35 H 90 M 82.5 27.5 V 42.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Lỗi')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-danger)', opacity: 0.8 }}><AlertTriangle size={18} /></div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tự nhập')}</span>
-                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.08)', color: '#f59e0b', flexShrink: 0 }}><UserPlus size={16} /></div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsConsultantData.summary.error || 0}
+                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Trùng lặp / Lỗi chia')}</div>
+                        <div style={{ fontSize: '0.625rem', color: 'var(--color-danger)', fontWeight: 600, marginTop: 2 }}>{t('(Đã loại bỏ khỏi Thành công)')}</div>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
-                          {statsConsultantData.summary.self_count || 0}
+                    </div>
+
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tỷ lệ')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-success)', opacity: 0.8 }}><BarChart2 size={18} /></div>
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsConsultantData.summary.system_total_successful > 0
+                            ? Math.round((statsConsultantData.summary.successful / statsConsultantData.summary.system_total_successful) * 100)
+                            : 0}%
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
-                            {t('Tự tạo hoặc giới thiệu')}: {statsConsultantData.summary.self_count || 0}
-                          </span>
-                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Thành công / Tổng của tất cả Đại lý')}</div>
                       </div>
                     </div>
                   </div>
@@ -6858,8 +6733,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                           <BarChart data={statsConsultantData.by_date} margin={{ left: -10, right: 5, top: 20, bottom: 0 }}>
                             <defs>
                               <linearGradient id="statsDateGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#e63946" stopOpacity={1} />
-                                <stop offset="100%" stopColor="#1D4ED8" stopOpacity={0.8} />
+                                <stop offset="0%" stopColor="#D8B467" stopOpacity={1} />
+                                <stop offset="100%" stopColor="#1E40FF" stopOpacity={0.8} />
                               </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" vertical={false} />
@@ -6886,7 +6761,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-text)' }}>{t('Tỷ lệ Trạng thái Data')}</h4>
                       {(() => {
                         const statusChartData = [
-                          { name: t('Thành công'), value: statsConsultantData.summary.successful, color: '#1D4ED8' },
+                          { name: t('Thành công'), value: statsConsultantData.summary.successful, color: '#1E40FF' },
                           { name: t('Nhắc lại'), value: statsConsultantData.summary.reminder, color: '#f59e0b' },
                           { name: t('Lỗi'), value: statsConsultantData.summary.error, color: '#ef4444' }
                         ].filter(item => item.value > 0);
@@ -6943,7 +6818,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                               <XAxis type="number" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                               <YAxis dataKey="round_name" type="category" width={90} tick={{ fontSize: 9, fontWeight: 600 }} axisLine={false} tickLine={false} />
                               <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', fontSize: '0.75rem', borderRadius: 8 }} />
-                              <Bar dataKey="successful_count" stackId="a" fill="#1D4ED8" radius={[0, 0, 0, 0]} barSize={12} name={t("Thành công")} />
+                              <Bar dataKey="successful_count" stackId="a" fill="#1E40FF" radius={[0, 0, 0, 0]} barSize={12} name={t("Thành công")} />
                               <Bar dataKey="reminder_count" stackId="a" fill="#f59e0b" radius={[0, 0, 0, 0]} barSize={12} name={t("Nhắc lại")} />
                               <Bar dataKey="error_count" stackId="a" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={12} name={t("Lỗi")} />
                             </BarChart>
@@ -6996,23 +6871,23 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                           <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', textAlign: 'center' }}>
                             <div style={{ background: 'var(--color-bg)', padding: '6px', borderRadius: 8, border: '1px solid var(--color-border-light)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', fontWeight: 700 }}>{t('GỬI ĐI')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 2 }}>{statsConsultantData.tickets.total}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 2 }}>{statsConsultantData.tickets?.total || 0}</div>
                             </div>
                             <div style={{ background: 'var(--color-success-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-success)', fontWeight: 700 }}>{t('ĐÃ BÙ')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 2 }}>{statsConsultantData.tickets.approved}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 2 }}>{statsConsultantData.tickets?.approved || 0}</div>
                             </div>
                             <div style={{ background: 'var(--color-warning-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(245, 158, 11, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-warning)', fontWeight: 700 }}>{t('ĐANG CHỜ')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 2 }}>{statsConsultantData.tickets.pending}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 2 }}>{statsConsultantData.tickets?.pending || 0}</div>
                             </div>
                             <div style={{ background: 'var(--color-danger-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-danger)', fontWeight: 700 }}>{t('TỪ CHỐI')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 2 }}>{statsConsultantData.tickets.rejected}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 2 }}>{statsConsultantData.tickets?.rejected || 0}</div>
                             </div>
                           </div>
                           <div style={{ marginTop: '10px', fontSize: '0.75rem', color: 'var(--color-text-muted)', textAlign: 'center', fontWeight: 500 }}>
-                            {t('Tổng nhận bù:')} <strong style={{ color: 'var(--color-success)' }}>{statsConsultantData.tickets.approved + (statsConsultantData.active_compensation || 0) + (statsConsultantData.blacklist_compensation || 0)}</strong> {t('data')} (Ticket: {statsConsultantData.tickets.approved}, Blacklist: {statsConsultantData.blacklist_compensation || 0}, {t('Chủ động')}: {statsConsultantData.active_compensation || 0})
+                            {t('Tổng nhận bù:')} <strong style={{ color: '#7e22ce' }}>{(statsConsultantData.tickets?.approved || 0) + (statsConsultantData.active_compensation || 0) + (statsConsultantData.blacklist_compensation || 0)}</strong> {t('data')} (Ticket: {statsConsultantData.tickets?.approved || 0}, Blacklist: {statsConsultantData.blacklist_compensation || 0}, {t('Chủ động')}: {statsConsultantData.active_compensation || 0})
                           </div>
                           <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
                             <button
@@ -7105,7 +6980,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
         .flow-step-number {
           position: relative;
-          background: linear-gradient(135deg, var(--color-primary) 0%, #700913 100%);
+          background: linear-gradient(135deg, #1E40FF 0%, #1E40FF 100%);
           color: #fff;
           font-weight: 800;
           width: 24px;

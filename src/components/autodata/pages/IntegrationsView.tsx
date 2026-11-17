@@ -3,7 +3,6 @@ import { Check, Copy, Link2, Mail, Plug, Plus, RefreshCw, Send, ShieldCheck, Tra
 import { apiRequest, getErrorMessage } from '../autodataApi';
 import { AutoDataTelegramBotGuide } from '../AutoDataTelegramBotGuide';
 import { AutoDataZaloBotGuide } from '../AutoDataZaloBotGuide';
-import { BrandChannelLogo, type BrandChannelKey } from '../cloned/components/ui/BrandChannelLogo';
 import {
   buildGoogleAppsScriptSnippet,
   type TelegramIntegrationState,
@@ -254,26 +253,23 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
       )}
 
       <div data-tour="integrations-tabs" className="flex flex-wrap gap-1.5 rounded-2xl bg-slate-100 p-1.5 text-xs font-semibold">
-        {(
-          [
-            { key: 'webhooks', label: 'Webhooks Inbound / Outbound', brand: 'webhook' },
-            { key: 'telegram', label: 'Telegram Bot', brand: 'telegram' },
-            { key: 'zalo', label: 'Zalo Bot OA 2 Chiều', brand: 'zalo' },
-            { key: 'capi', label: 'Meta CAPI v21.0', brand: 'meta' },
-            { key: 'smtp', label: 'Email SMTP', brand: 'aws_ses' },
-            { key: 'appscript', label: 'Google Apps Script', brand: 'sheets_email' },
-          ] as Array<{ key: typeof subTab; label: string; brand: BrandChannelKey }>
-        ).map((t) => (
+        {[
+          { key: 'webhooks', label: '1. Webhooks Inbound / Outbound' },
+          { key: 'telegram', label: '2. Telegram Bot' },
+          { key: 'zalo', label: '3. Zalo Bot OA 2 Chiều' },
+          { key: 'capi', label: '4. Meta CAPI v21.0' },
+          { key: 'smtp', label: '5. Email SMTP' },
+          { key: 'appscript', label: '6. Google Apps Script' },
+        ].map((t) => (
           <button
             key={t.key}
             type="button"
-            onClick={() => setSubTab(t.key)}
-            className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 transition ${
+            onClick={() => setSubTab(t.key as typeof subTab)}
+            className={`rounded-xl px-3.5 py-2 transition ${
               subTab === t.key ? 'bg-white text-[#1E40FF] shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <BrandChannelLogo brand={t.brand} size={16} />
-            <span>{t.label}</span>
+            {t.label}
           </button>
         ))}
       </div>
@@ -320,7 +316,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
               <div key={w.id} className="inkica-glass-card flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-xs">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <BrandChannelLogo brand="webhook" size={18} />
+                    <Link2 className="h-4 w-4 text-[#1E40FF]" />
                     <span className="font-bold text-slate-900">{w.name}</span>
                     <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase text-[#1E40FF]">
                       {w.webhook_type}
@@ -371,7 +367,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
         <div className="space-y-4">
           <form onSubmit={handleSaveCapi} className="inkica-glass-card space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-              <BrandChannelLogo brand="meta_capi" size={20} /> Cấu Hình Meta Conversions API v21.0
+              <ShieldCheck className="h-4 w-4 text-[#1E40FF]" /> Cấu Hình Meta Conversions API v21.0
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               <input type="text" value={pixelId} onChange={(e) => setPixelId(e.target.value)} placeholder="Dataset / Pixel ID" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
@@ -413,7 +409,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
       {subTab === 'smtp' && (
         <form onSubmit={handleSaveSmtp} className="inkica-glass-card space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-            <BrandChannelLogo brand="aws_ses" size={20} /> Cấu Hình Email SMTP / Amazon SES
+            <Mail className="h-4 w-4 text-[#1E40FF]" /> Cấu Hình Email SMTP / Amazon SES
           </div>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <input type="text" value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} placeholder="SMTP Host" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
@@ -431,10 +427,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
       {subTab === 'appscript' && (
         <div className="inkica-glass-card space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-sm font-bold text-slate-900">
-              <BrandChannelLogo brand="sheets_email" size={20} />
-              <span>Mã Google Apps Script Đồng Bộ 2 Chiều</span>
-            </h2>
+            <h2 className="text-sm font-bold text-slate-900">Mã Google Apps Script Đồng Bộ 2 Chiều</h2>
             <button
               type="button"
               onClick={() => {

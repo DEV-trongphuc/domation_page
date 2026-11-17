@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { Send, X, Database, Sparkles, LayoutGrid, Search, ChevronRight, RefreshCw, ChevronLeft, FileText } from 'lucide-react';
+import { Send, X, Database, Sparkles, LayoutGrid } from 'lucide-react';
 import { fetchAPI } from '../../utils/api';
 
 interface Message {
@@ -12,55 +11,17 @@ interface Message {
 }
 
 export const AIChatbot: React.FC = () => {
+  // Tạm thời ẩn trợ lý AI theo yêu cầu
+  return null;
   const { t } = useLanguage();
-  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
-  const getGreetingText = (userName?: string) => {
-    const name = userName ? ` ${userName}` : '';
-    const hour = new Date().getHours();
-    let timeStr = 'Chào buổi sáng';
-    if (hour >= 12 && hour < 18) timeStr = 'Chào buổi chiều';
-    else if (hour >= 18) timeStr = 'Chào buổi tối';
-
-    const greetings = [
-      `${timeStr}${name}! 🌟 Tôi là Trợ lý AI IDEAS. Hôm nay tôi có thể hỗ trợ gì cho bạn về dữ liệu, hệ thống CRM hay cấu hình Zalo/Telegram?`,
-      `Xin chào${name}! 👋 Rất vui được đồng hành cùng bạn. Bạn cần tra cứu chỉ số data hôm nay, kiểm tra ticket hay giải đáp thắc mắc nghiệp vụ nào không?`,
-      `${timeStr}${name}! ✨ Tôi đã sẵn sàng hỗ trợ. Hãy đặt câu hỏi về quy tắc chia số, blacklist, báo cáo hoặc thông tin dự án nhé!`
-    ];
-    return greetings[Math.floor(Math.random() * greetings.length)];
-  };
-
-  const getEntityWelcomeMessage = (entity: { name: string; type: 'project' | 'campaign' }, docCount: number) => {
-    const docInfo = docCount > 0 ? ` (đã tìm thấy **${docCount} tài liệu** đính kèm)` : '';
-    if (entity.type === 'project') {
-      return `🏢 **Tôi đã nạp dữ liệu cho Dự án ${entity.name}!**${docInfo}\n\nBạn có thể hỏi tôi về vị trí, tiến độ, pháp lý, chủ đầu tư hoặc chọn **Tài liệu cụ thể** ở menu bên trên để tôi trả lời chính xác nhất nhé!`;
-    } else {
-      return `🎯 **Tôi đã sẵn sàng giải đáp về Chiến dịch ${entity.name}!**${docInfo}\n\nHãy đặt câu hỏi về ngân sách, mục tiêu, thời gian chạy hoặc tài liệu thuộc chiến dịch này!`;
-    }
-  };
-
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
-
-  useEffect(() => {
-    let lastIsMobile = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
-    const handleResize = () => {
-      const next = window.innerWidth <= 768;
-      if (next !== lastIsMobile) {
-        lastIsMobile = next;
-        setIsMobile(next);
-      }
-    };
-    window.addEventListener('resize', handleResize, { passive: true });
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  const [showSidebar, setShowSidebar] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       sender: 'bot',
-      text: getGreetingText(user?.name),
+      text: t('Xin chào! Tôi là Trợ lý AI hỗ trợ hệ thống quản trị DOMATION AutoData. 🤖\n\nTôi có thể trả lời các câu hỏi về chỉ số thống kê hôm nay, cách cấu hình Zalo Bot, thiết lập Blacklist, quy tắc chia số, hoặc Ticket báo lỗi đền bù.\n\nBạn cần tôi hỗ trợ gì hôm nay?'),
       timestamp: new Date()
     }
   ]);
@@ -69,311 +30,7 @@ export const AIChatbot: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Chat modes: 'general' (chat thường), 'project_campaign' (chat chọn dự án/chiến dịch)
-  const [chatMode, setChatMode] = useState<'general' | 'project_campaign'>('project_campaign');
-  const [projectsList, setProjectsList] = useState<any[]>([]);
-  const [campaignsList, setCampaignsList] = useState<any[]>([]);
-  const [loadingEntities, setLoadingEntities] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedEntity, setSelectedEntity] = useState<any | null>(null);
-  const [entityContext, setEntityContext] = useState<string>('');
-  const [loadingContext, setLoadingContext] = useState(false);
-  const [entityDocs, setEntityDocs] = useState<any[]>([]);
-  const [selectedDocId, setSelectedDocId] = useState<number | 'all'>('all');
-  const [rawDetails, setRawDetails] = useState<any>(null);
-  const [parentProj, setParentProj] = useState<any>(null);
-  const [showDocSelectModal, setShowDocSelectModal] = useState(false);
-  const [docSearchQuery, setDocSearchQuery] = useState('');
-
-  const loadEntities = async () => {
-    setLoadingEntities(true);
-    try {
-      const [projRes, campRes] = await Promise.all([
-        fetchAPI('projects').catch(() => null),
-        fetchAPI('campaigns').catch(() => null)
-      ]);
-      const projs = Array.isArray(projRes) ? projRes : (projRes?.data || []);
-      const camps = Array.isArray(campRes) ? campRes : (campRes?.data || []);
-      setProjectsList(projs);
-      setCampaignsList(camps);
-    } catch (err) {
-      console.error("Lỗi khi tải danh sách dự án/chiến dịch:", err);
-    } finally {
-      setLoadingEntities(false);
-    }
-  };
-
-  useEffect(() => {
-    if (chatMode === 'project_campaign' && projectsList.length === 0 && campaignsList.length === 0) {
-      loadEntities();
-    }
-  }, [chatMode]);
-
-  const formatProjectContext = (proj: any, docs: any[]) => {
-    if (!proj) return '';
-    let refUrls: any[] = [];
-    if (proj.reference_url) {
-      try {
-        const parsed = JSON.parse(proj.reference_url);
-        refUrls = Array.isArray(parsed) ? parsed : [{ title: 'Website / Link tham khảo', url: proj.reference_url }];
-      } catch (e) {
-        refUrls = [{ title: 'Website / Link tham khảo', url: proj.reference_url }];
-      }
-    }
-    let folderPaths: any[] = [];
-    if (proj.folder_path) {
-      try {
-        const parsed = JSON.parse(proj.folder_path);
-        folderPaths = Array.isArray(parsed) ? parsed : [{ type: 'link', path: proj.folder_path }];
-      } catch (e) {
-        folderPaths = [{ type: 'link', path: proj.folder_path }];
-      }
-    }
-    let text = `TÊN DỰ ÁN: ${proj.name || '—'}\n`;
-    text += `MÃ DỰ ÁN: ${proj.code || '—'}\n`;
-    text += `MÔ TẢ: ${proj.description || '—'}\n`;
-    text += `CHỦ ĐẦU TƯ: ${proj.developer || '—'}\n`;
-    text += `VỊ TRÍ: ${proj.location || '—'}\n`;
-    text += `TIẾN ĐỘ THI CÔNG: ${proj.construction_status || '—'}\n`;
-    text += `TÌNH TRẠNG PHÁP LÝ: ${proj.legal_status || '—'}\n`;
-    text += `QUY MÔ BLOCK: ${proj.scale_block_count || '—'}\n`;
-    text += `QUY MÔ CĂN HỘ: ${proj.scale_unit_count || '—'}\n`;
-    text += `NĂM BÀN GIAO: ${proj.handover_year || '—'}\n`;
-    if (refUrls.length > 0) {
-      text += `LINKS THAM KHẢO / WEBSITE:\n`;
-      refUrls.forEach(link => {
-        if (link.url) text += `- [${link.title || 'Link'}](${link.url})\n`;
-      });
-    }
-    if (folderPaths.length > 0) {
-      text += `ĐƯỜNG DẪN THƯ MỤC / DRIVE:\n`;
-      folderPaths.forEach(f => {
-        if (f.path) text += `- Thư mục ${f.type === 'link' ? 'Drive' : 'Hệ thống'}: [Link Drive/Thư mục](${f.path})\n`;
-      });
-    }
-    if (docs.length > 0) {
-      text += `DANH SÁCH TÀI LIỆU DỰ ÁN:\n`;
-      docs.forEach(d => {
-        const absoluteUrl = d.file_path ? (d.file_path.startsWith('http') ? d.file_path : `${window.location.origin}${d.file_path}`) : '';
-        if (absoluteUrl) text += `- Tên tài liệu: ${d.name} | Loại: ${d.mime_type || '—'} | Tải về: [Tải tài liệu](${absoluteUrl})\n`;
-      });
-    }
-    return text;
-  };
-
-  const formatCampaignContext = (camp: any, parentProj: any, docs: any[]) => {
-    if (!camp) return '';
-    let text = `CHIẾN DỊCH MARKETING: ${camp.name || '—'}\n`;
-    text += `MÃ CHIẾN DỊCH: ${camp.code || '—'}\n`;
-    text += `MÔ TẢ CHIẾN DỊCH: ${camp.description || '—'}\n`;
-    text += `NGÂN SÁCH CHIẾN DỊCH: ${camp.budget ? Number(camp.budget).toLocaleString('vi-VN') + ' VND' : '—'}\n`;
-    text += `NGÀY BẮT ĐẦU: ${camp.start_date || '—'}\n`;
-    text += `NGÀY KẾT THÚC: ${camp.end_date || '—'}\n`;
-    text += `MỤC TIÊU CHIẾN DỊCH: ${camp.target_leads ? camp.target_leads + ' Leads' : '—'}\n`;
-    if (parentProj) {
-      text += `\nDỰ ÁN CHA CỦA CHIẾN DỊCH:\n`;
-      text += formatProjectContext(parentProj, docs);
-    }
-    return text;
-  };
-
-  const handleSelectDocFilter = (docId: number | 'all', docs: any[], details: any, pProj: any, entityType: 'project' | 'campaign') => {
-    setSelectedDocId(docId);
-    if (!details) return;
-
-    if (docId === 'all') {
-      if (entityType === 'project') {
-        setEntityContext(formatProjectContext(details, docs));
-      } else {
-        setEntityContext(formatCampaignContext(details, pProj, docs));
-      }
-    } else {
-      const selectedDoc = docs.find(d => Number(d.id) === Number(docId));
-      if (selectedDoc) {
-        let text = `=== BẠN ĐANG ĐƯỢC CHỈ ĐỊNH TẬP TRUNG HỎI VỀ TÀI LIỆU CỤ THỂ DƯỚI ĐÂY ===\n`;
-        text += `TÊN TÀI LIỆU: ${selectedDoc.name || selectedDoc.file_name || 'Tài liệu đính kèm'}\n`;
-        text += `LOẠI TÀI LIỆU / ĐỊNH DẠNG: ${selectedDoc.mime_type || selectedDoc.file_type || 'Tài liệu'}\n`;
-        const absoluteUrl = selectedDoc.file_path ? (selectedDoc.file_path.startsWith('http') ? selectedDoc.file_path : `${window.location.origin}${selectedDoc.file_path}`) : '';
-        if (absoluteUrl) text += `ĐƯỜNG DẪN TẢI FILE TRỰC TIẾP: [Xem/Tải file tài liệu](${absoluteUrl})\n`;
-        if (selectedDoc.description) text += `MÔ TẢ VÀ GHI CHÚ TÀI LIỆU: ${selectedDoc.description}\n`;
-        
-        text += `\n=== THÔNG TIN DỰ ÁN / CHIẾN DỊCH LIÊN QUAN ===\n`;
-        if (entityType === 'project') {
-          text += `DỰ ÁN: ${details.name || '—'} (Mã: ${details.code || '—'})\n`;
-          text += `CHỦ ĐẦU TƯ: ${details.developer || '—'} | VỊ TRÍ: ${details.location || '—'}\n`;
-          text += `PHÁP LÝ & TIẾN ĐỘ: ${details.legal_status || '—'} / ${details.construction_status || '—'}\n`;
-        } else {
-          text += `CHIẾN DỊCH: ${details.name || '—'} (Mã: ${details.code || '—'})\n`;
-          text += `MỤC TIÊU / NGÂN SÁCH: ${details.target_leads || '—'} / ${details.budget ? Number(details.budget).toLocaleString('vi-VN') + ' VND' : '—'}\n`;
-          if (pProj) {
-            text += `DỰ ÁN LIÊN QUAN: ${pProj.name || '—'} (Chủ đầu tư: ${pProj.developer || '—'})\n`;
-          }
-        }
-        setEntityContext(text);
-      }
-    }
-  };
-
-  const handleSelectEntity = async (entity: { id: number; name: string; type: 'project' | 'campaign'; project_id?: number }) => {
-    setSelectedEntity(entity);
-    setLoadingContext(true);
-    setEntityContext('');
-    setEntityDocs([]);
-    setSelectedDocId('all');
-    setRawDetails(null);
-    setParentProj(null);
-
-    try {
-      let contextText = '';
-      let docs: any[] = [];
-      let details: any = null;
-      let parentProject: any = null;
-
-      if (entity.type === 'project') {
-        const detailsRes = await fetchAPI(`projects/${entity.id}`).catch(() => null);
-        details = detailsRes?.data || detailsRes;
-        
-        // 1. Fetch project documents (uploaded directly to project)
-        const docsRes = await fetchAPI(`projects/${entity.id}/documents`).catch(() => null);
-        const docsList = Array.isArray(docsRes) ? docsRes : (docsRes?.data || []);
-
-        // 2. Fetch project folder files
-        const folderFilesRes = await fetchAPI(`projects/${entity.id}/folder-files`).catch(() => null);
-        const folderFiles = Array.isArray(folderFilesRes) ? folderFilesRes : (folderFilesRes?.data || []);
-        
-        // 3. Fetch linked documents (from document_ids)
-        let linkedDocs: any[] = [];
-        if (details && details.document_ids) {
-          const filesRes = await fetchAPI('cloud-files?limit=250').catch(() => null);
-          const allFiles = Array.isArray(filesRes) ? filesRes : (filesRes?.data?.items || filesRes?.data || []);
-          
-          let docIds: string[] = [];
-          try {
-            if (details.document_ids.startsWith('[')) {
-              docIds = JSON.parse(details.document_ids).map(String);
-            } else {
-              docIds = details.document_ids.split(',').map((s: string) => s.trim()).filter(Boolean);
-            }
-          } catch (err) {
-            docIds = details.document_ids.split(',').map((s: string) => s.trim()).filter(Boolean);
-          }
-          linkedDocs = allFiles.filter((f: any) => docIds.includes(String(f.id)));
-        }
-
-        const normalizedFolderFiles = folderFiles.map((f: any, idx: number) => ({
-          ...f,
-          id: f.id || `folder_${idx}_${f.name}`,
-          name: f.name || f.file_name || 'Tài liệu folder'
-        }));
-        
-        const combinedDocs = [
-          ...docsList,
-          ...normalizedFolderFiles,
-          ...linkedDocs
-        ];
-        
-        const seen = new Set();
-        const uniqueDocs = combinedDocs.filter((d: any) => {
-          const key = d.id || d.name;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-
-        setRawDetails(details);
-        setEntityDocs(uniqueDocs);
-        contextText = formatProjectContext(details, uniqueDocs);
-      } else {
-        const detailsRes = await fetchAPI(`campaigns/${entity.id}`).catch(() => null);
-        details = detailsRes?.data || detailsRes;
-        let parentDocs: any[] = [];
-        if (details && details.project_id) {
-          const parentProjRes = await fetchAPI(`projects/${details.project_id}`).catch(() => null);
-          parentProject = parentProjRes?.data || parentProjRes;
-          
-          // 1. Fetch parent project documents
-          const parentDocsRes = await fetchAPI(`projects/${details.project_id}/documents`).catch(() => null);
-          const pDocs = Array.isArray(parentDocsRes) ? parentDocsRes : (parentDocsRes?.data || []);
-
-          // 2. Fetch parent project folder files
-          const folderFilesRes = await fetchAPI(`projects/${details.project_id}/folder-files`).catch(() => null);
-          const folderFiles = Array.isArray(folderFilesRes) ? folderFilesRes : (folderFilesRes?.data || []);
-          
-          // 3. Fetch parent project linked documents
-          let linkedDocs: any[] = [];
-          if (parentProject && parentProject.document_ids) {
-            const filesRes = await fetchAPI('cloud-files?limit=250').catch(() => null);
-            const allFiles = Array.isArray(filesRes) ? filesRes : (filesRes?.data?.items || filesRes?.data || []);
-            
-            let docIds: string[] = [];
-            try {
-              if (parentProject.document_ids.startsWith('[')) {
-                docIds = JSON.parse(parentProject.document_ids).map(String);
-              } else {
-                docIds = parentProject.document_ids.split(',').map((s: string) => s.trim()).filter(Boolean);
-              }
-            } catch (err) {
-              docIds = parentProject.document_ids.split(',').map((s: string) => s.trim()).filter(Boolean);
-            }
-            linkedDocs = allFiles.filter((f: any) => docIds.includes(String(f.id)));
-          }
-
-          const normalizedFolderFiles = folderFiles.map((f: any, idx: number) => ({
-            ...f,
-            id: f.id || `folder_${idx}_${f.name}`,
-            name: f.name || f.file_name || 'Tài liệu folder'
-          }));
-
-          const combinedDocs = [
-            ...pDocs,
-            ...normalizedFolderFiles,
-            ...linkedDocs
-          ];
-
-          const seen = new Set();
-          parentDocs = combinedDocs.filter((d: any) => {
-            const key = d.id || d.name;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
-          });
-        }
-        docs = parentDocs;
-        setRawDetails(details);
-        setParentProj(parentProject);
-        setEntityDocs(parentDocs);
-        contextText = formatCampaignContext(details, parentProject, parentDocs);
-      }
-      setEntityContext(contextText);
-
-      // Set dynamic welcome message for selected entity
-      setMessages([
-        {
-          id: 'welcome_entity_' + Date.now(),
-          sender: 'bot',
-          text: getEntityWelcomeMessage(entity, docs.length),
-          timestamp: new Date()
-        }
-      ]);
-    } catch (err) {
-      console.error("Lỗi khi tải ngữ cảnh dự án/chiến dịch:", err);
-      setEntityContext(`Lỗi tải dữ liệu cho thực thể ${entity.name}`);
-    } finally {
-      setLoadingContext(false);
-    }
-  };
-
-  const filteredProjects = projectsList.filter(p => 
-    p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.code?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
-  const filteredCampaigns = campaignsList.filter(c => 
-    c.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    c.code?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const botAvatarUrl = "/LOGO.jpg";
+  const botAvatarUrl = "/imgs/autodata/domation_ai_icon.svg";
 
   // Sidebar stats card config
   const statsConfig = [
@@ -391,6 +48,20 @@ export const AIChatbot: React.FC = () => {
     { label: t('🛡️ Quản lý Blacklist'), text: t('Làm sao để cấu hình Blacklist?') },
     { label: t('🎫 Ticket báo lỗi đền bù'), text: t('Quy trình xử lý Ticket lỗi thế nào?') }
   ];
+
+  // Responsive sidebar toggle
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setShowSidebar(false);
+      } else {
+        setShowSidebar(true);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch stats when chat opens
   useEffect(() => {
@@ -437,8 +108,7 @@ export const AIChatbot: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({
           message: textToSend,
-          history: historyPayload,
-          project_context: chatMode === 'project_campaign' ? entityContext : ''
+          history: historyPayload
         })
       });
 
@@ -624,8 +294,8 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'white',
-        border: isHeader ? '1.5px solid rgba(255,255,255,0.6)' : '1px solid var(--chatbot-window-border)',
+        background: isHeader ? 'white' : 'var(--color-surface)',
+        border: isHeader ? '1.5px solid rgba(255,255,255,0.6)' : '1px solid var(--color-border-light)',
         flexShrink: 0,
         position: 'relative'
       }}>
@@ -660,44 +330,44 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
   };
 
   return (
-    <div className={`chatbot-parent ${isOpen ? 'is-open' : 'is-closed'}`} style={{ position: 'fixed', bottom: isMobile ? 80 : 24, right: isMobile ? 14 : 24, zIndex: 10005 }}>
+    <div className={`chatbot-parent ${isOpen ? 'is-open' : 'is-closed'}`} style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 95 }}>
       {/* CSS Styles injection */}
       <style>{`
-        :root {
-          --chatbot-window-bg: #ffffff;
-          --chatbot-window-border: #e5e7eb;
-          --chatbot-sidebar-bg: #f3f4f6;
-          --chatbot-sidebar-border: #e5e7eb;
-          --chatbot-bubble-bot-bg: #f9fafb;
-          --chatbot-bubble-bot-border: #e5e7eb;
-          --chatbot-bubble-user-bg: #1D4ED8;
-          --chatbot-text: #111827;
-          --chatbot-text-muted: #6b7280;
-          --chatbot-card-bg: #ffffff;
-          --chatbot-card-hover-bg: #f9fafb;
-          --chatbot-card-border: #e5e7eb;
-          --chatbot-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-          --chatbot-input-bg: #f9fafb;
-          --chatbot-btn-bg: #ffffff;
-          --chatbot-btn-border: #1D4ED8;
+        html[data-autodata-workspace="active"] {
+          --chatbot-window-bg: oklch(100% 0 0 / 75%);
+          --chatbot-window-border: oklch(100% 0 0 / 60%);
+          --chatbot-sidebar-bg: oklch(98.4% 0.007 247 / 35%);
+          --chatbot-sidebar-border: oklch(0% 0 0 / 5%);
+          --chatbot-bubble-bot-bg: oklch(54% 0.235 274 / 4%);
+          --chatbot-bubble-bot-border: oklch(54% 0.235 274 / 8%);
+          --chatbot-bubble-user-bg: linear-gradient(135deg, oklch(54% 0.235 274) 0%, oklch(53% 0.25 285) 100%);
+          --chatbot-text: oklch(15.9% 0.034 254);
+          --chatbot-text-muted: oklch(54.1% 0.038 248);
+          --chatbot-card-bg: oklch(100% 0 0 / 85%);
+          --chatbot-card-hover-bg: oklch(100% 0 0);
+          --chatbot-card-border: oklch(0% 0 0 / 4%);
+          --chatbot-card-shadow: 0 4px 12px oklch(0% 0 0 / 2%);
+          --chatbot-input-bg: oklch(98.4% 0.007 247 / 70%);
+          --chatbot-btn-bg: oklch(100% 0 0);
+          --chatbot-btn-border: oklch(54% 0.235 274);
         }
-        [data-theme="dark"] {
-          --chatbot-window-bg: #111827;
-          --chatbot-window-border: #374151;
-          --chatbot-sidebar-bg: #1f2937;
-          --chatbot-sidebar-border: #374151;
-          --chatbot-bubble-bot-bg: #1f2937;
-          --chatbot-bubble-bot-border: #374151;
-          --chatbot-bubble-user-bg: #1D4ED8;
-          --chatbot-text: #f9fafb;
-          --chatbot-text-muted: #9ca3af;
-          --chatbot-card-bg: #1f2937;
-          --chatbot-card-hover-bg: #374151;
-          --chatbot-card-border: #374151;
-          --chatbot-card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          --chatbot-input-bg: #1f2937;
-          --chatbot-btn-bg: #ffffff;
-          --chatbot-btn-border: #1D4ED8;
+        html[data-autodata-workspace="active"][data-theme="dark"] {
+          --chatbot-window-bg: oklch(12.7% 0.016 264 / 75%);
+          --chatbot-window-border: oklch(100% 0 0 / 8%);
+          --chatbot-sidebar-bg: oklch(6.5% 0.008 264 / 40%);
+          --chatbot-sidebar-border: oklch(100% 0 0 / 6%);
+          --chatbot-bubble-bot-bg: oklch(100% 0 0 / 3%);
+          --chatbot-bubble-bot-border: oklch(100% 0 0 / 6%);
+          --chatbot-bubble-user-bg: linear-gradient(135deg, oklch(54% 0.235 274) 0%, oklch(53% 0.25 285) 100%);
+          --chatbot-text: oklch(96.8% 0.009 246);
+          --chatbot-text-muted: oklch(70% 0.034 247);
+          --chatbot-card-bg: oklch(17.8% 0.022 264 / 60%);
+          --chatbot-card-hover-bg: oklch(17.8% 0.022 264 / 80%);
+          --chatbot-card-border: oklch(100% 0 0 / 4%);
+          --chatbot-card-shadow: 0 4px 12px oklch(0% 0 0 / 15%);
+          --chatbot-input-bg: oklch(6.5% 0.008 264 / 50%);
+          --chatbot-btn-bg: oklch(12.7% 0.024 254);
+          --chatbot-btn-border: oklch(60% 0.2 265);
         }
         
         .pulse-chatbot {
@@ -830,46 +500,30 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
         
         @media (max-width: 768px) {
           .chatbot-parent.is-open {
-            left: 0 !important;
-            right: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            left: 16px !important;
+            right: 16px !important;
+            bottom: 16px !important;
+            width: auto !important;
+            height: auto !important;
             transform: none !important;
           }
           .chatbot-parent.is-closed {
             left: auto !important;
-            right: 12px !important;
-            bottom: 74px !important;
-            width: 38px !important;
-            height: 38px !important;
-          }
-          .chatbot-parent.is-closed button {
-            width: 38px !important;
-            height: 38px !important;
-            min-width: 38px !important;
-            min-height: 38px !important;
-            max-width: 38px !important;
-            max-height: 38px !important;
+            right: 16px !important;
+            bottom: 16px !important;
+            width: 52px !important;
+            height: 52px !important;
           }
           .chatbot-window {
-            width: 100% !important;
-            height: 100% !important;
-            max-height: 100vh !important;
-            border-radius: 0 !important;
+            width: auto !important;
             left: 0 !important;
             right: 0 !important;
-            bottom: 0 !important;
-            top: 0 !important;
+            height: calc(100vh - 80px) !important;
+            max-height: 80vh !important;
             transform-origin: bottom center !important;
           }
           .chatbot-sidebar {
             display: none !important;
-          }
-          .chatbot-input-bar {
-            padding: 10px 10px 30px 10px !important;
-            gap: 8px !important;
           }
         }
       `}</style>
@@ -880,10 +534,6 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
         style={{
           width: 52,
           height: 52,
-          minWidth: 52,
-          minHeight: 52,
-          maxWidth: 52,
-          maxHeight: 52,
           borderRadius: '50%',
           background: 'var(--chatbot-btn-bg)',
           padding: 0,
@@ -898,8 +548,7 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
           position: 'absolute',
           bottom: 0,
           right: 0,
-          overflow: 'visible',
-          boxSizing: 'border-box'
+          overflow: 'visible'
         }}
         className="pulse-chatbot"
         onMouseEnter={() => setIsHovered(true)}
@@ -912,7 +561,7 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
             e.currentTarget.style.display = 'none';
             const parent = e.currentTarget.parentElement;
             if (parent) {
-              parent.style.background = 'linear-gradient(135deg, #1D4ED8, #1D4ED8)';
+              parent.style.background = 'linear-gradient(135deg, #1E40FF, #1E40FF)';
               if (!parent.querySelector('.btn-fallback-icon')) {
                 const fallback = document.createElement('span');
                 fallback.className = 'btn-fallback-icon';
@@ -952,7 +601,7 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
           position: 'absolute',
           bottom: 0,
           right: 0,
-          width: 'min(540px, 92vw)',
+          width: showSidebar ? 'min(820px, 94vw)' : 'min(540px, 92vw)',
           height: 'min(720px, 85vh)',
           borderRadius: '24px',
           background: 'var(--chatbot-window-bg)',
@@ -970,13 +619,107 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
           willChange: 'transform, opacity, width'
         }}
       >
+        {/* Sidebar - Dashboard Stats */}
+        {showSidebar && (
+          <div
+            className="chatbot-sidebar"
+            style={{
+              width: 260,
+              background: 'var(--chatbot-sidebar-bg)',
+              borderRight: '1px solid var(--chatbot-sidebar-border)',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              flexShrink: 0
+            }}
+          >
+            {/* Sidebar Header */}
+            <div style={{
+              padding: '16px 20px',
+              borderBottom: '1px solid var(--chatbot-sidebar-border)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'rgba(30, 64, 255, 0.02)'
+            }}>
+              <Database size={15} style={{ color: '#1E40FF' }} />
+              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--chatbot-text)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {t('Số liệu hôm nay')}
+              </span>
+            </div>
+
+            {/* Sidebar Content */}
+            <div 
+              style={{ 
+                flex: 1, 
+                overflowY: 'auto', 
+                padding: '16px', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: 12 
+              }} 
+              className="custom-scrollbar"
+            >
+              {stats ? (
+                statsConfig.map((item, idx) => {
+                  const value = stats[item.key] !== undefined ? stats[item.key] : 0;
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => handleSend(item.prompt)}
+                      style={{
+                        padding: '12px 14px',
+                        background: 'var(--chatbot-card-bg)',
+                        border: '1px solid var(--chatbot-card-border)',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        boxShadow: 'var(--chatbot-card-shadow)',
+                        animationDelay: `${idx * 0.05}s`
+                      }}
+                      className="chatbot-stats-card"
+                    >
+                      <div style={{ fontSize: '0.72rem', color: 'var(--chatbot-text-muted)', fontWeight: 600, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: item.color, display: 'inline-block' }} />
+                        {item.label}
+                      </div>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--chatbot-text)', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                        {value}
+                        <span style={{ fontSize: '0.6875rem', fontWeight: 500, color: 'var(--chatbot-text-muted)' }}>data</span>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 10, opacity: 0.6 }}>
+                  <div className="dot-typing" style={{ color: 'var(--chatbot-text-muted)', fontSize: '0.8rem' }}>{t('Đang tải số liệu')}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar Footer */}
+            <div style={{
+              padding: '12px 16px',
+              borderTop: '1px solid var(--chatbot-sidebar-border)',
+              fontSize: '0.6875rem',
+              color: 'var(--chatbot-text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              background: 'rgba(30, 64, 255, 0.01)'
+            }}>
+              <Sparkles size={12} style={{ color: '#1E40FF' }} />
+              <span>{t('Nhấp để hỏi AI tự động')}</span>
+            </div>
+          </div>
+        )}
+
         {/* Main Chat Panel */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           {/* Header */}
           <div
             style={{
               padding: '14px 20px',
-              background: 'linear-gradient(135deg, #1D4ED8 0%, #1D4ED8 100%)',
+              background: 'linear-gradient(135deg, #1E40FF 0%, #1E40FF 100%)',
               color: 'white',
               display: 'flex',
               alignItems: 'center',
@@ -989,7 +732,7 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
               {renderBotAvatar(34, true)}
               <div>
                 <div style={{ fontSize: '0.9rem', fontWeight: 800, letterSpacing: '0.01em', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  {t('Trợ lý AI IDEAS')}
+                  {t('Trợ lý AI DOMATION AutoData')}
                   <Sparkles size={12} style={{ color: '#fcd34d' }} />
                 </div>
                 <div style={{ fontSize: '0.6875rem', opacity: 0.85, display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -998,7 +741,33 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
                 </div>
               </div>
             </div>
+            
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {/* Sidebar toggle button */}
+              <button
+                className="chatbot-sidebar-toggle-btn"
+                onClick={() => setShowSidebar(!showSidebar)}
+                style={{
+                  background: 'rgba(255,255,255,0.15)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 30,
+                  height: 30,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+                title={showSidebar ? t("Ẩn chỉ số") : t("Hiện chỉ số")}
+              >
+                <LayoutGrid size={14} />
+              </button>
+
               <button
                 onClick={() => setIsOpen(false)}
                 style={{
@@ -1023,355 +792,120 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
             </div>
           </div>
 
-          {/* Mode Switcher Tabs */}
-          <div style={{
-            display: 'flex',
-            borderBottom: '1px solid var(--chatbot-window-border)',
-            background: 'var(--chatbot-sidebar-bg)',
-            padding: '2px'
-          }}>
-            <button
-              type="button"
-              onClick={() => setChatMode('project_campaign')}
-              style={{
-                flex: 1,
-                padding: '10px 12px',
-                border: 'none',
-                background: chatMode === 'project_campaign' ? 'var(--chatbot-card-bg)' : 'transparent',
-                color: chatMode === 'project_campaign' ? '#1D4ED8' : 'var(--chatbot-text-muted)',
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                borderRadius: '8px',
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px'
-              }}
-            >
-              {t('Hỏi Dự án / Chiến dịch')}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setChatMode('general');
-                setSelectedEntity(null);
-                setEntityContext('');
-              }}
-              style={{
-                flex: 1,
-                padding: '10px 12px',
-                border: 'none',
-                background: chatMode === 'general' ? 'var(--chatbot-card-bg)' : 'transparent',
-                color: chatMode === 'general' ? '#1D4ED8' : 'var(--chatbot-text-muted)',
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                borderRadius: '8px',
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px'
-              }}
-            >
-              {t('Chat thường')}
-            </button>
-          </div>
-
-          {chatMode === 'project_campaign' && !selectedEntity ? (
-            /* Selector Panel */
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px', background: 'var(--chatbot-window-bg)' }}>
-              <div style={{ position: 'relative', marginBottom: '12px' }}>
-                <input
-                  type="text"
-                  placeholder={t('Tìm kiếm dự án, chiến dịch...')}
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 32px 8px 12px',
-                    borderRadius: '20px',
-                    border: '1px solid var(--chatbot-window-border)',
-                    fontSize: '0.8rem',
-                    background: 'var(--chatbot-card-bg)',
-                    color: 'var(--chatbot-text)',
-                    outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
-                />
-                <Search size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5, color: 'var(--chatbot-text)' }} />
-              </div>
-              
-              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }} className="custom-scrollbar">
-                {loadingEntities ? (
-                  <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--chatbot-text-muted)', fontSize: '0.8rem' }}>
-                    <span className="dot-typing">{t('Đang tải danh sách')}</span>
-                  </div>
-                ) : (
-                  <>
-                    {/* Projects Section */}
-                    <div>
-                      <h5 style={{ fontSize: '0.72rem', color: '#1D4ED8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px 4px' }}>
-                        {t('Dự án')} ({filteredProjects.length})
-                      </h5>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        {filteredProjects.length === 0 ? (
-                          <div style={{ padding: '8px', color: 'var(--chatbot-text-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
-                            {t('Không có dự án nào')}
-                          </div>
-                        ) : (
-                          filteredProjects.map(p => (
-                            <div
-                              key={'proj_' + p.id}
-                              onClick={() => handleSelectEntity({ id: p.id, name: p.name, type: 'project' })}
-                              style={{
-                                padding: '10px 14px',
-                                background: 'var(--chatbot-card-bg)',
-                                border: '1px solid var(--chatbot-window-border)',
-                                borderRadius: '12px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                transition: 'all 0.2s'
-                              }}
-                              className="entity-select-item"
-                              onMouseEnter={e => e.currentTarget.style.borderColor = '#1D4ED8'}
-                              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--chatbot-window-border)'}
-                            >
-                              <div>
-                                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--chatbot-text)', textAlign: 'left' }}>{p.name}</div>
-                                <div style={{ fontSize: '0.68rem', color: 'var(--chatbot-text-muted)', textAlign: 'left' }}>{p.code} | {p.location || t('Chưa có vị trí')}</div>
-                              </div>
-                              <ChevronRight size={14} style={{ color: '#1D4ED8' }} />
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Campaigns Section */}
-                    <div>
-                      <h5 style={{ fontSize: '0.72rem', color: '#1D4ED8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '12px 0 8px 4px' }}>
-                        {t('Chiến dịch')} ({filteredCampaigns.length})
-                      </h5>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                        {filteredCampaigns.length === 0 ? (
-                          <div style={{ padding: '8px', color: 'var(--chatbot-text-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
-                            {t('Không có chiến dịch nào')}
-                          </div>
-                        ) : (
-                          filteredCampaigns.map(c => (
-                            <div
-                              key={'camp_' + c.id}
-                              onClick={() => handleSelectEntity({ id: c.id, name: c.name, type: 'campaign', project_id: c.project_id })}
-                              style={{
-                                padding: '10px 14px',
-                                background: 'var(--chatbot-card-bg)',
-                                border: '1px solid var(--chatbot-window-border)',
-                                borderRadius: '12px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                transition: 'all 0.2s'
-                              }}
-                              className="entity-select-item"
-                              onMouseEnter={e => e.currentTarget.style.borderColor = '#1D4ED8'}
-                              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--chatbot-window-border)'}
-                            >
-                              <div>
-                                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--chatbot-text)', textAlign: 'left' }}>{c.name}</div>
-                                <div style={{ fontSize: '0.68rem', color: 'var(--chatbot-text-muted)', textAlign: 'left' }}>{c.code} {c.project_name ? `(${c.project_name})` : ''}</div>
-                              </div>
-                              <ChevronRight size={14} style={{ color: '#1D4ED8' }} />
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          ) : (
-            /* Message Viewport */
-            <>
-              {chatMode === 'project_campaign' && selectedEntity && (
-                <div style={{
-                  padding: '8px 14px',
-                  background: 'rgba(30, 64, 255, 0.04)',
-                  borderBottom: '1px solid var(--chatbot-window-border)',
+          {/* Messages Container */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              background: 'transparent'
+            }}
+            className="custom-scrollbar"
+          >
+            {messages.map(msg => (
+              <div
+                key={msg.id}
+                style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px'
-                }}>
-                  {/* Top Row: < on far left, Đang hỏi về: <Name> on far right */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '8px' }}>
-                    <button
-                      type="button"
-                      title={t('Quay lại chọn dự án / chiến dịch')}
-                      onClick={() => {
-                        setSelectedEntity(null);
-                        setEntityContext('');
-                        setEntityDocs([]);
-                        setSelectedDocId('all');
-                      }}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: '#1D4ED8',
-                        cursor: 'pointer',
-                        padding: '4px',
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(30, 64, 255, 0.12)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <ChevronLeft size={18} style={{ color: '#1D4ED8' }} />
-                    </button>
-
-                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#1D4ED8', display: 'flex', alignItems: 'center', gap: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: 'auto' }}>
-                      <span>{t('Đang hỏi về')}:</span>
-                      <strong style={{ color: 'var(--chatbot-text)', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedEntity.name}</strong>
-                      {loadingContext && <span style={{ fontSize: '0.7rem', color: 'var(--chatbot-text-muted)', flexShrink: 0 }}>({t('Đang nạp...')})</span>}
-                    </div>
-                  </div>
-
-                  {/* Bottom Row: Document selector trigger button -> opens Modal */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px', gap: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <FileText size={13} style={{ color: '#1D4ED8', flexShrink: 0 }} />
-                      <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--chatbot-text-muted)', flexShrink: 0 }}>
-                        {t('Tài liệu hỏi AI:')}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setShowDocSelectModal(true)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        padding: '4px 10px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--chatbot-window-border)',
-                        background: 'var(--chatbot-card-bg)',
-                        color: selectedDocId === 'all' ? 'var(--chatbot-text)' : '#1D4ED8',
-                        cursor: 'pointer',
-                        outline: 'none',
-                        maxWidth: '220px',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.borderColor = '#1D4ED8'}
-                      onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--chatbot-window-border)'}
-                    >
-                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {selectedDocId === 'all'
-                          ? `📂 ${t('Tất cả tài liệu')} (${entityDocs.length})`
-                          : `📄 ${entityDocs.find(d => Number(d.id) === Number(selectedDocId))?.name || 'Tài liệu đã chọn'}`}
-                      </span>
-                      <ChevronRight size={12} style={{ flexShrink: 0, opacity: 0.6 }} />
-                    </button>
+                  justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                  alignItems: 'flex-start',
+                  gap: 10
+                }}
+                className="message-appear"
+              >
+                {msg.sender === 'bot' && renderBotAvatar(30, false)}
+                
+                <div
+                  style={{
+                    maxWidth: '82%',
+                    padding: '12px 18px',
+                    borderRadius: msg.sender === 'user' ? '18px 18px 2px 18px' : '18px 18px 18px 2px',
+                    background: msg.sender === 'user' 
+                      ? 'var(--chatbot-bubble-user-bg)' 
+                      : 'var(--chatbot-bubble-bot-bg)',
+                    color: msg.sender === 'user' ? 'white' : 'var(--chatbot-text)',
+                    fontSize: '0.875rem',
+                    lineHeight: '1.6',
+                    boxShadow: msg.sender === 'user' 
+                      ? '0 4px 15px rgba(30, 64, 255, 0.2)' 
+                      : '0 4px 15px rgba(0,0,0,0.02)',
+                    border: msg.sender === 'user' ? 'none' : '1px solid var(--chatbot-bubble-bot-border)'
+                  }}
+                >
+                  {renderText(msg.text)}
+                </div>
+              </div>
+            ))}
+            
+            {isTyping && (
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 10, 
+                  paddingLeft: 40,
+                  animation: 'slide-up-fade 0.3s ease forwards'
+                }}
+              >
+                <div style={{ display: 'flex', gap: 4 }}>
+                  {renderBotAvatar(24, false)}
+                  <div style={{
+                    padding: '8px 12px',
+                    borderRadius: '12px 12px 12px 2px',
+                    background: 'var(--chatbot-bubble-bot-bg)',
+                    border: '1px solid var(--chatbot-bubble-bot-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6
+                  }}>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--chatbot-text-muted)' }} className="dot-typing">{t('AI đang trả lời')}</span>
                   </div>
                 </div>
-              )}
-
-              
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                  background: 'transparent'
-                }}
-                className="custom-scrollbar"
-              >
-                {messages.map(msg => (
-                  <div
-                    key={msg.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                      alignItems: 'flex-start',
-                      gap: 10
-                    }}
-                    className="message-appear"
-                  >
-                    {msg.sender === 'bot' && renderBotAvatar(30, false)}
-                    
-                    <div
-                      style={{
-                        maxWidth: '82%',
-                        padding: '12px 18px',
-                        borderRadius: msg.sender === 'user' ? '18px 18px 2px 18px' : '18px 18px 18px 2px',
-                        background: msg.sender === 'user' 
-                          ? 'var(--chatbot-bubble-user-bg)' 
-                          : 'var(--chatbot-bubble-bot-bg)',
-                        color: msg.sender === 'user' ? 'white' : 'var(--chatbot-text)',
-                        fontSize: '0.875rem',
-                        lineHeight: '1.6',
-                        boxShadow: msg.sender === 'user' 
-                          ? '0 4px 15px rgba(30, 64, 255, 0.2)' 
-                          : '0 4px 15px rgba(0,0,0,0.02)',
-                        border: msg.sender === 'user' ? 'none' : '1px solid var(--chatbot-bubble-bot-border)'
-                      }}
-                    >
-                      {renderText(msg.text)}
-                    </div>
-                  </div>
-                ))}
-                
-                {isTyping && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-start',
-                      gap: 10,
-                      animation: 'slide-up-fade 0.3s ease forwards'
-                    }}
-                    className="message-appear"
-                  >
-                    {renderBotAvatar(30, false)}
-                    <div
-                      style={{
-                        maxWidth: '82%',
-                        padding: '12px 18px',
-                        borderRadius: '18px 18px 18px 2px',
-                        background: 'var(--chatbot-bubble-bot-bg)',
-                        color: 'var(--chatbot-text)',
-                        fontSize: '0.875rem',
-                        lineHeight: '1.6',
-                        boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
-                        border: '1px solid var(--chatbot-bubble-bot-border)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 6
-                      }}
-                    >
-                      <span style={{ fontSize: '0.78rem', color: 'var(--chatbot-text-muted)' }} className="dot-typing">{t('AI đang trả lời')}</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
               </div>
-            </>
-          )}
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Quick suggestions */}
+          <div
+            style={{
+              padding: '10px 20px 12px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+              borderTop: '1px solid var(--chatbot-window-border)',
+              background: 'rgba(30, 64, 255, 0.01)'
+            }}
+          >
+            <div style={{ fontSize: '0.72rem', color: 'var(--chatbot-text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('Gợi ý hỏi nhanh:')}</div>
+            <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }} className="hide-scrollbar">
+              {quickPrompts.map((p, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSend(p.text)}
+                  style={{
+                    flexShrink: 0,
+                    background: 'var(--chatbot-card-bg)',
+                    border: '1px solid var(--chatbot-card-border)',
+                    borderRadius: '20px',
+                    padding: '6px 14px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: 'var(--chatbot-text)',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    boxShadow: 'var(--chatbot-card-shadow)',
+                  }}
+                  className="quick-prompt-chip"
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Input Bar */}
           <form
@@ -1379,7 +913,6 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
               e.preventDefault();
               handleSend(inputValue);
             }}
-            className="chatbot-input-bar"
             style={{
               padding: '12px 20px 20px 20px',
               display: 'flex',
@@ -1428,168 +961,6 @@ Bạn có thể gõ rõ từ khóa hoặc click vào các gợi ý bên dưới 
               <Send size={15} />
             </button>
           </form>
-
-          {showDocSelectModal && (
-            <div style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.65)',
-              backdropFilter: 'blur(4px)',
-              zIndex: 2000000,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px'
-            }}
-            onClick={() => setShowDocSelectModal(false)}
-            >
-              <div style={{
-                width: '90%',
-                maxWidth: '460px',
-                maxHeight: '85%',
-                background: 'var(--color-surface, #ffffff)',
-                borderRadius: '16px',
-                border: '1px solid var(--color-border)',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.25)',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                animation: 'fadeIn 0.2s ease-out'
-              }}
-              onClick={e => e.stopPropagation()}
-              >
-                {/* Modal Header */}
-                <div style={{
-                  padding: '12px 16px',
-                  borderBottom: '1px solid var(--chatbot-window-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  background: 'var(--chatbot-sidebar-bg)'
-                }}>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 800, color: '#1D4ED8', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FileText size={16} />
-                    {t('Chọn tài liệu để hỏi AI')}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowDocSelectModal(false)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--chatbot-text-muted)',
-                      cursor: 'pointer',
-                      padding: '4px'
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-
-                {/* Modal Search Bar */}
-                <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--chatbot-window-border)' }}>
-                  <div style={{ position: 'relative' }}>
-                    <input
-                      type="text"
-                      placeholder={t('Tìm kiếm tài liệu...')}
-                      value={docSearchQuery}
-                      onChange={e => setDocSearchQuery(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '6px 28px 6px 10px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--chatbot-window-border)',
-                        fontSize: '0.78rem',
-                        background: 'var(--chatbot-card-bg)',
-                        color: 'var(--chatbot-text)',
-                        outline: 'none',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                    <Search size={13} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} />
-                  </div>
-                </div>
-
-                {/* Modal Document List */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }} className="custom-scrollbar">
-                  {/* Option 1: All Documents */}
-                  <div
-                    onClick={() => {
-                      handleSelectDocFilter('all', entityDocs, rawDetails, parentProj, selectedEntity.type);
-                      setShowDocSelectModal(false);
-                    }}
-                    style={{
-                      padding: '10px 12px',
-                      borderRadius: '10px',
-                      border: selectedDocId === 'all' ? '2px solid #1D4ED8' : '1px solid var(--chatbot-window-border)',
-                      background: selectedDocId === 'all' ? 'rgba(30, 64, 255, 0.06)' : 'var(--chatbot-card-bg)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      transition: 'all 0.15s'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.1rem' }}>📂</span>
-                      <div>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--chatbot-text)', textAlign: 'left' }}>
-                          {t('Tất cả tài liệu dự án')} ({entityDocs.length})
-                        </div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--chatbot-text-muted)', textAlign: 'left' }}>
-                          {t('AI sẽ tổng hợp câu trả lời từ tất cả tài liệu đính kèm')}
-                        </div>
-                      </div>
-                    </div>
-                    {selectedDocId === 'all' && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#1D4ED8' }} />}
-                  </div>
-
-                  {/* Option 2...N: Individual Documents */}
-                  {entityDocs
-                    .filter(d => (d.name || d.file_name || '').toLowerCase().includes(docSearchQuery.toLowerCase()))
-                    .map((doc: any) => {
-                      const isSelected = selectedDocId === doc.id;
-                      return (
-                        <div
-                          key={doc.id}
-                          onClick={() => {
-                            handleSelectDocFilter(doc.id, entityDocs, rawDetails, parentProj, selectedEntity.type);
-                            setShowDocSelectModal(false);
-                          }}
-                          style={{
-                            padding: '10px 12px',
-                            borderRadius: '10px',
-                            border: isSelected ? '2px solid #1D4ED8' : '1px solid var(--chatbot-window-border)',
-                            background: isSelected ? 'rgba(30, 64, 255, 0.06)' : 'var(--chatbot-card-bg)',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            transition: 'all 0.15s'
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
-                            <FileText size={16} style={{ color: isSelected ? '#1D4ED8' : 'var(--chatbot-text-muted)', flexShrink: 0 }} />
-                            <div style={{ overflow: 'hidden', textAlign: 'left' }}>
-                              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--chatbot-text)', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                {doc.name || doc.file_name || `Tài liệu #${doc.id}`}
-                              </div>
-                              <div style={{ fontSize: '0.68rem', color: 'var(--chatbot-text-muted)' }}>
-                                {doc.mime_type || 'Tài liệu'} {doc.description ? `• ${doc.description}` : ''}
-                              </div>
-                            </div>
-                          </div>
-                          {isSelected && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#1D4ED8', flexShrink: 0 }} />}
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

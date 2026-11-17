@@ -1,937 +1,980 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { AppIcon } from '../common/AppIcons';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
-  AnimateIcon,
-  createAnimatedLucideFallback,
-  LayoutDashboard,
-  Users,
-  GitBranch,
-  Settings,
-  ChevronLeft,
-  Webhook,
-  Link2,
-  Database,
-  ShieldCheck,
-  Ticket,
-  Plus,
-  Scale,
-  Filter,
-  Cpu,
-  Building2,
-  TrendingUp,
-  FileText,
-  Calendar,
-  Package,
-  Receipt,
-  CreditCard,
-  BarChart2,
-  Truck,
-  File,
-  Boxes,
-  Layers,
-  Clock,
-  Home,
+  Bot,
+  Briefcase,
   CheckSquare,
-  LifeBuoy,
-  User,
-  Clipboard,
+  ChevronLeft,
+  ClipboardCheck,
+  Database,
+  DollarSign,
+  FileCheck2,
+  FileText,
+  Filter,
+  FolderKanban,
+  GitBranch,
   Globe,
   GraduationCap,
-  Bot,
-  Brain,
-  DollarSign,
-} from '../animate-ui/icons';
+  Layers,
+  LayoutDashboard,
+  Link2,
+  Mail,
+  MapPin,
+  Megaphone,
+  MessageCircle,
+  MessageSquare,
+  Plus,
+  QrCode,
+  Scale,
+  Send,
+  Settings,
+  ShieldCheck,
+  Ticket,
+  TrendingUp,
+  Users,
+  Wallet,
+  Webhook,
+  Workflow,
+  type LucideIcon,
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-
-const AnimatedAppIcon = createAnimatedLucideFallback(AppIcon, 'default');
-import { useLanguage } from '../../contexts/LanguageContext';
-import { useEffect, useState, useRef, Fragment } from 'react';
-import { fetchAPI } from '../../utils/api';
 import { useEntitlement } from '../../contexts/EntitlementContext';
-import { canAccessRoutePath } from '../../config/routeAccess';
-import { useTenantConfig } from '../../contexts/TenantConfigContext';
-import { prefetchRoute } from '../../utils/routePrefetcher';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { fetchAPI } from '../../utils/api';
+import { DomationLogoMark } from '../../../../DomationLogoMark';
 
-export interface SidebarItem {
+interface SidebarNavItem {
   name: string;
   href: string;
-  icon: any;
-  iconKey?: string;
+  icon: LucideIcon;
+  section: string;
+  moduleKey: string;
   end?: boolean;
   adminOnly?: boolean;
-  badgeKey?: string;
-  hideForRoles?: string[];
-  isChat?: boolean;
+  superAdminOnly?: boolean;
+  badgeKey?: 'tickets' | 'gatekeeper';
 }
 
-export interface SidebarGroup {
-  title: string;
-  items: SidebarItem[];
-}
-
-export const SIDEBAR_GROUPS: SidebarGroup[] = [
-  {
-    title: 'TỔNG QUAN',
-    items: [
-      { name: 'Dashboard', href: '/', icon: LayoutDashboard, end: true, hideForRoles: ['academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien', 'viewer'] },
-      { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-      { name: 'Lịch trình', href: '/calendar', icon: Calendar, hideForRoles: ['hr'] },
-      { name: 'Bảng tin nội bộ', href: '/feed', icon: Globe }
-      // Tạm ẩn tab Báo cáo CRM theo yêu cầu
-      // { name: 'Báo cáo', href: '/reports-crm', icon: BarChart2, hideForRoles: ['hr', 'marketing', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien', 'viewer'] }
-    ]
-  },
-  {
-    title: 'QUY TRÌNH & PHÊ DUYỆT',
-    items: [
-      { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' }
-    ]
-  },
-  {
-    title: 'CHƯƠNG TRÌNH',
-    items: [
-      { name: 'Chương trình', href: '/projects', icon: Building2, hideForRoles: ['hr'] },
-      { name: 'Khóa học', href: '/projects?tab=campaigns', icon: Layers, hideForRoles: ['hr'] },
-      { name: 'Lịch học', href: '/schedules', icon: Calendar, hideForRoles: ['hr'] },
-      { name: 'Đối tác', href: '/companies', icon: Building2 },
-      { name: 'Tài liệu', href: '/files', icon: File },
-      { name: 'Nhà cung cấp', href: '/suppliers', icon: Truck, hideForRoles: ['hr', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] }
-    ]
-  },
-  {
-    title: 'KHÁCH HÀNG',
-    items: [
-      { name: 'Tiềm năng', href: '/contacts', icon: Users },
-      { name: 'Pipeline', href: '/deals', icon: TrendingUp },
-      { name: 'Học viên', href: '/students', icon: GraduationCap },
-      { name: 'Quản lý Data', href: '/data', icon: Database },
-      { name: 'Cổng Sale', href: '/sale-portal', icon: User },
-      { name: 'Hiệu suất Ads', href: '/ads-performance', icon: TrendingUp },
-      { name: 'Đối soát công bằng', href: '/fair-share', icon: Scale },
-      { name: 'AI Pre-screener', href: '/gatekeeper', icon: Filter, badgeKey: 'gatekeeper' },
-      { name: 'Ticket data lỗi', href: '/tickets', icon: Ticket, badgeKey: 'tickets' },
-      { name: 'Helpdesk', href: '/support-tickets', icon: LifeBuoy, badgeKey: 'supportTickets' }
-    ]
-  },
-  {
-    title: 'MARKETING & AUTOMATION',
-    items: [
-      { name: 'Marketing', href: '/marketing', icon: BarChart2, iconKey: 'marketing_dashboard', end: true },
-      { name: 'Automation', href: '/marketing/flows', icon: GitBranch, iconKey: 'automation_flows' },
-      { name: 'Chiến dịch', href: '/marketing/campaigns', icon: Layers, iconKey: 'email_campaigns' },
-      { name: 'Mẫu thiết kế', href: '/marketing/templates', icon: FileText, iconKey: 'email_templates' },
-      { name: 'Tệp liên hệ', href: '/marketing/audience', icon: Users, iconKey: 'audience_segments' },
-      { name: 'Khảo sát', href: '/marketing/surveys', icon: Clipboard, iconKey: 'surveys_quiz' },
-      { name: 'Voucher & QR', href: '/marketing/vouchers', icon: Ticket, iconKey: 'vouchers_qr' },
-      { name: 'Social Bot', href: '/marketing/social-bot', icon: Bot, iconKey: 'social_bot' },
-      { name: 'Đào tạo AI', href: '/marketing/ai-training', icon: Brain, iconKey: 'ai_training' },
-      { name: 'Web Tracking', href: '/marketing/web-tracking', icon: Globe, iconKey: 'web_tracking' },
-      { name: 'Meta CAPI & Tệp Ads', href: '/marketing/capi', icon: Link2, iconKey: 'meta_capi' },
-      { name: 'API & Webhook', href: '/marketing/api-triggers', icon: Webhook, iconKey: 'api_triggers' }
-    ]
-  },
-  {
-    title: 'NHÂN SỰ',
-    items: [
-      { name: 'Tài khoản cá nhân', href: '/account', icon: User },
-      { name: 'Phiếu lương', href: '/my-payslips', icon: FileText },
-      { name: 'Phòng ban', href: '/consultants?tab=teams', icon: Users },
-      { name: 'Nhân sự công ty', href: '/consultants', icon: Users },
-      { name: 'Quản lý công', href: '/attendance', icon: Clock },
-      { name: 'Nhân sự & Lương', href: '/hrm', icon: ShieldCheck, hideForRoles: ['manager', 'assistant', 'sale', 'viewer', 'sales', 'accountant', 'marketing', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] }
-    ]
-  },
-  {
-    title: 'TÀI CHÍNH',
-    items: [
-      { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-      { name: 'Sales Order', href: '/deposits', icon: Receipt, hideForRoles: ['viewer', 'sale_admin', 'saleadmin'], badgeKey: 'pendingDeposits' },
-      { name: 'Dự báo dòng tiền', href: '/cash-flow', icon: TrendingUp, hideForRoles: ['viewer', 'marketing', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] },
-      { name: 'Kế toán A-Z', href: '/accounting-az', icon: Scale, hideForRoles: ['viewer', 'marketing', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien', 'sale', 'sales', 'manager', 'assistant'] }
-    ]
-  },
-  {
-    title: 'CÀI ĐẶT HỆ THỐNG',
-    items: [
-      { name: 'Cài đặt hệ thống', href: '/settings', icon: Settings, hideForRoles: ['manager', 'assistant', 'sale', 'viewer', 'sales', 'hr', 'accountant', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] },
-      { name: 'Huấn luyện AI', href: '/ai-training', icon: Cpu },
-      { name: 'Quản lý tài khoản', href: '/accounts', icon: ShieldCheck, hideForRoles: ['manager', 'assistant', 'sale', 'viewer', 'sales', 'accountant', 'marketing', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] },
-      { name: 'Vòng phân bổ', href: '/rounds', icon: GitBranch, hideForRoles: ['manager', 'assistant', 'sale', 'sales', 'hr', 'accountant', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] },
-      { name: 'Quy tắc định tuyến', href: '/rules', icon: Webhook, hideForRoles: ['manager', 'assistant', 'sale', 'viewer', 'sales', 'hr', 'accountant', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] },
-      { name: 'Tích hợp Data', href: '/integrations', icon: Link2, hideForRoles: ['manager', 'assistant', 'sale', 'viewer', 'sales', 'hr', 'accountant', 'sale_admin', 'saleadmin', 'academic', 'hoc_vu', 'tro_giang', 'teacher', 'giang_vien'] }
-    ]
-  }
-];
-
-interface QuickNavItem {
-  name: string;
-  href: string;
-  icon: any;
-  badgeKey?: string;
-}
-
-const QUICK_NAV_BY_ROLE: Record<string, QuickNavItem[]> = {
-  admin: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Phê duyệt', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Duyệt công', href: '/attendance', icon: Clock },
-    { name: 'Huấn luyện AI', href: '/ai-training', icon: Cpu }
-  ],
-  superadmin: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Phê duyệt', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Duyệt công', href: '/attendance', icon: Clock },
-    { name: 'Huấn luyện AI', href: '/ai-training', icon: Cpu }
-  ],
-  super_admin: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Phê duyệt', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Duyệt công', href: '/attendance', icon: Clock },
-    { name: 'Huấn luyện AI', href: '/ai-training', icon: Cpu }
-  ],
-  director: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Phê duyệt', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Duyệt công', href: '/attendance', icon: Clock },
-    { name: 'Huấn luyện AI', href: '/ai-training', icon: Cpu }
-  ],
-  sale: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Tiềm năng', href: '/contacts', icon: Users },
-    { name: 'Pipeline', href: '/deals', icon: TrendingUp },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' }
-  ],
-  sales: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Tiềm năng', href: '/contacts', icon: Users },
-    { name: 'Pipeline', href: '/deals', icon: TrendingUp },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' }
-  ],
-  accountant: [
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Sales Order', href: '/deposits', icon: Receipt, badgeKey: 'pendingDeposits' },
-    { name: 'Dự báo dòng tiền', href: '/cash-flow', icon: TrendingUp },
-    { name: 'Kế toán A-Z', href: '/accounting-az', icon: Scale },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  hr: [
-    { name: 'Nhân sự', href: '/hrm', icon: ShieldCheck },
-    { name: 'Kế toán A-Z', href: '/accounting-az', icon: Scale },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Duyệt công', href: '/attendance', icon: Clock },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  marketing: [
-    { name: 'Tiềm năng', href: '/contacts', icon: Users },
-    { name: 'Pipeline', href: '/deals', icon: TrendingUp },
-    { name: 'Khóa học', href: '/projects?tab=campaigns', icon: Layers },
-    { name: 'Pre-screener', href: '/gatekeeper', icon: Filter, badgeKey: 'gatekeeper' },
-    { name: 'Ticket data lỗi', href: '/tickets', icon: Ticket, badgeKey: 'tickets' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phòng ban', href: '/consultants?tab=teams', icon: Users },
-    { name: 'Tích hợp', href: '/integrations', icon: Link2 }
-  ],
-  sale_admin: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Ticket data lỗi', href: '/tickets', icon: Ticket, badgeKey: 'tickets' },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' }
-  ],
-  saleadmin: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Ticket data lỗi', href: '/tickets', icon: Ticket, badgeKey: 'tickets' },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' }
-  ],
-  academic: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Đối tác & GV', href: '/companies', icon: Building2 },
-    { name: 'Chương trình', href: '/projects', icon: Building2 },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Sales Order', href: '/deposits', icon: Receipt, badgeKey: 'pendingDeposits' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  hoc_vu: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Đối tác & GV', href: '/companies', icon: Building2 },
-    { name: 'Chương trình', href: '/projects', icon: Building2 },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Sales Order', href: '/deposits', icon: Receipt, badgeKey: 'pendingDeposits' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  tro_giang: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Đối tác & GV', href: '/companies', icon: Building2 },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Sales Order', href: '/deposits', icon: Receipt, badgeKey: 'pendingDeposits' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  teacher: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Sales Order', href: '/deposits', icon: Receipt, badgeKey: 'pendingDeposits' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  giang_vien: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Purchase Order', href: '/expenses', icon: CreditCard, badgeKey: 'pendingExpenses' },
-    { name: 'Sales Order', href: '/deposits', icon: Receipt, badgeKey: 'pendingDeposits' },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  assistant: [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ],
-  viewer: [
-    { name: 'Bàn làm việc', href: '/workspace', icon: CheckSquare, badgeKey: 'workspaceTasks' },
-    { name: 'Học viên', href: '/students', icon: GraduationCap },
-    { name: 'Lịch học', href: '/schedules', icon: Calendar },
-    { name: 'Quy trình', href: '/approvals', icon: Clipboard, badgeKey: 'pendingApprovals' },
-    { name: 'Chương trình', href: '/projects', icon: Building2 },
-    { name: 'Phiếu lương', href: '/my-payslips', icon: FileText }
-  ]
-};
-
-const GROUP_ORDER_BY_ROLE: Record<string, string[]> = {
-  admin: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-  superadmin: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-  super_admin: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-  director: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-  sale: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'KHÁCH HÀNG', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-  sales: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'KHÁCH HÀNG', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-  accountant: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-  hr: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'NHÂN SỰ', 'TÀI CHÍNH', 'CHƯƠNG TRÌNH'],
-  marketing: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'MARKETING & AUTOMATION', 'KHÁCH HÀNG', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-  sale_admin: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-  saleadmin: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ'],
-  academic: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  hoc_vu: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  tro_giang: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  teacher: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  giang_vien: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  assistant: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'KHÁCH HÀNG', 'CHƯƠNG TRÌNH', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  viewer: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'CHƯƠNG TRÌNH', 'KHÁCH HÀNG', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  manager: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'TÀI CHÍNH', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'NHÂN SỰ', 'CÀI ĐẶT HỆ THỐNG'],
-  leader: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  staff: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'TÀI CHÍNH', 'NHÂN SỰ'],
-  employee: ['TỔNG QUAN', 'QUY TRÌNH & PHÊ DUYỆT', 'KHÁCH HÀNG', 'MARKETING & AUTOMATION', 'CHƯƠNG TRÌNH', 'TÀI CHÍNH', 'NHÂN SỰ']
-};
-
-export const PACKAGE1_SIDEBAR_GROUPS: SidebarGroup[] = [
-  {
-    title: 'AUTO DATA & CRM',
-    items: [
-      { name: 'Dashboard', href: '/', icon: LayoutDashboard, end: true },
-      { name: 'Quản lý Data', href: '/data', icon: Database },
-      { name: 'Lịch hẹn', href: '/calendar', icon: Calendar },
-      { name: 'Hiệu suất Quảng cáo', href: '/ads-performance', icon: TrendingUp },
-      { name: 'Ticket Lỗi Data', href: '/tickets', icon: Ticket, badgeKey: 'tickets' },
-      { name: 'AI Pre-screener', href: '/gatekeeper', icon: Filter, badgeKey: 'gatekeeper' },
-      { name: 'Vòng phân bổ', href: '/rounds', icon: GitBranch },
-      { name: 'Đối soát công bằng', href: '/fair-share', icon: Scale },
-      { name: 'Logic xử lý', href: '/rules', icon: Webhook },
-      { name: 'Chuyên viên Kinh doanh', href: '/consultants', icon: Users },
-      { name: 'Tích hợp Data', href: '/integrations', icon: Link2 },
-      { name: 'Quản lý tài khoản', href: '/accounts', icon: ShieldCheck },
-      { name: 'Cài đặt hệ thống', href: '/settings', icon: Settings },
-      { name: 'Cổng Sale', href: '/sale-portal', icon: User },
-    ],
-  },
-];
-
-export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onMobileClose }: { isCollapsed: boolean; onToggleCollapse: () => void; isMobileOpen?: boolean; onMobileClose?: () => void }) => {
-  const { user } = useAuth();
-  const { packageCode, hasModule, can, canScreen, isTenantOwner, educationAddon } = useEntitlement();
-  const { config: tenantConfig } = useTenantConfig();
+export const Sidebar = ({
+  isCollapsed,
+  onToggleCollapse,
+  isMobileOpen,
+  onMobileClose,
+}: {
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
+}) => {
+  const { user, companyName, tenantSlug, tenantSettings } = useAuth();
+  const { packageCode, packageMeta, hasModule, educationAddon, terminology, can } = useEntitlement();
   const { t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [pendingTickets, setPendingTickets] = useState(0);
-  const [supportTicketsCount, setSupportTicketsCount] = useState(0);
   const [heldLeadsCount, setHeldLeadsCount] = useState(0);
-  const [pendingExpensesCount, setPendingExpensesCount] = useState(0);
-  const [pendingCoopCount, setPendingCoopCount] = useState(0);
-  const [undoneTasksCount, setUndoneTasksCount] = useState(0);
-  const [pendingDepositsCount, setPendingDepositsCount] = useState(0);
-  const [nopHoSoCount, setNopHoSoCount] = useState(0);
-  const [lePhiCount, setLePhiCount] = useState(0);
-  const [dynamicStudentBadges, setDynamicStudentBadges] = useState<Record<string, number>>({});
-  const [pendingApprovalsCount, setPendingApprovalsCount] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem('pending_approvals_count') || localStorage.getItem('pending_approvals_count');
-      return cached ? parseInt(cached, 10) || 0 : 0;
-    }
-    return 0;
-  });
   const [isHovered, setIsHovered] = useState(false);
+  const [logoErrorUrl, setLogoErrorUrl] = useState<string | null>(null);
+
+  const [sliderStyle, setSliderStyle] = useState({ top: 0, height: 0 });
   const navContainerRef = useRef<HTMLDivElement>(null);
 
-  // Poll unified pending counts every 60s
-  useEffect(() => {
-    if (!user) return;
-
-    let isSubscribed = true;
-
-    const fetchPending = async () => {
-      try {
-        const res = await fetchAPI('badges');
-        if (!isSubscribed) return;
-        if (res && res.success && res.data) {
-          const d = res.data;
-          if (typeof d.workspaceTasks === 'number') setUndoneTasksCount(d.workspaceTasks);
-          if (typeof d.pendingApprovals === 'number') {
-            setPendingApprovalsCount(d.pendingApprovals);
-            if (typeof window !== 'undefined') {
-              sessionStorage.setItem('pending_approvals_count', String(d.pendingApprovals));
-              localStorage.setItem('pending_approvals_count', String(d.pendingApprovals));
-            }
-          }
-          if (typeof d.pendingExpenses === 'number') setPendingExpensesCount(d.pendingExpenses);
-          if (typeof d.pendingDeposits === 'number') setPendingDepositsCount(d.pendingDeposits);
-          if (typeof d.heldLeads === 'number') setHeldLeadsCount(d.heldLeads);
-          if (typeof d.tickets === 'number') setPendingTickets(d.tickets);
-          if (typeof d.supportTickets === 'number') setSupportTicketsCount(d.supportTickets);
-          if (typeof d.coopSlips === 'number') setPendingCoopCount(d.coopSlips);
-          if (typeof d.nopHoSo === 'number') setNopHoSoCount(d.nopHoSo);
-          if (typeof d.lePhi === 'number') setLePhiCount(d.lePhi);
-          const nextDynBadges: Record<string, number> = {};
-          Object.keys(d).forEach((k) => { if (typeof d[k] === 'number') nextDynBadges[k] = d[k]; });
-          setDynamicStudentBadges((prev) => ({ ...prev, ...nextDynBadges }));
-        }
-      } catch {
-        // Keep cached counts
-      }
-    };
-
-    fetchPending();
-    const interval = setInterval(fetchPending, 60000);
-
-    let debounceTimer: any = null;
-    const debouncedFetch = () => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        fetchPending();
-      }, 350);
-    };
-
-    const handleApprovalBadgeUpdated = (e: any) => {
-      if (typeof e.detail?.count === 'number') {
-        setPendingApprovalsCount(e.detail.count);
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('pending_approvals_count', String(e.detail.count));
-          localStorage.setItem('pending_approvals_count', String(e.detail.count));
-        }
-      }
-    };
-
-    const handleStudentBadgeUpdated = (e: any) => {
-      if (e.detail && typeof e.detail === 'object') {
-        if (typeof e.detail.nop_ho_so === 'number') setNopHoSoCount(e.detail.nop_ho_so);
-        if (typeof e.detail.le_phi === 'number') setLePhiCount(e.detail.le_phi);
-        const nextDyn: Record<string, number> = {};
-        Object.keys(e.detail).forEach((k) => { if (typeof e.detail[k] === 'number') nextDyn[k] = e.detail[k]; });
-        setDynamicStudentBadges((prev) => ({ ...prev, ...nextDyn }));
-      }
-    };
-
-    window.addEventListener('ticket-resolved', debouncedFetch);
-    window.addEventListener('task-updated', debouncedFetch);
-    window.addEventListener('lead-accepted', debouncedFetch);
-    window.addEventListener('uncontacted-count-changed', debouncedFetch);
-    window.addEventListener('realtime-update-received', debouncedFetch);
-    window.addEventListener('held-lead-updated', debouncedFetch);
-    window.addEventListener('gatekeeper-updated', debouncedFetch);
-    window.addEventListener('approval-updated', debouncedFetch);
-    window.addEventListener('approval-created', debouncedFetch);
-    window.addEventListener('refresh-approvals', debouncedFetch);
-    window.addEventListener('refresh-pending-counts', debouncedFetch);
-    window.addEventListener('approval-badge-updated', handleApprovalBadgeUpdated);
-    window.addEventListener('student-badge-updated', handleStudentBadgeUpdated);
-    window.addEventListener('lead-added', debouncedFetch);
-    window.addEventListener('contact-updated', debouncedFetch);
-
-    return () => {
-      isSubscribed = false;
-      clearInterval(interval);
-      if (debounceTimer) clearTimeout(debounceTimer);
-      window.removeEventListener('ticket-resolved', debouncedFetch);
-      window.removeEventListener('task-updated', debouncedFetch);
-      window.removeEventListener('lead-accepted', debouncedFetch);
-      window.removeEventListener('uncontacted-count-changed', debouncedFetch);
-      window.removeEventListener('realtime-update-received', debouncedFetch);
-      window.removeEventListener('held-lead-updated', debouncedFetch);
-      window.removeEventListener('gatekeeper-updated', debouncedFetch);
-      window.removeEventListener('approval-updated', debouncedFetch);
-      window.removeEventListener('approval-created', debouncedFetch);
-      window.removeEventListener('refresh-approvals', debouncedFetch);
-      window.removeEventListener('refresh-pending-counts', debouncedFetch);
-      window.removeEventListener('approval-badge-updated', handleApprovalBadgeUpdated);
-      window.removeEventListener('student-badge-updated', handleStudentBadgeUpdated);
-      window.removeEventListener('lead-added', debouncedFetch);
-      window.removeEventListener('contact-updated', debouncedFetch);
-    };
-  }, [user]);
-
-  // Auto scroll/snap to active sidebar menu item
-  const scrollToActiveItem = (behavior: ScrollBehavior = 'smooth') => {
-    const container = navContainerRef.current;
-    if (!container) return;
-
-    const activeEl = container.querySelector<HTMLElement>('.sidebar-nav-item.active');
-    if (!activeEl) return;
-
-    const containerRect = container.getBoundingClientRect();
-    const activeRect = activeEl.getBoundingClientRect();
-
-    // Active element's top position relative to container's scroll content
-    const relativeTop = (activeRect.top - containerRect.top) + container.scrollTop;
-
-    // Center the active item vertically within the container
-    const targetScrollTop = relativeTop - (container.clientHeight / 2) + (activeRect.height / 2);
-
-    // If already comfortably centered (within 8px diff), skip to avoid jitter
-    if (Math.abs(container.scrollTop - targetScrollTop) < 8) return;
-
-    container.scrollTo({
-      top: Math.max(0, targetScrollTop),
-      behavior
-    });
-  };
+  const hasSaleTickets = hasModule('tickets_data');
 
   useEffect(() => {
-    // Initial quick snap
-    scrollToActiveItem('auto');
-
-    // Smooth snap after rendering / animations / layout settles
-    const timer1 = setTimeout(() => {
-      scrollToActiveItem('smooth');
-    }, 120);
-
-    const timer2 = setTimeout(() => {
-      scrollToActiveItem('smooth');
-    }, 350);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, [location.pathname, location.search, isCollapsed, isMobileOpen, user?.role]);
-
-  const gateApi = { hasModule, can, canScreen, isTenantOwner, educationAddon };
-  const sourceGroups = packageCode === 'autodata_crm' ? PACKAGE1_SIDEBAR_GROUPS : SIDEBAR_GROUPS;
-
-  let visibleGroups = sourceGroups.map(group => {
-    let items = [...group.items];
-    if (group.title === 'KHÁCH HÀNG' && educationAddon && canScreen('students')) {
-      const dynamicStudentTabs = Array.isArray(tenantConfig?.student_tabs) && tenantConfig.student_tabs.length > 0
-        ? [...tenantConfig.student_tabs].sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
-        : [
-            { tab_key: 'nop_ho_so', label: 'Nộp hồ sơ', badge_key: 'nopHoSo' },
-            { tab_key: 'le_phi', label: 'Lệ phí hồ sơ', badge_key: 'lePhi' },
-            { tab_key: 'chinh_thuc', label: 'Học viên chính thức', badge_key: null }
-          ];
-      const expanded: typeof items = [];
-      items.forEach(item => {
-        if (item.name === 'Học viên') {
-          expanded.push(item);
-          dynamicStudentTabs.forEach(st => {
-            expanded.push({
-              name: st.label,
-              href: `/students?tab=${encodeURIComponent(st.tab_key)}`,
-              icon: GraduationCap,
-              badgeKey: st.badge_key || (!st.include_customer_status ? st.tab_key : undefined)
-            });
+    const timer = setTimeout(() => {
+      if (navContainerRef.current) {
+        const activeElement = navContainerRef.current.querySelector('.active') as HTMLElement | null;
+        if (activeElement) {
+          setSliderStyle({
+            top: activeElement.offsetTop,
+            height: activeElement.offsetHeight,
           });
         } else {
-          expanded.push(item);
+          setSliderStyle({ top: 0, height: 0 });
         }
+      }
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [location.pathname, isCollapsed, packageCode]);
+
+  // Poll pending ticket count every 60s ONLY when AutoData CRM Tickets module is unlocked
+  useEffect(() => {
+    if (!hasSaleTickets) return;
+    if (user?.role !== 'admin' && user?.role !== 'superadmin') return;
+    const fetchPending = async () => {
+      try {
+        const [resReports, resHeld] = await Promise.all([
+          fetchAPI('get_reports&status=pending&date=all&pageSize=1'),
+          fetchAPI('get_held_leads&pageSize=1&date=all'),
+        ]);
+
+        let countReports = 0;
+        let countHeld = 0;
+
+        if (resReports && resReports.success) {
+          countReports =
+            resReports.stats?.pending ??
+            (Array.isArray(resReports?.data)
+              ? resReports.data.filter((r: { status?: string }) => r?.status === 'pending').length
+              : 0);
+        }
+
+        if (resHeld && resHeld.success) {
+          countHeld = resHeld.total_count ?? 0;
+        }
+
+        setPendingTickets(countReports);
+        setHeldLeadsCount(countHeld);
+      } catch {
+        // silent
+      }
+    };
+    void fetchPending();
+    const interval = setInterval(() => void fetchPending(), 60000);
+    const onResolved = () => void fetchPending();
+    window.addEventListener('ticket-resolved', onResolved);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('ticket-resolved', onResolved);
+    };
+  }, [user, hasSaleTickets]);
+
+  const navItems = useMemo<SidebarNavItem[]>(() => {
+    const isMktOnly = packageCode === 'marketing_standalone';
+    const items: SidebarNavItem[] = [];
+
+    if (isMktOnly) {
+      items.push(
+        {
+          name: 'Dashboard Marketing',
+          href: '/',
+          icon: LayoutDashboard,
+          section: 'Marketing Automation',
+          moduleKey: 'mkt_dashboard',
+          end: true,
+        },
+        {
+          name: `${terminology.customerLabel} & Tệp Data/Logic`,
+          href: '/audiences',
+          icon: Layers,
+          section: 'Marketing Automation',
+          moduleKey: 'audiences',
+        },
+        {
+          name: 'Email Templates',
+          href: '/marketing/templates',
+          icon: Mail,
+          section: 'Marketing Automation',
+          moduleKey: 'email_templates',
+        },
+        {
+          name: 'Form Builder & Form Cards',
+          href: '/marketing/forms',
+          icon: FileText,
+          section: 'Marketing Automation',
+          moduleKey: 'forms_triggers',
+        },
+        {
+          name: 'Surveys & Quiz',
+          href: '/marketing/surveys',
+          icon: ClipboardCheck,
+          section: 'Marketing Automation',
+          moduleKey: 'surveys_quiz',
+        },
+        {
+          name: 'Chiến dịch Email / ZNS',
+          href: '/marketing/campaigns',
+          icon: Send,
+          section: 'Marketing Automation',
+          moduleKey: 'campaigns',
+        },
+        {
+          name: 'Automation Flows',
+          href: '/marketing/flows',
+          icon: Workflow,
+          section: 'Marketing Automation',
+          moduleKey: 'automation_flows',
+        },
+        {
+          name: 'Voucher & QR',
+          href: '/marketing/vouchers',
+          icon: QrCode,
+          section: 'Marketing Automation',
+          moduleKey: 'vouchers_qr',
+        },
+        {
+          name: 'Web Tracking',
+          href: '/marketing/web-tracking',
+          icon: Globe,
+          section: 'Marketing Automation',
+          moduleKey: 'web_tracking',
+        },
+        {
+          name: 'Social Bot',
+          href: '/marketing/social-bot',
+          icon: MessageCircle,
+          section: 'Marketing Automation',
+          moduleKey: 'social_bot',
+        },
+        {
+          name: 'Kết nối SES / ZNS / SDK',
+          href: '/marketing-connect',
+          icon: ShieldCheck,
+          section: 'Kết nối & Hệ thống',
+          moduleKey: 'integrations_marketing',
+          adminOnly: true,
+        },
+        {
+          name: 'Quản lý Tài khoản',
+          href: '/accounts',
+          icon: Users,
+          section: 'Kết nối & Hệ thống',
+          moduleKey: 'org_rbac',
+          superAdminOnly: true,
+        },
+        {
+          name: 'Cài đặt hệ thống',
+          href: '/settings',
+          icon: Settings,
+          section: 'Kết nối & Hệ thống',
+          moduleKey: 'settings',
+          adminOnly: true,
+        }
+      );
+    } else {
+      // Gói 1 (autodata_crm), Gói 3 (growth_combo), Gói 4 (domation_promax)
+      items.push(
+        {
+          name: 'Dashboard',
+          href: '/',
+          icon: LayoutDashboard,
+          section: 'Auto Data & CRM',
+          moduleKey: 'crm_dashboard',
+          end: true,
+        }
+      );
+
+      if (hasModule('growth_attribution')) {
+        items.push({
+          name: 'Doanh thu & ROAS Xuyên Phễu',
+          href: '/growth-attribution',
+          icon: TrendingUp,
+          section: 'Auto Data & CRM',
+          moduleKey: 'growth_attribution',
+        });
+      }
+
+      items.push(
+        {
+          name: 'Quản lý Data',
+          href: '/data',
+          icon: Database,
+          section: 'Auto Data & CRM',
+          moduleKey: 'leads',
+        },
+        {
+          name: 'Hiệu suất Quảng cáo',
+          href: '/ads-performance',
+          icon: Megaphone,
+          section: 'Auto Data & CRM',
+          moduleKey: 'ads_capi',
+        },
+        {
+          name: 'Ticket Lỗi Data',
+          href: '/tickets',
+          icon: Ticket,
+          section: 'Auto Data & CRM',
+          moduleKey: 'tickets_data',
+          adminOnly: true,
+          badgeKey: 'tickets',
+        },
+        {
+          name: 'AI Pre-screener',
+          href: '/gatekeeper',
+          icon: Filter,
+          section: 'Auto Data & CRM',
+          moduleKey: 'gatekeeper',
+          adminOnly: true,
+          badgeKey: 'gatekeeper',
+        },
+        {
+          name: 'Vòng phân bổ',
+          href: '/rounds',
+          icon: GitBranch,
+          section: 'Auto Data & CRM',
+          moduleKey: 'rounds',
+          adminOnly: true,
+        },
+        {
+          name: 'Đối soát công bằng',
+          href: '/fair-share',
+          icon: Scale,
+          section: 'Auto Data & CRM',
+          moduleKey: 'fair_share',
+          adminOnly: true,
+        },
+        {
+          name: 'Logic xử lý',
+          href: '/rules',
+          icon: Webhook,
+          section: 'Auto Data & CRM',
+          moduleKey: 'routing_rules',
+          adminOnly: true,
+        },
+        {
+          name: terminology.consultantLabel || 'Sale & Đại lý',
+          href: '/consultants',
+          icon: Users,
+          section: 'Auto Data & CRM',
+          moduleKey: 'consultants',
+          adminOnly: true,
+        }
+      );
+
+      // Marketing Suite section unlocked on Gói 3 & Gói 4
+      if (hasModule('audiences')) {
+        items.push(
+          {
+            name: 'Dashboard Marketing',
+            href: '/marketing-dashboard',
+            icon: LayoutDashboard,
+            section: 'Marketing Automation',
+            moduleKey: 'mkt_dashboard',
+          },
+          {
+            name: `${terminology.customerLabel} & Tệp Data/Logic`,
+            href: '/audiences',
+            icon: Layers,
+            section: 'Marketing Automation',
+            moduleKey: 'audiences',
+          },
+          {
+            name: 'Email Templates',
+            href: '/marketing/templates',
+            icon: Mail,
+            section: 'Marketing Automation',
+            moduleKey: 'email_templates',
+          },
+          {
+            name: 'Form Builder & Form Cards',
+            href: '/marketing/forms',
+            icon: FileText,
+            section: 'Marketing Automation',
+            moduleKey: 'forms_triggers',
+          },
+          {
+            name: 'Surveys & Quiz',
+            href: '/marketing/surveys',
+            icon: ClipboardCheck,
+            section: 'Marketing Automation',
+            moduleKey: 'surveys_quiz',
+          },
+          {
+            name: 'Chiến dịch Email / ZNS',
+            href: '/marketing/campaigns',
+            icon: Send,
+            section: 'Marketing Automation',
+            moduleKey: 'campaigns',
+          },
+          {
+            name: 'Automation Flows',
+            href: '/marketing/flows',
+            icon: Workflow,
+            section: 'Marketing Automation',
+            moduleKey: 'automation_flows',
+          },
+          {
+            name: 'Voucher & QR',
+            href: '/marketing/vouchers',
+            icon: QrCode,
+            section: 'Marketing Automation',
+            moduleKey: 'vouchers_qr',
+          },
+          {
+            name: 'Web Tracking',
+            href: '/marketing/web-tracking',
+            icon: Globe,
+            section: 'Marketing Automation',
+            moduleKey: 'web_tracking',
+          },
+          {
+            name: 'Social Bot',
+            href: '/marketing/social-bot',
+            icon: MessageCircle,
+            section: 'Marketing Automation',
+            moduleKey: 'social_bot',
+          }
+        );
+      }
+
+      // ERP PROMAX 9 Core Groups + Education Add-on
+      if (packageCode === 'domation_promax') {
+        items.push(
+          {
+            name: 'DOM Agent (AI Điều hành)',
+            href: '/dom-agent',
+            icon: Bot,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'dom_agent',
+          },
+          {
+            name: 'Nhân sự & Sơ đồ tổ chức',
+            href: '/erp/hrm',
+            icon: Briefcase,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_hrm_org',
+          },
+          {
+            name: 'Chấm công GPS / Selfie',
+            href: '/erp/attendance',
+            icon: MapPin,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_attendance',
+          },
+          {
+            name: 'Bảng lương & Thuế',
+            href: '/erp/payroll',
+            icon: Wallet,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_payroll',
+          },
+          {
+            name: 'Phê duyệt đa cấp',
+            href: '/erp/approvals',
+            icon: CheckSquare,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_approvals',
+          },
+          {
+            name: `${terminology.projectLabel} Kanban / Gantt`,
+            href: '/erp/projects',
+            icon: FolderKanban,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_projects_tasks',
+          },
+          {
+            name: 'WorkChat & Bảng tin',
+            href: '/erp/workchat',
+            icon: MessageSquare,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_workchat',
+          },
+          {
+            name: 'Tài chính, SO/PO & Kho',
+            href: '/erp/finance',
+            icon: DollarSign,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_finance_inventory',
+          },
+          {
+            name: 'Tài liệu Cloud OCR',
+            href: '/erp/cloud-files',
+            icon: FileCheck2,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'erp_cloud_ocr',
+          }
+        );
+
+        if (educationAddon) {
+          items.push({
+            name: 'Đào tạo & Học vụ',
+            href: '/erp/education',
+            icon: GraduationCap,
+            section: 'Quản trị ERP PROMAX',
+            moduleKey: 'education_addon',
+          });
+        }
+      }
+
+      // System & Connect section
+      items.push({
+        name: 'Tích hợp Webhook & Bot',
+        href: '/integrations',
+        icon: Link2,
+        section: 'Cài đặt hệ thống',
+        moduleKey: 'integrations_autodata',
+        adminOnly: true,
       });
-      items = expanded;
+
+      if (hasModule('integrations_marketing')) {
+        items.push({
+          name: 'Kênh gửi SES / ZNS / SDK',
+          href: '/marketing-connect',
+          icon: ShieldCheck,
+          section: 'Cài đặt hệ thống',
+          moduleKey: 'integrations_marketing',
+          adminOnly: true,
+        });
+      }
+
+      items.push(
+        {
+          name: 'Quản lý Tài khoản',
+          href: '/accounts',
+          icon: ShieldCheck,
+          section: 'Cài đặt hệ thống',
+          moduleKey: 'org_rbac',
+          superAdminOnly: true,
+        },
+        {
+          name: 'Cài đặt hệ thống',
+          href: '/settings',
+          icon: Settings,
+          section: 'Cài đặt hệ thống',
+          moduleKey: 'settings',
+          adminOnly: true,
+        }
+      );
     }
 
-    const filteredItems = items.filter((item: SidebarItem) => canAccessRoutePath(item.href, gateApi));
-    return { ...group, items: filteredItems };
-  }).filter(group => group.items.length > 0);
+    return items.filter((item) => {
+      if (!hasModule(item.moduleKey)) return false;
+      if (!can(item.moduleKey, 'view')) return false;
+      if (item.superAdminOnly && user?.role !== 'superadmin') return false;
+      if (item.adminOnly && user?.role !== 'admin' && user?.role !== 'superadmin') return false;
+      return true;
+    });
+  }, [packageCode, terminology.customerLabel, terminology.consultantLabel, terminology.projectLabel, educationAddon, hasModule, can, user?.role]);
 
-  const effectiveCollapsed = isCollapsed && !isMobileOpen;
+  const rawBrandLogo =
+    typeof tenantSettings?.brand_logo_url === 'string' && tenantSettings.brand_logo_url.trim()
+      ? tenantSettings.brand_logo_url.trim()
+      : '';
+  const showCustomLogo = Boolean(rawBrandLogo && rawBrandLogo !== logoErrorUrl);
+
+  const handlePrimaryQuickAction = () => {
+    if (packageCode === 'marketing_standalone') {
+      navigate('/audiences');
+    } else {
+      window.dispatchEvent(new CustomEvent('open-quick-add-lead'));
+    }
+    if (onMobileClose) onMobileClose();
+  };
+
+  const quickButtonLabel =
+    packageCode === 'marketing_standalone'
+      ? `Tạo Tệp / ${terminology.customerLabel}`
+      : t('Thêm Data Nhanh');
 
   return (
     <>
-      {isMobileOpen && (
-        <div
-          className="responsive-sidebar-overlay"
-          onClick={onMobileClose}
-        />
-      )}
+      {isMobileOpen && <div className="responsive-sidebar-overlay" onClick={onMobileClose} />}
       <aside
         className={`responsive-sidebar ${isMobileOpen ? 'responsive-sidebar-open' : ''}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={{
-          width: effectiveCollapsed ? 60 : 220,
-          background: 'radial-gradient(ellipse at 15% 0%, rgba(30, 64, 255, 0.08) 0%, transparent 50%), linear-gradient(180deg, #100d0e 0%, #0b090a 40%, #070708 100%)',
-          color: '#e2e8f0',
+          width: isCollapsed ? 72 : 260,
+          background: 'var(--sidebar-bg, linear-gradient(180deg, #FFFFFF 0%, #F8FAFF 50%, #F1F5F9 100%))',
+          color: 'var(--color-text)',
           display: 'flex',
           flexDirection: 'column',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           flexShrink: 0,
           position: 'relative',
           zIndex: 50,
-          borderRight: '1px solid rgba(255, 255, 255, 0.06)',
-          boxShadow: '4px 0 24px rgba(0, 0, 0, 0.35)',
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)'
+          borderRight: '1px solid var(--color-border)',
+          boxShadow: '4px 0 20px rgba(30, 64, 255, 0.04)',
         }}
       >
         {/* Logo Area */}
-        <div 
-          onClick={() => {
-            window.dispatchEvent(new CustomEvent('open-quick-menu'));
-          }}
+        <div
           style={{
-            height: 72,
+            height: 86,
             display: 'flex',
             alignItems: 'center',
-            padding: effectiveCollapsed ? '12px 0 0 0' : '12px 1rem 0 1rem',
-            gap: '0.75rem',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+            justifyContent: 'center',
+            padding: isCollapsed ? '16px 0' : '14px 1.25rem',
+            borderBottom: '1px solid var(--color-border-light)',
             flexShrink: 0,
-            justifyContent: effectiveCollapsed ? 'center' : 'flex-start',
             overflow: 'hidden',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease'
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.04)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.backgroundColor = 'transparent';
+            background: 'var(--sidebar-bg)',
           }}
         >
-          {/* Logo Icon */}
-          <div style={{
-            width: 36, height: 36,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-            overflow: 'hidden'
-          }}>
-            <img src={tenantConfig?.organization?.logo_url || '/LOGO.webp'} style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              alt="logo" />
-          </div>
-
-          {!effectiveCollapsed && (
-            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', flex: 1 }}>
-              <span style={{ fontSize: '1.15rem', fontWeight: 900, whiteSpace: 'nowrap', color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1.05 }}>
-                DOMATION
-              </span>
-              <span style={{
-                fontSize: '0.55rem',
-                fontWeight: 800,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: '#60A5FA',
-                marginTop: '3px',
-                whiteSpace: 'nowrap'
-              }}>
-                {packageCode === 'autodata_crm' ? '/ AUTO DATA CRM' : '/ DATA & ERP SUITE'}
-              </span>
+          {isCollapsed ? (
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: '14px',
+                background: 'var(--color-surface)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 2px 8px rgba(30, 64, 255, 0.14)',
+                overflow: 'hidden',
+                border: '1.5px solid var(--color-border)',
+                padding: '4px',
+              }}
+            >
+              {showCustomLogo ? (
+                <img
+                  src={rawBrandLogo}
+                  alt={companyName}
+                  onError={() => setLogoErrorUrl(rawBrandLogo)}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              ) : (
+                <DomationLogoMark size={30} />
+              )}
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                width: '100%',
+                minWidth: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: '12px',
+                  background: 'var(--color-surface)',
+                  border: '1px solid var(--color-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 12px rgba(30, 64, 255, 0.14)',
+                  overflow: 'hidden',
+                  padding: 4,
+                }}
+              >
+                {showCustomLogo ? (
+                  <img
+                    src={rawBrandLogo}
+                    alt={companyName}
+                    onError={() => setLogoErrorUrl(rawBrandLogo)}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
+                ) : (
+                  <DomationLogoMark size={30} />
+                )}
+              </div>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div
+                  style={{
+                    fontSize: '0.92rem',
+                    fontWeight: 800,
+                    color: 'var(--color-text)',
+                    lineHeight: 1.2,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {companyName || 'DOMATION Workspace'}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3 }}>
+                  <span
+                    style={{
+                      fontSize: '0.61rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.04em',
+                      color: '#1E40FF',
+                      background: 'rgba(30, 64, 255, 0.10)',
+                      padding: '1px 7px',
+                      borderRadius: 9999,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                    title={packageMeta.name}
+                  >
+                    {packageMeta.shortName}
+                  </span>
+                  {tenantSlug && (
+                    <span
+                      style={{
+                        fontSize: '0.6rem',
+                        fontWeight: 700,
+                        color: 'var(--color-text-muted)',
+                      }}
+                    >
+                      /{tenantSlug}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Quick Action Button */}
-        {(can('leads', 'create') || isTenantOwner) && (
-          <div style={{ padding: effectiveCollapsed ? '0.5rem 0.25rem' : '0.875rem 0.75rem', display: 'flex', justifyContent: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            {effectiveCollapsed ? (
-              <AnimateIcon animateOnHover asChild>
-                <button
-                  onClick={() => {
-                    window.dispatchEvent(new CustomEvent('open-quick-add-lead'));
-                    if (onMobileClose) onMobileClose();
-                  }}
-                  style={{
-                    width: 32, height: 32, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #1E40FF 0%, #1D4ED8 60%, #1E3A8A 100%)',
-                    color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', boxShadow: '0 2px 8px rgba(30, 64, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)', transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(30, 64, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
-                  }}
-                  title={t("Thêm data nhanh")}
-                >
-                  <Plus size={16} />
-                </button>
-              </AnimateIcon>
-            ) : (
-              <AnimateIcon animateOnHover asChild>
-                <button
-                  onClick={() => {
-                    window.dispatchEvent(new CustomEvent('open-quick-add-lead'));
-                    if (onMobileClose) onMobileClose();
-                  }}
-                  className="btn primary"
-                  style={{
-                    width: '100%', height: 34, borderRadius: '8px',
-                    background: 'linear-gradient(135deg, #1E40FF 0%, #1D4ED8 60%, #1E3A8A 100%)',
-                    color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    gap: 6, fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(30, 64, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)', transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(30, 64, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(30, 64, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
-                  }}
-                >
-                  <Plus size={14} /> {t("Thêm data nhanh")}
-                </button>
-              </AnimateIcon>
-            )}
-          </div>
-        )}
-
-        {/* Collapse Button */}
-        <AnimateIcon animateOnHover asChild>
-          <button
-            onClick={onToggleCollapse}
-            className="responsive-hide-mobile no-active-scale"
-            style={{
-              position: 'absolute', right: -12, top: '50%', transform: 'translateY(-50%)',
-              width: 24, height: 24, borderRadius: '50%', background: 'var(--color-primary, #1E40FF)', color: '#ffffff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', zIndex: 200, border: '1px solid rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 2px 10px rgba(30, 64, 255, 0.45)', transition: 'all 0.2s',
-              opacity: isHovered ? 1 : 0,
-              visibility: isHovered ? 'visible' : 'hidden',
-              pointerEvents: isHovered ? 'auto' : 'none'
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-            }}
-          >
-            <ChevronLeft size={14} style={{ transform: effectiveCollapsed ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }} />
-          </button>
-        </AnimateIcon>
-
-        {/* Nav */}
         <div
-          ref={navContainerRef}
-          className="sidebar-nav-container"
           style={{
-            flex: 1,
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            scrollbarWidth: 'none',
-            scrollBehavior: 'smooth'
+            padding: isCollapsed ? '0.75rem 0.5rem' : '1.05rem 1rem',
+            display: 'flex',
+            justifyContent: 'center',
+            borderBottom: '1px solid var(--color-border-light)',
           }}
         >
-          <div style={{ position: 'relative', padding: '1rem 0', display: 'flex', flexDirection: 'column' }}>
+          {user?.role === 'sale' ? null : isCollapsed ? (
+            <button
+              type="button"
+              onClick={handlePrimaryQuickAction}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #60A5FA 0%, #1E40FF 55%, #1D4ED8 100%)',
+                color: 'white',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(37, 99, 235, 0.28)',
+                transition: 'all 0.2s',
+              }}
+              title={quickButtonLabel}
+            >
+              <Plus size={20} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handlePrimaryQuickAction}
+              style={{
+                width: '100%',
+                height: 42,
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #60A5FA 0%, #1E40FF 55%, #1D4ED8 100%)',
+                color: 'white',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                fontSize: '0.88rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(37, 99, 235, 0.28)',
+                transition: 'all 0.2s',
+              }}
+            >
+              <Plus size={17} /> {quickButtonLabel}
+            </button>
+          )}
+        </div>
 
-            {visibleGroups.map((group, groupIdx) => (
-              <div key={groupIdx} style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: effectiveCollapsed ? '0.375rem' : '0.875rem' }}>
-                {!effectiveCollapsed && (
-                  <span style={{
-                    fontSize: '0.65rem',
-                    fontWeight: 800,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    color: 'rgba(255, 255, 255, 0.35)',
-                    padding: '0.375rem 1rem',
-                    whiteSpace: 'nowrap',
-                    display: 'block'
-                  }}>
-                    {t(group.title)}
-                  </span>
-                )}
-                 {group.items.map(({ name, href, icon: Icon, iconKey, end, badgeKey }) => {
-                   const badgeCount = badgeKey === 'tickets' ? pendingTickets : badgeKey === 'supportTickets' ? supportTicketsCount : badgeKey === 'gatekeeper' ? heldLeadsCount : badgeKey === 'coopSlips' ? pendingCoopCount : badgeKey === 'pendingExpenses' ? pendingExpensesCount : badgeKey === 'pendingDeposits' ? pendingDepositsCount : badgeKey === 'pendingApprovals' ? pendingApprovalsCount : badgeKey === 'workspaceTasks' ? undoneTasksCount : badgeKey === 'nopHoSo' ? nopHoSoCount : badgeKey === 'lePhi' ? lePhiCount : (badgeKey && typeof dynamicStudentBadges[badgeKey] === 'number' ? dynamicStudentBadges[badgeKey] : 0);
-                   const effectiveHref = href;
-                   const checkIsActive = (locationPath: string, locationSearch: string, itemHref: string) => {
-                     const qIdx = itemHref.indexOf('?');
-                     if (qIdx !== -1) {
-                       const itemPath = itemHref.substring(0, qIdx);
-                       if (locationPath !== itemPath) return false;
-                       const itemParams = new URLSearchParams(itemHref.substring(qIdx));
-                       const locParams = new URLSearchParams(locationSearch);
-                       let match = true;
-                       itemParams.forEach((val, key) => {
-                         if (locParams.get(key) !== val) match = false;
-                       });
-                       return match;
-                     } else {
-                       if (locationPath !== itemHref) return false;
-                       const locParams = new URLSearchParams(locationSearch);
-                       if (locParams.get('tab')) return false;
-                       return true;
-                     }
-                   };
-                   const isActive = checkIsActive(location.pathname, location.search, effectiveHref);
-                  const displayName = t(name);
+        {/* Collapse Button */}
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          className="responsive-hide-mobile"
+          style={{
+            position: 'absolute',
+            right: -12,
+            top: 36,
+            transform: 'translateY(-50%)',
+            width: 24,
+            height: 24,
+            borderRadius: '50%',
+            background: '#FFFFFF',
+            color: '#1E3A8A',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            zIndex: 200,
+            border: '1px solid #CBD5E1',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            transition: 'all 0.2s',
+            opacity: isHovered || isCollapsed ? 1 : 0,
+            visibility: isHovered || isCollapsed ? 'visible' : 'hidden',
+            pointerEvents: isHovered || isCollapsed ? 'auto' : 'none',
+          }}
+        >
+          <ChevronLeft
+            size={14}
+            style={{
+              transform: isCollapsed ? 'rotate(180deg)' : 'none',
+              transition: 'transform 0.3s',
+            }}
+          />
+        </button>
 
-                  return (
-                    <NavLink
-                      key={name + href}
-                      to={effectiveHref}
-                      end={end}
-                      id={isActive ? 'sidebar-active-item' : undefined}
-                      data-active={isActive ? 'true' : 'false'}
-                      className={() => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-                      title={effectiveCollapsed ? displayName : undefined}
-                      onMouseEnter={() => prefetchRoute(effectiveHref)}
-                      onTouchStart={() => prefetchRoute(effectiveHref)}
-                      onFocus={() => prefetchRoute(effectiveHref)}
-                      onClick={(e) => {
-                        const targetPath = href.split('?')[0];
-                        if (location.pathname === targetPath) {
-                          window.dispatchEvent(new CustomEvent('refresh-page', { detail: { path: targetPath } }));
-                        }
-                        if (onMobileClose) onMobileClose();
-                        setTimeout(() => scrollToActiveItem('smooth'), 50);
-                      }}
+        {/* Navigation List */}
+        <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', scrollbarWidth: 'none' }}>
+          <div
+            ref={navContainerRef}
+            style={{ position: 'relative', padding: '0.75rem 0 1.25rem 0', display: 'flex', flexDirection: 'column' }}
+          >
+            {sliderStyle.height > 0 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: 4,
+                  height: sliderStyle.height,
+                  background: 'linear-gradient(180deg, #3B82F6 0%, #0284C7 100%)',
+                  boxShadow: '2px 0 6px rgba(2, 132, 199, 0.28)',
+                  transition:
+                    'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), height 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transform: `translateY(${sliderStyle.top}px)`,
+                  borderRadius: '0 2px 2px 0',
+                  pointerEvents: 'none',
+                  zIndex: 10,
+                }}
+              />
+            )}
+
+            {navItems.map((item, idx) => {
+              const Icon = item.icon;
+              const prevSection = idx > 0 ? navItems[idx - 1]?.section : '';
+              const showSectionHeader = !isCollapsed && item.section !== prevSection;
+              const badgeCount =
+                item.badgeKey === 'tickets'
+                  ? pendingTickets
+                  : item.badgeKey === 'gatekeeper'
+                  ? heldLeadsCount
+                  : 0;
+
+              return (
+                <Fragment key={item.href}>
+                  {showSectionHeader && (
+                    <span
                       style={{
-                        display: 'flex', alignItems: 'center', gap: '0.75rem',
-                        padding: effectiveCollapsed ? '0.5rem 0' : '0.45rem 1rem',
-                        justifyContent: effectiveCollapsed ? 'center' : 'flex-start',
-                        color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.65)',
-                        textDecoration: 'none', fontSize: '0.825rem',
-                        fontWeight: isActive ? 700 : 500, transition: 'all 0.2s ease',
-                        position: 'relative',
-                        background: isActive ? 'linear-gradient(90deg, rgba(30, 64, 255, 0.16) 0%, rgba(30, 64, 255, 0.03) 100%)' : 'transparent',
-                        whiteSpace: 'nowrap', overflow: 'hidden',
+                        fontSize: '0.64rem',
+                        fontWeight: 800,
+                        letterSpacing: '0.09em',
+                        textTransform: 'uppercase',
+                        color: '#64748B',
+                        padding: idx === 0 ? '0.35rem 1.35rem' : '1.05rem 1.35rem 0.35rem 1.35rem',
+                        whiteSpace: 'nowrap',
+                        display: 'block',
                       }}
                     >
-                      {() => (
-                        <AnimateIcon
-                          animateOnHover
+                      {t(item.section)}
+                    </span>
+                  )}
+
+                  <NavLink
+                    to={item.href}
+                    end={item.end}
+                    className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
+                    title={isCollapsed ? t(item.name) : undefined}
+                    onClick={(e) => {
+                      if (location.pathname === item.href) {
+                        e.preventDefault();
+                        return;
+                      }
+                      if (onMobileClose) onMobileClose();
+                    }}
+                    style={({ isActive }) => ({
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      padding: isCollapsed ? '0.65rem 0' : '0.62rem 1.25rem',
+                      justifyContent: isCollapsed ? 'center' : 'flex-start',
+                      color: isActive ? 'var(--color-primary)' : 'var(--color-text-light)',
+                      textDecoration: 'none',
+                      fontSize: '0.88rem',
+                      fontWeight: isActive ? 700 : 600,
+                      transition: 'all 0.2s ease',
+                      position: 'relative',
+                      background: isActive
+                        ? 'linear-gradient(90deg, rgba(30, 64, 255, 0.14) 0%, rgba(30, 64, 255, 0.02) 100%)'
+                        : 'transparent',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                    })}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <div
                           style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: 10,
+                            background: isActive
+                              ? 'linear-gradient(135deg, #3B82F6 0%, #0284C7 100%)'
+                              : 'var(--color-surface)',
+                            border: isActive ? 'none' : '1px solid var(--color-border)',
+                            boxShadow: isActive
+                              ? '0 3px 8px rgba(2, 132, 199, 0.25)'
+                              : '0 1px 2px rgba(0, 0, 0, 0.03)',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.75rem',
-                            width: '100%',
-                            justifyContent: effectiveCollapsed ? 'center' : 'flex-start',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            transition: 'all 0.2s',
+                            position: 'relative',
                           }}
                         >
-                          {isActive && (
-                            <div style={{
-                              position: 'absolute',
-                              left: 0,
-                              top: 0,
-                              bottom: 0,
-                              width: 3,
-                              background: '#1E40FF',
-                              borderRadius: '0 2px 2px 0',
-                              zIndex: 10
-                            }} />
+                          <Icon size={17} color={isActive ? '#FFFFFF' : 'var(--color-text-muted)'} />
+                          {isCollapsed && badgeCount > 0 && (
+                            <div
+                              style={{
+                                position: 'absolute',
+                                top: 3,
+                                right: 3,
+                                width: 8,
+                                height: 8,
+                                borderRadius: '50%',
+                                background: item.badgeKey === 'gatekeeper' ? '#f59e0b' : '#ef4444',
+                              }}
+                            />
                           )}
-                          {/* Icon Box — Minimalist Executive Luxury (Monochrome Slate + Brand Crimson Active) */}
-                          <div style={{
-                            width: 28, height: 28,
-                            borderRadius: '7px',
-                            background: isActive ? '#1E40FF' : 'rgba(255, 255, 255, 0.05)',
-                            border: isActive ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.06)',
-                            color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.75)',
-                            boxShadow: isActive ? '0 2px 8px rgba(30, 64, 255, 0.35)' : 'none',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            flexShrink: 0, transition: 'all 0.2s cubic-bezier(0.22, 1, 0.36, 1)', position: 'relative'
-                          }}>
-                            {Icon ? <Icon size={16} /> : <AnimatedAppIcon name={iconKey || name} size={18} />}
-                            {effectiveCollapsed && badgeCount > 0 && (
-                              <div style={{
-                                position: 'absolute', top: -2, right: -2, width: 8, height: 8,
-                                borderRadius: '50%', background: '#1E40FF',
-                                boxShadow: '0 0 0 1.5px #140e11'
-                              }} />
-                            )}
-                          </div>
+                        </div>
 
-                          {!effectiveCollapsed && (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
-                              <span>{displayName}</span>
-                              {badgeCount > 0 && (
-                                <span style={{
-                                  fontSize: '0.65rem',
-                                  minWidth: '15px',
-                                  height: '15px',
-                                  borderRadius: '8px',
+                        {!isCollapsed && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              flex: 1,
+                              minWidth: 0,
+                            }}
+                          >
+                            <span
+                              style={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              {t(item.name)}
+                            </span>
+                            {badgeCount > 0 && (
+                              <span
+                                style={{
+                                  fontSize: '0.68rem',
+                                  minWidth: '18px',
+                                  height: '18px',
+                                  borderRadius: '9px',
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
                                   padding: badgeCount > 9 ? '0 5px' : '0',
-                                  background: '#1E40FF',
+                                  background: item.badgeKey === 'gatekeeper' ? '#f59e0b' : '#ef4444',
                                   color: 'white',
                                   fontWeight: 700,
-                                  lineHeight: 1
-                                }}>
-                                  {badgeCount}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </AnimateIcon>
-                      )}
-                    </NavLink>
-                  );
-                })}
-              </div>
-            ))}
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {badgeCount}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </NavLink>
+                </Fragment>
+              );
+            })}
           </div>
         </div>
-
-
-
-        {/* Pulse animation and scroll styling */}
-        <style>{`
-          @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
-          .sidebar-nav-container {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            scroll-behavior: smooth;
-          }
-          .sidebar-nav-container::-webkit-scrollbar {
-            display: none;
-          }
-          .sidebar-nav-item {
-            scroll-margin: 50px 0;
-          }
-          .sidebar-nav-item:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.07) !important;
-            color: #ffffff !important;
-          }
-        `}</style>
       </aside>
     </>
   );

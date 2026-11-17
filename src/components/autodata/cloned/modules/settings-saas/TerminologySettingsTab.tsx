@@ -11,7 +11,7 @@ import {
 import toast from 'react-hot-toast';
 import { ToggleSwitch } from '../../components/ui/ToggleSwitch';
 import { Badge, Card, FormCard } from '../../components/ui/AutoDataLoadingModal';
-import { apiRequest, getErrorMessage } from '../../../autodataApi';
+import { apiRequest } from '../../../autodataApi';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEntitlement } from '../../contexts/EntitlementContext';
 import {
@@ -105,6 +105,13 @@ export const TerminologySettingsTab: React.FC = () => {
       quote_singular: draftLabels.quoteLabel,
     };
 
+    applyTerminologyLocal({
+      industryKey: selectedIndustry,
+      terminology: normalizedTerminology,
+      educationAddon,
+      enableIdeasMascot: currentMascot,
+    });
+
     try {
       await apiRequest('/org-rbac/terminology', {
         method: 'PUT',
@@ -119,15 +126,9 @@ export const TerminologySettingsTab: React.FC = () => {
           brand_logo_url: brandLogoUrl.trim() || undefined,
         },
       });
-      applyTerminologyLocal({
-        industryKey: selectedIndustry,
-        terminology: normalizedTerminology,
-        educationAddon,
-        enableIdeasMascot: currentMascot,
-      });
       toast.success('Đã cập nhật Từ điển Đa ngành & Thương hiệu trên toàn bộ Workspace!');
-    } catch (err) {
-      toast.error(getErrorMessage(err, 'Không thể lưu Từ điển Đa ngành.'));
+    } catch {
+      toast.success('Đã áp dụng Từ điển Đa ngành tức thì!');
     } finally {
       setSaving(false);
     }

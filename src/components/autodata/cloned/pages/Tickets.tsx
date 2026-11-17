@@ -1,29 +1,25 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { AlertCircle, Users, User, CheckCircle, Ticket as TicketIcon, RefreshCw, Zap, Filter, Settings2, Save, Bell, ChevronLeft, ChevronRight, ExternalLink, AlertTriangle, Phone, Mail, Clock, Tag, CheckCircle2, XCircle, ShieldAlert, Database, Plus, Trash2, Edit2, Sparkles, Check, X, Edit, Copy, BarChart2, Scale, Calendar, Info, ArrowRight, Ban, UserPlus, Send } from 'lucide-react';
+import { AlertCircle, Users, User, CheckCircle, Ticket as TicketIcon, RefreshCw, Zap, Filter, Settings2, Save, Bell, ChevronLeft, ChevronRight, ExternalLink, AlertTriangle, Phone, Mail, Clock, Tag, CheckCircle2, XCircle, ShieldAlert, Database, Plus, Trash2, Edit2, Sparkles, Check, X, Edit, Copy, BarChart2, Scale, Calendar, Info, ArrowRight } from 'lucide-react';
 import {
   Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, LabelList
 } from 'recharts';
 import toast from 'react-hot-toast';
-import { useUIStore } from '../store/uiStore';
-import { fetchAPI, getDefaultDateFilter } from '../utils/api';
+import { fetchAPI, normalizeNotificationStatus, getDefaultDateFilter, normalizeGlobalDateFilter, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
 import { TableSkeleton, KpiCardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
 import { Avatar } from '../components/ui/Avatar';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
-import { EmptyCard } from '../components/ui/EmptyCard';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { VietnameseDateInput } from '../components/ui/VietnameseDateInput';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import { detectCountryFromPhone } from '../utils/phoneHelper';
 import { NotificationPreviewModal } from '../components/ui/NotificationPreviewModal';
-import { isMarketing } from '../utils/roleUtils';
+import { ScreenHelpButton } from '../components/ui/ScreenHelpButton';
 import { useNavigate } from 'react-router-dom';
-import { getLocalDateStr } from '../utils/dateUtils';
 
 type Lead = {
   id: number;
@@ -230,20 +226,9 @@ const parseBlacklistNote = (note: string) => {
 const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any }) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { showConfirm } = useUIStore();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
   });
-
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -258,13 +243,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const saleFilter = searchParams.get('consultant') || '';
 
   const [dateFilter, setDateFilter] = useState(() => {
-    return localStorage.getItem('Ideas_global_date') || getDefaultDateFilter();
+    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
   });
 
   const handleUpdateDateFilter = (val: string) => {
-    setDateFilter(val);
-    localStorage.setItem('Ideas_global_date', val);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: val }));
+    const norm = normalizeGlobalDateFilter(val);
+    setDateFilter(norm);
+    localStorage.setItem('domation_global_date', norm);
+    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
   };
 
   const currentPage = Number(searchParams.get('page') || '1');
@@ -313,41 +299,20 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
     } else if (filter === 'Tháng trước') {
       mode = 'last_month';
     } else if (filter === 'Tuần này') {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-      const monday = new Date(now);
-      monday.setDate(now.getDate() + distanceToMonday);
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-
+      const range = getWeekRangeVN(0);
       mode = 'custom';
-      start = getLocalDateStr(monday);
-      end = getLocalDateStr(sunday);
+      start = range.start;
+      end = range.end;
     } else if (filter === 'Tuần trước') {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-      const prevMonday = new Date(now);
-      prevMonday.setDate(now.getDate() + distanceToMonday - 7);
-      const prevSunday = new Date(prevMonday);
-      prevSunday.setDate(prevMonday.getDate() + 6);
-
+      const range = getWeekRangeVN(1);
       mode = 'custom';
-      start = getLocalDateStr(prevMonday);
-      end = getLocalDateStr(prevSunday);
+      start = range.start;
+      end = range.end;
     } else if (filter === 'Tuần trước nữa') {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-      const prev2Monday = new Date(now);
-      prev2Monday.setDate(now.getDate() + distanceToMonday - 14);
-      const prev2Sunday = new Date(prev2Monday);
-      prev2Sunday.setDate(prev2Monday.getDate() + 6);
-
+      const range = getWeekRangeVN(2);
       mode = 'custom';
-      start = getLocalDateStr(prev2Monday);
-      end = getLocalDateStr(prev2Sunday);
+      start = range.start;
+      end = range.end;
     } else {
       const match = filter.match(/^(\d{4}-\d{2}-\d{2})\s*(?:đến|đên|den|to|-)\s*(\d{4}-\d{2}-\d{2})$/i);
       if (match) {
@@ -413,8 +378,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const [ruleConnections, setRuleConnections] = useState<any[]>(['all']);
   const [ruleKeywords, setRuleKeywords] = useState('');
 
-  const { user } = useAuth();
-  const isUserAdmin = user && (['admin', 'superadmin', 'super_admin', 'manager', 'director'].includes(user.role) || isMarketing(user));
+  const { user, tenantSettings } = useAuth();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [notificationStatus, setNotificationStatus] = useState<any>(null);
   const [notifLoading, setNotifLoading] = useState(false);
@@ -447,6 +411,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   };
 
   const handleCopyFullInfo = (lead: Lead) => {
+    const isUserAdmin = (user?.role === 'admin' || user?.role === 'superadmin');
     const displayPhone = isUserAdmin ? lead.phone : maskPhone(lead.phone);
     const displayEmail = isUserAdmin ? lead.email : maskEmail(lead.email);
     const text = [
@@ -460,18 +425,21 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
     handleCopyText(text, t('Đã sao chép toàn bộ thông tin khách hàng!'), 'full');
   };
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
-  const [reminderChannels, setReminderChannels] = useState({ zalo: true, email: true, telegram: true });
+  const [reminderChannels, setReminderChannels] = useState({ zalo: true, email: true });
   const [isSendingReminder, setIsSendingReminder] = useState(false);
 
   const fetchNotificationStatus = async (leadId: number) => {
     setNotifLoading(true);
     try {
       const json = await fetchAPI(`get_lead_notification_status&lead_id=${leadId}`);
-      if (json.success) {
-        setNotificationStatus(json.data);
+      if (json && json.success) {
+        setNotificationStatus(normalizeNotificationStatus(json.data));
+      } else {
+        setNotificationStatus(null);
       }
     } catch (err) {
       console.error("Lỗi lấy trạng thái thông báo:", err);
+      setNotificationStatus(null);
     } finally {
       setNotifLoading(false);
     }
@@ -506,8 +474,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         body: JSON.stringify({
           lead_id: selectedLead.lead_id || selectedLead.id,
           send_zalo: reminderChannels.zalo,
-          send_email: reminderChannels.email,
-          send_telegram: reminderChannels.telegram
+          send_email: reminderChannels.email
         })
       });
       if (res.success) {
@@ -574,7 +541,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const [compensateBlock, setCompensateBlock] = useState<boolean>(false);
   const [isBlocking, setIsBlocking] = useState<boolean>(false);
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = Math.max(10, Math.min(200, Number(tenantSettings?.default_table_page_size || 50)));
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
   const isTicketLead = selectedLead?.status === 'error' || selectedLead?.report_status === 'approved' || selectedLead?.report_status === 'pending';
 
@@ -583,7 +550,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       handleUpdateDateFilter(value);
       return;
     }
-    setSearchParams((prev: any) => {
+    setSearchParams((prev: URLSearchParams) => {
       const next = new URLSearchParams(prev);
       if (value === '' || (key !== 'status' && value === 'all')) next.delete(key);
       else next.set(key, value);
@@ -644,8 +611,8 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       if (dateFilter && dateFilter !== 'all') queryParams.set('date', dateFilter);
 
       const res = await fetchAPI(`get_reports&${queryParams.toString()}`);
-      if (res.success) {
-        setReports(Array.isArray(res.data) ? res.data : []);
+      if (res && res.success) {
+        setReports(Array.isArray(res?.data) ? res.data : []);
         setTotalCount(res.total_count ?? 0);
         if (res.stats) {
           setStats(res.stats);
@@ -653,7 +620,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
             updateParams('status', 'all');
           }
         }
-        if (Array.isArray(res.consultants)) setConsultantOptions(res.consultants);
+        if (res.consultants) setConsultantOptions(res.consultants);
       }
     } catch (e: any) {
       toast.error(t('Lỗi tải ticket: ') + e.message);
@@ -669,9 +636,12 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
   useEffect(() => {
     if (isActive) {
-      const saved = localStorage.getItem('Ideas_global_date');
-      if (saved && saved !== dateFilter) {
-        setDateFilter(saved);
+      const rawSaved = localStorage.getItem('domation_global_date');
+      if (rawSaved) {
+        const saved = normalizeGlobalDateFilter(rawSaved);
+        if (saved !== dateFilter) {
+          setDateFilter(saved);
+        }
       }
     }
   }, [isActive]);
@@ -679,7 +649,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   useEffect(() => {
     if (!isActive) return;
     const handleGlobalDate = (e: any) => {
-      const newDate = e.detail;
+      const newDate = normalizeGlobalDateFilter(e.detail);
       if (newDate && newDate !== dateFilter) {
         setDateFilter(newDate);
       }
@@ -707,7 +677,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
     fetchAPI('get_consultants')
       .then(res => {
-        if (res.success && Array.isArray(res.data)) {
+        if (res.success && res.data) {
           setAllConsultants(res.data);
         }
       })
@@ -715,7 +685,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
     fetchAPI('get_accounts')
       .then(res => {
-        if (res.success && Array.isArray(res.data)) {
+        if (res.success && res.data) {
           setAllAccounts(res.data);
         }
       })
@@ -723,7 +693,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
     fetchAPI('get_rounds')
       .then(res => {
-        if (res.success && Array.isArray(res.data)) {
+        if (res.success && res.data) {
           setRounds(res.data);
         }
       })
@@ -731,7 +701,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
     fetchAPI('get_connections')
       .then(res => {
-        if (res.success && Array.isArray(res.data)) {
+        if (res.success && res.data) {
           setConnections(res.data);
         }
       })
@@ -741,9 +711,9 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const getUserAvatarByName = (name: string) => {
     if (!name || name === 'Hệ thống') return undefined;
     const acc = allAccounts.find(a => (a.name || a.username) === name);
-    if (acc?.avatar || acc?.avatar_url) return acc.avatar || acc.avatar_url;
+    if (acc?.avatar) return acc.avatar;
     const cons = allConsultants.find(c => c.name === name);
-    if (cons?.avatar || cons?.avatar_url) return cons.avatar || cons.avatar_url;
+    if (cons?.avatar) return cons.avatar;
     return undefined;
   };
 
@@ -779,7 +749,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         body: JSON.stringify({
           id: approvingId,
           approval_reason: approveReason,
-          new_consultant_id: reassignConsultantId ? Number(reassignConsultantId) : null,
+          new_consultant_id: reassignConsultantId ? String(reassignConsultantId) : null,
           no_compensation: noComp
         })
       });
@@ -798,34 +768,26 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
   const [isCompensatingNoComp, setIsCompensatingNoComp] = useState(false);
 
-  const handleCompensateNoComp = (reportId: number) => {
-    showConfirm({
-      title: t('Đền bù lỗi cho Ticket'),
-      message: t('Bạn có chắc chắn muốn thực hiện bù lỗi cho ticket này không? Hệ thống sẽ cộng 1 lượt đền bù cho Sale và chuyển trạng thái log phân bổ sang lỗi.'),
-      confirmText: t('Đền bù'),
-      cancelText: t('Hủy'),
-      isDanger: true,
-      onConfirm: async () => {
-        setIsCompensatingNoComp(true);
-        try {
-          const res = await fetchAPI('compensate_approved_no_comp', {
-            method: 'POST',
-            body: JSON.stringify({ id: reportId })
-          });
-          if (res.success) {
-            toast.success(t('Đã thực hiện bù lỗi thành công!'));
-            setSelectedLead(null);
-            fetchReports();
-          } else {
-            toast.error(res.message || t('Có lỗi xảy ra'));
-          }
-        } catch (e: any) {
-          toast.error(t('Lỗi: ') + e.message);
-        } finally {
-          setIsCompensatingNoComp(false);
-        }
+  const handleCompensateNoComp = async (reportId: number) => {
+    if (!window.confirm(t("Bạn có chắc chắn muốn thực hiện bù lỗi cho ticket này không? Hệ thống sẽ cộng 1 lượt đền bù cho Sale và chuyển trạng thái log phân bổ sang lỗi."))) return;
+    setIsCompensatingNoComp(true);
+    try {
+      const res = await fetchAPI('compensate_approved_no_comp', {
+        method: 'POST',
+        body: JSON.stringify({ id: reportId })
+      });
+      if (res.success) {
+        toast.success(t('Đã thực hiện bù lỗi thành công!'));
+        setSelectedLead(null);
+        fetchReports();
+      } else {
+        toast.error(res.message || t('Có lỗi xảy ra'));
       }
-    });
+    } catch (e: any) {
+      toast.error(t('Lỗi: ') + e.message);
+    } finally {
+      setIsCompensatingNoComp(false);
+    }
   };
 
   const openRejectModal = (id: number) => {
@@ -889,14 +851,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         method: 'POST',
         body: JSON.stringify({
           log_id: selectedLead.id,
-          new_consultant_id: Number(reassignConsId),
+          new_consultant_id: String(reassignConsId),
           compensate_old_sale: compensate
         })
       });
       if (res.success) {
         toast.success(compensate
-          ? t('Giao lại Tư vấn viên & Đền bù thành công!')
-          : t('Giao lại Tư vấn viên thành công!')
+          ? t('Giao lại Đại lý & Đền bù thành công!')
+          : t('Giao lại Đại lý thành công!')
         );
         setSelectedLead(null);
         setReassignConsId('');
@@ -949,7 +911,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const roundOptions = [
     { value: 'all', label: t('Tất cả các vòng'), icon: <Zap size={14} style={{ color: 'var(--color-primary)' }} /> },
     ...rounds.map(r => ({
-      value: Number(r.id),
+      value: String(r.id),
       label: r.round_name,
       icon: <Clock size={14} style={{ color: 'var(--color-text-muted)' }} />,
       disabled: Number(r.is_active) !== 1,
@@ -958,12 +920,11 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   ];
 
   const saleOptions = [
-    { value: 'all', label: t('Tất cả Salepersons'), icon: <Users size={14} style={{ color: 'var(--color-primary)' }} /> },
+    { value: 'all', label: t('Tất cả Đại lý'), icon: <Users size={14} style={{ color: 'var(--color-primary)' }} /> },
     ...allConsultants.map(c => ({
-      value: Number(c.id),
+      value: String(c.id),
       label: c.name + (c.status === 'leave' ? ` (${t('Nghỉ phép')})` : Number(c.vacation_mode) === 1 ? ` (${t('Tạm ngưng')})` : c.status === 'inactive' ? ` (${t('Nghỉ việc')})` : ''),
       icon: <Users size={14} style={{ color: 'var(--color-text-muted)' }} />,
-      avatar: c.avatar,
       disabled: c.status !== 'active' || Number(c.vacation_mode) === 1,
       disabledType: 'sale' as const
     }))
@@ -972,7 +933,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const connectionOptions = [
     { value: 'all', label: t('Tất cả các nguồn'), icon: <Database size={14} style={{ color: 'var(--color-primary)' }} /> },
     ...connections.map(conn => ({
-      value: Number(conn.id),
+      value: String(conn.id),
       label: conn.sheet_name,
       icon: <Database size={14} style={{ color: 'var(--color-text-muted)' }} />
     }))
@@ -1019,8 +980,9 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       {/* ── Header ── */}
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
         <div>
-          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <h1 className="page-title" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 10, margin: 0 }}>
             <TicketIcon size={28} color="var(--color-primary)" /> {t('Ticket Lỗi Data')}
+            <ScreenHelpButton screenKey="tickets" />
             <button
               onClick={() => setShowInfoModal(true)}
               style={{
@@ -1053,17 +1015,17 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
             </button>
           </h1>
           <p className="page-subtitle" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            {t('Quản lý và xét duyệt các BÁO CÁO DATA từ Tư vấn viên')}
+            {t('Quản lý và xét duyệt các BÁO CÁO DATA từ Đại lý')}
           </p>
         </div>
 
         {/* Filters right aligned on same row as title on desktop */}
-        <div className="responsive-hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div data-tour="tickets-filters" className="responsive-hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Sale filter */}
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <CustomSelect
               options={[
-                { value: '', label: t('Tất cả Saleperson'), icon: <Users size={16} /> },
+                { value: '', label: t('Tất cả Đại lý'), icon: <Users size={16} /> },
                 ...consultantOptions.map(name => {
                   const matched = allConsultants.find(c => c.name === name);
                   return {
@@ -1100,7 +1062,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           {hasActiveFilters && (
             <button onClick={() => {
               handleUpdateDateFilter(getDefaultDateFilter());
-              setSearchParams((prev: any) => {
+              setSearchParams((prev: URLSearchParams) => {
                 prev.delete('consultant');
                 prev.delete('page');
                 return prev;
@@ -1119,66 +1081,64 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           )}
 
           {/* Auto duyệt Toggle */}
-          {user?.role !== 'sale' && (
-            <div
-              onClick={() => setShowAutoApproveModal(true)}
-              title={t("Cấu hình quy tắc tự động duyệt")}
+          <div
+            onClick={() => setShowAutoApproveModal(true)}
+            title={t("Cấu hình quy tắc tự động duyệt")}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              cursor: 'pointer',
+              padding: '0 12px',
+              borderRadius: 8,
+              border: '1px solid var(--color-border)',
+              background: 'var(--color-surface)',
+              height: 38,
+              transition: 'background 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(30, 64, 255,0.05)';
+              const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
+              if (label) label.style.color = 'var(--color-primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--color-surface)';
+              const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
+              if (label) label.style.color = 'var(--color-text-muted)';
+            }}
+          >
+            <span
+              className="auto-approve-label"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                cursor: 'pointer',
-                padding: '0 12px',
-                borderRadius: 8,
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-surface)',
-                height: 38,
-                transition: 'background 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(30, 64, 255,0.05)';
-                const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
-                if (label) label.style.color = 'var(--color-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-surface)';
-                const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
-                if (label) label.style.color = 'var(--color-text-muted)';
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: 'var(--color-text-muted)',
+                transition: 'color 0.2s',
+                textDecoration: 'underline',
+                textDecorationStyle: 'dotted'
               }}
             >
-              <span
-                className="auto-approve-label"
-                style={{
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  color: 'var(--color-text-muted)',
-                  transition: 'color 0.2s',
-                  textDecoration: 'underline',
-                  textDecorationStyle: 'dotted'
-                }}
-              >
-                {t('Auto duyệt')}
-              </span>
-              <div
-                style={{
-                  width: 36, height: 20, borderRadius: 10,
-                  background: ticketAutoApprove ? 'var(--color-success)' : 'rgba(148,163,184,0.3)',
-                  position: 'relative', transition: 'background 0.2s',
-                  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
-                }}
-              >
-                <div style={{
-                  position: 'absolute', top: 3, width: 14, height: 14, borderRadius: '50%',
-                  background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                  left: ticketAutoApprove ? 19 : 3, transition: 'left 0.2s'
-                }} />
-              </div>
+              {t('Auto duyệt')}
+            </span>
+            <div
+              style={{
+                width: 36, height: 20, borderRadius: 10,
+                background: ticketAutoApprove ? 'var(--color-success)' : 'rgba(148,163,184,0.3)',
+                position: 'relative', transition: 'background 0.2s',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+              }}
+            >
+              <div style={{
+                position: 'absolute', top: 3, width: 14, height: 14, borderRadius: '50%',
+                background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                left: ticketAutoApprove ? 19 : 3, transition: 'left 0.2s'
+              }} />
             </div>
-          )}
+          </div>
         </div>
       </div>
 
-      <div className="mobile-filter-tabs hide-on-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+      <div data-tour="tickets-kpis" className="mobile-filter-tabs hide-on-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
         {FILTER_TABS.map(tab => (
           <button key={tab.key} onClick={() => updateParams('status', tab.key)} style={{ padding: '6px 14px', borderRadius: 20, fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', border: '1px solid', borderColor: activeFilter === tab.key ? tab.color : 'var(--color-border)', background: activeFilter === tab.key ? tab.bg : 'transparent', color: activeFilter === tab.key ? tab.color : 'var(--color-text-muted)', transition: 'all 0.15s' }}>
             {t(tab.label)} {`(${stats[tab.key]})`}
@@ -1308,7 +1268,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           backdropFilter: 'blur(8px)',
           boxShadow: '0 2px 12px rgba(30, 64, 255,0.06), inset 0 1px 0 rgba(255,255,255,0.8)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#1D4ED8', fontWeight: 700, fontSize: '0.8rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#1E40FF', fontWeight: 700, fontSize: '0.8rem' }}>
             <Filter size={14} />
             <span>{t('Bộ lọc')}</span>
           </div>
@@ -1319,7 +1279,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           <div className="responsive-filter-item" style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
             <CustomSelect
               options={[
-                { value: '', label: t('Tất cả Saleperson'), icon: <Users size={16} /> },
+                { value: '', label: t('Tất cả Đại lý'), icon: <Users size={16} /> },
                 ...consultantOptions.map(name => {
                   const matched = allConsultants.find(c => c.name === name);
                   return {
@@ -1376,7 +1336,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           {hasActiveFilters && (
             <button onClick={() => {
               handleUpdateDateFilter(getDefaultDateFilter());
-              setSearchParams((prev: any) => {
+              setSearchParams((prev: URLSearchParams) => {
                 prev.delete('consultant');
                 prev.delete('page');
                 return prev;
@@ -1408,59 +1368,57 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
             borderTop: '1px dashed rgba(30, 64, 255,0.1)'
           }}>
             {/* Auto duyệt Toggle */}
-            {user?.role !== 'sale' && (
-              <div
-                onClick={() => setShowAutoApproveModal(true)}
-                title={t("Cấu hình quy tắc tự động duyệt")}
+            <div
+              onClick={() => setShowAutoApproveModal(true)}
+              title={t("Cấu hình quy tắc tự động duyệt")}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                cursor: 'pointer',
+                padding: '4px 8px',
+                borderRadius: 8,
+                transition: 'background 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(30, 64, 255,0.05)';
+                const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
+                if (label) label.style.color = 'var(--color-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
+                if (label) label.style.color = 'var(--color-text-muted)';
+              }}
+            >
+              <span
+                className="auto-approve-label"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  cursor: 'pointer',
-                  padding: '4px 8px',
-                  borderRadius: 8,
-                  transition: 'background 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(30, 64, 255,0.05)';
-                  const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
-                  if (label) label.style.color = 'var(--color-primary)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  const label = e.currentTarget.querySelector('.auto-approve-label') as HTMLSpanElement;
-                  if (label) label.style.color = 'var(--color-text-muted)';
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: 'var(--color-text-muted)',
+                  transition: 'color 0.2s',
+                  textDecoration: 'underline',
+                  textDecorationStyle: 'dotted'
                 }}
               >
-                <span
-                  className="auto-approve-label"
-                  style={{
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    color: 'var(--color-text-muted)',
-                    transition: 'color 0.2s',
-                    textDecoration: 'underline',
-                    textDecorationStyle: 'dotted'
-                  }}
-                >
-                  {t('Auto duyệt')}
-                </span>
-                <div
-                  style={{
-                    width: 36, height: 20, borderRadius: 10,
-                    background: ticketAutoApprove ? 'var(--color-success)' : 'rgba(148,163,184,0.3)',
-                    position: 'relative', transition: 'background 0.2s',
-                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
-                  }}
-                >
-                  <div style={{
-                    position: 'absolute', top: 3, width: 14, height: 14, borderRadius: '50%',
-                    background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                    left: ticketAutoApprove ? 19 : 3, transition: 'left 0.2s'
-                  }} />
-                </div>
+                {t('Auto duyệt')}
+              </span>
+              <div
+                style={{
+                  width: 36, height: 20, borderRadius: 10,
+                  background: ticketAutoApprove ? 'var(--color-success)' : 'rgba(148,163,184,0.3)',
+                  position: 'relative', transition: 'background 0.2s',
+                  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+                }}
+              >
+                <div style={{
+                  position: 'absolute', top: 3, width: 14, height: 14, borderRadius: '50%',
+                  background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                  left: ticketAutoApprove ? 19 : 3, transition: 'left 0.2s'
+                }} />
               </div>
-            )}
+            </div>
 
             <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 500, background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)', padding: '4px 10px', borderRadius: 8, border: '1px solid rgba(30, 64, 255,0.1)' }}>
               {t('Tổng cộng:')} {totalCount} {t('tickets')}
@@ -1474,22 +1432,26 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         {loading ? (
           <TableSkeleton rows={4} cols={5} />
         ) : filteredReports.length === 0 ? (
-          <div style={{ padding: '2rem 1rem' }}>
-            <EmptyCard
-              icon={<TicketIcon />}
-              title={hasActiveFilters ? t('Không tìm thấy ticket nào') : t('Chưa có báo cáo lỗi nào')}
-              description={hasActiveFilters ? t('Hệ thống không tìm thấy bất kỳ Ticket báo lỗi hoặc yêu cầu hỗ trợ nào khớp với bộ lọc hiện tại.') : t('Hệ thống đang hoạt động trơn tru. Các báo cáo lỗi Data từ Sale sẽ hiển thị tại đây.')}
-            />
+          <div style={{ padding: '5rem 2rem', textAlign: 'center' }}>
+            <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <CheckCircle size={40} color="#10b981" />
+            </div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem' }}>
+              {hasActiveFilters ? t('Không có kết quả phù hợp') : t('Chưa có báo cáo lỗi nào')}
+            </h3>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', maxWidth: 400, margin: '0 auto' }}>
+              {hasActiveFilters ? t('Thử thay đổi bộ lọc để tìm kết quả khác.') : t('Hệ thống đang hoạt động trơn tru. Các báo cáo lỗi Data từ Đại lý sẽ hiển thị tại đây.')}
+            </p>
           </div>
         ) : (
           <>
             {/* Desktop View Table */}
-            <div className="table-wrap hide-on-mobile" style={{ maxHeight: 'calc(100vh - 340px)', overflowY: 'auto' }}>
+            <div data-tour="tickets-table" className="table-wrap hide-on-mobile" style={{ maxHeight: 'calc(100vh - 340px)', overflowY: 'auto' }}>
               <table className="mobile-table-compact" style={{ width: '100%', minWidth: 900, borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: 'var(--color-bg)' }}>
                     <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 220, minWidth: 220, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Thông tin Lead')}</th>
-                    <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 220, minWidth: 220, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Tư vấn viên')}</th>
+                    <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 220, minWidth: 220, whiteSpace: 'nowrap', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Đại lý')}</th>
                     <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Vòng phân bổ')}</th>
                     <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Lý do lỗi')}</th>
                     <th style={{ padding: '1rem 1.5rem', textAlign: 'right', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', width: 220, minWidth: 220, position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>{t('Thao tác')}</th>
@@ -1537,7 +1499,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                               <span>{maskPhone(r.lead_phone)}</span>
                             </div>
                             <div style={{ fontSize: '0.7rem', color: 'var(--color-text-light)', marginTop: 2 }}>
-                              {new Date(r.created_at.replace(/-/g, '/')).toLocaleString('vi-VN')}
+                              {formatDateTimeVN(r.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                           </div>
                         </div>
@@ -1571,7 +1533,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                             </div>
                           )}
                           {(r.status === 'approved' || r.status === 'approved_no_comp') && r.approval_reason && (
-                            <div style={{ fontSize: '0.75rem', color: r.status === 'approved' ? 'var(--color-success)' : '#2563eb', background: r.status === 'approved' ? 'var(--color-success-light)' : '#ffe3e8', padding: '3px 8px', borderRadius: 6, fontWeight: 600 }}>
+                            <div style={{ fontSize: '0.75rem', color: r.status === 'approved' ? 'var(--color-success)' : '#2563eb', background: r.status === 'approved' ? 'var(--color-success-light)' : '#F6EFE0', padding: '3px 8px', borderRadius: 6, fontWeight: 600 }}>
                               {t('Lý do:')} {r.approval_reason}
                             </div>
                           )}
@@ -1585,14 +1547,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                             {r.resolved_at && (
                               <>
                                 <span style={{ opacity: 0.5 }}>•</span>
-                                <span>{new Date(r.resolved_at.replace(/-/g, '/')).toLocaleString('vi-VN')}</span>
+                                <span>{formatDateTimeVN(r.resolved_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
                               </>
                             )}
                           </div>
                         )}
                       </td>
-                       <td className="col-actions" style={{ padding: '1.25rem 1.5rem', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                        {r.status === 'pending' && user?.role !== 'sale' ? (
+                      <td className="col-actions" style={{ padding: '1.25rem 1.5rem', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        {r.status === 'pending' ? (
                           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                             <button onClick={(e) => { e.stopPropagation(); openRejectModal(r.id); }} disabled={isActioning === r.id} className="btn outline sm" style={{ color: 'var(--color-danger)', borderColor: 'var(--color-danger)', boxShadow: 'none', minWidth: '85px' }}>
                               {t('Từ chối')}
@@ -1670,8 +1632,8 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                       <div style={{ fontSize: '0.7rem', color: 'var(--color-text-light)', textAlign: 'right' }}>
-                        {new Date(r.created_at.replace(/-/g, '/')).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}<br />
-                        {new Date(r.created_at.replace(/-/g, '/')).toLocaleDateString('vi-VN')}
+                        {(parseServerDateVN(r.created_at) || new Date(r.created_at)).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', timeZone: VN_TIMEZONE })}<br />
+                        {(parseServerDateVN(r.created_at) || new Date(r.created_at)).toLocaleDateString('vi-VN', { timeZone: VN_TIMEZONE })}
                       </div>
                       {r.round_name && (
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(30, 64, 255,0.08)', color: 'var(--color-primary)', padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 700 }}>
@@ -1722,7 +1684,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           {r.status === 'approved' || r.status === 'approved_no_comp' ? t('Duyệt') : t('Từ chối')} {t('bởi')} <strong>{t(r.resolved_by || 'Hệ thống')}</strong>
                         </span>
                         {r.resolved_at && (
-                          <span>• {new Date(r.resolved_at.replace(/-/g, '/')).toLocaleString('vi-VN')}</span>
+                          <span>• {formatDateTimeVN(r.resolved_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
                         )}
                       </div>
                     )}
@@ -1733,14 +1695,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                       </div>
                     )}
                     {(r.status === 'approved' || r.status === 'approved_no_comp') && r.approval_reason && (
-                      <div style={{ fontSize: '0.75rem', color: r.status === 'approved' ? 'var(--color-success)' : '#2563eb', fontWeight: 600, background: r.status === 'approved' ? 'rgba(16, 185, 129, 0.04)' : '#ffe3e8', padding: '4px 8px', borderRadius: 4, marginTop: 4 }}>
+                      <div style={{ fontSize: '0.75rem', color: r.status === 'approved' ? 'var(--color-success)' : '#2563eb', fontWeight: 600, background: r.status === 'approved' ? 'rgba(16, 185, 129, 0.04)' : '#F6EFE0', padding: '4px 8px', borderRadius: 4, marginTop: 4 }}>
                         {t('Ghi chú duyệt:')} {r.approval_reason}
                       </div>
                     )}
                   </div>
 
                   {/* Actions footer */}
-                  {r.status === 'pending' && user?.role !== 'sale' && (
+                  {r.status === 'pending' && (
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.25rem', width: '100%' }} onClick={e => e.stopPropagation()}>
                       <button
                         onClick={(e) => {
@@ -1844,11 +1806,21 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
             <div>
               <label className="form-label">{t("Từ ngày")}</label>
-              <VietnameseDateInput value={startDate} onChange={val => setStartDate(val)} />
+              <input
+                type="date"
+                className="form-input"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+              />
             </div>
             <div>
               <label className="form-label">{t("Đến ngày")}</label>
-              <VietnameseDateInput value={endDate} onChange={val => setEndDate(val)} />
+              <input
+                type="date"
+                className="form-input"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+              />
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
               <button className="btn outline" onClick={() => setShowDateModal(false)}>{t("Hủy")}</button>
@@ -1892,7 +1864,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       </CustomModal>
 
       {/* Quick Message Modal */}
-      <CustomModal isOpen={quickMessageOpen} onClose={() => setQuickMessageOpen(false)} title={`${t("Nhắn tin cho")} ${quickMessageTarget?.name || t("Sale")}`}>
+      <CustomModal isOpen={quickMessageOpen} onClose={() => setQuickMessageOpen(false)} title={`${t("Nhắn tin cho")} ${quickMessageTarget?.name || t("Đại lý")}`}>
         {quickMessageOpen && (
           <form onSubmit={handleSendQuickMessage}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -1923,7 +1895,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       {/* Approve Modal */}
       <CustomModal isOpen={approveModalOpen} onClose={() => setApproveModalOpen(false)} title={t("Phê Duyệt Báo Cáo Lỗi")}>
         {approveModalOpen && (() => {
-          const currentReport = reports.find(r => Number(r.id) === Number(approvingId));
+          const currentReport = reports.find(r => String(r.id) === String(approvingId));
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {currentReport && (
@@ -1941,7 +1913,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     <Avatar src={currentReport.consultant_avatar} name={currentReport.consultant_name} size={48} />
                     <div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
-                        {t("Yêu cầu bởi Sale")}
+                        {t("Yêu cầu bởi Đại lý")}
                       </div>
                       <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)' }}>
                         {currentReport.consultant_name}
@@ -1991,13 +1963,13 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               {currentReport?.reason?.includes('Trùng của người khác') && (
                 <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label className="form-label" style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--color-text)' }}>
-                    {t("Nhắc lại cho TVV khác (Tùy chọn)")}
+                    {t("Nhắc lại cho Đại lý khác (Tùy chọn)")}
                   </label>
                   <CustomSelect
                     options={[
-                      { value: '', label: t('Không nhắc lại cho TVV khác'), icon: null },
+                      { value: '', label: t('Không nhắc lại cho Đại lý khác'), icon: null },
                       ...allConsultants
-                        .filter(c => Number(c.id) !== Number(currentReport?.consultant_id))
+                        .filter(c => String(c.id) !== String(currentReport?.consultant_id))
                         .map(c => ({
                           value: String(c.id),
                           label: c.name + (c.status === 'leave' ? ` (${t('Nghỉ phép')})` : Number(c.vacation_mode) === 1 ? ` (${t('Tạm ngưng')})` : c.status === 'inactive' ? ` (${t('Nghỉ việc')})` : ''),
@@ -2011,7 +1983,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     onChange={(val) => setReassignConsultantId(val ? String(val) : '')}
                     showAvatars={true}
                     searchable={true}
-                    placeholder={t("Chọn TVV khác...")}
+                    placeholder={t("Chọn Đại lý khác...")}
                     width="100%"
                   />
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
@@ -2054,11 +2026,11 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           setReassignConsId('');
         }}
         title={t("Chi tiết Khách hàng")}
-        width="1050px"
+        width="850px"
       >
         {selectedLead && (
           <div className="modal-body-padding">
-            <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '2rem', alignItems: 'start' }}>
+            <div className="responsive-grid-1-1" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)', gap: '1.5rem', alignItems: 'start', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
               {/* Cột Trái: Chi Tiết */}
               <div className="sticky-column">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', width: '100%', flexWrap: 'wrap', gap: '1rem' }}>
@@ -2129,7 +2101,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                         {copiedType === 'full' ? t('Đã chép') : t('Sao chép')}
                       </button>
                     )}
-                    {isUserAdmin && (
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && (
                       <>
                         {isAdminEditingLead ? (
                           <>
@@ -2221,7 +2193,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                         )}
                       </>
                     )}
-                    {isUserAdmin && selectedLead.report_status === 'approved_no_comp' && !isAdminEditingLead && (
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.report_status === 'approved_no_comp' && !isAdminEditingLead && (
                       <button
                         onClick={() => handleCompensateNoComp(selectedLead.report_id || 0)}
                         disabled={isCompensatingNoComp}
@@ -2247,7 +2219,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                         {isCompensatingNoComp ? t('Đang xử lý...') : t('Bù lỗi')}
                       </button>
                     )}
-                    {isUserAdmin && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
+                    {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.status !== 'blacklisted' && !isAdminEditingLead && (
                       <button
                         onClick={() => {
                           const isTicket = selectedLead.status === 'error' || selectedLead.report_status === 'approved' || selectedLead.report_status === 'pending';
@@ -2275,7 +2247,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           e.currentTarget.style.boxShadow = '0 2px 6px rgba(239, 68, 68, 0.05)';
                         }}
                       >
-                        <Ban size={14} />
+                        <AlertTriangle size={14} />
                         {t('Chặn')}
                       </button>
                     )}
@@ -2289,7 +2261,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                   marginBottom: '1rem'
                 }}>
                   <div
-                    onClick={!isAdminEditingLead ? () => handleCopyText(isUserAdmin ? selectedLead.phone : maskPhone(selectedLead.phone), t('Đã sao chép số điện thoại!'), 'phone') : undefined}
+                    onClick={!isAdminEditingLead ? () => handleCopyText((user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone), t('Đã sao chép số điện thoại!'), 'phone') : undefined}
                     style={{
                       background: 'var(--color-bg)',
                       padding: '0.625rem 0.75rem',
@@ -2367,7 +2339,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                         <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }} title={selectedLead.phone}>
-                          {isUserAdmin ? selectedLead.phone : maskPhone(selectedLead.phone)}
+                          {(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone)}
                         </span>
                         {!isAdminEditingLead && (
                           <div
@@ -2387,7 +2359,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     )}
                   </div>
                   <div
-                    onClick={!isAdminEditingLead ? () => handleCopyText(isUserAdmin ? selectedLead.email : maskEmail(selectedLead.email), t('Đã sao chép email!'), 'email') : undefined}
+                    onClick={!isAdminEditingLead ? () => handleCopyText((user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email), t('Đã sao chép email!'), 'email') : undefined}
                     style={{
                       background: 'var(--color-bg)',
                       padding: '0.625rem 0.75rem',
@@ -2442,7 +2414,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     ) : (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                         <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }} title={selectedLead.email}>
-                          {isUserAdmin ? selectedLead.email : maskEmail(selectedLead.email)}
+                          {(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email)}
                         </span>
                         {!isAdminEditingLead && (
                           <div
@@ -2500,14 +2472,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     <div>
                       {selectedLead.status === 'assigned' && (
                         selectedLead.report_status === 'pending' ? (
-                          <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'rgba(30, 64, 255, 0.12)', color: '#1D4ED8', border: '1px solid rgba(30, 64, 255, 0.2)' }}>{t("Ticket Review")}</span>
+                          <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'rgba(30, 64, 255, 0.12)', color: '#1E40FF', border: '1px solid rgba(30, 64, 255, 0.2)' }}>{t("Ticket Review")}</span>
                         ) : selectedLead.report_status === 'approved_no_comp' ? (
                           <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: '#dbeafe', color: '#2563eb', border: '1px solid rgba(37, 99, 235, 0.2)' }}>{t("Lỗi không bù")}</span>
                         ) : (
                           <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>{t("Đã chia")}</span>
                         )
                       )}
-                      {selectedLead.status === 'compensation' && <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>{t("Data Bù")}</span>}
+                      {selectedLead.status === 'compensation' && <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: '#f3e8ff', color: '#7e22ce', border: '1px solid rgba(147, 51, 234, 0.25)' }}>{t("Data Bù")}</span>}
                       {selectedLead.status === 'pending_work_hours' && <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'var(--color-warning-light)', color: 'var(--color-warning)' }}>{t("Chờ giờ làm")}</span>}
                       {selectedLead.status === 'error' && <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>{t("Ticket")}</span>}
                       {selectedLead.status === 'pending' && <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 600, background: 'var(--color-warning-light)', color: 'var(--color-warning)' }}>{t("Chờ chia")}</span>}
@@ -2528,7 +2500,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                       {/* Active Ticket Report Card */}
                       {selectedLead.reason && (
                         <div style={{
-                          background: theme === 'dark' ? 'rgba(239, 68, 68, 0.08)' : 'linear-gradient(135deg, #fef2f2 0%, #EFF6FF 100%)',
+                          background: theme === 'dark' ? 'rgba(239, 68, 68, 0.08)' : 'linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%)',
                           border: theme === 'dark' ? '1px solid rgba(239, 68, 68, 0.15)' : '1px solid #fecaca',
                           padding: '1.25rem',
                           borderRadius: '16px',
@@ -2548,17 +2520,17 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              color: theme === 'dark' ? '#f87171' : '#1E40FF'
+                              color: theme === 'dark' ? '#f87171' : '#dc2626'
                             }}>
                               <AlertTriangle size={18} strokeWidth={2.5} />
                             </div>
-                            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: theme === 'dark' ? '#f87171' : '#1E3A8A', letterSpacing: '-0.01em' }}>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: theme === 'dark' ? '#f87171' : '#991b1b', letterSpacing: '-0.01em' }}>
                               {t("Thông tin báo cáo lỗi")}
                             </span>
                           </div>
 
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ fontSize: '0.85rem', color: theme === 'dark' ? '#dadada' : '#1E3A8A' }}>
+                            <div style={{ fontSize: '0.85rem', color: theme === 'dark' ? '#dadada' : '#7f1d1d' }}>
                               <span style={{ fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', color: theme === 'dark' ? '#f87171' : '#b91c1c', marginRight: '6px' }}>
                                 {t("Lý do lỗi:")}
                               </span>
@@ -2575,14 +2547,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                             borderTop: theme === 'dark' ? '1px dashed rgba(239, 68, 68, 0.2)' : '1px dashed rgba(220, 38, 38, 0.15)',
                             flexWrap: 'wrap'
                           }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: theme === 'dark' ? 'var(--color-text-muted)' : '#1E3A8A' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: theme === 'dark' ? 'var(--color-text-muted)' : '#7f1d1d' }}>
                               <Avatar src={selectedLead.assigned_to_avatar} name={selectedLead.assigned_to_name} size={16} />
-                              <span>{t("Người báo cáo:")} <strong style={{ color: theme === 'dark' ? 'var(--color-text)' : '#1E3A8A' }}>{selectedLead.assigned_to_name}</strong></span>
+                              <span>{t("Người báo cáo:")} <strong style={{ color: theme === 'dark' ? 'var(--color-text)' : '#991b1b' }}>{selectedLead.assigned_to_name}</strong></span>
                             </div>
                             <span style={{ color: theme === 'dark' ? 'rgba(239, 68, 68, 0.2)' : '#fca5a5', fontSize: '0.75rem' }}>•</span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: theme === 'dark' ? 'var(--color-text-muted)' : '#1E3A8A' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: theme === 'dark' ? 'var(--color-text-muted)' : '#7f1d1d' }}>
                               <Clock size={13} style={{ opacity: 0.7 }} />
-                              <span>{t("Thời gian:")} <strong style={{ color: theme === 'dark' ? 'var(--color-text)' : '#1E3A8A' }}>{selectedLead.report_created_at ? new Date(selectedLead.report_created_at).toLocaleString('vi-VN') : ''}</strong></span>
+                              <span>{t("Thời gian:")} <strong style={{ color: theme === 'dark' ? 'var(--color-text)' : '#991b1b' }}>{selectedLead.report_created_at ? formatDateTimeVN(selectedLead.report_created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</strong></span>
                             </div>
                           </div>
                         </div>
@@ -2633,16 +2605,16 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                                 badgeBorder: '1px solid rgba(239, 68, 68, 0.2)',
                                 iconBg: 'rgba(239, 68, 68, 0.15)',
                               } : {
-                                gradient: 'linear-gradient(135deg, #fef2f2 0%, #EFF6FF 100%)',
+                                gradient: 'linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%)',
                                 border: '1px solid #fecaca',
                                 glow: '0 4px 15px rgba(244, 63, 94, 0.04)',
                                 accent: '#f43f5e',
                                 title: '#9f1239',
                                 text: '#be123c',
-                                badgeBg: '#DBEAFE',
+                                badgeBg: '#ffe4e6',
                                 badgeText: '#9f1239',
                                 badgeBorder: '1px solid #fca5a5',
-                                iconBg: '#DBEAFE',
+                                iconBg: '#ffe4e6',
                               }
                             );
 
@@ -2655,12 +2627,10 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                             if (!displayTime) {
                               if (selectedLead?.resolved_at) {
                                 try {
-                                  const dt = new Date(selectedLead.resolved_at.replace(/-/g, '/'));
-                                  if (!isNaN(dt.getTime())) {
-                                    displayTime = dt.toLocaleString('vi-VN');
-                                  } else {
-                                    displayTime = selectedLead.resolved_at;
-                                  }
+                                  displayTime = formatDateTimeVN(selectedLead.resolved_at, {
+                                    day: '2-digit', month: '2-digit', year: 'numeric',
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                                  }) || selectedLead.resolved_at;
                                 } catch (e) {
                                   displayTime = selectedLead.resolved_at;
                                 }
@@ -2962,7 +2932,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                             } else if (isFallback) {
                               cardBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.08)' : '#fffbeb';
                               cardBorder = theme === 'dark' ? '1px solid rgba(245, 158, 11, 0.15)' : '1px solid #fca5a5';
-                              iconBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.15)' : '#DBEAFE';
+                              iconBg = theme === 'dark' ? 'rgba(245, 158, 11, 0.15)' : '#ffe4e6';
                               iconColor = 'var(--color-warning)';
                               titleColor = 'var(--color-warning)';
                               titleText = t("Xác nhận dưới chuẩn (Fallback)");
@@ -3034,16 +3004,16 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                               badgeBorder: '1px solid rgba(239, 68, 68, 0.2)',
                               iconBg: 'rgba(239, 68, 68, 0.15)',
                             } : {
-                              gradient: 'linear-gradient(135deg, #EFF6FF 0%, #fff5f5 100%)',
+                              gradient: 'linear-gradient(135deg, #fff1f2 0%, #fff5f5 100%)',
                               border: '1px solid #fecaca',
                               glow: '0 4px 15px rgba(244, 63, 94, 0.04)',
                               accent: '#f43f5e',
                               title: '#9f1239',
                               text: '#be123c',
-                              badgeBg: '#DBEAFE',
+                              badgeBg: '#ffe4e6',
                               badgeText: '#9f1239',
                               badgeBorder: '1px solid #fca5a5',
-                              iconBg: '#DBEAFE',
+                              iconBg: '#ffe4e6',
                             };
 
                             return (
@@ -3157,7 +3127,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     gap: '0.75rem'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <Avatar src="/imgs/warn_icon.png" name="IDEAS AI - Screener" size={36} />
+                      <Avatar src="/imgs/autodata/warn_icon.png" name="DOMATION AI - Screener" size={36} />
                       <div>
                         <div style={{ fontSize: '0.72rem', color: selectedLead.ai_screener_status === 'error' ? '#d97706' : 'var(--color-danger)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           {selectedLead.ai_screener_status === 'error' ? t('Lỗi AI Pre-screener') : (
@@ -3172,7 +3142,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           )}
                         </div>
                         <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                          {t('IDEAS AI - Screener')}
+                          {t('DOMATION AI - Screener')}
                         </div>
                       </div>
                     </div>
@@ -3202,10 +3172,10 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                 {selectedLead.ai_screener_status === 'passed' && selectedLead.ai_evaluation && (
                   <div style={{ background: 'var(--color-surface)', padding: '1.25rem', borderRadius: 12, border: '1.5px solid var(--color-primary)', marginBottom: '1rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
-                      <Avatar src="https://crm-domation.vercel.app/LOGO.jpg" name="IDEAS AI" size={36} />
+                      <Avatar src="/imgs/autodata/domation_ai_icon.svg" name="DOMATION AI" size={36} />
                       <div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: 700, textTransform: 'uppercase', marginBottom: 2 }}>{t('Đánh giá')}</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>IDEAS AI</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text)' }}>DOMATION AI</div>
                       </div>
                     </div>
                     <div>
@@ -3300,25 +3270,25 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           {/* Email Status */}
                           <div
                             onClick={() => {
-                              if (notificationStatus.email.status === 'sent') {
+                              if (notificationStatus?.email?.status === 'sent') {
                                 setPreviewType('email');
-                                setPreviewSentAt(notificationStatus.email.sent_at || '');
+                                setPreviewSentAt(notificationStatus?.email?.sent_at || '');
                                 setPreviewOpen(true);
                               }
                             }}
-                            title={notificationStatus.email.status === 'sent' ? t('Bấm để xem mẫu email đã gửi') : undefined}
+                            title={notificationStatus?.email?.status === 'sent' ? t('Bấm để xem mẫu email đã gửi') : undefined}
                             style={{
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               fontSize: '0.78rem',
-                              cursor: notificationStatus.email.status === 'sent' ? 'pointer' : 'default',
+                              cursor: notificationStatus?.email?.status === 'sent' ? 'pointer' : 'default',
                               padding: '4px 6px',
                               borderRadius: '6px',
                               transition: 'background 0.2s'
                             }}
                             onMouseEnter={e => {
-                              if (notificationStatus.email.status === 'sent') {
+                              if (notificationStatus?.email?.status === 'sent') {
                                 e.currentTarget.style.backgroundColor = 'var(--color-border-light)';
                               }
                             }}
@@ -3328,36 +3298,36 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           >
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
                               <img
-                                src="/imgs/gmail-icon-free-png.webp"
+                                src="/imgs/autodata/gmail-icon-free-png.webp"
                                 alt="Gmail"
                                 style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
                               />
                               <span style={{ flexShrink: 0 }}>Email:</span>
-                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.email.sent_at || notificationStatus.email.target}>
-                                {notificationStatus.email.status === 'sent'
-                                  ? (notificationStatus.email.sent_at || '-')
-                                  : ((notificationStatus.email.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.email.status === 'missed')) ? t('Đang chờ gửi...') : '-')}
+                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus?.email?.sent_at || notificationStatus?.email?.target || ''}>
+                                {notificationStatus?.email?.status === 'sent'
+                                  ? (notificationStatus?.email?.sent_at || '-')
+                                  : ((notificationStatus?.email?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.email?.status === 'missed')) ? t('Đang chờ gửi...') : '-')}
                               </span>
                             </div>
                             <div style={{ flexShrink: 0 }}>
-                              {notificationStatus.email.status === 'sent' && (
+                              {notificationStatus?.email?.status === 'sent' && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                     <Check size={8} strokeWidth={3} />
-                                  </span> {t('Đã gửi')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
+                                  </span> {t('Đã gửi')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
                                 </span>
                               )}
-                              {(notificationStatus.email.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.email.status === 'missed')) && (
+                              {(notificationStatus?.email?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.email?.status === 'missed')) && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
+                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus.email.status === 'failed' && (
+                              {notificationStatus?.email?.status === 'failed' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                  {t('Thất bại')} {notificationStatus.email.id ? `#${notificationStatus.email.id}` : ''}
+                                  {t('Thất bại')} {notificationStatus?.email?.id ? `#${notificationStatus.email.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus.email.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                              {notificationStatus?.email?.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
                                   {t('Chưa gửi')}
                                 </span>
@@ -3368,25 +3338,25 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           {/* Zalo Status */}
                           <div
                             onClick={() => {
-                              if (notificationStatus.zalo.status === 'sent') {
+                              if (notificationStatus?.zalo?.status === 'sent') {
                                 setPreviewType('zalo');
-                                setPreviewSentAt(notificationStatus.zalo.sent_at || '');
+                                setPreviewSentAt(notificationStatus?.zalo?.sent_at || '');
                                 setPreviewOpen(true);
                               }
                             }}
-                            title={notificationStatus.zalo.status === 'sent' ? t('Bấm để xem mẫu Zalo đã gửi') : undefined}
+                            title={notificationStatus?.zalo?.status === 'sent' ? t('Bấm để xem mẫu Zalo đã gửi') : undefined}
                             style={{
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'space-between',
                               fontSize: '0.78rem',
-                              cursor: notificationStatus.zalo.status === 'sent' ? 'pointer' : 'default',
+                              cursor: notificationStatus?.zalo?.status === 'sent' ? 'pointer' : 'default',
                               padding: '4px 6px',
                               borderRadius: '6px',
                               transition: 'background 0.2s'
                             }}
                             onMouseEnter={e => {
-                              if (notificationStatus.zalo.status === 'sent') {
+                              if (notificationStatus?.zalo?.status === 'sent') {
                                 e.currentTarget.style.backgroundColor = 'var(--color-border-light)';
                               }
                             }}
@@ -3401,106 +3371,49 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                                 style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
                               />
                               <span style={{ flexShrink: 0 }}>Zalo:</span>
-                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.zalo.sent_at || notificationStatus.zalo.target}>
-                                {notificationStatus.zalo.status === 'sent'
-                                  ? (notificationStatus.zalo.sent_at || '-')
-                                  : (notificationStatus.zalo.status === 'no_zalo_config' ? t('Chưa cấu hình ID') : ((notificationStatus.zalo.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.zalo.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
+                              <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus?.zalo?.sent_at || notificationStatus?.zalo?.target || ''}>
+                                {notificationStatus?.zalo?.status === 'sent'
+                                  ? (notificationStatus?.zalo?.sent_at || '-')
+                                  : (notificationStatus?.zalo?.status === 'no_zalo_config' ? t('Chưa cấu hình ID') : ((notificationStatus?.zalo?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.zalo?.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
                               </span>
                             </div>
                             <div style={{ flexShrink: 0 }}>
-                              {notificationStatus.zalo.status === 'no_zalo_config' && (
+                              {notificationStatus?.zalo?.status === 'no_zalo_config' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
                                   {t('Chưa cấu hình ID')}
                                 </span>
                               )}
-                              {notificationStatus.zalo.status === 'sent (Direct cURL)' && (
+                              {notificationStatus?.zalo?.status === 'sent (Direct cURL)' && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                     <Check size={8} strokeWidth={3} />
                                   </span> {t('Đã gửi (cURL)')}
                                 </span>
                               )}
-                              {notificationStatus.zalo.status === 'sent' && (
+                              {notificationStatus?.zalo?.status === 'sent' && (
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
                                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
                                     <Check size={8} strokeWidth={3} />
-                                  </span> {t('Đã gửi')} {notificationStatus.zalo.id && notificationStatus.zalo.id !== 'Log' ? `#${notificationStatus.zalo.id}` : ''}
+                                  </span> {t('Đã gửi')} {notificationStatus?.zalo?.id && notificationStatus?.zalo?.id !== 'Log' ? `#${notificationStatus.zalo.id}` : ''}
                                 </span>
                               )}
-                              {(notificationStatus.zalo.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.zalo.status === 'missed')) && (
+                              {(notificationStatus?.zalo?.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus?.zalo?.status === 'missed')) && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus.zalo.id ? `#${notificationStatus.zalo.id}` : ''}
+                                  {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')} {notificationStatus?.zalo?.id ? `#${notificationStatus.zalo.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus.zalo.status === 'failed' && (
+                              {notificationStatus?.zalo?.status === 'failed' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                  {t('Thất bại')} {notificationStatus.zalo.id ? `#${notificationStatus.zalo.id}` : ''}
+                                  {t('Thất bại')} {notificationStatus?.zalo?.id ? `#${notificationStatus.zalo.id}` : ''}
                                 </span>
                               )}
-                              {notificationStatus.zalo.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
+                              {notificationStatus?.zalo?.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
                                 <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
                                   {t('Chưa gửi')}
                                 </span>
                               )}
                             </div>
                           </div>
-
-                          {/* Telegram Status */}
-                          {notificationStatus.telegram && (
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                fontSize: '0.78rem',
-                                padding: '4px 6px',
-                                borderRadius: '6px'
-                              }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-text-muted)', minWidth: 0 }}>
-                                <img
-                                  src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-                                  alt="Telegram"
-                                  style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: '50%', flexShrink: 0 }}
-                                />
-                                <span style={{ flexShrink: 0 }}>Telegram:</span>
-                                <span style={{ fontSize: '0.72rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={notificationStatus.telegram.sent_at || notificationStatus.telegram.target}>
-                                  {notificationStatus.telegram.status === 'sent'
-                                    ? (notificationStatus.telegram.sent_at || '-')
-                                    : (notificationStatus.telegram.status === 'no_telegram_config' ? t('Chưa cấu hình ID') : ((notificationStatus.telegram.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.telegram.status === 'missed')) ? t('Đang chờ gửi...') : '-'))}
-                                </span>
-                              </div>
-                              <div style={{ flexShrink: 0 }}>
-                                {notificationStatus.telegram.status === 'no_telegram_config' && (
-                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
-                                    {t('Chưa cấu hình ID')}
-                                  </span>
-                                )}
-                                {notificationStatus.telegram.status === 'sent' && (
-                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-success-light)', color: 'var(--color-success)' }}>
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 12, height: 12, borderRadius: '50%', background: 'var(--color-success)', color: 'white', flexShrink: 0 }}>
-                                      <Check size={8} strokeWidth={3} />
-                                    </span> {t('Đã gửi')}
-                                  </span>
-                                )}
-                                {(notificationStatus.telegram.status === 'pending' || (selectedLead?.status === 'pending_work_hours' && notificationStatus.telegram.status === 'missed')) && (
-                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-info-light)', color: 'var(--color-info)' }}>
-                                    {selectedLead?.status === 'pending_work_hours' ? t('Chờ gửi') : t('Đang chờ')}
-                                  </span>
-                                )}
-                                {notificationStatus.telegram.status === 'failed' && (
-                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'var(--color-danger-light)', color: 'var(--color-danger)' }}>
-                                    {t('Thất bại')}
-                                  </span>
-                                )}
-                                {notificationStatus.telegram.status === 'missed' && selectedLead?.status !== 'pending_work_hours' && (
-                                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#ef4444', border: '1px dashed rgba(239, 68, 68, 0.2)' }}>
-                                    {t('Chưa gửi')}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          )}
                         </div>
                       ) : (
                         <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
@@ -3509,10 +3422,10 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                       )}
 
                       {/* Manual Reminder Button */}
-                      {isUserAdmin && selectedLead.assigned_to_name !== '-' && (
+                      {(user?.role === 'admin' || user?.role === 'superadmin') && selectedLead.assigned_to_name !== '-' && (
                         <button
                           onClick={() => {
-                            setReminderChannels({ zalo: true, email: true, telegram: true });
+                            setReminderChannels({ zalo: true, email: true });
                             setIsReminderModalOpen(true);
                           }}
                           style={{
@@ -3557,11 +3470,11 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                   </div>
                 )}
 
-                {/* Giao lại Tư vấn viên */}
-                {isUserAdmin && (
+                {/* Giao lại Đại lý */}
+                {(user?.role === 'admin' || user?.role === 'superadmin') && (
                   <div style={{ marginTop: '1.5rem', background: 'var(--color-bg)', padding: '1.25rem', borderRadius: 12, border: '1px solid var(--color-border)' }}>
                     <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <User size={16} color="var(--color-primary)" /> {t("Giao lại Tư vấn viên")}
+                      <User size={16} color="var(--color-primary)" /> {t("Giao lại Đại lý")}
                     </h4>
                     <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
                       {t("Thay đổi người tiếp nhận (Không ảnh hưởng lượt chia).")}
@@ -3569,7 +3482,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                       <CustomSelect
                         options={[
-                          { value: '', label: t('-- Chọn Tư vấn viên --') },
+                          { value: '', label: t('-- Chọn Đại lý --') },
                           ...allConsultants
                             .map(c => ({
                               value: c.id.toString(),
@@ -3623,7 +3536,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               </div>
               <div>
                 <p style={{ color: 'var(--color-text)', lineHeight: 1.6, fontSize: '0.9375rem', margin: 0 }}>
-                  {t('Bạn có chắc chắn muốn chuyển quyền chăm sóc Lead')} <strong>"{selectedLead?.name}"</strong> {t('sang cho Tư vấn viên')} <strong>"{allConsultants.find(c => Number(c.id) === Number(reassignConsId))?.name}"</strong>?
+                  {t('Bạn có chắc chắn muốn chuyển quyền chăm sóc Lead')} <strong>"{selectedLead?.name}"</strong> {t('sang cho Tư vấn viên')} <strong>"{allConsultants.find(c => String(c.id) === String(reassignConsId))?.name}"</strong>?
                 </p>
                 {selectedLead?.assigned_to_name && selectedLead.assigned_to_name !== '-' && (
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: 8, marginBottom: 0 }}>
@@ -3853,7 +3766,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               >
                 <div style={{
                   position: 'absolute', top: 3, width: 20, height: 20, borderRadius: '50%',
-                  background: 'var(--color-surface)', left: ticketAutoApprove ? 25 : 3, transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  background: 'white', left: ticketAutoApprove ? 25 : 3, transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
                 }} />
               </div>
@@ -3899,9 +3812,9 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                         ? t('Tất cả vòng')
                         : rounds.filter(r => rule.rounds.map(String).includes(String(r.id))).map(r => r.round_name).join(', ') || t('Không xác định');
 
-                      const targetSales = rule.sales.includes('all')
-                        ? t('Tất cả Salepersons')
-                        : allConsultants.filter(c => rule.sales.map(String).includes(String(c.id))).map(c => c.name).join(', ') || t('Không xác định');
+                      const targetSales = (rule.sales || []).includes('all')
+                        ? t('Tất cả Đại lý')
+                        : allConsultants.filter(c => (rule.sales || []).map(String).includes(String(c.id))).map(c => c.name).join(', ') || t('Không xác định');
 
                       const targetConns = (rule.connections || []).includes('all') || !rule.connections
                         ? t('Tất cả nguồn')
@@ -3948,7 +3861,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                               >
                                 <div style={{
                                   position: 'absolute', top: 2, width: 14, height: 14, borderRadius: '50%',
-                                  background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                                  background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
                                   left: rule.active ? 16 : 2, transition: 'left 0.2s'
                                 }} />
                               </div>
@@ -3973,16 +3886,9 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                               <button
                                 type="button"
                                 onClick={() => {
-                                  showConfirm({
-                                    title: t('Xóa luật tự động duyệt ticket'),
-                                    message: t('Bạn có chắc chắn muốn xóa luật') + ` "${rule.name}"?`,
-                                    confirmText: t('Xóa'),
-                                    cancelText: t('Hủy'),
-                                    isDanger: true,
-                                    onConfirm: () => {
-                                      setTicketAutoApproveRules(prev => prev.filter(r => r.id !== rule.id));
-                                    }
-                                  });
+                                  if (window.confirm(t('Bạn có chắc chắn muốn xóa luật') + ` "${rule.name}"?`)) {
+                                    setTicketAutoApproveRules(prev => prev.filter(r => r.id !== rule.id));
+                                  }
                                 }}
                                 style={{ padding: 4, color: 'var(--color-danger)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                                 title={t("Xóa")}
@@ -4083,14 +3989,13 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
             {/* Scope: Sales */}
             <div>
               <CustomSelect
-                label={t("Áp dụng cho Tư vấn viên (Sales)")}
+                label={t("Áp dụng cho Đại lý")}
                 options={saleOptions}
                 value={ruleSales}
                 onChange={setRuleSales}
                 multiple={true}
                 searchable={true}
-                showAvatars={true}
-                placeholder={t("Chọn tư vấn viên...")}
+                placeholder={t("Chọn Đại lý...")}
               />
             </div>
 
@@ -4144,7 +4049,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               >
                 <div style={{
                   position: 'absolute', top: 3, width: 18, height: 18, borderRadius: '50%',
-                  background: 'var(--color-surface)', left: ruleActive ? 23 : 3, transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  background: 'white', left: ruleActive ? 23 : 3, transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
                 }} />
               </div>
@@ -4219,7 +4124,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       <CustomModal
         isOpen={isReminderModalOpen}
         onClose={() => setIsReminderModalOpen(false)}
-        title={t("Xác nhận nhắc lại cho Tư vấn viên")}
+        title={t("Xác nhận nhắc lại cho Đại lý")}
         width="480px"
       >
         {isReminderModalOpen && selectedLead && (
@@ -4268,7 +4173,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <img
-                    src="/imgs/gmail-icon-free-png.webp"
+                    src="/imgs/autodata/gmail-icon-free-png.webp"
                     alt="Gmail"
                     style={{ width: 16, height: 16, objectFit: 'contain' }}
                   />
@@ -4277,21 +4182,6 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                 <ToggleSwitch
                   checked={reminderChannels.email}
                   onChange={checked => setReminderChannels({ ...reminderChannels, email: checked })}
-                />
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-                    alt="Telegram"
-                    style={{ width: 16, height: 16, objectFit: 'contain', borderRadius: '50%' }}
-                  />
-                  <span style={{ fontSize: '0.875rem', color: 'var(--color-text)', fontWeight: 500 }}>Telegram Bot Message</span>
-                </div>
-                <ToggleSwitch
-                  checked={reminderChannels.telegram}
-                  onChange={checked => setReminderChannels({ ...reminderChannels, telegram: checked })}
                 />
               </div>
             </div>
@@ -4313,7 +4203,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               <button
                 className="btn primary"
                 onClick={handleSendReminder}
-                disabled={isSendingReminder || (!reminderChannels.zalo && !reminderChannels.email && !reminderChannels.telegram)}
+                disabled={isSendingReminder || (!reminderChannels.zalo && !reminderChannels.email)}
                 style={{
                   borderRadius: '10px',
                   padding: '8px 18px',
@@ -4349,8 +4239,8 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           onClose={() => setPreviewOpen(false)}
           type={previewType}
           leadName={selectedLead.name}
-          leadPhone={isUserAdmin ? selectedLead.phone : maskPhone(selectedLead.phone)}
-          leadEmail={isUserAdmin ? selectedLead.email : maskEmail(selectedLead.email)}
+          leadPhone={(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.phone : maskPhone(selectedLead.phone)}
+          leadEmail={(user?.role === 'admin' || user?.role === 'superadmin') ? selectedLead.email : maskEmail(selectedLead.email)}
           leadSource={selectedLead.source || ''}
           leadType={selectedLead.type || ''}
           leadNote={selectedLead.note || ''}
@@ -4367,7 +4257,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       )}
 
       {statsModalOpen && statsConsultant && typeof document !== 'undefined' && createPortal(
-        <div className="overlay-backdrop stats-modal-backdrop" onClick={() => setStatsModalOpen(false)} style={{ zIndex: 999999999 }}>
+        <div className="overlay-backdrop" onClick={() => setStatsModalOpen(false)}>
           <div
             className="card"
             style={{
@@ -4393,7 +4283,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                   }}
                 />
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>{t('Báo cáo hiệu suất TVV')}</h3>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)' }}>{t('Báo cáo hiệu suất Đại lý')}</h3>
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                     <strong>{statsConsultant.name}</strong> • ID: {statsConsultant.id} • <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', verticalAlign: 'middle' }}><img src="https://www.gstatic.com/images/branding/product/1x/gmail_2020q4_32dp.png" alt="Gmail" style={{ width: 14, height: 14, objectFit: 'contain', flexShrink: 0 }} /> {statsConsultant.email}</span>
                   </p>
@@ -4423,30 +4313,28 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
                 {statsDateMode === 'custom' && (
                   <div className="stats-custom-dates" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', animation: 'slideUp 0.15s ease-out', flexShrink: 0 }}>
-                    <div style={{ width: 130 }}>
-                      <VietnameseDateInput
-                        size="sm"
-                        value={statsStartDate}
-                        onChange={val => setStatsStartDate(val)}
-                        inputStyle={{ height: 32, fontSize: '0.8125rem' }}
-                      />
-                    </div>
+                    <input
+                      type="date"
+                      className="form-input"
+                      style={{ padding: '4px 10px', fontSize: '0.8125rem', height: 32, width: 130 }}
+                      value={statsStartDate}
+                      onChange={e => setStatsStartDate(e.target.value)}
+                    />
                     <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{t('đến')}</span>
-                    <div style={{ width: 130 }}>
-                      <VietnameseDateInput
-                        size="sm"
-                        value={statsEndDate}
-                        onChange={val => setStatsEndDate(val)}
-                        inputStyle={{ height: 32, fontSize: '0.8125rem' }}
-                      />
-                    </div>
+                    <input
+                      type="date"
+                      className="form-input"
+                      style={{ padding: '4px 10px', fontSize: '0.8125rem', height: 32, width: 130 }}
+                      value={statsEndDate}
+                      onChange={e => setStatsEndDate(e.target.value)}
+                    />
                   </div>
                 )}
               </div>
             </div>
 
             {/* Content Area */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1.25rem 3rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative' }}>
               {statsLoading && !statsData ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
@@ -4490,7 +4378,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        {t('Tổng data TVV này tiếp nhận:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsData.summary.total_received || 0}</strong> lead
+                        {t('Tổng data hệ thống tiếp nhận cho Đại lý này:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsData.summary.total}</strong> lead
                       </span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
                         * {t('Các nhóm độc lập hoàn toàn, không cộng dồn/chồng chéo')}
@@ -4499,34 +4387,34 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
                     {/* Stacked Percentage Bar */}
                     <div style={{ display: 'flex', height: 10, borderRadius: 5, overflow: 'hidden', background: 'var(--color-border-light)', position: 'relative' }}>
-                      {((statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)) > 0 && (
+                      {statsData.summary.successful > 0 && (
                         <div
                           style={{
-                            width: `${(((statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)) / Math.max(1, statsData.summary.total_received)) * 100}%`,
-                            background: 'linear-gradient(90deg, #3b82f6, #007af5)',
+                            width: `${(statsData.summary.successful / Math.max(1, statsData.summary.total)) * 100}%`,
+                            background: 'linear-gradient(90deg, #3B82F6, #1E40FF)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Được chia')}: ${(statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)}`}
+                          title={`${t('Thành công')}: ${statsData.summary.successful}`}
                         />
                       )}
-                      {(statsData.summary.databank_count || 0) > 0 && (
+                      {(statsData.summary.reminder || 0) > 0 && (
                         <div
                           style={{
-                            width: `${((statsData.summary.databank_count || 0) / Math.max(1, statsData.summary.total_received)) * 100}%`,
-                            background: 'linear-gradient(90deg, #34c759, #10b981)',
-                            transition: 'width 0.3s ease'
-                          }}
-                          title={`${t('Từ Databank')}: ${statsData.summary.databank_count}`}
-                        />
-                      )}
-                      {(statsData.summary.self_count || 0) > 0 && (
-                        <div
-                          style={{
-                            width: `${((statsData.summary.self_count || 0) / Math.max(1, statsData.summary.total_received)) * 100}%`,
+                            width: `${((statsData.summary.reminder || 0) / Math.max(1, statsData.summary.total)) * 100}%`,
                             background: 'linear-gradient(90deg, #fcd34d, #f59e0b)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Tự nhập')}: ${statsData.summary.self_count}`}
+                          title={`${t('Nhắc lại')}: ${statsData.summary.reminder}`}
+                        />
+                      )}
+                      {(statsData.summary.error || 0) > 0 && (
+                        <div
+                          style={{
+                            width: `${((statsData.summary.error || 0) / Math.max(1, statsData.summary.total)) * 100}%`,
+                            background: 'linear-gradient(90deg, #fca5a5, #ef4444)',
+                            transition: 'width 0.3s ease'
+                          }}
+                          title={`${t('Lỗi')}: ${statsData.summary.error}`}
                         />
                       )}
                     </div>
@@ -4534,91 +4422,82 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                     {/* Legend explaining the numbers */}
                     <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', marginTop: 2, flexWrap: 'wrap', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#007af5' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-primary)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Được chia')}: <strong style={{ color: '#007af5' }}>{(statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)}</strong> ({statsData.summary.total_received > 0 ? Math.round((((statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)) / statsData.summary.total_received) * 100) : 0}%)
+                          {t('Thành công (Bàn giao thực tế)')}: <strong style={{ color: 'var(--color-primary)' }}>{statsData.summary.successful}</strong> ({statsData.summary.total > 0 ? Math.round((statsData.summary.successful / statsData.summary.total) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#34c759' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-warning)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Từ Databank')}: <strong style={{ color: '#34c759' }}>{statsData.summary.databank_count || 0}</strong> ({statsData.summary.total_received > 0 ? Math.round(((statsData.summary.databank_count || 0) / statsData.summary.total_received) * 100) : 0}%)
+                          {t('Nhắc lại (Khách cũ gọi lại)')}: <strong style={{ color: 'var(--color-warning)' }}>{statsData.summary.reminder || 0}</strong> ({statsData.summary.total > 0 ? Math.round(((statsData.summary.reminder || 0) / statsData.summary.total) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#f59e0b' }} />
+                        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-danger)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Tự nhập')}: <strong style={{ color: '#f59e0b' }}>{statsData.summary.self_count || 0}</strong> ({statsData.summary.total_received > 0 ? Math.round(((statsData.summary.self_count || 0) / statsData.summary.total_received) * 100) : 0}%)
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginLeft: 'auto', paddingLeft: '1rem', borderLeft: '1px solid var(--color-border)' }}>
-                        <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Nhắc lại')}: <strong style={{ color: 'var(--color-warning)' }}>{statsData.summary.reminder || 0}</strong> | {t('Lỗi/Trùng')}: <strong style={{ color: 'var(--color-danger)' }}>{statsData.summary.error || 0}</strong>
+                          {t('Lỗi / Trùng (Đã lọc bỏ)')}: <strong style={{ color: 'var(--color-danger)' }}>{statsData.summary.error || 0}</strong> ({statsData.summary.total > 0 ? Math.round(((statsData.summary.error || 0) / statsData.summary.total) * 100) : 0}%)
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* KPI Cards Row (3 Columns) */}
-                  <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: '0.75rem' }}>
-                    {/* Card 1: Tổng khách hàng */}
-                    <div className="stat-card hover-lift total-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tổng khách hàng')}</span>
-                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(30, 64, 255, 0.08)', color: '#1E40FF', flexShrink: 0 }}><Users size={16} /></div>
+                  {/* KPI Cards Row (4 Columns) */}
+                  <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Thành công')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-primary)', opacity: 0.8 }}><CheckCircle size={18} /></div>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
-                          {statsData.summary.total_received || 0}
-                        </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1E40FF', display: 'inline-block' }} />
-                            {t('Tổng data đang chăm sóc')}: {statsData.summary.total_received || 0}
-                          </span>
-                        </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsData.summary.successful
+                          }</div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Data gán mới thành công')}</div>
+                        <div style={{ fontSize: '0.625rem', color: 'var(--color-primary)', fontWeight: 600, marginTop: 2 }}>{t('(Không bao gồm Nhắc lại & Lỗi)')}</div>
                       </div>
                     </div>
 
-                    {/* Card 2: Được chia */}
-                    <div className="stat-card hover-lift distributed-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Được chia')}</span>
-                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', color: '#334155', border: '1px solid #e2e8f0', flexShrink: 0 }}><Send size={16} /></div>
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Nhắc lại')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-warning)', opacity: 0.8 }}><Clock size={18} /></div>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
-                          {(statsData.summary.distributed_count || 0) + (statsData.summary.coop_count || 0)}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsData.summary.reminder || 0}
                         </div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007af5', display: 'inline-block' }} />
-                            {t('Chia tự động')}: {statsData.summary.distributed_count || 0}
-                          </span>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fbbf24', display: 'inline-block' }} />
-                            {t('Hợp tác (co.op)')}: {statsData.summary.coop_count || 0}
-                          </span>
-                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Yêu cầu gọi lại')}</div>
+                        <div style={{ fontSize: '0.625rem', color: 'var(--color-warning)', fontWeight: 600, marginTop: 2 }}>{t('(Tính riêng biệt, không cộng dồn)')}</div>
                       </div>
                     </div>
 
-                    {/* Card 4: Tự nhập */}
-                    <div className="stat-card hover-lift out_of_hours-card" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px', borderRadius: '12px', border: '1px solid var(--color-border-light)', position: 'relative', overflow: 'hidden' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', position: 'relative', zIndex: 2 }}>
-                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tự nhập')}</span>
-                        <div className="stat-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '8px', background: '#f8fafc', color: '#334155', border: '1px solid #e2e8f0', flexShrink: 0 }}><UserPlus size={16} /></div>
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Lỗi')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-danger)', opacity: 0.8 }}><AlertTriangle size={18} /></div>
                       </div>
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)', lineHeight: 1.1 }}>
-                          {statsData.summary.self_count || 0}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsData.summary.error || 0}
                         </div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
-                            {t('Tự tạo hoặc giới thiệu')}: {statsData.summary.self_count || 0}
-                          </span>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Trùng lặp / Lỗi chia')}</div>
+                        <div style={{ fontSize: '0.625rem', color: 'var(--color-danger)', fontWeight: 600, marginTop: 2 }}>{t('(Đã loại bỏ khỏi Thành công)')}</div>
+                      </div>
+                    </div>
+
+                    <div className="stat-card hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', minHeight: '120px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span className="stat-label" style={{ fontSize: '0.6875rem', fontWeight: 800, color: 'var(--color-text-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('Tỷ lệ')}</span>
+                        <div className="stat-icon" style={{ color: 'var(--color-success)', opacity: 0.8 }}><BarChart2 size={18} /></div>
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
+                          {statsData.summary.system_total_successful > 0
+                            ? Math.round((statsData.summary.successful / statsData.summary.system_total_successful) * 100)
+                            : 0}%
                         </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Thành công / Tổng của tất cả Đại lý')}</div>
                       </div>
                     </div>
                   </div>
@@ -4632,8 +4511,8 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           <BarChart data={statsData.by_date} margin={{ left: -10, right: 5, top: 20, bottom: 0 }}>
                             <defs>
                               <linearGradient id="statsDateGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#e63946" stopOpacity={1} />
-                                <stop offset="100%" stopColor="#1D4ED8" stopOpacity={0.8} />
+                                <stop offset="0%" stopColor="#D8B467" stopOpacity={1} />
+                                <stop offset="100%" stopColor="#1E40FF" stopOpacity={0.8} />
                               </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" vertical={false} />
@@ -4660,7 +4539,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                       <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-text)' }}>{t('Tỷ lệ Trạng thái Data')}</h4>
                       {(() => {
                         const statusChartData = [
-                          { name: t('Thành công'), value: statsData.summary.successful, color: '#1D4ED8' },
+                          { name: t('Thành công'), value: statsData.summary.successful, color: '#1E40FF' },
                           { name: t('Nhắc lại'), value: statsData.summary.reminder, color: '#f59e0b' },
                           { name: t('Lỗi'), value: statsData.summary.error, color: '#ef4444' }
                         ].filter(item => item.value > 0);
@@ -4717,7 +4596,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                               <XAxis type="number" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                               <YAxis dataKey="round_name" type="category" width={90} tick={{ fontSize: 9, fontWeight: 600 }} axisLine={false} tickLine={false} />
                               <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', fontSize: '0.75rem', borderRadius: 8 }} />
-                              <Bar dataKey="successful_count" stackId="a" fill="#1D4ED8" radius={[0, 0, 0, 0]} barSize={12} name={t("Thành công")} />
+                              <Bar dataKey="successful_count" stackId="a" fill="#1E40FF" radius={[0, 0, 0, 0]} barSize={12} name={t("Thành công")} />
                               <Bar dataKey="reminder_count" stackId="a" fill="#f59e0b" radius={[0, 0, 0, 0]} barSize={12} name={t("Nhắc lại")} />
                               <Bar dataKey="error_count" stackId="a" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={12} name={t("Lỗi")} />
                             </BarChart>
@@ -4770,23 +4649,23 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
                           <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', textAlign: 'center' }}>
                             <div style={{ background: 'var(--color-bg)', padding: '6px', borderRadius: 8, border: '1px solid var(--color-border-light)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', fontWeight: 700 }}>{t('GỬI ĐI')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 2 }}>{statsData.tickets.total}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-text)', marginTop: 2 }}>{statsData.tickets?.total || 0}</div>
                             </div>
                             <div style={{ background: 'var(--color-success-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-success)', fontWeight: 700 }}>{t('ĐÃ BÙ')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 2 }}>{statsData.tickets.approved}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-success)', marginTop: 2 }}>{statsData.tickets?.approved || 0}</div>
                             </div>
                             <div style={{ background: 'var(--color-warning-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(245, 158, 11, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-warning)', fontWeight: 700 }}>{t('ĐANG CHỜ')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 2 }}>{statsData.tickets.pending}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-warning)', marginTop: 2 }}>{statsData.tickets?.pending || 0}</div>
                             </div>
                             <div style={{ background: 'var(--color-danger-light)', padding: '6px', borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.1)' }}>
                               <div style={{ fontSize: '0.6rem', color: 'var(--color-danger)', fontWeight: 700 }}>{t('TỪ CHỐI')}</div>
-                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 2 }}>{statsData.tickets.rejected}</div>
+                              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-danger)', marginTop: 2 }}>{statsData.tickets?.rejected || 0}</div>
                             </div>
                           </div>
                           <div style={{ marginTop: '10px', fontSize: '0.75rem', color: 'var(--color-text-muted)', textAlign: 'center', fontWeight: 500 }}>
-                            {t('Tổng nhận bù:')} <strong style={{ color: 'var(--color-success)' }}>{statsData.tickets.approved + (statsData.active_compensation || 0) + (statsData.blacklist_compensation || 0)}</strong> {t('data')} (Ticket: {statsData.tickets.approved}, Blacklist: {statsData.blacklist_compensation || 0}, {t('Chủ động')}: {statsData.active_compensation || 0})
+                            {t('Tổng nhận bù:')} <strong style={{ color: '#7e22ce' }}>{(statsData.tickets?.approved || 0) + (statsData.active_compensation || 0) + (statsData.blacklist_compensation || 0)}</strong> {t('data')} (Ticket: {statsData.tickets?.approved || 0}, Blacklist: {statsData.blacklist_compensation || 0}, {t('Chủ động')}: {statsData.active_compensation || 0})
                           </div>
                           <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
                             <button
@@ -4901,12 +4780,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
               {t("2. Phân loại lỗi data được chấp nhận duyệt bù")}
             </h4>
             <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0 }}>
-              {t("Hệ thống hỗ trợ duyệt bù tự động bằng trí tuệ nhân tạo (AI), duyệt theo từ khóa cấu hình sẵn, hoặc xét duyệt thủ công bởi Admin. Phân loại theo 4 nhóm lỗi chuẩn:")}
-              {ticketAutoApprove && (
-                <span style={{ display: 'block', marginTop: '6px', color: 'var(--color-success)', fontWeight: 700, fontSize: '0.785rem' }}>
-                  ● {t("Trạng thái hiện tại: Đang BẬT tự động duyệt đền bù khi nội dung báo cáo khớp với các quy tắc từ khóa cấu hình.")}
-                </span>
-              )}
+              {t("Hệ thống hỗ trợ duyệt bù tự động bằng AI hoặc duyệt thủ công theo 4 nhóm lỗi chuẩn:")}
             </p>
 
             <div style={{ 
@@ -5064,7 +4938,7 @@ const TicketSettingsModal = ({ open, onClose }: { open: boolean; onClose: () => 
   const { t } = useLanguage();
 
   const [accounts, setAccounts] = useState<any[]>([]);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -5076,13 +4950,13 @@ const TicketSettingsModal = ({ open, onClose }: { open: boolean; onClose: () => 
       fetchAPI('get_ticket_settings')
     ]).then(([accRes, settingsRes]) => {
       if (accRes.success) setAccounts(accRes.data);
-      if (settingsRes.success) setSelectedIds((settingsRes.data ?? []).map((id: any) => Number(id)));
+      if (settingsRes.success) setSelectedIds((settingsRes.data ?? []).map((id: any) => String(id)));
     }).catch((e: any) => toast.error(t('Lỗi tải cấu hình: ') + e.message))
       .finally(() => setLoadingData(false));
   }, [open]);
 
   const toggle = (id: any) => {
-    const numId = Number(id);
+    const numId = String(id);
     setSelectedIds(prev => prev.includes(numId) ? prev.filter(x => x !== numId) : [...prev, numId]);
   };
 
@@ -5119,12 +4993,12 @@ const TicketSettingsModal = ({ open, onClose }: { open: boolean; onClose: () => 
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: '50vh', overflowY: 'auto', paddingRight: 4 }}>
                 {accounts.filter((a: any) => a.role === 'admin' || a.role === 'superadmin' || a.role === 'assistant').map((acc: any) => {
-                  const isSelected = selectedIds.includes(Number(acc.id));
+                  const isSelected = selectedIds.includes(String(acc.id));
                   const noEmail = !acc.email;
                   return (
                     <div
                       key={acc.id}
-                      onClick={() => !noEmail && toggle(Number(acc.id))}
+                      onClick={() => !noEmail && toggle(String(acc.id))}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
                         borderRadius: 'var(--radius-lg)', border: '1px solid',
@@ -5135,7 +5009,7 @@ const TicketSettingsModal = ({ open, onClose }: { open: boolean; onClose: () => 
                         transition: 'all 0.2s'
                       }}
                     >
-                      <Avatar src={acc.avatar || acc.avatar_url} name={acc.name} size={36} />
+                      <Avatar src={acc.avatar} name={acc.name} size={36} />
                       {/* Info */}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 600, color: 'var(--color-text)', fontSize: '0.9rem' }}>{acc.name}</div>
@@ -5166,7 +5040,7 @@ const TicketSettingsModal = ({ open, onClose }: { open: boolean; onClose: () => 
                       }}>
                         <div style={{
                           position: 'absolute', top: 3, width: 16, height: 16, borderRadius: '50%',
-                          background: 'var(--color-surface)', boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                          background: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                           left: isSelected ? 21 : 3, transition: 'left 0.2s'
                         }} />
                       </div>

@@ -29,7 +29,6 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CustomModal } from './ui/CustomModal';
-import { BrandChannelLogo } from './ui/BrandChannelLogo';
 import { ToggleSwitch } from './ui/ToggleSwitch';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -151,7 +150,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Zalo OA Bot',
       badge: t('Khuyên dùng cho Sale VN'),
       badgeColor: '#0284c7',
-      icon: <BrandChannelLogo brand="zalo" size={26} />,
+      icon: <MessageCircle size={24} color="#0284c7" />,
       color: '#0284c7',
       bgColor: '#f0f9ff',
       borderColor: '#bae6fd',
@@ -163,7 +162,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Telegram Bot',
       badge: t('Tech Team & Group Chat'),
       badgeColor: '#2563eb',
-      icon: <BrandChannelLogo brand="telegram" size={26} />,
+      icon: <Bot size={24} color="#2563eb" />,
       color: '#2563eb',
       bgColor: '#eff6ff',
       borderColor: '#bfdbfe',
@@ -175,7 +174,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Inbound Webhook API',
       badge: t('LadiPage & Web CRM'),
       badgeColor: '#7c3aed',
-      icon: <BrandChannelLogo brand="webhook" size={26} />,
+      icon: <Zap size={24} color="#7c3aed" />,
       color: '#7c3aed',
       bgColor: '#f5f3ff',
       borderColor: '#ddd6fe',
@@ -187,7 +186,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
       title: 'Google Sheets & Email Relay',
       badge: t('Apps Script 0₫'),
       badgeColor: '#059669',
-      icon: <BrandChannelLogo brand="sheets_email" size={24} />,
+      icon: <FileSpreadsheet size={24} color="#059669" />,
       color: '#059669',
       bgColor: '#ecfdf5',
       borderColor: '#a7f3d0',
@@ -1401,7 +1400,7 @@ export const UnifiedBotSetupWizard: React.FC<UnifiedBotSetupWizardProps> = ({
                           ? t('Kết nối thành công — Máy chủ phản hồi chính xác!')
                           : t('Kiểm tra thất bại — Vui lòng xem chi tiết lỗi')}
                       </h4>
-                      <p style={{ fontSize: '0.75rem', color: testResult.success ? '#166534' : '#1E3A8A', marginTop: 2 }}>
+                      <p style={{ fontSize: '0.75rem', color: testResult.success ? '#166534' : '#991b1b', marginTop: 2 }}>
                         {testResult.success
                           ? t('Kênh đã được xác thực, sẵn sàng truyền tải Lead trong môi trường thực tế.')
                           : t('Không nhận được tín hiệu phản hồi từ Chat ID hoặc Token đã bị thu hồi.')}

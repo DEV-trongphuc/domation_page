@@ -398,7 +398,7 @@ export const AdsAnalyticsPanel: React.FC<AdsAnalyticsPanelProps> = ({
                 Reach & Tần Suất (Freq)
               </div>
               <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text)', margin: '4px 0' }}>
-                {(periodComp.current?.reach || 0).toLocaleString('vi-VN')} <span style={{ fontSize: '0.8rem', color: (periodComp.current?.frequency || 0) > 3.2 ? '#1E40FF' : '#1E40FF' }}>({periodComp.current?.frequency || 0})</span>
+                {(periodComp.current?.reach || 0).toLocaleString('vi-VN')} <span style={{ fontSize: '0.8rem', color: (periodComp.current?.frequency || 0) > 3.2 ? '#dc2626' : '#1E40FF' }}>({periodComp.current?.frequency || 0})</span>
               </div>
               <div style={{ fontSize: '0.67rem', color: 'var(--color-text-muted)' }}>
                 Hiển thị: {(periodComp.current?.impressions || 0).toLocaleString('vi-VN')}
