@@ -547,15 +547,153 @@ export function buildResolvedTerminology(
   };
 }
 
+export const FRONTEND_TO_BACKEND_MODULE_MAP: Readonly<Record<string, string>> = {
+  crm_dashboard: 'dashboard_crm',
+  fair_share: 'rounds',
+  consultants: 'sale_portal',
+  integrations_autodata: 'integrations_crm',
+  mkt_dashboard: 'dashboard_marketing',
+  email_templates: 'mkt_templates',
+  forms_triggers: 'mkt_forms',
+  surveys_quiz: 'mkt_surveys',
+  campaigns: 'mkt_campaigns',
+  automation_flows: 'mkt_flows',
+  vouchers_qr: 'mkt_vouchers',
+  web_tracking: 'mkt_web_tracking',
+  social_bot: 'mkt_social_bot',
+  ai_bot_studio: 'mkt_ai_bot',
+  growth_attribution: 'revenue_attribution',
+  integrations_unified: 'dashboard_growth',
+  erp_hrm_org: 'hrm',
+  erp_attendance: 'attendance',
+  erp_payroll: 'payroll',
+  erp_approvals: 'approvals',
+  erp_projects_tasks: 'projects',
+  erp_workchat: 'workchat',
+  erp_finance_inventory: 'finance',
+  erp_cloud_ocr: 'cloud_files_ocr',
+  education_addon: 'education',
+};
+
+export const MODULE_KEY_ALIASES: Readonly<Record<string, readonly string[]>> = {
+  crm_dashboard: ['crm_dashboard', 'dashboard_crm'],
+  dashboard_crm: ['dashboard_crm', 'crm_dashboard'],
+  rounds: ['rounds', 'fair_share'],
+  fair_share: ['fair_share', 'rounds'],
+  sale_portal: ['sale_portal', 'consultants'],
+  consultants: ['consultants', 'sale_portal'],
+  integrations_autodata: ['integrations_autodata', 'integrations_crm'],
+  integrations_crm: ['integrations_crm', 'integrations_autodata'],
+  mkt_dashboard: ['mkt_dashboard', 'dashboard_marketing'],
+  dashboard_marketing: ['dashboard_marketing', 'mkt_dashboard'],
+  email_templates: ['email_templates', 'mkt_templates'],
+  mkt_templates: ['mkt_templates', 'email_templates'],
+  forms_triggers: ['forms_triggers', 'mkt_forms'],
+  mkt_forms: ['mkt_forms', 'forms_triggers'],
+  surveys_quiz: ['surveys_quiz', 'mkt_surveys'],
+  mkt_surveys: ['mkt_surveys', 'surveys_quiz'],
+  campaigns: ['campaigns', 'mkt_campaigns'],
+  mkt_campaigns: ['mkt_campaigns', 'campaigns'],
+  automation_flows: ['automation_flows', 'mkt_flows'],
+  mkt_flows: ['mkt_flows', 'automation_flows'],
+  vouchers_qr: ['vouchers_qr', 'mkt_vouchers'],
+  mkt_vouchers: ['mkt_vouchers', 'vouchers_qr'],
+  web_tracking: ['web_tracking', 'mkt_web_tracking'],
+  mkt_web_tracking: ['mkt_web_tracking', 'web_tracking'],
+  social_bot: ['social_bot', 'mkt_social_bot'],
+  mkt_social_bot: ['mkt_social_bot', 'social_bot'],
+  ai_bot_studio: ['ai_bot_studio', 'mkt_ai_bot'],
+  mkt_ai_bot: ['mkt_ai_bot', 'ai_bot_studio'],
+  growth_attribution: ['growth_attribution', 'revenue_attribution', 'dashboard_growth'],
+  revenue_attribution: ['revenue_attribution', 'growth_attribution'],
+  dashboard_growth: ['dashboard_growth', 'growth_attribution', 'integrations_unified'],
+  integrations_unified: ['integrations_unified', 'dashboard_growth'],
+  erp_hrm_org: ['erp_hrm_org', 'hrm'],
+  hrm: ['hrm', 'erp_hrm_org'],
+  erp_attendance: ['erp_attendance', 'attendance'],
+  attendance: ['attendance', 'erp_attendance'],
+  erp_payroll: ['erp_payroll', 'payroll'],
+  payroll: ['payroll', 'erp_payroll'],
+  erp_approvals: ['erp_approvals', 'approvals'],
+  approvals: ['approvals', 'erp_approvals'],
+  erp_projects_tasks: ['erp_projects_tasks', 'projects', 'workspace_personal', 'helpdesk'],
+  projects: ['projects', 'erp_projects_tasks'],
+  workspace_personal: ['workspace_personal', 'erp_projects_tasks'],
+  helpdesk: ['helpdesk', 'erp_projects_tasks'],
+  erp_workchat: ['erp_workchat', 'workchat', 'enterprise_feed'],
+  workchat: ['workchat', 'erp_workchat'],
+  enterprise_feed: ['enterprise_feed', 'erp_workchat'],
+  erp_finance_inventory: ['erp_finance_inventory', 'finance', 'quotes_orders', 'inventory_assets', 'crm_b2b', 'reports_bi'],
+  finance: ['finance', 'erp_finance_inventory'],
+  quotes_orders: ['quotes_orders', 'erp_finance_inventory'],
+  inventory_assets: ['inventory_assets', 'erp_finance_inventory'],
+  crm_b2b: ['crm_b2b', 'erp_finance_inventory'],
+  reports_bi: ['reports_bi', 'erp_finance_inventory'],
+  erp_cloud_ocr: ['erp_cloud_ocr', 'cloud_files_ocr'],
+  cloud_files_ocr: ['cloud_files_ocr', 'erp_cloud_ocr'],
+  education_addon: ['education_addon', 'education'],
+  education: ['education', 'education_addon'],
+};
+
+export function toBackendModuleKey(moduleKey: string): string {
+  return FRONTEND_TO_BACKEND_MODULE_MAP[moduleKey] || moduleKey;
+}
+
+export function getModuleKeyAliases(moduleKey: string): string[] {
+  const aliases = MODULE_KEY_ALIASES[moduleKey];
+  if (aliases) {
+    return Array.from(new Set([moduleKey, toBackendModuleKey(moduleKey), ...aliases]));
+  }
+  return Array.from(new Set([moduleKey, toBackendModuleKey(moduleKey)]));
+}
+
 export function computeDefaultEnabledModules(
   packageCode: SaasPackageCode,
   educationAddon: boolean
 ): string[] {
   const base = SAAS_PACKAGES_CATALOG[packageCode]?.defaultModules || SAAS_PACKAGES_CATALOG.autodata_crm.defaultModules;
   if (educationAddon && packageCode === 'domation_promax') {
-    return Array.from(new Set([...base, 'education_addon']));
+    return Array.from(new Set([...base, 'education_addon', 'education']));
   }
-  return base.filter((m) => m !== 'education_addon' || educationAddon);
+  return base.filter((m) => (m !== 'education_addon' && m !== 'education') || educationAddon);
+}
+
+export function expandEnabledModulesForPackage(
+  packageCode: SaasPackageCode,
+  educationAddon: boolean,
+  rawServerModules?: ReadonlyArray<string> | null
+): string[] {
+  const defaults = computeDefaultEnabledModules(packageCode, educationAddon);
+  const merged = new Set<string>();
+
+  for (const mod of defaults) {
+    for (const alias of getModuleKeyAliases(mod)) {
+      merged.add(alias);
+    }
+  }
+
+  if (Array.isArray(rawServerModules)) {
+    for (const mod of rawServerModules) {
+      if (!mod) continue;
+      for (const alias of getModuleKeyAliases(mod)) {
+        merged.add(alias);
+      }
+    }
+  }
+
+  if (packageCode === 'autodata_crm') {
+    merged.delete('audiences');
+  }
+
+  if (!(educationAddon && packageCode === 'domation_promax')) {
+    merged.delete('education_addon');
+    merged.delete('education');
+  } else {
+    merged.add('education_addon');
+    merged.add('education');
+  }
+
+  return Array.from(merged);
 }
 
 export function maskPiiPhone(phone?: string | null, canUnmask = false): string {

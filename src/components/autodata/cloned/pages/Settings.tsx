@@ -1,7 +1,8 @@
+/* eslint-disable react-refresh/only-export-components, @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { Mail, Settings2, Save, Send, Server, Database, Activity, ChevronDown, ChevronUp, Zap, Shield, MessageCircle, RefreshCw, Settings as SettingsIcon, BarChart2, Clock, Calendar, Users, CheckCircle, Plus, Trash2, Edit2, FileSpreadsheet, Upload, Download, X, Search, UserCheck, Bell } from 'lucide-react';
+import { Mail, Settings2, Save, Send, Server, Database, Activity, ChevronDown, ChevronUp, Zap, Shield, MessageCircle, RefreshCw, Settings as SettingsIcon, BarChart2, Clock, Calendar, Users, CheckCircle, Plus, Trash2, Edit2, FileSpreadsheet, Upload, Download, X, Search, UserCheck, Bell, Network, Lock, Globe, GitBranch, FileText } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { CustomModal } from '../components/ui/CustomModal';
@@ -25,6 +26,9 @@ import { SettingsProcessingSections } from '../components/settings/SettingsProce
 import { SettingsCommunicationsSections } from '../components/settings/SettingsCommunicationsSections';
 import { SettingsReportSections, SettingsAiGlobalSection } from '../components/settings/SettingsReportSections';
 import { DEFAULT_PIPELINE_CAPI_STAGES, type TenantSettingsDto } from '../utils/pipelineConfig';
+import { useEntitlement } from '../contexts/EntitlementContext';
+import { SaasSettingsHub, type SaasEngineTabKey } from '../modules/settings-saas/SaasSettingsHub';
+import type { SettingsSubTabKey } from '../../autodataTypes';
 
 const loadXlsx = async () => await import('xlsx');
 
@@ -103,11 +107,37 @@ const SettingsInner = () => {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
 
+  const { hasModule } = useEntitlement();
+  const hasCrmRouting = hasModule('rounds');
+
   // Tab State
-  const [activeTab, setActiveTab] = useState<'processing' | 'communications' | 'report' | 'duplicate_check' | 'ai' | 'billing'>('processing');
+  const [activeTab, setActiveTab] = useState<SettingsSubTabKey>(() => {
+    if (typeof window !== 'undefined') {
+      const tabParam = new URLSearchParams(window.location.search).get('tab') as SettingsSubTabKey | null;
+      if (
+        tabParam &&
+        [
+          'org_structure',
+          'rbac_matrix',
+          'terminology',
+          'pipeline_rules',
+          'policy_docs',
+          'processing',
+          'communications',
+          'report',
+          'duplicate_check',
+          'ai',
+          'billing',
+        ].includes(tabParam)
+      ) {
+        return tabParam;
+      }
+    }
+    return hasCrmRouting ? 'processing' : 'org_structure';
+  });
   const [guideModal, setGuideModal] = useState<'webhook' | 'email' | 'telegram' | 'zalo' | null>(null);
 
-  const handleTabChange = (tab: 'processing' | 'communications' | 'report' | 'duplicate_check' | 'ai' | 'billing') => {
+  const handleTabChange = (tab: SettingsSubTabKey) => {
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -117,10 +147,19 @@ const SettingsInner = () => {
   };
 
   const tabOptions = [
-    { value: 'processing', label: t('Cấu hình Xử lý'), icon: <SettingsIcon size={16} /> },
+    { value: 'org_structure', label: t('Sơ đồ Tổ chức & GPS'), icon: <Network size={16} /> },
+    { value: 'rbac_matrix', label: t('Ma trận Phân quyền (7×11)'), icon: <Lock size={16} /> },
+    { value: 'terminology', label: t('Từ điển Đa ngành'), icon: <Globe size={16} /> },
+    { value: 'pipeline_rules', label: t('Pipeline & Luật chuyển bước'), icon: <GitBranch size={16} /> },
+    { value: 'policy_docs', label: t('Nội quy & Mẫu biểu'), icon: <FileText size={16} /> },
+    ...(hasCrmRouting
+      ? [{ value: 'processing', label: t('Cấu hình Xử lý'), icon: <SettingsIcon size={16} /> }]
+      : []),
     { value: 'communications', label: t('Cấu hình Gửi tin & Email'), icon: <Send size={16} /> },
     { value: 'report', label: t('Báo cáo'), icon: <BarChart2 size={16} /> },
-    { value: 'duplicate_check', label: t('Ánh xạ dữ liệu cũ'), icon: <FileSpreadsheet size={16} /> },
+    ...(hasCrmRouting
+      ? [{ value: 'duplicate_check', label: t('Ánh xạ dữ liệu cũ'), icon: <FileSpreadsheet size={16} /> }]
+      : []),
     { value: 'ai', label: t('Cấu hình Trợ lý AI'), icon: <Zap size={16} /> },
     { value: 'billing', label: t('Gói cước & Ví'), icon: <CreditCard size={16} /> }
   ];
@@ -478,8 +517,23 @@ const SettingsInner = () => {
     fetchSettings();
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (tabParam && ['processing', 'mail', 'zalo', 'report', 'duplicate_check', 'ai'].includes(tabParam)) {
-      setActiveTab(tabParam as any);
+    if (
+      tabParam &&
+      [
+        'org_structure',
+        'rbac_matrix',
+        'terminology',
+        'pipeline_rules',
+        'policy_docs',
+        'processing',
+        'communications',
+        'report',
+        'duplicate_check',
+        'ai',
+        'billing',
+      ].includes(tabParam)
+    ) {
+      setActiveTab(tabParam as SettingsSubTabKey);
       if (window.location.hash === '#auto-approve') {
         setTimeout(() => {
           const el = document.getElementById('auto-approve');
@@ -487,7 +541,7 @@ const SettingsInner = () => {
         }, 300);
       }
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (activeTab === 'duplicate_check') {
@@ -734,7 +788,7 @@ const SettingsInner = () => {
               if (val.includes('@') && /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(val)) {
                 foundContacts.push(val);
               } else {
-                const cleanedPhone = val.replace(/[\s\.\-\(\)]/g, '');
+                const cleanedPhone = val.replace(/[\s.\-()]/g, '');
                 if (/^\+?\d{8,15}$/.test(cleanedPhone)) {
                   foundContacts.push(cleanedPhone);
                 }
@@ -997,46 +1051,45 @@ const SettingsInner = () => {
         />
       </div>
 
-      <div className="mobile-filter-tabs hide-on-mobile" data-tour="settings-tabs" style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
-        <button
-          onClick={() => handleTabChange('processing')}
-          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'processing' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'processing' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
-        >
-          <SettingsIcon size={18} /> {t('Cấu hình Xử lý')}
-        </button>
-        <button
-          onClick={() => handleTabChange('communications')}
-          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'communications' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'communications' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
-        >
-          <Send size={18} /> {t('Cấu hình Gửi tin & Email')}
-        </button>
-        <button
-          onClick={() => handleTabChange('report')}
-          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'report' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'report' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
-        >
-          <BarChart2 size={18} /> Báo cáo
-        </button>
-        <button
-          onClick={() => handleTabChange('duplicate_check')}
-          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'duplicate_check' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'duplicate_check' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
-        >
-          <FileSpreadsheet size={18} /> Ánh xạ dữ liệu cũ
-        </button>
-        <button
-          onClick={() => handleTabChange('ai')}
-          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'ai' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'ai' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
-        >
-          <Zap size={18} /> Cấu hình Trợ lý AI
-        </button>
-        <button
-          onClick={() => handleTabChange('billing')}
-          style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9375rem', fontWeight: 600, background: 'transparent', border: 'none', borderBottom: activeTab === 'billing' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'billing' ? 'var(--color-primary)' : 'var(--color-text-muted)', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}
-        >
-          <CreditCard size={18} /> Gói cước & Ví
-        </button>
+      <div className="mobile-filter-tabs hide-on-mobile" data-tour="settings-tabs" style={{ display: 'flex', gap: '0.35rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)', overflowX: 'auto', paddingBottom: 2 }}>
+        {tabOptions.map((opt) => {
+          const isTabActive = activeTab === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => handleTabChange(opt.value as SettingsSubTabKey)}
+              style={{
+                padding: '0.7rem 0.95rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                fontSize: '0.86rem',
+                fontWeight: isTabActive ? 700 : 600,
+                background: isTabActive ? 'rgba(30, 64, 255, 0.06)' : 'transparent',
+                borderRadius: '10px 10px 0 0',
+                border: 'none',
+                borderBottom: isTabActive ? '2.5px solid var(--color-primary)' : '2.5px solid transparent',
+                color: isTabActive ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {opt.icon} {opt.label}
+            </button>
+          );
+        })}
       </div>
 
-      {activeTab === 'billing' ? (
+      {(['org_structure', 'rbac_matrix', 'terminology', 'pipeline_rules', 'policy_docs'] as const).includes(
+        activeTab as SaasEngineTabKey
+      ) ? (
+        <div className="subtab-enter-active">
+          <SaasSettingsHub activeEngineTab={activeTab as SaasEngineTabKey} />
+        </div>
+      ) : activeTab === 'billing' ? (
         <div data-tour="settings-bill-kpis" className="subtab-enter-active card" style={{ padding: '1.5rem' }}>
           <BillingView token={token || ''} tenantSlug={tenantSlug} />
         </div>

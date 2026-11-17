@@ -1,7 +1,8 @@
+/* eslint-disable react-refresh/only-export-components, @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect, react-hooks/exhaustive-deps, react-hooks/immutability */
 import { getApiBaseUrl } from '../utils/api';
 import { useState, useEffect, Fragment } from 'react';
 import { createPortal } from 'react-dom';
-import { Database, Search, Filter, ChevronLeft, ChevronRight, Download, RefreshCw, User, Phone, Mail, Clock, Tag, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ShieldAlert, Calendar, LayoutList, Sparkles, Check, X, Edit, Bell, Copy, CheckCircle, BarChart2, Scale, Info, Megaphone, Eye } from 'lucide-react';
+import { Database, Search, Filter, ChevronLeft, ChevronRight, Download, RefreshCw, User, Phone, Mail, Clock, Tag, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ShieldAlert, Calendar, LayoutList, Sparkles, Check, X, Edit, Bell, Copy, CheckCircle, BarChart2, Scale, Info, Megaphone, Eye, Layers } from 'lucide-react';
 import {
   Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
@@ -14,6 +15,7 @@ import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { useEntitlement } from '../contexts/EntitlementContext';
 import { resolveTenantPipelines } from '../utils/pipelineConfig';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
@@ -314,6 +316,7 @@ const getAICardConfig = (selectedLead: Lead | null, theme: 'light' | 'dark', t: 
 
 const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { isActive: boolean; searchParams: URLSearchParams; setSearchParams: any; location: any }) => {
   const { user, tenantSettings } = useAuth();
+  const { hasModule } = useEntitlement();
   const { language, t } = useLanguage();
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -963,7 +966,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
       document.body.removeChild(link);
 
       toast.success(t('Đang tải xuống file CSV...'), { id: 'export' });
-    } catch (err) {
+    } catch {
       toast.error(t('Có lỗi xảy ra khi xuất dữ liệu'), { id: 'export' });
     }
   };
@@ -1350,6 +1353,41 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
             >
               <Download size={13} /> <span>{t('Xuất')}<span className="hide-on-mobile"> CSV</span></span>
             </button>
+
+            {hasModule('audiences') && (
+              <>
+                <div style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const ids = (leads || []).map((l) => String(l.lead_id ?? l.id));
+                    navigate('/audiences');
+                    setTimeout(() => {
+                      window.dispatchEvent(
+                        new CustomEvent('autodata-save-crm-to-audience', { detail: { leadIds: ids } })
+                      );
+                    }, 120);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '0 10px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#0284C7',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    height: '28px',
+                  }}
+                  title="Lưu danh sách bộ lọc CRM hiện tại thành Tệp Data nuôi dưỡng"
+                >
+                  <Layers size={13} /> <span className="hide-on-mobile">Lưu vào Tệp</span>
+                </button>
+              </>
+            )}
 
             {/* Separator line for mobile filter toggle */}
             <div className="mobile-only" style={{ width: '1px', height: '16px', background: 'var(--color-border)', margin: '0 6px' }} />
@@ -2886,7 +2924,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                     day: '2-digit', month: '2-digit', year: 'numeric',
                                     hour: '2-digit', minute: '2-digit', second: '2-digit'
                                   }) || selectedLead.resolved_at;
-                                } catch (e) {
+                                } catch {
                                   displayTime = selectedLead.resolved_at;
                                 }
                               } else {

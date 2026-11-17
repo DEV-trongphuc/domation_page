@@ -147,7 +147,13 @@ export function renderRouteSeoHeadBlock(config: PageSeoConfig): string {
     );
   }
 
-  lines.push(`  ${SEO_END_MARKER}`);
+  lines.push(
+    ``,
+    `  <!-- Anti-FOUC SSR Fallback Styling & Stale-Chunk Recovery -->`,
+    `  <style id="domation-ssr-style">html[data-dom-js="1"] #domation-prerender-seo{display:none!important;}#domation-prerender-seo{max-width:980px;margin:40px auto;padding:0 20px;font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;color:#0F172A;line-height:1.65;}#domation-prerender-seo img{max-width:100%;height:auto;border-radius:14px;}#domation-prerender-seo a{color:#1E40FF;text-decoration:none;}</style>`,
+    `  <script>(function(){try{var d=document.documentElement;d.setAttribute('data-dom-js','1');var k='dom_asset_reload_ts';window.__domationRecoverStaleAssets=function(){try{var last=Number(sessionStorage.getItem(k)||'0');if(!last||Date.now()-last>30000){sessionStorage.setItem(k,String(Date.now()));fetch(window.location.pathname||'/',{cache:'reload'}).catch(function(){}).finally(function(){window.location.reload();});return true;}}catch(e){}d.removeAttribute('data-dom-js');return false;};window.addEventListener('error',function(ev){var t=ev&&ev.target;if(t&&(t.tagName==='SCRIPT'||t.tagName==='LINK')&&t.getAttribute){var s=t.getAttribute('src')||t.getAttribute('href')||'';if(s.indexOf('/assets/')!==-1&&!window.__DOMATION_APP_MOUNTED__){window.__domationRecoverStaleAssets();}}},true);window.setTimeout(function(){if(!window.__DOMATION_APP_MOUNTED__){window.__domationRecoverStaleAssets();}},9000);}catch(e){}})();</script>`,
+    `  ${SEO_END_MARKER}`
+  );
   return lines.join('\n');
 }
 
@@ -317,7 +323,10 @@ function injectStaticRootBody(html: string, staticBody: string): string {
   if (!rootPattern.test(html)) {
     return html;
   }
-  return html.replace(rootPattern, `<div id="root">${staticBody}</div>`);
+  return html.replace(
+    rootPattern,
+    `<div id="root"><div id="domation-prerender-seo">${staticBody}</div></div>`
+  );
 }
 
 export function seoPrerenderPlugin(): Plugin {

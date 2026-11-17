@@ -1,8 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useCallback, useEffect, useState } from 'react';
-import { ArrowUpRight, Check, CreditCard, RefreshCw, Sparkles, Wallet } from 'lucide-react';
+import { ArrowUpRight, Check, CreditCard, GraduationCap, RefreshCw, Sparkles, Wallet, Zap } from 'lucide-react';
 import { apiRequest, formatVnd, getErrorMessage } from '../autodataApi';
-import { DEFAULT_CLIENT_CATALOG, type ClientBillingCatalog, type ClientSubscriptionSnapshot } from '../autodataTypes';
+import { DEFAULT_CLIENT_CATALOG, type ClientBillingCatalog, type ClientSubscriptionSnapshot, type SaasPackageCode } from '../autodataTypes';
 import { ScreenHelpButton } from '../cloned/components/ui/ScreenHelpButton';
+import { useEntitlement } from '../cloned/contexts/EntitlementContext';
+import { SAAS_PACKAGES_CATALOG } from '../cloned/contexts/entitlementConstants';
 
 interface BillingTransactionRow {
   id: string;
@@ -44,6 +47,10 @@ export const formatPlanDisplayName = (
     enterprise_monthly: 'Enterprise • Theo Tháng',
     enterprise: 'Enterprise • Doanh nghiệp',
     domation_crm_erp: 'CRM 360° & ERP 5.0 • Doanh nghiệp',
+    autodata_crm: 'Gói 1 • Auto Data & CRM',
+    marketing_standalone: 'Gói 2 • Marketing Automation Standalone',
+    growth_combo: 'Gói 3 • Growth Suite (CRM + Marketing)',
+    domation_promax: 'Gói 4 • DOMATION PROMAX (Full ERP + AI)',
     standard_yearly: 'Standard • Chu kỳ Năm',
     standard_annual: 'Standard • Chu kỳ Năm',
     standard_monthly: 'Standard • Theo Tháng',
@@ -103,10 +110,23 @@ export const BillingView: React.FC<BillingViewProps> = ({
   catalog,
   hideHeaderCard = false,
 }) => {
+  const { packageCode, educationAddon, switchingPackage, switchPackage, applyTerminologyLocal } = useEntitlement();
   const [overview, setOverview] = useState<BillingOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+
+  const handleInstantPackageSwitch = async (targetPkg: SaasPackageCode, nextEdu?: boolean) => {
+    try {
+      await switchPackage(targetPkg, {
+        educationAddon: typeof nextEdu === 'boolean' ? nextEdu : educationAddon,
+      });
+      setToast(`Đã mở khóa tức thì ${SAAS_PACKAGES_CATALOG[targetPkg].shortName} (0 giây Migrate, bảo toàn 100% dữ liệu)!`);
+      void reload();
+    } catch (err: unknown) {
+      setToast(getErrorMessage(err, 'Không thể chuyển đổi gói phân hệ.'));
+    }
+  };
 
   const fetchBilling = useCallback(async () => {
     return apiRequest<BillingOverviewResponse>('/billing/overview', { token, tenantSlug });
@@ -314,6 +334,97 @@ export const BillingView: React.FC<BillingViewProps> = ({
           >
             <Sparkles className="h-3.5 w-3.5" /> Nâng cấp CRM 360° / ERP 5.0 <ArrowUpRight className="h-3.5 w-3.5" />
           </button>
+        </div>
+      </div>
+
+      {/* 4-Package Composable Ecosystem Instant Unlock Matrix */}
+      <div className="inkica-glass-card space-y-4 rounded-2xl border border-blue-200/80 bg-gradient-to-br from-white via-white to-blue-50/40 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-[#1E40FF]">
+              <Zap className="h-3.5 w-3.5" /> Zero-Migration Instant Unlock (0 Giây Chuyển Đổi)
+            </div>
+            <h2 className="mt-1.5 text-sm font-extrabold text-slate-900">
+              Hệ Sinh Thái 4 Gói Thương Mại DOMATION Trên 1 Trái Tim Dữ Liệu Dùng Chung
+            </h2>
+            <p className="text-xs text-slate-500">
+              Chuyển đổi hoặc nâng cấp 1 chạm: tự động tách biệt Menu, Step Tour & Cổng kết nối — giữ nguyên 100% Hồ sơ Khách hàng 360°
+            </p>
+          </div>
+
+          {packageCode === 'domation_promax' && (
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-blue-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 shadow-sm">
+              <GraduationCap className="h-4 w-4 text-[#1E40FF]" />
+              <span>Education Add-on (Học vụ)</span>
+              <input
+                type="checkbox"
+                checked={educationAddon}
+                onChange={(e) => {
+                  const nextVal = e.target.checked;
+                  applyTerminologyLocal({ educationAddon: nextVal });
+                  void handleInstantPackageSwitch('domation_promax', nextVal);
+                }}
+                className="h-4 w-4 accent-[#1E40FF]"
+              />
+            </label>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-4">
+          {(Object.keys(SAAS_PACKAGES_CATALOG) as SaasPackageCode[]).map((code) => {
+            const pkg = SAAS_PACKAGES_CATALOG[code];
+            const isCurrent = packageCode === code;
+            return (
+              <div
+                key={code}
+                className={`flex flex-col justify-between rounded-2xl border p-4 transition ${
+                  isCurrent
+                    ? 'border-[#1E40FF] bg-white shadow-md ring-2 ring-[#1E40FF]/15'
+                    : 'border-slate-200 bg-white hover:border-blue-300'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[10px] font-bold text-[#1E40FF]">
+                      {pkg.badge}
+                    </span>
+                    {isCurrent && (
+                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                        Đang dùng
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="mt-2 text-sm font-extrabold text-slate-900">{pkg.shortName}</h3>
+                  <p className="mt-1 text-[11px] leading-relaxed text-slate-500">{pkg.tagline}</p>
+                  <p className="mt-2.5 text-lg font-black text-slate-900">
+                    {formatVnd(billingCycle === 'annual' ? pkg.annualMonthlyEquivalentVnd : pkg.monthlyPriceVnd)}
+                    <span className="text-[11px] font-normal text-slate-500">/tháng</span>
+                  </p>
+                  <ul className="mt-3 space-y-1.5 text-[11px] text-slate-600">
+                    {pkg.highlights.map((hl) => (
+                      <li key={hl} className="flex items-start gap-1.5 leading-snug">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#1E40FF]" />
+                        <span>{hl}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={isCurrent || switchingPackage}
+                  onClick={() => void handleInstantPackageSwitch(code)}
+                  className={`mt-4 w-full rounded-xl py-2 text-xs font-bold transition ${
+                    isCurrent
+                      ? 'cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700'
+                      : 'btn-inkica-primary cursor-pointer text-white shadow-sm hover:opacity-95'
+                  }`}
+                >
+                  {isCurrent ? 'Đang kích hoạt trên Workspace' : `Kích hoạt ${pkg.shortName.split('•')[0].trim()}`}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 

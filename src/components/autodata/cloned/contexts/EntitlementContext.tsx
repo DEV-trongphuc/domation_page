@@ -9,10 +9,12 @@ import {
   SAAS_PACKAGES_CATALOG,
   INDUSTRY_PRESETS,
   buildResolvedTerminology,
-  computeDefaultEnabledModules,
+  expandEnabledModulesForPackage,
+  getModuleKeyAliases,
   localPackageOverrideKey,
   normalizeIndustryKey,
   normalizePackageCode,
+  toBackendModuleKey,
   type DataScopeKey,
   type IndustryPresetKey,
   type PackageCatalogMeta,
@@ -181,20 +183,13 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [localPatch.enableIdeasMascot, rawEntitlements.enable_ideas_mascot, tenantSettings.enable_ideas_mascot]);
 
   const enabledModules = useMemo<Set<string>>(() => {
-    const defaultForPkg = computeDefaultEnabledModules(packageCode, educationAddon);
-    if (localPatch.enabledModules && localPatch.enabledModules.length > 0) {
-      const merged = new Set(localPatch.enabledModules);
-      if (!educationAddon) merged.delete('education_addon');
-      else if (packageCode === 'domation_promax') merged.add('education_addon');
-      return merged;
-    }
-    const serverModules = bootstrapData?.tenant?.enabled_modules || v2Session.enabled_modules;
-    if (Array.isArray(serverModules) && serverModules.length > 0 && !localPatch.packageCode) {
-      const merged = new Set([...defaultForPkg, ...serverModules]);
-      if (!educationAddon) merged.delete('education_addon');
-      return merged;
-    }
-    return new Set(defaultForPkg);
+    const rawServerModules =
+      localPatch.enabledModules && localPatch.enabledModules.length > 0
+        ? localPatch.enabledModules
+        : !localPatch.packageCode
+        ? bootstrapData?.tenant?.enabled_modules || v2Session.enabled_modules
+        : undefined;
+    return new Set(expandEnabledModulesForPackage(packageCode, educationAddon, rawServerModules));
   }, [
     packageCode,
     educationAddon,
@@ -223,11 +218,12 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     localPatch.terminology,
   ]);
 
-  const isTenantOwner = useMemo<boolean>(() => {
-    if (typeof user?.is_tenant_owner === 'boolean') return user.is_tenant_owner;
-    if (typeof v2Session.is_tenant_owner === 'boolean') return v2Session.is_tenant_owner;
-    return user?.role === 'superadmin';
-  }, [user?.is_tenant_owner, user?.role, v2Session.is_tenant_owner]);
+  const isTenantOwner: boolean =
+    typeof user?.is_tenant_owner === 'boolean'
+      ? user.is_tenant_owner
+      : typeof v2Session.is_tenant_owner === 'boolean'
+      ? v2Session.is_tenant_owner
+      : user?.role === 'superadmin';
 
   const effectivePermissions = useMemo<Record<string, EffectiveModulePermission>>(() => {
     return (
@@ -251,21 +247,37 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (moduleKey === 'settings' || moduleKey === 'billing' || moduleKey === 'org_rbac') {
         return true;
       }
-      if (moduleKey === 'education_addon') {
+      if (moduleKey === 'audiences' && packageCode === 'autodata_crm') {
+        return false;
+      }
+      if (moduleKey === 'education_addon' || moduleKey === 'education') {
         return packageCode === 'domation_promax' && educationAddon;
       }
-      return enabledModules.has(moduleKey);
+      return enabledModules.has(moduleKey) || enabledModules.has(toBackendModuleKey(moduleKey));
     },
     [enabledModules, packageCode, educationAddon]
   );
 
   // Zero-Short-Circuit Resolution Order:
   // 1. Entitlement Gate -> 2. is_tenant_owner -> 3. Effective Permissions (User Deny/Grant -> Role ∪ Dept)
+  const resolveEffectivePermission = useCallback(
+    (moduleKey: string): EffectiveModulePermission | undefined => {
+      const direct =
+        effectivePermissions[moduleKey] ?? effectivePermissions[toBackendModuleKey(moduleKey)];
+      if (direct) return direct;
+      for (const alias of getModuleKeyAliases(moduleKey)) {
+        if (effectivePermissions[alias]) return effectivePermissions[alias];
+      }
+      return undefined;
+    },
+    [effectivePermissions]
+  );
+
   const scope = useCallback(
     (moduleKey: string): DataScopeKey => {
       if (!hasModule(moduleKey)) return 'none';
       if (isTenantOwner) return 'company';
-      const perm = effectivePermissions[moduleKey];
+      const perm = resolveEffectivePermission(moduleKey);
       if (perm) {
         const rawScope = (perm.data_scope || perm.scope || 'none') as DataScopeKey;
         return rawScope;
@@ -275,14 +287,14 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (user?.role === 'assistant' || user?.role === 'viewer') return 'department';
       return 'own';
     },
-    [hasModule, isTenantOwner, effectivePermissions, user?.role]
+    [hasModule, isTenantOwner, resolveEffectivePermission, user?.role]
   );
 
   const can = useCallback(
     (moduleKey: string, action: RbacActionKey = 'view'): boolean => {
       if (!hasModule(moduleKey)) return false;
       if (isTenantOwner) return true;
-      const perm = effectivePermissions[moduleKey];
+      const perm = resolveEffectivePermission(moduleKey);
       if (perm) {
         const resolvedScope = perm.data_scope || perm.scope || 'none';
         if (resolvedScope === 'none') return false;
@@ -306,7 +318,7 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       }
       return action === 'view';
     },
-    [hasModule, isTenantOwner, effectivePermissions, user?.role, tenantSettings.pii_masking_enabled, tenantSettings.pii_mask_all_sales]
+    [hasModule, isTenantOwner, resolveEffectivePermission, user?.role, tenantSettings.pii_masking_enabled, tenantSettings.pii_mask_all_sales]
   );
 
   const term = useCallback(
@@ -366,8 +378,6 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
         });
       }
 
-      const fallbackModules = computeDefaultEnabledModules(nextPackage, nextEdu);
-
       try {
         let res: SwitchPackageResponse | null = null;
         try {
@@ -394,18 +404,21 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
           }).catch(() => null);
         }
 
-        const resolvedModules =
-          res?.enabled_modules && res.enabled_modules.length > 0
-            ? res.enabled_modules
-            : fallbackModules;
+        const effectivePkg = res?.package_code || nextPackage;
+        const effectiveEdu =
+          typeof res?.entitlements?.education_addon === 'boolean'
+            ? Boolean(res.entitlements.education_addon)
+            : nextEdu;
+        const resolvedModules = expandEnabledModulesForPackage(
+          effectivePkg,
+          effectiveEdu,
+          res?.enabled_modules
+        );
 
         const nextPatch: LocalEntitlementPatch = {
-          packageCode: res?.package_code || nextPackage,
+          packageCode: effectivePkg,
           enabledModules: resolvedModules,
-          educationAddon:
-            typeof res?.entitlements?.education_addon === 'boolean'
-              ? Boolean(res.entitlements.education_addon)
-              : nextEdu,
+          educationAddon: effectiveEdu,
           industryKey: nextInd,
           ...(res?.terminology ? { terminology: res.terminology } : {}),
           ...(res?.effective_permissions ? { effectivePermissions: res.effective_permissions } : {}),

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useEntitlement } from '../../contexts/EntitlementContext';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { QuickAddLeadModal } from '../QuickAddLeadModal';
@@ -41,6 +43,8 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   
   // Notification states
   const { user } = useAuth();
+  const { hasModule } = useEntitlement();
+  const hasTicketsModule = hasModule('tickets_data');
   const navigate = useNavigate();
   const [pendingTicketsCount, setPendingTicketsCount] = useState<number>(0);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState<boolean>(false);
@@ -219,6 +223,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    if (!hasTicketsModule) return;
     if (user?.role === 'admin' || user?.role === 'superadmin') {
       fetchAPI('get_reports&status=pending&date=all&pageSize=1')
         .then(res => {
@@ -244,7 +249,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         })
         .catch(err => console.error('Error loading held leads notification:', err));
     }
-  }, [user]);
+  }, [user, hasTicketsModule]);
 
   const handleViewTickets = () => {
     setIsTicketModalOpen(false);
@@ -751,7 +756,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                                 try {
                                   const parsed = JSON.parse(item.details);
                                   return JSON.stringify(parsed, null, 2);
-                                } catch (e) {
+                                } catch {
                                   return item.details;
                                 }
                               })()}

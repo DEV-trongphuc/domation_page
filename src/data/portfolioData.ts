@@ -11,8 +11,9 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     logo: '/assets/partners/logo_capital_house.webp',
     previewImage: '/assets/ecolife/bocmai/bocmai_3d_b3.webp',
     liveUrl: 'https://ai.ecolifesignature.vn/',
+    highlight: 'Ứng dụng công nghệ AI và 3D web vào Ngành bất động sản',
     problem:
-      'Chủ đầu tư cần không gian số Quiet Luxury tương xứng chuẩn BĐS Xanh EDGE, cho phép khách hàng từ xa xem mặt bằng 3D căn hộ và chia Lead tự động minh bạch cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).',
+      'Thiết kế riêng không gian số Quiet Luxury tích hợp sa bàn 8 căn hộ 3D, Trợ lý AI Sale 24/7 và hệ thống chia số tự động cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).',
     implementationPain:
       'Mô hình 3D kiến trúc gốc nặng 80MB gây giật lag trên iPhone Safari; tranh cãi dễ phát sinh nếu chia số lệch hoặc Sàn F1 báo lỗi số thuê bao không được bù kịp thời.',
     architecture:
@@ -37,6 +38,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     logo: '/assets/partners/logo_inkica_icon.svg',
     previewImage: '/assets/inkica/inkica_aop_3d.jpg',
     liveUrl: 'https://ai.inkica.com/',
+    highlight: '60s đầy đủ trọn quy trình chuẩn Listing - Fulfillment',
     problem:
       'Ngành sản xuất may mặc in ấn POD toàn cầu tốn 45–60 phút chỉnh tay từng SKU để tách nền 300 DPI, áp rập .PSD và render Mockup đa màu vải.',
     implementationPain:

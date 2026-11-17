@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Download,
   EyeOff,
+  Layers,
   MessageSquarePlus,
   RefreshCw,
   Search,
@@ -186,6 +187,26 @@ export const DataListView: React.FC<DataListViewProps> = ({
     }
   };
 
+  const handleSaveToAudience = async () => {
+    if (items.length === 0) return;
+    try {
+      await apiRequest('/audiences', {
+        method: 'POST',
+        token,
+        tenantSlug,
+        body: {
+          name: `Tệp CRM (${new Date().toLocaleDateString('vi-VN')})`,
+          description: `Lưu từ bộ lọc CRM (${items.length} khách hàng)`,
+          audience_type: 'static_data',
+          initial_lead_ids: items.map((i) => i.id),
+        },
+      });
+      setToast(`Đã lưu ${items.length} khách hàng từ bộ lọc CRM thành Tệp Data chăm sóc!`);
+    } catch (err: unknown) {
+      setToast(getErrorMessage(err, 'Không thể lưu thành Tệp Data.'));
+    }
+  };
+
   const handleExportCsv = async () => {
     try {
       const csv = await apiRequest<string>('/leads/export', { token, tenantSlug, isCsv: true });
@@ -270,6 +291,13 @@ export const DataListView: React.FC<DataListViewProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void handleSaveToAudience()}
+            className="ql-btn-outline inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50/70 px-3 py-2 text-xs font-semibold text-[#1E40FF] hover:bg-blue-100"
+          >
+            <Layers className="h-3.5 w-3.5" /> Lưu thành Tệp Data
+          </button>
           <button
             type="button"
             onClick={() => void handleExportCsv()}

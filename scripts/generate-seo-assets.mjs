@@ -441,6 +441,12 @@ const vercelConfig = {
         { key: 'Cache-Control', value: 'public, max-age=3600, s-maxage=86400' },
       ],
     },
+    {
+      source: '/assets/(.*)',
+      headers: [
+        { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+      ],
+    },
   ],
   redirects: [
     { source: '/blog', destination: '/boost', permanent: true },

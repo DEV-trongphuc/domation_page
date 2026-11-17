@@ -111,7 +111,7 @@
 ### 1. EcoLife Signature Đà Nẵng • Web 3D & Auto F1 Router
 - Client: Capital House Group | Industry: Bất Động Sản Xanh chuẩn IFC EDGE (Bất Động Sản, 2026)
 - Live URL: https://ai.ecolifesignature.vn/
-- Problem: Chủ đầu tư cần không gian số Quiet Luxury tương xứng chuẩn BĐS Xanh EDGE, cho phép khách hàng từ xa xem mặt bằng 3D căn hộ và chia Lead tự động minh bạch cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).
+- Problem: Thiết kế riêng không gian số Quiet Luxury tích hợp sa bàn 8 căn hộ 3D, Trợ lý AI Sale 24/7 và hệ thống chia số tự động cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).
 - Implementation Pain: Mô hình 3D kiến trúc gốc nặng 80MB gây giật lag trên iPhone Safari; tranh cãi dễ phát sinh nếu chia số lệch hoặc Sàn F1 báo lỗi số thuê bao không được bù kịp thời.
 - DOMATION Architecture: Nén Draco GLB 8 mẫu căn hộ 3D (<3.5MB/căn) + Trợ lý AI Sale 24/7 + Auto Chia Data 3 cổng F1 qua ZaloBot <5s + Bù Ticket lỗi 1:1 + Meta CAPI SHA-256 + 25 ấn phẩm OOH gắn QR Tracking.
 - Deliverables: Website Quiet Luxury & Sa bàn Three.js 8 căn hộ 3D | Trợ lý AI Sale trực dự án 24/7 (ai.ecolifesignature.vn) | Auto Data Router 3 cổng F1 độ lệch ~0% & Meta CAPI HTTP 200 | 25 ấn phẩm OOH tích hợp QR Tracking ID

@@ -94,6 +94,25 @@ export const DomationHome: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const scrollToHash = () => {
+      const hash = window.location.hash?.replace(/^#/, '');
+      if (!hash) return;
+      const target = document.getElementById(hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+    };
+    const raf = window.requestAnimationFrame(scrollToHash);
+    const t = window.setTimeout(scrollToHash, 180);
+    window.addEventListener('hashchange', scrollToHash);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+      window.removeEventListener('hashchange', scrollToHash);
+    };
+  }, []);
+
   const currentPillar =
     CORE_OPERATION_PILLARS[activePillarIdx] || CORE_OPERATION_PILLARS[0];
 
@@ -613,7 +632,7 @@ export const DomationHome: React.FC = () => {
                       </div>
 
                       {cs.highlight && (
-                        <div className="mb-3 inline-flex items-start sm:items-center gap-2 rounded-xl bg-gradient-to-r from-[#1E40FF]/[0.06] via-sky-500/[0.06] to-cyan-400/[0.08] border border-blue-200/80 px-3.5 py-2 shadow-sm">
+                        <div className="mb-3 inline-flex items-start sm:items-center gap-2 rounded-xl bg-gradient-to-r from-[#1E40FF]/[0.10] via-sky-500/[0.10] to-cyan-400/[0.14] border border-blue-300/85 px-3.5 py-2 shadow-sm">
                           <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0 mt-0.5 sm:mt-0" />
                           <span className="text-[13px] sm:text-sm font-bold leading-snug text-gradient-inkica">
                             {cs.highlight}
