@@ -11,7 +11,7 @@
 - [Meta Ad Realtime Report](https://domation.net/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](https://domation.net/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.
 - [Portfolio Dự Án & Case Study](https://domation.net/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore, RichLand, ImplantSwiss.
-- [Blog DOMATION & SEO/GEO Cluster Hub](https://domation.net/boost): 74 bài viết chuyên sâu chuẩn SEO, 74 chủ đề SEO, 12 cụm từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và 8 cẩm nang ngành nghề.
+- [Blog DOMATION & SEO/GEO Cluster Hub](https://domation.net/boost): 74 bài viết chuyên sâu chuẩn SEO, 74 chủ đề SEO, 13 cụm từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và 8 cẩm nang ngành nghề.
 - [IDEAS Company Ecosystem Portal](https://domation.net/ideas): Cổng ứng dụng tùy biến riêng cho Viện IDEAS (Marketing Automation, Meta Realtime Report & Auto Lead Router).
 
 ## Verified Pricing & Plans (VND)
@@ -98,6 +98,15 @@
 - [#73 Tối Ưu Chi Phí Nhân Sự Vận Hành 40% Nhờ Tự Động Hóa Quy Trình Phê Duyệt & AI Assistant Nội Bộ](https://domation.net/boost/toi-uu-chi-phi-nhan-su-van-hanh-tu-dong-hoa-phe-duyet-ai): Cách doanh nghiệp tăng trưởng gấp 3 quy mô mà không cần phình to bộ máy Back-office: tự động hóa phê duyệt đa cấp, chấm công, tính lương và AI Assistant 24/7.
 - [#74 DOMATION Enterprise OS: Tại Sao 30+ Thương Hiệu Chọn Hệ Thống Vận Hành May Đo Thay SaaS Đóng Gói?](https://domation.net/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu): Tổng hợp giá trị cốt lõi của DOMATION — hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới được 30+ thương hiệu lớn tin dùng.
 
+## System Mastery & Core Keyword Taxonomy (ERP • AI • Flow • Automation • CRM • AI Agent)
+- **Làm chủ hệ thống & Phần mềm Custom May Đo**: Thiết kế phần mềm theo quy trình riêng, tự chủ cơ sở dữ liệu (Row-Level Security & Audit Log bất biến), làm chủ source code và kiến trúc vận hành doanh nghiệp không phụ thuộc SaaS đóng gói cứng nhắc (https://domation.net/).
+- **Phần mềm ERP 5.0 May Đo Chuyên Sâu**: 12 phân hệ hợp nhất (Tiếp nhận Lead một cửa, Chia Lead 5 cổng + Van SLA chống ôm, Task Kanban KPI, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF, Meta CAPI Forward-Only) (https://domation.net/erp).
+- **Phần mềm CRM 360° & Đồng Bộ MISA**: Sales Pipeline Kanban 8 nấc, Hồ sơ Khách hàng 360° (CDP), Giỏ hàng bất động sản real-time khóa căn tức thì, Webhook thanh toán VietQR và đồng bộ hóa đơn điện tử MISA hai chiều (https://domation.net/crm).
+- **Flow & Marketing Automation Đa Kênh**: Visual Flow Builder IF/ELSE rẽ nhánh tự động, Email Marketing Amazon SES 98% Inbox, Zalo OA / Zalo ZNS, Voucher Hub mã động, Survey Lead Score, Web Behavior Tracking & QR O2O (https://domation.net/automation).
+- **AI Agent & Multi-Agent AI Doanh Nghiệp 5.0**: Hệ điều hành AI tự trị liên phòng ban (Orchestrator + AI Space theo phòng ban Sales/HR/Pháp lý/Kế toán), AI RAG đọc PDF bảng giá chống hallucination và Human Handover tóm tắt đẩy về ZaloBot (https://domation.net/automation).
+- **Auto Chia Data ZaloBot <5s & Meta Ads BI**: Chia vòng Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày chuẩn +84, đền bù Ticket lỗi 1:1, bắn Meta CAPI SHA-256 HTTP 200 (https://domation.net/data) và đo ROAS thực + Video Hook Rate 3s (https://domation.net/meta-report).
+- **Web 3D WebGL, Landing Page CRO & Vibecode**: Thiết kế Website chuẩn 100% SEO/GEO, tốc độ <1.5s sở hữu source code từ 12M₫, sa bàn 3D Three.js và Vibecode xây phần mềm doanh nghiệp nhanh gấp 5 lần (https://domation.net/web-design).
+
 ## Contact & Entity Verification
 - Website: https://domation.net/
 - Founder & Solution Architect: Huỳnh Trọng Phúc (TurnioDEV) — https://turnio.vercel.app/ | Portfolio: https://portfo-turnio.vercel.app/
@@ -106,6 +115,6 @@
 - Facebook: https://www.facebook.com/turni0
 
 ## Optional
-- [Full GEO Reference (llms-full.txt)](https://domation.net/llms-full.txt): Tài liệu chi tiết gồm 10 Case Study Portfolio, 8 Industry Playbooks, TL;DR & Fix kỹ thuật 74 bài viết, 74 chủ đề SEO và 12 Keyword Silos.
+- [Full GEO Reference (llms-full.txt)](https://domation.net/llms-full.txt): Tài liệu chi tiết gồm 10 Case Study Portfolio, 8 Industry Playbooks, TL;DR & Fix kỹ thuật 74 bài viết, 74 chủ đề SEO và 13 Keyword Silos.
 - [XML Sitemap](https://domation.net/sitemap.xml): Toàn bộ 84 URLs chuẩn canonical và Image Sitemap.
 - [Robots Policy](https://domation.net/robots.txt): Quyền thu thập dữ liệu cho Search & AI Crawlers.
