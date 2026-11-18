@@ -70,7 +70,6 @@ export interface CaseStudySpotlightItem {
   cost: string;
   impact: string;
   tags: string[];
-  highlight?: string;
   summary: string;
   inspectionTab?: SolutionPillar['id'] | 'inkica';
   url?: string;
@@ -760,7 +759,6 @@ export const CASE_STUDY_SPOTLIGHTS: CaseStudySpotlightItem[] = [
     cost: 'Trợ Lý AI Sale',
     impact: '3 Đại Lý F1',
     tags: ['8 Mẫu Căn Hộ 3D', 'Trợ Lý AI Sale', '3 Đại Lý F1'],
-    highlight: 'Ứng dụng công nghệ AI và 3D web vào Ngành bất động sản',
     summary:
       'Thiết kế riêng không gian số Quiet Luxury tích hợp sa bàn 8 căn hộ 3D, Trợ lý AI Sale 24/7 và hệ thống chia số tự động cho 3 Đại lý F1.',
     inspectionTab: 'web-3d',
@@ -775,7 +773,6 @@ export const CASE_STUDY_SPOTLIGHTS: CaseStudySpotlightItem[] = [
     cost: '6 AI Agents',
     impact: '300 DPI AI',
     tags: ['AI Agent Chat', '208 SKU 3D', '300 DPI AI'],
-    highlight: '60s đầy đủ trọn quy trình chuẩn Listing - Fulfillment',
     summary:
       'Kiến tạo hệ điều hành 6 AI Prepress Agents tự động tách nền 300 DPI, bóc rập CAD chính xác và dựng mockup đa màu cho 208 mã sản phẩm.',
     inspectionTab: 'inkica',

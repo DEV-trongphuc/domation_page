@@ -110,7 +110,7 @@ export const PortfolioPage: React.FC = () => {
                   {[
                     { num: '30+', label: 'Doanh nghiệp đồng hành' },
                     { num: '10', label: 'Flagship Case Study sâu' },
-                    { num: 'Chuẩn SEO', label: 'Thư viện kiến thức thực chiến' },
+                    { num: '74+', label: 'Bài phân tích chuẩn SEO' },
                     { num: '< 5s', label: 'SLA Chia Lead thực chiến' },
                   ].map((stat) => (
                     <div
@@ -196,15 +196,6 @@ export const PortfolioPage: React.FC = () => {
                           </h2>
                         </div>
                       </div>
-
-                      {project.highlight && (
-                        <div className="inline-flex items-start sm:items-center gap-2 rounded-xl bg-gradient-to-r from-[#1E40FF]/[0.10] via-sky-500/[0.10] to-cyan-400/[0.14] border border-blue-300/85 px-3.5 py-2 shadow-sm">
-                          <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0 mt-0.5 sm:mt-0" />
-                          <span className="text-[13px] sm:text-sm font-bold leading-snug text-gradient-inkica">
-                            {project.highlight}
-                          </span>
-                        </div>
-                      )}
 
                       {/* Metrics Pills */}
                       <div className="flex flex-wrap gap-1.5">

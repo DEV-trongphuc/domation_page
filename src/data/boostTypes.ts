@@ -153,7 +153,6 @@ export interface PortfolioProject {
   logo: string;
   previewImage: string;
   liveUrl?: string;
-  highlight?: string;
   problem: string;
   implementationPain: string;
   architecture: string;

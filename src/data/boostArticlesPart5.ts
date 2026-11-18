@@ -811,7 +811,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     tldrSummary:
       'Khi khách hàng hỏi ChatGPT, Gemini hay Perplexity "Công ty nào thiết kế hệ thống ERP may đo và Auto Chia Data tốt tại Việt Nam?", các mô hình AI dựa vào hai nguồn tín hiệu kỹ thuật cốt lõi: Tệp `llms.txt` / `llms-full.txt` chuẩn `llmstxt.org` và Đồ thị thực thể JSON-LD (`@graph` liên kết Organization -> Person -> SoftwareApplication -> BlogPosting). Đây chính là kiến trúc GEO đang vận hành trực tiếp trên `domation.net`.',
     keyTakeaways: [
-      'Cung cấp song song `/llms.txt` (chỉ mục gọn chuẩn Markdown) và `/llms-full.txt` (toàn văn bảng giá, Case Study, thư viện bài viết và FAQ).',
+      'Cung cấp song song `/llms.txt` (chỉ mục gọn chuẩn Markdown) và `/llms-full.txt` (toàn văn bảng giá, Case Study, 74 bài viết và FAQ).',
       'Mở quyền tường minh trong `robots.txt` cho GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended và trả Content-Type `text/plain; charset=utf-8`.',
       'Liên kết toàn bộ nút Schema qua `@id` thống nhất (`#organization`, `#founder`, `#website`, `#blog`, `#article`) thay vì các block rời rạc.',
     ],
@@ -910,9 +910,9 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     coverImage: '/imgs/boost/boost-seo-topic-cluster-map.jpg',
     coverAlt: 'Sơ đồ Content SEO Topic Cluster và bộ từ khóa ngắn dài tại Blog DOMATION',
     screenshotImage: '/imgs/boost/boost-hero-growth-hub.jpg',
-    screenshotCaption: 'Mô hình Hub & Spoke kết nối các cụm Cluster và bài viết chuyên sâu trên Blog DOMATION.',
+    screenshotCaption: 'Mô hình Hub & Spoke kết nối 12 Cluster và 74 bài viết chuyên sâu trên Blog DOMATION.',
     tldrSummary:
-      'Viết hàng trăm bài blog rời rạc không liên kết với nhau sẽ không thể đấu lại đối thủ có kiến trúc Topic Cluster chặt chẽ. Bằng cách tổ chức nội dung quanh các Pillar Page chủ lực (`/erp`, `/crm`, `/data`, `/automation`, `/web-design`) nối chéo với hệ thống bài Cluster phủ kín bộ từ khóa ngắn (Head terms) và từ khóa dài theo nỗi đau (Pain-point Long-tail), website nhanh chóng đạt Topical Authority trên Google.',
+      'Viết 100 bài blog rời rạc không liên kết với nhau sẽ không thể đấu lại đối thủ có kiến trúc Topic Cluster chặt chẽ. Bằng cách tổ chức nội dung quanh các Pillar Page chủ lực (`/erp`, `/crm`, `/data`, `/automation`, `/web-design`) nối chéo với 74 bài Cluster phủ kín bộ từ khóa ngắn (Head terms) và từ khóa dài theo nỗi đau (Pain-point Long-tail), website nhanh chóng đạt Topical Authority trên Google.',
     keyTakeaways: [
       'Từ khóa ngắn (2–3 từ như `erp may đo`, `vibecode`, `auto chia data`) đánh vào các trang Pillar/Sản phẩm chính.',
       'Từ khóa dài (5–12 từ như `hệ thống vận hành custom may đo cho doanh nghiệp thời đại mới`) giao cho bài Blog chuyên sâu chốt ý định tìm kiếm cụ thể.',
@@ -952,15 +952,15 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     sections: [
       {
         id: 'suc-manh-cua-topical-authority',
-        heading: 'Tại sao Google ưu tiên xếp hạng website có hệ thống nội dung chuyên ngành sâu?',
+        heading: 'Tại sao Google ưu tiên xếp hạng website có 70+ bài cùng chuyên ngành sâu?',
         paragraphs: [
-          'Thuật toán Helpful Content và Topical Authority của Google đánh giá uy tín của một domain dựa trên độ bao phủ chiều sâu của chủ đề. Khi một website chỉ có vài bài rời rạc, Google chưa tin bạn là chuyên gia; nhưng khi bạn có hệ thống Cluster bài bản và kho bài viết thực chiến có số liệu Case Study thật, tốc độ index và leo top cho các từ khóa mới tăng vọt.',
+          'Thuật toán Helpful Content và Topical Authority của Google đánh giá uy tín của một domain dựa trên độ bao phủ chiều sâu của chủ đề. Khi một website chỉ có 5 bài, Google chưa tin bạn là chuyên gia; nhưng khi bạn có trọn 12 Cluster và 74 bài viết thực chiến có số liệu Case Study thật, tốc độ index và leo top cho các từ khóa mới tăng vọt.',
         ],
       },
     ],
     metricsOutcome: [
-      { label: 'Kiến Trúc Chủ Đề (Clusters)', value: 'Silo Dày Đặc' },
-      { label: 'Chiều Sâu Nội Dung SEO/GEO', value: 'Chuẩn Chuyên Gia' },
+      { label: 'Số Cụm Chủ Đề (Clusters)', value: '12 Silos Dày Đặc' },
+      { label: 'Tổng Bài Blog SEO/GEO', value: '74+ Bài Chuyên Sâu' },
       { label: 'Chống ăn thịt từ khóa', value: '1 KW Chính / 1 URL' },
       { label: 'Phủ 3 tầng phễu tìm kiếm', value: 'TOFU • MOFU • BOFU' },
     ],
@@ -976,7 +976,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
       {
         question: 'Có xuất được kế hoạch Keyword Cluster của DOMATION ra file Excel để tham khảo mô hình không?',
         answer:
-          'Có! Ngay tại mục Kế hoạch Content SEO Cluster trên trang `/boost`, bạn có thể bấm nút Xuất File Excel để tải trọn bộ bản đồ chủ đề và bộ từ khóa ngắn/dài.',
+          'Có! Ngay tại mục Kế hoạch Content SEO Cluster trên trang `/boost`, bạn có thể bấm nút Xuất File Excel để tải trọn bộ bản đồ 74 chủ đề và bộ từ khóa ngắn/dài.',
       },
     ],
   },
@@ -1034,7 +1034,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     solutionSteps: [
       {
         step: '01',
-        title: 'Chuẩn Hóa Quy Tắc Tạo Slug Cho Toàn Bộ Bài Viết Blog',
+        title: 'Chuẩn Hóa Quy Tắc Tạo Slug Cho Toàn Bộ 74 Bài Blog',
         detail: 'Mỗi slug chứa thẳng keyword mục tiêu (ví dụ `erp-may-do-cho-doanh-nghiep-thoi-dai-moi-thiet-ke-flow-rieng`).',
         techStack: 'Keyword-Rich Kebab Slug',
       },

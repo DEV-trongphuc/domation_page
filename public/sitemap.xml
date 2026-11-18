@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://domation.net/</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,17 +21,17 @@
   </url>
   <url>
     <loc>https://domation.net/boost</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <image:image>
       <image:loc>https://domation.net/imgs/boost/boost-hero-growth-hub.jpg</image:loc>
-      <image:title>Blog DOMATION — Bài Viết Chuẩn SEO &amp; Chủ Đề Vận Hành 5.0</image:title>
+      <image:title>Blog DOMATION — 74+ Bài Chuẩn SEO &amp; 74 Chủ Đề Vận Hành 5.0</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://domation.net/portfolio</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -49,7 +49,7 @@
   </url>
   <url>
     <loc>https://domation.net/data</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -63,7 +63,7 @@
   </url>
   <url>
     <loc>https://domation.net/erp</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -71,13 +71,21 @@
       <image:title>DOMATION Enterprise ERP 5.0 (12 Phân Hệ)</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg</image:loc>
-      <image:title>Dashboard Vận Hành &amp; Phân Bổ Data Doanh Nghiệp ERP 5.0</image:title>
+      <image:loc>https://domation.net/imgs/erp-screens/dashboard-lead.webp</image:loc>
+      <image:title>DOM ERP 5.0 — Tổng quan Phân bổ Data &amp; Hiệu suất SLA Thời Gian Thực</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/imgs/erp-screens/fair-share.webp</image:loc>
+      <image:title>DOM ERP 5.0 — Đối soát Công bằng Phân phối Lead &amp; Độ lệch chuẩn</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://domation.net/imgs/erp-screens/attendance-detail.webp</image:loc>
+      <image:title>DOM ERP 5.0 — Chi tiết Chấm công GPS AI &amp; Nhật ký vào/ra ca</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://domation.net/crm</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -91,7 +99,7 @@
   </url>
   <url>
     <loc>https://domation.net/automation</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -105,7 +113,7 @@
   </url>
   <url>
     <loc>https://domation.net/meta-report</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -119,7 +127,7 @@
   </url>
   <url>
     <loc>https://domation.net/web-design</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -129,7 +137,7 @@
   </url>
   <url>
     <loc>https://domation.net/ideas</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
     <image:image>
@@ -1206,7 +1214,7 @@
     <image:image>
       <image:loc>https://domation.net/imgs/boost/boost-hero-growth-hub.jpg</image:loc>
       <image:title>Kỹ Thuật Xây Dựng Content SEO Topic Cluster &amp; Bộ Từ Khóa Ngắn – Dài Đẩy Top Google Bền Vững — Giao diện thực tế</image:title>
-      <image:caption>Mô hình Hub &amp; Spoke kết nối các cụm Cluster và bài viết chuyên sâu trên Blog DOMATION.</image:caption>
+      <image:caption>Mô hình Hub &amp; Spoke kết nối 12 Cluster và 74 bài viết chuyên sâu trên Blog DOMATION.</image:caption>
     </image:image>
   </url>
   <url>

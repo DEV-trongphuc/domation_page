@@ -1,65 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Component, StrictMode, Suspense, lazy, useEffect, useState, type ErrorInfo, type ReactNode } from 'react';
+import { StrictMode, Suspense, lazy, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MotionConfig } from 'framer-motion';
 import { DomationHome } from './DomationHome';
 import { AiDomationChatbot } from './components/AiDomationChatbot';
 import { DOMATION_NAV_EVENT } from './utils/navigation';
 import './index.css';
-
-declare global {
-  interface Window {
-    __DOMATION_APP_MOUNTED__?: boolean;
-    __domationRecoverStaleAssets?: () => boolean;
-  }
-}
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('vite:preloadError', (event) => {
-    event.preventDefault();
-    if (window.__domationRecoverStaleAssets) {
-      window.__domationRecoverStaleAssets();
-    } else {
-      window.location.reload();
-    }
-  });
-}
-
-class DomationErrorBoundary extends Component<
-  { children: ReactNode },
-  { hasError: boolean }
-> {
-  state = { hasError: false };
-
-  static getDerivedStateFromError(): { hasError: boolean } {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('[DOMATION] Render recovery caught:', error, info);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8F9FA] text-slate-900 px-6 text-center gap-4">
-          <h1 className="text-xl font-bold">Đang làm mới phiên bản DOMATION mới nhất</h1>
-          <p className="text-sm text-slate-600 max-w-md">
-            Trình duyệt vừa cập nhật bản dựng mới. Bấm nút bên dưới để tải lại giao diện sạch.
-          </p>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="btn-inkica-primary px-5 py-2.5 text-sm cursor-pointer"
-          >
-            Tải Lại Trang
-          </button>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
 
 const App = lazy(() => import('./App'));
 const ErpLanding = lazy(() =>
@@ -153,11 +99,14 @@ const Main = () => {
 
   const isAutomation = path === '/automation';
   const isMetaReport = path === '/meta-report';
-  const isCrm = path === '/crm';
+  const isCrm = false; // path === '/crm';
   const isData =
     path === '/data' ||
+    path === '/crm' ||
     path.startsWith('/data/') ||
+    path.startsWith('/crm/') ||
     search.includes('page=data') ||
+    search.includes('page=crm') ||
     (isDataSubdomain && !isPortfolio && !isBoostHub && !singlePostSlug);
   const isIdeas = path === '/ideas' || search.includes('page=ideas');
   const isErp =
@@ -260,17 +209,11 @@ const ConditionalAiChatbot = () => {
   return <AiDomationChatbot />;
 };
 
-if (typeof window !== 'undefined') {
-  window.__DOMATION_APP_MOUNTED__ = true;
-}
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <DomationErrorBoundary>
-      <MotionConfig reducedMotion="user">
-        <Main />
-        <ConditionalAiChatbot />
-      </MotionConfig>
-    </DomationErrorBoundary>
+    <MotionConfig reducedMotion="user">
+      <Main />
+      <ConditionalAiChatbot />
+    </MotionConfig>
   </StrictMode>
 );

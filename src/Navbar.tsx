@@ -54,32 +54,11 @@ const ECOSYSTEM_ROUTES = [
     icon: Database,
   },
   {
-    id: 'erp',
-    href: '/erp',
-    label: 'Enterprise ERP 5.0',
-    desc: '12 phân hệ • GPS AI & Payroll PDF',
-    icon: Cpu,
-  },
-  {
-    id: 'crm',
-    href: '/crm',
-    label: 'CRM 360°',
-    desc: 'Kanban 8 nấc & hóa đơn điện tử',
-    icon: Layers,
-  },
-  {
     id: 'automation',
     href: '/automation',
     label: 'Automation & AI RAG',
     desc: 'Visual Flow & AI Phòng Ban 24/7',
     icon: Workflow,
-  },
-  {
-    id: 'meta-report',
-    href: '/meta-report',
-    label: 'Meta Ad Report',
-    desc: 'Đo lường ROAS & Video Hook Rate',
-    icon: TrendingUp,
   },
   {
     id: 'web-design',
@@ -88,6 +67,22 @@ const ECOSYSTEM_ROUTES = [
     desc: 'WebGL bóc mái & Dự toán từ 12.0M₫',
     icon: LayoutGrid,
   },
+  {
+    id: 'meta-report',
+    href: '/meta-report',
+    label: 'Meta Ad Report',
+    desc: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI',
+    icon: TrendingUp,
+  },
+];
+
+const PROMINENT_ROUTES = [
+  {
+    id: 'erp',
+    href: '/erp',
+    label: 'Enterprise ERP 5.0',
+    icon: Cpu,
+  },
 ];
 
 const GROWTH_ROUTES = [
@@ -95,7 +90,7 @@ const GROWTH_ROUTES = [
     id: 'boost',
     href: '/boost',
     label: 'Blog DOMATION • Triển Khai & SEO',
-    desc: 'Bài viết chuyên sâu: ERP may đo, Vibecode, AI 5.0 & tối ưu Ads',
+    desc: '74+ bài chuyên sâu: ERP may đo, Vibecode, AI 5.0 & tối ưu Ads',
     icon: BookOpen,
   },
   {
@@ -211,6 +206,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               Blog
             </a>
 
+            {PROMINENT_ROUTES.map((route) => (
+              <a
+                key={route.id}
+                href={route.href}
+                onClick={(e) => handleSpaLinkClick(e, route.href)}
+                className={`px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap ${
+                  activePage === route.id
+                    ? 'bg-blue-50 text-[#1E40FF]'
+                    : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
+                }`}
+              >
+                {route.label}
+              </a>
+            ))}
+
             {/* Ecosystem Apps Dropdown */}
             <div ref={dropdownRef} className="relative">
               <button
@@ -222,7 +232,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
                 }`}
               >
-                <span>Hệ Sinh Thái App</span>
+                <span>Khác</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform ${
                     ecoDropdownOpen ? 'rotate-180' : ''
@@ -384,7 +394,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Chuyên Trang Sản Phẩm
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {ECOSYSTEM_ROUTES.map((route) => {
+                {[...PROMINENT_ROUTES, ...ECOSYSTEM_ROUTES].map((route) => {
                   const Icon = route.icon;
                   return (
                     <a

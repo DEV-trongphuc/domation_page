@@ -5,7 +5,6 @@ import {
     Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, Sparkles, X, Send, Download
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
-import { submitDomationConsultation } from './utils/domationLeadSubmit';
 import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
@@ -147,43 +146,23 @@ export const WebDesignPricing: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        
+        console.log("Form Submitted:", {
+            ...formData,
+            addonsSelected: addons,
+            basePrice,
+            totalPrice
+        });
 
-        const selectedAddonNames: string[] = [];
-        if (addons.sales) selectedAddonNames.push('Hệ thống Bán hàng Online (+3.5M)');
-        if (addons.payment) selectedAddonNames.push('Cổng thanh toán QR/VNPay (+2.0M)');
-        if (addons.users) selectedAddonNames.push('Quản lý Thành viên & Phân quyền (+2.5M)');
-        if (addons.crmErp) selectedAddonNames.push('Kết nối CRM & ERP 5.0 (+10.0M)');
-        if (addons.multilingual) selectedAddonNames.push('Đa ngôn ngữ Chuẩn SEO (+18.6M)');
-        if (addons.automation) selectedAddonNames.push('Marketing Automation & SES (+8.9M)');
-        if (addons.elearning) selectedAddonNames.push('Hệ thống E-Learning / Khóa học (+4.3M)');
-
-        try {
-            await submitDomationConsultation({
-                email: formData.email,
-                phone: formData.phone,
-                service: 'Thiết Kế Website Enterprise & Sa Bàn 3D (/web-design)',
-                budget_or_scale: `${totalPrice.toLocaleString('vi-VN')} VNĐ`,
-                addons_summary: selectedAddonNames.length
-                    ? `Gói Cơ bản 12M + Add-ons: ${selectedAddonNames.join(', ')}`
-                    : 'Gói Website Tiêu chuẩn 12.000.000 VNĐ',
-                total_price_vnd: totalPrice,
-                message: formData.message,
-                source_form: '/web-design',
-                metadata: { addonsSelected: addons, basePrice, totalPrice },
-            });
-
+        setTimeout(() => {
+            setIsSubmitting(false);
             setIsSuccess(true);
             setTimeout(() => {
                 setShowModal(false);
                 setIsSuccess(false);
                 setFormData({ email: '', phone: '', message: '' });
             }, 3000);
-        } catch (error) {
-            console.error('WebDesignPricing submit error:', error);
-            alert(error instanceof Error && error.message ? error.message : 'Có lỗi xảy ra, vui lòng thử lại hoặc liên hệ Zalo 0378.859.736.');
-        } finally {
-            setIsSubmitting(false);
-        }
+        }, 1500);
     };
 
     const modules = [
@@ -697,13 +676,6 @@ export const WebDesignPricing: React.FC = () => {
                         </span>
                     </div>
                     <p className="text-slate-500 text-sm font-medium">© {new Date().getFullYear()} DOMATION. All rights reserved.</p>
-                    <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-600">
-                        <a href="mailto:domation.net@gmail.com" className="hover:text-[#1E40FF] font-medium transition-colors">domation.net@gmail.com</a>
-                        <span className="text-slate-300">•</span>
-                        <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-medium transition-colors">fb.com/domation.net</a>
-                        <span className="text-slate-300">•</span>
-                        <a href="https://zalo.me/0378859736" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-mono font-medium transition-colors">0378.859.736</a>
-                    </div>
                     <p className="text-slate-400 text-xs">
                         Powered by{' '}
                         <a

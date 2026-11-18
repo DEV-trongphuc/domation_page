@@ -28,7 +28,7 @@ export const BOOST_FAQS: PageFaqItem[] = [
   {
     question: 'Blog DOMATION (/boost) tập trung chia sẻ những chủ đề chuyên sâu nào?',
     answer:
-      'Blog DOMATION tổng hợp các bài phân tích thực chiến về Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO và chiến dịch Automation.',
+      'Blog DOMATION tổng hợp 74+ bài phân tích thực chiến về Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng, Vibecode doanh nghiệp, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị, tối ưu quảng cáo Meta/TikTok/Google, Landing Page CRO và chiến dịch Automation.',
   },
   {
     question: 'Tại sao DOMATION định vị là hệ thống vận hành custom may đo cho doanh nghiệp thời đại mới?',
@@ -57,6 +57,24 @@ export function computeArticleWordCount(article: BoostArticle): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+export const PORTFOLIO_FAQS: PageFaqItem[] = [
+  {
+    question: 'DOMATION đã triển khai thành công hệ thống may đo cho những doanh nghiệp và lĩnh vực nào?',
+    answer:
+      'DOMATION đã triển khai thực tế cho hơn 30+ thương hiệu đa ngành tại Việt Nam: Bất động sản (Capital House EcoLife Signature 3D, Rich Land), Giáo dục sau đại học (IDEAS Business, College de Paris, Swiss UMEF), Chuỗi F&B (Phúc Lộc Thọ 30+ cửa hàng, Cowboy Steak, En Group), Nha khoa (Flora, ImplantSwiss), E-commerce (Navastore) và AI/POD (INKICA 208 SKU 3D CAD).',
+  },
+  {
+    question: 'Hiệu quả định lượng khi triển khai ERP 5.0, CRM và Auto Data may đo là bao nhiêu?',
+    answer:
+      'Các dự án triển khai thực tế ghi nhận chia Lead qua ZaloBot dưới 5 giây, độ lệch chia data 3 Đại lý F1 ~0%, giảm 35% chi phí Lead rác nhờ Meta CAPI SHA-256, tăng 300% quy mô lớp MBA và giảm 30% CPA tại IDEAS, đồng thời đạt ROAS 5+ trên chuỗi F&B 30+ cửa hàng.',
+  },
+  {
+    question: 'Doanh nghiệp có thể làm chủ hoàn toàn dữ liệu và quy trình sau khi triển khai không?',
+    answer:
+      'Có. Toàn bộ kiến trúc được thiết kế may đo theo sơ đồ tổ chức, phân quyền Row-Level Security (RLS) cấp cơ sở dữ liệu, xuất hóa đơn/báo cáo tự chủ và bàn giao source code website/hệ thống theo gói Bespoke Enterprise.',
+  },
+];
+
 export function getPortfolioSeoConfig(): PageSeoConfig {
   return {
     title: 'Portfolio Dự Án & Case Study Đa Ngành | DOMATION.NET',
@@ -66,6 +84,9 @@ export function getPortfolioSeoConfig(): PageSeoConfig {
     keywords: [
       'portfolio domation',
       'case study erp crm auto data',
+      'triển khai phần mềm ERP custom may đo',
+      'triển khai AI Agent và Flow Automation doanh nghiệp',
+      'làm chủ hệ thống và dữ liệu doanh nghiệp',
       'dự án ecolife signature capital house',
       'inkica ai studio',
       'ideas erp 5.0',
@@ -76,6 +97,7 @@ export function getPortfolioSeoConfig(): PageSeoConfig {
       { name: 'Trang Chủ', url: '/' },
       { name: 'Portfolio Dự Án', url: '/portfolio' },
     ],
+    faqs: PORTFOLIO_FAQS,
     jsonLd: [
       {
         '@context': 'https://schema.org',
@@ -103,17 +125,21 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
   return {
     title: 'Blog DOMATION | ERP May Đo, Vibecode & AI Doanh Nghiệp 5.0',
     description:
-      'Blog kiến thức DOMATION: bài phân tích chuyên sâu về ERP may đo, Vibecode, AI 5.0, logic vận hành, tối ưu quảng cáo, Landing Page & chiến dịch.',
+      'Blog kiến thức DOMATION: 74+ bài phân tích chuyên sâu về ERP may đo, Flow Automation, CRM, AI Agent, Vibecode & chiến lược SEO/GEO.',
     path: '/boost',
     keywords: [
       'blog domation',
       'erp may đo cho doanh nghiệp thời đại mới',
+      'phần mềm erp custom chuyên sâu',
       'hệ thống vận hành custom may đo',
+      'làm chủ hệ thống doanh nghiệp',
+      'thiết kế flow automation riêng',
+      'phần mềm crm 360 độ',
+      'ai agent và multi-agent doanh nghiệp 5.0',
       'vibecode doanh nghiệp',
-      'ai doanh nghiệp thời đại 5.0',
       'logic vận hành quản trị doanh nghiệp',
       'tối ưu quảng cáo landing page chiến dịch',
-      'content seo topic cluster',
+      'content seo topic cluster geo llms',
     ],
     ogImage: '/imgs/boost/boost-hero-growth-hub.jpg',
     ogImageAlt: 'Blog DOMATION — ERP May Đo, Vibecode, AI 5.0 & Tối Ưu Quảng Cáo Chiến Dịch',
@@ -136,7 +162,7 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
         '@id': blogId,
         name: 'Blog DOMATION — Kiến Thức Vận Hành Doanh Nghiệp 5.0, ERP May Đo, Vibecode & Chuyển Đổi Số',
         description:
-          'Blog chuyên sâu của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
+          'Blog chuyên sâu 74+ bài viết của DOMATION về ERP 5.0 custom may đo, thiết kế flow riêng, Vibecode, AI doanh nghiệp thời đại 5.0, tối ưu quảng cáo, Landing Page và chiến dịch.',
         url: `${SITE_URL}/boost`,
         inLanguage: 'vi-VN',
         publisher: { '@id': ORG_ID },
@@ -159,7 +185,7 @@ export function getBoostHubSeoConfig(): PageSeoConfig {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         '@id': itemListId,
-        name: 'Danh sách bài viết Blog DOMATION',
+        name: `Danh sách ${BOOST_ALL_ARTICLES.length} bài Blog DOMATION`,
         numberOfItems: BOOST_ALL_ARTICLES.length,
         itemListElement: BOOST_ALL_ARTICLES.map((art, index) => ({
           '@type': 'ListItem',

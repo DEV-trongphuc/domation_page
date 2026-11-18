@@ -2355,13 +2355,6 @@ export function DomationDataLanding() {
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md">
                 Hệ thống Điều phối &amp; Chia vòng Khách hàng tự động cho đội ngũ Sale — kết nối Zalo, Google Sheets &amp; REST API 2 chiều.
               </p>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-300 pt-1">
-                <a href="mailto:domation.net@gmail.com" className="hover:text-cyan-300 font-medium transition-colors">domation.net@gmail.com</a>
-                <span className="text-slate-600">•</span>
-                <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 font-medium transition-colors">fb.com/domation.net</a>
-                <span className="text-slate-600">•</span>
-                <a href="https://zalo.me/0378859736" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 font-mono font-medium transition-colors">Zalo 0378.859.736</a>
-              </div>
             </div>
 
             <div className="md:col-span-3 space-y-2.5">

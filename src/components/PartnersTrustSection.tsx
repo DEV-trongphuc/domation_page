@@ -6,7 +6,12 @@ import {
   FLAGSHIP_PARTNERS,
 } from '../data/enterpriseData';
 
-export const PartnersTrustSection: React.FC = () => {
+interface PartnersTrustSectionProps {
+  /** Show the large "all cooperating brands" logo grid at the bottom (default: true). */
+  showEcosystemBrands?: boolean;
+}
+
+export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({ showEcosystemBrands = true }) => {
   return (
     <section id="partners" className="relative py-20 sm:py-26 px-4 sm:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -129,6 +134,7 @@ export const PartnersTrustSection: React.FC = () => {
         </div>
 
         {/* Ecosystem Brand Logos — All Cooperating Enterprises */}
+        {showEcosystemBrands && (
         <div className="mt-7 rounded-[24px] bg-white/80 backdrop-blur-xl border border-slate-200/80 p-5 sm:p-7">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3.5 border-b border-slate-200/70">
             <div className="text-xs font-semibold uppercase tracking-wider text-slate-800">
@@ -164,6 +170,7 @@ export const PartnersTrustSection: React.FC = () => {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );

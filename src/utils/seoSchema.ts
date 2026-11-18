@@ -57,6 +57,9 @@ const KNOWN_IMAGE_DIMENSIONS: Record<string, { width: number; height: number; ty
   '/imgs/boost/boost-hero-growth-hub.jpg': { width: 1376, height: 768, type: 'image/jpeg' },
   '/landingpage_avatar/portfolio.webp': { width: 2558, height: 1340, type: 'image/webp' },
   '/landingpage_avatar/ideasmba.webp': { width: 2557, height: 1345, type: 'image/webp' },
+  '/imgs/erp-screens/dashboard-lead.webp': { width: 2880, height: 1800, type: 'image/webp' },
+  '/imgs/erp-screens/fair-share.webp': { width: 2880, height: 1800, type: 'image/webp' },
+  '/imgs/erp-screens/attendance-detail.webp': { width: 2880, height: 1800, type: 'image/webp' },
 };
 
 export function toAbsoluteUrl(urlOrPath: string): string {
@@ -133,7 +136,7 @@ export function buildFounderSchema(): Record<string, unknown> {
     sameAs: [
       FOUNDER_PRIMARY_URL,
       FOUNDER_PORTFOLIO_URL,
-      'https://www.facebook.com/domation.net/',
+      'https://www.facebook.com/turni0',
       'https://zalo.me/0378859736',
     ],
   };
@@ -157,7 +160,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       contentUrl: BRAND_LOGO_URL,
       caption: 'DOMATION.NET Logo',
     },
-    email: 'domation.net@gmail.com',
+    email: 'turniodev@gmail.com',
     telephone: '+84378859736',
     address: {
       '@type': 'PostalAddress',
@@ -168,7 +171,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       {
         '@type': 'ContactPoint',
         telephone: '+84378859736',
-        email: 'domation.net@gmail.com',
+        email: 'turniodev@gmail.com',
         contactType: 'sales',
         areaServed: 'VN',
         availableLanguage: ['vi', 'en'],
@@ -185,19 +188,22 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       '@id': FOUNDER_ID,
     },
     sameAs: [
-      'https://www.facebook.com/domation.net/',
+      'https://www.facebook.com/turni0',
       FOUNDER_PRIMARY_URL,
       FOUNDER_PORTFOLIO_URL,
       'https://zalo.me/0378859736',
     ],
     knowsAbout: [
       'Hệ thống vận hành custom may đo doanh nghiệp',
+      'Làm chủ hệ thống, làm chủ dữ liệu và làm chủ source code doanh nghiệp',
       'Thiết kế flow riêng cho doanh nghiệp thời đại mới',
-      'Enterprise ERP 5.0 May Đo 12 Phân Hệ',
-      'Vibecode Enterprise & AI Doanh Nghiệp Thời Đại 5.0',
+      'Phần mềm ERP 5.0 May Đo 12 Phân Hệ Chuyên Sâu',
+      'Phần mềm AI Agent & Multi-Agent AI Điều Phối Tự Trị',
+      'Vibecode Enterprise & Kiến Trúc Phần Mềm Custom Chuyên Sâu',
+      'Flow Automation Đa Kênh (Visual Flow IF/ELSE, Webhook 2 Chiều)',
       'Auto Chia Data ZaloBot < 5s & Meta CAPI SHA-256',
-      'CRM 360 độ & Hóa đơn điện tử MISA',
-      'Tối ưu Quảng cáo, Landing Page & Chiến dịch Automation',
+      'Phần mềm CRM 360 độ & Hóa đơn điện tử MISA',
+      'Tối ưu Quảng cáo, Landing Page CRO & Chiến dịch Automation',
       'Thiết kế Website & Sa bàn 3D WebGL',
       'SEO 100%, GEO & LLMS.txt',
     ],

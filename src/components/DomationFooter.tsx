@@ -140,21 +140,21 @@ export const DomationFooter: React.FC<DomationFooterProps> = ({ onOpenContact })
                 <div>
                   Email:{' '}
                   <a
-                    href="mailto:domation.net@gmail.com"
+                    href="mailto:turniodev@gmail.com"
                     className="font-semibold text-white hover:text-cyan-300"
                   >
-                    domation.net@gmail.com
+                    turniodev@gmail.com
                   </a>
                 </div>
                 <div>
                   Facebook:{' '}
                   <a
-                    href="https://www.facebook.com/domation.net/"
+                    href="https://www.facebook.com/turni0"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold text-white hover:text-cyan-300"
                   >
-                    fb.com/domation.net
+                    fb.com/turni0
                   </a>
                 </div>
               </div>

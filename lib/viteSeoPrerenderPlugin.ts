@@ -147,13 +147,7 @@ export function renderRouteSeoHeadBlock(config: PageSeoConfig): string {
     );
   }
 
-  lines.push(
-    ``,
-    `  <!-- Anti-FOUC SSR Fallback Styling & Stale-Chunk Recovery -->`,
-    `  <style id="domation-ssr-style">html[data-dom-js="1"] #domation-prerender-seo{display:none!important;}#domation-prerender-seo{max-width:980px;margin:40px auto;padding:0 20px;font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;color:#0F172A;line-height:1.65;}#domation-prerender-seo img{max-width:100%;height:auto;border-radius:14px;}#domation-prerender-seo a{color:#1E40FF;text-decoration:none;}</style>`,
-    `  <script>(function(){try{var d=document.documentElement;d.setAttribute('data-dom-js','1');var k='dom_asset_reload_ts';window.__domationRecoverStaleAssets=function(){try{var last=Number(sessionStorage.getItem(k)||'0');if(!last||Date.now()-last>30000){sessionStorage.setItem(k,String(Date.now()));fetch(window.location.pathname||'/',{cache:'reload'}).catch(function(){}).finally(function(){window.location.reload();});return true;}}catch(e){}d.removeAttribute('data-dom-js');return false;};window.addEventListener('error',function(ev){var t=ev&&ev.target;if(t&&(t.tagName==='SCRIPT'||t.tagName==='LINK')&&t.getAttribute){var s=t.getAttribute('src')||t.getAttribute('href')||'';if(s.indexOf('/assets/')!==-1&&!window.__DOMATION_APP_MOUNTED__){window.__domationRecoverStaleAssets();}}},true);window.setTimeout(function(){if(!window.__DOMATION_APP_MOUNTED__){window.__domationRecoverStaleAssets();}},9000);}catch(e){}})();</script>`,
-    `  ${SEO_END_MARKER}`
-  );
+  lines.push(`  ${SEO_END_MARKER}`);
   return lines.join('\n');
 }
 
@@ -192,7 +186,7 @@ function renderStaticRouteBodyHtml(
     .map((l) => `<a href="${l.href}">${escapeHtmlText(l.label)}</a>`)
     .join(' | ')}</nav></header>`;
 
-  const footerHtml = `<footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer>`;
+  const footerHtml = `<footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer>`;
 
   const slugMatch = config.path.match(/^\/boost\/([^/]+)$/);
   const matchedArticle = slugMatch ? articlesBySlug.get(slugMatch[1]) : undefined;
@@ -271,7 +265,7 @@ function renderStaticRouteBodyHtml(
       config.description
     )}</p><img src="${escapeHtmlAttr(heroImg)}" alt="${escapeHtmlAttr(
       config.ogImageAlt || config.title
-    )}" width="1376" height="768" /></section><section><h2>Bài Viết Chuyên Sâu &amp; Case Study Triển Khai</h2><ul>${allArticles
+    )}" width="1376" height="768" /></section><section><h2>74+ Bài Viết Chuyên Sâu &amp; Case Study Triển Khai</h2><ul>${allArticles
       .map(
         (a) =>
           `<li><article><h3><a href="/boost/${escapeHtmlAttr(
@@ -293,22 +287,127 @@ function renderStaticRouteBodyHtml(
       .join('')}</ul></section></main>${footerHtml}`;
   }
 
-  const featuredPosts = allArticles.slice(0, 6);
+  const matchedPosts = allArticles.filter((a) => a.relatedModuleUrl === config.path);
+  const featuredPosts =
+    matchedPosts.length >= 4
+      ? matchedPosts.slice(0, 8)
+      : [
+          ...matchedPosts,
+          ...allArticles.filter((a) => a.relatedModuleUrl !== config.path),
+        ].slice(0, 6);
+
   const heroVisual = config.ogImage || '/imgs/boost/boost-hero-growth-hub.jpg';
   const heroMeta = inferOgImageMeta(config);
   const heroWidth = heroMeta.width || 1376;
   const heroHeight = heroMeta.height || 768;
   const headingText = config.title.split('|')[0]?.trim() || config.title;
 
-  return `${headerHtml}<main><section><h1>${escapeHtmlText(
+  const jsonLdNodes = Array.isArray(config.jsonLd) ? config.jsonLd : [];
+  const featureList: string[] = [];
+  const offersList: { name: string; price: string; description?: string; url?: string }[] = [];
+  const itemListElements: { name: string; url: string }[] = [];
+
+  for (const node of jsonLdNodes) {
+    if (Array.isArray(node.featureList)) {
+      for (const f of node.featureList) {
+        if (typeof f === 'string' && f.trim()) featureList.push(f.trim());
+      }
+    }
+    const rawOffers = node.offers;
+    const offerArray = Array.isArray(rawOffers)
+      ? rawOffers
+      : rawOffers && typeof rawOffers === 'object'
+        ? [rawOffers]
+        : [];
+    for (const o of offerArray) {
+      if (o && typeof o === 'object') {
+        const offerObj = o as Record<string, unknown>;
+        offersList.push({
+          name: typeof offerObj.name === 'string' ? offerObj.name : headingText,
+          price: typeof offerObj.price === 'string' ? offerObj.price : String(offerObj.price ?? ''),
+          description:
+            typeof offerObj.description === 'string' ? offerObj.description : undefined,
+          url: typeof offerObj.url === 'string' ? offerObj.url : undefined,
+        });
+      }
+    }
+    const mainEntity = node.mainEntity as Record<string, unknown> | undefined;
+    if (mainEntity && Array.isArray(mainEntity.itemListElement)) {
+      for (const item of mainEntity.itemListElement) {
+        if (item && typeof item === 'object') {
+          const itemObj = item as Record<string, unknown>;
+          if (typeof itemObj.name === 'string' && typeof itemObj.url === 'string') {
+            itemListElements.push({ name: itemObj.name, url: itemObj.url });
+          }
+        }
+      }
+    }
+  }
+
+  const breadcrumbHtml =
+    config.breadcrumbs && config.breadcrumbs.length > 0
+      ? `<nav aria-label="Breadcrumb">${config.breadcrumbs
+          .map((b) => `<a href="${escapeHtmlAttr(b.url)}">${escapeHtmlText(b.name)}</a>`)
+          .join(' &gt; ')}</nav>`
+      : '';
+
+  const featuresHtml =
+    featureList.length > 0
+      ? `<section><h2>Kiến Trúc &amp; Tính Năng Cốt Lõi</h2><ul>${featureList
+          .map((f) => `<li>${escapeHtmlText(f)}</li>`)
+          .join('')}</ul></section>`
+      : '';
+
+  const offersHtml =
+    offersList.length > 0
+      ? `<section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul>${offersList
+          .map(
+            (o) =>
+              `<li><strong>${escapeHtmlText(o.name)}</strong>${
+                o.price && o.price !== '0' ? ` — ${escapeHtmlText(o.price)} VND` : ''
+              }${o.description ? `: ${escapeHtmlText(o.description)}` : ''}</li>`
+          )
+          .join('')}</ul></section>`
+      : '';
+
+  const itemListHtml =
+    itemListElements.length > 0
+      ? `<section><h2>Danh Mục Dự Án &amp; Phân Hệ Triển Khai</h2><ul>${itemListElements
+          .map(
+            (it) =>
+              `<li><a href="${escapeHtmlAttr(it.url)}">${escapeHtmlText(it.name)}</a></li>`
+          )
+          .join('')}</ul></section>`
+      : '';
+
+  const faqsHtml =
+    config.faqs && config.faqs.length > 0
+      ? `<section><h2>Câu Hỏi Thường Gặp (FAQ)</h2>${config.faqs
+          .map(
+            (f) =>
+              `<article><h3>${escapeHtmlText(f.question)}</h3><p>${escapeHtmlText(
+                f.answer
+              )}</p></article>`
+          )
+          .join('')}</section>`
+      : '';
+
+  const keywordsHtml =
+    config.keywords && config.keywords.length > 0
+      ? `<section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul>${config.keywords
+          .map((kw) => `<li>${escapeHtmlText(kw)}</li>`)
+          .join('')}</ul></section>`
+      : '';
+
+  return `${headerHtml}<main>${breadcrumbHtml}<section><h1>${escapeHtmlText(
     headingText
   )}</h1><p>${escapeHtmlText(
     config.description
-  )}</p><p>DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: ERP 5.0, CRM 360°, Auto Chia Data ZaloBot, Vibecode AI Agent và hệ thống tối ưu quảng cáo Meta CAPI, Landing Page chuẩn SEO/GEO.</p><img src="${escapeHtmlAttr(
-    heroVisual
-  )}" alt="${escapeHtmlAttr(
+  )}</p><img src="${escapeHtmlAttr(heroVisual)}" alt="${escapeHtmlAttr(
     config.ogImageAlt || config.title
-  )}" width="${heroWidth}" height="${heroHeight}" /></section><section><h2>Bài Viết &amp; Tài Liệu Nổi Bật Trên Blog /boost</h2><ul>${featuredPosts
+  )}" width="${heroWidth}" height="${heroHeight}" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>${escapeHtmlText(
+    config.description
+  )} DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 12 phân hệ, CRM 360° đồng bộ MISA, Auto Chia Data ZaloBot &lt;5s, Flow Automation IF/ELSE, AI Agent / Multi-Agent RAG 24/7 và Website 3D WebGL).</p></section>${featuresHtml}${offersHtml}${itemListHtml}${faqsHtml}${keywordsHtml}<section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul>${featuredPosts
     .map(
       (a) =>
         `<li><a href="/boost/${escapeHtmlAttr(a.slug)}">${escapeHtmlText(
@@ -323,10 +422,7 @@ function injectStaticRootBody(html: string, staticBody: string): string {
   if (!rootPattern.test(html)) {
     return html;
   }
-  return html.replace(
-    rootPattern,
-    `<div id="root"><div id="domation-prerender-seo">${staticBody}</div></div>`
-  );
+  return html.replace(rootPattern, `<div id="root">${staticBody}</div>`);
 }
 
 export function seoPrerenderPlugin(): Plugin {

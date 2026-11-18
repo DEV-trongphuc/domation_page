@@ -21,7 +21,6 @@ import {
   Users,
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
-import { submitDomationConsultation } from './utils/domationLeadSubmit';
 import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
@@ -140,26 +139,15 @@ export const MetaAdReport: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    try {
-      await submitDomationConsultation({
-        email: formData.email,
-        phone: formData.phone,
-        service: 'DOMATION Meta Ad Report & CAPI (/meta-ad-report)',
-        message: formData.message,
-        source_form: '/meta-ad-report',
-      });
+    setTimeout(() => {
+      setIsSubmitting(false);
       setIsSuccess(true);
       setTimeout(() => {
         setShowModal(false);
         setIsSuccess(false);
         setFormData({ email: '', phone: '', message: '' });
       }, 3000);
-    } catch (error) {
-      console.error('MetaAdReport submit error:', error);
-      alert(error instanceof Error && error.message ? error.message : 'Có lỗi xảy ra, vui lòng thử lại hoặc liên hệ Zalo 0378.859.736.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    }, 1500);
   };
 
   return (
@@ -633,7 +621,7 @@ export const MetaAdReport: React.FC = () => {
                     Liên hệ qua Zalo
                   </a>
                   <a
-                    href="https://www.facebook.com/domation.net/"
+                    href="https://fb.com/turni0"
                     target="_blank"
                     rel="noreferrer"
                     className="w-full flex items-center justify-center gap-2 bg-white text-[#1E40FF] hover:bg-blue-50 py-4 rounded-xl font-bold shadow-lg hover:-translate-y-0.5 transition-all"
@@ -656,13 +644,6 @@ export const MetaAdReport: React.FC = () => {
         <p className="text-slate-500 text-xs font-medium">
           © {new Date().getFullYear()} DOMATION. All rights reserved.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-600 mt-2">
-          <a href="mailto:domation.net@gmail.com" className="hover:text-[#1E40FF] font-medium transition-colors">domation.net@gmail.com</a>
-          <span className="text-slate-300">•</span>
-          <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-medium transition-colors">fb.com/domation.net</a>
-          <span className="text-slate-300">•</span>
-          <a href="https://zalo.me/0378859736" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-mono font-medium transition-colors">0378.859.736</a>
-        </div>
         <p className="text-slate-400 text-[11px] mt-1.5">
           Powered by{' '}
           <a

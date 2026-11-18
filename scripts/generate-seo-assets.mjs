@@ -63,7 +63,7 @@ const CORE_ROUTES = [
     images: [
       {
         src: '/imgs/boost/boost-hero-growth-hub.jpg',
-        title: 'Blog DOMATION — Bài Viết Chuẩn SEO & Chủ Đề Vận Hành 5.0',
+        title: `Blog DOMATION — ${ALL_ARTICLES.length}+ Bài Chuẩn SEO & ${BOOST_74_SEO_TOPICS.length} Chủ Đề Vận Hành 5.0`,
       },
     ],
   },
@@ -114,8 +114,16 @@ const CORE_ROUTES = [
         title: 'DOMATION Enterprise ERP 5.0 (12 Phân Hệ)',
       },
       {
-        src: '/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg',
-        title: 'Dashboard Vận Hành & Phân Bổ Data Doanh Nghiệp ERP 5.0',
+        src: '/imgs/erp-screens/dashboard-lead.webp',
+        title: 'DOM ERP 5.0 — Tổng quan Phân bổ Data & Hiệu suất SLA Thời Gian Thực',
+      },
+      {
+        src: '/imgs/erp-screens/fair-share.webp',
+        title: 'DOM ERP 5.0 — Đối soát Công bằng Phân phối Lead & Độ lệch chuẩn',
+      },
+      {
+        src: '/imgs/erp-screens/attendance-detail.webp',
+        title: 'DOM ERP 5.0 — Chi tiết Chấm công GPS AI & Nhật ký vào/ra ca',
       },
     ],
   },
@@ -302,7 +310,7 @@ const llmsCoreBody = `# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI &
 - [Meta Ad Realtime Report](${SITE_URL}/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.
 - [Portfolio Dự Án & Case Study](${SITE_URL}/portfolio): Hồ sơ triển khai thực tế tại Capital House (EcoLife Signature Đà Nẵng), INKICA AI (208 SKU 3D), IDEAS Business (+300% quy mô MBA, -30% CPA), Phúc Lộc Thọ (30+ cửa hàng, ROAS 5+), Nha khoa Flora, Navastore, RichLand, ImplantSwiss.
-- [Blog DOMATION & SEO/GEO Cluster Hub](${SITE_URL}/boost): Kiến thức chuyên sâu chuẩn SEO về từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và cẩm nang ngành nghề.
+- [Blog DOMATION & SEO/GEO Cluster Hub](${SITE_URL}/boost): ${ALL_ARTICLES.length} bài viết chuyên sâu chuẩn SEO, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO, ${BOOST_KEYWORD_CLUSTERS.length} cụm từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và ${INDUSTRY_PAIN_PLAYBOOK.length} cẩm nang ngành nghề.
 - [IDEAS Company Ecosystem Portal](${SITE_URL}/ideas): Cổng ứng dụng tùy biến riêng cho Viện IDEAS (Marketing Automation, Meta Realtime Report & Auto Lead Router).
 
 ## Verified Pricing & Plans (VND)
@@ -313,23 +321,32 @@ const llmsCoreBody = `# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI &
 - **Thiết kế Website & Sa bàn 3D WebGL (/web-design)**: Gói Core 8 Module từ 12.000.000₫ thanh toán 1 lần, sở hữu source code vĩnh viễn.
 - **Enterprise ERP 5.0 (/erp)**: Thiết kế may đo theo quy mô 12 phân hệ (tư vấn & báo giá trực tiếp).
 
-## Featured Implementation Articles (Singlepost Guides)
+## Featured Implementation Articles (Singlepost — ${ALL_ARTICLES.length} Guides)
 ${ALL_ARTICLES.map(
   (art) =>
-    `- [${art.title}](${SITE_URL}/boost/${art.slug}): ${art.metaDescription}`
+    `- [#${art.number} ${art.title}](${SITE_URL}/boost/${art.slug}): ${art.metaDescription}`
 ).join('\n')}
+
+## System Mastery & Core Keyword Taxonomy (ERP • AI • Flow • Automation • CRM • AI Agent)
+- **Làm chủ hệ thống & Phần mềm Custom May Đo**: Thiết kế phần mềm theo quy trình riêng, tự chủ cơ sở dữ liệu (Row-Level Security & Audit Log bất biến), làm chủ source code và kiến trúc vận hành doanh nghiệp không phụ thuộc SaaS đóng gói cứng nhắc (${SITE_URL}/).
+- **Phần mềm ERP 5.0 May Đo Chuyên Sâu**: 12 phân hệ hợp nhất (Tiếp nhận Lead một cửa, Chia Lead 5 cổng + Van SLA chống ôm, Task Kanban KPI, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF, Meta CAPI Forward-Only) (${SITE_URL}/erp).
+- **Phần mềm CRM 360° & Đồng Bộ MISA**: Sales Pipeline Kanban 8 nấc, Hồ sơ Khách hàng 360° (CDP), Giỏ hàng bất động sản real-time khóa căn tức thì, Webhook thanh toán VietQR và đồng bộ hóa đơn điện tử MISA hai chiều (${SITE_URL}/crm).
+- **Flow & Marketing Automation Đa Kênh**: Visual Flow Builder IF/ELSE rẽ nhánh tự động, Email Marketing Amazon SES 98% Inbox, Zalo OA / Zalo ZNS, Voucher Hub mã động, Survey Lead Score, Web Behavior Tracking & QR O2O (${SITE_URL}/automation).
+- **AI Agent & Multi-Agent AI Doanh Nghiệp 5.0**: Hệ điều hành AI tự trị liên phòng ban (Orchestrator + AI Space theo phòng ban Sales/HR/Pháp lý/Kế toán), AI RAG đọc PDF bảng giá chống hallucination và Human Handover tóm tắt đẩy về ZaloBot (${SITE_URL}/automation).
+- **Auto Chia Data ZaloBot <5s & Meta Ads BI**: Chia vòng Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày chuẩn +84, đền bù Ticket lỗi 1:1, bắn Meta CAPI SHA-256 HTTP 200 (${SITE_URL}/data) và đo ROAS thực + Video Hook Rate 3s (${SITE_URL}/meta-report).
+- **Web 3D WebGL, Landing Page CRO & Vibecode**: Thiết kế Website chuẩn 100% SEO/GEO, tốc độ <1.5s sở hữu source code từ 12M₫, sa bàn 3D Three.js và Vibecode xây phần mềm doanh nghiệp nhanh gấp 5 lần (${SITE_URL}/web-design).
 
 ## Contact & Entity Verification
 - Website: ${SITE_URL}/
 - Founder & Solution Architect: Huỳnh Trọng Phúc (TurnioDEV) — https://turnio.vercel.app/ | Portfolio: https://portfo-turnio.vercel.app/
 - Hotline / Zalo: +84 378 859 736 (https://zalo.me/0378859736)
-- Email: domation.net@gmail.com
-- Facebook: https://www.facebook.com/domation.net/`;
+- Email: turniodev@gmail.com
+- Facebook: https://www.facebook.com/turni0`;
 
 const llmsTxt = `${llmsCoreBody}
 
 ## Optional
-- [Full GEO Reference (llms-full.txt)](${SITE_URL}/llms-full.txt): Tài liệu chi tiết Case Study Portfolio, Industry Playbooks, TL;DR & Fix kỹ thuật bài viết Blog DOMATION và Keyword Silos.
+- [Full GEO Reference (llms-full.txt)](${SITE_URL}/llms-full.txt): Tài liệu chi tiết gồm ${PORTFOLIO_PROJECTS.length} Case Study Portfolio, ${INDUSTRY_PAIN_PLAYBOOK.length} Industry Playbooks, TL;DR & Fix kỹ thuật ${ALL_ARTICLES.length} bài viết, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO và ${BOOST_KEYWORD_CLUSTERS.length} Keyword Silos.
 - [XML Sitemap](${SITE_URL}/sitemap.xml): Toàn bộ ${CORE_ROUTES.length + ALL_ARTICLES.length} URLs chuẩn canonical và Image Sitemap.
 - [Robots Policy](${SITE_URL}/robots.txt): Quyền thu thập dữ liệu cho Search & AI Crawlers.
 `;
@@ -370,9 +387,9 @@ ${INDUSTRY_PAIN_PLAYBOOK.map(
 
 ---
 
-## Complete Implementation Guides (Singlepost Deep Dives)
+## Complete Implementation Guides (${ALL_ARTICLES.length} Singlepost Deep Dives)
 ${ALL_ARTICLES.map(
-  (art) => `### ${art.title}
+  (art) => `### #${art.number} ${art.title}
 - URL: ${SITE_URL}/boost/${art.slug}
 - Pillar: ${art.pillarLabel} | Industry: ${art.industry} | Intent: ${art.searchIntent} | Updated: ${art.updatedAt}
 - Focus Keyword: "${art.focusKeyword}" | Secondary: ${art.secondaryKeywords.join(', ')}
@@ -386,7 +403,7 @@ ${ALL_ARTICLES.map(
 
 ---
 
-## Curated Enterprise SEO Topics for DOMATION
+## ${BOOST_74_SEO_TOPICS.length} Curated Enterprise SEO Topics for DOMATION
 ${BOOST_74_SEO_TOPICS.map(
   (t) =>
     `- [${t.code}] (${t.pillarLabel} | ${t.funnelStage} | ${t.searchIntent}) ${t.title} — Primary KW: "${t.primaryKeyword}" -> Target: ${SITE_URL}${t.targetLandingPage}${t.linkedArticleSlug ? ` | Article: ${SITE_URL}/boost/${t.linkedArticleSlug}` : ''}`
@@ -394,7 +411,7 @@ ${BOOST_74_SEO_TOPICS.map(
 
 ---
 
-## Keyword Clusters Summary (Short/Long & Primary/Secondary Silos)
+## Keyword Clusters Summary (${BOOST_KEYWORD_CLUSTERS.length} Silos — Short/Long & Primary/Secondary)
 ${BOOST_KEYWORD_CLUSTERS.map(
   (c) =>
     `- ${c.name} (${SITE_URL}${c.hubUrl}) | Short-tail: ${(c.shortTailTerms || []).join(', ')} | Long-tail: ${(c.longTailTerms || []).join(', ')} | Keywords: ${c.keywords.map((k) => `${k.keyword} [${k.lsiVariants.join('; ')}]`).join(' | ')}`
@@ -459,7 +476,16 @@ const vercelConfig = {
     { source: '/ideas-erp/', destination: '/erp', permanent: true },
   ],
   rewrites: [
-    ...['crm', 'erp', 'data', 'automation', 'meta-report', 'web-design', 'ideas', 'portfolio', 'boost', '404'].flatMap(
+    ...['crm', 'erp', 'data'].flatMap((route) => [
+      { source: `/${route}`, destination: `/${route}/index.html` },
+      { source: `/${route}/`, destination: `/${route}/index.html` },
+    ]),
+    { source: '/data/:slug', destination: '/data/index.html' },
+    { source: '/data/:slug/', destination: '/data/index.html' },
+    { source: '/data/:slug/:subpath*', destination: '/data/index.html' },
+    { source: '/api/v1/:path*', destination: '/api/autodata?__v1_path=:path*' },
+    { source: '/v1/:path*', destination: '/api/autodata?__raw_v1_path=:path*' },
+    ...['automation', 'meta-report', 'web-design', 'ideas', 'portfolio', 'boost', '404'].flatMap(
       (route) => [
         { source: `/${route}`, destination: `/${route}/index.html` },
         { source: `/${route}/`, destination: `/${route}/index.html` },

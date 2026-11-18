@@ -119,7 +119,7 @@ export const SinglePostPage: React.FC<SinglePostPageProps> = ({ slug }) => {
                 Bài Viết Không Tồn Tại Hoặc Đã Được Chuyển Mục
               </h1>
               <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-                Nội dung bạn đang truy cập hiện không còn ở đường dẫn này. Bạn có thể quay về Blog DOMATION (/boost) để xem các bài phân tích thực chiến về ERP may đo, Vibecode và chiến lược tối ưu chuyển đổi mới nhất.
+                Nội dung bạn đang truy cập hiện không còn ở đường dẫn này. Bạn có thể quay về Blog DOMATION (/boost) để xem 74+ bài phân tích thực chiến về ERP may đo, Vibecode và chiến lược tối ưu chuyển đổi mới nhất.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <a

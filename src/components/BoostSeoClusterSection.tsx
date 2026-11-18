@@ -75,7 +75,7 @@ export const BoostSeoClusterSection: React.FC = () => {
       workbook.creator = 'DOMATION.NET SEO Engine';
       workbook.created = new Date();
 
-      const sheetClusters = workbook.addWorksheet('Keyword Clusters', {
+      const sheetClusters = workbook.addWorksheet('12 Keyword Clusters', {
         properties: { tabColor: { argb: 'FF1E40FF' } },
       });
       sheetClusters.columns = [
@@ -119,7 +119,7 @@ export const BoostSeoClusterSection: React.FC = () => {
         }
       }
 
-      const sheetTopics = workbook.addWorksheet('Chu De Blog SEO', {
+      const sheetTopics = workbook.addWorksheet('74 Chu De Blog SEO', {
         properties: { tabColor: { argb: 'FF06B6D4' } },
       });
       sheetTopics.columns = [
@@ -161,7 +161,7 @@ export const BoostSeoClusterSection: React.FC = () => {
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      saveAs(blob, 'Ke_Hoach_SEO_Cluster_DOMATION.xlsx');
+      saveAs(blob, 'Ke_Hoach_SEO_Cluster_74_Bai_DOMATION.xlsx');
     } finally {
       setExporting(false);
     }
@@ -184,7 +184,7 @@ export const BoostSeoClusterSection: React.FC = () => {
             id="seo-clusters-heading"
             className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight"
           >
-            Kiến Trúc Content SEO Cluster Đẩy Top{' '}
+            Kiến Trúc 12 Cụm Từ Khóa &amp; 74 Bài Content SEO Cluster Đẩy Top{' '}
             <span className="text-gradient-inkica">DOMATION (/boost)</span>
           </h2>
           <p className="text-sm text-slate-600 leading-relaxed">
@@ -371,7 +371,7 @@ export const BoostSeoClusterSection: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg sm:text-xl font-bold text-slate-900">
-              Danh Mục Chủ Đề SEO &amp; SLUG Trên Blog /boost
+              Ma Trận 74 Chủ Đề SEO &amp; SLUG Đã Index Trên Blog /boost
             </h3>
             <p className="text-xs text-slate-600 mt-0.5">
               Lọc theo tầng phễu TOFU / MOFU / BOFU hoặc tìm theo từ khóa để kiểm tra internal link.
@@ -393,7 +393,7 @@ export const BoostSeoClusterSection: React.FC = () => {
                     active ? 'ql-pill-tab-active' : 'ql-pill-tab'
                   }`}
                 >
-                  {stage === 'ALL' ? 'Tất cả' : stage}
+                  {stage === 'ALL' ? 'Tất cả' : stage} ({stageCounts[stage]})
                 </button>
               );
             })}
@@ -406,8 +406,8 @@ export const BoostSeoClusterSection: React.FC = () => {
             type="search"
             value={topicQuery}
             onChange={(e) => setTopicQuery(e.target.value)}
-            placeholder="Lọc chủ đề SEO theo tiêu đề, từ khóa chính/phụ, vibecode, ERP may đo, tối ưu quảng cáo..."
-            aria-label="Lọc danh sách chủ đề SEO"
+            placeholder="Lọc trong 74 chủ đề SEO theo tiêu đề, từ khóa chính/phụ, vibecode, ERP may đo, tối ưu quảng cáo..."
+            aria-label="Lọc danh sách 74 chủ đề SEO"
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/30 focus:border-[#1E40FF]"
           />
         </div>
@@ -486,7 +486,7 @@ export const BoostSeoClusterSection: React.FC = () => {
           <div className="flex items-center justify-between gap-3 pt-1">
             <span className="text-xs text-slate-500 flex items-center gap-1.5">
               <Filter className="w-3.5 h-3.5 text-[#1E40FF]" />
-              Danh mục chủ đề SEO theo bộ lọc
+              Đang hiển thị {visibleTopics.length}/{filteredTopics.length} chủ đề SEO
             </span>
             <button
               type="button"
@@ -494,8 +494,8 @@ export const BoostSeoClusterSection: React.FC = () => {
               className="ql-btn-outline px-4 py-2 text-xs font-bold cursor-pointer"
             >
               {showAllTopics
-                ? 'Thu gọn danh sách'
-                : 'Xem toàn bộ chủ đề SEO'}
+                ? 'Thu gọn còn 12 chủ đề đầu'
+                : `Xem toàn bộ ${filteredTopics.length} chủ đề SEO`}
             </button>
           </div>
         )}

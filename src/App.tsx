@@ -10,7 +10,6 @@ import {
     ClipboardList, GanttChart, EyeOff, Monitor
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
-import { submitDomationConsultation } from './utils/domationLeadSubmit';
 import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
@@ -246,7 +245,7 @@ const WebDesignSection = () => {
                             onClick={(e) => handleSpaLinkClick(e, '/boost')}
                             className="ql-btn-outline px-4 py-2 text-xs"
                         >
-                            Đọc Blog Kiến Thức Chuyên Sâu
+                            Đọc 74+ Bài Blog Chuyên Sâu
                         </a>
                     </div>
                 </FadeIn>
@@ -496,33 +495,35 @@ const Landing: React.FC = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormStatus('submitting');
 
         const formData = new FormData(e.currentTarget);
-        const emailVal = String(formData.get('email') || '').trim();
-        const phoneVal = String(formData.get('phone') || '').trim();
-        const companyVal = String(formData.get('company') || '').trim();
-        const problemVal = String(formData.get('problem') || '').trim();
+        const data = {
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            company: `${formData.get('company')} | ${formData.get('problem')}`,
+            volume: emailVolume
+        };
 
-        try {
-            await submitDomationConsultation({
-                email: emailVal,
-                phone: phoneVal,
-                company: companyVal,
-                service: 'Marketing Automation & Email Flow (/automation)',
-                budget_or_scale: emailVolume,
-                message: problemVal,
-                source_form: '/automation',
-                metadata: { volume: emailVolume },
-            });
+        // Thay URL này bằng link Web App của Google Apps Script sau khi deploy
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzeo1UmYbTKqzOF5ZsQ-QVy4t5j6iXS_yJD-XTQJFYcUPh_ZDHUFcI1a7crph-oDkCI/exec';
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            }
+        }).then(() => {
             setFormStatus('success');
-        } catch (err) {
+        }).catch((err) => {
             console.error('Lỗi khi gửi form:', err);
-            setFormStatus('idle');
-            alert(err instanceof Error && err.message ? err.message : 'Có lỗi xảy ra, vui lòng thử lại hoặc liên hệ Zalo 0378.859.736.');
-        }
+            // Vẫn show success modal để không block trải nghiệm nếu có lỗi mạng/CORS
+            setFormStatus('success');
+        });
     };
 
     const stats = [
@@ -1754,13 +1755,8 @@ const Landing: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
                     <span>© {new Date().getFullYear()} DOMATION.NET • Marketing Automation.</span>
-                    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-                        <a href="mailto:domation.net@gmail.com" className="text-slate-600 hover:text-[#1E40FF] font-medium transition-colors">domation.net@gmail.com</a>
-                        <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-[#1E40FF] font-medium transition-colors">fb.com/domation.net</a>
-                        <a href="https://zalo.me/0378859736" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-[#1E40FF] font-medium font-mono transition-colors">0378.859.736</a>
-                    </div>
                     <span>
                         Powered by{' '}
                         <a
@@ -1885,7 +1881,7 @@ const Landing: React.FC = () => {
                                                 <img loading="lazy" decoding="async" src={LOGOS.zalo} alt="Zalo" className="w-4 h-4 object-contain" />
                                                 Zalo
                                             </a>
-                                            <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 text-[#0866FF] hover:bg-blue-100 border border-blue-200 transition-all text-sm font-bold">
+                                            <a href="https://www.facebook.com/turni0" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 text-[#0866FF] hover:bg-blue-100 border border-blue-200 transition-all text-sm font-bold">
                                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
                                                 Facebook
                                             </a>

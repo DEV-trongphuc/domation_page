@@ -15,7 +15,6 @@ import {
   Users2,
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
-import { submitDomationConsultation } from './utils/domationLeadSubmit';
 import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
@@ -149,16 +148,18 @@ export const CrmLanding: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await submitDomationConsultation({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        company: formData.company,
-        service: 'DOMATION CRM 360° (/crm)',
-        budget_or_scale: `Quy mô: ${formData.size} nhân sự`,
-        message: formData.note,
-        source_form: '/crm',
-        metadata: { team_size: formData.size },
+      const SCRIPT_URL =
+        'https://script.google.com/macros/s/AKfycbwY3J_VJN6lhGHaoJ0zNnOyYxsswyb3I1KqQ7nrdeElMZreXEKO_cigKEOEhtH-0noK/exec';
+
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          source: 'DOMATION CRM Landing',
+          timestamp: new Date().toLocaleString('vi-VN'),
+        }),
       });
 
       setIsSuccess(true);
@@ -176,7 +177,7 @@ export const CrmLanding: React.FC = () => {
       }, 3000);
     } catch (error) {
       console.error('Submit error:', error);
-      alert(error instanceof Error && error.message ? error.message : 'Có lỗi xảy ra, vui lòng thử lại.');
+      alert('Có lỗi xảy ra, vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
     }
@@ -615,13 +616,6 @@ export const CrmLanding: React.FC = () => {
         <p className="text-slate-500 text-xs font-medium">
           © {new Date().getFullYear()} DOMATION.NET • Nền tảng số hóa doanh nghiệp toàn diện.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-600 mt-2">
-          <a href="mailto:domation.net@gmail.com" className="hover:text-[#1E40FF] font-medium transition-colors">domation.net@gmail.com</a>
-          <span className="text-slate-300">•</span>
-          <a href="https://www.facebook.com/domation.net/" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-medium transition-colors">fb.com/domation.net</a>
-          <span className="text-slate-300">•</span>
-          <a href="https://zalo.me/0378859736" target="_blank" rel="noopener noreferrer" className="hover:text-[#1E40FF] font-mono font-medium transition-colors">0378.859.736</a>
-        </div>
         <p className="text-slate-400 text-[11px] mt-1.5">
           Powered by{' '}
           <a

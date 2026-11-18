@@ -38,7 +38,7 @@ const CORE_DESTINATIONS = [
   },
   {
     href: '/boost',
-    badge: 'BLOG CHUYÊN SÂU',
+    badge: '74+ BÀI CHUYÊN SÂU',
     title: 'Blog DOMATION & SEO',
     desc: 'Kiến thức Vibecode, AI 5.0, Logic quản trị, Tối ưu Ads, Landing Page & Chiến dịch.',
     icon: BookOpen,
@@ -248,7 +248,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path = '/404' }) => 
                   className="px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#1E40FF] text-xs sm:text-sm font-bold inline-flex items-center gap-2 transition-colors"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Khám Phá Blog DOMATION</span>
+                  <span>Khám Phá Blog DOMATION (74+ Bài)</span>
                 </a>
                 <a
                   href="/erp"
@@ -291,7 +291,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path = '/404' }) => 
               onClick={(e) => handleSpaLinkClick(e, '/boost')}
               className="text-xs font-bold text-[#1E40FF] hover:underline inline-flex items-center gap-1"
             >
-              <span>Xem tất cả bài viết chuẩn SEO</span>
+              <span>Xem toàn bộ 74 bài viết chuẩn SEO</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>

@@ -46,13 +46,13 @@ export const DOMATION_CORPUS = [
   {
     id: 'domation-blog-boost-seo',
     category: 'Blog & Tri thức 5.0',
-    title: 'Blog DOMATION (/boost) — Chiến Lược ERP May Đo, Vibecode, AI 5.0 & Tối Ưu Quảng Cáo',
+    title: 'Blog DOMATION (/boost) — 74+ Bài Chiến Lược ERP May Đo, Vibecode, AI 5.0 & Tối Ưu Quảng Cáo',
     sectionId: 'boost',
     url: '/boost',
     urlLabel: 'Đọc Blog /boost',
     image: '/imgs/boost/boost-hero-growth-hub.jpg',
     content:
-      'Blog DOMATION tại https://domation.net/boost tổng hợp các bài phân tích triển khai thực tế và hệ thống Content SEO Cluster (từ khóa ngắn & dài, chính & phụ) về: ERP DOMATION custom may đo thiết kế flow riêng, phương pháp Vibecode xây dựng hệ thống quản trị tốc độ cao, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị doanh nghiệp, tối ưu quảng cáo Meta CAPI, Landing Page CRO chuyển đổi cao và chiến dịch Automation Marketing đa kênh.',
+      'Blog DOMATION tại https://domation.net/boost tổng hợp 74+ bài phân tích triển khai thực tế và 12 cụm Content SEO Cluster (từ khóa ngắn & dài, chính & phụ) về: ERP DOMATION custom may đo thiết kế flow riêng, phương pháp Vibecode xây dựng hệ thống quản trị tốc độ cao, AI doanh nghiệp thời đại 5.0, logic vận hành quản trị doanh nghiệp, tối ưu quảng cáo Meta CAPI, Landing Page CRO chuyển đổi cao và chiến dịch Automation Marketing đa kênh.',
   },
   {
     id: 'domation-pillar-crm-misa',
@@ -195,6 +195,6 @@ export const DOMATION_CORPUS = [
     urlLabel: 'Nhắn Zalo 0378.859.736',
     image: '/imgs/enterprise/hero-domation-hub.webp',
     content:
-      'Để nhận demo trực tiếp hệ thống Chia số Meta CAPI, ERP 5.0, CRM MISA hoặc báo giá thiết kế Web 3D & SaaS cho doanh nghiệp, khách hàng có thể liên hệ trực tiếp CEO Founder Huỳnh Trọng Phúc qua Zalo & Hotline: 0378.859.736 (link Zalo chính thức: https://zalo.me/0378859736), Email: domation.net@gmail.com, Facebook: https://www.facebook.com/domation.net/, trụ sở tại TP. Hồ Chí Minh — hỗ trợ triển khai toàn quốc và quốc tế.',
+      'Để nhận demo trực tiếp hệ thống Chia số Meta CAPI, ERP 5.0, CRM MISA hoặc báo giá thiết kế Web 3D & SaaS cho doanh nghiệp, khách hàng có thể liên hệ trực tiếp CEO Founder Huỳnh Trọng Phúc qua Zalo & Hotline: 0378.859.736 (link Zalo chính thức: https://zalo.me/0378859736), Email: hello@domation.net hoặc turniodev@gmail.com, trụ sở tại TP. Hồ Chí Minh — hỗ trợ triển khai toàn quốc và quốc tế.',
   },
 ];

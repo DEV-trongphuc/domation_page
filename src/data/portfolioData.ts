@@ -11,9 +11,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     logo: '/assets/partners/logo_capital_house.webp',
     previewImage: '/assets/ecolife/bocmai/bocmai_3d_b3.webp',
     liveUrl: 'https://ai.ecolifesignature.vn/',
-    highlight: 'Ứng dụng công nghệ AI và 3D web vào Ngành bất động sản',
     problem:
-      'Thiết kế riêng không gian số Quiet Luxury tích hợp sa bàn 8 căn hộ 3D, Trợ lý AI Sale 24/7 và hệ thống chia số tự động cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).',
+      'Chủ đầu tư cần không gian số Quiet Luxury tương xứng chuẩn BĐS Xanh EDGE, cho phép khách hàng từ xa xem mặt bằng 3D căn hộ và chia Lead tự động minh bạch cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).',
     implementationPain:
       'Mô hình 3D kiến trúc gốc nặng 80MB gây giật lag trên iPhone Safari; tranh cãi dễ phát sinh nếu chia số lệch hoặc Sàn F1 báo lỗi số thuê bao không được bù kịp thời.',
     architecture:
@@ -38,7 +37,6 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     logo: '/assets/partners/logo_inkica_icon.svg',
     previewImage: '/assets/inkica/inkica_aop_3d.jpg',
     liveUrl: 'https://ai.inkica.com/',
-    highlight: '60s đầy đủ trọn quy trình chuẩn Listing - Fulfillment',
     problem:
       'Ngành sản xuất may mặc in ấn POD toàn cầu tốn 45–60 phút chỉnh tay từng SKU để tách nền 300 DPI, áp rập .PSD và render Mockup đa màu vải.',
     implementationPain:
@@ -243,18 +241,18 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     previewImage: '/landingpage_avatar/portfolio.webp',
     liveUrl: 'https://portfo-turnio.vercel.app/',
     problem:
-      'Xây dựng kiến trúc cổng thông tin doanh nghiệp tích hợp trợ lý AI RAG nội bộ, Blog DOMATION chuẩn SEO/GEO và bản đồ cụm từ khóa tăng trưởng B2B.',
+      'Xây dựng kiến trúc cổng thông tin doanh nghiệp tích hợp trợ lý AI RAG nội bộ, 74+ bài Blog DOMATION chuẩn SEO/GEO và bản đồ 12 cụm từ khóa tăng trưởng B2B.',
     implementationPain:
       'Ứng dụng React SPA dễ gặp lỗi trùng lặp thẻ Canonical/Title ở các trang con, Soft-404 và thiếu chuẩn dữ liệu `llms.txt` cho AI Search.',
     architecture:
       'Dynamic SEO & JSON-LD Engine (`src/utils/seo.ts`) + Prerender HTML/Blog + RAG Hybrid Vector Search + `/boost` Blog SEO Hub + `/boost/:slug` Singlepost + `sitemap.xml` & `llms.txt`.',
     deliverables: [
       'Cổng thông tin Đa chuyên trang DOMATION.NET',
-      'Blog DOMATION /boost (SEO/GEO & Topic Cluster)',
+      'Blog DOMATION /boost (74+ Bài SEO, 74 Chủ đề, 12 Keyword Clusters)',
       'Trợ lý AI RAG tư vấn giải pháp & báo giá 24/7',
       'Chuẩn hóa GEO llms.txt & Dynamic Schema.org',
     ],
-    metrics: ['Chuẩn SEO/GEO', 'Topic Clusters', '404 & Prerender 100%', 'Full GEO llms.txt'],
+    metrics: ['74+ Bài Blog SEO', '12 Keyword Clusters', '404 & Prerender 100%', 'Full GEO llms.txt'],
     relatedArticleSlug: 'chien-luoc-seo-geo-2026-dua-doanh-nghiep-b2b-top-google-ai-overview',
     inspectionTab: 'web-3d',
   },
