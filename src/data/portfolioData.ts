@@ -9,7 +9,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     category: 'Bất Động Sản',
     year: '2026',
     logo: '/assets/partners/logo_capital_house.webp',
-    previewImage: '/assets/ecolife/bocmai/bocmai_3d_b3.webp',
+    previewImage: '/assets/ecolife/ecolife_official_live.jpg',
     liveUrl: 'https://ai.ecolifesignature.vn/',
     problem:
       'Chủ đầu tư cần không gian số Quiet Luxury tương xứng chuẩn BĐS Xanh EDGE, cho phép khách hàng từ xa xem mặt bằng 3D căn hộ và chia Lead tự động minh bạch cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD).',
@@ -188,7 +188,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     category: 'Bất Động Sản',
     year: '2026',
     logo: '/assets/partners/partner_richland.webp',
-    previewImage: '/assets/domation/data_v2_ads_pipeline.webp',
+    previewImage: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
     liveUrl: 'https://rich-land.vercel.app/',
     problem:
       'Cần nền tảng CRM điều phối nguồn khách hàng đa dự án theo cả cơ chế tranh nhận data tốc độ cao lẫn chia theo vòng công bằng, kết hợp kho DataBank lưu trữ & khai thác lại.',
@@ -213,7 +213,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     category: 'Y Tế & Nha Khoa',
     year: '2025–2026',
     logo: '/assets/partners/partner_implantswiss.png',
-    previewImage: '/assets/domation/data_v2_capi_masked.webp',
+    previewImage: '/imgs/autodata/showcase/screen_datalist.jpg',
     liveUrl: 'https://implantswiss.vn/',
     problem:
       'Quản lý data khách hàng B2B (Bác sĩ/Phòng khám) và khách hàng nha khoa với yêu cầu bảo mật thông tin nghiêm ngặt và chống trùng chéo giữa các vùng.',

@@ -151,14 +151,16 @@ export function buildOrganizationSchema(): Record<string, unknown> {
     alternateName: ['DOMATION', 'DOMATION.NET', 'DOMARKETING', 'DOM MARKETING'],
     url: `${SITE_URL}/`,
     description:
-      'DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: Enterprise ERP 5.0 (12 phân hệ), CRM 360° MISA, Auto Chia Data ZaloBot <5s, Meta CAPI, Vibecode & AI Doanh nghiệp 5.0.',
+      'Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số <5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.',
     image: DEFAULT_OG_IMAGE,
     logo: {
       '@type': 'ImageObject',
       '@id': `${SITE_URL}/#logo`,
       url: BRAND_LOGO_URL,
       contentUrl: BRAND_LOGO_URL,
-      caption: 'DOMATION.NET Logo',
+      width: 512,
+      height: 512,
+      caption: 'DOMATION Logo',
     },
     email: 'turniodev@gmail.com',
     telephone: '+84378859736',
@@ -216,10 +218,10 @@ export function buildWebSiteSchema(): Record<string, unknown> {
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
     url: `${SITE_URL}/`,
-    name: 'DOMATION.NET',
-    alternateName: 'DOMATION Việt Nam',
+    name: 'DOMATION',
+    alternateName: ['DOMATION Việt Nam', 'DOMATION.NET', 'Công Ty TNHH DOMATION Việt Nam'],
     description:
-      'Hệ sinh thái Công nghệ Marketing × App × AI May Đo cho Doanh nghiệp: Auto Chia Data, Meta CAPI, ERP 5.0, CRM 360°, AI Agent & Web 3D.',
+      'Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data <5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.',
     inLanguage: 'vi-VN',
     publisher: {
       '@id': ORG_ID,

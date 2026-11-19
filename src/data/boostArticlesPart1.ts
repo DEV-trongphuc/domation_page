@@ -26,7 +26,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-zalobot-5s-router.jpg',
     coverAlt: 'Kiến trúc Auto Chia Data ZaloBot dưới 5 giây cho Chủ đầu tư và Đại lý F1 Bất động sản',
-    screenshotImage: '/assets/domation/data_v2_overview.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_dashboard.jpg',
     screenshotCaption: 'Giao diện DOMATION Auto Data V2 chia số đa cổng dưới 5 giây kèm nhật ký nhận lead.',
     tldrSummary:
       'Chậm phản hồi quá 5 phút khiến tỷ lệ kết nối Lead Bất động sản giảm tới 80%. Kiến trúc Auto Chia Data DOMATION thu Lead từ Meta Form/Landing Page qua Webhook, lọc trùng 6 tháng bằng SHA-256/SĐT chuẩn +84, chia vòng Round-Robin qua ZaloBot cá nhân trong dưới 5 giây và tự động thu hồi nếu Sale không nhận sau 120 giây.',
@@ -190,7 +190,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-f1-fair-balance.jpg',
     coverAlt: 'Đối soát chia data công bằng giữa 3 Đại lý F1 dự án EcoLife Signature',
-    screenshotImage: '/assets/domation/data_v2_fair_audit.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_fairshare.jpg',
     screenshotCaption: 'Bảng thống kê đối soát tỷ lệ chia và bù Ticket lỗi công bằng giữa Tùng Long, Hợp Nhất và IHD Group.',
     tldrSummary:
       'Khi Chủ đầu tư chia Lead Marketing tổng cho nhiều Sàn F1, chỉ chia vòng Round-Robin thôi là chưa đủ vì chất lượng từng Lead khác nhau. DOMATION áp dụng công thức "Thành công thực = Đã chia - Lỗi được duyệt + Đã bù tự động" giúp cân bằng độ lệch giữa 3 Sàn F1 về gần 0% và loại bỏ hoàn toàn tranh cãi cuối tháng.',
@@ -432,7 +432,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     updatedAt: '2026-11-13',
     coverImage: '/imgs/boost/boost-meta-capi-bi.jpg',
     coverAlt: 'Chu trình Meta Conversions API SHA-256 phản hồi trạng thái Qualified về Facebook Dataset',
-    screenshotImage: '/assets/domation/data_v2_capi_masked.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_datalist.jpg',
     screenshotCaption: 'Nhật ký DOMATION tự động hash SHA-256 và bắn sự kiện CAPI đạt chuẩn HTTP 200.',
     tldrSummary:
       'Meta Ads mặc định chỉ tối ưu theo "số người điền form" nên càng chạy càng hút Lead rác. Bằng cách gắn Meta Conversions API (CAPI) băm SHA-256 SĐT/Email và bắn ngược sự kiện Qualified, Schedule, Purchase hoặc DisqualifiedLead từ CRM về Dataset, thuật toán Meta tự điều chỉnh phân phối tới đúng tệp khách có tiền.',
@@ -681,7 +681,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-education-erp.jpg',
     coverAlt: 'Hệ thống ERP 5.0 chấm công GPS AI, phê duyệt đa cấp và xuất phiếu lương PDF',
-    screenshotImage: '/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg',
+    screenshotImage: '/imgs/erp-screens/attendance.webp',
     screenshotCaption: 'Màn hình Payroll Engine tự động tính công, KPI, BHXH và xuất phiếu lương PDF trong ERP 5.0.',
     tldrSummary:
       'Vận hành bằng 14 file Excel rời rạc giữa Phòng Đào tạo, Tư vấn, Hành chính và Kế toán gây sai sót bảng lương và chậm phê duyệt chi phí. DOMATION triển khai ERP 5.0 gồm 12 phân hệ thiết kế riêng: Task Kanban, Chấm công GPS + Selfie AI, Duyệt đơn từ/Purchase Order online và Payroll Engine xuất PDF ký số.',
@@ -797,7 +797,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-ai-rag-pdf-vault.jpg',
     coverAlt: 'Kiến trúc AI RAG Agent trích xuất tri thức PDF chống sai lệch bảng giá',
-    screenshotImage: '/assets/domation/auto_ai_chatbot.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Giao diện huấn luyện AI Space & Chatbot RAG trực đa kênh 24/7 trên hệ sinh thái DOMATION.',
     tldrSummary:
       'Đưa thẳng ChatGPT ra tiếp khách dễ gặp thảm họa "AI tự bịa mức học phí hoặc chương trình giảm giá". DOMATION dùng kiến trúc Hybrid Vector RAG kết hợp Strict Grounding Guardrails: chỉ trả lời dựa trên chunk PDF bảng giá đã được phê duyệt, đính kèm trích dẫn nguồn và tự động hỏi SĐT chuyển sang ZaloBot ngay khi khách có dấu hiệu muốn tư vấn sâu.',
@@ -1341,7 +1341,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-rls-privacy-shield.jpg',
     coverAlt: 'Lớp khiên bảo mật Row-Level Security và che số điện thoại tự động trong CRM Y tế',
-    screenshotImage: '/assets/domation/data_v2_capi_masked.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_datalist.jpg',
     screenshotCaption: 'Cơ chế mask số điện thoại bảo mật và nhật ký kiểm soát truy cập trên DOMATION.',
     tldrSummary:
       'Chạy Meta Ads ngành Y tế/Nha khoa đối mặt hai rủi ro lớn: nhân viên nghỉ việc tải toàn bộ danh bạ khách hàng đi và vi phạm chính sách quyền riêng tư nền tảng quảng cáo. DOMATION áp dụng Row-Level Security (RLS) ở tầng cơ sở dữ liệu, che SĐT trên báo cáo chung, chặn xuất Excel trái phép và băm SHA-256 toàn bộ định danh khi bắn Meta CAPI.',

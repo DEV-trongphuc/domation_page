@@ -66,6 +66,7 @@ export function renderRouteSeoHeadBlock(config: PageSeoConfig): string {
   }
 
   lines.push(
+    `  <meta name="application-name" content="DOMATION" />`,
     `  <meta name="author" content="${escapeHtmlAttr(author)}" />`,
     `  <meta name="robots" content="${escapeHtmlAttr(robotsContent)}" />`,
     ...(config.noindex
@@ -78,7 +79,7 @@ export function renderRouteSeoHeadBlock(config: PageSeoConfig): string {
     `  <!-- Open Graph / Facebook / Zalo -->`,
     `  <meta property="og:type" content="${escapeHtmlAttr(ogType)}" />`,
     `  <meta property="og:locale" content="vi_VN" />`,
-    `  <meta property="og:site_name" content="DOMATION Việt Nam" />`,
+    `  <meta property="og:site_name" content="DOMATION" />`,
     `  <meta property="og:url" content="${escapeHtmlAttr(canonicalUrl)}" />`,
     `  <meta property="og:title" content="${escapeHtmlAttr(config.title)}" />`,
     `  <meta property="og:description" content="${escapeHtmlAttr(config.description)}" />`,
@@ -186,7 +187,7 @@ function renderStaticRouteBodyHtml(
     .map((l) => `<a href="${l.href}">${escapeHtmlText(l.label)}</a>`)
     .join(' | ')}</nav></header>`;
 
-  const footerHtml = `<footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer>`;
+  const footerHtml = `<footer><p><strong>DOMATION</strong> — Hệ sinh thái hợp nhất Website &amp; Landing Page 3D với CRM Auto Data &lt;5s, Báo cáo Meta &amp; Google Ads gắn Lead, Automation Zalo ZNS &amp; phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer>`;
 
   const slugMatch = config.path.match(/^\/boost\/([^/]+)$/);
   const matchedArticle = slugMatch ? articlesBySlug.get(slugMatch[1]) : undefined;
@@ -407,7 +408,7 @@ function renderStaticRouteBodyHtml(
     config.ogImageAlt || config.title
   )}" width="${heroWidth}" height="${heroHeight}" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>${escapeHtmlText(
     config.description
-  )} DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 12 phân hệ, CRM 360° đồng bộ MISA, Auto Chia Data ZaloBot &lt;5s, Flow Automation IF/ELSE, AI Agent / Multi-Agent RAG 24/7 và Website 3D WebGL).</p></section>${featuresHtml}${offersHtml}${itemListHtml}${faqsHtml}${keywordsHtml}<section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul>${featuredPosts
+  )}</p></section>${featuresHtml}${offersHtml}${itemListHtml}${faqsHtml}${keywordsHtml}<section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul>${featuredPosts
     .map(
       (a) =>
         `<li><a href="/boost/${escapeHtmlAttr(a.slug)}">${escapeHtmlText(

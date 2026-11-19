@@ -173,6 +173,11 @@ code, pre, .font-mono {
   100% { transform: translateX(0); }
 }
 
+@keyframes smoothImgIn {
+  0% { opacity: 0.25; transform: scale(0.992); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
 .animate-aurora-slow {
   animation: aurora-slow 16s ease-in-out infinite;
   will-change: transform;
@@ -372,4 +377,69 @@ code, pre, .font-mono {
     -webkit-backdrop-filter: none !important;
     background: rgba(255, 255, 255, 0.94);
   }
+}
+
+/* DOM Meta Report Scoped Typography (Roboto / Inter parity with DOMATION_META), Light Surface Isolation & Table Scrollbar */
+.dom-meta-scope {
+  color-scheme: light;
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-text: #1E293B;
+  --color-text-muted: #64748B;
+  --color-border: #CBD5E1;
+  --color-border-light: #F1F5F9;
+  --color-primary: #1E40FF;
+  --color-primary-light: rgba(30, 64, 255, 0.12);
+}
+
+.dom-meta-scope,
+.dom-meta-scope h1,
+.dom-meta-scope h2,
+.dom-meta-scope h3,
+.dom-meta-scope h4,
+.dom-meta-scope button,
+.dom-meta-scope input,
+.dom-meta-scope select,
+.dom-meta-scope textarea {
+  --font-sans: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: normal;
+}
+
+[data-theme="dark"] .dom-meta-scope th {
+  background-color: #F8FAFC;
+  color: #475569;
+}
+
+[data-theme="dark"] .dom-meta-scope select,
+[data-theme="dark"] .dom-meta-scope input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="dark"] .dom-meta-scope textarea {
+  background-color: #F8FAFC;
+  color: #1E293B;
+  border-color: #E2E8F0;
+}
+
+.dom-meta-scope .dom-meta-table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E1 #F8FAFC;
+}
+
+.dom-meta-scope .dom-meta-table-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dom-meta-scope .dom-meta-table-scroll::-webkit-scrollbar-track {
+  background: #F8FAFC;
+  border-radius: 9999px;
+}
+
+.dom-meta-scope .dom-meta-table-scroll::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+.dom-meta-scope .dom-meta-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #1E40FF;
 }

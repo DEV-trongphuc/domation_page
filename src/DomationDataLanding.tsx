@@ -160,6 +160,51 @@ const SYSTEM_SCREENSHOTS: ScreenshotItem[] = [
   },
 ];
 
+const FUSION_GALLERY_SHOTS: Array<ScreenshotItem & { tabLabel: string }> = [
+  {
+    tabLabel: 'Chiến dịch & Khách nét',
+    badge: 'Đối soát trực tiếp trên bảng Ads',
+    title: 'Xem Từng Bài Quảng Cáo Mang Về Bao Nhiêu Khách Chất Lượng & Sale Phụ Trách',
+    desc: 'Ngay bên cạnh ngân sách chi tiêu là số lượng khách thực nhận trong CRM, tỷ lệ khách tiềm năng, chi phí thực tế cho 1 khách nét, doanh thu chốt và đội ngũ Sale đang chăm sóc.',
+    src: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
+  },
+  {
+    tabLabel: 'Phân bổ theo từng Sale',
+    badge: 'Chi tiết khách theo bài chạy',
+    title: 'Đối Soát Từng Nhân Viên Sale Nhận Khách & Kết Quả Gọi Từ Bài Quảng Cáo',
+    desc: 'Bấm vào bất kỳ chiến dịch hay bài quảng cáo nào để xem danh sách khách hàng thuộc bài đó, thuộc vòng chia nào, kết quả cuộc gọi ra sao và mở nhanh hồ sơ chăm sóc khách hàng.',
+    src: '/imgs/meta-screens/fusion-ad-leads-sale-modal.webp',
+  },
+  {
+    tabLabel: 'Kết nối 1 chạm',
+    badge: 'Hợp nhất trong 1 trung tâm',
+    title: 'Kết Nối 1 Chạm — Tự Nhận Tài Khoản Meta Sẵn Có Trong CRM',
+    desc: 'Hợp nhất trọn vẹn báo cáo quảng cáo và cấu hình chuyển đổi vào một mục duy nhất; hệ thống tự nhận kết nối Meta có sẵn trong CRM mà không bắt bạn nhập lại thông tin.',
+    src: '/imgs/meta-screens/fusion-quick-connect-crm.webp',
+  },
+  {
+    tabLabel: 'Tổng quan ngân sách',
+    badge: 'Theo dõi chi tiêu từng ngày',
+    title: 'Bảng Tổng Quan Ngân Sách, Kết Quả & Mục Tiêu Quảng Cáo Thời Gian Thực',
+    desc: 'Theo dõi tổng chi tiêu, tốc độ tăng giảm so với kỳ trước, biểu đồ chi phí từng ngày và tỷ trọng phân bổ ngân sách trên Facebook, Instagram.',
+    src: '/imgs/meta-screens/meta-dashboard.webp',
+  },
+  {
+    tabLabel: 'Thư viện bài chạy',
+    badge: 'Đánh giá hình ảnh & video',
+    title: 'Thư Viện Trực Quan Mọi Mẫu Quảng Cáo Kèm Tỷ Lệ Giữ Chân Người Xem',
+    desc: 'Nhìn rõ hình ảnh, video của từng bài quảng cáo đang chạy cùng chi phí, số khách mang về và tỷ lệ giữ chân 3 giây đầu để nhân bản nội dung hiệu quả.',
+    src: '/imgs/meta-screens/meta-ads-library.webp',
+  },
+  {
+    tabLabel: 'Khung giờ ra khách',
+    badge: '7 ngày × 24 giờ',
+    title: 'Bản Đồ Nhiệt Khung Giờ Vàng & Tỉnh Thành Phản Hồi Tốt Nhất',
+    desc: 'Chỉ rõ khung giờ nào trong ngày và khu vực địa lý nào mang về nhiều khách hàng nhất để đội Sale trực chiến kịp thời.',
+    src: '/imgs/meta-screens/meta-heatmap-region.webp',
+  },
+];
+
 const DEMO_PERSONAL_LEADS_CSV: PersonalSaleLeadItem[] = [
   {
     id: 'plead_01',
@@ -284,6 +329,7 @@ export function DomationDataLanding() {
 
   // Zoomable screenshot lightbox
   const [zoomImage, setZoomImage] = useState<ScreenshotItem | null>(null);
+  const [activeFusionShotIdx, setActiveFusionShotIdx] = useState(0);
 
   useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 560);
@@ -1129,6 +1175,218 @@ export function DomationDataLanding() {
                   {pillars.map(renderPillar)}
                 </div>
               </>
+            );
+          })()}
+        </div>
+      </section>
+
+      {/* ====================================================================
+          CLOSED-LOOP SHOWCASE: CRM AUTO DATA × DOM META REPORT (#meta-report-fusion)
+         ==================================================================== */}
+      <section
+        id="meta-report-fusion"
+        className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-gradient-to-b from-[#F4F8FF]/85 via-white to-white"
+      >
+        <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 text-center lg:text-left">
+            <div className="max-w-3xl mx-auto lg:mx-0 space-y-2.5">
+              <div className="ql-eyebrow mx-auto lg:mx-0">
+                <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                <span>LIÊN THÔNG 2 CHIỀU • BÁO CÁO QUẢNG CÁO &amp; CHIA SỐ</span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                Biết Rõ Nội Dung Nào Ra Khách —{' '}
+                <span className="text-gradient-inkica">
+                  Biết Rõ Khách Nào Từ Nội Dung Nào
+                </span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Hợp nhất Báo cáo Quảng cáo ngay trong hệ thống chia số: nhìn trọn từ bài quảng cáo đến từng khách hàng, cuộc gọi Sale và doanh thu chốt đơn.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
+                className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+              >
+                <span>Trải nghiệm miễn phí {catalog.trial_duration_months} tháng</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
+              </button>
+              <a
+                href="/meta-report"
+                onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
+                className="ql-btn-outline rounded-full px-5 py-2.5 text-xs sm:text-sm whitespace-nowrap"
+              >
+                <span>Xem chi tiết DOM Meta Report</span>
+                <ArrowUpRight className="w-4 h-4 shrink-0" />
+              </a>
+            </div>
+          </div>
+
+          {/* 3 Core Customer Values */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+            {[
+              {
+                icon: Users,
+                badge: 'Nội dung → Ra khách',
+                title: 'Biết Rõ Nội Dung Nào Ra Khách Nét & Sale Nào Nhận',
+                desc: 'Xem ngay từng bài chạy mang về bao nhiêu khách, bao nhiêu khách chất lượng, giao cho Sale nào và chốt bao nhiêu tiền.',
+              },
+              {
+                icon: RefreshCw,
+                badge: 'Kích hoạt 1 chạm',
+                title: 'Tự Nhận Kết Nối Sẵn Có — Bật Trong 1 Chạm',
+                desc: 'Tự động nhận tài khoản quảng cáo đã liên kết sẵn trong CRM để mở báo cáo ngay, không cần cài lại.',
+              },
+              {
+                icon: Activity,
+                badge: 'Khách → Từ nội dung nào',
+                title: 'Bấm Từ Tên Khách Xem Ngay Bài Quảng Cáo Gốc',
+                desc: 'Ngay trên danh sách khách hàng, bấm xem tức thì bài quảng cáo đã tạo ra vị khách đó và chi phí thực tế.',
+              },
+            ].map((val) => {
+              const VIcon = val.icon;
+              return (
+                <div
+                  key={val.title}
+                  className="rounded-2xl bg-white border border-slate-200/85 p-5 sm:p-6 shadow-sm space-y-3 flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="w-9 h-9 rounded-xl bg-[#F4F8FF] border border-blue-100 text-[#1E40FF] flex items-center justify-center shrink-0">
+                        <VIcon className="w-4 h-4" />
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200/80 text-[10.5px] font-semibold text-[#1E40FF] whitespace-nowrap">
+                        {val.badge}
+                      </span>
+                    </div>
+                    <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                      {val.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">{val.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Interactive Switcher + Featured Screenshot + Thumbnail Strip */}
+          {(() => {
+            const activeShot = FUSION_GALLERY_SHOTS[activeFusionShotIdx] || FUSION_GALLERY_SHOTS[0];
+            return (
+              <div className="rounded-[28px] bg-white border border-slate-200/90 shadow-[0_24px_64px_-24px_rgba(30,64,255,0.14)] p-4 sm:p-6 lg:p-8 space-y-5">
+                {/* Pill Switcher */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                  {FUSION_GALLERY_SHOTS.map((shot, idx) => {
+                    const isActive = idx === activeFusionShotIdx;
+                    return (
+                      <button
+                        key={shot.src}
+                        type="button"
+                        onClick={() => setActiveFusionShotIdx(idx)}
+                        className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                          isActive
+                            ? 'bg-[#1E40FF] text-white shadow-sm'
+                            : 'bg-slate-50 hover:bg-blue-50/70 border border-slate-200 text-slate-600 hover:text-[#1E40FF]'
+                        }`}
+                      >
+                        {shot.tabLabel}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Active Featured Preview */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                  <button
+                    type="button"
+                    onClick={() => setZoomImage(activeShot)}
+                    className="lg:col-span-8 group relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 aspect-[16/10] w-full text-left cursor-zoom-in shadow-sm"
+                  >
+                    <img
+                      src={activeShot.src}
+                      alt={activeShot.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top group-hover:scale-[1.015] transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-sm text-white text-[11px] font-semibold">
+                      {activeShot.badge}
+                    </span>
+                    <span className="absolute bottom-3 right-3 px-3.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-sm text-white text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm">
+                      <ZoomIn className="w-3.5 h-3.5" />
+                      <span>Nhấn để phóng to</span>
+                    </span>
+                  </button>
+
+                  <div className="lg:col-span-4 space-y-4">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 text-[11px] font-semibold text-emerald-700">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Màn hình vận hành thực tế</span>
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                      {activeShot.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      {activeShot.desc}
+                    </p>
+                    <div className="pt-2 flex flex-wrap items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setZoomImage(activeShot)}
+                        className="ql-btn-outline rounded-full px-4 py-2 text-xs font-semibold cursor-pointer"
+                      >
+                        <ZoomIn className="w-3.5 h-3.5 text-[#1E40FF]" />
+                        <span>Phóng to màn hình</span>
+                      </button>
+                      <a
+                        href="/meta-report"
+                        onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E40FF] hover:underline px-2 py-2"
+                      >
+                        <span>Tìm hiểu thêm</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6-Card Thumbnail Strip */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2 border-t border-slate-100">
+                  {FUSION_GALLERY_SHOTS.map((shot, idx) => {
+                    const isActive = idx === activeFusionShotIdx;
+                    return (
+                      <button
+                        key={shot.src}
+                        type="button"
+                        onClick={() => setActiveFusionShotIdx(idx)}
+                        className={`rounded-xl overflow-hidden border text-left transition-all cursor-pointer p-1.5 space-y-1.5 ${
+                          isActive
+                            ? 'border-[#1E40FF] bg-[#F4F8FF] shadow-sm'
+                            : 'border-slate-200/80 bg-slate-50/60 hover:border-blue-200'
+                        }`}
+                      >
+                        <div className="aspect-[16/10] rounded-lg overflow-hidden bg-slate-200/60 border border-slate-200/60">
+                          <img
+                            src={shot.src}
+                            alt={shot.tabLabel}
+                            loading="lazy"
+                            className="w-full h-full object-cover object-top"
+                          />
+                        </div>
+                        <div
+                          className={`text-[11px] font-semibold truncate px-0.5 ${
+                            isActive ? 'text-[#1E40FF]' : 'text-slate-700'
+                          }`}
+                        >
+                          {shot.tabLabel}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })()}
         </div>

@@ -218,7 +218,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-zalo-zns-rfm-flow.jpg',
     coverAlt: 'Kịch bản gửi Zalo ZNS tự động hậu mãi và phân khúc RFM DOMATION',
-    screenshotImage: '/assets/domation/crm_4.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Tích hợp gửi tin ZaloBot và Zalo ZNS tự động trực tiếp từ hồ sơ khách hàng DOMATION.',
     tldrSummary:
       'Zalo ZNS có tỷ lệ người dùng mở đọc gần 100%, nhưng nếu gửi đại trà cho cả tệp khách không tương tác sẽ rất tốn chi phí và dễ bị khách đánh dấu làm phiền. DOMATION kết hợp phân khúc RFM trên CRM với luồng Trigger sự kiện (Đặt lịch, Sau khám/Sau mua, Sắp đến hạn đóng tiền) để mỗi tin ZNS gửi đi đều đúng người, đúng lúc và sinh ra doanh thu.',
@@ -314,7 +314,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-5-core-automation-flows.jpg',
     coverAlt: '5 kịch bản Marketing Automation cốt lõi giúp doanh nghiệp không lãng phí 70% Lead',
-    screenshotImage: '/assets/domation/auto_flow.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Kéo thả 5 kịch bản Automation cốt lõi trên nền tảng DOMATION Visual Flow Builder.',
     tldrSummary:
       'Nhiều doanh nghiệp mua phần mềm Marketing Automation về nhưng bỏ không vì không biết bắt đầu vẽ luồng nào trước. Thực tế, 80% doanh thu tự động hóa đến từ đúng 5 kịch bản nền tảng: Welcome 5 giây, Kích hoạt khách xem lại Bảng giá, Nhắc lịch hẹn tự động, Survey 2h sau trải nghiệm và Win-back kéo khách cũ quay lại sau 60 ngày.',
@@ -602,7 +602,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ab-testing-server-tracking.jpg',
     coverAlt: 'A/B Testing Landing Page kết nối Server-side Tracking và doanh thu CRM DOMATION',
-    screenshotImage: '/assets/domation/meta_rp_3.webp',
+    screenshotImage: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
     screenshotCaption: 'Đối chiếu tỷ lệ thiện chí và doanh thu thực trên CRM theo từng biến thể quảng cáo và trang đích.',
     tldrSummary:
       'Sai lầm kinh điển khi làm A/B Testing Landing Page là chỉ dừng ở việc đo biến thể nào có nhiều người bấm nút Gửi hơn. Thực tế, một tiêu đề giật gân có thể hút thêm 30% lượt điền Form nhưng toàn khách không đủ tài chính. DOMATION gắn `variant_id` xuyên suốt từ lần tải trang đầu tiên tới khi hợp đồng đóng tiền trên CRM để tìm ra biến thể tạo ra ROAS thực cao nhất.',
@@ -1197,7 +1197,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-retail-franchise-os50.jpg',
     coverAlt: 'Hệ thống quản trị chuỗi bán lẻ và Franchise thời đại 5.0 DOMATION',
-    screenshotImage: '/assets/domation/erp_16.webp',
+    screenshotImage: '/imgs/erp-screens/data-log.webp',
     screenshotCaption: 'Ma trận quản lý công suất và vận hành đa chi nhánh thời gian thực trên DOMATION ERP 5.0.',
     tldrSummary:
       'Quản lý chuỗi 10–50 cửa hàng bán lẻ hoặc nhượng quyền đòi hỏi hai mạch dữ liệu phải thông suốt: mạch vận hành nội bộ (Chấm công GPS tại điểm bán, đặt hàng nguyên liệu PO, công nợ nhượng quyền) và mạch khách hàng (Đồng bộ hóa đơn POS -> Zalo ZNS -> Voucher Hub). DOMATION hợp nhất cả hai trên một hệ điều hành may đo duy nhất.',
@@ -1389,7 +1389,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-rbac-rls-permission-logic.jpg',
     coverAlt: 'Logic phân quyền dữ liệu RBAC và Row-Level Security đa chi nhánh DOMATION',
-    screenshotImage: '/assets/domation/data_v2_capi_masked.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_datalist.jpg',
     screenshotCaption: 'Che số điện thoại bảo mật trên giao diện giám sát kết hợp phân quyền sâu đến từng dòng dữ liệu.',
     tldrSummary:
       'Trong doanh nghiệp đa chi nhánh hoặc có nhiều đội Sale cạnh tranh nhau, lỗi phân quyền ở tầng giao diện (chỉ ẩn nút trên frontend) là lỗ hổng chí mạng khiến nhân viên có thể soi API hoặc tải toàn bộ danh bạ khách hàng. DOMATION áp dụng kép RBAC (theo vai trò) + Row-Level Security (RLS ngay tại tầng Database) kết hợp Phone Masking và Audit Log bất biến.',
@@ -1485,7 +1485,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ops-cost-reduction-ai.jpg',
     coverAlt: 'Tối ưu 40% chi phí vận hành bằng tự động hóa phê duyệt và AI Assistant DOMATION',
-    screenshotImage: '/ERP-Product/1788856627087_2141578413905312186_2310722037673454867_33798ebb805d3335cfcfedec3f73c1c0.jpg',
+    screenshotImage: '/imgs/erp-screens/approvals.webp',
     screenshotCaption: 'Quy trình phê duyệt trực tuyến không giấy tờ giúp tinh gọn thao tác khối vận hành.',
     tldrSummary:
       'Khi doanh thu tăng gấp đôi, chi phí nhân sự vận hành (Admin chia số, HR tính công, Kế toán nhập liệu, CSKH trả lời FAQ) thường tăng theo tương ứng nếu quy trình vẫn làm thủ công. Bằng cách thay thế các thao tác lặp lại bằng Auto Chia Data, Phê duyệt 1 chạm, Payroll Engine và AI Agent 24/7, doanh nghiệp giữ bộ máy tinh gọn và giảm tới 40% chi phí vận hành biên.',

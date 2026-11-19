@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect, react-refresh/only-export-components */
+import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Users, AlertTriangle, RefreshCw, Sparkles,
@@ -28,11 +29,14 @@ import { KpiCardSkeleton, Skeleton } from '../components/ui/Skeleton';
 
 import { Avatar } from '../components/ui/Avatar';
 import { WarRoomFlightDeck } from '../components/Dashboard/WarRoomFlightDeck';
+import { useAuth } from '../contexts/AuthContext';
+import { DomMetaQuickConnectButton } from '../../../dom-meta/DomMetaQuickConnectModal';
 
 const parseServerDate = (dateStr: string) => parseServerDateVN(dateStr) || new Date();
 
 const DashboardInner = ({ isActive }: { isActive: boolean }) => {
   const { t, language } = useLanguage();
+  const { user, token, tenantSlug } = useAuth();
   const daysOfWeek = [
     t('Thứ 2'),
     t('Thứ 3'),
@@ -53,6 +57,12 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
   ];
   const navigate = useNavigate();
   const [stats, setStats] = useState<any>(null);
+  const [adsPerfSummary, setAdsPerfSummary] = useState<{
+    total_spend: number;
+    total_ad_leads: number;
+    overall_positive_rate: number;
+    avg_cpql: number;
+  } | null>(null);
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showWarRoom, setShowWarRoom] = useState(false);
@@ -63,6 +73,27 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
   const [dateFilter, setDateFilter] = useState(() => {
     return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
   });
+
+  const loadAdsPerfStrip = useCallback(async () => {
+    try {
+      const res = await fetchAPI(`get_ads_performance_dashboard&date=${encodeURIComponent(dateFilter)}`);
+      if (res?.success && res?.summary) {
+        setAdsPerfSummary({
+          total_spend: Number(res.summary.total_spend || 0),
+          total_ad_leads: Number(res.summary.total_ad_leads || 0),
+          overall_positive_rate: Number(res.summary.overall_positive_rate || 0),
+          avg_cpql: Number(res.summary.avg_cpql || 0),
+        });
+      }
+    } catch {
+      // ignore non-critical strip load error
+    }
+  }, [dateFilter]);
+
+  useEffect(() => {
+    if (!isActive || user?.role === 'sale') return;
+    void loadAdsPerfStrip();
+  }, [isActive, user?.role, loadAdsPerfStrip]);
 
   const handleUpdateDateFilter = (val: string) => {
     const norm = normalizeGlobalDateFilter(val);
@@ -644,6 +675,83 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
           </button>
         </div>
       </div>
+
+      {/* Live "Hiệu suất Quảng cáo ↔ Lead CRM" Strip */}
+      {user?.role !== 'sale' && (
+        <div
+          className="card"
+          data-testid="crm-dashboard-ads-strip"
+          style={{
+            padding: '0.9rem 1.25rem',
+            marginBottom: '1.25rem',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            background: theme === 'dark'
+              ? 'linear-gradient(90deg, rgba(30, 64, 255, 0.14) 0%, rgba(15, 23, 42, 0.65) 100%)'
+              : 'linear-gradient(90deg, #F4F8FF 0%, #FFFFFF 60%, #F0FDFA 100%)',
+            border: theme === 'dark' ? '1px solid rgba(59, 130, 246, 0.28)' : '1px solid rgba(30, 64, 255, 0.18)',
+          }}
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg, #1E40FF 0%, #06B6D4 100%)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <BarChart2 size={16} />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                  Hiệu suất Quảng cáo ↔ Lead CRM
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
+                  Đối soát trực tiếp chi phí quảng cáo, khách chất lượng &amp; phân bổ Sale
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.15rem', fontSize: '0.8rem' }}>
+              <div>
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.7rem', display: 'block' }}>Chi phí Ads kỳ này</span>
+                <strong style={{ color: 'var(--color-text)', fontWeight: 700 }}>
+                  {adsPerfSummary && adsPerfSummary.total_spend > 0
+                    ? `${Math.round(adsPerfSummary.total_spend).toLocaleString('vi-VN')} ₫`
+                    : '0 ₫'}
+                </strong>
+              </div>
+              <div>
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.7rem', display: 'block' }}>Lead từ Ads</span>
+                <strong style={{ color: 'var(--color-text)', fontWeight: 700 }}>
+                  {adsPerfSummary ? adsPerfSummary.total_ad_leads.toLocaleString('vi-VN') : 0}
+                </strong>
+              </div>
+              <div>
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.7rem', display: 'block' }}>Tỷ lệ chất lượng</span>
+                <strong style={{ color: '#10b981', fontWeight: 700 }}>
+                  {adsPerfSummary ? `${adsPerfSummary.overall_positive_rate}%` : '0%'}
+                </strong>
+              </div>
+              <div>
+                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.7rem', display: 'block' }}>CPQL thực</span>
+                <strong style={{ color: '#1E40FF', fontWeight: 700 }}>
+                  {adsPerfSummary && adsPerfSummary.avg_cpql > 0
+                    ? `${Math.round(adsPerfSummary.avg_cpql).toLocaleString('vi-VN')} ₫`
+                    : '—'}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          <DomMetaQuickConnectButton
+            compact
+            authContext={{ accessToken: token || undefined, tenantSlug: tenantSlug || undefined }}
+            canManageConfig={user?.role === 'admin' || user?.role === 'superadmin'}
+            onConnected={() => void loadAdsPerfStrip()}
+            onOpenReport={() => navigate('/meta-report')}
+          />
+        </div>
+      )}
+
       {/* AI Pre-screener evaluation strip */}
       {aiScreenerEnabled && (
         loading && !stats ? (

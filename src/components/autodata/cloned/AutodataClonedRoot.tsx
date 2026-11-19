@@ -29,7 +29,12 @@ const Accounts = lazy(() => import('./pages/Accounts').then((m) => ({ default: m
 const ReportData = lazy(() => import('./pages/ReportData').then((m) => ({ default: m.ReportData })));
 const SalePortal = lazy(() => import('./pages/SalePortal').then((m) => ({ default: m.SalePortal })));
 const FairShareAudit = lazy(() => import('./pages/FairShareAudit').then((m) => ({ default: m.FairShareAudit })));
-const AdsPerformance = lazy(() => import('./pages/AdsPerformance').then((m) => ({ default: m.AdsPerformance })));
+const AdsCapiPanel = lazy(() =>
+  import('./components/AdsCapiPanel').then((m) => ({ default: m.AdsCapiPanel }))
+);
+const DomMetaReportWorkspace = lazy(() =>
+  import('../../dom-meta/DomMetaReportWorkspace').then((m) => ({ default: m.DomMetaReportWorkspace }))
+);
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[400px]">
@@ -45,6 +50,8 @@ function mapPathToScreenKey(pathname: string, role?: string): WorkspaceScreenKey
       return 'data_list';
     case '/ads-performance':
       return 'ads_performance';
+    case '/meta-report':
+      return 'dom_meta_report';
     case '/tickets':
       return 'tickets';
     case '/gatekeeper':
@@ -86,26 +93,32 @@ const ProtectedRoute: React.FC = () => {
 };
 
 const AppTabs: React.FC = () => {
-  const { user } = useAuth();
+  const { user, token, tenantSlug, companyName } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const [visitedPaths, setVisitedPaths] = useState<string[]>([currentPath]);
-
-  useEffect(() => {
-    if (!visitedPaths.includes(currentPath)) {
-      setVisitedPaths((prev) => [...prev, currentPath]);
-    }
-  }, [currentPath, visitedPaths]);
+  if (!visitedPaths.includes(currentPath)) {
+    setVisitedPaths((prev) => (prev.includes(currentPath) ? prev : [...prev, currentPath]));
+  }
 
   const adminPaths = ['/consultants', '/rounds', '/tickets', '/rules', '/integrations', '/settings', '/accounts', '/fair-share', '/gatekeeper'];
-  const userPaths = ['/', '/data', '/calendar', '/ads-performance'];
+  const userPaths = ['/', '/data', '/calendar', '/ads-performance', '/meta-report'];
   const allPaths = [...userPaths, ...adminPaths];
   const isAdminPath = adminPaths.includes(currentPath);
 
   if (user?.role === 'sale') return <Navigate to="/sale-portal" replace />;
+  if (currentPath === '/ads-performance') {
+    return <Navigate to={`/meta-report${location.search}`} replace />;
+  }
   if (!allPaths.includes(currentPath)) return <Navigate to="/" replace />;
   if (currentPath === '/accounts' && user?.role !== 'superadmin') return <Navigate to="/" replace />;
   if (isAdminPath && user?.role !== 'admin' && user?.role !== 'superadmin') return <Navigate to="/" replace />;
+
+  const searchParams = new URLSearchParams(location.search);
+  const focusAdId = searchParams.get('focusAdId') || searchParams.get('ad_id') || undefined;
+  const focusCampaignId =
+    searchParams.get('focusCampaignId') || searchParams.get('campaign_id') || undefined;
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -123,10 +136,34 @@ const AppTabs: React.FC = () => {
           </Suspense>
         )}
       </div>
-      <div style={{ display: currentPath === '/ads-performance' ? 'block' : 'none' }} className={currentPath === '/ads-performance' ? 'page-enter-active' : ''}>
-        {visitedPaths.includes('/ads-performance') && (
+      <div style={{ display: currentPath === '/meta-report' ? 'block' : 'none' }} className={currentPath === '/meta-report' ? 'page-enter-active' : ''}>
+        {visitedPaths.includes('/meta-report') && (
           <Suspense fallback={<PageLoader />}>
-            <AdsPerformance />
+            <DomMetaReportWorkspace
+              mode="embedded"
+              authContext={{ accessToken: token || undefined, tenantSlug: tenantSlug || undefined }}
+              workspaceName={companyName || 'AutoData Workspace'}
+              userDisplayName={user?.name || 'Admin'}
+              userRoleLabel={user?.role || 'admin'}
+              canManageConfig={user?.role === 'admin' || user?.role === 'superadmin'}
+              enableCrmAttribution={true}
+              focusAdId={focusAdId}
+              focusCampaignId={focusCampaignId}
+              capiPanel={
+                <Suspense fallback={<PageLoader />}>
+                  <AdsCapiPanel dateFilter={getDefaultDateFilter()} />
+                </Suspense>
+              }
+              onOpenLead={(lead) =>
+                navigate(`/data?highlightLeadId=${encodeURIComponent(lead.id)}`)
+              }
+              onFilterCampaignLeads={(cid, cname) => {
+                const q = new URLSearchParams();
+                if (cid) q.set('campaign_id', cid);
+                if (cname) q.set('search', cname);
+                navigate(`/data?${q.toString()}`);
+              }}
+            />
           </Suspense>
         )}
       </div>
@@ -208,7 +245,12 @@ const TourController: React.FC<{
 }> = ({ open, onClose }) => {
   const { user, v2Session } = useAuth();
   const location = useLocation();
-  const [stepIdx, setStepIdx] = useState(0);
+  const activeTourKey = `${location.pathname}|${location.search}|${String(open)}`;
+  const [stepState, setStepState] = useState<{ key: string; idx: number }>({
+    key: activeTourKey,
+    idx: 0,
+  });
+  const stepIdx = stepState.key === activeTourKey ? stepState.idx : 0;
 
   const resolveEffectiveScreenKey = (): WorkspaceScreenKey | 'sale_portal' => {
     const baseKey = mapPathToScreenKey(location.pathname, user?.role);
@@ -231,10 +273,6 @@ const TourController: React.FC<{
   const screenKey = resolveEffectiveScreenKey();
   const steps = SCREEN_TOUR_DECKS[screenKey] || SCREEN_TOUR_DECKS.settings || SCREEN_TOUR_DECKS.dashboard;
 
-  useEffect(() => {
-    setStepIdx(0);
-  }, [location.pathname, location.search, open]);
-
   const handleFinish = async () => {
     onClose();
     try {
@@ -254,7 +292,7 @@ const TourController: React.FC<{
       open={open}
       steps={steps}
       activeStepIndex={stepIdx}
-      onStepChange={setStepIdx}
+      onStepChange={(idx) => setStepState({ key: activeTourKey, idx })}
       onFinish={() => void handleFinish()}
       onClose={() => void handleFinish()}
     />

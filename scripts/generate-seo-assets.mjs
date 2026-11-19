@@ -297,15 +297,15 @@ ${sitemapEntries.join('\n')}
 fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
 
 // 2. Shared core body for llms.txt & llms-full.txt (keeps ## Optional strictly at the end per llmstxt.org spec)
-const llmsCoreBody = `# DOMATION.NET — Bespoke Enterprise OS, Auto Data CAPI & Multi-Agent AI
+const llmsCoreBody = `# DOMATION — Hệ Sinh Thái CRM Auto Data, Meta & Google Ads Report, Automation, ERP 5.0 & Web 3D
 
-> Công ty TNHH DOMATION Việt Nam (DOMARKETING / DOM MARKETING, sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: ERP 5.0 (12 phân hệ, Payroll PDF, Chấm công GPS AI), CRM 360° & Hóa đơn MISA, Auto Chia Data ZaloBot <5s & Meta CAPI SHA-256, Vibecode & Multi-Agent AI RAG 24/7 thời đại 5.0, cùng hệ thống tối ưu quảng cáo, Landing Page CRO & Website/Sa bàn 3D WebGL.
+> Công ty TNHH DOMATION Việt Nam (sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) kiến tạo hệ sinh thái hợp nhất điểm chạm Website/Landing Page 3D với bộ máy vận hành nội bộ: CRM Auto Data chia số <5s, Báo cáo Meta & Google Ads gắn Lead CRM, Automation Zalo ZNS/Email + Tracking hành vi Website, và phần mềm ERP 5.0 (12 phân hệ) tích hợp Đa Trợ Lý AI.
 
 ## Core Product & Portfolio Routes
-- [Trang chủ DOMATION Enterprise OS](${SITE_URL}/): Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới, 4 trụ cột, Multi-Agent AI Hub và bảng giá SaaS tổng thể.
+- [Trang chủ DOMATION](${SITE_URL}/): Hệ sinh thái hợp nhất CRM Auto Data <5s, Meta & Google Ads Report, Automation Zalo ZNS, Tracking Website, ERP 5.0 (12 phân hệ) & Web 3D.
 - [Auto Chia Data ZaloBot & Meta CAPI](${SITE_URL}/data): Phân bổ Lead Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
 - [Enterprise ERP 5.0 May Đo (12 Phân hệ)](${SITE_URL}/erp): Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng (Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF ký số).
-- [CRM 360° & Đồng bộ MISA](${SITE_URL}/crm): Pipeline Kanban 8 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
+- [CRM 360° & Auto Data](${SITE_URL}/crm): Thu khách đa kênh, chia vòng ZaloBot <5s, Pipeline Kanban 8 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
 - [Marketing Automation & AI RAG](${SITE_URL}/automation): Visual Flow IF/ELSE rẽ nhánh tự động, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
 - [Meta Ad Realtime Report](${SITE_URL}/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.

@@ -218,7 +218,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ai-handover-summary.jpg',
     coverAlt: 'AI tóm tắt hội thoại chuyển giao CRM cho Sale nhanh chóng chính xác',
-    screenshotImage: '/assets/domation/auto_ai_chatbot.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Trợ lý AI Chatbot tự động thu thập thông tin nhu cầu và đồng bộ bản tóm tắt sang CRM.',
     tldrSummary:
       'Khi Bot đã chat với khách 30–40 câu trước khi bàn giao, sai lầm hay gặp là bắt Sale phải cuộn đọc hết đoạn chat dài rồi mới dám bốc máy gọi. DOMATION tích hợp Agent Tóm Tắt Hội Thoại tự động trích xuất cấu trúc JSON (Sản phẩm quan tâm, Ngân sách, Điểm đau, Thời gian thuận tiện nghe máy) gửi thẳng vào thông báo ZaloBot và hồ sơ CRM.',
@@ -314,7 +314,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ai-rag-security-vault.jpg',
     coverAlt: 'Checklist bảo mật dữ liệu doanh nghiệp khi triển khai AI và RAG nội bộ',
-    screenshotImage: '/assets/domation/data_v2_capi_masked.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_datalist.jpg',
     screenshotCaption: 'Cơ chế che dữ liệu nhạy cảm và mã hóa thông tin khách hàng trong hệ sinh thái DOMATION.',
     tldrSummary:
       'Rào cản lớn nhất khiến Ban Giám đốc chần chừ đưa tài liệu hợp đồng, báo giá và dữ liệu khách hàng lên AI là nỗi lo rò rỉ bí mật kinh doanh. Checklist bảo mật 8 điểm của DOMATION giúp doanh nghiệp triển khai AI RAG an toàn: cô lập kho Vector theo từng doanh nghiệp, mã hóa AES-256 cho khóa API, che SĐT/PII trước khi gửi mô hình và chống tấn công Prompt Injection.',
@@ -410,7 +410,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-zalobot-vs-telegram-sheet.jpg',
     coverAlt: 'So sánh tốc độ chia Lead qua ZaloBot Telegram Bot và Google Sheet thủ công',
-    screenshotImage: '/assets/domation/chia_data_21.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_rounds.jpg',
     screenshotCaption: 'Giao diện cấu hình chia Lead tức thì qua ZaloBot & Telegram Bot trong DOMATION Auto Data.',
     tldrSummary:
       'Google Sheet từng là công cụ miễn phí tiện lợi nhưng trở thành điểm nghẽn chết người khi chạy quảng cáo quy mô lớn vì độ trễ chia số 15–120 phút và dễ lộ toàn bộ danh sách khách hàng. Kết hợp song song ZaloBot (gần gũi thói quen Sale Việt) và Telegram Bot (ổn định tốc độ cao làm kênh dự phòng) trên DOMATION giúp giao Lead dưới 5 giây kèm van thu hồi 120s.',
@@ -506,7 +506,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-tiktok-ladipage-webhook.jpg',
     coverAlt: 'Đồng bộ TikTok Instant Form Ladipage Meta Form về Auto Data Router qua Webhook',
-    screenshotImage: '/assets/domation/chia_data_18.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_integrations.jpg',
     screenshotCaption: 'Cổng kết nối Webhook đa nguồn thu Lead tức thì từ TikTok, Meta, Ladipage và Website.',
     tldrSummary:
       'Chạy song song Meta Ads, TikTok Lead Ads và Landing Page nhưng dữ liệu nằm ở 3 nơi khác nhau khiến một khách hàng đăng ký cả TikTok lẫn Facebook bị 2 Sale gọi trùng. DOMATION gom tất cả nguồn qua Webhook về một cổng chuẩn hóa duy nhất trong < 3 giây, tự động lọc trùng 180 ngày và chia vòng công bằng.',
@@ -619,7 +619,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ai-lead-prescorer.jpg',
     coverAlt: 'AI Pre-Scorer chấm điểm độ thiện chí Lead tự động trước khi chia Sale',
-    screenshotImage: '/ERP-Product/1788856540980_2141578413905312186_2310722037673454867_a9d3d972886e0c266f4c5866dec8111d.jpg',
+    screenshotImage: '/imgs/erp-screens/approvals.webp',
     screenshotCaption: 'Bộ lọc AI Gatekeeper phát hiện và giữ lại các Lead nghi ngờ spam trước khi làm nhiễu đội Sale.',
     tldrSummary:
       'Không phải mọi Lead đổ về từ quảng cáo đều có giá trị ngang nhau: có số bấm nhầm 9 số, số spam từ đối thủ hoặc khách điền tên vô nghĩa. AI Pre-Scorer của DOMATION chạy ngay ở cửa Webhook để chấm điểm thiện chí 0–100, lọc số rác vào kho Gatekeeper và gắn nhãn Ưu tiên cao (Hot Lead) cho những khách hàng tiềm năng thực sự.',
@@ -715,7 +715,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-daily-data-sla-report.jpg',
     coverAlt: 'Báo cáo tổng kết chia Data và SLA cuối ngày tự động gửi cho Giám đốc qua ZaloBot',
-    screenshotImage: '/assets/domation/data_v2_overview.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_dashboard.jpg',
     screenshotCaption: 'Thống kê tổng số Lead thu về, chia thành công và SLA từng nhân sự trên DOMATION Data.',
     tldrSummary:
       'Mỗi tối lúc 21h00 (hoặc theo khung giờ tùy chỉnh), DOMATION Auto Data tự động tổng hợp dữ liệu cả ngày gửi thẳng vào nhóm Zalo/Telegram của Giám đốc: hôm nay đổ về bao nhiêu Lead, nguồn nào nhiều nhất, tỷ lệ trùng, từng Sale/Đại lý F1 nhận bao nhiêu số, ai phản hồi SLA chậm và bao nhiêu Ticket lỗi đã được bù.',
@@ -811,7 +811,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-crm-kanban-8-stages.jpg',
     coverAlt: 'CRM Pipeline Kanban 8 nấc và rào cản TTL1 chống bỏ sót Lead DOMATION',
-    screenshotImage: '/assets/domation/crm_2.webp',
+    screenshotImage: '/imgs/erp-screens/rounds.webp',
     screenshotCaption: 'Giao diện Pipeline bán hàng & phân bổ Lead đa kênh trong DOMATION CRM 360°.',
     tldrSummary:
       '80% doanh thu bị mất không phải vì thiếu Lead mới mà vì Sale bỏ quên những khách hàng "đang cân nhắc" sau cuộc gọi đầu tiên. DOMATION CRM 360° thiết kế Pipeline Kanban 8 nấc rõ ràng kết hợp Rào cản chất lượng TTL1 (Tương tác Lần 1) và cơ chế tự hạ nhiệt (Decay) nhắc Sale gọi lại đúng thời điểm vàng.',
@@ -907,7 +907,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-live-inventory-cart-crm.jpg',
     coverAlt: 'Quản lý giỏ hàng bất động sản real-time và chia hoa hồng tự động trên DOMATION CRM',
-    screenshotImage: '/assets/domation/crm_9.webp',
+    screenshotImage: '/imgs/erp-screens/companies.webp',
     screenshotCaption: 'Màn hình quản trị giỏ hàng dự án và chính sách bán hàng cập nhật thời gian thực trên CRM.',
     tldrSummary:
       'Trong giờ cao điểm mở bán hoặc Flash Sale, việc cập nhật giỏ hàng bằng file Excel hay nhóm chat Zalo rất dễ khiến hai sàn cùng nhận tiền giữ chỗ cho một mã sản phẩm/căn hộ duy nhất. Giỏ hàng Live của DOMATION CRM khóa trạng thái nguyên tử (Atomic Lock) trong mili-giây và tự động sinh Phiếu Hợp Tác chia hoa hồng 100% khi giao dịch thành công.',
@@ -1003,7 +1003,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-cdp-360-timeline.jpg',
     coverAlt: 'Hồ sơ khách hàng 360 độ CDP hợp nhất dữ liệu web chat email hóa đơn',
-    screenshotImage: '/assets/domation/crm_3.webp',
+    screenshotImage: '/imgs/erp-screens/contacts.webp',
     screenshotCaption: 'Màn hình Hồ sơ Khách hàng 360 độ lưu trọn lịch sử tương tác đa kênh trên DOMATION CRM.',
     tldrSummary:
       'Khách hàng không phân biệt phòng Marketing hay phòng CSKH — họ chỉ thấy một thương hiệu duy nhất. Nếu họ vừa xem trang Bảng giá, vừa chat trên Zalo OA và từng mua gói dịch vụ năm ngoái, nhưng khi gọi Hotline nhân viên lại hỏi "Anh/chị tên gì ạ?" thì trải nghiệm lập tức sụp đổ. Hồ sơ Khách hàng 360° (CDP) trong DOMATION hợp nhất toàn bộ dữ liệu đó trên một màn hình Timeline duy nhất.',
@@ -1099,7 +1099,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-lead-heat-matrix-crm.jpg',
     coverAlt: 'Ma trận nhiệt độ khách hàng Nóng Ấm Lạnh kết hợp Lead Score trên DOMATION CRM',
-    screenshotImage: '/ERP-Product/1788856586610_2141578413905312186_2310722037673454867_3a3e0cd6e45b99e3e82c953988b294c7.jpg',
+    screenshotImage: '/imgs/erp-screens/contacts.webp',
     screenshotCaption: 'Thẻ hồ sơ Lead chi tiết hiển thị phân cấp nhiệt độ Nóng/Ấm/Lạnh và điểm tiềm năng AI.',
     tldrSummary:
       'Một đội Sale mỗi tháng nhận 500 số nhưng doanh số chỉ tập trung ở 20% khách hàng có độ sẵn sàng cao. Ma trận nhiệt độ của DOMATION tự động xếp hạng khách hàng thành Nóng – Ấm – Lạnh dựa trên 2 chiều: Tín hiệu chủ động từ khách (xem bảng giá, mở email, chat lại) và Đánh giá từ cuộc gọi của Sale, kèm cơ chế tự nguội nếu bỏ quên.',
@@ -1195,7 +1195,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-custom-crm-vs-saas.jpg',
     coverAlt: 'So sánh CRM may đo DOMATION và CRM đóng gói phổ thông tại Việt Nam',
-    screenshotImage: '/assets/domation/crm_8.webp',
+    screenshotImage: '/imgs/meta-screens/fusion-quick-connect-crm.webp',
     screenshotCaption: 'Kết nối Webhook hai chiều gốc giữa DOMATION CRM, Meta CAPI và kế toán MISA.',
     tldrSummary:
       'CRM đóng gói quốc tế mạnh về email tiếng Anh nhưng gần như bất lực trước nhu cầu thực chiến tại Việt Nam: chia số ZaloBot dưới 5s, gửi Zalo ZNS từ POS, xuất hóa đơn MISA hai chiều, kiểm tra VietQR ngân hàng và chống trùng số +84 qua nhiều đại lý F1. DOMATION CRM 360° may đo giải quyết trọn vẹn hệ sinh thái bản địa này trong một nền tảng.',
@@ -1291,7 +1291,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-custom-if-else-flow.jpg',
     coverAlt: 'Thiết kế flow riêng theo mô hình kinh doanh bằng logic điều kiện IF ELSE DOMATION',
-    screenshotImage: '/assets/domation/auto_flow.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Trình tạo Visual Flow Builder kéo thả đa nhánh điều kiện IF/ELSE trong DOMATION Automation.',
     tldrSummary:
       'Mỗi ngành nghề có một nhịp điệu ra quyết định khác nhau: khách BĐS cần xem sa bàn và bảng tính dòng tiền; học viên MBA cần đề cương và buổi học thử; khách Nha khoa cần nhắc lịch 24h trước giờ hẹn. DOMATION thiết kế Visual Flow Engine rẽ nhánh IF/ELSE may đo sát từng điểm chạm hành vi trên Email, Zalo ZNS, Messenger và CRM.',
@@ -1387,7 +1387,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-multichannel-ads-opt.jpg',
     coverAlt: 'Tối ưu quảng cáo đa kênh Meta TikTok Google bằng dữ liệu chuyển đổi thực CRM',
-    screenshotImage: '/assets/domation/meta_rp_5.webp',
+    screenshotImage: '/imgs/meta-screens/meta-heatmap-region.webp',
     screenshotCaption: 'Ma trận tối ưu ngân sách chiến dịch theo doanh thu và tỷ lệ thiện chí thực trong Meta Report.',
     tldrSummary:
       'Thuật toán quảng cáo của Meta, TikTok và Google hiện đại mạnh hơn con người rất nhiều trong việc tìm khách, NHƯNG chúng chỉ tối ưu đúng thứ bạn gửi về cho chúng. Nếu bạn chỉ tối ưu theo lượt điền form hoặc nhắn tin, AI của sàn quảng cáo sẽ tìm người hay bấm dạo. DOMATION thiết lập vòng phản hồi Server-Side đẩy dữ liệu Khách Thiện Chí (Qualified) & Đơn Đã Thu Tiền (Purchase) từ CRM ngược về các nền tảng Ads để giảm 25–40% CPA thực.',
@@ -1585,7 +1585,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-campaign-funnel-opt.jpg',
     coverAlt: 'Tối ưu chiến dịch quảng cáo và phễu nuôi dưỡng đa chạm giảm 40% CPA',
-    screenshotImage: '/assets/domation/auto_home.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Bảng điều khiển chiến dịch đa kênh tổng hợp tỷ lệ mở Email, Zalo ZNS và chuyển đổi phễu.',
     tldrSummary:
       'Đa số các chiến dịch quảng cáo thất bại vì chỉ dồn 100% tiền vào tầng lạnh (Cold Traffic) đánh một lần rồi thôi: khách chưa mua ngay trong ngày là coi như mất trắng. Tối ưu chiến dịch theo mô hình Full-Funnel của DOMATION kết nối ngân sách Retargeting chi phí rẻ với phễu Email SES + Zalo ZNS 30 ngày, giúp tận dụng tối đa mọi lượt click đã trả tiền và giảm tới 40% CPA tổng.',

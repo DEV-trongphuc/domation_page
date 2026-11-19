@@ -2,6 +2,26 @@ import type { SpotlightTourStep } from './AutoDataHelpTour';
 import type { WorkspaceScreenKey } from './autodataTypes';
 
 export const SCREEN_TOUR_DECKS: Record<WorkspaceScreenKey | 'sale_portal', SpotlightTourStep[]> = {
+  dom_meta_report: [
+    {
+      id: 'dm-1',
+      target: 'dom-meta-kpis',
+      selector: '[data-testid="open-perf-compare"]',
+      eyebrow: 'BƯỚC 1 / 2 • DOM META REPORT',
+      title: 'Báo cáo Quảng cáo Meta & Giữ chân Video 3 giây',
+      description: 'Theo dõi trực quan chi tiêu, xu hướng ngày, mục tiêu chiến dịch, nền tảng phân phối và bản đồ nhiệt khung giờ hiệu quả 24/7.',
+      chips: ['Dữ liệu thời gian thực', 'Khung giờ vàng 24/7'],
+    },
+    {
+      id: 'dm-2',
+      target: 'dom-meta-gads',
+      selector: '[data-testid="open-google-ads-settings"]',
+      eyebrow: 'BƯỚC 2 / 2 • MỞ RỘNG ĐA KÊNH',
+      title: 'Mở rộng báo cáo Google Ads khi cần',
+      description: 'Bật tính năng mở rộng khi cần kết nối thêm số liệu Google Ads qua 5 bước hướng dẫn chi tiết.',
+      chips: ['Bật khi cần', 'Hướng dẫn 5 bước'],
+    },
+  ],
   dashboard: [
     {
       id: 'dash-1',

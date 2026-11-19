@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Activity,
   ArrowRight,
   ArrowUp,
+  BarChart3,
   Bot,
+  Box,
   Building2,
   Calculator,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Cpu,
   Database,
   ExternalLink,
   Globe,
   Layers,
+  Mail,
   MonitorSmartphone,
+  MousePointerClick,
   Network,
+  Play,
   Sparkles,
+  Users,
   Workflow,
+  Zap,
+  ZoomIn,
 } from 'lucide-react';
 import { Navbar } from './Navbar';
 import { ContactModal } from './ContactModal';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { InteractiveBrandSphere } from './components/InteractiveBrandSphere';
+import { ImageZoomModal } from './components/GlassModal';
+import { SmoothAppImage } from './components/SmoothAppImage';
+import { preloadAppImages } from './utils/imagePreload';
 import {
   type InspectionTabId,
   ProductInspectionModal,
@@ -30,11 +44,9 @@ import { SectionQuickDock } from './components/SectionQuickDock';
 import { DomationFooter } from './components/DomationFooter';
 import {
   CASE_STUDY_SPOTLIGHTS,
-  CORE_OPERATION_PILLARS,
   DECOR_PNGS,
   DOMATION_SAAS_PLANS,
   ENTERPRISE_STORY_CHAPTERS,
-  MULTI_AGENT_NODES,
 } from './data/enterpriseData';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
@@ -44,11 +56,11 @@ import { usePageSeo } from './utils/seo';
 
 const DEDICATED_APP_LINKS = [
   { label: 'ERP 5.0', href: '/erp' },
+  { label: 'CRM Auto Data', href: '/data' },
+  { label: 'Meta & Google Ads Report', href: '/meta-report' },
+  { label: 'Automation & AI', href: '/automation' },
   { label: 'CRM 360°', href: '/crm' },
-  { label: 'AI & Flow', href: '/automation' },
-  { label: 'Auto Data', href: '/data' },
-  { label: 'Meta Ads BI', href: '/meta-report' },
-  { label: 'Thiết Kế Web', href: '/web-design' },
+  { label: 'Thiết Kế Web & 3D', href: '/web-design' },
   { label: 'Portfolio', href: '/portfolio' },
   { label: 'Blog', href: '/boost' },
 ];
@@ -60,8 +72,343 @@ const CASE_ARTICLE_MAP: Record<string, string> = {
   phucloctho: '/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5',
 };
 
-const AGENT_ICONS = [Workflow, Bot, Cpu, Layers];
-const PILLAR_ICONS = [Building2, Workflow, Database, Globe];
+const AUTODATA_SCREENS = [
+  {
+    id: 'dashboard',
+    label: 'Tổng quan Chia số',
+    hint: 'Biết ngay lượng khách về & tốc độ nhận từng giờ',
+    badge: 'REAL-TIME DASHBOARD',
+    title: 'Tổng Quan Lưu Lượng Khách & Tốc Độ Phân Bổ',
+    desc: 'Theo dõi tổng data về, tỷ lệ chia 100%, số trùng và bảng xếp hạng Sale/Đại lý.',
+    src: '/imgs/autodata/showcase/screen_dashboard.jpg',
+  },
+  {
+    id: 'datalist',
+    label: 'Danh sách & Bài Ads',
+    hint: 'Thấy rõ bài quảng cáo gốc & chất lượng gọi từng khách',
+    badge: 'LEAD & NGUỒN QUẢNG CÁO',
+    title: 'Danh Sách Khách Kèm Bài Quảng Cáo Gốc',
+    desc: 'Che SĐT bảo mật, hiển thị rõ bài quảng cáo tạo ra khách, Sale nhận và trạng thái cuộc gọi.',
+    src: '/imgs/autodata/showcase/screen_datalist.jpg',
+  },
+  {
+    id: 'fairshare',
+    label: 'Đối soát Công bằng',
+    hint: 'Tự cân bằng vòng chia & duyệt bù data lỗi minh bạch',
+    badge: 'ĐỐI SOÁT MINH BẠCH',
+    title: 'Đối Soát Công Bằng Giữa Sale & Đại Lý F1',
+    desc: 'Đo độ lệch phân bổ theo thời gian thực và tự động bù lượt khi có ticket số sai.',
+    src: '/imgs/autodata/showcase/screen_fairshare.jpg',
+  },
+  {
+    id: 'rounds',
+    label: 'Vòng chia Dự án',
+    hint: 'Chia theo sản phẩm, đẩy ZaloBot < 5s & chống ôm số',
+    badge: 'PHÂN BỔ LINH HOẠT',
+    title: 'Vòng Phân Bổ Độc Lập Theo Từng Dự Án',
+    desc: 'Tùy biến tỷ lệ chia cho từng đội Sale, tự động chuyển lượt nếu quá hạn không nhận.',
+    src: '/imgs/autodata/showcase/screen_rounds.jpg',
+  },
+];
+
+const ADS_SPOTLIGHT_SCREENS = [
+  {
+    id: 'lead-sale',
+    label: 'Lead & Sale từng Bài',
+    badge: 'TRUY VẾT 2 CHIỀU',
+    title: 'Bấm Từng Bài Ads — Xem Ngay Danh Sách Khách & Sale Chăm',
+    desc: 'Kiểm tra từng khách hàng đổ về từ bài viết, Sale đang phụ trách và doanh thu thực tế.',
+    src: '/imgs/meta-screens/fusion-ad-leads-sale-modal.webp',
+  },
+  {
+    id: 'overview',
+    label: 'Dashboard Real-Time',
+    badge: 'BÁO CÁO QUẢNG CÁO',
+    title: 'Tổng Quan Chi Tiêu, Xu Hướng Ngày & Nền Tảng',
+    desc: 'Cập nhật tức thì ngân sách đã chi, tăng giảm so với kỳ trước và tỷ trọng Facebook / Instagram.',
+    src: '/imgs/meta-screens/meta-dashboard.webp',
+  },
+  {
+    id: 'heatmap',
+    label: 'Khung giờ & Khu vực',
+    badge: 'TỐI ƯU NGÂN SÁCH',
+    title: 'Khung Giờ Ra Khách Rẻ Nhất & Tỉnh Thành Hiệu Quả',
+    desc: 'Phát hiện khung giờ vàng chốt đơn và tỉnh thành có chi phí mỗi khách tốt nhất.',
+    src: '/imgs/meta-screens/meta-heatmap-region.webp',
+  },
+  {
+    id: 'google-ads',
+    label: 'Mở rộng Google Ads',
+    badge: 'ĐA KÊNH QUẢNG CÁO',
+    title: 'Bật Thêm Báo Cáo Google Ads Trên Cùng Giao Diện',
+    desc: 'Theo dõi song song Meta Ads & Google Ads khi doanh nghiệp chạy đa kênh.',
+    src: '/imgs/meta-screens/meta-google-ads-guide-modal.webp',
+  },
+];
+
+const AUTOMATION_PILLARS = [
+  {
+    step: '01',
+    icon: MousePointerClick,
+    title: 'Tracking Website Từng Giây',
+    desc: 'Đo lượt click, độ sâu cuộn trang, thời gian đọc bảng giá và số lần quay lại.',
+    metric: 'Click • Scroll • Thời gian xem',
+  },
+  {
+    step: '02',
+    icon: Mail,
+    title: 'Đo Mở & Click Email',
+    desc: 'Kiểm tra khách đã mở mail hay bấm link chưa để rẽ nhánh chăm sóc đúng nhu cầu.',
+    metric: 'Open • Click • Rẽ nhánh IF/ELSE',
+  },
+  {
+    step: '03',
+    icon: Zap,
+    title: 'Gửi Zalo ZNS, OA & Voucher',
+    desc: 'Tự động gửi Zalo ZNS nhắc hẹn, tin nhắn OA, Email cá nhân hóa và mã ưu đãi.',
+    metric: 'Zalo ZNS • OA • Email • Voucher',
+  },
+  {
+    step: '04',
+    icon: Activity,
+    title: 'Báo Nóng Sale & Đồng Bộ Ads',
+    desc: 'Khách quay lại xem trang giá lập tức báo cho Sale và phản hồi Meta CAPI.',
+    metric: 'Báo Sale ngay • Tối ưu tệp Ads',
+  },
+];
+
+const ERP_MODULE_TRACKS = [
+  {
+    id: 'sales-crm',
+    label: 'Bán hàng & Pipeline',
+    badge: 'CRM 360° TRONG ERP',
+    title: 'Pipeline Kéo Thả, Hồ Sơ 360° & Khách Đã Chốt',
+    desc: 'Theo dõi xuyên suốt từ khách mới, hẹn gặp, đặt cọc đến hợp đồng và đối tác B2B.',
+    highlights: ['Kéo thả giai đoạn bán hàng trực quan', 'Hồ sơ 360° lưu đủ lịch sử gọi & ghi chú', 'Quản lý hợp đồng & đối tác doanh nghiệp'],
+    mainScreen: {
+      src: '/imgs/erp-screens/deals.webp',
+      title: 'Pipeline Khách hàng dạng Kanban',
+    },
+    subScreens: [
+      { src: '/imgs/erp-screens/contacts.webp', title: 'Danh sách Khách tiềm năng 360°' },
+      { src: '/imgs/erp-screens/students.webp', title: 'Khách hàng đã chốt & Hợp đồng' },
+    ],
+  },
+  {
+    id: 'ops-data',
+    label: 'Vận hành & Chia Data',
+    badge: 'ĐIỀU HÀNH THỜI GIAN THỰC',
+    title: 'Dashboard Tổng Quan, Nhật Ký Data & Đối Soát Công Bằng',
+    desc: 'Nắm trọn lượng data đổ về, tỷ lệ xử lý đúng hạn và cân bằng chia số toàn đội.',
+    highlights: ['Tổng quan chỉ số điều hành theo thời gian thực', 'Nhật ký giao data minh bạch từng giây', 'Đối soát công bằng giữa các đội Sale'],
+    mainScreen: {
+      src: '/imgs/erp-screens/dashboard-lead.webp',
+      title: 'Tổng quan Vận hành & Phân bổ Data',
+    },
+    subScreens: [
+      { src: '/imgs/erp-screens/data-log.webp', title: 'Nhật ký & Quản lý Data' },
+      { src: '/imgs/erp-screens/fair-share.webp', title: 'Đối soát Công bằng Phân phối' },
+    ],
+  },
+  {
+    id: 'approval-finance',
+    label: 'Phê duyệt & Chi phí',
+    badge: 'TÀI CHÍNH MINH BẠCH',
+    title: 'Phê Duyệt Đa Cấp & Kiểm Soát Chi Phí Vận Hành',
+    desc: 'Duyệt đơn từ, hoa hồng và đề xuất chi phí nhanh gọn, lưu vết chứng từ rõ ràng.',
+    highlights: ['Luồng duyệt nhiều cấp rõ trách nhiệm', 'Kiểm soát chi phí vận hành & thanh toán', 'Lưu đầy đủ chứng từ & lịch sử duyệt'],
+    mainScreen: {
+      src: '/imgs/erp-screens/approvals.webp',
+      title: 'Quy trình & Phê duyệt Đa cấp',
+    },
+    subScreens: [
+      { src: '/imgs/erp-screens/expenses.webp', title: 'Chi phí Vận hành & Đề xuất Chi' },
+      { src: '/imgs/erp-screens/companies.webp', title: 'Đối tác & Nhà cung cấp Doanh nghiệp' },
+    ],
+  },
+  {
+    id: 'hr-attendance',
+    label: 'Nhân sự & Chấm công',
+    badge: 'QUẢN TRỊ ĐỘI NGŨ',
+    title: 'Chấm Công GPS, Lịch Công Tháng & Kênh Nhân Sự',
+    desc: 'Giám sát giờ vào/ra ca, vị trí check-in thực tế và bảng công tự động toàn công ty.',
+    highlights: ['Bảng công tháng trực quan toàn đội ngũ', 'Xác thực giờ làm & vị trí check-in GPS', 'Gắn sẵn ZaloBot & Telegram từng nhân sự'],
+    mainScreen: {
+      src: '/imgs/erp-screens/attendance.webp',
+      title: 'Quản lý Chấm công theo Tháng',
+    },
+    subScreens: [
+      { src: '/imgs/erp-screens/attendance-detail.webp', title: 'Chi tiết Chấm công & Vị trí GPS' },
+      { src: '/imgs/erp-screens/consultants.webp', title: 'Nhân sự Công ty & Kênh Thông báo' },
+    ],
+  },
+  {
+    id: 'marketing-hub',
+    label: 'Marketing & 30+ Phân hệ',
+    badge: 'HỆ SINH THÁI MỞ RỘNG',
+    title: 'Marketing Đa Kênh, Bảng Tin Nội Bộ & Điều Hướng 1 Chạm',
+    desc: 'Tích hợp sẵn Email, Zalo OA, Automation, Bảng tin vinh danh và cấu hình linh hoạt.',
+    highlights: ['Tích hợp sẵn Báo cáo Ads & Automation', 'Bảng tin nội bộ gắn kết & vinh danh', '30+ phân hệ mở rộng theo nhu cầu'],
+    mainScreen: {
+      src: '/imgs/erp-screens/marketing.webp',
+      title: 'Trung tâm Marketing & Đa kênh',
+    },
+    subScreens: [
+      { src: '/imgs/erp-screens/feed.webp', title: 'Bảng tin Doanh nghiệp & Vinh danh' },
+      { src: '/imgs/erp-screens/quick-menu-1.jpg', title: 'Menu Điều hướng Nhanh Đa Phân Hệ' },
+    ],
+  },
+];
+
+const ERP_EMBEDDED_AGENTS = [
+  {
+    icon: Workflow,
+    tag: 'CHIA SỐ < 5S',
+    name: 'Trợ Lý Điều Phối Khách',
+    desc: 'Lọc trùng số, chấm điểm và chia khách đúng Sale theo quy tắc.',
+  },
+  {
+    icon: Bot,
+    tag: 'CHĂM SÓC 24/7',
+    name: 'Trợ Lý Tư Vấn Đa Kênh',
+    desc: 'Đọc bảng giá nội bộ để trả lời Web, Zalo, Messenger & đặt lịch.',
+  },
+  {
+    icon: Cpu,
+    tag: 'VẬN HÀNH NỘI BỘ',
+    name: 'Trợ Lý Phê Duyệt & HR',
+    desc: 'Nhắc việc quá hạn, theo sát đơn chờ duyệt & tổng hợp công ca.',
+  },
+  {
+    icon: BarChart3,
+    tag: 'BÁO CÁO TỰ ĐỘNG',
+    name: 'Trợ Lý Đọc Số & Tối Ưu',
+    desc: 'Cảnh báo bài quảng cáo kém hiệu quả & gửi báo cáo cuối ngày.',
+  },
+];
+
+const TOUCHPOINT_SHOWCASES = [
+  {
+    id: 'ecolife',
+    tag: 'BĐS XANH • WEBSITE',
+    title: 'EcoLife Signature',
+    url: 'ecolifesignature.vn',
+    desc: 'Website chuẩn Quiet Luxury tích hợp Trợ lý AI và đẩy Lead về CRM.',
+    src: '/assets/ecolife/ecolife_official_live.jpg',
+  },
+  {
+    id: 'nava',
+    tag: 'E-COMMERCE',
+    title: 'Nava Store',
+    url: 'navastore.vn',
+    desc: 'Web bán hàng tốc độ cao, gắn sẵn đo lường hành vi khách.',
+    src: '/landingpage_avatar/nava.webp',
+  },
+  {
+    id: 'ideasmba',
+    tag: 'TUYỂN SINH MBA',
+    title: 'Viện IDEAS MBA',
+    url: 'ideas.edu.vn/mba',
+    desc: 'Landing Page chuyển đổi cao, đẩy thẳng khách về CRM.',
+    src: '/landingpage_avatar/ideasmba.webp',
+  },
+  {
+    id: 'flora',
+    tag: 'NHA KHOA • SỰ KIỆN',
+    title: 'Nha Khoa Flora',
+    url: 'nhakhoaflora.com',
+    desc: 'Landing Page Ngày Hội Implant, tối ưu đăng ký và đồng bộ tổng đài.',
+    src: '/landingpage_avatar/flora.webp',
+  },
+  {
+    id: 'brandson',
+    tag: 'HỌC VIỆN Y KHOA',
+    title: 'Brandson Academy',
+    url: 'brandson.vn',
+    desc: 'Trang khóa học tối ưu bố cục giúp tăng mạnh tỷ lệ đăng ký.',
+    src: '/landingpage_avatar/brandson.webp',
+  },
+  {
+    id: 'ideasedu',
+    tag: 'GIÁO DỤC • SEO',
+    title: 'Viện Đào Tạo IDEAS',
+    url: 'ideas.edu.vn',
+    desc: 'Cổng thông tin đa trang chuẩn SEO Top đầu và đa phễu tuyển sinh.',
+    src: '/landingpage_avatar/ideasedu.webp',
+  },
+];
+
+const EXTRA_TOUCHPOINT_SHOWCASES = [
+  {
+    id: 'kaen',
+    tag: 'F&B • SỰ KIỆN',
+    title: 'KA-EN Event',
+    url: 'ka-en.com.vn/event',
+    desc: 'Microsite đặt bàn sự kiện ẩm thực Nhật, đồng bộ nhắc lịch tự động.',
+    src: '/landingpage_avatar/kaen_event.webp',
+  },
+  {
+    id: 'flora-qr',
+    tag: 'ĐẶT GÓI & VIETQR',
+    title: 'Flora Thanh Toán VietQR',
+    url: 'Cổng đặt gói & QR',
+    desc: 'Chọn dịch vụ, quét VietQR nhận diện tự động cộng tác viên đối soát.',
+    src: '/assets/flora/flora_checkout_qr.webp',
+  },
+  {
+    id: 'portfolio',
+    tag: 'HỒ SƠ NĂNG LỰC',
+    title: 'Turnio System Portal',
+    url: 'turnio.vercel.app',
+    desc: 'Website giới thiệu kiến trúc hệ sinh thái Marketing & Phần mềm.',
+    src: '/landingpage_avatar/portfolio.webp',
+  },
+];
+
+const WEB3D_FLOORPLAN_SHOTS = [
+  {
+    id: 'a1',
+    badge: 'CĂN 2PN A1 • 66M²',
+    title: 'Sa Bàn 3D Căn 2PN A1',
+    desc: 'Bóc mái trực quan phòng khách, 2 phòng ngủ và ban công đón gió.',
+    src: '/assets/ecolife/bocmai/bocmai_3d_a1.webp',
+  },
+  {
+    id: 'a2',
+    badge: 'CĂN 2PN A2 • 68.9M²',
+    title: 'Sa Bàn 3D Căn 2PN A2',
+    desc: 'Kiểm tra bố trí nội thất và hướng ánh sáng tự nhiên trên trình duyệt.',
+    src: '/assets/ecolife/bocmai/bocmai_3d_a2.webp',
+  },
+  {
+    id: 'b1',
+    badge: 'CĂN GÓC B1 • 77.8M²',
+    title: 'Sa Bàn 3D Căn Góc B1',
+    desc: 'Xoay 360° xem mặt bằng căn góc 2 mặt thoáng ngay trên điện thoại.',
+    src: '/assets/ecolife/bocmai/bocmai_3d_b1.webp',
+  },
+  {
+    id: 'b2',
+    badge: 'CĂN 2PN+ B2 • 87.3M²',
+    title: 'Sa Bàn 3D Căn 2PN+ B2',
+    desc: 'Phối cảnh bóc mái không gian đa năng chuẩn vật liệu bàn giao.',
+    src: '/assets/ecolife/bocmai/bocmai_3d_b2.webp',
+  },
+  {
+    id: 'b3',
+    badge: 'PANORAMA B3 • 88.8M²',
+    title: 'Sa Bàn 3D Căn Góc B3',
+    desc: 'Căn 3 phòng ngủ tầm nhìn toàn cảnh, gắn sẵn hỏi giá qua AI.',
+    src: '/assets/ecolife/bocmai/bocmai_3d_b3.webp',
+  },
+  {
+    id: 'b6',
+    badge: 'CĂN 3PN B6 • 87.1M²',
+    title: 'Sa Bàn 3D Căn 3PN B6',
+    desc: 'Tải mượt dưới 3.5MB trên di động, bấm giữ căn đẩy thẳng về CRM.',
+    src: '/assets/ecolife/bocmai/bocmai_3d_b6.webp',
+  },
+];
 
 export const DomationHome: React.FC = () => {
   usePageSeo(getHomeSeoConfig());
@@ -74,7 +421,16 @@ export const DomationHome: React.FC = () => {
     note?: string;
   }>({});
 
-  const [activePillarIdx, setActivePillarIdx] = useState(0);
+  const [activeAutoDataIdx, setActiveAutoDataIdx] = useState(0);
+  const [activeErpIdx, setActiveErpIdx] = useState(0);
+  const [showMoreTouchpoints, setShowMoreTouchpoints] = useState(false);
+  const [show3dDetails, setShow3dDetails] = useState(false);
+  const [zoomedShot, setZoomedShot] = useState<{
+    src: string;
+    title: string;
+    badge?: string;
+    desc?: string;
+  } | null>(null);
   const [billingYearly, setBillingYearly] = useState(true);
   const [showBackTop, setShowBackTop] = useState(false);
 
@@ -89,13 +445,23 @@ export const DomationHome: React.FC = () => {
   };
 
   useEffect(() => {
+    preloadAppImages([
+      ...AUTODATA_SCREENS.map((s) => s.src),
+      ...ERP_MODULE_TRACKS.flatMap((t) => [t.mainScreen.src, ...t.subScreens.map((sub) => sub.src)]),
+      '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
+      ADS_SPOTLIGHT_SCREENS[0].src,
+    ]);
+  }, []);
+
+  useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 560);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const currentPillar =
-    CORE_OPERATION_PILLARS[activePillarIdx] || CORE_OPERATION_PILLARS[0];
+  const currentAutoData = AUTODATA_SCREENS[activeAutoDataIdx] || AUTODATA_SCREENS[0];
+  const currentAdsShot = ADS_SPOTLIGHT_SCREENS[0];
+  const currentErpTrack = ERP_MODULE_TRACKS[activeErpIdx] || ERP_MODULE_TRACKS[0];
 
   return (
     <div className="min-h-screen relative text-slate-900 selection:bg-blue-600 selection:text-white font-sans">
@@ -123,65 +489,60 @@ export const DomationHome: React.FC = () => {
                 <div className="inline-flex items-center justify-center lg:justify-start">
                   <span className="ql-eyebrow">
                     <Sparkles className="w-3.5 h-3.5 text-[#1E40FF]" />
-                    <span>THIẾT KẾ RIÊNG CHO TỪNG DOANH NGHIỆP • BESPOKE AI &amp; ERP</span>
+                    <span>HỆ SINH THÁI DOMATION</span>
                   </span>
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl xl:text-[44px] font-bold text-slate-900 tracking-[-0.015em] space-y-2">
-                  <span className="block leading-[1.3]">Hệ Điều Hành Vận Hành &amp;</span>
+                  <span className="block leading-[1.3]">Hệ Điều Hành Doanh Nghiệp</span>
                   <span className="block leading-[1.3] text-gradient-inkica">
-                    AI Agent Thiết Kế Riêng
+                    Từ Hút Khách Đến Vận Hành
                   </span>
                 </h1>
 
-                {/* Concise Value Proposition Glass Box (Zero 3D mention, zero clutter) */}
                 <div className="relative rounded-2xl inkica-glass-card px-4 py-3.5 sm:px-5 sm:py-4 max-w-xl mx-auto lg:mx-0">
-                  <p className="text-sm sm:text-[15px] text-slate-600 leading-[1.75] font-normal">
-                    DOMATION là{' '}
-                    <span className="font-semibold text-[#1E40FF]">
-                      hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới
-                    </span>{' '}
-                    — kết hợp ERP – CRM – Flow Tự Động và đội ngũ{' '}
+                  <p className="text-sm sm:text-[15px] text-slate-600 leading-[1.65] font-normal">
+                    Kết nối{' '}
+                    <span className="font-semibold text-[#1E40FF]">Website · Landing Page · 3D</span>{' '}
+                    với{' '}
                     <span className="font-semibold text-slate-900">
-                      AI Agent 5.0
-                    </span>{' '}
-                    bám sát 100% cơ cấu tổ chức &amp; quy trình phê duyệt của bạn.
+                      Auto Data &lt; 5s, Báo cáo Ads, Automation Zalo ZNS &amp; ERP tích hợp AI
+                    </span>.
                   </p>
                 </div>
 
-                {/* Clean 3-Row Executive Focus Card + Integrated Channel Logos */}
-                <div className="rounded-2xl bg-white/85 backdrop-blur-xl border border-slate-200/80 p-4 sm:p-5 shadow-xs max-w-xl mx-auto lg:mx-0 text-left space-y-3">
-                  <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-200/70">
+                <div className="rounded-2xl bg-white/85 backdrop-blur-xl border border-slate-200/80 p-4 sm:p-5 shadow-sm max-w-xl mx-auto lg:mx-0 text-left space-y-2.5">
+                  <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-200/70">
                     <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-slate-700">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      Trọng Tâm Kiến Trúc DOMATION
+                      Hai Mặt Trận Đồng Bộ
                     </span>
                     <span className="text-[10px] font-mono text-slate-400 whitespace-nowrap shrink-0">
-                      BESPOKE OS
+                      ALL-IN-ONE OS
                     </span>
                   </div>
 
-                  <div className="space-y-2.5 text-xs sm:text-[13px] text-slate-600">
+                  <div className="space-y-2 text-xs sm:text-[13px] text-slate-600">
                     <div className="flex items-start gap-2.5">
-                      <Cpu className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" />
-                      <span className="leading-snug">
-                        <strong className="font-semibold text-slate-800">May Đo Vận Hành:</strong>{' '}
-                        ERP 5.0, Task, Nhân sự &amp; Cấp duyệt riêng
+                      <Globe className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" />
+                      <span>
+                        <strong className="font-semibold text-slate-800">Mặt tiền hút khách:</strong>{' '}
+                        Web, Landing Page &amp; 3D chốt niềm tin
                       </span>
                     </div>
 
                     <div className="flex items-start gap-2.5">
-                      <Network className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
-                      <span className="leading-snug">
-                        <strong className="font-semibold text-slate-800">AI Agent:</strong>{' '}
-                        Đội ngũ Agent chuyên trách phối hợp 24/7
+                      <Cpu className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
+                      <span>
+                        <strong className="font-semibold text-slate-800">App nội bộ vận hành:</strong>{' '}
+                        Chia số 5s · Báo cáo Ads · ZNS · ERP 5.0
                       </span>
                     </div>
 
                     <div className="pt-1 flex flex-wrap items-center justify-between gap-2">
                       <span className="inline-flex items-center gap-2 font-semibold text-slate-800">
                         <Bot className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>Tích Hợp Đa Kênh:</span>
+                        <span>Kết nối:</span>
                       </span>
                       <ChannelLogoStrip variant="compact" />
                     </div>
@@ -194,13 +555,13 @@ export const DomationHome: React.FC = () => {
                     type="button"
                     onClick={() =>
                       openContact(
-                        'Tư Vấn Kiến Trúc Thiết Kế Riêng (ERP • CRM • AI Agent)',
-                        'Mong muốn khảo sát quy trình và thiết kế hệ thống riêng cho doanh nghiệp'
+                        'Tư Vấn Hệ Sinh Thái DOMATION (ERP • CRM • Ads Report • Web)',
+                        'Mong muốn khảo sát quy trình và tư vấn triển khai hệ sinh thái phù hợp cho doanh nghiệp'
                       )
                     }
                     className="btn-inkica-primary justify-center px-3 sm:px-6 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                   >
-                    <span>Tư Vấn Kiến Trúc</span>
+                    <span>Tư Vấn Triển Khai</span>
                     <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                   </button>
 
@@ -228,9 +589,9 @@ export const DomationHome: React.FC = () => {
         {/* ================================================================ */}
         {/* 2. ENTERPRISE STORY — WHY BESPOKE DESIGN MATTERS                 */}
         {/* ================================================================ */}
-        <section id="story" className="relative py-20 sm:py-26 px-4 sm:px-6">
+        <section id="story" className="relative py-16 sm:py-22 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
               <div className="max-w-2xl">
                 <div className="ql-eyebrow mb-3">
                   <Sparkles className="w-3.5 h-3.5 text-[#1E40FF]" />
@@ -246,8 +607,7 @@ export const DomationHome: React.FC = () => {
               </p>
             </div>
 
-            {/* 3 Spacious Story Chapters — Calm Swiss Hairline Architecture */}
-            <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
+            <div className="rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
               {ENTERPRISE_STORY_CHAPTERS.map((chapter) => (
                 <div
                   key={chapter.step}
@@ -287,236 +647,1078 @@ export const DomationHome: React.FC = () => {
         </section>
 
         {/* ================================================================ */}
-        {/* 3. MULTI-AGENT ORCHESTRATION & INTEGRATED PLATFORMS              */}
+        {/* 3. TWO FRONTS OF DOMATION — BRIGHT QUIET LUXURY DUALITY          */}
         {/* ================================================================ */}
-        <section id="multi-agent" className="relative py-20 sm:py-26 px-4 sm:px-6">
+        <section id="solutions" className="relative py-12 sm:py-16 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-              <div className="max-w-2xl">
-                <div className="ql-eyebrow mb-3">
-                  <Network className="w-3.5 h-3.5 text-[#1E40FF]" />
-                  <span>AI AGENT HỖ TRỢ &amp; ĐIỀU PHỐI • TỰ ĐỘNG HÓA LIÊN PHÒNG BAN</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Một Trung Tâm Điều Phối,{' '}
-                  <span className="text-gradient-inkica">Nhiều Agent Cùng Vận Hành</span>
-                </h2>
+            <div className="text-center max-w-2xl mx-auto mb-8">
+              <div className="ql-eyebrow mb-2.5 mx-auto">
+                <Layers className="w-3.5 h-3.5 text-[#1E40FF]" />
+                <span>2 MẶT TRẬN ĐỒNG BỘ</span>
               </div>
-              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
-                Huấn luyện trực tiếp từ tài liệu nội bộ, các AI Agent chia sẻ ngữ cảnh và phối hợp xử lý tác vụ xuyên suốt 24/7.
-              </p>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-[1.2] tracking-tight">
+                Ngoài Hút Khách —{' '}
+                <span className="text-gradient-inkica">Trong Làm Chủ Số</span>
+              </h2>
             </div>
 
-            <div className="rounded-[28px] bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.07)] p-6 sm:p-10">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-                {/* Left: Bespoke 3D Fluent Glass Orchestrator Hub */}
-                <div className="lg:col-span-5 space-y-4">
-                  <div className="relative rounded-2xl overflow-hidden border border-slate-200/75 bg-[#F4F8FF]">
-                    <img
-                      src="/imgs/enterprise/sol-multi-agent.webp"
-                      alt="DOMATION Multi-Agent Orchestrator Hub"
-                      loading="lazy"
-                      className="w-full h-56 sm:h-64 object-cover"
-                    />
-                  </div>
-                  <div className="px-1 space-y-1.5">
-                    <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span>Orchestrator Core • Tri Thức Nội Bộ</span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      Tiếp nhận yêu cầu, kiểm soát phân quyền dữ liệu và kích hoạt đúng Agent chuyên môn theo quy trình riêng của từng doanh nghiệp.
-                    </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {/* Front 1: Customer Touchpoints (Crisp White Glass) */}
+              <div className="rounded-[26px] bg-white/95 backdrop-blur-xl border border-slate-200/90 p-6 sm:p-8 shadow-sm flex flex-col justify-between gap-5">
+                <div className="space-y-3">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/70 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                    <Globe className="w-3.5 h-3.5" />
+                    MẶT TIỀN • ĐIỂM CHẠM KHÁCH HÀNG
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                    Website, Landing Page &amp; 3D
+                  </h3>
+                  <p className="text-sm text-slate-600">
+                    Gây ấn tượng ngay giây đầu, giữ chân bằng trải nghiệm tương tác và đẩy đơn về CRM.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {['Website chuẩn SEO', 'Landing Page chuyển đổi', 'Sa bàn 3D', 'Đo hành vi'].map((tag) => (
+                      <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-xs font-medium text-slate-700">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                        <span>{tag}</span>
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                {/* Right: 4 Specialized Enterprise Agents (Clean 2x2 Grid, Zero Bullet Lists) */}
-                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {MULTI_AGENT_NODES.map((agent, idx) => {
-                    const Icon = AGENT_ICONS[idx % AGENT_ICONS.length];
-                    return (
-                      <div
-                        key={agent.id}
-                        className="rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 p-5 sm:p-6 transition-colors flex flex-col justify-between gap-3"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] flex items-center justify-center shadow-2xs">
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200/70">
-                            {agent.roleTag}
-                          </span>
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm sm:text-base font-semibold text-slate-900 mb-1">
-                            {agent.name}
-                          </h3>
-                          <p className="text-xs text-slate-600 leading-relaxed">
-                            {agent.focus}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-slate-100">
+                  <a href="#touchpoints" className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold">
+                    <span>Xem Website</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setEstimatorOpen(true)}
+                    className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  >
+                    <span>Báo giá</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Integrated Platforms Logo Dock — 5x2 Grid */}
-              <div className="mt-8 pt-7 border-t border-slate-200/75 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                <div className="lg:max-w-[340px] shrink-0">
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                    Platform &amp; Kênh Tích Hợp Đồng Bộ
-                  </div>
-                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                    Kết nối hai chiều thời gian thực với hệ sinh thái sẵn có của doanh nghiệp.
+              {/* Front 2: Internal Command Center (Luminous Royal Sapphire Glass) */}
+              <div className="rounded-[26px] bg-gradient-to-br from-[#F4F8FF] via-white to-[#ECFEFF] backdrop-blur-xl border border-blue-200/90 p-6 sm:p-8 shadow-sm flex flex-col justify-between gap-5">
+                <div className="space-y-3">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] text-white text-[11px] font-semibold uppercase tracking-wider shadow-sm">
+                    <Cpu className="w-3.5 h-3.5" />
+                    BỘ NÃO NỘI BỘ • QUAN SÁT &amp; VẬN HÀNH
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                    App Nội Bộ Cho Sếp, Marketing &amp; Sale
+                  </h3>
+                  <p className="text-sm text-slate-600">
+                    Chia số 5 giây, soi doanh thu từng bài Ads, nuôi dưỡng Zalo ZNS và điều hành toàn công ty.
                   </p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {['Auto Data < 5s', 'Meta & Google Ads', 'Zalo ZNS & Tracking', 'ERP & AI nội bộ'].map((tag) => (
+                      <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-blue-200/70 text-xs font-medium text-slate-800 shadow-2xs">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#0284C7] shrink-0" />
+                        <span>{tag}</span>
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <ChannelLogoStrip variant="platforms" className="w-full lg:flex-1 lg:max-w-[740px]" />
+                <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-blue-100/80">
+                  <a href="#crm-data" className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold">
+                    <span>Xem Các App Nội Bộ</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => openInspection('erp')}
+                    className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  >
+                    <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
+                    <span>Kho Ảnh Thực Tế</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* ================================================================ */}
-        {/* 4. CORE FUNCTIONS & OPERATIONS — CLEAN 4-PILLAR STUDIO           */}
+        {/* 4. CRM AUTO DATA — LAYOUT 1: SPLIT EDITORIAL + LIVE APP SWITCHER */}
         {/* ================================================================ */}
-        <section id="solutions" className="relative py-20 sm:py-26 px-4 sm:px-6">
+        <section id="crm-data" className="relative py-12 sm:py-16 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-              <div className="max-w-2xl">
-                <div className="ql-eyebrow mb-3">
-                  <Layers className="w-3.5 h-3.5 text-[#1E40FF]" />
-                  <span>CHỨC NĂNG &amp; VẬN HÀNH TRỌNG TÂM</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Bốn Trụ Cột{' '}
-                  <span className="text-gradient-inkica">Vận Hành Doanh Nghiệp Khép Kín</span>
-                </h2>
-              </div>
-              <p className="text-sm text-slate-600 max-w-md leading-relaxed">
-                Tập trung vào những nghiệp vụ cốt lõi tạo ra hiệu suất thực — tinh gọn, trực quan và sẵn sàng mở rộng.
-              </p>
-            </div>
+            <div className="rounded-[28px] bg-white/95 backdrop-blur-2xl border border-slate-200/85 shadow-sm p-6 sm:p-9">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-9 items-center">
+                {/* Left Compact Switcher */}
+                <div className="lg:col-span-5 space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                    <Database className="w-3.5 h-3.5" />
+                    <span>01 • CRM AUTO DATA</span>
+                  </div>
 
-            {/* Clean 4-Pillar Selector (2x2 on mobile, 4 equal architectural pillars on desktop) */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-6">
-              {CORE_OPERATION_PILLARS.map((pillar, idx) => {
-                const active = activePillarIdx === idx;
-                const PillarIcon = PILLAR_ICONS[idx % PILLAR_ICONS.length];
-                return (
-                  <button
-                    key={pillar.id}
-                    type="button"
-                    onClick={() => setActivePillarIdx(idx)}
-                    aria-pressed={active}
-                    className={`group relative rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 text-left border transition-all cursor-pointer flex items-center gap-3 ${
-                      active
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-[0_14px_30px_-14px_rgba(15,23,42,0.45)]'
-                        : 'bg-white/85 text-slate-700 border-slate-200/85 hover:bg-white hover:border-slate-300/90'
-                    }`}
-                  >
-                    <div
-                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl shrink-0 flex items-center justify-center transition-colors ${
-                        active
-                          ? 'bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white shadow-sm'
-                          : 'bg-slate-100 text-[#1E40FF] group-hover:bg-blue-50'
-                      }`}
-                    >
-                      <PillarIcon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-                    </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                    Chia Khách Tới Tay Sale{' '}
+                    <span className="text-gradient-inkica">Dưới 5 Giây</span>
+                  </h2>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-1.5">
-                        <span
-                          className={`text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider truncate ${
-                            active ? 'text-cyan-300' : 'text-slate-400'
+                  <p className="text-sm text-slate-600">
+                    Gom lead đa nguồn, lọc trùng 6 tháng, đẩy ZaloBot/Telegram và bù ticket minh bạch.
+                  </p>
+
+                  {/* 4 Clean Compact Feature Switchers */}
+                  <div className="space-y-2">
+                    {AUTODATA_SCREENS.map((item, idx) => {
+                      const active = activeAutoDataIdx === idx;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setActiveAutoDataIdx(idx)}
+                          className={`w-full text-left rounded-xl px-3.5 py-2.5 border transition-all cursor-pointer flex items-center gap-3 ${
+                            active
+                              ? 'bg-[#EEF4FF] border-[#1E40FF]/40 shadow-xs'
+                              : 'bg-slate-50/70 border-slate-200/70 hover:bg-white hover:border-slate-300'
                           }`}
                         >
-                          {pillar.pillarTag}
-                        </span>
-                        {active && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 hidden sm:inline-block" />
-                        )}
-                      </div>
-                      <div className="text-[11px] sm:text-sm font-semibold leading-snug mt-0.5 truncate">
-                        {pillar.tabLabel}
-                      </div>
+                          <span
+                            className={`w-6 h-6 rounded-lg text-[11px] font-bold flex items-center justify-center shrink-0 ${
+                              active ? 'bg-[#1E40FF] text-white' : 'bg-white text-slate-500 border border-slate-200'
+                            }`}
+                          >
+                            {idx + 1}
+                          </span>
+                          <div className="min-w-0">
+                            <div className={`text-xs sm:text-sm font-semibold ${active ? 'text-[#1E40FF]' : 'text-slate-900'}`}>
+                              {item.label}
+                            </div>
+                            <div className="text-[11px] text-slate-500 truncate">{item.hint}</div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                    <a
+                      href="/data"
+                      onClick={(e) => handleSpaLinkClick(e, '/data')}
+                      className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold"
+                    >
+                      <span>Mở Auto Data</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => openInspection('data-capi')}
+                      className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                    >
+                      <span>Xem 8 Màn Hình</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Right Real App Screenshot Frame */}
+                <div className="lg:col-span-7">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setZoomedShot({
+                        src: currentAutoData.src,
+                        title: currentAutoData.title,
+                        badge: currentAutoData.badge,
+                        desc: currentAutoData.desc,
+                      })
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setZoomedShot({
+                          src: currentAutoData.src,
+                          title: currentAutoData.title,
+                          badge: currentAutoData.badge,
+                          desc: currentAutoData.desc,
+                        });
+                      }
+                    }}
+                    className="group relative rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-md cursor-zoom-in"
+                  >
+                    <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200/80">
+                      <span className="text-[11px] font-semibold text-slate-700 truncate">
+                        {currentAutoData.title}
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#1E40FF] shrink-0">
+                        <ZoomIn className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Phóng to</span>
+                      </span>
                     </div>
+                    <SmoothAppImage
+                      src={currentAutoData.src}
+                      alt={currentAutoData.title}
+                      fit="contain"
+                      aspectClass="aspect-[16/10]"
+                      eager
+                      hoverZoom
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 5. META & GOOGLE ADS REPORT FUSED WITH CRM — LIGHT FROSTED BENTO */}
+        {/* ================================================================ */}
+        <section id="ads-report" className="relative py-12 sm:py-16 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="rounded-[28px] bg-gradient-to-br from-[#F5F9FF] via-white to-[#F0FDFA] border border-blue-200/85 shadow-sm p-6 sm:p-9">
+              {/* Header */}
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-7">
+                <div className="max-w-2xl">
+                  <div className="ql-eyebrow mb-2.5">
+                    <BarChart3 className="w-3.5 h-3.5 text-[#1E40FF]" />
+                    <span>02 • META &amp; GOOGLE ADS REPORT × CRM</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                    Biết Rõ Nội Dung Nào Ra Khách —{' '}
+                    <span className="text-gradient-inkica">Biết Rõ Khách Nào Từ Nội Dung Nào</span>
+                  </h2>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <a
+                    href="/meta-report"
+                    onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
+                    className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold"
+                  >
+                    <span>Dùng Thử Free 1 Tháng</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => openInspection('meta-report')}
+                    className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  >
+                    <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
+                    <span>9 Màn Hình + Video</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Light Bento Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                {/* Left Main Fusion Table */}
+                <div className="lg:col-span-7 flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-5 shadow-2xs">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
+                      Bảng Chiến Dịch Phủ Lead CRM, CPQL Thực, Doanh Thu &amp; Sale Phụ Trách
+                    </h3>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF] bg-blue-50 px-2.5 py-0.5 rounded-full shrink-0">
+                      REAL-TIME
+                    </span>
+                  </div>
+
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setZoomedShot({
+                        src: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
+                        title: 'Bảng Chiến Dịch Hợp Nhất Lead CRM, CPQL & Sale Phụ Trách',
+                        badge: 'META REPORT × CRM',
+                      })
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setZoomedShot({
+                          src: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
+                          title: 'Bảng Chiến Dịch Hợp Nhất Lead CRM, CPQL & Sale Phụ Trách',
+                          badge: 'META REPORT × CRM',
+                        });
+                      }
+                    }}
+                    className="group relative rounded-xl overflow-hidden border border-slate-200 bg-white cursor-zoom-in"
+                  >
+                    <SmoothAppImage
+                      src="/imgs/meta-screens/fusion-campaign-crm-leads.webp"
+                      alt="Bảng Chiến Dịch Hợp Nhất Lead CRM và Sale Phụ Trách"
+                      fit="contain"
+                      aspectClass="aspect-[16/10]"
+                      eager
+                      hoverZoom
+                    />
+                    <span className="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-900/75 text-[11px] font-medium text-white inline-flex items-center gap-1">
+                      <ZoomIn className="w-3.5 h-3.5 text-cyan-300" />
+                      Phóng to
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2.5 mt-3.5">
+                    <div className="rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2.5">
+                      <div className="text-xs font-semibold text-[#1E40FF]">1 Chạm Kết Nối</div>
+                      <div className="text-[11px] text-slate-600">Tự nhận tài khoản CRM</div>
+                    </div>
+                    <div className="rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2.5">
+                      <div className="text-xs font-semibold text-[#1E40FF]">Hook Video 3s</div>
+                      <div className="text-[11px] text-slate-600">Cảnh báo bão hòa sớm</div>
+                    </div>
+                    <div className="rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2.5">
+                      <div className="text-xs font-semibold text-[#1E40FF]">+ Google Ads</div>
+                      <div className="text-[11px] text-slate-600">Bật thêm khi cần</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Spotlight: Lead & Sale từng Bài (No noisy filter badges) */}
+                <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-5 gap-3.5 shadow-2xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
+                      {currentAdsShot.label}
+                    </h3>
+                    <span className="text-[11px] font-medium text-slate-400 shrink-0">
+                      Bấm ảnh để phóng to
+                    </span>
+                  </div>
+
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setZoomedShot({
+                        src: currentAdsShot.src,
+                        title: currentAdsShot.title,
+                        badge: currentAdsShot.badge,
+                        desc: currentAdsShot.desc,
+                      })
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setZoomedShot({
+                          src: currentAdsShot.src,
+                          title: currentAdsShot.title,
+                          badge: currentAdsShot.badge,
+                          desc: currentAdsShot.desc,
+                        });
+                      }
+                    }}
+                    className="group relative rounded-xl overflow-hidden border border-slate-200 bg-white cursor-zoom-in"
+                  >
+                    <SmoothAppImage
+                      src={currentAdsShot.src}
+                      alt={currentAdsShot.title}
+                      fit="contain"
+                      aspectClass="aspect-[16/10]"
+                      eager
+                      hoverZoom
+                    />
+                    <span className="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-900/75 text-[11px] font-medium text-white inline-flex items-center gap-1">
+                      <ZoomIn className="w-3.5 h-3.5 text-cyan-300" />
+                      Phóng to
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">
+                      {currentAdsShot.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                      {currentAdsShot.desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 6. AUTOMATION NURTURING & BEHAVIOR TRACKING — COMPACT 4 STEPS    */}
+        {/* ================================================================ */}
+        <section id="automation-hub" className="relative py-12 sm:py-16 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-7">
+              <div>
+                <div className="ql-eyebrow mb-2.5">
+                  <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>03 • AUTOMATION &amp; TRACKING HÀNH VI</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Nuôi Dưỡng Tự Động 24/7 —{' '}
+                  <span className="text-gradient-inkica">Đo Click, Lượt Mở &amp; Thời Gian Xem Web</span>
+                </h2>
+              </div>
+              <a
+                href="/automation"
+                onClick={(e) => handleSpaLinkClick(e, '/automation')}
+                className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold w-fit shrink-0"
+              >
+                <span>Khám Phá Automation</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+              {AUTOMATION_PILLARS.map((step) => {
+                const StepIcon = step.icon;
+                return (
+                  <div
+                    key={step.step}
+                    className="rounded-2xl bg-white/95 border border-slate-200/85 p-5 shadow-xs hover:border-blue-300/80 transition-all flex flex-col justify-between gap-3"
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#1E40FF] flex items-center justify-center border border-blue-100">
+                          <StepIcon className="w-4 h-4" />
+                        </div>
+                        <span className="text-[11px] font-mono font-semibold text-slate-400">
+                          {step.step}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-semibold text-slate-900">{step.title}</h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
+                    </div>
+                    <div className="pt-2.5 border-t border-slate-100 text-[11px] font-semibold text-[#1E40FF]">
+                      {step.metric}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() =>
+                  setZoomedShot({
+                    src: '/imgs/erp-screens/marketing.webp',
+                    title: 'Trung Tâm Chiến Dịch, Flow Nuôi Dưỡng, Zalo OA & Web Tracking',
+                    badge: 'MARKETING HUB',
+                  })
+                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setZoomedShot({
+                      src: '/imgs/erp-screens/marketing.webp',
+                      title: 'Trung Tâm Chiến Dịch, Flow Nuôi Dưỡng, Zalo OA & Web Tracking',
+                      badge: 'MARKETING HUB',
+                    });
+                  }
+                }}
+                className="group rounded-2xl bg-white/95 border border-slate-200/85 overflow-hidden shadow-xs hover:shadow-md transition-all cursor-zoom-in"
+              >
+                <div className="overflow-hidden border-b border-slate-100">
+                  <SmoothAppImage
+                    src="/imgs/erp-screens/marketing.webp"
+                    alt="Trung tâm Marketing Đa kênh & Automation"
+                    fit="contain"
+                    aspectClass="aspect-[16/9]"
+                    hoverZoom
+                  />
+                </div>
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <span className="text-xs sm:text-sm font-semibold text-slate-900">
+                    Chiến Dịch Email, Zalo ZNS, Voucher &amp; Web Tracking
+                  </span>
+                  <ZoomIn className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                </div>
+              </div>
+
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() =>
+                  setZoomedShot({
+                    src: '/imgs/autodata/showcase/screen_integrations.jpg',
+                    title: 'Đồng Bộ ZaloBot, Telegram, Email & Phản Hồi Quảng Cáo',
+                    badge: 'ĐỒNG BỘ KÊNH',
+                  })
+                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setZoomedShot({
+                      src: '/imgs/autodata/showcase/screen_integrations.jpg',
+                      title: 'Đồng Bộ ZaloBot, Telegram, Email & Phản Hồi Quảng Cáo',
+                      badge: 'ĐỒNG BỘ KÊNH',
+                    });
+                  }
+                }}
+                className="group rounded-2xl bg-white/95 border border-slate-200/85 overflow-hidden shadow-xs hover:shadow-md transition-all cursor-zoom-in"
+              >
+                <div className="overflow-hidden border-b border-slate-100">
+                  <SmoothAppImage
+                    src="/imgs/autodata/showcase/screen_integrations.jpg"
+                    alt="Kết nối ZaloBot, Telegram, Email & Meta CAPI"
+                    fit="contain"
+                    aspectClass="aspect-[16/9]"
+                    hoverZoom
+                  />
+                </div>
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <span className="text-xs sm:text-sm font-semibold text-slate-900">
+                    Báo Nóng ZaloBot, Telegram &amp; Đồng Bộ Meta CAPI
+                  </span>
+                  <ZoomIn className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 7. DOMATION ERP 5.0 + EMBEDDED MULTI-AGENT AI                    */}
+        {/* ================================================================ */}
+        <section id="erp-suite" className="relative py-12 sm:py-16 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+              <div>
+                <div className="ql-eyebrow mb-2.5">
+                  <Building2 className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>04 • DOMATION ERP 5.0 &amp; AI NỘI BỘ</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Bán Hàng, Phê Duyệt &amp; Chấm Công —{' '}
+                  <span className="text-gradient-inkica">Gọn Trong Một Hệ Điều Hành</span>
+                </h2>
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <a
+                  href="/erp"
+                  onClick={(e) => handleSpaLinkClick(e, '/erp')}
+                  className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold"
+                >
+                  <span>Khám Phá ERP 5.0</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => openInspection('erp')}
+                  className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                >
+                  <span>Xem 18 Màn Hình</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-5">
+              {ERP_MODULE_TRACKS.map((track, idx) => {
+                const active = activeErpIdx === idx;
+                return (
+                  <button
+                    key={track.id}
+                    type="button"
+                    onClick={() => setActiveErpIdx(idx)}
+                    className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                      active
+                        ? 'bg-[#1E40FF] text-white shadow-sm'
+                        : 'bg-white/95 text-slate-700 border border-slate-200 hover:border-blue-300'
+                    }`}
+                  >
+                    {track.label}
                   </button>
                 );
               })}
             </div>
 
-            {/* Spacious Active Operation Stage */}
-            <div className="rounded-[28px] bg-white/85 backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.07)] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-              <div className="lg:col-span-6">
-                <div className="relative rounded-2xl overflow-hidden border border-slate-200/75 bg-[#F4F8FF]">
-                  <img
-                    src={currentPillar.image}
-                    alt={currentPillar.tabLabel}
-                    className="w-full h-56 sm:h-72 object-cover"
-                  />
+            <div className="rounded-[28px] bg-white/95 backdrop-blur-2xl border border-slate-200/85 shadow-sm p-5 sm:p-8 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-7">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setZoomedShot({
+                        src: currentErpTrack.mainScreen.src,
+                        title: currentErpTrack.mainScreen.title,
+                        badge: currentErpTrack.badge,
+                        desc: currentErpTrack.desc,
+                      })
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setZoomedShot({
+                          src: currentErpTrack.mainScreen.src,
+                          title: currentErpTrack.mainScreen.title,
+                          badge: currentErpTrack.badge,
+                        });
+                      }
+                    }}
+                    className="group relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm cursor-zoom-in"
+                  >
+                    <SmoothAppImage
+                      src={currentErpTrack.mainScreen.src}
+                      alt={currentErpTrack.mainScreen.title}
+                      fit="contain"
+                      aspectClass="aspect-[16/10]"
+                      eager
+                      hoverZoom
+                    />
+                    <span className="absolute bottom-3 right-3 z-20 px-2.5 py-1 rounded-lg bg-slate-900/75 text-white text-[11px] font-medium inline-flex items-center gap-1">
+                      <ZoomIn className="w-3.5 h-3.5 text-cyan-300" />
+                      Phóng to
+                    </span>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+                  <div className="space-y-2.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                      {currentErpTrack.badge}
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                      {currentErpTrack.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600">{currentErpTrack.desc}</p>
+                    <div className="space-y-1.5 pt-1">
+                      {currentErpTrack.highlights.map((hl) => (
+                        <div key={hl} className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                          <span>{hl}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {currentErpTrack.subScreens.map((sub) => (
+                      <button
+                        key={sub.src}
+                        type="button"
+                        onClick={() =>
+                          setZoomedShot({
+                            src: sub.src,
+                            title: sub.title,
+                            badge: currentErpTrack.badge,
+                          })
+                        }
+                        className="group text-left rounded-xl overflow-hidden border border-slate-200 bg-white hover:border-blue-300 transition-all cursor-zoom-in"
+                      >
+                        <SmoothAppImage
+                          src={sub.src}
+                          alt={sub.title}
+                          fit="contain"
+                          aspectClass="aspect-[16/10]"
+                          eager
+                          hoverZoom
+                        />
+                        <div className="px-2.5 py-1.5 bg-white text-[11px] font-semibold text-slate-700 truncate border-t border-slate-100">
+                          {sub.title}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="lg:col-span-6 space-y-5">
-                <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF] mb-1.5">
-                    {currentPillar.eyebrow}
+              {/* Embedded Multi-Agent AI Inside ERP */}
+              <div id="multi-agent" className="pt-5 border-t border-slate-200/80 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white flex items-center justify-center shrink-0">
+                      <Network className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                        ĐA TRỢ LÝ AI BÊN TRONG ERP
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-slate-900">
+                        4 Trợ Lý AI Chuyên Trách Phối Hợp Theo Tài Liệu Nội Bộ
+                      </h4>
+                    </div>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
-                    {currentPillar.title}{' '}
-                    <span className="text-gradient-inkica">{currentPillar.accent}</span>
-                  </h3>
-                  <p className="text-sm text-slate-600 leading-relaxed mt-3">
-                    {currentPillar.summary}
-                  </p>
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-3 py-1 rounded-full w-fit shrink-0">
+                    <Users className="w-3.5 h-3.5" />
+                    Phân quyền từng phòng ban
+                  </span>
                 </div>
 
-                {/* 3 Crisp Focus Pills Instead of Long Bullet Sentences */}
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {currentPillar.keyTags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 text-xs font-medium text-slate-700"
-                    >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      <span>{tag}</span>
-                    </span>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {ERP_EMBEDDED_AGENTS.map((agent) => {
+                    const AgentIcon = agent.icon;
+                    return (
+                      <div key={agent.name} className="rounded-xl bg-slate-50/90 border border-slate-200/80 p-3.5 space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-[#1E40FF] flex items-center justify-center">
+                            <AgentIcon className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-[10px] font-semibold uppercase text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200/80">
+                            {agent.tag}
+                          </span>
+                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-slate-900">{agent.name}</div>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">{agent.desc}</p>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                {/* 2 Buttons on 1 Single Row */}
-                <div className="grid grid-cols-2 sm:inline-flex items-center gap-2.5 sm:gap-3 pt-2 w-full sm:w-auto">
-                  <button
-                    type="button"
-                    onClick={() => openInspection(currentPillar.inspectionTab)}
-                    className="btn-inkica-primary justify-center px-3 sm:px-5 py-2.5 sm:py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
-                  >
-                    <MonitorSmartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                    <span>Màn Hình Thực Tế</span>
-                  </button>
-
-                  <a
-                    href={currentPillar.routeUrl}
-                    onClick={(e) => handleSpaLinkClick(e, currentPillar.routeUrl)}
-                    className="ql-btn-outline justify-center px-3 sm:px-5 py-2.5 sm:py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
-                  >
-                    <span>{currentPillar.routeLabel}</span>
-                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                  </a>
+                <div className="pt-3 border-t border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-slate-700">Kết nối đồng bộ 2 chiều:</span>
+                  <ChannelLogoStrip variant="platforms" className="w-full lg:flex-1 lg:max-w-[740px]" />
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Minimalist Direct Links to Dedicated Product Pages */}
-            <div className="mt-6 px-2 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
-              <span className="font-medium text-slate-600">
-                Truy cập nhanh chuyên trang từng ứng dụng:
-              </span>
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        {/* ================================================================ */}
+        {/* 8. MODERN CUSTOMER TOUCHPOINTS — WEBSITE & LANDING PAGE          */}
+        {/* ================================================================ */}
+        <section id="touchpoints" className="relative py-12 sm:py-16 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+              <div>
+                <div className="ql-eyebrow mb-2.5">
+                  <Globe className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>05 • ĐIỂM CHẠM CUỐI THẾ HỆ MỚI</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Website &amp; Landing Page —{' '}
+                  <span className="text-gradient-inkica">Chốt Niềm Tin, Đẩy Về CRM</span>
+                </h2>
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  aria-expanded={showMoreTouchpoints}
+                  onClick={() => setShowMoreTouchpoints((prev) => !prev)}
+                  className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                >
+                  <span>{showMoreTouchpoints ? 'Thu gọn chi tiết' : 'Xem chi tiết'}</span>
+                  {showMoreTouchpoints ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEstimatorOpen(true)}
+                  className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                >
+                  <span>Báo giá</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {TOUCHPOINT_SHOWCASES.map((site) => (
+                <div
+                  key={site.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    setZoomedShot({
+                      src: site.src,
+                      title: `${site.title} (${site.url})`,
+                      badge: site.tag,
+                      desc: site.desc,
+                    })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setZoomedShot({
+                        src: site.src,
+                        title: `${site.title} (${site.url})`,
+                        badge: site.tag,
+                        desc: site.desc,
+                      });
+                    }
+                  }}
+                  className="group rounded-2xl bg-white/95 border border-slate-200/85 overflow-hidden shadow-xs hover:border-blue-300 hover:shadow-md transition-all flex flex-col cursor-zoom-in"
+                >
+                  <div className="relative overflow-hidden border-b border-slate-100">
+                    <img
+                      src={site.src}
+                      alt={site.title}
+                      loading="lazy"
+                      className="w-full aspect-[16/10] object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                    <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/95 text-[10px] font-semibold text-[#1E40FF] shadow-sm">
+                      {site.tag}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900">{site.title}</h3>
+                      <span className="text-[11px] font-mono text-slate-400 truncate">{site.url}</span>
+                    </div>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{site.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {showMoreTouchpoints && (
+              <div className="mt-5 pt-5 border-t border-slate-200/80 space-y-5 animate-fadeIn">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {EXTRA_TOUCHPOINT_SHOWCASES.map((site) => (
+                    <div
+                      key={site.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() =>
+                        setZoomedShot({
+                          src: site.src,
+                          title: `${site.title} (${site.url})`,
+                          badge: site.tag,
+                          desc: site.desc,
+                        })
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          setZoomedShot({
+                            src: site.src,
+                            title: `${site.title} (${site.url})`,
+                            badge: site.tag,
+                            desc: site.desc,
+                          });
+                        }
+                      }}
+                      className="group rounded-2xl bg-white/95 border border-slate-200/85 overflow-hidden shadow-xs hover:border-blue-300 hover:shadow-md transition-all flex flex-col cursor-zoom-in"
+                    >
+                      <div className="relative overflow-hidden border-b border-slate-100">
+                        <img
+                          src={site.src}
+                          alt={site.title}
+                          loading="lazy"
+                          className="w-full aspect-[16/10] object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                        <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/95 text-[10px] font-semibold text-[#1E40FF] shadow-sm">
+                          {site.tag}
+                        </span>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between gap-2">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900">{site.title}</h3>
+                          <span className="text-[11px] font-mono text-slate-400 truncate">{site.url}</span>
+                        </div>
+                        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{site.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-2xl bg-white/90 border border-blue-200/75 p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-xs">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {[
+                      'Chuẩn SEO & Schema',
+                      'Tải nhanh < 1.5s',
+                      'Tracking Click & Thời gian đọc',
+                      'Đẩy Lead CRM < 5s',
+                    ].map((item) => (
+                      <span
+                        key={item}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-50/70 border border-blue-200/60 text-xs font-medium text-slate-800"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                        <span>{item}</span>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                    <a
+                      href="/web-design"
+                      onClick={(e) => handleSpaLinkClick(e, '/web-design')}
+                      className="ql-btn-outline px-4 py-2 text-xs font-semibold"
+                    >
+                      <span>Xem trang Thiết kế Web</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setEstimatorOpen(true)}
+                      className="btn-inkica-primary px-4 py-2 text-xs font-semibold cursor-pointer"
+                    >
+                      <span>Báo giá</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 9. DEDICATED INTERACTIVE 3D WEBGL SHOWCASE SECTION               */}
+        {/* ================================================================ */}
+        <section id="web-3d-experience" className="relative py-12 sm:py-16 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+              <div>
+                <div className="ql-eyebrow mb-2.5">
+                  <Box className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>06 • CÔNG NGHỆ SA BÀN 3D TƯƠNG TÁC</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Sa Bàn 3D Bóc Mái —{' '}
+                  <span className="text-gradient-inkica">Nhập Vai Trực Tiếp Trên Web</span>
+                </h2>
+                <p className="text-sm text-slate-600 mt-2 max-w-2xl">
+                  Khách tự xoay từng căn hộ ngay trên trình duyệt điện thoại, soi ánh sáng công năng và hỏi giá đẩy thẳng về CRM.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  aria-expanded={show3dDetails}
+                  onClick={() => setShow3dDetails((prev) => !prev)}
+                  className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                >
+                  <span>{show3dDetails ? 'Thu gọn chi tiết' : 'Xem chi tiết'}</span>
+                  {show3dDetails ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEstimatorOpen(true)}
+                  className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                >
+                  <span>Báo giá</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="rounded-[26px] bg-white/95 backdrop-blur-xl border border-slate-200/90 p-5 sm:p-7 shadow-sm">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="lg:col-span-7 relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-xs">
+                  <video
+                    src="/assets/ecolife/ecolife_3d_preview.mp4"
+                    poster="/assets/ecolife/bocmai/bocmai_3d_b3.webp"
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="w-full aspect-video object-cover block"
+                  />
+                  <span className="pointer-events-none absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 text-[#1E40FF] text-[10px] sm:text-[11px] font-semibold shadow-sm border border-blue-100">
+                    <Play className="w-3 h-3 fill-[#1E40FF]" />
+                    <span>CLIP DEMO 3D THỰC TẾ • XOAY 360°</span>
+                  </span>
+                </div>
+
+                <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+                  <div className="space-y-3">
+                    <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80">
+                      <h3 className="text-sm font-bold text-slate-900">Bóc Mái 3D Từng Không Gian</h3>
+                      <p className="text-xs text-slate-600 mt-1">
+                        Khách hàng xoay tự do, phóng to từng phòng trước khi gặp Sale.
+                      </p>
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80">
+                      <h3 className="text-sm font-bold text-slate-900">Mở Tức Thì Trên Điện Thoại</h3>
+                      <p className="text-xs text-slate-600 mt-1">
+                        Nén siêu nhẹ dưới 3.5MB, chạy thẳng Safari &amp; Chrome không cần app.
+                      </p>
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80">
+                      <h3 className="text-sm font-bold text-slate-900">Gắn Sẵn Hỏi Giá &amp; Đẩy CRM</h3>
+                      <p className="text-xs text-slate-600 mt-1">
+                        Ghi nhận đúng căn đang xem và chia số Sale phụ trách dưới 5 giây.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2.5 pt-1">
+                    {WEB3D_FLOORPLAN_SHOTS.slice(0, 3).map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() =>
+                          setZoomedShot({
+                            src: item.src,
+                            title: item.title,
+                            badge: item.badge,
+                            desc: item.desc,
+                          })
+                        }
+                        className="group rounded-xl overflow-hidden border border-slate-200/90 bg-white hover:border-blue-400 transition-all text-left cursor-zoom-in"
+                      >
+                        <img
+                          src={item.src}
+                          alt={item.title}
+                          loading="lazy"
+                          className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="px-2 py-1 text-[10px] font-semibold text-slate-700 truncate">
+                          {item.badge.split('•')[0].trim()}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {show3dDetails && (
+                <div className="mt-6 pt-6 border-t border-slate-200/80 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#1E40FF]">
+                      6 Mẫu Sa Bàn Căn Hộ 3D Đã Triển Khai (Bấm Để Phóng To)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setEstimatorOpen(true)}
+                      className="text-xs font-semibold text-[#1E40FF] hover:underline cursor-pointer"
+                    >
+                      Nhận báo giá làm Web 3D →
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {WEB3D_FLOORPLAN_SHOTS.map((item) => (
+                      <div
+                        key={item.id}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() =>
+                          setZoomedShot({
+                            src: item.src,
+                            title: item.title,
+                            badge: item.badge,
+                            desc: item.desc,
+                          })
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            setZoomedShot({
+                              src: item.src,
+                              title: item.title,
+                              badge: item.badge,
+                              desc: item.desc,
+                            });
+                          }
+                        }}
+                        className="group rounded-2xl bg-slate-50/70 border border-slate-200/85 overflow-hidden hover:border-blue-300 hover:bg-white transition-all cursor-zoom-in"
+                      >
+                        <div className="relative overflow-hidden border-b border-slate-100">
+                          <img
+                            src={item.src}
+                            alt={item.title}
+                            loading="lazy"
+                            className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          />
+                          <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/95 text-[10px] font-semibold text-[#1E40FF] shadow-sm">
+                            {item.badge}
+                          </span>
+                        </div>
+                        <div className="p-3.5">
+                          <h4 className="text-sm font-bold text-slate-900">{item.title}</h4>
+                          <p className="text-xs text-slate-600 mt-1">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 px-4 py-3 rounded-2xl bg-white/85 border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+              <span className="font-semibold text-slate-700">Mở nhanh từng ứng dụng:</span>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
                 {DEDICATED_APP_LINKS.map((app) => (
                   <a
                     key={app.href}
@@ -722,7 +1924,7 @@ export const DomationHome: React.FC = () => {
                     key={plan.name}
                     className={`p-7 sm:p-9 flex flex-col justify-between ${
                       plan.popular
-                        ? 'bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white'
+                        ? 'bg-gradient-to-br from-[#EEF4FF] via-white to-[#ECFEFF] ring-2 ring-inset ring-[#1E40FF]/35'
                         : ''
                     }`}
                   >
@@ -730,65 +1932,41 @@ export const DomationHome: React.FC = () => {
                       <div
                         className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4 ${
                           plan.popular
-                            ? 'bg-cyan-400/20 text-cyan-300'
+                            ? 'bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] text-white'
                             : 'bg-slate-100 text-[#1E40FF]'
                         }`}
                       >
                         {plan.badge}
                       </div>
 
-                      <h3
-                        className={`text-xl font-bold ${
-                          plan.popular ? 'text-white' : 'text-slate-900'
-                        }`}
-                      >
+                      <h3 className="text-xl font-bold text-slate-900">
                         {plan.name}
                       </h3>
 
                       <div className="mt-3 mb-2.5 flex items-baseline gap-1.5">
-                        <span
-                          className={`text-3xl sm:text-4xl font-bold tracking-tight ${
-                            plan.popular ? 'text-white' : 'text-slate-900'
-                          }`}
-                        >
+                        <span className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
                           {billingYearly ? plan.yearly : plan.monthly}
                         </span>
                         {!isCustom && (
-                          <span
-                            className={`text-xs font-medium ${
-                              plan.popular ? 'text-slate-300' : 'text-slate-500'
-                            }`}
-                          >
+                          <span className="text-xs font-medium text-slate-500">
                             {billingYearly ? '/ năm' : '/ tháng'}
                           </span>
                         )}
                       </div>
 
-                      <p
-                        className={`text-xs sm:text-sm leading-relaxed mb-6 ${
-                          plan.popular ? 'text-slate-300' : 'text-slate-600'
-                        }`}
-                      >
+                      <p className="text-xs sm:text-sm leading-relaxed mb-6 text-slate-600">
                         {plan.desc}
                       </p>
 
-                      <div
-                        className={`space-y-3 pt-5 border-t ${
-                          plan.popular ? 'border-white/15' : 'border-slate-200/75'
-                        }`}
-                      >
+                      <div className="space-y-3 pt-5 border-t border-slate-200/75">
                         {plan.features.map((feat) => (
                           <div key={feat} className="flex items-start gap-2.5 text-xs sm:text-[13px]">
                             <CheckCircle2
                               className={`w-4 h-4 shrink-0 mt-0.5 ${
-                                plan.popular ? 'text-cyan-300' : 'text-emerald-500'
+                                plan.popular ? 'text-[#1E40FF]' : 'text-emerald-500'
                               }`}
                             />
-                            <span
-                              className={
-                                plan.popular ? 'text-slate-100' : 'text-slate-700'
-                              }
-                            >
+                            <span className="text-slate-700">
                               {feat}
                             </span>
                           </div>
@@ -843,8 +2021,8 @@ export const DomationHome: React.FC = () => {
                     <span>THIẾT KẾ WEBSITE THƯƠNG HIỆU &amp; TƯƠNG TÁC</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                    Dự Toán Chi Phí Website Từ{' '}
-                    <span className="text-[#1E40FF]">12.000.000₫</span>
+                    Dự Toán &amp; Báo Giá{' '}
+                    <span className="text-[#1E40FF]">Website Theo Nhu Cầu</span>
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                     Tùy chọn linh hoạt các hạng mục giao diện, bảng hàng, cổng thanh toán và đồng bộ CRM ngay trên bảng tính trực quan.
@@ -858,14 +2036,14 @@ export const DomationHome: React.FC = () => {
                     className="btn-inkica-primary justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                   >
                     <Calculator className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                    <span>Dự Toán Web</span>
+                    <span>Báo giá</span>
                   </button>
                   <a
                     href="/web-design"
                     onClick={(e) => handleSpaLinkClick(e, '/web-design')}
                     className="ql-btn-outline justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
                   >
-                    <span>Bảng Giá Web</span>
+                    <span>Chi Tiết Hạng Mục</span>
                     <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                   </a>
                 </div>
@@ -909,7 +2087,7 @@ export const DomationHome: React.FC = () => {
         isOpen={estimatorOpen}
         onClose={() => setEstimatorOpen(false)}
         onRequestQuote={(summary) =>
-          openContact('Website Thương Hiệu & Tương Tác (Từ 12.0M₫)', summary)
+          openContact('Website Thương Hiệu & Tương Tác', summary)
         }
       />
 
@@ -918,6 +2096,11 @@ export const DomationHome: React.FC = () => {
         onClose={() => setContactOpen(false)}
         defaultService={contactDefaults.service}
         defaultNote={contactDefaults.note}
+      />
+
+      <ImageZoomModal
+        image={zoomedShot}
+        onClose={() => setZoomedShot(null)}
       />
     </div>
   );

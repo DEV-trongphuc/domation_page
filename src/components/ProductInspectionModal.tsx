@@ -15,11 +15,11 @@ interface ProductInspectionModalProps {
 
 const TAB_LABELS: { id: InspectionTabId; short: string; count: string }[] = [
   { id: 'data-capi', short: 'Auto Data & CAPI', count: '8' },
-  { id: 'erp', short: 'ERP 5.0 Suite', count: '16' },
-  { id: 'crm', short: 'CRM 360°', count: '10' },
-  { id: 'autoflow', short: 'AI & Automation', count: '9' },
-  { id: 'meta-report', short: 'Meta Ad Report', count: '6 + Video' },
-  { id: 'web-3d', short: 'Web 3D & Landing', count: '9' },
+  { id: 'erp', short: 'ERP 5.0 Suite', count: '18' },
+  { id: 'crm', short: 'CRM 360°', count: '9' },
+  { id: 'autoflow', short: 'AI & Automation', count: '6' },
+  { id: 'meta-report', short: 'Meta Ad Report', count: '9 + Video' },
+  { id: 'web-3d', short: 'Web 3D & Landing', count: '11' },
   { id: 'inkica', short: 'INKICA Studio', count: '5' },
 ];
 

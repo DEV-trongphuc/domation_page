@@ -267,6 +267,7 @@ export type WorkspaceScreenKey =
   | 'dashboard'
   | 'data_list'
   | 'ads_performance'
+  | 'dom_meta_report'
   | 'tickets'
   | 'gatekeeper'
   | 'rounds'

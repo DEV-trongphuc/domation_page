@@ -141,7 +141,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-ecommerce-misa.jpg',
     coverAlt: 'Đồng bộ đơn hàng E-commerce, CRM 360 và Hóa đơn điện tử MISA hai chiều',
-    screenshotImage: '/assets/domation/crm_10.webp',
+    screenshotImage: '/imgs/erp-screens/students.webp',
     screenshotCaption: 'Màn hình quản trị chứng từ, giỏ hàng và kết nối xuất hóa đơn từ DOMATION CRM 360°.',
     tldrSummary:
       'Sale chốt đơn trên CRM còn Kế toán lại gõ tay lại từng mã hàng vào phần mềm MISA để xuất hóa đơn khiến số liệu doanh thu hai phòng ban luôn vênh nhau. DOMATION thiết kế lớp đồng bộ Webhook hai chiều giữa CRM 360° <-> MISA giúp đẩy đơn hàng hợp lệ, kiểm tra mã số thuế, đồng bộ thanh toán và cập nhật trạng thái xuất hóa đơn ngay trên hồ sơ khách hàng.',
@@ -255,7 +255,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-bespoke-erp-blueprint.jpg',
     coverAlt: 'So sánh ERP đóng gói truyền thống với kiến trúc ERP 5.0 May đo Bespoke OS',
-    screenshotImage: '/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg',
+    screenshotImage: '/imgs/erp-screens/dashboard-lead.webp',
     screenshotCaption: 'Executive Dashboard trong DOMATION ERP 5.0 thiết kế tinh gọn khớp đúng chỉ số lãnh đạo cần xem.',
     tldrSummary:
       'Phần mềm ERP đóng gói thường thất bại ở SME Việt Nam vì bắt nhân sự thay đổi thói quen theo 500 trường nhập liệu dư thừa của nước ngoài, phí user đắt đỏ và không kết nối được với Zalo/Meta Ads. Kiến trúc Bespoke ERP 5.0 của DOMATION chỉ xây đúng những phân hệ doanh nghiệp thực sự dùng, giao diện tiếng Việt tinh gọn và tích hợp sẵn ZaloBot + CRM.',
@@ -362,7 +362,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-hr-gps-payroll.jpg',
     coverAlt: 'Công nghệ chấm công định vị GPS bán kính và Selfie AI chống giả lập vị trí',
-    screenshotImage: '/ERP-Product/1788856668006_2141578413905312186_2310722037673454867_72b9a0047bb54f03c54fb657c81e41dc.jpg',
+    screenshotImage: '/imgs/erp-screens/attendance-detail.webp',
     screenshotCaption: 'Giao diện chấm công GPS + Selfie AI kiểm tra tọa độ và khoảng cách văn phòng chuẩn từng mét.',
     tldrSummary:
       'Máy chấm công vân tay tốn chi phí lắp đặt ở 10–30 chi nhánh và bó buộc nhân viên thị trường. Nhưng chấm công qua app thông thường dễ bị cài app Fake GPS hoặc chấm hộ bằng điện thoại. DOMATION kết hợp Geofence GPS, nhận diện Live Selfie (chặn ảnh chụp màn hình), khóa Device ID và luồng giải trình ngoại lệ 1 chạm.',
@@ -469,7 +469,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-approval-kanban-erp.jpg',
     coverAlt: 'Quy trình phê duyệt đa cấp Purchase Order và bảng công việc Task Kanban liên phòng ban',
-    screenshotImage: '/ERP-Product/1788856559658_2141578413905312186_2310722037673454867_192068dc865f82425fa3645d12da931a.jpg',
+    screenshotImage: '/imgs/erp-screens/deals.webp',
     screenshotCaption: 'Giao diện Bàn làm việc & Task Kanban theo dõi tiến độ công việc, cảnh báo quá hạn.',
     tldrSummary:
       'Trong doanh nghiệp 20–200 nhân sự, nút thắt lớn nhất nằm ở việc sếp không biết khoản chi này đã qua Trưởng phòng duyệt chưa và đầu việc chuyển giao giữa Marketing -> Sale -> Vận hành bị đứt gãy. DOMATION gộp Hộp thư Phê duyệt 1 chạm (Approval Inbox) với Task Kanban liên phòng ban có cảnh báo SLA tự động.',
@@ -570,7 +570,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-meta-cpl-crm-roas.jpg',
     coverAlt: 'Đối chiếu chi phí Meta Graph API với doanh thu thực và số khách thiện chí trên CRM',
-    screenshotImage: '/assets/domation/meta_rp_3.webp',
+    screenshotImage: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
     screenshotCaption: 'Màn hình Meta Ad Realtime Report đối chiếu chi phí từng mẫu Ad với lượng khách Thiện chí và Booking CRM.',
     tldrSummary:
       'Trình quản lý quảng cáo Facebook chỉ biết tổng tiền đã tiêu và tổng số Form điền được, không biết Form đó là số rác hay đã xuống cọc. Hệ thống Meta Ad Realtime Report của DOMATION kéo chi phí theo giờ từ Facebook Graph API ghép theo `ad_id` với trạng thái Qualified/Booking/Doanh thu thực từ CRM để lộ rõ mẫu Ad nào đang thực sự kiếm tiền.',
@@ -677,7 +677,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-video-hook-rate.jpg',
     coverAlt: 'Biểu đồ phân tích Video Hook Rate 3 giây, Hold Rate và Creative Fatigue trên Meta Ads',
-    screenshotImage: '/assets/domation/meta_rp_2.webp',
+    screenshotImage: '/imgs/meta-screens/meta-ad-detail-modal.webp',
     screenshotCaption: 'Phễu phân tích Hook Rate 3s, Hold Rate 15s và độ bão hòa tần suất của từng video quảng cáo.',
     tldrSummary:
       'Khi giá quảng cáo Meta tăng bất thường, 80% nguyên nhân không phải do target sai mà do mẫu Video đã bị bão hòa (Creative Fatigue) hoặc 3 giây mở đầu quá yếu. Đo lường Hook Rate (`3-Second Video Plays / Impressions`) và Hold Rate (`ThruPlay / 3-Second Plays`) giúp tách bạch lỗi nằm ở đoạn Mở đầu (Hook), Thân bài (Body) hay Lời kêu gọi (CTA).',
@@ -779,7 +779,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-dedup-phone-e164.jpg',
     coverAlt: 'Engine chuẩn hóa số điện thoại +84 và lọc trùng dữ liệu đa kênh trong cửa sổ 180 ngày',
-    screenshotImage: '/assets/domation/chia_data_14.webp',
+    screenshotImage: '/imgs/autodata/showcase/screen_datalist.jpg',
     screenshotCaption: 'Bộ lọc trùng 6 tháng và log xử lý Ticket lỗi đảm bảo mỗi SĐT chỉ vào vòng chia hợp lệ.',
     tldrSummary:
       'Một khách hàng thường để lại thông tin trên cả Facebook, TikTok và Landing Page dưới các định dạng khác nhau (`0905...`, `84905...`, `+84 905...`, `p:+84...`). Nếu không chuẩn hóa và lọc trùng trong cửa sổ 6 tháng, công ty sẽ chia 1 khách cho 3 Sale khác nhau gọi làm phiền khách và tính KPI ảo.',
@@ -989,7 +989,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-13',
     coverImage: '/imgs/boost/boost-flow-automation.jpg',
     coverAlt: 'Flow kịch bản Email Amazon SES rẽ nhánh IF/ELSE tự động theo hành vi người đọc',
-    screenshotImage: '/assets/domation/auto_flow.webp',
+    screenshotImage: '/imgs/erp-screens/marketing.webp',
     screenshotCaption: 'Trình tạo kịch bản Visual Flow Builder kéo thả rẽ nhánh điều kiện IF/ELSE trong DOMATION.',
     tldrSummary:
       'Nhiều doanh nghiệp gửi 50.000 Email/tháng nhưng 60% lọt thẳng vào thư mục Spam hoặc Quảng cáo vì dùng SMTP chia sẻ rẻ tiền và gửi 1 nội dung cho tất cả mọi người. DOMATION cấu hình Amazon SES định danh DKIM/SPF/DMARC riêng, thiết kế Email kéo thả nhẹ mã HTML và rẽ nhánh IF/ELSE theo hành vi thực tế.',
@@ -1197,7 +1197,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     updatedAt: '2026-11-14',
     coverImage: '/imgs/boost/boost-ai-multiagent.jpg',
     coverAlt: 'Trung tâm Orchestrator điều phối 4 AI Agent chuyên trách liên phòng ban trong doanh nghiệp',
-    screenshotImage: '/assets/domation/auto_ai_group.webp',
+    screenshotImage: '/imgs/erp-screens/quick-menu-2.jpg',
     screenshotCaption: 'Phân hệ AI Space & AI Phòng ban phân quyền tri thức riêng cho từng bộ phận.',
     tldrSummary:
       'Một con AI Chatbot làm tất cả mọi việc thường dẫn đến rối ngữ cảnh và lộ dữ liệu lương/hợp đồng nội bộ ra ngoài. Kiến trúc Multi-Agent của DOMATION đặt Orchestrator Core ở giữa điều phối 4 Agent tách biệt quyền hạn: Lead & Routing Agent, Omnichannel CSKH Agent, ERP & HR Ops Agent và Flow & Revenue Agent.',

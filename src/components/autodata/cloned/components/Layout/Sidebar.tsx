@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, GitBranch, Settings, ChevronLeft, Webhook, Link2, Database, ShieldCheck, Ticket, Plus, Scale, Filter, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Users, GitBranch, Settings, ChevronLeft, Webhook, Link2, Database, ShieldCheck, Ticket, Plus, Scale, Filter, BarChart3 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useEffect, useState, useRef, Fragment } from 'react';
@@ -9,7 +9,7 @@ import { DomationLogoMark } from '../../../../DomationLogoMark';
 const ALL_NAV_ITEMS = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard, end: true },
   { name: 'Quản lý Data', href: '/data', icon: Database },
-  { name: 'Hiệu suất Quảng cáo', href: '/ads-performance', icon: Megaphone },
+  { name: 'Báo cáo Quảng cáo', href: '/meta-report', icon: BarChart3 },
   { name: 'Ticket Lỗi Data', href: '/tickets', icon: Ticket, adminOnly: true, badgeKey: 'tickets' },
   { name: 'AI Pre-screener', href: '/gatekeeper', icon: Filter, adminOnly: true, badgeKey: 'gatekeeper' },
   { name: 'Vòng phân bổ', href: '/rounds', icon: GitBranch, adminOnly: true },
@@ -63,7 +63,7 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onMobileC
         let countHeld = 0;
 
         if (resReports && resReports.success) {
-          countReports = resReports.stats?.pending ?? (Array.isArray(resReports?.data) ? resReports.data.filter((r: any) => r?.status === 'pending').length : 0);
+          countReports = resReports.stats?.pending ?? (Array.isArray(resReports?.data) ? resReports.data.filter((r: { status?: string }) => r?.status === 'pending').length : 0);
         }
 
         if (resHeld.success) {

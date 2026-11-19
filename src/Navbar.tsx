@@ -6,7 +6,6 @@ import {
   Cpu,
   Database,
   ExternalLink,
-  Layers,
   LayoutGrid,
   Menu,
   Sparkles,
@@ -38,10 +37,10 @@ export interface NavbarProps {
 }
 
 const HOME_ANCHORS = [
-  { href: '#story', label: 'Câu Chuyện' },
-  { href: '#multi-agent', label: 'AI Agent' },
-  { href: '#solutions', label: 'Vận Hành' },
-  { href: '#cases', label: 'Dự Án' },
+  { href: '#solutions', label: 'Hệ Sinh Thái' },
+  { href: '#crm-data', label: 'Data & Ads' },
+  { href: '#erp-suite', label: 'ERP & AI' },
+  { href: '#touchpoints', label: 'Web & 3D' },
   { href: '#pricing', label: 'Đầu Tư' },
 ];
 
@@ -64,7 +63,7 @@ const ECOSYSTEM_ROUTES = [
     id: 'web-design',
     href: '/web-design',
     label: 'Thiết Kế Web & 3D',
-    desc: 'WebGL bóc mái & Dự toán từ 12.0M₫',
+    desc: 'Website chuẩn SEO, Sa bàn 3D & Báo giá trực quan',
     icon: LayoutGrid,
   },
   {

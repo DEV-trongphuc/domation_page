@@ -111,11 +111,12 @@ export function applyPageSeo(config: PageSeoConfig): void {
       ? 'noindex, nofollow'
       : 'index, follow, max-image-preview:large, max-snippet:-1'
   );
-  upsertMeta('name', 'author', config.authorName || 'Huỳnh Trọng Phúc (TurnioDEV) — DOMATION.NET');
+  upsertMeta('name', 'application-name', 'DOMATION');
+  upsertMeta('name', 'author', config.authorName || 'Huỳnh Trọng Phúc (TurnioDEV) — DOMATION');
 
   upsertMeta('property', 'og:type', ogType);
   upsertMeta('property', 'og:locale', 'vi_VN');
-  upsertMeta('property', 'og:site_name', 'DOMATION Việt Nam');
+  upsertMeta('property', 'og:site_name', 'DOMATION');
   upsertMeta('property', 'og:url', canonicalUrl);
   upsertMeta('property', 'og:title', config.title);
   upsertMeta('property', 'og:description', config.description);

@@ -218,7 +218,7 @@ export const CrmLanding: React.FC = () => {
               className="ql-eyebrow mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              ENTERPRISE CRM 360° &amp; QUẢN TRỊ BÁN HÀNG
+              ENTERPRISE CRM 360° &amp; AUTO CHIA DATA 5.0
             </motion.div>
 
             <motion.h1
@@ -227,8 +227,8 @@ export const CrmLanding: React.FC = () => {
               transition={{ delay: 0.1 }}
               className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-6 leading-[1.12]"
             >
-              Hệ Thống Quản Trị{' '}
-              <span className="text-gradient-inkica">Doanh Nghiệp 4.0</span>
+              DOMATION CRM 360°{' '}
+              <span className="text-gradient-inkica">&amp; Auto Data 5.0</span>
             </motion.h1>
 
             <motion.p
@@ -237,8 +237,8 @@ export const CrmLanding: React.FC = () => {
               transition={{ delay: 0.2 }}
               className="text-slate-600 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-9 font-medium"
             >
-              Số hóa toàn diện quy trình làm việc. Từ Sales Pipeline 8 nấc, quản lý khách hàng (CRM), tồn kho (Inventory)
-              đến đồng bộ hóa đơn chứng từ &amp; Ticket hỗ trợ trên một nền tảng duy nhất.
+              Hệ thống CRM 360° kết hợp Auto Chia Data dưới 5 giây qua ZaloBot &amp; Telegram: quản trị Sales Pipeline 8
+              nấc, giỏ hàng real-time, chống ôm số SLA 120s và đồng bộ hóa đơn điện tử MISA hai chiều.
             </motion.p>
 
             <motion.div
@@ -336,9 +336,9 @@ export const CrmLanding: React.FC = () => {
                   </p>
                   <ul className="space-y-3.5">
                     {[
-                      'Tự động tạo báo giá (Quotes) & hóa đơn điện tử chuyên nghiệp trong 2 click',
-                      'Kết nối trực tiếp Contact và Company vào mỗi Deal',
-                      'Nhắc nhở tự động khi có Deal đến hạn (Deadlines)',
+                      'Auto Chia Data qua ZaloBot dưới 5s, lọc trùng 6 tháng & Van SLA 120s chống ôm số',
+                      'Hồ sơ Khách hàng 360°, Pipeline Kanban 8 nấc & Giỏ hàng BĐS real-time không trùng cọc',
+                      'Đồng bộ hóa đơn điện tử MISA hai chiều & đối soát doanh thu thực về Meta/Google Ads',
                     ].map((pain, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 mt-0.5">

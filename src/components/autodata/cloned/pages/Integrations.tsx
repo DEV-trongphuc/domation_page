@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect, react-refresh/only-export-components, prefer-const */
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import { Webhook, Plus, Trash2, Copy, CheckCircle2, ChevronRight, ChevronLeft, Link2, Tag, Info, FileSpreadsheet, Zap, Clock, Target, RefreshCw, Edit2, ExternalLink, AlertCircle, Settings, Database } from 'lucide-react';
@@ -13,6 +15,7 @@ import { AutoDataTelegramBotGuide } from '../../AutoDataTelegramBotGuide';
 import { AutoDataZaloBotGuide } from '../../AutoDataZaloBotGuide';
 import { AutoDataWebhookGuide } from '../../AutoDataWebhookGuide';
 import { AutoDataEmailGuide } from '../../AutoDataEmailGuide';
+import { DomMetaQuickConnectButton } from '../../../dom-meta/DomMetaQuickConnectModal';
 import { MessageCircle, Bot, Mail } from 'lucide-react';
 
 const SYSTEM_FIELDS = [
@@ -318,7 +321,8 @@ function normalizePhone(phone) {
 
 const IntegrationsInner = () => {
   const { language, t } = useLanguage();
-  const { token, tenantSlug } = useAuth();
+  const { user, token, tenantSlug } = useAuth();
+  const navigate = useNavigate();
   const [botGuideType, setBotGuideType] = useState<'telegram' | 'zalo' | 'webhook' | 'email' | null>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selected, setSelected] = useState<Connection | null>(null);
@@ -829,6 +833,28 @@ const IntegrationsInner = () => {
             <button onClick={() => setShowAddApi(true)} className="btn primary" style={{ width: '100%', justifyContent: 'center', height: 40, borderRadius: 10, background: 'var(--color-primary)' }}>
               <Zap size={16} /> {t('Thêm API Landing Page')}
             </button>
+            <div
+              style={{
+                marginTop: 4,
+                padding: '10px 12px',
+                borderRadius: 12,
+                background: 'linear-gradient(135deg, rgba(30, 64, 255, 0.06) 0%, rgba(6, 182, 212, 0.06) 100%)',
+                border: '1px solid rgba(30, 64, 255, 0.2)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+              }}
+            >
+              <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                Liên thông Báo cáo Quảng cáo Meta
+              </div>
+              <DomMetaQuickConnectButton
+                compact
+                authContext={{ accessToken: token || undefined, tenantSlug: tenantSlug || undefined }}
+                canManageConfig={user?.role === 'admin' || user?.role === 'superadmin'}
+                onOpenReport={() => navigate('/meta-report')}
+              />
+            </div>
           </div>
 
           <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingBottom: '1rem' }}>

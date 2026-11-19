@@ -26,7 +26,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-erp-custom-flow-os.jpg',
     coverAlt: 'Kiến trúc ERP may đo cho doanh nghiệp thời đại mới thiết kế flow riêng DOMATION',
-    screenshotImage: '/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg',
+    screenshotImage: '/imgs/erp-screens/dashboard-lead.webp',
     screenshotCaption: 'Dashboard điều hành DOMATION Enterprise ERP 5.0 hợp nhất dữ liệu Lead, Công việc và Phê duyệt.',
     tldrSummary:
       'DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới thay vì ép đội ngũ chạy theo khuôn mẫu phần mềm đóng gói. Bằng lõi 12 phân hệ ERP 5.0 dựng sẵn kết hợp cấu hình luồng duyệt, phân quyền RLS và AI Agent theo đúng sơ đồ tổ chức thực tế, doanh nghiệp go-live chỉ trong 2–4 tuần và đạt tỷ lệ nhân sự sử dụng trên 95%.',
@@ -172,7 +172,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ops-logic-matrix-50.jpg',
     coverAlt: 'Ma trận logic vận hành quản trị doanh nghiệp 5.0 liên thông đa phòng ban',
-    screenshotImage: '/ERP-Product/1788856691047_2141578413905312186_2310722037673454867_2dacee1206b6e8f836cdea82018d556e.jpg',
+    screenshotImage: '/imgs/erp-screens/quick-menu-1.jpg',
     screenshotCaption: 'Thanh điều hướng phân hệ hợp nhất trong DOMATION Enterprise ERP 5.0.',
     tldrSummary:
       'Logic vận hành quản trị doanh nghiệp 5.0 đặt "luồng dữ liệu xuyên suốt" làm trung tâm thay vì chia cắt theo phòng ban. Khi một khách hàng phát sinh từ quảng cáo, định danh duy nhất (Entity ID) đi xuyên qua Auto Data Router, CRM Pipeline, Phiếu cọc kế toán, Tính hoa hồng nhân sự và Bảng lương mà không phải nhập lại lần thứ hai.',
@@ -292,7 +292,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-payroll-engine-pdf.jpg',
     coverAlt: 'Phần mềm tính lương tự động xuất phiếu lương PDF ký số DOMATION Payroll Engine',
-    screenshotImage: '/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg',
+    screenshotImage: '/imgs/erp-screens/attendance.webp',
     screenshotCaption: 'Bảng tính lương tự động Payroll Engine tổng hợp công chuẩn, KPI, BHXH và thực lĩnh NET.',
     tldrSummary:
       'Kế toán và HR thường mất 3–4 ngày mỗi đầu tháng để ghép bảng công máy chấm công, đơn xin phép trên Zalo, chỉ số KPI và hoa hồng từ CRM bằng công thức Excel VLOOKUP dễ sai sót. DOMATION Payroll Engine kết nối trực tiếp dữ liệu Chấm công GPS AI, Phê duyệt nghỉ phép và Hoa hồng CRM để tính lương tự động và xuất hàng loạt phiếu lương PDF bảo mật chỉ trong 30 phút.',
@@ -408,7 +408,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-kpi-okr-kanban-erp.jpg',
     coverAlt: 'Quản trị KPI OKR liên phòng ban gắn Task Kanban trên ERP 5.0',
-    screenshotImage: '/ERP-Product/1788856559658_2141578413905312186_2310722037673454867_192068dc865f82425fa3645d12da931a.jpg',
+    screenshotImage: '/imgs/erp-screens/deals.webp',
     screenshotCaption: 'Giao diện Task Kanban & Theo dõi phiên làm việc thời gian thực trong DOMATION ERP 5.0.',
     tldrSummary:
       'KPI truyền thống thường thất bại vì đến cuối quý mới mở file Excel ra tự chấm điểm theo cảm tính. DOMATION ERP 5.0 gắn thẳng trọng số KPI/OKR vào dữ liệu sống: tỷ lệ hoàn thành Task đúng hạn trên Kanban, tốc độ nhận Lead <120s, tỷ lệ chuyển đổi Qualified và doanh thu thực thu trên CRM.',
@@ -516,7 +516,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-po-budget-control.jpg',
     coverAlt: 'Kiểm soát chi phí vận hành và Purchase Order chống vượt ngân sách DOMATION ERP',
-    screenshotImage: '/ERP-Product/1788856566822_2141578413905312186_2310722037673454867_c63e338a900a1ede4d6aa48393ce24da.jpg',
+    screenshotImage: '/imgs/erp-screens/expenses.webp',
     screenshotCaption: 'Màn hình Quản lý Chi phí & Purchase Order kiểm soát hạn mức giải ngân theo từng kỳ.',
     tldrSummary:
       'Nhiều doanh nghiệp tăng trưởng doanh thu tốt nhưng cuối quý vẫn hụt dòng tiền vì chi phí Ads, in ấn, tiếp khách và mua sắm phát sinh không có công cụ đối chiếu hạn mức trước khi ký duyệt. Module Purchase Order (PO) trong DOMATION ERP 5.0 hiển thị ngay ngân sách còn lại của phòng ban trên màn hình duyệt của Ban Giám đốc và khóa chi vượt trần tự động.',
@@ -624,7 +624,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-elearning-lms-erp.jpg',
     coverAlt: 'Hệ thống E-Learning đào tạo Sale nội bộ và AI Assistant trên DOMATION ERP',
-    screenshotImage: '/assets/domation/auto_ai_group.webp',
+    screenshotImage: '/imgs/erp-screens/quick-menu-2.jpg',
     screenshotCaption: 'Kho tri thức & Trợ lý AI phòng ban kết hợp đào tạo quy trình và sát hạch nhân sự.',
     tldrSummary:
       'Sale mới hoặc cộng tác viên đại lý F1 thường mất 3–4 tuần mới thuộc mặt bằng, chính sách giá và kịch bản xử lý từ chối, làm tốn hàng trăm giờ kèm cặp của quản lý. Tích hợp cổng E-Learning nội bộ cùng AI Knowledge Assistant ngay trong hệ sinh thái DOMATION giúp nhân viên học video theo lộ trình, làm bài sát hạch tự động trước khi được mở quyền nhận Lead nóng.',
@@ -732,7 +732,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-erp-roi-investment.jpg',
     coverAlt: 'Phân tích chi phí triển khai ERP may đo và ROI hoàn vốn cho doanh nghiệp SME',
-    screenshotImage: '/ERP-Product/1788856705546_2141578413905312186_2310722037673454867_91d3fd439a4e7f45eee7ae77dc8c20a1.jpg',
+    screenshotImage: '/imgs/erp-screens/quick-menu-2.jpg',
     screenshotCaption: 'Hệ sinh thái 12 phân hệ mở rộng trên DOMATION ERP 5.0 không phát sinh phí bản quyền từng đầu user.',
     tldrSummary:
       'Nỗi lo lớn nhất của CEO doanh nghiệp vừa (20–300 nhân sự) khi cân nhắc ERP là bài toán chi phí ban đầu và phí gia hạn tăng vọt theo số nhân viên. Mô hình lõi ERP 5.0 may đo của DOMATION cho phép doanh nghiệp triển khai theo từng cụm phân hệ ưu tiên, không tính phí cắt cổ theo đầu user và thường thu hồi vốn trong 3–6 tháng nhờ giảm thất thoát Lead và công sức đối soát.',
@@ -949,7 +949,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-modern-ops-unification.jpg',
     coverAlt: 'Tối ưu hệ thống vận hành thời đại mới chuẩn hóa dữ liệu một cửa DOMATION',
-    screenshotImage: '/ERP-Product/1788856540980_2141578413905312186_2310722037673454867_a9d3d972886e0c266f4c5866dec8111d.jpg',
+    screenshotImage: '/imgs/erp-screens/approvals.webp',
     screenshotCaption: 'Hộp thư Phê duyệt & Tiếp nhận một cửa (Gatekeeper Hub) xử lý tức thì điểm nghẽn vận hành.',
     tldrSummary:
       'Phần lớn sự trì trệ trong doanh nghiệp đến từ việc thông tin bị phân mảnh trên hàng chục nhóm chat Zalo, Messenger, Excel và email cá nhân. Tối ưu hệ thống vận hành thời đại mới bắt đầu từ nguyên tắc "Một cửa tiếp nhận – Tự động phân luồng – Minh bạch SLA", giúp giảm 70% tin nhắn thúc việc thủ công.',
@@ -1045,7 +1045,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-erp-vs-saas-comparison.jpg',
     coverAlt: 'So sánh ERP đóng gói truyền thống và DOMATION ERP 5.0 may đo cho doanh nghiệp Việt',
-    screenshotImage: '/assets/domation/erp_16.webp',
+    screenshotImage: '/imgs/erp-screens/data-log.webp',
     screenshotCaption: 'Ma trận điều hành đa cơ sở và phân hệ tích hợp gốc trong DOMATION ERP 5.0.',
     tldrSummary:
       'ERP đóng gói nước ngoài rất mạnh về chuẩn kế toán quốc tế nhưng thường thiếu kết nối gốc với hệ sinh thái đặc thù tại Việt Nam như ZaloBot, Zalo ZNS, VietQR ngân hàng nội địa, hóa đơn điện tử MISA và Meta CAPI. DOMATION ERP 5.0 may đo tích hợp sẵn toàn bộ các cầu nối này ngay từ lõi và triển khai vừa vặn theo văn hóa vận hành Việt Nam.',
@@ -1261,7 +1261,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-vibecode-erp-blueprint.jpg',
     coverAlt: 'Vibecode ERP và CRM custom đưa quy trình vào vận hành thực tế trong 14 ngày',
-    screenshotImage: '/assets/domation/crm_1.webp',
+    screenshotImage: '/imgs/erp-screens/deals.webp',
     screenshotCaption: 'Giao diện DOMATION CRM 360° may đo triển khai nhanh với Pipeline Kanban và báo cáo doanh thu.',
     tldrSummary:
       'Thay vì chờ 6 tháng lập trình từng màn hình, phương pháp Vibecode kết hợp lõi DOMATION OS giúp doanh nghiệp dựng xong hệ thống CRM Pipeline hoặc cụm phân hệ ERP đặc thù chỉ trong 14 ngày. Bí quyết nằm ở việc tách 70% hạ tầng nền tảng có sẵn và tập trung Vibecode 30% giao diện & luật nghiệp vụ riêng biệt.',
@@ -1675,7 +1675,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-ai-department-vaults.jpg',
     coverAlt: 'AI Space phân quyền riêng từng phòng ban Sales Pháp lý Kế toán Nhân sự',
-    screenshotImage: '/assets/domation/auto_ai_group.webp',
+    screenshotImage: '/imgs/erp-screens/quick-menu-2.jpg',
     screenshotCaption: 'Màn hình cấu hình AI Space riêng biệt theo từng phòng ban trong DOMATION Automation.',
     tldrSummary:
       'Một nhân viên Sales không được phép truy vấn tài liệu lương thưởng của HR hay bảng giá vốn của Kế toán, ngược lại Pháp lý cần AI tra cứu điều khoản hợp đồng nhanh hơn. AI Space trong DOMATION tạo ra các không gian tri thức AI độc lập gắn với phân quyền RBAC của từng phòng ban, giúp nhân sự hỏi đáp quy trình trong 5 giây mà vẫn bảo mật tuyệt đối.',

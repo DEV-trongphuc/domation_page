@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from 'react';
 import { CustomModal } from './ui/CustomModal';
 import { Skeleton } from './ui/Skeleton';
@@ -20,6 +21,7 @@ interface AdPreviewModalProps {
   initialAdName?: string | null;
   initialThumb?: string | null;
   leadName?: string | null;
+  onOpenInMetaReport?: (adId: string) => void;
 }
 
 export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
@@ -28,7 +30,8 @@ export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
   adId,
   initialAdName,
   initialThumb,
-  leadName
+  leadName,
+  onOpenInMetaReport
 }) => {
   const [loading, setLoading] = useState(false);
   const [format, setFormat] = useState<'MOBILE_FEED_STANDARD' | 'DESKTOP_FEED_STANDARD'>('MOBILE_FEED_STANDARD');
@@ -203,6 +206,27 @@ export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
               >
                 <RefreshCw size={12} className={loading ? 'spin' : ''} /> Làm mới
               </button>
+              {onOpenInMetaReport && (
+                <button
+                  type="button"
+                  onClick={() => onOpenInMetaReport(adId)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 10px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #1E40FF 0%, #0284C7 100%)',
+                    color: '#ffffff',
+                    fontSize: '0.73rem',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  <BarChart3 size={12} /> Mở trong Báo cáo Quảng cáo
+                </button>
+              )}
               {adData?.post_url && (
                 <a
                   href={adData.post_url}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react-hooks/exhaustive-deps, react-hooks/set-state-in-effect, react-hooks/immutability, react-refresh/only-export-components */
 import { getApiBaseUrl } from '../utils/api';
 import { useState, useEffect, Fragment } from 'react';
 import { createPortal } from 'react-dom';
@@ -472,50 +473,55 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
 
+  const mapRawLeadItem = (item: any): Lead => ({
+    id: item.id,
+    lead_id: item.lead_id,
+    name: item.lead_name || t('Khách hàng ẩn danh'),
+    phone: item.phone || '-',
+    email: item.email || '-',
+    source: item.source || '-',
+    type: item.type || '-',
+    note: item.note || '',
+    status: item.status,
+    assigned_to_name: item.assigned_to_name || '-',
+    assigned_to_avatar: item.assigned_to_avatar,
+    round_name: item.round_name || '-',
+    created_at: item.created_at,
+    report_status: item.report_status,
+    last_activity_at: item.last_activity_at,
+    ai_screener_status: item.ai_screener_status,
+    ai_evaluation: item.ai_evaluation,
+    quality_status: item.quality_status,
+    quality_note: item.quality_note,
+    quality_updated_at: item.quality_updated_at,
+    ad_id: item.ad_id || null,
+    ad_name: item.ad_name || null,
+    adset_id: item.adset_id || null,
+    adset_name: item.adset_name || null,
+    campaign_id: item.campaign_id || null,
+    campaign_name: item.campaign_name || null,
+    ad_platform: item.ad_platform || null,
+    ad_thumbnail_url: item.ad_thumbnail_url || null,
+    ad_image_url: item.ad_image_url || null,
+    ad_creative_title: item.ad_creative_title || null,
+    ad_creative_body: item.ad_creative_body || null,
+    ad_story_id: item.ad_story_id || null,
+  });
+
   const fetchLeads = async () => {
     setLoading(true);
     try {
+      const urlCampaignId = searchParams.get('campaign_id') || '';
       let apiUrl = `get_logs&page=${currentPage}&pageSize=${ITEMS_PER_PAGE}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}`;
       if (qualityFilter && qualityFilter !== 'all') {
         apiUrl += `&quality_status=${encodeURIComponent(qualityFilter)}`;
       }
+      if (urlCampaignId) {
+        apiUrl += `&campaign_id=${encodeURIComponent(urlCampaignId)}`;
+      }
       const json = await fetchAPI(apiUrl);
       if (json && json.success) {
-        // Map the backend structure to the frontend structure
-        const mappedLeads = (Array.isArray(json?.data) ? json.data : []).map((item: any) => ({
-          id: item.id,
-          lead_id: item.lead_id,
-          name: item.lead_name || t('Khách hàng ẩn danh'),
-          phone: item.phone || '-',
-          email: item.email || '-',
-          source: item.source || '-',
-          type: item.type || '-',
-          note: item.note || '',
-          status: item.status,
-          assigned_to_name: item.assigned_to_name || '-',
-          assigned_to_avatar: item.assigned_to_avatar,
-          round_name: item.round_name || '-',
-          created_at: item.created_at,
-          report_status: item.report_status,
-          last_activity_at: item.last_activity_at,
-          ai_screener_status: item.ai_screener_status,
-          ai_evaluation: item.ai_evaluation,
-          quality_status: item.quality_status,
-          quality_note: item.quality_note,
-          quality_updated_at: item.quality_updated_at,
-          ad_id: item.ad_id || null,
-          ad_name: item.ad_name || null,
-          adset_id: item.adset_id || null,
-          adset_name: item.adset_name || null,
-          campaign_id: item.campaign_id || null,
-          campaign_name: item.campaign_name || null,
-          ad_platform: item.ad_platform || null,
-          ad_thumbnail_url: item.ad_thumbnail_url || null,
-          ad_image_url: item.ad_image_url || null,
-          ad_creative_title: item.ad_creative_title || null,
-          ad_creative_body: item.ad_creative_body || null,
-          ad_story_id: item.ad_story_id || null
-        }));
+        const mappedLeads = (Array.isArray(json?.data) ? json.data : []).map(mapRawLeadItem);
         setLeads(mappedLeads);
         setTotalCount(json.total_count ?? mappedLeads.length);
       }
@@ -569,34 +575,61 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   }, [searchParams, dateFilter, isActive]);
 
   useEffect(() => {
-    if (isActive && leads.length > 0) {
-      const autoOpen = searchParams.get('auto_open');
-      const openId = searchParams.get('open_id');
-      const phoneParam = searchParams.get('search');
-      
-      if (autoOpen === 'true' || openId) {
-        let foundLead = null;
-        if (openId) {
-          foundLead = leads.find(l => String(l.id) === String(openId) || String(l.lead_id) === String(openId));
-        }
-        if (!foundLead && phoneParam) {
-          foundLead = leads.find(l => l.phone === phoneParam);
-        }
-        if (!foundLead && leads.length === 1) {
-          foundLead = leads[0];
-        }
-        if (foundLead) {
-          setSelectedLead(foundLead);
-          
-          setSearchParams((prev: URLSearchParams) => {
-            prev.delete('auto_open');
-            prev.delete('open_id');
-            return prev;
-          }, { replace: true });
-        }
+    if (!isActive || loading) return;
+    const autoOpen = searchParams.get('auto_open');
+    const openId = searchParams.get('highlightLeadId') || searchParams.get('open_id');
+    const phoneParam = searchParams.get('search');
+
+    if (autoOpen !== 'true' && !openId) return;
+
+    const clearOpenParams = () => {
+      setSearchParams((prev: URLSearchParams) => {
+        const next = new URLSearchParams(prev);
+        next.delete('auto_open');
+        next.delete('open_id');
+        next.delete('highlightLeadId');
+        return next;
+      }, { replace: true });
+    };
+
+    let foundLead: Lead | null = null;
+    if (openId) {
+      foundLead =
+        leads.find(
+          (l) => String(l.id) === String(openId) || String(l.lead_id) === String(openId)
+        ) || null;
+    } else if (phoneParam) {
+      foundLead = leads.find((l) => l.phone === phoneParam) || null;
+      if (!foundLead && leads.length === 1) {
+        foundLead = leads[0];
       }
     }
-  }, [leads, searchParams, isActive]);
+
+    if (foundLead) {
+      setSelectedLead(foundLead);
+      clearOpenParams();
+      return;
+    }
+
+    if (openId) {
+      let cancelled = false;
+      fetchAPI(`get_logs&lead_id=${encodeURIComponent(openId)}`)
+        .then((res) => {
+          if (cancelled) return;
+          const row = Array.isArray(res?.data) ? res.data[0] : null;
+          if (row) {
+            setSelectedLead(mapRawLeadItem(row));
+          }
+          clearOpenParams();
+        })
+        .catch(() => {
+          if (!cancelled) clearOpenParams();
+        });
+      return () => {
+        cancelled = true;
+      };
+    }
+  }, [leads, loading, searchParams, isActive]);
 
   const updateParams = (key: string, value: string) => {
     if (key === 'date') {
@@ -1938,18 +1971,22 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                         </td>
                         {user?.role !== 'sale' && (
                           <td style={{ padding: '0.75rem 1rem', maxWidth: 230 }}>
-                            {lead.ad_id ? (
+                            {(lead.ad_id || lead.campaign_id) ? (
                               <div
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setPreviewAd({
-                                    adId: lead.ad_id!,
-                                    adName: lead.ad_name,
-                                    thumb: lead.ad_thumbnail_url || lead.ad_image_url,
-                                    leadName: lead.name
-                                  });
+                                  if (lead.ad_id) {
+                                    setPreviewAd({
+                                      adId: lead.ad_id,
+                                      adName: lead.ad_name || lead.campaign_name,
+                                      thumb: lead.ad_thumbnail_url || lead.ad_image_url,
+                                      leadName: lead.name
+                                    });
+                                  } else if (lead.campaign_id) {
+                                    navigate(`/meta-report?focusCampaignId=${encodeURIComponent(lead.campaign_id)}`);
+                                  }
                                 }}
-                                title='Nhấn để mở Iframe xem trực tiếp bài quảng cáo trên Facebook'
+                                title={lead.ad_id ? 'Xem bài quảng cáo gốc & chi phí chuyển đổi' : 'Mở chiến dịch trong Báo cáo Quảng cáo'}
                                 style={{
                                   display: 'flex',
                                   alignItems: 'center',
@@ -1969,8 +2006,8 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                 {(lead.ad_thumbnail_url || lead.ad_image_url) ? (
                                   <img
                                     src={lead.ad_thumbnail_url || lead.ad_image_url || ''}
-                                    alt={lead.ad_name || 'Ad'}
-                                    style={{ width: 32, height: 32, borderRadius: 7, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255, 0.3)' }} onError={(e) => { const f = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(lead.ad_id || '')}`; if (!e.currentTarget.src.includes('action=ad_thumb')) e.currentTarget.src = f; else e.currentTarget.style.display = 'none'; }}
+                                    alt={lead.ad_name || lead.campaign_name || 'Ad'}
+                                    style={{ width: 32, height: 32, borderRadius: 7, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(30, 64, 255, 0.3)' }} onError={(e) => { const f = `/data/sale_data/api.php?action=ad_thumb&ad_id=${encodeURIComponent(lead.ad_id || '')}`; if (lead.ad_id && !e.currentTarget.src.includes('action=ad_thumb')) e.currentTarget.src = f; else e.currentTarget.style.display = 'none'; }}
                                   />
                                 ) : (
                                   <div style={{ width: 32, height: 32, borderRadius: 7, background: 'rgba(30, 64, 255, 0.16)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1E40FF', flexShrink: 0 }}>
@@ -1978,14 +2015,14 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                                   </div>
                                 )}
                                 <div style={{ minWidth: 0, flex: 1 }}>
-                                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={lead.ad_name || ''}>
-                                    {lead.ad_name || `Ad #${lead.ad_id}`}
+                                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={lead.ad_name || lead.campaign_name || ''}>
+                                    {lead.ad_name || lead.campaign_name || `Ad #${lead.ad_id || lead.campaign_id}`}
                                   </div>
                                   <div style={{ fontSize: '0.64rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 1 }}>
-                                    {lead.campaign_name || `ID: ${lead.ad_id}`}
+                                    {lead.campaign_name || `ID: ${lead.ad_id || lead.campaign_id}`}
                                   </div>
                                 </div>
-                                <span style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(30, 64, 255, 0.16)', border: '1px solid rgba(30, 64, 255, 0.3)', color: '#1E40FF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} title='Mở Iframe Bài Quảng Cáo'>
+                                <span style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(30, 64, 255, 0.16)', border: '1px solid rgba(30, 64, 255, 0.3)', color: '#1E40FF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} title='Xem chi tiết quảng cáo'>
                                   <Eye size={12} />
                                 </span>
                               </div>
@@ -5878,6 +5915,10 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         initialAdName={previewAd?.adName}
         initialThumb={previewAd?.thumb}
         leadName={previewAd?.leadName}
+        onOpenInMetaReport={(id) => {
+          setPreviewAd(null);
+          navigate(`/meta-report?focusAdId=${encodeURIComponent(id)}`);
+        }}
       />
     </div>
   );

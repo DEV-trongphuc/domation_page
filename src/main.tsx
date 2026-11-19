@@ -82,7 +82,9 @@ const Main = () => {
 
   const isDataSubdomain =
     typeof window !== 'undefined' && /^data\./i.test(window.location.hostname);
-  const isHome = !isDataSubdomain && (path === '' || path === '/');
+  const isMetaSubdomain =
+    typeof window !== 'undefined' && /^meta\./i.test(window.location.hostname);
+  const isHome = !isDataSubdomain && !isMetaSubdomain && (path === '' || path === '/');
   const isPortfolio = path === '/portfolio' || search.includes('page=portfolio');
   const isBoostHub = path === '/boost' || path === '/bai-viet' || path === '/blog';
 
@@ -98,7 +100,10 @@ const Main = () => {
     : null;
 
   const isAutomation = path === '/automation';
-  const isMetaReport = path === '/meta-report';
+  const isMetaReport =
+    path === '/meta-report' ||
+    path.startsWith('/meta-report/') ||
+    (isMetaSubdomain && !isPortfolio && !isBoostHub && !singlePostSlug);
   const isCrm = false; // path === '/crm';
   const isData =
     path === '/data' ||
