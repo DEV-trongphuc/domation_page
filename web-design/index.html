@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
   <link rel="icon" type="image/svg+xml" href="/domation-logo.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1E40FF" />
 
@@ -11,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <link rel="preload" as="image" href="/imgs/landing/fluent-brand-ambient-bg.webp" type="image/webp" fetchpriority="high" />
@@ -22,6 +27,7 @@
   <meta name="title" content="Thiết Kế Website &amp; Landing Page Từ 12M₫ Chuẩn SEO | DOMATION" />
   <meta name="description" content="Thiết kế Website &amp; Landing Page tối ưu chuyển đổi, tải &lt;1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL &amp; CRM ZaloBot." />
   <meta name="keywords" content="báo giá thiết kế website doanh nghiệp, làm chủ source code website doanh nghiệp, tối ưu landing page, thiết kế web 3d sa bàn, dự toán chi phí website, thiết kế website chuẩn seo geo domation" />
+  <meta name="application-name" content="DOMATION" />
   <meta name="author" content="Huỳnh Trọng Phúc (TurnioDEV) — DOMATION.NET" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <link rel="canonical" href="https://domation.net/web-design" />
@@ -32,7 +38,7 @@
   <!-- Open Graph / Facebook / Zalo -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="vi_VN" />
-  <meta property="og:site_name" content="DOMATION Việt Nam" />
+  <meta property="og:site_name" content="DOMATION" />
   <meta property="og:url" content="https://domation.net/web-design" />
   <meta property="og:title" content="Thiết Kế Website &amp; Landing Page Từ 12M₫ Chuẩn SEO | DOMATION" />
   <meta property="og:description" content="Thiết kế Website &amp; Landing Page tối ưu chuyển đổi, tải &lt;1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL &amp; CRM ZaloBot." />
@@ -67,14 +73,16 @@
         "DOM MARKETING"
       ],
       "url": "https://domation.net/",
-      "description": "DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: Enterprise ERP 5.0 (12 phân hệ), CRM 360° MISA, Auto Chia Data ZaloBot \u003c5s, Meta CAPI, Vibecode & AI Doanh nghiệp 5.0.",
+      "description": "Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.",
       "image": "https://domation.net/imgs/og-domation-v2.jpg",
       "logo": {
         "@type": "ImageObject",
         "@id": "https://domation.net/#logo",
         "url": "https://domation.net/domation-logo.svg",
         "contentUrl": "https://domation.net/domation-logo.svg",
-        "caption": "DOMATION.NET Logo"
+        "width": 512,
+        "height": 512,
+        "caption": "DOMATION Logo"
       },
       "email": "turniodev@gmail.com",
       "telephone": "+84378859736",
@@ -164,9 +172,13 @@
       "@type": "WebSite",
       "@id": "https://domation.net/#website",
       "url": "https://domation.net/",
-      "name": "DOMATION.NET",
-      "alternateName": "DOMATION Việt Nam",
-      "description": "Hệ sinh thái Công nghệ Marketing × App × AI May Đo cho Doanh nghiệp: Auto Chia Data, Meta CAPI, ERP 5.0, CRM 360°, AI Agent & Web 3D.",
+      "name": "DOMATION",
+      "alternateName": [
+        "DOMATION Việt Nam",
+        "DOMATION.NET",
+        "Công Ty TNHH DOMATION Việt Nam"
+      ],
+      "description": "Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.",
       "inLanguage": "vi-VN",
       "publisher": {
         "@id": "https://domation.net/#organization"
@@ -283,53 +295,60 @@
   <!-- Google Identity Services (GIS) for Google OAuth Client ID Integration -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="module" crossorigin src="/assets/createLucideIcon-BHTqy3qS.js"></script>
-  <script type="module" crossorigin src="/assets/preload-helper-CDPbUJct.js"></script>
+  <script type="module" crossorigin src="/assets/preload-helper-DOh8UZsW.js"></script>
   <script type="module" crossorigin src="/assets/filter-props-88Ek8OZl.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-right-CL0VDN5f.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-right-CT72OZf2.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-WiL6naXA.js"></script>
-  <script type="module" crossorigin src="/assets/chevron-down-HjwK6qFR.js"></script>
-  <script type="module" crossorigin src="/assets/circle-check-Cmy1c76J.js"></script>
-  <script type="module" crossorigin src="/assets/clock-CiVzH8we.js"></script>
-  <script type="module" crossorigin src="/assets/cpu-DpfmolDr.js"></script>
-  <script type="module" crossorigin src="/assets/database-8ihoXuXu.js"></script>
-  <script type="module" crossorigin src="/assets/external-link-BfGYWHsN.js"></script>
-  <script type="module" crossorigin src="/assets/layout-grid-BCjRVJAb.js"></script>
-  <script type="module" crossorigin src="/assets/loader-circle-LiT5uVE3.js"></script>
-  <script type="module" crossorigin src="/assets/mail-4lyLEmDW.js"></script>
-  <script type="module" crossorigin src="/assets/menu-DLhVwJfe.js"></script>
-  <script type="module" crossorigin src="/assets/message-circle-7StbVtqt.js"></script>
-  <script type="module" crossorigin src="/assets/phone-BfRb4Div.js"></script>
-  <script type="module" crossorigin src="/assets/send-Cz2zFBm7.js"></script>
-  <script type="module" crossorigin src="/assets/shield-check-Dom9xOBs.js"></script>
-  <script type="module" crossorigin src="/assets/sparkles-7ybIQM6_.js"></script>
-  <script type="module" crossorigin src="/assets/trending-up-DjhMl_-6.js"></script>
-  <script type="module" crossorigin src="/assets/x-mCMxDP2S.js"></script>
+  <script type="module" crossorigin src="/assets/activity-QeXzFOTc.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-right-DE8PNXsO.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-right-DJQB30Ga.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-BH1I-y_v.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-down-B0Ytyeag.js"></script>
+  <script type="module" crossorigin src="/assets/circle-check-BSg2NWA3.js"></script>
+  <script type="module" crossorigin src="/assets/clock-CeGdrZv2.js"></script>
+  <script type="module" crossorigin src="/assets/cpu-80IIXOuO.js"></script>
+  <script type="module" crossorigin src="/assets/database-C9KtoFzy.js"></script>
+  <script type="module" crossorigin src="/assets/external-link-Z9NV7e51.js"></script>
+  <script type="module" crossorigin src="/assets/layout-grid-yMi8zSwQ.js"></script>
+  <script type="module" crossorigin src="/assets/loader-circle-DrpUKm1h.js"></script>
+  <script type="module" crossorigin src="/assets/mail-Ba9GVYPa.js"></script>
+  <script type="module" crossorigin src="/assets/menu-B0sqRSD_.js"></script>
+  <script type="module" crossorigin src="/assets/message-circle-CU_alaxX.js"></script>
+  <script type="module" crossorigin src="/assets/phone-BeJaJo6v.js"></script>
+  <script type="module" crossorigin src="/assets/send-RHIhHRGj.js"></script>
+  <script type="module" crossorigin src="/assets/shield-check-Cmri7xj6.js"></script>
+  <script type="module" crossorigin src="/assets/sparkles-BEsjrW0N.js"></script>
+  <script type="module" crossorigin src="/assets/trending-up-gBH3n_I0.js"></script>
+  <script type="module" crossorigin src="/assets/x-Daw1EJ0A.js"></script>
   <script type="module" crossorigin src="/assets/react-dom-BwRqVDd-.js"></script>
-  <script type="module" crossorigin src="/assets/seo-BobTjRQB.js"></script>
-  <script type="module" crossorigin src="/assets/DomationLogoMark-BXoCO0Ku.js"></script>
-  <script type="module" crossorigin src="/assets/Navbar-BDFtCIkl.js"></script>
-  <script type="module" crossorigin src="/assets/bot-DWz_IN5o.js"></script>
-  <script type="module" crossorigin src="/assets/building-2-SnGnWXWl.js"></script>
-  <script type="module" crossorigin src="/assets/layers-NS38u7n9.js"></script>
-  <script type="module" crossorigin src="/assets/enterpriseData-DrSJ4w9h.js"></script>
-  <script type="module" crossorigin src="/assets/ProductInspectionModal-CJcFpUGD.js"></script>
-  <script type="module" crossorigin src="/assets/globe-BsFKU9bP.js"></script>
-  <script type="module" crossorigin src="/assets/network-A3lxjZWX.js"></script>
-  <script type="module" crossorigin src="/assets/rotate-ccw-DwRTQkRz.js"></script>
-  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CxNQn5rw.js"></script>
-  <script type="module" crossorigin src="/assets/DomationFooter-pBAosj6x.js"></script>
-  <script type="module" crossorigin src="/assets/circle-question-mark-CAbqpeUO.js"></script>
-  <script type="module" crossorigin src="/assets/FaqAccordionSection-D-YJiBM5.js"></script>
-  <script type="module" crossorigin src="/assets/award-CrWAsvec.js"></script>
-  <script type="module" crossorigin src="/assets/PartnersTrustSection-Cxka_iqx.js"></script>
-  <script type="module" crossorigin src="/assets/coreRouteSeo-DwKaiGew.js"></script>
-  <script type="module" crossorigin src="/assets/main-BvhAnS48.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-BjcGA-5Y.css">
+  <script type="module" crossorigin src="/assets/seo-BSIsIRMz.js"></script>
+  <script type="module" crossorigin src="/assets/DomationLogoMark-Bj1A5DmS.js"></script>
+  <script type="module" crossorigin src="/assets/Navbar-uC3h9F5s.js"></script>
+  <script type="module" crossorigin src="/assets/bot-CbXfz573.js"></script>
+  <script type="module" crossorigin src="/assets/box-DWxbkiT7.js"></script>
+  <script type="module" crossorigin src="/assets/building-2-DmXfv8vw.js"></script>
+  <script type="module" crossorigin src="/assets/chart-column-DIl4rx9Z.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-up-CIR9Ss1i.js"></script>
+  <script type="module" crossorigin src="/assets/layers-BPf1wlGp.js"></script>
+  <script type="module" crossorigin src="/assets/enterpriseData-CLV7DCzS.js"></script>
+  <script type="module" crossorigin src="/assets/ProductInspectionModal-BLxVF6cZ.js"></script>
+  <script type="module" crossorigin src="/assets/globe-WZKxhsNS.js"></script>
+  <script type="module" crossorigin src="/assets/mouse-pointer-click-DGs3enbm.js"></script>
+  <script type="module" crossorigin src="/assets/play-BKaQCOiy.js"></script>
+  <script type="module" crossorigin src="/assets/rotate-ccw-76-vR85I.js"></script>
+  <script type="module" crossorigin src="/assets/users-BHW1iyk9.js"></script>
+  <script type="module" crossorigin src="/assets/zap-jmPcz4CT.js"></script>
+  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CUX2_OWo.js"></script>
+  <script type="module" crossorigin src="/assets/DomationFooter-ToT26Nn_.js"></script>
+  <script type="module" crossorigin src="/assets/circle-question-mark-O2MiMDO8.js"></script>
+  <script type="module" crossorigin src="/assets/FaqAccordionSection-BlAYBirr.js"></script>
+  <script type="module" crossorigin src="/assets/award-DqY7_dLd.js"></script>
+  <script type="module" crossorigin src="/assets/PartnersTrustSection-Chk9GMI3.js"></script>
+  <script type="module" crossorigin src="/assets/coreRouteSeo-D3RCnk9K.js"></script>
+  <script type="module" crossorigin src="/assets/main-BEvmH30B.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-BerhsbuY.css">
 </head>
 
 <body class="bg-[#F8F9FA] text-[#0F172A] antialiased selection:bg-blue-100 selection:text-[#1E40FF]">
-  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/web-design">Bảng Giá Thiết Kế Website</a></nav><section><h1>Thiết Kế Website &amp; Landing Page Từ 12M₫ Chuẩn SEO</h1><p>Thiết kế Website &amp; Landing Page tối ưu chuyển đổi, tải &lt;1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL &amp; CRM ZaloBot.</p><img src="/imgs/enterprise/hero-domation-hub.webp" alt="Thiết Kế Website Doanh Nghiệp, Landing Page CRO &amp; Sa Bàn 3D WebGL Từ 12.000.000₫ DOMATION" width="1344" height="750" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Thiết kế Website &amp; Landing Page tối ưu chuyển đổi, tải &lt;1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL &amp; CRM ZaloBot. DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 12 phân hệ, CRM 360° đồng bộ MISA, Auto Chia Data ZaloBot &lt;5s, Flow Automation IF/ELSE, AI Agent / Multi-Agent RAG 24/7 và Website 3D WebGL).</p></section><section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul><li><strong>Gói Core Website Doanh Nghiệp (8 Module)</strong> — 12000000 VND</li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>Chi phí thiết kế Website doanh nghiệp &amp; Landing Page chuẩn SEO tại DOMATION là bao nhiêu?</h3><p>Gói Core Website Doanh Nghiệp (8 Module) có giá từ 12.000.000₫ thanh toán 1 lần, bàn giao 100% source code sở hữu vĩnh viễn. Các module mở rộng như Sa bàn 3D WebGL Three.js, Booking hoặc kết nối CRM được dự toán minh bạch.</p></article><article><h3>Website do DOMATION thiết kế có đạt chuẩn SEO, GEO và tốc độ tải nhanh không?</h3><p>Có. Mọi website và Landing Page đều tối ưu tải dưới 1.5 giây, kiến trúc Semantic HTML5, Pre-render tĩnh, JSON-LD Unified @graph, llms.txt chuẩn AI Search (GEO) và tích hợp sẵn Tracking Webhook về ZaloBot/CRM/Meta CAPI.</p></article><article><h3>Sa bàn 3D WebGL bóc mái căn hộ chạy có mượt trên điện thoại không?</h3><p>Mô hình 3D Three.js được nén bằng chuẩn Draco GLB (&lt;5MB) và tối ưu lightmap giúp khách hàng xoay, bóc mái căn hộ trực tiếp trên trình duyệt di động ở tốc độ mượt mà mà không cần cài ứng dụng.</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>báo giá thiết kế website doanh nghiệp</li><li>làm chủ source code website doanh nghiệp</li><li>tối ưu landing page</li><li>thiết kế web 3d sa bàn</li><li>dự toán chi phí website</li><li>thiết kế website chuẩn seo geo domation</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm">Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile &amp; gắn Tracking đẩy thẳng CRM</a> — Kinh nghiệm triển khai sa bàn 3D Three.js bóc mái 8 căn hộ trực tiếp trên trình duyệt cho BĐS, tối ưu dung lượng &lt;5MB mượt trên mobile và đồng bộ CRM.</li><li><a href="/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side">Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury &amp; Tracking Server-side: Tránh bẫy Web đẹp nhưng 0 chuyển đổi</a> — Tại sao website đẹp lung linh nhưng không ra đơn? Kinh nghiệm thiết kế Web thương hiệu chuẩn SEO tốc độ &lt;3s, gắn sẵn Tracking CRM &amp; dự toán minh bạch từ 12M₫.</li><li><a href="/boost/he-thong-e-learning-dao-tao-sale-noi-bo-onboarding-erp">Hệ Thống E-Learning &amp; Kho Tri Thức Nội Bộ: Onboarding Sale Mới Trong 7 Ngày Trên ERP</a> — Tích hợp cổng E-Learning LMS và trợ lý AI nội bộ ngay trên ERP: chuẩn hóa đào tạo Sale mới, sát hạch kiến thức và rút ngắn 60% thời gian onboarding.</li><li><a href="/boost/vibecode-landing-page-chuyen-doi-cao-chuan-seo-meta-capi">Vibecode Landing Page &amp; Funnel Chuyển Đổi Cao: Tốc Độ &lt; 1.5s, Chuẩn SEO &amp; Gắn Sẵn Meta CAPI</a> — Kết hợp Vibecode với chuẩn UX Quiet Luxury để tạo Landing Page chạy quảng cáo tải dưới 1.5 giây, chuẩn 100 điểm SEO, gắn sẵn ZaloBot và Meta CAPI server-side.</li><li><a href="/boost/toi-uu-landing-page-chay-quang-cao-ty-le-chuyen-doi-cao">Tối Ưu Landing Page Chạy Quảng Cáo Đạt Tỷ Lệ Chuyển Đổi 12–18%: Cấu Trúc Above-the-Fold &amp; Form 3 Giây</a> — Bí quyết tối ưu Landing Page chạy quảng cáo đạt tỷ lệ chuyển đổi 12-18%: thiết kế Above-the-Fold 3 giây, Social Proof thật, Form gọn và Sticky CTA.</li><li><a href="/boost/checklist-audit-website-landing-page-truoc-khi-chay-ads">Checklist Audit Website &amp; Landing Page Trước Khi Đổ Ngân Sách Quảng Cáo Lớn (12 Điểm Kiểm Tra)</a> — 12 điểm kiểm tra Website và Landing Page trước khi chạy ngân sách Ads lớn: Core Web Vitals &lt;2.5s, Mobile Sticky CTA, Pixel+CAPI dedup và Webhook ZaloBot.</li><li><a href="/boost/landing-page-ab-testing-server-side-tracking-doanh-thu-crm">Landing Page A/B Testing &amp; Server-Side Tracking: Đo Chính Xác Doanh Thu Từng Biến Thể Hero &amp; CTA</a> — Thực hiện A/B Testing Landing Page gắn Server-Side Tracking và doanh thu thực CRM: chọn đúng biến thể thắng cuộc ra đơn thật thay vì chỉ nhiều click.</li><li><a href="/boost/dat-100-diem-google-lighthouse-seo-core-web-vitals-website">Đạt 100 Điểm Google Lighthouse SEO, Performance &amp; Core Web Vitals Cho Website Doanh Nghiệp</a> — Checklist kỹ thuật đưa website đạt 100 điểm SEO Google Lighthouse: semantic &lt;main&gt;, thứ tự H1-H2-H3 chuẩn, ảnh WebP/JPG tối ưu, Canonical và Schema.</li></ul></section></main><footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
+  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/web-design">Bảng Giá Thiết Kế Website</a></nav><section><h1>Thiết Kế Website &amp; Landing Page Từ 12M₫ Chuẩn SEO</h1><p>Thiết kế Website &amp; Landing Page tối ưu chuyển đổi, tải &lt;1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL &amp; CRM ZaloBot.</p><img src="/imgs/enterprise/hero-domation-hub.webp" alt="Thiết Kế Website Doanh Nghiệp, Landing Page CRO &amp; Sa Bàn 3D WebGL Từ 12.000.000₫ DOMATION" width="1344" height="750" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Thiết kế Website &amp; Landing Page tối ưu chuyển đổi, tải &lt;1.5s, chuẩn 100% SEO, sở hữu source code từ 12M₫, tích hợp Web 3D WebGL &amp; CRM ZaloBot.</p></section><section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul><li><strong>Gói Core Website Doanh Nghiệp (8 Module)</strong> — 12000000 VND</li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>Chi phí thiết kế Website doanh nghiệp &amp; Landing Page chuẩn SEO tại DOMATION là bao nhiêu?</h3><p>Gói Core Website Doanh Nghiệp (8 Module) có giá từ 12.000.000₫ thanh toán 1 lần, bàn giao 100% source code sở hữu vĩnh viễn. Các module mở rộng như Sa bàn 3D WebGL Three.js, Booking hoặc kết nối CRM được dự toán minh bạch.</p></article><article><h3>Website do DOMATION thiết kế có đạt chuẩn SEO, GEO và tốc độ tải nhanh không?</h3><p>Có. Mọi website và Landing Page đều tối ưu tải dưới 1.5 giây, kiến trúc Semantic HTML5, Pre-render tĩnh, JSON-LD Unified @graph, llms.txt chuẩn AI Search (GEO) và tích hợp sẵn Tracking Webhook về ZaloBot/CRM/Meta CAPI.</p></article><article><h3>Sa bàn 3D WebGL bóc mái căn hộ chạy có mượt trên điện thoại không?</h3><p>Mô hình 3D Three.js được nén bằng chuẩn Draco GLB (&lt;5MB) và tối ưu lightmap giúp khách hàng xoay, bóc mái căn hộ trực tiếp trên trình duyệt di động ở tốc độ mượt mà mà không cần cài ứng dụng.</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>báo giá thiết kế website doanh nghiệp</li><li>làm chủ source code website doanh nghiệp</li><li>tối ưu landing page</li><li>thiết kế web 3d sa bàn</li><li>dự toán chi phí website</li><li>thiết kế website chuẩn seo geo domation</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm">Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile &amp; gắn Tracking đẩy thẳng CRM</a> — Kinh nghiệm triển khai sa bàn 3D Three.js bóc mái 8 căn hộ trực tiếp trên trình duyệt cho BĐS, tối ưu dung lượng &lt;5MB mượt trên mobile và đồng bộ CRM.</li><li><a href="/boost/thiet-ke-website-doanh-nghiep-chuan-quiet-luxury-tracking-server-side">Thiết kế Website Doanh nghiệp chuẩn Quiet Luxury &amp; Tracking Server-side: Tránh bẫy Web đẹp nhưng 0 chuyển đổi</a> — Tại sao website đẹp lung linh nhưng không ra đơn? Kinh nghiệm thiết kế Web thương hiệu chuẩn SEO tốc độ &lt;3s, gắn sẵn Tracking CRM &amp; dự toán minh bạch từ 12M₫.</li><li><a href="/boost/he-thong-e-learning-dao-tao-sale-noi-bo-onboarding-erp">Hệ Thống E-Learning &amp; Kho Tri Thức Nội Bộ: Onboarding Sale Mới Trong 7 Ngày Trên ERP</a> — Tích hợp cổng E-Learning LMS và trợ lý AI nội bộ ngay trên ERP: chuẩn hóa đào tạo Sale mới, sát hạch kiến thức và rút ngắn 60% thời gian onboarding.</li><li><a href="/boost/vibecode-landing-page-chuyen-doi-cao-chuan-seo-meta-capi">Vibecode Landing Page &amp; Funnel Chuyển Đổi Cao: Tốc Độ &lt; 1.5s, Chuẩn SEO &amp; Gắn Sẵn Meta CAPI</a> — Kết hợp Vibecode với chuẩn UX Quiet Luxury để tạo Landing Page chạy quảng cáo tải dưới 1.5 giây, chuẩn 100 điểm SEO, gắn sẵn ZaloBot và Meta CAPI server-side.</li><li><a href="/boost/toi-uu-landing-page-chay-quang-cao-ty-le-chuyen-doi-cao">Tối Ưu Landing Page Chạy Quảng Cáo Đạt Tỷ Lệ Chuyển Đổi 12–18%: Cấu Trúc Above-the-Fold &amp; Form 3 Giây</a> — Bí quyết tối ưu Landing Page chạy quảng cáo đạt tỷ lệ chuyển đổi 12-18%: thiết kế Above-the-Fold 3 giây, Social Proof thật, Form gọn và Sticky CTA.</li><li><a href="/boost/checklist-audit-website-landing-page-truoc-khi-chay-ads">Checklist Audit Website &amp; Landing Page Trước Khi Đổ Ngân Sách Quảng Cáo Lớn (12 Điểm Kiểm Tra)</a> — 12 điểm kiểm tra Website và Landing Page trước khi chạy ngân sách Ads lớn: Core Web Vitals &lt;2.5s, Mobile Sticky CTA, Pixel+CAPI dedup và Webhook ZaloBot.</li><li><a href="/boost/landing-page-ab-testing-server-side-tracking-doanh-thu-crm">Landing Page A/B Testing &amp; Server-Side Tracking: Đo Chính Xác Doanh Thu Từng Biến Thể Hero &amp; CTA</a> — Thực hiện A/B Testing Landing Page gắn Server-Side Tracking và doanh thu thực CRM: chọn đúng biến thể thắng cuộc ra đơn thật thay vì chỉ nhiều click.</li><li><a href="/boost/dat-100-diem-google-lighthouse-seo-core-web-vitals-website">Đạt 100 Điểm Google Lighthouse SEO, Performance &amp; Core Web Vitals Cho Website Doanh Nghiệp</a> — Checklist kỹ thuật đưa website đạt 100 điểm SEO Google Lighthouse: semantic &lt;main&gt;, thứ tự H1-H2-H3 chuẩn, ảnh WebP/JPG tối ưu, Canonical và Schema.</li></ul></section></main><footer><p><strong>DOMATION</strong> — Hệ sinh thái hợp nhất Website &amp; Landing Page 3D với CRM Auto Data &lt;5s, Báo cáo Meta &amp; Google Ads gắn Lead, Automation Zalo ZNS &amp; phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
 </body>
 
 </html>

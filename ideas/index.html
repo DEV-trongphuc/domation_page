@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
   <link rel="icon" type="image/svg+xml" href="/domation-logo.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1E40FF" />
 
@@ -11,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <link rel="preload" as="image" href="/imgs/landing/fluent-brand-ambient-bg.webp" type="image/webp" fetchpriority="high" />
@@ -22,6 +27,7 @@
   <meta name="title" content="IDEAS Ecosystem | Hệ Thống Tuyển Sinh &amp; ERP May Đo | DOMATION" />
   <meta name="description" content="Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA." />
   <meta name="keywords" content="IDEAS Ecosystem, ERP Viện IDEAS, ERP may đo giáo dục sau đại học, Auto Lead Router IDEAS, làm chủ hệ thống tuyển sinh CRM Automation, DOMATION" />
+  <meta name="application-name" content="DOMATION" />
   <meta name="author" content="Huỳnh Trọng Phúc (TurnioDEV) — DOMATION.NET" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <link rel="canonical" href="https://domation.net/ideas" />
@@ -32,7 +38,7 @@
   <!-- Open Graph / Facebook / Zalo -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="vi_VN" />
-  <meta property="og:site_name" content="DOMATION Việt Nam" />
+  <meta property="og:site_name" content="DOMATION" />
   <meta property="og:url" content="https://domation.net/ideas" />
   <meta property="og:title" content="IDEAS Ecosystem | Hệ Thống Tuyển Sinh &amp; ERP May Đo | DOMATION" />
   <meta property="og:description" content="Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA." />
@@ -67,14 +73,16 @@
         "DOM MARKETING"
       ],
       "url": "https://domation.net/",
-      "description": "DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: Enterprise ERP 5.0 (12 phân hệ), CRM 360° MISA, Auto Chia Data ZaloBot \u003c5s, Meta CAPI, Vibecode & AI Doanh nghiệp 5.0.",
+      "description": "Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.",
       "image": "https://domation.net/imgs/og-domation-v2.jpg",
       "logo": {
         "@type": "ImageObject",
         "@id": "https://domation.net/#logo",
         "url": "https://domation.net/domation-logo.svg",
         "contentUrl": "https://domation.net/domation-logo.svg",
-        "caption": "DOMATION.NET Logo"
+        "width": 512,
+        "height": 512,
+        "caption": "DOMATION Logo"
       },
       "email": "turniodev@gmail.com",
       "telephone": "+84378859736",
@@ -164,9 +172,13 @@
       "@type": "WebSite",
       "@id": "https://domation.net/#website",
       "url": "https://domation.net/",
-      "name": "DOMATION.NET",
-      "alternateName": "DOMATION Việt Nam",
-      "description": "Hệ sinh thái Công nghệ Marketing × App × AI May Đo cho Doanh nghiệp: Auto Chia Data, Meta CAPI, ERP 5.0, CRM 360°, AI Agent & Web 3D.",
+      "name": "DOMATION",
+      "alternateName": [
+        "DOMATION Việt Nam",
+        "DOMATION.NET",
+        "Công Ty TNHH DOMATION Việt Nam"
+      ],
+      "description": "Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.",
       "inLanguage": "vi-VN",
       "publisher": {
         "@id": "https://domation.net/#organization"
@@ -272,53 +284,60 @@
   <!-- Google Identity Services (GIS) for Google OAuth Client ID Integration -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="module" crossorigin src="/assets/createLucideIcon-BHTqy3qS.js"></script>
-  <script type="module" crossorigin src="/assets/preload-helper-CDPbUJct.js"></script>
+  <script type="module" crossorigin src="/assets/preload-helper-DOh8UZsW.js"></script>
   <script type="module" crossorigin src="/assets/filter-props-88Ek8OZl.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-right-CL0VDN5f.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-right-CT72OZf2.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-WiL6naXA.js"></script>
-  <script type="module" crossorigin src="/assets/chevron-down-HjwK6qFR.js"></script>
-  <script type="module" crossorigin src="/assets/circle-check-Cmy1c76J.js"></script>
-  <script type="module" crossorigin src="/assets/clock-CiVzH8we.js"></script>
-  <script type="module" crossorigin src="/assets/cpu-DpfmolDr.js"></script>
-  <script type="module" crossorigin src="/assets/database-8ihoXuXu.js"></script>
-  <script type="module" crossorigin src="/assets/external-link-BfGYWHsN.js"></script>
-  <script type="module" crossorigin src="/assets/layout-grid-BCjRVJAb.js"></script>
-  <script type="module" crossorigin src="/assets/loader-circle-LiT5uVE3.js"></script>
-  <script type="module" crossorigin src="/assets/mail-4lyLEmDW.js"></script>
-  <script type="module" crossorigin src="/assets/menu-DLhVwJfe.js"></script>
-  <script type="module" crossorigin src="/assets/message-circle-7StbVtqt.js"></script>
-  <script type="module" crossorigin src="/assets/phone-BfRb4Div.js"></script>
-  <script type="module" crossorigin src="/assets/send-Cz2zFBm7.js"></script>
-  <script type="module" crossorigin src="/assets/shield-check-Dom9xOBs.js"></script>
-  <script type="module" crossorigin src="/assets/sparkles-7ybIQM6_.js"></script>
-  <script type="module" crossorigin src="/assets/trending-up-DjhMl_-6.js"></script>
-  <script type="module" crossorigin src="/assets/x-mCMxDP2S.js"></script>
+  <script type="module" crossorigin src="/assets/activity-QeXzFOTc.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-right-DE8PNXsO.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-right-DJQB30Ga.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-BH1I-y_v.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-down-B0Ytyeag.js"></script>
+  <script type="module" crossorigin src="/assets/circle-check-BSg2NWA3.js"></script>
+  <script type="module" crossorigin src="/assets/clock-CeGdrZv2.js"></script>
+  <script type="module" crossorigin src="/assets/cpu-80IIXOuO.js"></script>
+  <script type="module" crossorigin src="/assets/database-C9KtoFzy.js"></script>
+  <script type="module" crossorigin src="/assets/external-link-Z9NV7e51.js"></script>
+  <script type="module" crossorigin src="/assets/layout-grid-yMi8zSwQ.js"></script>
+  <script type="module" crossorigin src="/assets/loader-circle-DrpUKm1h.js"></script>
+  <script type="module" crossorigin src="/assets/mail-Ba9GVYPa.js"></script>
+  <script type="module" crossorigin src="/assets/menu-B0sqRSD_.js"></script>
+  <script type="module" crossorigin src="/assets/message-circle-CU_alaxX.js"></script>
+  <script type="module" crossorigin src="/assets/phone-BeJaJo6v.js"></script>
+  <script type="module" crossorigin src="/assets/send-RHIhHRGj.js"></script>
+  <script type="module" crossorigin src="/assets/shield-check-Cmri7xj6.js"></script>
+  <script type="module" crossorigin src="/assets/sparkles-BEsjrW0N.js"></script>
+  <script type="module" crossorigin src="/assets/trending-up-gBH3n_I0.js"></script>
+  <script type="module" crossorigin src="/assets/x-Daw1EJ0A.js"></script>
   <script type="module" crossorigin src="/assets/react-dom-BwRqVDd-.js"></script>
-  <script type="module" crossorigin src="/assets/seo-BobTjRQB.js"></script>
-  <script type="module" crossorigin src="/assets/DomationLogoMark-BXoCO0Ku.js"></script>
-  <script type="module" crossorigin src="/assets/Navbar-BDFtCIkl.js"></script>
-  <script type="module" crossorigin src="/assets/bot-DWz_IN5o.js"></script>
-  <script type="module" crossorigin src="/assets/building-2-SnGnWXWl.js"></script>
-  <script type="module" crossorigin src="/assets/layers-NS38u7n9.js"></script>
-  <script type="module" crossorigin src="/assets/enterpriseData-DrSJ4w9h.js"></script>
-  <script type="module" crossorigin src="/assets/ProductInspectionModal-CJcFpUGD.js"></script>
-  <script type="module" crossorigin src="/assets/globe-BsFKU9bP.js"></script>
-  <script type="module" crossorigin src="/assets/network-A3lxjZWX.js"></script>
-  <script type="module" crossorigin src="/assets/rotate-ccw-DwRTQkRz.js"></script>
-  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CxNQn5rw.js"></script>
-  <script type="module" crossorigin src="/assets/DomationFooter-pBAosj6x.js"></script>
-  <script type="module" crossorigin src="/assets/circle-question-mark-CAbqpeUO.js"></script>
-  <script type="module" crossorigin src="/assets/FaqAccordionSection-D-YJiBM5.js"></script>
-  <script type="module" crossorigin src="/assets/award-CrWAsvec.js"></script>
-  <script type="module" crossorigin src="/assets/PartnersTrustSection-Cxka_iqx.js"></script>
-  <script type="module" crossorigin src="/assets/coreRouteSeo-DwKaiGew.js"></script>
-  <script type="module" crossorigin src="/assets/main-BvhAnS48.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-BjcGA-5Y.css">
+  <script type="module" crossorigin src="/assets/seo-BSIsIRMz.js"></script>
+  <script type="module" crossorigin src="/assets/DomationLogoMark-Bj1A5DmS.js"></script>
+  <script type="module" crossorigin src="/assets/Navbar-uC3h9F5s.js"></script>
+  <script type="module" crossorigin src="/assets/bot-CbXfz573.js"></script>
+  <script type="module" crossorigin src="/assets/box-DWxbkiT7.js"></script>
+  <script type="module" crossorigin src="/assets/building-2-DmXfv8vw.js"></script>
+  <script type="module" crossorigin src="/assets/chart-column-DIl4rx9Z.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-up-CIR9Ss1i.js"></script>
+  <script type="module" crossorigin src="/assets/layers-BPf1wlGp.js"></script>
+  <script type="module" crossorigin src="/assets/enterpriseData-CLV7DCzS.js"></script>
+  <script type="module" crossorigin src="/assets/ProductInspectionModal-BLxVF6cZ.js"></script>
+  <script type="module" crossorigin src="/assets/globe-WZKxhsNS.js"></script>
+  <script type="module" crossorigin src="/assets/mouse-pointer-click-DGs3enbm.js"></script>
+  <script type="module" crossorigin src="/assets/play-BKaQCOiy.js"></script>
+  <script type="module" crossorigin src="/assets/rotate-ccw-76-vR85I.js"></script>
+  <script type="module" crossorigin src="/assets/users-BHW1iyk9.js"></script>
+  <script type="module" crossorigin src="/assets/zap-jmPcz4CT.js"></script>
+  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CUX2_OWo.js"></script>
+  <script type="module" crossorigin src="/assets/DomationFooter-ToT26Nn_.js"></script>
+  <script type="module" crossorigin src="/assets/circle-question-mark-O2MiMDO8.js"></script>
+  <script type="module" crossorigin src="/assets/FaqAccordionSection-BlAYBirr.js"></script>
+  <script type="module" crossorigin src="/assets/award-DqY7_dLd.js"></script>
+  <script type="module" crossorigin src="/assets/PartnersTrustSection-Chk9GMI3.js"></script>
+  <script type="module" crossorigin src="/assets/coreRouteSeo-D3RCnk9K.js"></script>
+  <script type="module" crossorigin src="/assets/main-BEvmH30B.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-BerhsbuY.css">
 </head>
 
 <body class="bg-[#F8F9FA] text-[#0F172A] antialiased selection:bg-blue-100 selection:text-[#1E40FF]">
-  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/ideas">IDEAS Ecosystem</a></nav><section><h1>IDEAS Ecosystem</h1><p>Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA.</p><img src="/landingpage_avatar/ideasmba.webp" alt="IDEAS Company Ecosystem Portal — Case Study Tuyển Sinh &amp; Automation DOMATION" width="2557" height="1345" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA. DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 12 phân hệ, CRM 360° đồng bộ MISA, Auto Chia Data ZaloBot &lt;5s, Flow Automation IF/ELSE, AI Agent / Multi-Agent RAG 24/7 và Website 3D WebGL).</p></section><section><h2>Danh Mục Dự Án &amp; Phân Hệ Triển Khai</h2><ul><li><a href="https://domation.net/automation">IDEAS Marketing Automation</a></li><li><a href="https://domation.net/meta-report">IDEAS Meta Realtime Report</a></li><li><a href="https://domation.net/data">IDEAS Auto Lead Router</a></li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>IDEAS Company Ecosystem Portal triển khai những hệ thống gì của DOMATION?</h3><p>Viện IDEAS vận hành đồng bộ 3 phân hệ may đo từ DOMATION: Marketing Automation nuôi dưỡng phễu tuyển sinh dài ngày, Meta Ad Realtime Report tối ưu chi phí quảng cáo và Auto Lead Router kết hợp ERP 5.0 thay thế 14 file Excel nội bộ.</p></article><article><h3>Hiệu quả thực tế sau khi IDEAS triển khai hệ thống ERP &amp; Automation may đo là gì?</h3><p>Hệ thống giúp IDEAS tăng 300% quy mô lớp học MBA (từ 20 lên 60 học viên/khóa), giảm 30% chi phí thu học viên (CPA), vận hành hơn 12.600 Leads và tự động hóa chấm công GPS AI cùng Payroll PDF.</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>IDEAS Ecosystem</li><li>ERP Viện IDEAS</li><li>ERP may đo giáo dục sau đại học</li><li>Auto Lead Router IDEAS</li><li>làm chủ hệ thống tuyển sinh CRM Automation</li><li>DOMATION</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds">Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead</a> — Giải pháp tự động chia data khách hàng BĐS qua ZaloBot dưới 5 giây, lọc trùng 6 tháng và thu hồi Lead quá hạn 2 phút giúp giảm 40% tỷ lệ rớt khách.</li><li><a href="/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife">Minh bạch chia giỏ hàng &amp; bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature</a> — Cách Chủ đầu tư Capital House quản lý chia Lead công bằng độ lệch ~0% cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD) bằng cơ chế bù Ticket lỗi 1:1.</li><li><a href="/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm">Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile &amp; gắn Tracking đẩy thẳng CRM</a> — Kinh nghiệm triển khai sa bàn 3D Three.js bóc mái 8 căn hộ trực tiếp trên trình duyệt cho BĐS, tối ưu dung lượng &lt;5MB mượt trên mobile và đồng bộ CRM.</li><li><a href="/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac">Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác</a> — Hướng dẫn kiến trúc Meta Conversions API (CAPI) chuẩn SHA-256 từ CRM bắn ngược trạng thái Qualified và DisqualifiedLead HTTP 200 để dạy lại thuật toán Meta Ads.</li><li><a href="/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa">Quản lý phễu tuyển sinh MBA &amp; Khóa học dài ngày: Nâng quy mô từ 20 lên 60 học viên/khóa &amp; giảm 30% CPA</a> — Case study triển khai CRM, Auto Lead Router và Flow nuôi dưỡng dài ngày giúp Viện IDEAS mở rộng quy mô từ 20 lên 60 học viên MBA/khóa và giảm 30% CPA.</li><li><a href="/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao">Xây dựng ERP 5.0 thay thế 14 file Excel cho Viện Đào Tạo: Chấm công GPS &amp; Payroll PDF</a> — Kinh nghiệm số hóa toàn bộ vận hành nội bộ 12 phân hệ ERP 5.0 tại IDEAS Business: hợp nhất Task Kanban, chấm công GPS AI, phê duyệt và xuất phiếu lương PDF.</li></ul></section></main><footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
+  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/ideas">IDEAS Ecosystem</a></nav><section><h1>IDEAS Ecosystem</h1><p>Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA.</p><img src="/landingpage_avatar/ideasmba.webp" alt="IDEAS Company Ecosystem Portal — Case Study Tuyển Sinh &amp; Automation DOMATION" width="2557" height="1345" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Cổng ứng dụng may đo riêng cho Viện IDEAS: Marketing Automation, Meta Ad Realtime Report và Auto Lead Router giúp tăng 300% quy mô, giảm 30% CPA.</p></section><section><h2>Danh Mục Dự Án &amp; Phân Hệ Triển Khai</h2><ul><li><a href="https://domation.net/automation">IDEAS Marketing Automation</a></li><li><a href="https://domation.net/meta-report">IDEAS Meta Realtime Report</a></li><li><a href="https://domation.net/data">IDEAS Auto Lead Router</a></li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>IDEAS Company Ecosystem Portal triển khai những hệ thống gì của DOMATION?</h3><p>Viện IDEAS vận hành đồng bộ 3 phân hệ may đo từ DOMATION: Marketing Automation nuôi dưỡng phễu tuyển sinh dài ngày, Meta Ad Realtime Report tối ưu chi phí quảng cáo và Auto Lead Router kết hợp ERP 5.0 thay thế 14 file Excel nội bộ.</p></article><article><h3>Hiệu quả thực tế sau khi IDEAS triển khai hệ thống ERP &amp; Automation may đo là gì?</h3><p>Hệ thống giúp IDEAS tăng 300% quy mô lớp học MBA (từ 20 lên 60 học viên/khóa), giảm 30% chi phí thu học viên (CPA), vận hành hơn 12.600 Leads và tự động hóa chấm công GPS AI cùng Payroll PDF.</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>IDEAS Ecosystem</li><li>ERP Viện IDEAS</li><li>ERP may đo giáo dục sau đại học</li><li>Auto Lead Router IDEAS</li><li>làm chủ hệ thống tuyển sinh CRM Automation</li><li>DOMATION</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/auto-chia-data-zalobot-5-giay-chong-rot-lead-bds">Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead</a> — Giải pháp tự động chia data khách hàng BĐS qua ZaloBot dưới 5 giây, lọc trùng 6 tháng và thu hồi Lead quá hạn 2 phút giúp giảm 40% tỷ lệ rớt khách.</li><li><a href="/boost/minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife">Minh bạch chia giỏ hàng &amp; bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature</a> — Cách Chủ đầu tư Capital House quản lý chia Lead công bằng độ lệch ~0% cho 3 Đại lý F1 (Tùng Long, Hợp Nhất, IHD) bằng cơ chế bù Ticket lỗi 1:1.</li><li><a href="/boost/sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm">Sa bàn 3D WebGL bóc mái căn hộ trên trình duyệt: Khó khăn tối ưu FPS Mobile &amp; gắn Tracking đẩy thẳng CRM</a> — Kinh nghiệm triển khai sa bàn 3D Three.js bóc mái 8 căn hộ trực tiếp trên trình duyệt cho BĐS, tối ưu dung lượng &lt;5MB mượt trên mobile và đồng bộ CRM.</li><li><a href="/boost/ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac">Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác</a> — Hướng dẫn kiến trúc Meta Conversions API (CAPI) chuẩn SHA-256 từ CRM bắn ngược trạng thái Qualified và DisqualifiedLead HTTP 200 để dạy lại thuật toán Meta Ads.</li><li><a href="/boost/quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa">Quản lý phễu tuyển sinh MBA &amp; Khóa học dài ngày: Nâng quy mô từ 20 lên 60 học viên/khóa &amp; giảm 30% CPA</a> — Case study triển khai CRM, Auto Lead Router và Flow nuôi dưỡng dài ngày giúp Viện IDEAS mở rộng quy mô từ 20 lên 60 học viên MBA/khóa và giảm 30% CPA.</li><li><a href="/boost/xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao">Xây dựng ERP 5.0 thay thế 14 file Excel cho Viện Đào Tạo: Chấm công GPS &amp; Payroll PDF</a> — Kinh nghiệm số hóa toàn bộ vận hành nội bộ 12 phân hệ ERP 5.0 tại IDEAS Business: hợp nhất Task Kanban, chấm công GPS AI, phê duyệt và xuất phiếu lương PDF.</li></ul></section></main><footer><p><strong>DOMATION</strong> — Hệ sinh thái hợp nhất Website &amp; Landing Page 3D với CRM Auto Data &lt;5s, Báo cáo Meta &amp; Google Ads gắn Lead, Automation Zalo ZNS &amp; phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
 </body>
 
 </html>

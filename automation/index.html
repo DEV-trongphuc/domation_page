@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
   <link rel="icon" type="image/svg+xml" href="/domation-logo.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1E40FF" />
 
@@ -11,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <link rel="preload" as="image" href="/imgs/landing/fluent-brand-ambient-bg.webp" type="image/webp" fetchpriority="high" />
@@ -22,6 +27,7 @@
   <meta name="title" content="DOMATION Automation | Flow IF/ELSE, Email SES &amp; AI 5.0" />
   <meta name="description" content="Nền tảng Automation &amp; AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking &amp; Multi-Agent RAG." />
   <meta name="keywords" content="Marketing Automation đa kênh, Visual Flow Builder IF ELSE, thiết kế flow automation riêng, Email Amazon SES 98% Inbox, Zalo ZNS Automation, AI Agent doanh nghiệp, Multi-Agent AI tự trị, AI doanh nghiệp thời đại 5.0, Vibecode doanh nghiệp" />
+  <meta name="application-name" content="DOMATION" />
   <meta name="author" content="Huỳnh Trọng Phúc (TurnioDEV) — DOMATION.NET" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <link rel="canonical" href="https://domation.net/automation" />
@@ -32,7 +38,7 @@
   <!-- Open Graph / Facebook / Zalo -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="vi_VN" />
-  <meta property="og:site_name" content="DOMATION Việt Nam" />
+  <meta property="og:site_name" content="DOMATION" />
   <meta property="og:url" content="https://domation.net/automation" />
   <meta property="og:title" content="DOMATION Automation | Flow IF/ELSE, Email SES &amp; AI 5.0" />
   <meta property="og:description" content="Nền tảng Automation &amp; AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking &amp; Multi-Agent RAG." />
@@ -67,14 +73,16 @@
         "DOM MARKETING"
       ],
       "url": "https://domation.net/",
-      "description": "DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: Enterprise ERP 5.0 (12 phân hệ), CRM 360° MISA, Auto Chia Data ZaloBot \u003c5s, Meta CAPI, Vibecode & AI Doanh nghiệp 5.0.",
+      "description": "Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.",
       "image": "https://domation.net/imgs/og-domation-v2.jpg",
       "logo": {
         "@type": "ImageObject",
         "@id": "https://domation.net/#logo",
         "url": "https://domation.net/domation-logo.svg",
         "contentUrl": "https://domation.net/domation-logo.svg",
-        "caption": "DOMATION.NET Logo"
+        "width": 512,
+        "height": 512,
+        "caption": "DOMATION Logo"
       },
       "email": "turniodev@gmail.com",
       "telephone": "+84378859736",
@@ -164,9 +172,13 @@
       "@type": "WebSite",
       "@id": "https://domation.net/#website",
       "url": "https://domation.net/",
-      "name": "DOMATION.NET",
-      "alternateName": "DOMATION Việt Nam",
-      "description": "Hệ sinh thái Công nghệ Marketing × App × AI May Đo cho Doanh nghiệp: Auto Chia Data, Meta CAPI, ERP 5.0, CRM 360°, AI Agent & Web 3D.",
+      "name": "DOMATION",
+      "alternateName": [
+        "DOMATION Việt Nam",
+        "DOMATION.NET",
+        "Công Ty TNHH DOMATION Việt Nam"
+      ],
+      "description": "Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.",
       "inLanguage": "vi-VN",
       "publisher": {
         "@id": "https://domation.net/#organization"
@@ -310,53 +322,60 @@
   <!-- Google Identity Services (GIS) for Google OAuth Client ID Integration -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="module" crossorigin src="/assets/createLucideIcon-BHTqy3qS.js"></script>
-  <script type="module" crossorigin src="/assets/preload-helper-CDPbUJct.js"></script>
+  <script type="module" crossorigin src="/assets/preload-helper-DOh8UZsW.js"></script>
   <script type="module" crossorigin src="/assets/filter-props-88Ek8OZl.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-right-CL0VDN5f.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-right-CT72OZf2.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-WiL6naXA.js"></script>
-  <script type="module" crossorigin src="/assets/chevron-down-HjwK6qFR.js"></script>
-  <script type="module" crossorigin src="/assets/circle-check-Cmy1c76J.js"></script>
-  <script type="module" crossorigin src="/assets/clock-CiVzH8we.js"></script>
-  <script type="module" crossorigin src="/assets/cpu-DpfmolDr.js"></script>
-  <script type="module" crossorigin src="/assets/database-8ihoXuXu.js"></script>
-  <script type="module" crossorigin src="/assets/external-link-BfGYWHsN.js"></script>
-  <script type="module" crossorigin src="/assets/layout-grid-BCjRVJAb.js"></script>
-  <script type="module" crossorigin src="/assets/loader-circle-LiT5uVE3.js"></script>
-  <script type="module" crossorigin src="/assets/mail-4lyLEmDW.js"></script>
-  <script type="module" crossorigin src="/assets/menu-DLhVwJfe.js"></script>
-  <script type="module" crossorigin src="/assets/message-circle-7StbVtqt.js"></script>
-  <script type="module" crossorigin src="/assets/phone-BfRb4Div.js"></script>
-  <script type="module" crossorigin src="/assets/send-Cz2zFBm7.js"></script>
-  <script type="module" crossorigin src="/assets/shield-check-Dom9xOBs.js"></script>
-  <script type="module" crossorigin src="/assets/sparkles-7ybIQM6_.js"></script>
-  <script type="module" crossorigin src="/assets/trending-up-DjhMl_-6.js"></script>
-  <script type="module" crossorigin src="/assets/x-mCMxDP2S.js"></script>
+  <script type="module" crossorigin src="/assets/activity-QeXzFOTc.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-right-DE8PNXsO.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-right-DJQB30Ga.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-BH1I-y_v.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-down-B0Ytyeag.js"></script>
+  <script type="module" crossorigin src="/assets/circle-check-BSg2NWA3.js"></script>
+  <script type="module" crossorigin src="/assets/clock-CeGdrZv2.js"></script>
+  <script type="module" crossorigin src="/assets/cpu-80IIXOuO.js"></script>
+  <script type="module" crossorigin src="/assets/database-C9KtoFzy.js"></script>
+  <script type="module" crossorigin src="/assets/external-link-Z9NV7e51.js"></script>
+  <script type="module" crossorigin src="/assets/layout-grid-yMi8zSwQ.js"></script>
+  <script type="module" crossorigin src="/assets/loader-circle-DrpUKm1h.js"></script>
+  <script type="module" crossorigin src="/assets/mail-Ba9GVYPa.js"></script>
+  <script type="module" crossorigin src="/assets/menu-B0sqRSD_.js"></script>
+  <script type="module" crossorigin src="/assets/message-circle-CU_alaxX.js"></script>
+  <script type="module" crossorigin src="/assets/phone-BeJaJo6v.js"></script>
+  <script type="module" crossorigin src="/assets/send-RHIhHRGj.js"></script>
+  <script type="module" crossorigin src="/assets/shield-check-Cmri7xj6.js"></script>
+  <script type="module" crossorigin src="/assets/sparkles-BEsjrW0N.js"></script>
+  <script type="module" crossorigin src="/assets/trending-up-gBH3n_I0.js"></script>
+  <script type="module" crossorigin src="/assets/x-Daw1EJ0A.js"></script>
   <script type="module" crossorigin src="/assets/react-dom-BwRqVDd-.js"></script>
-  <script type="module" crossorigin src="/assets/seo-BobTjRQB.js"></script>
-  <script type="module" crossorigin src="/assets/DomationLogoMark-BXoCO0Ku.js"></script>
-  <script type="module" crossorigin src="/assets/Navbar-BDFtCIkl.js"></script>
-  <script type="module" crossorigin src="/assets/bot-DWz_IN5o.js"></script>
-  <script type="module" crossorigin src="/assets/building-2-SnGnWXWl.js"></script>
-  <script type="module" crossorigin src="/assets/layers-NS38u7n9.js"></script>
-  <script type="module" crossorigin src="/assets/enterpriseData-DrSJ4w9h.js"></script>
-  <script type="module" crossorigin src="/assets/ProductInspectionModal-CJcFpUGD.js"></script>
-  <script type="module" crossorigin src="/assets/globe-BsFKU9bP.js"></script>
-  <script type="module" crossorigin src="/assets/network-A3lxjZWX.js"></script>
-  <script type="module" crossorigin src="/assets/rotate-ccw-DwRTQkRz.js"></script>
-  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CxNQn5rw.js"></script>
-  <script type="module" crossorigin src="/assets/DomationFooter-pBAosj6x.js"></script>
-  <script type="module" crossorigin src="/assets/circle-question-mark-CAbqpeUO.js"></script>
-  <script type="module" crossorigin src="/assets/FaqAccordionSection-D-YJiBM5.js"></script>
-  <script type="module" crossorigin src="/assets/award-CrWAsvec.js"></script>
-  <script type="module" crossorigin src="/assets/PartnersTrustSection-Cxka_iqx.js"></script>
-  <script type="module" crossorigin src="/assets/coreRouteSeo-DwKaiGew.js"></script>
-  <script type="module" crossorigin src="/assets/main-BvhAnS48.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-BjcGA-5Y.css">
+  <script type="module" crossorigin src="/assets/seo-BSIsIRMz.js"></script>
+  <script type="module" crossorigin src="/assets/DomationLogoMark-Bj1A5DmS.js"></script>
+  <script type="module" crossorigin src="/assets/Navbar-uC3h9F5s.js"></script>
+  <script type="module" crossorigin src="/assets/bot-CbXfz573.js"></script>
+  <script type="module" crossorigin src="/assets/box-DWxbkiT7.js"></script>
+  <script type="module" crossorigin src="/assets/building-2-DmXfv8vw.js"></script>
+  <script type="module" crossorigin src="/assets/chart-column-DIl4rx9Z.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-up-CIR9Ss1i.js"></script>
+  <script type="module" crossorigin src="/assets/layers-BPf1wlGp.js"></script>
+  <script type="module" crossorigin src="/assets/enterpriseData-CLV7DCzS.js"></script>
+  <script type="module" crossorigin src="/assets/ProductInspectionModal-BLxVF6cZ.js"></script>
+  <script type="module" crossorigin src="/assets/globe-WZKxhsNS.js"></script>
+  <script type="module" crossorigin src="/assets/mouse-pointer-click-DGs3enbm.js"></script>
+  <script type="module" crossorigin src="/assets/play-BKaQCOiy.js"></script>
+  <script type="module" crossorigin src="/assets/rotate-ccw-76-vR85I.js"></script>
+  <script type="module" crossorigin src="/assets/users-BHW1iyk9.js"></script>
+  <script type="module" crossorigin src="/assets/zap-jmPcz4CT.js"></script>
+  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CUX2_OWo.js"></script>
+  <script type="module" crossorigin src="/assets/DomationFooter-ToT26Nn_.js"></script>
+  <script type="module" crossorigin src="/assets/circle-question-mark-O2MiMDO8.js"></script>
+  <script type="module" crossorigin src="/assets/FaqAccordionSection-BlAYBirr.js"></script>
+  <script type="module" crossorigin src="/assets/award-DqY7_dLd.js"></script>
+  <script type="module" crossorigin src="/assets/PartnersTrustSection-Chk9GMI3.js"></script>
+  <script type="module" crossorigin src="/assets/coreRouteSeo-D3RCnk9K.js"></script>
+  <script type="module" crossorigin src="/assets/main-BEvmH30B.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-BerhsbuY.css">
 </head>
 
 <body class="bg-[#F8F9FA] text-[#0F172A] antialiased selection:bg-blue-100 selection:text-[#1E40FF]">
-  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/automation">Marketing Automation &amp; AI 5.0</a></nav><section><h1>DOMATION Automation</h1><p>Nền tảng Automation &amp; AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking &amp; Multi-Agent RAG.</p><img src="/imgs/enterprise/sol-ai-automation.webp" alt="DOMATION Marketing Automation Visual Flow &amp; AI Doanh Nghiệp 5.0" width="1344" height="750" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Nền tảng Automation &amp; AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking &amp; Multi-Agent RAG. DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 12 phân hệ, CRM 360° đồng bộ MISA, Auto Chia Data ZaloBot &lt;5s, Flow Automation IF/ELSE, AI Agent / Multi-Agent RAG 24/7 và Website 3D WebGL).</p></section><section><h2>Kiến Trúc &amp; Tính Năng Cốt Lõi</h2><ul><li>Visual Flow Builder kéo thả IF/ELSE đa kênh</li><li>Email Marketing Amazon SES 98% Inbox &amp; Email Builder kéo thả</li><li>Zalo OA / Zalo ZNS, Voucher Hub &amp; Survey Lead Score</li><li>QR Code Tracking O2O, Web Heatmap &amp; Multi-Agent AI RAG 24/7</li></ul></section><section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul><li><strong>DOMATION SaaS Starter</strong> — 2990000 VND: 2.990.000₫/tháng (100.000 Email/tháng, 5 Flow Automation, AI Zalo ZNS &amp; Messenger)</li><li><strong>DOMATION SaaS Growth</strong> — 4990000 VND: 4.990.000₫/tháng (500.000 Email/tháng, AI Chatbot 24/7, Lead Score, Heatmap)</li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>DOMATION Marketing Automation &amp; AI Space 5.0 hỗ trợ những kênh và Flow nào?</h3><p>Hệ thống tích hợp Visual Flow Builder kéo thả rẽ nhánh IF/ELSE đa kênh: Email Marketing Amazon SES (tỷ lệ vào Inbox 98%), Zalo OA / Zalo ZNS, Voucher Hub mã động, Survey chấm điểm Lead Score, Web Tracking / QR O2O và Multi-Agent AI RAG 24/7.</p></article><article><h3>Multi-Agent AI và AI RAG nội bộ của DOMATION có bịa thông tin giá bán không?</h3><p>Không. Các AI Agent của DOMATION sử dụng kiến trúc RAG đọc chính xác tài liệu PDF bảng giá, chính sách chiết khấu, giáo trình và kiểm soát ngưỡng tin cậy trước khi phản hồi; khi gặp khách hàng thiện chí cao, AI tự động tóm tắt 4 thông số vàng và chuyển nóng về ZaloBot cho Sale (Human Handover).</p></article><article><h3>Doanh nghiệp có thể tách riêng AI Agent cho từng phòng ban không?</h3><p>Có. Tính năng AI Space cho phép phân quyền bộ não AI độc lập cho Sales, CSKH, Pháp lý, Kế toán và Nhân sự để nhân viên tra cứu quy chế hoặc soạn thảo theo dữ liệu phòng ban mình mà không rò rỉ thông tin chéo.</p></article><article><h3>Chi phí nền tảng Marketing Automation &amp; Multi-Agent AI DOMATION là bao nhiêu?</h3><p>Gói SaaS Starter 2.990.000₫/tháng (100.000 Email/tháng, 5 Flow Automation, AI Zalo ZNS &amp; Messenger) và gói Growth 4.990.000₫/tháng (500.000 Email/tháng, AI RAG 24/7, Lead Score, Heatmap &amp; Auto Chia Data).</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>Marketing Automation đa kênh</li><li>Visual Flow Builder IF ELSE</li><li>thiết kế flow automation riêng</li><li>Email Amazon SES 98% Inbox</li><li>Zalo ZNS Automation</li><li>AI Agent doanh nghiệp</li><li>Multi-Agent AI tự trị</li><li>AI doanh nghiệp thời đại 5.0</li><li>Vibecode doanh nghiệp</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi">AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí &amp; chuyển nóng sang Sale</a> — Kỹ thuật xây dựng AI RAG Agent đọc chính xác PDF bảng giá, giáo trình, học bổng, chống hallucination bịa số liệu và tự động chuyển Lead nóng sang Sale.</li><li><a href="/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5">Bài toán đứt gãy dữ liệu POS &amp; CSKH chuỗi 30+ cửa hàng F&amp;B: Tự động hóa Zalo ZNS &amp; Voucher Hub đạt ROAS 5+</a> — Giải pháp đồng bộ dữ liệu mua hàng POS tại chuỗi 30+ cửa hàng F&amp;B (Phúc Lộc Thọ, En Group, Cowboy Steak) sang Zalo ZNS và Voucher Hub tăng tỷ lệ quay lại.</li><li><a href="/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score">Phễu Lead Nhượng quyền 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Lead Score</a> — Cách xây dựng phễu thu hút và chấm điểm đối tác nhượng quyền F&amp;B đạt 1.600+ Leads mở rộng 20+ cửa hàng mới nhờ Survey Builder và Lead Score tự động.</li><li><a href="/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap">Đo lường chuyển đổi Offline-to-Online (O2O) bằng QR Code Tracking &amp; Heatmap hành vi khách hàng</a> — Cách đo lường chính xác lượt quét từ Standee, Tờ gấp, Billboard OOH bằng QR Code động có ID và theo dõi hành vi scroll/click trên Heatmap website.</li><li><a href="/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi">Email Marketing Amazon SES đạt 98% Inbox &amp; Flow nuôi dưỡng IF/ELSE theo hành vi Click/Scroll</a> — Kinh nghiệm vận hành Email Automation qua Amazon SES đạt 98% vào Inbox chính, kết hợp kịch bản rẽ nhánh IF/ELSE theo lượt mở mail và hành vi website.</li><li><a href="/boost/vibecode-la-gi-ung-dung-vibecode-xay-phan-mem-doanh-nghiep-50">Vibecode Là Gì? Cách Doanh Nghiệp Thời Đại 5.0 Ứng Dụng Vibecode Xây Phần Mềm Nội Bộ Nhanh Gấp 5 Lần</a> — Tìm hiểu Vibecode trong phát triển phần mềm doanh nghiệp 5.0: kết hợp AI Coding Agent và kiến trúc DOMATION để xây ERP, CRM, Landing Page nhanh gấp 5 lần.</li><li><a href="/boost/ai-doanh-nghiep-thoi-dai-50-he-dieu-hanh-multi-agent-tu-tri">AI Doanh Nghiệp Thời Đại 5.0: Từ Chatbot Trả Lời Đơn Lẻ Tới Hệ Điều Hành Tự Trị Multi-Agent</a> — Khám phá AI doanh nghiệp thời đại 5.0: nâng cấp từ chatbot hỏi-đáp đơn lẻ lên hệ thống Multi-Agent AI điều phối Lead, CSKH, ERP và Doanh thu 24/7.</li><li><a href="/boost/ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan">AI Space Theo Phòng Ban: Tách Riêng Bộ Não AI Cho Sales, Pháp Lý, Kế Toán &amp; Nhân Sự</a> — Xây dựng AI Space phân quyền riêng theo phòng ban trên DOMATION: giúp Sales, Pháp lý, Kế toán và HR tra cứu quy chế trong 5 giây mà không lộ dữ liệu chéo.</li></ul></section></main><footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
+  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/automation">Marketing Automation &amp; AI 5.0</a></nav><section><h1>DOMATION Automation</h1><p>Nền tảng Automation &amp; AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking &amp; Multi-Agent RAG.</p><img src="/imgs/enterprise/sol-ai-automation.webp" alt="DOMATION Marketing Automation Visual Flow &amp; AI Doanh Nghiệp 5.0" width="1344" height="750" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Nền tảng Automation &amp; AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking &amp; Multi-Agent RAG.</p></section><section><h2>Kiến Trúc &amp; Tính Năng Cốt Lõi</h2><ul><li>Visual Flow Builder kéo thả IF/ELSE đa kênh</li><li>Email Marketing Amazon SES 98% Inbox &amp; Email Builder kéo thả</li><li>Zalo OA / Zalo ZNS, Voucher Hub &amp; Survey Lead Score</li><li>QR Code Tracking O2O, Web Heatmap &amp; Multi-Agent AI RAG 24/7</li></ul></section><section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul><li><strong>DOMATION SaaS Starter</strong> — 2990000 VND: 2.990.000₫/tháng (100.000 Email/tháng, 5 Flow Automation, AI Zalo ZNS &amp; Messenger)</li><li><strong>DOMATION SaaS Growth</strong> — 4990000 VND: 4.990.000₫/tháng (500.000 Email/tháng, AI Chatbot 24/7, Lead Score, Heatmap)</li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>DOMATION Marketing Automation &amp; AI Space 5.0 hỗ trợ những kênh và Flow nào?</h3><p>Hệ thống tích hợp Visual Flow Builder kéo thả rẽ nhánh IF/ELSE đa kênh: Email Marketing Amazon SES (tỷ lệ vào Inbox 98%), Zalo OA / Zalo ZNS, Voucher Hub mã động, Survey chấm điểm Lead Score, Web Tracking / QR O2O và Multi-Agent AI RAG 24/7.</p></article><article><h3>Multi-Agent AI và AI RAG nội bộ của DOMATION có bịa thông tin giá bán không?</h3><p>Không. Các AI Agent của DOMATION sử dụng kiến trúc RAG đọc chính xác tài liệu PDF bảng giá, chính sách chiết khấu, giáo trình và kiểm soát ngưỡng tin cậy trước khi phản hồi; khi gặp khách hàng thiện chí cao, AI tự động tóm tắt 4 thông số vàng và chuyển nóng về ZaloBot cho Sale (Human Handover).</p></article><article><h3>Doanh nghiệp có thể tách riêng AI Agent cho từng phòng ban không?</h3><p>Có. Tính năng AI Space cho phép phân quyền bộ não AI độc lập cho Sales, CSKH, Pháp lý, Kế toán và Nhân sự để nhân viên tra cứu quy chế hoặc soạn thảo theo dữ liệu phòng ban mình mà không rò rỉ thông tin chéo.</p></article><article><h3>Chi phí nền tảng Marketing Automation &amp; Multi-Agent AI DOMATION là bao nhiêu?</h3><p>Gói SaaS Starter 2.990.000₫/tháng (100.000 Email/tháng, 5 Flow Automation, AI Zalo ZNS &amp; Messenger) và gói Growth 4.990.000₫/tháng (500.000 Email/tháng, AI RAG 24/7, Lead Score, Heatmap &amp; Auto Chia Data).</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>Marketing Automation đa kênh</li><li>Visual Flow Builder IF ELSE</li><li>thiết kế flow automation riêng</li><li>Email Amazon SES 98% Inbox</li><li>Zalo ZNS Automation</li><li>AI Agent doanh nghiệp</li><li>Multi-Agent AI tự trị</li><li>AI doanh nghiệp thời đại 5.0</li><li>Vibecode doanh nghiệp</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi">AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí &amp; chuyển nóng sang Sale</a> — Kỹ thuật xây dựng AI RAG Agent đọc chính xác PDF bảng giá, giáo trình, học bổng, chống hallucination bịa số liệu và tự động chuyển Lead nóng sang Sale.</li><li><a href="/boost/dut-gay-du-lieu-pos-cskh-chuoi-fb-zalo-zns-voucher-hub-roas-5">Bài toán đứt gãy dữ liệu POS &amp; CSKH chuỗi 30+ cửa hàng F&amp;B: Tự động hóa Zalo ZNS &amp; Voucher Hub đạt ROAS 5+</a> — Giải pháp đồng bộ dữ liệu mua hàng POS tại chuỗi 30+ cửa hàng F&amp;B (Phúc Lộc Thọ, En Group, Cowboy Steak) sang Zalo ZNS và Voucher Hub tăng tỷ lệ quay lại.</li><li><a href="/boost/pheu-thu-lead-nhuong-quyen-1600-ho-so-survey-lead-score">Phễu Lead Nhượng quyền 1.600+ hồ sơ: Sàng lọc năng lực tài chính tự động bằng Lead Score</a> — Cách xây dựng phễu thu hút và chấm điểm đối tác nhượng quyền F&amp;B đạt 1.600+ Leads mở rộng 20+ cửa hàng mới nhờ Survey Builder và Lead Score tự động.</li><li><a href="/boost/do-luong-chuyen-doi-offline-o2o-qr-code-tracking-heatmap">Đo lường chuyển đổi Offline-to-Online (O2O) bằng QR Code Tracking &amp; Heatmap hành vi khách hàng</a> — Cách đo lường chính xác lượt quét từ Standee, Tờ gấp, Billboard OOH bằng QR Code động có ID và theo dõi hành vi scroll/click trên Heatmap website.</li><li><a href="/boost/email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi">Email Marketing Amazon SES đạt 98% Inbox &amp; Flow nuôi dưỡng IF/ELSE theo hành vi Click/Scroll</a> — Kinh nghiệm vận hành Email Automation qua Amazon SES đạt 98% vào Inbox chính, kết hợp kịch bản rẽ nhánh IF/ELSE theo lượt mở mail và hành vi website.</li><li><a href="/boost/vibecode-la-gi-ung-dung-vibecode-xay-phan-mem-doanh-nghiep-50">Vibecode Là Gì? Cách Doanh Nghiệp Thời Đại 5.0 Ứng Dụng Vibecode Xây Phần Mềm Nội Bộ Nhanh Gấp 5 Lần</a> — Tìm hiểu Vibecode trong phát triển phần mềm doanh nghiệp 5.0: kết hợp AI Coding Agent và kiến trúc DOMATION để xây ERP, CRM, Landing Page nhanh gấp 5 lần.</li><li><a href="/boost/ai-doanh-nghiep-thoi-dai-50-he-dieu-hanh-multi-agent-tu-tri">AI Doanh Nghiệp Thời Đại 5.0: Từ Chatbot Trả Lời Đơn Lẻ Tới Hệ Điều Hành Tự Trị Multi-Agent</a> — Khám phá AI doanh nghiệp thời đại 5.0: nâng cấp từ chatbot hỏi-đáp đơn lẻ lên hệ thống Multi-Agent AI điều phối Lead, CSKH, ERP và Doanh thu 24/7.</li><li><a href="/boost/ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan">AI Space Theo Phòng Ban: Tách Riêng Bộ Não AI Cho Sales, Pháp Lý, Kế Toán &amp; Nhân Sự</a> — Xây dựng AI Space phân quyền riêng theo phòng ban trên DOMATION: giúp Sales, Pháp lý, Kế toán và HR tra cứu quy chế trong 5 giây mà không lộ dữ liệu chéo.</li></ul></section></main><footer><p><strong>DOMATION</strong> — Hệ sinh thái hợp nhất Website &amp; Landing Page 3D với CRM Auto Data &lt;5s, Báo cáo Meta &amp; Google Ads gắn Lead, Automation Zalo ZNS &amp; phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
 </body>
 
 </html>

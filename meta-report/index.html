@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
   <link rel="icon" type="image/svg+xml" href="/domation-logo.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1E40FF" />
 
@@ -11,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <link rel="preload" as="image" href="/imgs/landing/fluent-brand-ambient-bg.webp" type="image/webp" fetchpriority="high" />
@@ -22,6 +27,7 @@
   <meta name="title" content="Meta Ad Realtime Report | Đo ROAS Thực CRM &amp; Hook Rate" />
   <meta name="description" content="Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log." />
   <meta name="keywords" content="Meta Ad Realtime Report, Video Hook Rate Meta Ads, Đối chiếu CPL với CRM, Meta Graph API BI, tối ưu quảng cáo đa kênh, làm chủ dữ liệu quảng cáo và Audit Log" />
+  <meta name="application-name" content="DOMATION" />
   <meta name="author" content="Huỳnh Trọng Phúc (TurnioDEV) — DOMATION.NET" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
   <link rel="canonical" href="https://domation.net/meta-report" />
@@ -32,7 +38,7 @@
   <!-- Open Graph / Facebook / Zalo -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="vi_VN" />
-  <meta property="og:site_name" content="DOMATION Việt Nam" />
+  <meta property="og:site_name" content="DOMATION" />
   <meta property="og:url" content="https://domation.net/meta-report" />
   <meta property="og:title" content="Meta Ad Realtime Report | Đo ROAS Thực CRM &amp; Hook Rate" />
   <meta property="og:description" content="Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log." />
@@ -67,14 +73,16 @@
         "DOM MARKETING"
       ],
       "url": "https://domation.net/",
-      "description": "DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới: Enterprise ERP 5.0 (12 phân hệ), CRM 360° MISA, Auto Chia Data ZaloBot \u003c5s, Meta CAPI, Vibecode & AI Doanh nghiệp 5.0.",
+      "description": "Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.",
       "image": "https://domation.net/imgs/og-domation-v2.jpg",
       "logo": {
         "@type": "ImageObject",
         "@id": "https://domation.net/#logo",
         "url": "https://domation.net/domation-logo.svg",
         "contentUrl": "https://domation.net/domation-logo.svg",
-        "caption": "DOMATION.NET Logo"
+        "width": 512,
+        "height": 512,
+        "caption": "DOMATION Logo"
       },
       "email": "turniodev@gmail.com",
       "telephone": "+84378859736",
@@ -164,9 +172,13 @@
       "@type": "WebSite",
       "@id": "https://domation.net/#website",
       "url": "https://domation.net/",
-      "name": "DOMATION.NET",
-      "alternateName": "DOMATION Việt Nam",
-      "description": "Hệ sinh thái Công nghệ Marketing × App × AI May Đo cho Doanh nghiệp: Auto Chia Data, Meta CAPI, ERP 5.0, CRM 360°, AI Agent & Web 3D.",
+      "name": "DOMATION",
+      "alternateName": [
+        "DOMATION Việt Nam",
+        "DOMATION.NET",
+        "Công Ty TNHH DOMATION Việt Nam"
+      ],
+      "description": "Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data \u003c5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.",
       "inLanguage": "vi-VN",
       "publisher": {
         "@id": "https://domation.net/#organization"
@@ -228,34 +240,42 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Meta Ad Realtime Report giải quyết vấn đề gì cho doanh nghiệp chạy Ads?",
+          "name": "DOM Meta Report có được dùng thử miễn phí 1 tháng và sử dụng độc lập không?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Công cụ kéo trực tiếp chi phí từ Meta Graph API và đối chiếu với trạng thái Qualified & Doanh thu cọc thực trên CRM, giúp loại bỏ bẫy chỉ số CPL ảo và tự động tính Cost/Qualified Lead cùng ROAS thực theo từng chiến dịch."
+            "text": "Có. Doanh nghiệp được miễn phí dùng thử trọn vẹn 1 tháng đầu đầy đủ tính năng. Bạn có thể sử dụng DOM Meta Report hoàn toàn độc lập cho đội ngũ Marketing, hoặc đồng bộ một chạm vào phân hệ riêng bên trong DOMATION ERP và Auto Chia Data."
           }
         },
         {
           "@type": "Question",
-          "name": "Video Hook Rate 3s và Creative Fatigue được phân tích như thế nào?",
+          "name": "Hệ thống đồng bộ dữ liệu từ Meta Ads qua Google Sheets lên Dashboard như thế nào?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Hệ thống tự động đo tỷ lệ giữ chân 3 giây đầu (Hook Rate), tỷ lệ xem sâu (Hold Rate) và phát hiện sớm dấu hiệu bão hòa quảng cáo (Creative Fatigue) hoặc khung giờ vàng chốt đơn để Media Buyer tắt/scale ngân sách kịp thời."
+            "text": "Hệ thống tự động lấy số liệu chiến dịch từ tài khoản Meta Ads, chuẩn hóa và lưu trữ minh bạch qua Google Sheets rồi trực quan hóa thành biểu đồ chi tiêu, tỷ lệ giữ chân video 3 giây, khung giờ ra khách tốt nhất và lịch sử chỉnh sửa tài khoản."
           }
         },
         {
           "@type": "Question",
-          "name": "Xem báo cáo và Admin Audit Log có cần cấp quyền quản trị Business Manager không?",
+          "name": "Tính năng báo cáo Google Ads có bắt buộc phải bật ngay từ đầu không?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Không. Nhân sự Media, Quản lý và Đối tác chỉ cần truy cập dashboard riêng có phân quyền và Admin Audit Log minh bạch trên DOMATION mà không cần cấp quyền trực tiếp vào Business Manager gốc."
+            "text": "Không bắt buộc. Giao diện được giữ tinh gọn hoàn toàn cho đội ngũ chuyên chạy Meta Ads. Bất cứ khi nào doanh nghiệp chạy thêm Google Ads, bạn chỉ cần bật tính năng mở rộng để hiển thị bảng báo cáo Google Ads kèm hướng dẫn kết nối 5 bước qua Google Sheets."
           }
         },
         {
           "@type": "Question",
-          "name": "Chi phí sử dụng Meta Ad Realtime Report là bao nhiêu?",
+          "name": "Xem báo cáo và lịch sử chỉnh sửa có cần cấp quyền quản trị Business Manager không?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Gói hàng năm chỉ 490.000₫/tháng (thanh toán 5.880.000₫/năm, tiết kiệm 29%) hoặc gói hàng tháng 690.000₫/tháng."
+            "text": "Không. Ban Giám Đốc, Quản lý và Đối tác chỉ cần truy cập không gian báo cáo riêng có phân quyền trên DOMATION để xem số liệu và lịch sử thao tác mà không cần cấp quyền trực tiếp vào Business Manager gốc."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Chi phí gia hạn DOM Meta Report sau 1 tháng miễn phí là bao nhiêu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sau 30 ngày dùng thử miễn phí, gói thanh toán theo năm chỉ 490.000₫/tháng — tương đương 5.880.000₫/năm, tiết kiệm 29% — hoặc gói linh hoạt từng tháng 690.000₫/tháng."
           }
         }
       ]
@@ -285,6 +305,15 @@
       "offers": [
         {
           "@type": "Offer",
+          "name": "Dùng Thử Miễn Phí 1 Tháng Đầu",
+          "priceCurrency": "VND",
+          "price": "0",
+          "availability": "https://schema.org/InStock",
+          "description": "0₫ trong 30 ngày đầu • Trải nghiệm đầy đủ Dashboard, Heatmap, Ads Library & Tích hợp ERP",
+          "url": "https://domation.net/meta-report#pricing"
+        },
+        {
+          "@type": "Offer",
           "name": "Gói Hàng Năm (Giảm 29%)",
           "priceCurrency": "VND",
           "price": "490000",
@@ -310,53 +339,60 @@
   <!-- Google Identity Services (GIS) for Google OAuth Client ID Integration -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="module" crossorigin src="/assets/createLucideIcon-BHTqy3qS.js"></script>
-  <script type="module" crossorigin src="/assets/preload-helper-CDPbUJct.js"></script>
+  <script type="module" crossorigin src="/assets/preload-helper-DOh8UZsW.js"></script>
   <script type="module" crossorigin src="/assets/filter-props-88Ek8OZl.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-right-CL0VDN5f.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-right-CT72OZf2.js"></script>
-  <script type="module" crossorigin src="/assets/arrow-up-WiL6naXA.js"></script>
-  <script type="module" crossorigin src="/assets/chevron-down-HjwK6qFR.js"></script>
-  <script type="module" crossorigin src="/assets/circle-check-Cmy1c76J.js"></script>
-  <script type="module" crossorigin src="/assets/clock-CiVzH8we.js"></script>
-  <script type="module" crossorigin src="/assets/cpu-DpfmolDr.js"></script>
-  <script type="module" crossorigin src="/assets/database-8ihoXuXu.js"></script>
-  <script type="module" crossorigin src="/assets/external-link-BfGYWHsN.js"></script>
-  <script type="module" crossorigin src="/assets/layout-grid-BCjRVJAb.js"></script>
-  <script type="module" crossorigin src="/assets/loader-circle-LiT5uVE3.js"></script>
-  <script type="module" crossorigin src="/assets/mail-4lyLEmDW.js"></script>
-  <script type="module" crossorigin src="/assets/menu-DLhVwJfe.js"></script>
-  <script type="module" crossorigin src="/assets/message-circle-7StbVtqt.js"></script>
-  <script type="module" crossorigin src="/assets/phone-BfRb4Div.js"></script>
-  <script type="module" crossorigin src="/assets/send-Cz2zFBm7.js"></script>
-  <script type="module" crossorigin src="/assets/shield-check-Dom9xOBs.js"></script>
-  <script type="module" crossorigin src="/assets/sparkles-7ybIQM6_.js"></script>
-  <script type="module" crossorigin src="/assets/trending-up-DjhMl_-6.js"></script>
-  <script type="module" crossorigin src="/assets/x-mCMxDP2S.js"></script>
+  <script type="module" crossorigin src="/assets/activity-QeXzFOTc.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-right-DE8PNXsO.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-right-DJQB30Ga.js"></script>
+  <script type="module" crossorigin src="/assets/arrow-up-BH1I-y_v.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-down-B0Ytyeag.js"></script>
+  <script type="module" crossorigin src="/assets/circle-check-BSg2NWA3.js"></script>
+  <script type="module" crossorigin src="/assets/clock-CeGdrZv2.js"></script>
+  <script type="module" crossorigin src="/assets/cpu-80IIXOuO.js"></script>
+  <script type="module" crossorigin src="/assets/database-C9KtoFzy.js"></script>
+  <script type="module" crossorigin src="/assets/external-link-Z9NV7e51.js"></script>
+  <script type="module" crossorigin src="/assets/layout-grid-yMi8zSwQ.js"></script>
+  <script type="module" crossorigin src="/assets/loader-circle-DrpUKm1h.js"></script>
+  <script type="module" crossorigin src="/assets/mail-Ba9GVYPa.js"></script>
+  <script type="module" crossorigin src="/assets/menu-B0sqRSD_.js"></script>
+  <script type="module" crossorigin src="/assets/message-circle-CU_alaxX.js"></script>
+  <script type="module" crossorigin src="/assets/phone-BeJaJo6v.js"></script>
+  <script type="module" crossorigin src="/assets/send-RHIhHRGj.js"></script>
+  <script type="module" crossorigin src="/assets/shield-check-Cmri7xj6.js"></script>
+  <script type="module" crossorigin src="/assets/sparkles-BEsjrW0N.js"></script>
+  <script type="module" crossorigin src="/assets/trending-up-gBH3n_I0.js"></script>
+  <script type="module" crossorigin src="/assets/x-Daw1EJ0A.js"></script>
   <script type="module" crossorigin src="/assets/react-dom-BwRqVDd-.js"></script>
-  <script type="module" crossorigin src="/assets/seo-BobTjRQB.js"></script>
-  <script type="module" crossorigin src="/assets/DomationLogoMark-BXoCO0Ku.js"></script>
-  <script type="module" crossorigin src="/assets/Navbar-BDFtCIkl.js"></script>
-  <script type="module" crossorigin src="/assets/bot-DWz_IN5o.js"></script>
-  <script type="module" crossorigin src="/assets/building-2-SnGnWXWl.js"></script>
-  <script type="module" crossorigin src="/assets/layers-NS38u7n9.js"></script>
-  <script type="module" crossorigin src="/assets/enterpriseData-DrSJ4w9h.js"></script>
-  <script type="module" crossorigin src="/assets/ProductInspectionModal-CJcFpUGD.js"></script>
-  <script type="module" crossorigin src="/assets/globe-BsFKU9bP.js"></script>
-  <script type="module" crossorigin src="/assets/network-A3lxjZWX.js"></script>
-  <script type="module" crossorigin src="/assets/rotate-ccw-DwRTQkRz.js"></script>
-  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CxNQn5rw.js"></script>
-  <script type="module" crossorigin src="/assets/DomationFooter-pBAosj6x.js"></script>
-  <script type="module" crossorigin src="/assets/circle-question-mark-CAbqpeUO.js"></script>
-  <script type="module" crossorigin src="/assets/FaqAccordionSection-D-YJiBM5.js"></script>
-  <script type="module" crossorigin src="/assets/award-CrWAsvec.js"></script>
-  <script type="module" crossorigin src="/assets/PartnersTrustSection-Cxka_iqx.js"></script>
-  <script type="module" crossorigin src="/assets/coreRouteSeo-DwKaiGew.js"></script>
-  <script type="module" crossorigin src="/assets/main-BvhAnS48.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-BjcGA-5Y.css">
+  <script type="module" crossorigin src="/assets/seo-BSIsIRMz.js"></script>
+  <script type="module" crossorigin src="/assets/DomationLogoMark-Bj1A5DmS.js"></script>
+  <script type="module" crossorigin src="/assets/Navbar-uC3h9F5s.js"></script>
+  <script type="module" crossorigin src="/assets/bot-CbXfz573.js"></script>
+  <script type="module" crossorigin src="/assets/box-DWxbkiT7.js"></script>
+  <script type="module" crossorigin src="/assets/building-2-DmXfv8vw.js"></script>
+  <script type="module" crossorigin src="/assets/chart-column-DIl4rx9Z.js"></script>
+  <script type="module" crossorigin src="/assets/chevron-up-CIR9Ss1i.js"></script>
+  <script type="module" crossorigin src="/assets/layers-BPf1wlGp.js"></script>
+  <script type="module" crossorigin src="/assets/enterpriseData-CLV7DCzS.js"></script>
+  <script type="module" crossorigin src="/assets/ProductInspectionModal-BLxVF6cZ.js"></script>
+  <script type="module" crossorigin src="/assets/globe-WZKxhsNS.js"></script>
+  <script type="module" crossorigin src="/assets/mouse-pointer-click-DGs3enbm.js"></script>
+  <script type="module" crossorigin src="/assets/play-BKaQCOiy.js"></script>
+  <script type="module" crossorigin src="/assets/rotate-ccw-76-vR85I.js"></script>
+  <script type="module" crossorigin src="/assets/users-BHW1iyk9.js"></script>
+  <script type="module" crossorigin src="/assets/zap-jmPcz4CT.js"></script>
+  <script type="module" crossorigin src="/assets/ChannelLogoStrip-CUX2_OWo.js"></script>
+  <script type="module" crossorigin src="/assets/DomationFooter-ToT26Nn_.js"></script>
+  <script type="module" crossorigin src="/assets/circle-question-mark-O2MiMDO8.js"></script>
+  <script type="module" crossorigin src="/assets/FaqAccordionSection-BlAYBirr.js"></script>
+  <script type="module" crossorigin src="/assets/award-DqY7_dLd.js"></script>
+  <script type="module" crossorigin src="/assets/PartnersTrustSection-Chk9GMI3.js"></script>
+  <script type="module" crossorigin src="/assets/coreRouteSeo-D3RCnk9K.js"></script>
+  <script type="module" crossorigin src="/assets/main-BEvmH30B.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-BerhsbuY.css">
 </head>
 
 <body class="bg-[#F8F9FA] text-[#0F172A] antialiased selection:bg-blue-100 selection:text-[#1E40FF]">
-  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/meta-report">Meta Ad Realtime Report</a></nav><section><h1>Meta Ad Realtime Report</h1><p>Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log.</p><img src="/imgs/enterprise/sol-web3d-meta.webp" alt="DOMATION Meta Ad Realtime Report &amp; Video Hook Rate Analytics" width="1344" height="750" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log. DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 12 phân hệ, CRM 360° đồng bộ MISA, Auto Chia Data ZaloBot &lt;5s, Flow Automation IF/ELSE, AI Agent / Multi-Agent RAG 24/7 và Website 3D WebGL).</p></section><section><h2>Kiến Trúc &amp; Tính Năng Cốt Lõi</h2><ul><li>Kết nối Meta Graph API đối chiếu doanh thu thực CRM</li><li>Phân tích Video Hook Rate 3s, Hold Rate &amp; Creative Fatigue</li><li>Phát hiện Khung Giờ Vàng chốt đơn</li><li>Admin Audit Log minh bạch không cần cấp quyền BM</li></ul></section><section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul><li><strong>Gói Hàng Năm (Giảm 29%)</strong> — 490000 VND: 490.000₫/tháng (thanh toán 5.880.000₫/năm)</li><li><strong>Gói Hàng Tháng</strong> — 690000 VND: 690.000₫/tháng</li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>Meta Ad Realtime Report giải quyết vấn đề gì cho doanh nghiệp chạy Ads?</h3><p>Công cụ kéo trực tiếp chi phí từ Meta Graph API và đối chiếu với trạng thái Qualified &amp; Doanh thu cọc thực trên CRM, giúp loại bỏ bẫy chỉ số CPL ảo và tự động tính Cost/Qualified Lead cùng ROAS thực theo từng chiến dịch.</p></article><article><h3>Video Hook Rate 3s và Creative Fatigue được phân tích như thế nào?</h3><p>Hệ thống tự động đo tỷ lệ giữ chân 3 giây đầu (Hook Rate), tỷ lệ xem sâu (Hold Rate) và phát hiện sớm dấu hiệu bão hòa quảng cáo (Creative Fatigue) hoặc khung giờ vàng chốt đơn để Media Buyer tắt/scale ngân sách kịp thời.</p></article><article><h3>Xem báo cáo và Admin Audit Log có cần cấp quyền quản trị Business Manager không?</h3><p>Không. Nhân sự Media, Quản lý và Đối tác chỉ cần truy cập dashboard riêng có phân quyền và Admin Audit Log minh bạch trên DOMATION mà không cần cấp quyền trực tiếp vào Business Manager gốc.</p></article><article><h3>Chi phí sử dụng Meta Ad Realtime Report là bao nhiêu?</h3><p>Gói hàng năm chỉ 490.000₫/tháng (thanh toán 5.880.000₫/năm, tiết kiệm 29%) hoặc gói hàng tháng 690.000₫/tháng.</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>Meta Ad Realtime Report</li><li>Video Hook Rate Meta Ads</li><li>Đối chiếu CPL với CRM</li><li>Meta Graph API BI</li><li>tối ưu quảng cáo đa kênh</li><li>làm chủ dữ liệu quảng cáo và Audit Log</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm">Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report</a> — Tránh bẫy giá Lead rẻ nhưng không có đơn hàng bằng hệ thống Meta Ad Realtime Report kết nối trực tiếp Facebook Graph API với dữ liệu Qualified &amp; Cọc trên CRM.</li><li><a href="/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads">Phân tích Video Hook Rate 3s &amp; Creative Fatigue: Khi nào nên tắt hoặc Scale ngân sách quảng cáo?</a> — Hướng dẫn đo lường Video Hook Rate (tỷ lệ giữ chân 3 giây đầu), Hold Rate và cảnh báo bão hòa Creative Fatigue để tắt/scale quảng cáo Meta chính xác.</li><li><a href="/boost/toi-uu-quang-cao-da-kenh-meta-tiktok-google-du-lieu-crm">Tối Ưu Quảng Cáo Đa Kênh (Meta, TikTok, Google): Đưa Dữ Liệu Chuyển Đổi Thực Từ CRM Dạy Lại AI Ads</a> — Bí quyết tối ưu quảng cáo Meta Ads, TikTok Ads và Google Ads năm 2026: đồng bộ chuyển đổi thực Qualified/Purchase từ CRM qua Server-Side CAPI giúp giảm 35% CPA.</li><li><a href="/boost/phat-hien-khung-gio-vang-chot-don-admin-audit-log-meta-ads">Phát Hiện Khung Giờ Vàng Chốt Đơn &amp; Giám Sát Admin Audit Log Minh Bạch Trên Meta Ads</a> — Khai thác Khung Giờ Vàng chốt đơn và giám sát Admin Audit Log 24/7 trên Meta Ad Realtime Report mà không cần chia sẻ quyền quản trị Business Manager.</li></ul></section></main><footer><p><strong>DOMATION.NET</strong> — Hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới (ERP 5.0 • CRM 360° • Vibecode • AI Agent 5.0 • Tối ưu quảng cáo &amp; Landing Page).</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
+  <div id="root"><header><nav aria-label="Điều hướng chính DOMATION"><a href="/">Trang Chủ</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/boost">Blog DOMATION</a> | <a href="/crm">CRM 360°</a> | <a href="/data">Auto Chia Data</a> | <a href="/automation">Automation &amp; AI</a> | <a href="/meta-report">Meta Ads Report</a> | <a href="/web-design">Thiết Kế Web &amp; Landing Page</a> | <a href="/portfolio">Portfolio</a></nav></header><main><nav aria-label="Breadcrumb"><a href="/">Trang Chủ</a> &gt; <a href="/meta-report">Meta Ad Realtime Report</a></nav><section><h1>Meta Ad Realtime Report</h1><p>Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log.</p><img src="/imgs/enterprise/sol-web3d-meta.webp" alt="DOMATION Meta Ad Realtime Report &amp; Video Hook Rate Analytics" width="1344" height="750" /></section><section id="geo-tldr"><h2>Tóm Tắt Nhanh (GEO Direct Answer)</h2><p>Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log.</p></section><section><h2>Kiến Trúc &amp; Tính Năng Cốt Lõi</h2><ul><li>Kết nối Meta Graph API đối chiếu doanh thu thực CRM</li><li>Phân tích Video Hook Rate 3s, Hold Rate &amp; Creative Fatigue</li><li>Phát hiện Khung Giờ Vàng chốt đơn</li><li>Admin Audit Log minh bạch không cần cấp quyền BM</li></ul></section><section><h2>Bảng Giá &amp; Gói Triển Khai</h2><ul><li><strong>Dùng Thử Miễn Phí 1 Tháng Đầu</strong>: 0₫ trong 30 ngày đầu • Trải nghiệm đầy đủ Dashboard, Heatmap, Ads Library &amp; Tích hợp ERP</li><li><strong>Gói Hàng Năm (Giảm 29%)</strong> — 490000 VND: 490.000₫/tháng (thanh toán 5.880.000₫/năm)</li><li><strong>Gói Hàng Tháng</strong> — 690000 VND: 690.000₫/tháng</li></ul></section><section><h2>Câu Hỏi Thường Gặp (FAQ)</h2><article><h3>DOM Meta Report có được dùng thử miễn phí 1 tháng và sử dụng độc lập không?</h3><p>Có. Doanh nghiệp được miễn phí dùng thử trọn vẹn 1 tháng đầu đầy đủ tính năng. Bạn có thể sử dụng DOM Meta Report hoàn toàn độc lập cho đội ngũ Marketing, hoặc đồng bộ một chạm vào phân hệ riêng bên trong DOMATION ERP và Auto Chia Data.</p></article><article><h3>Hệ thống đồng bộ dữ liệu từ Meta Ads qua Google Sheets lên Dashboard như thế nào?</h3><p>Hệ thống tự động lấy số liệu chiến dịch từ tài khoản Meta Ads, chuẩn hóa và lưu trữ minh bạch qua Google Sheets rồi trực quan hóa thành biểu đồ chi tiêu, tỷ lệ giữ chân video 3 giây, khung giờ ra khách tốt nhất và lịch sử chỉnh sửa tài khoản.</p></article><article><h3>Tính năng báo cáo Google Ads có bắt buộc phải bật ngay từ đầu không?</h3><p>Không bắt buộc. Giao diện được giữ tinh gọn hoàn toàn cho đội ngũ chuyên chạy Meta Ads. Bất cứ khi nào doanh nghiệp chạy thêm Google Ads, bạn chỉ cần bật tính năng mở rộng để hiển thị bảng báo cáo Google Ads kèm hướng dẫn kết nối 5 bước qua Google Sheets.</p></article><article><h3>Xem báo cáo và lịch sử chỉnh sửa có cần cấp quyền quản trị Business Manager không?</h3><p>Không. Ban Giám Đốc, Quản lý và Đối tác chỉ cần truy cập không gian báo cáo riêng có phân quyền trên DOMATION để xem số liệu và lịch sử thao tác mà không cần cấp quyền trực tiếp vào Business Manager gốc.</p></article><article><h3>Chi phí gia hạn DOM Meta Report sau 1 tháng miễn phí là bao nhiêu?</h3><p>Sau 30 ngày dùng thử miễn phí, gói thanh toán theo năm chỉ 490.000₫/tháng — tương đương 5.880.000₫/năm, tiết kiệm 29% — hoặc gói linh hoạt từng tháng 690.000₫/tháng.</p></article></section><section><h2>Từ Khóa &amp; Chủ Đề Chuyên Sâu</h2><ul><li>Meta Ad Realtime Report</li><li>Video Hook Rate Meta Ads</li><li>Đối chiếu CPL với CRM</li><li>Meta Graph API BI</li><li>tối ưu quảng cáo đa kênh</li><li>làm chủ dữ liệu quảng cáo và Audit Log</li></ul></section><section><h2>Bài Viết &amp; Tài Liệu Liên Quan Trên Blog /boost</h2><ul><li><a href="/boost/bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm">Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report</a> — Tránh bẫy giá Lead rẻ nhưng không có đơn hàng bằng hệ thống Meta Ad Realtime Report kết nối trực tiếp Facebook Graph API với dữ liệu Qualified &amp; Cọc trên CRM.</li><li><a href="/boost/phan-tich-video-hook-rate-3s-creative-fatigue-scale-meta-ads">Phân tích Video Hook Rate 3s &amp; Creative Fatigue: Khi nào nên tắt hoặc Scale ngân sách quảng cáo?</a> — Hướng dẫn đo lường Video Hook Rate (tỷ lệ giữ chân 3 giây đầu), Hold Rate và cảnh báo bão hòa Creative Fatigue để tắt/scale quảng cáo Meta chính xác.</li><li><a href="/boost/toi-uu-quang-cao-da-kenh-meta-tiktok-google-du-lieu-crm">Tối Ưu Quảng Cáo Đa Kênh (Meta, TikTok, Google): Đưa Dữ Liệu Chuyển Đổi Thực Từ CRM Dạy Lại AI Ads</a> — Bí quyết tối ưu quảng cáo Meta Ads, TikTok Ads và Google Ads năm 2026: đồng bộ chuyển đổi thực Qualified/Purchase từ CRM qua Server-Side CAPI giúp giảm 35% CPA.</li><li><a href="/boost/phat-hien-khung-gio-vang-chot-don-admin-audit-log-meta-ads">Phát Hiện Khung Giờ Vàng Chốt Đơn &amp; Giám Sát Admin Audit Log Minh Bạch Trên Meta Ads</a> — Khai thác Khung Giờ Vàng chốt đơn và giám sát Admin Audit Log 24/7 trên Meta Ad Realtime Report mà không cần chia sẻ quyền quản trị Business Manager.</li></ul></section></main><footer><p><strong>DOMATION</strong> — Hệ sinh thái hợp nhất Website &amp; Landing Page 3D với CRM Auto Data &lt;5s, Báo cáo Meta &amp; Google Ads gắn Lead, Automation Zalo ZNS &amp; phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.</p><nav aria-label="Liên kết chân trang"><a href="/boost">Blog DOMATION (74+ bài SEO)</a> | <a href="/erp">ERP 5.0 May Đo</a> | <a href="/llms.txt">llms.txt</a> | <a href="/sitemap.xml">sitemap.xml</a></nav></footer></div>
 </body>
 
 </html>

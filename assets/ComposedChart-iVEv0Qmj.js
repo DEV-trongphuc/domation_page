@@ -1,1 +1,0 @@
-import{l as e,r as t}from"./createLucideIcon-BHTqy3qS.js";import{X as n,n as r}from"./BarChart-50y8liQO.js";var i=e(t()),a=[`axis`],o=(0,i.forwardRef)((e,t)=>i.createElement(r,{chartName:`ComposedChart`,defaultTooltipEventType:`axis`,validateTooltipEventTypes:a,tooltipPayloadSearcher:n,categoricalChartProps:e,ref:t}));export{o as t};

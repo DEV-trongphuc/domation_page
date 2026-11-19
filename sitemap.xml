@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://domation.net/</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,7 +21,7 @@
   </url>
   <url>
     <loc>https://domation.net/boost</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <image:image>
@@ -31,7 +31,7 @@
   </url>
   <url>
     <loc>https://domation.net/portfolio</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -49,7 +49,7 @@
   </url>
   <url>
     <loc>https://domation.net/data</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -63,7 +63,7 @@
   </url>
   <url>
     <loc>https://domation.net/erp</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -85,7 +85,7 @@
   </url>
   <url>
     <loc>https://domation.net/crm</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -99,7 +99,7 @@
   </url>
   <url>
     <loc>https://domation.net/automation</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -113,7 +113,7 @@
   </url>
   <url>
     <loc>https://domation.net/meta-report</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -127,7 +127,7 @@
   </url>
   <url>
     <loc>https://domation.net/web-design</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -137,7 +137,7 @@
   </url>
   <url>
     <loc>https://domation.net/ideas</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
     <image:image>
@@ -156,7 +156,7 @@
       <image:caption>Kiến trúc Auto Chia Data ZaloBot dưới 5 giây cho Chủ đầu tư và Đại lý F1 Bất động sản</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_overview.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_dashboard.jpg</image:loc>
       <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead — Giao diện thực tế</image:title>
       <image:caption>Giao diện DOMATION Auto Data V2 chia số đa cổng dưới 5 giây kèm nhật ký nhận lead.</image:caption>
     </image:image>
@@ -172,7 +172,7 @@
       <image:caption>Đối soát chia data công bằng giữa 3 Đại lý F1 dự án EcoLife Signature</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_fair_audit.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_fairshare.jpg</image:loc>
       <image:title>Minh bạch chia giỏ hàng &amp; bù Ticket lỗi 1:1 giữa 3 Đại lý F1 — Kinh nghiệm thực chiến tại EcoLife Signature — Giao diện thực tế</image:title>
       <image:caption>Bảng thống kê đối soát tỷ lệ chia và bù Ticket lỗi công bằng giữa Tùng Long, Hợp Nhất và IHD Group.</image:caption>
     </image:image>
@@ -204,7 +204,7 @@
       <image:caption>Chu trình Meta Conversions API SHA-256 phản hồi trạng thái Qualified về Facebook Dataset</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_capi_masked.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_datalist.jpg</image:loc>
       <image:title>Kết nối Meta CAPI SHA-256 bắn sự kiện Qualified / DisqualifiedLead: Cách giảm 35% chi phí Lead rác — Giao diện thực tế</image:title>
       <image:caption>Nhật ký DOMATION tự động hash SHA-256 và bắn sự kiện CAPI đạt chuẩn HTTP 200.</image:caption>
     </image:image>
@@ -236,7 +236,7 @@
       <image:caption>Hệ thống ERP 5.0 chấm công GPS AI, phê duyệt đa cấp và xuất phiếu lương PDF</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/attendance.webp</image:loc>
       <image:title>Xây dựng ERP 5.0 thay thế 14 file Excel cho Viện Đào Tạo: Chấm công GPS &amp; Payroll PDF — Giao diện thực tế</image:title>
       <image:caption>Màn hình Payroll Engine tự động tính công, KPI, BHXH và xuất phiếu lương PDF trong ERP 5.0.</image:caption>
     </image:image>
@@ -252,7 +252,7 @@
       <image:caption>Kiến trúc AI RAG Agent trích xuất tri thức PDF chống sai lệch bảng giá</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_ai_chatbot.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>AI RAG Agent tư vấn tuyển sinh 24/7 từ PDF chương trình học: Cách chống AI bịa học phí &amp; chuyển nóng sang Sale — Giao diện thực tế</image:title>
       <image:caption>Giao diện huấn luyện AI Space &amp; Chatbot RAG trực đa kênh 24/7 trên hệ sinh thái DOMATION.</image:caption>
     </image:image>
@@ -332,7 +332,7 @@
       <image:caption>Lớp khiên bảo mật Row-Level Security và che số điện thoại tự động trong CRM Y tế</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_capi_masked.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_datalist.jpg</image:loc>
       <image:title>Bảo mật dữ liệu khách hàng y tế &amp; phân quyền RLS từng chi nhánh khi chạy Quảng cáo Meta Lead Ads — Giao diện thực tế</image:title>
       <image:caption>Cơ chế mask số điện thoại bảo mật và nhật ký kiểm soát truy cập trên DOMATION.</image:caption>
     </image:image>
@@ -364,7 +364,7 @@
       <image:caption>Đồng bộ đơn hàng E-commerce, CRM 360 và Hóa đơn điện tử MISA hai chiều</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_10.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/students.webp</image:loc>
       <image:title>Tối ưu E-commerce &amp; Đồng bộ Hóa đơn điện tử MISA hai chiều từ CRM 360° không sai lệch công nợ — Giao diện thực tế</image:title>
       <image:caption>Màn hình quản trị chứng từ, giỏ hàng và kết nối xuất hóa đơn từ DOMATION CRM 360°.</image:caption>
     </image:image>
@@ -380,7 +380,7 @@
       <image:caption>So sánh ERP đóng gói truyền thống với kiến trúc ERP 5.0 May đo Bespoke OS</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/dashboard-lead.webp</image:loc>
       <image:title>Vì sao 70% dự án triển khai ERP đóng gói thất bại ở SME Việt Nam? Lợi thế của Kiến trúc May đo (Bespoke OS) — Giao diện thực tế</image:title>
       <image:caption>Executive Dashboard trong DOMATION ERP 5.0 thiết kế tinh gọn khớp đúng chỉ số lãnh đạo cần xem.</image:caption>
     </image:image>
@@ -396,7 +396,7 @@
       <image:caption>Công nghệ chấm công định vị GPS bán kính và Selfie AI chống giả lập vị trí</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856668006_2141578413905312186_2310722037673454867_72b9a0047bb54f03c54fb657c81e41dc.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/attendance-detail.webp</image:loc>
       <image:title>Chống gian lận chấm công hộ bằng GPS bán kính + Selfie AI: Kinh nghiệm xử lý ngoại lệ ngoài thị trường — Giao diện thực tế</image:title>
       <image:caption>Giao diện chấm công GPS + Selfie AI kiểm tra tọa độ và khoảng cách văn phòng chuẩn từng mét.</image:caption>
     </image:image>
@@ -412,7 +412,7 @@
       <image:caption>Quy trình phê duyệt đa cấp Purchase Order và bảng công việc Task Kanban liên phòng ban</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856559658_2141578413905312186_2310722037673454867_192068dc865f82425fa3645d12da931a.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/deals.webp</image:loc>
       <image:title>Số hóa quy trình Phê duyệt đa cấp (PO, Tạm ứng, Nghỉ phép) &amp; Task Kanban liên phòng ban — Giao diện thực tế</image:title>
       <image:caption>Giao diện Bàn làm việc &amp; Task Kanban theo dõi tiến độ công việc, cảnh báo quá hạn.</image:caption>
     </image:image>
@@ -428,7 +428,7 @@
       <image:caption>Đối chiếu chi phí Meta Graph API với doanh thu thực và số khách thiện chí trên CRM</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/meta_rp_3.webp</image:loc>
+      <image:loc>https://domation.net/imgs/meta-screens/fusion-campaign-crm-leads.webp</image:loc>
       <image:title>Bẫy chỉ số CPL ảo trên Meta Ads: Cách đối chiếu Graph API với Doanh thu thực CRM qua Meta Ad Realtime Report — Giao diện thực tế</image:title>
       <image:caption>Màn hình Meta Ad Realtime Report đối chiếu chi phí từng mẫu Ad với lượng khách Thiện chí và Booking CRM.</image:caption>
     </image:image>
@@ -444,7 +444,7 @@
       <image:caption>Biểu đồ phân tích Video Hook Rate 3 giây, Hold Rate và Creative Fatigue trên Meta Ads</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/meta_rp_2.webp</image:loc>
+      <image:loc>https://domation.net/imgs/meta-screens/meta-ad-detail-modal.webp</image:loc>
       <image:title>Phân tích Video Hook Rate 3s &amp; Creative Fatigue: Khi nào nên tắt hoặc Scale ngân sách quảng cáo? — Giao diện thực tế</image:title>
       <image:caption>Phễu phân tích Hook Rate 3s, Hold Rate 15s và độ bão hòa tần suất của từng video quảng cáo.</image:caption>
     </image:image>
@@ -460,7 +460,7 @@
       <image:caption>Engine chuẩn hóa số điện thoại +84 và lọc trùng dữ liệu đa kênh trong cửa sổ 180 ngày</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/chia_data_14.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_datalist.jpg</image:loc>
       <image:title>Lọc trùng Lead đa kênh 6 tháng &amp; chuẩn hóa số điện thoại +84: Chìa khóa tiết kiệm 35% ngân sách Media — Giao diện thực tế</image:title>
       <image:caption>Bộ lọc trùng 6 tháng và log xử lý Ticket lỗi đảm bảo mỗi SĐT chỉ vào vòng chia hợp lệ.</image:caption>
     </image:image>
@@ -492,7 +492,7 @@
       <image:caption>Flow kịch bản Email Amazon SES rẽ nhánh IF/ELSE tự động theo hành vi người đọc</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_flow.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>Email Marketing Amazon SES đạt 98% Inbox &amp; Flow nuôi dưỡng IF/ELSE theo hành vi Click/Scroll — Giao diện thực tế</image:title>
       <image:caption>Trình tạo kịch bản Visual Flow Builder kéo thả rẽ nhánh điều kiện IF/ELSE trong DOMATION.</image:caption>
     </image:image>
@@ -524,7 +524,7 @@
       <image:caption>Trung tâm Orchestrator điều phối 4 AI Agent chuyên trách liên phòng ban trong doanh nghiệp</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_ai_group.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/quick-menu-2.jpg</image:loc>
       <image:title>Multi-Agent AI điều phối liên phòng ban (Sale – CSKH – HR – Media): Checklist bảo mật &amp; chống chồng chéo — Giao diện thực tế</image:title>
       <image:caption>Phân hệ AI Space &amp; AI Phòng ban phân quyền tri thức riêng cho từng bộ phận.</image:caption>
     </image:image>
@@ -540,7 +540,7 @@
       <image:caption>Kiến trúc ERP may đo cho doanh nghiệp thời đại mới thiết kế flow riêng DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856550308_2141578413905312186_2310722037673454867_9dee6011fca6751ff38ce855f9b34ee2.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/dashboard-lead.webp</image:loc>
       <image:title>ERP May Đo Cho Doanh Nghiệp Thời Đại Mới: Kiến Trúc Thiết Kế Flow Riêng Theo Sơ Đồ Tổ Chức — Giao diện thực tế</image:title>
       <image:caption>Dashboard điều hành DOMATION Enterprise ERP 5.0 hợp nhất dữ liệu Lead, Công việc và Phê duyệt.</image:caption>
     </image:image>
@@ -556,7 +556,7 @@
       <image:caption>Ma trận logic vận hành quản trị doanh nghiệp 5.0 liên thông đa phòng ban</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856691047_2141578413905312186_2310722037673454867_2dacee1206b6e8f836cdea82018d556e.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/quick-menu-1.jpg</image:loc>
       <image:title>Logic Vận Hành Quản Trị Doanh Nghiệp 5.0: Kết Nối Liền Mạch Lead – Sale – Nhân Sự – Kế Toán — Giao diện thực tế</image:title>
       <image:caption>Thanh điều hướng phân hệ hợp nhất trong DOMATION Enterprise ERP 5.0.</image:caption>
     </image:image>
@@ -572,7 +572,7 @@
       <image:caption>Phần mềm tính lương tự động xuất phiếu lương PDF ký số DOMATION Payroll Engine</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856643268_2141578413905312186_2310722037673454867_90891228871ff88a333f15fc1497741d.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/attendance.webp</image:loc>
       <image:title>Phần Mềm Tính Lương Tự Động Xuất PDF (Payroll Engine): Chấm Dứt 4 Ngày Chốt Công Thủ Công — Giao diện thực tế</image:title>
       <image:caption>Bảng tính lương tự động Payroll Engine tổng hợp công chuẩn, KPI, BHXH và thực lĩnh NET.</image:caption>
     </image:image>
@@ -588,7 +588,7 @@
       <image:caption>Quản trị KPI OKR liên phòng ban gắn Task Kanban trên ERP 5.0</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856559658_2141578413905312186_2310722037673454867_192068dc865f82425fa3645d12da931a.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/deals.webp</image:loc>
       <image:title>Quản Trị KPI &amp; OKR Phòng Ban Gắn Trực Tiếp Task Kanban &amp; SLA Doanh Thu Trên ERP 5.0 — Giao diện thực tế</image:title>
       <image:caption>Giao diện Task Kanban &amp; Theo dõi phiên làm việc thời gian thực trong DOMATION ERP 5.0.</image:caption>
     </image:image>
@@ -604,7 +604,7 @@
       <image:caption>Kiểm soát chi phí vận hành và Purchase Order chống vượt ngân sách DOMATION ERP</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856566822_2141578413905312186_2310722037673454867_c63e338a900a1ede4d6aa48393ce24da.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/expenses.webp</image:loc>
       <image:title>Kiểm Soát Chi Phí Vận Hành &amp; Purchase Order (PO) Chống Chi Vượt Ngân Sách Theo Thời Gian Thực — Giao diện thực tế</image:title>
       <image:caption>Màn hình Quản lý Chi phí &amp; Purchase Order kiểm soát hạn mức giải ngân theo từng kỳ.</image:caption>
     </image:image>
@@ -620,7 +620,7 @@
       <image:caption>Hệ thống E-Learning đào tạo Sale nội bộ và AI Assistant trên DOMATION ERP</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_ai_group.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/quick-menu-2.jpg</image:loc>
       <image:title>Hệ Thống E-Learning &amp; Kho Tri Thức Nội Bộ: Onboarding Sale Mới Trong 7 Ngày Trên ERP — Giao diện thực tế</image:title>
       <image:caption>Kho tri thức &amp; Trợ lý AI phòng ban kết hợp đào tạo quy trình và sát hạch nhân sự.</image:caption>
     </image:image>
@@ -636,7 +636,7 @@
       <image:caption>Phân tích chi phí triển khai ERP may đo và ROI hoàn vốn cho doanh nghiệp SME</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856705546_2141578413905312186_2310722037673454867_91d3fd439a4e7f45eee7ae77dc8c20a1.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/quick-menu-2.jpg</image:loc>
       <image:title>Chi Phí Triển Khai ERP May Đo Cho Doanh Nghiệp 20–300 Nhân Sự &amp; Bài Toán ROI Hoàn Vốn — Giao diện thực tế</image:title>
       <image:caption>Hệ sinh thái 12 phân hệ mở rộng trên DOMATION ERP 5.0 không phát sinh phí bản quyền từng đầu user.</image:caption>
     </image:image>
@@ -668,7 +668,7 @@
       <image:caption>Tối ưu hệ thống vận hành thời đại mới chuẩn hóa dữ liệu một cửa DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856540980_2141578413905312186_2310722037673454867_a9d3d972886e0c266f4c5866dec8111d.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/approvals.webp</image:loc>
       <image:title>Tối Ưu Hệ Thống Vận Hành Thời Đại Mới: Chuẩn Hóa Dữ Liệu Một Cửa &amp; Xóa Bỏ Sức Ì Phòng Ban — Giao diện thực tế</image:title>
       <image:caption>Hộp thư Phê duyệt &amp; Tiếp nhận một cửa (Gatekeeper Hub) xử lý tức thì điểm nghẽn vận hành.</image:caption>
     </image:image>
@@ -684,7 +684,7 @@
       <image:caption>So sánh ERP đóng gói truyền thống và DOMATION ERP 5.0 may đo cho doanh nghiệp Việt</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/erp_16.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/data-log.webp</image:loc>
       <image:title>So Sánh ERP Đóng Gói Nước Ngoài vs DOMATION ERP 5.0 May Đo Cho Doanh Nghiệp Việt Nam — Giao diện thực tế</image:title>
       <image:caption>Ma trận điều hành đa cơ sở và phân hệ tích hợp gốc trong DOMATION ERP 5.0.</image:caption>
     </image:image>
@@ -716,7 +716,7 @@
       <image:caption>Vibecode ERP và CRM custom đưa quy trình vào vận hành thực tế trong 14 ngày</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_1.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/deals.webp</image:loc>
       <image:title>Vibecode ERP &amp; CRM Custom: Đưa Ý Tưởng Quy Trình Vào Sản Xuất Thực Tế Trong 14 Ngày Không Lỗi Bảo Mật — Giao diện thực tế</image:title>
       <image:caption>Giao diện DOMATION CRM 360° may đo triển khai nhanh với Pipeline Kanban và báo cáo doanh thu.</image:caption>
     </image:image>
@@ -780,7 +780,7 @@
       <image:caption>AI Space phân quyền riêng từng phòng ban Sales Pháp lý Kế toán Nhân sự</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_ai_group.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/quick-menu-2.jpg</image:loc>
       <image:title>AI Space Theo Phòng Ban: Tách Riêng Bộ Não AI Cho Sales, Pháp Lý, Kế Toán &amp; Nhân Sự — Giao diện thực tế</image:title>
       <image:caption>Màn hình cấu hình AI Space riêng biệt theo từng phòng ban trong DOMATION Automation.</image:caption>
     </image:image>
@@ -828,7 +828,7 @@
       <image:caption>AI tóm tắt hội thoại chuyển giao CRM cho Sale nhanh chóng chính xác</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_ai_chatbot.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>AI Tóm Tắt Hội Thoại &amp; Chuyển Giao Cho Sale (Human Handover): Giảm 80% Thời Gian Đọc Lại Tin Nhắn — Giao diện thực tế</image:title>
       <image:caption>Trợ lý AI Chatbot tự động thu thập thông tin nhu cầu và đồng bộ bản tóm tắt sang CRM.</image:caption>
     </image:image>
@@ -844,7 +844,7 @@
       <image:caption>Checklist bảo mật dữ liệu doanh nghiệp khi triển khai AI và RAG nội bộ</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_capi_masked.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_datalist.jpg</image:loc>
       <image:title>Checklist Bảo Mật Dữ Liệu Doanh Nghiệp Khi Triển Khai AI &amp; RAG Nội Bộ Không Lo Rò Rỉ Tài Liệu — Giao diện thực tế</image:title>
       <image:caption>Cơ chế che dữ liệu nhạy cảm và mã hóa thông tin khách hàng trong hệ sinh thái DOMATION.</image:caption>
     </image:image>
@@ -860,7 +860,7 @@
       <image:caption>So sánh tốc độ chia Lead qua ZaloBot Telegram Bot và Google Sheet thủ công</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/chia_data_21.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_rounds.jpg</image:loc>
       <image:title>So Sánh Chia Lead Qua ZaloBot, Telegram Bot Và Google Sheet: Tốc Độ, SLA &amp; Độ Tin Cậy — Giao diện thực tế</image:title>
       <image:caption>Giao diện cấu hình chia Lead tức thì qua ZaloBot &amp; Telegram Bot trong DOMATION Auto Data.</image:caption>
     </image:image>
@@ -876,7 +876,7 @@
       <image:caption>Đồng bộ TikTok Instant Form Ladipage Meta Form về Auto Data Router qua Webhook</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/chia_data_18.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_integrations.jpg</image:loc>
       <image:title>Đồng Bộ TikTok Instant Form &amp; Ladipage Về Auto Data Router Trong &lt; 3 Giây Qua Webhook — Giao diện thực tế</image:title>
       <image:caption>Cổng kết nối Webhook đa nguồn thu Lead tức thì từ TikTok, Meta, Ladipage và Website.</image:caption>
     </image:image>
@@ -892,7 +892,7 @@
       <image:caption>AI Pre-Scorer chấm điểm độ thiện chí Lead tự động trước khi chia Sale</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856540980_2141578413905312186_2310722037673454867_a9d3d972886e0c266f4c5866dec8111d.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/approvals.webp</image:loc>
       <image:title>AI Pre-Scorer Chấm Điểm Thiện Chí Lead Ngay Tại Cửa Webhook Trước Khi Giao Sale — Giao diện thực tế</image:title>
       <image:caption>Bộ lọc AI Gatekeeper phát hiện và giữ lại các Lead nghi ngờ spam trước khi làm nhiễu đội Sale.</image:caption>
     </image:image>
@@ -908,7 +908,7 @@
       <image:caption>Báo cáo tổng kết chia Data và SLA cuối ngày tự động gửi cho Giám đốc qua ZaloBot</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_overview.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_dashboard.jpg</image:loc>
       <image:title>Báo Cáo Tổng Kết Chia Data &amp; SLA Cuối Ngày Tự Động 21h00 Cho Giám Đốc Qua ZaloBot — Giao diện thực tế</image:title>
       <image:caption>Thống kê tổng số Lead thu về, chia thành công và SLA từng nhân sự trên DOMATION Data.</image:caption>
     </image:image>
@@ -924,7 +924,7 @@
       <image:caption>CRM Pipeline Kanban 8 nấc và rào cản TTL1 chống bỏ sót Lead DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_2.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/rounds.webp</image:loc>
       <image:title>CRM Pipeline Kanban 8 Nấc &amp; Rào Cản TTL1: Logic Chống Sale Bỏ Sót Khách Hàng Doanh Nghiệp — Giao diện thực tế</image:title>
       <image:caption>Giao diện Pipeline bán hàng &amp; phân bổ Lead đa kênh trong DOMATION CRM 360°.</image:caption>
     </image:image>
@@ -940,7 +940,7 @@
       <image:caption>Quản lý giỏ hàng bất động sản real-time và chia hoa hồng tự động trên DOMATION CRM</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_9.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/companies.webp</image:loc>
       <image:title>Quản Lý Giỏ Hàng Bất Động Sản Real-Time &amp; Tính Hoa Hồng Đa Tầng Không Trùng Cọc — Giao diện thực tế</image:title>
       <image:caption>Màn hình quản trị giỏ hàng dự án và chính sách bán hàng cập nhật thời gian thực trên CRM.</image:caption>
     </image:image>
@@ -956,7 +956,7 @@
       <image:caption>Hồ sơ khách hàng 360 độ CDP hợp nhất dữ liệu web chat email hóa đơn</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_3.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/contacts.webp</image:loc>
       <image:title>Hồ Sơ Khách Hàng 360 Độ (CDP): Hợp Nhất Web Tracking, Zalo, Email &amp; Hóa Đơn Vào 1 Màn Hình — Giao diện thực tế</image:title>
       <image:caption>Màn hình Hồ sơ Khách hàng 360 độ lưu trọn lịch sử tương tác đa kênh trên DOMATION CRM.</image:caption>
     </image:image>
@@ -972,7 +972,7 @@
       <image:caption>Ma trận nhiệt độ khách hàng Nóng Ấm Lạnh kết hợp Lead Score trên DOMATION CRM</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856586610_2141578413905312186_2310722037673454867_3a3e0cd6e45b99e3e82c953988b294c7.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/contacts.webp</image:loc>
       <image:title>Ma Trận Nhiệt Độ Khách Hàng Nóng – Ấm – Lạnh: Cách Tập Trung Đúng 20% Khách Sắp Chốt — Giao diện thực tế</image:title>
       <image:caption>Thẻ hồ sơ Lead chi tiết hiển thị phân cấp nhiệt độ Nóng/Ấm/Lạnh và điểm tiềm năng AI.</image:caption>
     </image:image>
@@ -988,7 +988,7 @@
       <image:caption>So sánh CRM may đo DOMATION và CRM đóng gói phổ thông tại Việt Nam</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_8.webp</image:loc>
+      <image:loc>https://domation.net/imgs/meta-screens/fusion-quick-connect-crm.webp</image:loc>
       <image:title>So Sánh CRM May Đo DOMATION vs CRM Đóng Gói Phổ Thông Cho Doanh Nghiệp Việt Nam — Giao diện thực tế</image:title>
       <image:caption>Kết nối Webhook hai chiều gốc giữa DOMATION CRM, Meta CAPI và kế toán MISA.</image:caption>
     </image:image>
@@ -1004,7 +1004,7 @@
       <image:caption>Thiết kế flow riêng theo mô hình kinh doanh bằng logic điều kiện IF ELSE DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_flow.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>Thiết Kế Flow Riêng Theo Mô Hình Kinh Doanh: Logic Điều Kiện IF/ELSE Cho B2B, BĐS, Giáo Dục &amp; Y Tế — Giao diện thực tế</image:title>
       <image:caption>Trình tạo Visual Flow Builder kéo thả đa nhánh điều kiện IF/ELSE trong DOMATION Automation.</image:caption>
     </image:image>
@@ -1020,7 +1020,7 @@
       <image:caption>Tối ưu quảng cáo đa kênh Meta TikTok Google bằng dữ liệu chuyển đổi thực CRM</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/meta_rp_5.webp</image:loc>
+      <image:loc>https://domation.net/imgs/meta-screens/meta-heatmap-region.webp</image:loc>
       <image:title>Tối Ưu Quảng Cáo Đa Kênh (Meta, TikTok, Google): Đưa Dữ Liệu Chuyển Đổi Thực Từ CRM Dạy Lại AI Ads — Giao diện thực tế</image:title>
       <image:caption>Ma trận tối ưu ngân sách chiến dịch theo doanh thu và tỷ lệ thiện chí thực trong Meta Report.</image:caption>
     </image:image>
@@ -1052,7 +1052,7 @@
       <image:caption>Tối ưu chiến dịch quảng cáo và phễu nuôi dưỡng đa chạm giảm 40% CPA</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_home.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>Tối Ưu Chiến Dịch Quảng Cáo &amp; Phễu Nuôi Dưỡng 30 Ngày: Giảm 40% CPA Bằng Retargeting Đa Chạm — Giao diện thực tế</image:title>
       <image:caption>Bảng điều khiển chiến dịch đa kênh tổng hợp tỷ lệ mở Email, Zalo ZNS và chuyển đổi phễu.</image:caption>
     </image:image>
@@ -1100,7 +1100,7 @@
       <image:caption>Kịch bản gửi Zalo ZNS tự động hậu mãi và phân khúc RFM DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/crm_4.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>Kịch Bản Gửi Zalo ZNS Tự Động Hậu Mãi &amp; Nhắc Thanh Toán Không Làm Phiền Khách Hàng — Giao diện thực tế</image:title>
       <image:caption>Tích hợp gửi tin ZaloBot và Zalo ZNS tự động trực tiếp từ hồ sơ khách hàng DOMATION.</image:caption>
     </image:image>
@@ -1116,7 +1116,7 @@
       <image:caption>5 kịch bản Marketing Automation cốt lõi giúp doanh nghiệp không lãng phí 70% Lead</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/auto_flow.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/marketing.webp</image:loc>
       <image:title>5 Kịch Bản Marketing Automation Bắt Buộc Phải Có Để Không Lãng Phí 70% Lead Chưa Mua Ngay — Giao diện thực tế</image:title>
       <image:caption>Kéo thả 5 kịch bản Automation cốt lõi trên nền tảng DOMATION Visual Flow Builder.</image:caption>
     </image:image>
@@ -1164,7 +1164,7 @@
       <image:caption>A/B Testing Landing Page kết nối Server-side Tracking và doanh thu CRM DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/meta_rp_3.webp</image:loc>
+      <image:loc>https://domation.net/imgs/meta-screens/fusion-campaign-crm-leads.webp</image:loc>
       <image:title>Landing Page A/B Testing &amp; Server-Side Tracking: Đo Chính Xác Doanh Thu Từng Biến Thể Hero &amp; CTA — Giao diện thực tế</image:title>
       <image:caption>Đối chiếu tỷ lệ thiện chí và doanh thu thực trên CRM theo từng biến thể quảng cáo và trang đích.</image:caption>
     </image:image>
@@ -1260,7 +1260,7 @@
       <image:caption>Hệ thống quản trị chuỗi bán lẻ và Franchise thời đại 5.0 DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/erp_16.webp</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/data-log.webp</image:loc>
       <image:title>Hệ Thống Quản Trị Chuỗi Bán Lẻ &amp; Franchise Thời Đại 5.0: Từ POS, Kho Hàng Tới Loyalty Tự Động — Giao diện thực tế</image:title>
       <image:caption>Ma trận quản lý công suất và vận hành đa chi nhánh thời gian thực trên DOMATION ERP 5.0.</image:caption>
     </image:image>
@@ -1292,7 +1292,7 @@
       <image:caption>Logic phân quyền dữ liệu RBAC và Row-Level Security đa chi nhánh DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/assets/domation/data_v2_capi_masked.webp</image:loc>
+      <image:loc>https://domation.net/imgs/autodata/showcase/screen_datalist.jpg</image:loc>
       <image:title>Logic Phân Quyền Dữ Liệu (RBAC &amp; RLS) Trong Doanh Nghiệp Đa Chi Nhánh: Chống Rò Rỉ Khách Hàng — Giao diện thực tế</image:title>
       <image:caption>Che số điện thoại bảo mật trên giao diện giám sát kết hợp phân quyền sâu đến từng dòng dữ liệu.</image:caption>
     </image:image>
@@ -1308,7 +1308,7 @@
       <image:caption>Tối ưu 40% chi phí vận hành bằng tự động hóa phê duyệt và AI Assistant DOMATION</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://domation.net/ERP-Product/1788856627087_2141578413905312186_2310722037673454867_33798ebb805d3335cfcfedec3f73c1c0.jpg</image:loc>
+      <image:loc>https://domation.net/imgs/erp-screens/approvals.webp</image:loc>
       <image:title>Tối Ưu Chi Phí Nhân Sự Vận Hành 40% Nhờ Tự Động Hóa Quy Trình Phê Duyệt &amp; AI Assistant Nội Bộ — Giao diện thực tế</image:title>
       <image:caption>Quy trình phê duyệt trực tuyến không giấy tờ giúp tinh gọn thao tác khối vận hành.</image:caption>
     </image:image>
