@@ -79,11 +79,12 @@ function mapPathToScreenKey(pathname: string, role?: string): WorkspaceScreenKey
 
 const ProtectedRoute: React.FC = () => {
   const { user, token } = useAuth();
+  const location = useLocation();
   if (!token || !user) return null;
   if (user.role === 'sale') return <Navigate to="/sale-portal" replace />;
   return (
     <Layout>
-      <ErrorBoundary>
+      <ErrorBoundary resetKey={location.pathname + location.search}>
         <Suspense fallback={<PageLoader />}>
           <Outlet />
         </Suspense>
@@ -109,7 +110,9 @@ const AppTabs: React.FC = () => {
 
   if (user?.role === 'sale') return <Navigate to="/sale-portal" replace />;
   if (currentPath === '/ads-performance') {
-    return <Navigate to={`/meta-report${location.search}`} replace />;
+    const sp = new URLSearchParams(location.search);
+    if (!sp.get('view')) sp.set('view', 'lead_attribution');
+    return <Navigate to={`/meta-report?${sp.toString()}`} replace />;
   }
   if (!allPaths.includes(currentPath)) return <Navigate to="/" replace />;
   if (currentPath === '/accounts' && user?.role !== 'superadmin') return <Navigate to="/" replace />;

@@ -71,7 +71,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
       'ERP 5.0 May đo 12 phân hệ (Task Kanban, Chấm công GPS AI, Duyệt đơn, Payroll PDF) + Auto Lead Router + Flow Amazon SES & Zalo Mini App + Meta Ad Realtime Report.',
     deliverables: [
       'Enterprise ERP 5.0 May đo 12 Phân hệ & Payroll PDF',
-      'Hệ thống Phễu Tuyển sinh & CRM 8 nấc nuôi dưỡng dài ngày',
+      'Hệ thống Phễu Tuyển sinh & CRM 9 nấc nuôi dưỡng dài ngày',
       'Meta Ad Realtime Report & Auto Lead Router',
       'Hệ thống Website IDEAS & Trang MBA chuẩn SEO Top 1',
     ],

@@ -342,7 +342,7 @@ export type SetupModalIntent =
 export type HelpTopicKey =
   | 'apps_script'
   | 'round_robin_formula'
-  | 'dedupe_90d'
+  | 'dedupe_180d'
   | 'sla_recall'
   | 'meta_capi'
   | 'zalobot_chatid'
@@ -596,7 +596,7 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
   payment_bank_info: {
     bank_name: 'Techcombank (TCB)',
     account_number: '19038889996868',
-    account_holder: 'CONG TY TNHH DOM MARKETING',
+    account_holder: 'CONG TY GIAI PHAP CONG NGHE DOMATION',
     transfer_prefix: 'DOMDATA',
   },
   plans: [
@@ -612,9 +612,9 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
       annual_total_vnd: 15_300_000,
       annual_monthly_equivalent_vnd: 1_275_000,
       annual_saved_vnd: 2_700_000,
-      max_sales: 5,
-      max_managers: 3,
-      max_users: 8,
+      max_sales: 20,
+      max_managers: 5,
+      max_users: 25,
       max_rounds: 5,
       monthly_lead_quota: 15_000,
       is_enterprise_upgrade: false,
@@ -637,9 +637,9 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
       annual_total_vnd: 30_600_000,
       annual_monthly_equivalent_vnd: 2_550_000,
       annual_saved_vnd: 5_400_000,
-      max_sales: 25,
-      max_managers: 10,
-      max_users: 35,
+      max_sales: 85,
+      max_managers: 15,
+      max_users: 100,
       max_rounds: 30,
       monthly_lead_quota: 100_000,
       is_enterprise_upgrade: false,
@@ -662,6 +662,8 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
       annual_total_vnd: 61_200_000,
       annual_monthly_equivalent_vnd: 5_100_000,
       annual_saved_vnd: 10_800_000,
+      max_sales: 9_999,
+      max_managers: 9_999,
       max_users: 9_999,
       max_rounds: 999,
       monthly_lead_quota: 1_000_000,
@@ -671,6 +673,30 @@ export const DEFAULT_CLIENT_CATALOG: ClientBillingCatalog = {
         'Automation đa kênh và AI 24/7',
         'CRM 360 độ và hợp đồng số',
         'ERP 5.0 quản trị toàn diện',
+      ],
+    },
+    {
+      code: 'marketing_standalone',
+      step_order: 4,
+      name: 'Marketing Automation Standalone',
+      tagline: 'Thu thập Lead qua Form Card, phân Tệp Data / Tệp Logic động, gửi Email/ZNS & Automation Flow.',
+      badge: 'Nuôi Dưỡng Đa Kênh',
+      plan_tier: 'starter',
+      monthly_price_vnd: 1_800_000,
+      annual_discount_pct: 15,
+      annual_total_vnd: 18_360_000,
+      annual_monthly_equivalent_vnd: 1_530_000,
+      annual_saved_vnd: 3_240_000,
+      max_sales: 20,
+      max_managers: 5,
+      max_users: 25,
+      max_rounds: 5,
+      monthly_lead_quota: 50_000,
+      is_enterprise_upgrade: false,
+      features: [
+        'Tệp Data & Tệp Logic động (4 tầng dữ liệu, tách tệp A/B)',
+        'Email Editor kéo-thả 15 khối, Form Cards, Survey/Quiz & QR Voucher',
+        'Automation Flow trực quan + Kết nối AWS SES, SMTP, DKIM, Zalo ZNS',
       ],
     },
   ],

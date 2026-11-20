@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Check, Copy, Link2, Mail, Plug, Plus, RefreshCw, Send, ShieldCheck, Trash2 } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Code2, Copy, Link2, Mail, Plug, Plus, RefreshCw, Send, ShieldCheck, Trash2 } from 'lucide-react';
+import { DomResponsiveSubtabs } from '../../dom-meta/DomMetaSelect';
 import { apiRequest, getErrorMessage } from '../autodataApi';
 import { AutoDataTelegramBotGuide } from '../AutoDataTelegramBotGuide';
 import { AutoDataZaloBotGuide } from '../AutoDataZaloBotGuide';
@@ -50,6 +51,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showAdvancedCode, setShowAdvancedCode] = useState(false);
 
   const [whName, setWhName] = useState('');
   const [whType, setWhType] = useState<'inbound' | 'outbound'>('inbound');
@@ -241,7 +243,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
             <p className="text-xs text-slate-500">Webhook đa kênh, Telegram Bot, Zalo OA 2 Chiều, Meta CAPI v21.0, SMTP & Apps Script</p>
           </div>
         </div>
-        <button type="button" onClick={() => void reload()} className="rounded-xl border border-slate-200 p-2">
+        <button type="button" onClick={() => void reload()} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl border border-slate-200 p-2">
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
@@ -252,32 +254,29 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
         </div>
       )}
 
-      <div data-tour="integrations-tabs" className="flex flex-wrap gap-1.5 rounded-2xl bg-slate-100 p-1.5 text-xs font-semibold">
-        {[
-          { key: 'webhooks', label: '1. Webhooks Inbound / Outbound' },
-          { key: 'telegram', label: '2. Telegram Bot' },
-          { key: 'zalo', label: '3. Zalo Bot OA 2 Chiều' },
-          { key: 'capi', label: '4. Meta CAPI v21.0' },
-          { key: 'smtp', label: '5. Email SMTP' },
-          { key: 'appscript', label: '6. Google Apps Script' },
-        ].map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => setSubTab(t.key as typeof subTab)}
-            className={`rounded-xl px-3.5 py-2 transition ${
-              subTab === t.key ? 'bg-white text-[#1E40FF] shadow-sm' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div data-tour="integrations-tabs">
+        <DomResponsiveSubtabs
+          variant="segmented"
+          maxMobile={2}
+          maxTablet={4}
+          maxDesktop={6}
+          value={subTab}
+          onChange={(id) => setSubTab(id as typeof subTab)}
+          tabs={[
+            { id: 'webhooks', label: '1. Webhooks Inbound / Outbound', shortLabel: '1. Webhooks' },
+            { id: 'telegram', label: '2. Telegram Bot', shortLabel: '2. Telegram' },
+            { id: 'zalo', label: '3. Zalo Bot OA 2 Chiều', shortLabel: '3. Zalo Bot' },
+            { id: 'capi', label: '4. Meta CAPI v21.0', shortLabel: '4. Meta CAPI' },
+            { id: 'smtp', label: '5. Email SMTP', shortLabel: '5. Email' },
+            { id: 'appscript', label: '6. Google Apps Script', shortLabel: '6. Apps Script' },
+          ]}
+        />
       </div>
 
       {subTab === 'webhooks' && (
         <div className="space-y-4">
           <form onSubmit={handleCreateWebhook} className="inkica-glass-card flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="min-w-[180px] flex-1">
+            <div className="min-w-0 w-full sm:min-w-[180px] sm:flex-1">
               <label className="mb-1 block text-xs font-semibold text-slate-700">Tên kết nối</label>
               <input
                 type="text"
@@ -285,13 +284,13 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
                 value={whName}
                 onChange={(e) => setWhName(e.target.value)}
                 placeholder="vd: Landing Page EcoLife"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs min-h-[44px]"
               />
             </div>
             <select
               value={whType}
               onChange={(e) => setWhType(e.target.value as 'inbound' | 'outbound')}
-              className="rounded-xl border border-slate-200 px-3 py-2 text-xs"
+              className="w-full sm:w-auto rounded-xl border border-slate-200 px-3 py-2 text-xs min-h-[44px]"
             >
               <option value="inbound">Inbound (Nhận Lead)</option>
               <option value="outbound">Outbound (Đẩy sự kiện CRM)</option>
@@ -303,10 +302,10 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
                 value={whUrl}
                 onChange={(e) => setWhUrl(e.target.value)}
                 placeholder="https://crm.company.vn/webhook"
-                className="min-w-[240px] flex-1 rounded-xl border border-slate-200 px-3 py-2 text-xs"
+                className="min-w-0 w-full sm:min-w-[240px] sm:flex-1 rounded-xl border border-slate-200 px-3 py-2 text-xs min-h-[44px]"
               />
             )}
-            <button type="submit" className="btn-inkica-primary inline-flex items-center gap-1 rounded-xl px-4 py-2 text-xs font-semibold text-white">
+            <button type="submit" className="btn-inkica-primary w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2 text-xs font-semibold text-white">
               <Plus className="h-4 w-4" /> Thêm Webhook
             </button>
           </form>
@@ -328,7 +327,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
                       : w.url}
                   </p>
                 </div>
-                <button type="button" onClick={() => void handleDeleteWebhook(w.id)} className="rounded-lg p-1.5 text-rose-600 hover:bg-rose-50">
+                <button type="button" onClick={() => void handleDeleteWebhook(w.id)} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg p-1.5 text-rose-600 hover:bg-rose-50">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -370,18 +369,18 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
               <ShieldCheck className="h-4 w-4 text-[#1E40FF]" /> Cấu Hình Meta Conversions API v21.0
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              <input type="text" value={pixelId} onChange={(e) => setPixelId(e.target.value)} placeholder="Dataset / Pixel ID" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
-              <input type="password" value={capiToken} onChange={(e) => setCapiToken(e.target.value)} placeholder="System User Access Token" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
-              <input type="text" value={testCode} onChange={(e) => setTestCode(e.target.value)} placeholder="Test Event Code (vd: TEST12345)" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+              <input type="text" value={pixelId} onChange={(e) => setPixelId(e.target.value)} placeholder="Dataset / Pixel ID" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+              <input type="password" value={capiToken} onChange={(e) => setCapiToken(e.target.value)} placeholder="System User Access Token" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+              <input type="text" value={testCode} onChange={(e) => setTestCode(e.target.value)} placeholder="Test Event Code (vd: TEST12345)" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
             </div>
             <div className="flex gap-2">
-              <button type="submit" className="btn-inkica-primary rounded-xl px-4 py-2 text-xs font-semibold text-white">
+              <button type="submit" className="btn-inkica-primary min-h-[44px] rounded-xl px-4 py-2 text-xs font-semibold text-white">
                 Lưu Cấu Hình CAPI
               </button>
               <button
                 type="button"
                 onClick={() => void handleTestCapi()}
-                className="ql-btn-outline inline-flex items-center gap-1 rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700"
+                className="ql-btn-outline min-h-[44px] inline-flex items-center gap-1 rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700"
               >
                 <Send className="h-3.5 w-3.5" /> Test Event
               </button>
@@ -412,13 +411,13 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
             <Mail className="h-4 w-4 text-[#1E40FF]" /> Cấu Hình Email SMTP / Amazon SES
           </div>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <input type="text" value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} placeholder="SMTP Host" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
-            <input type="number" value={smtpPort} onChange={(e) => setSmtpPort(e.target.value)} placeholder="587" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
-            <input type="email" value={smtpFrom} onChange={(e) => setSmtpFrom(e.target.value)} placeholder="From Email" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
-            <input type="text" value={smtpUser} onChange={(e) => setSmtpUser(e.target.value)} placeholder="Username" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
-            <input type="password" value={smtpPass} onChange={(e) => setSmtpPass(e.target.value)} placeholder="Password" className="rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+            <input type="text" value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} placeholder="SMTP Host" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+            <input type="number" value={smtpPort} onChange={(e) => setSmtpPort(e.target.value)} placeholder="587" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+            <input type="email" value={smtpFrom} onChange={(e) => setSmtpFrom(e.target.value)} placeholder="From Email" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+            <input type="text" value={smtpUser} onChange={(e) => setSmtpUser(e.target.value)} placeholder="Username" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
+            <input type="password" value={smtpPass} onChange={(e) => setSmtpPass(e.target.value)} placeholder="Password" className="min-h-[44px] rounded-xl border border-slate-200 px-3 py-2 text-xs" />
           </div>
-          <button type="submit" className="btn-inkica-primary rounded-xl px-4 py-2 text-xs font-semibold text-white">
+          <button type="submit" className="btn-inkica-primary min-h-[44px] rounded-xl px-4 py-2 text-xs font-semibold text-white">
             Lưu SMTP Vault
           </button>
         </form>
@@ -426,8 +425,13 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
 
       {subTab === 'appscript' && (
         <div className="inkica-glass-card space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900">Mã Google Apps Script Đồng Bộ 2 Chiều</h2>
+          <div className="space-y-1">
+            <h2 className="text-sm font-bold text-slate-900">Google Apps Script Đồng Bộ 2 Chiều</h2>
+            <p className="text-xs text-slate-600">
+              Dùng mẫu có sẵn để tự động đẩy dữ liệu từ Google Sheets hoặc Gmail sang CRM. Bạn chỉ cần sao chép mẫu — không cần tự viết mã.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <button
               type="button"
               onClick={() => {
@@ -435,15 +439,26 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
                 setCopied(true);
                 setTimeout(() => setCopied(false), 1800);
               }}
-              className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700"
+              className="min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-              {copied ? 'Đã copy' : 'Copy Code'}
+              {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+              {copied ? 'Đã sao chép mẫu' : '1-Chạm Sao chép mẫu'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAdvancedCode((prev) => !prev)}
+              className="min-h-[44px] inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+            >
+              <Code2 className="h-4 w-4 text-[#1E40FF]" />
+              <span>Chế độ Nâng cao (Kỹ thuật)</span>
+              {showAdvancedCode ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
-          <pre className="max-h-96 overflow-auto rounded-xl bg-slate-950 p-4 text-[11px] text-slate-100">
-            {appsScriptCode}
-          </pre>
+          {showAdvancedCode && (
+            <pre className="max-h-96 overflow-auto rounded-xl bg-slate-950 p-4 font-mono text-[11px] text-slate-100">
+              {appsScriptCode}
+            </pre>
+          )}
         </div>
       )}
     </div>

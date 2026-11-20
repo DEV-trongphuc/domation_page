@@ -340,7 +340,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={triggerContact}
-              className="btn-inkica-primary px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap rounded-xl"
+              className="btn-inkica-primary min-h-[44px] sm:min-h-[40px] px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap rounded-xl"
             >
               <Sparkles className="hidden sm:inline w-3.5 h-3.5 text-cyan-200 shrink-0" />
               <span className="sm:hidden">{mobileContactLabel || contactLabel}</span>
@@ -351,7 +351,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Menu di động"
-              className="lg:hidden w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/95 border border-slate-200 text-slate-700 flex items-center justify-center cursor-pointer shrink-0"
+              className="lg:hidden w-11 h-11 rounded-xl bg-white/95 border border-slate-200 text-slate-700 flex items-center justify-center cursor-pointer shrink-0"
             >
               {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>

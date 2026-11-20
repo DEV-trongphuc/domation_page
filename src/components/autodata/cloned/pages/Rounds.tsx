@@ -810,58 +810,80 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                       </div>
                     </div>
 
-                    {/* Fairness score badge */}
-                    {r.fairness_index !== undefined && (
-                      <div 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/fair-share?round_id=${r.id}`);
-                        }}
-                        style={{ 
-                          cursor: 'pointer', 
-                          display: 'flex', 
-                          flexDirection: 'column',
-                          alignItems: 'flex-end',
-                          gap: 2 
-                        }}
-                        title={t("Click để xem chi tiết đối soát công bằng")}
-                      >
-                        <span style={{ 
-                          fontSize: '0.65rem', 
-                          fontWeight: 700, 
-                          color: 'var(--color-text-muted)', 
-                          textTransform: 'uppercase', 
-                          letterSpacing: '0.05em' 
-                        }}>
-                          {t("Điểm đối soát")}
-                        </span>
-                        <div style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: 4, 
-                          padding: '3px 8px', 
-                          borderRadius: 8, 
-                          background: getFairnessColor(r.fairness_index).bg,
-                          color: getFairnessColor(r.fairness_index).color,
-                          fontWeight: 700,
-                          fontSize: '0.8125rem',
-                          border: `1px solid ${getFairnessColor(r.fairness_index).color}25`,
-                          transition: 'all 0.2s ease-out'
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.transform = 'none';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }}
+                    {/* Fairness score badge + Delete action */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                      {r.fairness_index !== undefined && (
+                        <div 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/fair-share?round_id=${r.id}`);
+                          }}
+                          style={{ 
+                            cursor: 'pointer', 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            alignItems: 'flex-end',
+                            gap: 2 
+                          }}
+                          title={t("Click để xem chi tiết đối soát công bằng")}
                         >
-                          <Scale size={12} />
-                          {r.fairness_index}%
+                          <span style={{ 
+                            fontSize: '0.65rem', 
+                            fontWeight: 700, 
+                            color: 'var(--color-text-muted)', 
+                            textTransform: 'uppercase', 
+                            letterSpacing: '0.05em' 
+                          }}>
+                            {t("Điểm đối soát")}
+                          </span>
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: 4, 
+                            padding: '3px 8px', 
+                            borderRadius: 8, 
+                            background: getFairnessColor(r.fairness_index).bg,
+                            color: getFairnessColor(r.fairness_index).color,
+                            fontWeight: 700,
+                            fontSize: '0.8125rem',
+                            border: `1px solid ${getFairnessColor(r.fairness_index).color}25`,
+                            transition: 'all 0.2s ease-out'
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                          >
+                            <Scale size={12} />
+                            {r.fairness_index}%
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => { setDeleteId(r.id); setConfirmDeleteOpen(true); }}
+                        title={t("Xóa vòng phân bổ")}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: 8,
+                          border: '1px solid var(--color-danger-light)',
+                          background: 'transparent',
+                          color: 'var(--color-danger)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          flexShrink: 0
+                        }}
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
 
                   <div style={{ flex: 1, marginBottom: '1rem' }}>
@@ -995,15 +1017,12 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
                     )}
                   </div>
 
-                  <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem', display: 'flex', gap: '0.75rem' }}>
-                    <button className="btn outline sm" onClick={() => openEditModal(r)} style={{ flex: 1, padding: '0.5rem' }}>
+                  <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: '1rem', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.625rem' }}>
+                    <button className="btn outline sm" onClick={() => openEditModal(r)} style={{ justifyContent: 'center', padding: '0.5rem' }}>
                       <Info size={13} /> {t("Chi tiết")}
                     </button>
-                    <button className="btn primary sm" onClick={() => openCompModal(r)} style={{ flex: 1, padding: '0.5rem' }}>
+                    <button className="btn primary sm" onClick={() => openCompModal(r)} style={{ justifyContent: 'center', padding: '0.5rem' }}>
                       <Zap size={13} /> {t("Bù Data")}
-                    </button>
-                    <button className="btn outline sm" onClick={() => { setDeleteId(r.id); setConfirmDeleteOpen(true); }} style={{ padding: '0 0.75rem', color: 'var(--color-danger)', borderColor: 'var(--color-danger-light)' }}>
-                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>

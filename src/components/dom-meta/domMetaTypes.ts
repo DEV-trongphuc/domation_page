@@ -57,8 +57,34 @@ export interface DomMetaGoogleAdsConfig {
   last_verified_at?: string | null;
 }
 
+export interface DomMetaSharedAiConfig {
+  has_api_key: boolean;
+  api_key_masked: string;
+  model: string;
+  ai_lead_eval_enabled: boolean;
+  ai_ads_eval_enabled: boolean;
+  updated_at?: string | null;
+}
+
+export interface DomMetaShareMember {
+  id?: string;
+  email: string;
+  full_name: string;
+  role: 'tenant_admin' | 'viewer' | string;
+  is_tenant_owner?: boolean;
+  added_at?: string;
+}
+
+export interface DomMetaShareState {
+  public_view: boolean;
+  slug: string;
+  tenant_name: string;
+  members: DomMetaShareMember[];
+}
+
 export interface DomMetaWorkspaceConfig {
   primary_ad_account_id: string;
+  public_view?: boolean;
   meta_summary: {
     ad_account_id: string;
     pixel_id: string;
@@ -75,12 +101,14 @@ export interface DomMetaWorkspaceConfig {
   view_presets: DomMetaViewPreset[];
   summary_metrics: string[];
   ai_reports?: DomMetaAiReportEntry[];
+  ai_config?: DomMetaSharedAiConfig;
   google_ads: DomMetaGoogleAdsConfig;
   updated_at?: string;
 }
 
 export interface DomMetaWorkspacePatch {
   primary_ad_account_id?: string;
+  public_view?: boolean;
   brand_filters?: DomMetaBrandFilter[];
   goal_keywords?: string[];
   goal_chart_mode?: 'goal' | 'brand' | 'keyword';
@@ -88,6 +116,13 @@ export interface DomMetaWorkspacePatch {
   view_presets?: DomMetaViewPreset[];
   summary_metrics?: string[];
   ai_reports?: DomMetaAiReportEntry[];
+  ai_config?: {
+    api_key?: string;
+    clear_api_key?: boolean;
+    model?: string;
+    ai_lead_eval_enabled?: boolean;
+    ai_ads_eval_enabled?: boolean;
+  };
   google_ads?: Partial<DomMetaGoogleAdsConfig> & { mark_verified?: boolean };
 }
 
@@ -106,10 +141,21 @@ export type DomMetaDatePreset =
 export type DomMetaNavView =
   | 'dashboard'
   | 'ad_detail'
+  | 'lead_attribution'
   | 'ad_library'
   | 'account'
   | 'google_ads'
-  | 'meta_capi';
+  | 'meta_capi'
+  | 'settings';
+
+export type DomMetaSettingsTab =
+  | 'brand'
+  | 'goals'
+  | 'ai_key'
+  | 'google_ads'
+  | 'accounts'
+  | 'ecosystem'
+  | 'plan';
 
 export interface DomMetaQuickConnectStatus {
   has_meta_token: boolean;
@@ -181,6 +227,7 @@ export interface DomMetaCrmAttributionPayload {
     negative_leads: number;
     total_revenue_vnd: number;
     capi_sent_count: number;
+    pipeline_totals?: Record<string, number>;
   };
   by_ad: Record<string, DomMetaCrmEntityBucket>;
   by_adset: Record<string, DomMetaCrmEntityBucket>;
@@ -214,31 +261,48 @@ export const DOM_META_METRIC_REGISTRY: DomMetaMetricDef[] = [
   { id: 'result', label: 'Result', shortLabel: 'Result', format: 'number' },
   { id: 'cpr', label: 'Cost per result', shortLabel: 'CPR', format: 'money' },
   { id: 'cpm', label: 'CPM', shortLabel: 'CPM', format: 'money' },
+  { id: 'cpp', label: 'CPP (Cost / 1k Reach)', shortLabel: 'CPP', format: 'money' },
   { id: 'reach', label: 'Reach', shortLabel: 'Reach', format: 'number' },
   { id: 'impressions', label: 'Impressions', shortLabel: 'Impr.', format: 'number' },
   { id: 'frequency', label: 'Frequency', shortLabel: 'Freq.', format: 'decimal' },
   { id: 'clicks', label: 'All Clicks', shortLabel: 'Clicks', format: 'number' },
+  { id: 'unique_clicks', label: 'Unique Clicks', shortLabel: 'Uniq. Click', format: 'number' },
   { id: 'link_click', label: 'Link Clicks', shortLabel: 'Link Click', format: 'number' },
+  { id: 'outbound_click', label: 'Outbound Clicks', shortLabel: 'Outbound', format: 'number' },
+  { id: 'lpv', label: 'Landing Page Views', shortLabel: 'LPV', format: 'number' },
+  { id: 'lpv_rate', label: 'Connect Rate (LPV/Link)', shortLabel: 'LPV %', format: 'percent' },
+  { id: 'cost_per_lpv', label: 'Cost per LPV', shortLabel: 'CP-LPV', format: 'money' },
   { id: 'ctr', label: 'CTR (%)', shortLabel: 'CTR', format: 'percent' },
+  { id: 'unique_ctr', label: 'Unique CTR (%)', shortLabel: 'Uniq. CTR', format: 'percent' },
   { id: 'cpc', label: 'CPC', shortLabel: 'CPC', format: 'money' },
   { id: 'leads', label: 'Leads', shortLabel: 'Leads', format: 'number' },
   { id: 'messages', label: 'Mess. Started', shortLabel: 'Messages', format: 'number' },
   { id: 'message_connection', label: 'Mess. Connection', shortLabel: 'Mess. Conn', format: 'number' },
+  { id: 'msg_reply', label: 'Mess. First Reply', shortLabel: '1st Reply', format: 'number' },
+  { id: 'msg_depth_2', label: 'Mess. Depth 2+ (Hội thoại)', shortLabel: 'Msg 2+', format: 'number' },
+  { id: 'msg_depth_3', label: 'Mess. Depth 3+ (Sâu)', shortLabel: 'Msg 3+', format: 'number' },
+  { id: 'view_content', label: 'View Content', shortLabel: 'ViewContent', format: 'number' },
+  { id: 'add_to_cart', label: 'Add to Cart', shortLabel: 'ATC', format: 'number' },
+  { id: 'initiate_checkout', label: 'Initiate Checkout', shortLabel: 'Checkout', format: 'number' },
   { id: 'purchases', label: 'Purchases', shortLabel: 'Purchases', format: 'number' },
+  { id: 'aov', label: 'Avg Order Value (AOV)', shortLabel: 'AOV', format: 'money' },
   { id: 'roas', label: 'Purchase ROAS', shortLabel: 'ROAS', format: 'decimal' },
   { id: 'reaction', label: 'Reactions', shortLabel: 'Reaction', format: 'number' },
   { id: 'comments', label: 'Comments', shortLabel: 'Comments', format: 'number' },
   { id: 'shares', label: 'Shares', shortLabel: 'Shares', format: 'number' },
+  { id: 'post_save', label: 'Post Saves', shortLabel: 'Saves', format: 'number' },
   { id: 'photo_view', label: 'Photo Views', shortLabel: 'Photo', format: 'number' },
   { id: 'post_engagement', label: 'Post Engagement', shortLabel: 'Engagement', format: 'number' },
   { id: 'video_play', label: 'Video Plays', shortLabel: 'Video Plays', format: 'number' },
   { id: 'video_3s', label: '3s Video Views', shortLabel: '3s Views', format: 'number' },
   { id: 'thruplay', label: 'ThruPlays', shortLabel: 'ThruPlays', format: 'number' },
+  { id: 'video_avg_time', label: 'Avg Watch Time (giây)', shortLabel: 'Avg Watch(s)', format: 'decimal' },
   { id: 'video_p25', label: 'Video 25%', shortLabel: '25%', format: 'number' },
   { id: 'video_p50', label: 'Video 50%', shortLabel: '50%', format: 'number' },
   { id: 'video_p75', label: 'Video 75%', shortLabel: '75%', format: 'number' },
   { id: 'video_p95', label: 'Video 95%', shortLabel: '95%', format: 'number' },
   { id: 'video_p100', label: 'Video 100%', shortLabel: '100%', format: 'number' },
+  { id: 'completion_rate', label: 'Video Completion (%)', shortLabel: 'Complete %', format: 'percent' },
   { id: 'hook_rate', label: 'Hook Rate (3s/Impr)', shortLabel: 'Hook Rate', format: 'percent' },
   { id: 'hold_rate', label: 'Hold Rate (ThruPlay/3s)', shortLabel: 'Hold Rate', format: 'percent' },
   { id: 'follows', label: 'Page Likes / Follows', shortLabel: 'Follows', format: 'number' },
@@ -274,6 +338,16 @@ export const DOM_META_SUMMARY_KPI_OPTIONS: Array<{
   { id: 'thruplay', label: 'ThruPlays', shortLabel: 'ThruPlays', format: 'number' },
   { id: 'hook_rate', label: 'Hook Rate (3s/Impr)', shortLabel: 'Hook Rate', format: 'percent' },
   { id: 'hold_rate', label: 'Hold Rate (ThruPlay/3s)', shortLabel: 'Hold Rate', format: 'percent' },
+  { id: 'lpv', label: 'Landing Page Views (LPV)', shortLabel: 'LPV', format: 'number' },
+  { id: 'lpv_rate', label: 'Connect Rate (LPV/Link %)', shortLabel: 'Connect Rate', format: 'percent' },
+  { id: 'outbound_click', label: 'Outbound Clicks', shortLabel: 'Outbound Clicks', format: 'number' },
+  { id: 'unique_clicks', label: 'Unique Clicks (Người nhấp)', shortLabel: 'Unique Clicks', format: 'number' },
+  { id: 'msg_depth_2', label: 'Mess. Depth 2+ (Tương tác 2 chiều)', shortLabel: 'Msg Depth 2+', format: 'number' },
+  { id: 'msg_depth_3', label: 'Mess. Depth 3+ (Hội thoại sâu)', shortLabel: 'Msg Depth 3+', format: 'number' },
+  { id: 'add_to_cart', label: 'Add to Cart (Giỏ hàng)', shortLabel: 'Add to Cart', format: 'number' },
+  { id: 'initiate_checkout', label: 'Initiate Checkout', shortLabel: 'Checkout', format: 'number' },
+  { id: 'video_avg_time', label: 'Avg Watch Time (Giây)', shortLabel: 'Avg Watch (s)', format: 'decimal' },
+  { id: 'post_save', label: 'Post Saves (Lưu bài)', shortLabel: 'Post Saves', format: 'number' },
 ];
 
 export interface DomMetaActionMap {
@@ -296,6 +370,9 @@ export interface DomMetaTargetingSpec {
   device_platforms?: string[];
   flexible_spec?: Array<Record<string, Array<{ id?: string; name?: string }>>>;
   custom_audiences?: Array<{ id?: string; name?: string }>;
+  excluded_custom_audiences?: Array<{ id?: string; name?: string }>;
+  targeting_automation?: { advantage_audience?: number };
+  locales?: number[];
 }
 
 export interface DomMetaAdNode {
@@ -312,38 +389,68 @@ export interface DomMetaAdNode {
   image_url: string;
   post_url: string;
   story_id: string;
+  creative_title?: string;
+  creative_body?: string;
+  cta_type?: string;
+  link_url?: string;
+  instagram_permalink_url?: string;
+  quality_ranking?: string;
+  engagement_rate_ranking?: string;
+  conversion_rate_ranking?: string;
   spend: number;
   impressions: number;
   reach: number;
   clicks: number;
+  unique_clicks?: number;
   link_click: number;
+  outbound_click?: number;
+  lpv?: number;
+  lpv_rate?: number;
+  cost_per_lpv?: number;
   leads: number;
   messages: number;
+  message_connection?: number;
+  msg_reply?: number;
+  msg_depth_2?: number;
+  msg_depth_3?: number;
+  view_content?: number;
+  add_to_cart?: number;
+  initiate_checkout?: number;
   purchases: number;
   purchase_value: number;
+  aov?: number;
   roas: number;
   reaction: number;
   comments: number;
   shares: number;
+  post_save?: number;
+  photo_view?: number;
   follows: number;
   post_engagement: number;
   video_play: number;
   video_3s: number;
+  video_avg_time?: number;
   video_p25: number;
   video_p50: number;
   video_p75: number;
   video_p95: number;
   video_p100?: number;
+  completion_rate?: number;
   thruplay: number;
   result: number;
   cpr: number;
   cpm: number;
+  cpp?: number;
   cpc: number;
   ctr: number;
+  unique_ctr?: number;
   frequency: number;
   hook_rate: number;
   hold_rate: number;
   actions: DomMetaActionMap;
+  unique_actions?: DomMetaActionMap;
+  cost_per_action?: DomMetaActionMap;
+  action_values?: DomMetaActionMap;
 }
 
 export interface DomMetaAdsetNode {
@@ -354,8 +461,13 @@ export interface DomMetaAdsetNode {
   status: string;
   effective_status: string;
   optimization_goal: string;
+  bid_strategy?: string;
+  billing_event?: string;
+  destination_type?: string;
+  learning_stage_status?: string;
   daily_budget: number;
   lifetime_budget: number;
+  budget_remaining?: number;
   start_time?: string;
   end_time?: string;
   targeting?: DomMetaTargetingSpec | null;
@@ -363,33 +475,56 @@ export interface DomMetaAdsetNode {
   impressions: number;
   reach: number;
   clicks: number;
+  unique_clicks?: number;
   link_click: number;
+  outbound_click?: number;
+  lpv?: number;
+  lpv_rate?: number;
+  cost_per_lpv?: number;
   leads: number;
   messages: number;
+  message_connection?: number;
+  msg_reply?: number;
+  msg_depth_2?: number;
+  msg_depth_3?: number;
+  view_content?: number;
+  add_to_cart?: number;
+  initiate_checkout?: number;
   purchases: number;
   purchase_value: number;
+  aov?: number;
   roas: number;
   reaction: number;
   comments: number;
+  shares?: number;
+  post_save?: number;
+  photo_view?: number;
   follows: number;
   post_engagement: number;
   video_play: number;
   video_3s: number;
+  video_avg_time?: number;
   video_p25: number;
   video_p50: number;
   video_p75: number;
   video_p95: number;
   video_p100?: number;
+  completion_rate?: number;
   thruplay: number;
   result: number;
   cpr: number;
   cpm: number;
+  cpp?: number;
   cpc: number;
   ctr: number;
+  unique_ctr?: number;
   frequency: number;
   hook_rate: number;
   hold_rate: number;
   actions: DomMetaActionMap;
+  unique_actions?: DomMetaActionMap;
+  cost_per_action?: DomMetaActionMap;
+  action_values?: DomMetaActionMap;
   ads: DomMetaAdNode[];
 }
 
@@ -400,41 +535,67 @@ export interface DomMetaCampaignNode {
   effective_status: string;
   objective: string;
   optimization_goal: string;
+  buying_type?: string;
+  bid_strategy?: string;
   daily_budget?: number;
   lifetime_budget?: number;
+  budget_remaining?: number;
   start_time?: string;
   stop_time?: string;
   spend: number;
   impressions: number;
   reach: number;
   clicks: number;
+  unique_clicks?: number;
   link_click: number;
+  outbound_click?: number;
+  lpv?: number;
+  lpv_rate?: number;
+  cost_per_lpv?: number;
   leads: number;
   messages: number;
+  message_connection?: number;
+  msg_reply?: number;
+  msg_depth_2?: number;
+  msg_depth_3?: number;
+  view_content?: number;
+  add_to_cart?: number;
+  initiate_checkout?: number;
   purchases: number;
   purchase_value: number;
+  aov?: number;
   roas: number;
   reaction: number;
   comments: number;
+  shares?: number;
+  post_save?: number;
+  photo_view?: number;
   follows: number;
   post_engagement: number;
   video_play: number;
   video_3s: number;
+  video_avg_time?: number;
   video_p25: number;
   video_p50: number;
   video_p75: number;
   video_p95: number;
   video_p100?: number;
+  completion_rate?: number;
   thruplay: number;
   result: number;
   cpr: number;
   cpm: number;
+  cpp?: number;
   cpc: number;
   ctr: number;
+  unique_ctr?: number;
   frequency: number;
   hook_rate: number;
   hold_rate: number;
   actions: DomMetaActionMap;
+  unique_actions?: DomMetaActionMap;
+  cost_per_action?: DomMetaActionMap;
+  action_values?: DomMetaActionMap;
   adsets: DomMetaAdsetNode[];
 }
 
@@ -448,24 +609,34 @@ export interface DomMetaDailyPoint {
   messages: number;
   follows: number;
   cpm: number;
+  result?: number;
+  cpr?: number;
 }
 
 export interface DomMetaPlatformSlice {
   platform: string;
+  rawPlatform?: string;
   spend: number;
   impressions: number;
   reach: number;
+  clicks?: number;
+  ctr?: number;
   result: number;
+  cpr?: number;
 }
 
 export interface DomMetaPositionSlice {
   platform: string;
   position: string;
   label: string;
+  rawPlatform?: string;
+  rawPosition?: string;
   spend: number;
   impressions: number;
   clicks: number;
   result: number;
+  cpr?: number;
+  ctr?: number;
 }
 
 export interface DomMetaAgeGenderBucket {
@@ -476,21 +647,34 @@ export interface DomMetaAgeGenderBucket {
   totalSpend: number;
   maleResult: number;
   femaleResult: number;
+  unknownResult?: number;
+  totalResult?: number;
+  reach?: number;
+  clicks?: number;
 }
 
 export interface DomMetaRegionRow {
   region: string;
+  country?: string;
   spend: number;
   impressions: number;
   reach: number;
+  clicks?: number;
+  ctr?: number;
   result: number;
+  cpr?: number;
 }
 
 export interface DomMetaDeviceRow {
   device: string;
+  rawDevice?: string;
   spend: number;
   impressions: number;
   clicks: number;
+  reach?: number;
+  result?: number;
+  cpr?: number;
+  ctr?: number;
 }
 
 export interface DomMetaHourlyCell {
@@ -502,6 +686,8 @@ export interface DomMetaHourlyCell {
   messages: number;
   purchases: number;
   impressions: number;
+  result?: number;
+  cpr?: number;
 }
 
 export interface DomMetaActivityLogItem {
@@ -520,8 +706,13 @@ export interface DomMetaAccountOverview {
   currency: string;
   balance: number;
   amount_spent: number;
+  spend_cap?: number;
   funding_source: string;
   account_status: number;
+  timezone_name?: string;
+  business_name?: string;
+  business_address?: string;
+  tax_id?: string;
 }
 
 export interface DomMetaMonthlyPoint {
@@ -613,30 +804,47 @@ export interface DomMetaTotalsSnapshot {
   impressions: number;
   reach: number;
   clicks: number;
+  unique_clicks?: number;
   link_click?: number;
+  outbound_click?: number;
+  lpv?: number;
+  lpv_rate?: number;
+  cost_per_lpv?: number;
   leads: number;
   messages: number;
   message_connection?: number;
+  msg_reply?: number;
+  msg_depth_2?: number;
+  msg_depth_3?: number;
+  view_content?: number;
+  add_to_cart?: number;
+  initiate_checkout?: number;
   purchases: number;
   purchase_value?: number;
+  aov?: number;
   roas?: number;
   video_play?: number;
   video_3s?: number;
+  video_avg_time?: number;
   video_p25?: number;
   video_p50?: number;
   video_p75?: number;
   video_p95?: number;
   video_p100?: number;
+  completion_rate?: number;
   thruplay?: number;
   post_engagement?: number;
   reaction?: number;
   comments?: number;
   shares?: number;
+  post_save?: number;
   photo_view?: number;
   follows: number;
   cpm: number;
+  cpp?: number;
   cpc?: number;
   ctr?: number;
+  unique_ctr?: number;
   frequency?: number;
   hook_rate?: number;
   hold_rate?: number;
@@ -649,30 +857,47 @@ export interface DomMetaDashboardDataset {
     impressions: number;
     reach: number;
     clicks: number;
+    unique_clicks?: number;
     link_click: number;
+    outbound_click?: number;
+    lpv?: number;
+    lpv_rate?: number;
+    cost_per_lpv?: number;
     leads: number;
     messages: number;
     message_connection?: number;
+    msg_reply?: number;
+    msg_depth_2?: number;
+    msg_depth_3?: number;
+    view_content?: number;
+    add_to_cart?: number;
+    initiate_checkout?: number;
     purchases: number;
     purchase_value: number;
+    aov?: number;
     roas: number;
     video_play: number;
     video_3s: number;
+    video_avg_time?: number;
     video_p25?: number;
     video_p50?: number;
     video_p75?: number;
     video_p95?: number;
     video_p100?: number;
+    completion_rate?: number;
     thruplay: number;
     post_engagement: number;
     reaction: number;
     comments: number;
     shares?: number;
+    post_save?: number;
     photo_view?: number;
     follows: number;
     cpm: number;
+    cpp?: number;
     cpc: number;
     ctr: number;
+    unique_ctr?: number;
     frequency: number;
     hook_rate: number;
     hold_rate: number;
@@ -690,13 +915,19 @@ export interface DomMetaDashboardDataset {
   campaigns: DomMetaCampaignNode[];
   platforms: DomMetaPlatformSlice[];
   positions: DomMetaPositionSlice[];
+  platformDevices?: DomMetaPositionSlice[];
   ageGender: DomMetaAgeGenderBucket[];
   regions: DomMetaRegionRow[];
+  countries?: DomMetaRegionRow[];
   devices: DomMetaDeviceRow[];
   heatmap: DomMetaHourlyCell[];
+  hourlyAudience?: DomMetaEntityHourPoint[];
   accountOverview: DomMetaAccountOverview | null;
   monthlyByYear: DomMetaMonthlyPoint[];
   activities: DomMetaActivityLogItem[];
+  actions?: DomMetaActionMap;
+  uniqueActions?: DomMetaActionMap;
+  actionValues?: DomMetaActionMap;
 }
 
 export function formatDomMoney(val: number, currency = 'VND'): string {
@@ -903,24 +1134,42 @@ export function evaluateCustomFormula(
     impressions: num(row.impressions),
     reach: num(row.reach),
     clicks: num(row.clicks),
+    unique_clicks: num(row.unique_clicks),
     link_click: num(row.link_click),
+    outbound_click: num(row.outbound_click),
+    lpv: num(row.lpv),
+    lpv_rate: num(row.lpv_rate),
+    cost_per_lpv: num(row.cost_per_lpv),
     result: num(row.result),
     leads: num(row.leads),
     messages: num(row.messages),
+    msg_reply: num(row.msg_reply),
+    msg_depth_2: num(row.msg_depth_2),
+    msg_depth_3: num(row.msg_depth_3),
+    view_content: num(row.view_content),
+    add_to_cart: num(row.add_to_cart),
+    initiate_checkout: num(row.initiate_checkout),
     purchases: num(row.purchases),
+    aov: num(row.aov),
     roas: num(row.roas),
     video_view: num(row.video_play || row.video_3s),
     video_play: num(row.video_play),
     video_3s: num(row.video_3s),
+    video_avg_time: num(row.video_avg_time),
+    completion_rate: num(row.completion_rate),
     thruplay: num(row.thruplay),
     post_engagement: num(row.post_engagement),
     reaction: num(row.reaction),
     comments: num(row.comments),
+    shares: num(row.shares),
+    post_save: num(row.post_save),
     follows: num(row.follows),
     cpr: num(row.cpr),
     cpm: num(row.cpm),
+    cpp: num(row.cpp),
     cpc: num(row.cpc),
     ctr: num(row.ctr),
+    unique_ctr: num(row.unique_ctr),
     hook_rate: num(row.hook_rate),
     hold_rate: num(row.hold_rate),
   };
@@ -1155,4 +1404,96 @@ export function collectEntityThumbs(
     }
   }
   return result;
+}
+
+export interface DomMetaEntityDeepBreakdownRow {
+  label: string;
+  subLabel?: string;
+  rawKey?: string;
+  rawSubKey?: string;
+  spend: number;
+  impressions: number;
+  reach: number;
+  clicks: number;
+  ctr?: number;
+  result: number;
+  cpr: number;
+  sharePct: number;
+}
+
+export interface DomMetaEntityDailyPoint {
+  date: string;
+  spend: number;
+  impressions: number;
+  reach: number;
+  clicks: number;
+  leads: number;
+  messages: number;
+  purchases: number;
+  follows?: number;
+  cpm?: number;
+  result: number;
+  cpr: number;
+}
+
+export interface DomMetaEntityHourPoint {
+  hour: number;
+  label: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  result: number;
+  cpr: number;
+}
+
+export interface DomMetaEntityCreativeSpec {
+  title?: string;
+  body?: string;
+  ctaType?: string;
+  linkUrl?: string;
+  instagramPermalinkUrl?: string;
+  objectType?: string;
+  videoId?: string;
+  pageId?: string;
+}
+
+export interface DomMetaEntityDeliveryDiagnostics {
+  qualityRanking?: string;
+  engagementRateRanking?: string;
+  conversionRateRanking?: string;
+  bidStrategy?: string;
+  billingEvent?: string;
+  destinationType?: string;
+  learningStageStatus?: string;
+  learningStageConversions?: number;
+  attributionSummary?: string;
+}
+
+export interface DomMetaEntityDeepDetail {
+  entityType: 'campaign' | 'adset' | 'ad';
+  entityId: string;
+  optimizationGoal: string;
+  daily: DomMetaEntityDailyPoint[];
+  hourly: DomMetaEntityHourPoint[];
+  byHourAudience?: DomMetaEntityHourPoint[];
+  byDayOfWeek?: DomMetaEntityDeepBreakdownRow[];
+  byPlatform: DomMetaEntityDeepBreakdownRow[];
+  byPlatformDevice?: DomMetaEntityDeepBreakdownRow[];
+  byAgeGender: DomMetaEntityDeepBreakdownRow[];
+  ageGenderBuckets?: DomMetaAgeGenderBucket[];
+  byRegion: DomMetaEntityDeepBreakdownRow[];
+  byCountry?: DomMetaEntityDeepBreakdownRow[];
+  byDevice: DomMetaEntityDeepBreakdownRow[];
+  targeting: DomMetaTargetingSpec | null;
+  creativeSpec?: DomMetaEntityCreativeSpec | null;
+  diagnostics?: DomMetaEntityDeliveryDiagnostics | null;
+  uniqueActions?: DomMetaActionMap;
+  costPerAction?: DomMetaActionMap;
+  actionValues?: DomMetaActionMap;
+  deliveryEstimate?: {
+    usersLowerBound: number;
+    usersUpperBound: number;
+    ready?: boolean;
+  } | null;
+  previewIframeHtml?: string | null;
 }

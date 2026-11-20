@@ -10,6 +10,7 @@ import { CustomSelect } from './ui/CustomSelect';
 import { CustomModal } from './ui/CustomModal';
 import { Avatar } from './ui/Avatar';
 import { Skeleton, KpiCardSkeleton } from './ui/Skeleton';
+import { DomResponsiveSubtabs } from '../../../dom-meta/DomMetaSelect';
 
 interface CapiCustomEvent {
   name: string;
@@ -722,37 +723,24 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
             </div>
 
             {/* Clean Filter Pills */}
-            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-              {[
-                { id: 'all', label: 'Tất cả' },
-                { id: 'ok', label: 'Thành công (200)' },
-                { id: 'error', label: 'Lỗi Meta' },
-                { id: 'positive', label: 'Chất lượng (Qualified+)' },
-                { id: 'spam', label: 'Notlead / Spam' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setLogFilter(tab.id as any)}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: 16,
-                    border: logFilter === tab.id ? '1px solid #1E40FF' : '1px solid var(--color-border)',
-                    background: logFilter === tab.id ? 'rgba(30, 64, 255, 0.14)' : 'var(--color-bg)',
-                    color: logFilter === tab.id ? '#1E3A8A' : 'var(--color-text-muted)',
-                    fontSize: '0.71rem',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            <div className="w-full sm:w-auto">
+              <DomResponsiveSubtabs
+                tabs={[
+                  { id: 'all', label: 'Tất cả' },
+                  { id: 'ok', label: 'Thành công (200)' },
+                  { id: 'error', label: 'Lỗi Meta' },
+                  { id: 'positive', label: 'Chất lượng (Qualified+)' },
+                  { id: 'spam', label: 'Notlead / Spam' }
+                ]}
+                value={logFilter}
+                onChange={(id: string) => setLogFilter(id as any)}
+                maxMobile={2}
+              />
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <div style={{ position: 'relative', width: 225 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7, width: '100%', maxWidth: 320, flex: '1 1 220px' }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
               <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
               <input
                 type="text"
@@ -782,8 +770,76 @@ export const AdsCapiPanel: React.FC<AdsCapiPanelProps> = ({ onSyncCompleted }) =
           </div>
         </div>
 
+        {/* Mobile Card Stack (< 640px) */}
+        <div className="sm:hidden divide-y divide-slate-100">
+          {visibleLogs.length === 0 ? (
+            <div className="p-6 text-center text-xs text-slate-500">
+              Chưa có tín hiệu CAPI nào khớp bộ lọc.
+            </div>
+          ) : (
+            visibleLogs.map((log) => {
+              const isOk = log.response_status >= 200 && log.response_status < 300;
+              const isSpam = ['Notlead', 'Spam'].includes(log.quality_status);
+              const displayName = log.lead_name || `Lead #${log.lead_id}`;
+              const sourceLabel = TRIGGER_SOURCE_LABELS[log.trigger_source] || log.trigger_source || 'Hệ thống';
+              return (
+                <div key={log.id} className="p-3.5 space-y-2.5 bg-white">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-slate-900 truncate">{displayName}</div>
+                      <div className="text-[11px] text-slate-500 truncate">
+                        {log.lead_phone || '-'} • {sourceLabel}
+                      </div>
+                    </div>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
+                        isOk ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'
+                      }`}
+                    >
+                      HTTP {log.response_status || 0}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                    <span
+                      className={`px-2 py-0.5 rounded font-bold ${
+                        isSpam ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-700'
+                      }`}
+                    >
+                      {log.event_name}
+                    </span>
+                    <span className="text-slate-500 truncate">
+                      {log.quality_status || '-'} • {log.sent_at ? log.sent_at.slice(5, 16) : ''}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setInspectLog(log)}
+                      className="min-h-[40px] rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Eye size={13} />
+                      <span>Chi tiết JSON</span>
+                    </button>
+                    {log.lead_id > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRetryLog(log)}
+                        disabled={retryingLogId === log.id}
+                        className="min-h-[40px] rounded-xl border border-blue-200 bg-blue-50 text-[#1E40FF] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <RotateCcw size={12} className={retryingLogId === log.id ? 'spin' : ''} />
+                        <span>Gửi lại</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
         {/* Full-Width Synchronized Table */}
-        <div style={{ overflowX: 'auto' }}>
+        <div className="hidden sm:block" style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed', fontSize: '0.76rem' }}>
             <colgroup>
               <col style={{ width: '25%' }} />

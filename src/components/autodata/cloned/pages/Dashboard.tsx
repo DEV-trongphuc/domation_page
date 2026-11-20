@@ -31,6 +31,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { WarRoomFlightDeck } from '../components/Dashboard/WarRoomFlightDeck';
 import { useAuth } from '../contexts/AuthContext';
 import { DomMetaQuickConnectButton } from '../../../dom-meta/DomMetaQuickConnectModal';
+import { ClosedLoopFlywheelCockpit } from '../../../dom-meta/ClosedLoopFlywheelCockpit';
 
 const parseServerDate = (dateStr: string) => parseServerDateVN(dateStr) || new Date();
 
@@ -531,13 +532,13 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(330%); }
         }
-        @keyframes pulse {
+        @keyframes ping-dot-emerald {
           0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
           70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
           100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
         .ping-dot {
-          animation: pulse 2s infinite;
+          animation: ping-dot-emerald 2s infinite;
         }
         .top-consultant-item {
           cursor: pointer;
@@ -748,6 +749,25 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
             canManageConfig={user?.role === 'admin' || user?.role === 'superadmin'}
             onConnected={() => void loadAdsPerfStrip()}
             onOpenReport={() => navigate('/meta-report')}
+          />
+        </div>
+      )}
+
+      {user?.role !== 'sale' && (
+        <div style={{ marginBottom: '1.25rem' }}>
+          <ClosedLoopFlywheelCockpit
+            compact
+            metrics={{
+              spendVnd: adsPerfSummary?.total_spend || 0,
+              adLeads: adsPerfSummary?.total_ad_leads || 0,
+              crmAttributedLeads: stats?.assigned_leads ?? adsPerfSummary?.total_ad_leads ?? 0,
+              qualifiedLeads: stats?.won_leads || 0,
+              capiSentCount: stats?.capi_200_count || 0,
+            }}
+            onOpenCampaigns={() => navigate('/meta-report')}
+            onOpenRouting={() => navigate('/rounds')}
+            onOpenAttribution={() => navigate('/meta-report?view=lead_attribution')}
+            onOpenCapi={() => navigate('/meta-report?view=meta_capi')}
           />
         </div>
       )}

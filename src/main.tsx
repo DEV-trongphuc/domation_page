@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { MotionConfig } from 'framer-motion';
 import { DomationHome } from './DomationHome';
 import { AiDomationChatbot } from './components/AiDomationChatbot';
+import { ErrorBoundary } from './components/autodata/cloned/components/ErrorBoundary';
 import { DOMATION_NAV_EVENT } from './utils/navigation';
 import './index.css';
 
@@ -104,26 +105,33 @@ const Main = () => {
     path === '/meta-report' ||
     path.startsWith('/meta-report/') ||
     (isMetaSubdomain && !isPortfolio && !isBoostHub && !singlePostSlug);
-  const isCrm = false; // path === '/crm';
+  const isCrm = path === '/crm' || path.startsWith('/crm/') || search.includes('page=crm');
   const isData =
     path === '/data' ||
-    path === '/crm' ||
     path.startsWith('/data/') ||
-    path.startsWith('/crm/') ||
     search.includes('page=data') ||
-    search.includes('page=crm') ||
     (isDataSubdomain && !isPortfolio && !isBoostHub && !singlePostSlug);
   const isIdeas = path === '/ideas' || search.includes('page=ideas');
   const isErp =
     path === '/erp' ||
     path === '/ideas-erp' ||
+    path === '/enterprise' ||
+    path.startsWith('/enterprise/') ||
     search.includes('page=erp') ||
-    search.includes('page=ideas-erp');
+    search.includes('page=ideas-erp') ||
+    search.includes('page=enterprise');
 
-  if (isHome) return <DomationHome />;
+  if (isHome) {
+    return (
+      <ErrorBoundary resetKey={locationKey}>
+        <DomationHome />
+      </ErrorBoundary>
+    );
+  }
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <ErrorBoundary resetKey={locationKey}>
+      <Suspense fallback={<PageLoader />}>
       {singlePostSlug && <SinglePostPage key={singlePostSlug} slug={singlePostSlug} />}
       {!singlePostSlug && isBoostHub && <BoostHubPage />}
       {!singlePostSlug && !isBoostHub && isPortfolio && <PortfolioPage />}
@@ -188,7 +196,8 @@ const Main = () => {
         !isData &&
         !isAutomation &&
         !isIdeas && <NotFoundPage path={path} />}
-    </Suspense>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 

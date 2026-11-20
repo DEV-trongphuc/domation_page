@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "seo:generate": "node scripts/generate-seo-assets.mjs",
+    "seo:index": "node scripts/submit-indexnow.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

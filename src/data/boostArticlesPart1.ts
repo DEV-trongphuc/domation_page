@@ -594,7 +594,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
         rootCause:
           'Không có quy tắc giữ chân Lead theo thời hạn chăm sóc và lịch sử tương tác minh bạch.',
         domationFix:
-          'Thiết lập cửa sổ bảo hộ Lead 90 ngày kèm nhật ký cuộc gọi/email; nếu quá 14 ngày tư vấn viên không có hoạt động chăm sóc mới, hệ thống tự chuyển quyền cho đội Re-nurture.',
+          'Thiết lập cửa sổ bảo hộ & lọc trùng Lead 180 ngày (6 tháng) kèm nhật ký cuộc gọi/email; nếu quá 14 ngày tư vấn viên không có hoạt động chăm sóc mới, hệ thống tự chuyển quyền cho đội Re-nurture.',
       },
       {
         challenge: 'Gửi tài liệu Brochure MBA hàng chục MB qua Zalo/Email bị vào mục Spam',
@@ -647,7 +647,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
       {
         question: 'Hệ thống DOMATION có phù hợp cho trung tâm ngoại ngữ, cao đẳng hoặc đại học không?',
         answer:
-          'Rất phù hợp. Pipeline 8 nấc và chuỗi Flow nuôi dưỡng dài ngày được tùy biến theo từng kỳ tuyển sinh, lọc theo ngành học và kết nối cả LMS quản lý học viên sau khi nhập học.',
+          'Rất phù hợp. Pipeline 9 nấc và chuỗi Flow nuôi dưỡng dài ngày được tùy biến theo từng kỳ tuyển sinh, lọc theo ngành học và kết nối cả LMS quản lý học viên sau khi nhập học.',
       },
       {
         question: 'Làm sao giữ tỷ lệ chuyển đổi trong phễu tuyển sinh dài 30–60 ngày?',

@@ -15,6 +15,7 @@ import { Navbar } from './Navbar';
 import { ContactModal } from './ContactModal';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationFooter } from './components/DomationFooter';
+import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 import {
   type InspectionTabId,
   ProductInspectionModal,
@@ -85,11 +86,11 @@ export const PortfolioPage: React.FC = () => {
                   Mỗi dự án trong Portfolio của DOMATION đi kèm đầy đủ: Bài toán ban đầu, Khó khăn thực tế khi triển khai, Kiến trúc kỹ thuật xử lý, Số liệu đo lường thật và bài phân tích chuyên sâu trên <strong className="text-slate-900">Blog DOMATION</strong>.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3 pt-2">
+                <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-3 pt-2">
                   <a
                     href="/boost"
                     onClick={(e) => handleSpaLinkClick(e, '/boost')}
-                    className="btn-inkica-primary px-5 py-3 text-xs sm:text-sm"
+                    className="btn-inkica-primary min-h-[44px] px-5 py-3 text-xs sm:text-sm"
                   >
                     <BookOpen className="w-4 h-4" />
                     <span>Đọc Blog DOMATION</span>
@@ -97,7 +98,7 @@ export const PortfolioPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => openInspection('web-3d')}
-                    className="ql-btn-outline px-5 py-3 text-xs sm:text-sm cursor-pointer"
+                    className="ql-btn-outline min-h-[44px] px-5 py-3 text-xs sm:text-sm cursor-pointer"
                   >
                     <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
                     <span>Mở Thư Viện Màn Hình Thực Tế</span>
@@ -130,25 +131,21 @@ export const PortfolioPage: React.FC = () => {
             </div>
           </section>
 
-          {/* Category Filter Pills */}
+          {/* Category Filter Pills (Mobile <=2 buttons/row + >=44px touch targets) */}
           <section className="space-y-6">
-            <div className="flex flex-wrap items-center gap-2">
-              {PORTFOLIO_CATEGORIES.map((cat) => {
-                const active = selectedCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                      active ? 'ql-pill-tab-active' : 'ql-pill-tab'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                );
-              })}
-            </div>
+            <DomResponsiveSubtabs
+              tabs={PORTFOLIO_CATEGORIES.map((cat) => ({
+                id: cat,
+                label: cat,
+              }))}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              maxMobile={2}
+              maxTablet={4}
+              maxDesktop={7}
+              moreLabel="Thêm ngành"
+              className="[&>button]:min-h-[44px] sm:[&>button]:min-h-[40px]"
+            />
 
             {/* Projects Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -253,7 +250,7 @@ export const PortfolioPage: React.FC = () => {
                       onClick={(e) =>
                         handleSpaLinkClick(e, `/boost/${project.relatedArticleSlug}`)
                       }
-                      className="btn-inkica-primary px-4 py-2 text-xs"
+                      className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
                       <span>Đọc Bài Phân Tích Triển Khai</span>
@@ -264,7 +261,7 @@ export const PortfolioPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openInspection(project.inspectionTab!)}
-                        className="ql-btn-outline px-3 py-2 text-xs cursor-pointer"
+                        className="ql-btn-outline min-h-[44px] px-3 py-2 text-xs cursor-pointer"
                       >
                         <MonitorSmartphone className="w-3.5 h-3.5 text-[#1E40FF]" />
                         <span>Xem UI</span>
@@ -294,7 +291,7 @@ export const PortfolioPage: React.FC = () => {
                   setContactNote('Muốn xem demo kiến trúc tương tự trong Portfolio DOMATION');
                   setContactOpen(true);
                 }}
-                className="btn-inkica-primary px-4 py-2.5 text-xs w-fit cursor-pointer"
+                className="btn-inkica-primary min-h-[44px] px-4 py-2.5 text-xs w-fit cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Đặt Lịch Tư Vấn Theo Ngành</span>

@@ -11,11 +11,11 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  Compass,
   Cpu,
   Database,
   ExternalLink,
   Globe,
-  Layers,
   Mail,
   MonitorSmartphone,
   MousePointerClick,
@@ -43,6 +43,10 @@ import { PartnersTrustSection } from './components/PartnersTrustSection';
 import { SectionQuickDock } from './components/SectionQuickDock';
 import { DomationFooter } from './components/DomationFooter';
 import {
+  ClosedLoopFlywheelSection,
+  type FlywheelProduct,
+} from './components/ClosedLoopFlywheelSection';
+import {
   CASE_STUDY_SPOTLIGHTS,
   DECOR_PNGS,
   DOMATION_SAAS_PLANS,
@@ -50,9 +54,18 @@ import {
 } from './data/enterpriseData';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
-import { handleSpaLinkClick } from './utils/navigation';
+import { handleSpaLinkClick, navigateTo } from './utils/navigation';
 import { HOME_FAQS, getHomeSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
+import {
+  EcosystemFocusTourModal,
+  type EcosystemTourSystemKey,
+} from './components/onboarding/EcosystemFocusTourModal';
+import {
+  NonCoderSetupModal,
+  type SetupProductKey,
+} from './components/onboarding/NonCoderSetupModal';
+import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 
 const DEDICATED_APP_LINKS = [
   { label: 'ERP 5.0', href: '/erp' },
@@ -289,12 +302,12 @@ const ERP_EMBEDDED_AGENTS = [
 
 const TOUCHPOINT_SHOWCASES = [
   {
-    id: 'ecolife',
-    tag: 'BĐS XANH • WEBSITE',
-    title: 'EcoLife Signature',
-    url: 'ecolifesignature.vn',
-    desc: 'Website chuẩn Quiet Luxury tích hợp Trợ lý AI và đẩy Lead về CRM.',
-    src: '/assets/ecolife/ecolife_official_live.jpg',
+    id: 'kaen',
+    tag: 'F&B • SỰ KIỆN',
+    title: 'KA-EN Event',
+    url: 'ka-en.com.vn/event',
+    desc: 'Microsite đặt bàn sự kiện ẩm thực Nhật, đồng bộ nhắc lịch tự động.',
+    src: '/landingpage_avatar/kaen_event.webp',
   },
   {
     id: 'nava',
@@ -339,14 +352,6 @@ const TOUCHPOINT_SHOWCASES = [
 ];
 
 const EXTRA_TOUCHPOINT_SHOWCASES = [
-  {
-    id: 'kaen',
-    tag: 'F&B • SỰ KIỆN',
-    title: 'KA-EN Event',
-    url: 'ka-en.com.vn/event',
-    desc: 'Microsite đặt bàn sự kiện ẩm thực Nhật, đồng bộ nhắc lịch tự động.',
-    src: '/landingpage_avatar/kaen_event.webp',
-  },
   {
     id: 'flora-qr',
     tag: 'ĐẶT GÓI & VIETQR',
@@ -433,6 +438,38 @@ export const DomationHome: React.FC = () => {
   } | null>(null);
   const [billingYearly, setBillingYearly] = useState(true);
   const [showBackTop, setShowBackTop] = useState(false);
+  const [focusTourOpen, setFocusTourOpen] = useState(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
+  );
+  const [focusTourSystem, setFocusTourSystem] = useState<EcosystemTourSystemKey>(() => {
+    if (typeof window === 'undefined') return 'flywheel';
+    const p = new URLSearchParams(window.location.search).get('product');
+    return p === 'dommeta' || p === 'erp' || p === 'autodata' || p === 'automation' ? p : 'flywheel';
+  });
+  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('setup') === 'quick'
+  );
+  const [setupGuideProduct, setSetupGuideProduct] = useState<SetupProductKey>(() => {
+    if (typeof window === 'undefined') return 'autodata';
+    const p = new URLSearchParams(window.location.search).get('product');
+    return p === 'dommeta' || p === 'erp' ? p : 'autodata';
+  });
+
+  const openFocusTourModal = (product?: FlywheelProduct | EcosystemTourSystemKey) => {
+    setFocusTourSystem(
+      product === 'dommeta' || product === 'erp' || product === 'autodata' || product === 'automation'
+        ? product
+        : 'flywheel'
+    );
+    setFocusTourOpen(true);
+  };
+
+  const openSetupGuideModal = (product?: FlywheelProduct) => {
+    setSetupGuideProduct(product === 'dommeta' || product === 'erp' ? product : 'autodata');
+    setSetupGuideOpen(true);
+  };
 
   const openInspection = (tab: InspectionTabId) => {
     setInspectionTab(tab);
@@ -459,12 +496,34 @@ export const DomationHome: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // M4 Modal & Focus Tour Hooks (CustomEvents)
+  useEffect(() => {
+    const onFocusTour = (rawEvent: Event) => {
+      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
+      ev.preventDefault();
+      openFocusTourModal(ev.detail?.product || 'flywheel');
+    };
+
+    const onSetupGuide = (rawEvent: Event) => {
+      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
+      ev.preventDefault();
+      openSetupGuideModal(ev.detail?.product || 'autodata');
+    };
+
+    window.addEventListener('domation:open-focus-tour', onFocusTour);
+    window.addEventListener('domation:open-setup-guide', onSetupGuide);
+    return () => {
+      window.removeEventListener('domation:open-focus-tour', onFocusTour);
+      window.removeEventListener('domation:open-setup-guide', onSetupGuide);
+    };
+  }, []);
+
   const currentAutoData = AUTODATA_SCREENS[activeAutoDataIdx] || AUTODATA_SCREENS[0];
   const currentAdsShot = ADS_SPOTLIGHT_SCREENS[0];
   const currentErpTrack = ERP_MODULE_TRACKS[activeErpIdx] || ERP_MODULE_TRACKS[0];
 
   return (
-    <div className="min-h-screen relative text-slate-900 selection:bg-blue-600 selection:text-white font-sans">
+    <div className="min-h-screen relative text-slate-900 selection:bg-blue-600 selection:text-white font-sans overflow-x-clip">
       <LuxuryGoldBackdrop />
       <SectionQuickDock />
 
@@ -559,7 +618,7 @@ export const DomationHome: React.FC = () => {
                         'Mong muốn khảo sát quy trình và tư vấn triển khai hệ sinh thái phù hợp cho doanh nghiệp'
                       )
                     }
-                    className="btn-inkica-primary justify-center px-3 sm:px-6 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                    className="btn-inkica-primary min-h-[44px] justify-center px-3 sm:px-6 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                   >
                     <span>Tư Vấn Triển Khai</span>
                     <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
@@ -568,10 +627,29 @@ export const DomationHome: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => openInspection('erp')}
-                    className="ql-btn-outline justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                    className="ql-btn-outline min-h-[44px] justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                   >
                     <MonitorSmartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1E40FF] shrink-0" />
                     <span>Màn Hình Thực Tế</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => openFocusTourModal('flywheel')}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
+                    <span>Tour Hướng Dẫn</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openSetupGuideModal('autodata')}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Thiết lập nhanh 3 bước</span>
                   </button>
                 </div>
               </div>
@@ -643,105 +721,34 @@ export const DomationHome: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
 
-        {/* ================================================================ */}
-        {/* 3. TWO FRONTS OF DOMATION — BRIGHT QUIET LUXURY DUALITY          */}
-        {/* ================================================================ */}
-        <section id="solutions" className="relative py-12 sm:py-16 px-4 sm:px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-2xl mx-auto mb-8">
-              <div className="ql-eyebrow mb-2.5 mx-auto">
-                <Layers className="w-3.5 h-3.5 text-[#1E40FF]" />
-                <span>2 MẶT TRẬN ĐỒNG BỘ</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-[1.2] tracking-tight">
-                Ngoài Hút Khách —{' '}
-                <span className="text-gradient-inkica">Trong Làm Chủ Số</span>
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              {/* Front 1: Customer Touchpoints (Crisp White Glass) */}
-              <div className="rounded-[26px] bg-white/95 backdrop-blur-xl border border-slate-200/90 p-6 sm:p-8 shadow-sm flex flex-col justify-between gap-5">
-                <div className="space-y-3">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/70 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
-                    <Globe className="w-3.5 h-3.5" />
-                    MẶT TIỀN • ĐIỂM CHẠM KHÁCH HÀNG
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                    Website, Landing Page &amp; 3D
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    Gây ấn tượng ngay giây đầu, giữ chân bằng trải nghiệm tương tác và đẩy đơn về CRM.
-                  </p>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {['Website chuẩn SEO', 'Landing Page chuyển đổi', 'Sa bàn 3D', 'Đo hành vi'].map((tag) => (
-                      <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-xs font-medium text-slate-700">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-                        <span>{tag}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-slate-100">
-                  <a href="#touchpoints" className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold">
-                    <span>Xem Website</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => setEstimatorOpen(true)}
-                    className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
-                  >
-                    <span>Báo giá</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Front 2: Internal Command Center (Luminous Royal Sapphire Glass) */}
-              <div className="rounded-[26px] bg-gradient-to-br from-[#F4F8FF] via-white to-[#ECFEFF] backdrop-blur-xl border border-blue-200/90 p-6 sm:p-8 shadow-sm flex flex-col justify-between gap-5">
-                <div className="space-y-3">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] text-white text-[11px] font-semibold uppercase tracking-wider shadow-sm">
-                    <Cpu className="w-3.5 h-3.5" />
-                    BỘ NÃO NỘI BỘ • QUAN SÁT &amp; VẬN HÀNH
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                    App Nội Bộ Cho Sếp, Marketing &amp; Sale
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    Chia số 5 giây, soi doanh thu từng bài Ads, nuôi dưỡng Zalo ZNS và điều hành toàn công ty.
-                  </p>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {['Auto Data < 5s', 'Meta & Google Ads', 'Zalo ZNS & Tracking', 'ERP & AI nội bộ'].map((tag) => (
-                      <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-blue-200/70 text-xs font-medium text-slate-800 shadow-2xs">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#0284C7] shrink-0" />
-                        <span>{tag}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-blue-100/80">
-                  <a href="#crm-data" className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold">
-                    <span>Xem Các App Nội Bộ</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => openInspection('erp')}
-                    className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
-                  >
-                    <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
-                    <span>Kho Ảnh Thực Tế</span>
-                  </button>
-                </div>
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/90 border border-slate-200/80 px-5 py-3.5 text-xs">
+              <span className="text-slate-600">
+                Hai mặt trận đồng bộ: <strong className="text-slate-900">Website / Landing Page 3D</strong> hút khách ↔ <strong className="text-slate-900">App nội bộ</strong> chia số, đo Ads &amp; điều hành ERP.
+              </span>
+              <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <a href="#touchpoints" className="font-semibold text-[#1E40FF] hover:underline inline-flex items-center gap-1">
+                  <span>Xem Website &amp; 3D</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+                <span className="text-slate-300">|</span>
+                <a href="#crm-data" className="font-semibold text-slate-800 hover:text-[#1E40FF] inline-flex items-center gap-1">
+                  <span>Xem App Nội Bộ</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
               </div>
             </div>
           </div>
         </section>
+
+        {/* ================================================================ */}
+        {/* 3. CLOSED-LOOP INTELLIGENCE CIRCLE (META ADS <-> CRM <-> CAPI)   */}
+        {/* ================================================================ */}
+        <ClosedLoopFlywheelSection
+          variant="home"
+          onOpenFocusTour={openFocusTourModal}
+          onOpenSetupGuide={openSetupGuideModal}
+        />
 
         {/* ================================================================ */}
         {/* 4. CRM AUTO DATA — LAYOUT 1: SPLIT EDITORIAL + LIVE APP SWITCHER */}
@@ -803,7 +810,7 @@ export const DomationHome: React.FC = () => {
                     <a
                       href="/data"
                       onClick={(e) => handleSpaLinkClick(e, '/data')}
-                      className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold"
+                      className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold"
                     >
                       <span>Mở Auto Data</span>
                       <ArrowRight className="w-4 h-4" />
@@ -811,7 +818,7 @@ export const DomationHome: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => openInspection('data-capi')}
-                      className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                      className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                     >
                       <span>Xem 8 Màn Hình</span>
                     </button>
@@ -889,7 +896,7 @@ export const DomationHome: React.FC = () => {
                   <a
                     href="/meta-report"
                     onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
-                    className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold"
+                    className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold"
                   >
                     <span>Dùng Thử Free 1 Tháng</span>
                     <ArrowRight className="w-4 h-4" />
@@ -897,7 +904,7 @@ export const DomationHome: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => openInspection('meta-report')}
-                    className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                    className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                   >
                     <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
                     <span>9 Màn Hình + Video</span>
@@ -1050,7 +1057,7 @@ export const DomationHome: React.FC = () => {
               <a
                 href="/automation"
                 onClick={(e) => handleSpaLinkClick(e, '/automation')}
-                className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold w-fit shrink-0"
+                className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold w-fit shrink-0"
               >
                 <span>Khám Phá Automation</span>
                 <ArrowRight className="w-4 h-4" />
@@ -1185,7 +1192,7 @@ export const DomationHome: React.FC = () => {
                 <a
                   href="/erp"
                   onClick={(e) => handleSpaLinkClick(e, '/erp')}
-                  className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold"
+                  className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold"
                 >
                   <span>Khám Phá ERP 5.0</span>
                   <ArrowRight className="w-4 h-4" />
@@ -1193,31 +1200,24 @@ export const DomationHome: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => openInspection('erp')}
-                  className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                 >
                   <span>Xem 18 Màn Hình</span>
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-5">
-              {ERP_MODULE_TRACKS.map((track, idx) => {
-                const active = activeErpIdx === idx;
-                return (
-                  <button
-                    key={track.id}
-                    type="button"
-                    onClick={() => setActiveErpIdx(idx)}
-                    className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                      active
-                        ? 'bg-[#1E40FF] text-white shadow-sm'
-                        : 'bg-white/95 text-slate-700 border border-slate-200 hover:border-blue-300'
-                    }`}
-                  >
-                    {track.label}
-                  </button>
-                );
-              })}
+            <div className="mb-5">
+              <DomResponsiveSubtabs
+                tabs={ERP_MODULE_TRACKS.map((track, idx) => ({
+                  id: String(idx),
+                  label: track.label,
+                }))}
+                value={String(activeErpIdx)}
+                onChange={(id) => setActiveErpIdx(Number(id) || 0)}
+                maxMobile={2}
+                className="[&>button]:min-h-[44px] sm:[&>button]:min-h-0"
+              />
             </div>
 
             <div className="rounded-[28px] bg-white/95 backdrop-blur-2xl border border-slate-200/85 shadow-sm p-5 sm:p-8 space-y-6">
@@ -1351,11 +1351,6 @@ export const DomationHome: React.FC = () => {
                     );
                   })}
                 </div>
-
-                <div className="pt-3 border-t border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-                  <span className="text-xs font-semibold text-slate-700">Kết nối đồng bộ 2 chiều:</span>
-                  <ChannelLogoStrip variant="platforms" className="w-full lg:flex-1 lg:max-w-[740px]" />
-                </div>
               </div>
             </div>
           </div>
@@ -1382,7 +1377,7 @@ export const DomationHome: React.FC = () => {
                   type="button"
                   aria-expanded={showMoreTouchpoints}
                   onClick={() => setShowMoreTouchpoints((prev) => !prev)}
-                  className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                 >
                   <span>{showMoreTouchpoints ? 'Thu gọn chi tiết' : 'Xem chi tiết'}</span>
                   {showMoreTouchpoints ? (
@@ -1394,7 +1389,7 @@ export const DomationHome: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setEstimatorOpen(true)}
-                  className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                 >
                   <span>Báo giá</span>
                 </button>
@@ -1451,7 +1446,7 @@ export const DomationHome: React.FC = () => {
 
             {showMoreTouchpoints && (
               <div className="mt-5 pt-5 border-t border-slate-200/80 space-y-5 animate-fadeIn">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {EXTRA_TOUCHPOINT_SHOWCASES.map((site) => (
                     <div
                       key={site.id}
@@ -1563,7 +1558,7 @@ export const DomationHome: React.FC = () => {
                   type="button"
                   aria-expanded={show3dDetails}
                   onClick={() => setShow3dDetails((prev) => !prev)}
-                  className="btn-inkica-primary px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                 >
                   <span>{show3dDetails ? 'Thu gọn chi tiết' : 'Xem chi tiết'}</span>
                   {show3dDetails ? (
@@ -1575,7 +1570,7 @@ export const DomationHome: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setEstimatorOpen(true)}
-                  className="ql-btn-outline px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                 >
                   <span>Báo giá</span>
                 </button>
@@ -1624,7 +1619,7 @@ export const DomationHome: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2.5 pt-1">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
                     {WEB3D_FLOORPLAN_SHOTS.slice(0, 3).map((item) => (
                       <button
                         key={item.id}
@@ -1716,9 +1711,9 @@ export const DomationHome: React.FC = () => {
               )}
             </div>
 
-            <div className="mt-6 px-4 py-3 rounded-2xl bg-white/85 border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+            <div className="mt-6 px-4 py-3 rounded-2xl bg-white/85 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
               <span className="font-semibold text-slate-700">Mở nhanh từng ứng dụng:</span>
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-x-5 sm:gap-y-1.5">
                 {DEDICATED_APP_LINKS.map((app) => (
                   <a
                     key={app.href}
@@ -1865,7 +1860,7 @@ export const DomationHome: React.FC = () => {
         {/* ================================================================ */}
         {/* 6. STRATEGIC PARTNERS & F1 DISTRIBUTION NETWORK                  */}
         {/* ================================================================ */}
-        <PartnersTrustSection />
+        <PartnersTrustSection excludeFlagshipIds={['ecolife-signature']} />
 
         {/* ================================================================ */}
         {/* 7. TRANSPARENT INVESTMENT & BESPOKE ROADMAP                      */}
@@ -1888,7 +1883,7 @@ export const DomationHome: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setBillingYearly(false)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                  className={`min-h-[44px] sm:min-h-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     !billingYearly ? 'bg-[#1E40FF] text-white' : 'text-slate-600'
                   }`}
                 >
@@ -1897,7 +1892,7 @@ export const DomationHome: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setBillingYearly(true)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`min-h-[44px] sm:min-h-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     billingYearly ? 'bg-[#1E40FF] text-white' : 'text-slate-600'
                   }`}
                 >
@@ -1915,14 +1910,16 @@ export const DomationHome: React.FC = () => {
               </div>
             </div>
 
-            {/* Clean 3-Column Matrix (Max 3 Crisp Points Per Plan, Spotlighting Bespoke Enterprise) */}
-            <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/75 mb-10">
-              {DOMATION_SAAS_PLANS.map((plan) => {
+            {/* Clean 4-Column Canonical SaaS Matrix */}
+            <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 mb-10">
+              {DOMATION_SAAS_PLANS.map((plan, idx) => {
                 const isCustom = plan.monthly === 'May Đo';
                 return (
                   <div
                     key={plan.name}
-                    className={`p-7 sm:p-9 flex flex-col justify-between ${
+                    className={`p-6 sm:p-7 flex flex-col justify-between ${
+                      idx >= 2 ? 'md:border-t md:border-slate-200/75 xl:border-t-0' : ''
+                    } ${
                       plan.popular
                         ? 'bg-gradient-to-br from-[#EEF4FF] via-white to-[#ECFEFF] ring-2 ring-inset ring-[#1E40FF]/35'
                         : ''
@@ -1939,12 +1936,12 @@ export const DomationHome: React.FC = () => {
                         {plan.badge}
                       </div>
 
-                      <h3 className="text-xl font-bold text-slate-900">
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900">
                         {plan.name}
                       </h3>
 
                       <div className="mt-3 mb-2.5 flex items-baseline gap-1.5">
-                        <span className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+                        <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                           {billingYearly ? plan.yearly : plan.monthly}
                         </span>
                         {!isCustom && (
@@ -1986,7 +1983,7 @@ export const DomationHome: React.FC = () => {
                           })`
                         )
                       }
-                      className={`mt-8 w-full py-3.5 px-5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      className={`mt-8 min-h-[44px] w-full py-3.5 px-5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
                         plan.popular
                           ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-lg'
                           : 'ql-btn-outline'
@@ -2033,7 +2030,7 @@ export const DomationHome: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setEstimatorOpen(true)}
-                    className="btn-inkica-primary justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                    className="btn-inkica-primary min-h-[44px] justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                   >
                     <Calculator className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                     <span>Báo giá</span>
@@ -2041,7 +2038,7 @@ export const DomationHome: React.FC = () => {
                   <a
                     href="/web-design"
                     onClick={(e) => handleSpaLinkClick(e, '/web-design')}
-                    className="ql-btn-outline justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
+                    className="ql-btn-outline min-h-[44px] justify-center px-3 sm:px-5 py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap"
                   >
                     <span>Chi Tiết Hạng Mục</span>
                     <ExternalLink className="w-3.5 h-3.5 shrink-0" />
@@ -2069,7 +2066,7 @@ export const DomationHome: React.FC = () => {
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Lên đầu trang"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 min-h-[44px] px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
         >
           <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
           <span>Đầu trang</span>
@@ -2101,6 +2098,44 @@ export const DomationHome: React.FC = () => {
       <ImageZoomModal
         image={zoomedShot}
         onClose={() => setZoomedShot(null)}
+      />
+
+      <EcosystemFocusTourModal
+        open={focusTourOpen}
+        initialSystem={focusTourSystem}
+        onClose={() => setFocusTourOpen(false)}
+        onOpenSetupGuide={(product) => {
+          setFocusTourOpen(false);
+          openSetupGuideModal(product);
+        }}
+        onStartTrial={(system) => {
+          setFocusTourOpen(false);
+          if (system === 'dommeta') {
+            navigateTo('/meta-report');
+          } else if (system === 'erp') {
+            navigateTo('/erp#tu-van');
+          } else {
+            navigateTo('/data?setup=quick');
+          }
+        }}
+      />
+
+      <NonCoderSetupModal
+        open={setupGuideOpen}
+        initialProduct={setupGuideProduct}
+        onClose={() => setSetupGuideOpen(false)}
+        onLaunchAutodataWizard={() => {
+          setSetupGuideOpen(false);
+          navigateTo('/data?setup=quick');
+        }}
+        onOpenMetaReport={() => {
+          setSetupGuideOpen(false);
+          navigateTo('/meta-report');
+        }}
+        onNavigate={(path) => {
+          setSetupGuideOpen(false);
+          navigateTo(path);
+        }}
       />
     </div>
   );

@@ -102,9 +102,12 @@ const SettingsInner = () => {
     { value: 'billing', label: t('Gói cước & Ví'), icon: <CreditCard size={16} /> }
   ];
 
-  // States for Gemini API Connection
+  // States for Gemini API Connection (Shared across CRM & DOM Meta Report)
   const [geminiApiKey, setGeminiApiKey] = useState('');
-  const [geminiModel, setGeminiModel] = useState('gemini-3.5-flash-lite');
+  const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
+  const [aiLeadEvalEnabled, setAiLeadEvalEnabled] = useState(true);
+  const [aiAdsEvalEnabled, setAiAdsEvalEnabled] = useState(true);
+  const [aiKeyModalOpen, setAiKeyModalOpen] = useState(false);
   const [pipelineCapiStages, setPipelineCapiStages] = useState<
     Array<{ key: string; label: string; color: string; is_qualified: boolean; capi_event: string; enabled: boolean }>
   >([
@@ -150,9 +153,26 @@ const SettingsInner = () => {
   const [zaloBotLink, setZaloBotLink] = useState('');
   const [zaloAdminGroupChatId, setZaloAdminGroupChatId] = useState('');
   const [zaloNotifyOnlyGroup, setZaloNotifyOnlyGroup] = useState(false);
-  const [ticketNotifyAdmins, setTicketNotifyAdmins] = useState<any[]>([]);
+  const [ticketNotifyAdmins, setTicketNotifyAdmins] = useState<string[]>([]);
   const [zaloDailyReportTime, setZaloDailyReportTime] = useState('');
-  const [dailyReportAdmins, setDailyReportAdmins] = useState<any[]>([]);
+  const [dailyReportAdmins, setDailyReportAdmins] = useState<string[]>([]);
+  const [dailyReportChannels, setDailyReportChannels] = useState<{
+    zalo: boolean;
+    telegram: boolean;
+    email: boolean;
+    discord: boolean;
+  }>({ zalo: true, telegram: true, email: false, discord: false });
+  const [dailyReportIncludeMetaAds, setDailyReportIncludeMetaAds] = useState<boolean>(false);
+  const [dailyReportMetaAdsMetrics, setDailyReportMetaAdsMetrics] = useState<string[]>([
+    'results',
+    'leads',
+    'messages',
+    'reach',
+    'spend',
+    'peak_hours',
+  ]);
+  const [dailyReportMetaAccountIds, setDailyReportMetaAccountIds] = useState<string[]>([]);
+  const [connectedMetaAccounts, setConnectedMetaAccounts] = useState<Array<{ ad_account_id: string; name: string }>>([]);
 
   // Weekly report config
   const [zaloWeeklyReportDay, setZaloWeeklyReportDay] = useState('0');
@@ -341,10 +361,65 @@ const SettingsInner = () => {
         if (json.data.zalo_daily_report_time) setZaloDailyReportTime(json.data.zalo_daily_report_time);
         if (json.data.daily_report_admins) {
           try {
-            const parsed = JSON.parse(json.data.daily_report_admins);
+            const parsed = typeof json.data.daily_report_admins === 'string'
+              ? JSON.parse(json.data.daily_report_admins)
+              : json.data.daily_report_admins;
             if (Array.isArray(parsed)) setDailyReportAdmins(parsed.map(String));
           } catch { /* ignore */ }
         }
+        if (json.data.daily_report_channels) {
+          try {
+            const ch = typeof json.data.daily_report_channels === 'string'
+              ? JSON.parse(json.data.daily_report_channels)
+              : json.data.daily_report_channels;
+            if (ch && typeof ch === 'object') {
+              setDailyReportChannels({
+                zalo: ch.zalo ?? true,
+                telegram: ch.telegram ?? true,
+                email: Boolean(ch.email),
+                discord: Boolean(ch.discord),
+              });
+            }
+          } catch { /* ignore */ }
+        }
+        setDailyReportIncludeMetaAds(
+          json.data.daily_report_include_meta_ads === true ||
+            json.data.daily_report_include_meta_ads === 'true' ||
+            json.data.daily_report_include_meta_ads === 1 ||
+            json.data.daily_report_include_meta_ads === '1'
+        );
+        if (json.data.daily_report_meta_ads_metrics) {
+          try {
+            const parsedMetrics = typeof json.data.daily_report_meta_ads_metrics === 'string'
+              ? JSON.parse(json.data.daily_report_meta_ads_metrics)
+              : json.data.daily_report_meta_ads_metrics;
+            if (Array.isArray(parsedMetrics) && parsedMetrics.length > 0) {
+              setDailyReportMetaAdsMetrics(parsedMetrics.map(String));
+            }
+          } catch { /* ignore */ }
+        }
+        if (json.data.daily_report_meta_account_ids) {
+          try {
+            const parsedAcc = typeof json.data.daily_report_meta_account_ids === 'string'
+              ? JSON.parse(json.data.daily_report_meta_account_ids)
+              : json.data.daily_report_meta_account_ids;
+            if (Array.isArray(parsedAcc)) {
+              setDailyReportMetaAccountIds(parsedAcc.map(String));
+            }
+          } catch { /* ignore */ }
+        }
+        try {
+          const metaCfgJson = await fetchAPI('get_meta_ads_config');
+          const rawAccounts = metaCfgJson?.data?.accounts || metaCfgJson?.accounts;
+          if (Array.isArray(rawAccounts)) {
+            setConnectedMetaAccounts(
+              rawAccounts.map((a: any) => ({
+                ad_account_id: String(a.ad_account_id || a.account_id || a.id || ''),
+                name: String(a.name || a.account_name || a.ad_account_id || 'Meta Ad Account'),
+              })).filter((a: any) => a.ad_account_id)
+            );
+          }
+        } catch { /* ignore */ }
         if (json.data.zalo_weekly_report_day) setZaloWeeklyReportDay(json.data.zalo_weekly_report_day);
         if (json.data.zalo_weekly_report_time) setZaloWeeklyReportTime(json.data.zalo_weekly_report_time);
         if (json.data.zalo_monthly_report_enabled) setZaloMonthlyReportEnabled(json.data.zalo_monthly_report_enabled.toString());
@@ -394,6 +469,22 @@ const SettingsInner = () => {
         }
         if (json.data.gemini_api_key) setGeminiApiKey(json.data.gemini_api_key);
         if (json.data.gemini_model) setGeminiModel(json.data.gemini_model);
+        setAiLeadEvalEnabled(
+          json.data.ai_lead_eval_enabled === undefined
+            ? true
+            : json.data.ai_lead_eval_enabled === '1' ||
+                json.data.ai_lead_eval_enabled === 1 ||
+                json.data.ai_lead_eval_enabled === true ||
+                json.data.ai_lead_eval_enabled === 'true'
+        );
+        setAiAdsEvalEnabled(
+          json.data.ai_ads_eval_enabled === undefined
+            ? true
+            : json.data.ai_ads_eval_enabled === '1' ||
+                json.data.ai_ads_eval_enabled === 1 ||
+                json.data.ai_ads_eval_enabled === true ||
+                json.data.ai_ads_eval_enabled === 'true'
+        );
         if (Array.isArray(json.data.pipeline_capi_stages) && json.data.pipeline_capi_stages.length > 0) {
           setPipelineCapiStages(json.data.pipeline_capi_stages);
         }
@@ -430,7 +521,7 @@ const SettingsInner = () => {
       
       const ticketSettingsJson = await fetchAPI('get_ticket_settings');
       if (ticketSettingsJson && ticketSettingsJson.success && Array.isArray(ticketSettingsJson.data)) {
-        setTicketNotifyAdmins(ticketSettingsJson.data.map(Number));
+        setTicketNotifyAdmins(ticketSettingsJson.data.map(String));
       }
     } catch (e) {
       console.error(e);
@@ -442,7 +533,7 @@ const SettingsInner = () => {
     fetchSettings();
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (tabParam && ['processing', 'mail', 'zalo', 'report', 'duplicate_check', 'ai'].includes(tabParam)) {
+    if (tabParam && ['processing', 'communications', 'report', 'duplicate_check', 'ai', 'billing'].includes(tabParam)) {
       setActiveTab(tabParam as any);
       if (window.location.hash === '#auto-approve') {
         setTimeout(() => {
@@ -476,7 +567,11 @@ const SettingsInner = () => {
       zalo_admin_group_chat_id: zaloAdminGroupChatId,
       zalo_notify_only_group: zaloNotifyOnlyGroup ? '1' : '0',
       zalo_daily_report_time: zaloDailyReportTime,
-      daily_report_admins: dailyReportAdmins,
+      daily_report_admins: dailyReportAdmins.map(String),
+      daily_report_channels: dailyReportChannels,
+      daily_report_include_meta_ads: dailyReportIncludeMetaAds,
+      daily_report_meta_ads_metrics: dailyReportMetaAdsMetrics,
+      daily_report_meta_account_ids: dailyReportMetaAccountIds,
       zalo_weekly_report_day: zaloWeeklyReportDay,
       zalo_weekly_report_time: zaloWeeklyReportTime,
       zalo_monthly_report_enabled: zaloMonthlyReportEnabled,
@@ -497,7 +592,9 @@ const SettingsInner = () => {
       report_error_reasons: reportErrorReasons,
       gemini_api_key: geminiApiKey,
       gemini_model: geminiModel,
-      ai_screener_enabled: aiScreenerEnabled ? '1' : '0',
+      ai_lead_eval_enabled: aiLeadEvalEnabled ? '1' : '0',
+      ai_ads_eval_enabled: aiAdsEvalEnabled ? '1' : '0',
+      ai_screener_enabled: (geminiApiKey.trim() ? aiLeadEvalEnabled : aiScreenerEnabled) ? '1' : '0',
       ai_screener_rules: aiScreenerRules,
       ai_screener_rounds: aiScreenerRounds.join(','),
       ai_screener_mode: aiScreenerMode,
@@ -990,19 +1087,34 @@ const SettingsInner = () => {
             {/* AI Assistant Tab Content */}
             <div style={{ display: activeTab === 'ai' ? 'block' : 'none' }} className="subtab-enter-active">
               <div data-tour="settings-ai-key" className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ display: 'inline-flex', background: 'var(--color-primary)', color: 'white', padding: 6, borderRadius: 6 }}>
-                    <Zap size={16} />
-                  </span>
-                  {t('Cấu hình Trợ lý AI (Gemini Key)')}
-                </h3>
-                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.5 }}>
-                  {t('Cấu hình khóa kết nối Google Gemini API để Trợ lý AI Chatbot có thể đọc dữ liệu thống kê trực tiếp và trả lời một cách thông minh, linh hoạt cho người dùng bằng mô hình')} <strong>Gemini 2.5 Flash Lite</strong>.
-                </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0, color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <span style={{ display: 'inline-flex', background: 'var(--color-primary)', color: 'white', padding: 6, borderRadius: 6 }}>
+                        <Zap size={16} />
+                      </span>
+                      {t('Cấu hình AI API Key Dùng Chung (CRM & Meta Ads)')}
+                      <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '3px 8px', borderRadius: 999, background: 'rgba(16, 185, 129, 0.14)', color: '#059669' }}>
+                        Đồng bộ CRM + Meta Report
+                      </span>
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', margin: '6px 0 0', lineHeight: 1.5 }}>
+                      {t('Một khóa Google Gemini API duy nhất được mã hóa dùng chung cho cả CRM AutoData (sàng lọc & chấm điểm Lead) và Báo cáo Quảng cáo Meta (phân tích chiến dịch, phễu & creative).')}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn primary"
+                    style={{ gap: 6, padding: '9px 14px', fontWeight: 700, flexShrink: 0 }}
+                    onClick={() => setAiKeyModalOpen(true)}
+                  >
+                    <Bot size={16} /> Thiết lập nhanh AI & Quyền đánh giá
+                  </button>
+                </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <label style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-light)' }}>
-                    {t('Gemini API Key')}
+                    {t('Gemini API Key (Dùng chung CRM & Meta Report)')}
                   </label>
                   <input
                     type="password"
@@ -1021,7 +1133,7 @@ const SettingsInner = () => {
                     }}
                   />
                   <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                    {t('Khóa API này được lưu trữ an toàn ở phía máy chủ và được sử dụng làm thông tin xác thực để gửi truy vấn trực tiếp đến Google Gemini.')}
+                    {t('Khóa API được mã hóa AES-256-GCM tại máy chủ và đồng bộ tự động giữa CRM AutoData & DOM Meta Report.')}
                   </span>
                 </div>
 
@@ -1033,7 +1145,7 @@ const SettingsInner = () => {
                     type="text"
                     value={geminiModel}
                     onChange={e => setGeminiModel(e.target.value)}
-                    placeholder="gemini-3.5-flash-lite"
+                    placeholder="gemini-2.5-flash"
                     style={{
                       padding: '10px 12px',
                       border: '1px solid var(--color-border)',
@@ -1046,8 +1158,43 @@ const SettingsInner = () => {
                     }}
                   />
                   <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                    {t('Mặc định sử dụng')} <strong>gemini-3.5-flash-lite</strong> {t('(hoặc bạn có thể chỉ định mô hình tương thích khác như')} <code>gemini-2.5-flash</code> {t('nếu cần).')}
+                    {t('Khuyên dùng')} <strong>gemini-2.5-flash</strong> {t('(tốc độ nhanh & phân tích sâu cả Lead lẫn Quảng cáo Meta).')}
                   </span>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem', paddingTop: '0.25rem' }}>
+                  <div style={{ padding: '14px 16px', borderRadius: 12, border: '1px solid var(--color-border)', background: 'var(--color-bg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                    <div>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                        Cho phép dùng AI đánh giá Lead
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                        Tự động chấm điểm, phân loại chất lượng & sàng lọc Lead trong CRM
+                      </div>
+                    </div>
+                    <ToggleSwitch
+                      checked={aiLeadEvalEnabled}
+                      onChange={(val) => {
+                        setAiLeadEvalEnabled(val);
+                        setAiScreenerEnabled(val);
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ padding: '14px 16px', borderRadius: 12, border: '1px solid var(--color-border)', background: 'var(--color-bg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                    <div>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                        Cho phép dùng AI đánh giá Quảng cáo
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                        Phân tích hiệu suất chiến dịch, phễu chuyển đổi & Creative trên Meta Report
+                      </div>
+                    </div>
+                    <ToggleSwitch
+                      checked={aiAdsEvalEnabled}
+                      onChange={(val) => setAiAdsEvalEnabled(val)}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -2219,10 +2366,11 @@ function doPost(e) {
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {accounts.filter(a => a.role === 'admin' || a.role === 'superadmin' || Boolean(a.is_primary_admin)).map((admin: any) => {
-                      const isSelected = dailyReportAdmins.includes(String(admin.id));
+                      const adminIdStr = String(admin.id);
+                      const isSelected = dailyReportAdmins.includes(adminIdStr);
                       return (
                         <label
-                          key={admin.id}
+                          key={adminIdStr}
                           style={{
                             display: 'flex', alignItems: 'center', gap: '0.875rem',
                             padding: '0.875rem 1rem', borderRadius: 10, cursor: 'pointer',
@@ -2236,7 +2384,7 @@ function doPost(e) {
                             checked={isSelected}
                             onChange={() => {
                               setDailyReportAdmins(prev =>
-                                isSelected ? prev.filter(id => id !== Number(admin.id)) : [...prev, Number(admin.id)]
+                                isSelected ? prev.filter(id => id !== adminIdStr) : [...prev, adminIdStr]
                               );
                             }}
                             style={{ accentColor: 'var(--color-primary)', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }}
@@ -2281,6 +2429,146 @@ function doPost(e) {
                   )}
                 </div>
 
+                {/* Kênh gửi & Gộp Báo cáo Meta Ads Cuối ngày (Mặc định Tắt) */}
+                <div data-tour="settings-comm-zalo" className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: 700, margin: '0 0 4px', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ display: 'inline-flex', background: '#1E40FF', color: 'white', padding: 4, borderRadius: 6 }}><BarChart2 size={16} /></span>
+                      {t('Kênh Gửi & Gộp Báo Cáo Meta Ads Cuối Ngày')}
+                    </h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', margin: 0 }}>
+                      {t('Chọn các kênh nhận báo cáo tự động và bật tùy chọn gộp hiệu suất Meta Ads vào cùng bản tin cuối ngày.')}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-light)', marginBottom: '0.5rem' }}>
+                      {t('Kênh phát hành báo cáo (daily_report_channels)')}
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {([
+                        { key: 'zalo', label: 'Zalo Bot' },
+                        { key: 'telegram', label: 'Telegram' },
+                        { key: 'email', label: 'Email' },
+                        { key: 'discord', label: 'Discord' },
+                      ] as const).map((ch) => {
+                        const active = Boolean(dailyReportChannels[ch.key]);
+                        return (
+                          <button
+                            key={ch.key}
+                            type="button"
+                            onClick={() =>
+                              setDailyReportChannels((prev) => ({
+                                ...prev,
+                                [ch.key]: !prev[ch.key],
+                              }))
+                            }
+                            className={`min-h-[44px] px-3 py-2 rounded-xl border text-xs font-bold flex items-center justify-between gap-2 transition-colors ${
+                              active
+                                ? 'bg-blue-50 border-blue-500 text-blue-700'
+                                : 'bg-white border-slate-200 text-slate-600'
+                            }`}
+                          >
+                            <span>{ch.label}</span>
+                            <span>{active ? 'Bật' : 'Tắt'}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '1rem', borderRadius: 12, border: '1px solid var(--color-border)', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                        {t('Gộp Báo cáo Quảng cáo Meta vào Báo cáo Cuối ngày (Mặc định Tắt)')}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginTop: 3 }}>
+                        {t('Khi bật, bản tin Bot & Email cuối ngày sẽ tự động tổng hợp kết quả Lead, Tin nhắn, Reach, Chi tiêu & Giờ cao điểm từ Meta Ads.')}
+                      </div>
+                    </div>
+                    <ToggleSwitch
+                      checked={dailyReportIncludeMetaAds}
+                      onChange={(val) => setDailyReportIncludeMetaAds(val)}
+                    />
+                  </div>
+
+                  {dailyReportIncludeMetaAds && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem', borderRadius: 12, border: '1px solid rgba(30, 64, 255, 0.2)', background: 'rgba(30, 64, 255, 0.03)' }}>
+                      <div>
+                        <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem' }}>
+                          {t('Chỉ số Meta Ads hiển thị trong báo cáo')}
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {[
+                            { id: 'results', label: 'Kết quả (Results)' },
+                            { id: 'leads', label: 'Số Lead (Leads)' },
+                            { id: 'messages', label: 'Tin nhắn (Messages)' },
+                            { id: 'reach', label: 'Tiếp cận (Reach)' },
+                            { id: 'spend', label: 'Chi tiêu (Spend)' },
+                            { id: 'peak_hours', label: 'Giờ cao điểm' },
+                          ].map((metric) => {
+                            const checked = dailyReportMetaAdsMetrics.includes(metric.id);
+                            return (
+                              <label
+                                key={metric.id}
+                                className="min-h-[44px] px-3 py-2 rounded-xl border border-slate-200 bg-white flex items-center gap-2 text-xs font-semibold cursor-pointer"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() =>
+                                    setDailyReportMetaAdsMetrics((prev) =>
+                                      checked ? prev.filter((m) => m !== metric.id) : [...prev, metric.id]
+                                    )
+                                  }
+                                />
+                                <span>{metric.label}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '0.5rem' }}>
+                          {t('Lọc tài khoản quảng cáo Meta (Tùy chọn)')}
+                        </div>
+                        {connectedMetaAccounts.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                            {connectedMetaAccounts.map((acc) => {
+                              const accChecked = dailyReportMetaAccountIds.includes(acc.ad_account_id);
+                              return (
+                                <label
+                                  key={acc.ad_account_id}
+                                  className="min-h-[44px] px-3 py-2 rounded-xl border border-slate-200 bg-white flex items-center gap-2 text-xs font-semibold cursor-pointer"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={accChecked}
+                                    onChange={() =>
+                                      setDailyReportMetaAccountIds((prev) =>
+                                        accChecked
+                                          ? prev.filter((id) => id !== acc.ad_account_id)
+                                          : [...prev, acc.ad_account_id]
+                                      )
+                                    }
+                                  />
+                                  <span className="truncate">{acc.name} ({acc.ad_account_id})</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {dailyReportMetaAccountIds.length === 0 && (
+                          <div style={{ padding: '0.55rem 0.75rem', borderRadius: 8, background: '#fff', border: '1px dashed rgba(30, 64, 255, 0.35)', fontSize: '0.78rem', color: '#1E40FF', fontWeight: 600 }}>
+                            {t('Để trống = tự động gộp tất cả tài khoản Meta Ads đang kết nối.')}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Thông báo Ticket & Cảnh báo Admin */}
                 <div data-tour="settings-comm-zalo" className="card" style={{ padding: '1.5rem' }}>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2314,10 +2602,11 @@ function doPost(e) {
                     </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                       {accounts.filter(a => a.role === 'admin' || a.role === 'superadmin' || Boolean(a.is_primary_admin)).map((admin: any) => {
-                        const isSelected = ticketNotifyAdmins.includes(String(admin.id));
+                        const adminIdStr = String(admin.id);
+                        const isSelected = ticketNotifyAdmins.includes(adminIdStr);
                         return (
                           <label
-                            key={admin.id}
+                            key={adminIdStr}
                             style={{
                               display: 'flex', alignItems: 'center', gap: '0.875rem',
                               padding: '0.875rem 1rem', borderRadius: 10,
@@ -2333,7 +2622,7 @@ function doPost(e) {
                               checked={isSelected}
                               onChange={() => {
                                 setTicketNotifyAdmins(prev =>
-                                  isSelected ? prev.filter(id => id !== Number(admin.id)) : [...prev, Number(admin.id)]
+                                  isSelected ? prev.filter(id => id !== adminIdStr) : [...prev, adminIdStr]
                                 );
                               }}
                               style={{ accentColor: 'var(--color-primary)', width: 16, height: 16, cursor: zaloNotifyOnlyGroup ? 'not-allowed' : 'pointer', flexShrink: 0 }}
@@ -3382,8 +3671,88 @@ function doPost(e) {
                   </label>
                 </div>
 
-                {/* Stage Mapping Table */}
-                <div className="table-wrap" style={{ overflowX: 'auto' }}>
+                {/* Stage Mapping Mobile Cards + Desktop Table */}
+                <div className="md:hidden space-y-2.5">
+                  {pipelineCapiStages.map((st, idx) => (
+                    <div key={st.key + idx} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <input
+                          type="text"
+                          className="form-input flex-1 min-w-0 font-mono text-xs"
+                          value={st.key}
+                          onChange={(e) =>
+                            setPipelineCapiStages((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, key: e.target.value } : item))
+                            )
+                          }
+                        />
+                        <input
+                          type="color"
+                          value={st.color}
+                          onChange={(e) =>
+                            setPipelineCapiStages((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, color: e.target.value } : item))
+                            )
+                          }
+                          className="w-10 h-10 rounded-lg border border-slate-200 shrink-0"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        className="form-input w-full text-sm"
+                        value={st.label}
+                        onChange={(e) =>
+                          setPipelineCapiStages((prev) =>
+                            prev.map((item, i) => (i === idx ? { ...item, label: e.target.value } : item))
+                          )
+                        }
+                      />
+                      <select
+                        value={st.capi_event}
+                        onChange={(e) =>
+                          setPipelineCapiStages((prev) =>
+                            prev.map((item, i) => (i === idx ? { ...item, capi_event: e.target.value } : item))
+                          )
+                        }
+                        className="form-input w-full min-h-[44px] text-sm"
+                      >
+                        <option value="None">{t('Không bắn CAPI')}</option>
+                        <option value="Lead">Lead</option>
+                        <option value="CompleteRegistration">CompleteRegistration</option>
+                        <option value="Schedule">Schedule</option>
+                        <option value="InitiateCheckout">InitiateCheckout</option>
+                        <option value="Purchase">Purchase</option>
+                      </select>
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="min-h-[44px] px-3 rounded-lg border border-slate-200 bg-white flex items-center gap-2 text-xs font-semibold">
+                          <input
+                            type="checkbox"
+                            checked={st.is_qualified}
+                            onChange={(e) =>
+                              setPipelineCapiStages((prev) =>
+                                prev.map((item, i) => (i === idx ? { ...item, is_qualified: e.target.checked } : item))
+                              )
+                            }
+                          />
+                          <span>{t('Qualified')}</span>
+                        </label>
+                        <label className="min-h-[44px] px-3 rounded-lg border border-slate-200 bg-white flex items-center gap-2 text-xs font-semibold">
+                          <input
+                            type="checkbox"
+                            checked={st.enabled}
+                            onChange={(e) =>
+                              setPipelineCapiStages((prev) =>
+                                prev.map((item, i) => (i === idx ? { ...item, enabled: e.target.checked } : item))
+                              )
+                            }
+                          />
+                          <span>{t('Bật')}</span>
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="hidden md:block table-wrap" style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                     <thead>
                       <tr style={{ background: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}>
@@ -3913,6 +4282,101 @@ function doPost(e) {
             }}
           />
         )}
+      </CustomModal>
+
+      <CustomModal
+        isOpen={aiKeyModalOpen}
+        onClose={() => setAiKeyModalOpen(false)}
+        title="Thiết lập AI API Key Dùng Chung (CRM & Meta Ads)"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem', paddingTop: '0.25rem' }}>
+          <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', fontSize: '0.82rem', color: 'var(--color-text)', lineHeight: 1.5 }}>
+            <strong>Đồng bộ 2 chiều:</strong> API Key thiết lập tại đây được mã hóa dùng chung cho cả <strong>CRM AutoData</strong> và <strong>DOM Meta Report</strong>. Mặc định cả 2 quyền đánh giá đều được bật sẵn.
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-light)' }}>
+              Google Gemini API Key
+            </label>
+            <input
+              type="password"
+              value={geminiApiKey}
+              onChange={(e) => setGeminiApiKey(e.target.value)}
+              placeholder="AIzaSy..."
+              className="form-input"
+              style={{ width: '100%' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-text-light)' }}>
+              Mô hình AI ưu tiên
+            </label>
+            <select
+              value={geminiModel || 'gemini-2.5-flash'}
+              onChange={(e) => setGeminiModel(e.target.value)}
+              className="form-input"
+              style={{ width: '100%' }}
+            >
+              <option value="gemini-2.5-flash">Gemini 2.5 Flash (Khuyên dùng - Tốc độ & Phân tích sâu)</option>
+              <option value="gemini-2.5-pro">Gemini 2.5 Pro (Chuyên sâu chiến lược)</option>
+              <option value="gemini-2.0-flash">Gemini 2.0 Flash (Tiết kiệm & Nhanh)</option>
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--color-border)', background: 'var(--color-bg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                  Cho phép dùng AI đánh giá Lead (CRM)
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                  Chấm điểm tiềm năng, phát hiện số rác & gợi ý kịch bản tư vấn cho Sale
+                </div>
+              </div>
+              <ToggleSwitch
+                checked={aiLeadEvalEnabled}
+                onChange={(val) => {
+                  setAiLeadEvalEnabled(val);
+                  setAiScreenerEnabled(val);
+                }}
+              />
+            </div>
+
+            <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--color-border)', background: 'var(--color-bg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
+                  Cho phép dùng AI đánh giá Quảng cáo (Meta Report)
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                  Phân tích chuyên sâu Result, Spend, Phễu người dùng, Khung giờ & Creative
+                </div>
+              </div>
+              <ToggleSwitch
+                checked={aiAdsEvalEnabled}
+                onChange={(val) => setAiAdsEvalEnabled(val)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:flex sm:justify-end gap-2 pt-1.5">
+            <button type="button" className="btn outline min-h-[44px] justify-center" onClick={() => setAiKeyModalOpen(false)}>
+              Đóng
+            </button>
+            <button
+              type="button"
+              className="btn primary min-h-[44px] justify-center"
+              disabled={saving}
+              onClick={async () => {
+                await handleSave();
+                setAiKeyModalOpen(false);
+              }}
+              style={{ gap: 6, fontWeight: 700 }}
+            >
+              <Save size={15} /> {saving ? 'Đang lưu...' : 'Lưu AI Key'}
+            </button>
+          </div>
+        </div>
       </CustomModal>
     </div>
   );

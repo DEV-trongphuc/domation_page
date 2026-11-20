@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   ArrowRight,
-  Bot,
   Check,
   CheckCircle2,
   Copy,
@@ -201,6 +200,27 @@ export function AutoDataZaloBotGuide({
         )}
       </div>
 
+      {/* 3-Pill Check-Step Bar */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        {[
+          { label: 'Bước 1 ✓ Dán Token Bot', done: botToken.trim().length >= 10 || Boolean(verifyResult?.verified) },
+          { label: 'Bước 2 ✓ Lấy Chat ID nhận tin', done: chatId.trim().length >= 3 || Boolean(verifyResult?.verified) },
+          { label: 'Test thành công ✓', done: Boolean(verifyResult?.verified) },
+        ].map((pill, idx) => (
+          <div
+            key={pill.label}
+            className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold ${
+              pill.done
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-slate-200 bg-white/90 text-slate-600'
+            }`}
+          >
+            <CheckCircle2 className={`w-4 h-4 shrink-0 ${pill.done ? 'text-emerald-600' : 'text-slate-300'}`} />
+            <span className="truncate">{idx === 2 && !pill.done ? 'Bước 3: Bấm Xác thực & Gửi Test' : pill.label}</span>
+          </div>
+        ))}
+      </div>
+
       {/* 4-Step A-Z Visual Guide */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div className="rounded-2xl border border-slate-200/80 bg-white/85 p-4 space-y-2">
@@ -310,33 +330,33 @@ export function AutoDataZaloBotGuide({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <button
             type="button"
             disabled={verifyingMode !== null}
             onClick={() => void runVerification('live')}
-            className="btn-inkica-primary px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
+            className="btn-inkica-primary min-h-[44px] px-4 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap justify-center"
           >
             {verifyingMode === 'live' ? (
               <Loader2 className="w-4 h-4 animate-spin shrink-0" />
             ) : (
               <Send className="w-4 h-4 shrink-0" />
             )}
-            <span>Xác thực Zalo Bot Thật (Live API)</span>
+            <span>Xác thực Zalo Bot Thật</span>
           </button>
 
           <button
             type="button"
             disabled={verifyingMode !== null}
             onClick={() => void runVerification('sandbox')}
-            className="ql-btn-outline px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
+            className="ql-btn-outline min-h-[44px] px-4 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap justify-center"
           >
             {verifyingMode === 'sandbox' ? (
               <Loader2 className="w-4 h-4 animate-spin shrink-0" />
             ) : (
               <Zap className="w-4 h-4 text-amber-500 shrink-0" />
             )}
-            <span>Test thử luồng Bridge (Sandbox)</span>
+            <span>Test thử Sandbox</span>
           </button>
         </div>
 

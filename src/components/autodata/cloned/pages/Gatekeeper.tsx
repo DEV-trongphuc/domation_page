@@ -19,6 +19,8 @@ import {
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { CustomModal } from '../components/ui/CustomModal';
+import { DomOverflowMenu, DomResponsiveSubtabs } from '../../../dom-meta/DomMetaSelect';
+import { DomMetaAiKeyModal } from '../../../dom-meta/DomMetaModals';
 import { Avatar } from '../components/ui/Avatar';
 import { TableSkeleton, Skeleton, KpiCardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
 import { detectCountryFromPhone } from '../utils/phoneHelper';
@@ -749,6 +751,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
   // AI Token Stats Modal States
   const [isTokenStatsModalOpen, setIsTokenStatsModalOpen] = useState<boolean>(false);
+  const [sharedAiModalOpen, setSharedAiModalOpen] = useState<boolean>(false);
+  const { token, tenantSlug } = useAuth();
   const [tokenStatsData, setTokenStatsData] = useState<any>(null);
   const [tokenStatsLoading, setTokenStatsLoading] = useState<boolean>(false);
   const [tokenStatsPage, setTokenStatsPage] = useState<number>(1);
@@ -1999,10 +2003,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         )
       )}
 
-      {/* Mobile control bar */}
+      {/* Mobile control bar: Strictly <= 2 controls horizontally (Status Select + Overflow Action Menu) */}
       <div className="filter-mobile-only" style={{ width: '100%', marginBottom: '1rem' }}>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%' }}>
-          {/* Status Dropdown (Matches Tickets style) */}
           <div style={{ flex: 1, minWidth: 0 }}>
             <CustomSelect
               options={[
@@ -2018,97 +2021,47 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             />
           </div>
 
-          {/* Filter Toggle Button */}
-          <button
-            onClick={() => setShowMobileFilters(!showMobileFilters)}
-            title={showMobileFilters ? t("Ẩn bộ lọc") : t("Hiện bộ lọc")}
-            style={{
-              padding: 0,
-              borderRadius: 8,
-              border: '1px solid',
-              borderColor: showMobileFilters ? 'var(--color-primary)' : 'var(--color-border)',
-              background: showMobileFilters ? 'var(--color-primary-light)' : 'var(--color-surface)',
-              color: showMobileFilters ? 'var(--color-primary)' : 'var(--color-text-muted)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 38,
-              height: 38,
-              flexShrink: 0
-            }}
-          >
-            <Filter size={16} />
-          </button>
-
-          {/* AI Token Stats Button */}
-          <button
-            onClick={() => setIsTokenStatsModalOpen(true)}
-            title={t("Thống kê token AI")}
-            style={{
-              padding: 0,
-              borderRadius: 8,
-              border: '1px solid var(--color-primary)',
-              background: 'rgba(200, 160, 74, 0.08)',
-              color: 'var(--color-primary)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 38,
-              height: 38,
-              flexShrink: 0
-            }}
-          >
-            <Sparkles size={16} />
-          </button>
-
-          {/* Stats Button */}
-          <button
-            onClick={() => setIsStatsModalOpen(true)}
-            title={t("Thống kê")}
-            style={{
-              padding: 0,
-              borderRadius: 8,
-              border: '1px solid var(--color-primary)',
-              background: 'rgba(30, 64, 255,0.08)',
-              color: 'var(--color-primary)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 38,
-              height: 38,
-              flexShrink: 0
-            }}
-          >
-            <BarChart2 size={16} />
-          </button>
-
-          {/* Settings Button */}
-          <button
-            onClick={() => {
-              fetchSettings();
-              setIsSettingsModalOpen(true);
-            }}
-            title={t("Cấu hình quy tắc")}
-            style={{
-              padding: 0,
-              borderRadius: 8,
-              border: '1px solid var(--color-primary)',
-              background: 'rgba(30, 64, 255,0.08)',
-              color: 'var(--color-primary)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 38,
-              height: 38,
-              flexShrink: 0
-            }}
-          >
-            <Settings size={16} />
-          </button>
+          <DomOverflowMenu
+            variant="pill"
+            label={t('Tác vụ')}
+            items={[
+              {
+                id: 'gk_filter',
+                label: showMobileFilters ? t('Ẩn bộ lọc nâng cao') : t('Hiện bộ lọc nâng cao'),
+                icon: <Filter size={15} />,
+                active: showMobileFilters,
+                onClick: () => setShowMobileFilters(!showMobileFilters),
+              },
+              {
+                id: 'gk_shared_ai_key',
+                label: t('Thiết lập AI API Key (CRM & Meta)'),
+                description: t('Khóa dùng chung & bật/tắt AI đánh giá'),
+                icon: <Zap size={15} color="#10b981" />,
+                onClick: () => setSharedAiModalOpen(true),
+              },
+              {
+                id: 'gk_rules',
+                label: t('Cấu hình quy tắc sàng lọc'),
+                icon: <Settings size={15} />,
+                onClick: () => {
+                  fetchSettings();
+                  setIsSettingsModalOpen(true);
+                },
+              },
+              {
+                id: 'gk_token_stats',
+                label: t('Thống kê Token AI'),
+                icon: <Sparkles size={15} />,
+                onClick: () => setIsTokenStatsModalOpen(true),
+              },
+              {
+                id: 'gk_stats',
+                label: t('Báo cáo thống kê sàng lọc'),
+                icon: <BarChart2 size={15} />,
+                onClick: () => setIsStatsModalOpen(true),
+              },
+            ]}
+          />
         </div>
       </div>
 
@@ -2127,63 +2080,27 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           }} />
         )}
 
-        {/* Custom Tabs Bar */}
+        {/* Non-wrapping Subtabs Bar (Strictly <= 2 inline pills on mobile + `⋯` dropdown!) */}
         <div style={{
-          display: 'flex',
           borderBottom: '1px solid var(--color-border)',
           background: 'rgba(30, 64, 255, 0.02)',
-          padding: '10px 18px',
-          gap: '8px',
-          alignItems: 'center',
-          flexWrap: 'wrap'
+          padding: '10px 14px',
         }}>
-          {[
-            { id: 'queue', label: t('Hàng chờ duyệt'), count: tabCounts.queue, color: 'var(--color-warning)' },
-            { id: 'ai_pending', label: t('Chờ AI đánh giá'), count: tabCounts.ai_pending || 0, color: 'var(--color-primary)' },
-            { id: 'substandard', label: t('Dưới chuẩn'), count: tabCounts.substandard, color: 'var(--color-danger)' },
-            { id: 'assigned', label: t('Giao lead'), count: tabCounts.assigned, color: 'var(--color-success)' }
-          ].map(tab => {
-            const isActiveTab = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  border: '1px solid',
-                  borderColor: isActiveTab ? 'var(--color-primary)' : 'var(--color-border)',
-                  background: isActiveTab ? 'var(--color-primary-light)' : 'transparent',
-                  color: isActiveTab ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  fontSize: '0.825rem',
-                  transition: 'all 0.2s ease',
-                  outline: 'none'
-                }}
-              >
-                <span>{tab.label}</span>
-                <span style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  minWidth: '18px',
-                  height: '18px',
-                  padding: '0 5px',
-                  borderRadius: '9px',
-                  background: tab.color,
-                  color: '#ffffff',
-                  fontSize: '0.7rem',
-                  fontWeight: 700
-                }}>
-                  {tab.count}
-                </span>
-              </button>
-            );
-          })}
+          <DomResponsiveSubtabs
+            maxMobile={1}
+            maxTablet={4}
+            maxDesktop={4}
+            moreLabel={t('Trạng thái')}
+            className="w-full sm:w-auto justify-between sm:justify-start"
+            value={activeTab}
+            onChange={(nextId) => setActiveTab(nextId as any)}
+            tabs={[
+              { id: 'queue', label: t('Hàng chờ duyệt'), badge: tabCounts.queue },
+              { id: 'ai_pending', label: t('Chờ AI đánh giá'), badge: tabCounts.ai_pending || 0 },
+              { id: 'substandard', label: t('Dưới chuẩn'), badge: tabCounts.substandard },
+              { id: 'assigned', label: t('Giao lead'), badge: tabCounts.assigned },
+            ]}
+          />
         </div>
 
 
@@ -7023,6 +6940,17 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
           }
         }
       `}</style>
+
+      <DomMetaAiKeyModal
+        open={sharedAiModalOpen}
+        authContext={{ accessToken: token || undefined, tenantSlug: tenantSlug || undefined }}
+        canManageConfig={true}
+        onSaved={(saved) => {
+          setAiScreenerEnabled(Boolean(saved.has_api_key && saved.ai_lead_eval_enabled));
+          fetchSettings();
+        }}
+        onClose={() => setSharedAiModalOpen(false)}
+      />
 
     </div>
   );

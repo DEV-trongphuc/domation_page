@@ -1054,9 +1054,9 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     relatedModuleLabel: 'Xem Trình Tạo Flow & Email Builder',
     faqs: [
       {
-        question: 'Gói Starter và Growth của DOMATION hỗ trợ bao nhiêu Email mỗi tháng?',
+        question: 'Các gói dịch vụ của DOMATION hỗ trợ Email Marketing và Automation ở mức nào mỗi tháng?',
         answer:
-          'Gói Starter (2.990.000₫/tháng) hỗ trợ 100.000 Email/tháng; gói Growth (4.990.000₫/tháng) hỗ trợ 500.000 Email/tháng với SMTP riêng; gói Bespoke Enterprise không giới hạn khối lượng.',
+          'Gói Auto Data Standard (1.500.000₫/tháng) và Auto Data Pro (3.000.000₫/tháng) tập trung chia Lead & Meta CAPI; gói Automation • CRM 360° • ERP 5.0 (6.000.000₫/tháng) mở khóa Amazon SES 98% Inbox, Visual Flow IF/ELSE & Zalo ZNS; gói Bespoke Enterprise hỗ trợ SMTP riêng không giới hạn khối lượng.',
       },
       {
         question: 'Làm sao cấu hình SPF, DKIM và DMARC để Email không bị rơi vào tab Spam?',

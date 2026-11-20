@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 import { CustomModal } from '../components/ui/CustomModal';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
+import { DomOverflowMenu } from '../../../dom-meta/DomMetaSelect';
 import { fetchAPI } from '../utils/api';
 import { CardSkeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
@@ -654,14 +655,47 @@ const RuleSettingsInner = () => {
 
   return (
     <div style={{ animation: 'fadeIn 0.3s' }}>
-      <div className="page-header" style={{ marginBottom: '2rem' }}>
-        <div>
+      <div className="page-header" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.875rem' }}>
+        <div style={{ minWidth: 0, flex: '1 1 240px' }}>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <Filter size={24} color="var(--color-primary)" /> {t("Quy tắc Định tuyến (Routing Rules)")}
           </h1>
           <p className="page-subtitle">{t("Hệ thống Rule Engine tự động phân tích Data Inbound và điều phối cho Đại lý.")}</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        {/* Mobile (< sm): Strictly 2 controls (Primary + Overflow Menu) */}
+        <div className="flex sm:hidden items-center gap-2 w-full">
+          <button className="btn primary flex-1 justify-center min-h-[42px]" onClick={openAddModal}>
+            <Plus size={16} /> {t("Thêm Quy tắc mới")}
+          </button>
+          <DomOverflowMenu
+            variant="pill"
+            label={t("Tác vụ")}
+            items={[
+              {
+                id: 'ai_eval_rules',
+                label: t("AI Đánh giá Quy tắc"),
+                description: t("Kiểm tra xung đột vòng lặp bằng AI"),
+                icon: (
+                  <img
+                    src="/imgs/autodata/domation_ai_icon.svg"
+                    alt="AI"
+                    style={{ width: 16, height: 16, borderRadius: '50%', objectFit: 'cover' }}
+                  />
+                ),
+                onClick: handleAIEvaluateRules,
+              },
+              {
+                id: 'simulate_rules',
+                label: t("Thử nghiệm Định tuyến"),
+                description: t("Giả lập phân phối Data Inbound"),
+                icon: <Play size={14} style={{ fill: 'currentColor' }} />,
+                onClick: openSimulateModal,
+              },
+            ]}
+          />
+        </div>
+        {/* Tablet / Desktop (>= sm) */}
+        <div className="hidden sm:flex items-center gap-3 flex-wrap">
           <button className="btn outline" onClick={handleAIEvaluateRules} style={{ borderColor: '#1E40FF', color: '#1E40FF', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <img 
               src="/imgs/autodata/domation_ai_icon.svg" 
@@ -699,12 +733,13 @@ const RuleSettingsInner = () => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-6 mb-6 w-full">
         {/* Filter 1: Connection */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ fontWeight: 600, color: 'var(--color-text)', whiteSpace: 'nowrap' }}>{t("Lọc theo nguồn:")}</div>
-          <div style={{ width: 280 }}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 min-w-0 w-full sm:w-auto">
+          <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--color-text)', whiteSpace: 'nowrap' }}>{t("Lọc theo nguồn:")}</div>
+          <div className="w-full sm:w-[260px] min-w-0">
             <CustomSelect
+              width="100%"
               options={[
                 { value: 'all', label: t('Hiển thị tất cả nguồn'), icon: <Filter size={14} color="#64748b" /> },
                 { value: 'null', label: t('Chỉ các Quy tắc "Tất cả kết nối"'), icon: <Globe size={14} color="#1E40FF" /> },
@@ -720,10 +755,11 @@ const RuleSettingsInner = () => {
         </div>
 
         {/* Filter 2: Round */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ fontWeight: 600, color: 'var(--color-text)', whiteSpace: 'nowrap' }}>{t("Lọc theo vòng hành động xử lý:")}</div>
-          <div style={{ width: 280 }}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 min-w-0 w-full sm:w-auto">
+          <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--color-text)', whiteSpace: 'nowrap' }}>{t("Lọc theo vòng hành động xử lý:")}</div>
+          <div className="w-full sm:w-[260px] min-w-0">
             <CustomSelect
+              width="100%"
               options={[
                 { value: 'all', label: t('Hiển thị tất cả vòng hành động'), icon: <Filter size={14} color="#64748b" /> },
                 ...rounds.map(r => ({ value: r.id.toString(), label: r.round_name, icon: <MapPin size={14} color="var(--color-primary)" /> }))

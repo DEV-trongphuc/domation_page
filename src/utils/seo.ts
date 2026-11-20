@@ -45,6 +45,13 @@ function removeCanonical(): void {
   document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]').forEach((el) => el.remove());
 }
 
+function removeHreflangAlternates(): void {
+  if (typeof document === 'undefined') return;
+  document
+    .querySelectorAll<HTMLLinkElement>('link[rel="alternate"][hreflang]')
+    .forEach((el) => el.remove());
+}
+
 function upsertHeadLink(attrs: Record<string, string>, selector: string): void {
   if (typeof document === 'undefined') return;
   let link = document.querySelector<HTMLLinkElement>(selector);
@@ -66,8 +73,17 @@ export function applyPageSeo(config: PageSeoConfig): void {
   document.title = config.title;
   if (config.noindex) {
     removeCanonical();
+    removeHreflangAlternates();
   } else {
     upsertCanonical(canonicalUrl);
+    upsertHeadLink(
+      { rel: 'alternate', hreflang: 'vi', href: canonicalUrl },
+      'link[rel="alternate"][hreflang="vi"]'
+    );
+    upsertHeadLink(
+      { rel: 'alternate', hreflang: 'x-default', href: canonicalUrl },
+      'link[rel="alternate"][hreflang="x-default"]'
+    );
   }
   upsertHeadLink(
     {

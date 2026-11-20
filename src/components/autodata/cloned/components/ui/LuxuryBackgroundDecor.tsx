@@ -1,5 +1,5 @@
 import React from 'react';
-const goldEmblem = '/imgs/autodata/domation_ai_icon.svg';
+import { DomationLogoMark } from '../../../../DomationLogoMark';
 
 interface LuxuryBackgroundDecorProps {
   variant?: 'app' | 'report' | 'login';
@@ -8,13 +8,13 @@ interface LuxuryBackgroundDecorProps {
 export const LuxuryBackgroundDecor: React.FC<LuxuryBackgroundDecorProps> = ({ variant = 'app' }) => {
   return (
     <div className={`ql-luxury-decor-layer ql-decor-${variant}`} aria-hidden="true">
-      {/* 1. Architectural Hairline Gold Frame with '+' Corner Crosshairs */}
+      {/* 1. Architectural Hairline Frame with '+' Corner Crosshairs */}
       <div className="ql-brochure-frame-decor">
         <span className="ql-frame-cross bl">+</span>
         <span className="ql-frame-cross br">+</span>
       </div>
 
-      {/* 2. Flowing Gold Silk Wave Line Decor */}
+      {/* 2. Flowing Silk Wave Line Decor */}
       <svg className="ql-silk-wave-decor" viewBox="0 0 1440 900" preserveAspectRatio="none">
         <g fill="none" stroke="rgba(30, 64, 255, 0.28)">
           <path d="M 0 110 C 260 55, 540 165, 860 95 C 1120 40, 1290 130, 1440 80" strokeWidth="1.15" />
@@ -23,9 +23,9 @@ export const LuxuryBackgroundDecor: React.FC<LuxuryBackgroundDecorProps> = ({ va
         </g>
       </svg>
 
-      {/* 3. Ambient Corner Gold Brand Emblem Watermarks (Only Top-Left & Bottom-Right) */}
-      <img src={goldEmblem} alt="" className="ql-sec-decor tl-hero" />
-      <img src={goldEmblem} alt="" className="ql-sec-decor br" />
+      {/* 3. Ambient Corner Official App Brand Emblem Watermarks (Top-Left & Bottom-Right) */}
+      <DomationLogoMark className="ql-sec-decor tl-hero" />
+      <DomationLogoMark className="ql-sec-decor br" />
     </div>
   );
 };

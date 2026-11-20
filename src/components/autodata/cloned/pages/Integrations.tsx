@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { Webhook, Plus, Trash2, Copy, CheckCircle2, ChevronRight, ChevronLeft, Link2, Tag, Info, FileSpreadsheet, Zap, Clock, Target, RefreshCw, Edit2, ExternalLink, AlertCircle, Settings, Database } from 'lucide-react';
+import { Webhook, Plus, Trash2, Copy, CheckCircle2, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, Code2, Link2, Tag, Info, FileSpreadsheet, Zap, Clock, Target, RefreshCw, Edit2, ExternalLink, AlertCircle, Settings, Database } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { CustomModal } from '../components/ui/CustomModal';
 import { CustomSelect } from '../components/ui/CustomSelect';
@@ -327,6 +327,14 @@ const IntegrationsInner = () => {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [selected, setSelected] = useState<Connection | null>(null);
   const [mobileActiveView, setMobileActiveView] = useState<'list' | 'detail'>('list');
+  const [isMobileViewport, setIsMobileViewport] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 640 : false
+  );
+  useEffect(() => {
+    const onResize = () => setIsMobileViewport(window.innerWidth <= 640);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -386,6 +394,8 @@ const IntegrationsInner = () => {
   const [masterSheetName, setMasterSheetName] = useState('');
   const [isSavingMaster, setIsSavingMaster] = useState(false);
   const [isTestingMaster, setIsTestingMaster] = useState(false);
+  const [showMasterAdvancedCode, setShowMasterAdvancedCode] = useState(false);
+  const [showWebhookAdvancedCode, setShowWebhookAdvancedCode] = useState(false);
 
   const getSelectFields = () => {
     const isSyncActive = selected?.sync_saleperson || (showEditConn && editSyncSaleperson) || (showAddConn && syncSaleperson);
@@ -827,10 +837,10 @@ const IntegrationsInner = () => {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button onClick={() => setShowAddConn(true)} className="btn outline" style={{ width: '100%', justifyContent: 'center', height: 40, borderRadius: 10 }}>
+            <button onClick={() => setShowAddConn(true)} className="btn outline" style={{ width: '100%', justifyContent: 'center', minHeight: 44, borderRadius: 10 }}>
               <FileSpreadsheet size={16} /> {t('Thêm kết nối Sheets')}
             </button>
-            <button onClick={() => setShowAddApi(true)} className="btn primary" style={{ width: '100%', justifyContent: 'center', height: 40, borderRadius: 10, background: 'var(--color-primary)' }}>
+            <button onClick={() => setShowAddApi(true)} className="btn primary" style={{ width: '100%', justifyContent: 'center', minHeight: 44, borderRadius: 10, background: 'var(--color-primary)' }}>
               <Zap size={16} /> {t('Thêm API Landing Page')}
             </button>
             <div
@@ -979,7 +989,7 @@ const IntegrationsInner = () => {
             <button
               onClick={() => setMobileActiveView('list')}
               className="btn outline"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', height: 36, padding: '0 10px', fontSize: '0.8125rem' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', minHeight: 44, padding: '0 14px', fontSize: '0.8125rem' }}
             >
               <ChevronLeft size={16} /> {t('Quay lại')} danh sách
             </button>
@@ -1031,18 +1041,18 @@ const IntegrationsInner = () => {
                       <label className="form-label" style={{ fontWeight: 700, fontSize: '0.8125rem', color: 'var(--color-text-light)' }}>
                         {t('Google Apps Script Web App URL')} <span style={{ color: 'var(--color-danger)' }}>*</span>
                       </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         <input
                           type="text"
                           className="form-input"
                           placeholder={t("https://script.google.com/macros/s/.../exec")}
                           value={masterUrl}
                           onChange={e => setMasterUrl(e.target.value)}
-                          style={{ flex: 1, background: 'var(--color-surface)', color: 'var(--color-text)' }}
+                          style={{ flex: '1 1 220px', minWidth: 0, background: 'var(--color-surface)', color: 'var(--color-text)' }}
                         />
                         <button
                           className="btn outline"
-                          style={{ height: 40, whiteSpace: 'nowrap', padding: '0 1rem', borderRadius: 10 }}
+                          style={{ minHeight: 44, whiteSpace: 'nowrap', padding: '0 1rem', borderRadius: 10 }}
                           disabled={isTestingMaster || !masterUrl.trim()}
                           onClick={async () => {
                             setIsTestingMaster(true);
@@ -1093,7 +1103,7 @@ const IntegrationsInner = () => {
                 <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid var(--color-border)', paddingTop: '1.25rem' }}>
                   <button
                     className="btn primary"
-                    style={{ height: 38, padding: '0 1.5rem', background: 'var(--color-primary)', color: '#fff', borderRadius: 10, fontWeight: 600 }}
+                    style={{ minHeight: 44, padding: '0 1.5rem', background: 'var(--color-primary)', color: '#fff', borderRadius: 10, fontWeight: 600 }}
                     disabled={isSavingMaster || (masterEnabled && !masterUrl.trim())}
                     onClick={async () => {
                       setIsSavingMaster(true);
@@ -1140,32 +1150,45 @@ const IntegrationsInner = () => {
                   <li>{t('Nhấp Triển khai, phê duyệt quyền truy cập của Google, sau đó sao chép')} <strong>{t('URL ứng dụng web (Web app URL)')}</strong> {t('và dán vào cấu hình phía trên.')}</li>
                 </ol>
 
-                <div style={{ fontWeight: 700, marginBottom: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>{t('Mã nguồn Google Apps Script:')}</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: showMasterAdvancedCode ? 10 : 0 }}>
                   <button
+                    type="button"
                     className="btn outline"
-                    style={{ height: 26, padding: '0 8px', fontSize: '0.75rem', borderRadius: 6, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                    aria-expanded={showMasterAdvancedCode}
+                    style={{ minHeight: 44, padding: '0 12px', fontSize: '0.8125rem', fontWeight: 700, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                    onClick={() => setShowMasterAdvancedCode((v) => !v)}
+                  >
+                    <Code2 size={15} />
+                    <span>Chế độ Nâng cao (Kỹ thuật)</span>
+                    {showMasterAdvancedCode ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn outline"
+                    style={{ minHeight: 44, padding: '0 14px', fontSize: '0.8125rem', fontWeight: 600, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 6 }}
                     onClick={() => {
                       navigator.clipboard.writeText(masterAppsScriptCode);
                       toast.success(t('Đã sao chép mã nguồn Apps Script!'));
                     }}
                   >
-                    <Copy size={12} /> {t('Sao chép')}
+                    <Copy size={14} /> {t('Sao chép')}
                   </button>
                 </div>
-                <pre style={{
-                  maxHeight: '200px', overflowY: 'auto', background: 'var(--color-surface)', border: '1px solid var(--color-border)',
-                  padding: '10px', borderRadius: 8, fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--color-text-muted)'
-                }}>
-                  {masterAppsScriptCode}
-                </pre>
+                {showMasterAdvancedCode && (
+                  <pre style={{
+                    maxHeight: '220px', overflowY: 'auto', overflowX: 'auto', background: 'var(--color-surface)', border: '1px solid var(--color-border)',
+                    padding: '10px', borderRadius: 8, fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--color-text-muted)'
+                  }}>
+                    {masterAppsScriptCode}
+                  </pre>
+                )}
               </div>
             </div>
           ) : (
             <>
               <div className="card" style={{ padding: '1.25rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', minWidth: 0, flex: '1 1 220px' }}>
                     <div style={{
                       width: 44, height: 44, borderRadius: 12, background: 'var(--color-bg)', border: '1px solid var(--color-border)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
@@ -1217,87 +1240,92 @@ const IntegrationsInner = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', width: isMobileViewport ? '100%' : 'auto' }}>
                     {selected.last_sync_at && (
-                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', width: '100%' }}>
                         {t('Lần cuối:')} {parseServerDateVN(selected.last_sync_at)?.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', { timeZone: VN_TIMEZONE }) || selected.last_sync_at}
                       </div>
                     )}
                     {selected.connection_type !== 'landing_page' && (
-                      <button
-                        className="btn outline"
-                        style={{ padding: '6px 12px', fontSize: '0.8125rem', height: 32 }}
-                        disabled={isSyncing}
-                        onClick={async () => {
-                          setIsSyncing(true);
-                          try {
-                            const res = await fetchAPI(`force_sync&id=${selected.id}`);
-                            if (res.success) {
-                              toast.success(t('Đã đồng bộ dữ liệu thủ công!'));
-                              fetchData(); // Refresh to update last_sync_at on screen
-                            } else {
-                              toast.error(t('Đồng bộ thất bại: ') + (res.message || ''));
+                      <div style={{ width: isMobileViewport ? '100%' : 'auto' }}>
+                        <button
+                          className="btn outline"
+                          style={{ padding: '0 12px', fontSize: '0.8125rem', minHeight: 44, width: isMobileViewport ? '100%' : 'auto', justifyContent: 'center' }}
+                          disabled={isSyncing}
+                          onClick={async () => {
+                            setIsSyncing(true);
+                            try {
+                              const res = await fetchAPI(`force_sync&id=${selected.id}`);
+                              if (res.success) {
+                                toast.success(t('Đã đồng bộ dữ liệu thủ công!'));
+                                fetchData(); // Refresh to update last_sync_at on screen
+                              } else {
+                                toast.error(t('Đồng bộ thất bại: ') + (res.message || ''));
+                              }
+                            } catch (e: any) {
+                              toast.error(t('Lỗi kết nối: ') + e.message);
                             }
-                          } catch (e: any) {
-                            toast.error(t('Lỗi kết nối: ') + e.message);
-                          }
-                          setIsSyncing(false);
-                        }}
-                      >
-                        <RefreshCw size={14} className={isSyncing ? 'spin' : ''} /> {isSyncing ? t('Đang đồng bộ...') : t('Đồng bộ ngay')}
-                      </button>
+                            setIsSyncing(false);
+                          }}
+                        >
+                          <RefreshCw size={14} className={isSyncing ? 'spin' : ''} /> {isSyncing ? t('Đang đồng bộ...') : t('Đồng bộ ngay')}
+                        </button>
+                      </div>
                     )}
 
-                    <button
-                      className="btn outline"
-                      style={{ padding: 8, borderRadius: 8, height: 32, width: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', cursor: 'pointer' }}
-                      title={t("Chỉnh sửa cấu hình đồng bộ & email")}
-                      onClick={() => {
-                        let preset: any = 'custom';
-                        let customVal = selected.sync_interval;
-                        if (customVal === 5) preset = '5p';
-                        else if (customVal === 15) preset = '15p';
-                        else if (customVal === 60) preset = '1h';
-                        else if (customVal === 1440) preset = '1d';
-                        
-                        setEditSyncPreset(preset);
-                        setEditCustomSyncMins(customVal || 15);
-                        setEditSyncMode((selected.sync_mode as 'all' | 'new_only') || 'all');
-                        setEditIsSilent(Boolean(Number(selected.is_silent)));
-                        setEditSyncSaleperson(Boolean(Number(selected.sync_saleperson)));
-                        setEditTwoWaySync(Boolean(Number(selected.two_way_sync)));
-                        setEditGoogleScriptUrl(selected.google_script_url || '');
-                        setEditLeadRecallMinutes(Number(selected.lead_recall_minutes) || 0);
-                        const existingTemplate = selected.email_template || '';
-                        setEditEmailTemplate(
-                          existingTemplate ||
-                          generateDefaultTemplate(
-                            (selected.mappings || []).map(m => ({
-                              sheet_col: m.sheet_column,
-                              sys_field: m.system_field,
-                              custom_label: m.custom_label
-                            })),
-                            t
-                          )
-                        );
-                        setShowEditConn(true);
-                      }}
-                    >
-                      <Settings size={16} />
-                    </button>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <button
+                        className="btn outline"
+                        style={{ padding: 8, borderRadius: 8, minHeight: 44, minWidth: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', cursor: 'pointer' }}
+                        title={t("Chỉnh sửa cấu hình đồng bộ & email")}
+                        onClick={() => {
+                          let preset: any = 'custom';
+                          let customVal = selected.sync_interval;
+                          if (customVal === 5) preset = '5p';
+                          else if (customVal === 15) preset = '15p';
+                          else if (customVal === 60) preset = '1h';
+                          else if (customVal === 1440) preset = '1d';
+                          
+                          setEditSyncPreset(preset);
+                          setEditCustomSyncMins(customVal || 15);
+                          setEditSyncMode((selected.sync_mode as 'all' | 'new_only') || 'all');
+                          setEditIsSilent(Boolean(Number(selected.is_silent)));
+                          setEditSyncSaleperson(Boolean(Number(selected.sync_saleperson)));
+                          setEditTwoWaySync(Boolean(Number(selected.two_way_sync)));
+                          setEditGoogleScriptUrl(selected.google_script_url || '');
+                          setEditLeadRecallMinutes(Number(selected.lead_recall_minutes) || 0);
+                          const existingTemplate = selected.email_template || '';
+                          setEditEmailTemplate(
+                            existingTemplate ||
+                            generateDefaultTemplate(
+                              (selected.mappings || []).map(m => ({
+                                sheet_col: m.sheet_column,
+                                sys_field: m.system_field,
+                                custom_label: m.custom_label
+                              })),
+                              t
+                            )
+                          );
+                          setShowEditConn(true);
+                        }}
+                      >
+                        <Settings size={16} />
+                      </button>
 
-                    <ToggleSwitch
-                      checked={selected.is_active}
-                      onChange={() => handleToggleActive(selected)}
-                    />
-                    <button
-                      onClick={() => { setDeleteId(selected.id); setIsConfirmOpen(true); }}
-                      style={{ padding: 8, borderRadius: 8, color: 'var(--color-text-muted)', transition: 'all 0.2s', border: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 32, width: 32, cursor: 'pointer' }}
-                      onMouseEnter={e => { (e.currentTarget.style.color = 'var(--color-danger)'); (e.currentTarget.style.background = 'var(--color-danger-light)'); }}
-                      onMouseLeave={e => { (e.currentTarget.style.color = 'var(--color-text-muted)'); (e.currentTarget.style.background = 'transparent'); }}
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                      <ToggleSwitch
+                        checked={selected.is_active}
+                        onChange={() => handleToggleActive(selected)}
+                      />
+                      <button
+                        onClick={() => { setDeleteId(selected.id); setIsConfirmOpen(true); }}
+                        aria-label={t('Xóa kết nối')}
+                        style={{ padding: 8, borderRadius: 8, color: 'var(--color-text-muted)', transition: 'all 0.2s', border: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 44, minWidth: 44, cursor: 'pointer' }}
+                        onMouseEnter={e => { (e.currentTarget.style.color = 'var(--color-danger)'); (e.currentTarget.style.background = 'var(--color-danger-light)'); }}
+                        onMouseLeave={e => { (e.currentTarget.style.color = 'var(--color-text-muted)'); (e.currentTarget.style.background = 'transparent'); }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -1522,20 +1550,37 @@ const IntegrationsInner = () => {
                     </div>
                   </div>
 
-                  <div style={{ position: 'relative', background: '#1e293b', padding: '1rem', borderRadius: 8, overflowX: 'auto', border: '1px solid #334155' }}>
-                    <button
-                      onClick={() => {
-                        const code = `// Gửi dữ liệu bằng JS fetch API (JSON)\nfetch("${webhookUrl(selected.webhook_token)}", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify({\n    name: "Nguyễn Văn A",\n    phone: "0912345678",\n    email: "a@gmail.com",\n    source: "Landing_X",\n    tuoi: 25,\n    nhu_cau: "Tư vấn gấp"\n  })\n});`;
-                        navigator.clipboard.writeText(code);
-                        setCopiedId(selected.id);
-                        setTimeout(() => setCopiedId(null), 2000);
-                      }}
-                      style={{ position: 'absolute', top: 8, right: 8, padding: '4px 8px', background: 'rgba(255,255,255,0.1)', color: 'white', borderRadius: 6, fontSize: '0.75rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-                    >
-                      {copiedId === selected.id ? <CheckCircle2 size={14} /> : <Copy size={14} />} {copiedId === selected.id ? t('Đã copy') : t('Copy Code')}
-                    </button>
-                    <pre style={{ margin: 0, color: '#dadada', fontSize: '0.8125rem', fontFamily: 'monospace', marginTop: 12 }}>
-                      {`// Gửi dữ liệu bằng JS fetch API (JSON)
+                  <div style={{ border: '1px solid var(--color-border)', borderRadius: 12, padding: '0.875rem', background: 'var(--color-bg)' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                      <button
+                        type="button"
+                        className="btn outline"
+                        aria-expanded={showWebhookAdvancedCode}
+                        onClick={() => setShowWebhookAdvancedCode((v) => !v)}
+                        style={{ minHeight: 44, padding: '0 12px', fontSize: '0.8125rem', fontWeight: 700, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      >
+                        <Code2 size={15} />
+                        <span>Chế độ Nâng cao (Kỹ thuật)</span>
+                        {showWebhookAdvancedCode ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn outline"
+                        onClick={() => {
+                          const code = `// Gửi dữ liệu bằng JS fetch API (JSON)\nfetch("${webhookUrl(selected.webhook_token)}", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify({\n    name: "Nguyễn Văn A",\n    phone: "0912345678",\n    email: "a@gmail.com",\n    source: "Landing_X",\n    tuoi: 25,\n    nhu_cau: "Tư vấn gấp"\n  })\n});`;
+                          navigator.clipboard.writeText(code);
+                          setCopiedId(selected.id);
+                          setTimeout(() => setCopiedId(null), 2000);
+                        }}
+                        style={{ minHeight: 44, padding: '0 14px', borderRadius: 10, fontSize: '0.8125rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      >
+                        {copiedId === selected.id ? <CheckCircle2 size={14} /> : <Copy size={14} />} {copiedId === selected.id ? t('Đã copy') : t('Copy Code')}
+                      </button>
+                    </div>
+                    {showWebhookAdvancedCode && (
+                      <div style={{ marginTop: 10, background: '#1e293b', padding: '1rem', borderRadius: 8, overflowX: 'auto', border: '1px solid #334155' }}>
+                        <pre style={{ margin: 0, color: '#dadada', fontSize: '0.8125rem', fontFamily: 'monospace' }}>
+                          {`// Gửi dữ liệu bằng JS fetch API (JSON)
 fetch("${webhookUrl(selected.webhook_token)}", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -1548,7 +1593,9 @@ fetch("${webhookUrl(selected.webhook_token)}", {
     nhu_cau: "Tư vấn gấp"
   })
 });`}
-                    </pre>
+                        </pre>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -1607,11 +1654,11 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                       />
                     </div>
                     <div className="mapping-btn-container" style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
-                      <button className="btn primary" onClick={handleSaveMapping} disabled={isSavingMapping} style={{ flexShrink: 0, height: 42, background: editingMappingId ? 'var(--color-warning)' : 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700 }}>
+                      <button className="btn primary" onClick={handleSaveMapping} disabled={isSavingMapping} style={{ flexShrink: 0, minHeight: 44, background: editingMappingId ? 'var(--color-warning)' : 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700 }}>
                         {isSavingMapping ? t('Đang lưu...') : (editingMappingId ? t('Cập nhật') : <><Plus size={16} /> {t('Thêm')}</>)}
                       </button>
                       {editingMappingId && (
-                        <button className="btn outline" onClick={cancelEditMapping} style={{ flexShrink: 0, height: 42, display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, padding: '0 0.75rem' }}>
+                        <button className="btn outline" onClick={cancelEditMapping} style={{ flexShrink: 0, minHeight: 44, display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, padding: '0 0.75rem' }}>
                           {t('Hủy')}
                         </button>
                       )}
@@ -1626,20 +1673,20 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                   </div>
 
                   {/* Mappings Table BELOW */}
-                  <div className="responsive-table-wrap" style={{ marginBottom: '1rem' }}>
+                  <div className="responsive-table-wrap dom-table-scroll-x overflow-x-auto" style={{ marginBottom: '1rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
                     <table style={{ tableLayout: 'fixed', width: '100%', minWidth: 650 }}>
                       <colgroup>
-                        <col style={{ width: '45%' }} />
-                        <col style={{ width: '25%' }} />
+                        <col style={{ width: '38%' }} />
                         <col style={{ width: '22%' }} />
-                        <col style={{ width: '8%' }} />
+                        <col style={{ width: '22%' }} />
+                        <col style={{ width: '18%' }} />
                       </colgroup>
                       <thead>
                         <tr>
                           <th>{t('Tên cột trên Google Sheets')}</th>
                           <th>{t('Trường hiển thị trong Email')}</th>
                           <th>{t('Trường hệ thống')}</th>
-                          <th style={{ width: 60 }}></th>
+                          <th style={{ width: 112, minWidth: 108 }}></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1691,7 +1738,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                                   setNewMappingCustomLabel(m.custom_label || '');
                                 }}
                                 title={t("Chỉnh sửa mapping")}
-                                style={{ padding: 6, borderRadius: 8, color: 'var(--color-text-muted)', transition: 'all 0.2s', background: editingMappingId === m.id ? 'var(--color-warning-light)' : 'transparent' }}
+                                style={{ padding: 6, borderRadius: 8, minWidth: 44, minHeight: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', transition: 'all 0.2s', background: editingMappingId === m.id ? 'var(--color-warning-light)' : 'transparent' }}
                                 onMouseEnter={e => { (e.currentTarget.style.color = 'var(--color-warning)'); (e.currentTarget.style.background = 'var(--color-warning-light)'); }}
                                 onMouseLeave={e => { (e.currentTarget.style.color = 'var(--color-text-muted)'); (e.currentTarget.style.background = editingMappingId === m.id ? 'var(--color-warning-light)' : 'transparent'); }}
                               >
@@ -1700,7 +1747,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                               <button
                                 onClick={() => handleDeleteMapping(m.id)}
                                 title={t("Xóa mapping")}
-                                style={{ padding: 6, borderRadius: 8, color: 'var(--color-text-muted)', transition: 'all 0.2s' }}
+                                style={{ padding: 6, borderRadius: 8, minWidth: 44, minHeight: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', transition: 'all 0.2s' }}
                                 onMouseEnter={e => { (e.currentTarget.style.color = 'var(--color-danger)'); (e.currentTarget.style.background = 'var(--color-danger-light)'); }}
                                 onMouseLeave={e => { (e.currentTarget.style.color = 'var(--color-text-muted)'); (e.currentTarget.style.background = 'transparent'); }}
                               >
@@ -1940,13 +1987,13 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                 </div>
               )}
 
-              <div style={{ position: 'sticky', bottom: '-24px', background: 'var(--color-surface)', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', paddingBottom: '1rem', borderTop: '1px solid var(--color-border)', marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
-                <span onClick={() => setShowAddConn(false)} style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>{t('Quay lại')}</span>
+              <div style={{ position: 'sticky', bottom: '-24px', background: 'var(--color-surface)', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: '1.5rem', paddingTop: '1rem', paddingBottom: '1rem', borderTop: '1px solid var(--color-border)', marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
+                <button type="button" className="btn outline" onClick={() => setShowAddConn(false)} style={{ minHeight: 44, padding: '0 16px', fontSize: '0.875rem', fontWeight: 600 }}>{t('Quay lại')}</button>
                 <button
                   className="btn"
                   onClick={handleFetchColumns}
                   disabled={isFetchingColumns}
-                  style={{ background: 'var(--color-primary)', color: 'white', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}
+                  style={{ minHeight: 44, background: 'var(--color-primary)', color: 'white', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}
                 >
                   {isFetchingColumns ? <RefreshCw size={16} className="spin" /> : null}
                   {isFetchingColumns ? t('Đang kiểm tra...') : t('Kiểm tra kết nối')} <ChevronRight size={16} />
@@ -2020,7 +2067,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                     setNewMappingCustomLabel('');
                   }}
                   className="btn"
-                  style={{ background: 'var(--color-primary)', color: 'white', height: 38, padding: '0 1rem', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700 }}
+                  style={{ background: 'var(--color-primary)', color: 'white', minHeight: 44, padding: '0 1rem', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700 }}
                 >
                   <Plus size={16} /> Thêm
                 </button>
@@ -2063,7 +2110,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                       </div>
                       <div style={{ color: 'var(--color-primary)', fontSize: '0.875rem', fontWeight: 700 }}>{t(SYSTEM_FIELDS.find(f => f.value === m.sys_field)?.label || m.sys_field)}</div>
                       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <button onClick={() => setTempMappings(tempMappings.filter((_, i) => i !== idx))} style={{ color: 'var(--color-danger)', background: 'var(--color-danger-light)', border: 'none', width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                        <button onClick={() => setTempMappings(tempMappings.filter((_, i) => i !== idx))} aria-label={t('Xóa dòng mapping')} style={{ color: 'var(--color-danger)', background: 'var(--color-danger-light)', border: 'none', minWidth: 44, minHeight: 44, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -2077,8 +2124,8 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                 </div>
               </div>
 
-              <div style={{ position: 'sticky', bottom: '-24px', background: 'var(--color-surface)', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', paddingBottom: '1rem', borderTop: '1px solid var(--color-border)', marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
-                <span onClick={() => setAddStep(1)} style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>{t('Quay lại')}</span>
+              <div style={{ position: 'sticky', bottom: '-24px', background: 'var(--color-surface)', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: '1.5rem', paddingTop: '1rem', paddingBottom: '1rem', borderTop: '1px solid var(--color-border)', marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
+                <button type="button" className="btn outline" onClick={() => setAddStep(1)} style={{ minHeight: 44, padding: '0 16px', fontSize: '0.875rem', fontWeight: 600 }}>{t('Quay lại')}</button>
                 <button
                   className="btn"
                   onClick={() => {
@@ -2095,7 +2142,7 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                     setEmailTemplate(generateDefaultTemplate(tempMappings, t));
                     setAddStep(3);
                   }}
-                  style={{ background: 'var(--color-primary)', color: 'white', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}
+                  style={{ minHeight: 44, background: 'var(--color-primary)', color: 'white', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}
                 >
                   {t('Tiếp tục thiết lập Email')} <ChevronRight size={16} />
                 </button>
@@ -2129,9 +2176,9 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                 </div>
               </div>
 
-              <div style={{ position: 'sticky', bottom: '-24px', background: 'var(--color-surface)', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', paddingBottom: '1rem', borderTop: '1px solid var(--color-border)', marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
-                <span onClick={() => setAddStep(2)} style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>{t('Quay lại')}</span>
-                <button className="btn" onClick={handleAddConnection} style={{ background: 'var(--color-primary)', color: 'white', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ position: 'sticky', bottom: '-24px', background: 'var(--color-surface)', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: '1.5rem', paddingTop: '1rem', paddingBottom: '1rem', borderTop: '1px solid var(--color-border)', marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px' }}>
+                <button type="button" className="btn outline" onClick={() => setAddStep(2)} style={{ minHeight: 44, padding: '0 16px', fontSize: '0.875rem', fontWeight: 600 }}>{t('Quay lại')}</button>
+                <button className="btn" onClick={handleAddConnection} style={{ minHeight: 44, background: 'var(--color-primary)', color: 'white', fontWeight: 700, padding: '0.75rem 1.5rem', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
                   {t('Hoàn tất kết nối')} <CheckCircle2 size={16} />
                 </button>
               </div>
@@ -2430,8 +2477,8 @@ fetch("${webhookUrl(selected.webhook_token)}", {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem', paddingTop: '1.25rem', borderTop: '1px solid var(--color-border)' }}>
-              <button className="btn outline" onClick={() => setShowEditConn(false)} style={{ padding: '0.5rem 1.25rem' }}>{t('Hủy bỏ')}</button>
-              <button className="btn primary" onClick={handleSaveEditConn} disabled={isSaving} style={{ padding: '0.5rem 1.25rem', background: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <button className="btn outline" onClick={() => setShowEditConn(false)} style={{ padding: '0.5rem 1.25rem', minHeight: 44 }}>{t('Hủy bỏ')}</button>
+              <button className="btn primary" onClick={handleSaveEditConn} disabled={isSaving} style={{ padding: '0.5rem 1.25rem', minHeight: 44, background: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
                 {isSaving ? <RefreshCw size={16} className="spin" /> : <CheckCircle2 size={16} />} {t('Lưu cấu hình')}
               </button>
             </div>
@@ -2473,8 +2520,8 @@ fetch("${webhookUrl(selected.webhook_token)}", {
           </div>
   
           <div style={{ padding: '1rem 1.5rem', background: 'var(--color-bg)', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-            <button className="btn outline" onClick={() => setShowAddApi(false)}>{t('Hủy')}</button>
-            <button className="btn primary" onClick={handleAddApiConnection} disabled={isSaving || !newApiName.trim()} style={{ background: 'var(--color-primary)', border: 'none' }}>
+            <button className="btn outline" onClick={() => setShowAddApi(false)} style={{ minHeight: 44 }}>{t('Hủy')}</button>
+            <button className="btn primary" onClick={handleAddApiConnection} disabled={isSaving || !newApiName.trim()} style={{ minHeight: 44, background: 'var(--color-primary)', border: 'none' }}>
               {isSaving ? t('Đang tạo...') : t('Tạo API Endpoint')}
             </button>
           </div>

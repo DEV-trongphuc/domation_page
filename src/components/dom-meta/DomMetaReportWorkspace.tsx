@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -15,6 +15,7 @@ import {
   Download,
   ExternalLink,
   Eye,
+  HelpCircle,
   Images,
   KeyRound,
   Layers,
@@ -22,8 +23,9 @@ import {
   List,
   LogOut,
   MapPin,
+  Menu,
   PlusCircle,
-  RefreshCw,
+  Rocket,
   Search,
   Settings,
   Share2,
@@ -32,6 +34,7 @@ import {
   Target,
   TrendingUp,
   Users,
+  X,
   Zap,
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
@@ -61,7 +64,9 @@ import {
   type DomMetaDailyPoint,
   type DomMetaDashboardDataset,
   type DomMetaDatePreset,
+  type DomMetaEntityHourPoint,
   type DomMetaNavView,
+  type DomMetaSettingsTab,
   type DomMetaWorkspaceConfig,
   type DomMetaWorkspacePatch,
 } from './domMetaTypes';
@@ -72,10 +77,13 @@ import {
   fetchDomMetaCrmAttribution,
   fetchDomMetaQuickConnectStatus,
   fetchDomMetaWorkspaceConfig,
+  getCachedPrimaryAdAccountId,
   loadDomGoogleAdsDataset,
   loadDomGoogleAdsKeywords,
   loadFullDomMetaDataset,
+  prefetchDomMetaEntityDeepDetail,
   quickConnectDomMeta,
+  setCachedPrimaryAdAccountId,
   updateDomMetaWorkspaceConfig,
   type DomMetaAuthContext,
 } from './domMetaApi';
@@ -84,14 +92,17 @@ import {
   CreativeThumbFan,
   DailyTrendAreaChart,
   DaypartingHeatmapGrid,
+  DeviceDonutCard,
   GoogleAdsCampaignDonutCard,
   GoogleAdsChannelCard,
   GoogleAdsHourlyBarChart,
   GoogleAdsLocationBarChart,
+  HourlySpendResultChart,
   MetaGoalBarChart,
   MonthlyYearBarChart,
   RegionSpentBarChart,
   SpentPlatformDonutCard,
+  UserBehaviorFunnelCard,
   VideoFunnelBars,
   type DomGoogleAdsDimMetric,
 } from './DomMetaCharts';
@@ -101,14 +112,30 @@ import {
   AiSummaryModal,
   CampaignCompareModal,
   ColumnPresetModal,
+  CrmUpgradeShowcaseModal,
+  DomMetaSettingsPage,
   GoogleAdsKeywordModal,
   PerformanceCompareModal,
   ShareAccessModal,
-  WorkspaceSettingsModal,
 } from './DomMetaModals';
 import { DOM_META_SUMMARY_KPI_OPTIONS } from './domMetaTypes';
-import { DomMetaQuickConnectModal } from './DomMetaQuickConnectModal';
-import { DomMetaSelect } from './DomMetaSelect';
+import {
+  DomMetaSelect,
+  DomOverflowMenu,
+  DomResponsiveSubtabs,
+} from './DomMetaSelect';
+import {
+  DOM_META_TOUR_STORAGE_KEY,
+  DomMetaSpotlightTour,
+} from './DomMetaSpotlightTour';
+import { ClosedLoopFlywheelCockpit } from './ClosedLoopFlywheelCockpit';
+
+const DomMetaQuickConnectModal = lazy(() =>
+  import('./DomMetaQuickConnectModal').then((m) => ({ default: m.DomMetaQuickConnectModal }))
+);
+const DomMetaLeadAttributionPanel = lazy(() =>
+  import('./DomMetaLeadAttributionPanel').then((m) => ({ default: m.DomMetaLeadAttributionPanel }))
+);
 
 function formatScheduleDateVn(iso?: string): string {
   if (!iso) return '';
@@ -217,6 +244,8 @@ type DomEndingFilterKey = 'all' | 'ending_1d' | 'ending_3d' | 'ended';
 
 type DailyMetricKey =
   | 'spend'
+  | 'result'
+  | 'cpr'
   | 'impressions'
   | 'reach'
   | 'leads'
@@ -224,9 +253,9 @@ type DailyMetricKey =
   | 'follows'
   | 'cpm';
 
-type HeatmapMetricKey = 'spend' | 'leads' | 'messages' | 'purchases' | 'clicks';
+type HeatmapMetricKey = 'spend' | 'result' | 'cpr' | 'leads' | 'messages' | 'purchases' | 'clicks';
 type YearMetricKey = 'spend' | 'leads' | 'reach' | 'messages' | 'follows';
-type GadsTrendMetricKey = 'spend' | 'clicks' | 'impressions' | 'leads';
+type GadsTrendMetricKey = 'spend' | 'leads' | 'cpr' | 'clicks' | 'impressions';
 type GadsBarMetricKey = 'spent' | 'click' | 'conv' | 'ctr' | 'cpc' | 'cpa';
 
 const DATE_PRESET_OPTIONS: Array<{ key: DomMetaDatePreset; label: string }> = [
@@ -323,10 +352,12 @@ function readInitialUrlParams(): {
     const validViews: DomMetaNavView[] = [
       'dashboard',
       'ad_detail',
+      'lead_attribution',
       'ad_library',
       'account',
       'google_ads',
       'meta_capi',
+      'settings',
     ];
     return {
       since: /^\d{4}-\d{2}-\d{2}$/.test(since) ? since : undefined,
@@ -487,13 +518,16 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reloadTick, setReloadTick] = useState(0);
+  const forceRefreshRef = useRef(false);
   const autoConnectCheckedRef = useRef(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Dashboard interactive states
   const [dailyMetric, setDailyMetric] = useState<DailyMetricKey>('spend');
   const [heatmapMetric, setHeatmapMetric] = useState<HeatmapMetricKey>('spend');
   const [ageOnly, setAgeOnly] = useState(false);
-  const [showExtraDetails, setShowExtraDetails] = useState(true);
+  const [ageMetric, setAgeMetric] = useState<'spend' | 'result' | 'cpr'>('spend');
   const [activeBrandFilter, setActiveBrandFilter] = useState(initialUrlState.brand || '');
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [localAiReports, setLocalAiReports] = useState<DomMetaAiReportEntry[]>(() =>
@@ -510,6 +544,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const [expandedCampaigns, setExpandedCampaigns] = useState<Record<string, boolean>>({});
   const [expandedAdsets, setExpandedAdsets] = useState<Record<string, boolean>>({});
   const [selectedCampaignIds, setSelectedCampaignIds] = useState<Record<string, boolean>>({});
+  const [mobileHierarchyMode, setMobileHierarchyMode] = useState<'cards' | 'table'>('cards');
 
   // Ad Account states
   const [yearMetric, setYearMetric] = useState<YearMetricKey>('spend');
@@ -543,6 +578,14 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     type: 'campaign' | 'ad' | 'adset';
     initialTab?: 'insights' | 'crm_leads';
   } | null>(null);
+  const [detailHistory, setDetailHistory] = useState<
+    Array<{
+      entity: DomMetaCampaignNode | DomMetaAdNode | DomMetaAdsetNode;
+      type: 'campaign' | 'ad' | 'adset';
+      initialTab?: 'insights' | 'crm_leads';
+    }>
+  >([]);
+  const [crmUpgradeOpen, setCrmUpgradeOpen] = useState(false);
   const [handledFocusKey, setHandledFocusKey] = useState('');
   const [quickConnectOpen, setQuickConnectOpen] = useState(Boolean(defaultQuickConnectOpen));
   const [perfCompareOpen, setPerfCompareOpen] = useState(false);
@@ -550,68 +593,127 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const [columnModalOpen, setColumnModalOpen] = useState(false);
   const [compareCampaignsOpen, setCompareCampaignsOpen] = useState(false);
   const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
+  const [tourStepIdx, setTourStepIdx] = useState(0);
+  const isAiAdsEvalAllowed = config.ai_config?.ai_ads_eval_enabled !== false;
   const [accountModalOpen, setAccountModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [settingsModal, setSettingsModal] = useState<{
-    open: boolean;
-    tab: 'brand' | 'goals' | 'google_ads' | 'ecosystem' | 'plan';
-  }>({ open: false, tab: 'brand' });
+  const [settingsTab, setSettingsTab] = useState<DomMetaSettingsTab>('brand');
+  const [metaGoalMetric, setMetaGoalMetric] = useState<'spend' | 'result' | 'cpr'>('spend');
+  const [adLibGoalFilter, setAdLibGoalFilter] = useState<string>('ALL');
+
+  const openSettingsPage = useCallback((tab: DomMetaSettingsTab = 'brand') => {
+    setSettingsTab(tab);
+    setActiveView('settings');
+  }, []);
+
+  const stableAuthContext = useMemo<DomMetaAuthContext>(
+    () => ({
+      apiBaseUrl: authContext.apiBaseUrl,
+      accessToken: authContext.accessToken,
+      tenantSlug: authContext.tenantSlug,
+      standaloneSessionRecovery: authContext.standaloneSessionRecovery,
+      directMetaToken: authContext.directMetaToken,
+      directAdAccountId: authContext.directAdAccountId,
+      directGoogleAds: authContext.directGoogleAds,
+      previewDataset: authContext.previewDataset,
+      previewCrmAttribution: authContext.previewCrmAttribution,
+      previewEntityLeadsByEntityId: authContext.previewEntityLeadsByEntityId,
+      previewQuickConnectStatus: authContext.previewQuickConnectStatus,
+      previewActiveColumns: authContext.previewActiveColumns,
+    }),
+    [
+      authContext.apiBaseUrl,
+      authContext.accessToken,
+      authContext.tenantSlug,
+      authContext.standaloneSessionRecovery,
+      authContext.directMetaToken,
+      authContext.directAdAccountId,
+      authContext.directGoogleAds,
+      authContext.previewDataset,
+      authContext.previewCrmAttribution,
+      authContext.previewEntityLeadsByEntityId,
+      authContext.previewQuickConnectStatus,
+      authContext.previewActiveColumns,
+    ]
+  );
 
   const resolvedRange = useMemo(
     () => resolveDateRangeFromPreset(datePreset, customStart, customEnd),
     [datePreset, customStart, customEnd]
   );
 
-  // Derived view fallback if Google Ads is turned OFF or CAPI panel is absent
+  // Derived view fallback if Google Ads is turned OFF, CAPI panel is absent, or CRM attribution is disabled
   const effectiveView: DomMetaNavView =
     (!config.google_ads.enabled && activeView === 'google_ads') ||
-    (!capiPanel && activeView === 'meta_capi')
+    (!capiPanel && activeView === 'meta_capi') ||
+    (!isCrmEnabled && activeView === 'lead_attribution')
       ? 'dashboard'
       : activeView;
 
-  const triggerReload = useCallback(() => {
-    setLoading(true);
-    setError(null);
-    setReloadTick((t) => t + 1);
-  }, []);
-
   useEffect(() => {
     let cancelled = false;
+    const ctx = stableAuthContext;
     const run = async () => {
       try {
         // Zero-Friction Auto-Connect in embedded CRM/ERP mode when Meta token already exists
         if (
           mode === 'embedded' &&
           canManageConfig &&
-          authContext.accessToken &&
+          ctx.accessToken &&
           !autoConnectCheckedRef.current
         ) {
           autoConnectCheckedRef.current = true;
           try {
-            const st = await fetchDomMetaQuickConnectStatus(authContext);
+            const st = await fetchDomMetaQuickConnectStatus(ctx);
             if (!cancelled && st.can_auto_connect && !st.dom_meta_connected) {
-              await quickConnectDomMeta(authContext, { auto_reuse: true });
+              await quickConnectDomMeta(ctx, { auto_reuse: true });
             }
           } catch {
             // Non-blocking auto-connect check
           }
         }
 
-        const cfgPromise = fetchDomMetaWorkspaceConfig(authContext);
-        const crmPromise = isCrmEnabled
-          ? fetchDomMetaCrmAttribution(authContext, {
-              since: resolvedRange.since,
-              until: resolvedRange.until,
-            }).catch(() => null)
-          : Promise.resolve(null);
+        const shouldForce = forceRefreshRef.current;
+        forceRefreshRef.current = false;
 
-        const [cfg, crmRes] = await Promise.all([cfgPromise, crmPromise]);
+        // Fire CRM attribution asynchronously so Meta Ads KPIs & charts paint without waiting on CRM DB
+        if (isCrmEnabled) {
+          fetchDomMetaCrmAttribution(ctx, {
+            since: resolvedRange.since,
+            until: resolvedRange.until,
+          })
+            .then((crmRes) => {
+              if (!cancelled) setCrmAttribution(crmRes);
+            })
+            .catch(() => {
+              if (!cancelled) setCrmAttribution(null);
+            });
+        } else {
+          setCrmAttribution(null);
+        }
+
+        // Parallelize workspace config + speculative Meta Batch dataset when primary ad account is cached
+        const speculativeAcc =
+          ctx.directAdAccountId ||
+          getCachedPrimaryAdAccountId(ctx.tenantSlug) ||
+          '';
+        const speculativeDatasetPromise = speculativeAcc
+          ? loadFullDomMetaDataset(
+              ctx,
+              speculativeAcc,
+              resolvedRange,
+              selectedYear,
+              { forceRefresh: shouldForce }
+            ).catch(() => null)
+          : null;
+
+        const cfg = await fetchDomMetaWorkspaceConfig(ctx);
         if (cancelled) return;
         setConfig(cfg);
-        setCrmAttribution(crmRes);
         if (Array.isArray(cfg.ai_reports) && cfg.ai_reports.length > 0) {
           setLocalAiReports(cfg.ai_reports);
-          saveLocalAiReports(authContext.tenantSlug, cfg.ai_reports);
+          saveLocalAiReports(ctx.tenantSlug, cfg.ai_reports);
         }
 
         // Normalize URL brand parameter against configured brand_filters if matched by name
@@ -627,34 +729,9 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           }
         }
 
-        const targetAcc =
-          cfg.primary_ad_account_id ||
-          cfg.meta_summary.ad_account_id ||
-          cfg.meta_summary.accounts[0]?.ad_account_id ||
-          authContext.directAdAccountId ||
-          '';
-
-        if (!targetAcc) {
-          setDataset(null);
-          setError(null);
-          setLoading(false);
-          return;
-        }
-
-        const ds = await loadFullDomMetaDataset(
-          authContext,
-          targetAcc,
-          resolvedRange,
-          selectedYear
-        );
-        if (cancelled) return;
-        setDataset(ds);
-        setReferenceNowMs(Date.now());
-        setError(null);
-
         if (cfg.google_ads.enabled) {
           setGadsLoading(true);
-          loadDomGoogleAdsDataset(authContext, resolvedRange)
+          loadDomGoogleAdsDataset(ctx, resolvedRange)
             .then((gd) => {
               if (!cancelled) setGadsData(gd);
             })
@@ -667,6 +744,43 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         } else {
           setGadsData(null);
         }
+
+        const targetAcc =
+          cfg.primary_ad_account_id ||
+          cfg.meta_summary.ad_account_id ||
+          cfg.meta_summary.accounts[0]?.ad_account_id ||
+          ctx.directAdAccountId ||
+          '';
+
+        if (!targetAcc) {
+          setDataset(null);
+          setError(null);
+          setLoading(false);
+          return;
+        }
+
+        setCachedPrimaryAdAccountId(ctx.tenantSlug, targetAcc);
+
+        let ds: DomMetaDashboardDataset | null = null;
+        if (
+          speculativeDatasetPromise &&
+          targetAcc.replace(/^act_/i, '').trim() === speculativeAcc.replace(/^act_/i, '').trim()
+        ) {
+          ds = await speculativeDatasetPromise;
+        }
+        if (!ds) {
+          ds = await loadFullDomMetaDataset(
+            ctx,
+            targetAcc,
+            resolvedRange,
+            selectedYear,
+            { forceRefresh: shouldForce }
+          );
+        }
+        if (cancelled) return;
+        setDataset(ds);
+        setReferenceNowMs(Date.now());
+        setError(null);
       } catch (err: unknown) {
         if (!cancelled) {
           setError(
@@ -686,7 +800,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       cancelled = true;
     };
   }, [
-    authContext,
+    stableAuthContext,
     canManageConfig,
     isCrmEnabled,
     mode,
@@ -773,6 +887,26 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     );
   }, [config]);
 
+  const activeAdAccountId = activeAccountObj?.ad_account_id || authContext.directAdAccountId || '';
+
+  const handleHoverPrefetchEntity = useCallback(
+    (
+      entity: DomMetaCampaignNode | DomMetaAdsetNode | DomMetaAdNode,
+      type: 'campaign' | 'adset' | 'ad'
+    ) => {
+      if (!activeAdAccountId || !entity?.id) return;
+      prefetchDomMetaEntityDeepDetail(
+        authContext,
+        activeAdAccountId,
+        type,
+        entity.id,
+        entity.optimization_goal || 'QUALITY LEAD',
+        { since: resolvedRange.since, until: resolvedRange.until }
+      );
+    },
+    [activeAdAccountId, authContext, resolvedRange.since, resolvedRange.until]
+  );
+
   const activeBrandLabel = useMemo(() => {
     if (!activeBrandFilter) return 'Tất cả';
     const found = config.brand_filters.find((b) => b.filter === activeBrandFilter);
@@ -795,6 +929,9 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     };
 
     const filtered = all.filter((c) => {
+      if ((c.spend || 0) <= 0) {
+        return false;
+      }
       if (activeBrandFilter && !c.name.toLowerCase().includes(activeBrandFilter.toLowerCase())) {
         return false;
       }
@@ -929,9 +1066,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       .map((camp) => ({
         ...camp,
         adsets: [...camp.adsets]
+          .filter((as) => (as.spend || 0) > 0)
           .map((as) => ({
             ...as,
-            ads: [...as.ads].sort(compareEntities),
+            ads: [...as.ads].filter((ad) => (ad.spend || 0) > 0).sort(compareEntities),
           }))
           .sort(compareEntities),
       }))
@@ -956,16 +1094,20 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     });
   };
 
-  // Meta Goal / Custom Bar Chart aggregation
+  // Meta Goal / Custom Bar Chart aggregation (with Spent + Result + CPR)
   const metaGoalBars = useMemo(() => {
     const chartMode = config.goal_chart_mode || 'goal';
     if (chartMode === 'brand' && config.brand_filters.length > 0) {
       const items = config.brand_filters.map((b) => {
         const kw = b.filter.toLowerCase();
-        const spend = filteredCampaigns
-          .filter((c) => kw && c.name.toLowerCase().includes(kw))
-          .reduce((acc, c) => acc + c.spend, 0);
-        return { label: b.name, spend };
+        const matched = filteredCampaigns.filter(
+          (c) => kw && c.name.toLowerCase().includes(kw)
+        );
+        return {
+          label: b.name,
+          spend: matched.reduce((acc, c) => acc + c.spend, 0),
+          result: matched.reduce((acc, c) => acc + (c.result || 0), 0),
+        };
       });
       if (items.some((i) => i.spend > 0)) return items;
     }
@@ -973,21 +1115,67 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     if (chartMode === 'keyword' && config.goal_keywords.length > 0) {
       const items = config.goal_keywords.map((kw) => {
         const lower = kw.toLowerCase();
-        const spend = filteredCampaigns
-          .filter((c) => lower && c.name.toLowerCase().includes(lower))
-          .reduce((acc, c) => acc + c.spend, 0);
-        return { label: kw.toUpperCase(), spend };
+        const matched = filteredCampaigns.filter(
+          (c) => lower && c.name.toLowerCase().includes(lower)
+        );
+        return {
+          label: kw.toUpperCase(),
+          spend: matched.reduce((acc, c) => acc + c.spend, 0),
+          result: matched.reduce((acc, c) => acc + (c.result || 0), 0),
+        };
       });
       if (items.some((i) => i.spend > 0)) return items;
     }
 
-    const map = new Map<string, number>();
+    const map = new Map<string, { spend: number; result: number }>();
     for (const c of filteredCampaigns) {
       const g = c.optimization_goal || 'QUALITY LEAD';
-      map.set(g, (map.get(g) || 0) + c.spend);
+      const cur = map.get(g) || { spend: 0, result: 0 };
+      cur.spend += c.spend;
+      cur.result += c.result || 0;
+      map.set(g, cur);
     }
-    return Array.from(map.entries()).map(([label, spend]) => ({ label, spend }));
+    return Array.from(map.entries()).map(([label, v]) => ({
+      label,
+      spend: v.spend,
+      result: v.result,
+    }));
   }, [filteredCampaigns, config.goal_chart_mode, config.brand_filters, config.goal_keywords]);
+
+  // 24h Hourly Spend & Result aggregated from dataset.heatmap (Advertiser TZ)
+  const dashboardHourly = useMemo<DomMetaEntityHourPoint[]>(() => {
+    if (!dataset?.heatmap?.length) return [];
+    const byH = new Map<number, { spend: number; impr: number; clicks: number; res: number }>();
+    for (const cell of dataset.heatmap) {
+      const prev = byH.get(cell.hour) || { spend: 0, impr: 0, clicks: 0, res: 0 };
+      const cellRes =
+        cell.result ?? (cell.leads || 0) + (cell.messages || 0) + (cell.purchases || 0);
+      prev.spend += cell.spend || 0;
+      prev.impr += cell.impressions || 0;
+      prev.clicks += cell.clicks || 0;
+      prev.res += cellRes;
+      byH.set(cell.hour, prev);
+    }
+    return Array.from({ length: 24 }, (_, h) => {
+      const cur = byH.get(h) || { spend: 0, impr: 0, clicks: 0, res: 0 };
+      return {
+        hour: h,
+        label: `${String(h).padStart(2, '0')}:00`,
+        spend: cur.spend,
+        impressions: cur.impr,
+        clicks: cur.clicks,
+        result: cur.res,
+        cpr: cur.res > 0 ? cur.spend / cur.res : 0,
+      };
+    });
+  }, [dataset]);
+
+  const dashboardTotalResults = useMemo(() => {
+    const campSum = filteredCampaigns.reduce((acc, c) => acc + (c.result || 0), 0);
+    if (campSum > 0) return campSum;
+    const t = dataset?.currentTotals;
+    return (t?.leads || 0) + (t?.messages || 0) + (t?.purchases || 0);
+  }, [filteredCampaigns, dataset]);
 
   // Smart Campaign Alerts
   const smartAlerts = useMemo(() => {
@@ -1186,8 +1374,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       if (colId === 'status') return c.effective_status;
       if (
         colId === 'ctr' ||
+        colId === 'unique_ctr' ||
+        colId === 'lpv_rate' ||
         colId === 'hook_rate' ||
         colId === 'hold_rate' ||
+        colId === 'completion_rate' ||
+        colId === 'video_avg_time' ||
         colId === 'frequency' ||
         colId === 'roas'
       ) {
@@ -1220,7 +1412,8 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
 
   const renderMetricCell = (
     colId: string,
-    row: DomMetaCampaignNode | DomMetaAdsetNode | DomMetaAdNode
+    row: DomMetaCampaignNode | DomMetaAdsetNode | DomMetaAdNode,
+    parentCamp?: DomMetaCampaignNode
   ) => {
     const custom = config.column_config.customMetrics?.find((m) => m.id === colId);
     if (custom) {
@@ -1243,6 +1436,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           'lifetime_budget' in row && typeof row.lifetime_budget === 'number'
             ? row.lifetime_budget
             : 0;
+        const inheritedCbo =
+          Boolean(parentCamp) &&
+          dailyBudget === 0 &&
+          lifetimeBudget === 0 &&
+          (Number(parentCamp?.daily_budget || 0) > 0 ||
+            Number(parentCamp?.lifetime_budget || 0) > 0);
         const startStr = 'start_time' in row ? row.start_time : undefined;
         const endStr =
           'end_time' in row ? row.end_time : 'stop_time' in row ? row.stop_time : undefined;
@@ -1250,26 +1449,33 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
 
         return (
           <div className="space-y-1">
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
-                badge.tone === 'active'
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  : badge.tone === 'complete'
-                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                    : 'bg-slate-100 text-slate-500 border border-slate-200/70'
-              }`}
-            >
+            <div className="flex items-center gap-1.5">
               <span
-                className={`w-1.5 h-1.5 rounded-full ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
                   badge.tone === 'active'
-                    ? 'bg-emerald-500'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                     : badge.tone === 'complete'
-                      ? 'bg-indigo-500'
-                      : 'bg-slate-400'
+                      ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                      : 'bg-slate-100 text-slate-500 border border-slate-200/70'
                 }`}
-              />
-              {badge.label}
-            </span>
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    badge.tone === 'active'
+                      ? 'bg-emerald-500'
+                      : badge.tone === 'complete'
+                        ? 'bg-indigo-500'
+                        : 'bg-slate-400'
+                  }`}
+                />
+                {badge.label}
+              </span>
+              {inheritedCbo && (
+                <span className="px-1.5 py-0.5 rounded bg-blue-50 text-[#1E40FF] text-[9.5px] font-bold">
+                  CBO
+                </span>
+              )}
+            </div>
             {(dailyBudget > 0 || lifetimeBudget > 0) && (
               <div className="text-[10.5px] font-semibold text-slate-700 tabular-nums leading-tight">
                 <span className="text-slate-400 font-medium">
@@ -1310,14 +1516,58 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         );
       case 'cpm':
         return <span className="text-slate-600">{formatDomMoney(row.cpm, currency)}</span>;
+      case 'cpp':
+        return Number(row.cpp || 0) > 0 ? (
+          <span className="text-slate-600">{formatDomMoney(Number(row.cpp || 0), currency)}</span>
+        ) : (
+          <span className="text-slate-300">—</span>
+        );
       case 'cpc':
         return <span className="text-slate-600">{formatDomMoney(row.cpc, currency)}</span>;
+      case 'cost_per_lpv':
+        return Number(row.cost_per_lpv || 0) > 0 ? (
+          <span className="text-slate-600">
+            {formatDomMoney(Number(row.cost_per_lpv || 0), currency)}
+          </span>
+        ) : (
+          <span className="text-slate-300">—</span>
+        );
+      case 'aov':
+        return Number(row.aov || 0) > 0 ? (
+          <span className="font-medium text-emerald-700">
+            {formatDomMoney(Number(row.aov || 0), currency)}
+          </span>
+        ) : (
+          <span className="text-slate-300">—</span>
+        );
       case 'ctr':
         return <span className="text-slate-600">{`${row.ctr.toFixed(2)}%`}</span>;
+      case 'unique_ctr':
+        return (
+          <span className="text-slate-600">{`${Number(row.unique_ctr || 0).toFixed(2)}%`}</span>
+        );
+      case 'lpv_rate':
+        return Number(row.lpv_rate || 0) > 0 ? (
+          <span className="font-medium text-cyan-700">{`${Number(row.lpv_rate || 0).toFixed(1)}%`}</span>
+        ) : (
+          <span className="text-slate-300">—</span>
+        );
       case 'hook_rate':
         return <span className="text-slate-600">{`${row.hook_rate.toFixed(1)}%`}</span>;
       case 'hold_rate':
         return <span className="text-slate-600">{`${row.hold_rate.toFixed(1)}%`}</span>;
+      case 'completion_rate':
+        return Number(row.completion_rate || 0) > 0 ? (
+          <span className="text-slate-600">{`${Number(row.completion_rate || 0).toFixed(1)}%`}</span>
+        ) : (
+          <span className="text-slate-300">—</span>
+        );
+      case 'video_avg_time':
+        return Number(row.video_avg_time || 0) > 0 ? (
+          <span className="text-slate-600">{`${Number(row.video_avg_time || 0).toFixed(1)}s`}</span>
+        ) : (
+          <span className="text-slate-300">—</span>
+        );
       case 'frequency':
         return <span className="text-slate-600">{row.frequency.toFixed(2)}</span>;
       case 'roas':
@@ -1357,16 +1607,45 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     );
   };
 
-  const navItems: Array<{ id: DomMetaNavView; label: string; icon: React.ElementType }> = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'ad_detail', label: 'Campaign details', icon: List },
-    { id: 'ad_library', label: 'Ads Library', icon: Images },
-    { id: 'account', label: 'Ad Account', icon: CreditCard },
+  const navItems: Array<{
+    id: DomMetaNavView;
+    label: string;
+    shortLabel: string;
+    icon: React.ElementType;
+  }> = [
+    { id: 'dashboard', label: 'Dashboard', shortLabel: 'Dashboard', icon: LayoutDashboard },
+    { id: 'ad_detail', label: 'Campaign details', shortLabel: 'Campaigns', icon: List },
+    ...(isCrmEnabled
+      ? [
+          {
+            id: 'lead_attribution' as const,
+            label: 'Đối chiếu Lead',
+            shortLabel: 'Đối chiếu Lead',
+            icon: Users,
+          },
+        ]
+      : []),
+    { id: 'ad_library', label: 'Ads Library', shortLabel: 'Ads Library', icon: Images },
+    { id: 'account', label: 'Ad Account', shortLabel: 'Ad Account', icon: CreditCard },
     ...(config.google_ads.enabled
-      ? [{ id: 'google_ads' as const, label: 'Google ads', icon: TrendingUp }]
+      ? [
+          {
+            id: 'google_ads' as const,
+            label: 'Google ads',
+            shortLabel: 'Google Ads',
+            icon: TrendingUp,
+          },
+        ]
       : []),
     ...(capiPanel
-      ? [{ id: 'meta_capi' as const, label: capiTabLabel, icon: ShieldCheck }]
+      ? [
+          {
+            id: 'meta_capi' as const,
+            label: capiTabLabel,
+            shortLabel: capiTabLabel,
+            icon: ShieldCheck,
+          },
+        ]
       : []),
   ];
 
@@ -1572,9 +1851,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             <button
               type="button"
               data-testid={`open-crm-leads-${entity.id}`}
-              onClick={() =>
-                setDetailModal({ entity, type, initialTab: 'crm_leads' })
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetailModal({ entity, type, initialTab: 'crm_leads' });
+              }}
               title="Bấm xem danh sách khách hàng & Sale phụ trách"
               className="text-left group/crm cursor-pointer space-y-1 min-w-[98px]"
             >
@@ -1639,9 +1919,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           {sales.length > 0 ? (
             <button
               type="button"
-              onClick={() =>
-                setDetailModal({ entity, type, initialTab: 'crm_leads' })
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetailModal({ entity, type, initialTab: 'crm_leads' });
+              }}
               title={salesTooltip}
               className="inline-flex items-center gap-1.5 cursor-pointer group/sale"
             >
@@ -1700,111 +1981,116 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const renderCampaignHierarchyCard = (sectionTitle?: string) => (
     <div
       data-testid="campaign-hierarchy-card"
-      className="rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 space-y-4"
+      className="rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 min-w-0"
     >
       {sectionTitle && (
-        <div className="flex items-center justify-between gap-2 pb-1 border-b border-slate-100">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-            <List className="w-4 h-4 text-[#1E40FF]" />
-            <span>{sectionTitle}</span>
+        <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-slate-100 min-w-0">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 min-w-0">
+            <List className="w-4 h-4 text-[#1E40FF] shrink-0" />
+            <span className="truncate">{sectionTitle}</span>
           </div>
-          <span className="text-xs font-medium text-slate-500">
-            {filteredCampaigns.length} chiến dịch
+          <span className="text-xs font-medium text-slate-500 shrink-0 tabular-nums">
+            {filteredCampaigns.length} CD
           </span>
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2 flex-1">
-          <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 flex-1 min-w-0">
+          <div className="relative w-full sm:w-72 lg:w-88">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Lọc theo tên / ID Campaign, Adset, Ad..."
-              className="w-full pl-9 pr-3 py-2 rounded-full border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] text-xs outline-none"
+              placeholder="Tìm tên / ID Campaign, Adset, Ad..."
+              className="w-full !pl-10 pr-3.5 py-2 rounded-full border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] focus:ring-2 focus:ring-[#1E40FF]/10 text-[13px] text-slate-800 outline-none transition-all"
             />
           </div>
 
-          <DomMetaSelect
-            ariaLabel="Quick filter chiến dịch"
-            testId="campaign-quick-filter"
-            value={quickFilter}
-            onChange={(val) => setQuickFilter(val as DomQuickFilterKey)}
-            variant="pill"
-            options={[
-              { value: 'all', label: 'Quick filter: Tất cả' },
-              { value: 'active', label: 'Active Campaigns' },
-              { value: 'spent', label: 'Có chi tiêu (> 0đ)' },
-              { value: 'lead', label: 'Lead Campaign', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'message', label: 'Message Campaign', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'traffic', label: 'Traffic Campaign', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'sales', label: 'Sales Campaign', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'video', label: 'Video Campaign', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'app', label: 'App Promotion', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'awareness', label: 'Brand Awareness', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'engagement', label: 'Engagement Page', group: 'Mục tiêu (Goal Filters)' },
-              { value: 'high_ctr', label: 'High CTR (> 1%)', group: 'Hiệu suất (Performance)' },
-              { value: 'high_roas', label: 'High ROAS (> 2)', group: 'Hiệu suất (Performance)' },
-            ]}
-          />
-
-          <DomMetaSelect
-            ariaLabel="Bộ lọc thời hạn kết thúc"
-            testId="ending-status-filter"
-            value={endingFilter}
-            onChange={(val) => setEndingFilter(val as DomEndingFilterKey)}
-            variant="pill"
-            options={[
-              { value: 'all', label: 'Sắp kết thúc: Tất cả' },
-              { value: 'ending_1d', label: 'Sắp kết thúc 1 ngày' },
-              { value: 'ending_3d', label: 'Sắp kết thúc 3 ngày' },
-              { value: 'ended', label: 'Đã kết thúc' },
-            ]}
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {config.view_presets.length > 0 && (
+          <div className="grid grid-cols-2 sm:flex items-center gap-2 min-w-0">
             <DomMetaSelect
-              ariaLabel="Chọn nhanh Preset cột"
-              value=""
-              placeholder="Chọn nhanh Preset..."
-              align="right"
+              ariaLabel="Quick filter chiến dịch"
+              testId="campaign-quick-filter"
+              value={quickFilter}
+              onChange={(val) => setQuickFilter(val as DomQuickFilterKey)}
               variant="pill"
-              onChange={(presetId) => {
-                const p = config.view_presets.find((x) => x.id === presetId);
-                if (!p) return;
-                const mergedCustom = [...(config.column_config.customMetrics || [])];
-                for (const cm of p.customMetrics || []) {
-                  if (!mergedCustom.some((x) => x.id === cm.id)) {
-                    mergedCustom.push(cm);
-                  }
-                }
-                const nextCol = {
-                  activeColumns: p.activeColumns,
-                  customMetrics: mergedCustom,
-                };
-                setConfig((prev) => ({ ...prev, column_config: nextCol }));
-                if (canManageConfig) {
-                  void handleSaveSettingsPatch({ column_config: nextCol });
-                }
-              }}
+              className="w-full sm:w-auto"
               options={[
-                ...config.view_presets.map((p) => ({
-                  value: p.id,
-                  label: p.name,
-                })),
+                { value: 'all', label: 'Bộ lọc: Tất cả' },
+                { value: 'active', label: 'Active Campaigns' },
+                { value: 'spent', label: 'Có chi tiêu (> 0đ)' },
+                { value: 'lead', label: 'Lead Campaign', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'message', label: 'Message Campaign', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'traffic', label: 'Traffic Campaign', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'sales', label: 'Sales Campaign', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'video', label: 'Video Campaign', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'app', label: 'App Promotion', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'awareness', label: 'Brand Awareness', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'engagement', label: 'Engagement Page', group: 'Mục tiêu (Goal Filters)' },
+                { value: 'high_ctr', label: 'High CTR (> 1%)', group: 'Hiệu suất (Performance)' },
+                { value: 'high_roas', label: 'High ROAS (> 2)', group: 'Hiệu suất (Performance)' },
               ]}
             />
-          )}
+
+            <DomMetaSelect
+              ariaLabel="Bộ lọc thời hạn kết thúc"
+              testId="ending-status-filter"
+              value={endingFilter}
+              onChange={(val) => setEndingFilter(val as DomEndingFilterKey)}
+              variant="pill"
+              className="w-full sm:w-auto"
+              options={[
+                { value: 'all', label: 'Hạn chạy: Tất cả' },
+                { value: 'ending_1d', label: 'Sắp hết 1 ngày' },
+                { value: 'ending_3d', label: 'Sắp hết 3 ngày' },
+                { value: 'ended', label: 'Đã kết thúc' },
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* Mobile Action Row: Strictly <= 2 controls! Desktop (>= sm): Preset + Column + Export */}
+        <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+          <div className="hidden sm:block">
+            {config.view_presets.length > 0 && (
+              <DomMetaSelect
+                ariaLabel="Chọn nhanh Preset cột"
+                value=""
+                placeholder="Preset cột..."
+                align="right"
+                variant="pill"
+                onChange={(presetId) => {
+                  const p = config.view_presets.find((x) => x.id === presetId);
+                  if (!p) return;
+                  const mergedCustom = [...(config.column_config.customMetrics || [])];
+                  for (const cm of p.customMetrics || []) {
+                    if (!mergedCustom.some((x) => x.id === cm.id)) {
+                      mergedCustom.push(cm);
+                    }
+                  }
+                  const nextCol = {
+                    activeColumns: p.activeColumns,
+                    customMetrics: mergedCustom,
+                  };
+                  setConfig((prev) => ({ ...prev, column_config: nextCol }));
+                  if (canManageConfig) {
+                    void handleSaveSettingsPatch({ column_config: nextCol });
+                  }
+                }}
+                options={config.view_presets.map((p) => ({
+                  value: p.id,
+                  label: p.name,
+                }))}
+              />
+            )}
+          </div>
 
           <button
             type="button"
             data-testid="open-column-preset"
             onClick={() => setColumnModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-50 hover:bg-blue-50 border border-slate-200 text-xs font-medium text-slate-700 hover:text-[#1E40FF] cursor-pointer"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-50 hover:bg-blue-50 border border-slate-200 text-xs font-medium text-slate-700 hover:text-[#1E40FF] cursor-pointer dom-ios-press"
           >
             <Layers className="w-3.5 h-3.5 text-[#1E40FF]" />
             <span>Cột &amp; Preset</span>
@@ -1813,66 +2099,120 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           <button
             type="button"
             onClick={handleExportCampaignCsv}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer shadow-sm"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-blue-700 text-white text-xs font-semibold cursor-pointer shadow-sm dom-ios-press"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export CSV</span>
           </button>
+
+          <div className="sm:hidden">
+            <DomOverflowMenu
+              variant="pill"
+              label="Tác vụ"
+              items={[
+                {
+                  id: 'toggle_mode',
+                  label:
+                    mobileHierarchyMode === 'cards'
+                      ? 'Chuyển sang Bảng nhiều cột'
+                      : 'Chuyển sang Thẻ Mobile App',
+                  description:
+                    mobileHierarchyMode === 'cards'
+                      ? 'Cuộn ngang xem đầy đủ cột tùy chỉnh'
+                      : 'Tối ưu đọc nhanh trên điện thoại',
+                  icon: <List className="w-3.5 h-3.5" />,
+                  onClick: () =>
+                    setMobileHierarchyMode((m) => (m === 'cards' ? 'table' : 'cards')),
+                },
+                {
+                  id: 'export_csv',
+                  label: 'Xuất báo cáo CSV',
+                  icon: <Download className="w-3.5 h-3.5" />,
+                  onClick: handleExportCampaignCsv,
+                },
+                ...config.view_presets.map((p) => ({
+                  id: `preset_${p.id}`,
+                  label: `Preset: ${p.name}`,
+                  icon: <Layers className="w-3.5 h-3.5" />,
+                  onClick: () => {
+                    const mergedCustom = [...(config.column_config.customMetrics || [])];
+                    for (const cm of p.customMetrics || []) {
+                      if (!mergedCustom.some((x) => x.id === cm.id)) {
+                        mergedCustom.push(cm);
+                      }
+                    }
+                    const nextCol = {
+                      activeColumns: p.activeColumns,
+                      customMetrics: mergedCustom,
+                    };
+                    setConfig((prev) => ({ ...prev, column_config: nextCol }));
+                    setMobileHierarchyMode('table');
+                    if (canManageConfig) {
+                      void handleSaveSettingsPatch({ column_config: nextCol });
+                    }
+                  },
+                })),
+              ]}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Selection Summary Bar when >= 1 Campaign is checked */}
+      {/* Selection Summary Bar when >= 1 Campaign is checked (Max 2 action buttons!) */}
       {selectedCompareCampaigns.length >= 1 && (
-        <div className="rounded-2xl bg-[#F4F8FF] border border-blue-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="font-semibold text-[#1E40FF]">
-              Đã chọn {selectedCompareCampaigns.length} chiến dịch
+        <div className="rounded-2xl bg-[#F4F8FF] border border-blue-200 px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-[#1E40FF]">
+              <span>Đã chọn {selectedCompareCampaigns.length} CD</span>
+              <button
+                type="button"
+                onClick={() => setSelectedCampaignIds({})}
+                className="w-[18px] h-[18px] rounded-full bg-blue-100 hover:bg-blue-200 text-[#1E40FF] inline-flex items-center justify-center cursor-pointer"
+                title="Bỏ chọn tất cả"
+              >
+                <X className="w-3 h-3" />
+              </button>
             </span>
             <span className="text-slate-600">
               Spent:{' '}
               <span className="font-semibold text-slate-800 tabular-nums">
-                {formatDomMoney(
+                {formatDomMoneyShort(
                   selectedCompareCampaigns.reduce((s, c) => s + c.spend, 0),
                   currency
                 )}
               </span>
             </span>
             <span className="text-slate-600">
-              Results:{' '}
+              KQ:{' '}
               <span className="font-semibold text-slate-800 tabular-nums">
                 {formatDomNumber(selectedCompareCampaigns.reduce((s, c) => s + c.result, 0))}
               </span>
             </span>
-            <span className="text-slate-600">
-              Reach:{' '}
-              <span className="font-semibold text-slate-800 tabular-nums">
-                {formatDomNumber(selectedCompareCampaigns.reduce((s, c) => s + c.reach, 0))}
-              </span>
-            </span>
           </div>
-          <div className="flex items-center gap-2">
-            {selectedCompareCampaigns.length >= 2 && (
+          <div className="grid grid-cols-2 sm:flex items-center gap-2">
+            {selectedCompareCampaigns.length >= 2 ? (
               <button
                 type="button"
                 onClick={() => setCompareCampaignsOpen(true)}
-                className="px-3 py-1.5 rounded-full bg-[#1E40FF] text-white font-semibold cursor-pointer"
+                className="px-3 py-1.5 rounded-full bg-[#1E40FF] text-white font-semibold cursor-pointer text-center"
               >
                 So sánh ({selectedCompareCampaigns.length})
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSelectedCampaignIds({})}
+                className="px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 font-semibold cursor-pointer text-center"
+              >
+                Bỏ chọn
               </button>
             )}
             <button
               type="button"
               onClick={() => setAiModalOpen(true)}
-              className="px-3 py-1.5 rounded-full bg-white border border-blue-200 text-[#1E40FF] font-semibold cursor-pointer"
+              className="px-3 py-1.5 rounded-full bg-white border border-blue-200 text-[#1E40FF] font-semibold cursor-pointer text-center truncate"
             >
-              AI Phân tích nhóm chọn
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCampaignIds({})}
-              className="px-2.5 py-1.5 rounded-full text-slate-500 hover:text-slate-800 font-medium cursor-pointer"
-            >
-              Bỏ chọn
+              AI Phân tích
             </button>
           </div>
         </div>
@@ -1942,9 +2282,265 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         </div>
       )}
 
+      {/* ====================================================================
+          DEDICATED MOBILE APP CAMPAIGN / ADSET / AD CARD-LIST (< md)
+         ==================================================================== */}
+      {mobileHierarchyMode === 'cards' && (
+        <div data-testid="campaign-mobile-cards" className="md:hidden space-y-2.5">
+          {filteredCampaigns.length === 0 ? (
+            <div className="py-8 text-center text-xs text-slate-400 rounded-2xl border border-slate-200/80 bg-slate-50/50 px-4">
+              Không có chiến dịch nào khớp với bộ lọc hiện tại.
+            </div>
+          ) : (
+            filteredCampaigns.map((camp, campIdx) => {
+              const isOpen = Boolean(
+                expandedCampaigns[camp.id] ?? camp.id === pendingFocusMatch?.campaignId
+              );
+              const campAds = camp.adsets.flatMap((as) => as.ads);
+              const campThumbs = collectEntityThumbs(campAds, 2);
+              const badge = normalizeStatusBadgeInfo(camp, referenceNowMs);
+              const crmB = showCrmColumns
+                ? getEntityCrmBucket('campaign', camp.id, camp.name)
+                : undefined;
+              return (
+                <div
+                  key={camp.id}
+                  className="rounded-2xl border border-slate-200/90 bg-white shadow-[0_2px_10px_rgba(15,23,42,0.03)] p-3 space-y-2.5"
+                >
+                  <div
+                    onClick={
+                      camp.adsets.length > 0
+                        ? () =>
+                            setExpandedCampaigns((prev) => ({
+                              ...prev,
+                              [camp.id]: !isOpen,
+                            }))
+                        : undefined
+                    }
+                    className={`flex items-start gap-2.5 min-w-0 ${
+                      camp.adsets.length > 0 ? 'cursor-pointer' : ''
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={Boolean(selectedCampaignIds[camp.id])}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) =>
+                        setSelectedCampaignIds((prev) => ({
+                          ...prev,
+                          [camp.id]: e.target.checked,
+                        }))
+                      }
+                      className="accent-[#1E40FF] mt-1 shrink-0"
+                    />
+                    <CreativeThumbFan
+                      urls={campThumbs}
+                      goal={camp.optimization_goal}
+                      active={badge.tone === 'active'}
+                      variant="adset"
+                      eager={campIdx < 6}
+                      alt={camp.name}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                            badge.tone === 'active'
+                              ? 'bg-emerald-50 text-emerald-700'
+                              : badge.tone === 'complete'
+                                ? 'bg-indigo-50 text-indigo-700'
+                                : 'bg-slate-100 text-slate-500'
+                          }`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              badge.tone === 'active'
+                                ? 'bg-emerald-500'
+                                : badge.tone === 'complete'
+                                  ? 'bg-indigo-500'
+                                  : 'bg-slate-400'
+                            }`}
+                          />
+                          {badge.label}
+                        </span>
+                        <span className="text-[10px] font-semibold uppercase text-slate-400 truncate">
+                          {camp.optimization_goal}
+                        </span>
+                      </div>
+                      <div className="text-[13px] font-bold text-slate-900 line-clamp-2 leading-snug mt-0.5">
+                        {camp.name}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3-Column Native App KPI Strip */}
+                  <div className="grid grid-cols-3 gap-1.5 rounded-xl bg-slate-50/95 border border-slate-100 p-2 text-center">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-medium text-slate-400">Spent</div>
+                      <div className="text-xs font-bold text-slate-800 tabular-nums truncate">
+                        {formatDomMoneyShort(camp.spend, currency)}
+                      </div>
+                    </div>
+                    <div className="min-w-0 border-x border-slate-200/70 px-1">
+                      <div className="text-[10px] font-medium text-slate-400">Results</div>
+                      <div className="text-xs font-bold text-slate-800 tabular-nums truncate">
+                        {formatDomNumber(camp.result)}
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-medium text-slate-400">CPR</div>
+                      <div className="text-xs font-bold text-[#1E40FF] tabular-nums truncate">
+                        {camp.result > 0 ? formatDomMoneyShort(camp.cpr, currency) : '—'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {crmB && crmB.total_leads > 0 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setDetailModal({ entity: camp, type: 'campaign', initialTab: 'crm_leads' })
+                      }
+                      className="w-full rounded-xl bg-[#F4F8FF] border border-blue-200/80 px-2.5 py-1.5 flex items-center justify-between gap-2 text-[11px] font-semibold text-[#1E40FF] cursor-pointer"
+                    >
+                      <span>
+                        Lead CRM: {crmB.total_leads} ({crmB.positive_rate}% CL)
+                      </span>
+                      <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+                    </button>
+                  )}
+
+                  {/* Strictly 2 Action Buttons Horizontally */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedCampaigns((prev) => ({
+                          ...prev,
+                          [camp.id]: !isOpen,
+                        }))
+                      }
+                      className="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-xs font-semibold text-slate-700 inline-flex items-center justify-center gap-1 cursor-pointer dom-ios-press"
+                    >
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180 text-[#1E40FF]' : ''}`}
+                      />
+                      <span>Nhóm QC ({camp.adsets.length})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDetailModal({ entity: camp, type: 'campaign' })}
+                      className="py-2 px-2.5 rounded-xl bg-[#1E40FF] text-white text-xs font-semibold inline-flex items-center justify-center gap-1 cursor-pointer dom-ios-press"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Xem Insight</span>
+                    </button>
+                  </div>
+
+                  {/* Nested Mobile Adsets & Ads */}
+                  {isOpen && camp.adsets.length > 0 && (
+                    <div className="pt-2 border-t border-slate-100 space-y-2">
+                      {camp.adsets.map((as) => {
+                        const asOpen = Boolean(expandedAdsets[as.id]);
+                        return (
+                          <div
+                            key={as.id}
+                            className="rounded-xl bg-slate-50/90 border border-slate-200/75 p-2.5 space-y-2"
+                          >
+                            <div
+                              onClick={
+                                as.ads.length > 0
+                                  ? () =>
+                                      setExpandedAdsets((prev) => ({
+                                        ...prev,
+                                        [as.id]: !asOpen,
+                                      }))
+                                  : undefined
+                              }
+                              className={`flex items-center justify-between gap-2 min-w-0 ${
+                                as.ads.length > 0 ? 'cursor-pointer' : ''
+                              }`}
+                            >
+                              <div className="min-w-0 flex-1">
+                                <div className="text-xs font-semibold text-slate-800 line-clamp-1">
+                                  {as.name}
+                                </div>
+                                <div className="text-[10.5px] text-slate-500 tabular-nums mt-0.5">
+                                  {formatDomMoneyShort(as.spend, currency)} · {formatDomNumber(as.result)} KQ
+                                  {as.result > 0 ? ` · CPR ${formatDomMoneyShort(as.cpr, currency)}` : ''}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setExpandedAdsets((prev) => ({ ...prev, [as.id]: !asOpen }))
+                                }
+                                className="py-1.5 px-2 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 inline-flex items-center justify-center gap-1 cursor-pointer"
+                              >
+                                <ChevronDown
+                                  className={`w-3 h-3 transition-transform ${asOpen ? 'rotate-180' : ''}`}
+                                />
+                                <span>Bài Ad ({as.ads.length})</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setDetailModal({ entity: as, type: 'adset' })}
+                                className="py-1.5 px-2 rounded-lg bg-blue-50 text-[#1E40FF] text-[11px] font-semibold inline-flex items-center justify-center gap-1 cursor-pointer"
+                              >
+                                <span>Chi tiết Adset</span>
+                              </button>
+                            </div>
+
+                            {asOpen && as.ads.length > 0 && (
+                              <div className="space-y-1.5 pt-1">
+                                {as.ads.map((ad) => (
+                                  <button
+                                    key={ad.id}
+                                    type="button"
+                                    onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
+                                    className="w-full rounded-lg bg-white border border-slate-200/80 p-2 flex items-center justify-between gap-2 text-left cursor-pointer dom-ios-press"
+                                  >
+                                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                                      <CreativeThumbFan
+                                        urls={[ad.thumbnail_url || ad.image_url].filter(Boolean)}
+                                        goal={ad.optimization_goal || as.optimization_goal}
+                                        active={ad.effective_status.toUpperCase() === 'ACTIVE'}
+                                        variant="ad"
+                                        alt={ad.name}
+                                      />
+                                      <div className="min-w-0 flex-1">
+                                        <div className="text-[11.5px] font-semibold text-slate-800 truncate">
+                                          {ad.name}
+                                        </div>
+                                        <div className="text-[10px] text-slate-500 tabular-nums">
+                                          {formatDomMoneyShort(ad.spend, currency)} · {formatDomNumber(ad.result)} KQ
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <ChevronRight className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+
       <div
         data-testid="campaign-table-scroll"
-        className="dom-meta-table-scroll overflow-x-auto overflow-y-auto max-h-[540px] rounded-2xl border border-slate-200/85 bg-white"
+        className={`${
+          mobileHierarchyMode === 'cards' ? 'hidden md:block' : 'block'
+        } dom-meta-table-scroll overflow-x-auto overflow-y-auto max-h-[540px] rounded-2xl border border-slate-200/85 bg-white`}
       >
         <table className="w-full text-left border-collapse text-xs">
           <thead>
@@ -2085,8 +2681,21 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   camp.adsets.some((as) => as.effective_status.toUpperCase() === 'ACTIVE');
                 return (
                   <React.Fragment key={camp.id}>
-                    <tr className="group/row hover:bg-slate-50/80 transition-colors">
-                      <td className="py-2.5 px-3">
+                    <tr
+                      onClick={
+                        camp.adsets.length > 0
+                          ? () =>
+                              setExpandedCampaigns((prev) => ({
+                                ...prev,
+                                [camp.id]: !isOpen,
+                              }))
+                          : undefined
+                      }
+                      className={`group/row hover:bg-slate-50/80 transition-colors ${
+                        camp.adsets.length > 0 ? 'cursor-pointer' : ''
+                      }`}
+                    >
+                      <td className="py-2.5 px-3" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           checked={Boolean(selectedCampaignIds[camp.id])}
@@ -2100,16 +2709,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         />
                       </td>
                       <td className="py-2.5 px-3">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setExpandedCampaigns((prev) => ({
-                              ...prev,
-                              [camp.id]: !isOpen,
-                            }))
-                          }
-                          className="flex items-center gap-2.5 text-left font-medium text-slate-800 hover:text-[#1E40FF] cursor-pointer min-w-0"
-                        >
+                        <div className="flex items-center gap-2.5 text-left font-medium text-slate-800 group-hover/row:text-[#1E40FF] min-w-0">
                           <ChevronRight
                             className={`w-4 h-4 text-slate-400 transition-transform shrink-0 ${
                               isOpen ? 'rotate-90 text-[#1E40FF]' : ''
@@ -2124,30 +2724,14 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                             alt={camp.name}
                           />
                           <div className="min-w-0">
-                            <div className="line-clamp-1">{camp.name}</div>
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10.5px] font-normal text-slate-400 mt-0.5">
-                              <span className="font-mono">
-                                {camp.adsets.length} adsets · ID: {camp.id}
-                              </span>
-                              {(Number(camp.daily_budget || 0) > 0 ||
-                                Number(camp.lifetime_budget || 0) > 0) && (
-                                <span className="px-1.5 py-0.5 rounded bg-blue-50/80 text-[#1E40FF] font-semibold tabular-nums">
-                                  {Number(camp.daily_budget || 0) > 0
-                                    ? `Daily: ${formatDomMoney(Number(camp.daily_budget), currency)}`
-                                    : `Lifetime: ${formatDomMoney(Number(camp.lifetime_budget), currency)}`}
-                                </span>
-                              )}
-                              {buildScheduleText(camp.start_time, camp.stop_time, campActive) && (
-                                <span className="inline-flex items-center gap-1 text-slate-500">
-                                  <Clock className="w-2.5 h-2.5" />
-                                  <span>
-                                    {buildScheduleText(camp.start_time, camp.stop_time, campActive)}
-                                  </span>
-                                </span>
-                              )}
+                            <div className="line-clamp-1 font-semibold text-slate-900 group-hover/row:text-[#1E40FF] transition-colors">
+                              {camp.name}
+                            </div>
+                            <div className="text-[10.5px] font-mono text-slate-400 mt-0.5">
+                              {camp.adsets.length} adsets · ID: {camp.id}
                             </div>
                           </div>
-                        </button>
+                        </div>
                       </td>
                       {config.column_config.activeColumns.map((colId) => (
                         <td key={colId} className="py-2.5 px-3 tabular-nums whitespace-nowrap">
@@ -2159,8 +2743,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         <button
                           type="button"
                           data-testid={`open-insight-${camp.id}`}
-                          onClick={() => setDetailModal({ entity: camp, type: 'campaign' })}
-                          className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1E40FF] font-medium cursor-pointer"
+                          onMouseEnter={() => handleHoverPrefetchEntity(camp, 'campaign')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDetailModal({ entity: camp, type: 'campaign' });
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1E40FF] font-medium cursor-pointer dom-ios-press"
                         >
                           Insight
                         </button>
@@ -2177,19 +2765,23 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         const asActive = as.effective_status.toUpperCase() === 'ACTIVE';
                         return (
                           <React.Fragment key={as.id}>
-                            <tr className="group/row bg-slate-50/55 hover:bg-blue-50/30 transition-colors">
+                            <tr
+                              onClick={
+                                as.ads.length > 0
+                                  ? () =>
+                                      setExpandedAdsets((prev) => ({
+                                        ...prev,
+                                        [as.id]: !asOpen,
+                                      }))
+                                  : undefined
+                              }
+                              className={`group/row bg-slate-50/55 hover:bg-blue-50/35 transition-colors ${
+                                as.ads.length > 0 ? 'cursor-pointer' : ''
+                              }`}
+                            >
                               <td className="py-2 px-3" />
                               <td className="py-2 pl-8 pr-3">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setExpandedAdsets((prev) => ({
-                                      ...prev,
-                                      [as.id]: !asOpen,
-                                    }))
-                                  }
-                                  className="flex items-center gap-2.5 text-left font-medium text-slate-700 hover:text-[#1E40FF] cursor-pointer min-w-0"
-                                >
+                                <div className="flex items-center gap-2.5 text-left font-medium text-slate-700 group-hover/row:text-[#1E40FF] min-w-0">
                                   <ChevronRight
                                     className={`w-3.5 h-3.5 text-slate-400 transition-transform shrink-0 ${
                                       asOpen ? 'rotate-90 text-[#1E40FF]' : ''
@@ -2204,66 +2796,32 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                                     alt={as.name}
                                   />
                                   <div className="min-w-0">
-                                    <span className="line-clamp-1">{as.name}</span>
-                                    {(() => {
-                                      const effDaily =
-                                        as.daily_budget > 0
-                                          ? as.daily_budget
-                                          : Number(camp.daily_budget || 0);
-                                      const effLifetime =
-                                        as.lifetime_budget > 0
-                                          ? as.lifetime_budget
-                                          : Number(camp.lifetime_budget || 0);
-                                      const isCbo =
-                                        as.daily_budget === 0 &&
-                                        as.lifetime_budget === 0 &&
-                                        (Number(camp.daily_budget || 0) > 0 ||
-                                          Number(camp.lifetime_budget || 0) > 0);
-                                      const sched = buildScheduleText(
-                                        as.start_time,
-                                        as.end_time,
-                                        asActive
-                                      );
-                                      if (!effDaily && !effLifetime && !sched) return null;
-                                      return (
-                                        <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-normal text-slate-500 mt-0.5">
-                                          {effDaily > 0 && (
-                                            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold tabular-nums">
-                                              {isCbo ? 'CBO · Daily: ' : 'Daily Budget: '}
-                                              {formatDomMoney(effDaily, currency)}
-                                            </span>
-                                          )}
-                                          {effDaily === 0 && effLifetime > 0 && (
-                                            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold tabular-nums">
-                                              {isCbo ? 'CBO · Lifetime: ' : 'Lifetime Budget: '}
-                                              {formatDomMoney(effLifetime, currency)}
-                                            </span>
-                                          )}
-                                          {sched && (
-                                            <span className="inline-flex items-center gap-1 text-slate-400">
-                                              <Clock className="w-2.5 h-2.5" />
-                                              <span>{sched}</span>
-                                            </span>
-                                          )}
-                                        </span>
-                                      );
-                                    })()}
+                                    <span className="line-clamp-1 font-medium text-slate-800 group-hover/row:text-[#1E40FF] transition-colors">
+                                      {as.name}
+                                    </span>
+                                    <span className="block text-[10px] font-mono text-slate-400 mt-0.5">
+                                      {as.ads.length} ads · ID: {as.id}
+                                    </span>
                                   </div>
-                                </button>
+                                </div>
                               </td>
                               {config.column_config.activeColumns.map((colId) => (
                                 <td
                                   key={colId}
                                   className="py-2 px-3 tabular-nums whitespace-nowrap"
                                 >
-                                  {renderMetricCell(colId, as)}
+                                  {renderMetricCell(colId, as, camp)}
                                 </td>
                               ))}
                               {renderCrmAttributionCells(as, 'adset')}
                               <td className="py-2 px-3 text-right">
                                 <button
                                   type="button"
-                                  onClick={() => setDetailModal({ entity: as, type: 'adset' })}
+                                  onMouseEnter={() => handleHoverPrefetchEntity(as, 'adset')}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDetailModal({ entity: as, type: 'adset' });
+                                  }}
                                   className="px-2.5 py-1 rounded-lg bg-white border border-blue-200 text-[#1E40FF] font-medium cursor-pointer"
                                 >
                                   Adset
@@ -2310,6 +2868,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                                   <td className="py-2 px-3 text-right">
                                     <button
                                       type="button"
+                                      onMouseEnter={() => handleHoverPrefetchEntity(ad, 'ad')}
                                       onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
                                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1E40FF] text-white font-medium cursor-pointer"
                                     >
@@ -2332,130 +2891,564 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     </div>
   );
 
+  const datePickerControl = (
+    <div ref={datePickerRef} className="relative flex items-center gap-2 shrink-0">
+      <button
+        type="button"
+        data-testid="open-date-picker"
+        title={`${formatIsoToVnDisplay(resolvedRange.since)} - ${formatIsoToVnDisplay(
+          resolvedRange.until
+        )}`}
+        onClick={() => {
+          if (!dateMenuOpen) {
+            setDraftPreset(datePreset);
+            setDraftStart(resolvedRange.since);
+            setDraftEnd(resolvedRange.until);
+            setPickPhase('start');
+            const parts = resolvedRange.until.split('-').map(Number);
+            if (parts[0] && parts[1]) {
+              setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
+            }
+          }
+          setDateMenuOpen((v) => !v);
+        }}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-full bg-slate-50 hover:bg-blue-50/60 border border-slate-200/90 text-xs font-semibold text-slate-800 cursor-pointer transition-colors dom-ios-press"
+      >
+        <Calendar className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+        <span className="whitespace-nowrap">
+          {DATE_PRESET_OPTIONS.find((p) => p.key === datePreset)?.label || 'Last 7 days'}
+        </span>
+        <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
+      </button>
+
+      {mode === 'standalone' && (
+        <span className="hidden lg:inline text-xs font-medium text-slate-400 tabular-nums whitespace-nowrap">
+          {formatIsoToVnDisplay(resolvedRange.since)} -{' '}
+          {formatIsoToVnDisplay(resolvedRange.until)}
+        </span>
+      )}
+
+      {dateMenuOpen && (
+        <div
+          className={`fixed sm:absolute inset-x-3 sm:inset-x-auto ${
+            mode === 'standalone' ? 'sm:right-0 lg:right-auto lg:left-0' : 'sm:right-0'
+          } top-[68px] sm:top-full sm:mt-2.5 sm:w-[570px] max-h-[calc(100dvh-84px)] sm:max-h-none overflow-y-auto sm:overflow-hidden rounded-2xl bg-white border border-slate-200/95 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.24)] z-50 flex flex-col sm:flex-row dom-ios-modal-responsive`}
+        >
+          {/* Left Column: Preset Radio List */}
+          <div className="sm:w-44 shrink-0 border-b sm:border-b-0 sm:border-r border-slate-100 bg-slate-50/55 p-2.5 grid grid-cols-2 sm:grid-cols-1 gap-0.5 max-h-44 sm:max-h-none overflow-y-auto">
+            {DATE_PRESET_OPTIONS.map((opt) => {
+              const isSelected = draftPreset === opt.key;
+              return (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => {
+                    setDraftPreset(opt.key);
+                    if (opt.key !== 'custom_range') {
+                      const next = resolveDateRangeFromPreset(opt.key);
+                      setDraftStart(next.since);
+                      setDraftEnd(next.until);
+                      const parts = next.until.split('-').map(Number);
+                      if (parts[0] && parts[1]) {
+                        setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
+                      }
+                    }
+                  }}
+                  className={`w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-left text-xs transition-colors cursor-pointer ${
+                    isSelected
+                      ? 'bg-blue-50/90 text-[#1E40FF] font-semibold'
+                      : 'text-slate-600 font-medium hover:bg-white'
+                  }`}
+                >
+                  <span
+                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'border-[#1E40FF]' : 'border-slate-300'
+                    }`}
+                  >
+                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#1E40FF]" />}
+                  </span>
+                  <span className="truncate">{opt.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Column: Interactive Monthly Calendar Grid + Footer */}
+          <div className="flex-1 p-4 flex flex-col justify-between gap-3">
+            <div className="space-y-3">
+              <div className="text-xs font-bold text-slate-900">Select Date Range</div>
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCalendarMonth((prev) =>
+                      prev.month === 0
+                        ? { year: prev.year - 1, month: 11 }
+                        : { year: prev.year, month: prev.month - 1 }
+                    )
+                  }
+                  className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer"
+                  aria-label="Previous month"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div className="text-xs sm:text-sm font-bold text-slate-800">
+                  {CALENDAR_MONTH_NAMES[calendarMonth.month]} {calendarMonth.year}
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCalendarMonth((prev) =>
+                      prev.month === 11
+                        ? { year: prev.year + 1, month: 0 }
+                        : { year: prev.year, month: prev.month + 1 }
+                    )
+                  }
+                  className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer"
+                  aria-label="Next month"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-7 gap-1 text-center">
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((wd) => (
+                  <div key={wd} className="text-[11px] font-semibold text-slate-400 py-1">
+                    {wd}
+                  </div>
+                ))}
+                {buildCalendarMonthGrid(calendarMonth.year, calendarMonth.month).map((cell) => {
+                  const sMin = draftStart <= draftEnd ? draftStart : draftEnd;
+                  const sMax = draftStart <= draftEnd ? draftEnd : draftStart;
+                  const isEdge = cell.iso === sMin || cell.iso === sMax;
+                  const inRange = cell.iso > sMin && cell.iso < sMax;
+                  return (
+                    <button
+                      key={cell.iso}
+                      type="button"
+                      onClick={() => {
+                        setDraftPreset('custom_range');
+                        if (pickPhase === 'start') {
+                          setDraftStart(cell.iso);
+                          setDraftEnd(cell.iso);
+                          setPickPhase('end');
+                        } else {
+                          if (cell.iso < draftStart) {
+                            setDraftEnd(draftStart);
+                            setDraftStart(cell.iso);
+                          } else {
+                            setDraftEnd(cell.iso);
+                          }
+                          setPickPhase('start');
+                        }
+                      }}
+                      className={`h-8 w-full rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                        isEdge
+                          ? 'bg-[#1E40FF] text-white font-bold shadow-xs'
+                          : inRange
+                            ? 'bg-blue-50 text-[#1E40FF] font-semibold'
+                            : cell.inMonth
+                              ? 'text-slate-700 hover:bg-slate-100'
+                              : 'text-slate-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      {cell.day}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2">
+              <div className="grid grid-cols-2 sm:flex items-center gap-1.5 min-w-0">
+                <input
+                  type="date"
+                  value={draftStart}
+                  onChange={(e) => {
+                    setDraftPreset('custom_range');
+                    setDraftStart(e.target.value);
+                  }}
+                  className="w-full sm:w-[136px] min-w-0 rounded-xl border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-700 focus:border-[#1E40FF] outline-none"
+                />
+                <span className="hidden sm:inline text-slate-400 text-xs">-</span>
+                <input
+                  type="date"
+                  value={draftEnd}
+                  onChange={(e) => {
+                    setDraftPreset('custom_range');
+                    setDraftEnd(e.target.value);
+                  }}
+                  className="w-full sm:w-[136px] min-w-0 rounded-xl border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-700 focus:border-[#1E40FF] outline-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 sm:flex items-center gap-2 sm:ml-auto">
+                <button
+                  type="button"
+                  onClick={() => setDateMenuOpen(false)}
+                  className="px-3 py-2 sm:py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-600 cursor-pointer text-center"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDatePreset(draftPreset);
+                    if (draftPreset === 'custom_range') {
+                      const sMin = draftStart <= draftEnd ? draftStart : draftEnd;
+                      const sMax = draftStart <= draftEnd ? draftEnd : draftStart;
+                      setCustomStart(sMin);
+                      setCustomEnd(sMax);
+                    }
+                    setLoading(true);
+                    setDateMenuOpen(false);
+                  }}
+                  className="px-4 py-2 sm:py-1.5 rounded-xl bg-[#1E40FF] hover:bg-blue-700 text-xs font-semibold text-white shadow-xs cursor-pointer text-center"
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div
       className={`${
         mode === 'standalone'
-          ? 'min-h-screen flex bg-gradient-to-br from-[#F4F8FF] via-[#F8FAFC] to-[#EEF4FF] relative overflow-x-clip'
-          : 'w-full bg-[#F4F6FA] rounded-2xl'
+          ? 'min-h-screen flex bg-[#F8F9FA] relative overflow-x-clip'
+          : 'w-full'
       } dom-meta-scope text-slate-800`}
     >
-      {mode === 'standalone' && (
-        <div className="pointer-events-none fixed inset-0 overflow-hidden z-0" aria-hidden="true">
-          <div
-            className="absolute inset-0 opacity-[0.35]"
-            style={{
-              backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
-          <div className="absolute -top-28 left-1/3 w-[480px] h-[480px] rounded-full bg-blue-400/12 blur-3xl" />
-          <div className="absolute -bottom-24 right-1/5 w-[440px] h-[440px] rounded-full bg-cyan-400/12 blur-3xl" />
+      {/* ====================================================================
+          STANDALONE MOBILE iOS SLIDE-OVER NAVIGATION DRAWER (< lg)
+         ==================================================================== */}
+      {mode === 'standalone' && mobileMenuOpen && (
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 z-50 lg:hidden bg-slate-950/45 backdrop-blur-xs flex dom-ios-backdrop"
+        >
+          <aside
+            onClick={(e) => e.stopPropagation()}
+            className="w-[282px] max-w-[84vw] h-full bg-gradient-to-b from-white via-[#F8FAFF] to-[#F1F5F9] border-r border-slate-200 shadow-2xl flex flex-col justify-between select-none dom-ios-drawer-left"
+          >
+            <div className="overflow-y-auto">
+              {/* Mobile Drawer Brand Header — Static DOMATION.NET Logo */}
+              <div className="h-[76px] px-4 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <DomationLogoMark className="w-9 h-9 shadow-sm rounded-xl shrink-0" />
+                  <div className="flex flex-col leading-none">
+                    <span className="text-[17px] font-bold tracking-tight text-slate-900">
+                      DOMATION<span className="text-[#1E40FF]">.NET</span>
+                    </span>
+                    <span className="text-[9px] font-semibold tracking-[0.15em] uppercase text-slate-500 mt-0.5">
+                      Meta Report
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 cursor-pointer dom-ios-press"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Ad Account CTA + Workspace Switcher */}
+              <div className="p-3.5 border-b border-slate-100 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setAccountModalOpen(true);
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #60A5FA 0%, #1E40FF 55%, #1D4ED8 100%)',
+                  }}
+                  className="w-full rounded-xl px-3.5 py-2.5 text-white shadow-[0_6px_18px_rgba(30,64,255,0.26)] flex items-center justify-between gap-2 text-left cursor-pointer dom-ios-press"
+                >
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold truncate">
+                      {activeAccountObj?.name || 'Chọn / Kết nối Ad Account'}
+                    </div>
+                    <div className="text-[10px] font-mono text-white/80 truncate">
+                      {activeAccountObj?.ad_account_id
+                        ? `act_${activeAccountObj.ad_account_id}`
+                        : 'Chưa gắn tài khoản QC'}
+                    </div>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-white/90 shrink-0" />
+                </button>
+
+                {(onRequestSwitchWorkspace || onRequestCreateWorkspace) && (
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {onRequestSwitchWorkspace && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          onRequestSwitchWorkspace();
+                        }}
+                        className="px-2.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center justify-center gap-1.5 cursor-pointer dom-ios-press"
+                      >
+                        <Building2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                        <span className="truncate">
+                          /{authContext.tenantSlug || 'workspace'}
+                        </span>
+                      </button>
+                    )}
+                    {onRequestCreateWorkspace && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          onRequestCreateWorkspace();
+                        }}
+                        className="px-2.5 py-2 rounded-xl bg-[#F4F8FF] border border-blue-200 text-[11px] font-semibold text-[#1E40FF] flex items-center justify-center gap-1 cursor-pointer dom-ios-press"
+                      >
+                        <PlusCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>Tạo mới</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {config.brand_filters.length > 0 && (
+                  <DomMetaSelect
+                    ariaLabel="Lọc theo thương hiệu"
+                    value={activeBrandFilter}
+                    onChange={(val) => {
+                      setActiveBrandFilter(val);
+                      setMobileMenuOpen(false);
+                    }}
+                    variant="pill"
+                    className="w-full justify-between bg-white"
+                    options={[
+                      { value: '', label: 'Tất cả thương hiệu' },
+                      ...config.brand_filters.map((b) => ({
+                        value: b.filter,
+                        label: b.name,
+                        avatarUrl: b.avatar || undefined,
+                      })),
+                    ]}
+                  />
+                )}
+              </div>
+
+              {/* Navigation Items */}
+              <div className="p-3 space-y-1">
+                <div className="px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                  CHỨC NĂNG CHÍNH
+                </div>
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = effectiveView === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      data-testid={`mobile-nav-${item.id}`}
+                      onClick={() => {
+                        setActiveView(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      style={
+                        active
+                          ? {
+                              background:
+                                'linear-gradient(90deg, rgba(30, 64, 255, 0.14) 0%, rgba(30, 64, 255, 0.02) 100%)',
+                            }
+                          : undefined
+                      }
+                      className={`relative w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-[13px] cursor-pointer dom-ios-press ${
+                        active ? 'text-[#1E40FF] font-bold' : 'text-slate-600 font-medium'
+                      }`}
+                    >
+                      {active && (
+                        <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-gradient-to-b from-[#3B82F6] to-[#0284C7]" />
+                      )}
+                      <span
+                        className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 ${
+                          active
+                            ? 'bg-gradient-to-br from-[#3B82F6] to-[#0284C7] text-white shadow-[0_4px_10px_rgba(30,64,255,0.24)]'
+                            : 'bg-white border border-slate-200/80 text-slate-500'
+                        }`}
+                      >
+                        <Icon className="w-[17px] h-[17px]" />
+                      </span>
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="p-3 border-t border-slate-200/80 space-y-1.5 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setCrmUpgradeOpen(true);
+                }}
+                className="w-full px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white flex items-center justify-between gap-2 text-xs font-bold shadow-sm cursor-pointer dom-ios-press"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Rocket className="w-4 h-4 shrink-0" />
+                  <span>Upgrade lên CRM AutoData</span>
+                </span>
+                <span className="px-1.5 py-0.5 rounded bg-white/20 text-[10px]">30d 0₫</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openSettingsPage('brand');
+                }}
+                className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-[13px] cursor-pointer dom-ios-press ${
+                  effectiveView === 'settings'
+                    ? 'bg-gradient-to-r from-[#EFF6FF] to-transparent text-[#1E40FF] font-semibold'
+                    : 'font-medium text-slate-700 hover:bg-slate-100'
+                }`}
+              >
+                <span
+                  className={`w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 ${
+                    effectiveView === 'settings'
+                      ? 'bg-[#1E40FF] text-white'
+                      : 'bg-white border border-slate-200/80 text-slate-500'
+                  }`}
+                >
+                  <Settings className="w-4 h-4" />
+                </span>
+                <span>Cài đặt hệ thống</span>
+              </button>
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onLogout();
+                  }}
+                  className="w-full px-3 py-2.5 rounded-xl flex items-center gap-3 text-[13px] font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer dom-ios-press"
+                >
+                  <span className="w-8 h-8 rounded-[10px] bg-rose-50 border border-rose-200/70 flex items-center justify-center text-rose-600">
+                    <LogOut className="w-4 h-4" />
+                  </span>
+                  <span>Đăng xuất</span>
+                </button>
+              )}
+            </div>
+          </aside>
         </div>
       )}
 
       {/* ====================================================================
-          LEFT SIDEBAR — STANDALONE WORKSPACE SHELL (Matching /data CRM Style)
+          LEFT SIDEBAR — STANDALONE DESKTOP SHELL (100% Aligned with data.domation.net CRM)
          ==================================================================== */}
       {mode === 'standalone' && (
-        <aside className="hidden lg:flex w-[258px] shrink-0 bg-gradient-to-b from-white via-[#F8FAFF] to-[#F1F5F9] border-r border-slate-200/85 shadow-[4px_0_24px_rgba(30,64,255,0.04)] flex-col justify-between p-4 select-none sticky top-0 h-screen z-10">
-          <div className="space-y-5">
-            {/* Official DOMATION Logo & Meta Report Sub-brand (Framed like /data CRM) */}
-            <div className="flex items-center justify-between px-1 pt-1 pb-3 border-b border-slate-100">
-              <div
-                onClick={onExitStandalone}
-                className="flex items-center gap-3 cursor-pointer group"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200/90 shadow-[0_4px_14px_rgba(30,64,255,0.14)] flex items-center justify-center shrink-0">
-                  <DomationLogoMark size={34} />
-                </div>
-                <div>
-                  <div className="text-[17px] font-extrabold tracking-tight text-slate-900 leading-none">
-                    DOMATION
-                  </div>
-                  <div className="text-[10.5px] font-semibold tracking-[0.14em] uppercase text-slate-400 mt-1.5">
-                    <span className="text-[#1E40FF]">/</span> META REPORT
-                  </div>
-                </div>
-              </div>
-            </div>
+        <aside
+          data-dom-meta-sidebar="true"
+          style={{
+            width: isSidebarCollapsed ? 72 : 260,
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFF 52%, #EEF4FF 100%)',
+          }}
+          className="hidden lg:flex shrink-0 border-r border-slate-200/90 shadow-[4px_0_20px_rgba(30,64,255,0.04)] flex-col justify-between select-none sticky top-0 h-screen z-40 transition-[width] duration-300 ease-out relative"
+        >
+          {/* Floating Circular Collapse Toggle (<) — z-50 above sticky header so never clipped */}
+          <button
+            type="button"
+            data-testid="sidebar-collapse-toggle"
+            onClick={() => setIsSidebarCollapsed((v) => !v)}
+            title={isSidebarCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+            className="absolute -right-3.5 top-[30px] z-50 w-7 h-7 rounded-full bg-white border border-slate-200/95 shadow-[0_3px_10px_rgba(15,23,42,0.12)] flex items-center justify-center text-slate-600 hover:text-[#1E40FF] hover:border-blue-300 cursor-pointer transition-all"
+          >
+            <ChevronLeft
+              className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                isSidebarCollapsed ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
 
-            {/* PROJECT VIEW Switcher + Workspace Management */}
-            <div className="space-y-2">
-              <div className="px-2 flex items-center justify-between">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                  PROJECT VIEW
-                </span>
-                {authContext.tenantSlug && (
-                  <span className="text-[10px] font-mono font-medium text-[#1E40FF] truncate max-w-[110px]">
-                    /{authContext.tenantSlug}
+          <div className="flex flex-col min-h-0 flex-1">
+            {/* Static DOMATION.NET Brand Header (86px — Aligned with Landing Page) */}
+            <div
+              onClick={onExitStandalone}
+              className={`h-[86px] border-b border-slate-100 flex items-center shrink-0 ${
+                isSidebarCollapsed ? 'justify-center px-0' : 'px-4 gap-2.5'
+              } ${onExitStandalone ? 'cursor-pointer' : ''}`}
+            >
+              <DomationLogoMark className="w-10 h-10 shadow-sm rounded-xl shrink-0" />
+              {!isSidebarCollapsed && (
+                <div className="min-w-0 flex-1 flex flex-col leading-none">
+                  <span className="text-[19px] font-bold tracking-tight text-slate-900 whitespace-nowrap">
+                    DOMATION<span className="text-[#1E40FF]">.NET</span>
                   </span>
-                )}
-              </div>
-              <button
-                type="button"
-                data-testid="open-account-manager"
-                onClick={() => setAccountModalOpen(true)}
-                className="w-full rounded-2xl bg-slate-50 hover:bg-blue-50/50 border border-slate-200/90 hover:border-blue-200 px-3 py-2.5 flex items-center justify-between gap-2 transition-all cursor-pointer text-left"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                    D
-                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs font-semibold text-slate-800 truncate">
-                      {activeAccountObj?.name || workspaceName}
-                    </div>
-                    <div className="text-[10.5px] font-mono text-slate-500 truncate">
-                      {activeAccountObj?.ad_account_id || 'Chưa gắn Ad Account'}
-                    </div>
-                  </div>
-                </div>
-                <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
-              </button>
-
-              {(onRequestSwitchWorkspace || onRequestCreateWorkspace) && (
-                <div className="grid grid-cols-2 gap-1.5 pt-0.5">
-                  {onRequestSwitchWorkspace && (
-                    <button
-                      type="button"
-                      data-testid="standalone-switch-workspace"
-                      onClick={onRequestSwitchWorkspace}
-                      className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-blue-50 border border-slate-200 text-[11px] font-medium text-slate-700 hover:text-[#1E40FF] flex items-center justify-center gap-1 cursor-pointer"
-                      title="Chuyển sang Workspace khác"
-                    >
-                      <Building2 className="w-3 h-3 shrink-0" />
-                      <span className="truncate">
-                        Workspace{workspacesCount > 1 ? ` (${workspacesCount})` : ''}
-                      </span>
-                    </button>
-                  )}
-                  {onRequestCreateWorkspace && (
-                    <button
-                      type="button"
-                      data-testid="standalone-create-workspace"
-                      onClick={onRequestCreateWorkspace}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#F4F8FF] hover:bg-blue-100/70 border border-blue-200 text-[11px] font-semibold text-[#1E40FF] flex items-center justify-center gap-1 cursor-pointer"
-                      title="Khởi tạo thêm Workspace mới"
-                    >
-                      <PlusCircle className="w-3 h-3 shrink-0" />
-                      <span className="truncate">Tạo mới</span>
-                    </button>
-                  )}
+                  <span className="text-[9.5px] font-semibold tracking-[0.16em] uppercase text-slate-500 mt-1 whitespace-nowrap">
+                    Meta Report
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* META REPORT Navigation */}
-            <div>
-              <div className="px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
-                META REPORT
-              </div>
-              <nav className="space-y-2">
-                {navItems
-                  .filter((i) => i.id !== 'google_ads')
-                  .map((item) => {
+            {/* Primary Gradient CTA — Active Ad Account Switcher */}
+            <div
+              className={`border-b border-slate-100 flex justify-center shrink-0 ${
+                isSidebarCollapsed ? 'py-3 px-2' : 'px-4 py-4'
+              }`}
+            >
+              {isSidebarCollapsed ? (
+                <button
+                  type="button"
+                  data-testid="open-account-manager"
+                  onClick={() => setAccountModalOpen(true)}
+                  title={activeAccountObj?.name || 'Quản lý Ad Account'}
+                  style={{
+                    background: 'linear-gradient(135deg, #60A5FA 0%, #1E40FF 55%, #1D4ED8 100%)',
+                  }}
+                  className="w-11 h-11 rounded-full text-white shadow-[0_4px_14px_rgba(37,99,235,0.28)] flex items-center justify-center cursor-pointer dom-ios-press"
+                >
+                  <CreditCard className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  data-testid="open-account-manager"
+                  onClick={() => setAccountModalOpen(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #60A5FA 0%, #1E40FF 55%, #1D4ED8 100%)',
+                  }}
+                  className="w-full rounded-2xl px-3.5 py-2.5 text-white shadow-[0_6px_18px_rgba(30,64,255,0.26)] hover:brightness-105 flex items-center justify-between gap-2 text-left cursor-pointer dom-ios-press"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-white/40 shrink-0" />
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold truncate">
+                        {activeAccountObj?.name || 'Kết nối Ad Account'}
+                      </div>
+                      <div className="text-[10px] font-mono text-white/80 truncate">
+                        {activeAccountObj?.ad_account_id
+                          ? `#${activeAccountObj.ad_account_id}`
+                          : 'Bấm để chọn tài khoản'}
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-white/85 shrink-0" />
+                </button>
+              )}
+            </div>
+
+            {/* Scrollable Nav Container */}
+            <div className="flex-1 overflow-y-auto py-3 px-2.5 space-y-5">
+              <div>
+                {!isSidebarCollapsed && (
+                  <div className="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-400">
+                    CHỨC NĂNG CHÍNH
+                  </div>
+                )}
+                <nav className="space-y-1">
+                  {navItems.map((item) => {
                     const Icon = item.icon;
                     const active = effectiveView === item.id;
                     return (
@@ -2464,478 +3457,524 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         type="button"
                         data-testid={`nav-${item.id}`}
                         onClick={() => setActiveView(item.id)}
-                        className={`w-full px-4 py-3.5 rounded-2xl flex items-center gap-3.5 text-[13px] transition-all cursor-pointer ${
+                        title={isSidebarCollapsed ? item.label : undefined}
+                        style={
                           active
-                            ? 'bg-[#F4F8FF] text-slate-900 font-semibold shadow-[0_1px_4px_rgba(30,64,255,0.12)] border border-blue-200/80'
-                            : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-900'
+                            ? {
+                                background:
+                                  'linear-gradient(90deg, rgba(30, 64, 255, 0.14) 0%, rgba(30, 64, 255, 0.02) 100%)',
+                              }
+                            : undefined
+                        }
+                        className={`relative w-full rounded-xl flex items-center transition-all cursor-pointer dom-ios-press ${
+                          isSidebarCollapsed
+                            ? 'justify-center py-2 px-0'
+                            : 'px-3 py-2 gap-3 text-[13px]'
+                        } ${
+                          active
+                            ? 'text-[#1E40FF] font-bold'
+                            : 'text-slate-600 font-medium hover:bg-blue-50/50 hover:text-slate-900'
                         }`}
                       >
-                        <Icon
-                          className={`w-[18px] h-[18px] shrink-0 ${
-                            active ? 'text-[#1E40FF]' : 'text-slate-400'
+                        {active && (
+                          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-gradient-to-b from-[#3B82F6] to-[#0284C7]" />
+                        )}
+                        <span
+                          className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 transition-all ${
+                            active
+                              ? 'bg-gradient-to-br from-[#3B82F6] to-[#0284C7] text-white shadow-[0_4px_10px_rgba(30,64,255,0.24)]'
+                              : 'bg-white border border-slate-200/80 text-slate-500'
                           }`}
-                        />
-                        <span>{item.label}</span>
+                        >
+                          <Icon className="w-[17px] h-[17px]" />
+                        </span>
+                        {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                       </button>
                     );
                   })}
-              </nav>
-            </div>
+                </nav>
+              </div>
 
-            {/* GOOGLE ADS Conditional Navigation (Hidden when Toggle is OFF!) */}
-            {config.google_ads.enabled && (
               <div>
-                <div className="px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
-                  GOOGLE ADS
-                </div>
-                <button
-                  type="button"
-                  data-testid="nav-google_ads"
-                  onClick={() => setActiveView('google_ads')}
-                  className={`w-full px-4 py-3.5 rounded-2xl flex items-center gap-3.5 text-[13px] transition-all cursor-pointer ${
-                    effectiveView === 'google_ads'
-                      ? 'bg-[#F4F8FF] text-slate-900 font-semibold shadow-[0_1px_4px_rgba(30,64,255,0.12)] border border-blue-200/80'
-                      : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  <span
-                    className={`w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold text-[11px] ${
-                      effectiveView === 'google_ads'
-                        ? 'bg-[#1E40FF] text-white'
-                        : 'bg-slate-200 text-slate-700'
+                {!isSidebarCollapsed && (
+                  <div className="px-3 mb-2 text-[10px] font-extrabold uppercase tracking-[0.08em] text-slate-400">
+                    CÀI ĐẶT HỆ THỐNG
+                  </div>
+                )}
+                <div className="space-y-1">
+                  <button
+                    type="button"
+                    data-testid="open-workspace-settings"
+                    onClick={() => openSettingsPage('brand')}
+                    title={isSidebarCollapsed ? 'Cài đặt hệ thống' : undefined}
+                    className={`relative w-full rounded-xl flex items-center transition-all cursor-pointer dom-ios-press ${
+                      isSidebarCollapsed
+                        ? 'justify-center py-2 px-0'
+                        : 'px-3 py-2 gap-3 text-[13px]'
+                    } ${
+                      effectiveView === 'settings'
+                        ? 'bg-gradient-to-r from-[#EFF6FF] to-transparent text-[#1E40FF] font-semibold shadow-xs'
+                        : 'text-slate-600 font-medium hover:bg-blue-50/50 hover:text-slate-900'
                     }`}
                   >
-                    G
-                  </span>
-                  <span>Google ads</span>
-                </button>
+                    {effectiveView === 'settings' && !isSidebarCollapsed && (
+                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3.5px] rounded-r-full bg-[#1E40FF]" />
+                    )}
+                    <span
+                      className={`w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 ${
+                        effectiveView === 'settings'
+                          ? 'bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white shadow-sm'
+                          : 'bg-white border border-slate-200/80 text-slate-500'
+                      }`}
+                    >
+                      <Settings className="w-[17px] h-[17px]" />
+                    </span>
+                    {!isSidebarCollapsed && (
+                      <div className="flex items-center justify-between gap-2 min-w-0 flex-1">
+                        <span className="truncate">Cài đặt hệ thống</span>
+                        {config.ai_config?.has_api_key && (
+                          <span
+                            className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"
+                            title="AI API Key đã cấu hình"
+                          />
+                        )}
+                      </div>
+                    )}
+                  </button>
+
+                  {onRequestCreateWorkspace && (
+                    <button
+                      type="button"
+                      data-testid="standalone-create-workspace"
+                      onClick={onRequestCreateWorkspace}
+                      title={isSidebarCollapsed ? 'Tạo Workspace mới' : undefined}
+                      className={`w-full rounded-xl flex items-center text-slate-600 font-medium hover:bg-blue-50/50 hover:text-[#1E40FF] transition-all cursor-pointer dom-ios-press ${
+                        isSidebarCollapsed
+                          ? 'justify-center py-2 px-0'
+                          : 'px-3 py-2 gap-3 text-[13px]'
+                      }`}
+                    >
+                      <span className="w-9 h-9 rounded-[10px] bg-white border border-slate-200/80 flex items-center justify-center text-[#1E40FF] shrink-0">
+                        <PlusCircle className="w-[17px] h-[17px]" />
+                      </span>
+                      {!isSidebarCollapsed && <span className="truncate">Tạo Workspace mới</span>}
+                    </button>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Bottom SYSTEM & Ecosystem Links */}
-          <div className="space-y-2 pt-4 border-t border-slate-100">
-            <div className="px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-              SYSTEM
-            </div>
-            <button
-              type="button"
-              data-testid="open-workspace-settings"
-              onClick={() => setSettingsModal({ open: true, tab: 'brand' })}
-              className="w-full px-4 py-3 rounded-2xl flex items-center gap-3.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 cursor-pointer"
+          {/* Lower Sidebar Architectural Blueprint Decor + Upgrade to CRM AutoData CTA */}
+          <div className="relative overflow-hidden shrink-0">
+            {/* Subtle Architectural '+' Crosshair & Hairline Blueprint Decor (matching workspace canvas corner) */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 overflow-hidden select-none"
             >
-              <Settings className="w-[18px] h-[18px] text-slate-400" />
-              <span>Setting</span>
-            </button>
+              <div className="absolute left-4 top-0 bottom-0 w-px bg-[#1E40FF]/[0.09]" />
+              <div className="absolute left-0 right-0 top-3.5 h-px bg-[#1E40FF]/[0.09]" />
+              <span className="absolute left-[11.5px] top-[5px] text-[13px] font-medium leading-none text-[#1E40FF]/45">
+                +
+              </span>
+              {!isSidebarCollapsed && (
+                <>
+                  <div className="absolute right-4 top-0 bottom-0 w-px bg-[#1E40FF]/[0.06]" />
+                  <span className="absolute right-[11.5px] top-[5px] text-[12px] font-medium leading-none text-[#1E40FF]/30">
+                    +
+                  </span>
+                  <svg
+                    viewBox="0 0 260 150"
+                    className="absolute inset-0 w-full h-full opacity-75"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M -10,125 C 65,65 145,140 270,55"
+                      fill="none"
+                      stroke="#1E40FF"
+                      strokeWidth="1"
+                      strokeOpacity="0.14"
+                    />
+                    <path
+                      d="M -10,145 C 80,95 160,150 270,82"
+                      fill="none"
+                      stroke="#0284C7"
+                      strokeWidth="0.9"
+                      strokeOpacity="0.11"
+                    />
+                  </svg>
+                </>
+              )}
+            </div>
+
+            {/* Upgrade to CRM AutoData Card / Button (Compact Light UI) */}
+            <div className={`relative z-10 ${isSidebarCollapsed ? 'px-2 pt-3 pb-2 flex justify-center' : 'px-3 pt-3 pb-2'}`}>
+              {isSidebarCollapsed ? (
+                <button
+                  type="button"
+                  data-testid="open-crm-upgrade-modal"
+                  onClick={() => setCrmUpgradeOpen(true)}
+                  title="Upgrade lên CRM AutoData (Dùng thử 30 ngày 0₫)"
+                  className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white shadow-[0_6px_14px_rgba(30,64,255,0.28)] flex items-center justify-center cursor-pointer dom-ios-press"
+                >
+                  <Rocket className="w-4 h-4" />
+                </button>
+              ) : (
+                <div className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-blue-50/70 backdrop-blur-md border border-blue-200/80 shadow-[0_6px_18px_-8px_rgba(30,64,255,0.16)] p-2.5 space-y-2">
+                  <div className="flex items-center justify-between gap-1.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-blue-100 text-[#1E40FF] text-[9.5px] font-extrabold uppercase tracking-wide">
+                      <Sparkles className="w-2.5 h-2.5" />
+                      <span>CRM AutoData</span>
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9.5px] font-bold">
+                      30d 0₫
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-600 leading-snug px-0.5">
+                    <strong className="text-slate-900 block text-[11.5px]">Auto Chia Số &amp; Track Lead</strong>
+                    Đồng bộ khách nét về từng Ad &lt;1s
+                  </div>
+                  <button
+                    type="button"
+                    data-testid="open-crm-upgrade-modal"
+                    onClick={() => setCrmUpgradeOpen(true)}
+                    className="w-full py-1.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer dom-ios-press"
+                  >
+                    <Rocket className="w-3 h-3" />
+                    <span>Upgrade CRM</span>
+                  </button>
+                </div>
+              )}
+            </div>
 
             {onLogout && (
-              <button
-                type="button"
-                onClick={onLogout}
-                className="w-full px-4 py-3 rounded-2xl flex items-center gap-3.5 text-[13px] font-medium text-rose-600 hover:bg-rose-50 cursor-pointer"
-              >
-                <LogOut className="w-[18px] h-[18px]" />
-                <span>Đăng xuất</span>
-              </button>
+              <div className="relative z-10 px-2.5 py-2 border-t border-slate-200/75 bg-white/75 backdrop-blur-sm">
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  title="Đăng xuất"
+                  className={`w-full rounded-xl flex items-center text-rose-600 font-medium hover:bg-rose-50 transition-all cursor-pointer dom-ios-press ${
+                    isSidebarCollapsed
+                      ? 'justify-center py-2 px-0'
+                      : 'justify-between px-3 py-1.5 text-[13px]'
+                  }`}
+                >
+                  {!isSidebarCollapsed && <span className="truncate font-semibold">Đăng xuất</span>}
+                  <span className="w-8 h-8 rounded-[10px] bg-white border border-rose-200/75 flex items-center justify-center text-rose-500 shrink-0">
+                    <LogOut className="w-4 h-4" />
+                  </span>
+                </button>
+              </div>
             )}
           </div>
         </aside>
       )}
 
       {/* ====================================================================
-          MAIN CONTENT CONTAINER
+          RIGHT WORKSPACE COLUMN (Standalone Canvas w/ Luxury Decor OR Single-Padding Embedded Column)
          ==================================================================== */}
-      <div className="relative z-10 flex-1 min-w-0 p-4 sm:p-6 lg:px-8 lg:py-5 flex flex-col gap-5">
-        {/* Top Header Bar — Classic Compact Capsule Style */}
+      <div
+        className={
+          mode === 'standalone'
+            ? 'dom-meta-app-canvas flex-1 min-w-0 flex flex-col relative'
+            : 'w-full flex flex-col gap-3.5'
+        }
+      >
+        {/* Architectural Hairline Frame + '+' Crosshairs + Silk Waves + Watermarks (Standalone Only — Embedded Already Inherits CRM's LuxuryBackgroundDecor) */}
+        {mode === 'standalone' && (
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 top-[60px] lg:top-[66px] overflow-hidden z-0 select-none"
+            aria-hidden="true"
+          >
+            <div className="dom-meta-brochure-frame">
+              <span className="dom-frame-cross bl">+</span>
+              <span className="dom-frame-cross br">+</span>
+            </div>
+            <svg
+              className="absolute inset-0 w-full h-full opacity-60"
+              viewBox="0 0 1440 500"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M -50,420 C 320,180 680,480 1050,240 C 1280,100 1390,260 1500,190"
+                fill="none"
+                stroke="#1E40FF"
+                strokeWidth="1.2"
+                strokeOpacity="0.22"
+              />
+              <path
+                d="M -50,460 C 360,230 720,510 1090,280 C 1310,140 1410,300 1500,230"
+                fill="none"
+                stroke="#0284C7"
+                strokeWidth="0.9"
+                strokeOpacity="0.16"
+              />
+              <path
+                d="M -50,140 C 380,310 820,40 1220,240 C 1360,310 1440,220 1500,260"
+                fill="none"
+                stroke="#1E40FF"
+                strokeWidth="0.8"
+                strokeOpacity="0.13"
+              />
+            </svg>
+            <DomationLogoMark className="absolute -top-7 -left-9 w-[250px] h-[250px] opacity-[0.065] pointer-events-none select-none" />
+            <DomationLogoMark className="absolute -bottom-9 -right-9 w-[230px] h-[230px] opacity-[0.055] pointer-events-none select-none" />
+          </div>
+        )}
+
+        {/* ====================================================================
+            TOP HEADER BAR
+            - Standalone: 66px White CRM-Style Header (Date + /slug on left | Brand + Actions + Profile on right)
+            - Embedded (CRM / ERP): Compact Single-Row Toolbar (1 Layer of Padding Only!)
+           ==================================================================== */}
         <header
           className={
             mode === 'standalone'
-              ? 'flex flex-wrap items-center justify-between gap-3 py-1'
-              : 'rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_12px_rgba(15,23,42,0.03)] px-4 py-3 flex flex-wrap items-center justify-between gap-3'
+              ? 'sticky top-0 z-30 h-[60px] lg:h-[66px] bg-white/[0.97] md:bg-white/92 backdrop-blur-xl border-b border-slate-200/85 px-3.5 sm:px-6 flex items-center gap-2 sm:gap-2.5 shrink-0'
+              : 'relative z-20 rounded-2xl bg-white border border-slate-200/85 shadow-[0_2px_10px_rgba(15,23,42,0.03)] px-3 py-2 flex items-center justify-between gap-2 flex-wrap xl:flex-nowrap'
           }
         >
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Embedded Mode: Account Pill / Quick-Connect + Sub-Tab Switcher */}
-            {mode === 'embedded' && (
-              <>
-                {hasConnectedAccounts ? (
-                  <div className="inline-flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      data-testid="open-account-manager"
-                      onClick={() => setAccountModalOpen(true)}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 text-xs font-semibold text-slate-800 cursor-pointer"
-                    >
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span>{activeAccountObj?.name || 'Chọn tài khoản QC'}</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                    </button>
-                    {canManageConfig && (
-                      <button
-                        type="button"
-                        data-testid="open-quick-connect"
-                        onClick={() => setQuickConnectOpen(true)}
-                        title="Kết nối nhanh hoặc đồng bộ tài khoản Meta"
-                        className="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl bg-[#F4F8FF] hover:bg-blue-100/70 border border-blue-200 text-[#1E40FF] text-xs font-semibold cursor-pointer"
-                      >
-                        <Zap className="w-3.5 h-3.5" />
-                        <span className="hidden xl:inline">Kết nối nhanh</span>
-                      </button>
-                    )}
-                  </div>
-                ) : (
+          {mode === 'standalone' ? (
+            <>
+              {/* Mobile Hamburger + Account Pill (< lg, pushed left via mr-auto) */}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className="lg:hidden order-1 w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 shrink-0 cursor-pointer dom-ios-press"
+                aria-label="Mở menu điều hướng"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setAccountModalOpen(true)}
+                className="lg:hidden order-2 mr-auto inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-bold text-slate-800 max-w-[150px] truncate cursor-pointer dom-ios-press"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                <span className="truncate">
+                  {activeAccountObj?.name || authContext.tenantSlug || 'Ad Account'}
+                </span>
+                <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
+              </button>
+
+              {/* Standalone Date Range Picker: Left on Desktop (>= lg), Right on Mobile/Tablet (< lg) */}
+              <div className="order-3 lg:order-1 shrink-0">{datePickerControl}</div>
+
+              {/* Desktop Workspace Switcher Pill (>= lg) right beside Date Picker */}
+              {authContext.tenantSlug && (
+                <button
+                  type="button"
+                  data-testid="standalone-switch-workspace"
+                  onClick={onRequestSwitchWorkspace}
+                  className={`hidden lg:inline-flex lg:order-2 items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-50 hover:bg-blue-50/70 border border-slate-200/90 text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-colors shrink-0 ${
+                    onRequestSwitchWorkspace ? 'cursor-pointer dom-ios-press' : 'cursor-default'
+                  }`}
+                  title={`Không gian: ${workspaceName}`}
+                >
+                  <Building2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                  <span className="max-w-[140px] truncate">
+                    {authContext.tenantSlug}
+                    {workspacesCount > 1 ? ` (${workspacesCount})` : ''}
+                  </span>
+                  {onRequestSwitchWorkspace && (
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  )}
+                </button>
+              )}
+            </>
+          ) : (
+            /* Embedded Mode: Compact Account Pill + Desktop Single-Line View Tabs */
+            <div className="flex items-center gap-2 min-w-0 shrink lg:flex-1">
+              {hasConnectedAccounts ? (
+                <div className="inline-flex items-center gap-1 min-w-0">
                   <button
                     type="button"
-                    data-testid="open-quick-connect"
-                    onClick={() => setQuickConnectOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white text-xs font-semibold shadow-sm cursor-pointer"
+                    data-testid="open-account-manager"
+                    onClick={() => setAccountModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 text-xs font-bold text-slate-800 cursor-pointer dom-ios-press min-w-0"
+                    title={
+                      activeAccountObj?.ad_account_id
+                        ? `Tài khoản: ${activeAccountObj.name} (act_${activeAccountObj.ad_account_id})`
+                        : 'Chọn tài khoản quảng cáo'
+                    }
                   >
-                    <Zap className="w-3.5 h-3.5" />
-                    <span>Kết nối nhanh Meta</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="max-w-[100px] sm:max-w-[140px] truncate">
+                      {activeAccountObj?.name || 'Tài khoản QC'}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                   </button>
-                )}
-
-                <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl overflow-x-auto">
-                  {navItems.map((item) => {
-                    const active = effectiveView === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        data-testid={`nav-${item.id}`}
-                        onClick={() => setActiveView(item.id)}
-                        className={`px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer whitespace-nowrap ${
-                          active
-                            ? 'bg-white text-[#1E40FF] font-semibold shadow-sm'
-                            : 'text-slate-600 font-medium hover:text-slate-900'
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-
-            {/* Mobile Sub-Tab Switcher for Standalone (< lg) */}
-            {mode === 'standalone' && (
-              <div className="flex lg:hidden items-center gap-1 bg-slate-100/90 p-1 rounded-xl overflow-x-auto">
-                {navItems.map((item) => {
-                  const active = effectiveView === item.id;
-                  return (
+                  {canManageConfig && (
                     <button
-                      key={item.id}
                       type="button"
-                      onClick={() => setActiveView(item.id)}
-                      className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer whitespace-nowrap ${
-                        active
-                          ? 'bg-white text-[#1E40FF] font-semibold shadow-sm'
-                          : 'text-slate-600 font-medium hover:text-slate-900'
-                      }`}
+                      data-testid="open-quick-connect"
+                      onClick={() => setQuickConnectOpen(true)}
+                      title="Kết nối nhanh hoặc thêm tài khoản Meta"
+                      className="w-7 h-7 rounded-lg bg-[#F4F8FF] hover:bg-blue-100/80 border border-blue-200/80 text-[#1E40FF] flex items-center justify-center cursor-pointer dom-ios-press shrink-0"
                     >
-                      {item.label}
+                      <Zap className="w-3.5 h-3.5" />
                     </button>
-                  );
-                })}
+                  )}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  data-testid="open-quick-connect"
+                  onClick={() => setQuickConnectOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white text-xs font-semibold shadow-xs cursor-pointer shrink-0 dom-ios-press"
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Kết nối Meta</span>
+                </button>
+              )}
+
+              <div className="hidden lg:block min-w-0">
+                <DomResponsiveSubtabs
+                  variant="segmented"
+                  maxMobile={2}
+                  maxTablet={4}
+                  maxDesktop={6}
+                  value={effectiveView}
+                  onChange={(id) => setActiveView(id as DomMetaNavView)}
+                  tabs={navItems.map((item) => ({
+                    id: item.id,
+                    label: item.shortLabel,
+                    shortLabel: item.shortLabel,
+                    testId: `nav-${item.id}`,
+                  }))}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Right Side of Header — Brand Filter + Embedded Date Picker + Compact Action Capsule + User Profile */}
+          <div
+            className={`flex items-center gap-1.5 sm:gap-2 shrink-0 ${
+              mode === 'standalone' ? 'order-4 lg:order-3 lg:ml-auto' : ''
+            }`}
+          >
+            {/* Brand Quick Filter (Desktop) */}
+            {config.brand_filters.length > 0 && (
+              <div className="hidden md:block">
+                <DomMetaSelect
+                  ariaLabel="Lọc theo thương hiệu"
+                  testId="brand-filter-select"
+                  value={activeBrandFilter}
+                  onChange={(val) => setActiveBrandFilter(val)}
+                  variant="pill"
+                  className="bg-slate-50/90"
+                  options={[
+                    { value: '', label: 'Tất cả thương hiệu' },
+                    ...config.brand_filters.map((b) => ({
+                      value: b.filter,
+                      label: b.name,
+                      avatarUrl: b.avatar || undefined,
+                    })),
+                  ]}
+                />
               </div>
             )}
 
-            {/* Classic Date Range Picker Dropdown Pill + Readable Range */}
-            <div ref={datePickerRef} className="relative flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                data-testid="open-date-picker"
-                onClick={() => {
-                  if (!dateMenuOpen) {
-                    setDraftPreset(datePreset);
-                    setDraftStart(resolvedRange.since);
-                    setDraftEnd(resolvedRange.until);
-                    setPickPhase('start');
-                    const parts = resolvedRange.until.split('-').map(Number);
-                    if (parts[0] && parts[1]) {
-                      setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
-                    }
-                  }
-                  setDateMenuOpen((v) => !v);
-                }}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-[0_2px_8px_rgba(15,23,42,0.04)] text-xs font-semibold text-slate-800 cursor-pointer transition-colors"
-              >
-                <Calendar className="w-4 h-4 text-[#1E40FF]" />
-                <span>
-                  {DATE_PRESET_OPTIONS.find((p) => p.key === datePreset)?.label || 'Last 7 days'}
-                </span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-              </button>
+            {mode !== 'standalone' && datePickerControl}
 
-              {dateMenuOpen && (
-                <div className="absolute left-0 top-full mt-2.5 w-[330px] sm:w-[570px] rounded-2xl bg-white border border-slate-200/95 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.22)] z-50 overflow-hidden flex flex-col sm:flex-row">
-                  {/* Left Column: Preset Radio List */}
-                  <div className="sm:w-44 shrink-0 border-b sm:border-b-0 sm:border-r border-slate-100 bg-slate-50/55 p-2.5 grid grid-cols-2 sm:grid-cols-1 gap-0.5">
-                    {DATE_PRESET_OPTIONS.map((opt) => {
-                      const isSelected = draftPreset === opt.key;
-                      return (
-                        <button
-                          key={opt.key}
-                          type="button"
-                          onClick={() => {
-                            setDraftPreset(opt.key);
-                            if (opt.key !== 'custom_range') {
-                              const next = resolveDateRangeFromPreset(opt.key);
-                              setDraftStart(next.since);
-                              setDraftEnd(next.until);
-                              const parts = next.until.split('-').map(Number);
-                              if (parts[0] && parts[1]) {
-                                setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
-                              }
-                            }
-                          }}
-                          className={`w-full px-2.5 py-2 rounded-xl flex items-center gap-2.5 text-left text-xs transition-colors cursor-pointer ${
-                            isSelected
-                              ? 'bg-blue-50/90 text-[#1E40FF] font-semibold'
-                              : 'text-slate-600 font-medium hover:bg-white'
-                          }`}
-                        >
-                          <span
-                            className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
-                              isSelected ? 'border-[#1E40FF]' : 'border-slate-300'
-                            }`}
-                          >
-                            {isSelected && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#1E40FF]" />
-                            )}
-                          </span>
-                          <span className="truncate">{opt.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Right Column: Interactive Monthly Calendar Grid + Footer */}
-                  <div className="flex-1 p-4 flex flex-col justify-between gap-3">
-                    <div className="space-y-3">
-                      <div className="text-xs font-bold text-slate-900">Select Date Range</div>
-                      <div className="flex items-center justify-between gap-2">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setCalendarMonth((prev) =>
-                              prev.month === 0
-                                ? { year: prev.year - 1, month: 11 }
-                                : { year: prev.year, month: prev.month - 1 }
-                            )
-                          }
-                          className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer"
-                          aria-label="Previous month"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <div className="text-xs sm:text-sm font-bold text-slate-800">
-                          {CALENDAR_MONTH_NAMES[calendarMonth.month]} {calendarMonth.year}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setCalendarMonth((prev) =>
-                              prev.month === 11
-                                ? { year: prev.year + 1, month: 0 }
-                                : { year: prev.year, month: prev.month + 1 }
-                            )
-                          }
-                          className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer"
-                          aria-label="Next month"
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-7 gap-1 text-center">
-                        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((wd) => (
-                          <div
-                            key={wd}
-                            className="text-[11px] font-semibold text-slate-400 py-1"
-                          >
-                            {wd}
-                          </div>
-                        ))}
-                        {buildCalendarMonthGrid(calendarMonth.year, calendarMonth.month).map(
-                          (cell) => {
-                            const sMin = draftStart <= draftEnd ? draftStart : draftEnd;
-                            const sMax = draftStart <= draftEnd ? draftEnd : draftStart;
-                            const isEdge = cell.iso === sMin || cell.iso === sMax;
-                            const inRange = cell.iso > sMin && cell.iso < sMax;
-                            return (
-                              <button
-                                key={cell.iso}
-                                type="button"
-                                onClick={() => {
-                                  setDraftPreset('custom_range');
-                                  if (pickPhase === 'start') {
-                                    setDraftStart(cell.iso);
-                                    setDraftEnd(cell.iso);
-                                    setPickPhase('end');
-                                  } else {
-                                    if (cell.iso < draftStart) {
-                                      setDraftEnd(draftStart);
-                                      setDraftStart(cell.iso);
-                                    } else {
-                                      setDraftEnd(cell.iso);
-                                    }
-                                    setPickPhase('start');
-                                  }
-                                }}
-                                className={`h-8 w-full rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                                  isEdge
-                                    ? 'bg-[#1E40FF] text-white font-bold shadow-xs'
-                                    : inRange
-                                      ? 'bg-blue-50 text-[#1E40FF] font-semibold'
-                                      : cell.inMonth
-                                        ? 'text-slate-700 hover:bg-slate-100'
-                                        : 'text-slate-300 hover:bg-slate-50'
-                                }`}
-                              >
-                                {cell.day}
-                              </button>
-                            );
-                          }
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <input
-                          type="date"
-                          value={draftStart}
-                          onChange={(e) => {
-                            setDraftPreset('custom_range');
-                            setDraftStart(e.target.value);
-                          }}
-                          className="w-[126px] rounded-xl border border-slate-200 px-2.5 py-1.5 text-[11px] font-medium text-slate-700 focus:border-[#1E40FF] outline-none"
-                        />
-                        <span className="text-slate-400 text-xs">-</span>
-                        <input
-                          type="date"
-                          value={draftEnd}
-                          onChange={(e) => {
-                            setDraftPreset('custom_range');
-                            setDraftEnd(e.target.value);
-                          }}
-                          className="w-[126px] rounded-xl border border-slate-200 px-2.5 py-1.5 text-[11px] font-medium text-slate-700 focus:border-[#1E40FF] outline-none"
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 ml-auto">
-                        <button
-                          type="button"
-                          onClick={() => setDateMenuOpen(false)}
-                          className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-600 cursor-pointer"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDatePreset(draftPreset);
-                            if (draftPreset === 'custom_range') {
-                              const sMin = draftStart <= draftEnd ? draftStart : draftEnd;
-                              const sMax = draftStart <= draftEnd ? draftEnd : draftStart;
-                              setCustomStart(sMin);
-                              setCustomEnd(sMax);
-                            }
-                            setLoading(true);
-                            setDateMenuOpen(false);
-                          }}
-                          className="px-4 py-1.5 rounded-xl bg-[#1E40FF] hover:bg-blue-700 text-xs font-semibold text-white shadow-xs cursor-pointer"
-                        >
-                          Update
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <span className="text-xs font-medium text-slate-500 tabular-nums">
-              {formatIsoToVnDisplay(resolvedRange.since)} - {formatIsoToVnDisplay(resolvedRange.until)}
-            </span>
-
-            {/* Brand Quick Filter */}
-            {config.brand_filters.length > 0 && (
-              <DomMetaSelect
-                ariaLabel="Lọc theo thương hiệu"
-                testId="brand-filter-select"
-                value={activeBrandFilter}
-                onChange={(val) => setActiveBrandFilter(val)}
-                variant="pill"
-                className="bg-white shadow-[0_2px_8px_rgba(15,23,42,0.03)] py-2"
-                options={[
-                  { value: '', label: 'Tất cả thương hiệu' },
-                  ...config.brand_filters.map((b) => ({
-                    value: b.filter,
-                    label: b.name,
-                  })),
+            {/* Mobile Header Overflow Menu (< md): Strictly 2 right-side controls (Date Pill + More) */}
+            <div className="md:hidden">
+              <DomOverflowMenu
+                testId="mobile-header-overflow"
+                badgeCount={smartAlerts.length}
+                items={[
+                  ...(dataset && isAiAdsEvalAllowed
+                    ? [
+                        {
+                          id: 'ai_summary',
+                          label: 'AI Phân tích hiệu suất',
+                          description: 'Chẩn đoán chiến dịch & đề xuất tối ưu',
+                          icon: <Sparkles className="w-3.5 h-3.5 text-[#1E40FF]" />,
+                          onClick: () => setAiModalOpen(true),
+                        },
+                      ]
+                    : []),
+                  {
+                    id: 'focus_tour',
+                    label: 'Tour Hướng Dẫn',
+                    description: 'Xem chỉ điểm 5 bước trực quan',
+                    icon: <HelpCircle className="w-3.5 h-3.5 text-[#1E40FF]" />,
+                    onClick: () => {
+                      setTourStepIdx(0);
+                      setTourOpen(true);
+                    },
+                  },
+                  {
+                    id: 'share',
+                    label: 'Chia sẻ báo cáo & phân quyền',
+                    icon: <Share2 className="w-3.5 h-3.5" />,
+                    onClick: () => setShareModalOpen(true),
+                  },
+                  {
+                    id: 'settings',
+                    label: 'Cài đặt Workspace & API',
+                    icon: <Settings className="w-3.5 h-3.5" />,
+                    onClick: () => openSettingsPage('brand'),
+                  },
                 ]}
               />
-            )}
-          </div>
+            </div>
 
-          {/* Right Toolbar — Classic Unified White Pill Capsule */}
-          <div className="flex items-center gap-2">
-            {dataset && (
+            {/* Desktop/Tablet Compact Action Capsule (>= md) */}
+            <div className="hidden md:inline-flex items-center gap-0.5 p-0.5 rounded-full bg-slate-50 border border-slate-200/90">
               <button
                 type="button"
-                data-testid="open-ai-summary"
-                onClick={() => setAiModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#F4F8FF] hover:bg-blue-100/70 border border-blue-200 text-xs font-semibold text-[#1E40FF] transition-colors cursor-pointer"
-                title="AI Chẩn đoán hiệu suất"
+                data-testid="open-dom-meta-tour"
+                onClick={() => {
+                  setTourStepIdx(0);
+                  setTourOpen(true);
+                }}
+                title="Tour Hướng Dẫn DOM Meta Report"
+                className="w-7 h-7 rounded-full hover:bg-white flex items-center justify-center text-slate-600 hover:text-[#1E40FF] cursor-pointer dom-ios-press"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">AI Phân tích</span>
+                <HelpCircle className="w-3.5 h-3.5" />
               </button>
-            )}
-
-            <div className="inline-flex items-center gap-1 p-1 rounded-full bg-white border border-slate-200/90 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
-              {mode === 'standalone' && (
-                <div className="hidden sm:flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full bg-slate-50 border border-slate-200/80">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-[10px] font-bold flex items-center justify-center">
-                    {userDisplayName.slice(0, 1).toUpperCase()}
-                  </div>
-                  <span className="text-xs font-medium text-slate-700 max-w-[120px] truncate">
-                    {userDisplayName}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-[#1E40FF] text-white text-[10px] font-semibold">
-                    {formatDomMetaRoleBadge(userRoleLabel)}
-                  </span>
-                </div>
+              {dataset && (
+                <button
+                  type="button"
+                  data-testid="open-ai-summary"
+                  onClick={() =>
+                    isAiAdsEvalAllowed ? setAiModalOpen(true) : openSettingsPage('ai_key')
+                  }
+                  title={
+                    isAiAdsEvalAllowed
+                      ? 'AI Phân tích hiệu suất'
+                      : 'AI đánh giá Quảng cáo đang tắt — bấm để mở Cài đặt AI'
+                  }
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold cursor-pointer dom-ios-press ${
+                    isAiAdsEvalAllowed
+                      ? 'bg-[#F4F8FF] hover:bg-blue-100/80 text-[#1E40FF]'
+                      : 'bg-slate-100 text-slate-500 hover:text-[#1E40FF]'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span className="hidden 2xl:inline">{isAiAdsEvalAllowed ? 'AI' : 'AI (Tắt)'}</span>
+                </button>
               )}
-
-              <button
-                type="button"
-                onClick={triggerReload}
-                title="Làm mới dữ liệu"
-                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-[#1E40FF] cursor-pointer transition-colors"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#1E40FF]' : ''}`} />
-              </button>
 
               {/* Alerts Bell */}
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setAlertsOpen((v) => !v)}
-                  className="relative w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 cursor-pointer transition-colors"
+                  title="Trung tâm cảnh báo chiến dịch"
+                  className="relative w-7 h-7 rounded-full hover:bg-white flex items-center justify-center text-slate-600 cursor-pointer dom-ios-press"
                 >
                   <Bell className="w-3.5 h-3.5" />
                   {smartAlerts.length > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
+                    <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
                       {smartAlerts.length}
                     </span>
                   )}
                 </button>
                 {alertsOpen && (
-                  <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-white border border-slate-200 shadow-xl z-50 p-3.5 space-y-2">
-                    <div className="text-xs font-semibold text-slate-800">
+                  <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-white border border-slate-200 shadow-xl z-50 p-3.5 space-y-2 dom-ios-modal">
+                    <div className="text-xs font-bold text-slate-800">
                       Trung tâm cảnh báo chiến dịch
                     </div>
                     {smartAlerts.length === 0 ? (
@@ -2961,9 +4000,9 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 <button
                   type="button"
                   data-testid="open-workspace-settings"
-                  onClick={() => setSettingsModal({ open: true, tab: 'brand' })}
-                  className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 cursor-pointer transition-colors"
-                  title="Cài đặt Workspace"
+                  onClick={() => openSettingsPage('brand')}
+                  className="w-7 h-7 rounded-full hover:bg-white flex items-center justify-center text-slate-600 cursor-pointer dom-ios-press"
+                  title="Cài đặt Workspace & API"
                 >
                   <Settings className="w-3.5 h-3.5" />
                 </button>
@@ -2973,146 +4012,289 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 type="button"
                 data-testid="copy-share-url"
                 onClick={() => setShareModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-slate-100 text-xs font-medium text-slate-700 cursor-pointer transition-colors"
+                className="w-7 h-7 rounded-full hover:bg-white flex items-center justify-center text-slate-600 hover:text-[#1E40FF] cursor-pointer dom-ios-press"
                 title="Chia sẻ báo cáo & phân quyền truy cập"
               >
-                <Share2 className="w-3.5 h-3.5 text-slate-500" />
-                <span>Share</span>
+                <Share2 className="w-3.5 h-3.5" />
               </button>
             </div>
+
+            {/* Standalone Desktop User Profile Block (Aligned with data.domation.net CRM Header) */}
+            {mode === 'standalone' && (
+              <div className="hidden lg:flex items-center gap-2.5 pl-2.5 border-l border-slate-200/80">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-xs font-bold flex items-center justify-center shadow-xs shrink-0">
+                  {userDisplayName.slice(0, 1).toUpperCase()}
+                </div>
+                <div className="leading-tight">
+                  <div className="text-xs font-bold text-slate-900 max-w-[125px] truncate">
+                    {userDisplayName}
+                  </div>
+                  <div className="text-[10.5px] font-semibold text-slate-400">
+                    {formatDomMetaRoleBadge(userRoleLabel)}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Embedded Mobile/Tablet Dedicated View Subtabs Row (< lg): Clean full-width row with zero header collision */}
+          {mode === 'embedded' && (
+            <div className="lg:hidden w-full pt-1.5 border-t border-slate-100 min-w-0">
+              <DomResponsiveSubtabs
+                variant="segmented"
+                maxMobile={1}
+                maxTablet={4}
+                maxDesktop={6}
+                className="w-full justify-between"
+                value={effectiveView}
+                onChange={(id) => setActiveView(id as DomMetaNavView)}
+                tabs={navItems.map((item) => ({
+                  id: item.id,
+                  label: item.shortLabel,
+                  shortLabel: item.shortLabel,
+                  testId: `nav-mobile-${item.id}`,
+                }))}
+              />
+            </div>
+          )}
         </header>
 
-        {/* Empty Onboarding Prompt when no Meta Ad Account connected yet — Vertically Centered Quiet Luxury Card */}
-        {!loading && !hasConnectedAccounts && effectiveView !== 'meta_capi' && (
-          <div className="flex-1 min-h-[calc(100vh-140px)] flex items-center justify-center py-6">
-            <div className="w-full max-w-xl rounded-[28px] bg-white/95 backdrop-blur-xl border border-slate-200/85 shadow-[0_20px_50px_-15px_rgba(30,64,255,0.12)] p-8 sm:p-11 text-center relative overflow-hidden">
-              <div className="relative space-y-5">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white flex items-center justify-center mx-auto shadow-[0_14px_28px_-8px_rgba(30,64,255,0.45)]">
-                  <KeyRound className="w-7 h-7" />
-                </div>
+        {/* ====================================================================
+            MAIN BODY CONTENT WRAPPER
+            - Standalone: Padded inside architectural frame (+ mobile bottom tab clearance)
+            - Embedded: Zero extra wrapper padding (1 layer of padding from CRM/ERP <main>)
+           ==================================================================== */}
+        <div
+          className={
+            mode === 'standalone'
+              ? 'relative z-10 flex-1 min-w-0 p-3.5 sm:p-6 lg:px-8 lg:py-6 pb-24 lg:pb-8 flex flex-col gap-4 max-w-[1640px] w-full mx-auto'
+              : 'relative z-10 flex flex-col gap-4'
+          }
+        >
+          {/* Empty Onboarding Prompt when no Meta Ad Account connected yet */}
+          {!loading &&
+            !hasConnectedAccounts &&
+            effectiveView !== 'meta_capi' &&
+            effectiveView !== 'google_ads' && (
+            <div className="flex-1 min-h-[calc(100vh-180px)] flex items-center justify-center py-6">
+              <div className="w-full max-w-xl rounded-[28px] bg-white/95 backdrop-blur-xl border border-slate-200/85 shadow-[0_20px_50px_-15px_rgba(30,64,255,0.12)] p-8 sm:p-11 text-center relative overflow-hidden">
+                <div className="relative space-y-5">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white flex items-center justify-center mx-auto shadow-[0_14px_28px_-8px_rgba(30,64,255,0.45)]">
+                    <KeyRound className="w-7 h-7" />
+                  </div>
 
-                <div className="space-y-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/70 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
-                    KHỞI TẠO BÁO CÁO QUẢNG CÁO
-                  </span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
-                    Kết Nối Tài Khoản Quảng Cáo Meta
-                  </h2>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
-                    Tự động đồng bộ toàn bộ chiến dịch, phân tích tỷ lệ giữ chân video 3 giây và đối soát trực tiếp từng khách hàng cùng Sale phụ trách.
-                  </p>
-                </div>
+                  <div className="space-y-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/70 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                      KHỞI TẠO BÁO CÁO QUẢNG CÁO
+                    </span>
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
+                      Kết Nối Tài Khoản Quảng Cáo Meta
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+                      Tự động đồng bộ toàn bộ chiến dịch, phân tích tỷ lệ giữ chân video 3 giây và đối soát trực tiếp từng khách hàng cùng Sale phụ trách.
+                    </p>
+                  </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-                  {['Biết rõ bài nào ra khách', 'Đối soát Sale & CPQL', 'Cảnh báo Video 3s'].map(
-                    (chip) => (
-                      <span
-                        key={chip}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-200/80 text-[11px] font-medium text-slate-700"
-                      >
-                        <Check className="w-3 h-3 text-[#1E40FF]" />
-                        <span>{chip}</span>
-                      </span>
-                    )
-                  )}
-                </div>
+                  <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                    {['Biết rõ bài nào ra khách', 'Đối soát Sale & CPQL', 'Cảnh báo Video 3s'].map(
+                      (chip) => (
+                        <span
+                          key={chip}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-200/80 text-[11px] font-medium text-slate-700"
+                        >
+                          <Check className="w-3 h-3 text-[#1E40FF]" />
+                          <span>{chip}</span>
+                        </span>
+                      )
+                    )}
+                  </div>
 
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    data-testid="onboarding-quick-connect-btn"
-                    onClick={() =>
-                      mode === 'embedded' ? setQuickConnectOpen(true) : setAccountModalOpen(true)
-                    }
-                    className="px-7 py-3.5 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs sm:text-sm font-semibold shadow-[0_12px_28px_-8px_rgba(30,64,255,0.5)] cursor-pointer inline-flex items-center gap-2 transition-all"
-                  >
-                    <Zap className="w-4 h-4" />
-                    <span>Kết Nối Tài Khoản Meta Ngay</span>
-                  </button>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      data-testid="onboarding-quick-connect-btn"
+                      onClick={() =>
+                        mode === 'embedded' ? setQuickConnectOpen(true) : setAccountModalOpen(true)
+                      }
+                      className="px-7 py-3.5 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs sm:text-sm font-semibold shadow-[0_12px_28px_-8px_rgba(30,64,255,0.5)] cursor-pointer inline-flex items-center gap-2 transition-all dom-ios-press"
+                    >
+                      <Zap className="w-4 h-4" />
+                      <span>Kết Nối Tài Khoản Meta Ngay</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {error && (
-          <div className="rounded-2xl bg-rose-50 border border-rose-200 px-5 py-3.5 flex items-center justify-between gap-4 text-xs font-medium text-rose-700">
-            <span>{error}</span>
-            <button
-              type="button"
-              onClick={() => setAccountModalOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-white border border-rose-200 text-rose-700 font-semibold cursor-pointer shrink-0"
-            >
-              Kiểm tra Token
-            </button>
-          </div>
-        )}
+          {error && (
+            <div className="rounded-2xl bg-rose-50 border border-rose-200 px-5 py-3.5 flex items-center justify-between gap-4 text-xs font-medium text-rose-700">
+              <span>{error}</span>
+              <button
+                type="button"
+                onClick={() => setAccountModalOpen(true)}
+                className="px-3 py-1.5 rounded-xl bg-white border border-rose-200 text-rose-700 font-semibold cursor-pointer shrink-0 dom-ios-press"
+              >
+                Kiểm tra Token
+              </button>
+            </div>
+          )}
 
-        {/* Loading Skeleton — Matching 3-Row Dashboard Structure */}
-        {loading && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200/80 p-3.5 space-y-2.5">
-                <div className="h-[108px] rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-500/20 animate-pulse p-3.5 flex flex-col justify-between">
-                  <div className="h-3 w-16 rounded bg-blue-300/60" />
-                  <div className="h-6 w-36 rounded bg-blue-300/70" />
+          {/* ====================================================================
+              COMPLETE VIEW-ACCURATE NEUTRAL SHIMMER SKELETONS (Zero Green Borders!)
+             ==================================================================== */}
+          {loading && effectiveView === 'dashboard' && (
+            <div className="space-y-4">
+              {/* Row 1 Skeleton: KPI Stack + Daily Spent + Meta Goal */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200/80 p-3.5 space-y-2.5">
+                  <div className="h-[104px] rounded-xl dom-meta-skeleton p-4 flex flex-col justify-between" />
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-[60px] rounded-xl dom-meta-skeleton-soft p-3 flex flex-col justify-between"
+                    >
+                      <div className="h-2.5 w-20 rounded dom-meta-skeleton" />
+                      <div className="h-4 w-28 rounded dom-meta-skeleton" />
+                    </div>
+                  ))}
                 </div>
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="h-[58px] rounded-xl bg-slate-50 border border-slate-100 p-3 animate-pulse flex flex-col justify-between">
-                    <div className="h-2.5 w-20 rounded bg-slate-200" />
-                    <div className="h-4 w-24 rounded bg-slate-200" />
+                <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <div className="h-4 w-28 rounded dom-meta-skeleton" />
+                    <div className="h-7 w-28 rounded-full dom-meta-skeleton-soft" />
+                  </div>
+                  <div className="h-[225px] rounded-xl dom-meta-skeleton-soft mt-4" />
+                </div>
+                <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <div className="h-4 w-24 rounded dom-meta-skeleton" />
+                    <div className="h-7 w-24 rounded-lg dom-meta-skeleton-soft" />
+                  </div>
+                  <div className="h-[215px] flex items-end justify-around gap-5 px-4 pt-6">
+                    <div className="w-14 h-[84%] rounded-t-xl dom-meta-skeleton" />
+                    <div className="w-14 h-[42%] rounded-t-xl dom-meta-skeleton-soft" />
+                    <div className="w-14 h-[22%] rounded-t-xl dom-meta-skeleton-soft" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 2 Skeleton: Active/Interaction + Spent Platform + Age & Gender */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3.5">
+                  <div className="grid grid-cols-3 gap-2">
+                    {[0, 1, 2].map((i) => (
+                      <div key={i} className="h-16 rounded-xl dom-meta-skeleton-soft" />
+                    ))}
+                  </div>
+                  <div className="h-3.5 w-24 rounded dom-meta-skeleton" />
+                  <div className="grid grid-cols-3 gap-2">
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="h-14 rounded-xl dom-meta-skeleton-soft" />
+                    ))}
+                  </div>
+                </div>
+                <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="h-4 w-28 rounded dom-meta-skeleton" />
+                    <div className="h-6 w-16 rounded-lg dom-meta-skeleton-soft" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 items-center pt-2">
+                    <div className="space-y-2.5">
+                      <div className="h-12 rounded-xl dom-meta-skeleton-soft" />
+                      <div className="h-12 rounded-xl dom-meta-skeleton-soft" />
+                      <div className="h-12 rounded-xl dom-meta-skeleton-soft" />
+                    </div>
+                    <div className="w-32 h-32 rounded-full dom-meta-skeleton mx-auto" />
+                  </div>
+                </div>
+                <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <div className="h-4 w-28 rounded dom-meta-skeleton" />
+                    <div className="h-6 w-20 rounded-lg dom-meta-skeleton-soft" />
+                  </div>
+                  <div className="h-[180px] flex items-end justify-around gap-3 px-2 pt-4">
+                    {[38, 76, 92, 64, 42, 24].map((h, i) => (
+                      <div
+                        key={i}
+                        className="w-7 rounded-t-lg dom-meta-skeleton"
+                        style={{ height: `${h}%` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 3 Skeleton: Dayparting Heatmap + Regional/Funnel/Device/Top 5 */}
+              <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="h-4 w-48 rounded dom-meta-skeleton" />
+                  <div className="h-7 w-28 rounded-full dom-meta-skeleton-soft" />
+                </div>
+                <div className="h-40 rounded-xl dom-meta-skeleton-soft" />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3"
+                  >
+                    <div className="h-4 w-36 rounded dom-meta-skeleton" />
+                    {[0, 1, 2, 3, 4].map((r) => (
+                      <div key={r} className="h-9 rounded-xl dom-meta-skeleton-soft" />
+                    ))}
                   </div>
                 ))}
               </div>
-              <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <div className="h-4 w-28 rounded bg-slate-200 animate-pulse" />
-                  <div className="h-7 w-32 rounded-full bg-slate-100 animate-pulse" />
-                </div>
-                <div className="h-[220px] rounded-xl bg-gradient-to-t from-blue-50/80 via-slate-50/40 to-transparent animate-pulse mt-4" />
-              </div>
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <div className="h-4 w-28 rounded bg-slate-200 animate-pulse" />
-                  <div className="h-7 w-24 rounded-lg bg-slate-100 animate-pulse" />
-                </div>
-                <div className="h-[210px] flex items-end justify-around gap-5 px-4 pt-6">
-                  <div className="w-14 h-[82%] rounded-t-lg bg-blue-100 animate-pulse" />
-                  <div className="w-14 h-[35%] rounded-t-lg bg-slate-200 animate-pulse" />
-                  <div className="w-14 h-[18%] rounded-t-lg bg-slate-100 animate-pulse" />
-                </div>
-              </div>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              <div className="lg:col-span-4 h-[230px] rounded-2xl bg-white border border-slate-200/80 p-5 animate-pulse space-y-4">
-                <div className="h-4 w-32 rounded bg-slate-200" />
-                <div className="grid grid-cols-2 gap-3 pt-2">
-                  <div className="h-24 rounded-xl bg-slate-100" />
-                  <div className="h-24 rounded-xl bg-slate-100" />
-                </div>
-              </div>
-              <div className="lg:col-span-4 h-[230px] rounded-2xl bg-white border border-slate-200/80 p-5 animate-pulse space-y-3">
-                <div className="h-4 w-28 rounded bg-slate-200" />
-                <div className="grid grid-cols-2 gap-4 items-center pt-2">
-                  <div className="space-y-2">
-                    <div className="h-11 rounded-xl bg-slate-100" />
-                    <div className="h-11 rounded-xl bg-slate-100" />
+          )}
+
+          {loading &&
+            (effectiveView === 'ad_detail' || effectiveView === 'lead_attribution') && (
+              <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-56 rounded-full dom-meta-skeleton-soft" />
+                    <div className="h-8 w-36 rounded-full dom-meta-skeleton-soft" />
                   </div>
-                  <div className="w-32 h-32 rounded-full border-[14px] border-slate-100 mx-auto" />
+                  <div className="h-8 w-28 rounded-full dom-meta-skeleton" />
                 </div>
-              </div>
-              <div className="lg:col-span-4 h-[230px] rounded-2xl bg-white border border-slate-200/80 p-5 animate-pulse flex flex-col justify-between">
-                <div className="h-4 w-28 rounded bg-slate-200" />
-                <div className="h-[150px] flex items-end justify-around gap-3 px-2">
-                  {[45, 75, 92, 60, 35].map((h, i) => (
-                    <div key={i} className="w-8 rounded-t-lg bg-slate-200" style={{ height: `${h}%` }} />
+                <div className="space-y-2.5 pt-1">
+                  {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                    <div key={i} className="h-14 rounded-xl dom-meta-skeleton-soft" />
                   ))}
                 </div>
               </div>
+            )}
+
+          {loading && effectiveView === 'ad_library' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl bg-white border border-slate-200/80 p-3.5 space-y-3"
+                >
+                  <div className="aspect-square rounded-xl dom-meta-skeleton-soft" />
+                  <div className="h-4 w-3/4 rounded dom-meta-skeleton" />
+                  <div className="h-8 rounded-xl dom-meta-skeleton-soft" />
+                </div>
+              ))}
             </div>
-          </div>
-        )}
+          )}
+
+          {loading && effectiveView === 'account' && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="h-24 rounded-2xl dom-meta-skeleton-soft" />
+                ))}
+              </div>
+              <div className="h-64 rounded-2xl bg-white border border-slate-200/80 p-5">
+                <div className="h-full rounded-xl dom-meta-skeleton-soft" />
+              </div>
+            </div>
+          )}
 
         {/* ====================================================================
             VIEW 1: DASHBOARD — Executive Overview Layout + Campaign Tree at Bottom
@@ -3122,19 +4304,19 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             {/* ROW 1: Spent KPI Stack + Daily Spent Area Chart + Meta Goal Bar Chart */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
               {/* KPI Stack Card */}
-              <div className="lg:col-span-3 relative rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-3.5 flex flex-col justify-between gap-2.5">
+              <div className="lg:col-span-3 relative rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-3.5 flex flex-col justify-between gap-2.5 min-w-0">
                 <button
                   type="button"
                   data-testid="open-perf-compare"
                   onClick={() => setPerfCompareOpen(true)}
                   title="Báo cáo đối soát kỳ trước"
-                  className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-[#1E40FF] cursor-pointer"
+                  className="absolute right-5 top-5 lg:-right-3 lg:top-1/2 lg:-translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/95 border border-slate-200 shadow-md flex items-center justify-center text-slate-600 hover:text-[#1E40FF] cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
 
                 {/* Hero Royal Sapphire Spent Card */}
-                <div className="rounded-xl bg-gradient-to-br from-[#1E40FF] via-[#1B4DFF] to-[#0284C7] text-white p-4 shadow-[0_10px_24px_-8px_rgba(30,64,255,0.45)]">
+                <div className="rounded-xl bg-gradient-to-br from-[#1E40FF] via-[#1B4DFF] to-[#0284C7] text-white p-3.5 sm:p-4 pr-12 sm:pr-12 lg:pr-4 shadow-[0_10px_24px_-8px_rgba(30,64,255,0.45)]">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-medium text-white/90">Spent</span>
                     {renderDeltaPill(
@@ -3143,62 +4325,66 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       true
                     )}
                   </div>
-                  <div className="text-2xl xl:text-[26px] font-bold tracking-tight mt-2 tabular-nums">
+                  <div className="text-xl sm:text-2xl xl:text-[26px] font-bold tracking-tight mt-1.5 sm:mt-2 tabular-nums">
                     {formatDomMoney(dataset.currentTotals.spend, currency)}
                   </div>
                 </div>
 
-                {/* 3 Customizable Secondary KPI Cards */}
-                {(config.summary_metrics?.length === 3
-                  ? config.summary_metrics
-                  : ['reach', 'leads', 'impressions']
-                ).map((metricId) => {
-                  const optMeta = DOM_META_SUMMARY_KPI_OPTIONS.find((o) => o.id === metricId);
-                  const curRec = dataset.currentTotals as unknown as Record<string, number | undefined>;
-                  const prvRec = dataset.prevTotals as unknown as Record<string, number | undefined>;
-                  const isLeadFallback =
-                    metricId === 'leads' &&
-                    dataset.currentTotals.leads === 0 &&
-                    dataset.currentTotals.messages > 0;
-                  const currVal = isLeadFallback
-                    ? dataset.currentTotals.messages
-                    : Number(curRec[metricId] ?? 0);
-                  const prevVal = isLeadFallback
-                    ? dataset.prevTotals.messages
-                    : Number(prvRec[metricId] ?? 0);
-                  const kpiLabel = isLeadFallback
-                    ? 'Messages'
-                    : optMeta?.shortLabel || metricId;
-                  const fmt = optMeta?.format || 'number';
-                  const formattedVal =
-                    fmt === 'money'
-                      ? formatDomMoney(currVal, currency)
-                      : fmt === 'percent'
-                        ? `${currVal.toFixed(2)}%`
-                        : fmt === 'decimal'
-                          ? currVal.toFixed(2)
-                          : formatDomNumber(currVal);
+                {/* 3 Customizable Secondary KPI Cards (3-col native mobile strip < lg, stacked on lg) */}
+                <div className="grid grid-cols-3 lg:grid-cols-1 gap-2 lg:gap-2.5">
+                  {(config.summary_metrics?.length === 3
+                    ? config.summary_metrics
+                    : ['reach', 'leads', 'impressions']
+                  ).map((metricId) => {
+                    const optMeta = DOM_META_SUMMARY_KPI_OPTIONS.find((o) => o.id === metricId);
+                    const curRec = dataset.currentTotals as unknown as Record<string, number | undefined>;
+                    const prvRec = dataset.prevTotals as unknown as Record<string, number | undefined>;
+                    const isLeadFallback =
+                      metricId === 'leads' &&
+                      dataset.currentTotals.leads === 0 &&
+                      dataset.currentTotals.messages > 0;
+                    const currVal = isLeadFallback
+                      ? dataset.currentTotals.messages
+                      : Number(curRec[metricId] ?? 0);
+                    const prevVal = isLeadFallback
+                      ? dataset.prevTotals.messages
+                      : Number(prvRec[metricId] ?? 0);
+                    const kpiLabel = isLeadFallback
+                      ? 'Messages'
+                      : optMeta?.shortLabel || metricId;
+                    const fmt = optMeta?.format || 'number';
+                    const formattedVal =
+                      fmt === 'money'
+                        ? formatDomMoneyShort(currVal, currency)
+                        : fmt === 'percent'
+                          ? `${currVal.toFixed(2)}%`
+                          : fmt === 'decimal'
+                            ? currVal.toFixed(2)
+                            : formatDomNumber(currVal);
 
-                  return (
-                    <div
-                      key={metricId}
-                      className="rounded-xl bg-slate-50/95 border border-slate-100 px-3.5 py-2.5 flex flex-col justify-between"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-medium text-slate-500">{kpiLabel}</span>
-                        {renderDeltaPill(currVal, prevVal)}
+                    return (
+                      <div
+                        key={metricId}
+                        className="rounded-xl bg-slate-50/95 border border-slate-100 px-2.5 sm:px-3.5 py-2 sm:py-2.5 flex flex-col justify-between min-w-0"
+                      >
+                        <div className="flex items-center justify-between gap-1 min-w-0">
+                          <span className="text-[10.5px] sm:text-xs font-medium text-slate-500 truncate">
+                            {kpiLabel}
+                          </span>
+                          <span className="hidden sm:inline-flex">{renderDeltaPill(currVal, prevVal)}</span>
+                        </div>
+                        <div className="text-sm sm:text-[17px] font-bold sm:font-semibold text-slate-800 mt-1 tabular-nums truncate">
+                          {formattedVal}
+                        </div>
                       </div>
-                      <div className="text-base sm:text-[17px] font-semibold text-slate-700 mt-1 tabular-nums">
-                        {formattedVal}
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Daily Spent Smooth Area Chart */}
-              <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-2 shrink-0">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
                     <TrendingUp className="w-4 h-4 text-[#1E40FF]" />
                     <span>Daily Spent</span>
@@ -3211,6 +4397,8 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     variant="pill"
                     options={[
                       { value: 'spend', label: 'Spent' },
+                      { value: 'result', label: 'Results (KQ)' },
+                      { value: 'cpr', label: 'CPR (Chi phí/KQ)' },
                       { value: 'impressions', label: 'Impressions' },
                       { value: 'reach', label: 'Reach' },
                       { value: 'leads', label: 'Leads' },
@@ -3228,13 +4416,27 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
               </div>
 
               {/* Meta Goal Bar Chart */}
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-2 shrink-0 flex-nowrap min-w-0">
+                  <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-800 shrink-0">
                     <Target className="w-4 h-4 text-[#1E40FF]" />
                     <span>Meta Goal</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1 flex-nowrap min-w-0">
+                    {metaGoalBars.some((x) => Number(x.result || 0) > 0) && (
+                      <DomMetaSelect
+                        ariaLabel="Chọn chỉ số Meta Goal"
+                        value={metaGoalMetric}
+                        onChange={(v) => setMetaGoalMetric(v as 'spend' | 'result' | 'cpr')}
+                        variant="compact"
+                        align="right"
+                        options={[
+                          { value: 'spend', label: 'Chi tiêu (Spent)' },
+                          { value: 'result', label: 'Kết quả (Result)' },
+                          { value: 'cpr', label: 'Chi phí/KQ (CPR)' },
+                        ]}
+                      />
+                    )}
                     <button
                       type="button"
                       onClick={() => {
@@ -3250,7 +4452,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                           void handleSaveSettingsPatch({ goal_chart_mode: nextMode });
                         }
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 text-[11px] font-medium text-slate-700 hover:text-[#1E40FF] cursor-pointer"
+                      className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 text-[11px] font-medium text-slate-700 hover:text-[#1E40FF] cursor-pointer whitespace-nowrap shrink-0"
                       title="Chuyển chế độ gom nhóm cột: Optimization Goal / Keyword / Brand"
                     >
                       ⇄{' '}
@@ -3263,59 +4465,96 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     <button
                       type="button"
                       data-testid="open-goal-settings"
-                      onClick={() => setSettingsModal({ open: true, tab: 'goals' })}
-                      className="w-7 h-7 rounded-lg bg-slate-50 hover:bg-blue-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-[#1E40FF] cursor-pointer"
+                      onClick={() => openSettingsPage('goals')}
+                      className="w-7 h-7 rounded-lg bg-slate-50 hover:bg-blue-50 border border-slate-200/80 flex items-center justify-center text-slate-500 hover:text-[#1E40FF] cursor-pointer shrink-0"
                       title="Cài đặt từ khóa Goal & 3 chỉ số KPI"
                     >
                       <Settings className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
-                <MetaGoalBarChart items={metaGoalBars} currency={currency} />
+                <MetaGoalBarChart
+                  items={metaGoalBars}
+                  currency={currency}
+                  metric={metaGoalMetric}
+                  onMetricChange={setMetaGoalMetric}
+                  hideMetricSelect
+                />
               </div>
             </div>
 
-            {/* ROW 2: Active Status + Interaction | Spent Platform Donut | Age & Gender */}
+            {/* ROW 2: Active Status + Interaction (No Empty Gap!) | Spent Platform Donut | Age & Gender */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col justify-between gap-4">
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    {
-                      label: 'Active Campaign',
-                      active: dataset.counts.activeCampaigns,
-                      total: dataset.counts.totalCampaigns,
-                    },
-                    {
-                      label: 'Active Adset',
-                      active: dataset.counts.activeAdsets,
-                      total: dataset.counts.totalAdsets,
-                    },
-                    {
-                      label: 'Active Ads',
-                      active: dataset.counts.activeAds,
-                      total: dataset.counts.totalAds,
-                    },
-                  ].map((st) => (
-                    <div
-                      key={st.label}
-                      className="rounded-xl bg-slate-50 border border-slate-100 px-2.5 py-2.5"
-                    >
-                      <div className="text-[10.5px] font-medium text-slate-500 leading-tight truncate">
-                        {st.label}
-                      </div>
-                      <div className="flex items-center gap-1.5 mt-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                        <span className="text-sm sm:text-[15px] font-semibold text-slate-700 tabular-nums">
-                          {st.active}/{st.total}
-                        </span>
-                      </div>
+              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3.5">
+                {(() => {
+                  const spendCamps = filteredCampaigns;
+                  const spendAdsets = spendCamps.flatMap((c) => c.adsets);
+                  const spendAds = spendAdsets.flatMap((a) => a.ads);
+                  const actCamps = spendCamps.filter(
+                    (c) => c.effective_status.toUpperCase() === 'ACTIVE'
+                  ).length;
+                  const actAdsets = spendAdsets.filter(
+                    (a) => a.effective_status.toUpperCase() === 'ACTIVE'
+                  ).length;
+                  const actAds = spendAds.filter(
+                    (ad) => ad.effective_status.toUpperCase() === 'ACTIVE'
+                  ).length;
+                  return (
+                    <div className="grid grid-cols-3 gap-2 shrink-0">
+                      {[
+                        {
+                          label: 'Active Campaign',
+                          active: actCamps,
+                          total: spendCamps.length,
+                        },
+                        {
+                          label: 'Active Adset',
+                          active: actAdsets,
+                          total: spendAdsets.length,
+                        },
+                        {
+                          label: 'Active Ads',
+                          active: actAds,
+                          total: spendAds.length,
+                        },
+                      ].map((st) => {
+                        const ratio =
+                          st.total > 0 ? Math.round((st.active / st.total) * 100) : 0;
+                        return (
+                          <div
+                            key={st.label}
+                            className="rounded-xl bg-slate-50/95 border border-slate-100 px-2.5 py-2.5 flex flex-col justify-between"
+                          >
+                            <div className="text-[10.5px] font-medium text-slate-500 leading-tight truncate">
+                              {st.label}
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-1.5">
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                              <span className="text-sm sm:text-[15px] font-bold text-slate-800 tabular-nums">
+                                {st.active}/{st.total}
+                              </span>
+                            </div>
+                            <div className="mt-2 h-2 rounded-full bg-slate-200/85 overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                                style={{ width: `${ratio}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
+                  );
+                })()}
 
-                <div>
-                  <div className="text-sm font-semibold text-slate-700 mb-2.5">Interaction</div>
-                  <div className="grid grid-cols-3 gap-2">
+                <div className="flex-1 flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-slate-800">Interaction</span>
+                    <span className="text-[11px] font-medium text-slate-400">
+                      CTR {dataset.currentTotals.ctr.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 flex-1">
                     {[
                       ['Video Plays', dataset.currentTotals.video_play],
                       ['ThruPlays', dataset.currentTotals.thruplay],
@@ -3326,12 +4565,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     ].map(([lbl, val]) => (
                       <div
                         key={String(lbl)}
-                        className="rounded-xl bg-slate-50/90 border border-slate-100 px-2.5 py-2.5"
+                        className="rounded-xl bg-slate-50/90 border border-slate-100 px-3 py-2.5 flex flex-col justify-between"
                       >
                         <div className="text-[10.5px] font-medium text-slate-500 leading-tight truncate">
                           {lbl}
                         </div>
-                        <div className="text-sm sm:text-[15px] font-semibold text-slate-700 mt-1 tabular-nums">
+                        <div className="text-sm sm:text-[15px] font-bold text-slate-800 mt-1 tabular-nums">
                           {formatDomNumber(Number(val || 0))}
                         </div>
                       </div>
@@ -3340,44 +4579,60 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 </div>
               </div>
 
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5">
+              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col">
                 <SpentPlatformDonutCard
                   platforms={dataset.platforms}
                   positions={dataset.positions}
+                  platformDevices={dataset.platformDevices}
                   currency={currency}
                 />
               </div>
 
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col justify-between">
-                <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-2 shrink-0">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
                     <span className="w-2.5 h-2.5 rounded-sm bg-[#1E40FF]" />
                     <span>Age &amp; Gender</span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setAgeOnly((v) => !v)}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                      ageOnly
-                        ? 'bg-[#1E40FF] text-white'
-                        : 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-[#1E40FF]'
-                    }`}
-                  >
-                    {ageOnly ? 'By Gender' : 'Age Only'}
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <DomMetaSelect
+                      ariaLabel="Chọn chỉ số Age & Gender"
+                      value={ageMetric}
+                      onChange={(v) => setAgeMetric(v as 'spend' | 'result' | 'cpr')}
+                      variant="compact"
+                      align="right"
+                      options={[
+                        { value: 'spend', label: 'Spent' },
+                        { value: 'result', label: 'Result' },
+                        { value: 'cpr', label: 'CPR' },
+                      ]}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setAgeOnly((v) => !v)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                        ageOnly
+                          ? 'bg-[#1E40FF] text-white'
+                          : 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-[#1E40FF]'
+                      }`}
+                    >
+                      {ageOnly ? 'By Gender' : 'Age Only'}
+                    </button>
+                  </div>
                 </div>
                 <AgeGenderBarChart
                   buckets={dataset.ageGender}
                   ageOnly={ageOnly}
+                  metric={ageMetric}
                   currency={currency}
                 />
               </div>
             </div>
 
-            {/* ROW 3: Dayparting Heatmap (8 cols) + Region Spent (4 cols) */}
+            {/* ROW 3: Dayparting Heatmap (8 cols) + Region Spent (4 cols, Scroll-Bounded Same Height) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              <div className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col lg:h-[365px]">
+                <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
                     <Clock className="w-4 h-4 text-[#1E40FF]" />
                     <span>Dayparting Heatmap</span>
@@ -3390,6 +4645,8 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     variant="pill"
                     options={[
                       { value: 'spend', label: 'Spend' },
+                      { value: 'result', label: 'Results (KQ)' },
+                      { value: 'cpr', label: 'CPR (Chi phí/KQ)' },
                       { value: 'leads', label: 'Leads' },
                       { value: 'messages', label: 'Messages' },
                       { value: 'purchases', label: 'Purchases' },
@@ -3404,304 +4661,480 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 />
               </div>
 
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5">
-                <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 mb-3">
+              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col lg:h-[365px] overflow-hidden">
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 mb-2.5 shrink-0">
                   <MapPin className="w-4 h-4 text-[#1E40FF]" />
-                  <span>Region Spent</span>
+                  <span>Địa Lý &amp; Tỉnh Thành</span>
                 </div>
-                <RegionSpentBarChart regions={dataset.regions} currency={currency} />
-              </div>
-            </div>
-
-            {/* Expandable Extra Details */}
-            <div className="text-center pt-1">
-              <button
-                type="button"
-                onClick={() => setShowExtraDetails((v) => !v)}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-xs font-medium text-slate-700 hover:text-[#1E40FF] cursor-pointer"
-              >
-                <span>
-                  {showExtraDetails
-                    ? 'Thu gọn Extra Details'
-                    : 'Mở rộng Extra Details & Creative Hook Rate'}
-                </span>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform ${
-                    showExtraDetails ? 'rotate-180' : ''
-                  }`}
+                <RegionSpentBarChart
+                  regions={dataset.regions}
+                  countries={dataset.countries}
+                  currency={currency}
                 />
-              </button>
+              </div>
             </div>
 
-            {showExtraDetails && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col justify-between">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-[#1E40FF]" />
-                      <span>Video Funnel (Hook &amp; Hold Rate)</span>
-                    </h3>
-                    <span className="text-[11px] font-medium text-slate-400">Creative</span>
+            {/* Full Dashboard Analytics Section (Auto-Shown) */}
+            <div className="space-y-4">
+              {/* Deep Row A: 24h Hourly Spend/Result (Advertiser vs Audience TZ) + Full User Behavior Funnel */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                  <div className="lg:col-span-7 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3">
+                    <div className="flex items-center justify-between gap-2 shrink-0">
+                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#1E40FF]" />
+                        <span>Phân Bổ 24 Khung Giờ (Chi Tiêu, Kết Quả &amp; Múi Giờ)</span>
+                      </h3>
+                      <span className="text-[11px] font-medium text-slate-400">00:00 – 23:59</span>
+                    </div>
+                    <HourlySpendResultChart
+                      hourly={dashboardHourly}
+                      hourlyAudience={dataset.hourlyAudience}
+                      currency={currency}
+                    />
                   </div>
-                  <VideoFunnelBars
-                    impressions={dataset.currentTotals.impressions}
-                    video3s={dataset.currentTotals.video_3s}
-                    thruplay={dataset.currentTotals.thruplay}
-                    linkClicks={dataset.currentTotals.link_click}
-                  />
-                </div>
 
-                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-[#06B6D4]" />
-                      <span>Device Breakdown</span>
-                    </h3>
-                    <span className="text-[11px] font-medium text-slate-400">
-                      {dataset.devices.length} thiết bị
-                    </span>
-                  </div>
-                  <div className="space-y-3 pt-1">
-                    {dataset.devices.map((dv) => {
-                      const totalDvSpend = Math.max(
-                        dataset.devices.reduce((acc, x) => acc + x.spend, 0),
-                        1
-                      );
-                      const maxDv = Math.max(...dataset.devices.map((x) => x.spend), 1);
-                      const barPct = Math.max(5, Math.round((dv.spend / maxDv) * 100));
-                      const sharePct = ((dv.spend / totalDvSpend) * 100).toFixed(1);
-                      return (
-                        <div key={dv.device} className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs gap-2">
-                            <span className="font-medium capitalize text-slate-700">
-                              {dv.device.replace(/_/g, ' ')}
-                            </span>
-                            <div className="flex items-center gap-2 tabular-nums">
-                              <span className="text-[11px] font-medium text-slate-400">
-                                {sharePct}%
-                              </span>
-                              <span className="font-semibold text-slate-800">
-                                {formatDomMoney(dv.spend, currency)}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div
-                              className="h-full rounded-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]"
-                              style={{ width: `${barPct}%` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div className="lg:col-span-5 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3">
+                    <div className="flex items-center justify-between gap-2 shrink-0">
+                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#1E40FF]" />
+                        <span>Phễu Hành Vi &amp; Tương Tác Người Dùng</span>
+                      </h3>
+                      <span className="text-[11px] font-medium text-slate-400">Full Funnel</span>
+                    </div>
+                    <UserBehaviorFunnelCard
+                      metrics={{
+                        ...dataset.currentTotals,
+                        result: dashboardTotalResults,
+                      }}
+                      currency={currency}
+                      compact
+                    />
                   </div>
                 </div>
 
-                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
-                      <span>Top 5 Campaigns by Spend</span>
-                    </h3>
-                    <span className="text-[11px] font-medium text-slate-400">Chi tiêu cao</span>
+                {/* Deep Row B: Video Retention + Hardware Device Donut + Top 5 Campaigns */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col justify-between">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-sm bg-[#1E40FF]" />
+                        <span>Video Funnel (Hook &amp; Hold Rate)</span>
+                      </h3>
+                      <span className="text-[11px] font-medium text-slate-400">Creative</span>
+                    </div>
+                    <VideoFunnelBars
+                      impressions={dataset.currentTotals.impressions}
+                      video3s={dataset.currentTotals.video_3s}
+                      thruplay={dataset.currentTotals.thruplay}
+                      avgWatchTimeSec={dataset.currentTotals.video_avg_time}
+                      completionRate={dataset.currentTotals.completion_rate}
+                      p25={dataset.currentTotals.video_p25}
+                      p50={dataset.currentTotals.video_p50}
+                      p75={dataset.currentTotals.video_p75}
+                      p95={dataset.currentTotals.video_p95}
+                      p100={dataset.currentTotals.video_p100}
+                      linkClicks={dataset.currentTotals.link_click}
+                    />
                   </div>
-                  <div className="space-y-2 pt-0.5">
-                    {filteredCampaigns.slice(0, 5).map((c, i) => (
-                      <div
-                        key={c.id}
-                        className="rounded-xl bg-slate-50/90 border border-slate-100 px-3 py-2 flex items-center justify-between gap-2.5 text-xs"
+
+                  <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col gap-3">
+                    <div className="flex items-center justify-between shrink-0">
+                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-sm bg-[#06B6D4]" />
+                        <span>Device Breakdown</span>
+                      </h3>
+                      <span className="text-[11px] font-medium text-slate-400">
+                        {dataset.devices.length} thiết bị
+                      </span>
+                    </div>
+                    <DeviceDonutCard devices={dataset.devices} currency={currency} compact />
+                  </div>
+
+                  <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
+                        <span>Top 5 Campaigns by Spend</span>
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => setActiveView('ad_detail')}
+                        className="text-[11px] font-semibold text-[#1E40FF] hover:underline cursor-pointer"
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span
-                            className={`w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0 ${
-                              i === 0
-                                ? 'bg-[#1E40FF] text-white'
-                                : 'bg-slate-200/80 text-slate-700'
-                            }`}
-                          >
-                            {i + 1}
-                          </span>
-                          <span className="font-medium text-slate-700 truncate">{c.name}</span>
-                        </div>
-                        <span className="font-semibold text-[#1E40FF] tabular-nums shrink-0">
-                          {formatDomMoneyShort(c.spend, currency)}
-                        </span>
-                      </div>
-                    ))}
+                        Xem tất cả →
+                      </button>
+                    </div>
+                    <div className="space-y-2 pt-0.5">
+                      {(() => {
+                        const top5 = filteredCampaigns.slice(0, 5);
+                        const maxTopSpend = Math.max(1, ...top5.map((x) => x.spend));
+                        return top5.map((c, i) => {
+                          const cThumbs = collectEntityThumbs(
+                            c.adsets.flatMap((as) => as.ads || []),
+                            2
+                          );
+                          const barW = Math.max(6, Math.round((c.spend / maxTopSpend) * 100));
+                          return (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onMouseEnter={() => handleHoverPrefetchEntity(c, 'campaign')}
+                              onClick={() => setDetailModal({ entity: c, type: 'campaign' })}
+                              className="w-full rounded-xl bg-slate-50/90 hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200/80 px-2.5 py-2 flex items-center justify-between gap-2.5 text-xs text-left cursor-pointer dom-ios-press"
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                <span
+                                  className={`w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0 ${
+                                    i === 0
+                                      ? 'bg-[#1E40FF] text-white'
+                                      : 'bg-slate-200/80 text-slate-700'
+                                  }`}
+                                >
+                                  {i + 1}
+                                </span>
+                                <CreativeThumbFan
+                                  urls={cThumbs}
+                                  goal={c.optimization_goal}
+                                  active={c.effective_status.toUpperCase() === 'ACTIVE'}
+                                  variant="adset"
+                                  alt={c.name}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-semibold text-slate-800 truncate">{c.name}</div>
+                                  <div className="mt-1 h-1.5 w-full rounded-full bg-slate-200/75 overflow-hidden">
+                                    <div
+                                      className="h-full rounded-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]"
+                                      style={{ width: `${barW}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0 tabular-nums">
+                                <div className="font-bold text-[#1E40FF]">
+                                  {formatDomMoneyShort(c.spend, currency)}
+                                </div>
+                                {c.result > 0 && (
+                                  <div className="text-[10px] text-slate-400">
+                                    {formatDomNumber(c.result)} KQ
+                                  </div>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        });
+                      })()}
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* ROW 4: Hierarchical Campaign -> Adset -> Ad Tree directly on Dashboard (DOMATION_META parity) */}
-            {renderCampaignHierarchyCard('Campaign Details — Cây Chiến Dịch Đa Tầng')}
           </div>
         )}
 
         {/* ====================================================================
             VIEW 2: CAMPAIGN DETAILS — Full Hierarchical Tree + Filters + Sort
            ==================================================================== */}
-        {!loading && dataset && effectiveView === 'ad_detail' && renderCampaignHierarchyCard()}
+        {!loading &&
+          dataset &&
+          effectiveView === 'ad_detail' &&
+          renderCampaignHierarchyCard('Campaign Details — Cây Chiến Dịch Đa Tầng')}
 
         {/* ====================================================================
-            VIEW 3: ADS LIBRARY — Active Creative Cards + Hook/Hold Rate
+            VIEW 2B: LEAD ATTRIBUTION (CRM & ERP — Theo Bài Quảng Cáo & Đối Chiếu Từng Lead)
            ==================================================================== */}
-        {!loading && dataset && effectiveView === 'ad_library' && (
+        {!loading && isCrmEnabled && effectiveView === 'lead_attribution' && (
           <div className="space-y-4">
-            <div className="rounded-2xl bg-white border border-slate-200/80 px-5 py-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <Images className="w-5 h-5 text-[#1E40FF]" />
-                <h2 className="text-base font-semibold text-slate-800">
-                  Ads Library — Thư Viện Quảng Cáo &amp; Creative Hook Rate
-                </h2>
+            <ClosedLoopFlywheelCockpit
+              compact
+              metrics={{
+                spendVnd: dataset?.currentTotals.spend || 0,
+                adLeads: dataset?.currentTotals.leads || 0,
+                crmAttributedLeads: crmAttribution?.summary?.attributed_leads || 0,
+                qualifiedLeads: crmAttribution?.summary?.qualified_leads || 0,
+                closedRevenueVnd: crmAttribution?.summary?.total_revenue_vnd || 0,
+                capiSentCount: crmAttribution?.summary?.capi_sent_count || 0,
+                blockedJunkCount: crmAttribution?.summary?.negative_leads || 0,
+              }}
+              onOpenCampaigns={() => setActiveView('ad_detail')}
+              onOpenAttribution={() => setActiveView('lead_attribution')}
+              onOpenCapi={capiPanel ? () => setActiveView('meta_capi') : undefined}
+            />
+            <Suspense
+              fallback={
+                <div className="rounded-2xl bg-white border border-slate-200 p-6 text-xs text-slate-500">
+                  Đang tải bảng đối chiếu Lead CRM...
+                </div>
+              }
+            >
+              <DomMetaLeadAttributionPanel
+                authContext={authContext}
+                dataset={dataset}
+                crmAttribution={crmAttribution}
+                dateRange={{ since: resolvedRange.since, until: resolvedRange.until }}
+                currency={currency}
+                onInspectAd={(ad, tab = 'insights') =>
+                  setDetailModal({ entity: ad, type: 'ad', initialTab: tab })
+                }
+                onOpenLead={onOpenLead}
+              />
+            </Suspense>
+          </div>
+        )}
+
+        {/* ====================================================================
+            VIEW 3: ADS LIBRARY — Grouped by Optimization Goal + Hook/Hold Rate
+           ==================================================================== */}
+        {!loading && dataset && effectiveView === 'ad_library' && (() => {
+          const getGoalBucket = (rawGoal?: string): { key: string; label: string } => {
+            const g = String(rawGoal || '').trim().toUpperCase();
+            if (!g) return { key: 'OTHER', label: 'Mục tiêu khác (General)' };
+            if (g.includes('LEAD')) return { key: 'LEAD', label: 'Leads (Thu thập khách tiềm năng)' };
+            if (g.includes('MESSAG') || g.includes('CONVERSATION')) {
+              return { key: 'MESSAGE', label: 'Messages (Tin nhắn tư vấn)' };
+            }
+            if (g.includes('REACH') || g.includes('IMPRESSION') || g.includes('AWARENESS') || g.includes('AD_RECALL')) {
+              return { key: 'AWARENESS', label: 'Awareness & Reach (Phủ thương hiệu)' };
+            }
+            if (g.includes('LINK_CLICK') || g.includes('LANDING_PAGE') || g.includes('TRAFFIC')) {
+              return { key: 'TRAFFIC', label: 'Traffic (Truy cập trang đích)' };
+            }
+            if (g.includes('THRUPLAY') || g.includes('VIDEO') || g.includes('ENGAGEMENT') || g.includes('POST')) {
+              return { key: 'ENGAGEMENT', label: 'Engagement & Video (Tương tác)' };
+            }
+            if (g.includes('PURCHASE') || g.includes('OFFSITE') || g.includes('CONVERSION') || g.includes('VALUE')) {
+              return { key: 'CONVERSION', label: 'Conversions / Doanh số' };
+            }
+            return { key: g, label: g.replace(/_/g, ' ') };
+          };
+
+          const groupMap = new Map<
+            string,
+            { key: string; label: string; spend: number; result: number; ads: DomMetaAdNode[] }
+          >();
+          for (const ad of activeAdsLibrary) {
+            const b = getGoalBucket(ad.optimization_goal);
+            const cur = groupMap.get(b.key) || {
+              key: b.key,
+              label: b.label,
+              spend: 0,
+              result: 0,
+              ads: [],
+            };
+            cur.spend += ad.spend;
+            cur.result += ad.result || 0;
+            cur.ads.push(ad);
+            groupMap.set(b.key, cur);
+          }
+          const goalGroups = Array.from(groupMap.values()).sort((a, b) => b.spend - a.spend);
+          const visibleGroups =
+            adLibGoalFilter === 'ALL'
+              ? goalGroups
+              : goalGroups.filter((g) => g.key === adLibGoalFilter);
+
+          return (
+            <div className="space-y-4">
+              <div className="rounded-2xl bg-white border border-slate-200/80 px-4 sm:px-5 py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Images className="w-5 h-5 text-[#1E40FF] shrink-0" />
+                  <div className="min-w-0">
+                    <h2 className="text-sm sm:text-base font-semibold text-slate-800 truncate">
+                      Ads Library — Thư Viện Quảng Cáo Theo Mục Tiêu
+                    </h2>
+                    <p className="text-[11px] text-slate-500">
+                      {activeAdsLibrary.length} mẫu quảng cáo · {goalGroups.length} nhóm mục tiêu chạy
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <DomMetaSelect
+                    ariaLabel="Lọc thư viện quảng cáo theo mục tiêu"
+                    value={adLibGoalFilter}
+                    onChange={(v) => setAdLibGoalFilter(v)}
+                    variant="pill"
+                    align="right"
+                    options={[
+                      { value: 'ALL', label: `Tất cả mục tiêu (${activeAdsLibrary.length})` },
+                      ...goalGroups.map((g) => ({
+                        value: g.key,
+                        label: `${g.label.split(' (')[0]} (${g.ads.length})`,
+                      })),
+                    ]}
+                  />
+                </div>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-medium text-emerald-700">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                {activeAdsLibrary.length} mẫu quảng cáo ghi nhận phân phối
-              </span>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {activeAdsLibrary.slice(0, 24).map((ad, idx) => (
-                <div
-                  key={ad.id}
-                  className="rounded-2xl bg-white border border-slate-200/85 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-900 via-[#1E40FF]/90 to-[#0284C7] overflow-hidden">
-                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white/90 select-none">
-                        <Images className="w-7 h-7 text-cyan-300 mb-1.5 opacity-90" />
-                        <span className="text-[11px] font-semibold line-clamp-2 max-w-[90%]">
-                          {ad.name}
-                        </span>
-                        <span className="text-[9.5px] text-cyan-200/80 mt-0.5 font-mono">
-                          {ad.optimization_goal || 'META CREATIVE'}
-                        </span>
-                      </div>
-                      {(ad.thumbnail_url || ad.image_url) && (
-                        <img
-                          src={ad.thumbnail_url || ad.image_url}
-                          alt={ad.name}
-                          className="relative z-10 w-full h-full object-cover bg-slate-100"
-                          loading={idx < 8 ? 'eager' : 'lazy'}
-                          referrerPolicy="no-referrer"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      )}
-                      <span className="absolute top-2.5 left-2.5 z-20 px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-semibold">
-                        {ad.effective_status}
+              {visibleGroups.map((grp) => (
+                <div key={grp.key} className="space-y-3">
+                  <div className="rounded-xl bg-[#F4F8FF]/90 border border-blue-200/70 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Target className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                      <span className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                        {grp.label}
                       </span>
-                      {ad.hook_rate > 0 && (
-                        <span className="absolute top-2.5 right-2.5 z-20 px-2.5 py-0.5 rounded-full bg-[#1E40FF] text-white text-[10px] font-semibold">
-                          Hook {ad.hook_rate.toFixed(1)}%
-                        </span>
-                      )}
+                      <span className="px-2 py-0.5 rounded-full bg-white border border-blue-200 text-[#1E40FF] text-[10.5px] font-bold shrink-0">
+                        {grp.ads.length} mẫu
+                      </span>
                     </div>
-
-                    <div className="p-4 space-y-2">
-                      <div className="text-[10.5px] font-medium text-[#1E40FF] truncate">
-                        {ad.campaign_name}
-                      </div>
-                      <h3 className="text-xs sm:text-sm font-semibold text-slate-800 line-clamp-2">
-                        {ad.name}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
-                        <div>
-                          <span className="text-[10.5px] text-slate-400 block">Spent</span>
-                          <span className="font-semibold text-slate-800 tabular-nums">
-                            {formatDomMoneyShort(ad.spend, currency)}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-[10.5px] text-slate-400 block">Results</span>
-                          <span className="font-semibold text-slate-800 tabular-nums">
-                            {formatDomNumber(ad.result)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {showCrmColumns && (() => {
-                        const adBucket = getEntityCrmBucket('ad', ad.id);
-                        if (!adBucket || adBucket.total_leads === 0) return null;
-                        const adCpql =
-                          adBucket.qualified_leads > 0 && ad.spend > 0
-                            ? ad.spend / adBucket.qualified_leads
-                            : 0;
-                        return (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setDetailModal({
-                                entity: ad,
-                                type: 'ad',
-                                initialTab: 'crm_leads',
-                              })
-                            }
-                            className="w-full mt-1 rounded-xl bg-[#F4F8FF] hover:bg-blue-100/70 border border-blue-200/80 px-3 py-2 text-left space-y-1.5 transition-colors cursor-pointer"
-                          >
-                            <div className="flex items-center justify-between gap-2 text-[11px]">
-                              <span className="font-semibold text-[#1E40FF]">
-                                Lead CRM: {adBucket.total_leads} ({adBucket.positive_rate}% CL)
-                              </span>
-                              {adCpql > 0 && (
-                                <span className="font-semibold text-slate-700 tabular-nums">
-                                  CPQL: {formatDomMoneyShort(adCpql, currency)}
-                                </span>
-                              )}
-                            </div>
-                            {adBucket.sales.length > 0 && (
-                              <div className="flex items-center justify-between gap-2 text-[10.5px] text-slate-600">
-                                <div className="flex items-center -space-x-1">
-                                  {adBucket.sales.slice(0, 3).map((s) => (
-                                    <span
-                                      key={s.user_id}
-                                      className="w-4 h-4 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-[8px] font-bold flex items-center justify-center ring-1 ring-white"
-                                    >
-                                      {getSaleInitials(s.name)}
-                                    </span>
-                                  ))}
-                                </div>
-                                <span className="truncate">
-                                  {adBucket.sales[0]?.name}
-                                  {adBucket.sales.length > 1
-                                    ? ` +${adBucket.sales.length - 1}`
-                                    : ''}
-                                </span>
-                              </div>
-                            )}
-                          </button>
-                        );
-                      })()}
+                    <div className="flex items-center gap-3 text-xs tabular-nums">
+                      <span className="text-slate-600">
+                        Chi tiêu:{' '}
+                        <strong className="text-slate-900">
+                          {formatDomMoneyShort(grp.spend, currency)}
+                        </strong>
+                      </span>
+                      <span className="text-slate-600">
+                        Kết quả:{' '}
+                        <strong className="text-[#1E40FF]">
+                          {formatDomNumber(grp.result)}
+                        </strong>
+                      </span>
                     </div>
                   </div>
 
-                  <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
-                      className="text-xs font-semibold text-[#1E40FF] hover:underline cursor-pointer"
-                    >
-                      Xem Insight Chi Tiết →
-                    </button>
-                    {ad.post_url && (
-                      <a
-                        href={ad.post_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-slate-400 hover:text-slate-700"
-                        title="Mở bài viết Facebook"
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {grp.ads.slice(0, 16).map((ad, idx) => (
+                      <div
+                        key={ad.id}
+                        className="rounded-2xl bg-white border border-slate-200/85 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
                       >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    )}
+                        <div>
+                          <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-900 via-[#1E40FF]/90 to-[#0284C7] overflow-hidden">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white/90 select-none">
+                              <Images className="w-7 h-7 text-cyan-300 mb-1.5 opacity-90" />
+                              <span className="text-[11px] font-semibold line-clamp-2 max-w-[90%]">
+                                {ad.name}
+                              </span>
+                              <span className="text-[9.5px] text-cyan-200/80 mt-0.5 font-mono">
+                                {ad.optimization_goal || 'META CREATIVE'}
+                              </span>
+                            </div>
+                            {(ad.thumbnail_url || ad.image_url) && (
+                              <img
+                                src={ad.thumbnail_url || ad.image_url}
+                                alt={ad.name}
+                                className="relative z-10 w-full h-full object-cover bg-slate-100"
+                                loading={idx < 8 ? 'eager' : 'lazy'}
+                                referrerPolicy="no-referrer"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            )}
+                            <span className="absolute top-2.5 left-2.5 z-20 px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-semibold">
+                              {ad.effective_status}
+                            </span>
+                            {ad.hook_rate > 0 && (
+                              <span className="absolute top-2.5 right-2.5 z-20 px-2.5 py-0.5 rounded-full bg-[#1E40FF] text-white text-[10px] font-semibold">
+                                Hook {ad.hook_rate.toFixed(1)}%
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="p-4 space-y-2">
+                            <div className="text-[10.5px] font-medium text-[#1E40FF] truncate">
+                              {ad.campaign_name}
+                            </div>
+                            <h3 className="text-xs sm:text-sm font-semibold text-slate-800 line-clamp-2">
+                              {ad.name}
+                            </h3>
+                            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
+                              <div>
+                                <span className="text-[10.5px] text-slate-400 block">Spent</span>
+                                <span className="font-semibold text-slate-800 tabular-nums">
+                                  {formatDomMoneyShort(ad.spend, currency)}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-[10.5px] text-slate-400 block">Results</span>
+                                <span className="font-semibold text-slate-800 tabular-nums">
+                                  {formatDomNumber(ad.result)}
+                                </span>
+                              </div>
+                            </div>
+
+                            {showCrmColumns && (() => {
+                              const adBucket = getEntityCrmBucket('ad', ad.id);
+                              if (!adBucket || adBucket.total_leads === 0) return null;
+                              const adCpql =
+                                adBucket.qualified_leads > 0 && ad.spend > 0
+                                  ? ad.spend / adBucket.qualified_leads
+                                  : 0;
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setDetailModal({
+                                      entity: ad,
+                                      type: 'ad',
+                                      initialTab: 'crm_leads',
+                                    })
+                                  }
+                                  className="w-full mt-1 rounded-xl bg-[#F4F8FF] hover:bg-blue-100/70 border border-blue-200/80 px-3 py-2 text-left space-y-1.5 transition-colors cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between gap-2 text-[11px]">
+                                    <span className="font-semibold text-[#1E40FF]">
+                                      Lead CRM: {adBucket.total_leads} ({adBucket.positive_rate}% CL)
+                                    </span>
+                                    {adCpql > 0 && (
+                                      <span className="font-semibold text-slate-700 tabular-nums">
+                                        CPQL: {formatDomMoneyShort(adCpql, currency)}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {adBucket.sales.length > 0 && (
+                                    <div className="flex items-center justify-between gap-2 text-[10.5px] text-slate-600">
+                                      <div className="flex items-center -space-x-1">
+                                        {adBucket.sales.slice(0, 3).map((s) => (
+                                          <span
+                                            key={s.user_id}
+                                            className="w-4 h-4 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-[8px] font-bold flex items-center justify-center ring-1 ring-white"
+                                          >
+                                            {getSaleInitials(s.name)}
+                                          </span>
+                                        ))}
+                                      </div>
+                                      <span className="truncate">
+                                        {adBucket.sales[0]?.name}
+                                        {adBucket.sales.length > 1
+                                          ? ` +${adBucket.sales.length - 1}`
+                                          : ''}
+                                      </span>
+                                    </div>
+                                  )}
+                                </button>
+                              );
+                            })()}
+                          </div>
+                        </div>
+
+                        <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+                          <button
+                            type="button"
+                            onMouseEnter={() => handleHoverPrefetchEntity(ad, 'ad')}
+                            onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
+                            className="text-xs font-semibold text-[#1E40FF] hover:underline cursor-pointer"
+                          >
+                            Xem Insight Chi Tiết →
+                          </button>
+                          {ad.post_url && (
+                            <a
+                              href={ad.post_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-slate-400 hover:text-slate-700"
+                              title="Mở bài viết Facebook"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ====================================================================
             VIEW 4: AD ACCOUNT — Balance + VAT + Monthly Spend + Activity Logs
@@ -3709,10 +5142,17 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         {!loading && dataset && effectiveView === 'account' && (
           <div className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between gap-4">
+              <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between gap-3.5">
                 <div className="rounded-2xl bg-gradient-to-br from-[#0F172A] via-[#1E40FF] to-[#0284C7] text-white p-5 space-y-2">
-                  <div className="text-xs font-medium text-cyan-200">
-                    {dataset.accountOverview?.name || activeAccountObj?.name || 'Meta Ad Account'}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-medium text-cyan-200 truncate">
+                      {dataset.accountOverview?.name || activeAccountObj?.name || 'Meta Ad Account'}
+                    </span>
+                    {dataset.accountOverview?.timezone_name && (
+                      <span className="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-mono text-white/90 shrink-0">
+                        {dataset.accountOverview.timezone_name}
+                      </span>
+                    )}
                   </div>
                   <div className="text-2xl font-bold tabular-nums">
                     {formatDomMoney(dataset.currentTotals.spend, currency)}
@@ -3722,17 +5162,69 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-slate-50 border border-slate-100 p-4 space-y-1">
-                  <div className="text-xs font-medium text-slate-500">
-                    Ước tính bao gồm thuế VAT (+10%)
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 space-y-0.5">
+                    <div className="text-[10.5px] font-medium text-slate-500">
+                      Ước tính gồm VAT (+10%)
+                    </div>
+                    <div className="text-sm sm:text-base font-bold text-slate-800 tabular-nums">
+                      {formatDomMoney(dataset.currentTotals.spend * 1.1, currency)}
+                    </div>
                   </div>
-                  <div className="text-xl font-semibold text-slate-800 tabular-nums">
-                    {formatDomMoney(dataset.currentTotals.spend * 1.1, currency)}
+                  <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 space-y-0.5">
+                    <div className="text-[10.5px] font-medium text-slate-500">
+                      Tổng chi tiêu lũy kế TK
+                    </div>
+                    <div className="text-sm sm:text-base font-bold text-[#1E40FF] tabular-nums">
+                      {dataset.accountOverview?.amount_spent
+                        ? formatDomMoneyShort(dataset.accountOverview.amount_spent, currency)
+                        : formatDomMoneyShort(dataset.currentTotals.spend, currency)}
+                    </div>
                   </div>
                 </div>
+
+                {(dataset.accountOverview?.business_name ||
+                  (dataset.accountOverview?.spend_cap ?? 0) > 0 ||
+                  (dataset.accountOverview?.balance ?? 0) > 0 ||
+                  dataset.accountOverview?.tax_id) && (
+                  <div className="rounded-xl bg-slate-50/80 border border-slate-200/70 p-3.5 space-y-1.5 text-xs">
+                    {dataset.accountOverview?.business_name && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-500">Doanh nghiệp (BM):</span>
+                        <span className="font-semibold text-slate-800 truncate">
+                          {dataset.accountOverview.business_name}
+                        </span>
+                      </div>
+                    )}
+                    {(dataset.accountOverview?.balance ?? 0) > 0 && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-500">Dư nợ hiện tại:</span>
+                        <span className="font-semibold text-amber-700 tabular-nums">
+                          {formatDomMoney(dataset.accountOverview?.balance || 0, currency)}
+                        </span>
+                      </div>
+                    )}
+                    {(dataset.accountOverview?.spend_cap ?? 0) > 0 && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-500">Hạn mức chi tiêu (Cap):</span>
+                        <span className="font-semibold text-slate-800 tabular-nums">
+                          {formatDomMoney(dataset.accountOverview?.spend_cap || 0, currency)}
+                        </span>
+                      </div>
+                    )}
+                    {dataset.accountOverview?.tax_id && (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-500">Mã số thuế:</span>
+                        <span className="font-mono font-semibold text-slate-700">
+                          {dataset.accountOverview.tax_id}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 p-5">
+              <div className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <div className="text-sm font-semibold text-slate-800">
                     Advertising by Month ({selectedYear})
@@ -3777,29 +5269,27 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             </div>
 
             {/* Admin Activities Logs */}
-            <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="text-sm sm:text-base font-semibold text-slate-800">
-                  Activities Logs — Nhật Ký Thao Tác Tài Khoản Quảng Cáo
+            <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 space-y-3.5 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 min-w-0">
+                <h3 className="text-sm sm:text-base font-semibold text-slate-800 truncate">
+                  Nhật Ký Thao Tác Tài Khoản (Activities)
                 </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {['ALL', 'CAMPAIGN', 'AD_SET', 'AD', 'BUDGET', 'STATUS', 'TARGETING'].map(
-                    (cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => setActivityCat(cat)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium cursor-pointer ${
-                          activityCat === cat
-                            ? 'bg-[#1E40FF] text-white'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    )
-                  )}
-                </div>
+                <DomResponsiveSubtabs
+                  maxMobile={2}
+                  maxTablet={4}
+                  maxDesktop={5}
+                  value={activityCat}
+                  onChange={setActivityCat}
+                  tabs={[
+                    { id: 'ALL', label: 'Tất cả' },
+                    { id: 'CAMPAIGN', label: 'Campaign' },
+                    { id: 'AD_SET', label: 'Adset' },
+                    { id: 'AD', label: 'Ad' },
+                    { id: 'BUDGET', label: 'Budget' },
+                    { id: 'STATUS', label: 'Status' },
+                    { id: 'TARGETING', label: 'Targeting' },
+                  ]}
+                />
               </div>
 
               <div className="dom-meta-table-scroll space-y-2 max-h-[360px] overflow-y-auto pr-1">
@@ -3853,13 +5343,21 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </span>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => setSettingsModal({ open: true, tab: 'google_ads' })}
-                className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#1E40FF] text-xs font-semibold cursor-pointer"
-              >
-                Cấu hình &amp; Hướng dẫn 5 bước
-              </button>
+              {config.google_ads.customer_id.trim() &&
+              (config.google_ads.apps_script_url.trim() || (gadsData?.currentRows.length || 0) > 0) ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Đã kết nối</span>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => openSettingsPage('google_ads')}
+                  className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#1E40FF] text-xs font-semibold cursor-pointer"
+                >
+                  Cấu hình &amp; Hướng dẫn 5 bước
+                </button>
+              )}
             </div>
 
             {gadsLoading ? (
@@ -3870,37 +5368,43 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
               <>
                 {/* Row 1: KPI Stack + Daily Trend + Bar by Campaign */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                  <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200/80 p-3.5 space-y-2.5">
-                    <div className="rounded-xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white p-4">
+                  <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200/80 p-3.5 space-y-2.5 min-w-0">
+                    <div className="rounded-xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white p-3.5 sm:p-4">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-white/90">Google Ads Spent</span>
                         {renderDeltaPill(gadsSummary.spent, gadsSummary.prevSpent, true)}
                       </div>
-                      <div className="text-2xl font-bold mt-2 tabular-nums">
+                      <div className="text-xl sm:text-2xl font-bold mt-1.5 sm:mt-2 tabular-nums">
                         {formatDomMoney(gadsSummary.spent, 'VND')}
                       </div>
                     </div>
-                    {[
-                      ['Impressions', gadsSummary.impression, gadsSummary.prevImpression],
-                      ['Clicks', gadsSummary.click, gadsSummary.prevClick],
-                      ['Conversions', gadsSummary.conv, gadsSummary.prevConv],
-                    ].map(([lbl, curV, prvV]) => (
-                      <div
-                        key={String(lbl)}
-                        className="rounded-xl bg-slate-50 border border-slate-100 px-3.5 py-2.5"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-slate-500">{lbl}</span>
-                          {renderDeltaPill(Number(curV), Number(prvV))}
+                    <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
+                      {[
+                        ['Impressions', gadsSummary.impression, gadsSummary.prevImpression],
+                        ['Clicks', gadsSummary.click, gadsSummary.prevClick],
+                        ['Conversions', gadsSummary.conv, gadsSummary.prevConv],
+                      ].map(([lbl, curV, prvV]) => (
+                        <div
+                          key={String(lbl)}
+                          className="rounded-xl bg-slate-50 border border-slate-100 px-2.5 sm:px-3.5 py-2 sm:py-2.5 min-w-0"
+                        >
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-[10.5px] sm:text-xs font-medium text-slate-500 truncate">
+                              {lbl}
+                            </span>
+                            <span className="hidden sm:inline-flex">
+                              {renderDeltaPill(Number(curV), Number(prvV))}
+                            </span>
+                          </div>
+                          <div className="text-sm sm:text-base font-semibold text-slate-700 mt-1 tabular-nums truncate">
+                            {formatDomNumber(Number(curV))}
+                          </div>
                         </div>
-                        <div className="text-base font-semibold text-slate-700 mt-1 tabular-nums">
-                          {formatDomNumber(Number(curV))}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5">
+                  <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <span className="text-sm font-semibold text-slate-800">
                         Google Ads Daily Trend
@@ -3913,9 +5417,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         variant="pill"
                         options={[
                           { value: 'spend', label: 'Spent' },
+                          { value: 'leads', label: 'All Conversions' },
+                          { value: 'cpr', label: 'CPA / CPR' },
                           { value: 'clicks', label: 'Clicks' },
                           { value: 'impressions', label: 'Impressions' },
-                          { value: 'leads', label: 'All Conversions' },
                         ]}
                       />
                     </div>
@@ -4041,73 +5546,90 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </div>
                 </div>
 
-                {/* Row 3: Google Ads Deep Breakdowns (Hourly Activity + Channel + Location) */}
-                <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-                      <Clock className="w-4 h-4 text-[#1E40FF]" />
-                      <span>Phân Bổ Khung Giờ (Hourly Activity), Kênh (Channel) &amp; Vị Trí (Location)</span>
+                {/* Row 3: Google Ads Deep Breakdowns (Edge-to-Edge Hourly Card + Balanced Channel/Location Grid) */}
+                <div className="space-y-4">
+                  {/* Full-width Hourly Activity Card with integrated Filter Selectors */}
+                  <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                        <Clock className="w-4 h-4 text-[#1E40FF]" />
+                        <span>Hourly Activity (0h – 23h)</span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <DomMetaSelect
+                          ariaLabel="Chọn chiến dịch Google Ads"
+                          value={gadsBreakdowns.effectiveCamp}
+                          onChange={(val) => setGadsBreakdownCamp(val)}
+                          align="right"
+                          variant="pill"
+                          className="max-w-[220px]"
+                          options={[
+                            { value: '__all__', label: 'All Campaigns' },
+                            ...gadsSummary.campaigns.map((c) => ({
+                              value: c.campaign,
+                              label: c.campaign,
+                            })),
+                          ]}
+                        />
+                        <DomMetaSelect
+                          ariaLabel="Chọn chỉ số Breakdown Google Ads"
+                          value={gadsBreakdownMetric}
+                          onChange={(val) =>
+                            setGadsBreakdownMetric(val as DomGoogleAdsDimMetric)
+                          }
+                          align="right"
+                          variant="pill"
+                          options={[
+                            { value: 'click', label: 'Clicks' },
+                            { value: 'cost', label: 'Spent' },
+                            { value: 'imp', label: 'Impressions' },
+                            { value: 'conv', label: 'All Conversions' },
+                            { value: 'cpc', label: 'CPC' },
+                          ]}
+                        />
+                      </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <DomMetaSelect
-                        ariaLabel="Chọn chiến dịch Google Ads"
-                        value={gadsBreakdowns.effectiveCamp}
-                        onChange={(val) => setGadsBreakdownCamp(val)}
-                        align="right"
-                        variant="pill"
-                        className="max-w-[220px]"
-                        options={[
-                          { value: '__all__', label: 'All Campaigns' },
-                          ...gadsSummary.campaigns.map((c) => ({
-                            value: c.campaign,
-                            label: c.campaign,
-                          })),
-                        ]}
-                      />
-                      <DomMetaSelect
-                        ariaLabel="Chọn chỉ số Breakdown Google Ads"
-                        value={gadsBreakdownMetric}
-                        onChange={(val) =>
-                          setGadsBreakdownMetric(val as DomGoogleAdsDimMetric)
-                        }
-                        align="right"
-                        variant="pill"
-                        options={[
-                          { value: 'click', label: 'Clicks' },
-                          { value: 'cost', label: 'Spent' },
-                          { value: 'imp', label: 'Impressions' },
-                          { value: 'conv', label: 'All Conversions' },
-                          { value: 'cpc', label: 'CPC' },
-                        ]}
+
+                    <div data-testid="gads-hourly-chart" className="w-full min-w-0">
+                      <GoogleAdsHourlyBarChart
+                        slots={gadsBreakdowns.hourly}
+                        metric={gadsBreakdownMetric}
                       />
                     </div>
                   </div>
 
-                  <div data-testid="gads-hourly-chart">
-                    <div className="text-xs font-semibold text-slate-600 mb-1">
-                      Hourly Activity (0h – 23h)
-                    </div>
-                    <GoogleAdsHourlyBarChart
-                      slots={gadsBreakdowns.hourly}
-                      metric={gadsBreakdownMetric}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2 border-t border-slate-100">
-                    <div data-testid="gads-channel-card" className="space-y-2">
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600">
-                        Channel Breakdown
-                      </h4>
+                  {/* Balanced 2-Column Channel Breakdown & Location Performance Cards */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                    <div
+                      data-testid="gads-channel-card"
+                      className="lg:col-span-7 rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between space-y-3"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                          Channel Breakdown
+                        </h4>
+                        <span className="text-[11px] font-medium text-slate-400">
+                          {gadsBreakdowns.channels.length} kênh
+                        </span>
+                      </div>
                       <GoogleAdsChannelCard
                         channels={gadsBreakdowns.channels}
                         metric={gadsBreakdownMetric}
                       />
                     </div>
 
-                    <div data-testid="gads-location-chart" className="space-y-2">
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600">
-                        Location Performance
-                      </h4>
+                    <div
+                      data-testid="gads-location-chart"
+                      className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between space-y-3"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+                          Location Performance
+                        </h4>
+                        <span className="text-[11px] font-medium text-slate-400">
+                          Top khu vực
+                        </span>
+                      </div>
                       <GoogleAdsLocationBarChart
                         locations={gadsBreakdowns.locations}
                         metric={gadsBreakdownMetric}
@@ -4116,21 +5638,95 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </div>
                 </div>
 
-                {/* Row 4: Detail Google Ads Campaigns Table */}
-                <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h3 className="text-sm font-semibold text-slate-800">
-                      Detail Google Ads Campaigns ({gadsSummary.campaigns.length})
+                {/* Row 4: Detail Google Ads Campaigns (Dedicated Mobile Cards + Desktop Table) */}
+                <div className="rounded-2xl bg-white border border-slate-200/80 p-3.5 sm:p-5 space-y-3 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <h3 className="text-sm font-semibold text-slate-800 truncate">
+                      Chiến Dịch Google Ads ({gadsSummary.campaigns.length})
                     </h3>
                     <input
                       type="text"
                       value={gadsSearch}
                       onChange={(e) => setGadsSearch(e.target.value)}
                       placeholder="Tìm chiến dịch Google Ads..."
-                      className="rounded-full bg-slate-50 border border-slate-200 px-3.5 py-1.5 text-xs outline-none focus:bg-white focus:border-[#1E40FF]"
+                      className="w-full sm:w-64 rounded-full bg-slate-50 border border-slate-200 px-3.5 py-1.5 text-xs outline-none focus:bg-white focus:border-[#1E40FF]"
                     />
                   </div>
-                  <div className="dom-meta-table-scroll overflow-x-auto overflow-y-auto max-h-[480px] rounded-xl border border-slate-200 bg-white">
+
+                  {/* Mobile Native Cards (< md) */}
+                  <div className="md:hidden space-y-2.5">
+                    {gadsSummary.campaigns
+                      .filter(
+                        (gc) =>
+                          !gadsSearch.trim() ||
+                          gc.campaign.toLowerCase().includes(gadsSearch.toLowerCase())
+                      )
+                      .map((gc) => {
+                        const cpc = gc.click > 0 ? gc.spent / gc.click : 0;
+                        return (
+                          <div
+                            key={gc.campaign}
+                            className="rounded-xl border border-slate-200/85 bg-slate-50/50 p-3 space-y-2.5"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="text-xs font-bold text-slate-800 line-clamp-2">
+                                {gc.campaign}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const cid = gc.campaign_id || gc.campaign;
+                                  setGadsKwModal({
+                                    open: true,
+                                    campaignName: gc.campaign,
+                                    loading: true,
+                                    keywords: [],
+                                    searchTerms: [],
+                                  });
+                                  loadDomGoogleAdsKeywords(authContext, cid, resolvedRange)
+                                    .then((res) =>
+                                      setGadsKwModal((prev) => ({
+                                        ...prev,
+                                        loading: false,
+                                        keywords: res.keywords,
+                                        searchTerms: res.searchTerms,
+                                      }))
+                                    )
+                                    .catch(() =>
+                                      setGadsKwModal((prev) => ({ ...prev, loading: false }))
+                                    );
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-blue-50 text-[#1E40FF] text-[11px] font-semibold shrink-0 cursor-pointer"
+                              >
+                                Keywords
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-3 gap-1.5 rounded-lg bg-white border border-slate-100 p-2 text-center">
+                              <div>
+                                <div className="text-[10px] text-slate-400">Spent</div>
+                                <div className="text-xs font-bold text-slate-800 tabular-nums">
+                                  {formatDomMoneyShort(gc.spent, 'VND')}
+                                </div>
+                              </div>
+                              <div className="border-x border-slate-100">
+                                <div className="text-[10px] text-slate-400">Clicks / Conv</div>
+                                <div className="text-xs font-bold text-[#1E40FF] tabular-nums">
+                                  {formatDomNumber(gc.click)} / {formatDomNumber(gc.conv)}
+                                </div>
+                              </div>
+                              <div>
+                                <div className="text-[10px] text-slate-400">CPC</div>
+                                <div className="text-xs font-semibold text-slate-700 tabular-nums">
+                                  {formatDomMoneyShort(cpc, 'VND')}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+
+                  <div className="hidden md:block dom-meta-table-scroll overflow-x-auto overflow-y-auto max-h-[480px] rounded-xl border border-slate-200 bg-white">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
                         <tr className="bg-slate-50 font-semibold text-slate-600">
@@ -4241,6 +5837,94 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             {capiPanel}
           </div>
         )}
+
+        {/* ====================================================================
+            VIEW 7: SYSTEM SETTINGS PAGE (ERP-Style Vertical Tab Sidebar + AI Key)
+           ==================================================================== */}
+        {!loading && effectiveView === 'settings' && (
+          <DomMetaSettingsPage
+            activeTab={settingsTab}
+            onTabChange={setSettingsTab}
+            config={config}
+            authContext={authContext}
+            tenantSlug={authContext.tenantSlug || 'workspace'}
+            shareUrlOverride={currentShareUrl}
+            daysRemaining={daysRemaining}
+            canManageConfig={canManageConfig}
+            onSaveConfig={handleSaveSettingsPatch}
+            onAiConfigSaved={(nextAi) =>
+              setConfig((prev) => ({
+                ...prev,
+                ai_config: nextAi,
+              }))
+            }
+            onTestGoogleAds={async (cfg) => {
+              const res = await loadDomGoogleAdsDataset(authContext, resolvedRange, {
+                testConnection: true,
+                overrideConfig: {
+                  customer_id: cfg.customer_id,
+                  apps_script_url: cfg.apps_script_url,
+                  developer_token: cfg.developer_token,
+                },
+              });
+              return { rowsCount: res.currentRows.length + res.prevRows.length };
+            }}
+            onOpenAccountManager={() => setAccountModalOpen(true)}
+            onOpenShareModal={() => setShareModalOpen(true)}
+          />
+        )}
+        </div>
+
+        {/* ====================================================================
+            STANDALONE MOBILE iOS FLOATING FROSTED BOTTOM TAB BAR (< lg)
+           ==================================================================== */}
+        {mode === 'standalone' && (
+          <nav
+            aria-label="Mobile bottom navigation"
+            className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/[0.97] backdrop-blur-xl border-t border-slate-200/85 pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-8px_24px_rgba(15,23,42,0.06)]"
+          >
+            <div className="grid grid-cols-5 h-[58px] px-1">
+              {(
+                [
+                  { id: 'dashboard' as const, label: 'Tổng quan', icon: LayoutDashboard },
+                  { id: 'ad_detail' as const, label: 'Chiến dịch', icon: List },
+                  { id: 'ad_library' as const, label: 'Thư viện', icon: Images },
+                  { id: 'account' as const, label: 'Tài khoản', icon: CreditCard },
+                ] as const
+              ).map((tab) => {
+                const Icon = tab.icon;
+                const active = effectiveView === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveView(tab.id)}
+                    className={`relative flex flex-col items-center justify-center gap-0.5 cursor-pointer dom-ios-press ${
+                      active ? 'text-[#1E40FF] font-bold' : 'text-slate-400 font-medium'
+                    }`}
+                  >
+                    {active && (
+                      <span className="absolute top-0 w-7 h-[3px] rounded-b-full bg-[#1E40FF]" />
+                    )}
+                    <Icon className="w-[19px] h-[19px]" />
+                    <span className="text-[10px] leading-tight">{tab.label}</span>
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className={`flex flex-col items-center justify-center gap-0.5 cursor-pointer dom-ios-press ${
+                  mobileMenuOpen ? 'text-[#1E40FF] font-bold' : 'text-slate-400 font-medium'
+                }`}
+              >
+                <Menu className="w-[19px] h-[19px]" />
+                <span className="text-[10px] leading-tight">Menu</span>
+              </button>
+            </div>
+          </nav>
+        )}
       </div>
 
       {/* ====================================================================
@@ -4249,7 +5933,18 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       <AdEntityDetailModal
         entity={effectiveDetailModal?.entity || null}
         entityType={effectiveDetailModal?.type || 'ad'}
+        adAccountId={activeAccountObj?.ad_account_id || authContext.directAdAccountId || ''}
         currency={currency}
+        sidebarWidthPx={mode === 'standalone' ? (isSidebarCollapsed ? 72 : 260) : undefined}
+        canGoBack={detailHistory.length > 0}
+        onNavigateBack={() => {
+          setDetailHistory((prev) => {
+            if (prev.length === 0) return prev;
+            const last = prev[prev.length - 1];
+            setDetailModal(last);
+            return prev.slice(0, -1);
+          });
+        }}
         enableCrmAttribution={isCrmEnabled}
         crmBucket={
           effectiveDetailModal
@@ -4261,29 +5956,59 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             : null
         }
         authContext={authContext}
+        aiConfig={config.ai_config}
+        onOpenAiKeySetup={() => {
+          setDetailModal(null);
+          openSettingsPage('ai_key');
+        }}
         dateRange={{ since: resolvedRange.since, until: resolvedRange.until }}
         initialTab={effectiveDetailModal?.initialTab || initialEntityModalTab}
         onOpenLead={onOpenLead}
         onFilterCampaignLeads={onFilterCampaignLeads}
-        onSelectChildAdset={(as) => setDetailModal({ entity: as, type: 'adset' })}
+        onSelectChildAdset={(as) => {
+          if (effectiveDetailModal) {
+            setDetailHistory((prev) => [...prev, effectiveDetailModal]);
+          }
+          setDetailModal({ entity: as, type: 'adset' });
+        }}
+        onSelectChildAd={(ad) => {
+          if (effectiveDetailModal) {
+            setDetailHistory((prev) => [...prev, effectiveDetailModal]);
+          }
+          setDetailModal({ entity: ad, type: 'ad' });
+        }}
         onClose={() => {
           setDetailModal(null);
+          setDetailHistory([]);
           if (currentFocusKey && currentFocusKey !== '|') {
             setHandledFocusKey(currentFocusKey);
           }
         }}
       />
 
-      <DomMetaQuickConnectModal
-        open={quickConnectOpen}
+      <CrmUpgradeShowcaseModal
+        open={crmUpgradeOpen}
+        tenantSlug={authContext.tenantSlug || ''}
+        companyName={workspaceName}
         authContext={authContext}
-        onConnected={(res) => {
-          setConfig(res.config);
-          setLoading(true);
-          setReloadTick((t) => t + 1);
-        }}
-        onClose={() => setQuickConnectOpen(false)}
+        onRequestAuth={onRequestSwitchWorkspace || onRequestCreateWorkspace}
+        onClose={() => setCrmUpgradeOpen(false)}
       />
+
+      {quickConnectOpen && (
+        <Suspense fallback={null}>
+          <DomMetaQuickConnectModal
+            open={quickConnectOpen}
+            authContext={authContext}
+            onConnected={(res) => {
+              setConfig(res.config);
+              setLoading(true);
+              setReloadTick((t) => t + 1);
+            }}
+            onClose={() => setQuickConnectOpen(false)}
+          />
+        </Suspense>
+      )}
 
       <AiSummaryModal
         open={aiModalOpen}
@@ -4294,6 +6019,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         currency={currency}
         activeBrandLabel={activeBrandLabel}
         savedReports={localAiReports}
+        authContext={authContext}
+        aiConfig={config.ai_config}
+        onOpenAiKeyModal={() => {
+          setAiModalOpen(false);
+          openSettingsPage('ai_key');
+        }}
         onSaveReports={handlePersistAiReports}
         onClose={() => setAiModalOpen(false)}
       />
@@ -4386,30 +6117,26 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         tenantSlug={authContext.tenantSlug || 'workspace'}
         currentUserName={userDisplayName}
         canManageConfig={canManageConfig}
+        authContext={authContext}
+        onPublicViewChanged={(nextPublicView) =>
+          setConfig((prev) => ({ ...prev, public_view: nextPublicView }))
+        }
         onClose={() => setShareModalOpen(false)}
       />
 
-      <WorkspaceSettingsModal
-        open={settingsModal.open}
-        initialTab={settingsModal.tab}
-        config={config}
-        tenantSlug={authContext.tenantSlug || 'workspace'}
-        shareUrlOverride={currentShareUrl}
-        daysRemaining={daysRemaining}
-        canManageConfig={canManageConfig}
-        onSaveConfig={handleSaveSettingsPatch}
-        onTestGoogleAds={async (cfg) => {
-          const res = await loadDomGoogleAdsDataset(authContext, resolvedRange, {
-            testConnection: true,
-            overrideConfig: {
-              customer_id: cfg.customer_id,
-              apps_script_url: cfg.apps_script_url,
-              developer_token: cfg.developer_token,
-            },
-          });
-          return { rowsCount: res.currentRows.length + res.prevRows.length };
+      <DomMetaSpotlightTour
+        open={tourOpen}
+        activeStepIndex={tourStepIdx}
+        onStepChange={(idx) => setTourStepIdx(idx)}
+        onClose={() => setTourOpen(false)}
+        onFinish={() => {
+          try {
+            localStorage.setItem(DOM_META_TOUR_STORAGE_KEY, '1');
+          } catch {
+            // ignore
+          }
+          setTourOpen(false);
         }}
-        onClose={() => setSettingsModal((prev) => ({ ...prev, open: false }))}
       />
     </div>
   );

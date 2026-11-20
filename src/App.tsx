@@ -13,7 +13,7 @@ import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
-import { DECOR_PNGS } from './data/enterpriseData';
+import { DOMATION_SAAS_PLANS } from './data/enterpriseData';
 import { handleSpaLinkClick } from './utils/navigation';
 import { getAutomationSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
@@ -77,86 +77,25 @@ const Counter = ({ to, suffix = '', prefix = '' }: { to: number; suffix?: string
     return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
 };
 
-interface PricingCardProps {
-    tier: string;
-    price: string;
-    yearlyPrice?: string;
-    desc: string;
-    features: string[];
-    delay?: number;
-    highlight?: boolean;
-    enterprise?: boolean;
-    scaleUp?: boolean;
-    isYearly: boolean;
-    onClick: () => void;
-}
-
-// Pricing card
-const PricingCard = ({ tier, price, yearlyPrice, desc, features, delay, highlight, enterprise, scaleUp, isYearly, onClick }: PricingCardProps) => {
-    const isSpecial = highlight || enterprise;
-    const currentPrice = isYearly && yearlyPrice ? yearlyPrice : price;
-    const suffix = currentPrice !== 'Liên hệ' ? (isYearly ? '/năm' : '/tháng') : '';
-
-    const borderGradient = enterprise
-        ? 'linear-gradient(135deg, #0F172A, #1E40FF, #06B6D4)'
-        : 'linear-gradient(135deg, #1E40FF, #0284C7, #06B6D4)';
-    const badgeBg = enterprise ? 'from-[#0F172A] to-[#1E40FF]' : 'from-[#1E40FF] to-[#06B6D4]';
-    const badgeText = enterprise ? 'Giải Pháp Tối Đa' : 'Phổ Biến Nhất';
-    const glowShadow = enterprise ? 'rgba(15,23,42,0.22)' : 'rgba(30,64,255,0.26)';
-    const checkBg = 'bg-blue-50 border border-blue-200';
-    const checkColor = 'text-[#1E40FF]';
-    const btnClass = 'btn-inkica-primary text-white hover:-translate-y-0.5';
-
-    return (
-        <FadeIn delay={delay} className="h-full">
-            <div className={`relative rounded-[24px] p-[1.5px] h-full mt-4 transition-all duration-500 ${scaleUp ? 'md:scale-[1.06] lg:scale-[1.08] z-10' : ''} ${isSpecial
-                ? 'hover:-translate-y-2 shadow-[0_24px_56px_rgba(30,64,255,0.16)]'
-                : 'bg-slate-200/80 hover:-translate-y-1 shadow-sm'
-                }`} style={isSpecial ? {
-                    background: borderGradient,
-                    backgroundSize: '300% 300%',
-                    animation: 'border-flow 4s linear infinite'
-                } : {}}>
-                {isSpecial && (
-                    <div className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r ${badgeBg} text-white text-[11px] uppercase font-black px-4 py-1.5 rounded-full z-20`} style={{ boxShadow: `0 4px 20px ${glowShadow}` }}>
-                        {badgeText}
-                    </div>
-                )}
-                <div className={`relative rounded-[23px] p-6 lg:p-8 h-full flex flex-col overflow-hidden bg-white/95 backdrop-blur-xl`}>
-                    <div className="mb-6">
-                        <p className="text-sm font-bold text-[#1E40FF] uppercase tracking-widest mb-2">{tier}</p>
-                        <div className="flex items-end gap-1">
-                            <span className={`text-3xl lg:text-4xl font-black tracking-tight ${isSpecial ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4]' : 'text-slate-900'}`}>{currentPrice}</span>
-                            {currentPrice !== 'Liên hệ' && <span className="text-slate-500 text-sm mb-1">{suffix}</span>}
-                        </div>
-                        <p className="text-slate-600 text-sm mt-2">{desc}</p>
-                    </div>
-                    <ul className="space-y-3 mb-8 flex-1">
-                        {features.map((f: string, i: number) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
-                                <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isSpecial ? checkBg : 'bg-slate-100 border border-slate-200'}`}>
-                                    <Check className={`w-3 h-3 ${isSpecial ? checkColor : 'text-slate-600'}`} />
-                                </div>
-                                {f}
-                            </li>
-                        ))}
-                    </ul>
-                    <button onClick={onClick} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 ${isSpecial
-                        ? btnClass
-                        : 'bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200'
-                        }`}>
-                        {price === 'Liên hệ' ? 'Liên hệ tư vấn' : 'Bắt đầu ngay'}
-                    </button>
-                </div>
-            </div>
-        </FadeIn>
-    );
-};
-
 const TESTIMONIALS = [
-    { name: 'Nguyễn Minh Khoa', role: 'CEO, TechViet Solutions', text: 'Hệ thống automation giúp chúng tôi tiết kiệm 80% thời gian chăm sóc khách hàng. Lead Score cực kỳ chính xác, team sales tập trung đúng người cần.', avatar: 'MK' },
-    { name: 'Trần Thị Lan Anh', role: 'Marketing Director, EduPro', text: 'Tỉ lệ open email tăng từ 18% lên 41% sau 2 tháng dùng. Flow builder rất trực quan, Email Kéo Thả tạo template chỉ trong 5 phút.', avatar: 'LA' },
-    { name: 'Lê Văn Hùng', role: 'Founder, RetailMax', text: 'Gửi ZNS Zalo cho 50,000 KH chỉ mất 15 phút, kết hợp Tracking Website chạm Click quá đỉnh. AI chatbot xử lý 70% FAQ.', avatar: 'VH' },
+    {
+        name: 'Capital House • EcoLife Signature',
+        role: 'Chủ đầu tư BĐS Xanh • Đà Nẵng',
+        text: 'Hợp nhất Sa bàn 3D WebGL, AI Sales Portal 24/7 và hệ thống Auto Chia Data về 3 Đại lý F1 dưới 5 giây với tỷ lệ 1:1:1 độ lệch gần ~0%.',
+        avatar: 'CH',
+    },
+    {
+        name: 'Viện Đào Tạo IDEAS Business',
+        role: 'Giáo dục Sau Đại Học & MBA',
+        text: 'Thay thế 14 file Excel rời rạc bằng Automation nuôi dưỡng phễu tuyển sinh, Meta Ads BI và ERP 5.0 — tăng 300% quy mô lớp MBA và giảm 30% CPA.',
+        avatar: 'ID',
+    },
+    {
+        name: 'Hệ Thống Phúc Lộc Thọ',
+        role: 'Chuỗi F&B & Nhượng Quyền 30+ Cửa Hàng',
+        text: 'Đồng bộ POS cửa hàng với Zalo ZNS, Voucher Hub và phễu CRM nhượng quyền tự động: đạt ROAS 5+ và thu về 1.600+ đối tác tiềm năng.',
+        avatar: 'PLT',
+    },
 ];
 
 const TestimonialSection = () => {
@@ -236,14 +175,14 @@ const WebDesignSection = () => {
                         <a
                             href="/portfolio"
                             onClick={(e) => handleSpaLinkClick(e, '/portfolio')}
-                            className="ql-btn-outline px-4 py-2 text-xs"
+                            className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs"
                         >
                             Xem Toàn Bộ Portfolio
                         </a>
                         <a
                             href="/boost"
                             onClick={(e) => handleSpaLinkClick(e, '/boost')}
-                            className="ql-btn-outline px-4 py-2 text-xs"
+                            className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs"
                         >
                             Đọc 74+ Bài Blog Chuyên Sâu
                         </a>
@@ -310,7 +249,7 @@ const MetaAdReportFeatureSection = () => {
                         <a
                             href="/meta-report"
                             onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
-                            className="inline-flex items-center gap-2 px-8 py-4 rounded-full btn-inkica-primary text-white font-bold transition-all shadow-[0_12px_30px_rgba(30,64,255,0.28)] hover:-translate-y-1"
+                            className="inline-flex items-center gap-2 min-h-[44px] px-8 py-4 rounded-full btn-inkica-primary text-white font-bold transition-all shadow-[0_12px_30px_rgba(30,64,255,0.28)] hover:-translate-y-1"
                         >
                             Khám Phá Ngay <ArrowRight className="w-5 h-5" />
                         </a>
@@ -337,82 +276,76 @@ const MetaAdReportFeatureSection = () => {
 
 const DomationDataSection = () => {
     return (
-        <section id="domation-data" className="py-24 px-6 relative z-10 border-t border-slate-200/70 bg-white/45 backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
-                
-                <div className="w-full lg:w-1/2 relative perspective-1000">
+        <section id="domation-data" className="py-20 px-6 relative z-10 border-t border-slate-200/70 bg-white/45 backdrop-blur-sm">
+            <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
+                <div className="w-full lg:w-1/2">
                     <FadeIn delay={0.2} from="left">
-                        <div className="relative flex flex-col items-center pt-8 pb-10">
-                            <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_64px_rgba(16,185,129,0.14)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
-                                <img loading="lazy" decoding="async" src="/CHIA DATA/chia_data (1).png" alt="Domation Data Interface" className="w-full rounded-2xl object-cover" />
-                            </div>
-                            
-                            <div className="absolute -bottom-6 -right-4 md:-right-10 z-40 bg-white/95 border border-emerald-200 rounded-2xl p-4 md:p-5 shadow-[0_18px_40px_rgba(16,185,129,0.18)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500 w-[260px] md:w-[300px]">
-                                <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center border border-blue-200">
-                                            <img src={LOGOS.zalo} className="w-3.5 h-3.5" alt="Zalo" />
-                                        </div>
-                                        <p className="text-[11px] font-bold text-slate-900 uppercase">Zalo Bot Noti</p>
+                        <div className="rounded-3xl border border-slate-200 bg-white p-2.5 shadow-[0_20px_54px_rgba(30,64,255,0.12)] space-y-3">
+                            <img
+                                loading="lazy"
+                                decoding="async"
+                                src="/imgs/autodata/showcase/screen_dashboard.jpg"
+                                alt="DOMATION Auto Data Dashboard"
+                                className="w-full rounded-2xl object-cover"
+                            />
+                            <div className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-2xl bg-[#F4F8FF] border border-blue-100">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center border border-blue-200 shrink-0">
+                                        <img src={LOGOS.zalo} className="w-4 h-4" alt="Zalo" />
                                     </div>
-                                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                    <div className="text-xs text-slate-700">
+                                        <span className="font-bold text-[#1E40FF]">ZaloBot &lt; 5s:</span> Chia vòng công bằng &amp; lọc trùng 180 ngày
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <p className="text-xs text-slate-800 leading-relaxed"><span className="text-emerald-600 font-bold">Data mới:</span> Nguyễn Văn A - 098x.xxx.xxx</p>
-                                    <p className="text-[10px] text-slate-500">Từ chiến dịch: FB Ads - Mùa Hè</p>
-                                    <p className="text-[10px] text-slate-500">Sale nhận: Trần Thị B</p>
-                                </div>
+                                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shrink-0" />
                             </div>
                         </div>
                     </FadeIn>
                 </div>
-                
+
                 <div className="w-full lg:w-1/2 z-20">
                     <FadeIn from="right">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
-                            <Database className="w-3.5 h-3.5" /> DOMATION DATA
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
+                            <Database className="w-3.5 h-3.5" /> DOMATION AUTO DATA
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                             Hệ Thống Phân Bổ <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Data Tự Động</span>
+                            <span className="text-gradient-inkica">Data Tự Động &lt; 5 Giây</span>
                         </h2>
-                        <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-                            <strong className="text-emerald-700 font-semibold block mb-2">Bạn mệt mỏi vì Data khách hàng đổ về bị sót? Sale phàn nàn vì nhận số chậm, mất "thời điểm vàng" để chốt đơn?</strong>
-                            Giải pháp điều phối luồng Data tự động và bảo vệ doanh thu. Thiết lập các vòng giao data, logic giao từng vòng, tích hợp Zalo BOT và Email thông báo bảo mật cho từng tư vấn viên.
+                        <p className="text-slate-600 text-base md:text-lg mb-7 leading-relaxed">
+                            <strong className="text-[#1E40FF] font-semibold block mb-2">Chấm dứt tình trạng Data bị sót hoặc Sale nhận số chậm làm nguội khách hàng.</strong>
+                            Thu lead đa kênh tức thì, AI chấm điểm, lọc trùng 180 ngày (6 tháng), báo ZaloBot cá nhân &amp; bắn ngược Meta CAPI SHA-256.
                         </p>
 
-                        <div className="space-y-4 mb-8">
+                        <div className="space-y-3 mb-8">
                             {[
-                                { t: "Tích Hợp Realtime", d: "Dữ liệu từ Landing Page, Facebook Ads hay Google Sheets đồng bộ lập tức. Không độ trễ, không copy-paste thủ công." },
-                                { t: "Thông báo chủ động", d: "Lead vừa đổ về, Sale nhận thông báo chi tiết qua Zalo Bot cá nhân & Email. Đảm bảo gọi khách trong vài phút đầu." },
-                                { t: "Chia đều & Định tuyến", d: "Tự động chia vòng Round-Robin hoặc định tuyến theo nguồn. Nhận diện Sale nghỉ phép và chuyển luồng chia số." },
-                                { t: "Quản Lý Lỗi & Đền Bù", d: "Khách trùng, sai số, sai nhu cầu? Sale báo lỗi trực tiếp, Admin duyệt là tự động bù 1 Data mới. Đảm bảo công bằng 100%." },
-                                { t: "Báo Cáo Tự Động", d: "Cuối ngày Zalo Bot tự động gửi bảng tổng kết: Data thu về, số lượng chia, tỷ lệ lỗi. Giúp Quản lý nắm trọn hiệu suất." },
-                            ].map((box, i) => (
-                                <div key={i} className="flex gap-3.5 p-3.5 rounded-xl bg-white/85 border border-slate-200 hover:border-emerald-300 transition-colors shadow-sm">
-                                    <div className="mt-0.5 w-7 h-7 rounded border border-emerald-200 bg-emerald-50 flex shrink-0 items-center justify-center">
-                                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                { t: 'Tích Hợp Realtime < 5s', d: 'Đồng bộ Meta Lead Ads, TikTok, LadiPage, Google Sheets & Website ngay lập tức.' },
+                                { t: 'Van SLA 120s & Bù Lỗi 1:1', d: 'Quá 120s chưa nhận tự chuyển vòng; duyệt ticket số sai tự cộng bù +1 lượt.' },
+                                { t: 'Bắn Ngược Meta CAPI SHA-256', d: 'Đồng bộ 9 trạng thái từ Qualified đến Closed & DisqualifiedLead về Meta Ads.' },
+                            ].map((box) => (
+                                <div key={box.t} className="flex gap-3.5 p-3.5 rounded-xl bg-white/90 border border-slate-200 hover:border-blue-300 transition-colors shadow-sm">
+                                    <div className="mt-0.5 w-7 h-7 rounded border border-blue-200 bg-blue-50 flex shrink-0 items-center justify-center">
+                                        <Check className="w-3.5 h-3.5 text-[#1E40FF]" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
+                                        <h3 className="font-bold text-slate-900 text-sm mb-0.5">{box.t}</h3>
                                         <p className="text-xs text-slate-600 leading-relaxed">{box.d}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        
+
                         <div className="flex">
                             <a
                                 href="/data"
                                 onClick={(e) => handleSpaLinkClick(e, '/data')}
-                                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition-all shadow-[0_12px_28px_rgba(16,185,129,0.28)] hover:-translate-y-1"
+                                className="btn-inkica-primary inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-bold"
                             >
-                                <Monitor className="w-5 h-5" /> Trải Nghiệm Demo Tính Năng
+                                <Monitor className="w-5 h-5" /> Trải Nghiệm Auto Data (Free 30 Ngày)
                             </a>
                         </div>
                     </FadeIn>
                 </div>
-
             </div>
         </section>
     );
@@ -483,10 +416,6 @@ const Landing: React.FC = () => {
     const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
     const [emailVolume, setEmailVolume] = useState('500k Emails');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const flowSlide = 0;
-    const campSlide = 0;
-    const qrSlide = 0;
-    const showLegacyPricing = false;
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [showContactModal, setShowContactModal] = useState(false);
@@ -533,133 +462,29 @@ const Landing: React.FC = () => {
         { value: 24, suffix: '/7', label: 'AI Support hoạt động' },
     ];
 
-    const plans = [
-        {
-            tier: 'Starter', price: '2.990.000₫', yearlyPrice: '30.498.000₫', desc: 'Dành cho Startup & Shop nhỏ',
-            features: ['Khối lượng 100.000 Email/tháng', 'AI Phân tích', 'Flow Automation 5 Kịch bản', 'Gắn Web Tracking Tiêu Chuẩn', 'AI trực Zalo ZNS & Messenger'],
-        },
-        {
-            tier: 'Growth', price: '4.990.000₫', yearlyPrice: '50.898.000₫', desc: 'Bứt phá doanh thu cho Doanh Nghiệp',
-            features: ['Khối lượng 500.000 Email/tháng', 'AI Chatbot Tự Động 24/7', 'AI Lead Score Thông Minh', 'Trình Tạo Flow Trực Quan', 'Bản Đồ Tracking Heatmap Website', '100+ Template Kéo Thả Cao Cấp'],
-            highlight: true,
-            scaleUp: true,
-        },
-        {
-            tier: 'Enterprise', price: 'Liên hệ', yearlyPrice: 'Liên hệ', desc: 'Tập đoàn & Agency Marketing',
-            features: ['Khối lượng Email không giới hạn', 'Hỗ trợ AI phòng ban không giới hạn', 'Tích Hợp API Sâu & Webhook 2 Chiều', 'SLA 99.9% + Support Kỹ Thuật VIP'],
-            enterprise: true,
-        },
-    ];
-
     return (
         <div className="min-h-screen bg-[#F8F9FA] text-slate-900 relative overflow-x-clip font-sans selection:bg-blue-600/20">
-            <style>{`
-                html, body { overflow-y: scroll; background-color: #F8F9FA; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-                ::-webkit-scrollbar { width: 6px; height: 6px; }
-                ::-webkit-scrollbar-track { background: #F1F5F9; }
-                ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #1E40FF, #0284C7, #06B6D4); border-radius: 10px; }
-                ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #0F172A, #1E40FF, #0284C7); }
-
-                @keyframes shimmer-sweep {
-                    0% { background-position: -200% center; }
-                    100% { background-position: 200% center; }
-                }
-                @keyframes glow-pulse {
-                    0%,100% { box-shadow: 0 8px 24px rgba(30,64,255,0.16); }
-                    50% { box-shadow: 0 12px 34px rgba(6,182,212,0.28); }
-                }
-                @keyframes float-y {
-                    0%,100% { transform: translate3d(0,0px,0); }
-                    50% { transform: translate3d(0,-8px,0); }
-                }
-                @keyframes live-dot {
-                    0%,100% { opacity: 1; transform: scale(1); }
-                    50% { opacity: 0.4; transform: scale(0.7); }
-                }
-                @keyframes border-flow {
-                    0% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                    100% { background-position: 0% 50%; }
-                }
-                @keyframes spin-slow {
-                    from { transform: translate(-50%, -50%) rotate(0deg); }
-                    to { transform: translate(-50%, -50%) rotate(360deg); }
-                }
-
-                .shimmer-text {
-                    background: linear-gradient(90deg, #0F172A 0%, #1E40FF 35%, #0284C7 65%, #06B6D4 100%);
-                    background-size: 200% auto;
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    animation: shimmer-sweep 5s linear infinite;
-                }
-                .glow-btn { animation: glow-pulse 3s ease-in-out infinite; }
-                .float-y { animation: float-y 6s ease-in-out infinite; }
-                .live-dot { animation: live-dot 1.4s ease-in-out infinite; }
-                .animate-spin-slow { animation: spin-slow 8s linear infinite; }
-
-                @media (max-width: 767px) {
-                    .float-y { animation: none !important; }
-                    .glow-btn { animation: none !important; }
-                    .shimmer-text { animation: shimmer-sweep 6s linear infinite; }
-                }
-
-                @media (prefers-reduced-motion: reduce) {
-                    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-                }
-
-                .holo-card { position: relative; }
-                @media (hover: hover) {
-                    .holo-card:hover {
-                        box-shadow: 0 20px 44px -12px rgba(30,64,255,0.16);
-                        border-color: rgba(30,64,255,0.35);
-                    }
-                }
-
-                img { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-                section { overflow-x: clip; }
-            `}</style>
-
             <LuxuryGoldBackdrop />
-
-            {/* Floating 3D Glass Decor */}
-            <motion.img
-                src={DECOR_PNGS.prism}
-                alt=""
-                aria-hidden="true"
-                animate={{ y: [0, -14, 0], rotate: [0, 3, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                className="pointer-events-none select-none hidden lg:block fixed top-28 right-8 w-36 xl:w-44 opacity-55 drop-shadow-[0_18px_36px_rgba(30,64,255,0.16)] z-[1]"
-            />
-            <motion.img
-                src={DECOR_PNGS.funnel}
-                alt=""
-                aria-hidden="true"
-                animate={{ y: [0, 12, 0], rotate: [0, -3, 0] }}
-                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-                className="pointer-events-none select-none hidden lg:block fixed bottom-24 left-8 w-32 xl:w-40 opacity-50 drop-shadow-[0_18px_36px_rgba(6,182,212,0.16)] z-[1]"
-            />
 
             {/* ── Navigation ── */}
             <Navbar activePage="automation" onOpenContact={() => setShowContactModal(true)} />
 
             <main>
             {/* ── Hero ── */}
-            <section className="relative pt-36 pb-20 md:pt-44 md:pb-24 px-4 md:px-6 z-10 min-h-screen flex flex-col items-center justify-center">
+            <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-4 md:px-6 z-10 flex flex-col items-center justify-center">
                 <div className="max-w-5xl mx-auto text-center">
                     {/* Badge Hook */}
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
                         className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-blue-50/90 border border-blue-200 text-sm font-bold mb-8 shadow-sm backdrop-blur-sm">
-                        <span className="live-dot w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                        <span className="text-[#1E40FF] tracking-wide uppercase">Ready To Scale 🚀</span>
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                        <span className="text-[#1E40FF] tracking-wide uppercase">Automation &amp; Multi-Agent AI 5.0</span>
                     </motion.div>
 
                     {/* Heading */}
                     <motion.h1 initial={{ opacity: 0, y: 40, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                         className="font-black tracking-tight leading-[1.2] md:leading-[1.1] mb-8 w-full relative z-10 text-center">
                         <span className="block text-xl md:text-3xl lg:text-4xl text-slate-800 mb-2 md:mb-3 tracking-[0.2em] font-extrabold">DIGITAL AI</span>
-                        <span className="shimmer-text block pb-2 inline-block text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+                        <span className="text-gradient-inkica block pb-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
                             MARKETING AUTOMATION
                         </span>
                     </motion.h1>
@@ -673,13 +498,13 @@ const Landing: React.FC = () => {
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
                         className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-16 w-full">
                         <button onClick={() => setIsFormOpen(true)}
-                            className="w-full sm:w-auto btn-inkica-primary group relative flex items-center justify-center gap-2 md:gap-3 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-black hover:-translate-y-1 transition-transform duration-300 shadow-[0_14px_32px_rgba(30,64,255,0.28)]">
+                            className="w-full sm:w-auto min-h-[44px] btn-inkica-primary group relative flex items-center justify-center gap-2 md:gap-3 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-black hover:-translate-y-1 transition-transform duration-300 shadow-[0_14px_32px_rgba(30,64,255,0.28)]">
                             <span className="relative z-10 flex items-center gap-2 md:gap-3">
                                 Bắt Đầu Tăng Trưởng
                                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                             </span>
                         </button>
-                        <button onClick={() => setIsDemoModalOpen(true)} className="w-full sm:w-auto justify-center flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-bold text-slate-800 bg-white/90 border border-slate-200 hover:border-blue-300 hover:bg-white hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
+                        <button onClick={() => setIsDemoModalOpen(true)} className="w-full sm:w-auto min-h-[44px] justify-center flex items-center gap-2 md:gap-3 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base font-bold text-slate-800 bg-white/90 border border-slate-200 hover:border-blue-300 hover:bg-white hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
                             <Play className="w-4 h-4 md:w-5 md:h-5 text-[#1E40FF]" />
                             Khám Phá Tính Năng
                         </button>
@@ -716,10 +541,10 @@ const Landing: React.FC = () => {
 
                         {/* Floating badges */}
                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.0, duration: 0.6 }} className="absolute -top-4 right-4 md:right-8 flex items-center gap-2 bg-white/95 border border-emerald-200 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-lg backdrop-blur-sm z-20">
-                            <span className="live-dot w-2 h-2 rounded-full bg-emerald-500" />
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                             <span className="text-emerald-700 text-xs font-bold">Live System</span>
                         </motion.div>
-                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }} className="absolute -bottom-4 left-4 md:left-8 flex items-center gap-2 bg-white/95 border border-blue-200 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-lg backdrop-blur-sm z-20 float-y">
+                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2, duration: 0.6 }} className="absolute -bottom-4 left-4 md:left-8 flex items-center gap-2 bg-white/95 border border-blue-200 rounded-full px-3 md:px-4 py-1.5 md:py-2 shadow-lg backdrop-blur-sm z-20">
                             <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
                             <span className="text-[#1E40FF] text-xs font-bold">98% Inbox Rate</span>
                         </motion.div>
@@ -732,7 +557,7 @@ const Landing: React.FC = () => {
                 <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {stats.map((s, i) => (
                         <FadeIn key={s.label} delay={i * 0.1}>
-                            <div className="holo-card inkica-glass-card relative text-center p-5 rounded-2xl border border-white/90 transition-all duration-500 group overflow-hidden">
+                            <div className="inkica-glass-card relative text-center p-5 rounded-2xl border border-white/90 hover:border-blue-300/70 transition-all duration-300 group overflow-hidden">
                                 <div className="text-4xl md:text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#0F172A] via-[#1E40FF] to-[#06B6D4]">
                                     <Counter to={s.value} suffix={s.suffix} />
                                 </div>
@@ -756,7 +581,7 @@ const Landing: React.FC = () => {
                         </p>
                     </FadeIn>
 
-                    <div className="w-full relative border border-slate-200 rounded-[24px] md:rounded-[32px] p-2 md:p-3 bg-white/95 backdrop-blur-sm shadow-[0_24px_64px_rgba(30,64,255,0.10)] float-y flex-shrink-0 cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
+                    <div className="w-full relative border border-slate-200 rounded-[24px] md:rounded-[32px] p-2 md:p-3 bg-white/95 backdrop-blur-sm shadow-[0_24px_64px_rgba(30,64,255,0.10)] flex-shrink-0 cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
                         <img loading="lazy" decoding="async" src="/imgs/cac_tinh_nang.png" alt="Các tính năng nổi bật" className="w-full h-auto rounded-[18px] md:rounded-[24px] object-cover group-hover:opacity-95 transition-opacity" />
                     </div>
 
@@ -775,7 +600,7 @@ const Landing: React.FC = () => {
                     {/* Visual */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="left">
-                            <div className="relative rounded-2xl md:rounded-3xl border border-slate-200/90 bg-white/95 p-3 md:p-4 shadow-[0_24px_60px_rgba(30,64,255,0.10)] float-y cursor-pointer group" onClick={() => setPreviewImage('/imgs/email build.jpg')}>
+                            <div className="relative rounded-2xl md:rounded-3xl border border-slate-200/90 bg-white/95 p-3 md:p-4 shadow-[0_24px_60px_rgba(30,64,255,0.10)] cursor-pointer group" onClick={() => setPreviewImage('/imgs/email build.jpg')}>
                                 <div className="flex justify-between items-center px-2 pb-3 md:pb-4 border-b border-slate-200 mb-3 md:mb-4">
                                     <div className="flex gap-1.5">
                                         <div className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-rose-400" />
@@ -860,41 +685,30 @@ const Landing: React.FC = () => {
                         </FadeIn>
                     </div>
 
-                    {/* Flow Visual */}
+                    {/* Flow Visual — Clean Glass Frame */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn delay={0.2} from="right">
-                            {/* Mobile slider */}
-                            <div className="block lg:hidden">
-                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/flow.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/flow.png" alt="Automation Flow Builder" className="w-full h-auto rounded-2xl object-cover" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
                                     {[
-                                        { src: '/imgs/flow.jpg', alt: 'Sơ đồ kịch bản' },
-                                        { src: '/imgs/flow.png', alt: 'Cấu hình rẽ nhánh' },
-                                        { src: '/imgs/flow_renhanh.png', alt: 'Chi tiết tự động hoá' }
-                                    ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: "pointer" }}>
-                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
-                                        </div>
+                                        { src: '/imgs/flow_renhanh.png', alt: 'Cấu hình rẽ nhánh IF/ELSE' },
+                                        { src: '/imgs/flow.jpg', alt: 'Sơ đồ kịch bản tự động' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-blue-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
                                     ))}
-                                </div>
-                                <div className="flex justify-center gap-1.5 mt-3">
-                                    {[0, 1, 2].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${flowSlide === i ? 'w-5 h-2 bg-[#1E40FF]' : 'w-2 h-2 bg-slate-300'}`} />
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Desktop stacked */}
-                            <div className="hidden lg:block relative flex flex-col items-center pt-8 pb-16 perspective-1000 mt-6">
-                                {/* Base Image */}
-                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] w-[95%] z-20 hover:-translate-y-2 hover:z-[60] transition-all duration-500 self-center cursor-pointer" onClick={() => setPreviewImage('/imgs/flow.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/flow.png" alt="Automation Flow Builder" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                {/* Overlay Top Right Background */}
-                                <div className="absolute -top-8 -right-6 md:-top-12 md:-right-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[55%] sm:w-[50%] z-10 hover:-translate-y-3 hover:scale-[1.05] hover:z-[60] transition-all duration-500 cursor-pointer" onClick={() => setPreviewImage('/imgs/flow_renhanh.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/flow_renhanh.png" alt="Cấu hình luồng" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                {/* Stacked Overlay Bottom Left */}
-                                <div className="absolute -bottom-8 -left-6 md:-bottom-10 md:-left-12 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[65%] sm:w-[60%] z-30 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 hover:z-[60] cursor-pointer" onClick={() => setPreviewImage('/imgs/flow.jpg')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/flow.jpg" alt="Rẽ nhánh kịch bản" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -903,48 +717,32 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Campaign Tracking Section ── */}
-            <section id="campaign-tracking" className="py-16 md:py-28 px-4 md:px-6 relative z-10 scroll-mt-20">
-                <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
-                    {/* Visual */}
+            <section id="campaign-tracking" className="py-16 md:py-24 px-4 md:px-6 relative z-10 scroll-mt-20">
+                <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
+                    {/* Visual — Clean Glass Frame */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn delay={0.2} from="left">
-                            {/* Mobile slider */}
-                            <div className="block lg:hidden">
-                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-cyan-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/campain_track_heatmap.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/campain_track_heatmap.png" alt="Campaign Heatmap Tracking" className="w-full h-auto rounded-2xl object-cover" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
                                     {[
                                         { src: '/imgs/campain_track_3.png', alt: 'Mail Detail Track' },
                                         { src: '/imgs/campain_track_4.png', alt: 'Device Analytics' },
-                                        { src: '/imgs/campain_track_heatmap.png', alt: 'Heatmap' },
-                                        { src: '/imgs/campain_track_1.png', alt: 'Heatmap Insights' },
-                                        { src: '/imgs/campain_track_2.png', alt: 'Time Tracking' },
-                                    ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: "pointer" }}>
-                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
-                                        </div>
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-cyan-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
                                     ))}
-                                </div>
-                                <div className="flex justify-center gap-1.5 mt-3">
-                                    {[0, 1, 2, 3, 4].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${campSlide === i ? 'w-5 h-2 bg-[#0284C7]' : 'w-2 h-2 bg-slate-300'}`} />
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Desktop stacked layout */}
-                            <div className="hidden lg:block relative flex flex-col items-center pb-10 perspective-1000 mt-8">
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_20px_50px_rgba(30,64,255,0.10)] group hover:-translate-y-2 transition-all duration-500 w-[90%] z-10 self-start ml-4 hover:z-40" onClick={() => setPreviewImage('/imgs/campain_track_3.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/campain_track_3.png" alt="Mail Detail Track" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 z-20 self-end mr-4 hover:z-40" onClick={() => setPreviewImage('/imgs/campain_track_4.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/campain_track_4.png" alt="Device Analytics" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[90%] -mt-14 z-30 self-center hover:z-50" onClick={() => setPreviewImage('/imgs/campain_track_heatmap.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/campain_track_heatmap.png" alt="Location Metrics" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                <div className="cursor-pointer absolute top-[25%] -left-10 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[50%] z-40 hover:z-[60]" onClick={() => setPreviewImage('/imgs/campain_track_1.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/campain_track_1.png" alt="Heatmap Insights" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                <div className="cursor-pointer absolute top-[65%] -right-8 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[45%] z-50 hover:z-[60]" onClick={() => setPreviewImage('/imgs/campain_track_2.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/campain_track_2.png" alt="Time Tracking" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -1022,23 +820,30 @@ const Landing: React.FC = () => {
                         </FadeIn>
                     </div>
 
-                    {/* Visual Gallery */}
-                    <div className="w-full lg:w-1/2 relative perspective-1000">
+                    {/* Visual Gallery — Clean Glass Frame */}
+                    <div className="w-full lg:w-1/2">
                         <FadeIn delay={0.2} from="right">
-                            <div className="relative flex flex-col items-center pt-10 pb-16">
-                                {/* Base Image */}
-                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/voucher3.png')}
+                                >
                                     <img loading="lazy" decoding="async" src="/imgs/voucher3.png" alt="Promotion Dashboard" className="w-full rounded-2xl object-cover" />
                                 </div>
-
-                                {/* Overlay Top Right */}
-                                <div className="absolute -top-4 -right-2 md:-right-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[65%] sm:w-[60%] z-30 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/voucher2.png" alt="Voucher Setup Rules" className="w-full rounded-xl object-cover" />
-                                </div>
-
-                                {/* Overlay Bottom Left */}
-                                <div className="absolute -bottom-8 -left-2 md:-left-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[70%] sm:w-[65%] z-20 hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/voucher.png" alt="Tracking & Redeem" className="w-full rounded-xl object-cover" />
+                                <div className="grid grid-cols-2 gap-3">
+                                    {[
+                                        { src: '/imgs/voucher2.png', alt: 'Voucher Setup Rules' },
+                                        { src: '/imgs/voucher.png', alt: 'Tracking & Redeem' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-blue-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </FadeIn>
@@ -1047,75 +852,32 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Survey Builder Section ── */}
-            <section id="survey" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden scroll-mt-20">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+            <section id="survey" className="py-16 md:py-24 px-4 md:px-6 relative z-10 overflow-hidden scroll-mt-20">
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     {/* ── Visual (left) ── */}
-                    <div className="w-full lg:w-[52%] relative perspective-1000">
+                    <div className="w-full lg:w-[52%]">
                         <FadeIn delay={0.2} from="left">
-                            {/* Mobile: horizontal scroll */}
-                            <div className="block lg:hidden">
-                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
-                                    {[
-                                        { src: '/imgs/ks.png', alt: 'Survey Dashboard' },
-                                        { src: '/imgs/ks2.png', alt: 'Survey Builder' },
-                                        { src: '/imgs/ks3.png', alt: 'Survey Results' },
-                                    ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
-                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex justify-center gap-1.5 mt-3">
-                                    {[0, 1, 2].map(i => (
-                                        <div key={i} className="w-2 h-2 rounded-full bg-slate-300" />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Desktop: stacked overlapping cards */}
-                            <div className="hidden lg:block relative pt-10 pb-20">
-                                {/* Base image — Survey dashboard */}
+                            <div className="space-y-3">
                                 <div
-                                    className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(6,182,212,0.12)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center"
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(6,182,212,0.10)] hover:border-cyan-300 transition-all"
                                     onClick={() => setPreviewImage('/imgs/ks.png')}
                                 >
-                                    <img loading="lazy" decoding="async" src="/imgs/ks.png" alt="Survey Dashboard" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                    <img loading="lazy" decoding="async" src="/imgs/ks.png" alt="Survey Dashboard" className="w-full rounded-2xl object-cover" />
                                 </div>
-
-                                {/* Overlay top-right — Survey builder */}
-                                <div
-                                    className="cursor-pointer absolute -top-4 -right-4 md:-right-10 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[60%] z-30 hover:z-[60]"
-                                    onClick={() => setPreviewImage('/imgs/ks2.png')}
-                                >
-                                    <img loading="lazy" decoding="async" src="/imgs/ks2.png" alt="Survey Builder" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-
-                                {/* Overlay bottom-left — Survey results/stats */}
-                                <div
-                                    className="cursor-pointer absolute -bottom-10 -left-4 md:-left-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-3 hover:scale-[1.02] transition-all duration-500 w-[55%] z-20 hover:z-[60]"
-                                    onClick={() => setPreviewImage('/imgs/ks3.png')}
-                                >
-                                    <img loading="lazy" decoding="async" src="/imgs/ks3.png" alt="Survey Statistics" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-
-                                {/* Floating live-result badge */}
-                                <div className="absolute top-[40%] -right-6 md:-right-12 z-40 bg-white/95 border border-cyan-200 rounded-2xl p-3.5 shadow-[0_18px_40px_rgba(6,182,212,0.16)] backdrop-blur-xl hover:-translate-y-1 transition-transform duration-500">
-                                    <p className="text-[10px] font-bold text-[#0284C7] uppercase tracking-widest mb-2">Live Result</p>
-                                    <div className="space-y-1.5">
-                                        {[
-                                            { label: 'Rất hài lòng', pct: 62, color: 'bg-[#1E40FF]' },
-                                            { label: 'Hài lòng', pct: 24, color: 'bg-[#06B6D4]' },
-                                            { label: 'Trung lập', pct: 9, color: 'bg-slate-400' },
-                                        ].map((row) => (
-                                            <div key={row.label} className="flex items-center gap-2">
-                                                <span className="text-[9px] text-slate-600 w-16 truncate">{row.label}</span>
-                                                <div className="flex-1 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-                                                    <div className={`h-full ${row.color} rounded-full`} style={{ width: `${row.pct}%` }} />
-                                                </div>
-                                                <span className="text-[9px] font-bold text-slate-900 w-6 text-right">{row.pct}%</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {[
+                                        { src: '/imgs/ks2.png', alt: 'Survey Builder' },
+                                        { src: '/imgs/ks3.png', alt: 'Survey Statistics' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-cyan-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </FadeIn>
@@ -1196,38 +958,21 @@ const Landing: React.FC = () => {
             {/* ── QR Link Tracking Section ── */}
             <section id="qr-tracking" className="py-24 md:py-32 px-4 md:px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm scroll-mt-20">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
-                    {/* Visual (right side) */}
-                    <div className="w-full lg:w-1/2 relative perspective-1000">
+                    {/* Visual (right side) — Clean Glass Frame */}
+                    <div className="w-full lg:w-1/2">
                         <FadeIn delay={0.2} from="right">
-                            {/* Mobile slider */}
-                            <div className="block lg:hidden">
-                                <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4" style={{ scrollbarWidth: 'none' }}>
-                                    {[
-                                        { src: '/imgs/qr_code.png', alt: 'QR Design Customization' },
-                                        { src: '/imgs/qr_code2.png', alt: 'QR Analytics Dashboard' },
-                                    ].map((img, i) => (
-                                        <div key={i} className="snap-center shrink-0 w-[85vw] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-md" onClick={() => setPreviewImage(img.src)} style={{ cursor: 'pointer' }}>
-                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full h-auto rounded-xl object-cover" />
-                                        </div>
-                                    ))}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/qr_code.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/qr_code.png" alt="QR Thiết Kế Đẹp" className="w-full rounded-2xl object-cover" />
                                 </div>
-                                <div className="flex justify-center gap-1.5 mt-3">
-                                    {[0, 1].map(i => (
-                                        <div key={i} className={`rounded-full transition-all duration-300 ${qrSlide === i ? 'w-5 h-2 bg-[#1E40FF]' : 'w-2 h-2 bg-slate-300'}`} />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Desktop stacked layout */}
-                            <div className="hidden lg:block relative pt-10 pb-20">
-                                {/* Base Image */}
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] group hover:-translate-y-2 hover:z-40 transition-all duration-500 w-[92%] z-10 self-center" onClick={() => setPreviewImage('/imgs/qr_code.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/qr_code.png" alt="QR Thiết Kế Đẹp" className="w-full rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-
-                                {/* Overlay Image */}
-                                <div className="cursor-pointer absolute -bottom-6 -left-4 md:-left-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-3 hover:scale-[1.03] transition-all duration-500 w-[70%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/qr_code2.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/qr_code2.png" alt="QR Tracking Report" className="w-full rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(6,182,212,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/qr_code2.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/qr_code2.png" alt="QR Tracking Report" className="w-full rounded-2xl object-cover" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -1327,50 +1072,51 @@ const Landing: React.FC = () => {
                         </FadeIn>
                     </div>
 
-                    {/* Dashboard Mock */}
-                    <div className="w-full lg:w-1/2 relative min-h-[500px] flex flex-col justify-center">
+                    {/* Dashboard Mock — Clean Glass Frame */}
+                    <div className="w-full lg:w-1/2">
                         <FadeIn delay={0.2} from="left" className="w-full">
-                            <div className="relative flex flex-col items-center pb-10 md:pb-0">
-                                {/* Base Vertical Image */}
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(16,185,129,0.12)] group hover:-translate-y-2 transition-all duration-500 w-[70%] sm:w-[60%] z-10 self-start hover:z-40" onClick={() => setPreviewImage('/imgs/website_tracking1.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/website_tracking1.png" alt="User Journey Vertical" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/website tracking.jpg')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/website tracking.jpg" alt="Website Tracking Metrics" className="w-full h-auto rounded-2xl object-cover" />
                                 </div>
-                                {/* Second Base Image */}
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[90%] sm:w-[85%] -mt-20 md:-mt-32 self-end z-20 hover:z-40" onClick={() => setPreviewImage('/imgs/website tracking.jpg')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/website tracking.jpg" alt="Website Tracking Metrics" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                <div className="grid grid-cols-2 gap-3">
+                                    {[
+                                        { src: '/imgs/website_tracking1.png', alt: 'User Journey Vertical' },
+                                        { src: '/imgs/user_jouney.jpg', alt: 'Tracking Timeline' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-blue-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
-                                {/* Third Image (Dọc nhỏ hơn) */}
-                                <div className="cursor-pointer absolute top-[5%] md:top-[-30%] -right-4 md:-right-10 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[55%] md:w-[60%] z-30 hover:z-50" onClick={() => setPreviewImage('/imgs/user_jouney.jpg')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/user_jouney.jpg" alt="Tracking Mobile/Vertical" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-
-                                {/* Live Tracking Log HTML Mockup */}
-                                <div className="absolute right-0 -bottom-8 md:-bottom-12 lg:-right-12 w-[280px] sm:w-[320px] bg-white/95 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-[0_22px_54px_rgba(15,23,42,0.14)] overflow-hidden backdrop-blur-xl z-40 transform hover:-translate-y-2 transition-transform duration-500">
-                                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
-                                        <div><p className="text-sm font-bold text-slate-900">Live Tracking Log</p><p className="text-[10px] text-slate-500">Phát hiện dữ liệu Real-time</p></div>
-                                        <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse border-2 border-emerald-200" />
+                                <div className="rounded-2xl bg-white/95 border border-slate-200 p-4 shadow-sm">
+                                    <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+                                        <div>
+                                            <p className="text-xs font-bold text-slate-900">Live Tracking Log</p>
+                                            <p className="text-[10px] text-slate-500">Ghi nhận tương tác Real-time</p>
+                                        </div>
+                                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                                     </div>
-                                    <div className="space-y-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                         {[
-                                            { ev: "PAGE SCROLL_75%", user: "Nguyen Minh (ng**n)", score: "+5 Point", iconBg: "bg-emerald-50 border-emerald-200", iconColor: "text-emerald-600" },
-                                            { ev: "BTN CLICK: BUY NOW", user: "Tran Anh (tr**a)", score: "+20 Point", iconBg: "bg-blue-50 border-blue-200", iconColor: "text-[#1E40FF]" },
-                                            { ev: "EMAIL OPENED", user: "Le Hoang (le**c)", score: "+2 Point", iconBg: "bg-cyan-50 border-cyan-200", iconColor: "text-[#0284C7]" },
-                                        ].map((row, i) => (
-                                            <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-blue-200 transition-colors">
-                                                <div className="flex items-center gap-2.5">
-                                                    <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${row.iconBg}`}>
-                                                        <Pointer className={`w-3.5 h-3.5 ${row.iconColor}`} />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[11px] font-bold text-slate-900 leading-tight">{row.ev}</p>
-                                                        <p className="text-[9px] text-slate-500 mt-0.5">{row.user}</p>
-                                                    </div>
+                                            { ev: 'SCROLL 75%', user: 'ng**n', score: '+5 pt', iconColor: 'text-emerald-600' },
+                                            { ev: 'CLICK PRICING', user: 'tr**a', score: '+20 pt', iconColor: 'text-[#1E40FF]' },
+                                            { ev: 'EMAIL OPENED', user: 'le**c', score: '+2 pt', iconColor: 'text-[#0284C7]' },
+                                        ].map((row) => (
+                                            <div key={row.ev} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200/80 text-[10px]">
+                                                <div className="flex items-center gap-1.5 min-w-0">
+                                                    <Pointer className={`w-3 h-3 shrink-0 ${row.iconColor}`} />
+                                                    <span className="font-bold text-slate-800 truncate">{row.ev}</span>
                                                 </div>
-                                                <div className="mt-1 sm:mt-0 text-right">
-                                                    <span className="inline-block px-1.5 py-0.5 rounded bg-blue-50 text-[9px] font-black text-[#1E40FF] border border-blue-200">
-                                                        {row.score}
-                                                    </span>
-                                                </div>
+                                                <span className="px-1.5 py-0.5 rounded bg-blue-50 font-bold text-[#1E40FF] shrink-0">{row.score}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -1382,8 +1128,8 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Chatbot Section ── */}
-            <section id="ai" className="py-28 px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-20">
+            <section id="ai" className="py-20 px-6 relative z-10 overflow-hidden border-y border-slate-200/70 bg-white/45 backdrop-blur-sm">
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
                     {/* Text */}
                     <div className="w-full lg:w-1/2">
                         <FadeIn from="right">
@@ -1393,7 +1139,7 @@ const Landing: React.FC = () => {
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Trợ Lý Ảo AI<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] whitespace-nowrap">Thông Minh Như Chuyên Gia</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Thông Minh Như Chuyên Gia</span>
                             </h2>
                             <p className="text-slate-600 text-lg mb-10 leading-relaxed">
                                 Train AI từ tài liệu nội bộ, website của bạn. Thiết lập nền tảng kiến thức (Knowledge Base) thông minh, trả lời trực tiếp thắc mắc Khách hàng 24/7.
@@ -1415,19 +1161,30 @@ const Landing: React.FC = () => {
                         </FadeIn>
                     </div>
 
-                    {/* Screenshot */}
-                    <div className="w-full lg:w-1/2 relative perspective-1000">
+                    {/* Screenshot — Clean Glass Frame */}
+                    <div className="w-full lg:w-1/2">
                         <FadeIn delay={0.2} from="left">
-                            {/* Stacked layout for all devices */}
-                            <div className="relative flex flex-col items-start pt-6 md:pt-12 pb-10">
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] group hover:-translate-y-2 transition-all duration-500 w-full sm:w-[85%] z-10 hover:z-40" onClick={() => setPreviewImage('/imgs/kien thuc ai.jpg')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/kien thuc ai.jpg" alt="Knowledge Base Platform" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/ai_2.jpg')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/ai_2.jpg" alt="AI Chatbot Interaction" className="w-full h-auto rounded-2xl object-cover" />
                                 </div>
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[90%] -mt-24 md:-mt-32 self-end z-20 hover:z-40" onClick={() => setPreviewImage('/imgs/ai_2.jpg')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/ai_2.jpg" alt="AI Chatbot Interaction" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-                                <div className="cursor-pointer absolute top-[15%] md:top-[25%] -left-4 sm:-left-12 border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-3 transition-all duration-500 w-[55%] sm:w-[45%] z-30 hover:z-50" onClick={() => setPreviewImage('/imgs/AIchatbot.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/AIchatbot.png" alt="Custom AI Chatbot" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.05] transition-transform duration-500" />
+                                <div className="grid grid-cols-2 gap-3">
+                                    {[
+                                        { src: '/imgs/kien thuc ai.jpg', alt: 'Knowledge Base Platform' },
+                                        { src: '/imgs/AIchatbot.png', alt: 'Custom AI Chatbot' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-blue-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </FadeIn>
@@ -1436,31 +1193,33 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── AI Segment Analytics ── */}
-            <section id="ai-segment" className="py-16 md:py-28 px-4 md:px-6 relative z-10 overflow-hidden scroll-mt-20">
-                <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-16 lg:gap-24">
-                    {/* Visual */}
+            <section id="ai-segment" className="py-16 md:py-24 px-4 md:px-6 relative z-10 overflow-hidden scroll-mt-20">
+                <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20">
+                    {/* Visual — Clean Glass Frame */}
                     <div className="w-full lg:w-[55%]">
                         <FadeIn delay={0.2} from="left">
-                            {/* Stacked layout for all devices */}
-                            <div className="relative flex flex-col items-center pb-20 perspective-1000 mt-4">
-                                {/* The Big Main Image */}
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] group hover:-translate-y-2 transition-all duration-500 w-full z-20 self-center hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_3.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_3.png" alt="Phân Tích Độ Chính Xác" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/phan_tich_ai_3.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_3.png" alt="Phân Tích Độ Chính Xác" className="w-full h-auto rounded-2xl object-cover" />
                                 </div>
-
-                                {/* Stacked under it, offset slightly left */}
-                                <div className="cursor-pointer border border-slate-200 rounded-3xl p-2 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[85%] -mt-16 self-start z-10 hover:z-[60]" onClick={() => setPreviewImage('/imgs/thauhieu.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/thauhieu.png" alt="Thấu Hiểu Khách Hàng" className="w-full h-auto rounded-2xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-
-                                {/* Floating Top Right */}
-                                <div className="cursor-pointer absolute top-[-8%] right-[-5%] border border-slate-200 rounded-3xl p-1.5 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[45%] z-30 hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_1.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_1.png" alt="Phân Tích AI Segment" className="w-full h-auto rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
-                                </div>
-
-                                {/* Floating Bottom Center/Right */}
-                                <div className="cursor-pointer absolute bottom-[2%] right-[5%] border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl group hover:-translate-y-2 transition-all duration-500 w-[55%] z-40 hover:z-[60]" onClick={() => setPreviewImage('/imgs/phan_tich_ai_2.png')}>
-                                    <img loading="lazy" decoding="async" src="/imgs/phan_tich_ai_2.png" alt="Phân Tích Chủ Đề" className="w-full h-auto rounded-xl object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                                    {[
+                                        { src: '/imgs/thauhieu.png', alt: 'Thấu Hiểu Khách Hàng' },
+                                        { src: '/imgs/phan_tich_ai_1.png', alt: 'Phân Tích AI Segment' },
+                                        { src: '/imgs/phan_tich_ai_2.png', alt: 'Phân Tích Chủ Đề' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-blue-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </FadeIn>
@@ -1474,7 +1233,7 @@ const Landing: React.FC = () => {
                                 Cụm Hành Vi (AI Segment)
                             </div>
                             <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
-                                <span className="whitespace-nowrap">Phân Tích &amp; Thấu Hiểu</span><br />
+                                <span className="sm:whitespace-nowrap">Phân Tích &amp; Thấu Hiểu</span><br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#0284C7]">Từng Khách Hàng</span>
                             </h2>
                             <p className="text-slate-600 text-lg mb-8 leading-relaxed">
@@ -1516,7 +1275,7 @@ const Landing: React.FC = () => {
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Không Gian AI <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284C7] to-[#06B6D4] whitespace-nowrap">Độc Lập Cho Phòng Ban</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0284C7] to-[#06B6D4] sm:whitespace-nowrap">Độc Lập Cho Phòng Ban</span>
                             </h2>
                             <p className="text-slate-600 text-lg mb-8 leading-relaxed">
                                 <strong className="text-[#1E40FF] font-semibold block mb-2">Nhân sự cạn kiệt ý tưởng, tư vấn nhầm lẫn? Khách hàng bức xúc vì chờ đợi trả lời quá lâu?</strong>
@@ -1544,31 +1303,32 @@ const Landing: React.FC = () => {
                         </FadeIn>
                     </div>
 
-                    {/* Visual Gallery */}
-                    <div className="w-full lg:w-[55%] relative">
+                    {/* Visual Gallery — Clean Glass Frame */}
+                    <div className="w-full lg:w-[55%]">
                         <FadeIn delay={0.2} from="right">
-                            <div className="relative flex flex-col items-center pb-12 pt-6 perspective-1000">
-                                {/* Base Image */}
-                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(30,64,255,0.12)] w-full sm:w-[90%] z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                            <div className="space-y-3">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all"
+                                    onClick={() => setPreviewImage('/imgs/AI GROUP (1).png')}
+                                >
                                     <img loading="lazy" decoding="async" src="/imgs/AI GROUP (1).png" alt="AI Space" className="w-full rounded-2xl" />
                                 </div>
-                                {/* Stacked Right */}
-                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-xl w-[85%] -mt-16 sm:-mt-24 self-end z-20 hover:-translate-y-2 hover:z-40 transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/AI GROUP (2).png" alt="Department Training" className="w-full rounded-2xl" />
-                                </div>
-                                {/* Stacked Left */}
-                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-xl w-[95%] sm:w-[85%] -mt-10 sm:-mt-16 z-30 self-center hover:-translate-y-2 hover:z-50 transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/AI GROUP (4).png" alt="AI Expert Mode" className="w-full rounded-2xl" />
-                                </div>
-
-                                {/* Floating Top-Right */}
-                                <div className="absolute top-[8%] -right-2 md:-right-8 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[40%] sm:w-[35%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/AI GROUP (3).png" alt="Image Mode" className="w-full rounded-xl" />
-                                </div>
-
-                                {/* Floating Bottom-Left */}
-                                <div className="absolute bottom-[-5%] -left-2 md:-left-6 border border-slate-200 rounded-2xl p-1.5 bg-white shadow-xl w-[45%] sm:w-[40%] z-40 hover:-translate-y-3 hover:scale-105 transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/AI GROUP (5).png" alt="Code Mode" className="w-full rounded-xl" />
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                    {[
+                                        { src: '/imgs/AI GROUP (2).png', alt: 'Department Training' },
+                                        { src: '/imgs/AI GROUP (4).png', alt: 'AI Expert Mode' },
+                                        { src: '/imgs/AI GROUP (3).png', alt: 'Image Mode' },
+                                        { src: '/imgs/AI GROUP (5).png', alt: 'Code Mode' },
+                                    ].map((img) => (
+                                        <button
+                                            key={img.src}
+                                            type="button"
+                                            onClick={() => setPreviewImage(img.src)}
+                                            className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm hover:border-blue-300 transition-all overflow-hidden"
+                                        >
+                                            <img loading="lazy" decoding="async" src={img.src} alt={img.alt} className="w-full aspect-[16/10] rounded-xl object-cover" />
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </FadeIn>
@@ -1577,21 +1337,21 @@ const Landing: React.FC = () => {
             </section>
 
             {/* ── Dashboard & Reporting ── */}
-            <section id="dashboard" className="py-24 px-6 relative z-10 overflow-hidden">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
+            <section id="dashboard" className="py-20 px-6 relative z-10 overflow-hidden">
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
                     {/* Content */}
                     <div className="w-full lg:w-[45%] z-20">
                         <FadeIn from="right">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-widest mb-6">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
                                 <BarChart3 className="w-3.5 h-3.5" />
                                 Theo dõi Real-time
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                                 Báo Cáo Thông Minh <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Kiểm Soát Mọi Điểm Chạm</span>
+                                <span className="text-gradient-inkica">Kiểm Soát Mọi Điểm Chạm</span>
                             </h2>
                             <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-                                <strong className="text-emerald-700 font-semibold block mb-2">Mù mờ về số liệu thực tế? Phải đợi đến cuối tháng rà soát lại mới vỡ lẽ chiến dịch đang bốc hơi hàng chục triệu đồng?</strong>
+                                <strong className="text-[#0284C7] font-semibold block mb-2">Mù mờ về số liệu thực tế? Phải đợi đến cuối tháng rà soát lại mới vỡ lẽ chiến dịch đang bốc hơi hàng chục triệu đồng?</strong>
                                 Làm chủ dòng chảy dữ liệu. Nắm bắt toàn bộ bức tranh hiệu suất trải dài từ tần suất tương tác Website, tốc độ chốt đơn của AI, đến tỷ lệ phản hồi Zalo OA/Email với độ trễ gần như bằng 0.
                             </p>
 
@@ -1601,9 +1361,9 @@ const Landing: React.FC = () => {
                                     { t: "Biểu Đồ Trực Quan", d: "Đánh giá sức khỏe chiến dịch với đa dạng loại biểu đồ trực quan, dễ hiểu." },
                                     { t: "Triết Xuất Chi Tiết", d: "Truy vết tăng trưởng, cập nhật sự kiện hàng ngày theo thời gian thực." }
                                 ].map((box, i) => (
-                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
-                                        <div className="mt-1 w-6 h-6 rounded border border-emerald-200 bg-emerald-50 flex shrink-0 items-center justify-center">
-                                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/90 border border-slate-200 shadow-sm hover:border-blue-300 transition-colors">
+                                        <div className="mt-1 w-6 h-6 rounded border border-blue-200 bg-blue-50 flex shrink-0 items-center justify-center">
+                                            <Check className="w-3.5 h-3.5 text-[#1E40FF]" />
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-slate-900 text-sm mb-1">{box.t}</h3>
@@ -1615,17 +1375,21 @@ const Landing: React.FC = () => {
                         </FadeIn>
                     </div>
 
-                    {/* Visual Gallery */}
-                    <div className="w-full lg:w-[55%] relative">
+                    {/* Visual Gallery — Clean Glass Frame */}
+                    <div className="w-full lg:w-[55%]">
                         <FadeIn delay={0.2} from="left">
-                            <div className="relative flex flex-col items-center perspective-1000 pb-16">
-                                {/* Base Image */}
-                                <div className="border border-slate-200 rounded-3xl p-2 bg-white shadow-[0_24px_60px_rgba(16,185,129,0.12)] w-full z-10 hover:-translate-y-2 hover:z-40 transition-all duration-500">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div
+                                    className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_20px_54px_rgba(30,64,255,0.10)] hover:border-blue-300 transition-all sm:col-span-2"
+                                    onClick={() => setPreviewImage('/imgs/dash1.png')}
+                                >
                                     <img loading="lazy" decoding="async" src="/imgs/dash1.png" alt="Dashboard Tổng Quan" className="w-full rounded-2xl" />
                                 </div>
-                                {/* Stacked Image */}
-                                <div className="absolute -bottom-4 md:-bottom-8 md:-left-8 border border-slate-200 rounded-3xl p-1.5 bg-white shadow-xl w-[85%] sm:w-[70%] z-30 hover:-translate-y-3 hover:scale-[1.02] hover:z-50 transition-all duration-500">
-                                    <img loading="lazy" decoding="async" src="/imgs/dash.png" alt="Biểu Diễn Số Liệu" className="w-full rounded-2xl" />
+                                <div
+                                    className="cursor-pointer rounded-2xl border border-slate-200 bg-white p-2 shadow-sm hover:border-blue-300 transition-all sm:col-span-2"
+                                    onClick={() => setPreviewImage('/imgs/dash.png')}
+                                >
+                                    <img loading="lazy" decoding="async" src="/imgs/dash.png" alt="Biểu Diễn Số Liệu" className="w-full rounded-xl" />
                                 </div>
                             </div>
                         </FadeIn>
@@ -1645,25 +1409,28 @@ const Landing: React.FC = () => {
             {/* ── Testimonials ── */}
             <TestimonialSection />
 
-            {/* ── Pricing ── */}
-            {showLegacyPricing && (
-            <section id="pricing" className="py-28 px-6 relative z-10 scroll-mt-20">
-                <div className="max-w-6xl mx-auto">
-                    <FadeIn className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6">
-                            <BoxSelect className="w-3.5 h-3.5" /> Bảng Giá
+            {/* ── Canonical Pricing ── */}
+            <section id="pricing" className="py-20 px-6 relative z-10 scroll-mt-20">
+                <div className="max-w-7xl mx-auto">
+                    <FadeIn className="text-center mb-12">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-5">
+                            <BoxSelect className="w-3.5 h-3.5" /> Bảng Giá Hệ Sinh Thái Đồng Bộ
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-5">
-                            Giá Phù Hợp<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]">Mọi Quy Mô Doanh Nghiệp</span>
+                        <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
+                            Giải Pháp Tương Xứng{' '}
+                            <span className="text-gradient-inkica">Mọi Quy Mô Doanh Nghiệp</span>
                         </h2>
+                        <p className="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+                            Dùng thử miễn phí 30 ngày (0₫) • Giá đồng bộ xuyên suốt toàn hệ sinh thái DOMATION.
+                        </p>
 
-                        {/* Billing Toggle */}
-                        <div className="mt-8 flex flex-row items-center justify-center gap-3">
+                        <div className="mt-7 flex flex-row items-center justify-center gap-3">
                             <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-slate-900' : 'text-slate-500'}`}>Hàng Tháng</span>
                             <button
+                                type="button"
                                 onClick={() => setIsYearly(!isYearly)}
-                                className="relative w-14 h-7 rounded-full bg-slate-200 border border-slate-300 flex items-center p-1 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                                aria-label="Chuyển đổi chu kỳ thanh toán tháng và năm"
+                                className="relative w-14 h-7 rounded-full bg-slate-200 border border-slate-300 flex items-center p-1 cursor-pointer transition-colors"
                             >
                                 <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${isYearly ? 'translate-x-[26px] bg-[#1E40FF]' : 'translate-x-0 bg-white'}`} />
                             </button>
@@ -1673,17 +1440,70 @@ const Landing: React.FC = () => {
                         </div>
                     </FadeIn>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-14 items-stretch mt-8 px-0 md:px-4">
-                        {plans.map((plan, i) => (
-                            <PricingCard key={plan.tier} {...plan} delay={i * 0.1} isYearly={isYearly} onClick={() => setIsFormOpen(true)} />
-                        ))}
+                    <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/90 backdrop-blur-xl shadow-xs grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/75">
+                        {DOMATION_SAAS_PLANS.map((plan, idx) => {
+                            const isCustom = plan.monthly === 'May Đo';
+                            return (
+                                <div
+                                    key={plan.name}
+                                    className={`p-6 sm:p-7 flex flex-col justify-between ${
+                                        idx >= 2 ? 'md:border-t md:border-slate-200/75 xl:border-t-0' : ''
+                                    } ${
+                                        plan.popular
+                                            ? 'bg-gradient-to-br from-[#EEF4FF] via-white to-[#ECFEFF] ring-2 ring-inset ring-[#1E40FF]/35'
+                                            : ''
+                                    }`}
+                                >
+                                    <div>
+                                        <span
+                                            className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4 ${
+                                                plan.popular
+                                                    ? 'bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] text-white'
+                                                    : 'bg-slate-100 text-[#1E40FF]'
+                                            }`}
+                                        >
+                                            {plan.badge}
+                                        </span>
+                                        <h3 className="text-lg font-bold text-slate-900">{plan.name}</h3>
+                                        <div className="mt-3 mb-2.5 flex items-baseline gap-1.5">
+                                            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                                                {isYearly ? plan.yearly : plan.monthly}
+                                            </span>
+                                            {!isCustom && (
+                                                <span className="text-xs font-medium text-slate-500">
+                                                    {isYearly ? '/ năm' : '/ tháng'}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs sm:text-sm leading-relaxed mb-5 text-slate-600">{plan.desc}</p>
+                                        <ul className="space-y-2.5 pt-4 border-t border-slate-200/75">
+                                            {plan.features.map((feat) => (
+                                                <li key={feat} className="flex items-start gap-2 text-xs text-slate-700">
+                                                    <Check className="w-4 h-4 shrink-0 mt-0.5 text-[#1E40FF]" />
+                                                    <span>{feat}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsFormOpen(true)}
+                                        className={`mt-7 min-h-[44px] w-full py-3 px-4 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                                            plan.popular ? 'btn-inkica-primary text-white' : 'ql-btn-outline'
+                                        }`}
+                                    >
+                                        <span>{isCustom ? 'Tư Vấn May Đo' : 'Bắt Đầu Ngay'}</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
-            )}
 
             {/* ── CTA Final ── */}
-            <section className="py-28 px-6 relative z-10 overflow-hidden">
+            <section className="py-20 px-6 relative z-10 overflow-hidden">
                 <div className="max-w-5xl mx-auto">
                     <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_30px_70px_rgba(30,64,255,0.24)]">
                         <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E40FF] to-[#06B6D4]" />
@@ -1694,7 +1514,7 @@ const Landing: React.FC = () => {
                         </div>
                         <FadeIn className="relative z-10 p-10 md:p-20 text-center">
                             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 mb-8">
-                                <span className="live-dot w-2 h-2 rounded-full bg-cyan-300" />
+                                <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse" />
                                 <span className="text-white text-xs font-bold uppercase tracking-widest">Sẵn Sàng Tăng Trưởng</span>
                             </div>
                             <h2 className="text-xl md:text-2xl font-extrabold text-white/95 mb-6 leading-tight tracking-tight">
@@ -1734,7 +1554,7 @@ const Landing: React.FC = () => {
                         {[
                             { title: 'Công Cụ Marketing', links: [['#builder', 'Email Builder Kéo Thả'], ['#flow', 'Automation Flow'], ['#survey', 'Tạo Khảo Sát (Survey)'], ['#voucher', 'Smart Voucher Hub']] },
                             { title: 'Tracking & Phân Tích', links: [['#campaign-tracking', 'Web Tracking Pixel'], ['#analytics', 'Web Analytics Tracking'], ['#ai-segment', 'AI Phân Tích (Lead)'], ['#dashboard', 'Báo Cáo Tăng Trưởng']] },
-                            { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['/#pricing', 'Bảng Giá Hệ Thống']] },
+                            { title: 'Trí Tuệ Nhân Tạo & Thêm', links: [['#ai', 'Chatbot Meta AI'], ['#ai-space', 'AI Workspace'], ['#features', 'Toàn Bộ Tính Năng'], ['/data#pricing', 'Bảng Giá Hệ Thống']] },
                         ].map((col) => (
                             <div key={col.title}>
                                 <h3 className="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">{col.title}</h3>
@@ -1775,7 +1595,7 @@ const Landing: React.FC = () => {
             <button
                 type="button"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
+                className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
             >
                 <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
                 <span>Đầu trang</span>
@@ -1789,17 +1609,17 @@ const Landing: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-sm"
+                        className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/45 backdrop-blur-sm"
                     >
                         <motion.div
                             initial={{ scale: 0.95, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-8 shadow-2xl"
+                            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-t-[26px] sm:rounded-3xl p-5 sm:p-8 max-h-[92dvh] overflow-y-auto shadow-2xl"
                         >
                             <button
                                 onClick={() => { setIsFormOpen(false); setFormStatus('idle'); }}
-                                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-600"
+                                className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-600"
                             >
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -1834,12 +1654,12 @@ const Landing: React.FC = () => {
                                             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Số điện thoại (Zalo)</label>
                                             <input required name="phone" type="tel" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-colors" placeholder="09xx xxx xxx" />
                                         </div>
-                                        <div className="flex gap-3">
-                                            <div className="w-[60%]">
+                                        <div className="flex flex-col sm:flex-row gap-3">
+                                            <div className="w-full sm:w-[60%]">
                                                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Doanh nghiệp / Dự án</label>
                                                 <input required name="company" type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1E40FF] focus:ring-2 focus:ring-blue-500/20 transition-colors" placeholder="Website công ty" />
                                             </div>
-                                            <div className="w-[40%] relative">
+                                            <div className="w-full sm:w-[40%] relative">
                                                 <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Số lượng Email/tháng</label>
                                                 <div
                                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 flex justify-between items-center cursor-pointer hover:border-[#1E40FF] transition-colors"
@@ -1901,7 +1721,7 @@ const Landing: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-sm overflow-y-auto"
+                        className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/45 backdrop-blur-sm overflow-y-auto"
                         onClick={(e) => {
                             if (e.target === e.currentTarget) setIsDemoModalOpen(false);
                         }}
@@ -1910,11 +1730,11 @@ const Landing: React.FC = () => {
                             initial={{ scale: 0.95, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-5xl bg-white border border-slate-200 rounded-3xl p-6 md:p-10 shadow-2xl overflow-hidden max-h-[95vh] flex flex-col"
+                            className="relative w-full max-w-5xl bg-white border border-slate-200 rounded-t-[26px] sm:rounded-3xl p-5 sm:p-6 md:p-10 shadow-2xl overflow-hidden max-h-[92dvh] flex flex-col"
                         >
                             <button
                                 onClick={() => setIsDemoModalOpen(false)}
-                                className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors z-50 text-slate-600"
+                                className="absolute top-3.5 right-3.5 md:top-6 md:right-6 w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors z-50 text-slate-600"
                             >
                                 <svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor">
                                     <path d="M13 1L1 13M1 1L13 13" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

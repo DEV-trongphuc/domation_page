@@ -9,9 +9,18 @@ import {
 interface PartnersTrustSectionProps {
   /** Show the large "all cooperating brands" logo grid at the bottom (default: true). */
   showEcosystemBrands?: boolean;
+  /** Show the flagship partner rows block (default: true). */
+  showFlagshipRows?: boolean;
+  /** Optional partner IDs to exclude from flagship rows (avoids page duplication). */
+  excludeFlagshipIds?: string[];
 }
 
-export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({ showEcosystemBrands = true }) => {
+export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({
+  showEcosystemBrands = true,
+  showFlagshipRows = true,
+  excludeFlagshipIds = [],
+}) => {
+  const visibleFlagships = FLAGSHIP_PARTNERS.filter((p) => !excludeFlagshipIds.includes(p.id));
   return (
     <section id="partners" className="relative py-20 sm:py-26 px-4 sm:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -33,8 +42,9 @@ export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({ show
         </div>
 
         {/* Flagship Strategic Partners — Clean Minimalist Rows */}
+        {showFlagshipRows && visibleFlagships.length > 0 && (
         <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-sm divide-y divide-slate-200/75 overflow-hidden mb-7">
-          {FLAGSHIP_PARTNERS.map((partner) => {
+          {visibleFlagships.map((partner) => {
             const isInkica = partner.id === 'inkica';
             return (
               <div
@@ -94,6 +104,7 @@ export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({ show
             );
           })}
         </div>
+        )}
 
         {/* 3 F1 Distribution Network Strip */}
         <div className="rounded-[24px] bg-white/75 backdrop-blur-xl border border-slate-200/80 p-5 sm:p-7">

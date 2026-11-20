@@ -61,8 +61,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         {children}
         
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-          <button className="btn outline" onClick={onClose}>{t(cancelText)}</button>
-          <button className={btnClass} onClick={() => { onConfirm(); onClose(); }}>{t(confirmText)}</button>
+          <button className="btn outline" style={{ minHeight: 44 }} onClick={onClose}>{t(cancelText)}</button>
+          <button className={btnClass} style={{ minHeight: 44 }} onClick={() => { onConfirm(); onClose(); }}>{t(confirmText)}</button>
         </div>
       </div>
     </CustomModal>

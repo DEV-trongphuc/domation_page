@@ -321,14 +321,23 @@ export function AutoDataSpotlightTour({
               AUTO DATA TOUR
             </span>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Đóng hướng dẫn"
-            className="w-7 h-7 rounded-full border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-50 flex items-center justify-center cursor-pointer transition-colors shrink-0"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 cursor-pointer whitespace-nowrap px-2 py-1.5 rounded-lg min-h-[40px] sm:min-h-0"
+            >
+              Bỏ qua tour
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Đóng hướng dẫn"
+              className="w-11 h-11 sm:w-8 sm:h-8 rounded-full border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-50 flex items-center justify-center cursor-pointer transition-colors shrink-0"
+            >
+              <X className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+            </button>
+          </div>
         </div>
 
         {/* Step Eyebrow + Title + Explanation */}
@@ -358,44 +367,36 @@ export function AutoDataSpotlightTour({
           </div>
         )}
 
-        {/* Footer: Progress Dots + Skip + Back / Next */}
+        {/* Footer: Progress Dots + Back / Next (strictly <= 2 buttons) */}
         <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex items-center gap-1" aria-hidden="true">
-              {steps.map((s, idx) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => onStepChange(idx)}
-                  aria-label={`Chuyển đến bước ${idx + 1}`}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    idx === safeIndex
-                      ? 'w-5 bg-[#1E40FF]'
-                      : idx < safeIndex
-                        ? 'w-1.5 bg-blue-300'
-                        : 'w-1.5 bg-slate-200 hover:bg-slate-300'
-                  }`}
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 cursor-pointer whitespace-nowrap"
-            >
-              Bỏ qua tour
-            </button>
+          <div className="flex items-center gap-1 min-w-0" aria-hidden="true">
+            {steps.map((s, idx) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => onStepChange(idx)}
+                aria-label={`Chuyển đến bước ${idx + 1}`}
+                className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                  idx === safeIndex
+                    ? 'w-5 bg-[#1E40FF]'
+                    : idx < safeIndex
+                      ? 'w-1.5 bg-blue-300'
+                      : 'w-1.5 bg-slate-200 hover:bg-slate-300'
+                }`}
+              />
+            ))}
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="grid grid-cols-2 sm:flex items-center gap-1.5 shrink-0">
             {!isFirst && (
               <button
                 type="button"
                 onClick={() => onStepChange(safeIndex - 1)}
                 aria-label="Quay lại bước trước"
-                className="ql-btn-outline rounded-xl px-2.5 py-2 text-xs cursor-pointer"
+                className="ql-btn-outline rounded-xl px-3 py-2 min-h-[44px] sm:min-h-0 text-xs cursor-pointer inline-flex items-center justify-center gap-1"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
+                <span className="sm:hidden">Quay lại</span>
               </button>
             )}
             <button
@@ -409,7 +410,7 @@ export function AutoDataSpotlightTour({
                   onClose();
                 }
               }}
-              className="btn-inkica-primary rounded-xl px-3.5 py-2 text-xs cursor-pointer whitespace-nowrap"
+              className="btn-inkica-primary rounded-xl px-3.5 py-2 min-h-[44px] sm:min-h-0 text-xs cursor-pointer whitespace-nowrap inline-flex items-center justify-center gap-1"
             >
               <span>{isLast ? current.actionLabel || 'Hoàn tất' : 'Tiếp theo'}</span>
               {isLast ? (

@@ -1913,31 +1913,31 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
                     <tr key={`skel-${i}`}>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--color-border)', animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                          <div className="skeleton" style={{ width: 40, height: 40, borderRadius: '50%', border: 'none', boxShadow: 'none' }} />
                           <div>
-                            <div style={{ width: 120, height: 16, background: 'var(--color-border)', borderRadius: 4, marginBottom: 8, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                            <div style={{ width: 80, height: 12, background: 'var(--color-border-light)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                            <div className="skeleton" style={{ width: 120, height: 14, borderRadius: 6, marginBottom: 8, border: 'none', boxShadow: 'none' }} />
+                            <div className="skeleton" style={{ width: 80, height: 11, borderRadius: 6, border: 'none', boxShadow: 'none' }} />
                           </div>
                         </div>
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 100, height: 16, background: 'var(--color-border)', borderRadius: 4, marginBottom: 8, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                        <div style={{ width: 140, height: 12, background: 'var(--color-border-light)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div className="skeleton" style={{ width: 100, height: 14, borderRadius: 6, marginBottom: 8, border: 'none', boxShadow: 'none' }} />
+                        <div className="skeleton" style={{ width: 140, height: 11, borderRadius: 6, border: 'none', boxShadow: 'none' }} />
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 80, height: 24, background: 'var(--color-border)', borderRadius: 12, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div className="skeleton" style={{ width: 80, height: 22, borderRadius: 999, border: 'none', boxShadow: 'none' }} />
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 100, height: 22, background: 'var(--color-border)', borderRadius: 12, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div className="skeleton" style={{ width: 100, height: 22, borderRadius: 999, border: 'none', boxShadow: 'none' }} />
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--color-border)', animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
-                          <div style={{ width: 90, height: 14, background: 'var(--color-border)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                          <div className="skeleton" style={{ width: 24, height: 24, borderRadius: '50%', border: 'none', boxShadow: 'none' }} />
+                          <div className="skeleton" style={{ width: 90, height: 13, borderRadius: 6, border: 'none', boxShadow: 'none' }} />
                         </div>
                       </td>
                       <td style={{ padding: '1rem', borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div style={{ width: 110, height: 14, background: 'var(--color-border)', borderRadius: 4, animation: 'pulse 1.5s infinite', opacity: 0.5 }} />
+                        <div className="skeleton" style={{ width: 110, height: 13, borderRadius: 6, border: 'none', boxShadow: 'none' }} />
                       </td>
                     </tr>
                   )) : paginatedLeads.length > 0 ? paginatedLeads.map(lead => {

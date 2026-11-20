@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import {
   Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Code2,
   Copy,
-  ExternalLink,
   Globe,
   KeyRound,
   Link2,
   Loader2,
   Play,
-  Send,
-  ShieldCheck,
   Terminal,
   Webhook,
 } from 'lucide-react';
+import { DomResponsiveSubtabs } from '../dom-meta/DomMetaSelect';
 import { apiRequest, getErrorMessage } from './autodataApi';
 
 interface AutoDataWebhookGuideProps {
@@ -30,6 +31,7 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
   onClose,
 }) => {
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4>(1);
+  const [showAdvancedCode, setShowAdvancedCode] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [testPayload, setTestPayload] = useState(
     JSON.stringify(
@@ -89,7 +91,7 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
       try {
         parsed = JSON.parse(testPayload);
       } catch {
-        throw new Error('Dữ liệu JSON kiểm thử không đúng định dạng.');
+        throw new Error('Dữ liệu kiểm thử không đúng định dạng.');
       }
 
       const res = await apiRequest<{ success?: boolean; lead_id?: number | string; message?: string }>(
@@ -121,20 +123,24 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
     }
   };
 
+  const step1Done = copiedKey === 'endpoint' || activeStep > 1 || Boolean(testResult?.success);
+  const step2Done = copiedKey === 'secret' || activeStep > 2 || Boolean(testResult?.success);
+  const step3Done = Boolean(testResult?.success);
+
   return (
-    <div className="flex flex-col gap-6 text-slate-800">
+    <div className="flex flex-col gap-5 text-slate-800">
       {/* Header Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 p-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#1E40FF] text-white shadow-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 p-4 sm:p-5">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#1E40FF] text-white shadow-md shrink-0">
             <Webhook className="h-6 w-6" />
           </div>
-          <div>
-            <h2 className="text-base font-extrabold text-slate-900">
-              Hướng Dẫn Tích Hợp Inbound Webhook & Linkbot Tiếp Nhận Lead
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base font-extrabold text-slate-900">
+              Hướng Dẫn Nhận Khách Tự Động (LadiPage, Web, Form)
             </h2>
-            <p className="text-xs text-slate-600">
-              Kết nối tức thì &lt;3s từ LadiPage, Website, CRM ngoài hoặc Linkbot cá nhân của từng Sale.
+            <p className="text-xs text-slate-600 mt-0.5">
+              Chỉ cần copy đường link nhận khách và bấm Gửi thử nghiệm — không cần biết lập trình.
             </p>
           </div>
         </div>
@@ -142,196 +148,217 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+            className="min-h-[44px] rounded-xl border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
           >
             Đóng
           </button>
         )}
       </div>
 
-      {/* Step Tabs */}
-      <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-bold text-slate-600">
-        <button
-          type="button"
-          onClick={() => setActiveStep(1)}
-          className={`flex-1 rounded-lg py-2 transition ${
-            activeStep === 1 ? 'bg-white text-[#1E40FF] shadow-sm' : 'hover:text-slate-900'
-          }`}
-        >
-          1. Cổng Webhook URL
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveStep(2)}
-          className={`flex-1 rounded-lg py-2 transition ${
-            activeStep === 2 ? 'bg-white text-[#1E40FF] shadow-sm' : 'hover:text-slate-900'
-          }`}
-        >
-          2. Bảo Mật HMAC-SHA256
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveStep(3)}
-          className={`flex-1 rounded-lg py-2 transition ${
-            activeStep === 3 ? 'bg-white text-[#1E40FF] shadow-sm' : 'hover:text-slate-900'
-          }`}
-        >
-          3. Mẫu JSON & Test cURL
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveStep(4)}
-          className={`flex-1 rounded-lg py-2 transition ${
-            activeStep === 4 ? 'bg-white text-[#1E40FF] shadow-sm' : 'hover:text-slate-900'
-          }`}
-        >
-          4. Linkbot Cá Nhân Sale
-        </button>
+      {/* 3-Pill Check-Step Progress Bar */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        {[
+          { label: 'Bước 1: Copy Link Nhận Khách', done: step1Done },
+          { label: 'Bước 2: Gắn Bảo Mật (Tùy chọn)', done: step2Done },
+          { label: 'Test thành công ✓', done: step3Done },
+        ].map((pill, i) => (
+          <div
+            key={pill.label}
+            className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold ${
+              pill.done
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-slate-200 bg-white text-slate-600'
+            }`}
+          >
+            <CheckCircle2
+              className={`h-4 w-4 shrink-0 ${pill.done ? 'text-emerald-600' : 'text-slate-300'}`}
+            />
+            <span className="truncate">{i === 2 && !pill.done ? 'Bước 3: Gửi Lead thử nghiệm' : pill.label}</span>
+          </div>
+        ))}
       </div>
+
+      {/* Responsive Step Tabs (Max 2 + ... on mobile, zero wrap) */}
+      <DomResponsiveSubtabs
+        variant="segmented"
+        maxMobile={2}
+        maxTablet={4}
+        maxDesktop={4}
+        value={String(activeStep)}
+        onChange={(id) => setActiveStep(Number(id) as 1 | 2 | 3 | 4)}
+        tabs={[
+          { id: '1', label: '1. Link nhận khách', shortLabel: '1. Link nhận' },
+          { id: '2', label: '2. Bảo mật chống spam', shortLabel: '2. Bảo mật' },
+          { id: '3', label: '3. Gửi thử 1 chạm', shortLabel: '3. Gửi thử' },
+          { id: '4', label: '4. Link cá nhân Sale', shortLabel: '4. Link Sale' },
+        ]}
+      />
 
       {/* Step 1: Webhook URL */}
       {activeStep === 1 && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center gap-2">
-            <Globe className="h-5 w-5 text-[#1E40FF]" />
+            <Globe className="h-5 w-5 text-[#1E40FF] shrink-0" />
             <h3 className="text-sm font-bold text-slate-900">
-              Bước 1: Lấy Địa Chỉ URL Cổng Tiếp Nhận Dữ Liệu (Inbound Webhook)
+              Bước 1: Lấy Đường Link Tiếp Nhận Khách Hàng Tự Động
             </h3>
           </div>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Dán đường dẫn này vào mục <strong>Webhook / API Liên kết</strong> trên Landing Page (LadiPage, WordPress,
-            Webflow, Shopify) hoặc Form đăng ký của bạn. Phương thức HTTP luôn là <code>POST</code> với header{' '}
-            <code>Content-Type: application/json</code>.
+            Dán đường dẫn dưới đây vào mục <strong>Webhook / API Liên kết</strong> trên LadiPage, WordPress hoặc Form đăng ký của bạn. Hệ thống tự động nhận và chia cho Sale trong dưới 5 giây.
           </p>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700">Endpoint Webhook Chuẩn:</label>
-            <div className="flex items-center gap-2">
+            <label className="text-xs font-bold text-slate-700">Đường dẫn tiếp nhận (Webhook URL):</label>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <input
                 type="text"
                 readOnly
                 value={inboundWebhookUrl}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs font-semibold text-slate-800 selection:bg-blue-200"
+                className="w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs font-semibold text-slate-800"
               />
               <button
                 type="button"
                 onClick={() => copyToClipboard(inboundWebhookUrl, 'endpoint')}
-                className="inline-flex items-center gap-1 rounded-xl bg-[#1E40FF] px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition shrink-0"
+                className="min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#1E40FF] px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition shrink-0"
               >
                 {copiedKey === 'endpoint' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                {copiedKey === 'endpoint' ? 'Đã sao chép' : 'Sao chép'}
+                {copiedKey === 'endpoint' ? 'Đã sao chép' : 'Sao chép Link'}
               </button>
             </div>
           </div>
 
           <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-3.5 text-xs text-amber-900 leading-relaxed">
-            <strong>Gợi ý nguồn (Source Tagging):</strong> Bạn có thể thêm tham số truy vấn vào URL để hệ thống tự động
-            phân loại nguồn, ví dụ:{' '}
-            <code className="rounded bg-white px-1.5 py-0.5 border border-amber-200">
-              {inboundWebhookUrl}?source=ladipage_du_an_a
-            </code>
+            <strong>Mẹo phân biệt chiến dịch:</strong> Thêm đuôi{' '}
+            <span className="rounded bg-white px-1.5 py-0.5 border border-amber-200 font-mono">
+              ?source=ladipage_du_an_a
+            </span>{' '}
+            vào cuối link để CRM tự gắn tên nguồn chính xác.
           </div>
         </div>
       )}
 
-      {/* Step 2: HMAC-SHA256 Signature */}
+      {/* Step 2: Secret Key & Optional Technical Signature */}
       {activeStep === 2 && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center gap-2">
-            <KeyRound className="h-5 w-5 text-indigo-600" />
+            <KeyRound className="h-5 w-5 text-indigo-600 shrink-0" />
             <h3 className="text-sm font-bold text-slate-900">
-              Bước 2: Mã Khóa Bí Mật & Xác Thực Chữ Ký HMAC-SHA256
+              Bước 2: Mã Bí Mật Chống Spam (Tùy chọn)
             </h3>
           </div>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Để ngăn chặn spam hoặc đối thủ phá form, hệ thống hỗ trợ xác minh chữ ký qua header{' '}
-            <code>X-Webhook-Signature</code>. Khi bật tùy chọn này, mọi yêu cầu không mang chữ ký hợp lệ sẽ bị từ chối
-            ngay tại cổng.
+            Nếu bạn dùng LadiPage hoặc Google Form thông thường, có thể bỏ qua bước này. Với hệ thống riêng, sao chép mã bảo mật bên dưới để chặn tin rác giả mạo.
           </p>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700">Mã Webhook Secret:</label>
-            <div className="flex items-center gap-2">
+            <label className="text-xs font-bold text-slate-700">Mã Bảo Mật (Webhook Secret):</label>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <input
                 type="text"
                 readOnly
                 value={webhookSecret}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs font-semibold text-slate-800"
+                className="w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs font-semibold text-slate-800"
               />
               <button
                 type="button"
                 onClick={() => copyToClipboard(webhookSecret, 'secret')}
-                className="inline-flex items-center gap-1 rounded-xl bg-slate-800 px-4 py-2.5 text-xs font-semibold text-white hover:bg-black transition shrink-0"
+                className="min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-800 px-4 py-2.5 text-xs font-semibold text-white hover:bg-black transition shrink-0"
               >
                 {copiedKey === 'secret' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                {copiedKey === 'secret' ? 'Đã sao chép' : 'Sao chép'}
+                {copiedKey === 'secret' ? 'Đã sao chép' : 'Sao chép Mã'}
               </button>
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs text-slate-700">
-            <p className="font-bold text-slate-900 mb-1">Cách tính toán chữ ký HMAC-SHA256 (Node.js / Python / PHP):</p>
-            <code className="block rounded-lg bg-slate-900 p-2.5 font-mono text-[11px] text-emerald-400">
-              const signature = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
-            </code>
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowAdvancedCode((v) => !v)}
+            className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
+          >
+            <span className="inline-flex items-center gap-1.5">
+              <Code2 className="h-4 w-4 text-[#1E40FF]" />
+              Chế độ Nâng cao (Kỹ thuật)
+            </span>
+            {showAdvancedCode ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+
+          {showAdvancedCode && (
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs text-slate-700">
+              <p className="font-bold text-slate-900 mb-1">Cách tính toán chữ ký HMAC-SHA256 (Node.js / Python / PHP):</p>
+              <code className="block overflow-x-auto rounded-lg bg-slate-900 p-2.5 font-mono text-[11px] text-emerald-400">
+                const signature = crypto.createHmac(&apos;sha256&apos;, secret).update(rawBody).digest(&apos;hex&apos;);
+              </code>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Step 3: Payload & Test */}
+      {/* Step 3: 1-Click Test & Collapsible Technical JSON */}
       {activeStep === 3 && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center gap-2">
-            <Code2 className="h-5 w-5 text-emerald-600" />
+            <Play className="h-5 w-5 text-emerald-600 shrink-0" />
             <h3 className="text-sm font-bold text-slate-900">
-              Bước 3: Cấu Trúc JSON Chuẩn & Trình Kiểm Thử Trực Tuyến
+              Bước 3: Gửi Khách Hàng Thử Nghiệm (Kiểm tra 1 chạm)
             </h3>
           </div>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Chỉnh sửa payload bên dưới và nhấn nút <strong>"Gửi Lead Thử Nghiệm"</strong> để kiểm tra xem hệ thống có
-            nhận số, khử trùng và kích hoạt thông báo Zalo/Telegram tức thì hay không.
+            Nhấn nút <strong>&quot;Gửi Lead Thử Nghiệm Ngay&quot;</strong> bên dưới để kiểm tra xem hệ thống có nhận khách mẫu (&quot;Nguyễn Văn An — 0987654321&quot;) và báo Zalo/Telegram cho Sale tức thì hay chưa.
           </p>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700">JSON Payload Mẫu:</label>
-            <textarea
-              rows={8}
-              value={testPayload}
-              onChange={(e) => setTestPayload(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-900 p-3.5 font-mono text-xs text-emerald-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => copyToClipboard(curlSnippet, 'curl')}
-                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-              >
-                <Terminal className="h-3.5 w-3.5" />
-                {copiedKey === 'curl' ? 'Đã copy cURL' : 'Copy lệnh cURL'}
-              </button>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(jsFetchSnippet, 'fetch')}
-                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
-              >
-                <Code2 className="h-3.5 w-3.5" />
-                {copiedKey === 'fetch' ? 'Đã copy JS' : 'Copy JS Fetch'}
-              </button>
-            </div>
-
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <button
               type="button"
               disabled={sendingTest}
               onClick={() => void handleSendTestWebhook()}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-700 disabled:opacity-50 transition"
+              className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-emerald-700 disabled:opacity-50 transition"
             >
               {sendingTest ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
-              {sendingTest ? 'Đang gửi...' : 'Gửi Lead Thử Nghiệm Ngay'}
+              {sendingTest ? 'Đang gửi thử...' : 'Gửi Lead Thử Nghiệm Ngay'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowAdvancedCode((v) => !v)}
+              className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
+            >
+              <Code2 className="h-4 w-4 text-[#1E40FF]" />
+              <span>Chế độ Nâng cao (Kỹ thuật)</span>
+              {showAdvancedCode ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
+
+          {showAdvancedCode && (
+            <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">JSON Payload Mẫu (Dành cho Lập trình viên):</label>
+                <textarea
+                  rows={8}
+                  value={testPayload}
+                  onChange={(e) => setTestPayload(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-900 p-3.5 font-mono text-xs text-emerald-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                />
+              </div>
+              <div className="grid grid-cols-2 sm:flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(curlSnippet, 'curl')}
+                  className="min-h-[44px] inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                >
+                  <Terminal className="h-3.5 w-3.5" />
+                  {copiedKey === 'curl' ? 'Đã copy cURL' : 'Copy cURL'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(jsFetchSnippet, 'fetch')}
+                  className="min-h-[44px] inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                >
+                  <Code2 className="h-3.5 w-3.5" />
+                  {copiedKey === 'fetch' ? 'Đã copy JS' : 'Copy JS Fetch'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {testResult && (
             <div
@@ -354,51 +381,35 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
 
       {/* Step 4: Personal Linkbot */}
       {activeStep === 4 && (
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center gap-2">
-            <Link2 className="h-5 w-5 text-[#1E40FF]" />
+            <Link2 className="h-5 w-5 text-[#1E40FF] shrink-0" />
             <h3 className="text-sm font-bold text-slate-900">
-              Bước 4: Linkbot Cá Nhân Cho Từng Tư Vấn Viên (Sale Personal Link)
+              Bước 4: Link Cá Nhân Cho Từng Sale (Khách về thẳng chủ sở hữu)
             </h3>
           </div>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Mỗi tư vấn viên có một đường dẫn riêng biệt để đăng lên trang cá nhân (Zalo, Facebook, TikTok Bio, danh thiếp
-            điện tử). Khi khách điền qua link này:
+            Mỗi Sale có một đường dẫn riêng để gắn lên Bio TikTok, Facebook cá nhân hoặc Zalo. Khách điền qua link này sẽ vào thẳng tài khoản của Sale đó, không bị chia vòng và không bị thu hồi SLA.
           </p>
-          <ul className="space-y-1.5 text-xs text-slate-600 list-disc pl-5">
-            <li>
-              <strong>Khách tự động thuộc về Sale đó ngay lập tức</strong>, không bị chia ngẫu nhiên qua các Sale khác.
-            </li>
-            <li>
-              <strong>Miễn thu hồi SLA:</strong> Vì đây là khách do Sale tự tìm kiếm, hệ thống không áp dụng cơ chế tự
-              động thu hồi chuyển số.
-            </li>
-            <li>
-              <strong>Không tính vào hạn mức (Quota impact = 0):</strong> Không làm trừ lượt phân bổ của vòng chung.
-            </li>
-          </ul>
 
-          <div className="space-y-2 pt-2">
-            <label className="text-xs font-bold text-slate-700">Định dạng URL Linkbot Cá Nhân:</label>
-            <div className="flex items-center gap-2">
+          <div className="space-y-2 pt-1">
+            <label className="text-xs font-bold text-slate-700">Định dạng Link Cá Nhân của Sale:</label>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <input
                 type="text"
                 readOnly
                 value={personalLinkbotUrl}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs font-semibold text-slate-800"
+                className="w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs font-semibold text-slate-800"
               />
               <button
                 type="button"
                 onClick={() => copyToClipboard(personalLinkbotUrl, 'linkbot')}
-                className="inline-flex items-center gap-1 rounded-xl bg-[#1E40FF] px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition shrink-0"
+                className="min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#1E40FF] px-4 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 transition shrink-0"
               >
                 {copiedKey === 'linkbot' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                {copiedKey === 'linkbot' ? 'Đã sao chép' : 'Sao chép'}
+                {copiedKey === 'linkbot' ? 'Đã sao chép' : 'Sao chép Link'}
               </button>
             </div>
-            <p className="text-[11px] text-slate-500">
-              Thay <code>consultant_id=1</code> bằng ID riêng của từng Sale (xem tại mục <strong>Đại lý &amp; Sale</strong>).
-            </p>
           </div>
         </div>
       )}

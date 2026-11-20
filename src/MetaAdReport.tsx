@@ -8,6 +8,7 @@ import {
   Check,
   CheckCircle2,
   Clock,
+  Compass,
   Cookie,
   Cpu,
   Database,
@@ -16,8 +17,10 @@ import {
   FileText,
   KeyRound,
   Layers,
+  Link2,
   Maximize2,
   Play,
+  RefreshCw,
   ShieldCheck,
   Sliders,
   Sparkles,
@@ -31,9 +34,14 @@ import { Navbar } from './Navbar';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
-import { DOMATION_NAV_EVENT, handleSpaLinkClick } from './utils/navigation';
+import { DOMATION_NAV_EVENT, handleSpaLinkClick, navigateTo } from './utils/navigation';
 import { META_REPORT_FAQS, getMetaReportSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
+import { ErrorBoundary } from './components/autodata/cloned/components/ErrorBoundary';
+import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
+import { ClosedLoopFlywheelCockpit } from './components/dom-meta/ClosedLoopFlywheelCockpit';
+import { EcosystemFocusTourModal } from './components/onboarding/EcosystemFocusTourModal';
+import { NonCoderSetupModal } from './components/onboarding/NonCoderSetupModal';
 import {
   apiRequest,
   clearAutodataSessionV2,
@@ -54,10 +62,17 @@ import { DomMetaAuthModal, type DomMetaAuthMode } from './components/dom-meta/Do
 import { DomMetaModalPortal } from './components/dom-meta/DomMetaModals';
 import { GoogleAdsSetupGuide } from './components/dom-meta/GoogleAdsSetupGuide';
 import type { DomMetaGoogleAdsConfig, DomMetaNavView } from './components/dom-meta/domMetaTypes';
-import type { DomMetaAuthContext } from './components/dom-meta/domMetaApi';
+import {
+  getCachedPublicDomMetaAccess,
+  resolvePublicDomMetaAccess,
+  type DomMetaAuthContext,
+  type DomMetaPublicAccessPayload,
+} from './components/dom-meta/domMetaApi';
+
+const loadDomMetaWorkspaceChunk = () => import('./components/dom-meta/DomMetaReportWorkspace');
 
 const DomMetaReportWorkspace = React.lazy(() =>
-  import('./components/dom-meta/DomMetaReportWorkspace').then((m) => ({
+  loadDomMetaWorkspaceChunk().then((m) => ({
     default: m.DomMetaReportWorkspace,
   }))
 );
@@ -318,6 +333,11 @@ const PARTNER_BRANDS: PartnerBrandItem[] = [
     logo: '/assets/partners/partner_ampersand.jpg',
   },
   {
+    name: 'The Crumb Club',
+    sector: 'Coffee & Bakes',
+    logo: '/assets/partners/partner_the_crumb_club.jpg',
+  },
+  {
     name: 'Brandson',
     sector: 'Học viện Đào tạo Nha khoa',
     logo: '/assets/partners/partner_brandson.webp',
@@ -389,19 +409,55 @@ const PARTNER_BRANDS: PartnerBrandItem[] = [
   },
 ];
 
+const META_RESERVED_PATHS = new Set([
+  'meta-report',
+  'privacy',
+  'terms',
+  'workspaces',
+  'register',
+  'login',
+  '404',
+  '404.html',
+  'index.html',
+  'favicon.ico',
+]);
+
+function detectMetaActionPath(): 'workspaces' | 'login' | 'register' | null {
+  if (typeof window === 'undefined') return null;
+  if (!/^meta\./i.test(window.location.hostname)) return null;
+  const clean = window.location.pathname.replace(/\/+$/, '').toLowerCase();
+  if (clean === '/workspaces') return 'workspaces';
+  if (clean === '/login') return 'login';
+  if (clean === '/register') return 'register';
+  return null;
+}
+
+function toPublicViewerSession(payload: DomMetaPublicAccessPayload): TenantSessionV2 {
+  return {
+    access_token: payload.access_token,
+    tenant_slug: payload.tenant.slug,
+    company_name: payload.tenant.name,
+    industry: 'general',
+    admin_email: payload.user.email || 'public-viewer@domation.net',
+    user_id: payload.user.id,
+    user_name: payload.user.full_name || `${payload.tenant.name} (Viewer)`,
+    role: 'viewer',
+  };
+}
+
 function detectMetaPathSlug(): string | null {
   if (typeof window === 'undefined') return null;
   const clean = window.location.pathname.replace(/\/+$/, '');
   const m = clean.match(/^\/meta-report\/([^/]+)$/i);
   if (m && m[1]) {
-    const s = m[1].toLowerCase();
-    if (s !== 'privacy' && s !== 'terms') return s;
+    const s = decodeURIComponent(m[1]).toLowerCase();
+    if (!META_RESERVED_PATHS.has(s)) return s;
   }
   if (/^meta\./i.test(window.location.hostname)) {
     const sub = clean.match(/^\/([^/]+)$/);
     if (sub && sub[1]) {
-      const s = sub[1].toLowerCase();
-      if (s !== 'meta-report' && s !== 'privacy' && s !== 'terms') return s;
+      const s = decodeURIComponent(sub[1]).toLowerCase();
+      if (!META_RESERVED_PATHS.has(s)) return s;
     }
   }
   return null;
@@ -446,6 +502,14 @@ export const MetaAdReport: React.FC = () => {
 
   const initialPreview = typeof window !== 'undefined' ? window.__DOM_META_PREVIEW__ || null : null;
   const initialSlug = detectMetaPathSlug();
+  const initialActionPath = detectMetaActionPath();
+
+  // Eagerly preload workspace bundle in parallel with auth/public-access resolution when visiting /<slug>
+  useEffect(() => {
+    if (initialSlug || initialPreview || loadAutodataSessionV2()) {
+      void loadDomMetaWorkspaceChunk();
+    }
+  }, [initialSlug, initialPreview]);
 
   const [googleClientId, setGoogleClientId] = useState<string | null>(() => {
     const viteClientId = (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim();
@@ -459,15 +523,68 @@ export const MetaAdReport: React.FC = () => {
   }, [session]);
 
   const [requestedSlug, setRequestedSlug] = useState<string | null>(initialSlug);
+  const [publicViewerSession, setPublicViewerSession] = useState<TenantSessionV2 | null>(() => {
+    if (initialPreview || !initialSlug) return null;
+    if (loadAutodataSessionV2()) return null;
+    const cachedPub = getCachedPublicDomMetaAccess(initialSlug);
+    return cachedPub ? toPublicViewerSession(cachedPub) : null;
+  });
+  const [resolvedPublicSlug, setResolvedPublicSlug] = useState<string | null>(() => {
+    if (initialPreview || !initialSlug) return null;
+    if (loadAutodataSessionV2()) return null;
+    return getCachedPublicDomMetaAccess(initialSlug) ? initialSlug : null;
+  });
   const [workspaceOpen, setWorkspaceOpen] = useState<boolean>(() =>
-    Boolean(initialPreview || (initialSlug && loadAutodataSessionV2()?.tenant_slug.toLowerCase() === initialSlug))
+    Boolean(
+      initialPreview ||
+        (initialSlug && loadAutodataSessionV2()?.tenant_slug.toLowerCase() === initialSlug) ||
+        (initialSlug && !loadAutodataSessionV2() && getCachedPublicDomMetaAccess(initialSlug))
+    )
   );
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(() =>
-    Boolean(!initialPreview && initialSlug && !loadAutodataSessionV2())
+    Boolean(!initialPreview && !initialSlug && initialActionPath)
   );
-  const [authMode, setAuthMode] = useState<DomMetaAuthMode>(() =>
-    initialSlug ? 'login' : 'register'
-  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onRefreshed = (ev: Event) => {
+      const detail = (ev as CustomEvent<TenantSessionV2 | undefined>).detail;
+      if (detail?.access_token) {
+        setPublicViewerSession(null);
+        setSession(detail);
+      }
+    };
+    const onPublicFallback = (ev: Event) => {
+      const detail = (ev as CustomEvent<DomMetaPublicAccessPayload | undefined>).detail;
+      if (detail?.public_view && detail.access_token) {
+        clearAutodataSessionV2();
+        setSession(null);
+        setPublicViewerSession(toPublicViewerSession(detail));
+        setResolvedPublicSlug(detail.tenant.slug.toLowerCase());
+        setAuthModalOpen(false);
+        setWorkspaceOpen(true);
+      }
+    };
+    const onExpired = () => {
+      clearAutodataSessionV2();
+      setSession(null);
+    };
+    window.addEventListener('autodata-session-refreshed', onRefreshed);
+    window.addEventListener('dom-meta-public-fallback', onPublicFallback);
+    window.addEventListener('autodata-session-expired', onExpired);
+    return () => {
+      window.removeEventListener('autodata-session-refreshed', onRefreshed);
+      window.removeEventListener('dom-meta-public-fallback', onPublicFallback);
+      window.removeEventListener('autodata-session-expired', onExpired);
+    };
+  }, []);
+  const [authMode, setAuthMode] = useState<DomMetaAuthMode>(() => {
+    if (initialActionPath === 'register') return 'register';
+    if (initialActionPath === 'workspaces') {
+      return loadAutodataSessionV2() ? 'select_workspace' : 'login';
+    }
+    return initialSlug ? 'login' : 'register';
+  });
   const [authModalKey, setAuthModalKey] = useState(0);
   const [switchingSlug, setSwitchingSlug] = useState<string | null>(null);
 
@@ -476,6 +593,32 @@ export const MetaAdReport: React.FC = () => {
   const [zoomShot, setZoomShot] = useState<MetaLiveShot | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [pricingCycle, setPricingCycle] = useState<'annual' | 'monthly'>('annual');
+  const [focusTourOpen, setFocusTourOpen] = useState(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
+  );
+  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('setup') === 'quick'
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onTour = (ev: Event) => {
+      ev.preventDefault();
+      setFocusTourOpen(true);
+    };
+    const onSetup = (ev: Event) => {
+      ev.preventDefault();
+      setSetupGuideOpen(true);
+    };
+    window.addEventListener('domation:open-focus-tour', onTour);
+    window.addEventListener('domation:open-setup-guide', onSetup);
+    return () => {
+      window.removeEventListener('domation:open-focus-tour', onTour);
+      window.removeEventListener('domation:open-setup-guide', onSetup);
+    };
+  }, []);
   const [demoGAdsConfig, setDemoGAdsConfig] = useState<DomMetaGoogleAdsConfig>({
     enabled: false,
     customer_id: '',
@@ -534,22 +677,33 @@ export const MetaAdReport: React.FC = () => {
     };
   }, []);
 
-  // Track browser back/forward & SPA navigation to workspace slug
+  // Track browser back/forward & SPA navigation to workspace slug or auth paths
   useEffect(() => {
     const syncFromUrl = () => {
       const slug = detectMetaPathSlug();
+      const actionPath = detectMetaActionPath();
       setRequestedSlug(slug);
       if (!slug && !initialPreview) {
+        setPublicViewerSession(null);
+        setResolvedPublicSlug(null);
         setWorkspaceOpen(false);
+        if (actionPath) {
+          setAuthMode(
+            actionPath === 'register'
+              ? 'register'
+              : sessionRef.current
+                ? 'select_workspace'
+                : 'login'
+          );
+          setAuthModalKey((k) => k + 1);
+          setAuthModalOpen(true);
+        }
         return;
       }
       if (slug && !initialPreview) {
         const current = sessionRef.current;
-        if (!current) {
-          setAuthMode('login');
-          setAuthModalKey((k) => k + 1);
-          setAuthModalOpen(true);
-        } else if (current.tenant_slug.toLowerCase() === slug) {
+        if (current && current.tenant_slug.toLowerCase() === slug) {
+          setPublicViewerSession(null);
           setAuthModalOpen(false);
           setWorkspaceOpen(true);
         }
@@ -563,15 +717,62 @@ export const MetaAdReport: React.FC = () => {
     };
   }, [initialPreview]);
 
+  // Public share resolver when visiting `/<slug>` without a session
+  useEffect(() => {
+    if (initialPreview || !requestedSlug || session) {
+      return;
+    }
+    const cachedPub = getCachedPublicDomMetaAccess(requestedSlug);
+    if (cachedPub && resolvedPublicSlug === requestedSlug) {
+      return;
+    }
+
+    let cancelled = false;
+    const targetSlug = requestedSlug;
+    void (async () => {
+      try {
+        const pub = await resolvePublicDomMetaAccess(targetSlug);
+        if (cancelled) return;
+        if (pub && pub.public_view && pub.access_token) {
+          setPublicViewerSession(toPublicViewerSession(pub));
+          setAuthModalOpen(false);
+          setWorkspaceOpen(true);
+          return;
+        }
+      } catch {
+        // Fallback to login prompt when not public
+      } finally {
+        if (!cancelled) {
+          setResolvedPublicSlug(targetSlug);
+        }
+      }
+      if (!cancelled) {
+        setPublicViewerSession(null);
+        setWorkspaceOpen(false);
+        setAuthMode('login');
+        setAuthModalKey((k) => k + 1);
+        setAuthModalOpen(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialPreview, requestedSlug, resolvedPublicSlug, session]);
+
   // Auto-switch workspace when URL targets another tenant slug
   useEffect(() => {
     if (initialPreview || !requestedSlug || !session) return;
-    if (session.tenant_slug.toLowerCase() === requestedSlug) return;
+    if (session.tenant_slug.toLowerCase() === requestedSlug) {
+      return;
+    }
 
     let cancelled = false;
     const targetSlug = requestedSlug;
     const token = session.account_token || session.access_token;
     void (async () => {
+      await Promise.resolve();
+      if (cancelled) return;
       setSwitchingSlug(targetSlug);
       try {
         const d = await apiRequest<SwitchWorkspaceResponse>(
@@ -601,6 +802,7 @@ export const MetaAdReport: React.FC = () => {
             subscription: d.subscription || session.subscription,
           };
           saveAutodataSessionV2(nextSession);
+          setPublicViewerSession(null);
           setSession(nextSession);
           setAuthModalOpen(false);
           setWorkspaceOpen(true);
@@ -608,11 +810,30 @@ export const MetaAdReport: React.FC = () => {
           return;
         }
       } catch {
-        // User does not have access to requestedSlug with current session -> prompt login
+        // User is not a member of targetSlug -> check if targetSlug allows public viewer read-only access
       } finally {
         setSwitchingSlug((curr) => (curr === targetSlug ? null : curr));
       }
+
       if (!cancelled) {
+        try {
+          const pub = await resolvePublicDomMetaAccess(targetSlug);
+          if (!cancelled && pub && pub.public_view && pub.access_token) {
+            setPublicViewerSession(toPublicViewerSession(pub));
+            setResolvedPublicSlug(targetSlug);
+            setAuthModalOpen(false);
+            setWorkspaceOpen(true);
+            return;
+          }
+        } catch {
+          // ignore
+        } finally {
+          if (!cancelled) setResolvedPublicSlug(targetSlug);
+        }
+      }
+
+      if (!cancelled) {
+        setPublicViewerSession(null);
         setWorkspaceOpen(false);
         setAuthMode('login');
         setAuthModalKey((k) => k + 1);
@@ -625,18 +846,55 @@ export const MetaAdReport: React.FC = () => {
     };
   }, [initialPreview, requestedSlug, session]);
 
+  const effectiveSession = useMemo(() => {
+    if (session && (!requestedSlug || session.tenant_slug.toLowerCase() === requestedSlug)) {
+      return session;
+    }
+    if (
+      publicViewerSession &&
+      requestedSlug &&
+      publicViewerSession.tenant_slug.toLowerCase() === requestedSlug
+    ) {
+      return publicViewerSession;
+    }
+    return null;
+  }, [session, publicViewerSession, requestedSlug]);
+
+  const workspaceAuthCtx = useMemo<DomMetaAuthContext | null>(() => {
+    if (initialPreview) return initialPreview.authContext;
+    if (!effectiveSession) return null;
+    return {
+      accessToken: effectiveSession.access_token,
+      tenantSlug: effectiveSession.tenant_slug,
+      standaloneSessionRecovery: true,
+    };
+  }, [initialPreview, effectiveSession]);
+
+  const isPublicViewerMode = Boolean(
+    !initialPreview && effectiveSession && publicViewerSession && effectiveSession === publicViewerSession
+  );
+
+  const isCheckingPublic = Boolean(
+    !initialPreview &&
+      requestedSlug &&
+      !effectiveSession &&
+      !authModalOpen &&
+      resolvedPublicSlug !== requestedSlug
+  );
+
   const isSwitchingWorkspace = Boolean(
-    switchingSlug &&
+    (switchingSlug &&
       requestedSlug &&
       switchingSlug === requestedSlug &&
-      session &&
-      session.tenant_slug.toLowerCase() !== requestedSlug
+      !isPublicViewerMode &&
+      (!session || session.tenant_slug.toLowerCase() !== requestedSlug)) ||
+      isCheckingPublic
   );
 
   const isSlugMatched =
     Boolean(initialPreview) ||
     !requestedSlug ||
-    Boolean(session && session.tenant_slug.toLowerCase() === requestedSlug);
+    Boolean(effectiveSession);
 
   // Hide floating AI chatbot while full-screen workspace is open
   useEffect(() => {
@@ -726,6 +984,8 @@ export const MetaAdReport: React.FC = () => {
       }}
       onAuthenticated={(nextSession) => {
         saveAutodataSessionV2(nextSession);
+        setPublicViewerSession(null);
+        setResolvedPublicSlug(nextSession.tenant_slug);
         setSession(nextSession);
         setRequestedSlug(nextSession.tenant_slug);
         setAuthModalOpen(false);
@@ -778,40 +1038,39 @@ export const MetaAdReport: React.FC = () => {
   }
 
   // Full-screen Standalone Workspace
-  if (workspaceOpen && isSlugMatched && (initialPreview || session)) {
-    const authCtx: DomMetaAuthContext = initialPreview
-      ? initialPreview.authContext
-      : {
-          accessToken: session!.access_token,
-          tenantSlug: session!.tenant_slug,
-        };
+  if (workspaceOpen && isSlugMatched && workspaceAuthCtx) {
+    const authCtx = workspaceAuthCtx;
 
     const workspaceNode = (
       <DomMetaReportWorkspace
-        key={authCtx.tenantSlug || 'preview'}
+        key={`${authCtx.tenantSlug || 'preview'}:${isPublicViewerMode ? 'public' : 'auth'}`}
         mode={initialPreview?.mode || 'standalone'}
         authContext={authCtx}
         workspaceName={
-          initialPreview?.workspaceName || session?.company_name || 'DOM Workspace'
+          initialPreview?.workspaceName || effectiveSession?.company_name || 'DOM Workspace'
         }
         userDisplayName={
-          initialPreview?.userDisplayName || session?.user_name || 'Signature'
+          initialPreview?.userDisplayName || effectiveSession?.user_name || 'Signature'
         }
-        userRoleLabel={initialPreview?.userRoleLabel || session?.role || 'admin'}
+        userRoleLabel={initialPreview?.userRoleLabel || effectiveSession?.role || 'admin'}
         canManageConfig={Boolean(
           initialPreview ||
-            !session?.role ||
-            ['tenant_admin', 'admin', 'superadmin', 'owner'].includes(session.role)
+            (!isPublicViewerMode &&
+              (!effectiveSession?.role ||
+                ['tenant_admin', 'admin', 'superadmin', 'owner'].includes(effectiveSession.role)))
         )}
-        daysRemaining={session?.subscription?.days_remaining ?? 30}
+        daysRemaining={effectiveSession?.subscription?.days_remaining ?? 30}
         enableCrmAttribution={initialPreview?.enableCrmAttribution}
         erpMode={initialPreview?.erpMode}
         initialEntityModalTab={initialPreview?.initialEntityModalTab}
         defaultQuickConnectOpen={initialPreview?.defaultQuickConnectOpen}
         capiPanel={
           initialPreview?.showCapiTab ? (
-            <div className="rounded-2xl bg-white border border-slate-200 p-6 text-xs text-slate-600">
-              Đồng bộ tự động tín hiệu khách hàng chất lượng từ CRM về Meta CAPI để tối ưu phân phối quảng cáo.
+            <div className="space-y-4">
+              <div className="rounded-2xl bg-white border border-slate-200 p-5 text-xs text-slate-600">
+                Đồng bộ tự động tín hiệu khách hàng chất lượng từ CRM về Meta CAPI để tối ưu phân phối quảng cáo.
+              </div>
+              <ClosedLoopFlywheelCockpit compact />
             </div>
           ) : undefined
         }
@@ -820,18 +1079,28 @@ export const MetaAdReport: React.FC = () => {
         initialCustomRange={initialPreview?.initialCustomRange}
         workspacesCount={resolvedExistingWorkspaces.length}
         onRequestSwitchWorkspace={
-          initialPreview ? undefined : () => openAuthModalWithMode('select_workspace')
+          initialPreview
+            ? undefined
+            : () => openAuthModalWithMode(session ? 'select_workspace' : 'login')
         }
         onRequestCreateWorkspace={
           initialPreview ? undefined : () => openAuthModalWithMode('create_workspace')
         }
         onExitStandalone={() => {
+          setPublicViewerSession(null);
           setWorkspaceOpen(false);
           setRequestedSlug(null);
           syncMetaUrlSlug(null);
         }}
         onLogout={() => {
+          if (isPublicViewerMode) {
+            setPublicViewerSession(null);
+            setWorkspaceOpen(false);
+            openAuthModalWithMode('login');
+            return;
+          }
           clearAutodataSessionV2();
+          setPublicViewerSession(null);
           setSession(null);
           setRequestedSlug(null);
           setWorkspaceOpen(false);
@@ -842,16 +1111,17 @@ export const MetaAdReport: React.FC = () => {
 
     return (
       <div className="min-h-screen bg-[#F4F6FA]">
-        <Suspense
-          fallback={
-            <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-semibold">
-              Đang khởi tạo không gian báo cáo DOM Meta Report...
-            </div>
-          }
-        >
-          {initialPreview?.crmShellPreview ? (
-            <div className="min-h-screen flex bg-[#F4F6FA]">
-              <aside className="w-[238px] shrink-0 bg-white border-r border-slate-200/90 flex flex-col justify-between p-4 select-none">
+        <ErrorBoundary resetKey={`${authCtx.tenantSlug || 'preview'}:${isPublicViewerMode ? 'public' : 'auth'}`}>
+          <Suspense
+            fallback={
+              <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-semibold">
+                Đang khởi tạo không gian báo cáo DOM Meta Report...
+              </div>
+            }
+          >
+            {initialPreview?.crmShellPreview ? (
+              <div className="min-h-screen flex bg-[#F4F6FA]">
+                <aside className="hidden lg:flex w-[238px] shrink-0 bg-white border-r border-slate-200/90 flex-col justify-between p-4 select-none">
                 <div className="space-y-5">
                   <div className="flex items-center gap-2.5 px-1">
                     <DomationLogoMark size={32} />
@@ -916,7 +1186,8 @@ export const MetaAdReport: React.FC = () => {
           ) : (
             workspaceNode
           )}
-        </Suspense>
+          </Suspense>
+        </ErrorBoundary>
         {renderAuthModal()}
       </div>
     );
@@ -931,9 +1202,9 @@ export const MetaAdReport: React.FC = () => {
         onOpenShowcase={() => {
           document.getElementById('live-screenshots')?.scrollIntoView({ behavior: 'smooth' });
         }}
-        onOpenContact={() => openStartFlow('register')}
-        contactLabel={session ? 'Mở Workspace' : 'Dùng Thử Miễn Phí'}
-        mobileContactLabel={session ? 'Workspace' : 'Dùng thử'}
+        onOpenContact={() => openStartFlow(session ? 'register' : 'login')}
+        contactLabel={session ? 'Mở Workspace' : 'Đăng nhập'}
+        mobileContactLabel={session ? 'Workspace' : 'Đăng nhập'}
       />
 
       <main className="relative z-10 pt-28 sm:pt-32 md:pt-36">
@@ -990,14 +1261,24 @@ export const MetaAdReport: React.FC = () => {
                   <span>Video hướng dẫn</span>
                 </button>
               </div>
+            </div>
 
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
               <button
                 type="button"
-                data-testid="hero-login-workspace"
-                onClick={() => openStartFlow('login')}
-                className="w-full sm:w-auto rounded-full px-4 sm:px-5 py-2.5 sm:py-3.5 text-xs sm:text-sm font-semibold text-slate-700 hover:text-[#1E40FF] bg-white/80 hover:bg-white border border-slate-200/90 transition-colors cursor-pointer whitespace-nowrap"
+                onClick={() => setFocusTourOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[40px]"
               >
-                <span>{session ? 'Chuyển Workspace' : 'Đăng nhập Workspace'}</span>
+                <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
+                <span>Tour Hướng Dẫn</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSetupGuideOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[40px]"
+              >
+                <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Thiết lập 3 bước</span>
               </button>
             </div>
 
@@ -1101,6 +1382,86 @@ export const MetaAdReport: React.FC = () => {
                   <p className="text-xs text-slate-600 leading-relaxed">{node.desc}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Red Connect-Link Divider: Bridging Dashboard Step 3 into CRM Auto Closed-Loop Optimization */}
+            <div className="relative py-3 flex items-center justify-center">
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-rose-300 to-transparent" />
+              <div className="relative z-10 inline-flex items-center gap-2 rounded-full border border-rose-200 bg-rose-50/95 px-3.5 sm:px-4 py-1.5 shadow-xs">
+                <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Link2 className="w-3.5 h-3.5" />
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-rose-700">
+                  Kết Hợp Auto Data CRM • Vòng Tròn Tối Ưu Khép Kín
+                </span>
+              </div>
+            </div>
+
+            <div
+              data-testid="meta-crm-closed-loop-bridge"
+              className="rounded-2xl bg-gradient-to-br from-rose-50/60 via-white to-blue-50/70 border border-rose-200/75 p-4 sm:p-5 space-y-4 text-left"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-600">
+                    <RefreshCw className="w-3.5 h-3.5 shrink-0" />
+                    <span>Từ Dashboard Bước 03 → Vận Hành CRM &amp; Học Tệp CAPI Tự Động</span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Đừng chỉ xem báo cáo đẹp trên màn hình — kết nối thẳng số liệu Bước 03 với Auto Data CRM để mỗi đồng chi tiêu Ads tự xoay vòng sinh lời ngày càng chuẩn xác:
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  data-testid="meta-crm-connect-now"
+                  onClick={() => navigateTo('/data?setup=quick')}
+                  className="self-start sm:self-center inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-600 to-[#1E40FF] hover:from-rose-700 hover:to-[#1E3A8A] text-white px-5 py-2.5 min-h-[44px] text-xs font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  <Link2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Connect ngay</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                {[
+                  {
+                    badge: 'Từ Bước 03 → Chia Sale < 5s',
+                    title: 'Chia cho từng Sale tư vấn chăm sóc',
+                    desc: 'Lead đổ về từ bài Ads trên Dashboard được lọc trùng 180 ngày và chia vòng công bằng 1:1 tới Zalo/Telegram của từng Sale chỉ trong dưới 5 giây.',
+                  },
+                  {
+                    badge: 'Đối soát 2 chiều theo từng Ads',
+                    title: 'Báo cáo trạng thái từng Lead trên từng Ads',
+                    desc: 'Hiển thị trực tiếp từng Lead thuộc bài quảng cáo nào đang Hẹn gặp, Tiềm năng, Chốt đơn hay Số rác — biết chính xác bài nào ra doanh thu thật.',
+                  },
+                  {
+                    badge: 'Vòng tròn tối ưu thuật toán Meta',
+                    title: 'Bắn Meta CAPI học tệp tối ưu',
+                    desc: 'Tự động mã hóa SHA-256 và gửi ngược tín hiệu chất lượng (Qualified, Purchase) về Meta CAPI để thuật toán né số ảo, nhân bản đúng tệp khách chốt.',
+                  },
+                ].map((stage, idx) => (
+                  <div
+                    key={stage.badge}
+                    className="rounded-xl bg-white/95 border border-slate-200/85 p-3.5 flex flex-col gap-1.5 shadow-2xs"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600">
+                        {stage.badge}
+                      </span>
+                      {idx < 2 && (
+                        <ArrowRight className="hidden lg:block w-3.5 h-3.5 text-rose-400 shrink-0" />
+                      )}
+                    </div>
+                    <div className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                      {stage.title}
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
+                      {stage.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -1294,25 +1655,15 @@ export const MetaAdReport: React.FC = () => {
               </div>
 
               {/* Category Filter Pills */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-end gap-1.5">
-                {SHOT_CATEGORIES.map((cat) => {
-                  const active = shotCat === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setShotCat(cat.id)}
-                      className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                        active
-                          ? 'bg-[#1E40FF] text-white shadow-sm'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:border-blue-200 hover:text-[#1E40FF]'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  );
-                })}
-              </div>
+              <DomResponsiveSubtabs
+                tabs={SHOT_CATEGORIES.map((cat) => ({
+                  id: cat.id,
+                  label: cat.label,
+                }))}
+                value={shotCat}
+                onChange={(id) => setShotCat(id as MetaShotCat)}
+                maxMobile={2}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -1974,18 +2325,18 @@ export const MetaAdReport: React.FC = () => {
             data-testid="meta-video-modal"
             onClick={() => setShowVideoModal(false)}
             style={{ zIndex: 2147483638 }}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm p-4 sm:p-8 flex items-center justify-center"
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm p-0 sm:p-8 flex items-end sm:items-center justify-center"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-5xl flex flex-col items-center gap-5"
+              className="relative w-full max-w-5xl rounded-t-[26px] sm:rounded-3xl bg-slate-950 p-3 sm:p-0 flex flex-col items-center gap-4 sm:gap-5 max-h-[92dvh]"
             >
-              <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl bg-slate-950 border border-white/20">
+              <div className="relative w-full aspect-video rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl bg-slate-950 border border-white/20">
                 <button
                   type="button"
                   aria-label="Đóng video hướng dẫn"
                   onClick={() => setShowVideoModal(false)}
-                  className="absolute top-4 right-4 z-10 p-2.5 bg-white/95 hover:bg-white text-slate-900 rounded-full transition-colors cursor-pointer shadow"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-11 h-11 sm:w-10 sm:h-10 flex items-center justify-center bg-white/95 hover:bg-white text-slate-900 rounded-full transition-colors cursor-pointer shadow"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -2021,26 +2372,26 @@ export const MetaAdReport: React.FC = () => {
             aria-modal="true"
             onClick={() => setZoomShot(null)}
             style={{ zIndex: 2147483636 }}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm p-4 sm:p-8 flex items-center justify-center"
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm p-0 sm:p-8 flex items-end sm:items-center justify-center"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="max-w-6xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl"
+              className="max-w-6xl w-full bg-white rounded-t-[26px] sm:rounded-3xl max-h-[92dvh] flex flex-col overflow-hidden shadow-2xl"
             >
-              <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
-                <div>
+              <div className="px-4 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
+                <div className="min-w-0">
                   <div className="text-sm font-bold text-slate-900">{zoomShot.title}</div>
                   <div className="text-xs text-slate-500">{zoomShot.desc}</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setZoomShot(null)}
-                  className="rounded-full border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 cursor-pointer"
+                  className="rounded-full border border-slate-200 w-11 h-11 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <div className="bg-slate-100 max-h-[80vh] overflow-auto p-2 sm:p-4">
+              <div className="bg-slate-100 flex-1 overflow-auto p-2 sm:p-4">
                 <img src={zoomShot.src} alt={zoomShot.title} className="w-full h-auto rounded-xl" />
               </div>
             </div>
@@ -2077,6 +2428,48 @@ export const MetaAdReport: React.FC = () => {
 
       {/* Standalone Onboarding & Login Modal */}
       {renderAuthModal()}
+
+      <EcosystemFocusTourModal
+        open={focusTourOpen}
+        initialSystem="dommeta"
+        onClose={() => setFocusTourOpen(false)}
+        onOpenSetupGuide={(product) => {
+          setFocusTourOpen(false);
+          if (product === 'dommeta') {
+            setSetupGuideOpen(true);
+          } else {
+            navigateTo(product === 'erp' ? '/erp?setup=quick' : '/data?setup=quick');
+          }
+        }}
+        onStartTrial={(system) => {
+          setFocusTourOpen(false);
+          if (system === 'dommeta') {
+            openStartFlow('register');
+          } else if (system === 'erp') {
+            navigateTo('/erp#tu-van');
+          } else {
+            navigateTo('/data?setup=quick');
+          }
+        }}
+      />
+
+      <NonCoderSetupModal
+        open={setupGuideOpen}
+        initialProduct="dommeta"
+        onClose={() => setSetupGuideOpen(false)}
+        onOpenMetaReport={() => {
+          setSetupGuideOpen(false);
+          openStartFlow('register');
+        }}
+        onLaunchAutodataWizard={() => {
+          setSetupGuideOpen(false);
+          navigateTo('/data?setup=quick');
+        }}
+        onNavigate={(path) => {
+          setSetupGuideOpen(false);
+          navigateTo(path);
+        }}
+      />
     </div>
   );
 };

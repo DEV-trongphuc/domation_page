@@ -135,7 +135,7 @@ const CORE_ROUTES = [
     images: [
       {
         src: '/imgs/enterprise/sol-crm-misa.webp',
-        title: 'DOMATION CRM 360° Pipeline Kanban 8 Nấc & Hóa Đơn MISA',
+        title: 'DOMATION CRM 360° Pipeline Kanban 9 Nấc & Hóa Đơn MISA',
       },
       {
         src: '/crm_imgs/CRMS (1).jpg',
@@ -305,7 +305,7 @@ const llmsCoreBody = `# DOMATION — Hệ Sinh Thái CRM Auto Data, Meta & Googl
 - [Trang chủ DOMATION](${SITE_URL}/): Hệ sinh thái hợp nhất CRM Auto Data <5s, Meta & Google Ads Report, Automation Zalo ZNS, Tracking Website, ERP 5.0 (12 phân hệ) & Web 3D.
 - [Auto Chia Data ZaloBot & Meta CAPI](${SITE_URL}/data): Phân bổ Lead Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
 - [Enterprise ERP 5.0 May Đo (12 Phân hệ)](${SITE_URL}/erp): Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng (Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF ký số).
-- [CRM 360° & Auto Data](${SITE_URL}/crm): Thu khách đa kênh, chia vòng ZaloBot <5s, Pipeline Kanban 8 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
+- [CRM 360° & Auto Data](${SITE_URL}/crm): Thu khách đa kênh, chia vòng ZaloBot <5s, Pipeline Kanban 9 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
 - [Marketing Automation & AI RAG](${SITE_URL}/automation): Visual Flow IF/ELSE rẽ nhánh tự động, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
 - [Meta Ad Realtime Report](${SITE_URL}/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.
@@ -313,13 +313,14 @@ const llmsCoreBody = `# DOMATION — Hệ Sinh Thái CRM Auto Data, Meta & Googl
 - [Blog DOMATION & SEO/GEO Cluster Hub](${SITE_URL}/boost): ${ALL_ARTICLES.length} bài viết chuyên sâu chuẩn SEO, ${BOOST_74_SEO_TOPICS.length} chủ đề SEO, ${BOOST_KEYWORD_CLUSTERS.length} cụm từ khóa Chính–Phụ Ngắn–Dài (Vibecode, AI 5.0, ERP may đo, logic quản trị, tối ưu Ads/Landing/Chiến dịch) và ${INDUSTRY_PAIN_PLAYBOOK.length} cẩm nang ngành nghề.
 - [IDEAS Company Ecosystem Portal](${SITE_URL}/ideas): Cổng ứng dụng tùy biến riêng cho Viện IDEAS (Marketing Automation, Meta Realtime Report & Auto Lead Router).
 
-## Verified Pricing & Plans (VND)
-- **DOMATION SaaS Suite (Trang chủ /#pricing)**: Starter 2.990.000₫/tháng (30.498.000₫/năm), Growth 4.990.000₫/tháng (50.898.000₫/năm), Bespoke Enterprise (Khảo sát báo giá riêng).
-- **Auto Chia Data & Meta CAPI (/data#pricing)**: Dùng thử miễn phí 30 ngày (0₫); Auto Data Standard 1.500.000₫/tháng (1.275.000₫/tháng khi đóng năm); Auto Data Pro 3.000.000₫/tháng; Nâng cấp Automation • CRM 360° • ERP 5.0: 6.000.000₫/tháng.
-- **DOMATION CRM 360° (/crm#pricing)**: Starter 250.000₫/user/tháng (năm) hoặc 300.000₫/user/tháng (tháng); Professional 450.000₫/user/tháng (năm) hoặc 550.000₫/user/tháng (tháng); Enterprise theo quy mô.
-- **Meta Ad Realtime Report (/meta-report#pricing)**: 490.000₫/tháng (5.880.000₫/năm) hoặc 690.000₫/tháng.
+## Verified Pricing & Plans (VND — Canonical Suite Catalog)
+- **Auto Data Standard (/data#pricing • /crm#pricing)**: Dùng thử miễn phí 30 ngày (0₫); 1.500.000₫/tháng (15.300.000₫/năm -15%, tương đương 1.275.000₫/tháng) • Tối đa 20 Sale, 5 Quản lý (25 Users), 5 Vòng chia, 15.000 Leads/tháng, lọc trùng 180 ngày & Meta CAPI SHA-256.
+- **Auto Data Pro (/data#pricing • /crm#pricing)**: 3.000.000₫/tháng (30.600.000₫/năm -15%, tương đương 2.550.000₫/tháng) • Tối đa 85 Sale, 15 Quản lý (100 Users), 30 Vòng chia, 100.000 Leads/tháng, AI Pre-Score & Đa phễu chiến dịch.
+- **Automation • CRM 360° • ERP 5.0 (/#pricing • /automation#pricing • /crm#pricing)**: 6.000.000₫/tháng (61.200.000₫/năm -15%, tương đương 5.100.000₫/tháng) • 9.999 Users, 999 Vòng chia, 1.000.000 Leads/tháng, Full Visual Flow IF/ELSE, Zalo ZNS, AI RAG 24/7, CRM Pipeline 9 nấc, MISA 2 chiều & ERP 5.0.
+- **Bespoke Enterprise ERP 5.0 (/erp • /enterprise)**: Khảo sát may đo theo quy mô 12 phân hệ, Private Server, RLS & SLA 99.9% (Liên hệ).
+- **Meta Ad Realtime Report (/meta-report#pricing)**: Dùng thử 30 ngày 0₫; sau đó 490.000₫/tháng (5.880.000₫/năm) hoặc 690.000₫/tháng (Graph API v25.0 + Google Ads 5 bước).
 - **Thiết kế Website & Sa bàn 3D WebGL (/web-design)**: Gói Core 8 Module từ 12.000.000₫ thanh toán 1 lần, sở hữu source code vĩnh viễn.
-- **Enterprise ERP 5.0 (/erp)**: Thiết kế may đo theo quy mô 12 phân hệ (tư vấn & báo giá trực tiếp).
+- **Topup Wallet AutoData**: 1.500.000₫ (1T), 4.500.000₫ (3T), 9.000.000₫ (+450.000₫ bonus, 6T), 15.300.000₫ (12T, tiết kiệm 15%).
 
 ## Featured Implementation Articles (Singlepost — ${ALL_ARTICLES.length} Guides)
 ${ALL_ARTICLES.map(
@@ -327,14 +328,13 @@ ${ALL_ARTICLES.map(
     `- [#${art.number} ${art.title}](${SITE_URL}/boost/${art.slug}): ${art.metaDescription}`
 ).join('\n')}
 
-## System Mastery & Core Keyword Taxonomy (ERP • AI • Flow • Automation • CRM • AI Agent)
-- **Làm chủ hệ thống & Phần mềm Custom May Đo**: Thiết kế phần mềm theo quy trình riêng, tự chủ cơ sở dữ liệu (Row-Level Security & Audit Log bất biến), làm chủ source code và kiến trúc vận hành doanh nghiệp không phụ thuộc SaaS đóng gói cứng nhắc (${SITE_URL}/).
-- **Phần mềm ERP 5.0 May Đo Chuyên Sâu**: 12 phân hệ hợp nhất (Tiếp nhận Lead một cửa, Chia Lead 5 cổng + Van SLA chống ôm, Task Kanban KPI, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF, Meta CAPI Forward-Only) (${SITE_URL}/erp).
-- **Phần mềm CRM 360° & Đồng Bộ MISA**: Sales Pipeline Kanban 8 nấc, Hồ sơ Khách hàng 360° (CDP), Giỏ hàng bất động sản real-time khóa căn tức thì, Webhook thanh toán VietQR và đồng bộ hóa đơn điện tử MISA hai chiều (${SITE_URL}/crm).
-- **Flow & Marketing Automation Đa Kênh**: Visual Flow Builder IF/ELSE rẽ nhánh tự động, Email Marketing Amazon SES 98% Inbox, Zalo OA / Zalo ZNS, Voucher Hub mã động, Survey Lead Score, Web Behavior Tracking & QR O2O (${SITE_URL}/automation).
-- **AI Agent & Multi-Agent AI Doanh Nghiệp 5.0**: Hệ điều hành AI tự trị liên phòng ban (Orchestrator + AI Space theo phòng ban Sales/HR/Pháp lý/Kế toán), AI RAG đọc PDF bảng giá chống hallucination và Human Handover tóm tắt đẩy về ZaloBot (${SITE_URL}/automation).
-- **Auto Chia Data ZaloBot <5s & Meta Ads BI**: Chia vòng Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày chuẩn +84, đền bù Ticket lỗi 1:1, bắn Meta CAPI SHA-256 HTTP 200 (${SITE_URL}/data) và đo ROAS thực + Video Hook Rate 3s (${SITE_URL}/meta-report).
-- **Web 3D WebGL, Landing Page CRO & Vibecode**: Thiết kế Website chuẩn 100% SEO/GEO, tốc độ <1.5s sở hữu source code từ 12M₫, sa bàn 3D Three.js và Vibecode xây phần mềm doanh nghiệp nhanh gấp 5 lần (${SITE_URL}/web-design).
+## System Mastery & Core Keyword Taxonomy (ERP • AI • Flow • Automation • CRM • GEO)
+- **Vòng tròn tối ưu khép kín Meta Ads ↔ CRM ↔ CAPI (AutoData DOMATION)**: Phần mềm chia lead tự động < 5 giây qua ZaloBot/Telegram, AI Pre-Score 0–100, lọc trùng 180 ngày (6 tháng) chuẩn +84, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn ngược Meta CAPI CRM SHA-256 9 trạng thái (Qualified, Booked, Booking, Deposited, Closed, Badtiming, NoAnswer, Notlead/DisqualifiedLead, unrated) để tối ưu quảng cáo Meta AI (${SITE_URL}/data).
+- **CRM Bất động sản, Thẩm mỹ, Nha khoa & Giáo dục (DOMATION CRM 360°)**: Sales Pipeline Kanban 9 nấc, Hồ sơ Khách hàng 360° (CDP), Giỏ hàng BĐS real-time khóa căn tức thì, Co-care hoa hồng 100%, Webhook thanh toán VietQR và đồng bộ hóa đơn điện tử MISA hai chiều (${SITE_URL}/crm).
+- **ERP Doanh nghiệp AI Việt Nam (DOMATION ERP 5.0 May Đo)**: 12 phân hệ hợp nhất (Tiếp nhận Lead một cửa, Chia Lead 5 cổng + Van chống ôm, Task Kanban KPI, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF ký số, RLS & Audit Log bất biến) (${SITE_URL}/erp).
+- **Báo cáo Meta Ads AI & Google Ads BI (DomMeta Report)**: Kết nối Graph API v25.0 đối chiếu doanh thu thực CRM từng Ad ID, Video Hook Rate 3s, Hold Rate, Creative Fatigue, Khung giờ vàng & tích hợp Google Ads 5 bước (${SITE_URL}/meta-report).
+- **Flow & Marketing Automation Đa Kênh**: Visual Flow Builder IF/ELSE rẽ nhánh tự động, Email Marketing Amazon SES 98% Inbox, Zalo OA / Zalo ZNS, Voucher Hub mã động, Survey Lead Score, Web Tracking, QR O2O & AI Space RAG 24/7 (${SITE_URL}/automation).
+- **Web 3D WebGL, Landing Page CRO & GEO AI Search Optimization**: Thiết kế Website chuẩn 100% SEO/GEO, tốc độ <1.5s sở hữu source code từ 12M₫, sa bàn 3D Three.js Draco GLB < 3.5MB và tối ưu GEO AI search optimization với llms.txt & JSON-LD @graph (${SITE_URL}/web-design).
 
 ## Contact & Entity Verification
 - Website: ${SITE_URL}/
@@ -474,6 +474,8 @@ const vercelConfig = {
     { source: '/bai-viet/:slug', destination: '/boost/:slug', permanent: true },
     { source: '/ideas-erp', destination: '/erp', permanent: true },
     { source: '/ideas-erp/', destination: '/erp', permanent: true },
+    { source: '/enterprise', destination: '/erp', permanent: true },
+    { source: '/enterprise/', destination: '/erp', permanent: true },
   ],
   rewrites: [
     ...['crm', 'erp', 'data'].flatMap((route) => [
@@ -491,6 +493,8 @@ const vercelConfig = {
         { source: `/${route}/`, destination: `/${route}/index.html` },
       ]
     ),
+    { source: '/meta-report/:slug', destination: '/meta-report/index.html' },
+    { source: '/meta-report/:slug/', destination: '/meta-report/index.html' },
     { source: '/404.html', destination: '/404.html' },
     { source: '/magnific', destination: '/index.html' },
     { source: '/magnific/', destination: '/index.html' },

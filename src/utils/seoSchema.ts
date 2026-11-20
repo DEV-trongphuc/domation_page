@@ -199,6 +199,12 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       'Hệ thống vận hành custom may đo doanh nghiệp',
       'Làm chủ hệ thống, làm chủ dữ liệu và làm chủ source code doanh nghiệp',
       'Thiết kế flow riêng cho doanh nghiệp thời đại mới',
+      'Phần mềm chia lead tự động AutoData DOMATION',
+      'CRM bất động sản, thẩm mỹ, nha khoa & giáo dục',
+      'Meta CAPI CRM & tối ưu quảng cáo Meta AI',
+      'Báo cáo Meta Ads AI realtime',
+      'ERP doanh nghiệp AI Việt Nam',
+      'GEO AI search optimization',
       'Phần mềm ERP 5.0 May Đo 12 Phân Hệ Chuyên Sâu',
       'Phần mềm AI Agent & Multi-Agent AI Điều Phối Tự Trị',
       'Vibecode Enterprise & Kiến Trúc Phần Mềm Custom Chuyên Sâu',
@@ -317,7 +323,7 @@ export function buildSoftwareAppSchema(params: {
     offersNode = {
       '@type': 'Offer',
       priceCurrency: 'VND',
-      price: params.price || '2990000',
+      price: params.price || '1500000',
       availability: 'https://schema.org/InStock',
     };
   }

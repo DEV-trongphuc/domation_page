@@ -374,9 +374,9 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     relatedModuleLabel: 'Kích Hoạt 5 Flow Automation Mẫu',
     faqs: [
       {
-        question: 'Gói DOMATION SaaS Starter 2.990.000₫/tháng có dùng được đầy đủ 5 Flow này không?',
+        question: 'Các gói DOMATION SaaS (1.5M – 6.0M/tháng) có dùng được đầy đủ 5 Flow này không?',
         answer:
-          'Có! Gói Starter hỗ trợ đúng 5 Flow Automation chủ lực kèm 100.000 Email/tháng và Web Tracking tiêu chuẩn; gói Growth 4.990.000₫ mở không giới hạn số lượng Flow.',
+          'Có! Bạn có thể bắt đầu với Auto Data Standard (1.500.000₫/tháng) hoặc Auto Data Pro (3.000.000₫/tháng) cho luồng chia số & Meta CAPI, và mở khóa đầy đủ Visual Flow IF/ELSE, Amazon SES, Zalo ZNS & Web Tracking trên gói Automation • CRM 360° • ERP 5.0 (6.000.000₫/tháng).',
       },
       {
         question: 'Có nhân viên kỹ thuật DOMATION hỗ trợ vẽ sẵn 5 kịch bản này lúc mới triển khai không?',
@@ -740,8 +740,8 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
       {
         step: '03',
         title: 'Tầng 3 — Nuôi Dưỡng & Chốt Đơn (CRM 360°, Flow IF/ELSE & AI RAG)',
-        detail: 'Tăng tỷ lệ chốt nhờ Pipeline 8 nấc, Email SES, ZNS và Chatbot AI 24/7.',
-        techStack: 'CRM 8-Stage • Multi-Agent AI',
+        detail: 'Tăng tỷ lệ chốt nhờ Pipeline 9 nấc, Email SES, ZNS và Chatbot AI 24/7.',
+        techStack: 'CRM 9-Stage • Multi-Agent AI',
       },
       {
         step: '04',

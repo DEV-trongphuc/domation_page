@@ -229,7 +229,7 @@ const DEDUP_POLICIES: DedupPolicyOption[] = [
   {
     key: 'route_to_existing_owner',
     title: 'Trả Về Đúng Sale Cũ Đang Chăm',
-    desc: 'Bảo vệ quyền lợi Sale khai thác ban đầu và gắn cảnh báo khách quay lại trong 90 ngày.',
+    desc: 'Bảo vệ quyền lợi Sale khai thác ban đầu và gắn cảnh báo khách quay lại trong 180 ngày (6 tháng).',
     icon: UserCheck,
   },
   {
@@ -315,7 +315,7 @@ const WIZARD_TOUR_STEPS: WizardTourStep[] = [
     title: 'Thông tin Doanh nghiệp & Tài khoản Quản trị',
     description:
       'Điền Tên đội Sale, người phụ trách, Email và Mật khẩu. Hệ thống tự tạo địa chỉ không gian làm việc riêng (/data/slug) và kích hoạt gói dùng thử miễn phí.',
-    chips: ['Gói Standard: 5 Sale & 3 Quản lý', 'Tự sinh cổng tiếp nhận riêng'],
+    chips: ['Standard: 20 Sale & 5 Quản lý', 'Growth: 85 Sale & 15 Quản lý', 'Tự sinh cổng tiếp nhận riêng'],
   },
   {
     id: 'wiz_router_internal',
@@ -333,11 +333,11 @@ const WIZARD_TOUR_STEPS: WizardTourStep[] = [
     target: 'setup-router-algo',
     stepNumber: 2,
     eyebrow: 'LUẬT CHIA & CHỐNG TRÙNG',
-    title: 'Chia thẳng vòng theo năng lực & Lọc trùng 90 ngày',
+    title: 'Chia thẳng vòng theo năng lực & Lọc trùng 180 ngày (6 tháng)',
     description:
-      'Mặc định chia thẳng về Bot cho Sale đang bật Online ngay khi có khách. Khách cũ quay lại trong 90 ngày tự trả về đúng Sale phụ trách.',
-    chips: ['Chia thẳng hoặc Bật SLA', 'Nhận thông báo tức thì', 'Lọc trùng 90 ngày'],
-    topics: ['round_robin_formula', 'dedupe_90d', 'sla_recall'],
+      'Mặc định chia thẳng về Bot cho Sale đang bật Online ngay khi có khách. Khách cũ quay lại trong 180 ngày (6 tháng) tự trả về đúng Sale phụ trách.',
+    chips: ['Chia thẳng hoặc Bật SLA', 'Nhận thông báo tức thì', 'Lọc trùng 180 ngày (6 tháng)'],
+    topics: ['round_robin_formula', 'dedupe_180d', 'sla_recall'],
   },
   {
     id: 'wiz_channels',
@@ -487,7 +487,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
   // Registration Step 2 state — Individual Internal Sale is strictly DEFAULT (is_external_agency = false)
   const [routerMode, setRouterMode] = useState<RouterModeOption['key']>('weighted_round_robin');
   const [dedupPolicy, setDedupPolicy] = useState<DedupPolicyOption['key']>('route_to_existing_owner');
-  const [dedupDays, setDedupDays] = useState<number>(90);
+  const [dedupDays, setDedupDays] = useState<number>(180);
   const [isExternalAgency, setIsExternalAgency] = useState<boolean>(false);
   const [slaAutoRecall, setSlaAutoRecall] = useState<boolean>(false);
 
@@ -996,7 +996,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label="Không gian khởi tạo và kết nối Auto Data"
-      className="fixed inset-0 z-[120] w-screen h-screen bg-[#F8F9FA] text-slate-900 flex flex-col overflow-hidden"
+      className="fixed inset-0 z-[120] w-full h-[100dvh] bg-[#F8F9FA] text-slate-900 flex flex-col overflow-hidden"
     >
       <LuxuryGoldBackdrop />
 
@@ -1566,7 +1566,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                           <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                             2. Chính sách xử lý trùng Số Điện Thoại
                           </label>
-                          <AutoDataHelpTrigger topic="dedupe_90d" onOpenTour={openInAppTour} />
+                          <AutoDataHelpTrigger topic="dedupe_180d" onOpenTour={openInAppTour} />
                         </div>
                         <div className="flex items-center gap-2 text-xs">
                           <span className="text-slate-600">Chu kỳ quét trùng:</span>
@@ -1767,7 +1767,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                         <li className="rounded-xl bg-white p-3.5 border border-blue-100">
                           <div className="font-bold text-slate-900">03. Lộ trình nâng cấp mở</div>
                           <div className="text-slate-500 mt-1 leading-relaxed">
-                            Nâng cấp 1-click lên Marketing Automation, CRM 360° hoặc ERP 5.0 giữ 100% dữ liệu.
+                            Từ Standard (20 Sale &amp; 5 Quản lý) nâng 1-click lên Growth (85 Sale &amp; 15 Quản lý), CRM 360° hoặc ERP 5.0 giữ 100% dữ liệu.
                           </div>
                         </li>
                       </ul>
@@ -2108,14 +2108,14 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
 
       {/* Sticky Bottom Action Bar for 3-Step Registration Wizard */}
       {authMode === 'register' && !authDiscovery && (
-        <footer className="relative z-10 shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-8 py-3">
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
-            <div className="flex items-center justify-between md:justify-start gap-3">
+        <footer className="relative z-10 shrink-0 border-t border-slate-200/80 bg-white/95 backdrop-blur-md px-4 sm:px-8 py-3">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="hidden sm:flex items-center gap-3">
               {step > 1 ? (
                 <button
                   type="button"
                   onClick={() => setStep((s) => (s === 3 ? 2 : 1))}
-                  className="ql-btn-outline px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+                  className="ql-btn-outline min-h-[44px] px-4 py-2 text-sm cursor-pointer whitespace-nowrap"
                 >
                   <ArrowLeft className="w-4 h-4 shrink-0" />
                   <span>Quay lại</span>
@@ -2127,12 +2127,32 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-end gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-2 sm:flex items-center sm:justify-end gap-2 sm:gap-2.5">
+              {step > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setStep((s) => (s === 3 ? 2 : 1))}
+                  className="sm:hidden ql-btn-outline min-h-[44px] px-3 py-2 text-xs cursor-pointer whitespace-nowrap justify-center"
+                >
+                  <ArrowLeft className="w-4 h-4 shrink-0" />
+                  <span>Quay lại</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => void handleRegisterSubmit()}
+                  className="sm:hidden ql-btn-outline min-h-[44px] px-3 py-2 text-xs transition-colors cursor-pointer whitespace-nowrap disabled:opacity-60 justify-center"
+                >
+                  <span>Bỏ qua &amp; vào ngay</span>
+                </button>
+              )}
+
               <button
                 type="button"
                 disabled={submitting}
                 onClick={() => void handleRegisterSubmit()}
-                className="ql-btn-outline px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm transition-colors cursor-pointer whitespace-nowrap disabled:opacity-60"
+                className="hidden sm:inline-flex ql-btn-outline min-h-[44px] px-4 py-2.5 text-sm transition-colors cursor-pointer whitespace-nowrap disabled:opacity-60"
               >
                 <span>Bỏ qua &amp; vào ngay</span>
               </button>
@@ -2145,7 +2165,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                     setErrorMsg(null);
                     setStep((s) => (s === 1 ? 2 : 3));
                   }}
-                  className="btn-inkica-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+                  className="btn-inkica-primary min-h-[44px] px-4 sm:px-5 py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap justify-center"
                 >
                   <span>Tiếp theo</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
@@ -2155,7 +2175,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                   type="button"
                   disabled={submitting}
                   onClick={() => void handleRegisterSubmit()}
-                  className="btn-inkica-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                  className="btn-inkica-primary min-h-[44px] px-4 sm:px-5 py-2.5 text-xs sm:text-sm cursor-pointer disabled:opacity-60 whitespace-nowrap justify-center"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin shrink-0" />
@@ -2166,6 +2186,16 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                 </button>
               )}
             </div>
+            {step > 1 && (
+              <button
+                type="button"
+                disabled={submitting}
+                onClick={() => void handleRegisterSubmit()}
+                className="sm:hidden w-full min-h-[44px] rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700"
+              >
+                Bỏ qua &amp; vào ngay
+              </button>
+            )}
           </div>
         </footer>
       )}
@@ -2176,9 +2206,12 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
           role="dialog"
           aria-modal="true"
           aria-label="Chọn tài khoản Google"
-          className="fixed inset-0 z-[135] bg-slate-900/45 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-[135] bg-slate-900/45 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
-          <div className="w-full max-w-md rounded-3xl bg-white border border-slate-200 shadow-2xl p-6 sm:p-7 space-y-5">
+          <div className="w-full max-w-md rounded-t-[26px] sm:rounded-3xl bg-white border border-slate-200 shadow-2xl p-5 sm:p-7 space-y-5 max-h-[92dvh] overflow-y-auto">
+            <div className="sm:hidden flex justify-center -mt-1">
+              <span className="w-10 h-1 rounded-full bg-slate-300" />
+            </div>
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
@@ -2195,7 +2228,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                 type="button"
                 onClick={() => setGoogleModalOpen(false)}
                 aria-label="Đóng chọn tài khoản Google"
-                className="rounded-full p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+                className="w-11 h-11 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>

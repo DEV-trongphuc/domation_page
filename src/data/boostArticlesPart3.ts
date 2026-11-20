@@ -33,7 +33,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     keyTakeaways: [
       'Không cắt gọt quy trình sống còn để vừa với phần mềm đóng gói; mọi cấp phê duyệt, chia hoa hồng và KPI đều ánh xạ 1:1.',
       'Rút ngắn 80% thời gian xây dựng so với code tay từ con số 0 nhờ bộ lõi DOMATION ERP 5.0 gồm 12 phân hệ đã kiểm chứng.',
-      'Liên thông khép kín từ Marketing Ads -> Auto Chia Data <5s -> CRM 8 nấc -> Chấm công GPS AI & Payroll PDF.',
+      'Liên thông khép kín từ Marketing Ads -> Auto Chia Data <5s -> CRM 9 nấc -> Chấm công GPS AI & Payroll PDF.',
     ],
     painPoints: [
       {
@@ -75,7 +75,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       {
         step: '02',
         title: 'May đo Lõi 12 phân hệ ERP 5.0 & Thiết kế Flow riêng',
-        detail: 'Kích hoạt các module cần thiết (Kanban, Approval, GPS AI, Payroll PDF, CRM 8 nấc) khớp đúng thuật ngữ nội bộ.',
+        detail: 'Kích hoạt các module cần thiết (Kanban, Approval, GPS AI, Payroll PDF, CRM 9 nấc) khớp đúng thuật ngữ nội bộ.',
         techStack: 'DOMATION ERP 5.0 Core • Dynamic Flow Engine',
       },
       {
@@ -738,7 +738,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       'Nỗi lo lớn nhất của CEO doanh nghiệp vừa (20–300 nhân sự) khi cân nhắc ERP là bài toán chi phí ban đầu và phí gia hạn tăng vọt theo số nhân viên. Mô hình lõi ERP 5.0 may đo của DOMATION cho phép doanh nghiệp triển khai theo từng cụm phân hệ ưu tiên, không tính phí cắt cổ theo đầu user và thường thu hồi vốn trong 3–6 tháng nhờ giảm thất thoát Lead và công sức đối soát.',
     keyTakeaways: [
       'Tránh bẫy SaaS per-user: 100 nhân sự x 300k–500k/tháng = 360M–600M/năm chỉ để đi thuê phần mềm cứng nhắc.',
-      'Với gói SaaS Suite từ 2.99M–4.99M/tháng hoặc gói Bespoke ERP trọn gói may đo theo kiến trúc 12 phân hệ, chi phí minh bạch ngay từ đầu.',
+      'Với các gói SaaS chuẩn 1.500.000₫ – 6.000.000₫/tháng (1.5M₫/tháng khởi điểm Auto Data Standard, 3.0M₫/tháng Pro, 6.0M₫/tháng Automation • CRM 360° • ERP 5.0 Suite) hoặc gói Bespoke ERP trọn gói may đo theo kiến trúc 12 phân hệ, chi phí minh bạch ngay từ đầu.',
       'ROI đến từ 3 nguồn đo được: cứu 35% Lead rơi rớt, tiết kiệm 35% chi phí Ads trùng và giảm 70% giờ công tổng hợp báo cáo.',
     ],
     painPoints: [
@@ -774,7 +774,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       {
         step: '02',
         title: 'Chọn kiến trúc triển khai (SaaS Suite vs Bespoke Enterprise OS)',
-        detail: 'Doanh nghiệp chọn gói SaaS 2.99M–4.99M/tháng hoặc đặt may đo Private ERP theo sơ đồ riêng.',
+        detail: 'Doanh nghiệp chọn gói SaaS 1.500.000₫ – 6.000.000₫/tháng hoặc đặt may đo Private ERP theo sơ đồ riêng.',
         techStack: 'Modular Architecture Sizing',
       },
       {
@@ -796,7 +796,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     metricsOutcome: [
       { label: 'Thời gian hoàn vốn (ROI)', value: '3 – 6 tháng' },
       { label: 'Tiết kiệm phí SaaS 3 năm', value: '40% – 60%' },
-      { label: 'Gói SaaS Suite khởi điểm', value: 'Từ 2.99M₫/tháng' },
+      { label: 'Gói SaaS khởi điểm / Suite', value: '1.5M₫ – 6.0M₫/tháng' },
       { label: 'Triển khai cuốn chiếu', value: 'Từ 2 tuần' },
     ],
     relatedPortfolioId: 'ideas-business',
@@ -806,7 +806,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       {
         question: 'Doanh nghiệp mới 15–20 người có thể bắt đầu từ gói nhỏ rồi nâng cấp lên ERP may đo không?',
         answer:
-          'Hoàn toàn được. Bạn có thể bắt đầu từ Auto Chia Data (1.5M/tháng) hoặc DOMATION Suite (2.99M/tháng), sau đó kích hoạt dần các phân hệ ERP khi quy mô tăng.',
+          'Hoàn toàn được. Bạn có thể bắt đầu từ Auto Data Standard (1.5M₫/tháng) hoặc Auto Data Pro (3.0M₫/tháng), sau đó nâng cấp lên Automation • CRM 360° • ERP 5.0 (6.0M₫/tháng) hoặc kích hoạt dần các phân hệ ERP khi quy mô tăng.',
       },
       {
         question: 'Chi phí vận hành server riêng (Private Cloud) hàng tháng khoảng bao nhiêu?',
@@ -1081,7 +1081,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       {
         step: '02',
         title: 'Kiểm thử luồng dữ liệu thật trên bản Demo DOMATION',
-        detail: 'Chạy thử thực tế vòng Lead -> ZaloBot -> CRM 8 nấc -> MISA -> Payroll PDF trước khi ký hợp đồng.',
+        detail: 'Chạy thử thực tế vòng Lead -> ZaloBot -> CRM 9 nấc -> MISA -> Payroll PDF trước khi ký hợp đồng.',
         techStack: 'Live Sandbox Pilot',
       },
     ],

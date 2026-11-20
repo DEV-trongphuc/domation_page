@@ -13,6 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
+  Compass,
   Cookie,
   Cpu,
   CreditCard,
@@ -37,15 +38,26 @@ import {
   Webhook,
   Workflow,
   X,
+  Zap,
   ZoomIn,
 } from 'lucide-react';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { Navbar } from './Navbar';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
+import { ClosedLoopFlywheelSection, type FlywheelProduct } from './components/ClosedLoopFlywheelSection';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
-import { handleSpaLinkClick } from './utils/navigation';
+import { handleSpaLinkClick, navigateTo } from './utils/navigation';
+import {
+  EcosystemFocusTourModal,
+  type EcosystemTourSystemKey,
+} from './components/onboarding/EcosystemFocusTourModal';
+import {
+  NonCoderSetupModal,
+  type SetupProductKey,
+} from './components/onboarding/NonCoderSetupModal';
+import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 import { AUTODATA_FAQS, getDataSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
 import { AutoDataAuthModal } from './components/autodata/AutoDataAuthModal';
@@ -330,11 +342,65 @@ export function DomationDataLanding() {
   // Zoomable screenshot lightbox
   const [zoomImage, setZoomImage] = useState<ScreenshotItem | null>(null);
   const [activeFusionShotIdx, setActiveFusionShotIdx] = useState(0);
+  const [focusTourOpen, setFocusTourOpen] = useState(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
+  );
+  const [focusTourSystem, setFocusTourSystem] = useState<EcosystemTourSystemKey>(() => {
+    if (typeof window === 'undefined') return 'autodata';
+    const p = new URLSearchParams(window.location.search).get('product');
+    return p === 'dommeta' || p === 'erp' || p === 'flywheel' || p === 'automation' ? p : 'autodata';
+  });
+  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('setup') === 'quick'
+  );
+  const [setupGuideProduct, setSetupGuideProduct] = useState<SetupProductKey>(() => {
+    if (typeof window === 'undefined') return 'autodata';
+    const p = new URLSearchParams(window.location.search).get('product');
+    return p === 'dommeta' || p === 'erp' ? p : 'autodata';
+  });
+
+  const openFocusTourModal = (product?: FlywheelProduct | EcosystemTourSystemKey) => {
+    setFocusTourSystem(
+      product === 'dommeta' || product === 'erp' || product === 'flywheel' || product === 'automation'
+        ? product
+        : 'autodata'
+    );
+    setFocusTourOpen(true);
+  };
+
+  const openSetupGuideModal = (product?: FlywheelProduct) => {
+    setSetupGuideProduct(product === 'dommeta' || product === 'erp' ? product : 'autodata');
+    setSetupGuideOpen(true);
+  };
 
   useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 560);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // M4 Modal & Focus Tour Hooks (CustomEvents)
+  useEffect(() => {
+    const onSetupGuide = (rawEvent: Event) => {
+      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
+      ev.preventDefault();
+      openSetupGuideModal(ev.detail?.product || 'autodata');
+    };
+
+    const onFocusTour = (rawEvent: Event) => {
+      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
+      ev.preventDefault();
+      openFocusTourModal(ev.detail?.product || 'autodata');
+    };
+
+    window.addEventListener('domation:open-setup-guide', onSetupGuide);
+    window.addEventListener('domation:open-focus-tour', onFocusTour);
+    return () => {
+      window.removeEventListener('domation:open-setup-guide', onSetupGuide);
+      window.removeEventListener('domation:open-focus-tour', onFocusTour);
+    };
   }, []);
 
   // Sync live dynamic catalog & platform defaults from real backend bridge
@@ -490,8 +556,8 @@ export function DomationDataLanding() {
     },
     {
       icon: UserCheck,
-      title: '2. Chống Trùng Khách Hàng Trong 90 Ngày',
-      desc: 'Tự động nhận diện khách hàng cũ quay lại từ các chiến dịch khác để chuyển thẳng về đúng chuyên viên đang chăm sóc, chấm dứt tranh chấp nội bộ.',
+      title: '2. Chống Trùng Khách Hàng Trong 180 Ngày (6 Tháng)',
+      desc: 'Tự động nhận diện khách hàng cũ quay lại từ các chiến dịch khác trong 180 ngày để chuyển thẳng về đúng chuyên viên đang chăm sóc, chấm dứt tranh chấp nội bộ.',
     },
     {
       icon: Clock,
@@ -514,6 +580,51 @@ export function DomationDataLanding() {
       desc: 'Đồng bộ kết quả chất lượng từ đội Sale về Facebook để tối ưu chi phí quảng cáo, kèm báo cáo minh bạch hiệu suất từng nhân sự cho Ban Lãnh Đạo.',
     },
   ];
+
+  if (setupOpen && session) {
+    return (
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-[#F8F9FA]">
+        <Suspense
+          fallback={
+            <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-medium">
+              Đang tải không gian vận hành AutoData...
+            </div>
+          }
+        >
+          <AutoDataWorkspaceApp
+            key={`${session.tenant_slug}-${setupModalKey}`}
+            session={session}
+            initialView={
+              typeof window !== 'undefined' && window.location.pathname.endsWith('/report-data')
+                ? 'report_data'
+                : setupIntent === 'workspace_billing'
+                  ? 'billing'
+                  : setupIntent === 'workspace_zalo'
+                    ? 'integrations'
+                    : 'dashboard'
+            }
+            onSessionUpdated={(next) => handleSessionChange(next)}
+            onSwitchWorkspaceRequested={() => {
+              handleSessionChange(null);
+              setSetupIntent('login');
+              setSetupOpen(true);
+            }}
+            onNavigateSlug={(slug) => syncWorkspaceUrlSlug(slug)}
+            onLoggedOut={() => {
+              setSetupOpen(false);
+              handleSessionChange(null);
+            }}
+          />
+        </Suspense>
+        <AutoDataLegalModal
+          open={legalOpen}
+          activeTab={legalTab}
+          onTabChange={(t) => openLegalDoc(t)}
+          onClose={closeLegalDoc}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans relative overflow-x-clip selection:bg-[#1E40FF] selection:text-white">
@@ -557,7 +668,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
-                className="btn-inkica-primary w-full sm:w-auto rounded-full px-3 sm:px-7 py-3 sm:py-3.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+                className="btn-inkica-primary min-h-[44px] w-full sm:w-auto rounded-full px-3 sm:px-7 py-3 sm:py-3.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
               >
                 <span className="sm:hidden">
                   {session ? 'Mở Workspace' : 'Dùng thử Free'}
@@ -573,7 +684,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => openFullScreenApp(session ? 'workspace_billing' : 'login')}
-                className="ql-btn-outline w-full sm:w-auto rounded-full px-3 sm:px-6 py-3 sm:py-3.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] w-full sm:w-auto rounded-full px-3 sm:px-6 py-3 sm:py-3.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
               >
                 <span className="sm:hidden">
                   {session ? 'Gói & Ví' : 'Đăng nhập'}
@@ -583,6 +694,25 @@ export function DomationDataLanding() {
                     ? `Quản lý Gói & Ví (${session.subscription?.days_remaining ?? 30} ngày)`
                     : 'Đăng nhập Workspace'}
                 </span>
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => openFocusTourModal('autodata')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[44px]"
+              >
+                <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
+                <span>Tour Hướng Dẫn</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => openSetupGuideModal('autodata')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[44px]"
+              >
+                <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Thiết lập 3 bước</span>
               </button>
             </div>
 
@@ -618,7 +748,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
-                className="self-start sm:self-center ql-btn-outline rounded-full px-4 py-2 text-xs cursor-pointer whitespace-nowrap shrink-0"
+                className="self-start sm:self-center ql-btn-outline min-h-[44px] rounded-full px-4 py-2 text-xs cursor-pointer whitespace-nowrap shrink-0"
               >
                 <span>Khởi tạo 60 giây</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -629,6 +759,12 @@ export function DomationDataLanding() {
             </div>
           </div>
         </section>
+
+      <ClosedLoopFlywheelSection
+        variant="data"
+        onOpenFocusTour={openFocusTourModal}
+        onOpenSetupGuide={openSetupGuideModal}
+      />
 
       {/* ====================================================================
           REAL PARTNERS STRIP (#partners)
@@ -754,7 +890,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
-                className="btn-inkica-primary w-full rounded-full px-5 py-3 text-xs cursor-pointer whitespace-nowrap justify-center"
+                className="btn-inkica-primary min-h-[44px] w-full rounded-full px-5 py-3 text-xs cursor-pointer whitespace-nowrap justify-center"
               >
                 <span>Chọn phễu ngành này</span>
                 <ArrowRight className="w-3.5 h-3.5 shrink-0" />
@@ -886,7 +1022,7 @@ export function DomationDataLanding() {
 
           <div className="mb-5 sm:mb-6 rounded-2xl sm:rounded-[24px] bg-white/95 sm:bg-white/85 sm:backdrop-blur-xl border border-slate-200/80 shadow-xs grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
             <div className="p-4 sm:p-6 bg-slate-100/95 space-y-1.5">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 border border-rose-200 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700 whitespace-nowrap">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 whitespace-nowrap">
                 Cách chia cũ • Bị nguội
               </div>
               <div className="text-sm font-bold text-slate-700">
@@ -1031,7 +1167,7 @@ export function DomationDataLanding() {
                   },
                   {
                     step: '02',
-                    title: 'Lọc SĐT ảo, spam form & kiểm tra trùng 90 ngày',
+                    title: 'Lọc SĐT ảo, spam form & kiểm tra trùng 180 ngày (6 tháng)',
                     desc: 'Chặn dữ liệu rác ngay tại cổng tiếp nhận để không làm loãng giỏ khách và quota của từng Sale.',
                   },
                   {
@@ -1209,7 +1345,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
-                className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+                className="btn-inkica-primary min-h-[44px] rounded-full px-5 py-2.5 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
               >
                 <span>Trải nghiệm miễn phí {catalog.trial_duration_months} tháng</span>
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -1217,7 +1353,7 @@ export function DomationDataLanding() {
               <a
                 href="/meta-report"
                 onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
-                className="ql-btn-outline rounded-full px-5 py-2.5 text-xs sm:text-sm whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] rounded-full px-5 py-2.5 text-xs sm:text-sm whitespace-nowrap"
               >
                 <span>Xem chi tiết DOM Meta Report</span>
                 <ArrowUpRight className="w-4 h-4 shrink-0" />
@@ -1278,25 +1414,15 @@ export function DomationDataLanding() {
             return (
               <div className="rounded-[28px] bg-white border border-slate-200/90 shadow-[0_24px_64px_-24px_rgba(30,64,255,0.14)] p-4 sm:p-6 lg:p-8 space-y-5">
                 {/* Pill Switcher */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {FUSION_GALLERY_SHOTS.map((shot, idx) => {
-                    const isActive = idx === activeFusionShotIdx;
-                    return (
-                      <button
-                        key={shot.src}
-                        type="button"
-                        onClick={() => setActiveFusionShotIdx(idx)}
-                        className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                          isActive
-                            ? 'bg-[#1E40FF] text-white shadow-sm'
-                            : 'bg-slate-50 hover:bg-blue-50/70 border border-slate-200 text-slate-600 hover:text-[#1E40FF]'
-                        }`}
-                      >
-                        {shot.tabLabel}
-                      </button>
-                    );
-                  })}
-                </div>
+                <DomResponsiveSubtabs
+                  tabs={FUSION_GALLERY_SHOTS.map((shot, idx) => ({
+                    id: String(idx),
+                    label: shot.tabLabel,
+                  }))}
+                  value={String(activeFusionShotIdx)}
+                  onChange={(id) => setActiveFusionShotIdx(Number(id) || 0)}
+                  maxMobile={2}
+                />
 
                 {/* Active Featured Preview */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
@@ -1335,7 +1461,7 @@ export function DomationDataLanding() {
                       <button
                         type="button"
                         onClick={() => setZoomImage(activeShot)}
-                        className="ql-btn-outline rounded-full px-4 py-2 text-xs font-semibold cursor-pointer"
+                        className="ql-btn-outline min-h-[44px] rounded-full px-4 py-2 text-xs font-semibold cursor-pointer"
                       >
                         <ZoomIn className="w-3.5 h-3.5 text-[#1E40FF]" />
                         <span>Phóng to màn hình</span>
@@ -1343,7 +1469,7 @@ export function DomationDataLanding() {
                       <a
                         href="/meta-report"
                         onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E40FF] hover:underline px-2 py-2"
+                        className="min-h-[44px] inline-flex items-center gap-1 text-xs font-semibold text-[#1E40FF] hover:underline px-2 py-2"
                       >
                         <span>Tìm hiểu thêm</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -1415,7 +1541,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={handleDownloadSamplePersonalCsv}
-                className="ql-btn-outline rounded-full px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] rounded-full px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
               >
                 <Download className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                 <span>Mẫu CSV Sale</span>
@@ -1423,7 +1549,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => openFullScreenApp(session ? 'workspace_sale_port' : 'register')}
-                className="btn-inkica-primary rounded-full px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
+                className="btn-inkica-primary min-h-[44px] rounded-full px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs cursor-pointer whitespace-nowrap"
               >
                 <span>Mở Cổng Sale</span>
                 <ArrowRight className="w-3.5 h-3.5 shrink-0" />
@@ -1602,144 +1728,73 @@ export function DomationDataLanding() {
       </section>
 
       {/* ====================================================================
-          OMNI-CHANNEL FLOW (#omni-channel) — Mobile SlideDots + Desktop Hub
+          OMNI-CHANNEL SYNC & 2-WAY API (#omni-channel) — Streamlined
          ==================================================================== */}
-      <section id="omni-channel" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+      <section id="omni-channel" className="scroll-mt-24 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-12 text-center md:text-left">
-            <div className="max-w-2xl mx-auto md:mx-0">
-              <div className="ql-eyebrow mb-2.5 sm:mb-3 mx-auto md:mx-0">
-                <span>QUY TRÌNH KHÉP KÍN</span>
-              </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                Từ Quảng Cáo Đến Zalo Sale{' '}
-                <span className="text-gradient-inkica">Ngay Lập Tức</span>
-              </h2>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
-              4 bước tự động hoàn toàn giúp Ban Lãnh Đạo kiểm soát trọn vẹn hành trình khách hàng và chi phí Ads.
-            </p>
-          </div>
-
-          <div className="rounded-2xl sm:rounded-[28px] bg-white/95 sm:bg-white/85 sm:backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.07)] p-4 sm:p-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-center">
-              {/* Left Visual Card matching DomationHome Hub */}
-              <div className="lg:col-span-5 space-y-4 sm:space-y-5">
+          <div className="rounded-2xl sm:rounded-[28px] bg-white/95 sm:bg-white/85 sm:backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.07)] p-5 sm:p-9">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+              <div className="lg:col-span-5 space-y-4">
+                <div className="ql-eyebrow">
+                  <span>ĐỒNG BỘ 2 CHIỀU • WEBHOOK &amp; SHEETS</span>
+                </div>
+                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Liên Thông Dữ Liệu{' '}
+                  <span className="text-gradient-inkica">Không Độ Trễ</span>
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Nhận dữ liệu đa nguồn, khử trùng 180 ngày (6 tháng), giao thẳng qua Zalo Sale đang Online và đồng bộ ngược kết quả về Facebook CAPI, Google Sheets &amp; REST API 2 chiều.
+                </p>
                 <div className="relative rounded-2xl overflow-hidden border border-slate-200/75 bg-[#F4F8FF]">
                   <img
                     src="/imgs/enterprise/sol-data-capi.webp"
                     alt="Trung tâm điều phối và đồng bộ dữ liệu DOMATION Auto Data"
                     loading="lazy"
-                    className="w-full h-44 sm:h-64 object-cover"
+                    className="w-full h-40 sm:h-48 object-cover"
                   />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    <span className="text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF] whitespace-nowrap">
-                      AUTO ROUTING • CHIA TỨC THÌ
-                    </span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Nhận dữ liệu đa nguồn, khử trùng 90 ngày, giao thẳng qua Zalo Sale đang Online và đồng bộ ngược kết quả về Facebook CAPI, Google Sheets &amp; API 2 chiều.
-                  </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
-                  className="btn-inkica-primary w-full sm:w-auto rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
+                  className="btn-inkica-primary min-h-[44px] w-full sm:w-auto rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
                 >
                   <span>Trải nghiệm hệ thống ngay</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               </div>
 
-              {/* Mobile SlideDots + Tablet/Desktop 2x2 Flow Cards */}
-              <div className="lg:col-span-7">
-                <div className="sm:hidden">
-                  <ResponsiveSlideDeck
-                    items={[
-                      {
-                        step: 'BƯỚC 01 • THU HÚT',
-                        icon: Webhook,
-                        title: 'Hội tụ mọi nguồn khách',
-                        desc: 'Nhận dữ liệu thời gian thực từ Facebook Lead Ads, TikTok, LadiPage, Website và Form tư vấn về một nơi duy nhất.',
-                      },
-                      {
-                        step: 'BƯỚC 02 • CHẤM ĐIỂM AI',
-                        icon: Layers,
-                        title: 'AI chấm điểm, lọc trùng & chia đều',
-                        desc: 'AI đánh giá mức độ tiềm năng & chặn số rác trước khi giao, tự động lọc trùng 90 ngày và bù lượt 1-đổi-1 nếu phát sinh data lỗi.',
-                      },
-                      {
-                        step: 'BƯỚC 03 • ZALO & SHEET',
-                        icon: Bot,
-                        title: 'Báo Zalo & Cập nhật Sheet',
-                        desc: 'Gửi tin báo khách mới đến Zalo cá nhân của Sale ngay lập tức, đồng thời đồng bộ 2 chiều qua Google Sheets & REST API.',
-                      },
-                      {
-                        step: 'BƯỚC 04 • TỐI ƯU ADS',
-                        icon: Activity,
-                        title: 'Đo lường hiệu quả Ads',
-                        desc: 'Khi Sale xác nhận khách nét hoặc chốt đơn, tín hiệu chất lượng được phản hồi tự động để tối ưu ngân sách quảng cáo.',
-                      },
-                    ]}
-                    keyExtractor={(s) => s.step}
-                    mobilePerPage={1}
-                    gapClass="gap-3"
-                    ariaLabel="Quy trình vận hành 4 bước"
-                    renderItem={(item) => {
-                      const Icon = item.icon;
-                      return (
-                        <div className="rounded-2xl bg-slate-50 border border-slate-200/80 p-4 space-y-2.5 h-full">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] flex items-center justify-center shrink-0">
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-0.5 rounded-full border border-slate-200/70 whitespace-nowrap">
-                              {item.step}
-                            </span>
-                          </div>
-                          <h3 className="text-sm font-semibold text-slate-900">{item.title}</h3>
-                          <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
-                        </div>
-                      );
-                    }}
-                  />
-                </div>
-
-                <div className="hidden sm:grid grid-cols-2 gap-4">
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 {[
                   {
-                    step: 'BƯỚC 01 • THU HÚT',
+                    step: '01 • INGRESS < 5S',
                     icon: Webhook,
-                    title: 'Hội tụ mọi nguồn khách',
-                    desc: 'Nhận dữ liệu thời gian thực từ Facebook Lead Ads, TikTok, LadiPage, Website và Form tư vấn về một nơi duy nhất.',
+                    title: 'Webhook Đa Nguồn Một Cửa',
+                    desc: 'Meta Lead Ads, TikTok Instant Form, Google Ads, LadiPage & Form Web chuẩn hóa +84 tức thì.',
                   },
                   {
-                    step: 'BƯỚC 02 • AI ĐÁNH GIÁ & CHIA VÒNG',
+                    step: '02 • DEDUP 180 NGÀY',
                     icon: Layers,
-                    title: 'AI chấm điểm, lọc trùng & chia đều',
-                    desc: 'AI đánh giá mức độ tiềm năng & chặn số rác trước khi giao, tự động lọc trùng 90 ngày và bù lượt 1-đổi-1 nếu phát sinh data lỗi.',
+                    title: 'AI Chấm Điểm & Lọc Trùng 6 Tháng',
+                    desc: 'Chặn số rác Blacklist, khử trùng 180 ngày đa chiến dịch và bù ticket lỗi 1-đổi-1 minh bạch.',
                   },
                   {
-                    step: 'BƯỚC 03 • TƯƠNG TÁC TỨC THÌ',
+                    step: '03 • ZALO & SHEETS',
                     icon: Bot,
-                    title: 'Báo Zalo & Cập nhật Sheet',
-                    desc: 'Gửi tin báo khách mới đến Zalo cá nhân của Sale ngay lập tức, đồng thời đồng bộ 2 chiều qua Google Sheets & REST API.',
+                    title: 'Báo Zalo & Google Sheets 2 Chiều',
+                    desc: 'Ping ZaloBot/Telegram kèm tóm tắt AI cho Sale và cập nhật ngược trạng thái về Sheet/ERP.',
                   },
                   {
-                    step: 'BƯỚC 04 • TỐI ƯU CHI PHÍ',
+                    step: '04 • META CAPI SHA-256',
                     icon: Activity,
-                    title: 'Đo lường hiệu quả Ads',
-                    desc: 'Khi Sale xác nhận khách nét hoặc chốt đơn, tín hiệu chất lượng được phản hồi tự động để tối ưu ngân sách quảng cáo.',
+                    title: 'Phản Hồi Tín Hiệu Học Máy',
+                    desc: 'Đẩy chuyển đổi 9 nấc (Lead → Purchase & DisqualifiedLead) để Meta Ads ngày càng rẻ.',
                   },
-                ].map((item, idx) => {
+                ].map((item) => {
                   const Icon = item.icon;
                   return (
                     <div
-                      key={idx}
-                      className="rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 p-5 sm:p-6 transition-colors flex flex-col justify-between gap-3"
+                      key={item.step}
+                      className="rounded-2xl bg-slate-50/80 hover:bg-white border border-slate-200/80 p-5 transition-colors flex flex-col justify-between gap-3"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] flex items-center justify-center shadow-2xs shrink-0">
@@ -1758,22 +1813,7 @@ export function DomationDataLanding() {
                     </div>
                   );
                 })}
-                </div>
               </div>
-            </div>
-
-            {/* Integrated Connectors Strip matching DomationHome */}
-            <div className="mt-8 pt-7 border-t border-slate-200/75 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-              <div className="shrink-0">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                  ZALO, TELEGRAM, GOOGLE SHEETS &amp; REST API 2 CHIỀU
-                </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Kết nối hai chiều thời gian thực với hệ sinh thái marketing &amp; bán hàng sẵn có của doanh nghiệp.
-                </p>
-              </div>
-
-              <ChannelLogoStrip variant="autodata" className="w-full xl:max-w-[740px]" />
             </div>
           </div>
         </div>
@@ -1797,7 +1837,7 @@ export function DomationDataLanding() {
             <button
               type="button"
               onClick={() => openFullScreenApp(session ? 'workspace_router' : 'register')}
-              className="btn-inkica-primary w-full sm:w-auto self-center lg:self-end rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap shrink-0"
+              className="btn-inkica-primary min-h-[44px] w-full sm:w-auto self-center lg:self-end rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Bắt đầu dùng thử {catalog.trial_duration_months} tháng 0đ</span>
               <ArrowRight className="w-4 h-4 shrink-0" />
@@ -1810,7 +1850,7 @@ export function DomationDataLanding() {
               items={[
                 {
                   badge: 'BƯỚC 01 • 30 GIÂY',
-                  dotTone: 'bg-rose-500',
+                  dotTone: 'bg-[#1E40FF]',
                   decor: '/imgs/enterprise/decor-funnel-orb.png',
                   title: 'Tạo Không Gian Làm Việc Riêng',
                   desc: 'Chỉ cần điền thông tin đội Sale và tài khoản quản trị để mở khóa ngay bộ chia số thông minh và Cổng làm việc cho từng nhân viên.',
@@ -1860,7 +1900,7 @@ export function DomationDataLanding() {
             {[
               {
                 badge: 'BƯỚC 01 • BẮT BUỘC (30 GIÂY)',
-                dotTone: 'bg-rose-500',
+                dotTone: 'bg-[#1E40FF]',
                 decor: '/imgs/enterprise/decor-funnel-orb.png',
                 title: 'Tạo Không Gian Làm Việc Riêng',
                 desc: 'Chỉ cần điền thông tin đội Sale và tài khoản quản trị để mở khóa ngay bộ chia số thông minh và Cổng làm việc cho từng nhân viên.',
@@ -2013,7 +2053,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => setPricingCycle('monthly')}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                className={`min-h-[44px] sm:min-h-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   pricingCycle === 'monthly' ? 'bg-[#1E40FF] text-white' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -2022,7 +2062,7 @@ export function DomationDataLanding() {
               <button
                 type="button"
                 onClick={() => setPricingCycle('annual')}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`min-h-[44px] sm:min-h-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   pricingCycle === 'annual' ? 'bg-[#1E40FF] text-white' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -2130,11 +2170,11 @@ export function DomationDataLanding() {
                         <>
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 border border-slate-200/80 px-2.5 py-1 text-[11px] font-semibold text-slate-700 whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#1E40FF] shrink-0" />
-                            Tối đa {plan.max_sales ?? (plan.code === 'autodata_standard' ? 5 : 25)} Sale
+                            Tối đa {plan.max_sales ?? (plan.code === 'autodata_standard' ? 20 : 85)} Sale
                           </span>
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 border border-slate-200/80 px-2.5 py-1 text-[11px] font-semibold text-slate-600 whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                            Tối đa {plan.max_managers ?? (plan.code === 'autodata_standard' ? 3 : 10)} Quản lý
+                            Tối đa {plan.max_managers ?? (plan.code === 'autodata_standard' ? 5 : 15)} Quản lý
                           </span>
                         </>
                       )}
@@ -2181,7 +2221,7 @@ export function DomationDataLanding() {
                             : 'register'
                       )
                     }
-                    className={`mt-6 sm:mt-8 w-full py-3 sm:py-3.5 px-5 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                    className={`mt-6 sm:mt-8 min-h-[44px] w-full py-3 sm:py-3.5 px-5 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
                       isEnterprise
                         ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-lg'
                         : 'ql-btn-outline'
@@ -2212,7 +2252,11 @@ export function DomationDataLanding() {
                     renderItem={(plan) => renderPlanCard(plan, true)}
                   />
                 </div>
-                <div className="hidden lg:grid rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs lg:grid-cols-3 divide-x divide-slate-200/75 mb-10">
+                <div
+                  className={`hidden lg:grid rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs divide-x divide-slate-200/75 mb-10 ${
+                    catalog.plans.length >= 4 ? 'lg:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3'
+                  }`}
+                >
                   {catalog.plans.map((plan) => renderPlanCard(plan, false))}
                 </div>
               </>
@@ -2246,7 +2290,7 @@ export function DomationDataLanding() {
                   <button
                     type="button"
                     onClick={() => openFullScreenApp(session ? 'workspace_billing' : 'register')}
-                    className="btn-inkica-primary rounded-xl px-4 py-2 text-xs cursor-pointer whitespace-nowrap"
+                    className="btn-inkica-primary min-h-[44px] rounded-xl px-4 py-2 text-xs cursor-pointer whitespace-nowrap"
                   >
                     <CreditCard className="w-3.5 h-3.5 shrink-0" />
                     <span>Mở Quản lý Gói &amp; Ví</span>
@@ -2256,7 +2300,7 @@ export function DomationDataLanding() {
                   type="button"
                   onClick={() => setShowTopupWallet((prev) => !prev)}
                   aria-expanded={showTopupWallet}
-                  className="ql-btn-outline rounded-xl px-3.5 py-2 text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap"
+                  className="ql-btn-outline min-h-[44px] rounded-xl px-3.5 py-2 text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap"
                 >
                   <span>{showTopupWallet ? 'Thu gọn' : 'Xem gói Topup'}</span>
                   {showTopupWallet ? (
@@ -2323,7 +2367,7 @@ export function DomationDataLanding() {
             <button
               type="button"
               onClick={() => openFullScreenApp(session ? 'workspace_crm_erp' : 'register')}
-              className="btn-inkica-primary w-full sm:w-auto self-center lg:self-end rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap shrink-0"
+              className="btn-inkica-primary min-h-[44px] w-full sm:w-auto self-center lg:self-end rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Đăng ký Nâng cấp (Giữ 100% Data)</span>
               <ArrowRight className="w-4 h-4 shrink-0" />
@@ -2356,7 +2400,7 @@ export function DomationDataLanding() {
                   title: 'Full DOMATION CRM 360°',
                   desc: 'Mở rộng lên quản trị toàn diện vòng đời khách hàng B2B/B2C, báo giá, hợp đồng và doanh thu thực thu.',
                   bullets: [
-                    'Phễu Kanban 8 nấc chuyên sâu & Hồ sơ 360°',
+                    'Phễu Kanban 9 nấc chuyên sâu & Hồ sơ 360°',
                     'Báo giá, Hợp đồng, Thanh toán & Hóa đơn điện tử',
                     'Kho Databank tái khai thác Lead & Co-care hoa hồng',
                   ],
@@ -2428,7 +2472,7 @@ export function DomationDataLanding() {
                       onClick={(e) => handleSpaLinkClick(e, path.href)}
                       className={`${
                         path.highlight ? 'btn-inkica-primary' : 'ql-btn-outline'
-                      } w-full rounded-xl px-4 py-3 text-xs justify-between whitespace-nowrap`}
+                      } min-h-[44px] w-full rounded-xl px-4 py-3 text-xs justify-between whitespace-nowrap`}
                     >
                       <span>{path.cta}</span>
                       <ArrowUpRight className="w-4 h-4 shrink-0" />
@@ -2476,7 +2520,7 @@ export function DomationDataLanding() {
               <a
                 href={catalog.automation_upgrade_url || '/automation'}
                 onClick={(e) => handleSpaLinkClick(e, catalog.automation_upgrade_url || '/automation')}
-                className="ql-btn-outline w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
               >
                 <span>Khám phá Marketing Automation</span>
                 <ArrowUpRight className="w-4 h-4 shrink-0" />
@@ -2504,7 +2548,7 @@ export function DomationDataLanding() {
                 <ul className="space-y-2 text-xs sm:text-sm text-slate-700">
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Phễu Kanban 8 nấc chuyên sâu &amp; Hồ sơ 360°</span>
+                    <span>Phễu Kanban 9 nấc chuyên sâu &amp; Hồ sơ 360°</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -2519,7 +2563,7 @@ export function DomationDataLanding() {
               <a
                 href={catalog.crm_upgrade_url || '/crm'}
                 onClick={(e) => handleSpaLinkClick(e, catalog.crm_upgrade_url || '/crm')}
-                className="ql-btn-outline w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
               >
                 <span>Khám phá Full CRM 360°</span>
                 <ArrowUpRight className="w-4 h-4 shrink-0" />
@@ -2562,7 +2606,7 @@ export function DomationDataLanding() {
               <a
                 href={catalog.erp_upgrade_url || '/erp'}
                 onClick={(e) => handleSpaLinkClick(e, catalog.erp_upgrade_url || '/erp')}
-                className="btn-inkica-primary w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
+                className="btn-inkica-primary min-h-[44px] w-full rounded-xl px-4 py-3 text-xs sm:text-sm justify-between whitespace-nowrap"
               >
                 <span>Khám phá Enterprise ERP 5.0</span>
                 <ArrowUpRight className="w-4 h-4 shrink-0" />
@@ -2736,14 +2780,14 @@ export function DomationDataLanding() {
           role="dialog"
           aria-modal="true"
           onClick={() => setZoomImage(null)}
-          className="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-sm p-4 sm:p-8 flex items-center justify-center"
+          className="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-sm p-0 sm:p-8 flex items-end sm:items-center justify-center"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="max-w-5xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl"
+            className="max-w-5xl w-full bg-white rounded-t-[26px] sm:rounded-3xl max-h-[92dvh] flex flex-col overflow-hidden shadow-2xl"
           >
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
-              <div>
+            <div className="px-4 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between gap-4">
+              <div className="min-w-0">
                 <div className="text-sm font-bold text-slate-900">{zoomImage.title}</div>
                 <div className="text-xs text-slate-500">{zoomImage.desc}</div>
               </div>
@@ -2751,12 +2795,12 @@ export function DomationDataLanding() {
                 type="button"
                 onClick={() => setZoomImage(null)}
                 aria-label="Đóng ảnh phóng to"
-                className="rounded-full border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0"
+                className="rounded-full border border-slate-200 w-11 h-11 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="bg-slate-100 max-h-[78vh] overflow-auto p-2 sm:p-4">
+            <div className="bg-slate-100 flex-1 overflow-auto p-2 sm:p-4">
               <img src={zoomImage.src} alt={zoomImage.title} className="w-full h-auto rounded-xl" />
             </div>
           </div>
@@ -2784,7 +2828,7 @@ export function DomationDataLanding() {
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Lên đầu trang"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 min-h-[44px] px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
         >
           <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
           <span>Đầu trang</span>
@@ -2843,6 +2887,44 @@ export function DomationDataLanding() {
         onAuthenticated={(next) => {
           handleSessionChange(next);
           setSetupOpen(true);
+        }}
+      />
+
+      <EcosystemFocusTourModal
+        open={focusTourOpen}
+        initialSystem={focusTourSystem}
+        onClose={() => setFocusTourOpen(false)}
+        onOpenSetupGuide={(product) => {
+          setFocusTourOpen(false);
+          openSetupGuideModal(product);
+        }}
+        onStartTrial={(system) => {
+          setFocusTourOpen(false);
+          if (system === 'dommeta') {
+            navigateTo('/meta-report');
+          } else if (system === 'erp') {
+            navigateTo('/erp#tu-van');
+          } else {
+            openFullScreenApp(session ? 'workspace_router' : 'register');
+          }
+        }}
+      />
+
+      <NonCoderSetupModal
+        open={setupGuideOpen}
+        initialProduct={setupGuideProduct}
+        onClose={() => setSetupGuideOpen(false)}
+        onLaunchAutodataWizard={() => {
+          setSetupGuideOpen(false);
+          openFullScreenApp(session ? 'workspace_router' : 'register');
+        }}
+        onOpenMetaReport={() => {
+          setSetupGuideOpen(false);
+          navigateTo('/meta-report');
+        }}
+        onNavigate={(path) => {
+          setSetupGuideOpen(false);
+          navigateTo(path);
         }}
       />
     </div>

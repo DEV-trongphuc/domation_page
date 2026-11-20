@@ -71,7 +71,11 @@ export function renderRouteSeoHeadBlock(config: PageSeoConfig): string {
     `  <meta name="robots" content="${escapeHtmlAttr(robotsContent)}" />`,
     ...(config.noindex
       ? []
-      : [`  <link rel="canonical" href="${escapeHtmlAttr(canonicalUrl)}" />`]),
+      : [
+          `  <link rel="canonical" href="${escapeHtmlAttr(canonicalUrl)}" />`,
+          `  <link rel="alternate" hreflang="vi" href="${escapeHtmlAttr(canonicalUrl)}" />`,
+          `  <link rel="alternate" hreflang="x-default" href="${escapeHtmlAttr(canonicalUrl)}" />`,
+        ]),
     `  <link rel="alternate" type="text/plain" title="LLM Context (GEO)" href="${SITE_URL}/llms.txt" />`,
     `  <link rel="alternate" type="text/plain" title="LLM Full Context (GEO)" href="${SITE_URL}/llms-full.txt" />`,
     `  <link rel="sitemap" type="application/xml" title="Sitemap" href="${SITE_URL}/sitemap.xml" />`,
@@ -498,11 +502,12 @@ export function seoPrerenderPlugin(): Plugin {
         emitRoute(outputRel, config, template);
       }
 
-      // Emit canonical-pointed aliases for static hosting (/blog, /bai-viet -> /boost; /ideas-erp -> /erp)
+      // Emit canonical-pointed aliases for static hosting (/blog, /bai-viet -> /boost; /ideas-erp, /enterprise -> /erp)
       emitRoute(path.join('blog', 'index.html'), boostHubConfig, baseTemplate);
       emitRoute(path.join('bai-viet', 'index.html'), boostHubConfig, baseTemplate);
       if (erpConfig) {
         emitRoute(path.join('ideas-erp', 'index.html'), erpConfig, baseTemplate);
+        emitRoute(path.join('enterprise', 'index.html'), erpConfig, baseTemplate);
       }
 
       // Emit dedicated 404.html & /404/index.html (noindex, nofollow, no canonical)

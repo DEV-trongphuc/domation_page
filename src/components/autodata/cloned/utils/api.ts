@@ -1,4 +1,4 @@
-import { loadAutodataSessionV2 } from '../../autodataApi';
+import { loadAutodataSessionV2, refreshAutodataSessionV2 } from '../../autodataApi';
 
 export const getApiBaseUrl = () => '/api/v1/legacy';
 
@@ -71,8 +71,26 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
         const json = await response.json().catch(() => ({ success: false, message: 'Invalid JSON response' }));
 
         if (!response.ok) {
-          const errMsg = json?.error?.message || json?.message || getTranslatedError('Lỗi dữ liệu phía người dùng');
-          if ((response.status === 401 || response.status === 403) && actionName !== 'login') {
+          if (response.status === 401 && actionName !== 'login') {
+            const refreshed = await refreshAutodataSessionV2(tenantSlug);
+            if (refreshed?.access_token) {
+              headers['Authorization'] = `Bearer ${refreshed.access_token}`;
+              headers['X-Auth-Token'] = refreshed.access_token;
+              if (refreshed.tenant_slug) {
+                headers['X-Tenant-Slug'] = refreshed.tenant_slug;
+              }
+              const retryRes = await fetch(url, {
+                ...options,
+                headers,
+              });
+              const retryJson = await retryRes.json().catch(() => ({
+                success: false,
+                message: 'Invalid JSON response',
+              }));
+              if (retryRes.ok) {
+                return retryJson;
+              }
+            }
             if (!_isHandlingSessionExpiry && typeof window !== 'undefined') {
               _isHandlingSessionExpiry = true;
               setTimeout(() => {
@@ -81,6 +99,7 @@ export async function fetchAPI(action: string, options: RequestInit = {}, retrie
               window.dispatchEvent(new CustomEvent('autodata-session-expired'));
             }
           }
+          const errMsg = json?.error?.message || json?.message || getTranslatedError('Lỗi dữ liệu phía người dùng');
           if (response.status >= 400 && response.status < 500) {
             throw new Error(errMsg);
           }

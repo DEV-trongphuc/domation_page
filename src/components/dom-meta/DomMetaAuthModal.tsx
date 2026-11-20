@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -92,11 +92,132 @@ interface GoogleIdentityWindow extends Window {
           auto_select?: boolean;
           use_fedcm_for_prompt?: boolean;
         }) => void;
+        renderButton: (
+          parent: HTMLElement,
+          options: {
+            type?: 'standard' | 'icon';
+            theme?: 'outline' | 'filled_blue' | 'filled_black';
+            size?: 'large' | 'medium' | 'small';
+            text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
+            shape?: 'rectangular' | 'pill' | 'circle' | 'square';
+            width?: number | string;
+            locale?: string;
+          }
+        ) => void;
         prompt: (callback?: (notification: GooglePromptNotification) => void) => void;
       };
     };
   };
 }
+
+interface GisOfficialButtonProps {
+  clientId: string;
+  label: string;
+  disabled?: boolean;
+  loading?: boolean;
+  onCredential: (credential: string) => void;
+  onFallbackClick: () => void;
+}
+
+const GisOfficialButton: React.FC<GisOfficialButtonProps> = ({
+  clientId,
+  label,
+  disabled,
+  loading,
+  onCredential,
+  onFallbackClick,
+}) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const onCredentialRef = useRef(onCredential);
+  const [rendered, setRendered] = useState(false);
+
+  useEffect(() => {
+    onCredentialRef.current = onCredential;
+  }, [onCredential]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let attempts = 0;
+
+    const tryMount = () => {
+      if (cancelled || !containerRef.current) return false;
+      const g = (window as GoogleIdentityWindow).google?.accounts?.id;
+      if (!g || typeof g.renderButton !== 'function') return false;
+      try {
+        g.initialize({
+          client_id: clientId,
+          auto_select: false,
+          use_fedcm_for_prompt: false,
+          callback: (resp: { credential?: string }) => {
+            if (resp?.credential) {
+              onCredentialRef.current(resp.credential);
+            }
+          },
+        });
+        containerRef.current.innerHTML = '';
+        const widthPx = Math.max(260, Math.min(400, containerRef.current.clientWidth || 360));
+        g.renderButton(containerRef.current, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          text: 'continue_with',
+          shape: 'pill',
+          width: widthPx,
+          locale: 'vi',
+        });
+        setRendered(true);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    if (!tryMount()) {
+      const timer = window.setInterval(() => {
+        attempts += 1;
+        if (tryMount() || attempts >= 16) {
+          window.clearInterval(timer);
+        }
+      }, 250);
+      return () => {
+        cancelled = true;
+        window.clearInterval(timer);
+      };
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [clientId]);
+
+  return (
+    <div className="w-full space-y-2">
+      <div
+        ref={containerRef}
+        data-testid={rendered ? 'dom-meta-google-btn' : undefined}
+        className={`w-full flex justify-center overflow-hidden rounded-full ${
+          rendered ? 'min-h-[42px]' : 'hidden'
+        } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
+      />
+      {!rendered && (
+        <button
+          type="button"
+          data-testid="dom-meta-google-btn"
+          disabled={disabled}
+          onClick={onFallbackClick}
+          className="w-full py-2.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 cursor-pointer shadow-sm transition-colors"
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin text-[#1E40FF]" />
+          ) : (
+            <GoogleLogoMark className="w-4 h-4" />
+          )}
+          <span>{label}</span>
+        </button>
+      )}
+    </div>
+  );
+};
 
 interface RecentGoogleAccountItem {
   email: string;
@@ -796,24 +917,25 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
       aria-modal="true"
       data-testid="dom-meta-auth-modal"
       style={{ zIndex: 2147483640 }}
-      className="fixed inset-0 bg-slate-950/65 backdrop-blur-md p-3 sm:p-6 flex items-center justify-center overflow-y-auto text-slate-800"
+      className="fixed inset-0 bg-slate-950/65 backdrop-blur-md p-0 sm:p-6 flex items-end sm:items-center justify-center overflow-hidden text-slate-800 dom-ios-backdrop"
     >
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden my-auto">
+      <div className="w-full max-w-2xl max-h-[93dvh] sm:max-h-[90vh] bg-white rounded-t-[26px] sm:rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col dom-ios-modal-responsive">
+        <div className="sm:hidden dom-sheet-grabber" />
         {/* Header */}
-        <div className="px-6 py-4 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <DomationLogoMark size={34} />
-            <div>
-              <div className="text-sm font-bold text-slate-900 leading-none">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <DomationLogoMark size={32} />
+            <div className="min-w-0">
+              <div className="text-xs sm:text-sm font-bold text-slate-900 leading-none truncate">
                 DOMATION <span className="text-[#1E40FF]">/ META REPORT</span>
               </div>
-              <div className="text-[11px] font-medium text-slate-500 mt-1">
-                Miễn phí dùng thử 1 tháng đầu · Đồng bộ ERP &amp; CRM Auto Data
+              <div className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 mt-1 truncate">
+                Miễn phí 1 tháng đầu · Đồng bộ CRM AutoData
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {mode !== 'select_workspace' && mode !== 'create_workspace' && (
               <button
                 type="button"
@@ -821,15 +943,20 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
                   setError(null);
                   setMode(mode === 'register' ? 'login' : 'register');
                 }}
-                className="px-3 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-[#1E40FF] hover:bg-blue-50 cursor-pointer"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[11px] sm:text-xs font-semibold text-[#1E40FF] hover:bg-blue-50 cursor-pointer"
               >
-                {mode === 'register' ? 'Đã có tài khoản? Đăng nhập' : 'Tạo Workspace Free 1 tháng'}
+                <span className="sm:hidden">
+                  {mode === 'register' ? 'Đăng nhập' : 'Tạo mới'}
+                </span>
+                <span className="hidden sm:inline">
+                  {mode === 'register' ? 'Đã có tài khoản? Đăng nhập' : 'Tạo Workspace Free 1 tháng'}
+                </span>
               </button>
             )}
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 cursor-pointer"
+              className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
@@ -837,7 +964,7 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
         </div>
 
         {/* Body */}
-        <div className="p-6 sm:p-7 max-h-[80vh] overflow-y-auto space-y-5">
+        <div className="flex-1 p-4 sm:p-7 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-7 overflow-y-auto overflow-x-hidden overscroll-contain space-y-5">
           {requestedSlug && mode === 'login' && (
             <div className="rounded-2xl bg-[#F4F8FF] border border-blue-200 px-4 py-3 text-xs font-medium text-slate-700">
               Bạn đang truy cập Workspace{' '}
@@ -867,20 +994,20 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
                 </p>
               </div>
 
-              <button
-                type="button"
-                data-testid="dom-meta-google-btn"
+              <GisOfficialButton
+                clientId={(
+                  googleClientId ||
+                  (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ||
+                  '641158233158-nsg8a8tdsj3fdgb34dc9tugm8god7tho.apps.googleusercontent.com'
+                ).trim()}
+                label="Tiếp tục nhanh với Google"
                 disabled={googleLoading || submitting}
-                onClick={handleGoogleSignInClick}
-                className="w-full py-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 cursor-pointer shadow-sm transition-colors"
-              >
-                {googleLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-[#1E40FF]" />
-                ) : (
-                  <GoogleLogoMark className="w-4 h-4" />
-                )}
-                <span>Tiếp tục nhanh với Google</span>
-              </button>
+                loading={googleLoading}
+                onCredential={(cred) =>
+                  void executeGoogleLogin({ credential: cred, id_token: cred })
+                }
+                onFallbackClick={handleGoogleSignInClick}
+              />
 
               <div className="relative flex items-center py-0.5">
                 <div className="flex-grow border-t border-slate-200" />
@@ -1074,20 +1201,20 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
 
                   {!accountToken && (
                     <>
-                      <button
-                        type="button"
-                        data-testid="dom-meta-google-btn"
+                      <GisOfficialButton
+                        clientId={(
+                          googleClientId ||
+                          (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ||
+                          '641158233158-nsg8a8tdsj3fdgb34dc9tugm8god7tho.apps.googleusercontent.com'
+                        ).trim()}
+                        label="Khởi tạo nhanh 1 chạm với Google"
                         disabled={googleLoading || submitting}
-                        onClick={handleGoogleSignInClick}
-                        className="w-full py-2.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 cursor-pointer shadow-sm transition-colors"
-                      >
-                        {googleLoading ? (
-                          <Loader2 className="w-4 h-4 animate-spin text-[#1E40FF]" />
-                        ) : (
-                          <GoogleLogoMark className="w-4 h-4" />
-                        )}
-                        <span>Khởi tạo nhanh 1 chạm với Google</span>
-                      </button>
+                        loading={googleLoading}
+                        onCredential={(cred) =>
+                          void executeGoogleLogin({ credential: cred, id_token: cred })
+                        }
+                        onFallbackClick={handleGoogleSignInClick}
+                      />
 
                       <div className="relative flex items-center py-0.5">
                         <div className="flex-grow border-t border-slate-200" />

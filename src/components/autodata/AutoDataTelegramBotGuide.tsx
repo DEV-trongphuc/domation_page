@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Bot,
   Check,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Code2,
   Copy,
   Loader2,
   Send,
@@ -50,6 +52,7 @@ export function AutoDataTelegramBotGuide({
     });
 
   const [saving, setSaving] = useState(false);
+  const [showAdvancedCode, setShowAdvancedCode] = useState(false);
 
   const [testCommand, setTestCommand] = useState('/chatid');
   const [testingCmd, setTestingCmd] = useState(false);
@@ -218,6 +221,26 @@ export function AutoDataTelegramBotGuide({
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        {[
+          { label: 'Bước 1 ✓ Dán Bot Token', done: botToken.trim().length >= 8 },
+          { label: 'Bước 2 ✓ Điền Chat ID nhóm', done: chatId.trim().length >= 3 },
+          { label: 'Test thành công ✓', done: Boolean(testReply) || Boolean(savedTelegram?.enabled) },
+        ].map((pill, idx) => (
+          <div
+            key={pill.label}
+            className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold ${
+              pill.done
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-slate-200 bg-white/90 text-slate-600'
+            }`}
+          >
+            <CheckCircle2 className={`w-4 h-4 shrink-0 ${pill.done ? 'text-emerald-600' : 'text-slate-300'}`} />
+            <span className="truncate">{idx === 2 && !pill.done ? 'Bước 3: Chạy thử Dry-Run' : pill.label}</span>
+          </div>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Vault Settings + Silent Mode Control */}
         <div className="lg:col-span-6 space-y-4">
@@ -278,11 +301,11 @@ export function AutoDataTelegramBotGuide({
               </label>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
               <button
                 type="submit"
                 disabled={saving}
-                className="btn-inkica-primary rounded-full px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                className="btn-inkica-primary min-h-[44px] rounded-full px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap justify-center"
               >
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
                 <span>Lưu Cấu Hình (AES-256)</span>
@@ -291,7 +314,7 @@ export function AutoDataTelegramBotGuide({
                 type="button"
                 disabled={testingCmd}
                 onClick={() => void handleTestTelegram('silent_dry_run')}
-                className="ql-btn-outline rounded-full px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] rounded-full px-4 py-2 text-xs cursor-pointer disabled:opacity-60 whitespace-nowrap justify-center"
               >
                 <Send className="w-3.5 h-3.5 text-[#1E40FF]" />
                 <span>Chạy Thử Dry-Run (Silent)</span>
@@ -299,44 +322,74 @@ export function AutoDataTelegramBotGuide({
             </div>
           </form>
 
-          {/* Slash Command Tester */}
-          <div className="rounded-2xl bg-white/95 border border-slate-200/80 p-5 space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-              <Terminal className="w-3.5 h-3.5 text-[#1E40FF]" />
-              <span>Kiểm thử Slash Command Webhook</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {['/chatid', '/tiepnhan', '/baoloi Sai số'].map((cmd) => (
-                <button
-                  key={cmd}
-                  type="button"
-                  onClick={() => setTestCommand(cmd)}
-                  className={`rounded-full px-3 py-1 text-[11px] font-mono cursor-pointer transition-colors ${
-                    testCommand === cmd
-                      ? 'bg-[#1E40FF] text-white font-semibold'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  {cmd}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={testCommand}
-                onChange={(e) => setTestCommand(e.target.value)}
-                className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-mono"
-              />
-              <button
-                type="button"
-                disabled={testingCmd}
-                onClick={() => void handleTestTelegram('webhook_command')}
-                className="btn-inkica-primary rounded-xl px-4 py-2 text-xs cursor-pointer whitespace-nowrap"
-              >
-                {testingCmd ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span>Thử lệnh</span>}
-              </button>
-            </div>
+          {/* Collapsible Advanced Slash Command Tester */}
+          <div className="rounded-2xl bg-white/95 border border-slate-200/80 p-4 sm:p-5 space-y-3">
+            <button
+              type="button"
+              onClick={() => setShowAdvancedCode((v) => !v)}
+              className="min-h-[44px] w-full flex items-center justify-between gap-2 text-xs font-bold text-slate-700 cursor-pointer"
+            >
+              <span className="inline-flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-[#1E40FF]" />
+                <span>Chế độ Nâng cao (Kỹ thuật: Slash Command &amp; Webhook)</span>
+              </span>
+              {showAdvancedCode ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+
+            {showAdvancedCode && (
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <Terminal className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  <span>Kiểm thử Slash Command Webhook</span>
+                </div>
+                <div className="grid grid-cols-2 sm:flex flex-wrap gap-2">
+                  {['/chatid', '/tiepnhan', '/baoloi Sai số'].map((cmd) => (
+                    <button
+                      key={cmd}
+                      type="button"
+                      onClick={() => setTestCommand(cmd)}
+                      className={`min-h-[36px] rounded-full px-3 py-1 text-[11px] font-mono cursor-pointer transition-colors ${
+                        testCommand === cmd
+                          ? 'bg-[#1E40FF] text-white font-semibold'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {cmd}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={testCommand}
+                    onChange={(e) => setTestCommand(e.target.value)}
+                    className="w-full sm:flex-1 min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-mono min-h-[44px]"
+                  />
+                  <button
+                    type="button"
+                    disabled={testingCmd}
+                    onClick={() => void handleTestTelegram('webhook_command')}
+                    className="btn-inkica-primary min-h-[44px] rounded-xl px-4 py-2 text-xs cursor-pointer whitespace-nowrap justify-center"
+                  >
+                    {testingCmd ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span>Thử lệnh</span>}
+                  </button>
+                </div>
+                <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3 space-y-1.5">
+                  <div className="flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-500">
+                    <span>TELEGRAM WEBHOOK ENDPOINT</span>
+                    <button
+                      type="button"
+                      onClick={() => void handleCopyWebhook()}
+                      className="inline-flex items-center gap-1 text-[#1E40FF] hover:underline cursor-pointer"
+                    >
+                      {copiedWebhook ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedWebhook ? 'Đã chép' : 'Sao chép'}</span>
+                    </button>
+                  </div>
+                  <div className="font-mono text-[11px] text-slate-800 break-all">{webhookEndpoint}</div>
+                </div>
+              </div>
+            )}
             {testReply && (
               <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-900 space-y-1">
                 <div className="flex items-center gap-1.5 font-bold">
@@ -401,26 +454,11 @@ export function AutoDataTelegramBotGuide({
               <div>
                 <div className="font-bold text-slate-900">Bật gửi thật sau khi test xong</div>
                 <p>
-                  Copy link Webhook bên dưới gắn vào Bot nếu cần nhận lệnh 2 chiều, rồi tắt <strong>Chế độ Chạy thử an toàn</strong> ở cột trái để gửi tin thật cho Sale.
+                  Mở <strong>Chế độ Nâng cao</strong> ở cột trái nếu cần lấy link Webhook 2 chiều, rồi tắt <strong>Chế độ Chạy thử an toàn</strong> để gửi tin thật cho Sale.
                 </p>
               </div>
             </li>
           </ol>
-
-          <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5 space-y-2">
-            <div className="flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-500">
-              <span>TELEGRAM WEBHOOK ENDPOINT</span>
-              <button
-                type="button"
-                onClick={() => void handleCopyWebhook()}
-                className="inline-flex items-center gap-1 text-[#1E40FF] hover:underline cursor-pointer"
-              >
-                {copiedWebhook ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                <span>{copiedWebhook ? 'Đã chép' : 'Sao chép'}</span>
-              </button>
-            </div>
-            <div className="font-mono text-[11px] text-slate-800 break-all">{webhookEndpoint}</div>
-          </div>
         </div>
       </div>
     </div>

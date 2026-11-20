@@ -30,7 +30,7 @@ export const HOME_FAQS: PageFaqItem[] = [
   {
     question: 'Chi phí các gói phần mềm DOMATION và Thiết kế Website chuẩn SEO là bao nhiêu?',
     answer:
-      'CRM Auto Data và DOM Meta Report đều có 30 ngày dùng thử miễn phí 0₫ (sau đó chỉ từ 490.000₫/tháng cho Meta Report và từ 1.500.000₫/tháng cho Auto Data). Bộ nền tảng SaaS mở rộng khởi điểm từ 2.990.000₫/tháng, gói Enterprise may đo thiết kế riêng theo nhu cầu, và dịch vụ Thiết kế Website/Landing Page chuẩn SEO báo giá minh bạch theo từng hạng mục, thanh toán 1 lần sở hữu toàn bộ mã nguồn.',
+      'Auto Data CRM và DOM Meta Report đều có 30 ngày dùng thử miễn phí 0₫. Sau dùng thử: DOM Meta Report từ 490.000₫/tháng (năm); Auto Data Standard 1.500.000₫/tháng (20 Sale • 15.000 Leads); Auto Data Pro 3.000.000₫/tháng (85 Sale • 100.000 Leads); Automation • CRM 360° • ERP 5.0 6.000.000₫/tháng (9.999 Users • 1.000.000 Leads, giảm 15% khi đóng năm). Gói Bespoke Enterprise ERP 5.0 may đo theo quy mô, và Website/3D WebGL từ 12.000.000₫ thanh toán 1 lần sở hữu toàn bộ source code.',
   },
 ];
 
@@ -94,7 +94,7 @@ export const CRM_FAQS: PageFaqItem[] = [
   {
     question: 'DOMATION CRM 360° quản trị quy trình bán hàng như thế nào?',
     answer:
-      'Hệ thống cung cấp bảng Pipeline Kanban 8 nấc trực quan do doanh nghiệp tự định nghĩa, hợp nhất Hồ sơ Khách hàng 360° (Web Tracking, Zalo, Email, lịch sử cuộc gọi, Ticket) và rào cản Form TTL1 chống Sale bỏ sót Lead ấm.',
+      'Hệ thống cung cấp bảng Pipeline Kanban 9 nấc chuẩn Meta CAPI (Qualified, Booked, Booking, Deposited, Closed, Badtiming, NoAnswer, Notlead, unrated), hợp nhất Hồ sơ Khách hàng 360° (Web Tracking, Zalo, Email, lịch sử cuộc gọi, Ticket) và lọc trùng 180 ngày (6 tháng).',
   },
   {
     question: 'Tính năng đồng bộ hóa đơn điện tử MISA hai chiều hoạt động ra sao?',
@@ -107,9 +107,9 @@ export const CRM_FAQS: PageFaqItem[] = [
       'Khi một Sale hoặc Đại lý F1 giữ chỗ căn hộ trên Giỏ hàng Live, trạng thái căn được khóa tức thì theo thời gian thực để tránh đặt cọc trùng; khi phát sinh cọc, hệ thống tự sinh Phiếu Hợp Tác phân chia hoa hồng tổng 100% trình Ban Giám Đốc duyệt.',
   },
   {
-    question: 'Chi phí phần mềm DOMATION CRM 360° là bao nhiêu?',
+    question: 'Chi phí phần mềm DOMATION CRM 360° & Auto Data là bao nhiêu?',
     answer:
-      'Gói Starter từ 250.000₫/user/tháng (thanh toán năm) hoặc 300.000₫/user/tháng; gói Professional từ 450.000₫/user/tháng (năm) hoặc 550.000₫/user/tháng; và gói Enterprise custom may đo làm chủ hệ thống.',
+      'Dùng thử miễn phí 30 ngày (0₫). Gói đồng bộ theo quy mô: Auto Data Standard 1.500.000₫/tháng (20 Sale • 15.000 Leads), Auto Data Pro 3.000.000₫/tháng (85 Sale • 100.000 Leads), gói Automation • CRM 360° • ERP 5.0 6.000.000₫/tháng (9.999 Users, giảm 15% khi đóng năm) và gói Bespoke Enterprise ERP 5.0 may đo riêng.',
   },
 ];
 
@@ -132,7 +132,7 @@ export const AUTOMATION_FAQS: PageFaqItem[] = [
   {
     question: 'Chi phí nền tảng Marketing Automation & Multi-Agent AI DOMATION là bao nhiêu?',
     answer:
-      'Gói SaaS Starter 2.990.000₫/tháng (100.000 Email/tháng, 5 Flow Automation, AI Zalo ZNS & Messenger) và gói Growth 4.990.000₫/tháng (500.000 Email/tháng, AI RAG 24/7, Lead Score, Heatmap & Auto Chia Data).',
+      'Khởi điểm với Auto Data Standard 1.500.000₫/tháng (20 Sale), Auto Data Pro 3.000.000₫/tháng (85 Sale), gói hợp nhất Automation • CRM 360° • ERP 5.0 6.000.000₫/tháng (9.999 Users, giảm 15% theo năm) và gói Bespoke Enterprise ERP 5.0 may đo riêng.',
   },
 ];
 
@@ -160,7 +160,7 @@ export const META_REPORT_FAQS: PageFaqItem[] = [
   {
     question: 'Chi phí gia hạn DOM Meta Report sau 1 tháng miễn phí là bao nhiêu?',
     answer:
-      'Sau 30 ngày dùng thử miễn phí, gói thanh toán theo năm chỉ 490.000₫/tháng — tương đương 5.880.000₫/năm, tiết kiệm 29% — hoặc gói linh hoạt từng tháng 690.000₫/tháng.',
+      'Sau 30 ngày dùng thử DOM Meta Report miễn phí (/meta-report), gói thanh toán theo năm chỉ 490.000₫/tháng — tương đương 5.880.000₫/năm, tiết kiệm 29% — hoặc gói linh hoạt từng tháng 690.000₫/tháng.',
   },
 ];
 
@@ -197,23 +197,23 @@ export const IDEAS_FAQS: PageFaqItem[] = [
 
 export function getHomeSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION | Hệ Sinh Thái CRM Auto Data, Meta Ads Report, Automation, ERP 5.0 & Web 3D',
+    title: 'DOMATION | AutoData Chia Lead, Meta CAPI CRM, DomMeta Ads AI & ERP 5.0',
     description:
-      'Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số <5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi & ERP 5.0 tích hợp AI.',
+      'Hệ sinh thái DOMATION hợp nhất Web/Landing 3D với vòng tròn tối ưu khép kín Meta Ads ↔ CRM ↔ CAPI: AutoData chia lead tự động <5s, lọc trùng 180 ngày, báo cáo Meta Ads AI realtime & ERP 5.0.',
     path: '/',
     keywords: [
       'DOMATION',
       'domation.net',
+      'AutoData DOMATION',
+      'phần mềm chia lead tự động',
+      'CRM bất động sản thẩm mỹ nha khoa',
+      'Meta CAPI CRM',
+      'tối ưu quảng cáo Meta AI',
+      'báo cáo Meta Ads AI',
+      'ERP doanh nghiệp AI Việt Nam',
+      'GEO AI search optimization',
       'hệ sinh thái phần mềm doanh nghiệp',
-      'CRM Auto Data chia khách 5 giây',
-      'báo cáo Meta Ads realtime',
-      'báo cáo Google Ads hợp nhất CRM',
-      'Automation nuôi dưỡng khách hàng',
-      'Zalo ZNS tự động',
-      'tracking hành vi website',
-      'phần mềm ERP 5.0 may đo',
-      'đa trợ lý AI nội bộ doanh nghiệp',
-      'thiết kế Website Landing Page chuyển đổi',
+      'Automation nuôi dưỡng khách hàng Zalo ZNS',
       'sa bàn 3D bất động sản WebGL',
     ],
     ogImage: '/imgs/og-domation-v2.jpg',
@@ -226,39 +226,39 @@ export function getHomeSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION Enterprise Ecosystem — CRM Auto Data, Meta & Google Ads Report, Automation & ERP 5.0',
         description:
-          'Hệ sinh thái hợp nhất Website & Landing Page chuyển đổi 3D với hệ ứng dụng vận hành nội bộ: CRM Auto Data chia số dưới 5 giây, Báo cáo Meta & Google Ads gắn từng Lead & Sale, Automation nuôi dưỡng Zalo ZNS/Email + Tracking Website, và DOMATION ERP 5.0 tích hợp Đa Trợ Lý AI.',
+          'Hệ sinh thái hợp nhất Website & Landing Page chuyển đổi 3D với vòng tròn tối ưu khép kín: CRM Auto Data chia số <5s, lọc trùng 180 ngày, SHA-256 Meta CAPI, Báo cáo Meta & Google Ads AI, Automation Zalo ZNS & ERP 5.0.',
         path: '/',
         screenshot: '/imgs/erp-screens/dashboard-lead.webp',
         featureList: [
-          'CRM Auto Data: Thu khách đa nguồn, lọc trùng 6 tháng, chia vòng ZaloBot & Telegram dưới 5 giây',
-          'DOM Meta Report & Mở rộng Google Ads: Xem chi phí, giữ chân Video 3s, khung giờ vàng và đối soát từng Lead & Sale',
-          'Automation Nuôi Dưỡng Đa Kênh: Tracking click/mở Email, thời gian tương tác Website, Zalo ZNS, Zalo OA & Voucher',
-          'DOMATION ERP 5.0 & Đa Trợ Lý AI Nội Bộ: Pipeline 360°, Chấm công GPS, Phê duyệt đa cấp & Tài chính minh bạch',
-          'Điểm Chạm Cuối Thế Hệ Mới: Website thương hiệu, Landing Page chuyển đổi chuẩn SEO & Sa bàn 3D tương tác',
+          'AutoData DOMATION: Thu lead đa nguồn, lọc trùng 180 ngày, AI Pre-Score & chia vòng ZaloBot <5s + bù 1:1',
+          'Vòng Tròn Khép Kín Meta CAPI CRM: 9 trạng thái Sale Pipeline bắn SHA-256 về Meta Ads tối ưu CPL/CPA',
+          'DOM Meta Report AI & Google Ads: Video Hook Rate 3s, khung giờ vàng và đối soát từng Lead & Sale',
+          'Automation Nuôi Dưỡng Đa Kênh: Tracking click/mở Email, hành vi Website, Zalo ZNS, Zalo OA & Voucher',
+          'DOMATION ERP 5.0 May Đo & Web 3D WebGL: Pipeline 360°, Chấm công GPS AI, Phê duyệt đa cấp & Sa bàn 3D',
         ],
         offers: [
           {
             name: 'DOM Meta Report (Miễn phí 30 ngày)',
             price: '490000',
-            description: '490.000₫/tháng (thanh toán năm) • Báo cáo Meta Ads realtime, mở rộng Google Ads & đồng bộ CRM',
+            description: '490.000₫/tháng (thanh toán năm) • Báo cáo Meta Ads AI realtime, mở rộng Google Ads & đồng bộ CRM',
             url: '/meta-report',
           },
           {
-            name: 'CRM Auto Data (Miễn phí 30 ngày)',
+            name: 'Auto Data Standard (Miễn phí 30 ngày)',
             price: '1500000',
-            description: '1.500.000₫/tháng • Chia số dưới 5 giây ZaloBot/Telegram, lọc trùng 6 tháng & Meta CAPI',
-            url: '/data',
+            description: '1.500.000₫/tháng (15.300.000₫/năm) • 20 Sale, 5 QL, 15.000 Leads/tháng, lọc trùng 180 ngày & Meta CAPI',
+            url: '/data#pricing',
           },
           {
-            name: 'DOMATION SaaS Starter',
-            price: '2990000',
-            description: '2.990.000₫/tháng • 100.000 Email/tháng, Automation rẽ nhánh, Zalo ZNS & AI Chatbot 24/7',
-            url: '/#pricing',
+            name: 'Auto Data Pro',
+            price: '3000000',
+            description: '3.000.000₫/tháng (30.600.000₫/năm) • 85 Sale, 15 QL (100 Users), 100.000 Leads/tháng & AI Pre-Score',
+            url: '/data#pricing',
           },
           {
-            name: 'DOMATION SaaS Growth',
-            price: '4990000',
-            description: '4.990.000₫/tháng • Trọn bộ Auto Data, Automation đa kênh, Tracking hành vi & AI nội bộ',
+            name: 'Automation • CRM 360° • ERP 5.0',
+            price: '6000000',
+            description: '6.000.000₫/tháng (61.200.000₫/năm) • 9.999 Users, 1.000.000 Leads/tháng, Full Suite & MISA 2 chiều',
             url: '/#pricing',
           },
         ],
@@ -269,19 +269,20 @@ export function getHomeSeoConfig(): PageSeoConfig {
 
 export function getDataSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION Auto Data | Chia Lead ZaloBot < 5s & Meta CAPI',
+    title: 'AutoData DOMATION | Phần Mềm Chia Lead Tự Động < 5s & Meta CAPI CRM',
     description:
-      'Hệ thống chia Lead tự động dưới 5s qua ZaloBot & Telegram, lọc trùng 180 ngày, đền bù Ticket 1:1 và bắn Meta CAPI chuẩn SHA-256 HTTP 200.',
+      'Phần mềm chia lead tự động AutoData DOMATION <5s qua ZaloBot & Telegram, AI Pre-Score, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket 1:1 và bắn Meta CAPI SHA-256.',
     path: '/data',
     keywords: [
+      'AutoData DOMATION',
+      'phần mềm chia lead tự động',
+      'Meta CAPI CRM',
+      'tối ưu quảng cáo Meta AI',
+      'CRM bất động sản thẩm mỹ nha khoa',
       'Auto Chia Data ZaloBot',
-      'phần mềm chia data tự động',
       'hệ thống chia lead round robin',
-      'Flow tự động phân bổ Lead 5 giây',
-      'Meta CAPI SHA-256',
-      'Lọc trùng Lead 6 tháng',
+      'Lọc trùng Lead 180 ngày',
       'Đền bù Ticket lỗi 1:1',
-      'làm chủ dữ liệu khách hàng RLS',
     ],
     ogImage: '/imgs/enterprise/sol-data-capi.webp',
     ogImageAlt: 'DOMATION Auto Chia Data ZaloBot dưới 5 giây & Meta CAPI SHA-256',
@@ -294,35 +295,35 @@ export function getDataSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION Auto Data & Meta CAPI Router',
         description:
-          'Phần mềm tự động chia Lead < 5 giây qua ZaloBot & Telegram, lọc trùng 6 tháng và bắn Meta Conversions API SHA-256.',
+          'Phần mềm tự động chia Lead < 5 giây qua ZaloBot & Telegram, lọc trùng 180 ngày và bắn Meta Conversions API SHA-256 9 trạng thái.',
         path: '/data',
         screenshot: '/imgs/autodata/showcase/screen_dashboard.jpg',
         featureList: [
-          'Chia vòng Round-Robin 5 cổng dưới 5 giây qua ZaloBot & Telegram',
-          'Chuẩn hóa SĐT +84 & lọc trùng Lead đa kênh 180 ngày',
+          'Chia vòng Round-Robin 5 cổng dưới 5 giây qua ZaloBot & Telegram + AI Pre-Score 0–100',
+          'Chuẩn hóa SĐT +84 & lọc trùng Lead đa kênh 180 ngày (6 tháng)',
           'Van SLA 120s chống ôm số & Đền bù Ticket lỗi 1:1',
-          'Bắn sự kiện Meta CAPI SHA-256 (Qualified/DisqualifiedLead) HTTP 200',
+          'Vòng tròn khép kín Meta CAPI SHA-256 9 trạng thái (Qualified -> Purchase & DisqualifiedLead)',
         ],
         offers: [
           {
             name: 'Auto Data Standard',
             price: '1500000',
             description:
-              '1.500.000₫/tháng (hoặc 1.275.000₫/tháng khi đóng năm 15.300.000₫ • Dùng thử 30 ngày 0đ)',
+              '1.500.000₫/tháng (hoặc 1.275.000₫/tháng khi đóng năm 15.300.000₫ • 20 Sale, 5 QL, 15.000 Leads/tháng • Dùng thử 30 ngày 0₫)',
             url: '/data#pricing',
           },
           {
             name: 'Auto Data Pro',
             price: '3000000',
             description:
-              '3.000.000₫/tháng (hoặc 2.550.000₫/tháng khi đóng năm 30.600.000₫ • Tối đa 25 Sale)',
+              '3.000.000₫/tháng (hoặc 2.550.000₫/tháng khi đóng năm 30.600.000₫ • Tối đa 85 Sale, 15 QL, 100 Users • 100.000 Leads/tháng)',
             url: '/data#pricing',
           },
           {
             name: 'Automation • CRM 360° • ERP 5.0',
             price: '6000000',
             description:
-              '6.000.000₫/tháng (hoặc 5.100.000₫/tháng khi đóng năm • Nâng cấp trọn bộ Automation, CRM & ERP)',
+              '6.000.000₫/tháng (hoặc 5.100.000₫/tháng khi đóng năm 61.200.000₫ • 9.999 Users • 1.000.000 Leads/tháng)',
             url: '/data#pricing',
           },
         ],
@@ -333,18 +334,18 @@ export function getDataSeoConfig(): PageSeoConfig {
 
 export function getErpSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION ERP 5.0 May Đo | Thiết Kế Flow Riêng Doanh Nghiệp',
+    title: 'DOMATION ERP 5.0 May Đo | ERP Doanh Nghiệp AI Việt Nam (12 Phân Hệ)',
     description:
-      'Hệ thống ERP 5.0 custom may đo 12 phân hệ, thiết kế flow riêng cho doanh nghiệp thời đại mới: Kanban, Chấm công GPS AI, Duyệt PO & Payroll PDF.',
+      'ERP doanh nghiệp AI Việt Nam DOMATION 5.0 custom may đo 12 phân hệ: chia lead 5 cổng, Kanban, Chấm công GPS Selfie AI, Duyệt PO, Payroll PDF & Meta CAPI Forward-Only.',
     path: '/erp',
     keywords: [
+      'ERP doanh nghiệp AI Việt Nam',
       'phần mềm ERP 5.0',
       'Enterprise ERP 5.0',
       'ERP may đo doanh nghiệp',
       'hệ thống vận hành custom may đo',
-      'làm chủ hệ thống ERP',
-      'thiết kế flow riêng cho doanh nghiệp thời đại mới',
-      'phần mềm quản trị doanh nghiệp custom chuyên sâu',
+      'CRM bất động sản thẩm mỹ nha khoa',
+      'Meta CAPI CRM',
       'Chấm công GPS Selfie AI',
       'Payroll PDF tự động',
     ],
@@ -379,21 +380,22 @@ export function getErpSeoConfig(): PageSeoConfig {
 
 export function getCrmSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION CRM 360° & Auto Data | Chia Lead < 5s, Pipeline 8 Nấc & MISA',
+    title: 'DOMATION CRM 360° & Auto Data | CRM BĐS, Thẩm Mỹ, Nha Khoa & MISA',
     description:
-      'Hệ thống DOMATION CRM 360° & Auto Data: thu khách đa kênh, chia vòng ZaloBot <5s, quản trị Pipeline bán hàng 8 nấc, giỏ hàng real-time và đồng bộ hóa đơn MISA.',
+      'CRM bất động sản, thẩm mỹ, nha khoa & giáo dục DOMATION 360°: chia lead <5s, lọc trùng 180 ngày, Pipeline 9 nấc Meta CAPI, giỏ hàng real-time & đồng bộ MISA hai chiều.',
     path: '/crm',
     keywords: [
       'DOMATION CRM 360',
-      'CRM Auto Data chia số 5 giây',
-      'phần mềm CRM custom may đo',
-      'CRM Pipeline Kanban 8 nấc',
+      'CRM bất động sản thẩm mỹ nha khoa',
+      'phần mềm chia lead tự động',
+      'AutoData DOMATION',
+      'Meta CAPI CRM',
+      'CRM Pipeline Kanban 9 nấc',
       'Đồng bộ CRM kế toán MISA',
       'Quản lý giỏ hàng bất động sản real-time',
-      'làm chủ dữ liệu CRM khách hàng',
     ],
     ogImage: '/imgs/enterprise/sol-crm-misa.webp',
-    ogImageAlt: 'DOMATION CRM 360° & Auto Data — Chia Lead < 5s, Pipeline 8 Nấc & Đồng bộ MISA',
+    ogImageAlt: 'DOMATION CRM 360° & Auto Data — Chia Lead < 5s, Pipeline 9 Nấc & Đồng bộ MISA',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
       { name: 'CRM 360° & Auto Data', url: '/crm' },
@@ -403,26 +405,32 @@ export function getCrmSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION CRM 360° & Auto Data',
         description:
-          'Hệ thống DOMATION CRM 360° & Auto Data: thu khách đa kênh, chia vòng ZaloBot <5s, quản trị Pipeline bán hàng 8 nấc, giỏ hàng real-time và đồng bộ hóa đơn MISA hai chiều.',
+          'Hệ thống DOMATION CRM 360° & Auto Data: thu khách đa kênh, chia vòng ZaloBot <5s, lọc trùng 180 ngày, Pipeline 9 nấc Meta CAPI, giỏ hàng BĐS real-time và đồng bộ hóa đơn MISA hai chiều.',
         path: '/crm',
         screenshot: '/imgs/enterprise/sol-crm-misa.webp',
         featureList: [
-          'Thu khách đa kênh & Auto Chia Data ZaloBot / Telegram dưới 5 giây',
-          'Sales Pipeline Kanban 8 nấc trực quan & Hồ sơ Khách hàng 360°',
-          'Quản lý Giỏ hàng bất động sản Real-time & Support Tickets',
+          'Thu khách đa kênh & Auto Chia Data ZaloBot / Telegram dưới 5 giây + lọc trùng 180 ngày',
+          'Sales Pipeline Kanban 9 nấc chuẩn Meta CAPI & Hồ sơ Khách hàng 360°',
+          'Quản lý Giỏ hàng bất động sản Real-time khóa căn tức thì & Phiếu hợp tác Co-care 100%',
           'Đồng bộ Hóa đơn điện tử MISA hai chiều & Báo cáo Meta/Google Ads gắn Lead',
         ],
         offers: [
           {
-            name: 'Starter (Thanh toán năm)',
-            price: '250000',
-            description: '250.000₫/user/tháng (hoặc 300.000₫/user/tháng theo tháng)',
+            name: 'Auto Data Standard',
+            price: '1500000',
+            description: '1.500.000₫/tháng (15.300.000₫/năm -15%) • 20 Sale, 5 Quản lý, 15.000 Leads/tháng',
             url: '/crm#pricing',
           },
           {
-            name: 'Professional (Thanh toán năm)',
-            price: '450000',
-            description: '450.000₫/user/tháng (hoặc 550.000₫/user/tháng theo tháng)',
+            name: 'Auto Data Pro',
+            price: '3000000',
+            description: '3.000.000₫/tháng (30.600.000₫/năm -15%) • 85 Sale, 15 Quản lý, 100.000 Leads/tháng',
+            url: '/crm#pricing',
+          },
+          {
+            name: 'Automation • CRM 360° • ERP 5.0',
+            price: '6000000',
+            description: '6.000.000₫/tháng (61.200.000₫/năm -15%) • 9.999 Users, Full CRM 360°, MISA & ERP 5.0',
             url: '/crm#pricing',
           },
         ],
@@ -433,20 +441,20 @@ export function getCrmSeoConfig(): PageSeoConfig {
 
 export function getAutomationSeoConfig(): PageSeoConfig {
   return {
-    title: 'DOMATION Automation | Flow IF/ELSE, Email SES & AI 5.0',
+    title: 'DOMATION Automation | Flow IF/ELSE, Zalo ZNS, Meta AI & RAG 5.0',
     description:
-      'Nền tảng Automation & AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking & Multi-Agent RAG.',
+      'Nền tảng Automation & AI doanh nghiệp 5.0: Visual Flow IF/ELSE, Email Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, Web Tracking, tối ưu quảng cáo Meta AI & Multi-Agent RAG.',
     path: '/automation',
     keywords: [
       'Marketing Automation đa kênh',
       'Visual Flow Builder IF ELSE',
-      'thiết kế flow automation riêng',
+      'tối ưu quảng cáo Meta AI',
+      'GEO AI search optimization',
       'Email Amazon SES 98% Inbox',
       'Zalo ZNS Automation',
       'AI Agent doanh nghiệp',
       'Multi-Agent AI tự trị',
       'AI doanh nghiệp thời đại 5.0',
-      'Vibecode doanh nghiệp',
     ],
     ogImage: '/imgs/enterprise/sol-ai-automation.webp',
     ogImageAlt: 'DOMATION Marketing Automation Visual Flow & AI Doanh Nghiệp 5.0',
@@ -470,18 +478,22 @@ export function getAutomationSeoConfig(): PageSeoConfig {
         ],
         offers: [
           {
-            name: 'DOMATION SaaS Starter',
-            price: '2990000',
-            description:
-              '2.990.000₫/tháng (100.000 Email/tháng, 5 Flow Automation, AI Zalo ZNS & Messenger)',
-            url: '/#pricing',
+            name: 'Auto Data Standard',
+            price: '1500000',
+            description: '1.500.000₫/tháng (15.300.000₫/năm) • 20 Sale, 15.000 Leads/tháng & Chia số ZaloBot <5s',
+            url: '/automation#pricing',
           },
           {
-            name: 'DOMATION SaaS Growth',
-            price: '4990000',
-            description:
-              '4.990.000₫/tháng (500.000 Email/tháng, AI Chatbot 24/7, Lead Score, Heatmap)',
-            url: '/#pricing',
+            name: 'Auto Data Pro',
+            price: '3000000',
+            description: '3.000.000₫/tháng (30.600.000₫/năm) • 85 Sale, 100.000 Leads/tháng & Đa phễu chiến dịch',
+            url: '/automation#pricing',
+          },
+          {
+            name: 'Automation • CRM 360° • ERP 5.0',
+            price: '6000000',
+            description: '6.000.000₫/tháng (61.200.000₫/năm) • 9.999 Users, Visual Flow IF/ELSE, Zalo ZNS & AI RAG 24/7',
+            url: '/automation#pricing',
           },
         ],
       }),
@@ -491,17 +503,19 @@ export function getAutomationSeoConfig(): PageSeoConfig {
 
 export function getMetaReportSeoConfig(): PageSeoConfig {
   return {
-    title: 'Meta Ad Realtime Report | Đo ROAS Thực CRM & Hook Rate',
+    title: 'DomMeta Report | Báo Cáo Meta Ads AI & Tối Ưu Quảng Cáo Meta AI',
     description:
-      'Báo cáo Meta Ads real-time kết nối Graph API đối chiếu doanh thu thực CRM, phân tích Video Hook Rate 3s, Creative Fatigue và Admin Audit Log.',
+      'Báo cáo Meta Ads AI real-time kết nối Graph API v25.0 đối chiếu doanh thu thực CRM 9 nấc, phân tích Video Hook Rate 3s, Creative Fatigue & tối ưu quảng cáo Meta AI.',
     path: '/meta-report',
     keywords: [
+      'báo cáo Meta Ads AI',
+      'tối ưu quảng cáo Meta AI',
+      'Meta CAPI CRM',
       'Meta Ad Realtime Report',
       'Video Hook Rate Meta Ads',
       'Đối chiếu CPL với CRM',
       'Meta Graph API BI',
       'tối ưu quảng cáo đa kênh',
-      'làm chủ dữ liệu quảng cáo và Audit Log',
     ],
     ogImage: '/imgs/enterprise/sol-web3d-meta.webp',
     ogImageAlt: 'DOMATION Meta Ad Realtime Report & Video Hook Rate Analytics',

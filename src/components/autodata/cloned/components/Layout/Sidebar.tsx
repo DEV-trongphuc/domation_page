@@ -22,7 +22,7 @@ const ALL_NAV_ITEMS = [
 ];
 
 export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onMobileClose }: { isCollapsed: boolean; onToggleCollapse: () => void; isMobileOpen?: boolean; onMobileClose?: () => void }) => {
-  const { user, companyName, tenantSlug } = useAuth();
+  const { user } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
   const [pendingTickets, setPendingTickets] = useState(0);
@@ -168,34 +168,23 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onMobileC
               </div>
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{
-                  fontSize: '0.92rem',
-                  fontWeight: 800,
+                  fontSize: '1.02rem',
+                  fontWeight: 900,
                   color: 'var(--color-text)',
-                  lineHeight: 1.2,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.02em',
+                  whiteSpace: 'nowrap'
                 }}>
-                  {companyName || 'AutoData Workspace'}
+                  DOMATION
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3 }}>
                   <span style={{
                     fontSize: '0.625rem',
                     fontWeight: 800,
-                    letterSpacing: '0.06em',
+                    letterSpacing: '0.12em',
                     color: 'var(--color-primary)',
                     textTransform: 'uppercase'
-                  }}>DOMATION.NET</span>
-                  {tenantSlug && (
-                    <span style={{
-                      fontSize: '0.625rem',
-                      fontWeight: 700,
-                      color: 'var(--color-text-muted)',
-                      background: 'var(--color-primary-light)',
-                      padding: '1px 6px',
-                      borderRadius: 9999
-                    }}>/{tenantSlug}</span>
-                  )}
+                  }}>AUTO DATA CRM</span>
                 </div>
               </div>
             </div>

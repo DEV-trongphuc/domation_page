@@ -2,23 +2,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import {
   BarChart3,
+  Building2,
   Check,
   ArrowRight,
   Target,
   Send,
   X,
   Eye,
-  Box,
   Calendar,
   LifeBuoy,
-  Package,
   Users2,
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
-import { DECOR_PNGS } from './data/enterpriseData';
+import { DECOR_PNGS, DOMATION_SAAS_PLANS } from './data/enterpriseData';
 import { getCrmSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
 
@@ -90,38 +89,38 @@ export const CrmLanding: React.FC = () => {
 
   const features = [
     {
-      title: 'Pipeline Bán Hàng',
-      desc: 'Theo dõi mọi Deal từ lúc tiếp cận đến khi chốt đơn thành công với giao diện Kanban.',
+      title: 'Pipeline Bán Hàng 9 Nấc',
+      desc: 'Quản trị toàn bộ thương vụ từ Qualified, Booked, Booking, Deposited đến Closed với giao diện Kanban & CAPI.',
       icon: Target,
       accent: 'from-[#1E40FF] to-[#0284C7]',
     },
     {
-      title: 'Khách Hàng 360°',
-      desc: 'Lưu trữ toàn bộ lịch sử tương tác, báo giá, hóa đơn của từng Contact & Company.',
+      title: 'Khách Hàng 360° & Lọc Trùng 180 Ngày',
+      desc: 'Hợp nhất lịch sử Web Tracking, Zalo, cuộc gọi, báo giá & chống trùng đa chiến dịch trong 6 tháng.',
       icon: Users2,
       accent: 'from-[#0284C7] to-[#06B6D4]',
     },
     {
-      title: 'Quản Lý Kho Thông Minh',
-      desc: 'Theo dõi số lượng tồn kho, biến động sản phẩm và quản lý nhà cung cấp chặt chẽ.',
-      icon: Package,
+      title: 'Giỏ Hàng BĐS Real-Time & MISA 2 Chiều',
+      desc: 'Khóa căn giữ chỗ tức thì tránh trùng cọc, chia hoa hồng Co-care 100% và đồng bộ hóa đơn điện tử MISA.',
+      icon: Building2,
       accent: 'from-blue-600 to-cyan-500',
     },
     {
-      title: 'Nhắc Việc & Lịch Trình',
-      desc: 'Không bỏ lỡ bất kỳ hoạt động nào với hệ thống Calendar và nhắc nhở Activities.',
+      title: 'Chia Số < 5s & Van SLA 120s',
+      desc: 'Tự động phân phối Lead qua ZaloBot / Telegram, thu hồi sau 120s nếu quá hạn và bù Ticket lỗi 1-đổi-1.',
       icon: Calendar,
       accent: 'from-emerald-500 to-teal-600',
     },
     {
-      title: 'Báo Cáo Trực Quan',
-      desc: 'Dashboard thời gian thực tổng hợp doanh thu, tiến độ nhân sự và hiệu suất kinh doanh.',
+      title: 'Đối Soát Doanh Thu Ads Thực',
+      desc: 'Kết nối trực tiếp DomMeta Graph v25.0 & bắn ngược SHA-256 Meta CAPI giúp tối ưu ROAS từng bài quảng cáo.',
       icon: BarChart3,
       accent: 'from-[#1E40FF] to-[#06B6D4]',
     },
     {
-      title: 'Hỗ Trợ Tickets',
-      desc: 'Tiếp nhận và xử lý sự cố khách hàng nhanh chóng, phân luồng theo mức độ ưu tiên.',
+      title: 'Kho Databank & Support Tickets',
+      desc: 'Đồng hồ bảo mật tự trả lead nguội về kho chung khai thác song song, xử lý Ticket báo lỗi minh bạch.',
       icon: LifeBuoy,
       accent: 'from-indigo-500 to-[#1E40FF]',
     },
@@ -237,8 +236,8 @@ export const CrmLanding: React.FC = () => {
               transition={{ delay: 0.2 }}
               className="text-slate-600 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-9 font-medium"
             >
-              Hệ thống CRM 360° kết hợp Auto Chia Data dưới 5 giây qua ZaloBot &amp; Telegram: quản trị Sales Pipeline 8
-              nấc, giỏ hàng real-time, chống ôm số SLA 120s và đồng bộ hóa đơn điện tử MISA hai chiều.
+              Hệ thống CRM 360° kết hợp Auto Chia Data dưới 5 giây qua ZaloBot &amp; Telegram: quản trị Sales Pipeline 9
+              nấc chuẩn Meta CAPI, lọc trùng 180 ngày, giỏ hàng BĐS real-time &amp; đồng bộ hóa đơn điện tử MISA hai chiều.
             </motion.p>
 
             <motion.div
@@ -251,14 +250,14 @@ export const CrmLanding: React.FC = () => {
                 href="https://crm-domation.vercel.app/"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-inkica-primary w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm md:text-base font-bold"
+                className="btn-inkica-primary min-h-[44px] w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm md:text-base font-bold"
               >
                 Trải nghiệm ngay <ArrowRight className="w-4 h-4" />
               </a>
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
-                className="ql-btn-outline w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm md:text-base font-bold cursor-pointer"
+                className="ql-btn-outline min-h-[44px] w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm md:text-base font-bold cursor-pointer"
               >
                 Xem báo giá chi tiết
               </button>
@@ -336,9 +335,9 @@ export const CrmLanding: React.FC = () => {
                   </p>
                   <ul className="space-y-3.5">
                     {[
-                      'Auto Chia Data qua ZaloBot dưới 5s, lọc trùng 6 tháng & Van SLA 120s chống ôm số',
-                      'Hồ sơ Khách hàng 360°, Pipeline Kanban 8 nấc & Giỏ hàng BĐS real-time không trùng cọc',
-                      'Đồng bộ hóa đơn điện tử MISA hai chiều & đối soát doanh thu thực về Meta/Google Ads',
+                      'Auto Chia Data qua ZaloBot dưới 5s, lọc trùng 180 ngày (6 tháng) & Van SLA 120s chống ôm số',
+                      'Hồ sơ Khách hàng 360°, Pipeline Kanban 9 nấc & Giỏ hàng BĐS real-time khóa căn tức thì',
+                      'Đồng bộ hóa đơn điện tử MISA hai chiều & bắn ngược Meta CAPI SHA-256 tối ưu quảng cáo',
                     ].map((pain, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center shrink-0 mt-0.5">
@@ -399,26 +398,26 @@ export const CrmLanding: React.FC = () => {
                 </div>
                 <div className="order-1 lg:order-2">
                   <div className="ql-eyebrow mb-5">
-                    <Box className="w-3.5 h-3.5" /> Quản Lý Kho Tiên Tiến
+                    <Building2 className="w-3.5 h-3.5" /> Giỏ Hàng BĐS &amp; Kế Toán MISA
                   </div>
                   <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-5 leading-tight">
-                    Kiểm Soát Tồn Kho Theo Thời Gian Thực
+                    Giỏ Hàng Real-Time &amp; Đồng Bộ MISA Hai Chiều
                   </h2>
                   <p className="text-slate-600 text-sm md:text-base mb-7 leading-relaxed">
-                    Hệ thống quản lý sản phẩm (Products), tồn kho (Inventory) kết nối đồng bộ với đơn hàng (Invoices).
-                    Tránh tình trạng hụt hàng hoặc thất thoát không đáng có.
+                    Khóa căn giữ chỗ theo thời gian thực giữa các sàn F1 để triệt tiêu trùng cọc, tự sinh Phiếu Hợp Tác
+                    Co-care 100% hoa hồng và đẩy hóa đơn điện tử thẳng sang kế toán MISA.
                   </p>
                   <div className="space-y-4">
                     <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-                      <h3 className="font-bold text-slate-900 mb-1">Kiểm Kê Sản Phẩm Tự Động</h3>
+                      <h3 className="font-bold text-slate-900 mb-1">Khóa Căn Tức Thì &amp; Phiếu Hợp Tác 100%</h3>
                       <p className="text-sm text-slate-600">
-                        Tự động trừ kho khi xuất Invoice. Có hệ thống định mức tối thiểu cảnh báo cần nhập hàng từ Suppliers.
+                        Cập nhật trạng thái Mở bán / Giữ chỗ / Đặt cọc real-time cho nội bộ lẫn Đại lý F1, minh bạch hoa hồng từng người hỗ trợ.
                       </p>
                     </div>
                     <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80">
-                      <h3 className="font-bold text-slate-900 mb-1">Theo Dõi Thu Chi (Expenses)</h3>
+                      <h3 className="font-bold text-slate-900 mb-1">Đồng Bộ Hóa Đơn Điện Tử MISA &amp; VietQR</h3>
                       <p className="text-sm text-slate-600">
-                        Ghi nhận mọi khoản chi phí công ty, giúp tính toán Profit Margin chuẩn xác tới từng đồng.
+                        Webhook tự động map mã khách, mã số thuế, dòng tiền đặt cọc UNC/VietQR sang MISA và gạch nợ hai chiều tức thì.
                       </p>
                     </div>
                   </div>
@@ -464,15 +463,14 @@ export const CrmLanding: React.FC = () => {
             </div>
           </div>
 
-          {/* Pricing Section */}
-          <div className="max-w-5xl mx-auto mb-16" id="pricing">
+          {/* Pricing Section — Canonical DOMATION Suite */}
+          <div className="max-w-7xl mx-auto mb-16" id="pricing">
             <FadeIn className="text-center mb-10">
               <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">
-                Bảng Báo Giá <span className="text-gradient-inkica">DOMATION CRM</span>
+                Bảng Giá Đồng Bộ <span className="text-gradient-inkica">DOMATION CRM 360° &amp; Auto Data</span>
               </h2>
               <p className="text-slate-600 max-w-2xl mx-auto">
-                Chọn giải pháp phù hợp với quy mô doanh nghiệp của bạn. Không giới hạn tính năng cơ bản, chỉ tính phí
-                dựa trên số người dùng (Users).
+                Dùng thử miễn phí 30 ngày (0₫) • Giá theo gói doanh nghiệp minh bạch, nâng cấp liền mạch giữ nguyên 100% dữ liệu.
               </p>
             </FadeIn>
 
@@ -497,111 +495,77 @@ export const CrmLanding: React.FC = () => {
                   Theo Năm
                 </span>
                 <span className="bg-blue-50 text-[#1E40FF] text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-blue-200">
-                  ƯU ĐÃI 20%
+                  TIẾT KIỆM 15%
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Starter */}
-              <FadeIn delay={0.08}>
-                <div className="inkica-glass-card p-8 h-full flex flex-col">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">Starter</h3>
-                  <p className="text-slate-600 text-sm mb-6">Phù hợp đội nhóm kinh doanh nhỏ dưới 5 người.</p>
-                  <div className="mb-6">
-                    <span className="text-4xl font-black text-slate-900">{isYearly ? '250K' : '300K'}</span>
-                    <span className="text-slate-500 text-sm">/user/tháng</span>
-                  </div>
-                  <ul className="space-y-3.5 mb-8 flex-1">
-                    {[
-                      'Quản lý Khách hàng & Công ty',
-                      'Sales Pipeline & Kanban',
-                      'Calendar & Nhắc việc',
-                      'Báo cáo doanh thu cơ bản',
-                      'Hỗ trợ giờ hành chính',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
-                        <Check className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(true)}
-                    className="ql-btn-outline w-full py-3 rounded-xl font-bold cursor-pointer"
+            <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/90 backdrop-blur-xl shadow-xs grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/75">
+              {DOMATION_SAAS_PLANS.map((plan, idx) => {
+                const isCustom = plan.monthly === 'May Đo';
+                return (
+                  <div
+                    key={plan.name}
+                    className={`p-6 sm:p-7 flex flex-col justify-between ${
+                      idx >= 2 ? 'md:border-t md:border-slate-200/75 xl:border-t-0' : ''
+                    } ${
+                      plan.popular
+                        ? 'bg-gradient-to-br from-[#0F172A] via-[#1E3A8A] to-[#0284C7] text-white'
+                        : ''
+                    }`}
                   >
-                    Bắt đầu ngay
-                  </button>
-                </div>
-              </FadeIn>
-
-              {/* Professional */}
-              <FadeIn delay={0.16} className="relative">
-                <div className="relative rounded-[24px] p-8 bg-gradient-to-br from-[#0F172A] via-[#1E3A8A] to-[#0284C7] text-white h-full flex flex-col shadow-[0_24px_60px_-12px_rgba(30,64,255,0.4)]">
-                  <div className="absolute top-0 right-0 bg-[#06B6D4] text-white text-[10px] font-bold px-3.5 py-1 rounded-bl-xl rounded-tr-[23px] uppercase tracking-wider">
-                    Phổ biến nhất
+                    <div>
+                      <span
+                        className={`inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 ${
+                          plan.popular ? 'bg-cyan-400/20 text-cyan-200' : 'bg-slate-100 text-[#1E40FF]'
+                        }`}
+                      >
+                        {plan.badge}
+                      </span>
+                      <h3 className={`text-lg font-bold mb-2 ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
+                        {plan.name}
+                      </h3>
+                      <div className="mb-3 flex items-baseline gap-1.5">
+                        <span className={`text-2xl sm:text-3xl font-black ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
+                          {isYearly ? plan.yearly : plan.monthly}
+                        </span>
+                        {!isCustom && (
+                          <span className={`text-xs ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
+                            {isYearly ? '/năm' : '/tháng'}
+                          </span>
+                        )}
+                      </div>
+                      <p className={`text-xs sm:text-sm mb-5 ${plan.popular ? 'text-blue-100' : 'text-slate-600'}`}>
+                        {plan.desc}
+                      </p>
+                      <ul className="space-y-3 mb-7">
+                        {plan.features.map((item) => (
+                          <li
+                            key={item}
+                            className={`flex items-start gap-2.5 text-xs sm:text-sm ${
+                              plan.popular ? 'text-blue-50' : 'text-slate-700'
+                            }`}
+                          >
+                            <Check className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-cyan-300' : 'text-[#1E40FF]'}`} />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowModal(true)}
+                      className={`min-h-[44px] w-full py-3 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-colors ${
+                        plan.popular
+                          ? 'bg-white text-[#1E40FF] hover:bg-blue-50 shadow-lg'
+                          : 'ql-btn-outline'
+                      }`}
+                    >
+                      {isCustom ? 'Tư Vấn May Đo' : `Chọn Gói ${plan.name}`}
+                    </button>
                   </div>
-                  <h3 className="text-xl font-bold text-cyan-300 mb-2">Professional</h3>
-                  <p className="text-blue-100 text-sm mb-6">Cho doanh nghiệp SMB cần vận hành chuyên sâu.</p>
-                  <div className="mb-6">
-                    <span className="text-4xl font-black text-white">{isYearly ? '450K' : '550K'}</span>
-                    <span className="text-blue-200 text-sm">/user/tháng</span>
-                  </div>
-                  <ul className="space-y-3.5 mb-8 flex-1">
-                    {[
-                      'Mọi tính năng của Starter',
-                      'Quản lý Sản phẩm & Tồn kho',
-                      'Tạo Báo giá (Quotes) & Hóa đơn điện tử',
-                      'Quản lý Support Tickets',
-                      'Dashboard phân tích chi tiết',
-                      'Phân quyền Role đa cấp độ',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-blue-50">
-                        <Check className="w-4 h-4 text-cyan-300 shrink-0 mt-0.5" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(true)}
-                    className="w-full py-3.5 rounded-xl bg-white text-[#1E40FF] font-black hover:bg-blue-50 transition-colors shadow-lg cursor-pointer"
-                  >
-                    Đăng ký Professional
-                  </button>
-                </div>
-              </FadeIn>
-
-              {/* Enterprise */}
-              <FadeIn delay={0.24}>
-                <div className="inkica-glass-card p-8 h-full flex flex-col">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">Enterprise</h3>
-                  <p className="text-slate-600 text-sm mb-6">Giải pháp tùy chỉnh riêng cho tập đoàn lớn.</p>
-                  <div className="mb-6">
-                    <span className="text-3xl font-black text-slate-900">Liên hệ</span>
-                  </div>
-                  <ul className="space-y-3.5 mb-8 flex-1">
-                    {[
-                      'Triển khai trên Private Server',
-                      'Tính năng code theo yêu cầu',
-                      'Tích hợp API phần mềm thứ 3',
-                      'Tự động hóa luồng phức tạp',
-                      'Account Manager hỗ trợ 1-1',
-                      'Bảo mật SLA cấp cao',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
-                        <Check className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(true)}
-                    className="ql-btn-outline w-full py-3 rounded-xl font-bold cursor-pointer"
-                  >
-                    Nhận tư vấn riêng
-                  </button>
-                </div>
-              </FadeIn>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -634,7 +598,7 @@ export const CrmLanding: React.FC = () => {
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="Lên đầu trang"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 min-h-[44px] px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
       >
         ↑ Đầu trang
       </button>

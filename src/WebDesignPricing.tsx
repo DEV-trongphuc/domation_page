@@ -694,7 +694,7 @@ export const WebDesignPricing: React.FC = () => {
             <button
                 type="button"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="fixed bottom-[94px] sm:bottom-[90px] left-1/2 -translate-x-1/2 z-40 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
+                className="fixed bottom-[94px] sm:bottom-[90px] left-1/2 -translate-x-1/2 z-40 min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
             >
                 <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
                 <span>Đầu trang</span>
@@ -711,11 +711,11 @@ export const WebDesignPricing: React.FC = () => {
                      </div>
                      <div className="flex flex-col items-end gap-1">
                           <div className="flex items-center gap-2 md:gap-3">
-                              <button onClick={exportToExcel} className="p-2.5 md:px-4 md:py-2.5 flex items-center gap-2 border border-slate-200 rounded-full text-emerald-700 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 active:scale-95 transition-all cursor-pointer" title="Xuất Báo Giá Excel">
+                              <button onClick={exportToExcel} className="min-h-[44px] min-w-[44px] p-2.5 md:px-4 md:py-2.5 flex items-center justify-center gap-2 border border-slate-200 rounded-full text-emerald-700 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 active:scale-95 transition-all cursor-pointer" title="Xuất Báo Giá Excel">
                                   <Download className="w-4 h-4" />
                                   <span className="hidden md:inline text-sm font-bold">Xuất File Báo Giá</span>
                               </button>
-                              <button onClick={() => setShowModal(true)} className="btn-inkica-primary px-4 sm:px-6 md:px-8 py-2.5 rounded-full text-xs sm:text-sm font-black shadow-[0_10px_24px_rgba(30,64,255,0.26)] active:scale-95 transition-all cursor-pointer">
+                              <button onClick={() => setShowModal(true)} className="btn-inkica-primary min-h-[44px] px-4 sm:px-6 md:px-8 py-2.5 rounded-full text-xs sm:text-sm font-black shadow-[0_10px_24px_rgba(30,64,255,0.26)] active:scale-95 transition-all cursor-pointer">
                                   Request
                               </button>
                           </div>

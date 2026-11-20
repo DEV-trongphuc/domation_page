@@ -790,11 +790,11 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     id: 'art-49',
     number: '49',
     slug: 'crm-pipeline-kanban-8-nac-rao-can-ttl1-chong-sot-lead',
-    title: 'CRM Pipeline Kanban 8 Nấc & Rào Cản TTL1: Logic Chống Sale Bỏ Sót Khách Hàng Doanh Nghiệp',
-    seoTitle: 'CRM Pipeline Kanban 8 Nấc & Chống Sót Lead TTL1 | DOMATION',
+    title: 'CRM Pipeline Kanban 9 Nấc & Rào Cản TTL1: Logic Chống Sale Bỏ Sót Khách Hàng Doanh Nghiệp',
+    seoTitle: 'CRM Pipeline Kanban 9 Nấc & Chống Sót Lead TTL1 | DOMATION',
     metaDescription:
-      'Quản trị phễu bán hàng chuyên sâu bằng CRM Pipeline Kanban 8 nấc và Form rào cản TTL1 trong DOMATION CRM 360°, chống Sale bỏ quên Lead ấm.',
-    focusKeyword: 'crm pipeline kanban 8 bước',
+      'Quản trị phễu bán hàng chuyên sâu bằng CRM Pipeline Kanban 9 nấc và Form rào cản TTL1 trong DOMATION CRM 360°, chống Sale bỏ quên Lead ấm.',
+    focusKeyword: 'crm pipeline kanban 9 bước',
     secondaryKeywords: [
       'chống sale bỏ sót lead',
       'quản trị phễu bán hàng b2b',
@@ -810,13 +810,13 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     publishedAt: '2026-11-12',
     updatedAt: '2026-11-16',
     coverImage: '/imgs/boost/boost-crm-kanban-8-stages.jpg',
-    coverAlt: 'CRM Pipeline Kanban 8 nấc và rào cản TTL1 chống bỏ sót Lead DOMATION',
+    coverAlt: 'CRM Pipeline Kanban 9 nấc và rào cản TTL1 chống bỏ sót Lead DOMATION',
     screenshotImage: '/imgs/erp-screens/rounds.webp',
     screenshotCaption: 'Giao diện Pipeline bán hàng & phân bổ Lead đa kênh trong DOMATION CRM 360°.',
     tldrSummary:
-      '80% doanh thu bị mất không phải vì thiếu Lead mới mà vì Sale bỏ quên những khách hàng "đang cân nhắc" sau cuộc gọi đầu tiên. DOMATION CRM 360° thiết kế Pipeline Kanban 8 nấc rõ ràng kết hợp Rào cản chất lượng TTL1 (Tương tác Lần 1) và cơ chế tự hạ nhiệt (Decay) nhắc Sale gọi lại đúng thời điểm vàng.',
+      '80% doanh thu bị mất không phải vì thiếu Lead mới mà vì Sale bỏ quên những khách hàng "đang cân nhắc" sau cuộc gọi đầu tiên. DOMATION CRM 360° thiết kế Pipeline Kanban 9 nấc rõ ràng kết hợp Rào cản chất lượng TTL1 (Tương tác Lần 1) và cơ chế tự hạ nhiệt (Decay) nhắc Sale gọi lại đúng thời điểm vàng.',
     keyTakeaways: [
-      '8 Nấc chuẩn: Tiếp nhận -> Đã gọi TTL1 -> Tư vấn sâu -> Xem dự án/Demo -> Đặt chỗ -> Đặt cọc -> Hợp đồng -> Xuất hóa đơn & Hậu mãi.',
+      '9 Nấc chuẩn: Chờ xử lý -> Tiếp nhận (Qualified) -> Hẹn gặp (Booked) -> Giữ chỗ (Booking) -> Đặt cọc (Deposited) -> Chốt HĐ (Closed) -> Sai thời điểm (Badtiming) -> Không nghe máy (NoAnswer) -> Sai số/Rác (DisqualifiedLead).',
       'Chặn tình trạng Sale kéo bừa khách sang bước Hẹn gặp mà chưa điền ghi chú nhu cầu & ngân sách tối thiểu (Form TTL1).',
       'Tự động nhắc lịch Follow-up qua ZaloBot và thu hồi về kho DataBank nếu quá 5 ngày không có bất kỳ tương tác nào.',
     ],
@@ -840,7 +840,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     solutionSteps: [
       {
         step: '01',
-        title: 'Thiết kế 8 Cột Kanban Khớp Đúng Chu Kỳ Bán Hàng Doanh Nghiệp',
+        title: 'Thiết kế 9 Nấc Kanban & Ma Trận CAPI Khớp Chu Kỳ Bán Hàng',
         detail: 'Tùy biến tên gọi từng bước theo ngành BĐS, Giáo dục, Nha khoa hoặc B2B.',
         techStack: 'Custom Kanban Pipeline',
       },
@@ -871,7 +871,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     relatedModuleLabel: 'Khám Phá DOMATION CRM 360°',
     faqs: [
       {
-        question: 'Doanh nghiệp có thể chỉnh số lượng cột từ 8 nấc thành 5 hoặc 10 nấc theo quy trình riêng không?',
+        question: 'Doanh nghiệp có thể chỉnh số lượng cột từ 9 nấc thành 5 hoặc 12 nấc theo quy trình riêng không?',
         answer:
           'Hoàn toàn được. Số bước, tên cột và điều kiện bắt buộc tại mỗi cột đều may đo theo đúng mô hình bán hàng của từng công ty.',
       },
@@ -1202,7 +1202,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     keyTakeaways: [
       'Không phải tốn hàng trăm triệu mua thêm Zapier/Make để nối CRM với Zalo, Facebook CAPI và kế toán MISA.',
       'Giao diện thiết kế riêng theo đúng thuật ngữ ngành (Mã căn, Học bổng, Ca khám, Franchise) nên Sale dùng ngay.',
-      'Chi phí minh bạch: từ 250.000₫/user/tháng ở bản SaaS chuẩn hoặc trọn gói may đo không giới hạn user.',
+      'Chi phí minh bạch theo gói Workspace trọn đội: 1.500.000₫/tháng (Auto Data Standard • 25 Users: 20 Sale + 5 Quản lý), 3.000.000₫/tháng (Auto Data Pro • 100 Users: 85 Sale + 15 Quản lý), 6.000.000₫/tháng (Automation • CRM 360° • ERP 5.0) hoặc gói may đo không giới hạn user.',
     ],
     painPoints: [
       {
@@ -1246,7 +1246,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     ],
     metricsOutcome: [
       { label: 'Tiết kiệm phí Middleware ngoài', value: '100% (Tích hợp sẵn)' },
-      { label: 'Gói CRM SaaS từ', value: '250.000₫/user/tháng' },
+      { label: 'Gói SaaS từ', value: '1.500.000₫/tháng (25 Users)' },
       { label: 'Tỷ lệ Sale sử dụng hàng ngày', value: '95%+' },
       { label: 'Kết nối ZaloBot & CAPI', value: 'Sẵn trong lõi' },
     ],
