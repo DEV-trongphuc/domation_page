@@ -16,10 +16,8 @@ import {
   FileText,
   KeyRound,
   Layers,
-  Link2,
   Maximize2,
   Play,
-  RefreshCw,
   ShieldCheck,
   Sparkles,
   TrendingUp,
@@ -33,7 +31,7 @@ import { DomationLogoMark } from './components/DomationLogoMark';
 import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
-import { DOMATION_NAV_EVENT, handleSpaLinkClick, navigateTo } from './utils/navigation';
+import { DOMATION_NAV_EVENT, handleSpaLinkClick } from './utils/navigation';
 import { META_REPORT_FAQS, getMetaReportSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
 import { ErrorBoundary } from './components/autodata/cloned/components/ErrorBoundary';
@@ -112,10 +110,10 @@ interface MetaLiveShot {
 }
 
 const SHOT_CATEGORIES: Array<{ id: MetaShotCat; label: string }> = [
-  { id: 'all', label: 'Tất cả (9)' },
+  { id: 'all', label: 'Tất cả (12)' },
   { id: 'dashboard', label: 'Tổng quan & Giờ vàng' },
-  { id: 'modals', label: 'Chiến dịch & Nội dung' },
-  { id: 'creative', label: 'CRM, Lịch sử & Google Ads' },
+  { id: 'modals', label: 'Chiến dịch, Drawer & Thư viện' },
+  { id: 'creative', label: 'CRM, Tài khoản & Cài đặt' },
 ];
 
 const META_LIVE_SHOTS: MetaLiveShot[] = [
@@ -124,7 +122,7 @@ const META_LIVE_SHOTS: MetaLiveShot[] = [
     category: 'dashboard',
     tag: 'Tổng Quan',
     title: 'Bảng Tổng Quan Chi Tiêu & Kết Quả Real-Time',
-    highlight: 'Chi tiêu • Xu hướng • Độ tuổi',
+    highlight: 'Chi tiêu • Instagram hồng • Độ tuổi',
     desc: 'Xem ngay tổng chi tiêu, tăng giảm kỳ trước, biểu đồ ngày, Facebook/Instagram và độ tuổi.',
     src: '/imgs/meta-screens/meta-dashboard.webp',
   },
@@ -134,8 +132,17 @@ const META_LIVE_SHOTS: MetaLiveShot[] = [
     tag: 'Khung Giờ & Vùng',
     title: 'Bản Đồ Nhiệt Giờ Vàng & Tỉnh Thành Ra Khách',
     highlight: '7 Ngày × 24 Giờ • Tỉnh thành',
-    desc: 'Chỉ rõ khung giờ ra khách rẻ nhất trong tuần và tỉnh thành phản hồi tốt nhất.',
+    desc: 'Chỉ rõ khung giờ ra khách rẻ nhất trong tuần và tỉnh thành phản hồi tốt nhất trên 1 khung không cuộn.',
     src: '/imgs/meta-screens/meta-heatmap-region.webp',
+  },
+  {
+    id: 'meta-funnel-hourly-cpr',
+    category: 'dashboard',
+    tag: '24h CPR & Phễu',
+    title: 'Khung Giờ Vàng 24h, CPR & Phễu Hành Vi Người Dùng',
+    highlight: 'CPR từng giờ • Phễu ngang từ trái',
+    desc: 'So sánh giờ vàng theo tài khoản/người xem kèm CPR từng giờ và phễu tương tác canh trái rõ nét.',
+    src: '/imgs/meta-screens/meta-funnel-hourly-cpr.webp',
   },
   {
     id: 'meta-performance-compare-modal',
@@ -158,29 +165,29 @@ const META_LIVE_SHOTS: MetaLiveShot[] = [
   {
     id: 'meta-ad-detail-modal',
     category: 'modals',
-    tag: 'Giữ Chân Video',
-    title: 'Đo Tỷ Lệ Giữ Chân 3 Giây & Tần Suất Lặp',
-    highlight: 'Hook 3s • Xem trọn video',
-    desc: 'Đánh giá độ hút 3 giây đầu và cảnh báo sớm khi mẫu quảng cáo lặp quá nhiều.',
+    tag: 'Creative & Chẩn Đoán',
+    title: 'Chẩn Đoán Chất Lượng Meta, Ảnh Creative & Nội Dung CTA',
+    highlight: 'Ảnh Creative + Slide • Nội dung CTA',
+    desc: 'Hiển thị trực tiếp chẩn đoán đấu thầu kèm ảnh creative trượt slide bên trái và nội dung CTA bên phải.',
     src: '/imgs/meta-screens/meta-ad-detail-modal.webp',
+  },
+  {
+    id: 'meta-drawer-heatmap-device',
+    category: 'modals',
+    tag: 'Deep Insights Từng Bài',
+    title: 'Heatmap Từng Bài, Thiết Bị, Độ Tuổi & Tỉnh Thành',
+    highlight: 'Heatmap × Device • Age × Region',
+    desc: 'Soi riêng từng Chiến dịch, Nhóm hoặc Bài Ad với Heatmap 7×24 cạnh Device và Age × Region cùng 1 hàng.',
+    src: '/imgs/meta-screens/meta-drawer-heatmap-device.webp',
   },
   {
     id: 'meta-ads-library',
     category: 'modals',
     tag: 'Thư Viện Bài Chạy',
-    title: 'Thư Viện Trực Quan Mọi Ảnh & Video Đang Chạy',
-    highlight: 'Xem bài thật • Mở post gốc',
-    desc: 'Xem ảnh, video từng bài chạy kèm chi phí, số khách và mở thẳng bài viết gốc.',
+    title: 'Thư Viện Trực Quan Mọi Ảnh & Video Đang Chạy HD',
+    highlight: 'Ảnh HD 720px • Mở drawer tức thì',
+    desc: 'Xem ảnh nét căng, tỷ lệ giữ chân Hook 3s từng bài chạy và bấm thẳng vào thẻ để mở chi tiết.',
     src: '/imgs/meta-screens/meta-ads-library.webp',
-  },
-  {
-    id: 'meta-ad-account-logs',
-    category: 'creative',
-    tag: 'Lịch Sử Tài Khoản',
-    title: 'Tổng Hợp Chi Tiêu Năm, Thuế VAT & Nhật Ký Sửa',
-    highlight: 'Minh bạch 100% thao tác',
-    desc: 'Thống kê ngân sách 12 tháng, thuế VAT và ghi vết ai vừa chỉnh sửa chiến dịch.',
-    src: '/imgs/meta-screens/meta-ad-account-logs.webp',
   },
   {
     id: 'fusion-campaign-crm-leads',
@@ -192,12 +199,30 @@ const META_LIVE_SHOTS: MetaLiveShot[] = [
     src: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
   },
   {
+    id: 'meta-ad-account-logs',
+    category: 'creative',
+    tag: 'Lịch Sử Tài Khoản',
+    title: 'Tổng Hợp Chi Tiêu Năm, Thuế VAT & Nhật Ký Sửa',
+    highlight: 'Minh bạch 100% thao tác',
+    desc: 'Thống kê ngân sách 12 tháng, thuế VAT và ghi vết ai vừa chỉnh sửa chiến dịch.',
+    src: '/imgs/meta-screens/meta-ad-account-logs.webp',
+  },
+  {
+    id: 'meta-settings-ai-crm',
+    category: 'creative',
+    tag: 'Cài Đặt & CRM',
+    title: 'Cài Đặt Workspace, AI Key Chung & Nâng Cấp CRM',
+    highlight: '7 Tab ERP • Nâng cấp CRM bên trong',
+    desc: 'Quản lý thương hiệu, Goal/KPI, AI Gemini Key dùng chung và nâng cấp CRM AutoData gọn trong Cài đặt.',
+    src: '/imgs/meta-screens/meta-settings-ai-crm.webp',
+  },
+  {
     id: 'meta-google-ads-guide-modal',
     category: 'creative',
-    tag: 'Mở Rộng Google Ads',
-    title: 'Bật Thêm Báo Cáo Google Ads Theo 5 Bước Gọn Lẹ',
-    highlight: 'Theo dõi đa kênh khi cần',
-    desc: 'Giữ giao diện gọn cho Meta Ads; bật thêm Google Ads bất cứ lúc nào chạy đa kênh.',
+    tag: 'Cấu Hình Kết Nối',
+    title: 'Cấu Hình Mở Rộng Báo Cáo Google Ads Theo 5 Bước',
+    highlight: 'Tùy chọn đa kênh trong Cài đặt',
+    desc: 'Giữ giao diện gọn cho Meta Ads; cấu hình đồng bộ thêm Google Ads ngay trong mục Cài đặt khi cần.',
     src: '/imgs/meta-screens/meta-google-ads-guide-modal.webp',
   },
 ];
@@ -1250,198 +1275,6 @@ export const MetaAdReport: React.FC = () => {
               </span>
             </div>
           </div>
-
-          {/* Automated 3-Step Pipeline Banner: Meta Ads -> Google Sheets -> Dashboard */}
-          <div className="max-w-5xl mx-auto mt-8 sm:mt-12 rounded-2xl sm:rounded-[28px] bg-white/90 sm:bg-white/85 sm:backdrop-blur-2xl border border-slate-200/80 shadow-[0_24px_64px_-24px_rgba(15,23,42,0.08)] p-4 sm:p-8 flex flex-col gap-4 sm:gap-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="space-y-1 text-left">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-800">
-                    LUỒNG ĐỒNG BỘ TỰ ĐỘNG • META ADS → GOOGLE SHEETS → DASHBOARD BÁO CÁO
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Số liệu chiến dịch được tự động kéo về, lưu trữ chuẩn hóa trên Google Sheets và lên
-                  biểu đồ trực quan tức thì — dùng độc lập hoặc đồng bộ thẳng với hệ sinh thái DOMATION.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => openStartFlow('register')}
-                className="self-start sm:self-center ql-btn-outline rounded-full px-4 py-2 text-xs cursor-pointer whitespace-nowrap shrink-0"
-              >
-                <span>Khởi tạo 60 giây</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <div className="pt-4 border-t border-slate-200/75 grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 relative">
-              {[
-                {
-                  step: 'Bước 01',
-                  title: 'Tài khoản Meta Ads',
-                  desc: 'Kết nối an toàn nhiều tài khoản doanh nghiệp và cá nhân, tự động lấy chi tiêu, lượt tiếp cận, tin nhắn và video.',
-                  renderLogo: () => (
-                    <img
-                      src="/assets/brands/meta-icon.svg"
-                      alt="Meta Ads"
-                      className="w-9 h-9 rounded-xl object-contain shrink-0"
-                    />
-                  ),
-                },
-                {
-                  step: 'Bước 02',
-                  title: 'Google Sheets trung tâm',
-                  desc: 'Chuẩn hóa và lưu trữ lịch sử dữ liệu sạch sẽ trên trang tính riêng của doanh nghiệp, minh bạch và dễ kiểm chứng.',
-                  renderLogo: () => (
-                    <img
-                      src="/assets/brands/sheets-icon.svg"
-                      alt="Google Sheets"
-                      className="w-9 h-9 rounded-xl object-contain shrink-0"
-                    />
-                  ),
-                },
-                {
-                  step: 'Bước 03',
-                  title: 'Dashboard trực quan',
-                  desc: 'Biểu đồ xu hướng, khung giờ ra khách, thư viện mẫu quảng cáo và đường dẫn chia sẻ báo cáo an toàn.',
-                  renderLogo: () => (
-                    <div className="w-9 h-9 rounded-xl bg-[#F4F8FF] border border-blue-100 flex items-center justify-center shrink-0">
-                      <DomationLogoMark size={22} />
-                    </div>
-                  ),
-                },
-              ].map((node, index) => (
-                <div
-                  key={node.step}
-                  className="relative rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/80 p-4 flex flex-col gap-2.5 transition-colors text-left"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      {node.renderLogo()}
-                      <div className="min-w-0">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#1E40FF]">
-                          {node.step}
-                        </div>
-                        <div className="text-sm font-bold text-slate-900 leading-snug">{node.title}</div>
-                      </div>
-                    </div>
-                    {index < 2 && (
-                      <span className="hidden lg:inline-flex w-6 h-6 rounded-full bg-white border border-slate-200 text-[#1E40FF] items-center justify-center shrink-0">
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">{node.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Brand Sapphire Connect-Link Divider: Bridging Dashboard Step 3 into CRM Auto Closed-Loop Optimization */}
-            <div className="relative py-3 flex items-center justify-center">
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
-              <div className="relative z-10 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-[#F4F8FF]/95 px-3.5 sm:px-4 py-1.5 shadow-xs">
-                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white flex items-center justify-center shrink-0 shadow-xs">
-                  <Link2 className="w-3.5 h-3.5" />
-                </span>
-                <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#1E40FF]">
-                  Kết Hợp Auto Data CRM • Vòng Tròn Tối Ưu Khép Kín
-                </span>
-              </div>
-            </div>
-
-            <div
-              data-testid="meta-crm-closed-loop-bridge"
-              className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-[#ECFEFF]/75 border border-blue-200/80 p-4 sm:p-5 space-y-4 text-left"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#1E40FF]">
-                    <RefreshCw className="w-3.5 h-3.5 shrink-0" />
-                    <span>Từ Dashboard Bước 03 → Vận Hành CRM &amp; Học Tệp CAPI Tự Động</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Đừng chỉ xem báo cáo đẹp trên màn hình — kết nối thẳng số liệu Bước 03 với Auto Data CRM để mỗi đồng chi tiêu Ads tự xoay vòng sinh lời ngày càng chuẩn xác:
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  data-testid="meta-crm-connect-now"
-                  onClick={() => navigateTo('/data?setup=quick')}
-                  className="self-start sm:self-center inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white px-5 py-2.5 min-h-[44px] text-xs font-bold shadow-[0_6px_18px_rgba(30,64,255,0.28)] transition-all cursor-pointer whitespace-nowrap shrink-0"
-                >
-                  <Link2 className="w-3.5 h-3.5 shrink-0" />
-                  <span>Connect ngay</span>
-                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
-                {[
-                  {
-                    badge: 'Từ Bước 03 → Chia Sale < 5s',
-                    title: 'Chia cho từng Sale tư vấn chăm sóc',
-                    desc: 'Lead đổ về từ bài Ads trên Dashboard được lọc trùng 180 ngày và chia vòng công bằng 1:1 tới Zalo/Telegram của từng Sale chỉ trong dưới 5 giây.',
-                    renderLogo: () => (
-                      <img
-                        src="/assets/brands/zalobot-logo.webp"
-                        alt="ZaloBot Chia Sale"
-                        className="w-9 h-9 rounded-xl object-contain bg-white border border-blue-100 p-1 shrink-0"
-                      />
-                    ),
-                  },
-                  {
-                    badge: 'Đối soát 2 chiều theo từng Ads',
-                    title: 'Báo cáo trạng thái từng Lead trên từng Ads',
-                    desc: 'Hiển thị trực tiếp từng Lead thuộc bài quảng cáo nào đang Hẹn gặp, Tiềm năng, Chốt đơn hay Số rác — biết chính xác bài nào ra doanh thu thật.',
-                    renderLogo: () => (
-                      <div className="w-9 h-9 rounded-xl bg-[#F4F8FF] border border-blue-100 flex items-center justify-center shrink-0">
-                        <DomationLogoMark size={22} />
-                      </div>
-                    ),
-                  },
-                  {
-                    badge: 'Vòng tròn tối ưu thuật toán Meta',
-                    title: 'Bắn Meta CAPI học tệp tối ưu',
-                    desc: 'Tự động mã hóa SHA-256 và gửi ngược tín hiệu chất lượng (Qualified, Purchase) về Meta CAPI để thuật toán né số ảo, nhân bản đúng tệp khách chốt.',
-                    renderLogo: () => (
-                      <img
-                        src="/assets/brands/meta-icon.svg"
-                        alt="Meta CAPI SHA-256"
-                        className="w-9 h-9 rounded-xl object-contain bg-white border border-blue-100 p-1 shrink-0"
-                      />
-                    ),
-                  },
-                ].map((stage, idx) => (
-                  <div
-                    key={stage.badge}
-                    className="rounded-2xl bg-white/95 hover:bg-white border border-slate-200/85 p-4 flex flex-col gap-2.5 shadow-2xs transition-colors"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        {stage.renderLogo()}
-                        <div className="min-w-0">
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-[#1E40FF] truncate">
-                            {stage.badge}
-                          </div>
-                          <div className="text-sm font-bold text-slate-900 leading-snug">
-                            {stage.title}
-                          </div>
-                        </div>
-                      </div>
-                      {idx < 2 && (
-                        <span className="hidden lg:inline-flex w-6 h-6 rounded-full bg-slate-50 border border-slate-200 text-[#1E40FF] items-center justify-center shrink-0">
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">{stage.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </section>
 
         {/* ====================================================================
@@ -1948,7 +1781,7 @@ export const MetaAdReport: React.FC = () => {
                   badge: 'Đồng bộ cùng đội Sale',
                   icon: Database,
                   title: '2. Kết Nối Với Hệ Thống Auto Chia Data',
-                  desc: 'Mở ngay bảng báo cáo quảng cáo bên cạnh bộ chia vòng khách hàng tự động dưới 5 giây qua Zalo và Telegram, vừa theo dõi chi phí vừa kiểm soát chất lượng Sale gọi khách.',
+                  desc: 'Mở ngay bảng báo cáo quảng cáo bên cạnh bộ chia vòng khách hàng tự động tức thì qua Zalo và Telegram, vừa theo dõi chi phí vừa kiểm soát chất lượng Sale gọi khách.',
                   ctaLabel: 'Khám phá Auto Chia Data',
                   href: '/data',
                 },

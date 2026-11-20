@@ -224,26 +224,6 @@
       "destination": "/meta-report/index.html"
     },
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "meta.domation.net"
-        }
-      ],
-      "destination": "/meta-report/index.html"
-    },
-    {
-      "source": "/:slug((?!assets|imgs|meta-report|portfolio|boost|404|404\\.html|favicon\\.ico|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|manifest\\.webmanifest).*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "meta.domation.net"
-        }
-      ],
-      "destination": "/meta-report/index.html"
-    },
-    {
       "source": "/404.html",
       "destination": "/404.html"
     },

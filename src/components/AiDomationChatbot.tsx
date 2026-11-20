@@ -42,8 +42,8 @@ const STARTER_SUGGESTIONS: StarterSuggestion[] = [
     prompt: 'Cho tôi xem bảng giá các gói DOMATION SaaS (Starter, Growth, Enterprise) và chi phí thiết kế Web 3D?',
   },
   {
-    label: 'Auto Chia Data < 5s & CAPI',
-    prompt: 'Hệ thống phân bổ Lead < 5 giây, lọc trùng và tự động bắn Meta CAPI hoạt động như thế nào?',
+    label: 'Auto Chia Data Tức Thì & CAPI',
+    prompt: 'Hệ thống phân bổ Lead tức thì, lọc trùng và tự động bắn Meta CAPI hoạt động như thế nào?',
   },
   {
     label: 'ERP 5.0 & CRM 360°',

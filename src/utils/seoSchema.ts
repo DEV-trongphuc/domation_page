@@ -151,7 +151,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
     alternateName: ['DOMATION', 'DOMATION.NET', 'DOMARKETING', 'DOM MARKETING'],
     url: `${SITE_URL}/`,
     description:
-      'Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số <5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.',
+      'Hệ sinh thái DOMATION hợp nhất điểm chạm Website/Landing Page 3D với bộ máy nội bộ: CRM Auto Data chia số tức thì, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS, Tracking hành vi Website & phần mềm ERP 5.0 may đo tích hợp Đa Trợ Lý AI.',
     image: DEFAULT_OG_IMAGE,
     logo: {
       '@type': 'ImageObject',
@@ -209,7 +209,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       'Phần mềm AI Agent & Multi-Agent AI Điều Phối Tự Trị',
       'Vibecode Enterprise & Kiến Trúc Phần Mềm Custom Chuyên Sâu',
       'Flow Automation Đa Kênh (Visual Flow IF/ELSE, Webhook 2 Chiều)',
-      'Auto Chia Data ZaloBot < 5s & Meta CAPI SHA-256',
+      'Auto Chia Data ZaloBot Tức Thì & Meta CAPI SHA-256',
       'Phần mềm CRM 360 độ & Hóa đơn điện tử MISA',
       'Tối ưu Quảng cáo, Landing Page CRO & Chiến dịch Automation',
       'Thiết kế Website & Sa bàn 3D WebGL',
@@ -227,7 +227,7 @@ export function buildWebSiteSchema(): Record<string, unknown> {
     name: 'DOMATION',
     alternateName: ['DOMATION Việt Nam', 'DOMATION.NET', 'Công Ty TNHH DOMATION Việt Nam'],
     description:
-      'Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data <5s, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.',
+      'Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data Tức Thì, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.',
     inLanguage: 'vi-VN',
     publisher: {
       '@id': ORG_ID,

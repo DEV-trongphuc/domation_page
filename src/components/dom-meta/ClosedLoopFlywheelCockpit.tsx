@@ -70,8 +70,8 @@ export const ClosedLoopFlywheelCockpit: React.FC<ClosedLoopFlywheelCockpitProps>
     {
       id: 'routing' as const,
       step: '02',
-      title: 'Auto-Router <5s',
-      primaryVal: '< 5 giây',
+      title: 'Auto-Router Tức Thì',
+      primaryVal: 'Tức thì',
       subVal: '120s SLA • Hoàn 1:1',
       detail:
         'Lọc trùng 180 ngày (6 tháng), chống trễ SLA 120s tự thu hồi và đền bù ticket sai số tỷ lệ 1:1.',
@@ -130,7 +130,7 @@ export const ClosedLoopFlywheelCockpit: React.FC<ClosedLoopFlywheelCockpitProps>
               CLOSED-LOOP FLYWHEEL COCKPIT
             </div>
             <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
-              Vòng Tròn Tối Ưu: Ads → Auto-Router &lt;5s → CRM → Meta CAPI SHA-256
+              Vòng Tròn Tối Ưu: Ads → Auto-Router Tức Thì → CRM → Meta CAPI SHA-256
             </h3>
           </div>
         </div>

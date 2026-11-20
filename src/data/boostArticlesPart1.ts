@@ -5,10 +5,10 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     id: 'art-01',
     number: '01',
     slug: 'auto-chia-data-zalobot-5-giay-chong-rot-lead-bds',
-    title: 'Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot < 5 giây & Van chống ôm Lead',
-    seoTitle: 'Auto Chia Data ZaloBot < 5s & Van Chống Ôm Lead BĐS | DOMATION',
+    title: 'Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot Tức Thì & Van chống ôm Lead',
+    seoTitle: 'Auto Chia Data ZaloBot Tức Thì & Van Chống Ôm Lead BĐS | DOMATION',
     metaDescription:
-      'Giải pháp tự động chia data khách hàng BĐS qua ZaloBot dưới 5 giây, lọc trùng 6 tháng và thu hồi Lead quá hạn 2 phút giúp giảm 40% tỷ lệ rớt khách.',
+      'Giải pháp tự động chia data khách hàng BĐS qua ZaloBot tức thì, lọc trùng 6 tháng và thu hồi Lead quá hạn 2 phút giúp giảm 40% tỷ lệ rớt khách.',
     focusKeyword: 'auto chia data zalobot',
     secondaryKeywords: [
       'phân bổ lead tự động bđs',
@@ -25,11 +25,11 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     publishedAt: '2026-10-12',
     updatedAt: '2026-11-12',
     coverImage: '/imgs/boost/boost-zalobot-5s-router.jpg',
-    coverAlt: 'Kiến trúc Auto Chia Data ZaloBot dưới 5 giây cho Chủ đầu tư và Đại lý F1 Bất động sản',
+    coverAlt: 'Kiến trúc Auto Chia Data ZaloBot tức thì cho Chủ đầu tư và Đại lý F1 Bất động sản',
     screenshotImage: '/imgs/autodata/showcase/screen_dashboard.jpg',
-    screenshotCaption: 'Giao diện DOMATION Auto Data V2 chia số đa cổng dưới 5 giây kèm nhật ký nhận lead.',
+    screenshotCaption: 'Giao diện DOMATION Auto Data V2 chia số đa cổng tức thì kèm nhật ký nhận lead.',
     tldrSummary:
-      'Chậm phản hồi quá 5 phút khiến tỷ lệ kết nối Lead Bất động sản giảm tới 80%. Kiến trúc Auto Chia Data DOMATION thu Lead từ Meta Form/Landing Page qua Webhook, lọc trùng 6 tháng bằng SHA-256/SĐT chuẩn +84, chia vòng Round-Robin qua ZaloBot cá nhân trong dưới 5 giây và tự động thu hồi nếu Sale không nhận sau 120 giây.',
+      'Chậm phản hồi quá 5 phút khiến tỷ lệ kết nối Lead Bất động sản giảm tới 80%. Kiến trúc Auto Chia Data DOMATION thu Lead từ Meta Form/Landing Page qua Webhook, lọc trùng 6 tháng bằng SHA-256/SĐT chuẩn +84, chia vòng Round-Robin qua ZaloBot cá nhân tức thì và tự động thu hồi nếu Sale không nhận sau 120 giây.',
     keyTakeaways: [
       'Rút ngắn thời gian từ lúc khách điền Form đến khi Sale nhận thông báo ZaloBot xuống còn 2.8 – 4.5 giây.',
       'Chặn hoàn toàn tình trạng Sale ôm số nhưng không gọi nhờ cơ chế Van SLA 120 giây tự động xoay vòng.',
@@ -93,7 +93,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
       },
       {
         step: '03',
-        title: 'Chia vòng Round-Robin 5 cổng qua ZaloBot < 5s',
+        title: 'Chia vòng Round-Robin 5 cổng qua ZaloBot Tức Thì',
         detail: 'Tự động bỏ qua Sale đang tắt ca/nghỉ phép, gửi tin nhắn kèm nút Nhận Lead ngay trên Zalo.',
         techStack: '5-Port Router • ZaloBot • Telegram Fallback',
       },
@@ -139,7 +139,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
       },
     ],
     metricsOutcome: [
-      { label: 'Tốc độ giao Lead', value: '< 5 giây' },
+      { label: 'Tốc độ giao Lead', value: 'Tức thì' },
       { label: 'Tỷ lệ nghe máy lần 1', value: '76% (+42%)' },
       { label: 'Tiết kiệm ngân sách trùng', value: '35%' },
       { label: 'Độ lệch chia giữa các Sale', value: '< 1%' },
@@ -1298,7 +1298,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     metricsOutcome: [
       { label: 'Giảm tỷ lệ No-show', value: '35% -> 11%' },
       { label: 'Tỷ lệ nhắc tái khám đúng hạn', value: '94%' },
-      { label: 'Thời gian xác nhận lịch', value: '< 5 giây' },
+      { label: 'Thời gian xác nhận lịch', value: 'Tức thì' },
     ],
     relatedPortfolioId: 'flora-dental',
     relatedModuleUrl: '/crm',
@@ -1390,7 +1390,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     sections: [
       {
         id: 'van-hanh-an-toan-khong-hy-sinh-toc-do',
-        heading: 'Bảo mật chặt nhưng thao tác Sale vẫn dưới 5 giây',
+        heading: 'Bảo mật chặt nhưng thao tác Sale vẫn tức thì',
         paragraphs: [
           'Nhiều hệ thống bảo mật bắt nhân viên đăng nhập 4 lớp VPN khiến tốc độ gọi khách chậm đi 5 phút. Kiến trúc DOMATION xác thực token bảo mật qua ZaloBot/Portal định danh từng nhân sự: Sale vẫn nhận cuộc gọi trực tiếp đúng khách của mình trong 4 giây nhưng không thể xem hoặc tải dữ liệu của đồng nghiệp khác.',
         ],
@@ -1399,7 +1399,7 @@ export const BOOST_ARTICLES_PART_1: BoostArticle[] = [
     metricsOutcome: [
       { label: 'Cô lập dữ liệu chi nhánh', value: '100% RLS' },
       { label: 'Ẩn SĐT trên màn hình Audit', value: 'Masked SHA-256' },
-      { label: 'Thời gian phản hồi Lead', value: '< 5 giây' },
+      { label: 'Thời gian phản hồi Lead', value: 'Tức thì' },
     ],
     relatedPortfolioId: 'implantswiss-crm',
     relatedModuleUrl: '/data',

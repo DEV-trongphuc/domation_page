@@ -49,7 +49,7 @@ const ECOSYSTEM_ROUTES = [
     id: 'data',
     href: '/data',
     label: 'Auto Data & Meta CAPI',
-    desc: 'Chia Lead ZaloBot < 5s & HTTP 200',
+    desc: 'Chia Lead ZaloBot Tức Thì & HTTP 200',
     icon: Database,
   },
   {

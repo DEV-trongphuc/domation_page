@@ -107,7 +107,7 @@ export const CrmLanding: React.FC = () => {
       accent: 'from-blue-600 to-cyan-500',
     },
     {
-      title: 'Chia Số < 5s & Van SLA 120s',
+      title: 'Chia Số Tức Thì & Van SLA 120s',
       desc: 'Tự động phân phối Lead qua ZaloBot / Telegram, thu hồi sau 120s nếu quá hạn và bù Ticket lỗi 1-đổi-1.',
       icon: Calendar,
       accent: 'from-emerald-500 to-teal-600',
@@ -236,7 +236,7 @@ export const CrmLanding: React.FC = () => {
               transition={{ delay: 0.2 }}
               className="text-slate-600 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed mb-9 font-medium"
             >
-              Hệ thống CRM 360° kết hợp Auto Chia Data dưới 5 giây qua ZaloBot &amp; Telegram: quản trị Sales Pipeline 9
+              Hệ thống CRM 360° kết hợp Auto Chia Data tức thì qua ZaloBot &amp; Telegram: quản trị Sales Pipeline 9
               nấc chuẩn Meta CAPI, lọc trùng 180 ngày, giỏ hàng BĐS real-time &amp; đồng bộ hóa đơn điện tử MISA hai chiều.
             </motion.p>
 
@@ -335,7 +335,7 @@ export const CrmLanding: React.FC = () => {
                   </p>
                   <ul className="space-y-3.5">
                     {[
-                      'Auto Chia Data qua ZaloBot dưới 5s, lọc trùng 180 ngày (6 tháng) & Van SLA 120s chống ôm số',
+                      'Auto Chia Data qua ZaloBot tức thì, lọc trùng 180 ngày (6 tháng) & Van SLA 120s chống ôm số',
                       'Hồ sơ Khách hàng 360°, Pipeline Kanban 9 nấc & Giỏ hàng BĐS real-time khóa căn tức thì',
                       'Đồng bộ hóa đơn điện tử MISA hai chiều & bắn ngược Meta CAPI SHA-256 tối ưu quảng cáo',
                     ].map((pain, idx) => (

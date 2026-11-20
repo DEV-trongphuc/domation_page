@@ -104,7 +104,7 @@ const AUTODATA_SCREENS = [
   {
     id: 'rounds',
     label: 'Vòng chia Dự án',
-    hint: 'Chia theo sản phẩm, đẩy ZaloBot < 5s & chống ôm số',
+    hint: 'Chia theo sản phẩm, đẩy ZaloBot tức thì & chống ôm số',
     badge: 'PHÂN BỔ LINH HOẠT',
     title: 'Vòng Phân Bổ Độc Lập Theo Từng Dự Án',
     desc: 'Tùy biến tỷ lệ chia cho từng đội Sale, tự động chuyển lượt nếu quá hạn không nhận.',
@@ -114,36 +114,60 @@ const AUTODATA_SCREENS = [
 
 const ADS_SPOTLIGHT_SCREENS = [
   {
-    id: 'lead-sale',
-    label: 'Lead & Sale từng Bài',
-    badge: 'TRUY VẾT 2 CHIỀU',
-    title: 'Bấm Từng Bài Ads — Xem Ngay Danh Sách Khách & Sale Chăm',
-    desc: 'Kiểm tra từng khách hàng đổ về từ bài viết, Sale đang phụ trách và doanh thu thực tế.',
-    src: '/imgs/meta-screens/fusion-ad-leads-sale-modal.webp',
-  },
-  {
     id: 'overview',
-    label: 'Dashboard Real-Time',
+    label: 'Tổng Quan Real-Time',
     badge: 'BÁO CÁO QUẢNG CÁO',
-    title: 'Tổng Quan Chi Tiêu, Xu Hướng Ngày & Nền Tảng',
-    desc: 'Cập nhật tức thì ngân sách đã chi, tăng giảm so với kỳ trước và tỷ trọng Facebook / Instagram.',
+    title: 'Bảng Tổng Quan Chi Tiêu, Xu Hướng & Nền Tảng',
+    desc: 'Theo dõi tức thì ngân sách đã chi, tăng giảm kỳ trước, biểu đồ Facebook / Instagram và độ tuổi.',
     src: '/imgs/meta-screens/meta-dashboard.webp',
   },
   {
     id: 'heatmap',
-    label: 'Khung giờ & Khu vực',
-    badge: 'TỐI ƯU NGÂN SÁCH',
-    title: 'Khung Giờ Ra Khách Rẻ Nhất & Tỉnh Thành Hiệu Quả',
-    desc: 'Phát hiện khung giờ vàng chốt đơn và tỉnh thành có chi phí mỗi khách tốt nhất.',
+    label: 'Heatmap & Vùng',
+    badge: 'GIỜ VÀNG CHỐT ĐƠN',
+    title: 'Bản Đồ Nhiệt 7×24 Giờ Vàng & Tỉnh Thành Ra Khách',
+    desc: 'Phát hiện khung giờ ra khách rẻ nhất trong tuần và tỉnh thành có chi phí mỗi khách tối ưu nhất.',
     src: '/imgs/meta-screens/meta-heatmap-region.webp',
   },
   {
-    id: 'google-ads',
-    label: 'Mở rộng Google Ads',
-    badge: 'ĐA KÊNH QUẢNG CÁO',
-    title: 'Bật Thêm Báo Cáo Google Ads Trên Cùng Giao Diện',
-    desc: 'Theo dõi song song Meta Ads & Google Ads khi doanh nghiệp chạy đa kênh.',
-    src: '/imgs/meta-screens/meta-google-ads-guide-modal.webp',
+    id: 'funnel',
+    label: '24h CPR & Phễu',
+    badge: 'PHỄU HÀNH VI',
+    title: 'Khung Giờ Vàng 24h, CPR & Phễu Chuyển Đổi Ngang',
+    desc: 'Đối chiếu chi tiêu với kết quả & CPR theo từng giờ, soi phễu hành vi từ hiển thị đến chốt đơn.',
+    src: '/imgs/meta-screens/meta-funnel-hourly-cpr.webp',
+  },
+  {
+    id: 'ad-detail',
+    label: 'Creative & Chẩn Đoán',
+    badge: 'CHI TIẾT BÀI ADS',
+    title: 'Chẩn Đoán Chất Lượng Meta Kèm Ảnh Creative & CTA',
+    desc: 'Soi bảng xếp hạng phân phối Meta kèm slide ảnh creative thực tế và toàn bộ nội dung quảng cáo.',
+    src: '/imgs/meta-screens/meta-ad-detail-modal.webp',
+  },
+  {
+    id: 'drawer-deep',
+    label: 'Deep Insights Bài',
+    badge: 'HEATMAP × DEVICE × AGE',
+    title: 'Heatmap, Thiết Bị, Độ Tuổi & Tỉnh Thành Từng Bài',
+    desc: 'Từng chiến dịch, nhóm hay bài Ad đều có Heatmap 7×24 cạnh Device Breakdown và Age × Top Regions.',
+    src: '/imgs/meta-screens/meta-drawer-heatmap-device.webp',
+  },
+  {
+    id: 'library',
+    label: 'Thư Viện Ads HD',
+    badge: 'CREATIVE LIBRARY',
+    title: 'Thư Viện Trực Quan Mọi Ảnh & Video Đang Chạy',
+    desc: 'Hiển thị ảnh Creative HD 720px, tỷ lệ Hook 3s từng mẫu quảng cáo và mở nhanh chi tiết 1 chạm.',
+    src: '/imgs/meta-screens/meta-ads-library.webp',
+  },
+  {
+    id: 'lead-sale',
+    label: 'Lead & Sale Từng Bài',
+    badge: 'TRUY VẾT 2 CHIỀU CRM',
+    title: 'Bấm Từng Bài Ads — Xem Ngay Danh Sách Khách & Sale',
+    desc: 'Kiểm tra từng khách hàng đổ về từ bài viết, Sale đang phụ trách và doanh thu thực tế.',
+    src: '/imgs/meta-screens/fusion-ad-leads-sale-modal.webp',
   },
 ];
 
@@ -264,7 +288,7 @@ const ERP_MODULE_TRACKS = [
 const ERP_EMBEDDED_AGENTS = [
   {
     icon: Workflow,
-    tag: 'CHIA SỐ < 5S',
+    tag: 'CHIA SỐ TỨC THÌ',
     name: 'Trợ Lý Điều Phối Khách',
     desc: 'Lọc trùng số, chấm điểm và chia khách đúng Sale theo quy tắc.',
   },
@@ -415,6 +439,7 @@ export const DomationHome: React.FC = () => {
   }>({});
 
   const [activeAutoDataIdx, setActiveAutoDataIdx] = useState(0);
+  const [activeAdsIdx, setActiveAdsIdx] = useState(0);
   const [activeErpIdx, setActiveErpIdx] = useState(0);
   const [showMoreTouchpoints, setShowMoreTouchpoints] = useState(false);
   const [show3dDetails, setShow3dDetails] = useState(false);
@@ -442,7 +467,7 @@ export const DomationHome: React.FC = () => {
       ...AUTODATA_SCREENS.map((s) => s.src),
       ...ERP_MODULE_TRACKS.flatMap((t) => [t.mainScreen.src, ...t.subScreens.map((sub) => sub.src)]),
       '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
-      ADS_SPOTLIGHT_SCREENS[0].src,
+      ...ADS_SPOTLIGHT_SCREENS.map((s) => s.src),
     ]);
   }, []);
 
@@ -453,7 +478,7 @@ export const DomationHome: React.FC = () => {
   }, []);
 
   const currentAutoData = AUTODATA_SCREENS[activeAutoDataIdx] || AUTODATA_SCREENS[0];
-  const currentAdsShot = ADS_SPOTLIGHT_SCREENS[0];
+  const currentAdsShot = ADS_SPOTLIGHT_SCREENS[activeAdsIdx] || ADS_SPOTLIGHT_SCREENS[0];
   const currentErpTrack = ERP_MODULE_TRACKS[activeErpIdx] || ERP_MODULE_TRACKS[0];
 
   return (
@@ -499,7 +524,7 @@ export const DomationHome: React.FC = () => {
                     <span className="font-semibold text-[#1E40FF]">Website · Landing Page · 3D</span>{' '}
                     với{' '}
                     <span className="font-semibold text-slate-900">
-                      Auto Data &lt; 5s, Báo cáo Ads, Automation Zalo ZNS &amp; ERP tích hợp AI
+                      Auto Data Tức Thì, Báo cáo Ads, Automation Zalo ZNS &amp; ERP tích hợp AI
                     </span>.
                   </p>
                 </div>
@@ -528,7 +553,7 @@ export const DomationHome: React.FC = () => {
                       <Cpu className="w-4 h-4 text-[#0284C7] shrink-0 mt-0.5" />
                       <span>
                         <strong className="font-semibold text-slate-800">App nội bộ vận hành:</strong>{' '}
-                        Chia số 5s · Báo cáo Ads · ZNS · ERP 5.0
+                        Chia số Tức Thì · Báo cáo Ads · ZNS · ERP 5.0
                       </span>
                     </div>
 
@@ -657,11 +682,6 @@ export const DomationHome: React.FC = () => {
         </section>
 
         {/* ================================================================ */}
-        {/* 3. CLOSED-LOOP INTELLIGENCE CIRCLE (META ADS <-> CRM <-> CAPI)   */}
-        {/* ================================================================ */}
-        <ClosedLoopFlywheelSection variant="home" />
-
-        {/* ================================================================ */}
         {/* 4. CRM AUTO DATA — LAYOUT 1: SPLIT EDITORIAL + LIVE APP SWITCHER */}
         {/* ================================================================ */}
         <section id="crm-data" className="relative py-12 sm:py-16 px-4 sm:px-6">
@@ -677,7 +697,7 @@ export const DomationHome: React.FC = () => {
 
                   <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
                     Chia Khách Tới Tay Sale{' '}
-                    <span className="text-gradient-inkica">Dưới 5 Giây</span>
+                    <span className="text-gradient-inkica">Tức Thì</span>
                   </h2>
 
                   <p className="text-sm text-slate-600">
@@ -818,7 +838,7 @@ export const DomationHome: React.FC = () => {
                     className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
                   >
                     <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
-                    <span>9 Màn Hình + Video</span>
+                    <span>12 Màn Hình + Video</span>
                   </button>
                 </div>
               </div>
@@ -881,21 +901,43 @@ export const DomationHome: React.FC = () => {
                       <div className="text-[11px] text-slate-600">Cảnh báo bão hòa sớm</div>
                     </div>
                     <div className="rounded-xl bg-slate-50 border border-slate-200/80 px-3 py-2.5">
-                      <div className="text-xs font-semibold text-[#1E40FF]">+ Google Ads</div>
-                      <div className="text-[11px] text-slate-600">Bật thêm khi cần</div>
+                      <div className="text-xs font-semibold text-[#1E40FF]">Heatmap &amp; Phễu</div>
+                      <div className="text-[11px] text-slate-600">Theo bài &amp; theo giờ</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Right Spotlight: Lead & Sale từng Bài (No noisy filter badges) */}
-                <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-5 gap-3.5 shadow-2xs">
+                {/* Right Spotlight: Interactive Main Meta Report UI Showcase */}
+                <div className="lg:col-span-5 flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 p-4 sm:p-5 gap-3 shadow-2xs">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
+                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900 truncate">
                       {currentAdsShot.label}
                     </h3>
                     <span className="text-[11px] font-medium text-slate-400 shrink-0">
                       Bấm ảnh để phóng to
                     </span>
+                  </div>
+
+                  {/* Main Capture Switcher Pills */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {ADS_SPOTLIGHT_SCREENS.map((shot, idx) => {
+                      const active = idx === activeAdsIdx;
+                      return (
+                        <button
+                          key={shot.id}
+                          type="button"
+                          data-testid={`home-meta-shot-tab-${shot.id}`}
+                          onClick={() => setActiveAdsIdx(idx)}
+                          className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                            active
+                              ? 'bg-[#1E40FF] text-white shadow-xs'
+                              : 'bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-[#1E40FF]'
+                          }`}
+                        >
+                          {shot.label}
+                        </button>
+                      );
+                    })}
                   </div>
 
                   <div
@@ -948,6 +990,12 @@ export const DomationHome: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* ================================================================ */}
+        {/* 5B. CLOSED-LOOP INTELLIGENCE CIRCLE (META ADS <-> CRM <-> CAPI)  */}
+        {/* Placed right below Biết Rõ Nội Dung Nào Ra Khách Section         */}
+        {/* ================================================================ */}
+        <ClosedLoopFlywheelSection variant="home" />
 
         {/* ================================================================ */}
         {/* 6. AUTOMATION NURTURING & BEHAVIOR TRACKING — COMPACT 4 STEPS    */}
@@ -1411,7 +1459,7 @@ export const DomationHome: React.FC = () => {
                       'Chuẩn SEO & Schema',
                       'Tải nhanh < 1.5s',
                       'Tracking Click & Thời gian đọc',
-                      'Đẩy Lead CRM < 5s',
+                      'Đẩy Lead CRM Tức Thì',
                     ].map((item) => (
                       <span
                         key={item}
@@ -1525,7 +1573,7 @@ export const DomationHome: React.FC = () => {
                     <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80">
                       <h3 className="text-sm font-bold text-slate-900">Gắn Sẵn Hỏi Giá &amp; Đẩy CRM</h3>
                       <p className="text-xs text-slate-600 mt-1">
-                        Ghi nhận đúng căn đang xem và chia số Sale phụ trách dưới 5 giây.
+                        Ghi nhận đúng căn đang xem và chia số Sale phụ trách tức thì.
                       </p>
                     </div>
                   </div>

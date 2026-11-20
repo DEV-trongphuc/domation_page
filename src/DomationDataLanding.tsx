@@ -1681,7 +1681,7 @@ export function DomationDataLanding() {
               <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 {[
                   {
-                    step: '01 • INGRESS < 5S',
+                    step: '01 • INGRESS TỨC THÌ',
                     icon: Webhook,
                     title: 'Webhook Đa Nguồn Một Cửa',
                     desc: 'Meta Lead Ads, TikTok Instant Form, Google Ads, LadiPage & Form Web chuẩn hóa +84 tức thì.',
@@ -2547,7 +2547,7 @@ export function DomationDataLanding() {
       <FaqAccordionSection
         faqs={AUTODATA_FAQS}
         heading="Câu Hỏi Thường Gặp Về Auto Data & Meta CAPI"
-        subtitle="Giải đáp về tốc độ chia số <5s, cơ chế bù Ticket lỗi 1:1, Van SLA 120s và chi phí vận hành."
+        subtitle="Giải đáp về tốc độ chia số tức thì, cơ chế bù Ticket lỗi 1:1, Van SLA 120s và chi phí vận hành."
       />
       </main>
 

@@ -42,16 +42,16 @@ const TOUR_SLIDES: TourSlide[] = [
     label: 'Vòng Tròn Tối Ưu',
     shortLabel: 'Vòng tròn',
     eyebrow: 'BƯỚC 1 / 5 • CLOSED-LOOP INTELLIGENCE',
-    title: 'Vòng tròn khép kín: Meta Ads ↔ Chia Data <5s ↔ Học tệp CAPI',
+    title: 'Vòng tròn khép kín: Meta Ads ↔ Chia Data Tức Thì ↔ Học tệp CAPI',
     description:
-      'Mỗi Lead từ Meta/Google Ads được chia cho Sale dưới 5 giây, giữ chuẩn phản hồi 120s SLA (hoàn 1:1 nếu sai số) và bắn ngược 9 tầng tín hiệu SHA-256 về Meta Pixel để AI quảng cáo học đúng khách mua thật.',
+      'Mỗi Lead từ Meta/Google Ads được chia cho Sale tức thì, giữ chuẩn phản hồi 120s SLA (hoàn 1:1 nếu sai số) và bắn ngược 9 tầng tín hiệu SHA-256 về Meta Pixel để AI quảng cáo học đúng khách mua thật.',
     bullets: [
       '01. Đổ Lead Ads → Chống trùng 180 ngày (6 tháng) & lọc số rác ngay cổng vào',
-      '02. Chia đều cho Sale Online trong <5 giây, quá 120s tự thu hồi chuyển người khác',
+      '02. Chia đều cho Sale Online tức thì, quá 120s tự thu hồi chuyển người khác',
       '03. Sale cập nhật trạng thái (Lead, Schedule, Purchase, DisqualifiedLead) → Meta học tệp chuẩn',
     ],
     metrics: [
-      { label: 'Tốc độ chia số', value: '< 5 giây' },
+      { label: 'Tốc độ chia số', value: 'Tức thì' },
       { label: 'Chống trễ SLA', value: '120 giây' },
       { label: 'Chuẩn bảo mật CAPI', value: 'SHA-256' },
     ],

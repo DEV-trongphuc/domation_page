@@ -10,7 +10,7 @@ export const HOME_FAQS: PageFaqItem[] = [
   {
     question: 'Hệ sinh thái DOMATION gồm những sản phẩm và điểm chạm nào cho doanh nghiệp?',
     answer:
-      'DOMATION kết hợp trọn bộ hai mặt trận: (1) Mặt tiền hút khách gồm Website thương hiệu, Landing Page chuyển đổi cao và Sa bàn 3D tương tác; (2) Bộ máy vận hành nội bộ gồm CRM Auto Data chia khách dưới 5 giây, Báo cáo Meta Ads & mở rộng Google Ads hợp nhất Lead CRM, Automation nuôi dưỡng khách hàng (Zalo ZNS, Email, tracking lượt mở/click & thời gian xem Website), và DOMATION ERP 5.0 tích hợp Đa Trợ Lý AI nội bộ.',
+      'DOMATION kết hợp trọn bộ hai mặt trận: (1) Mặt tiền hút khách gồm Website thương hiệu, Landing Page chuyển đổi cao và Sa bàn 3D tương tác; (2) Bộ máy vận hành nội bộ gồm CRM Auto Data chia khách tức thì, Báo cáo Meta Ads & mở rộng Google Ads hợp nhất Lead CRM, Automation nuôi dưỡng khách hàng (Zalo ZNS, Email, tracking lượt mở/click & thời gian xem Website), và DOMATION ERP 5.0 tích hợp Đa Trợ Lý AI nội bộ.',
   },
   {
     question: 'DOMATION kết hợp Báo cáo Quảng cáo Meta & Google Ads với CRM như thế nào?',
@@ -38,7 +38,7 @@ export const AUTODATA_FAQS: PageFaqItem[] = [
   {
     question: 'DOMATION Auto Data chia Lead về máy Sale trong bao lâu?',
     answer:
-      'Lead từ Meta Instant Form, TikTok, Ladipage hoặc Website được lọc trùng 180 ngày và phân bổ Round-Robin qua ZaloBot / Telegram Bot trong dưới 5 giây.',
+      'Lead từ Meta Instant Form, TikTok, Ladipage hoặc Website được lọc trùng 180 ngày và phân bổ Round-Robin qua ZaloBot / Telegram Bot tức thì.',
   },
   {
     question: 'Cơ chế đền bù Ticket lỗi 1:1 và Van SLA 120s hoạt động như thế nào?',
@@ -48,7 +48,7 @@ export const AUTODATA_FAQS: PageFaqItem[] = [
   {
     question: 'Hệ thống có đồng bộ Webhook từ TikTok Instant Form, Ladipage và Website tự động không?',
     answer:
-      'Có. Cổng tiếp nhận một cửa tự động chuẩn hóa số điện thoại +84, gắn thẻ nguồn chiến dịch UTM và lọc trùng đa kênh 180 ngày từ Meta Ads, TikTok Instant Form, Ladipage, Google Ads và Website trong dưới 3–5 giây.',
+      'Có. Cổng tiếp nhận một cửa tự động chuẩn hóa số điện thoại +84, gắn thẻ nguồn chiến dịch UTM và lọc trùng đa kênh 180 ngày từ Meta Ads, TikTok Instant Form, Ladipage, Google Ads và Website tức thì.',
   },
   {
     question: 'Làm sao chia data công bằng cho nhiều Đại lý F1 mà vẫn bảo mật RLS không lộ SĐT?',
@@ -199,7 +199,7 @@ export function getHomeSeoConfig(): PageSeoConfig {
   return {
     title: 'DOMATION | AutoData Chia Lead, Meta CAPI CRM, DomMeta Ads AI & ERP 5.0',
     description:
-      'Hệ sinh thái DOMATION hợp nhất Web/Landing 3D với vòng tròn tối ưu khép kín Meta Ads ↔ CRM ↔ CAPI: AutoData chia lead tự động <5s, lọc trùng 180 ngày, báo cáo Meta Ads AI realtime & ERP 5.0.',
+      'Hệ sinh thái DOMATION hợp nhất Web/Landing 3D với vòng tròn tối ưu khép kín Meta Ads ↔ CRM ↔ CAPI: AutoData chia lead tự động tức thì, lọc trùng 180 ngày, báo cáo Meta Ads AI realtime & ERP 5.0.',
     path: '/',
     keywords: [
       'DOMATION',
@@ -226,11 +226,11 @@ export function getHomeSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION Enterprise Ecosystem — CRM Auto Data, Meta & Google Ads Report, Automation & ERP 5.0',
         description:
-          'Hệ sinh thái hợp nhất Website & Landing Page chuyển đổi 3D với vòng tròn tối ưu khép kín: CRM Auto Data chia số <5s, lọc trùng 180 ngày, SHA-256 Meta CAPI, Báo cáo Meta & Google Ads AI, Automation Zalo ZNS & ERP 5.0.',
+          'Hệ sinh thái hợp nhất Website & Landing Page chuyển đổi 3D với vòng tròn tối ưu khép kín: CRM Auto Data chia số tức thì, lọc trùng 180 ngày, SHA-256 Meta CAPI, Báo cáo Meta & Google Ads AI, Automation Zalo ZNS & ERP 5.0.',
         path: '/',
         screenshot: '/imgs/erp-screens/dashboard-lead.webp',
         featureList: [
-          'AutoData DOMATION: Thu lead đa nguồn, lọc trùng 180 ngày, AI Pre-Score & chia vòng ZaloBot <5s + bù 1:1',
+          'AutoData DOMATION: Thu lead đa nguồn, lọc trùng 180 ngày, AI Pre-Score & chia vòng ZaloBot tức thì + bù 1:1',
           'Vòng Tròn Khép Kín Meta CAPI CRM: 9 trạng thái Sale Pipeline bắn SHA-256 về Meta Ads tối ưu CPL/CPA',
           'DOM Meta Report AI & Google Ads: Video Hook Rate 3s, khung giờ vàng và đối soát từng Lead & Sale',
           'Automation Nuôi Dưỡng Đa Kênh: Tracking click/mở Email, hành vi Website, Zalo ZNS, Zalo OA & Voucher',
@@ -269,9 +269,9 @@ export function getHomeSeoConfig(): PageSeoConfig {
 
 export function getDataSeoConfig(): PageSeoConfig {
   return {
-    title: 'AutoData DOMATION | Phần Mềm Chia Lead Tự Động < 5s & Meta CAPI CRM',
+    title: 'AutoData DOMATION | Phần Mềm Chia Lead Tự Động Tức Thì & Meta CAPI CRM',
     description:
-      'Phần mềm chia lead tự động AutoData DOMATION <5s qua ZaloBot & Telegram, AI Pre-Score, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket 1:1 và bắn Meta CAPI SHA-256.',
+      'Phần mềm chia lead tự động AutoData DOMATION tức thì qua ZaloBot & Telegram, AI Pre-Score, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket 1:1 và bắn Meta CAPI SHA-256.',
     path: '/data',
     keywords: [
       'AutoData DOMATION',
@@ -285,7 +285,7 @@ export function getDataSeoConfig(): PageSeoConfig {
       'Đền bù Ticket lỗi 1:1',
     ],
     ogImage: '/imgs/enterprise/sol-data-capi.webp',
-    ogImageAlt: 'DOMATION Auto Chia Data ZaloBot dưới 5 giây & Meta CAPI SHA-256',
+    ogImageAlt: 'DOMATION Auto Chia Data ZaloBot Tức Thì & Meta CAPI SHA-256',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
       { name: 'Auto Data & Meta CAPI', url: '/data' },
@@ -295,11 +295,11 @@ export function getDataSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION Auto Data & Meta CAPI Router',
         description:
-          'Phần mềm tự động chia Lead < 5 giây qua ZaloBot & Telegram, lọc trùng 180 ngày và bắn Meta Conversions API SHA-256 9 trạng thái.',
+          'Phần mềm tự động chia Lead tức thì qua ZaloBot & Telegram, lọc trùng 180 ngày và bắn Meta Conversions API SHA-256 9 trạng thái.',
         path: '/data',
         screenshot: '/imgs/autodata/showcase/screen_dashboard.jpg',
         featureList: [
-          'Chia vòng Round-Robin 5 cổng dưới 5 giây qua ZaloBot & Telegram + AI Pre-Score 0–100',
+          'Chia vòng Round-Robin 5 cổng tức thì qua ZaloBot & Telegram + AI Pre-Score 0–100',
           'Chuẩn hóa SĐT +84 & lọc trùng Lead đa kênh 180 ngày (6 tháng)',
           'Van SLA 120s chống ôm số & Đền bù Ticket lỗi 1:1',
           'Vòng tròn khép kín Meta CAPI SHA-256 9 trạng thái (Qualified -> Purchase & DisqualifiedLead)',
@@ -382,7 +382,7 @@ export function getCrmSeoConfig(): PageSeoConfig {
   return {
     title: 'DOMATION CRM 360° & Auto Data | CRM BĐS, Thẩm Mỹ, Nha Khoa & MISA',
     description:
-      'CRM bất động sản, thẩm mỹ, nha khoa & giáo dục DOMATION 360°: chia lead <5s, lọc trùng 180 ngày, Pipeline 9 nấc Meta CAPI, giỏ hàng real-time & đồng bộ MISA hai chiều.',
+      'CRM bất động sản, thẩm mỹ, nha khoa & giáo dục DOMATION 360°: chia lead tức thì, lọc trùng 180 ngày, Pipeline 9 nấc Meta CAPI, giỏ hàng real-time & đồng bộ MISA hai chiều.',
     path: '/crm',
     keywords: [
       'DOMATION CRM 360',
@@ -395,7 +395,7 @@ export function getCrmSeoConfig(): PageSeoConfig {
       'Quản lý giỏ hàng bất động sản real-time',
     ],
     ogImage: '/imgs/enterprise/sol-crm-misa.webp',
-    ogImageAlt: 'DOMATION CRM 360° & Auto Data — Chia Lead < 5s, Pipeline 9 Nấc & Đồng bộ MISA',
+    ogImageAlt: 'DOMATION CRM 360° & Auto Data — Chia Lead Tức Thì, Pipeline 9 Nấc & Đồng bộ MISA',
     breadcrumbs: [
       { name: 'Trang Chủ', url: '/' },
       { name: 'CRM 360° & Auto Data', url: '/crm' },
@@ -405,11 +405,11 @@ export function getCrmSeoConfig(): PageSeoConfig {
       buildSoftwareAppSchema({
         name: 'DOMATION CRM 360° & Auto Data',
         description:
-          'Hệ thống DOMATION CRM 360° & Auto Data: thu khách đa kênh, chia vòng ZaloBot <5s, lọc trùng 180 ngày, Pipeline 9 nấc Meta CAPI, giỏ hàng BĐS real-time và đồng bộ hóa đơn MISA hai chiều.',
+          'Hệ thống DOMATION CRM 360° & Auto Data: thu khách đa kênh, chia vòng ZaloBot tức thì, lọc trùng 180 ngày, Pipeline 9 nấc Meta CAPI, giỏ hàng BĐS real-time và đồng bộ hóa đơn MISA hai chiều.',
         path: '/crm',
         screenshot: '/imgs/enterprise/sol-crm-misa.webp',
         featureList: [
-          'Thu khách đa kênh & Auto Chia Data ZaloBot / Telegram dưới 5 giây + lọc trùng 180 ngày',
+          'Thu khách đa kênh & Auto Chia Data ZaloBot / Telegram tức thì + lọc trùng 180 ngày',
           'Sales Pipeline Kanban 9 nấc chuẩn Meta CAPI & Hồ sơ Khách hàng 360°',
           'Quản lý Giỏ hàng bất động sản Real-time khóa căn tức thì & Phiếu hợp tác Co-care 100%',
           'Đồng bộ Hóa đơn điện tử MISA hai chiều & Báo cáo Meta/Google Ads gắn Lead',
@@ -480,7 +480,7 @@ export function getAutomationSeoConfig(): PageSeoConfig {
           {
             name: 'Auto Data Standard',
             price: '1500000',
-            description: '1.500.000₫/tháng (15.300.000₫/năm) • 20 Sale, 15.000 Leads/tháng & Chia số ZaloBot <5s',
+            description: '1.500.000₫/tháng (15.300.000₫/năm) • 20 Sale, 15.000 Leads/tháng & Chia số ZaloBot tức thì',
             url: '/automation#pricing',
           },
           {

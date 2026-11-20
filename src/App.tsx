@@ -81,7 +81,7 @@ const TESTIMONIALS = [
     {
         name: 'Capital House • EcoLife Signature',
         role: 'Chủ đầu tư BĐS Xanh • Đà Nẵng',
-        text: 'Hợp nhất Sa bàn 3D WebGL, AI Sales Portal 24/7 và hệ thống Auto Chia Data về 3 Đại lý F1 dưới 5 giây với tỷ lệ 1:1:1 độ lệch gần ~0%.',
+        text: 'Hợp nhất Sa bàn 3D WebGL, AI Sales Portal 24/7 và hệ thống Auto Chia Data về 3 Đại lý F1 tức thì với tỷ lệ 1:1:1 độ lệch gần ~0%.',
         avatar: 'CH',
     },
     {
@@ -294,7 +294,7 @@ const DomationDataSection = () => {
                                         <img src={LOGOS.zalo} className="w-4 h-4" alt="Zalo" />
                                     </div>
                                     <div className="text-xs text-slate-700">
-                                        <span className="font-bold text-[#1E40FF]">ZaloBot &lt; 5s:</span> Chia vòng công bằng &amp; lọc trùng 180 ngày
+                                        <span className="font-bold text-[#1E40FF]">ZaloBot Tức Thì:</span> Chia vòng công bằng &amp; lọc trùng 180 ngày
                                     </div>
                                 </div>
                                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shrink-0" />
@@ -310,7 +310,7 @@ const DomationDataSection = () => {
                         </div>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
                             Hệ Thống Phân Bổ <br />
-                            <span className="text-gradient-inkica">Data Tự Động &lt; 5 Giây</span>
+                            <span className="text-gradient-inkica">Data Tự Động Tức Thì</span>
                         </h2>
                         <p className="text-slate-600 text-base md:text-lg mb-7 leading-relaxed">
                             <strong className="text-[#1E40FF] font-semibold block mb-2">Chấm dứt tình trạng Data bị sót hoặc Sale nhận số chậm làm nguội khách hàng.</strong>
@@ -319,7 +319,7 @@ const DomationDataSection = () => {
 
                         <div className="space-y-3 mb-8">
                             {[
-                                { t: 'Tích Hợp Realtime < 5s', d: 'Đồng bộ Meta Lead Ads, TikTok, LadiPage, Google Sheets & Website ngay lập tức.' },
+                                { t: 'Tích Hợp Realtime Tức Thì', d: 'Đồng bộ Meta Lead Ads, TikTok, LadiPage, Google Sheets & Website ngay lập tức.' },
                                 { t: 'Van SLA 120s & Bù Lỗi 1:1', d: 'Quá 120s chưa nhận tự chuyển vòng; duyệt ticket số sai tự cộng bù +1 lượt.' },
                                 { t: 'Bắn Ngược Meta CAPI SHA-256', d: 'Đồng bộ 9 trạng thái từ Qualified đến Closed & DisqualifiedLead về Meta Ads.' },
                             ].map((box) => (

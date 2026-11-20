@@ -204,7 +204,7 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
             </h3>
           </div>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Dán đường dẫn dưới đây vào mục <strong>Webhook / API Liên kết</strong> trên LadiPage, WordPress hoặc Form đăng ký của bạn. Hệ thống tự động nhận và chia cho Sale trong dưới 5 giây.
+            Dán đường dẫn dưới đây vào mục <strong>Webhook / API Liên kết</strong> trên LadiPage, WordPress hoặc Form đăng ký của bạn. Hệ thống tự động nhận và chia cho Sale tức thì.
           </p>
 
           <div className="space-y-2">

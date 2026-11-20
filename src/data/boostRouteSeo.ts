@@ -33,7 +33,7 @@ export const BOOST_FAQS: PageFaqItem[] = [
   {
     question: 'Tại sao DOMATION định vị là hệ thống vận hành custom may đo cho doanh nghiệp thời đại mới?',
     answer:
-      'Thay vì ép doanh nghiệp cắt gọt quy trình để vừa với phần mềm đóng gói, DOMATION sử dụng lõi 12 phân hệ ERP 5.0 kết hợp Vibecode và Visual Flow Builder để thiết kế luồng phê duyệt, chia data ZaloBot <5s, tính hoa hồng, CRM MISA và Multi-Agent AI khớp 100% cơ cấu tổ chức thực tế.',
+      'Thay vì ép doanh nghiệp cắt gọt quy trình để vừa với phần mềm đóng gói, DOMATION sử dụng lõi 12 phân hệ ERP 5.0 kết hợp Vibecode và Visual Flow Builder để thiết kế luồng phê duyệt, chia data ZaloBot tức thì, tính hoa hồng, CRM MISA và Multi-Agent AI khớp 100% cơ cấu tổ chức thực tế.',
   },
   {
     question: 'Doanh nghiệp có thể đặt lịch tư vấn thiết kế hệ thống & khảo sát 1-1 không?',
@@ -66,7 +66,7 @@ export const PORTFOLIO_FAQS: PageFaqItem[] = [
   {
     question: 'Hiệu quả định lượng khi triển khai ERP 5.0, CRM và Auto Data may đo là bao nhiêu?',
     answer:
-      'Các dự án triển khai thực tế ghi nhận chia Lead qua ZaloBot dưới 5 giây, độ lệch chia data 3 Đại lý F1 ~0%, giảm 35% chi phí Lead rác nhờ Meta CAPI SHA-256, tăng 300% quy mô lớp MBA và giảm 30% CPA tại IDEAS, đồng thời đạt ROAS 5+ trên chuỗi F&B 30+ cửa hàng.',
+      'Các dự án triển khai thực tế ghi nhận chia Lead qua ZaloBot tức thì, độ lệch chia data 3 Đại lý F1 ~0%, giảm 35% chi phí Lead rác nhờ Meta CAPI SHA-256, tăng 300% quy mô lớp MBA và giảm 30% CPA tại IDEAS, đồng thời đạt ROAS 5+ trên chuỗi F&B 30+ cửa hàng.',
   },
   {
     question: 'Doanh nghiệp có thể làm chủ hoàn toàn dữ liệu và quy trình sau khi triển khai không?',

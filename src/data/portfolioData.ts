@@ -16,14 +16,14 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     implementationPain:
       'Mô hình 3D kiến trúc gốc nặng 80MB gây giật lag trên iPhone Safari; tranh cãi dễ phát sinh nếu chia số lệch hoặc Sàn F1 báo lỗi số thuê bao không được bù kịp thời.',
     architecture:
-      'Nén Draco GLB 8 mẫu căn hộ 3D (<3.5MB/căn) + Trợ lý AI Sale 24/7 + Auto Chia Data 3 cổng F1 qua ZaloBot <5s + Bù Ticket lỗi 1:1 + Meta CAPI SHA-256 + 25 ấn phẩm OOH gắn QR Tracking.',
+      'Nén Draco GLB 8 mẫu căn hộ 3D (<3.5MB/căn) + Trợ lý AI Sale 24/7 + Auto Chia Data 3 cổng F1 qua ZaloBot tức thì + Bù Ticket lỗi 1:1 + Meta CAPI SHA-256 + 25 ấn phẩm OOH gắn QR Tracking.',
     deliverables: [
       'Website Quiet Luxury & Sa bàn Three.js 8 căn hộ 3D',
       'Trợ lý AI Sale trực dự án 24/7 (ai.ecolifesignature.vn)',
       'Auto Data Router 3 cổng F1 độ lệch ~0% & Meta CAPI HTTP 200',
       '25 ấn phẩm OOH tích hợp QR Tracking ID',
     ],
-    metrics: ['8 Mẫu Căn 3D', 'Chia Lead < 5s', '3 Đại Lý F1 ~0% lệch', '25 Ấn Phẩm OOH'],
+    metrics: ['8 Mẫu Căn 3D', 'Chia Lead Tức Thì', '3 Đại Lý F1 ~0% lệch', '25 Ấn Phẩm OOH'],
     relatedArticleSlug: 'minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife',
     inspectionTab: 'web-3d',
   },
@@ -176,7 +176,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
       'Tích hợp Form đăng ký tức thì & Email xác nhận 98% Inbox',
       'Hệ thống Tracking chuyển đổi đa kênh',
     ],
-    metrics: ['98% Inbox Email', 'Chuyển đổi cao B2B', 'Sync CRM < 5s'],
+    metrics: ['98% Inbox Email', 'Chuyển đổi cao B2B', 'Sync CRM Tức Thì'],
     relatedArticleSlug: 'email-marketing-amazon-ses-98-inbox-flow-if-else-theo-hanh-vi',
     inspectionTab: 'web-3d',
   },

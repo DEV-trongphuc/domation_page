@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://domation.net/</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -21,7 +21,7 @@
   </url>
   <url>
     <loc>https://domation.net/boost</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <image:image>
@@ -31,7 +31,7 @@
   </url>
   <url>
     <loc>https://domation.net/portfolio</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -49,12 +49,12 @@
   </url>
   <url>
     <loc>https://domation.net/data</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
       <image:loc>https://domation.net/imgs/enterprise/sol-data-capi.webp</image:loc>
-      <image:title>DOMATION Auto Chia Data ZaloBot &lt; 5s &amp; Meta CAPI SHA-256</image:title>
+      <image:title>DOMATION Auto Chia Data ZaloBot Tức Thì &amp; Meta CAPI SHA-256</image:title>
     </image:image>
     <image:image>
       <image:loc>https://domation.net/assets/domation/data_v2_overview.webp</image:loc>
@@ -63,7 +63,7 @@
   </url>
   <url>
     <loc>https://domation.net/erp</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -85,7 +85,7 @@
   </url>
   <url>
     <loc>https://domation.net/crm</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <image:image>
@@ -99,7 +99,7 @@
   </url>
   <url>
     <loc>https://domation.net/automation</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -113,7 +113,7 @@
   </url>
   <url>
     <loc>https://domation.net/meta-report</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -127,7 +127,7 @@
   </url>
   <url>
     <loc>https://domation.net/web-design</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -137,7 +137,7 @@
   </url>
   <url>
     <loc>https://domation.net/ideas</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
     <image:image>
@@ -152,13 +152,13 @@
     <priority>0.80</priority>
     <image:image>
       <image:loc>https://domation.net/imgs/boost/boost-zalobot-5s-router.jpg</image:loc>
-      <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead</image:title>
-      <image:caption>Kiến trúc Auto Chia Data ZaloBot dưới 5 giây cho Chủ đầu tư và Đại lý F1 Bất động sản</image:caption>
+      <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot Tức Thì &amp; Van chống ôm Lead</image:title>
+      <image:caption>Kiến trúc Auto Chia Data ZaloBot tức thì cho Chủ đầu tư và Đại lý F1 Bất động sản</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://domation.net/imgs/autodata/showcase/screen_dashboard.jpg</image:loc>
-      <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot &lt; 5 giây &amp; Van chống ôm Lead — Giao diện thực tế</image:title>
-      <image:caption>Giao diện DOMATION Auto Data V2 chia số đa cổng dưới 5 giây kèm nhật ký nhận lead.</image:caption>
+      <image:title>Bài toán rớt 40% Lead BĐS vì chia số thủ công: Kiến trúc Auto Chia Data ZaloBot Tức Thì &amp; Van chống ôm Lead — Giao diện thực tế</image:title>
+      <image:caption>Giao diện DOMATION Auto Data V2 chia số đa cổng tức thì kèm nhật ký nhận lead.</image:caption>
     </image:image>
   </url>
   <url>
@@ -1176,12 +1176,12 @@
     <priority>0.80</priority>
     <image:image>
       <image:loc>https://domation.net/imgs/boost/boost-sme-digital-roadmap.jpg</image:loc>
-      <image:title>Bản Đồ Chuyển Đổi Số Toàn Diện Cho Doanh Nghiệp Việt: Từ Lead &lt; 5s Tới ERP 5.0 &amp; Multi-Agent</image:title>
+      <image:title>Bản Đồ Chuyển Đổi Số Toàn Diện Cho Doanh Nghiệp Việt: Từ Lead Tức Thì Tới ERP 5.0 &amp; Multi-Agent</image:title>
       <image:caption>Lộ trình chuyển đổi số toàn diện 4 bước cho doanh nghiệp SME Việt Nam DOMATION</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://domation.net/imgs/enterprise/hero-domation-hub.webp</image:loc>
-      <image:title>Bản Đồ Chuyển Đổi Số Toàn Diện Cho Doanh Nghiệp Việt: Từ Lead &lt; 5s Tới ERP 5.0 &amp; Multi-Agent — Giao diện thực tế</image:title>
+      <image:title>Bản Đồ Chuyển Đổi Số Toàn Diện Cho Doanh Nghiệp Việt: Từ Lead Tức Thì Tới ERP 5.0 &amp; Multi-Agent — Giao diện thực tế</image:title>
       <image:caption>Toàn cảnh Kiến trúc Hợp nhất DOMATION: từ Marketing Acquisition đến ERP 5.0 nội bộ.</image:caption>
     </image:image>
   </url>

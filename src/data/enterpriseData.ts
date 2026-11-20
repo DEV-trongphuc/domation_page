@@ -139,7 +139,7 @@ export const ENTERPRISE_STORY_CHAPTERS: EnterpriseStoryChapter[] = [
 export const MULTI_AGENT_NODES: MultiAgentNode[] = [
   {
     id: 'lead-agent',
-    roleTag: 'ĐIỀU PHỐI < 5S',
+    roleTag: 'ĐIỀU PHỐI TỨC THÌ',
     name: 'Lead & Routing Agent',
     focus: 'Lọc trùng dữ liệu, chấm điểm nhu cầu và chia khách đúng Sale hoặc Đại lý F1 tức thì.',
   },
@@ -199,11 +199,11 @@ export const CORE_OPERATION_PILLARS: CoreOperationPillar[] = [
     pillarTag: 'TRỤ CỘT TĂNG TRƯỞNG',
     tabLabel: 'Auto Data & Ads BI',
     eyebrow: 'PHÂN BỔ LEAD & ĐO LƯỜNG ROI',
-    title: 'Chia Data Dưới 5 Giây &',
+    title: 'Chia Data Tức Thì &',
     accent: 'Meta CAPI HTTP 200',
     summary:
       'Thu nhận khách hàng đa nguồn, lọc trùng 6 tháng, chia vòng công bằng qua ZaloBot & Telegram Bot, đối chiếu ngân sách quảng cáo với doanh thu thực tế.',
-    keyTags: ['ZaloBot & Telegram < 5s', 'Meta CAPI Chuẩn SHA-256', 'Báo Cáo ROI Realtime'],
+    keyTags: ['ZaloBot & Telegram Tức Thì', 'Meta CAPI Chuẩn SHA-256', 'Báo Cáo ROI Realtime'],
     image: '/imgs/enterprise/sol-data-capi.webp',
     inspectionTab: 'data-capi',
     routeUrl: '/data',
@@ -238,9 +238,9 @@ export const COMPANY_STRENGTHS: CompanyStrength[] = [
   {
     num: '02',
     title: 'CRM Chăm Sóc & Auto Chia Data',
-    subtitle: 'Pipeline 9 Nấc • ZaloBot & Telegram < 5s • CRM 360°',
+    subtitle: 'Pipeline 9 Nấc • ZaloBot & Telegram Tức Thì • CRM 360°',
     desc: 'Phễu chăm sóc khách hàng 360°, chia số Round-Robin 5 cổng qua ZaloBot & Telegram và đồng bộ doanh thu bán hàng.',
-    metric: 'Chia Data < 5s • Meta CAPI 200',
+    metric: 'Chia Data Tức Thì • Meta CAPI 200',
     decorImg: DECOR_PNGS.funnel,
   },
   {
@@ -336,7 +336,7 @@ export const SOLUTION_PILLARS: SolutionPillar[] = [
     title: 'Auto Chia Data &',
     editorialAccent: 'Meta CAPI HTTP 200',
     summary:
-      'Thu Lead tức thì, lọc trùng 6 tháng, chia đều qua ZaloBot & Telegram Bot < 5s và phản hồi Meta CAPI 24/7.',
+      'Thu Lead tức thì, lọc trùng 6 tháng, chia đều qua ZaloBot & Telegram Bot tức thì và phản hồi Meta CAPI 24/7.',
     illustration: '/imgs/enterprise/sol-data-capi.webp',
     decorPng: DECOR_PNGS.funnel,
     highlights: [
@@ -454,7 +454,7 @@ export const SOLUTION_PILLARS: SolutionPillar[] = [
 ];
 
 export const ECOSYSTEM_18_MODULES = [
-  { id: 'chia-data', group: 'Data & Ads', name: 'Phân Bổ Data V2', tag: 'Routing', desc: 'Chia số ZaloBot dưới 5s cho Đại lý F1 & Sale.' },
+  { id: 'chia-data', group: 'Data & Ads', name: 'Phân Bổ Data V2', tag: 'Routing', desc: 'Chia số ZaloBot tức thì cho Đại lý F1 & Sale.' },
   { id: 'meta-capi', group: 'Data & Ads', name: 'Auto Bắn Meta CAPI', tag: 'CAPI 200', desc: 'Phản hồi Qualified / Notlead về Meta Dataset.' },
   { id: 'meta-api', group: 'Data & Ads', name: 'Meta Ads API Report', tag: 'Analytics', desc: 'Đối chiếu chi phí Graph API & doanh thu CRM.' },
   { id: 'web-tracking', group: 'Data & Ads', name: 'Behavior Tracking', tag: 'Pixel', desc: 'Đo lượt click/scroll chấm điểm Lead Score.' },
@@ -491,7 +491,7 @@ export const MODAL_SCREEN_GALLERIES: Record<
   'data-capi': {
     title: 'CRM Auto Data & Đối Soát Quảng Cáo — 8 Màn Hình Thực Tế',
     subtitle:
-      'Giao diện chia khách dưới 5 giây qua ZaloBot & Telegram, lọc trùng tự động, đối soát công bằng và hợp nhất trực tiếp với Báo cáo Meta Ads.',
+      'Giao diện chia khách tức thì qua ZaloBot & Telegram, lọc trùng tự động, đối soát công bằng và hợp nhất trực tiếp với Báo cáo Meta Ads.',
     liveUrl: '/data',
     liveLabel: 'Mở CRM Auto Data',
     items: [
@@ -789,9 +789,9 @@ export const MODAL_SCREEN_GALLERIES: Record<
     ],
   },
   'meta-report': {
-    title: 'DOM Meta Report & Mở Rộng Google Ads — 9 Màn Hình + Video Demo',
+    title: 'DOM Meta Report & AutoData CRM — 12 Màn Hình Mới + Video Demo',
     subtitle:
-      'Báo cáo quảng cáo Meta realtime, mở rộng theo dõi Google Ads khi cần và hợp nhất trực tiếp với Lead CRM & Sale phụ trách.',
+      'Báo cáo quảng cáo Meta realtime phiên bản mới: phễu chuyển đổi, bản đồ nhiệt không thanh cuộn, Drawer Creative/Device, cấu hình AI + CRM & mở rộng Google Ads.',
     liveUrl: '/meta-report',
     liveLabel: 'Mở DOM Meta Report',
     youtubeEmbed: 'https://www.youtube.com/embed/fvIHSrpsAlI',
@@ -799,54 +799,72 @@ export const MODAL_SCREEN_GALLERIES: Record<
       {
         src: '/imgs/meta-screens/meta-dashboard.webp',
         badge: 'REPORT #01',
-        title: 'Tổng Quan Chi Tiêu & Hiệu Suất Quảng Cáo Real-Time',
-        desc: 'Theo dõi tức thì tổng chi tiêu, tăng giảm so với kỳ trước, biểu đồ ngày, nền tảng và độ tuổi khách hàng.',
+        title: 'Tổng Quan Chi Tiêu, Nền Tảng Instagram & Mục Tiêu',
+        desc: 'Theo dõi tức thì tổng chi tiêu, so sánh kỳ trước, biểu đồ ngày và tỷ trọng Facebook / Instagram sắc hồng nổi bật.',
+      },
+      {
+        src: '/imgs/meta-screens/meta-heatmap-region.webp',
+        badge: 'REPORT #02',
+        title: 'Bản Đồ Nhiệt 24 Giờ Tối Ưu Không Thanh Cuộn & Tỉnh Thành',
+        desc: 'Hiển thị trọn vẹn 7 ngày × 24 giờ trên một khung nhìn cùng xếp hạng tỉnh thành mang về khách hàng tốt nhất.',
+      },
+      {
+        src: '/imgs/meta-screens/meta-funnel-hourly-cpr.webp',
+        badge: 'REPORT #03',
+        title: 'Phễu Chuyển Đổi Horizontal & Biến Động Chi Phí Theo Giờ',
+        desc: 'Biểu đồ phễu thanh ngang căn trái rõ từng bước rơi rụng kèm đường CPR / Kết quả biến động theo từng giờ.',
+      },
+      {
+        src: '/imgs/meta-screens/meta-ad-detail-modal.webp',
+        badge: 'REPORT #04',
+        title: 'Drawer Chi Tiết Creative Carousel, Tuổi & Khu Vực 1 Hàng',
+        desc: 'Xem ảnh/video bài chạy kèm nút trượt nhiều ảnh, phân bổ Tuổi và Khu vực cùng hàng dễ đối chiếu tức thì.',
+      },
+      {
+        src: '/imgs/meta-screens/meta-drawer-heatmap-device.webp',
+        badge: 'REPORT #05',
+        title: 'Heatmap Khung Giờ Vàng Song Song Thiết Bị Ngay Trong Drawer',
+        desc: 'Đặt Dayparting Heatmap cạnh Device Breakdown ngay trong ngăn chi tiết chiến dịch, nhóm và bài quảng cáo.',
       },
       {
         src: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
-        badge: 'REPORT #02',
+        badge: 'REPORT #06',
         title: 'Bảng Chiến Dịch Hợp Nhất Lead CRM, CPQL & Sale',
         desc: 'Đối chiếu trực tiếp chi phí từng chiến dịch, nhóm và bài quảng cáo với khách chất lượng, doanh thu và Sale phụ trách.',
       },
       {
         src: '/imgs/meta-screens/fusion-ad-leads-sale-modal.webp',
-        badge: 'REPORT #03',
+        badge: 'REPORT #07',
         title: 'Xem Từng Khách Hàng & Phân Bổ Sale Trong Từng Bài Ads',
         desc: 'Bấm vào bất kỳ bài chạy nào để xem danh sách khách, Sale đang gọi, trạng thái chất lượng và doanh thu chốt.',
       },
       {
-        src: '/imgs/meta-screens/meta-heatmap-region.webp',
-        badge: 'REPORT #04',
-        title: 'Bản Đồ Nhiệt Khung Giờ Ra Khách & Tỉnh Thành',
-        desc: 'Chỉ rõ khung giờ vàng 7 ngày × 24 giờ và tỉnh thành mang về khách rẻ nhất để tập trung ngân sách.',
-      },
-      {
-        src: '/imgs/meta-screens/meta-ad-detail-modal.webp',
-        badge: 'REPORT #05',
-        title: 'Phân Tích Giữ Chân Video 3 Giây & Tần Suất Lặp',
-        desc: 'Đánh giá chính xác tỷ lệ giữ chân 3 giây đầu, tỷ lệ xem hết video và cảnh báo sớm khi mẫu quảng cáo bão hòa.',
-      },
-      {
         src: '/imgs/meta-screens/meta-performance-compare-modal.webp',
-        badge: 'REPORT #06',
+        badge: 'REPORT #08',
         title: 'So Sánh Trực Diện Hiệu Quả Giữa Hai Giai Đoạn',
         desc: 'Đối chiếu nhanh chi tiêu, tiếp cận, lượt nhấp và chi phí/khách giữa hai chu kỳ ngay trên một bảng.',
       },
       {
         src: '/imgs/meta-screens/meta-ads-library.webp',
-        badge: 'REPORT #07',
+        badge: 'REPORT #09',
         title: 'Thư Viện Trực Quan Toàn Bộ Bài Quảng Cáo Đang Chạy',
         desc: 'Xem trực tiếp hình ảnh, video kèm chi phí, số khách thu về và nút mở thẳng bài viết gốc trên Facebook.',
       },
       {
         src: '/imgs/meta-screens/meta-ad-account-logs.webp',
-        badge: 'REPORT #08',
-        title: 'Quản Lý Nhiều Tài Khoản & Lịch Sử Thao Tác',
-        desc: 'Theo dõi trạng thái tài khoản, hạn mức chi tiêu và toàn bộ lịch sử bật/tắt, chỉnh sửa ngân sách.',
+        badge: 'REPORT #10',
+        title: 'Quản Lý Nhiều Tài Khoản & Tạo Workspace Trong Modal',
+        desc: 'Theo dõi trạng thái tài khoản, tạo Workspace trực tiếp trong hộp thoại quản lý và kiểm tra lịch sử bật/tắt chiến dịch.',
+      },
+      {
+        src: '/imgs/meta-screens/meta-settings-ai-crm.webp',
+        badge: 'REPORT #11',
+        title: 'Cài Đặt Hệ Thống & Thẻ Kết Nối Upgrade CRM AutoData',
+        desc: 'Tập trung cấu hình Google Sheets, Gemini AI, ngưỡng cảnh báo và nâng cấp CRM AutoData gọn gàng ngay trong Settings.',
       },
       {
         src: '/imgs/meta-screens/meta-google-ads-guide-modal.webp',
-        badge: 'REPORT #09',
+        badge: 'REPORT #12',
         title: 'Mở Rộng Báo Cáo Google Ads Trên Cùng Giao Diện',
         desc: 'Bật thêm báo cáo Google Ads bất cứ khi nào cần với hướng dẫn thiết lập từng bước đơn giản.',
       },
@@ -967,7 +985,7 @@ export const FLAGSHIP_PARTNERS: FlagshipPartner[] = [
     logo: '/assets/partners/logo_ecolife_ngang.webp',
     url: 'https://ai.ecolifesignature.vn/',
     badge: 'AI.ECOLIFESIGNATURE.VN',
-    metrics: ['AI Sales Portal 24/7', 'Auto Chia 3 Đại Lý F1 < 5s'],
+    metrics: ['AI Sales Portal 24/7', 'Auto Chia 3 Đại Lý F1 Tức Thì'],
   },
   {
     id: 'inkica',
@@ -1011,7 +1029,7 @@ export const F1_AGENCY_PARTNERS: F1AgencyPartner[] = [
     shortName: 'TÙNG LONG PROPERTY',
     role: 'Đại lý F1 Chính thức',
     logo: '/assets/partners/logo_tung_long.webp',
-    routeMetric: 'ZaloBot < 5s • Ratio 1:1',
+    routeMetric: 'ZaloBot Tức Thì • Ratio 1:1',
     note: 'Nhận khách tự động và đối soát bù ticket thời gian thực.',
   },
   {
@@ -1076,11 +1094,11 @@ export const DOMATION_SAAS_PLANS = [
     badge: 'KHỞI ĐỘNG NHANH • FREE 30 NGÀY',
     monthly: '1.500.000₫',
     yearly: '15.300.000₫',
-    desc: 'Gói tiêu chuẩn cho đội Sale nội bộ — chia số < 5s, lọc trùng 180 ngày & bắn Meta CAPI.',
+    desc: 'Gói tiêu chuẩn cho đội Sale nội bộ — chia số tức thì, lọc trùng 180 ngày & bắn Meta CAPI.',
     popular: false,
     features: [
       '20 Sale • 5 Quản lý (25 Users) • 5 Vòng chia',
-      '15.000 Leads/tháng • Chia ZaloBot & Telegram < 5s',
+      '15.000 Leads/tháng • Chia ZaloBot & Telegram Tức Thì',
       'Lọc trùng 180 ngày (6 tháng) • Bù lỗi 1:1 & Meta CAPI',
     ],
   },

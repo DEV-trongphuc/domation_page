@@ -1107,20 +1107,25 @@ async function captureFusionScreens(browser) {
 
     // Expand Campaign 1 -> Adset 1 so Campaign, Adsets & Ad rows are all visible with CRM columns
     await page1.evaluate(() => {
-      const expandBtns = document.querySelectorAll('tbody tr td:nth-child(2) button');
-      if (expandBtns[0]) expandBtns[0].click();
+      const rows = document.querySelectorAll('tbody tr');
+      if (rows[0]) rows[0].click();
     });
-    await sleep(450);
+    await sleep(500);
     await page1.evaluate(() => {
-      const expandBtns = document.querySelectorAll('tbody tr td:nth-child(2) button');
-      if (expandBtns[1]) expandBtns[1].click();
+      const rows = document.querySelectorAll('tbody tr');
+      if (rows[1]) rows[1].click();
     });
     await sleep(700);
 
     await captureOnPage(page1, 'fusion-campaign-crm-leads');
 
-    // Open Ad_Booking_Dau_Tu Lead & Phân bổ Sale modal by clicking its CRM lead cell
-    await page1.click('[data-testid="open-crm-leads-120253871045600781"]');
+    // Open Ad Lead & Phân bổ Sale modal by clicking first CRM lead badge (prefer Ad_Booking_Dau_Tu)
+    await page1.evaluate(() => {
+      const target =
+        document.querySelector('[data-testid="open-crm-leads-120253871045600781"]') ||
+        document.querySelector('[data-testid^="open-crm-leads-"]');
+      if (target) target.click();
+    });
     await page1.waitForSelector('[data-testid="entity-modal-crm-tab"]', { timeout: 15000 });
     await sleep(850);
 

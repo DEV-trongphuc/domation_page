@@ -18,7 +18,7 @@ const TAB_LABELS: { id: InspectionTabId; short: string; count: string }[] = [
   { id: 'erp', short: 'ERP 5.0 Suite', count: '18' },
   { id: 'crm', short: 'CRM 360°', count: '9' },
   { id: 'autoflow', short: 'AI & Automation', count: '6' },
-  { id: 'meta-report', short: 'Meta Ad Report', count: '9 + Video' },
+  { id: 'meta-report', short: 'Meta Ad Report', count: '12 + Video' },
   { id: 'web-3d', short: 'Web 3D & Landing', count: '11' },
   { id: 'inkica', short: 'INKICA Studio', count: '5' },
 ];

@@ -29,7 +29,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     screenshotImage: '/assets/domation/auto_tracking.webp',
     screenshotCaption: 'Màn hình kiểm soát sự kiện Pixel Tracking và hành vi click trên Landing Page DOMATION.',
     tldrSummary:
-      'Đổ 50–200 triệu chạy quảng cáo về một Landing Page chưa được Audit kỹ giống như đổ nước vào thùng thủng đáy. Bộ Checklist 12 điểm của DOMATION kiểm tra trọn vẹn từ tốc độ LCP trên 4G di động, tỷ lệ tương phản CTA, chống bắn trùng sự kiện Pixel/CAPI (`event_id`) tới độ tin cậy Webhook đổ về ZaloBot < 5s trước khi bấm nút chạy chiến dịch.',
+      'Đổ 50–200 triệu chạy quảng cáo về một Landing Page chưa được Audit kỹ giống như đổ nước vào thùng thủng đáy. Bộ Checklist 12 điểm của DOMATION kiểm tra trọn vẹn từ tốc độ LCP trên 4G di động, tỷ lệ tương phản CTA, chống bắn trùng sự kiện Pixel/CAPI (`event_id`) tới độ tin cậy Webhook đổ về ZaloBot Tức Thì trước khi bấm nút chạy chiến dịch.',
     keyTakeaways: [
       'Kiểm tra LCP trên mạng 4G thực tế phải < 2.5s (tốt nhất < 1.5s) và zero layout shift (CLS < 0.05).',
       'Test gửi Form thử trên iPhone Safari & Zalo In-App Browser — hai trình duyệt chiếm 70% traffic Ads tại Việt Nam.',
@@ -462,7 +462,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     metricsOutcome: [
       { label: 'Dung lượng script tracking', value: '< 4KB (Zero lag)' },
       { label: 'Tỷ lệ chốt khách quay lại Web', value: 'Tăng gấp 2.2x' },
-      { label: 'Độ trễ cảnh báo hành vi', value: 'Real-time < 5s' },
+      { label: 'Độ trễ cảnh báo hành vi', value: 'Tức thì (Real-time)' },
       { label: 'Độ chính xác First-Party', value: 'Không bị AdBlock chặn' },
     ],
     relatedPortfolioId: 'navastore-ecommerce',
@@ -677,10 +677,10 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     id: 'art-65',
     number: '65',
     slug: 'lo-trinh-chuyen-doi-so-doanh-nghiep-sme-viet-nam-domation',
-    title: 'Bản Đồ Chuyển Đổi Số Toàn Diện Cho Doanh Nghiệp Việt: Từ Lead < 5s Tới ERP 5.0 & Multi-Agent',
+    title: 'Bản Đồ Chuyển Đổi Số Toàn Diện Cho Doanh Nghiệp Việt: Từ Lead Tức Thì Tới ERP 5.0 & Multi-Agent',
     seoTitle: 'Lộ Trình Chuyển Đổi Số Doanh Nghiệp SME Việt Nam | DOMATION',
     metaDescription:
-      'Bản đồ chuyển đổi số 4 bước thực chiến cho doanh nghiệp Việt cùng DOMATION: Web chuẩn SEO -> Chia Data <5s -> Automation & AI RAG -> ERP 5.0 May Đo.',
+      'Bản đồ chuyển đổi số 4 bước thực chiến cho doanh nghiệp Việt cùng DOMATION: Web chuẩn SEO -> Chia Data Tức Thì -> Automation & AI RAG -> ERP 5.0 May Đo.',
     focusKeyword: 'lộ trình chuyển đổi số doanh nghiệp sme việt nam',
     secondaryKeywords: [
       'hệ sinh thái domation.net',
@@ -701,7 +701,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     screenshotImage: '/imgs/enterprise/hero-domation-hub.webp',
     screenshotCaption: 'Toàn cảnh Kiến trúc Hợp nhất DOMATION: từ Marketing Acquisition đến ERP 5.0 nội bộ.',
     tldrSummary:
-      'Sai lầm phổ biến nhất khi doanh nghiệp SME chuyển đổi số là làm ngược: bắt đầu từ mua ERP kế toán phức tạp trong khi đầu vào khách hàng và kênh bán hàng vẫn rời rạc. Bản đồ chuyển đổi số 4 bước của DOMATION đi đúng trình tự tạo dòng tiền: Bước 1 Website & Landing chuẩn SEO/Tracking -> Bước 2 Auto Chia Data <5s & Meta CAPI -> Bước 3 CRM 360°, Flow Automation & AI Agent -> Bước 4 ERP 5.0 May Đo 12 Phân hệ.',
+      'Sai lầm phổ biến nhất khi doanh nghiệp SME chuyển đổi số là làm ngược: bắt đầu từ mua ERP kế toán phức tạp trong khi đầu vào khách hàng và kênh bán hàng vẫn rời rạc. Bản đồ chuyển đổi số 4 bước của DOMATION đi đúng trình tự tạo dòng tiền: Bước 1 Website & Landing chuẩn SEO/Tracking -> Bước 2 Auto Chia Data Tức Thì & Meta CAPI -> Bước 3 CRM 360°, Flow Automation & AI Agent -> Bước 4 ERP 5.0 May Đo 12 Phân hệ.',
     keyTakeaways: [
       'Mỗi giai đoạn triển khai độc lập trong 1–3 tuần nhưng nối khớp hoàn hảo trên cùng 1 trục dữ liệu.',
       'Ưu tiên giải quyết điểm chảy máu doanh thu trước (Lead rơi, Lead rác, Sale bỏ quên khách) để tự nuôi các bước sau.',
@@ -733,9 +733,9 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
       },
       {
         step: '02',
-        title: 'Tầng 2 — Điều Phối Tức Thì (Auto Chia Data <5s & Meta CAPI)',
+        title: 'Tầng 2 — Điều Phối Tức Thì (Auto Chia Data & Meta CAPI)',
         detail: 'Chặn tuyệt đối rớt số, lọc trùng 180 ngày và tối ưu tệp khách hàng chạy quảng cáo.',
-        techStack: 'ZaloBot <5s • SHA-256 CAPI',
+        techStack: 'ZaloBot Tức Thì • SHA-256 CAPI',
       },
       {
         step: '03',
@@ -1584,7 +1584,7 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
     screenshotImage: '/landingpage_avatar/portfolio.webp',
     screenshotCaption: 'Hệ sinh thái kiến trúc may đo DOMATION đồng hành cùng Capital House, INKICA, IDEAS, Phúc Lộc Thọ và 30+ đối tác.',
     tldrSummary:
-      'DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới — kết hợp trọn vẹn 4 năng lực hiếm có trên cùng một nền tảng: Auto Chia Data ZaloBot <5s & Meta CAPI, Enterprise ERP 5.0 (12 phân hệ), CRM 360° đồng bộ MISA và Multi-Agent AI + Web 3D/CRO. Đó là lý do 30+ thương hiệu hàng đầu từ Bất động sản, Giáo dục, Y tế đến F&B và Sản xuất POD đã chọn DOMATION.',
+      'DOMATION là hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới — kết hợp trọn vẹn 4 năng lực hiếm có trên cùng một nền tảng: Auto Chia Data ZaloBot Tức Thì & Meta CAPI, Enterprise ERP 5.0 (12 phân hệ), CRM 360° đồng bộ MISA và Multi-Agent AI + Web 3D/CRO. Đó là lý do 30+ thương hiệu hàng đầu từ Bất động sản, Giáo dục, Y tế đến F&B và Sản xuất POD đã chọn DOMATION.',
     keyTakeaways: [
       'Một đối tác kiến trúc duy nhất chịu trách nhiệm xuyên suốt từ Website thu khách, Quảng cáo CAPI tới ERP/Lương nội bộ.',
       'May đo 100% theo quy trình sống còn của doanh nghiệp nhưng giao hàng nhanh chỉ trong 2–4 tuần nhờ lõi module chuẩn.',

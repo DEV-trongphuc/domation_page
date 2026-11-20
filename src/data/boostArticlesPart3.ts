@@ -33,7 +33,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     keyTakeaways: [
       'Không cắt gọt quy trình sống còn để vừa với phần mềm đóng gói; mọi cấp phê duyệt, chia hoa hồng và KPI đều ánh xạ 1:1.',
       'Rút ngắn 80% thời gian xây dựng so với code tay từ con số 0 nhờ bộ lõi DOMATION ERP 5.0 gồm 12 phân hệ đã kiểm chứng.',
-      'Liên thông khép kín từ Marketing Ads -> Auto Chia Data <5s -> CRM 9 nấc -> Chấm công GPS AI & Payroll PDF.',
+      'Liên thông khép kín từ Marketing Ads -> Auto Chia Data Tức Thì -> CRM 9 nấc -> Chấm công GPS AI & Payroll PDF.',
     ],
     painPoints: [
       {
@@ -1050,7 +1050,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
     tldrSummary:
       'ERP đóng gói nước ngoài rất mạnh về chuẩn kế toán quốc tế nhưng thường thiếu kết nối gốc với hệ sinh thái đặc thù tại Việt Nam như ZaloBot, Zalo ZNS, VietQR ngân hàng nội địa, hóa đơn điện tử MISA và Meta CAPI. DOMATION ERP 5.0 may đo tích hợp sẵn toàn bộ các cầu nối này ngay từ lõi và triển khai vừa vặn theo văn hóa vận hành Việt Nam.',
     keyTakeaways: [
-      'Tích hợp bản địa: ZaloBot <5s, Zalo ZNS, VietQR ACB/Napas, Hóa đơn điện tử MISA và BHXH/TNCN Việt Nam chạy sẵn.',
+      'Tích hợp bản địa: ZaloBot Tức Thì, Zalo ZNS, VietQR ACB/Napas, Hóa đơn điện tử MISA và BHXH/TNCN Việt Nam chạy sẵn.',
       'Thời gian triển khai 2–4 tuần thay vì 6–12 tháng cấu hình phức tạp.',
       'Giao diện tiếng Việt trực quan, tối ưu cho thao tác nhanh trên điện thoại của đội Sale & hiện trường.',
     ],
@@ -1090,7 +1090,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
         id: 'tieu-chi-chon-erp-viet-nam',
         heading: '5 Tiêu chí quyết định khi chọn ERP tại Việt Nam năm 2026',
         paragraphs: [
-          'Đừng chỉ nhìn vào danh sách 100 tính năng trên brochure. Hãy hỏi 5 câu hỏi thực tế: Có chia Lead từ Meta/TikTok về ZaloBot dưới 5 giây không? Có chấm công GPS + Selfie AI chống fake không? Có tính lương chuẩn TNCN Việt Nam và xuất PDF 1 click không? Có đồng bộ MISA và VietQR tự động không? Và có sửa được luồng duyệt trong vài ngày không?',
+          'Đừng chỉ nhìn vào danh sách 100 tính năng trên brochure. Hãy hỏi 5 câu hỏi thực tế: Có chia Lead từ Meta/TikTok về ZaloBot tức thì không? Có chấm công GPS + Selfie AI chống fake không? Có tính lương chuẩn TNCN Việt Nam và xuất PDF 1 click không? Có đồng bộ MISA và VietQR tự động không? Và có sửa được luồng duyệt trong vài ngày không?',
         ],
         bullets: [
           'DOMATION ERP 5.0 đáp ứng 5/5 tiêu chí bản địa này ngay trong lõi kiến trúc.',
@@ -1507,7 +1507,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       {
         step: '03',
         title: 'Kết nối Pipeline Server-Side (CAPI + ZaloBot + CRM)',
-        detail: 'Mỗi lượt gửi form lập tức chia cho Sale dưới 5s và ghi nhận tham số `fbp/fbc/utm` chuẩn xác.',
+        detail: 'Mỗi lượt gửi form lập tức chia cho Sale tức thì và ghi nhận tham số `fbp/fbc/utm` chuẩn xác.',
         techStack: 'Server-Side CAPI • ZaloBot Webhook',
       },
     ],
@@ -1609,7 +1609,7 @@ export const BOOST_ARTICLES_PART_3: BoostArticle[] = [
       {
         step: '02',
         title: 'Kích hoạt 4 AI Agent chuyên trách liên phòng ban',
-        detail: 'Lead Agent (<5s), CSKH Agent (24/7 đa kênh), Ops Agent (Task/HR), Revenue Agent (CAPI/Flow).',
+        detail: 'Lead Agent (Tức thì), CSKH Agent (24/7 đa kênh), Ops Agent (Task/HR), Revenue Agent (CAPI/Flow).',
         techStack: 'Orchestrator Core • Tool Calling',
       },
       {

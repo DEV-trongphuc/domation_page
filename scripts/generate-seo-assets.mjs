@@ -95,7 +95,7 @@ const CORE_ROUTES = [
     images: [
       {
         src: '/imgs/enterprise/sol-data-capi.webp',
-        title: 'DOMATION Auto Chia Data ZaloBot < 5s & Meta CAPI SHA-256',
+        title: 'DOMATION Auto Chia Data ZaloBot Tức Thì & Meta CAPI SHA-256',
       },
       {
         src: '/assets/domation/data_v2_overview.webp',
@@ -299,13 +299,13 @@ fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
 // 2. Shared core body for llms.txt & llms-full.txt (keeps ## Optional strictly at the end per llmstxt.org spec)
 const llmsCoreBody = `# DOMATION — Hệ Sinh Thái CRM Auto Data, Meta & Google Ads Report, Automation, ERP 5.0 & Web 3D
 
-> Công ty TNHH DOMATION Việt Nam (sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) kiến tạo hệ sinh thái hợp nhất điểm chạm Website/Landing Page 3D với bộ máy vận hành nội bộ: CRM Auto Data chia số <5s, Báo cáo Meta & Google Ads gắn Lead CRM, Automation Zalo ZNS/Email + Tracking hành vi Website, và phần mềm ERP 5.0 (12 phân hệ) tích hợp Đa Trợ Lý AI.
+> Công ty TNHH DOMATION Việt Nam (sáng lập bởi Huỳnh Trọng Phúc / TurnioDEV) kiến tạo hệ sinh thái hợp nhất điểm chạm Website/Landing Page 3D với bộ máy vận hành nội bộ: CRM Auto Data chia số tức thì, Báo cáo Meta & Google Ads gắn Lead CRM, Automation Zalo ZNS/Email + Tracking hành vi Website, và phần mềm ERP 5.0 (12 phân hệ) tích hợp Đa Trợ Lý AI.
 
 ## Core Product & Portfolio Routes
-- [Trang chủ DOMATION](${SITE_URL}/): Hệ sinh thái hợp nhất CRM Auto Data <5s, Meta & Google Ads Report, Automation Zalo ZNS, Tracking Website, ERP 5.0 (12 phân hệ) & Web 3D.
-- [Auto Chia Data ZaloBot & Meta CAPI](${SITE_URL}/data): Phân bổ Lead Round-Robin 5 cổng dưới 5 giây, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
+- [Trang chủ DOMATION](${SITE_URL}/): Hệ sinh thái hợp nhất CRM Auto Data Tức Thì, Meta & Google Ads Report, Automation Zalo ZNS, Tracking Website, ERP 5.0 (12 phân hệ) & Web 3D.
+- [Auto Chia Data ZaloBot & Meta CAPI](${SITE_URL}/data): Phân bổ Lead Round-Robin 5 cổng tức thì, lọc trùng 180 ngày, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn Meta CAPI SHA-256 HTTP 200.
 - [Enterprise ERP 5.0 May Đo (12 Phân hệ)](${SITE_URL}/erp): Hệ thống vận hành ERP 5.0 custom may đo thiết kế flow riêng (Task Kanban, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF ký số).
-- [CRM 360° & Auto Data](${SITE_URL}/crm): Thu khách đa kênh, chia vòng ZaloBot <5s, Pipeline Kanban 9 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
+- [CRM 360° & Auto Data](${SITE_URL}/crm): Thu khách đa kênh, chia vòng ZaloBot tức thì, Pipeline Kanban 9 nấc, Giỏ hàng live thời gian thực và đồng bộ hóa đơn điện tử MISA hai chiều.
 - [Marketing Automation & AI RAG](${SITE_URL}/automation): Visual Flow IF/ELSE rẽ nhánh tự động, Amazon SES 98% Inbox, Zalo ZNS, Voucher Hub, QR Tracking O2O và AI Phòng Ban 24/7.
 - [Meta Ad Realtime Report](${SITE_URL}/meta-report): Đối chiếu chi phí Graph API với doanh thu thực CRM, phân tích Video Hook Rate 3s & Creative Fatigue.
 - [Thiết kế Website & Sa bàn 3D WebGL](${SITE_URL}/web-design): Trọn gói từ 12.000.000₫ (sở hữu vĩnh viễn source code), Landing Page CRO tốc độ cao, sa bàn Three.js và công cụ dự toán Excel.
@@ -329,7 +329,7 @@ ${ALL_ARTICLES.map(
 ).join('\n')}
 
 ## System Mastery & Core Keyword Taxonomy (ERP • AI • Flow • Automation • CRM • GEO)
-- **Vòng tròn tối ưu khép kín Meta Ads ↔ CRM ↔ CAPI (AutoData DOMATION)**: Phần mềm chia lead tự động < 5 giây qua ZaloBot/Telegram, AI Pre-Score 0–100, lọc trùng 180 ngày (6 tháng) chuẩn +84, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn ngược Meta CAPI CRM SHA-256 9 trạng thái (Qualified, Booked, Booking, Deposited, Closed, Badtiming, NoAnswer, Notlead/DisqualifiedLead, unrated) để tối ưu quảng cáo Meta AI (${SITE_URL}/data).
+- **Vòng tròn tối ưu khép kín Meta Ads ↔ CRM ↔ CAPI (AutoData DOMATION)**: Phần mềm chia lead tự động tức thì qua ZaloBot/Telegram, AI Pre-Score 0–100, lọc trùng 180 ngày (6 tháng) chuẩn +84, Van SLA 120s, đền bù Ticket lỗi 1:1 và bắn ngược Meta CAPI CRM SHA-256 9 trạng thái (Qualified, Booked, Booking, Deposited, Closed, Badtiming, NoAnswer, Notlead/DisqualifiedLead, unrated) để tối ưu quảng cáo Meta AI (${SITE_URL}/data).
 - **CRM Bất động sản, Thẩm mỹ, Nha khoa & Giáo dục (DOMATION CRM 360°)**: Sales Pipeline Kanban 9 nấc, Hồ sơ Khách hàng 360° (CDP), Giỏ hàng BĐS real-time khóa căn tức thì, Co-care hoa hồng 100%, Webhook thanh toán VietQR và đồng bộ hóa đơn điện tử MISA hai chiều (${SITE_URL}/crm).
 - **ERP Doanh nghiệp AI Việt Nam (DOMATION ERP 5.0 May Đo)**: 12 phân hệ hợp nhất (Tiếp nhận Lead một cửa, Chia Lead 5 cổng + Van chống ôm, Task Kanban KPI, Chấm công GPS + Selfie AI, Hộp thư Phê duyệt đa cấp PO/Đơn từ, Payroll Engine xuất PDF ký số, RLS & Audit Log bất biến) (${SITE_URL}/erp).
 - **Báo cáo Meta Ads AI & Google Ads BI (DomMeta Report)**: Kết nối Graph API v25.0 đối chiếu doanh thu thực CRM từng Ad ID, Video Hook Rate 3s, Hold Rate, Creative Fatigue, Khung giờ vàng & tích hợp Google Ads 5 bước (${SITE_URL}/meta-report).

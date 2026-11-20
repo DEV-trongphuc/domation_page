@@ -46,7 +46,7 @@ const PRODUCT_GUIDES: Record<
     badge: 'AUTO DATA CRM • 60 GIÂY',
     title: 'Thiết lập Chia Data Tự Động cho người không rành kỹ thuật',
     subtitle:
-      'Chỉ cần điền tên đội Sale ở Bước 1 — mọi luật chia vòng <5s, lọc trùng 180 ngày (6 tháng) và chống trễ SLA 120s đã bật sẵn.',
+      'Chỉ cần điền tên đội Sale ở Bước 1 — mọi luật chia vòng tức thì, lọc trùng 180 ngày (6 tháng) và chống trễ SLA 120s đã bật sẵn.',
     steps: [
       {
         step: 'Bước 1',

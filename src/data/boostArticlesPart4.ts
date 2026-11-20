@@ -392,7 +392,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     title: 'So Sánh Chia Lead Qua ZaloBot, Telegram Bot Và Google Sheet: Tốc Độ, SLA & Độ Tin Cậy',
     seoTitle: 'So Sánh Chia Lead ZaloBot, Telegram & Google Sheet | DOMATION',
     metaDescription:
-      'Đánh giá thực tế 3 cách chia Lead cho đội Sale tại Việt Nam: ZaloBot, Telegram Bot và Google Sheet thủ công về tốc độ <5s, tỷ lệ nghe máy và van SLA 120s.',
+      'Đánh giá thực tế 3 cách chia Lead cho đội Sale tại Việt Nam: ZaloBot, Telegram Bot và Google Sheet thủ công về tốc độ Tức Thì, tỷ lệ nghe máy và van SLA 120s.',
     focusKeyword: 'chia lead qua zalobot hay telegram bot',
     secondaryKeywords: [
       'tự động hóa chia lead',
@@ -413,7 +413,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     screenshotImage: '/imgs/autodata/showcase/screen_rounds.jpg',
     screenshotCaption: 'Giao diện cấu hình chia Lead tức thì qua ZaloBot & Telegram Bot trong DOMATION Auto Data.',
     tldrSummary:
-      'Google Sheet từng là công cụ miễn phí tiện lợi nhưng trở thành điểm nghẽn chết người khi chạy quảng cáo quy mô lớn vì độ trễ chia số 15–120 phút và dễ lộ toàn bộ danh sách khách hàng. Kết hợp song song ZaloBot (gần gũi thói quen Sale Việt) và Telegram Bot (ổn định tốc độ cao làm kênh dự phòng) trên DOMATION giúp giao Lead dưới 5 giây kèm van thu hồi 120s.',
+      'Google Sheet từng là công cụ miễn phí tiện lợi nhưng trở thành điểm nghẽn chết người khi chạy quảng cáo quy mô lớn vì độ trễ chia số 15–120 phút và dễ lộ toàn bộ danh sách khách hàng. Kết hợp song song ZaloBot (gần gũi thói quen Sale Việt) và Telegram Bot (ổn định tốc độ cao làm kênh dự phòng) trên DOMATION giúp giao Lead tức thì kèm van thu hồi 120s.',
     keyTakeaways: [
       'Google Sheet: Độ trễ cao, không có van thu hồi SLA, dễ bị nhân viên tải toàn bộ file SĐT khi nghỉ việc.',
       'ZaloBot: 99% Sale Việt Nam mở Zalo cả ngày nên tỷ lệ bấm nhận số ngay trong 30 giây đầu đạt cao nhất.',
@@ -460,7 +460,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
       },
     ],
     metricsOutcome: [
-      { label: 'Độ trễ chia số', value: '30 phút -> < 5 giây' },
+      { label: 'Độ trễ chia số', value: '30 phút -> Tức thì' },
       { label: 'Tỷ lệ xác nhận nhận Lead', value: '97% trong 90s' },
       { label: 'Rủi ro tải trộm danh bạ Sheet', value: '0% (Che SĐT & RLS)' },
       { label: 'Kênh dự phòng (Fallback)', value: 'ZaloBot + Telegram' },
@@ -679,9 +679,9 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     relatedModuleLabel: 'Xem Bộ Lọc AI Pre-Scorer Tại /data',
     faqs: [
       {
-        question: 'AI Pre-Scorer có tốn nhiều thời gian làm chậm tốc độ chia số dưới 5 giây không?',
+        question: 'AI Pre-Scorer có tốn nhiều thời gian làm chậm tốc độ chia số tức thì không?',
         answer:
-          'Không. Toàn bộ khâu kiểm tra định dạng, lọc trùng và chấm điểm AI chạy song song dưới 400 mili-giây nên tổng thời gian giao số vẫn giữ vững dưới 5 giây.',
+          'Không. Toàn bộ khâu kiểm tra định dạng, lọc trùng và chấm điểm AI chạy song song dưới 400 mili-giây nên tổng thời gian giao số vẫn giữ vững tức thì.',
       },
       {
         question: 'Có tự động chặn được các số điện thoại hay phá form của đối thủ không?',
@@ -1177,7 +1177,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     title: 'So Sánh CRM May Đo DOMATION vs CRM Đóng Gói Phổ Thông Cho Doanh Nghiệp Việt Nam',
     seoTitle: 'So Sánh CRM May Đo vs CRM Đóng Gói Cho Doanh Nghiệp | DOMATION',
     metaDescription:
-      'Phân tích khác biệt giữa CRM may đo DOMATION 360° và CRM đóng gói: tích hợp gốc ZaloBot <5s, Meta CAPI, MISA, chi phí mở rộng và khả năng tùy biến flow riêng.',
+      'Phân tích khác biệt giữa CRM may đo DOMATION 360° và CRM đóng gói: tích hợp gốc ZaloBot Tức Thì, Meta CAPI, MISA, chi phí mở rộng và khả năng tùy biến flow riêng.',
     focusKeyword: 'so sánh crm may đo và crm đóng gói',
     secondaryKeywords: [
       'nên chọn crm nào cho doanh nghiệp việt',
@@ -1198,7 +1198,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     screenshotImage: '/imgs/meta-screens/fusion-quick-connect-crm.webp',
     screenshotCaption: 'Kết nối Webhook hai chiều gốc giữa DOMATION CRM, Meta CAPI và kế toán MISA.',
     tldrSummary:
-      'CRM đóng gói quốc tế mạnh về email tiếng Anh nhưng gần như bất lực trước nhu cầu thực chiến tại Việt Nam: chia số ZaloBot dưới 5s, gửi Zalo ZNS từ POS, xuất hóa đơn MISA hai chiều, kiểm tra VietQR ngân hàng và chống trùng số +84 qua nhiều đại lý F1. DOMATION CRM 360° may đo giải quyết trọn vẹn hệ sinh thái bản địa này trong một nền tảng.',
+      'CRM đóng gói quốc tế mạnh về email tiếng Anh nhưng gần như bất lực trước nhu cầu thực chiến tại Việt Nam: chia số ZaloBot tức thì, gửi Zalo ZNS từ POS, xuất hóa đơn MISA hai chiều, kiểm tra VietQR ngân hàng và chống trùng số +84 qua nhiều đại lý F1. DOMATION CRM 360° may đo giải quyết trọn vẹn hệ sinh thái bản địa này trong một nền tảng.',
     keyTakeaways: [
       'Không phải tốn hàng trăm triệu mua thêm Zapier/Make để nối CRM với Zalo, Facebook CAPI và kế toán MISA.',
       'Giao diện thiết kế riêng theo đúng thuật ngữ ngành (Mã căn, Học bổng, Ca khám, Franchise) nên Sale dùng ngay.',
@@ -1541,7 +1541,7 @@ export const BOOST_ARTICLES_PART_4: BoostArticle[] = [
     metricsOutcome: [
       { label: 'Tỷ lệ chuyển đổi chuẩn CRO', value: '12% – 18% ngành dịch vụ' },
       { label: 'Điểm tốc độ Mobile', value: '95 – 100 Performance' },
-      { label: 'Thời gian từ Gửi Form -> Zalo Sale', value: '< 5 giây' },
+      { label: 'Thời gian từ Gửi Form -> Zalo Sale', value: 'Tức thì' },
       { label: 'Giảm chi phí trên mỗi Lead (CPL)', value: '-35% đến -50%' },
     ],
     relatedPortfolioId: 'brandson-academy',

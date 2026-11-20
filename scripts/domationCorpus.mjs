@@ -8,7 +8,7 @@ export const DOMATION_CORPUS = [
     urlLabel: 'Trang chủ DOMATION',
     image: '/imgs/enterprise/hero-domation-hub.webp',
     content:
-      'DOMATION.NET (Công ty DOMARKETING, sáng lập bởi CEO Huỳnh Trọng Phúc) chuyên khảo sát và kiến tạo Hệ điều hành Vận hành & Multi-Agent AI thiết kế riêng (Bespoke Enterprise OS) bám sát 100% cơ cấu tổ chức, cấp phê duyệt và phễu bán hàng thực tế của từng doanh nghiệp — không ép doanh nghiệp vào phần mềm đóng gói cứng nhắc. Trọng tâm gồm 4 trụ cột: ERP 5.0 nội bộ, CRM 360° & Flow rẽ nhánh IF/ELSE, Auto Chia Data < 5 giây & Meta CAPI HTTP 200, và Website thương hiệu tương tác, đồng hành cùng 30+ thương hiệu lớn (Capital House, EcoLife Signature, INKICA, IDEAS, Phúc Lộc Thọ, Cowboy Steak, En Group).',
+      'DOMATION.NET (Công ty DOMARKETING, sáng lập bởi CEO Huỳnh Trọng Phúc) chuyên khảo sát và kiến tạo Hệ điều hành Vận hành & Multi-Agent AI thiết kế riêng (Bespoke Enterprise OS) bám sát 100% cơ cấu tổ chức, cấp phê duyệt và phễu bán hàng thực tế của từng doanh nghiệp — không ép doanh nghiệp vào phần mềm đóng gói cứng nhắc. Trọng tâm gồm 4 trụ cột: ERP 5.0 nội bộ, CRM 360° & Flow rẽ nhánh IF/ELSE, Auto Chia Data tức thì & Meta CAPI HTTP 200, và Website thương hiệu tương tác, đồng hành cùng 30+ thương hiệu lớn (Capital House, EcoLife Signature, INKICA, IDEAS, Phúc Lộc Thọ, Cowboy Steak, En Group).',
   },
   {
     id: 'domation-multi-agent-platforms',
@@ -19,18 +19,18 @@ export const DOMATION_CORPUS = [
     urlLabel: 'Xem Multi-Agent Hub',
     image: '/imgs/enterprise/sol-multi-agent.webp',
     content:
-      'Hệ điều hành Multi-Agent của DOMATION đặt Orchestrator Core (huấn luyện trực tiếp từ tài liệu PDF, bảng giá, quy trình nội bộ) ở trung tâm để điều phối 4 AI Agent chuyên trách vận hành liên phòng ban 24/7: 1) Lead & Routing Agent (lọc trùng 6 tháng, chấm điểm nhu cầu, chia số ZaloBot dưới 5 giây cho Sale/Đại lý F1); 2) Omnichannel CSKH Agent (tư vấn bảng giá, gửi tài liệu và đặt lịch hẹn tự động đa kênh); 3) ERP & HR Ops Agent (nhắc tiến độ Task Kanban, đối soát công ca GPS AI và luân chuyển hồ sơ phê duyệt đa cấp); 4) Flow & Revenue Agent (kích hoạt kịch bản rẽ nhánh IF/ELSE và bắn tín hiệu doanh thu thực về quảng cáo). Hệ thống tích hợp đồng bộ 2 chiều qua Website, ZaloBot, Zalo OA, Facebook Messenger, Zalo ZNS, Email Amazon SES, Meta Conversions API (CAPI), kế toán MISA, Google Sheets và REST Webhook API.',
+      'Hệ điều hành Multi-Agent của DOMATION đặt Orchestrator Core (huấn luyện trực tiếp từ tài liệu PDF, bảng giá, quy trình nội bộ) ở trung tâm để điều phối 4 AI Agent chuyên trách vận hành liên phòng ban 24/7: 1) Lead & Routing Agent (lọc trùng 6 tháng, chấm điểm nhu cầu, chia số ZaloBot tức thì cho Sale/Đại lý F1); 2) Omnichannel CSKH Agent (tư vấn bảng giá, gửi tài liệu và đặt lịch hẹn tự động đa kênh); 3) ERP & HR Ops Agent (nhắc tiến độ Task Kanban, đối soát công ca GPS AI và luân chuyển hồ sơ phê duyệt đa cấp); 4) Flow & Revenue Agent (kích hoạt kịch bản rẽ nhánh IF/ELSE và bắn tín hiệu doanh thu thực về quảng cáo). Hệ thống tích hợp đồng bộ 2 chiều qua Website, ZaloBot, Zalo OA, Facebook Messenger, Zalo ZNS, Email Amazon SES, Meta Conversions API (CAPI), kế toán MISA, Google Sheets và REST Webhook API.',
   },
   {
     id: 'domation-pillars-auto-data-capi',
     category: 'Giải pháp Lõi #01',
-    title: 'Auto Data Routing & Meta CAPI — Chia số 5 cổng < 5 giây',
+    title: 'Auto Data Routing & Meta CAPI — Chia số 5 cổng tức thì',
     sectionId: 'solutions',
     url: '/data',
     urlLabel: 'Mở trang /data',
     image: '/imgs/enterprise/sol-data-capi.webp',
     content:
-      'Hệ thống Phân bổ Data V2 giải quyết bài toán Lead chậm và lãng phí ngân sách quảng cáo: nhận Lead đa kênh (Meta Instant Form, TikTok, Landing Page 3D, QR Offline) dưới 1 giây, tự động lọc trùng số điện thoại trong 6 tháng (tiết kiệm 35% chi phí quảng cáo), chia vòng công bằng Round-Robin qua ZaloBot trong < 5 giây về thẳng máy Sale/Đại lý F1 (hỗ trợ 5 cổng chia số và bù ticket tự động). Đặc biệt tích hợp Meta Conversions API (CAPI) tự động bắn ngược trạng thái Qualified / Notlead / Booked (mã HTTP 200) về Facebook Dataset giúp thuật toán Meta tự tối ưu tập khách hàng chất lượng cao.',
+      'Hệ thống Phân bổ Data V2 giải quyết bài toán Lead chậm và lãng phí ngân sách quảng cáo: nhận Lead đa kênh (Meta Instant Form, TikTok, Landing Page 3D, QR Offline) tức thì, tự động lọc trùng số điện thoại trong 6 tháng (tiết kiệm 35% chi phí quảng cáo), chia vòng công bằng Round-Robin qua ZaloBot tức thì về thẳng máy Sale/Đại lý F1 (hỗ trợ 5 cổng chia số và bù ticket tự động). Đặc biệt tích hợp Meta Conversions API (CAPI) tự động bắn ngược trạng thái Qualified / Notlead / Booked (mã HTTP 200) về Facebook Dataset giúp thuật toán Meta tự tối ưu tập khách hàng chất lượng cao.',
   },
   {
     id: 'domation-pillar-erp5',
@@ -129,7 +129,7 @@ export const DOMATION_CORPUS = [
     urlLabel: 'Xem EcoLife Signature',
     image: '/imgs/enterprise/sol-web3d-meta.webp',
     content:
-      'Dự án EcoLife Signature Đà Nẵng của Chủ đầu tư Capital House Group (BĐS Xanh chuẩn quốc tế IFC EDGE): DOMATION triển khai toàn diện Website Quiet Luxury, Sa bàn 3D bóc mái tương tác 8 mẫu căn hộ mẫu trực tiếp trên trình duyệt, Trợ lý AI hỗ trợ Sale 24/7 (ai.ecolifesignature.vn), 25+ ấn phẩm OOH đồng bộ, cùng hệ thống Auto Chia Data Round-Robin & Meta CAPI kết nối trực tiếp cho 3 Đại lý F1 chính thức (Địa Ốc Tùng Long, BĐS Hợp Nhất, Tập Đoàn IHD) dưới 5 giây.',
+      'Dự án EcoLife Signature Đà Nẵng của Chủ đầu tư Capital House Group (BĐS Xanh chuẩn quốc tế IFC EDGE): DOMATION triển khai toàn diện Website Quiet Luxury, Sa bàn 3D bóc mái tương tác 8 mẫu căn hộ mẫu trực tiếp trên trình duyệt, Trợ lý AI hỗ trợ Sale 24/7 (ai.ecolifesignature.vn), 25+ ấn phẩm OOH đồng bộ, cùng hệ thống Auto Chia Data Round-Robin & Meta CAPI kết nối trực tiếp cho 3 Đại lý F1 chính thức (Địa Ốc Tùng Long, BĐS Hợp Nhất, Tập Đoàn IHD) tức thì.',
   },
   {
     id: 'case-study-inkica',
@@ -167,13 +167,13 @@ export const DOMATION_CORPUS = [
   {
     id: 'domation-timeline-process',
     category: 'Quy trình Triển khai',
-    title: 'Quy trình Triển khai Chu trình Đóng < 5 Giây Tự Động',
+    title: 'Quy trình Triển khai Chu trình Đóng Tức Thì Tự Động',
     sectionId: 'architecture',
     url: '/#architecture',
     urlLabel: 'Xem Kiến trúc',
     image: '/imgs/enterprise/hero-domation-hub.webp',
     content:
-      'Chu trình khép kín 4 bước tại DOMATION giúp không bỏ lỡ bất kỳ khách hàng nào: Bước 01 Thu Lead đa kênh từ Meta Form & Web 3D (< 1 giây) -> Bước 02 Lọc trùng dữ liệu 6 tháng & Chia vòng ZaloBot về Sale/Đại lý (< 5 giây) -> Bước 03 Nuôi dưỡng đa kênh ZNS/Email, AI Chatbot trực 24/7 & Pipeline CRM 8 nấc (24/7 Auto) -> Bước 04 Bắn tín hiệu Qualified/Booked HTTP 200 ngược về Meta CAPI giúp máy học quảng cáo ngày càng rẻ và chất lượng.',
+      'Chu trình khép kín 4 bước tại DOMATION giúp không bỏ lỡ bất kỳ khách hàng nào: Bước 01 Thu Lead đa kênh từ Meta Form & Web 3D (< 1 giây) -> Bước 02 Lọc trùng dữ liệu 6 tháng & Chia vòng ZaloBot về Sale/Đại lý tức thì -> Bước 03 Nuôi dưỡng đa kênh ZNS/Email, AI Chatbot trực 24/7 & Pipeline CRM 8 nấc (24/7 Auto) -> Bước 04 Bắn tín hiệu Qualified/Booked HTTP 200 ngược về Meta CAPI giúp máy học quảng cáo ngày càng rẻ và chất lượng.',
   },
   {
     id: 'domation-security-infra',

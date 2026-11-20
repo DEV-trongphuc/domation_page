@@ -51,14 +51,14 @@ const CYCLE_STEPS: CycleStep[] = [
   {
     id: 'ingress',
     step: '01',
-    shortLabel: 'Lead Ingress < 5s',
+    shortLabel: 'Lead Ingress Tức Thì',
     title: 'Thu Lead Đa Kênh & Lọc Trùng 180 Ngày',
     badge: 'BƯỚC 01 • TIẾP NHẬN TỨC THÌ',
-    latency: '< 5 giây',
+    latency: 'Tức thì',
     summary:
       'Webhook từ Meta Lead Ads, Google Ads, TikTok Instant Form, Ladipage và Website đổ về một cửa, tự chuẩn hóa +84 và kiểm tra trùng đa kênh 180 ngày (6 tháng).',
     metrics: [
-      { label: 'Độ trễ Webhook', value: '< 5s' },
+      { label: 'Độ trễ Webhook', value: 'Tức thì' },
       { label: 'Cửa sổ lọc trùng', value: '180 Ngày (6 Tháng)' },
       { label: 'Chuẩn hóa SĐT', value: 'E.164 (+84)' },
     ],
@@ -263,7 +263,7 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
               </div>
               <h2 className="text-xl sm:text-3xl lg:text-[34px] font-bold text-slate-900 leading-[1.22] tracking-tight">
                 Quảng Cáo Hút Khách — Chia Số{' '}
-                <span className="whitespace-nowrap">&lt;&nbsp;5s</span> —{' '}
+                <span className="whitespace-nowrap">Tức Thì</span> —{' '}
                 <span className="text-gradient-inkica">Bắn Ngược CAPI Tự Thông Minh</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">

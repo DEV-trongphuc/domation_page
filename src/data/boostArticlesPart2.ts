@@ -426,7 +426,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
     metricsOutcome: [
       { label: 'Chi phí máy chấm công', value: '0₫ phần cứng' },
       { label: 'Đồng bộ bảng công', value: 'Real-time' },
-      { label: 'Thời gian check-in', value: '< 5 giây' },
+      { label: 'Thời gian check-in', value: 'Tức thì' },
     ],
     relatedPortfolioId: 'ideas-business',
     relatedModuleUrl: '/erp',
@@ -1138,7 +1138,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
       {
         step: '03',
         title: 'Tích hợp Hệ Sinh Thái Tracking, AI Chat & Auto Chia Lead',
-        detail: 'Mọi form trên web đều bắn Webhook về ZaloBot/CRM dưới 5 giây.',
+        detail: 'Mọi form trên web đều bắn Webhook về ZaloBot/CRM tức thì.',
         techStack: 'Server-side Tracking • Webhook Sync',
       },
     ],
@@ -1233,7 +1233,7 @@ export const BOOST_ARTICLES_PART_2: BoostArticle[] = [
       {
         step: '02',
         title: 'Cấu hình 4 Agent Chuyên Trách Qua Orchestrator Core',
-        detail: 'Lead Agent (<5s) + CSKH Agent (24/7) + ERP/HR Agent (GPS/Task/Approval) + Revenue Agent (IF/ELSE & CAPI).',
+        detail: 'Lead Agent (Tức thì) + CSKH Agent (24/7) + ERP/HR Agent (GPS/Task/Approval) + Revenue Agent (IF/ELSE & CAPI).',
         techStack: 'Orchestrator Event Bus • Tool Sandbox',
       },
       {
