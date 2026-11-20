@@ -10,6 +10,8 @@ import {
 } from 'recharts';
 import { CustomModal } from '../components/ui/CustomModal';
 import { CustomSelect } from '../components/ui/CustomSelect';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import { Avatar } from '../components/ui/Avatar';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { useNavigate } from 'react-router-dom';
@@ -64,8 +66,6 @@ type Lead = {
 import {
   fetchAPI,
   normalizeNotificationStatus,
-  getDefaultDateFilter,
-  normalizeGlobalDateFilter,
   parseServerDateVN,
   getWeekRangeVN,
   formatDateYYYYMMDD_VN,
@@ -340,15 +340,12 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
   const navigate = useNavigate();
   const searchTerm = searchParams.get('search') || '';
   const statusFilter = searchParams.get('status') || 'all';
-  const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-  });
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const dateFilter = unifiedDateHelpers.legacyDate;
+  const dateQueryString = unifiedDateHelpers.queryString;
 
   const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
+    unifiedDateHelpers.setFromLegacy(val);
   };
   const consultantFilter = searchParams.get('consultant') || 'all';
   const roundFilter = searchParams.get('round') || 'all';
@@ -381,10 +378,14 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     let start = '';
     let end = '';
 
-    if (filter === 'Hôm nay') {
+    if (filter === 'all' || filter === 'Tất cả thời gian') {
+      mode = 'all';
+    } else if (filter === 'Hôm nay') {
       mode = 'today';
     } else if (filter === 'Hôm qua') {
       mode = 'yesterday';
+    } else if (filter === 'Hôm qua - Hôm nay') {
+      mode = 'yesterday_to_today';
     } else if (filter === '7 ngày qua') {
       mode = '7_days';
     } else if (filter === '30 ngày qua') {
@@ -512,7 +513,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     setLoading(true);
     try {
       const urlCampaignId = searchParams.get('campaign_id') || '';
-      let apiUrl = `get_logs&page=${currentPage}&pageSize=${ITEMS_PER_PAGE}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}`;
+      let apiUrl = `get_logs&page=${currentPage}&pageSize=${ITEMS_PER_PAGE}&${dateQueryString}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}`;
       if (qualityFilter && qualityFilter !== 'all') {
         apiUrl += `&quality_status=${encodeURIComponent(qualityFilter)}`;
       }
@@ -535,28 +536,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     if (isActive) {
       fetchLeads();
     }
-  }, [searchParams, dateFilter, isActive]);
-
-  useEffect(() => {
-    if (isActive) {
-      const saved = normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-      if (saved && saved !== dateFilter) {
-        setDateFilter(saved);
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    if (!isActive) return;
-    const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
-      if (newDate && newDate !== dateFilter) {
-        setDateFilter(newDate);
-      }
-    };
-    window.addEventListener('global-date-change', handleGlobalDate);
-    return () => window.removeEventListener('global-date-change', handleGlobalDate);
-  }, [dateFilter, isActive]);
+  }, [searchParams, dateQueryString, isActive]);
 
   useEffect(() => {
     fetchConsultants();
@@ -572,7 +552,7 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
     };
     window.addEventListener('lead-added', handleLeadAdded);
     return () => window.removeEventListener('lead-added', handleLeadAdded);
-  }, [searchParams, dateFilter, isActive]);
+  }, [searchParams, dateQueryString, isActive]);
 
   useEffect(() => {
     if (!isActive || loading) return;
@@ -978,23 +958,38 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
 
   const ITEMS_PER_PAGE = 50;
 
-  // BUG-05 fix: Implement CSV export using Backend Stream to prevent browser/server OOM
-  const handleExportCSV = () => {
+  // BUG-05 fix: Authenticated Blob CSV export (no JWT leaked in URL, honors Bearer auth + all filters)
+  const handleExportCSV = async () => {
     toast.loading(t('Đang chuẩn bị dữ liệu xuất CSV...'), { id: 'export' });
     try {
-      const token = localStorage.getItem('domation_token') || '';
+      const token =
+        localStorage.getItem('domation_token') ||
+        localStorage.getItem('access_token') ||
+        '';
+      const tenantSlug = localStorage.getItem('domation_tenant_slug') || '';
       const baseUrl = getApiBaseUrl();
-      const exportUrl = `${baseUrl}?action=export_csv&token=${encodeURIComponent(token)}&date=${encodeURIComponent(dateFilter)}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}&quality_status=${encodeURIComponent(qualityFilter)}`;
+      const exportUrl = `${baseUrl}?action=export_csv&${dateQueryString}&status=${encodeURIComponent(statusFilter)}&consultant=${encodeURIComponent(consultantFilter)}&round=${encodeURIComponent(roundFilter)}&search=${encodeURIComponent(searchTerm)}&quality_status=${encodeURIComponent(qualityFilter)}`;
 
+      const headers: Record<string, string> = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+      if (tenantSlug) headers['X-Tenant-Slug'] = tenantSlug;
+
+      const resp = await fetch(exportUrl, { method: 'GET', headers });
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+      const blob = await resp.blob();
+      const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = exportUrl;
+      link.href = objectUrl;
       link.setAttribute('download', `export_${nowSqlDateTimeVN().replace(/[- :]/g, '')}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 10_000);
 
       toast.success(t('Đang tải xuống file CSV...'), { id: 'export' });
-    } catch (err) {
+    } catch {
       toast.error(t('Có lỗi xảy ra khi xuất dữ liệu'), { id: 'export' });
     }
   };
@@ -1442,22 +1437,24 @@ const DataListInner = ({ isActive, searchParams, setSearchParams, location }: { 
         </div>
 
         <div className="responsive-filter-item">
-          <CustomSelect
-            options={[
-              { value: 'all', label: t('Tất cả thời gian'), icon: <Clock size={16} /> },
-              { value: 'Hôm nay', label: t('Hôm nay') },
-              { value: 'Hôm qua', label: t('Hôm qua') },
-              { value: 'Tuần này', label: t('Tuần này') },
-              { value: 'Tuần trước', label: t('Tuần trước') },
-              { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-              { value: '7 ngày qua', label: t('7 ngày qua') },
-              { value: '30 ngày qua', label: t('30 ngày qua') },
-              { value: 'Tháng này', label: t('Tháng này') },
-              { value: 'Tháng trước', label: t('Tháng trước') }
-            ]}
-            value={dateFilter}
-            onChange={val => updateParams('date', val.toString())}
-            width={160}
+          <DomUnifiedDatePicker
+            value={unifiedDate}
+            onChange={(next) => {
+              setUnifiedDate(next);
+              if (currentPage > 1) {
+                setSearchParams((prev: URLSearchParams) => {
+                  const np = new URLSearchParams(prev);
+                  np.set('page', '1');
+                  return np;
+                });
+              }
+            }}
+            allowAllTime={true}
+            lang="vi"
+            variant="auto"
+            align="left"
+            showRangeBadge={true}
+            buttonTestId="crm-datalist-date-picker"
           />
         </div>
 

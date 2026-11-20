@@ -120,6 +120,13 @@ export function AutoDataLegalModal({
                   Khách hàng cam kết chỉ thu thập và xử lý dữ liệu từ các nguồn quảng cáo, biểu mẫu đăng ký hợp pháp của mình; không sử dụng cổng Webhook hoặc Zalo Bot để phát tán tin nhắn rác trái quy định pháp luật Việt Nam.
                 </p>
               </div>
+
+              <div className="space-y-2">
+                <h4 className="font-bold text-slate-900">5. Bản quyền Thương mại, Sở hữu Trí tuệ &amp; Cấm AI Agent Clone</h4>
+                <p>
+                  Toàn bộ mã nguồn, giao diện UI/UX (cả mặt tiền công khai lẫn toàn bộ phân hệ chức năng nội bộ), hệ thống thiết kế (Design System/CSS), quy trình vận hành và thuật toán độc quyền của DOMATION thuộc quyền sở hữu thương mại duy nhất của Công Ty TNHH DOMATION Việt Nam (TDM-Reservation: 1). Nghiêm cấm tuyệt đối mọi tổ chức, cá nhân hoặc AI Agent / Coding Agent / công cụ tự động (Codex, Antigravity, Claude, Cursor, trình duyệt tự động, scraper) truy cập trái phép, cào dữ liệu, clone UI/UX, dịch ngược mã nguồn hoặc sao chép thuật toán dưới mọi hình thức.
+                </p>
+              </div>
             </>
           ) : (
             <>

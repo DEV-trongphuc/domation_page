@@ -14,7 +14,6 @@ export function purgeLegacyAutodataStorage(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem('domation_autodata_session_v1');
-    localStorage.removeItem('domation_global_date');
   } catch {
     // ignore storage errors
   }

@@ -6,7 +6,9 @@ import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChar
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { fetchAPI, normalizeNotificationStatus, getDefaultDateFilter, normalizeGlobalDateFilter, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
+import { fetchAPI, normalizeNotificationStatus, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import toast from 'react-hot-toast';
 import {
   ShieldAlert, RefreshCw, Filter, Zap, Trash2, Plus,
@@ -533,11 +535,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     return () => window.removeEventListener('theme-change', handleThemeChange);
   }, []);
 
-  // Search Params
-  const getInitialDateFilter = () => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-  };
-  const dateFilter = normalizeGlobalDateFilter(searchParams.get('date') || getInitialDateFilter());
+  // Unified Date Filter
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const dateFilter = unifiedDateHelpers.legacyDate;
+  const dateQueryString = unifiedDateHelpers.queryString;
 
   const currentPage = Number(searchParams.get('page') || '1');
 
@@ -788,24 +789,18 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     };
   }, [activeRoundsDropdown]);
 
-  // Custom Date Picker Modal
-  const [showDateModal, setShowDateModal] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const ITEMS_PER_PAGE = 50;
 
   const updateParams = (key: string, value: string) => {
+    if (key === 'date') {
+      unifiedDateHelpers.setFromLegacy(value);
+      return;
+    }
     const currentValue = searchParams.get(key) || '';
     if (currentValue === value || (value === '1' && key === 'page' && !searchParams.has('page'))) {
       return;
-    }
-    if (key === 'date') {
-      const norm = normalizeGlobalDateFilter(value);
-      localStorage.setItem('domation_global_date', norm);
-      window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
-      value = norm;
     }
     setSearchParams((prev: URLSearchParams) => {
       const next = new URLSearchParams(prev);
@@ -823,44 +818,11 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     return t(filter);
   };
 
-  const dateOptions = [
-    { value: 'all', label: t('Tất cả thời gian') },
-    { value: 'Hôm nay', label: t('Hôm nay') },
-    { value: 'Hôm qua', label: t('Hôm qua') },
-    { value: 'Tuần này', label: t('Tuần này') },
-    { value: 'Tuần trước', label: t('Tuần trước') },
-    { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-    { value: '7 ngày qua', label: t('7 ngày qua') },
-    { value: '30 ngày qua', label: t('30 ngày qua') },
-    { value: 'Tháng này', label: t('Tháng này') },
-    { value: 'Tháng trước', label: t('Tháng trước') }
-  ];
-
-  const defaultFilters = ['all', 'Hôm nay', 'Hôm qua', 'Tuần này', 'Tuần trước', 'Tuần trước nữa', '7 ngày qua', '30 ngày qua', 'Tháng này', 'Tháng trước', 'Tùy chỉnh'];
-  if (!defaultFilters.includes(dateFilter)) {
-    dateOptions.push({ value: dateFilter, label: getDisplayDateFilterText(dateFilter) });
-  }
-  dateOptions.push({ value: 'Tùy chỉnh', label: t('Tùy chỉnh...') });
-
-  const handleCustomDateSubmit = () => {
-    if (!startDate || !endDate) {
-      toast.error(t("Vui lòng chọn đầy đủ Từ ngày và Đến ngày"));
-      return;
-    }
-    if (new Date(startDate) > new Date(endDate)) {
-      toast.error(t("Từ ngày không được lớn hơn Đến ngày"));
-      return;
-    }
-    const label = `${startDate} ${t('đến')} ${endDate}`;
-    updateParams('date', label);
-    setShowDateModal(false);
-  };
-
   // ── API Fetchers ──
   const fetchStats = async () => {
     setStatsLoading(true);
     try {
-      const res = await fetchAPI(`get_gatekeeper_stats&date=${encodeURIComponent(dateFilter)}`);
+      const res = await fetchAPI(`get_gatekeeper_stats&${dateQueryString}`);
       if (res.success) {
         setStatsData(res);
       } else {
@@ -875,7 +837,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   const fetchTokenStats = async (page: number = 1) => {
     setTokenStatsLoading(true);
     try {
-      const res = await fetchAPI(`get_ai_token_stats&date=${encodeURIComponent(dateFilter)}&page=${page}&pageSize=20`);
+      const res = await fetchAPI(`get_ai_token_stats&${dateQueryString}&page=${page}&pageSize=20`);
       if (res.success) {
         setTokenStatsData(res);
       } else {
@@ -892,14 +854,14 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       setStatsPage(1);
       fetchStats();
     }
-  }, [isStatsModalOpen, dateFilter]);
+  }, [isStatsModalOpen, dateQueryString]);
 
   useEffect(() => {
     if (isTokenStatsModalOpen) {
       setTokenStatsPage(1);
       fetchTokenStats();
     }
-  }, [isTokenStatsModalOpen, dateFilter]);
+  }, [isTokenStatsModalOpen, dateQueryString]);
 
   const handleRunDupCheck = async (overrideInput?: string) => {
     const inputVal = (overrideInput ?? dupCheckInput).trim();
@@ -942,7 +904,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       queryParams.set('page', String(currentPage));
       queryParams.set('pageSize', String(ITEMS_PER_PAGE));
       if (heldLeadsSearch) queryParams.set('search', heldLeadsSearch);
-      if (dateFilter) queryParams.set('date', dateFilter);
+      Object.entries(unifiedDateHelpers.queryParams).forEach(([k, v]) => queryParams.set(k, v));
 
       let apiStatus = 'pending_approval';
       if (activeTab === 'substandard') apiStatus = 'rejected';
@@ -974,7 +936,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
   const fetchDashboardStats = async () => {
     setDashboardStatsLoading(true);
     try {
-      const res = await fetchAPI(`get_dashboard_stats&date=${encodeURIComponent(dateFilter)}`);
+      const res = await fetchAPI(`get_dashboard_stats&${dateQueryString}`);
       if (res.success) {
         setDashboardStats(res.data);
       }
@@ -988,38 +950,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     fetchHeldLeads();
     fetchDashboardStats();
   };
-
-  useEffect(() => {
-    if (isActive) {
-      const rawSaved = localStorage.getItem('domation_global_date');
-      if (rawSaved) {
-        const saved = normalizeGlobalDateFilter(rawSaved);
-        if (searchParams.get('date') !== saved) {
-          setSearchParams((prev: URLSearchParams) => {
-            const next = new URLSearchParams(prev);
-            next.set('date', saved);
-            return next;
-          }, { replace: true });
-        }
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    if (!isActive) return;
-    const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
-      if (newDate && searchParams.get('date') !== newDate) {
-        setSearchParams((prev: URLSearchParams) => {
-          const next = new URLSearchParams(prev);
-          next.set('date', newDate);
-          return next;
-        }, { replace: true });
-      }
-    };
-    window.addEventListener('global-date-change', handleGlobalDate);
-    return () => window.removeEventListener('global-date-change', handleGlobalDate);
-  }, [searchParams, isActive]);
 
   const fetchSettings = async () => {
     setSettingsLoading(true);
@@ -1104,10 +1034,14 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
     let start = '';
     let end = '';
 
-    if (filter === 'Hôm nay') {
+    if (filter === 'all' || filter === 'Tất cả thời gian') {
+      mode = 'all';
+    } else if (filter === 'Hôm nay') {
       mode = 'today';
     } else if (filter === 'Hôm qua') {
       mode = 'yesterday';
+    } else if (filter === 'Hôm qua - Hôm nay') {
+      mode = 'yesterday_to_today';
     } else if (filter === '7 ngày qua') {
       mode = '7_days';
     } else if (filter === '30 ngày qua') {
@@ -1199,7 +1133,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
       fetchHeldLeads();
       fetchDashboardStats();
     }
-  }, [searchParams, heldLeadsSearch, isActive, activeTab]);
+  }, [searchParams, heldLeadsSearch, dateQueryString, isActive, activeTab]);
 
   useEffect(() => {
     if (isActive && searchParams.get('open_tokens') === 'true') {
@@ -2132,21 +2066,17 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             </div>
 
             {/* Date Select */}
-            <div className="mobile-w-full" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: 180 }}>
-              <div style={{ position: 'relative', width: '100%' }} className="mobile-flex-1">
-                <CustomSelect
-                  options={dateOptions}
-                  value={dateFilter}
-                  onChange={val => {
-                    if (val === 'Tùy chỉnh') {
-                      setShowDateModal(true);
-                      return;
-                    }
-                    updateParams('date', val.toString());
-                  }}
-                  width="100%"
-                />
-              </div>
+            <div className="mobile-w-full" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <DomUnifiedDatePicker
+                value={unifiedDate}
+                onChange={setUnifiedDate}
+                allowAllTime={true}
+                lang="vi"
+                variant="auto"
+                align="auto"
+                showRangeBadge={true}
+                buttonTestId="crm-gatekeeper-date-picker"
+              />
             </div>
 
             {(activeTab === 'queue' || activeTab === 'ai_pending') && (
@@ -3728,39 +3658,6 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
             </div>
           </>
         )}
-      </CustomModal>
-
-      {/* Custom Date Picker Modal */}
-      <CustomModal
-        isOpen={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        title={t("Tùy chỉnh thời gian")}
-        width="400px"
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-          <div>
-            <label className="form-label">{t("Từ ngày")}</label>
-            <input
-              type="date"
-              className="form-input"
-              value={startDate}
-              onChange={e => setStartDate(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="form-label">{t("Đến ngày")}</label>
-            <input
-              type="date"
-              className="form-input"
-              value={endDate}
-              onChange={e => setEndDate(e.target.value)}
-            />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-            <button className="btn outline" onClick={() => setShowDateModal(false)}>{t("Hủy")}</button>
-            <button className="btn primary" onClick={handleCustomDateSubmit}>{t("Áp dụng")}</button>
-          </div>
-        </div>
       </CustomModal>
 
       {/* AI Pre-screener Filter Stats Modal */}

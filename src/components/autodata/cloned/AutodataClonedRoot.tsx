@@ -9,12 +9,18 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { CustomModal } from './components/ui/CustomModal';
-import { getDefaultDateFilter } from './utils/api';
+import {
+  UNIFIED_DATE_STORAGE_KEY,
+  readStoredUnifiedDateFilter,
+  useUnifiedDateFilter,
+  writeStoredUnifiedDateFilter,
+} from '../../common/unifiedDateFilter';
 import { apiRequest } from '../autodataApi';
 import { AutoDataSpotlightTour } from '../AutoDataHelpTour';
 import { SCREEN_TOUR_DECKS } from '../autoDataScreenTours';
 import { BillingView } from '../pages/BillingView';
 import { DomationProgressLoader } from '../../DomationProgressLoader';
+import { useWorkspaceIpProtection } from '../../../utils/workspaceIpGuard';
 import type { TenantSessionV2, WorkspaceScreenKey } from '../autodataTypes';
 
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
@@ -98,6 +104,7 @@ const ProtectedRoute: React.FC = () => {
 
 const AppTabs: React.FC = () => {
   const { user, token, tenantSlug, companyName } = useAuth();
+  const [, , unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
@@ -159,7 +166,7 @@ const AppTabs: React.FC = () => {
               focusCampaignId={focusCampaignId}
               capiPanel={
                 <Suspense fallback={<PageLoader />}>
-                  <AdsCapiPanel dateFilter={getDefaultDateFilter()} />
+                  <AdsCapiPanel dateFilter={unifiedDateHelpers.legacyDate} />
                 </Suspense>
               }
               onOpenLead={(lead) =>
@@ -414,6 +421,21 @@ const KeyboardShortcutsController: React.FC = () => {
   );
 };
 
+const WorkspaceIpGuardController: React.FC<{ tenantSlug?: string | null; billingOpen: boolean }> = ({
+  tenantSlug,
+  billingOpen,
+}) => {
+  const { user } = useAuth();
+  const location = useLocation();
+  const screenKey = billingOpen ? 'billing' : mapPathToScreenKey(location.pathname, user?.role);
+  useWorkspaceIpProtection({
+    app: 'autodata_workspace',
+    module: screenKey,
+    tenantSlug,
+  });
+  return null;
+};
+
 export interface AutodataClonedRootProps {
   session: TenantSessionV2;
   initialView?: WorkspaceScreenKey;
@@ -438,7 +460,9 @@ export const AutodataClonedRoot: React.FC<AutodataClonedRootProps> = ({
     document.documentElement.setAttribute('data-autodata-workspace', 'active');
     const localTheme = (localStorage.getItem('domation_theme') as 'light' | 'dark') || 'light';
     document.documentElement.setAttribute('data-theme', localTheme);
-    localStorage.setItem('domation_global_date', getDefaultDateFilter());
+    if (!localStorage.getItem(UNIFIED_DATE_STORAGE_KEY)) {
+      writeStoredUnifiedDateFilter(readStoredUnifiedDateFilter());
+    }
 
     const onExpired = () => {
       onLoggedOut();
@@ -502,6 +526,7 @@ export const AutodataClonedRoot: React.FC<AutodataClonedRootProps> = ({
                 </Routes>
                 <KeyboardShortcutsController />
                 <TourController open={tourOpen} onClose={() => setTourOpen(false)} />
+                <WorkspaceIpGuardController tenantSlug={session.tenant_slug} billingOpen={billingModalOpen} />
               </Suspense>
             </MemoryRouter>
 

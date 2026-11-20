@@ -1031,88 +1031,104 @@ export function resolveDateRangeFromPreset(
   customStart?: string,
   customEnd?: string
 ): { since: string; until: string; prevSince: string; prevUntil: string; label: string } {
-  const now = new Date();
-  const toIso = (d: Date) => {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+  const VN_OFFSET_MS = 7 * 60 * 60 * 1000;
+  const vnNow = new Date(Date.now() + VN_OFFSET_MS);
+  const y = vnNow.getUTCFullYear();
+  const m = vnNow.getUTCMonth();
+  const d = vnNow.getUTCDate();
+  const utcDay = vnNow.getUTCDay();
+  const isoDow = utcDay === 0 ? 7 : utcDay;
+
+  const toIso = (yr: number, mo: number, dy: number) => {
+    const dt = new Date(Date.UTC(yr, mo, dy));
+    return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, '0')}-${String(dt.getUTCDate()).padStart(2, '0')}`;
+  };
+  const shiftIso = (iso: string, delta: number) => {
+    const dt = new Date(`${iso}T00:00:00Z`);
+    dt.setUTCDate(dt.getUTCDate() + delta);
+    return dt.toISOString().slice(0, 10);
   };
 
-  let start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  let end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  let label = 'Last 7 days';
+  let since = toIso(y, m, d);
+  let until = since;
+  let label = '7 ngày qua';
 
   switch (preset) {
     case 'today':
-      label = 'Today';
+      label = 'Hôm nay';
       break;
     case 'yesterday':
-      start.setDate(start.getDate() - 1);
-      end.setDate(end.getDate() - 1);
-      label = 'Yesterday';
+      since = toIso(y, m, d - 1);
+      until = since;
+      label = 'Hôm qua';
       break;
     case 'yesterday_to_today':
-      start.setDate(start.getDate() - 1);
-      label = 'Yesterday - Today';
+      since = toIso(y, m, d - 1);
+      label = 'Hôm qua - Hôm nay';
       break;
     case 'last_7days':
-      start.setDate(start.getDate() - 6);
-      label = 'Last 7 days';
+      since = toIso(y, m, d - 6);
+      label = '7 ngày qua';
       break;
     case 'last_30days':
-      start.setDate(start.getDate() - 29);
-      label = 'Last 30 days';
+      since = toIso(y, m, d - 29);
+      label = '30 ngày qua';
       break;
-    case 'this_week': {
-      const day = start.getDay() || 7;
-      start.setDate(start.getDate() - day + 1);
-      label = 'This Week';
+    case 'this_week':
+      since = toIso(y, m, d - (isoDow - 1));
+      label = 'Tuần này';
       break;
-    }
     case 'last_week': {
-      const day = start.getDay() || 7;
-      end.setDate(end.getDate() - day);
-      start = new Date(end);
-      start.setDate(end.getDate() - 6);
-      label = 'Last Week';
+      const monOffset = d - (isoDow - 1);
+      since = toIso(y, m, monOffset - 7);
+      until = toIso(y, m, monOffset - 1);
+      label = 'Tuần trước';
       break;
     }
     case 'this_month':
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-      label = 'This Month';
+      since = toIso(y, m, 1);
+      label = 'Tháng này';
       break;
     case 'last_month':
-      start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      end = new Date(now.getFullYear(), now.getMonth(), 0);
-      label = 'Last Month';
+      since = toIso(y, m - 1, 1);
+      until = toIso(y, m, 0);
+      label = 'Tháng trước';
       break;
-    case 'custom_range':
-      if (customStart && customEnd) {
-        start = new Date(`${customStart}T00:00:00`);
-        end = new Date(`${customEnd}T00:00:00`);
+    case 'custom_range': {
+      const isValidCal = (s?: string) => {
+        if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+        const [yy, mm, dd] = s.split('-').map(Number);
+        const dt = new Date(Date.UTC(yy, mm - 1, dd));
+        return dt.getUTCFullYear() === yy && dt.getUTCMonth() === mm - 1 && dt.getUTCDate() === dd;
+      };
+      if (isValidCal(customStart) && isValidCal(customEnd)) {
+        since = customStart!;
+        until = customEnd!;
       } else {
-        start.setDate(start.getDate() - 6);
+        since = toIso(y, m, d - 6);
       }
-      label = 'Custom Date';
+      label = 'Tuỳ chọn ngày';
       break;
+    }
   }
 
-  if (start > end) {
-    const tmp = start;
-    start = end;
-    end = tmp;
+  if (since > until) {
+    const tmp = since;
+    since = until;
+    until = tmp;
   }
 
-  const diffMs = Math.max(86_400_000, end.getTime() - start.getTime() + 86_400_000);
-  const prevEnd = new Date(start.getTime() - 86_400_000);
-  const prevStart = new Date(prevEnd.getTime() - diffMs + 86_400_000);
+  const startMs = Date.parse(`${since}T00:00:00Z`);
+  const endMs = Date.parse(`${until}T00:00:00Z`);
+  const spanDays = Math.max(1, Math.round((endMs - startMs) / 86_400_000) + 1);
+  const prevUntil = shiftIso(since, -1);
+  const prevSince = shiftIso(prevUntil, -(spanDays - 1));
 
   return {
-    since: toIso(start),
-    until: toIso(end),
-    prevSince: toIso(prevStart),
-    prevUntil: toIso(prevEnd),
+    since,
+    until,
+    prevSince,
+    prevUntil,
     label,
   };
 }

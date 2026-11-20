@@ -11,7 +11,9 @@ import {
 } from 'recharts';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
-import { fetchAPI, getDefaultDateFilter, normalizeGlobalDateFilter, formatDateTimeVN } from '../utils/api';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
+import { fetchAPI, formatDateTimeVN } from '../utils/api';
 import toast from 'react-hot-toast';
 import { KpiCardSkeleton, Skeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
@@ -27,23 +29,13 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
   const [data, setData] = useState<any>(null);
   const [rounds, setRounds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-  });
-
-  const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
-  };
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const dateFilter = unifiedDateHelpers.legacyDate;
+  const dateQueryString = unifiedDateHelpers.queryString;
   const [roundFilter, setRoundFilter] = useState(() => {
     return searchParams.get('round_id') || '';
   });
 
-  const [showDateModal, setShowDateModal] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [showCopyModal, setShowCopyModal] = useState(false);
   const [copyReportText, setCopyReportText] = useState('');
@@ -301,7 +293,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
     if (!roundFilter) return; // Guard to prevent fetching before round filter is initialized
     setLoading(true);
     try {
-      const url = `get_fair_share_stats&date=${encodeURIComponent(dateFilter)}&round_id=${roundFilter}`;
+      const url = `get_fair_share_stats&${dateQueryString}&round_id=${roundFilter}`;
       const res = await fetchAPI(url);
       if (signal?.aborted) return;
 
@@ -344,7 +336,7 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
             case 'this_month': resolvedDateFilter = 'Tháng này'; break;
             case 'last_month': resolvedDateFilter = 'Tháng trước'; break;
           }
-          setDateFilter(resolvedDateFilter);
+          unifiedDateHelpers.setFromLegacy(resolvedDateFilter);
         }
         handleOpenDetailsModal(String(openCompId), resolvedDateFilter);
       }
@@ -357,71 +349,13 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
       fetchStats(abortController.signal);
       return () => abortController.abort();
     }
-  }, [dateFilter, roundFilter, isActive]);
-
-  useEffect(() => {
-    if (isActive) {
-      const rawDate = localStorage.getItem('domation_global_date');
-      if (rawDate) {
-        const savedDate = normalizeGlobalDateFilter(rawDate);
-        if (savedDate !== dateFilter) {
-          setDateFilter(savedDate);
-        }
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    if (!isActive) return;
-    const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
-      if (newDate && newDate !== dateFilter) {
-        setDateFilter(newDate);
-      }
-    };
-    window.addEventListener('global-date-change', handleGlobalDate);
-    return () => window.removeEventListener('global-date-change', handleGlobalDate);
-  }, [dateFilter, isActive]);
-
-  const handleCustomDateSubmit = () => {
-    if (!startDate || !endDate) return toast.error(t("Vui lòng chọn đầy đủ Từ ngày và Đến ngày"));
-    if (new Date(startDate) > new Date(endDate)) return toast.error(t("Từ ngày không được lớn hơn Đến ngày"));
-
-    const label = `${startDate} ${t('đến')} ${endDate}`;
-    handleUpdateDateFilter(label);
-    setShowDateModal(false);
-  };
-
-  const getDisplayDateFilterText = (filter: string) => {
-    if (filter.includes('đến')) {
-      return filter.replace(/\s*đến\s*/i, ` ${t('đến')} `);
-    }
-    return t(filter);
-  };
+  }, [dateQueryString, roundFilter, isActive]);
 
   const getFairnessLevel = (index: number) => {
     if (index >= 90) return { label: t('Rất công bằng'), color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)', desc: '' };
     if (index >= 75) return { label: t('Bình thường'), color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)', desc: t('Có sự chênh lệch nhẹ (thường do tỷ lệ thiết lập hoặc Sale tạm vắng).') };
     return { label: t('Cần điều chỉnh'), color: '#ef4444', bg: 'rgba(239, 68, 68, 0.08)', desc: t('Độ lệch phân phối cao. Vui lòng rà soát lại cấu hình lượt và ca làm việc.') };
   };
-
-  const dateOptions = [
-    { value: 'Hôm nay', label: t('Hôm nay') },
-    { value: 'Hôm qua', label: t('Hôm qua') },
-    { value: 'Tuần này', label: t('Tuần này') },
-    { value: 'Tuần trước', label: t('Tuần trước') },
-    { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-    { value: '7 ngày qua', label: t('7 ngày qua') },
-    { value: '30 ngày qua', label: t('30 ngày qua') },
-    { value: 'Tháng này', label: t('Tháng này') },
-    { value: 'Tháng trước', label: t('Tháng trước') }
-  ];
-
-  const defaultFilters = ['Hôm nay', 'Hôm qua', 'Tuần này', 'Tuần trước', 'Tuần trước nữa', '7 ngày qua', '30 ngày qua', 'Tháng này', 'Tháng trước', 'Tùy chỉnh'];
-  if (!defaultFilters.includes(dateFilter)) {
-    dateOptions.push({ value: dateFilter, label: getDisplayDateFilterText(dateFilter) });
-  }
-  dateOptions.push({ value: 'Tùy chỉnh', label: t('Tùy chỉnh...') });
 
   const roundOptions = rounds.map(r => ({ value: String(r.id), label: r.round_name }));
 
@@ -929,20 +863,16 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
               width="100%"
             />
           </div>
-          <div className="mobile-flex-1" style={{ position: 'relative', zIndex: 100, width: 150 }}>
-            <CustomSelect
-              options={dateOptions}
-              value={dateFilter}
-              onChange={(val) => {
-                if (val === 'Tùy chỉnh') {
-                  setShowDateModal(true);
-                  return;
-                }
-                handleUpdateDateFilter(String(val));
-              }}
-              width="100%"
-            />
-          </div>
+          <DomUnifiedDatePicker
+            value={unifiedDate}
+            onChange={setUnifiedDate}
+            allowAllTime={true}
+            lang="vi"
+            variant="auto"
+            align="right"
+            showRangeBadge={true}
+            buttonTestId="crm-fairshare-date-picker"
+          />
           <button
             className="btn outline"
             onClick={handleCopyReport}
@@ -1737,41 +1667,6 @@ const FairShareAuditInner = ({ forceActive = false, isActive: propActive, search
           )}
         </div>
       </div>
-
-      {/* Custom Date Modal (from Dashboard.tsx) */}
-      <CustomModal
-        isOpen={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        title={t("Tùy chỉnh thời gian")}
-        width="400px"
-      >
-        {showDateModal && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-            <div>
-              <label className="form-label">{t("Từ ngày")}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={startDate}
-                onChange={e => setStartDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="form-label">{t("Đến ngày")}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={endDate}
-                onChange={e => setEndDate(e.target.value)}
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn outline" onClick={() => setShowDateModal(false)}>{t("Hủy")}</button>
-              <button className="btn primary" onClick={handleCustomDateSubmit}>{t("Áp dụng")}</button>
-            </div>
-          </div>
-        )}
-      </CustomModal>
 
       {/* Copy Report Preview Modal */}
       <CustomModal

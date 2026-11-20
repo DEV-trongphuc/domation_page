@@ -21,6 +21,8 @@ import toast from 'react-hot-toast';
 import { fetchAPI, formatDateTimeVN, parseServerDateVN, nowSqlDateTimeVN, VN_TIMEZONE } from '../utils/api';
 import { CustomModal } from '../components/ui/CustomModal';
 import { CustomSelect } from '../components/ui/CustomSelect';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Avatar } from '../components/ui/Avatar';
 import { TableSkeleton, StatRowSkeleton, CalendarSkeleton } from '../components/ui/Skeleton';
@@ -670,10 +672,6 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
     const params = new URLSearchParams(location.search);
     return params.get('sale_id') || '';
   });
-  const [dateMode, setDateMode] = useState('7_days'); // all, today, yesterday, custom
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [showCustomDate, setShowCustomDate] = useState(false);
   const [flowViewMode, setFlowViewMode] = useState<'day' | 'hour'>('day');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -787,7 +785,8 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
   const [tickets, setTickets] = useState<any[]>([]);
   const [ticketsLoading, setTicketsLoading] = useState(false);
   const [ticketStatusFilter, setTicketStatusFilter] = useState('all');
-  const [ticketDateFilter, setTicketDateFilter] = useState('Tất cả');
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const ticketDateQueryString = unifiedDateHelpers.queryString;
   const [ticketPage, setTicketPage] = useState(1);
   const [ticketTotalCount, setTicketTotalCount] = useState(0);
   const TICKET_ITEMS_PER_PAGE = 10;
@@ -803,8 +802,8 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
       if (ticketStatusFilter !== 'all') {
         queryParams.set('status', ticketStatusFilter);
       }
-      if (ticketDateFilter && ticketDateFilter !== 'Tất cả') {
-        queryParams.set('date', ticketDateFilter);
+      if (unifiedDate.preset !== 'all') {
+        Object.entries(unifiedDateHelpers.queryParams).forEach(([k, v]) => queryParams.set(k, v));
       }
       if (displayUser?.consultant_id) {
         queryParams.set('consultant_id', String(displayUser.consultant_id));
@@ -829,7 +828,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
     if (activeTab === 'tickets' && token) {
       loadTicketsData();
     }
-  }, [token, ticketStatusFilter, ticketDateFilter, ticketPage, activeTab, displayUser?.consultant_id]);
+  }, [token, ticketStatusFilter, ticketDateQueryString, ticketPage, activeTab, displayUser?.consultant_id]);
 
   // Google Login element references
   const googleBtnRef = useRef<HTMLDivElement>(null);
@@ -912,10 +911,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
     if (!token || !['sale', 'superadmin', 'admin', 'assistant', 'viewer'].includes(user?.role || '')) return;
     setLoading(true);
     try {
-      let query = `get_sale_portal_data&search=${encodeURIComponent(search)}&round_id=${roundId}&date_mode=${dateMode}&sale_id=${saleIdFilter}`;
-      if (dateMode === 'custom') {
-        query += `&start_date=${startDate}&end_date=${endDate}`;
-      }
+      const query = `get_sale_portal_data&search=${encodeURIComponent(search)}&round_id=${roundId}&${ticketDateQueryString}&sale_id=${saleIdFilter}`;
       const json = await fetchAPI(query);
       if (json.success) {
         setData(json);
@@ -1198,7 +1194,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
 
   useEffect(() => {
     loadPortalData();
-  }, [token, user, roundId, dateMode, saleIdFilter, search, startDate, endDate]);
+  }, [token, user, roundId, ticketDateQueryString, saleIdFilter, search]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -1228,7 +1224,7 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
     };
     window.addEventListener('lead-added', handleLeadAdded);
     return () => window.removeEventListener('lead-added', handleLeadAdded);
-  }, [token, user, roundId, dateMode, saleIdFilter, startDate, endDate]);
+  }, [token, user, roundId, ticketDateQueryString, saleIdFilter]);
 
   // Calendar stats fetch
   const fetchCalendarStats = async () => {
@@ -1313,15 +1309,6 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
   const handleSearchKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       setSearch(searchInput);
-    }
-  };
-
-  const handleDateModeChange = (val: string) => {
-    setDateMode(val);
-    if (val === 'custom') {
-      setShowCustomDate(true);
-    } else {
-      setShowCustomDate(false);
     }
   };
 
@@ -1708,33 +1695,19 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             <p className="page-subtitle" style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', margin: '4px 0 0' }}>{t("Phân tích hiệu suất giao data theo thời gian thực — Hệ thống đang hoạt động trơn tru.")}</p>
           </div>
           <div className="mobile-w-full" style={{ display: 'flex', gap: '8px', alignItems: 'center', width: 'auto', flexWrap: 'wrap' }}>
-            <div className="mobile-flex-1" style={{ position: 'relative', zIndex: 100, width: 200 }}>
-              <CustomSelect
-                options={[
-                  { value: 'all', label: t('Tất cả thời gian'), icon: <Clock size={16} /> },
-                  { value: 'today', label: t('Hôm nay') },
-                  { value: 'yesterday', label: t('Hôm qua') },
-                  { value: 'this_week', label: t('Tuần này') },
-                  { value: 'last_week', label: t('Tuần trước') },
-                  { value: 'two_weeks_ago', label: t('Tuần trước nữa') },
-                  { value: '7_days', label: t('7 ngày qua') },
-                  { value: '30_days', label: t('30 ngày qua') },
-                  { value: 'this_month', label: t('Tháng này') },
-                  { value: 'last_month', label: t('Tháng trước') },
-                  { value: 'this_year', label: t('Năm nay') },
-                  { value: 'custom', label: t('Tùy chọn ngày...') }
-                ]}
-                value={dateMode}
-                onChange={(val) => {
-                  if (val === 'custom') {
-                    setShowCustomDate(true);
-                  } else {
-                    handleDateModeChange(String(val));
-                  }
-                }}
-                width="100%"
-              />
-            </div>
+            <DomUnifiedDatePicker
+              value={unifiedDate}
+              onChange={(next) => {
+                setUnifiedDate(next);
+                setCurrentPage(1);
+              }}
+              allowAllTime={true}
+              lang="vi"
+              variant="auto"
+              align="right"
+              showRangeBadge={true}
+              buttonTestId="crm-saleportal-dashboard-date-picker"
+            />
             {/* Button to open Connection Health Modal */}
             <button
               className="btn outline"
@@ -1755,46 +1728,6 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
             </button>
           </div>
         </div>
-
-        {showCustomDate && (
-          <div className="portal-filters-row" style={{
-            display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
-            background: 'var(--color-surface)', border: '1px solid var(--color-border-light)', borderRadius: '16px',
-            padding: '1rem 1.5rem', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.02)', marginTop: '-0.5rem'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>{t('Từ ngày')}:</span>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{
-                  padding: '8px 12px', borderRadius: '10px', border: '1px solid var(--color-border)',
-                  fontSize: '0.85rem', outline: 'none', background: 'var(--color-surface)', color: 'var(--color-text)', height: 38
-                }}
-              />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>{t('Đến ngày')}:</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{
-                  padding: '8px 12px', borderRadius: '10px', border: '1px solid var(--color-border)',
-                  fontSize: '0.85rem', outline: 'none', background: 'var(--color-surface)', color: 'var(--color-text)', height: 38
-                }}
-              />
-            </div>
-            <button
-              onClick={loadPortalData}
-              className="btn sm primary"
-              style={{ height: 38, padding: '0 15px', borderRadius: '10px' }}
-            >
-              {t('Áp dụng')}
-            </button>
-          </div>
-        )}
 
         {/* KPI Cards Grid */}
         <div className="responsive-grid-4" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)', gap: '1.25rem' }}>
@@ -2173,53 +2106,20 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
 
           {/* Date Select Filter */}
           <div className="responsive-filter-item">
-            <CustomSelect
-              options={[
-                { value: 'all', label: t('Tất cả thời gian'), icon: <Clock size={16} /> },
-                { value: 'today', label: t('Hôm nay') },
-                { value: 'yesterday', label: t('Hôm qua') },
-                { value: 'this_week', label: t('Tuần này') },
-                { value: 'last_week', label: t('Tuần trước') },
-                { value: 'two_weeks_ago', label: t('Tuần trước nữa') },
-                { value: '7_days', label: t('7 ngày qua') },
-                { value: '30_days', label: t('30 ngày qua') },
-                { value: 'this_month', label: t('Tháng này') },
-                { value: 'last_month', label: t('Tháng trước') },
-                { value: 'this_year', label: t('Năm nay') },
-                { value: 'custom', label: t('Tùy chọn ngày...') }
-              ]}
-              value={dateMode}
-              onChange={(val) => handleDateModeChange(String(val))}
-              width={160}
+            <DomUnifiedDatePicker
+              value={unifiedDate}
+              onChange={(next) => {
+                setUnifiedDate(next);
+                setCurrentPage(1);
+              }}
+              allowAllTime={true}
+              lang="vi"
+              variant="auto"
+              align="left"
+              showRangeBadge={true}
+              buttonTestId="crm-saleportal-leads-date-picker"
             />
           </div>
-
-          {/* Custom Date Inputs */}
-          {showCustomDate && (
-            <div className="portal-filter-custom-date" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{
-                  padding: '8px 12px', borderRadius: '10px', border: '1px solid var(--color-border)',
-                  fontSize: '0.85rem', outline: 'none', background: 'var(--color-surface)', color: 'var(--color-text)',
-                  height: 38
-                }}
-              />
-              <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>{t('đến')}</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{
-                  padding: '8px 12px', borderRadius: '10px', border: '1px solid var(--color-border)',
-                  fontSize: '0.85rem', outline: 'none', background: 'var(--color-surface)', color: 'var(--color-text)',
-                  height: 38
-                }}
-              />
-            </div>
-          )}
 
           {/* Status Select Filter */}
           <div className="responsive-filter-item">
@@ -2764,21 +2664,18 @@ const SalePortalInner = ({ location }: { isActive: boolean; searchParams: URLSea
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-text-muted)' }}>{t('THỜI GIAN:')}</span>
-              <CustomSelect
-                options={[
-                  { value: 'Tất cả', label: t('Tất cả thời gian') },
-                  { value: 'Hôm nay', label: t('Hôm nay') },
-                  { value: 'Hôm qua', label: t('Hôm qua') },
-                  { value: 'Tuần này', label: t('Tuần này') },
-                  { value: 'Tháng này', label: t('Tháng này') },
-                  { value: 'Tháng trước', label: t('Tháng trước') }
-                ]}
-                value={ticketDateFilter}
-                onChange={(val) => {
-                  setTicketDateFilter(String(val));
+              <DomUnifiedDatePicker
+                value={unifiedDate}
+                onChange={(next) => {
+                  setUnifiedDate(next);
                   setTicketPage(1);
                 }}
-                width={160}
+                allowAllTime={true}
+                lang="vi"
+                variant="auto"
+                align="auto"
+                showRangeBadge={true}
+                buttonTestId="crm-saleportal-date-picker"
               />
             </div>
 

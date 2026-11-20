@@ -7,9 +7,11 @@ import {
   ChevronLeft, ChevronRight, BarChart3, GitCompare, X, Zap, Send
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { fetchAPI, getDefaultDateFilter, normalizeGlobalDateFilter } from '../utils/api';
+import { fetchAPI } from '../utils/api';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import { Avatar } from '../components/ui/Avatar';
 import { Skeleton, KpiCardSkeleton } from '../components/ui/Skeleton';
 import { LeadQualityBadge } from '../components/LeadQualityBadge';
@@ -360,35 +362,13 @@ const DRAWER_PAGE_SIZE = 8;
 const ADS_PAGE_SIZE = 10;
 const LEADS_PAGE_SIZE = 12;
 
-const normalizeAdsDateFilter = (val: string | null | undefined): string => {
-  if (!val) return 'this_month';
-  const v = val.trim();
-  const map: Record<string, string> = {
-    'Tất cả': 'all',
-    'Tất cả thời gian': 'all',
-    'all': 'all',
-    'Hôm nay': 'today',
-    'today': 'today',
-    'Hôm qua': 'yesterday',
-    'yesterday': 'yesterday',
-    '7 ngày qua': '7days',
-    '7days': '7days',
-    'Tuần này': '7days',
-    'this_week': '7days',
-    '30 ngày qua': '30days',
-    '30days': '30days',
-    'Tháng này': 'this_month',
-    'this_month': 'this_month',
-    'Tháng trước': 'last_month',
-    'last_month': 'last_month',
-  };
-  return map[v] || 'this_month';
-};
-
 const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
-  const [dateFilter, setDateFilter] = useState<string>(() => {
-    return normalizeAdsDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({
+    allowAllTime: false,
+    allTimeFallbackPreset: 'last_30days',
   });
+  const dateFilter = unifiedDateHelpers.legacyDate;
+  const dateQueryString = unifiedDateHelpers.queryString;
 
   const [loading, setLoading] = useState<boolean>(true);
   const [syncing, setSyncing] = useState<boolean>(false);
@@ -436,35 +416,15 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
   const [savingConfig, setSavingConfig] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleUpdateDateFilter = (val: string) => {
-    setDateFilter(val);
-    const canonical = normalizeGlobalDateFilter(val);
-    localStorage.setItem('domation_global_date', canonical);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: canonical }));
-  };
-
-  useEffect(() => {
-    const onGlobalDate = (e: any) => {
-      if (e.detail) {
-        const norm = normalizeAdsDateFilter(e.detail);
-        if (norm !== dateFilter) {
-          setDateFilter(norm);
-        }
-      }
-    };
-    window.addEventListener('global-date-change', onGlobalDate);
-    return () => window.removeEventListener('global-date-change', onGlobalDate);
-  }, [dateFilter]);
-
   // Reset pagination when filters change
   useEffect(() => {
     setAdsPage(1);
     setLeadsPage(1);
     setDrawerPages({});
-  }, [searchTerm, tierFilter, pipelineFilter, dateFilter, goalFilter, viewMode]);
+  }, [searchTerm, tierFilter, pipelineFilter, dateQueryString, goalFilter, viewMode]);
 
   const loadDashboard = async (silent = false) => {
-    const cacheKey = `ecolife_ads_dash_${dateFilter}_${goalFilter}`;
+    const cacheKey = `ecolife_ads_dash_${dateQueryString}_${goalFilter}`;
     if (!silent) {
       try {
         const cached = sessionStorage.getItem(cacheKey);
@@ -484,7 +444,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     }
     try {
       const res = await fetchAPI(
-        `get_ads_performance_dashboard&date=${encodeURIComponent(dateFilter)}&goal=${encodeURIComponent(goalFilter)}`
+        `get_ads_performance_dashboard&${dateQueryString}&goal=${encodeURIComponent(goalFilter)}`
       );
       if (res?.success) {
         setAds(Array.isArray(res.ads) ? res.ads : []);
@@ -516,7 +476,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
   };
 
   const loadAnalyticsBreakdowns = async (forceRefresh = false) => {
-    const cacheKey = `ecolife_ads_analytics_${dateFilter}_${goalFilter}`;
+    const cacheKey = `ecolife_ads_analytics_${dateQueryString}_${goalFilter}`;
     if (!forceRefresh) {
       try {
         const cached = sessionStorage.getItem(cacheKey);
@@ -533,7 +493,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     setLoadingAnalytics(true);
     try {
       const res = await fetchAPI(
-        `get_ads_analytics_breakdowns&date=${encodeURIComponent(dateFilter)}&goal=${encodeURIComponent(goalFilter)}${forceRefresh ? '&refresh=1' : ''}`
+        `get_ads_analytics_breakdowns&${dateQueryString}&goal=${encodeURIComponent(goalFilter)}${forceRefresh ? '&refresh=1' : ''}`
       );
       if (res?.success) {
         setAnalyticsData(res);
@@ -597,7 +557,7 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
       loadMetaConfig();
       loadAnalyticsBreakdowns(false);
     }
-  }, [isActive, dateFilter, goalFilter]);
+  }, [isActive, dateQueryString, goalFilter]);
 
   const handleSyncMetaAds = async () => {
     setSyncing(true);
@@ -898,21 +858,16 @@ const AdsPerformanceInner: React.FC<{ isActive: boolean }> = ({ isActive }) => {
 
         {/* Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <div style={{ minWidth: 165 }}>
-            <CustomSelect
-              value={dateFilter}
-              onChange={handleUpdateDateFilter}
-              options={[
-                { value: 'all', label: 'Tất cả thời gian' },
-                { value: 'today', label: 'Hôm nay' },
-                { value: 'yesterday', label: 'Hôm qua' },
-                { value: '7days', label: '7 ngày qua' },
-                { value: '30days', label: '30 ngày qua' },
-                { value: 'this_month', label: 'Tháng này' },
-                { value: 'last_month', label: 'Tháng trước' }
-              ]}
-            />
-          </div>
+          <DomUnifiedDatePicker
+            value={unifiedDate}
+            onChange={setUnifiedDate}
+            allowAllTime={false}
+            lang="vi"
+            variant="auto"
+            align="right"
+            showRangeBadge={true}
+            buttonTestId="crm-ads-date-picker"
+          />
 
           <button
             type="button"

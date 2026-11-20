@@ -13,12 +13,12 @@ import {
 } from 'recharts';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import { useNavigate } from 'react-router-dom';
 import { withRouterFreezer } from '../components/RouterFreezer';
 import {
   fetchAPI,
-  getDefaultDateFilter,
-  normalizeGlobalDateFilter,
   parseServerDateVN,
   getWeekRangeVN,
   VN_TIMEZONE
@@ -70,13 +70,13 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     const cached = localStorage.getItem('ai_screener_enabled');
     return cached === null ? true : cached === '1';
   });
-  const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-  });
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const dateFilter = unifiedDateHelpers.legacyDate;
+  const dateQueryString = unifiedDateHelpers.queryString;
 
   const loadAdsPerfStrip = useCallback(async () => {
     try {
-      const res = await fetchAPI(`get_ads_performance_dashboard&date=${encodeURIComponent(dateFilter)}`);
+      const res = await fetchAPI(`get_ads_performance_dashboard&${dateQueryString}`);
       if (res?.success && res?.summary) {
         setAdsPerfSummary({
           total_spend: Number(res.summary.total_spend || 0),
@@ -88,19 +88,12 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     } catch {
       // ignore non-critical strip load error
     }
-  }, [dateFilter]);
+  }, [dateQueryString]);
 
   useEffect(() => {
     if (!isActive || user?.role === 'sale') return;
     void loadAdsPerfStrip();
   }, [isActive, user?.role, loadAdsPerfStrip]);
-
-  const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
-  };
 
   const [chartMode, setChartMode] = useState<'day' | 'hour' | 'heatmap'>('day');
   const [hoveredCell, setHoveredCell] = useState<{
@@ -122,7 +115,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     if (loading) return; // Skip if main dashboard loading is in progress
     setModalChartLoading(true);
     try {
-      const statsJson = await fetchAPI(`get_dashboard_stats&date=${encodeURIComponent(dateFilter)}&chart_mode=${modeVal}&chart_metric=${metricVal}`, { signal });
+      const statsJson = await fetchAPI(`get_dashboard_stats&${dateQueryString}&chart_mode=${modeVal}&chart_metric=${metricVal}`, { signal });
       if (signal?.aborted) return;
       if (statsJson.success) {
         setStats(statsJson.data);
@@ -162,13 +155,12 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     return '#1E40FF';
   };
 
-  const isSingleDay = dateFilter === 'Hôm nay' || dateFilter === 'Hôm qua';
+  const isSingleDay =
+    unifiedDate.preset === 'today' ||
+    unifiedDate.preset === 'yesterday' ||
+    (unifiedDate.preset === 'custom_range' && Boolean(unifiedDate.since) && unifiedDate.since === unifiedDate.until);
   const displayChartMode = isSingleDay ? 'hour' : chartMode;
   const modalChartMode = displayChartMode === 'heatmap' ? 'day' : displayChartMode;
-
-  const [showDateModal, setShowDateModal] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
 
   // Consultant stats state for details modal
   const [statsModalOpen, setStatsModalOpen] = useState(false);
@@ -245,7 +237,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
       // BUG-06 fix: Xử lý lỗi riêng từng API, không để lỗi một cái 'nuốt' cái kia
       const metric = showHealthModal ? healthChartMetric : 'lead';
       const [statsJson, logsJson, settingsJson, connectionsJson] = await Promise.all([
-        fetchAPI(`get_dashboard_stats&date=${encodeURIComponent(dateFilter)}&chart_mode=${displayChartMode}&chart_metric=${metric}`),
+        fetchAPI(`get_dashboard_stats&${dateQueryString}&chart_mode=${displayChartMode}&chart_metric=${metric}`),
         fetchAPI('get_logs&exclude_status=silent&page=1&pageSize=5'),
         fetchAPI('get_settings'),
         fetchAPI('get_connections')
@@ -287,7 +279,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
       fetchDashboard(abortController.signal);
       return () => abortController.abort(); // Cleanup: hủy khi component unmount hoặc dateFilter đổi
     }
-  }, [dateFilter, isActive]);
+  }, [dateQueryString, isActive]);
 
   useEffect(() => {
     if (isActive) {
@@ -300,29 +292,6 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
   }, [chartMode, healthChartMetric, showHealthModal, isActive]);
 
   useEffect(() => {
-    if (isActive) {
-      const savedDate = localStorage.getItem('domation_global_date');
-      if (savedDate) {
-        const norm = normalizeGlobalDateFilter(savedDate);
-        if (norm !== dateFilter) {
-          setDateFilter(norm);
-        }
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
-      if (newDate && newDate !== dateFilter) {
-        setDateFilter(newDate);
-      }
-    };
-    window.addEventListener('global-date-change', handleGlobalDate);
-    return () => window.removeEventListener('global-date-change', handleGlobalDate);
-  }, [dateFilter]);
-
-  useEffect(() => {
     const handleLeadAdded = () => {
       if (isActive) {
         fetchDashboard();
@@ -330,7 +299,7 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     };
     window.addEventListener('lead-added', handleLeadAdded);
     return () => window.removeEventListener('lead-added', handleLeadAdded);
-  }, [dateFilter, chartMode, isActive]);
+  }, [dateQueryString, chartMode, isActive]);
 
   useEffect(() => {
     const handleOpenWarRoom = () => {
@@ -345,10 +314,14 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     let start = '';
     let end = '';
 
-    if (filter === 'Hôm nay') {
+    if (filter === 'all' || filter === 'Tất cả thời gian') {
+      mode = 'all';
+    } else if (filter === 'Hôm nay') {
       mode = 'today';
     } else if (filter === 'Hôm qua') {
       mode = 'yesterday';
+    } else if (filter === 'Hôm qua - Hôm nay') {
+      mode = 'yesterday_to_today';
     } else if (filter === '7 ngày qua') {
       mode = '7_days';
     } else if (filter === '30 ngày qua') {
@@ -456,37 +429,6 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
     }
   ];
 
-
-  const dateOptions = [
-    { value: 'Hôm nay', label: t('Hôm nay') },
-    { value: 'Hôm qua', label: t('Hôm qua') },
-    { value: 'Tuần này', label: t('Tuần này') },
-    { value: 'Tuần trước', label: t('Tuần trước') },
-    { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-    { value: '7 ngày qua', label: t('7 ngày qua') },
-    { value: '30 ngày qua', label: t('30 ngày qua') },
-    { value: 'Tháng này', label: t('Tháng này') },
-    { value: 'Tháng trước', label: t('Tháng trước') }
-  ];
-
-  const defaultFilters = ['Hôm nay', 'Hôm qua', 'Tuần này', 'Tuần trước', 'Tuần trước nữa', '7 ngày qua', '30 ngày qua', 'Tháng này', 'Tháng trước', 'Tùy chỉnh'];
-  if (!defaultFilters.includes(dateFilter)) {
-    dateOptions.push({ value: dateFilter, label: getDisplayDateFilterText(dateFilter) });
-  }
-
-  dateOptions.push({ value: 'Tùy chỉnh', label: t('Tùy chỉnh...') });
-
-  const handleCustomDateSubmit = () => {
-    if (!startDate || !endDate) return toast.error(t("Vui lòng chọn đầy đủ Từ ngày và Đến ngày"));
-    if (new Date(startDate) > new Date(endDate)) return toast.error(t("Từ ngày không được lớn hơn Đến ngày"));
-
-    // BUG-HIGH-1 fix: api.php expects format 'YYYY-MM-DD đến YYYY-MM-DD'
-    // startDate/endDate from <input type="date"> are already in YYYY-MM-DD format
-    const label = `${startDate} đến ${endDate}`;
-
-    handleUpdateDateFilter(label);
-    setShowDateModal(false);
-  };
 
   const aiPassed = stats?.ai_passed_count || 0;
   const aiFailed = stats?.ai_failed_count || 0;
@@ -605,20 +547,16 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
           <p className="page-subtitle">{t("Phân tích hiệu suất giao data theo thời gian thực — Hệ thống đang hoạt động trơn tru.")}</p>
         </div>
         <div className="mobile-w-full" style={{ display: 'flex', gap: '8px', alignItems: 'center', width: 'auto' }}>
-          <div className="mobile-flex-1" style={{ position: 'relative', zIndex: 100, width: 200 }}>
-            <CustomSelect
-              options={dateOptions}
-              value={dateFilter}
-              onChange={(val) => {
-                if (val === 'Tùy chỉnh') {
-                  setShowDateModal(true);
-                  return;
-                }
-                handleUpdateDateFilter(String(val));
-              }}
-              width="100%"
-            />
-          </div>
+          <DomUnifiedDatePicker
+            value={unifiedDate}
+            onChange={setUnifiedDate}
+            allowAllTime={true}
+            lang="vi"
+            variant="auto"
+            align="right"
+            showRangeBadge={true}
+            buttonTestId="crm-dashboard-date-picker"
+          />
           {/* Button to toggle War Room Flight Deck mode (Da an theo yeu cau) */}
           {/*
           <button
@@ -2261,40 +2199,6 @@ const DashboardInner = ({ isActive }: { isActive: boolean }) => {
           </div>
         </>
       )}{/* end stats ternary */}
-      {/* Date Picker Modal */}
-      <CustomModal
-        isOpen={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        title={t("Tùy chỉnh thời gian")}
-        width="400px"
-      >
-        {showDateModal && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-            <div>
-              <label className="form-label">{t('Từ ngày')}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={startDate}
-                onChange={e => setStartDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="form-label">{t('Đến ngày')}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={endDate}
-                onChange={e => setEndDate(e.target.value)}
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn outline" onClick={() => setShowDateModal(false)}>{t('Hủy')}</button>
-              <button className="btn primary" onClick={handleCustomDateSubmit}>{t('Áp dụng')}</button>
-            </div>
-          </div>
-        )}
-      </CustomModal>
 
       {/* Statistics Modal */}
       {statsModalOpen && statsConsultant && typeof document !== 'undefined' && createPortal(

@@ -226,8 +226,13 @@ export function normalizeGlobalDateFilter(val: string | null | undefined): strin
   const map: Record<string, string> = {
     today: 'Hôm nay',
     yesterday: 'Hôm qua',
+    yesterday_to_today: 'Hôm qua - Hôm nay',
     '7days': '7 ngày qua',
+    '7_days': '7 ngày qua',
+    last_7days: '7 ngày qua',
     '30days': '30 ngày qua',
+    '30_days': '30 ngày qua',
+    last_30days: '30 ngày qua',
     this_week: 'Tuần này',
     last_week: 'Tuần trước',
     this_month: 'Tháng này',

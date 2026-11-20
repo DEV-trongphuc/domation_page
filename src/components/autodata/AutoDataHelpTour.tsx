@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   ArrowLeft,
@@ -90,9 +90,15 @@ export function AutoDataSpotlightTour({
   onClose,
   onFinish,
 }: AutoDataSpotlightTourProps) {
-  const maskId = useId().replace(/:/g, '');
+  const maskId = `autodata_tour_mask_${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
-  const [viewport, setViewport] = useState({ w: 1280, h: 800 });
+  const [viewport, setViewport] = useState(() =>
+    typeof window !== 'undefined'
+      ? { w: window.innerWidth, h: window.innerHeight }
+      : { w: 1280, h: 800 }
+  );
+  const [measuredCardHeight, setMeasuredCardHeight] = useState(296);
 
   const safeIndex = Math.max(0, Math.min(steps.length - 1, activeStepIndex));
   const current = steps[safeIndex];
@@ -117,56 +123,115 @@ export function AutoDataSpotlightTour({
 
     let cancelled = false;
     let rafId = 0;
+    let targetResizeObserver: ResizeObserver | null = null;
+    let observedEl: HTMLElement | null = null;
+
+    const findVisibleEl = (selectorList: string): HTMLElement | null => {
+      const parts = selectorList
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      for (const sel of parts) {
+        try {
+          const list = Array.from(document.querySelectorAll(sel)) as HTMLElement[];
+          const found = list.find((node) => {
+            const style = window.getComputedStyle(node);
+            if (
+              style.display === 'none' ||
+              style.visibility === 'hidden' ||
+              parseFloat(style.opacity || '1') <= 0.02
+            ) {
+              return false;
+            }
+            const r = node.getBoundingClientRect();
+            return r.width > 4 && r.height > 4;
+          });
+          if (found) return found;
+        } catch {
+          // ignore invalid selector
+        }
+      }
+      return null;
+    };
 
     const findAndMeasure = (shouldScroll: boolean) => {
       if (cancelled) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      setViewport({ w: vw, h: vh });
-
-      const findVisibleEl = (sel: string): HTMLElement | null => {
-        const list = Array.from(document.querySelectorAll(sel)) as HTMLElement[];
-        return (
-          list.find((node) => {
-            const r = node.getBoundingClientRect();
-            return r.width > 0 && r.height > 0;
-          }) || null
-        );
-      };
+      setViewport((prev) => (prev.w === vw && prev.h === vh ? prev : { w: vw, h: vh }));
 
       const el =
         findVisibleEl(`[data-tour="${current.target}"]`) ||
         (current.selector ? findVisibleEl(current.selector) : null);
       if (!el) {
-        setTargetRect(null);
+        if (observedEl && targetResizeObserver) {
+          targetResizeObserver.disconnect();
+          observedEl = null;
+        }
+        setTargetRect((prev) => (prev === null ? prev : null));
         return;
       }
 
+      if (typeof ResizeObserver !== 'undefined' && el !== observedEl) {
+        targetResizeObserver?.disconnect();
+        observedEl = el;
+        targetResizeObserver = new ResizeObserver(() => {
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(() => findAndMeasure(false));
+        });
+        targetResizeObserver.observe(el);
+      }
+
+      const preRect = el.getBoundingClientRect();
       if (shouldScroll) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        const comfortablyInView =
+          preRect.top >= 74 &&
+          preRect.bottom <= vh - 32 &&
+          preRect.left >= 0 &&
+          preRect.right <= vw;
+        if (!comfortablyInView) {
+          el.scrollIntoView({
+            behavior: 'smooth',
+            block: preRect.height > vh * 0.65 ? 'start' : 'center',
+            inline: 'nearest',
+          });
+        }
       }
 
       const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        setTargetRect({
+      if (rect.width > 4 && rect.height > 4) {
+        const nextRect = {
           top: rect.top,
           left: rect.left,
           width: rect.width,
           height: rect.height,
-        });
+        };
+        setTargetRect((prev) =>
+          prev &&
+          Math.abs(prev.top - nextRect.top) < 0.5 &&
+          Math.abs(prev.left - nextRect.left) < 0.5 &&
+          Math.abs(prev.width - nextRect.width) < 0.5 &&
+          Math.abs(prev.height - nextRect.height) < 0.5
+            ? prev
+            : nextRect
+        );
       } else {
-        setTargetRect(null);
+        setTargetRect((prev) => (prev === null ? prev : null));
       }
     };
-
-    // Wait briefly so parent tab/step React render + scroll settle cleanly
-    const t1 = window.setTimeout(() => findAndMeasure(true), 60);
-    const t2 = window.setTimeout(() => findAndMeasure(false), 320);
 
     const handleReposition = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => findAndMeasure(false));
     };
+
+    // Wait briefly so parent tab/step React render + smooth scroll settle cleanly
+    findAndMeasure(true);
+    const t1 = window.setTimeout(() => findAndMeasure(true), 80);
+    const t2 = window.setTimeout(() => findAndMeasure(false), 280);
+    const t3 = window.setTimeout(() => findAndMeasure(false), 540);
+    const t4 = window.setTimeout(() => findAndMeasure(false), 820);
+    const pollTimer = window.setInterval(() => findAndMeasure(false), 450);
 
     window.addEventListener('resize', handleReposition);
     window.addEventListener('scroll', handleReposition, true);
@@ -175,31 +240,58 @@ export function AutoDataSpotlightTour({
       cancelled = true;
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
+      window.clearTimeout(t4);
+      window.clearInterval(pollTimer);
+      targetResizeObserver?.disconnect();
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', handleReposition);
       window.removeEventListener('scroll', handleReposition, true);
     };
   }, [open, current]);
 
+  useLayoutEffect(() => {
+    if (!open || !current) return;
+    const measureCard = () => {
+      const node = cardRef.current;
+      if (!node) return;
+      const h = Math.ceil(node.getBoundingClientRect().height || node.offsetHeight || 0);
+      if (h > 0) {
+        setMeasuredCardHeight((prev) => (Math.abs(h - prev) >= 2 ? h : prev));
+      }
+    };
+    measureCard();
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && cardRef.current) {
+      ro = new ResizeObserver(measureCard);
+      ro.observe(cardRef.current);
+    }
+    return () => ro?.disconnect();
+  }, [open, current, safeIndex, viewport.w, viewport.h]);
+
   if (!open || !current || typeof document === 'undefined') return null;
 
   const isFirst = safeIndex === 0;
   const isLast = safeIndex === steps.length - 1;
 
-  // Spotlight frame padding
-  const pad = 10;
+  // Spotlight frame padding with exact viewport intersection clamping
+  const pad = 8;
   const spotlight = targetRect
-    ? {
-        top: Math.max(8, targetRect.top - pad),
-        left: Math.max(8, targetRect.left - pad),
-        width: Math.min(viewport.w - 16, targetRect.width + pad * 2),
-        height: Math.min(viewport.h - 16, targetRect.height + pad * 2),
-      }
+    ? (() => {
+        const x1 = Math.max(6, targetRect.left - pad);
+        const y1 = Math.max(6, targetRect.top - pad);
+        const x2 = Math.min(viewport.w - 6, targetRect.left + targetRect.width + pad);
+        const y2 = Math.min(viewport.h - 6, targetRect.top + targetRect.height + pad);
+        const width = x2 - x1;
+        const height = y2 - y1;
+        if (width < 8 || height < 8) return null;
+        return { top: y1, left: x1, width, height };
+      })()
     : null;
 
   // Calculate smart anchored floating card coordinates beside the spotlight cutout
   const cardWidth = Math.min(372, viewport.w - 24);
-  const estimatedCardHeight = 290;
+  const estimatedCardHeight = Math.min(viewport.h - 32, Math.max(260, measuredCardHeight));
   const margin = 16;
 
   let cardStyle: React.CSSProperties = {
@@ -213,27 +305,28 @@ export function AutoDataSpotlightTour({
     const spaceLeft = spotlight.left - margin;
     const spaceBottom = viewport.h - (spotlight.top + spotlight.height) - margin;
     const spaceTop = spotlight.top - margin;
+    const maxTop = Math.max(16, viewport.h - estimatedCardHeight - 16);
 
     if (viewport.w >= 768 && spaceRight >= cardWidth) {
       // Place cleanly to the RIGHT of the highlighted element
       cardStyle = {
         width: `${cardWidth}px`,
         left: `${spotlight.left + spotlight.width + margin}px`,
-        top: `${Math.max(16, Math.min(viewport.h - estimatedCardHeight - 16, spotlight.top + 12))}px`,
+        top: `${Math.max(16, Math.min(maxTop, spotlight.top))}px`,
       };
     } else if (viewport.w >= 768 && spaceLeft >= cardWidth) {
       // Place cleanly to the LEFT of the highlighted element (matches reference image)
       cardStyle = {
         width: `${cardWidth}px`,
         left: `${Math.max(16, spotlight.left - cardWidth - margin)}px`,
-        top: `${Math.max(16, Math.min(viewport.h - estimatedCardHeight - 16, spotlight.top + 12))}px`,
+        top: `${Math.max(16, Math.min(maxTop, spotlight.top))}px`,
       };
     } else if (spaceBottom >= estimatedCardHeight) {
       // Place BELOW target
       cardStyle = {
         width: `${cardWidth}px`,
         left: `${Math.max(12, Math.min(viewport.w - cardWidth - 12, spotlight.left))}px`,
-        top: `${spotlight.top + spotlight.height + margin}px`,
+        top: `${Math.max(16, Math.min(maxTop, spotlight.top + spotlight.height + margin))}px`,
       };
     } else if (spaceTop >= estimatedCardHeight) {
       // Place ABOVE target
@@ -243,10 +336,11 @@ export function AutoDataSpotlightTour({
         top: `${Math.max(12, spotlight.top - estimatedCardHeight - margin)}px`,
       };
     } else {
-      // Target fills viewport -> dock cleanly near bottom center
+      // Target fills viewport -> dock cleanly near bottom right / bottom center
       cardStyle = {
         width: `${cardWidth}px`,
-        left: `${Math.max(12, Math.round((viewport.w - cardWidth) / 2))}px`,
+        right: viewport.w >= 768 ? '20px' : undefined,
+        left: viewport.w < 768 ? `${Math.max(12, Math.round((viewport.w - cardWidth) / 2))}px` : undefined,
         bottom: '20px',
       };
     }
@@ -261,20 +355,31 @@ export function AutoDataSpotlightTour({
     >
       {/* Translucent Dimmed Backdrop with Crisp Bright Spotlight Cutout */}
       <svg
+        width={viewport.w}
+        height={viewport.h}
+        viewBox={`0 0 ${viewport.w} ${viewport.h}`}
         className="fixed inset-0 w-full h-full pointer-events-auto"
         onClick={onClose}
       >
         <defs>
-          <mask id={maskId}>
-            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+          <mask
+            id={maskId}
+            maskUnits="userSpaceOnUse"
+            maskContentUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width={viewport.w}
+            height={viewport.h}
+          >
+            <rect x="0" y="0" width={viewport.w} height={viewport.h} fill="white" />
             {spotlight && (
               <rect
                 x={spotlight.left}
                 y={spotlight.top}
                 width={spotlight.width}
                 height={spotlight.height}
-                rx={20}
-                ry={20}
+                rx={18}
+                ry={18}
                 fill="black"
               />
             )}
@@ -283,8 +388,8 @@ export function AutoDataSpotlightTour({
         <rect
           x="0"
           y="0"
-          width="100%"
-          height="100%"
+          width={viewport.w}
+          height={viewport.h}
           fill="rgba(15, 23, 42, 0.54)"
           mask={`url(#${maskId})`}
         />
@@ -300,12 +405,13 @@ export function AutoDataSpotlightTour({
             width: `${spotlight.width}px`,
             height: `${spotlight.height}px`,
           }}
-          className="fixed rounded-[20px] border-2 border-[#1E40FF] ring-4 ring-white/95 shadow-[0_18px_48px_-12px_rgba(30,64,255,0.42)] pointer-events-none transition-all duration-200"
+          className="fixed rounded-[18px] border-2 border-[#1E40FF] ring-4 ring-white/95 shadow-[0_18px_48px_-12px_rgba(30,64,255,0.42)] pointer-events-none transition-all duration-200"
         />
       )}
 
       {/* Anchored Floating Coachmark Card */}
       <div
+        ref={cardRef}
         style={cardStyle}
         onClick={(e) => e.stopPropagation()}
         className="fixed pointer-events-auto rounded-2xl bg-white border border-slate-200/95 shadow-[0_24px_64px_-12px_rgba(15,23,42,0.34)] p-5 space-y-3.5 transition-all duration-200"

@@ -5,7 +5,6 @@ import {
   ArrowUpDown,
   Bell,
   Building2,
-  Calendar,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -37,6 +36,12 @@ import {
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
 import { DomationProgressLoader } from '../DomationProgressLoader';
+import { DomUnifiedDatePicker } from '../common/DomUnifiedDatePicker';
+import {
+  createUnifiedDateValue,
+  useUnifiedDateFilter,
+  type UnifiedDateFilterValue,
+} from '../common/unifiedDateFilter';
 import {
   DOM_META_METRIC_REGISTRY,
   calcDeltaPercent,
@@ -45,7 +50,6 @@ import {
   formatDomMoney,
   formatDomMoneyShort,
   formatDomNumber,
-  formatIsoToVnDisplay,
   parseGoogleAdsChannelsFromRows,
   parseGoogleAdsHourlyFromRows,
   parseGoogleAdsLocationsFromRows,
@@ -134,6 +138,7 @@ import {
   DomMetaSpotlightTour,
 } from './DomMetaSpotlightTour';
 import { ClosedLoopFlywheelCockpit } from './ClosedLoopFlywheelCockpit';
+import { useWorkspaceIpProtection } from '../../utils/workspaceIpGuard';
 
 const DomMetaQuickConnectModal = lazy(() =>
   import('./DomMetaQuickConnectModal').then((m) => ({ default: m.DomMetaQuickConnectModal }))
@@ -265,34 +270,6 @@ type YearMetricKey = 'spend' | 'leads' | 'reach' | 'messages' | 'follows';
 type GadsTrendMetricKey = 'spend' | 'leads' | 'cpr' | 'clicks' | 'impressions';
 type GadsBarMetricKey = 'spent' | 'click' | 'conv' | 'ctr' | 'cpc' | 'cpa';
 
-const DATE_PRESET_OPTIONS: Array<{ key: DomMetaDatePreset; label: string }> = [
-  { key: 'today', label: 'Today' },
-  { key: 'yesterday', label: 'Yesterday' },
-  { key: 'yesterday_to_today', label: 'Yesterday - Today' },
-  { key: 'last_7days', label: 'Last 7 days' },
-  { key: 'last_30days', label: 'Last 30 days' },
-  { key: 'this_week', label: 'This Week' },
-  { key: 'last_week', label: 'Last Week' },
-  { key: 'this_month', label: 'This Month' },
-  { key: 'last_month', label: 'Last Month' },
-  { key: 'custom_range', label: 'Custom Date' },
-];
-
-const CALENDAR_MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
 function formatDomMetaRoleBadge(rawRole?: string): string {
   const key = String(rawRole || 'admin')
     .trim()
@@ -311,32 +288,6 @@ function formatDomMetaRoleBadge(rawRole?: string): string {
   if (key === 'sale') return 'Sale';
   if (key === 'viewer') return 'Viewer';
   return rawRole || 'Admin';
-}
-
-function toIsoDateLocal(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
-function buildCalendarMonthGrid(
-  year: number,
-  month: number
-): Array<{ iso: string; day: number; inMonth: boolean }> {
-  const firstOfMonth = new Date(year, month, 1);
-  const startOffset = firstOfMonth.getDay(); // 0=Sun .. 6=Sat
-  const gridStart = new Date(year, month, 1 - startOffset);
-  const cells: Array<{ iso: string; day: number; inMonth: boolean }> = [];
-  for (let i = 0; i < 42; i++) {
-    const cur = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
-    cells.push({
-      iso: toIsoDateLocal(cur),
-      day: cur.getDate(),
-      inMonth: cur.getMonth() === month && cur.getFullYear() === year,
-    });
-  }
-  return cells;
 }
 
 function readInitialUrlParams(): {
@@ -481,46 +432,38 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const [activeView, setActiveView] = useState<DomMetaNavView>(
     initialUrlState.view || initialView
   );
-  const [datePreset, setDatePreset] = useState<DomMetaDatePreset>(
-    effectiveInitialRange ? 'custom_range' : initialDatePreset
-  );
-  const [customStart, setCustomStart] = useState(effectiveInitialRange?.since || '');
-  const [customEnd, setCustomEnd] = useState(effectiveInitialRange?.until || '');
-  const [dateMenuOpen, setDateMenuOpen] = useState(false);
-  const datePickerRef = useRef<HTMLDivElement>(null);
-  const initialResolvedRange = useMemo(
-    () =>
-      resolveDateRangeFromPreset(
-        effectiveInitialRange ? 'custom_range' : initialDatePreset,
-        effectiveInitialRange?.since || '',
-        effectiveInitialRange?.until || ''
-      ),
-    [effectiveInitialRange, initialDatePreset]
-  );
-  const [draftPreset, setDraftPreset] = useState<DomMetaDatePreset>(
-    effectiveInitialRange ? 'custom_range' : initialDatePreset
-  );
-  const [draftStart, setDraftStart] = useState(initialResolvedRange.since);
-  const [draftEnd, setDraftEnd] = useState(initialResolvedRange.until);
-  const [pickPhase, setPickPhase] = useState<'start' | 'end'>('start');
-  const [calendarMonth, setCalendarMonth] = useState<{ year: number; month: number }>(() => {
-    const parts = initialResolvedRange.until.split('-').map(Number);
-    return {
-      year: parts[0] || new Date().getFullYear(),
-      month: (parts[1] ? parts[1] - 1 : new Date().getMonth()),
-    };
+  useWorkspaceIpProtection({
+    app: 'dom_meta_bi',
+    module: activeView,
+    tenantSlug: authContext.tenantSlug || null,
   });
+  const [globalUnifiedDate, setGlobalUnifiedDate] = useUnifiedDateFilter({
+    allowAllTime: false,
+    fallbackPreset: initialDatePreset,
+    allTimeFallbackPreset: 'last_30days',
+  });
+  const [urlRangeOverride, setUrlRangeOverride] = useState<UnifiedDateFilterValue | null>(() =>
+    effectiveInitialRange
+      ? createUnifiedDateValue('custom_range', effectiveInitialRange.since, effectiveInitialRange.until)
+      : null
+  );
+  const activeUnifiedDate = urlRangeOverride || globalUnifiedDate;
+  const datePreset: DomMetaDatePreset =
+    activeUnifiedDate.preset === 'all' ? 'last_30days' : activeUnifiedDate.preset;
+  const customStart = activeUnifiedDate.since || '';
+  const customEnd = activeUnifiedDate.until || '';
 
+  // Clear URL range override whenever global date changes from another CRM/ERP tab
+  const lastGlobalKeyRef = useRef(
+    `${globalUnifiedDate.preset}:${globalUnifiedDate.since || ''}:${globalUnifiedDate.until || ''}`
+  );
   useEffect(() => {
-    if (!dateMenuOpen) return;
-    const onPointerDown = (e: MouseEvent) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
-        setDateMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', onPointerDown);
-    return () => document.removeEventListener('mousedown', onPointerDown);
-  }, [dateMenuOpen]);
+    const nextKey = `${globalUnifiedDate.preset}:${globalUnifiedDate.since || ''}:${globalUnifiedDate.until || ''}`;
+    if (nextKey !== lastGlobalKeyRef.current) {
+      lastGlobalKeyRef.current = nextKey;
+      setUrlRangeOverride(null);
+    }
+  }, [globalUnifiedDate]);
 
   const [dataset, setDataset] = useState<DomMetaDashboardDataset | null>(null);
   const [crmAttribution, setCrmAttribution] = useState<DomMetaCrmAttributionPayload | null>(null);
@@ -3143,17 +3086,26 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     </div>
   );
 
-  const applyDateSelection = (
-    nextPreset: DomMetaDatePreset,
-    nextStartInput: string,
-    nextEndInput: string
-  ) => {
-    setDatePreset(nextPreset);
-    if (nextPreset === 'custom_range') {
-      const sMin = nextStartInput <= nextEndInput ? nextStartInput : nextEndInput;
-      const sMax = nextStartInput <= nextEndInput ? nextEndInput : nextStartInput;
-      setCustomStart(sMin);
-      setCustomEnd(sMax);
+  const applyUnifiedDateSelection = (nextVal: UnifiedDateFilterValue) => {
+    const safeVal: UnifiedDateFilterValue =
+      nextVal.preset === 'all' ? createUnifiedDateValue('last_30days') : nextVal;
+    setUrlRangeOverride(null);
+    setGlobalUnifiedDate(safeVal);
+    if (
+      mode === 'standalone' &&
+      typeof window !== 'undefined' &&
+      safeVal.since &&
+      safeVal.until &&
+      window.location.search.includes('since=')
+    ) {
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        sp.set('since', safeVal.since);
+        sp.set('until', safeVal.until);
+        window.history.replaceState(null, '', `${window.location.pathname}?${sp.toString()}`);
+      } catch {
+        // ignore URL sync failure
+      }
     }
     setError(null);
     setGadsError(null);
@@ -3164,7 +3116,6 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       setLoading(true);
     }
     setReloadTick((t) => t + 1);
-    setDateMenuOpen(false);
   };
 
   const googleAdsSkeleton = (
@@ -3220,217 +3171,16 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   );
 
   const datePickerControl = (
-    <div ref={datePickerRef} className="relative flex items-center gap-2 shrink-0">
-      <button
-        type="button"
-        data-testid="open-date-picker"
-        title={`${formatIsoToVnDisplay(resolvedRange.since)} - ${formatIsoToVnDisplay(
-          resolvedRange.until
-        )}`}
-        onClick={() => {
-          if (!dateMenuOpen) {
-            setDraftPreset(datePreset);
-            setDraftStart(resolvedRange.since);
-            setDraftEnd(resolvedRange.until);
-            setPickPhase('start');
-            const parts = resolvedRange.until.split('-').map(Number);
-            if (parts[0] && parts[1]) {
-              setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
-            }
-          }
-          setDateMenuOpen((v) => !v);
-        }}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-full bg-slate-50 hover:bg-blue-50/60 border border-slate-200/90 text-xs font-semibold text-slate-800 cursor-pointer transition-colors dom-ios-press"
-      >
-        <Calendar className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-        <span className="whitespace-nowrap">
-          {DATE_PRESET_OPTIONS.find((p) => p.key === datePreset)?.label || 'Last 7 days'}
-        </span>
-        <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
-      </button>
-
-      {mode === 'standalone' && (
-        <span className="hidden lg:inline text-xs font-medium text-slate-400 tabular-nums whitespace-nowrap">
-          {formatIsoToVnDisplay(resolvedRange.since)} -{' '}
-          {formatIsoToVnDisplay(resolvedRange.until)}
-        </span>
-      )}
-
-      {dateMenuOpen && (
-        <div
-          className={`fixed sm:absolute inset-x-3 sm:inset-x-auto ${
-            mode === 'standalone' ? 'sm:right-0 lg:right-auto lg:left-0' : 'sm:right-0'
-          } top-[68px] sm:top-full sm:mt-2.5 sm:w-[570px] max-h-[calc(100dvh-84px)] sm:max-h-none overflow-y-auto sm:overflow-hidden rounded-2xl bg-white border border-slate-200/95 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.24)] z-50 flex flex-col sm:flex-row dom-ios-modal-responsive`}
-        >
-          {/* Left Column: Preset Radio List */}
-          <div className="sm:w-44 shrink-0 border-b sm:border-b-0 sm:border-r border-slate-100 bg-slate-50/55 p-2.5 grid grid-cols-2 sm:grid-cols-1 gap-0.5 max-h-44 sm:max-h-none overflow-y-auto">
-            {DATE_PRESET_OPTIONS.map((opt) => {
-              const isSelected = draftPreset === opt.key;
-              return (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => {
-                    setDraftPreset(opt.key);
-                    if (opt.key !== 'custom_range') {
-                      const next = resolveDateRangeFromPreset(opt.key);
-                      setDraftStart(next.since);
-                      setDraftEnd(next.until);
-                      const parts = next.until.split('-').map(Number);
-                      if (parts[0] && parts[1]) {
-                        setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
-                      }
-                      applyDateSelection(opt.key, next.since, next.until);
-                    }
-                  }}
-                  className={`w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-left text-xs transition-colors cursor-pointer ${
-                    isSelected
-                      ? 'bg-blue-50/90 text-[#1E40FF] font-semibold'
-                      : 'text-slate-600 font-medium hover:bg-white'
-                  }`}
-                >
-                  <span
-                    className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1E40FF]' : 'border-slate-300'
-                    }`}
-                  >
-                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#1E40FF]" />}
-                  </span>
-                  <span className="truncate">{opt.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right Column: Interactive Monthly Calendar Grid + Footer */}
-          <div className="flex-1 p-4 flex flex-col justify-between gap-3">
-            <div className="space-y-3">
-              <div className="text-xs font-bold text-slate-900">Select Date Range</div>
-              <div className="flex items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setCalendarMonth((prev) =>
-                      prev.month === 0
-                        ? { year: prev.year - 1, month: 11 }
-                        : { year: prev.year, month: prev.month - 1 }
-                    )
-                  }
-                  className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer"
-                  aria-label="Previous month"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <div className="text-xs sm:text-sm font-bold text-slate-800">
-                  {CALENDAR_MONTH_NAMES[calendarMonth.month]} {calendarMonth.year}
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setCalendarMonth((prev) =>
-                      prev.month === 11
-                        ? { year: prev.year + 1, month: 0 }
-                        : { year: prev.year, month: prev.month + 1 }
-                    )
-                  }
-                  className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 cursor-pointer"
-                  aria-label="Next month"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-7 gap-1 text-center">
-                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((wd) => (
-                  <div key={wd} className="text-[11px] font-semibold text-slate-400 py-1">
-                    {wd}
-                  </div>
-                ))}
-                {buildCalendarMonthGrid(calendarMonth.year, calendarMonth.month).map((cell) => {
-                  const sMin = draftStart <= draftEnd ? draftStart : draftEnd;
-                  const sMax = draftStart <= draftEnd ? draftEnd : draftStart;
-                  const isEdge = cell.iso === sMin || cell.iso === sMax;
-                  const inRange = cell.iso > sMin && cell.iso < sMax;
-                  return (
-                    <button
-                      key={cell.iso}
-                      type="button"
-                      onClick={() => {
-                        setDraftPreset('custom_range');
-                        if (pickPhase === 'start') {
-                          setDraftStart(cell.iso);
-                          setDraftEnd(cell.iso);
-                          setPickPhase('end');
-                        } else {
-                          if (cell.iso < draftStart) {
-                            setDraftEnd(draftStart);
-                            setDraftStart(cell.iso);
-                          } else {
-                            setDraftEnd(cell.iso);
-                          }
-                          setPickPhase('start');
-                        }
-                      }}
-                      className={`h-8 w-full rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                        isEdge
-                          ? 'bg-[#1E40FF] text-white font-bold shadow-xs'
-                          : inRange
-                            ? 'bg-blue-50 text-[#1E40FF] font-semibold'
-                            : cell.inMonth
-                              ? 'text-slate-700 hover:bg-slate-100'
-                              : 'text-slate-300 hover:bg-slate-50'
-                      }`}
-                    >
-                      {cell.day}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-between gap-2">
-              <div className="grid grid-cols-2 sm:flex items-center gap-1.5 min-w-0">
-                <input
-                  type="date"
-                  value={draftStart}
-                  onChange={(e) => {
-                    setDraftPreset('custom_range');
-                    setDraftStart(e.target.value);
-                  }}
-                  className="w-full sm:w-[136px] min-w-0 rounded-xl border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-700 focus:border-[#1E40FF] outline-none"
-                />
-                <span className="hidden sm:inline text-slate-400 text-xs">-</span>
-                <input
-                  type="date"
-                  value={draftEnd}
-                  onChange={(e) => {
-                    setDraftPreset('custom_range');
-                    setDraftEnd(e.target.value);
-                  }}
-                  className="w-full sm:w-[136px] min-w-0 rounded-xl border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-700 focus:border-[#1E40FF] outline-none"
-                />
-              </div>
-              <div className="grid grid-cols-2 sm:flex items-center gap-2 sm:ml-auto">
-                <button
-                  type="button"
-                  onClick={() => setDateMenuOpen(false)}
-                  className="px-3 py-2 sm:py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-600 cursor-pointer text-center"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyDateSelection(draftPreset, draftStart, draftEnd)}
-                  className="px-4 py-2 sm:py-1.5 rounded-xl bg-[#1E40FF] hover:bg-blue-700 text-xs font-semibold text-white shadow-xs cursor-pointer text-center"
-                >
-                  Update
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <DomUnifiedDatePicker
+      value={activeUnifiedDate}
+      onChange={applyUnifiedDateSelection}
+      allowAllTime={false}
+      lang="vi"
+      variant="light"
+      align={mode === 'standalone' ? 'auto' : 'right'}
+      showRangeBadge={true}
+      buttonTestId="open-date-picker"
+    />
   );
 
   return (
@@ -3928,6 +3678,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
               {/* Mobile Hamburger + Account Pill (< lg, pushed left via mr-auto) */}
               <button
                 type="button"
+                data-testid="mobile-nav-menu-btn"
                 onClick={() => setMobileMenuOpen(true)}
                 className="lg:hidden order-1 w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 shrink-0 cursor-pointer dom-ios-press"
                 aria-label="Mở menu điều hướng"
@@ -4091,6 +3842,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     description: 'Xem chỉ điểm 5 bước trực quan',
                     icon: <HelpCircle className="w-3.5 h-3.5 text-[#1E40FF]" />,
                     onClick: () => {
+                      if (effectiveView !== 'dashboard') setActiveView('dashboard');
                       setTourStepIdx(0);
                       setTourOpen(true);
                     },
@@ -4117,6 +3869,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 type="button"
                 data-testid="open-dom-meta-tour"
                 onClick={() => {
+                  if (effectiveView !== 'dashboard') setActiveView('dashboard');
                   setTourStepIdx(0);
                   setTourOpen(true);
                 }}
@@ -4510,7 +4263,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             {/* ROW 1: Spent KPI Stack + Daily Spent Area Chart + Meta Goal Bar Chart */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
               {/* KPI Stack Card */}
-              <div className="lg:col-span-3 relative rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-3.5 flex flex-col justify-between gap-2.5 min-w-0">
+              <div
+                data-tour="dom-meta-kpis"
+                className="lg:col-span-3 relative rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-3.5 flex flex-col justify-between gap-2.5 min-w-0"
+              >
                 <button
                   type="button"
                   data-testid="open-perf-compare"
@@ -4837,7 +4593,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
 
             {/* ROW 3: Dayparting Heatmap (8 cols) + Region Spent (4 cols, Scroll-Bounded Same Height) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              <div className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col lg:h-[365px]">
+              <div
+                data-tour="dom-meta-heatmap"
+                className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col lg:h-[365px]"
+              >
                 <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
                     <Clock className="w-4 h-4 text-[#1E40FF]" />
@@ -4938,7 +4697,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   titleSizeClassName="text-sm font-semibold text-slate-800"
                 />
 
-                <div className="lg:col-span-7 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2.5 h-full">
+                <div
+                  data-tour="dom-meta-campaigns"
+                  className="lg:col-span-7 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2.5 h-full"
+                >
                   <div className="flex items-center justify-between shrink-0">
                     <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
@@ -6441,7 +6203,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       <DomMetaSpotlightTour
         open={tourOpen}
         activeStepIndex={tourStepIdx}
-        onStepChange={(idx) => setTourStepIdx(idx)}
+        onStepChange={(idx) => {
+          if (idx <= 2 && effectiveView !== 'dashboard') {
+            setActiveView('dashboard');
+          }
+          setTourStepIdx(idx);
+        }}
         onClose={() => setTourOpen(false)}
         onFinish={() => {
           try {

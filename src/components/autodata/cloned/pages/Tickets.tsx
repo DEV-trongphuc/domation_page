@@ -7,7 +7,9 @@ import {
   PieChart, Pie, Cell, BarChart, LabelList
 } from 'recharts';
 import toast from 'react-hot-toast';
-import { fetchAPI, normalizeNotificationStatus, getDefaultDateFilter, normalizeGlobalDateFilter, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
+import { fetchAPI, normalizeNotificationStatus, getDefaultDateFilter, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import { TableSkeleton, KpiCardSkeleton, ChartSkeleton } from '../components/ui/Skeleton';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
@@ -241,23 +243,17 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
   const activeFilter = (searchParams.get('status') || 'pending') as 'all' | 'pending' | 'approved' | 'approved_no_comp' | 'rejected';
   const saleFilter = searchParams.get('consultant') || '';
 
-  const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-  });
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const dateFilter = unifiedDateHelpers.legacyDate;
+  const dateQueryString = unifiedDateHelpers.queryString;
 
   const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
+    unifiedDateHelpers.setFromLegacy(val);
   };
 
   const currentPage = Number(searchParams.get('page') || '1');
 
-  const [showDateModal, setShowDateModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
 
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -285,10 +281,14 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
     let start = '';
     let end = '';
 
-    if (filter === 'Hôm nay') {
+    if (filter === 'all' || filter === 'Tất cả thời gian') {
+      mode = 'all';
+    } else if (filter === 'Hôm nay') {
       mode = 'today';
     } else if (filter === 'Hôm qua') {
       mode = 'yesterday';
+    } else if (filter === 'Hôm qua - Hôm nay') {
+      mode = 'yesterday_to_today';
     } else if (filter === '7 ngày qua') {
       mode = '7_days';
     } else if (filter === '30 ngày qua') {
@@ -558,47 +558,6 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
     }, { replace: true });
   };
 
-  const getDisplayDateFilterText = (filter: string) => {
-    if (filter.includes('đến')) {
-      return filter.replace(/\s*đến\s*/i, ` ${t('đến')} `);
-    }
-    return t(filter);
-  };
-
-  const dateOptions = [
-    { value: 'all', label: t('Tất cả thời gian') },
-    { value: 'Hôm nay', label: t('Hôm nay') },
-    { value: 'Hôm qua', label: t('Hôm qua') },
-    { value: 'Tuần này', label: t('Tuần này') },
-    { value: 'Tuần trước', label: t('Tuần trước') },
-    { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-    { value: '7 ngày qua', label: t('7 ngày qua') },
-    { value: '30 ngày qua', label: t('30 ngày qua') },
-    { value: 'Tháng này', label: t('Tháng này') },
-    { value: 'Tháng trước', label: t('Tháng trước') }
-  ];
-
-  const defaultFilters = ['all', 'Hôm nay', 'Hôm qua', 'Tuần này', 'Tuần trước', 'Tuần trước nữa', '7 ngày qua', '30 ngày qua', 'Tháng này', 'Tháng trước', 'Tùy chỉnh'];
-  if (!defaultFilters.includes(dateFilter)) {
-    dateOptions.push({ value: dateFilter, label: getDisplayDateFilterText(dateFilter) });
-  }
-
-  dateOptions.push({ value: 'Tùy chỉnh', label: t('Tùy chỉnh...') });
-
-  const handleCustomDateSubmit = () => {
-    if (!startDate || !endDate) {
-      toast.error(t("Vui lòng chọn đầy đủ Từ ngày và Đến ngày"));
-      return;
-    }
-    if (new Date(startDate) > new Date(endDate)) {
-      toast.error(t("Từ ngày không được lớn hơn Đến ngày"));
-      return;
-    }
-    const label = `${startDate} ${t('đến')} ${endDate}`;
-    updateParams('date', label);
-    setShowDateModal(false);
-  };
-
   const fetchReports = async () => {
     setLoading(true);
     try {
@@ -607,7 +566,9 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
       queryParams.set('pageSize', String(ITEMS_PER_PAGE));
       if (activeFilter !== 'all') queryParams.set('status', activeFilter);
       if (saleFilter) queryParams.set('consultant', saleFilter);
-      if (dateFilter && dateFilter !== 'all') queryParams.set('date', dateFilter);
+      if (unifiedDate.preset !== 'all') {
+        Object.entries(unifiedDateHelpers.queryParams).forEach(([k, v]) => queryParams.set(k, v));
+      }
 
       const res = await fetchAPI(`get_reports&${queryParams.toString()}`);
       if (res && res.success) {
@@ -631,31 +592,7 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
     if (isActive) {
       fetchReports();
     }
-  }, [searchParams, dateFilter, isActive]);
-
-  useEffect(() => {
-    if (isActive) {
-      const rawSaved = localStorage.getItem('domation_global_date');
-      if (rawSaved) {
-        const saved = normalizeGlobalDateFilter(rawSaved);
-        if (saved !== dateFilter) {
-          setDateFilter(saved);
-        }
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    if (!isActive) return;
-    const handleGlobalDate = (e: any) => {
-      const newDate = normalizeGlobalDateFilter(e.detail);
-      if (newDate && newDate !== dateFilter) {
-        setDateFilter(newDate);
-      }
-    };
-    window.addEventListener('global-date-change', handleGlobalDate);
-    return () => window.removeEventListener('global-date-change', handleGlobalDate);
-  }, [dateFilter, isActive]);
+  }, [searchParams, dateQueryString, isActive]);
 
   useEffect(() => {
     fetchAPI('get_settings')
@@ -1042,20 +979,25 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
           </div>
 
           {/* Date Filter */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: 200 }}>
-            <CustomSelect
-              options={dateOptions}
-              value={dateFilter}
-              onChange={val => {
-                if (val === 'Tùy chỉnh') {
-                  setShowDateModal(true);
-                  return;
-                }
-                updateParams('date', val.toString());
-              }}
-              width="100%"
-            />
-          </div>
+          <DomUnifiedDatePicker
+            value={unifiedDate}
+            onChange={(next) => {
+              setUnifiedDate(next);
+              if (currentPage > 1) {
+                setSearchParams((prev: URLSearchParams) => {
+                  const np = new URLSearchParams(prev);
+                  np.set('page', '1');
+                  return np;
+                });
+              }
+            }}
+            allowAllTime={true}
+            lang="vi"
+            variant="auto"
+            align="auto"
+            showRangeBadge={true}
+            buttonTestId="crm-tickets-date-picker"
+          />
 
           {hasActiveFilters && (
             <button onClick={() => {
@@ -1297,17 +1239,24 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
 
           {/* Date Filter */}
           <div className="responsive-filter-item" style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
-            <CustomSelect
-              options={dateOptions}
-              value={dateFilter}
-              onChange={val => {
-                if (val === 'Tùy chỉnh') {
-                  setShowDateModal(true);
-                  return;
+            <DomUnifiedDatePicker
+              value={unifiedDate}
+              onChange={(next) => {
+                setUnifiedDate(next);
+                if (currentPage > 1) {
+                  setSearchParams((prev: URLSearchParams) => {
+                    const np = new URLSearchParams(prev);
+                    np.set('page', '1');
+                    return np;
+                  });
                 }
-                updateParams('date', val.toString());
               }}
-              width="100%"
+              allowAllTime={true}
+              lang="vi"
+              variant="auto"
+              align="auto"
+              showRangeBadge={true}
+              buttonTestId="crm-tickets-mobile-date-picker"
             />
           </div>
 
@@ -1792,43 +1741,6 @@ const TicketsInner = ({ isActive, searchParams, setSearchParams }: { isActive: b
         )}
       </div>
       <TicketSettingsModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
-
-      {/* Custom Date Picker Modal */}
-      <CustomModal
-        isOpen={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        title={t("Tùy chỉnh thời gian")}
-        width="400px"
-      >
-        {showDateModal && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-            <div>
-              <label className="form-label">{t("Từ ngày")}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={startDate}
-                onChange={e => setStartDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="form-label">{t("Đến ngày")}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={endDate}
-                onChange={e => setEndDate(e.target.value)}
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn outline" onClick={() => setShowDateModal(false)}>{t("Hủy")}</button>
-              <button className="btn primary" onClick={handleCustomDateSubmit}>{t("Áp dụng")}</button>
-            </div>
-          </div>
-        )}
-      </CustomModal>
-
-
 
       {/* Reject Modal */}
       <CustomModal isOpen={rejectModalOpen} onClose={() => setRejectModalOpen(false)} title={t("Từ chối Báo cáo Lỗi")}>

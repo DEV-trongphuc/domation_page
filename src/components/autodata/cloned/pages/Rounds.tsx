@@ -5,13 +5,14 @@ import { withRouterFreezer } from '../components/RouterFreezer';
 import { Plus, Users, Zap, X, Shield, Check, LayoutGrid, List, Trash2, Search, AlertCircle, Clock, Scale, Info, Layers, HelpCircle, ArrowRight, RefreshCw } from 'lucide-react';
 import { ToggleSwitch } from '../components/ui/ToggleSwitch';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
-import { fetchAPI, getDefaultDateFilter, normalizeGlobalDateFilter, formatDateTimeVN } from '../utils/api';
+import { fetchAPI, formatDateTimeVN } from '../utils/api';
 import toast from 'react-hot-toast';
 import { RoundCardSkeleton } from '../components/ui/Skeleton';
 import { Avatar } from '../components/ui/Avatar';
 import { useLanguage } from '../contexts/LanguageContext';
-import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomModal } from '../components/ui/CustomModal';
+import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
+import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 
 const AVATAR_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#10b981', '#0ea5e9',
@@ -62,55 +63,8 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const [dateFilter, setDateFilter] = useState(() => {
-    return normalizeGlobalDateFilter(localStorage.getItem('domation_global_date') || getDefaultDateFilter());
-  });
-  const [showDateModal, setShowDateModal] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const handleUpdateDateFilter = (val: string) => {
-    const norm = normalizeGlobalDateFilter(val);
-    setDateFilter(norm);
-    localStorage.setItem('domation_global_date', norm);
-    window.dispatchEvent(new CustomEvent('global-date-change', { detail: norm }));
-  };
-
-  const getDisplayDateFilterText = (val: string) => {
-    if (val.includes(' đến ')) {
-      const parts = val.split(' đến ');
-      if (parts.length === 2) {
-        return `${parts[0]} - ${parts[1]}`;
-      }
-    }
-    return t(val);
-  };
-
-  const dateOptions = [
-    { value: 'Hôm nay', label: t('Hôm nay') },
-    { value: 'Hôm qua', label: t('Hôm qua') },
-    { value: 'Tuần này', label: t('Tuần này') },
-    { value: 'Tuần trước', label: t('Tuần trước') },
-    { value: 'Tuần trước nữa', label: t('Tuần trước nữa') },
-    { value: '7 ngày qua', label: t('7 ngày qua') },
-    { value: '30 ngày qua', label: t('30 ngày qua') },
-    { value: 'Tháng này', label: t('Tháng này') },
-    { value: 'Tháng trước', label: t('Tháng trước') }
-  ];
-
-  if (dateFilter && !dateOptions.some(o => o.value === dateFilter) && dateFilter !== 'Tùy chỉnh') {
-    dateOptions.push({ value: dateFilter, label: getDisplayDateFilterText(dateFilter) });
-  }
-
-  dateOptions.push({ value: 'Tùy chỉnh', label: t('Tùy chỉnh...') });
-
-  const handleCustomDateSubmit = () => {
-    if (!startDate || !endDate) return toast.error(t("Vui lòng chọn đầy đủ Từ ngày và Đến ngày"));
-    if (new Date(startDate) > new Date(endDate)) return toast.error(t("Từ ngày không được lớn hơn Đến ngày"));
-    const label = `${startDate} đến ${endDate}`;
-    handleUpdateDateFilter(label);
-    setShowDateModal(false);
-  };
+  const [unifiedDate, setUnifiedDate, unifiedDateHelpers] = useUnifiedDateFilter({ allowAllTime: true });
+  const dateQueryString = unifiedDateHelpers.queryString;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -187,7 +141,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
 
   const fetchRounds = async () => {
     try {
-      const json = await fetchAPI(`get_rounds&date=${encodeURIComponent(dateFilter)}`);
+      const json = await fetchAPI(`get_rounds&${dateQueryString}`);
       if (json && json.success) setRounds(Array.isArray(json?.data) ? json.data : []);
     } catch (e: any) {
       toast.error(t('Không thể tải dữ liệu: ') + e.message);
@@ -208,38 +162,12 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
     if (isActive) {
       fetchRounds();
     }
-  }, [dateFilter, isActive]);
+  }, [dateQueryString, isActive]);
 
   useEffect(() => {
     fetchConsultants();
     fetchAccounts();
   }, []);
-
-  useEffect(() => {
-    if (isActive) {
-      const raw = localStorage.getItem('domation_global_date');
-      if (raw) {
-        const saved = normalizeGlobalDateFilter(raw);
-        if (saved !== dateFilter) {
-          setDateFilter(saved);
-        }
-      }
-    }
-  }, [isActive]);
-
-  useEffect(() => {
-    if (!isActive) return;
-    const handleGlobalDate = (e: any) => {
-      if (e.detail) {
-        const nextDate = normalizeGlobalDateFilter(e.detail);
-        if (nextDate !== dateFilter) {
-          setDateFilter(nextDate);
-        }
-      }
-    };
-    window.addEventListener('global-date-change', handleGlobalDate);
-    return () => window.removeEventListener('global-date-change', handleGlobalDate);
-  }, [dateFilter, isActive]);
 
   useEffect(() => {
     if (!isActive) return;
@@ -248,7 +176,7 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
     };
     window.addEventListener('lead-added', handleLeadAdded);
     return () => window.removeEventListener('lead-added', handleLeadAdded);
-  }, [dateFilter, isActive]);
+  }, [dateQueryString, isActive]);
 
   const openAddModal = () => {
     setEditingRound(null);
@@ -592,21 +520,17 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
         </div>
 
         <div className="mobile-flex-wrap" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          {/* Date Filter Dropdown */}
-          <div className="responsive-filter-item" style={{ position: 'relative', display: 'flex', alignItems: 'center', width: 180 }}>
-            <CustomSelect
-              options={dateOptions}
-              value={dateFilter}
-              onChange={val => {
-                if (val === 'Tùy chỉnh') {
-                  setShowDateModal(true);
-                  return;
-                }
-                handleUpdateDateFilter(val.toString());
-              }}
-              width="100%"
-            />
-          </div>
+          {/* Unified Date Picker */}
+          <DomUnifiedDatePicker
+            value={unifiedDate}
+            onChange={setUnifiedDate}
+            allowAllTime={true}
+            lang="vi"
+            variant="auto"
+            align="right"
+            showRangeBadge={true}
+            buttonTestId="crm-rounds-date-picker"
+          />
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -2063,41 +1987,6 @@ const RoundsInner = ({ isActive }: { isActive: boolean }) => {
         message={t("Bạn có chắc chắn muốn xóa vòng này không? Lưu ý: Việc xóa vòng phân bổ sẽ ảnh hưởng trực tiếp đến các Rule định tuyến đang trỏ đến vòng này!")}
         confirmText={t("Xóa vĩnh viễn")}
       />
-
-      {/* Date Picker Modal */}
-      <CustomModal
-        isOpen={showDateModal}
-        onClose={() => setShowDateModal(false)}
-        title={t("Tùy chỉnh thời gian")}
-        width="400px"
-      >
-        {showDateModal && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-            <div>
-              <label className="form-label">{t('Từ ngày')}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={startDate}
-                onChange={e => setStartDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="form-label">{t('Đến ngày')}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={endDate}
-                onChange={e => setEndDate(e.target.value)}
-              />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn outline" onClick={() => setShowDateModal(false)}>{t('Hủy')}</button>
-              <button className="btn primary" onClick={handleCustomDateSubmit}>{t('Áp dụng')}</button>
-            </div>
-          </div>
-        )}
-      </CustomModal>
 
       {/* Mechanism Info Help Modal */}
       <CustomModal
