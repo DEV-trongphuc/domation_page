@@ -44,6 +44,7 @@ import { Navbar } from './Navbar';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 import { ClosedLoopFlywheelSection } from './components/ClosedLoopFlywheelSection';
 import { DomationLogoMark } from './components/DomationLogoMark';
+import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
 import { handleSpaLinkClick } from './utils/navigation';
@@ -522,9 +523,10 @@ export function DomationDataLanding() {
       <div className="fixed inset-0 z-50 overflow-y-auto bg-[#F8F9FA]">
         <Suspense
           fallback={
-            <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-medium">
-              Đang tải không gian vận hành AutoData...
-            </div>
+            <DomationProgressLoader
+              title="AutoData CRM"
+              subtitle="Đang tải không gian vận hành AutoData..."
+            />
           }
         >
           <AutoDataWorkspaceApp
@@ -2753,9 +2755,10 @@ export function DomationDataLanding() {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-[#F8F9FA]">
           <Suspense
             fallback={
-              <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-medium">
-                Đang tải không gian vận hành AutoData...
-              </div>
+              <DomationProgressLoader
+                title="AutoData CRM"
+                subtitle="Đang tải không gian vận hành AutoData..."
+              />
             }
           >
             <AutoDataWorkspaceApp

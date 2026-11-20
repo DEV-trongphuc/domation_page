@@ -1455,6 +1455,7 @@ export interface DomMetaEntityCreativeSpec {
   objectType?: string;
   videoId?: string;
   pageId?: string;
+  imageUrls?: string[];
 }
 
 export interface DomMetaEntityDeliveryDiagnostics {

@@ -169,6 +169,7 @@ interface GraphAdRow {
     instagram_permalink_url?: string;
     thumbnail_url?: string;
     image_url?: string;
+    object_story_spec?: unknown;
     effective_object_story_id?: string;
     effective_instagram_media_id?: string;
   };
@@ -2709,7 +2710,7 @@ export async function fetchDomMetaEntityDeepDetail(
         graph_path: cleanEntityId,
         params: {
           fields:
-            'id,name,adset_id,targeting,creative{id,title,body,call_to_action_type,link_url,object_type,video_id,actor_id,instagram_permalink_url}',
+            'id,name,adset_id,targeting,creative.thumbnail_width(720).thumbnail_height(720){id,title,body,call_to_action_type,link_url,object_type,video_id,actor_id,instagram_permalink_url,image_url,thumbnail_url,object_story_spec}',
         },
       },
       {
@@ -3041,8 +3042,56 @@ export async function fetchDomMetaEntityDeepDetail(
 
   let creativeSpec: DomMetaEntityCreativeSpec | null = null;
   if (batch.entityMeta?.creative && typeof batch.entityMeta.creative === 'object') {
-    const cr = batch.entityMeta.creative;
-    if (cr.title || cr.body || cr.call_to_action_type || cr.link_url || cr.instagram_permalink_url) {
+    const cr = batch.entityMeta.creative as Record<string, unknown>;
+    const normalizeCrUrl = (raw: unknown): string => {
+      const u = String(raw || '').trim();
+      if (!u) return '';
+      return u
+        .replace(/^https:\/\/scontent\.[^/]+\.fbcdn\.net\//i, 'https://scontent.xx.fbcdn.net/')
+        .replace(/^https:\/\/external\.[^/]+\.fbcdn\.net\//i, 'https://external.xx.fbcdn.net/');
+    };
+    const carouselUrls: string[] = [];
+    const seenUrls = new Set<string>();
+    const pushCrUrl = (raw: unknown) => {
+      const clean = normalizeCrUrl(raw);
+      if (!clean || seenUrls.has(clean)) return;
+      seenUrls.add(clean);
+      carouselUrls.push(clean);
+    };
+
+    const storySpec = cr.object_story_spec as
+      | {
+          link_data?: {
+            picture?: string;
+            child_attachments?: Array<{ picture?: string; image_url?: string }>;
+          };
+          photo_data?: { url?: string };
+          video_data?: { image_url?: string };
+        }
+      | undefined;
+    if (Array.isArray(storySpec?.link_data?.child_attachments)) {
+      for (const att of storySpec.link_data.child_attachments) {
+        pushCrUrl(att?.image_url || att?.picture);
+      }
+    }
+    if (carouselUrls.length === 0) {
+      pushCrUrl(
+        cr.image_url ||
+          storySpec?.photo_data?.url ||
+          storySpec?.video_data?.image_url ||
+          storySpec?.link_data?.picture ||
+          cr.thumbnail_url
+      );
+    }
+
+    if (
+      cr.title ||
+      cr.body ||
+      cr.call_to_action_type ||
+      cr.link_url ||
+      cr.instagram_permalink_url ||
+      carouselUrls.length > 0
+    ) {
       creativeSpec = {
         title: cr.title ? String(cr.title) : undefined,
         body: cr.body ? String(cr.body) : undefined,
@@ -3052,6 +3101,7 @@ export async function fetchDomMetaEntityDeepDetail(
         objectType: cr.object_type ? String(cr.object_type) : undefined,
         videoId: cr.video_id ? String(cr.video_id) : undefined,
         pageId: cr.actor_id ? String(cr.actor_id) : undefined,
+        imageUrls: carouselUrls.length > 0 ? carouselUrls : undefined,
       };
     }
   }

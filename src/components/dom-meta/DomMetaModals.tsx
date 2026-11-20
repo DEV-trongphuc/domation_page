@@ -541,6 +541,10 @@ export const AdEntityDetailModal: React.FC<{
   const [drawerAgeOnly, setDrawerAgeOnly] = useState(false);
   const [drawerAgeMetric, setDrawerAgeMetric] = useState<'spend' | 'result' | 'cpr'>('spend');
   const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
+  const [creativeSlideState, setCreativeSlideState] = useState<{ key: string; idx: number }>({
+    key: '',
+    idx: 0,
+  });
   const [copiedId, setCopiedId] = useState(false);
   const [entityAiState, setEntityAiState] = useState<{
     key: string;
@@ -757,8 +761,8 @@ export const AdEntityDetailModal: React.FC<{
   const entityThumbs = isAd
     ? [adNode.image_url || adNode.thumbnail_url].filter(Boolean)
     : isCamp
-      ? collectEntityThumbs((campNode.adsets || []).flatMap((as) => as.ads || []), 3)
-      : collectEntityThumbs(adsetNode.ads || [], 3);
+      ? collectEntityThumbs((campNode.adsets || []).flatMap((as) => as.ads || []), 8)
+      : collectEntityThumbs(adsetNode.ads || [], 8);
 
   const isDeepLoading = Boolean(deepFetchKey && deepDetailResp?.key !== deepFetchKey);
   const deepDetail = deepDetailResp?.key === deepFetchKey ? deepDetailResp.detail : null;
@@ -1014,6 +1018,48 @@ export const AdEntityDetailModal: React.FC<{
       resolvedDiagnostics.destinationType ||
       resolvedDiagnostics.attributionSummary
   );
+
+  const creativeSlides = (() => {
+    const items: Array<{ url: string; label?: string }> = [];
+    const seen = new Set<string>();
+    const pushSlide = (rawUrl?: string, label?: string) => {
+      const clean = String(rawUrl || '').trim();
+      if (!clean || seen.has(clean)) return;
+      seen.add(clean);
+      items.push({ url: clean, label });
+    };
+
+    if (isAd) {
+      const specUrls = deepDetail?.creativeSpec?.imageUrls || [];
+      if (specUrls.length > 0) {
+        for (const u of specUrls) {
+          pushSlide(u, adNode.name);
+        }
+      } else {
+        pushSlide(adNode.image_url || adNode.thumbnail_url, adNode.name);
+      }
+      if (items.length === 0) {
+        pushSlide(adNode.image_url || adNode.thumbnail_url, adNode.name);
+      }
+    } else {
+      const childAds = isCamp
+        ? (campNode.adsets || []).flatMap((as) => as.ads || [])
+        : adsetNode.ads || [];
+      for (const ad of childAds) {
+        const u = ad.image_url || ad.thumbnail_url;
+        if (u) pushSlide(u, ad.name);
+        if (items.length >= 12) break;
+      }
+    }
+    return items;
+  })();
+
+  const activeCreativeSlideIdx =
+    creativeSlideState.key === entityKey &&
+    creativeSlideState.idx >= 0 &&
+    creativeSlideState.idx < creativeSlides.length
+      ? creativeSlideState.idx
+      : 0;
 
   const uniqueActionsMap = deepDetail?.uniqueActions || entity.unique_actions || {};
   const costPerActionMap = deepDetail?.costPerAction || entity.cost_per_action || {};
@@ -2101,13 +2147,200 @@ export const AdEntityDetailModal: React.FC<{
                   <UserBehaviorFunnelCard metrics={entity} currency={currency} />
                 </div>
 
-                {/* Row 2C: Creative Copy/CTA & Meta Ad Relevance / Delivery Diagnostics */}
-                {(resolvedCreative || hasDiagnosticBadges) && (
+                {/* Row 2C: Left = Meta Relevance Diagnostics + Creative Image Slider | Right = Creative Copy/CTA */}
+                {(hasDiagnosticBadges || creativeSlides.length > 0 || resolvedCreative) && (
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                    {(hasDiagnosticBadges || creativeSlides.length > 0) && (
+                      <div
+                        data-dom-drawer-card="diagnostics-creative"
+                        className={`${
+                          resolvedCreative ? 'lg:col-span-5' : 'lg:col-span-12'
+                        } rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3`}
+                      >
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-800">
+                            {hasDiagnosticBadges
+                              ? 'Chẩn đoán Chất lượng & Đấu thầu Meta'
+                              : 'Hình ảnh Creative Quảng Cáo'}
+                          </h4>
+                          <p className="text-[11px] text-slate-400">
+                            {hasDiagnosticBadges
+                              ? 'Relevance Diagnostics, Learning Stage, Bid Strategy & Creative trực tiếp từ Meta API'
+                              : 'Mẫu creative thuộc chiến dịch / nhóm quảng cáo đang chạy'}
+                          </p>
+                        </div>
+                        {hasDiagnosticBadges && (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                            {resolvedDiagnostics.qualityRanking && (
+                              <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
+                                <span className="text-[10px] text-slate-400 block">Quality Ranking</span>
+                                <strong className="text-slate-800 font-bold text-[11px]">
+                                  {resolvedDiagnostics.qualityRanking.replace(/_/g, ' ')}
+                                </strong>
+                              </div>
+                            )}
+                            {resolvedDiagnostics.engagementRateRanking && (
+                              <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
+                                <span className="text-[10px] text-slate-400 block">Engagement Rank</span>
+                                <strong className="text-slate-800 font-bold text-[11px]">
+                                  {resolvedDiagnostics.engagementRateRanking.replace(/_/g, ' ')}
+                                </strong>
+                              </div>
+                            )}
+                            {resolvedDiagnostics.conversionRateRanking && (
+                              <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
+                                <span className="text-[10px] text-slate-400 block">Conversion Rank</span>
+                                <strong className="text-slate-800 font-bold text-[11px]">
+                                  {resolvedDiagnostics.conversionRateRanking.replace(/_/g, ' ')}
+                                </strong>
+                              </div>
+                            )}
+                            {resolvedDiagnostics.learningStageStatus && (
+                              <div className="rounded-xl bg-blue-50/70 border border-blue-100 px-3 py-2">
+                                <span className="text-[10px] text-slate-500 block">Máy học (Learning)</span>
+                                <strong className="text-[#1E40FF] font-bold text-[11px]">
+                                  {resolvedDiagnostics.learningStageStatus}
+                                  {resolvedDiagnostics.learningStageConversions !== undefined
+                                    ? ` (${resolvedDiagnostics.learningStageConversions} KQ)`
+                                    : ''}
+                                </strong>
+                              </div>
+                            )}
+                            {resolvedDiagnostics.bidStrategy && (
+                              <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
+                                <span className="text-[10px] text-slate-400 block">Bid Strategy</span>
+                                <strong className="text-slate-800 font-bold text-[11px]">
+                                  {resolvedDiagnostics.bidStrategy.replace(/_/g, ' ')}
+                                </strong>
+                              </div>
+                            )}
+                            {(resolvedDiagnostics.destinationType || resolvedDiagnostics.billingEvent) && (
+                              <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
+                                <span className="text-[10px] text-slate-400 block">Đích / Tính phí</span>
+                                <strong className="text-slate-800 font-bold text-[11px]">
+                                  {(
+                                    resolvedDiagnostics.destinationType ||
+                                    resolvedDiagnostics.billingEvent ||
+                                    ''
+                                  ).replace(/_/g, ' ')}
+                                </strong>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {resolvedDiagnostics.attributionSummary && (
+                          <div className="text-[11px] text-slate-500">
+                            Cửa sổ phân bổ (Attribution):{' '}
+                            <strong className="text-slate-700">
+                              {resolvedDiagnostics.attributionSummary}
+                            </strong>
+                          </div>
+                        )}
+
+                        {creativeSlides.length > 0 && (
+                          <div className="mt-auto pt-1 space-y-2">
+                            <div className="flex items-center justify-between gap-2 text-[11px]">
+                              <span className="font-semibold text-slate-600">
+                                Ảnh Creative ({creativeSlides.length})
+                              </span>
+                              {creativeSlides.length > 1 ? (
+                                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono text-[10.5px] font-semibold">
+                                  {activeCreativeSlideIdx + 1} / {creativeSlides.length}
+                                </span>
+                              ) : (
+                                isAd && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setQuickPreviewOpen((v) => !v)}
+                                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1E40FF] hover:underline cursor-pointer"
+                                  >
+                                    <Eye className="w-3 h-3" />
+                                    <span>{quickPreviewOpen ? 'Ẩn Preview' : 'Xem Feed Preview'}</span>
+                                  </button>
+                                )
+                              )}
+                            </div>
+
+                            <div className="relative rounded-xl overflow-hidden border border-slate-200/80 bg-gradient-to-br from-slate-50 via-white to-blue-50/40 group">
+                              <img
+                                src={creativeSlides[activeCreativeSlideIdx]?.url}
+                                alt={creativeSlides[activeCreativeSlideIdx]?.label || entity.name}
+                                className="w-full h-[220px] sm:h-[250px] object-contain mx-auto select-none"
+                                loading="eager"
+                              />
+                              {creativeSlides.length > 1 && (
+                                <>
+                                  <button
+                                    type="button"
+                                    aria-label="Ảnh creative trước"
+                                    onClick={() =>
+                                      setCreativeSlideState({
+                                        key: entityKey,
+                                        idx:
+                                          (activeCreativeSlideIdx - 1 + creativeSlides.length) %
+                                          creativeSlides.length,
+                                      })
+                                    }
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 hover:bg-white border border-slate-200/80 shadow-sm flex items-center justify-center text-slate-700 hover:text-[#1E40FF] opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer"
+                                  >
+                                    <ChevronLeft className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    aria-label="Ảnh creative tiếp theo"
+                                    onClick={() =>
+                                      setCreativeSlideState({
+                                        key: entityKey,
+                                        idx: (activeCreativeSlideIdx + 1) % creativeSlides.length,
+                                      })
+                                    }
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 hover:bg-white border border-slate-200/80 shadow-sm flex items-center justify-center text-slate-700 hover:text-[#1E40FF] opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer"
+                                  >
+                                    <ChevronRight className="w-4 h-4" />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+
+                            {creativeSlides.length > 1 && (
+                              <div className="flex flex-col items-center gap-1.5">
+                                <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                                  {creativeSlides.map((slide, sIdx) => (
+                                    <button
+                                      key={`${slide.url}-${sIdx}`}
+                                      type="button"
+                                      aria-label={`Xem slide creative ${sIdx + 1}`}
+                                      aria-current={sIdx === activeCreativeSlideIdx ? 'true' : undefined}
+                                      onClick={() =>
+                                        setCreativeSlideState({ key: entityKey, idx: sIdx })
+                                      }
+                                      className={`h-2 rounded-full transition-all cursor-pointer ${
+                                        sIdx === activeCreativeSlideIdx
+                                          ? 'w-5 bg-[#1E40FF]'
+                                          : 'w-2 bg-slate-300 hover:bg-slate-400'
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                                {creativeSlides[activeCreativeSlideIdx]?.label && (
+                                  <div className="text-[11px] font-medium text-slate-500 truncate max-w-full">
+                                    {creativeSlides[activeCreativeSlideIdx].label}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {resolvedCreative && (
                       <div
+                        data-dom-drawer-card="creative-copy"
                         className={`${
-                          hasDiagnosticBadges ? 'lg:col-span-7' : 'lg:col-span-12'
+                          hasDiagnosticBadges || creativeSlides.length > 0
+                            ? 'lg:col-span-7'
+                            : 'lg:col-span-12'
                         } rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3`}
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -2152,88 +2385,6 @@ export const AdEntityDetailModal: React.FC<{
                         {resolvedCreative.body && (
                           <div className="text-[12.5px] text-slate-700 leading-relaxed whitespace-pre-line flex-1 min-h-[170px] max-h-[340px] overflow-y-auto rounded-xl bg-slate-50/90 border border-slate-200/75 p-3.5">
                             {resolvedCreative.body}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {hasDiagnosticBadges && (
-                      <div
-                        className={`${
-                          resolvedCreative ? 'lg:col-span-5' : 'lg:col-span-12'
-                        } rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3`}
-                      >
-                        <div>
-                          <h4 className="text-sm font-bold text-slate-800">
-                            Chẩn đoán Chất lượng &amp; Đấu thầu Meta
-                          </h4>
-                          <p className="text-[11px] text-slate-400">
-                            Relevance Diagnostics, Learning Stage &amp; Bid Strategy trực tiếp từ Meta API
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                          {resolvedDiagnostics.qualityRanking && (
-                            <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
-                              <span className="text-[10px] text-slate-400 block">Quality Ranking</span>
-                              <strong className="text-slate-800 font-bold text-[11px]">
-                                {resolvedDiagnostics.qualityRanking.replace(/_/g, ' ')}
-                              </strong>
-                            </div>
-                          )}
-                          {resolvedDiagnostics.engagementRateRanking && (
-                            <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
-                              <span className="text-[10px] text-slate-400 block">Engagement Rank</span>
-                              <strong className="text-slate-800 font-bold text-[11px]">
-                                {resolvedDiagnostics.engagementRateRanking.replace(/_/g, ' ')}
-                              </strong>
-                            </div>
-                          )}
-                          {resolvedDiagnostics.conversionRateRanking && (
-                            <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
-                              <span className="text-[10px] text-slate-400 block">Conversion Rank</span>
-                              <strong className="text-slate-800 font-bold text-[11px]">
-                                {resolvedDiagnostics.conversionRateRanking.replace(/_/g, ' ')}
-                              </strong>
-                            </div>
-                          )}
-                          {resolvedDiagnostics.learningStageStatus && (
-                            <div className="rounded-xl bg-blue-50/70 border border-blue-100 px-3 py-2">
-                              <span className="text-[10px] text-slate-500 block">Máy học (Learning)</span>
-                              <strong className="text-[#1E40FF] font-bold text-[11px]">
-                                {resolvedDiagnostics.learningStageStatus}
-                                {resolvedDiagnostics.learningStageConversions !== undefined
-                                  ? ` (${resolvedDiagnostics.learningStageConversions} KQ)`
-                                  : ''}
-                              </strong>
-                            </div>
-                          )}
-                          {resolvedDiagnostics.bidStrategy && (
-                            <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
-                              <span className="text-[10px] text-slate-400 block">Bid Strategy</span>
-                              <strong className="text-slate-800 font-bold text-[11px]">
-                                {resolvedDiagnostics.bidStrategy.replace(/_/g, ' ')}
-                              </strong>
-                            </div>
-                          )}
-                          {(resolvedDiagnostics.destinationType || resolvedDiagnostics.billingEvent) && (
-                            <div className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2">
-                              <span className="text-[10px] text-slate-400 block">Đích / Tính phí</span>
-                              <strong className="text-slate-800 font-bold text-[11px]">
-                                {(
-                                  resolvedDiagnostics.destinationType ||
-                                  resolvedDiagnostics.billingEvent ||
-                                  ''
-                                ).replace(/_/g, ' ')}
-                              </strong>
-                            </div>
-                          )}
-                        </div>
-                        {resolvedDiagnostics.attributionSummary && (
-                          <div className="text-[11px] text-slate-500 pt-0.5">
-                            Cửa sổ phân bổ (Attribution):{' '}
-                            <strong className="text-slate-700">
-                              {resolvedDiagnostics.attributionSummary}
-                            </strong>
                           </div>
                         )}
                       </div>

@@ -38,6 +38,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
+import { DomationProgressLoader } from '../DomationProgressLoader';
 import {
   DOM_META_METRIC_REGISTRY,
   calcDeltaPercent,
@@ -4860,9 +4861,11 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             />
             <Suspense
               fallback={
-                <div className="rounded-2xl bg-white border border-slate-200 p-6 text-xs text-slate-500">
-                  Đang tải bảng đối chiếu Lead CRM...
-                </div>
+                <DomationProgressLoader
+                  embedded
+                  title="CRM Attribution"
+                  subtitle="Đang tải bảng đối chiếu Lead CRM..."
+                />
               }
             >
               <DomMetaLeadAttributionPanel

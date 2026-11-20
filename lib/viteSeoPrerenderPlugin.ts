@@ -427,7 +427,10 @@ function injectStaticRootBody(html: string, staticBody: string): string {
   if (!rootPattern.test(html)) {
     return html;
   }
-  return html.replace(rootPattern, `<div id="root">${staticBody}</div>`);
+  return html.replace(
+    rootPattern,
+    `<div id="root"><div id="domation-seo-prerender" aria-hidden="true" style="position:fixed;left:-99999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;">${staticBody}</div></div>`
+  );
 }
 
 export function seoPrerenderPlugin(): Plugin {

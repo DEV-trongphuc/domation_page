@@ -14,6 +14,7 @@ import { apiRequest } from '../autodataApi';
 import { AutoDataSpotlightTour } from '../AutoDataHelpTour';
 import { SCREEN_TOUR_DECKS } from '../autoDataScreenTours';
 import { BillingView } from '../pages/BillingView';
+import { DomationProgressLoader } from '../../DomationProgressLoader';
 import type { TenantSessionV2, WorkspaceScreenKey } from '../autodataTypes';
 
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
@@ -37,9 +38,11 @@ const DomMetaReportWorkspace = lazy(() =>
 );
 
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[400px]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1E40FF]" />
-  </div>
+  <DomationProgressLoader
+    embedded
+    title="DOMATION AutoData"
+    subtitle="Đang tải phân hệ vận hành..."
+  />
 );
 
 function mapPathToScreenKey(pathname: string, role?: string): WorkspaceScreenKey | 'sale_portal' {

@@ -31,6 +31,7 @@ import {
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { Navbar } from './Navbar';
 import { DomationLogoMark } from './components/DomationLogoMark';
+import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
 import { DOMATION_NAV_EVENT, handleSpaLinkClick, navigateTo } from './utils/navigation';
@@ -1002,9 +1003,10 @@ export const MetaAdReport: React.FC = () => {
   // Switching workspace state
   if (isSwitchingWorkspace) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-semibold">
-        Đang chuyển sang không gian báo cáo của doanh nghiệp...
-      </div>
+      <DomationProgressLoader
+        title="DOM Meta Report"
+        subtitle="Đang chuyển sang không gian báo cáo của doanh nghiệp..."
+      />
     );
   }
 
@@ -1085,9 +1087,10 @@ export const MetaAdReport: React.FC = () => {
         <ErrorBoundary resetKey={`${authCtx.tenantSlug || 'preview'}:${isPublicViewerMode ? 'public' : 'auth'}`}>
           <Suspense
             fallback={
-              <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] text-slate-600 text-sm font-semibold">
-                Đang khởi tạo không gian báo cáo DOM Meta Report...
-              </div>
+              <DomationProgressLoader
+                title="DOM Meta Report"
+                subtitle="Đang khởi tạo không gian báo cáo DOM Meta Report..."
+              />
             }
           >
             {initialPreview?.crmShellPreview ? (

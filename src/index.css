@@ -647,3 +647,21 @@ code, pre, .font-mono {
   margin: 8px auto 2px;
   flex-shrink: 0;
 }
+
+@keyframes domationProgressIndeterminate {
+  0% {
+    transform: translateX(-105%) scaleX(0.55);
+  }
+  50% {
+    transform: translateX(35%) scaleX(0.95);
+  }
+  100% {
+    transform: translateX(220%) scaleX(0.55);
+  }
+}
+
+.domation-progress-bar {
+  width: 46%;
+  will-change: transform;
+  animation: domationProgressIndeterminate 1.45s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

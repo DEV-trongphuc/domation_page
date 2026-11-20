@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { MotionConfig } from 'framer-motion';
 import { DomationHome } from './DomationHome';
 import { AiDomationChatbot } from './components/AiDomationChatbot';
+import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { ErrorBoundary } from './components/autodata/cloned/components/ErrorBoundary';
 import { DOMATION_NAV_EVENT } from './utils/navigation';
 import './index.css';
@@ -44,18 +45,26 @@ const NotFoundPage = lazy(() =>
 );
 
 const PageLoader = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8F9FA] text-slate-700">
-    <div className="w-10 h-10 rounded-full border-2 border-blue-200 border-t-[#1E40FF] animate-spin mb-3" />
-    <span className="text-xs font-bold tracking-widest uppercase text-slate-500">
-      Đang tải DOMATION Suite...
-    </span>
-  </div>
+  <DomationProgressLoader
+    title="DOMATION Suite"
+    subtitle="Đang tải không gian làm việc..."
+  />
 );
 
 const Main = () => {
   const [locationKey, setLocationKey] = useState(() =>
     typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/'
   );
+
+  useEffect(() => {
+    const splash = document.getElementById('domation-boot-splash');
+    if (!splash) return;
+    splash.classList.add('domation-boot-splash--hiding');
+    const timer = window.setTimeout(() => {
+      splash.remove();
+    }, 180);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const sync = () => {
