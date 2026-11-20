@@ -85,9 +85,13 @@ import {
   fetchDomMetaCrmAttribution,
   fetchDomMetaEntityDeepDetail,
   fetchDomMetaShareConfig,
+  removeDomGoogleAdsMccAccount,
+  requestDomGoogleAdsMccAccounts,
   requestDomMetaAiAnalysis,
+  resendDomGoogleAdsMccOtp,
   saveDomMetaAiConfig,
   saveDomMetaShareConfig,
+  verifyDomGoogleAdsMccOtp,
   type DomMetaAuthContext,
 } from './domMetaApi';
 import {
@@ -5259,6 +5263,8 @@ const WorkspaceSettingsTabContent: React.FC<{
   setCopiedShare: React.Dispatch<React.SetStateAction<boolean>>;
   daysRemaining: number;
   canManageConfig: boolean;
+  authContext?: DomMetaAuthContext;
+  onGoogleAdsUpdated?: (next: DomMetaGoogleAdsConfig) => void;
   onTestGoogleAds?: (cfg: DomMetaGoogleAdsConfig) => Promise<{ rowsCount: number }>;
   onOpenAccountManager?: () => void;
   onOpenShareModal?: () => void;
@@ -5284,6 +5290,8 @@ const WorkspaceSettingsTabContent: React.FC<{
   setCopiedShare,
   daysRemaining,
   canManageConfig,
+  authContext,
+  onGoogleAdsUpdated,
   onTestGoogleAds,
   onOpenAccountManager,
   onOpenShareModal,
@@ -5465,7 +5473,48 @@ const WorkspaceSettingsTabContent: React.FC<{
       <GoogleAdsSetupGuide
         value={gads}
         onChange={setGads}
+        readOnly={!canManageConfig}
         onTestConnection={canManageConfig ? onTestGoogleAds : undefined}
+        onMccAddOrRequest={
+          canManageConfig && authContext
+            ? async (items, note) => {
+                const res = await requestDomGoogleAdsMccAccounts(authContext, items, note);
+                setGads(res.google_ads);
+                onGoogleAdsUpdated?.(res.google_ads);
+                return res;
+              }
+            : undefined
+        }
+        onMccResendOtp={
+          canManageConfig && authContext
+            ? async (cid) => {
+                const res = await resendDomGoogleAdsMccOtp(authContext, cid);
+                setGads(res.google_ads);
+                onGoogleAdsUpdated?.(res.google_ads);
+                return res;
+              }
+            : undefined
+        }
+        onMccVerifyOtp={
+          canManageConfig && authContext
+            ? async (cid, code) => {
+                const res = await verifyDomGoogleAdsMccOtp(authContext, cid, code);
+                setGads(res.google_ads);
+                onGoogleAdsUpdated?.(res.google_ads);
+                return res;
+              }
+            : undefined
+        }
+        onMccRemoveAccount={
+          canManageConfig && authContext
+            ? async (cid) => {
+                const res = await removeDomGoogleAdsMccAccount(authContext, cid);
+                setGads(res.google_ads);
+                onGoogleAdsUpdated?.(res.google_ads);
+                return res;
+              }
+            : undefined
+        }
       />
     )}
 
@@ -9112,6 +9161,7 @@ export const DomMetaSettingsPage: React.FC<{
   canManageConfig?: boolean;
   onSaveConfig: (patch: DomMetaWorkspacePatch) => Promise<void>;
   onAiConfigSaved?: (next: DomMetaSharedAiConfig) => void;
+  onGoogleAdsUpdated?: (next: DomMetaGoogleAdsConfig) => void;
   onTestGoogleAds?: (cfg: DomMetaGoogleAdsConfig) => Promise<{ rowsCount: number }>;
   onOpenAccountManager?: () => void;
   onOpenShareModal?: () => void;
@@ -9127,6 +9177,7 @@ export const DomMetaSettingsPage: React.FC<{
   canManageConfig = true,
   onSaveConfig,
   onAiConfigSaved,
+  onGoogleAdsUpdated,
   onTestGoogleAds,
   onOpenAccountManager,
   onOpenShareModal,
@@ -9437,6 +9488,8 @@ export const DomMetaSettingsPage: React.FC<{
                 setCopiedShare={setCopiedShare}
                 daysRemaining={daysRemaining}
                 canManageConfig={canManageConfig}
+                authContext={authContext}
+                onGoogleAdsUpdated={onGoogleAdsUpdated}
                 onTestGoogleAds={onTestGoogleAds}
                 onOpenAccountManager={onOpenAccountManager}
                 onOpenShareModal={onOpenShareModal}

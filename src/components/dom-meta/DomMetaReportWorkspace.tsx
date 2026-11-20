@@ -64,6 +64,7 @@ import {
   type DomMetaDashboardDataset,
   type DomMetaDatePreset,
   type DomMetaEntityHourPoint,
+  type DomMetaGoogleAdsConfig,
   type DomMetaNavView,
   type DomMetaSettingsTab,
   type DomMetaWorkspaceConfig,
@@ -551,6 +552,11 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const [activityCat, setActivityCat] = useState<string>('ALL');
 
   // Google Ads states (only fetched when config.google_ads.enabled === true)
+  const [activeGadsAccountId, setActiveGadsAccountId] = useState<string>('');
+  const activeGadsAccountIdRef = useRef<string>('');
+  useEffect(() => {
+    activeGadsAccountIdRef.current = activeGadsAccountId;
+  }, [activeGadsAccountId]);
   const [gadsLoading, setGadsLoading] = useState(false);
   const [gadsData, setGadsData] = useState<{
     currentRows: DomGoogleAdsRow[];
@@ -729,17 +735,44 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         }
 
         if (cfg.google_ads.enabled) {
-          setGadsLoading(true);
-          loadDomGoogleAdsDataset(ctx, resolvedRange)
-            .then((gd) => {
-              if (!cancelled) setGadsData(gd);
+          const connectedList = (cfg.google_ads.accounts || []).filter(
+            (a) => a.status === 'connected'
+          );
+          const isMccQuick =
+            cfg.google_ads.setup_mode === 'mcc_quick' ||
+            (!cfg.google_ads.apps_script_url && cfg.google_ads.setup_mode !== 'custom_script');
+          const prevSelectedCid = activeGadsAccountIdRef.current;
+          const resolvedGadsTarget =
+            prevSelectedCid &&
+            (prevSelectedCid === 'all' ||
+              connectedList.some((a) => a.customer_id === prevSelectedCid))
+              ? prevSelectedCid
+              : cfg.google_ads.customer_id &&
+                  (!isMccQuick ||
+                    connectedList.some((a) => a.customer_id === cfg.google_ads.customer_id))
+                ? cfg.google_ads.customer_id
+                : connectedList[0]?.customer_id || '';
+          if (resolvedGadsTarget && resolvedGadsTarget !== prevSelectedCid) {
+            setActiveGadsAccountId(resolvedGadsTarget);
+          }
+
+          if (!isMccQuick || connectedList.length > 0) {
+            setGadsLoading(true);
+            loadDomGoogleAdsDataset(ctx, resolvedRange, {
+              ...(resolvedGadsTarget ? { customerId: resolvedGadsTarget } : {}),
             })
-            .catch(() => {
-              if (!cancelled) setGadsData(null);
-            })
-            .finally(() => {
-              if (!cancelled) setGadsLoading(false);
-            });
+              .then((gd) => {
+                if (!cancelled) setGadsData(gd);
+              })
+              .catch(() => {
+                if (!cancelled) setGadsData(null);
+              })
+              .finally(() => {
+                if (!cancelled) setGadsLoading(false);
+              });
+          } else {
+            setGadsData(null);
+          }
         } else {
           setGadsData(null);
         }
@@ -1236,6 +1269,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       {
         campaign: string;
         campaign_id: string;
+        customer_id?: string;
         spent: number;
         impression: number;
         click: number;
@@ -1250,6 +1284,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       const prevC = byCampMap.get(r.campaign) || {
         campaign: r.campaign,
         campaign_id: r.campaign_id,
+        customer_id: r.customer_id,
         spent: 0,
         impression: 0,
         click: 0,
@@ -1258,6 +1293,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         store_visits: 0,
       };
       if (!prevC.campaign_id && r.campaign_id) prevC.campaign_id = r.campaign_id;
+      if (!prevC.customer_id && r.customer_id) prevC.customer_id = r.customer_id;
       prevC.spent += r.spent;
       prevC.impression += r.impression;
       prevC.click += r.click;
@@ -1320,6 +1356,53 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     };
   }, [gadsSummary, gadsBreakdownCamp]);
 
+  const connectedGadsAccounts = useMemo(
+    () => (config.google_ads.accounts || []).filter((a) => a.status === 'connected'),
+    [config.google_ads.accounts]
+  );
+  const pendingGadsAccounts = useMemo(
+    () =>
+      (config.google_ads.accounts || []).filter(
+        (a) => a.status === 'pending_mcc' || a.status === 'pending_otp'
+      ),
+    [config.google_ads.accounts]
+  );
+
+  const handleSelectGadsAccount = (nextCid: string) => {
+    setActiveGadsAccountId(nextCid);
+    if (!config.google_ads.enabled) return;
+    setGadsLoading(true);
+    loadDomGoogleAdsDataset(authContext, resolvedRange, { customerId: nextCid })
+      .then((gd) => setGadsData(gd))
+      .catch(() => setGadsData(null))
+      .finally(() => setGadsLoading(false));
+  };
+
+  const handleGoogleAdsConfigUpdated = (nextGads: DomMetaGoogleAdsConfig) => {
+    setConfig((prev) => ({ ...prev, google_ads: nextGads }));
+    const nextConnected = (nextGads.accounts || []).filter((a) => a.status === 'connected');
+    const nextTarget =
+      activeGadsAccountId &&
+      (activeGadsAccountId === 'all' ||
+        nextConnected.some((a) => a.customer_id === activeGadsAccountId))
+        ? activeGadsAccountId
+        : nextGads.customer_id && nextConnected.some((a) => a.customer_id === nextGads.customer_id)
+          ? nextGads.customer_id
+          : nextConnected[0]?.customer_id || '';
+    if (nextTarget) {
+      setActiveGadsAccountId(nextTarget);
+      if (nextGads.enabled) {
+        setGadsLoading(true);
+        loadDomGoogleAdsDataset(authContext, resolvedRange, { customerId: nextTarget })
+          .then((gd) => setGadsData(gd))
+          .catch(() => setGadsData(null))
+          .finally(() => setGadsLoading(false));
+      }
+    } else {
+      setGadsData(null);
+    }
+  };
+
   const handleSaveSettingsPatch = async (patch: DomMetaWorkspacePatch) => {
     const updated = await updateDomMetaWorkspaceConfig(authContext, patch);
     setConfig(updated);
@@ -1328,11 +1411,21 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
       saveLocalAiReports(authContext.tenantSlug, patch.ai_reports);
     }
     if (patch.google_ads?.enabled === true) {
-      setGadsLoading(true);
-      loadDomGoogleAdsDataset(authContext, resolvedRange)
-        .then((gd) => setGadsData(gd))
-        .catch(() => setGadsData(null))
-        .finally(() => setGadsLoading(false));
+      const nextConnected = (updated.google_ads.accounts || []).filter(
+        (a) => a.status === 'connected'
+      );
+      const isMccQuick = updated.google_ads.setup_mode === 'mcc_quick';
+      const targetCid =
+        updated.google_ads.customer_id || nextConnected[0]?.customer_id || activeGadsAccountId;
+      if (!isMccQuick || nextConnected.length > 0) {
+        setGadsLoading(true);
+        loadDomGoogleAdsDataset(authContext, resolvedRange, {
+          ...(targetCid ? { customerId: targetCid } : {}),
+        })
+          .then((gd) => setGadsData(gd))
+          .catch(() => setGadsData(null))
+          .finally(() => setGadsLoading(false));
+      }
     }
   };
 
@@ -5204,14 +5297,48 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         {!loading && config.google_ads.enabled && effectiveView === 'google_ads' && (
           <div className="space-y-4">
             <div className="rounded-2xl bg-white border border-slate-200/80 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 text-xs font-medium text-slate-600">
-                <Sparkles className="w-4 h-4 text-[#1E40FF]" />
-                <span>
-                  Google Ads Customer ID:{' '}
-                  <span className="font-mono font-semibold text-slate-800">
-                    {config.google_ads.customer_id || 'Chưa nhập'}
+              <div className="flex flex-wrap items-center gap-2.5 text-xs font-medium text-slate-600">
+                <Sparkles className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                {connectedGadsAccounts.length >= 2 ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-500">Tài khoản Google Ads:</span>
+                    <DomMetaSelect
+                      ariaLabel="Chọn tài khoản Google Ads"
+                      testId="google-ads-account-selector"
+                      value={
+                        activeGadsAccountId ||
+                        config.google_ads.customer_id ||
+                        connectedGadsAccounts[0].customer_id
+                      }
+                      onChange={(val) => handleSelectGadsAccount(val)}
+                      variant="pill"
+                      options={[
+                        {
+                          value: 'all',
+                          label: `Tất cả tài khoản (Gộp ${connectedGadsAccounts.length} TK)`,
+                        },
+                        ...connectedGadsAccounts.map((acc) => ({
+                          value: acc.customer_id,
+                          label: acc.label
+                            ? `${acc.customer_id} · ${acc.label}`
+                            : acc.customer_id,
+                        })),
+                      ]}
+                    />
+                  </div>
+                ) : (
+                  <span>
+                    Google Ads Customer ID:{' '}
+                    <span className="font-mono font-semibold text-slate-800">
+                      {connectedGadsAccounts[0]?.customer_id ||
+                        config.google_ads.customer_id ||
+                        'Chưa xác thực'}
+                    </span>
+                    {connectedGadsAccounts[0]?.label && (
+                      <span className="text-slate-500"> · {connectedGadsAccounts[0].label}</span>
+                    )}
                   </span>
-                </span>
+                )}
                 {gadsData?.syncedAt && (
                   <span>
                     · Đồng bộ lúc:{' '}
@@ -5221,24 +5348,70 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </span>
                 )}
               </div>
-              {config.google_ads.customer_id.trim() &&
-              (config.google_ads.apps_script_url.trim() || (gadsData?.currentRows.length || 0) > 0) ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Đã kết nối</span>
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => openSettingsPage('google_ads')}
-                  className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#1E40FF] text-xs font-semibold cursor-pointer"
-                >
-                  Cấu hình &amp; Hướng dẫn 5 bước
-                </button>
-              )}
+
+              <div className="flex flex-wrap items-center gap-2">
+                {pendingGadsAccounts.length > 0 && canManageConfig && (
+                  <button
+                    type="button"
+                    onClick={() => openSettingsPage('google_ads')}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold cursor-pointer hover:bg-amber-100"
+                  >
+                    <span>{pendingGadsAccounts.length} ID chờ xác thực OTP / MCC</span>
+                  </button>
+                )}
+
+                {connectedGadsAccounts.length > 0 ||
+                (config.google_ads.customer_id.trim() &&
+                  (config.google_ads.apps_script_url.trim() ||
+                    (gadsData?.currentRows.length || 0) > 0)) ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Đã kết nối</span>
+                  </span>
+                ) : null}
+
+                {canManageConfig && (
+                  <button
+                    type="button"
+                    onClick={() => openSettingsPage('google_ads')}
+                    className="px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#1E40FF] text-xs font-semibold cursor-pointer"
+                  >
+                    + Thêm / Quản lý ID
+                  </button>
+                )}
+              </div>
             </div>
 
-            {gadsLoading ? (
+            {config.google_ads.setup_mode === 'mcc_quick' &&
+            connectedGadsAccounts.length === 0 &&
+            !gadsLoading ? (
+              <div className="rounded-2xl bg-white border border-blue-200/80 p-8 text-center space-y-3 max-w-2xl mx-auto">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#1E40FF] flex items-center justify-center mx-auto">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  {pendingGadsAccounts.some((a) => a.status === 'pending_otp')
+                    ? 'Đang chờ nhập mã OTP 6 số xác nhận chủ tài khoản Google Ads'
+                    : pendingGadsAccounts.length > 0
+                      ? 'Đang chờ chấp nhận lời mời vào MCC DOMATION'
+                      : 'Thêm Google Ads Customer ID để bắt đầu'}
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed max-w-lg mx-auto">
+                  {pendingGadsAccounts.some((a) => a.status === 'pending_otp')
+                    ? 'Hệ thống đã gửi mã OTP 6 số về email quản trị viên của Google Ads ID để đảm bảo chỉ chính chủ mới được xem & gộp dữ liệu. Hãy mở Cài đặt Google Ads để nhập mã kích hoạt ngay.'
+                    : 'Chỉ cần nhập 1 hoặc nhiều Google Ads ID (chung MCC DOMATION) → bấm Accept lời mời trong Google Ads → nhập mã OTP 6 số gửi về email chủ tài khoản là lên báo cáo tức thì.'}
+                </p>
+                {canManageConfig && (
+                  <button
+                    type="button"
+                    onClick={() => openSettingsPage('google_ads')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs font-bold shadow-xs cursor-pointer"
+                  >
+                    <span>Mở Thiết Lập Nhanh Google Ads &amp; Nhập OTP</span>
+                  </button>
+                )}
+              </div>
+            ) : gadsLoading ? (
               <div className="rounded-2xl bg-white border border-slate-200 p-10 text-center text-xs text-slate-500">
                 Đang đồng bộ dữ liệu Google Ads...
               </div>
@@ -5561,7 +5734,15 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                                     keywords: [],
                                     searchTerms: [],
                                   });
-                                  loadDomGoogleAdsKeywords(authContext, cid, resolvedRange)
+                                  loadDomGoogleAdsKeywords(
+                                    authContext,
+                                    cid,
+                                    resolvedRange,
+                                    gc.customer_id ||
+                                      (activeGadsAccountId && activeGadsAccountId !== 'all'
+                                        ? activeGadsAccountId
+                                        : undefined)
+                                  )
                                     .then((res) =>
                                       setGadsKwModal((prev) => ({
                                         ...prev,
@@ -5677,7 +5858,15 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                                         keywords: [],
                                         searchTerms: [],
                                       });
-                                      loadDomGoogleAdsKeywords(authContext, cid, resolvedRange)
+                                      loadDomGoogleAdsKeywords(
+                                    authContext,
+                                    cid,
+                                    resolvedRange,
+                                    gc.customer_id ||
+                                      (activeGadsAccountId && activeGadsAccountId !== 'all'
+                                        ? activeGadsAccountId
+                                        : undefined)
+                                  )
                                         .then((res) =>
                                           setGadsKwModal((prev) => ({
                                             ...prev,
@@ -5736,15 +5925,28 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 ai_config: nextAi,
               }))
             }
+            onGoogleAdsUpdated={handleGoogleAdsConfigUpdated}
             onTestGoogleAds={async (cfg) => {
-              const res = await loadDomGoogleAdsDataset(authContext, resolvedRange, {
-                testConnection: true,
-                overrideConfig: {
-                  customer_id: cfg.customer_id,
-                  apps_script_url: cfg.apps_script_url,
-                  developer_token: cfg.developer_token,
-                },
-              });
+              const isMccQuick =
+                cfg.setup_mode === 'mcc_quick' ||
+                (!cfg.apps_script_url?.trim() && cfg.setup_mode !== 'custom_script');
+              const res = await loadDomGoogleAdsDataset(
+                authContext,
+                resolvedRange,
+                isMccQuick
+                  ? {
+                      customerId: cfg.customer_id || undefined,
+                      testConnection: true,
+                    }
+                  : {
+                      testConnection: true,
+                      overrideConfig: {
+                        customer_id: cfg.customer_id,
+                        apps_script_url: cfg.apps_script_url,
+                        developer_token: cfg.developer_token,
+                      },
+                    }
+              );
               return { rowsCount: res.currentRows.length + res.prevRows.length };
             }}
             onOpenAccountManager={() => setAccountModalOpen(true)}

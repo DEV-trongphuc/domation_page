@@ -1867,7 +1867,7 @@ export const MetaAdReport: React.FC = () => {
               <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
                 Nếu doanh nghiệp chỉ chạy Meta Ads, hệ thống giữ giao diện tinh gọn tối đa để tập trung
                 theo dõi. Khi cần gom thêm số liệu Google Ads vào chung một nơi, hãy bật nút bên dưới để
-                xem hướng dẫn 5 bước kết nối qua Google Sheets:
+                chọn <strong>Thiết lập nhanh qua MCC DOMATION</strong> (gắn nhiều Google Ads ID + xác thực OTP chủ tài khoản) hoặc tự cấu hình Apps Script riêng:
               </p>
             </div>
 

@@ -20,6 +20,8 @@ import type {
   DomMetaEntityDeepDetail,
   DomMetaEntityDeliveryDiagnostics,
   DomMetaEntityHourPoint,
+  DomMetaGoogleAdsAccountItem,
+  DomMetaGoogleAdsConfig,
   DomMetaHourlyCell,
   DomMetaMonthlyPoint,
   DomMetaPlatformSlice,
@@ -448,7 +450,10 @@ export function createEmptyWorkspaceConfig(): DomMetaWorkspaceConfig {
     },
     google_ads: {
       enabled: false, // STRICTLY OFF BY DEFAULT
+      setup_mode: 'mcc_quick',
       customer_id: '',
+      accounts: [],
+      mcc_id: '113-061-8835',
       apps_script_url: '',
       has_developer_token: false,
       developer_token_masked: '',
@@ -3373,6 +3378,7 @@ function mapGoogleAdsObjectRow(obj: Record<string, unknown>): DomGoogleAdsRow {
     date: String(obj.date || obj.day || ''),
     campaign: String(obj.campaign || obj.campaign_name || 'Google Campaign'),
     campaign_id: String(obj.campaign_id || obj.campaignId || ''),
+    customer_id: obj.customer_id ? String(obj.customer_id) : undefined,
     spent: Number(obj.spent ?? obj.cost ?? obj.spend ?? 0) || 0,
     impression: Number(obj.impression ?? obj.impressions ?? 0) || 0,
     click: Number(obj.click ?? obj.clicks ?? 0) || 0,
@@ -3458,7 +3464,8 @@ function expandCompactGoogleAds(compact: unknown): {
 export async function loadDomGoogleAdsKeywords(
   ctx: DomMetaAuthContext,
   campaignId: string,
-  range: { since: string; until: string }
+  range: { since: string; until: string },
+  customerId?: string
 ): Promise<{
   keywords: DomGoogleAdsKeywordItem[];
   searchTerms: DomGoogleAdsSearchTermItem[];
@@ -3555,6 +3562,7 @@ export async function loadDomGoogleAdsKeywords(
       campaign_id: campaignId,
       since: range.since,
       until: range.until,
+      ...(customerId ? { customer_id: customerId } : {}),
     }),
   });
   const json = (await res.json().catch(() => ({}))) as {
@@ -3573,6 +3581,7 @@ export async function loadDomGoogleAdsDataset(
   ctx: DomMetaAuthContext,
   range: { since: string; until: string; prevSince: string; prevUntil: string },
   options?: {
+    customerId?: string;
     testConnection?: boolean;
     overrideConfig?: { customer_id?: string; apps_script_url?: string; developer_token?: string };
   }
@@ -3588,8 +3597,9 @@ export async function loadDomGoogleAdsDataset(
       'time_range',
       JSON.stringify({ since: range.prevSince, until: range.until })
     );
-    if (ctx.directGoogleAds.customer_id) {
-      target.searchParams.set('account_id', ctx.directGoogleAds.customer_id);
+    const cid = options?.customerId || ctx.directGoogleAds.customer_id;
+    if (cid && cid !== 'all') {
+      target.searchParams.set('account_id', cid);
     }
     if (ctx.directGoogleAds.developer_token) {
       target.searchParams.set('token', ctx.directGoogleAds.developer_token);
@@ -3608,6 +3618,7 @@ export async function loadDomGoogleAdsDataset(
   const res = await fetchDomMetaAuthed(ctx, '/api/v1/integrations/dom-meta/google-ads-proxy', {
     method: 'POST',
     body: JSON.stringify({
+      ...(options?.customerId ? { customer_id: options.customerId } : {}),
       time_range: { since: range.prevSince, until: range.until },
       test_connection: Boolean(options?.testConnection),
       override_config: options?.overrideConfig,
@@ -3629,6 +3640,143 @@ export async function loadDomGoogleAdsDataset(
     leadForms: expanded.leadForms,
     syncedAt: expanded.syncedAt,
   };
+}
+
+export interface DomGoogleAdsMccRequestResult {
+  google_ads: DomMetaGoogleAdsConfig;
+  sent_otp_ids: Array<{ customer_id: string; masked_to: string; is_mcc_fallback: boolean }>;
+  pending_mcc_ids: string[];
+  already_connected_ids: string[];
+  warnings?: string[];
+}
+
+export async function requestDomGoogleAdsMccAccounts(
+  ctx: DomMetaAuthContext,
+  items: Array<{ customer_id: string; label?: string }>,
+  note?: string
+): Promise<DomGoogleAdsMccRequestResult> {
+  const res = await fetchDomMetaAuthed(
+    ctx,
+    '/api/v1/integrations/dom-meta/google-ads/mcc-add-or-request',
+    {
+      method: 'POST',
+      body: JSON.stringify({ items, ...(note ? { note } : {}) }),
+    }
+  );
+  const json = (await res.json().catch(() => ({}))) as {
+    success?: boolean;
+    data?: DomGoogleAdsMccRequestResult;
+    message?: string;
+    error?: { message?: string };
+  };
+  if (!res.ok || !json?.success || !json?.data) {
+    throw new Error(
+      json?.error?.message || json?.message || 'Không thể gửi yêu cầu liên kết Google Ads MCC.'
+    );
+  }
+  return json.data;
+}
+
+export async function resendDomGoogleAdsMccOtp(
+  ctx: DomMetaAuthContext,
+  customerId: string
+): Promise<{
+  already_connected?: boolean;
+  linked: boolean;
+  customer_id?: string;
+  otp_sent_to_masked?: string;
+  is_mcc_fallback?: boolean;
+  otp_expires_at?: string;
+  google_ads: DomMetaGoogleAdsConfig;
+}> {
+  const res = await fetchDomMetaAuthed(
+    ctx,
+    '/api/v1/integrations/dom-meta/google-ads/mcc-resend-otp',
+    {
+      method: 'POST',
+      body: JSON.stringify({ customer_id: customerId }),
+    }
+  );
+  const json = (await res.json().catch(() => ({}))) as {
+    success?: boolean;
+    data?: {
+      already_connected?: boolean;
+      linked: boolean;
+      customer_id?: string;
+      otp_sent_to_masked?: string;
+      is_mcc_fallback?: boolean;
+      otp_expires_at?: string;
+      google_ads: DomMetaGoogleAdsConfig;
+    };
+    message?: string;
+    error?: { message?: string };
+  };
+  if (!res.ok || !json?.success || !json?.data) {
+    throw new Error(
+      json?.error?.message || json?.message || 'Chưa gửi được mã xác nhận OTP cho tài khoản này.'
+    );
+  }
+  return json.data;
+}
+
+export async function verifyDomGoogleAdsMccOtp(
+  ctx: DomMetaAuthContext,
+  customerId: string,
+  otpCode: string
+): Promise<{
+  verified: boolean;
+  account: DomMetaGoogleAdsAccountItem;
+  google_ads: DomMetaGoogleAdsConfig;
+}> {
+  const res = await fetchDomMetaAuthed(
+    ctx,
+    '/api/v1/integrations/dom-meta/google-ads/mcc-verify-otp',
+    {
+      method: 'POST',
+      body: JSON.stringify({ customer_id: customerId, otp_code: otpCode }),
+    }
+  );
+  const json = (await res.json().catch(() => ({}))) as {
+    success?: boolean;
+    data?: {
+      verified: boolean;
+      account: DomMetaGoogleAdsAccountItem;
+      google_ads: DomMetaGoogleAdsConfig;
+    };
+    message?: string;
+    error?: { message?: string };
+  };
+  if (!res.ok || !json?.success || !json?.data) {
+    throw new Error(json?.error?.message || json?.message || 'Mã xác nhận OTP không hợp lệ.');
+  }
+  return json.data;
+}
+
+export async function removeDomGoogleAdsMccAccount(
+  ctx: DomMetaAuthContext,
+  customerId: string
+): Promise<{
+  removed_customer_id: string;
+  google_ads: DomMetaGoogleAdsConfig;
+}> {
+  const res = await fetchDomMetaAuthed(
+    ctx,
+    `/api/v1/integrations/dom-meta/google-ads/mcc-account/${encodeURIComponent(customerId)}`,
+    { method: 'DELETE' }
+  );
+  const json = (await res.json().catch(() => ({}))) as {
+    success?: boolean;
+    data?: {
+      removed_customer_id: string;
+      google_ads: DomMetaGoogleAdsConfig;
+    };
+    message?: string;
+    error?: { message?: string };
+  };
+  if (!res.ok || !json?.success || !json?.data) {
+    throw new Error(json?.error?.message || json?.message || 'Không thể gỡ Google Ads ID.');
+  }
+  return json.data;
 }
 
 export async function fetchDomMetaQuickConnectStatus(

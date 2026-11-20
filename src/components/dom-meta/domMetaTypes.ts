@@ -47,9 +47,32 @@ export interface DomMetaAiReportEntry {
   plain_text: string;
 }
 
+export type DomMetaGoogleAdsSetupMode = 'mcc_quick' | 'custom_script';
+export type DomMetaGoogleAdsAccountStatus = 'pending_mcc' | 'pending_otp' | 'connected' | 'error';
+export type DomMetaGoogleAdsVerifiedVia =
+  | 'owner_email_otp'
+  | 'mcc_admin_otp'
+  | 'legacy_migrated'
+  | 'custom_script';
+
+export interface DomMetaGoogleAdsAccountItem {
+  customer_id: string;
+  label?: string;
+  status: DomMetaGoogleAdsAccountStatus;
+  requested_at?: string | null;
+  verified_at?: string | null;
+  verified_via?: DomMetaGoogleAdsVerifiedVia | null;
+  otp_sent_to_masked?: string | null;
+  otp_expires_at?: string | null;
+  last_error?: string | null;
+}
+
 export interface DomMetaGoogleAdsConfig {
   enabled: boolean; // STRICTLY FALSE BY DEFAULT
+  setup_mode?: DomMetaGoogleAdsSetupMode;
   customer_id: string;
+  accounts?: DomMetaGoogleAdsAccountItem[];
+  mcc_id?: string;
   apps_script_url: string;
   has_developer_token?: boolean;
   developer_token_masked?: string;
@@ -753,6 +776,7 @@ export interface DomGoogleAdsRow {
   date: string;
   campaign: string;
   campaign_id: string;
+  customer_id?: string;
   spent: number;
   impression: number;
   click: number;
@@ -1359,6 +1383,24 @@ export const GOOGLE_ADS_APPSCRIPT_SCOPES_JSON = `{
     "https://www.googleapis.com/auth/script.external_request"
   ]
 }`;
+
+export const GOOGLE_ADS_MCC_QUICK_STEPS = [
+  {
+    step: '01',
+    title: 'Nhập 1 hoặc nhiều Google Ads ID',
+    desc: 'Điền mã 10 chữ số (VD: 227-521-6666). Một Workspace có thể thêm nhiều Google Ads ID cùng nằm trong MCC DOMATION để xem riêng hoặc gộp chung.',
+  },
+  {
+    step: '02',
+    title: 'Gửi yêu cầu mời MCC & Chấp nhận',
+    desc: 'Hệ thống tự gửi Email tới bộ phận MCC DOMATION (domation.net@gmail.com). Khi nhận được lời mời liên kết trong Google Ads, bạn bấm Chấp nhận (Accept).',
+  },
+  {
+    step: '03',
+    title: 'Nhập mã OTP 6 số chủ tài khoản',
+    desc: 'Để chống tuyệt đối bên khác gắn nhầm ID của bạn, hệ thống gửi mã OTP 6 số trực tiếp tới email quản trị viên Google Ads của ID đó — nhập mã xong là lên báo cáo ngay.',
+  },
+];
 
 export const GOOGLE_ADS_SETUP_STEPS = [
   {
