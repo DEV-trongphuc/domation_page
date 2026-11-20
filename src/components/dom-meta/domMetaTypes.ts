@@ -1476,6 +1476,7 @@ export interface DomMetaEntityDeepDetail {
   optimizationGoal: string;
   daily: DomMetaEntityDailyPoint[];
   hourly: DomMetaEntityHourPoint[];
+  heatmap?: DomMetaHourlyCell[];
   byHourAudience?: DomMetaEntityHourPoint[];
   byDayOfWeek?: DomMetaEntityDeepBreakdownRow[];
   byPlatform: DomMetaEntityDeepBreakdownRow[];

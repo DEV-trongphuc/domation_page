@@ -94,6 +94,7 @@ import {
   AgeGenderBarChart,
   CreativeThumbFan,
   DailyTrendAreaChart,
+  DaypartingHeatmapGrid,
   DeviceBrandLogo,
   DeviceDonutCard,
   HourlySpendResultChart,
@@ -540,6 +541,9 @@ export const AdEntityDetailModal: React.FC<{
   const [dimSortBy, setDimSortBy] = useState<'spend' | 'result' | 'cpr' | 'ctr'>('spend');
   const [drawerAgeOnly, setDrawerAgeOnly] = useState(false);
   const [drawerAgeMetric, setDrawerAgeMetric] = useState<'spend' | 'result' | 'cpr'>('spend');
+  const [drawerHeatmapMetric, setDrawerHeatmapMetric] = useState<
+    'spend' | 'result' | 'cpr' | 'leads' | 'messages' | 'purchases' | 'clicks'
+  >('spend');
   const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
   const [creativeSlideState, setCreativeSlideState] = useState<{ key: string; idx: number }>({
     key: '',
@@ -2973,9 +2977,81 @@ export const AdEntityDetailModal: React.FC<{
                   </div>
                 </div>
 
-                {/* Row 5: Full Visual Breakdown Charts (Age & Gender | Device Donut with Labels & Logos | Top Regions) */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                  <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3">
+                {/* Row 5A: Dayparting Heatmap (Left 8 cols) + Device Breakdown (Right 4 cols) */}
+                <div
+                  data-dom-drawer-row="heatmap-device"
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
+                >
+                  <div
+                    data-dom-drawer-card="heatmap"
+                    className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col lg:min-h-[365px]"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
+                      <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
+                        <Clock className="w-4 h-4 text-[#1E40FF]" />
+                        <span>Dayparting Heatmap</span>
+                      </div>
+                      <DomMetaSelect
+                        ariaLabel="Chọn chỉ số Dayparting Heatmap"
+                        value={drawerHeatmapMetric}
+                        onChange={(val) =>
+                          setDrawerHeatmapMetric(val as typeof drawerHeatmapMetric)
+                        }
+                        align="right"
+                        variant="pill"
+                        options={[
+                          { value: 'spend', label: 'Spend' },
+                          { value: 'result', label: 'Results (KQ)' },
+                          { value: 'cpr', label: 'CPR (Chi phí/KQ)' },
+                          { value: 'leads', label: 'Leads' },
+                          { value: 'messages', label: 'Messages' },
+                          { value: 'purchases', label: 'Purchases' },
+                          { value: 'clicks', label: 'Clicks' },
+                        ]}
+                      />
+                    </div>
+                    {isDeepLoading ? (
+                      <div className="flex-1 min-h-[220px] rounded-xl dom-meta-skeleton-soft" />
+                    ) : (
+                      <DaypartingHeatmapGrid
+                        cells={deepDetail?.heatmap || []}
+                        metric={drawerHeatmapMetric}
+                        currency={currency}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    data-dom-drawer-card="device"
+                    className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3 lg:min-h-[365px]"
+                  >
+                    <div className="flex items-center justify-between gap-2 shrink-0">
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-800">Device Breakdown</h4>
+                        <p className="text-[11px] text-slate-400">Tỷ trọng iPhone, Android &amp; Desktop</p>
+                      </div>
+                    </div>
+                    {isDeepLoading ? (
+                      <div className="flex-1 min-h-[220px] rounded-xl dom-meta-skeleton-soft" />
+                    ) : (
+                      <DeviceDonutCard
+                        devices={deepDetail?.byDevice || []}
+                        currency={currency}
+                        compact
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Row 5B: Age & Gender + Top Regions on 1 dedicated row */}
+                <div
+                  data-dom-drawer-row="age-region"
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
+                >
+                  <div
+                    data-dom-drawer-card="age-gender"
+                    className="lg:col-span-6 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-2 shrink-0">
                       <h4 className="text-sm font-bold text-slate-800">Age &amp; Gender</h4>
                       <div className="flex items-center gap-1">
@@ -3019,25 +3095,10 @@ export const AdEntityDetailModal: React.FC<{
                     )}
                   </div>
 
-                  <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-2 shrink-0">
-                      <div>
-                        <h4 className="text-sm font-bold text-slate-800">Device Breakdown</h4>
-                        <p className="text-[11px] text-slate-400">Tỷ trọng iPhone, Android &amp; Desktop</p>
-                      </div>
-                    </div>
-                    {isDeepLoading ? (
-                      <div className="flex-1 min-h-[220px] rounded-xl dom-meta-skeleton-soft" />
-                    ) : (
-                      <DeviceDonutCard
-                        devices={deepDetail?.byDevice || []}
-                        currency={currency}
-                        compact
-                      />
-                    )}
-                  </div>
-
-                  <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3">
+                  <div
+                    data-dom-drawer-card="region"
+                    className="lg:col-span-6 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3"
+                  >
                     <div className="flex items-center justify-between gap-2 shrink-0">
                       <div>
                         <h4 className="text-sm font-bold text-slate-800">Top Regions</h4>

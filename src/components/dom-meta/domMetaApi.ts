@@ -2533,6 +2533,7 @@ export async function fetchDomMetaEntityDeepDetail(
           cpr: leads > 0 ? spend / leads : 0,
         };
       }),
+      heatmap: ds.heatmap,
       byPlatform: ds.positions.slice(0, 8).map((p) => ({
         label: p.label,
         subLabel: p.platform,
@@ -2625,9 +2626,10 @@ export async function fetchDomMetaEntityDeepDetail(
       key: 'byHour',
       graph_path: `${cleanEntityId}/insights`,
       params: {
-        fields: 'spend,impressions,clicks,actions',
+        fields: 'date_start,spend,impressions,clicks,actions',
+        time_increment: 1,
         breakdowns: 'hourly_stats_aggregated_by_advertiser_time_zone',
-        limit: 100,
+        limit: 1000,
         time_range: timeRangeJson,
       },
     },
@@ -2878,6 +2880,56 @@ export async function fetchDomMetaEntityDeepDetail(
     batch.byHourAudience?.data,
     'hourly_stats_aggregated_by_audience_time_zone'
   );
+
+  // Entity Dayparting Heatmap (7 days x 24 hours - Advertiser TZ)
+  const entityCellMap = new Map<string, DomMetaHourlyCell>();
+  for (let d = 0; d < 7; d++) {
+    for (let h = 0; h < 24; h++) {
+      entityCellMap.set(`${d}_${h}`, {
+        dayOfWeek: d,
+        hour: h,
+        spend: 0,
+        clicks: 0,
+        leads: 0,
+        messages: 0,
+        purchases: 0,
+        impressions: 0,
+        result: 0,
+        cpr: 0,
+      });
+    }
+  }
+  for (const r of Array.isArray(batch.byHour?.data)
+    ? (batch.byHour.data as Array<Record<string, unknown>>)
+    : []) {
+    const dt = new Date(`${String(r.date_start || '')}T00:00:00`);
+    const day = Number.isNaN(dt.getTime()) ? 1 : dt.getDay();
+    const hourStr = String(r.hourly_stats_aggregated_by_advertiser_time_zone || '00:00:00');
+    const hour = Math.min(23, Math.max(0, parseInt(hourStr.split(':')[0] || '0', 10) || 0));
+    const cell = entityCellMap.get(`${day}_${hour}`);
+    if (!cell) continue;
+    const m = parseInsightMetrics(r as unknown as GraphInsightRow, goal);
+    cell.spend += m.spend;
+    cell.clicks += m.clicks;
+    cell.leads += m.leads;
+    cell.messages += m.messages;
+    cell.purchases += m.purchases;
+    cell.impressions += m.impressions;
+    cell.result = (cell.result || 0) + m.result;
+  }
+  const heatmap = Array.from(entityCellMap.values()).map((c) => {
+    const totRes = c.result || c.leads + c.messages + c.purchases;
+    return {
+      ...c,
+      result: totRes,
+      cpr:
+        totRes > 0
+          ? isPerThousand
+            ? (c.spend / totRes) * 1000
+            : c.spend / totRes
+          : 0,
+    };
+  });
 
   // Day-of-week rollup (Thứ 2 .. Chủ nhật) derived from daily series
   const dowOrder = [1, 2, 3, 4, 5, 6, 0];
@@ -3168,6 +3220,7 @@ export async function fetchDomMetaEntityDeepDetail(
     optimizationGoal: goal,
     daily,
     hourly,
+    heatmap,
     byHourAudience,
     byDayOfWeek,
     byPlatform,
