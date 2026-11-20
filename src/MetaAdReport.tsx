@@ -21,7 +21,6 @@ import {
   Play,
   RefreshCw,
   ShieldCheck,
-  Sliders,
   Sparkles,
   TrendingUp,
   Users,
@@ -994,9 +993,9 @@ export const MetaAdReport: React.FC = () => {
       desc: 'Xem ai vừa tăng giảm ngân sách hay bật tắt bài mà không cần vào BM.',
     },
     {
-      icon: Sliders,
-      title: '6. Mở Rộng Google Ads Khi Cần',
-      desc: 'Giữ gọn cho Meta Ads từ đầu; bật thêm Google Ads ngay khi chạy đa kênh.',
+      icon: Sparkles,
+      title: '6. Cảnh Báo Rớt Hiệu Suất & Gợi Ý Tối Ưu AI',
+      desc: 'Tự động phát hiện bài Ads chi phí tăng cao, cảnh báo nội dung bão hòa và đề xuất phân bổ ngân sách.',
     },
   ];
 
@@ -1446,180 +1445,12 @@ export const MetaAdReport: React.FC = () => {
         </section>
 
         {/* ====================================================================
-            PARTNERS TRUST STRIP (#partners) — Full 38 DOM Partner Brands
-           ==================================================================== */}
-        <section
-          id="partners"
-          className="py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/65 sm:bg-white/55 sm:backdrop-blur-md"
-        >
-          <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 text-center md:text-left">
-              <div className="max-w-2xl mx-auto md:mx-0">
-                <div className="ql-eyebrow mb-2.5 sm:mb-3 mx-auto md:mx-0">
-                  <Award className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-                  <span>ĐỒNG HÀNH CÙNG {PARTNER_BRANDS.length}+ THƯƠNG HIỆU</span>
-                </div>
-                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Được Tin Dùng Bởi Chủ Đầu Tư, Chuỗi Dịch Vụ &amp;{' '}
-                  <span className="text-gradient-inkica">Đội Ngũ Marketing Đa Ngành</span>
-                </h2>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
-                Triển khai thực tế cho Bất động sản, Chuỗi F&amp;B, Giáo dục Quốc tế, Nha khoa Thẩm mỹ và Bán lẻ.
-              </p>
-            </div>
-
-            {/* Mobile: Compact 2x3 SlideDeck */}
-            <div className="sm:hidden">
-              <ResponsiveSlideDeck
-                items={PARTNER_BRANDS}
-                keyExtractor={(p) => p.name}
-                mobilePerPage={6}
-                mobileColsClass="grid-cols-2"
-                gapClass="gap-2.5"
-                ariaLabel="Các thương hiệu đồng hành cùng DOMATION"
-                renderItem={(partner) => (
-                  <div className="rounded-2xl bg-white border border-slate-200/85 px-3 py-3.5 flex flex-col items-center justify-center text-center gap-2 shadow-sm h-full">
-                    <div className="h-9 flex items-center justify-center">
-                      <img
-                        src={partner.logo}
-                        alt={partner.name}
-                        loading="lazy"
-                        className="max-h-8 max-w-[110px] w-auto object-contain"
-                      />
-                    </div>
-                    <div className="min-w-0 w-full">
-                      <div className="text-[11px] font-bold text-slate-800 truncate">
-                        {partner.name}
-                      </div>
-                      <div className="text-[10px] text-slate-500 truncate mt-0.5">
-                        {partner.sector}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              />
-            </div>
-
-            {/* Tablet & Desktop: Complete 38-Brand Partner Showcase */}
-            <div className="hidden sm:block rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm p-5 sm:p-7">
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200/70">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-800">
-                  Mạng lưới doanh nghiệp &amp; thương hiệu đã hợp tác triển khai
-                </span>
-                <span className="text-[11px] font-medium text-slate-500">
-                  {PARTNER_BRANDS.length} thương hiệu • Bất động sản · F&amp;B · Giáo dục · Y tế · Bán lẻ
-                </span>
-              </div>
-
-              <div className="flex flex-wrap justify-center gap-3">
-                {PARTNER_BRANDS.map((partner) => (
-                  <div
-                    key={partner.name}
-                    className="w-[calc(33.333333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666667%-10px)] group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 px-3.5 py-4 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
-                  >
-                    <div className="h-10 w-full flex items-center justify-center">
-                      <img
-                        src={partner.logo}
-                        alt={partner.name}
-                        loading="lazy"
-                        className="max-h-9 max-w-[115px] w-auto object-contain grayscale-[10%] group-hover:grayscale-0 transition-all"
-                      />
-                    </div>
-                    <div className="min-w-0 w-full">
-                      <div className="text-[11.5px] font-bold text-slate-800 group-hover:text-[#1E40FF] truncate transition-colors">
-                        {partner.name}
-                      </div>
-                      <div className="text-[10px] text-slate-500 truncate mt-0.5">
-                        {partner.sector}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ====================================================================
-            VIDEO WALKTHROUGH & DEMO CLIP (#video-demo)
-           ==================================================================== */}
-        <section
-          id="video-demo"
-          className="scroll-mt-24 pt-12 sm:pt-20 pb-6 sm:pb-10 px-4 sm:px-6 lg:px-8"
-        >
-          <div className="max-w-7xl mx-auto">
-            <div className="rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200/85 shadow-[0_20px_56px_-24px_rgba(15,23,42,0.1)] p-5 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center">
-              <div className="lg:col-span-5 space-y-4">
-                <div className="ql-eyebrow">
-                  <Play className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" fill="currentColor" />
-                  <span>VIDEO HƯỚNG DẪN THỰC TẾ</span>
-                </div>
-                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Xem Cách Hệ Thống Lên Báo Cáo{' '}
-                  <span className="text-gradient-inkica">Chỉ Trong Vài Phút</span>
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Từ bước kết nối tài khoản Meta Ads, đồng bộ qua Google Sheets đến cách đọc hiệu quả
-                  từng nội dung video, tìm khung giờ vàng chốt đơn và kiểm tra lịch sử chỉnh sửa ngân sách.
-                </p>
-
-                <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700 pt-1">
-                  {[
-                    'Xem báo cáo rõ ràng mà không cần cấp quyền vào Business Manager gốc',
-                    'Biết ngay điểm rơi khách hàng từ lúc thấy quảng cáo đến khi nhắn tin',
-                    'Kiểm soát minh bạch ai vừa bật tắt chiến dịch hoặc đổi ngân sách',
-                  ].map((point) => (
-                    <li key={point} className="flex items-start gap-2.5">
-                      <Check className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="pt-2 flex flex-wrap items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setShowVideoModal(true)}
-                    className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs font-bold cursor-pointer"
-                  >
-                    <Play className="w-3.5 h-3.5 shrink-0" fill="currentColor" />
-                    <span>Mở rộng Video Hướng Dẫn</span>
-                  </button>
-                  <a
-                    href={META_VIDEO_YOUTUBE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ql-btn-outline rounded-full px-4 py-2.5 text-xs font-bold"
-                  >
-                    <span>Xem trên YouTube</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
-
-              <div className="lg:col-span-7">
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_20px_50px_-16px_rgba(15,23,42,0.2)] border border-slate-200 bg-slate-950">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`${META_VIDEO_EMBED_URL}?rel=0`}
-                    title="Video hướng dẫn hệ thống báo cáo Meta Ads DOMATION"
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full border-0"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ====================================================================
             LIVE SCREENSHOTS GALLERY (#live-screenshots)
            ==================================================================== */}
-        <section id="live-screenshots" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+        <section
+          id="live-screenshots"
+          className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70"
+        >
           <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 text-center lg:text-left">
               <div className="max-w-2xl mx-auto lg:mx-0">
@@ -1909,11 +1740,182 @@ export const MetaAdReport: React.FC = () => {
         </section>
 
         {/* ====================================================================
+            VIDEO WALKTHROUGH & DEMO CLIP (#video-demo)
+           ==================================================================== */}
+        <section
+          id="video-demo"
+          className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200/85 shadow-[0_20px_56px_-24px_rgba(15,23,42,0.1)] p-5 sm:p-8 lg:p-10 grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center">
+              <div className="lg:col-span-5 space-y-4">
+                <div className="ql-eyebrow">
+                  <Play className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" fill="currentColor" />
+                  <span>VIDEO HƯỚNG DẪN THỰC TẾ</span>
+                </div>
+                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Xem Cách Hệ Thống Lên Báo Cáo{' '}
+                  <span className="text-gradient-inkica">Chỉ Trong Vài Phút</span>
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Từ bước kết nối tài khoản Meta Ads, đồng bộ qua Google Sheets đến cách đọc hiệu quả
+                  từng nội dung video, tìm khung giờ vàng chốt đơn và kiểm tra lịch sử chỉnh sửa ngân sách.
+                </p>
+
+                <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700 pt-1">
+                  {[
+                    'Xem báo cáo rõ ràng mà không cần cấp quyền vào Business Manager gốc',
+                    'Biết ngay điểm rơi khách hàng từ lúc thấy quảng cáo đến khi nhắn tin',
+                    'Kiểm soát minh bạch ai vừa bật tắt chiến dịch hoặc đổi ngân sách',
+                  ].map((point) => (
+                    <li key={point} className="flex items-start gap-2.5">
+                      <Check className="w-4 h-4 text-[#1E40FF] shrink-0 mt-0.5" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="pt-2 flex flex-wrap items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowVideoModal(true)}
+                    className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs font-bold cursor-pointer"
+                  >
+                    <Play className="w-3.5 h-3.5 shrink-0" fill="currentColor" />
+                    <span>Mở rộng Video Hướng Dẫn</span>
+                  </button>
+                  <a
+                    href={META_VIDEO_YOUTUBE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ql-btn-outline rounded-full px-4 py-2.5 text-xs font-bold"
+                  >
+                    <span>Xem trên YouTube</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7">
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_20px_50px_-16px_rgba(15,23,42,0.2)] border border-slate-200 bg-slate-950">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`${META_VIDEO_EMBED_URL}?rel=0`}
+                    title="Video hướng dẫn hệ thống báo cáo Meta Ads DOMATION"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full border-0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ====================================================================
+            PARTNERS TRUST STRIP (#partners) — Full 38 DOM Partner Brands
+           ==================================================================== */}
+        <section
+          id="partners"
+          className="py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-y border-slate-200/70 bg-white/65 sm:bg-white/55 sm:backdrop-blur-md"
+        >
+          <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 text-center md:text-left">
+              <div className="max-w-2xl mx-auto md:mx-0">
+                <div className="ql-eyebrow mb-2.5 sm:mb-3 mx-auto md:mx-0">
+                  <Award className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                  <span>ĐỒNG HÀNH CÙNG {PARTNER_BRANDS.length}+ THƯƠNG HIỆU</span>
+                </div>
+                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Được Tin Dùng Bởi Chủ Đầu Tư, Chuỗi Dịch Vụ &amp;{' '}
+                  <span className="text-gradient-inkica">Đội Ngũ Marketing Đa Ngành</span>
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
+                Triển khai thực tế cho Bất động sản, Chuỗi F&amp;B, Giáo dục Quốc tế, Nha khoa Thẩm mỹ và Bán lẻ.
+              </p>
+            </div>
+
+            {/* Mobile: Compact 2x3 SlideDeck */}
+            <div className="sm:hidden">
+              <ResponsiveSlideDeck
+                items={PARTNER_BRANDS}
+                keyExtractor={(p) => p.name}
+                mobilePerPage={6}
+                mobileColsClass="grid-cols-2"
+                gapClass="gap-2.5"
+                ariaLabel="Các thương hiệu đồng hành cùng DOMATION"
+                renderItem={(partner) => (
+                  <div className="rounded-2xl bg-white border border-slate-200/85 px-3 py-3.5 flex flex-col items-center justify-center text-center gap-2 shadow-sm h-full">
+                    <div className="h-9 flex items-center justify-center">
+                      <img
+                        src={partner.logo}
+                        alt={partner.name}
+                        loading="lazy"
+                        className="max-h-8 max-w-[110px] w-auto object-contain"
+                      />
+                    </div>
+                    <div className="min-w-0 w-full">
+                      <div className="text-[11px] font-bold text-slate-800 truncate">
+                        {partner.name}
+                      </div>
+                      <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                        {partner.sector}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* Tablet & Desktop: Complete 38-Brand Partner Showcase */}
+            <div className="hidden sm:block rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm p-5 sm:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200/70">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-800">
+                  Mạng lưới doanh nghiệp &amp; thương hiệu đã hợp tác triển khai
+                </span>
+                <span className="text-[11px] font-medium text-slate-500">
+                  {PARTNER_BRANDS.length} thương hiệu • Bất động sản · F&amp;B · Giáo dục · Y tế · Bán lẻ
+                </span>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-3">
+                {PARTNER_BRANDS.map((partner) => (
+                  <div
+                    key={partner.name}
+                    className="w-[calc(33.333333%-8px)] md:w-[calc(25%-9px)] lg:w-[calc(16.666667%-10px)] group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 px-3.5 py-4 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
+                  >
+                    <div className="h-10 w-full flex items-center justify-center">
+                      <img
+                        src={partner.logo}
+                        alt={partner.name}
+                        loading="lazy"
+                        className="max-h-9 max-w-[115px] w-auto object-contain grayscale-[10%] group-hover:grayscale-0 transition-all"
+                      />
+                    </div>
+                    <div className="min-w-0 w-full">
+                      <div className="text-[11.5px] font-bold text-slate-800 group-hover:text-[#1E40FF] truncate transition-colors">
+                        {partner.name}
+                      </div>
+                      <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                        {partner.sector}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ====================================================================
             ECOSYSTEM INTEGRATION: STANDALONE OR ERP / AUTO DATA (#ecosystem)
            ==================================================================== */}
         <section
           id="ecosystem"
-          className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-slate-200/70 bg-gradient-to-b from-white/75 via-[#F4F8FF]/55 to-white/60"
+          className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white/75 via-[#F4F8FF]/55 to-white/60"
         >
           <div className="max-w-7xl mx-auto space-y-8">
             <div className="text-center max-w-3xl mx-auto space-y-3">
