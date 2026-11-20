@@ -111,9 +111,9 @@ interface MetaLiveShot {
 
 const SHOT_CATEGORIES: Array<{ id: MetaShotCat; label: string }> = [
   { id: 'all', label: 'Tất cả (12)' },
-  { id: 'dashboard', label: 'Tổng quan & Giờ vàng' },
-  { id: 'modals', label: 'Chiến dịch, Drawer & Thư viện' },
-  { id: 'creative', label: 'CRM, Tài khoản & Cài đặt' },
+  { id: 'dashboard', label: 'Tổng quan & Phễu' },
+  { id: 'modals', label: 'Chiến dịch & Drawer' },
+  { id: 'creative', label: 'CRM & Cài đặt' },
 ];
 
 const META_LIVE_SHOTS: MetaLiveShot[] = [
@@ -1286,7 +1286,7 @@ export const MetaAdReport: React.FC = () => {
         >
           <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 text-center lg:text-left">
-              <div className="max-w-2xl mx-auto lg:mx-0">
+              <div className="max-w-xl mx-auto lg:mx-0">
                 <div className="ql-eyebrow mb-2.5 mx-auto lg:mx-0">
                   <BarChart3 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                   <span>GIAO DIỆN BÁO CÁO THỰC TẾ</span>
@@ -1298,15 +1298,17 @@ export const MetaAdReport: React.FC = () => {
               </div>
 
               {/* Category Filter Pills */}
-              <DomResponsiveSubtabs
-                tabs={SHOT_CATEGORIES.map((cat) => ({
-                  id: cat.id,
-                  label: cat.label,
-                }))}
-                value={shotCat}
-                onChange={(id) => setShotCat(id as MetaShotCat)}
-                maxMobile={2}
-              />
+              <div className="shrink-0">
+                <DomResponsiveSubtabs
+                  tabs={SHOT_CATEGORIES.map((cat) => ({
+                    id: cat.id,
+                    label: cat.label,
+                  }))}
+                  value={shotCat}
+                  onChange={(id) => setShotCat(id as MetaShotCat)}
+                  maxMobile={2}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
