@@ -99,6 +99,7 @@ import {
   GoogleAdsLocationBarChart,
   HourlySpendResultChart,
   MetaGoalBarChart,
+  MicroBehaviorSignalsCard,
   MonthlyYearBarChart,
   RegionSpentBarChart,
   SpentPlatformDonutCard,
@@ -646,6 +647,36 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   const resolvedRange = useMemo(
     () => resolveDateRangeFromPreset(datePreset, customStart, customEnd),
     [datePreset, customStart, customEnd]
+  );
+
+  const handleOpenGadsKeywords = useCallback(
+    (gc: { campaign: string; campaign_id?: string; customer_id?: string }) => {
+      const cid = gc.campaign_id || gc.campaign;
+      setGadsKwModal({
+        open: true,
+        campaignName: gc.campaign,
+        loading: true,
+        keywords: [],
+        searchTerms: [],
+      });
+      loadDomGoogleAdsKeywords(
+        authContext,
+        cid,
+        resolvedRange,
+        gc.customer_id ||
+          (activeGadsAccountId && activeGadsAccountId !== 'all' ? activeGadsAccountId : undefined)
+      )
+        .then((res) =>
+          setGadsKwModal((prev) => ({
+            ...prev,
+            loading: false,
+            keywords: res.keywords,
+            searchTerms: res.searchTerms,
+          }))
+        )
+        .catch(() => setGadsKwModal((prev) => ({ ...prev, loading: false })));
+    },
+    [authContext, resolvedRange, activeGadsAccountId]
   );
 
   // Derived view fallback if Google Ads is turned OFF, CAPI panel is absent, or CRM attribution is disabled
@@ -4638,157 +4669,180 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
 
             {/* Full Dashboard Analytics Section (Auto-Shown) */}
             <div className="space-y-4">
-              {/* Deep Row A: 24h Hourly Spend/Result (Advertiser vs Audience TZ) + Full User Behavior Funnel */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                  <div className="lg:col-span-7 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-2 shrink-0">
-                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-[#1E40FF]" />
-                        <span>Phân Bổ 24 Khung Giờ (Chi Tiêu, Kết Quả &amp; Múi Giờ)</span>
-                      </h3>
-                      <span className="text-[11px] font-medium text-slate-400">00:00 – 23:59</span>
-                    </div>
-                    <HourlySpendResultChart
-                      hourly={dashboardHourly}
-                      hourlyAudience={dataset.hourlyAudience}
-                      currency={currency}
-                    />
+              {/* Deep Row A (60 / 40): 24h Hourly Spend/Result + Behavior Funnel */}
+              <div
+                data-testid="dashboard-hourly-funnel-row"
+                className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-stretch"
+              >
+                <div className="lg:col-span-3 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-2 shrink-0">
+                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-[#1E40FF]" />
+                      <span>Phân Bổ 24 Khung Giờ (Chi Tiêu, Kết Quả &amp; Múi Giờ)</span>
+                    </h3>
+                    <span className="text-[11px] font-medium text-slate-400">00:00 – 23:59</span>
                   </div>
-
-                  <div className="lg:col-span-5 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-2 shrink-0">
-                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                        <Users className="w-4 h-4 text-[#1E40FF]" />
-                        <span>Phễu Hành Vi &amp; Tương Tác Người Dùng</span>
-                      </h3>
-                      <span className="text-[11px] font-medium text-slate-400">Full Funnel</span>
-                    </div>
-                    <UserBehaviorFunnelCard
-                      metrics={{
-                        ...dataset.currentTotals,
-                        result: dashboardTotalResults,
-                      }}
-                      currency={currency}
-                      compact
-                    />
-                  </div>
+                  <HourlySpendResultChart
+                    hourly={dashboardHourly}
+                    hourlyAudience={dataset.hourlyAudience}
+                    currency={currency}
+                  />
                 </div>
 
-                {/* Deep Row B: Video Retention + Hardware Device Donut + Top 5 Campaigns */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-[#1E40FF]" />
-                        <span>Video Funnel (Hook &amp; Hold Rate)</span>
-                      </h3>
-                      <span className="text-[11px] font-medium text-slate-400">Creative</span>
-                    </div>
-                    <VideoFunnelBars
-                      impressions={dataset.currentTotals.impressions}
-                      video3s={dataset.currentTotals.video_3s}
-                      thruplay={dataset.currentTotals.thruplay}
-                      avgWatchTimeSec={dataset.currentTotals.video_avg_time}
-                      completionRate={dataset.currentTotals.completion_rate}
-                      p25={dataset.currentTotals.video_p25}
-                      p50={dataset.currentTotals.video_p50}
-                      p75={dataset.currentTotals.video_p75}
-                      p95={dataset.currentTotals.video_p95}
-                      p100={dataset.currentTotals.video_p100}
-                      linkClicks={dataset.currentTotals.link_click}
-                    />
+                <div className="lg:col-span-2 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-2 shrink-0">
+                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-[#1E40FF]" />
+                      <span>Phễu Hành Vi &amp; Tương Tác Người Dùng</span>
+                    </h3>
+                    <span className="text-[11px] font-medium text-slate-400">Full Funnel</span>
                   </div>
+                  <UserBehaviorFunnelCard
+                    metrics={{
+                      ...dataset.currentTotals,
+                      result: dashboardTotalResults,
+                    }}
+                    currency={currency}
+                    compact
+                    showMicroBehaviors={false}
+                  />
+                </div>
+              </div>
 
-                  <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col gap-3">
-                    <div className="flex items-center justify-between shrink-0">
-                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-[#06B6D4]" />
-                        <span>Device Breakdown</span>
-                      </h3>
-                      <span className="text-[11px] font-medium text-slate-400">
-                        {dataset.devices.length} thiết bị
-                      </span>
-                    </div>
-                    <DeviceDonutCard devices={dataset.devices} currency={currency} compact />
+              {/* Deep Row B (50 / 50): Detailed Micro-Behavior Signals + Top 10 Campaigns by Spend */}
+              <div
+                data-testid="dashboard-behavior-top10-row"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch"
+              >
+                <MicroBehaviorSignalsCard
+                  metrics={{
+                    ...dataset.currentTotals,
+                    result: dashboardTotalResults,
+                  }}
+                  currency={currency}
+                  surfaceClassName="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3 h-full"
+                  columnsClassName="grid-cols-2 sm:grid-cols-3 content-start flex-1"
+                  titleSizeClassName="text-sm font-semibold text-slate-800"
+                />
+
+                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3 h-full">
+                  <div className="flex items-center justify-between shrink-0">
+                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
+                      <span>Top 10 Campaigns by Spend</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setActiveView('ad_detail')}
+                      className="text-[11px] font-semibold text-[#1E40FF] hover:underline cursor-pointer"
+                    >
+                      Xem tất cả →
+                    </button>
                   </div>
-
-                  <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
-                        <span>Top 5 Campaigns by Spend</span>
-                      </h3>
-                      <button
-                        type="button"
-                        onClick={() => setActiveView('ad_detail')}
-                        className="text-[11px] font-semibold text-[#1E40FF] hover:underline cursor-pointer"
-                      >
-                        Xem tất cả →
-                      </button>
-                    </div>
-                    <div className="space-y-2 pt-0.5">
-                      {(() => {
-                        const top5 = filteredCampaigns.slice(0, 5);
-                        const maxTopSpend = Math.max(1, ...top5.map((x) => x.spend));
-                        return top5.map((c, i) => {
-                          const cThumbs = collectEntityThumbs(
-                            c.adsets.flatMap((as) => as.ads || []),
-                            2
-                          );
-                          const barW = Math.max(6, Math.round((c.spend / maxTopSpend) * 100));
-                          return (
-                            <button
-                              key={c.id}
-                              type="button"
-                              onMouseEnter={() => handleHoverPrefetchEntity(c, 'campaign')}
-                              onClick={() => setDetailModal({ entity: c, type: 'campaign' })}
-                              className="w-full rounded-xl bg-slate-50/90 hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200/80 px-2.5 py-2 flex items-center justify-between gap-2.5 text-xs text-left cursor-pointer dom-ios-press"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                <span
-                                  className={`w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0 ${
-                                    i === 0
-                                      ? 'bg-[#1E40FF] text-white'
-                                      : 'bg-slate-200/80 text-slate-700'
-                                  }`}
-                                >
-                                  {i + 1}
-                                </span>
-                                <CreativeThumbFan
-                                  urls={cThumbs}
-                                  goal={c.optimization_goal}
-                                  active={c.effective_status.toUpperCase() === 'ACTIVE'}
-                                  variant="adset"
-                                  alt={c.name}
-                                />
-                                <div className="min-w-0 flex-1">
-                                  <div className="font-semibold text-slate-800 truncate">{c.name}</div>
-                                  <div className="mt-1 h-1.5 w-full rounded-full bg-slate-200/75 overflow-hidden">
-                                    <div
-                                      className="h-full rounded-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]"
-                                      style={{ width: `${barW}%` }}
-                                    />
-                                  </div>
+                  <div className="space-y-2 flex-1">
+                    {(() => {
+                      const top10 = [...filteredCampaigns]
+                        .sort((a, b) => b.spend - a.spend)
+                        .slice(0, 10);
+                      const maxTopSpend = Math.max(1, ...top10.map((x) => x.spend));
+                      return top10.map((c, i) => {
+                        const cThumbs = collectEntityThumbs(
+                          c.adsets.flatMap((as) => as.ads || []),
+                          2
+                        );
+                        const barW = Math.max(6, Math.round((c.spend / maxTopSpend) * 100));
+                        return (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onMouseEnter={() => handleHoverPrefetchEntity(c, 'campaign')}
+                            onClick={() => setDetailModal({ entity: c, type: 'campaign' })}
+                            className="w-full rounded-xl bg-slate-50/90 hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200/80 px-2.5 py-2 flex items-center justify-between gap-2.5 text-xs text-left cursor-pointer dom-ios-press"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <span
+                                className={`w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0 ${
+                                  i === 0
+                                    ? 'bg-[#1E40FF] text-white'
+                                    : 'bg-slate-200/80 text-slate-700'
+                                }`}
+                              >
+                                {i + 1}
+                              </span>
+                              <CreativeThumbFan
+                                urls={cThumbs}
+                                goal={c.optimization_goal}
+                                active={c.effective_status.toUpperCase() === 'ACTIVE'}
+                                variant="adset"
+                                alt={c.name}
+                              />
+                              <div className="min-w-0 flex-1">
+                                <div className="font-semibold text-slate-800 truncate">{c.name}</div>
+                                <div className="mt-1 h-1.5 w-full rounded-full bg-slate-200/75 overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4]"
+                                    style={{ width: `${barW}%` }}
+                                  />
                                 </div>
                               </div>
-                              <div className="text-right shrink-0 tabular-nums">
-                                <div className="font-bold text-[#1E40FF]">
-                                  {formatDomMoneyShort(c.spend, currency)}
-                                </div>
-                                {c.result > 0 && (
-                                  <div className="text-[10px] text-slate-400">
-                                    {formatDomNumber(c.result)} KQ
-                                  </div>
-                                )}
+                            </div>
+                            <div className="text-right shrink-0 tabular-nums">
+                              <div className="font-bold text-[#1E40FF]">
+                                {formatDomMoneyShort(c.spend, currency)}
                               </div>
-                            </button>
-                          );
-                        });
-                      })()}
-                    </div>
+                              {c.result > 0 && (
+                                <div className="text-[10px] text-slate-400">
+                                  {formatDomNumber(c.result)} KQ
+                                </div>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      });
+                    })()}
                   </div>
                 </div>
               </div>
+
+              {/* Deep Row C (50 / 50): Video Retention + Hardware Device Donut */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#1E40FF]" />
+                      <span>Video Funnel (Hook &amp; Hold Rate)</span>
+                    </h3>
+                    <span className="text-[11px] font-medium text-slate-400">Creative</span>
+                  </div>
+                  <VideoFunnelBars
+                    impressions={dataset.currentTotals.impressions}
+                    video3s={dataset.currentTotals.video_3s}
+                    thruplay={dataset.currentTotals.thruplay}
+                    avgWatchTimeSec={dataset.currentTotals.video_avg_time}
+                    completionRate={dataset.currentTotals.completion_rate}
+                    p25={dataset.currentTotals.video_p25}
+                    p50={dataset.currentTotals.video_p50}
+                    p75={dataset.currentTotals.video_p75}
+                    p95={dataset.currentTotals.video_p95}
+                    p100={dataset.currentTotals.video_p100}
+                    linkClicks={dataset.currentTotals.link_click}
+                  />
+                </div>
+
+                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-5 flex flex-col gap-3">
+                  <div className="flex items-center justify-between shrink-0">
+                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#06B6D4]" />
+                      <span>Device Breakdown</span>
+                    </h3>
+                    <span className="text-[11px] font-medium text-slate-400">
+                      {dataset.devices.length} thiết bị
+                    </span>
+                  </div>
+                  <DeviceDonutCard devices={dataset.devices} currency={currency} compact={false} />
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -5716,7 +5770,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         const cpc = gc.click > 0 ? gc.spent / gc.click : 0;
                         return (
                           <div
-                            key={gc.campaign}
+                            key={`${gc.customer_id || ''}:${gc.campaign_id || gc.campaign}`}
                             className="rounded-xl border border-slate-200/85 bg-slate-50/50 p-3 space-y-2.5"
                           >
                             <div className="flex items-start justify-between gap-2">
@@ -5725,39 +5779,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                               </div>
                               <button
                                 type="button"
-                                onClick={() => {
-                                  const cid = gc.campaign_id || gc.campaign;
-                                  setGadsKwModal({
-                                    open: true,
-                                    campaignName: gc.campaign,
-                                    loading: true,
-                                    keywords: [],
-                                    searchTerms: [],
-                                  });
-                                  loadDomGoogleAdsKeywords(
-                                    authContext,
-                                    cid,
-                                    resolvedRange,
-                                    gc.customer_id ||
-                                      (activeGadsAccountId && activeGadsAccountId !== 'all'
-                                        ? activeGadsAccountId
-                                        : undefined)
-                                  )
-                                    .then((res) =>
-                                      setGadsKwModal((prev) => ({
-                                        ...prev,
-                                        loading: false,
-                                        keywords: res.keywords,
-                                        searchTerms: res.searchTerms,
-                                      }))
-                                    )
-                                    .catch(() =>
-                                      setGadsKwModal((prev) => ({ ...prev, loading: false }))
-                                    );
-                                }}
-                                className="px-2.5 py-1 rounded-lg bg-blue-50 text-[#1E40FF] text-[11px] font-semibold shrink-0 cursor-pointer"
+                                data-testid="gads-keywords-btn-mobile"
+                                onClick={() => handleOpenGadsKeywords(gc)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1E40FF] text-[11px] font-semibold shrink-0 cursor-pointer"
                               >
-                                Keywords
+                                <KeyRound className="w-3.5 h-3.5 shrink-0" />
+                                <span>Keywords</span>
                               </button>
                             </div>
                             <div className="grid grid-cols-3 gap-1.5 rounded-lg bg-white border border-slate-100 p-2 text-center">
@@ -5786,11 +5813,14 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </div>
 
                   <div className="hidden md:block dom-meta-table-scroll overflow-x-auto overflow-y-auto max-h-[480px] rounded-xl border border-slate-200 bg-white">
-                    <table className="w-full text-left border-collapse text-xs">
+                    <table data-testid="gads-campaigns-table" className="w-full text-left border-collapse text-xs">
                       <thead>
                         <tr className="bg-slate-50 font-semibold text-slate-600">
                           <th className="sticky top-0 z-10 py-3 px-4 text-xs bg-slate-50 shadow-[inset_0_-1px_0_0_rgba(226,232,240,1)] normal-case tracking-normal text-left">
                             Campaign Name
+                          </th>
+                          <th className="sticky top-0 z-10 py-3 px-4 text-xs bg-slate-50 shadow-[inset_0_-1px_0_0_rgba(226,232,240,1)] normal-case tracking-normal text-left">
+                            Keywords
                           </th>
                           <th className="sticky top-0 z-10 py-3 px-4 text-xs bg-slate-50 shadow-[inset_0_-1px_0_0_rgba(226,232,240,1)] normal-case tracking-normal text-right">
                             Spent
@@ -5810,9 +5840,6 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                           <th className="sticky top-0 z-10 py-3 px-4 text-xs bg-slate-50 shadow-[inset_0_-1px_0_0_rgba(226,232,240,1)] normal-case tracking-normal text-right">
                             CPC
                           </th>
-                          <th className="sticky top-0 z-10 py-3 px-4 text-xs bg-slate-50 shadow-[inset_0_-1px_0_0_rgba(226,232,240,1)] normal-case tracking-normal text-right">
-                            Keywords
-                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -5826,8 +5853,22 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                             const ctr = gc.impression > 0 ? (gc.click / gc.impression) * 100 : 0;
                             const cpc = gc.click > 0 ? gc.spent / gc.click : 0;
                             return (
-                              <tr key={gc.campaign} className="hover:bg-slate-50">
+                              <tr
+                                key={`${gc.customer_id || ''}:${gc.campaign_id || gc.campaign}`}
+                                className="hover:bg-slate-50"
+                              >
                                 <td className="py-3 px-4 font-medium text-slate-800">{gc.campaign}</td>
+                                <td className="py-3 px-4 text-left">
+                                  <button
+                                    type="button"
+                                    data-testid="gads-keywords-btn"
+                                    onClick={() => handleOpenGadsKeywords(gc)}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1E40FF] font-semibold cursor-pointer whitespace-nowrap transition-colors"
+                                  >
+                                    <KeyRound className="w-3.5 h-3.5 shrink-0" />
+                                    <span>Keywords</span>
+                                  </button>
+                                </td>
                                 <td className="py-3 px-4 text-right font-semibold text-slate-800 tabular-nums">
                                   {formatDomMoney(gc.spent, 'VND')}
                                 </td>
@@ -5845,44 +5886,6 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                                 </td>
                                 <td className="py-3 px-4 text-right text-slate-600 tabular-nums">
                                   {formatDomMoney(cpc, 'VND')}
-                                </td>
-                                <td className="py-3 px-4 text-right">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const cid = gc.campaign_id || gc.campaign;
-                                      setGadsKwModal({
-                                        open: true,
-                                        campaignName: gc.campaign,
-                                        loading: true,
-                                        keywords: [],
-                                        searchTerms: [],
-                                      });
-                                      loadDomGoogleAdsKeywords(
-                                    authContext,
-                                    cid,
-                                    resolvedRange,
-                                    gc.customer_id ||
-                                      (activeGadsAccountId && activeGadsAccountId !== 'all'
-                                        ? activeGadsAccountId
-                                        : undefined)
-                                  )
-                                        .then((res) =>
-                                          setGadsKwModal((prev) => ({
-                                            ...prev,
-                                            loading: false,
-                                            keywords: res.keywords,
-                                            searchTerms: res.searchTerms,
-                                          }))
-                                        )
-                                        .catch(() =>
-                                          setGadsKwModal((prev) => ({ ...prev, loading: false }))
-                                        );
-                                    }}
-                                    className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1E40FF] font-medium cursor-pointer"
-                                  >
-                                    Keywords
-                                  </button>
                                 </td>
                               </tr>
                             );

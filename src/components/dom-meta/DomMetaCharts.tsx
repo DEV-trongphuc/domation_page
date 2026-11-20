@@ -2720,46 +2720,122 @@ export const VideoFunnelBars: React.FC<{
   );
 };
 
+export interface DomMetaBehaviorMetrics {
+  spend: number;
+  impressions: number;
+  reach: number;
+  frequency?: number;
+  clicks: number;
+  unique_clicks?: number;
+  ctr?: number;
+  unique_ctr?: number;
+  link_click: number;
+  outbound_click?: number;
+  lpv?: number;
+  lpv_rate?: number;
+  cost_per_lpv?: number;
+  leads: number;
+  messages: number;
+  message_connection?: number;
+  msg_reply?: number;
+  msg_depth_2?: number;
+  msg_depth_3?: number;
+  view_content?: number;
+  add_to_cart?: number;
+  initiate_checkout?: number;
+  purchases: number;
+  purchase_value?: number;
+  aov?: number;
+  roas?: number;
+  reaction?: number;
+  comments?: number;
+  shares?: number;
+  post_save?: number;
+  photo_view?: number;
+  follows?: number;
+  result?: number;
+}
+
+export const MicroBehaviorSignalsCard: React.FC<{
+  metrics: DomMetaBehaviorMetrics;
+  currency?: string;
+  columnsClassName?: string;
+  surfaceClassName?: string;
+  titleSizeClassName?: string;
+}> = ({
+  metrics,
+  currency = 'VND',
+  columnsClassName = 'grid-cols-2 sm:grid-cols-3',
+  surfaceClassName = 'rounded-2xl bg-[#F8FAFC] border border-slate-200/75 p-4 flex flex-col gap-3',
+  titleSizeClassName = 'text-xs font-bold text-slate-800',
+}) => {
+  const microSignals = [
+    { label: 'Tin nhắn mới', val: metrics.messages || 0, dot: 'bg-blue-500' },
+    { label: 'Kết nối Mess', val: metrics.message_connection || 0, dot: 'bg-blue-500' },
+    { label: 'Phản hồi đầu', val: metrics.msg_reply || 0, dot: 'bg-cyan-500' },
+    { label: 'Hội thoại 2+ câu', val: metrics.msg_depth_2 || 0, dot: 'bg-cyan-500' },
+    { label: 'Hội thoại sâu 3+', val: metrics.msg_depth_3 || 0, dot: 'bg-indigo-500' },
+    { label: 'Leads (Form/Web)', val: metrics.leads || 0, dot: 'bg-emerald-500' },
+    { label: 'Xem sản phẩm', val: metrics.view_content || 0, dot: 'bg-violet-500' },
+    { label: 'Thêm giỏ hàng', val: metrics.add_to_cart || 0, dot: 'bg-violet-500' },
+    { label: 'Bắt đầu thanh toán', val: metrics.initiate_checkout || 0, dot: 'bg-amber-500' },
+    { label: 'Đơn mua', val: metrics.purchases || 0, dot: 'bg-emerald-600' },
+    { label: 'Cảm xúc (Reaction)', val: metrics.reaction || 0, dot: 'bg-sky-500' },
+    { label: 'Bình luận', val: metrics.comments || 0, dot: 'bg-sky-500' },
+    { label: 'Chia sẻ', val: metrics.shares || 0, dot: 'bg-indigo-400' },
+    { label: 'Lưu bài', val: metrics.post_save || 0, dot: 'bg-indigo-400' },
+    { label: 'Xem ảnh', val: metrics.photo_view || 0, dot: 'bg-slate-400' },
+    { label: 'Theo dõi trang', val: metrics.follows || 0, dot: 'bg-emerald-400' },
+  ].filter((s) => s.val > 0);
+
+  return (
+    <div data-testid="micro-behavior-signals-card" className={surfaceClassName}>
+      <div className="flex items-center justify-between gap-2 shrink-0">
+        <span className={`inline-flex items-center gap-2 ${titleSizeClassName}`}>
+          <Users className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>Hành vi tương tác chi tiết</span>
+        </span>
+        {(metrics.purchase_value || 0) > 0 && (
+          <span className="px-2 py-0.5 rounded-md bg-emerald-100/80 text-emerald-800 text-[10.5px] font-extrabold tabular-nums whitespace-nowrap">
+            Doanh thu {formatDomMoneyShort(metrics.purchase_value || 0, currency)} · ROAS{' '}
+            {(metrics.roas || 0).toFixed(2)}x
+          </span>
+        )}
+      </div>
+
+      {microSignals.length > 0 ? (
+        <div className={`grid gap-2.5 ${columnsClassName}`}>
+          {microSignals.map((sig) => (
+            <div
+              key={sig.label}
+              className="rounded-xl bg-white border border-slate-200/80 px-3 py-2.5 flex items-center justify-between gap-2 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:border-blue-200/80 transition-colors"
+            >
+              <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-slate-600 min-w-0 leading-tight">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${sig.dot}`} />
+                <span className="truncate">{sig.label}</span>
+              </span>
+              <strong className="text-xs font-extrabold text-slate-900 tabular-nums shrink-0">
+                {formatDomNumber(sig.val)}
+              </strong>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center text-xs text-slate-400 text-center py-6">
+          Chưa ghi nhận hành vi tương tác vi mô trong giai đoạn này
+        </div>
+      )}
+    </div>
+  );
+};
+
 /** Deep User Behavioral & Conversion Funnel Card (Impressions -> Reach -> Clicks -> Link/Outbound -> LPV -> Intent -> Conversion + Messaging Depth & Social/Ecom micro-signals) */
 export const UserBehaviorFunnelCard: React.FC<{
-  metrics: {
-    spend: number;
-    impressions: number;
-    reach: number;
-    frequency?: number;
-    clicks: number;
-    unique_clicks?: number;
-    ctr?: number;
-    unique_ctr?: number;
-    link_click: number;
-    outbound_click?: number;
-    lpv?: number;
-    lpv_rate?: number;
-    cost_per_lpv?: number;
-    leads: number;
-    messages: number;
-    message_connection?: number;
-    msg_reply?: number;
-    msg_depth_2?: number;
-    msg_depth_3?: number;
-    view_content?: number;
-    add_to_cart?: number;
-    initiate_checkout?: number;
-    purchases: number;
-    purchase_value?: number;
-    aov?: number;
-    roas?: number;
-    reaction?: number;
-    comments?: number;
-    shares?: number;
-    post_save?: number;
-    photo_view?: number;
-    follows?: number;
-    result?: number;
-  };
+  metrics: DomMetaBehaviorMetrics;
   currency?: string;
   compact?: boolean;
-}> = ({ metrics, currency = 'VND', compact = false }) => {
+  showMicroBehaviors?: boolean;
+}> = ({ metrics, currency = 'VND', compact = false, showMicroBehaviors = true }) => {
   const impr = Math.max(metrics.impressions || 0, 0);
   const reach = Math.max(metrics.reach || 0, 0);
   const freq = metrics.frequency || (reach > 0 ? impr / reach : 0);
@@ -2876,35 +2952,24 @@ export const UserBehaviorFunnelCard: React.FC<{
     return { ...step, pctOfTop: widthPct };
   });
 
-  const microSignals = [
-    { label: 'Tin nhắn mới', val: metrics.messages || 0, dot: 'bg-blue-500' },
-    { label: 'Kết nối Mess', val: metrics.message_connection || 0, dot: 'bg-blue-500' },
-    { label: 'Phản hồi đầu', val: metrics.msg_reply || 0, dot: 'bg-cyan-500' },
-    { label: 'Hội thoại 2+ câu', val: metrics.msg_depth_2 || 0, dot: 'bg-cyan-500' },
-    { label: 'Hội thoại sâu 3+', val: metrics.msg_depth_3 || 0, dot: 'bg-indigo-500' },
-    { label: 'Leads (Form/Web)', val: metrics.leads || 0, dot: 'bg-emerald-500' },
-    { label: 'Xem sản phẩm', val: metrics.view_content || 0, dot: 'bg-violet-500' },
-    { label: 'Thêm giỏ hàng', val: metrics.add_to_cart || 0, dot: 'bg-violet-500' },
-    { label: 'Bắt đầu thanh toán', val: metrics.initiate_checkout || 0, dot: 'bg-amber-500' },
-    { label: 'Đơn mua', val: metrics.purchases || 0, dot: 'bg-emerald-600' },
-    { label: 'Cảm xúc (Reaction)', val: metrics.reaction || 0, dot: 'bg-sky-500' },
-    { label: 'Bình luận', val: metrics.comments || 0, dot: 'bg-sky-500' },
-    { label: 'Chia sẻ', val: metrics.shares || 0, dot: 'bg-indigo-400' },
-    { label: 'Lưu bài', val: metrics.post_save || 0, dot: 'bg-indigo-400' },
-    { label: 'Xem ảnh', val: metrics.photo_view || 0, dot: 'bg-slate-400' },
-    { label: 'Theo dõi trang', val: metrics.follows || 0, dot: 'bg-emerald-400' },
-  ].filter((s) => s.val > 0);
-
   return (
     <div
       data-testid="user-behavior-funnel-card"
-      className={compact ? 'space-y-3.5' : 'grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch'}
+      className={
+        compact
+          ? showMicroBehaviors
+            ? 'space-y-3.5'
+            : 'flex flex-col flex-1'
+          : 'grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch'
+      }
     >
       {/* Journey Funnel Bars (~60% on wide detail view) */}
       <div
         className={
           compact
-            ? 'space-y-2'
+            ? showMicroBehaviors
+              ? 'space-y-2'
+              : 'flex-1 flex flex-col justify-between gap-2'
             : 'lg:col-span-7 rounded-2xl bg-[#F8FAFC]/80 border border-slate-200/75 p-4 flex flex-col justify-between gap-2.5'
         }
       >
@@ -2920,7 +2985,13 @@ export const UserBehaviorFunnelCard: React.FC<{
           ) : null}
         </div>
 
-        <div className={compact ? 'space-y-1.5' : 'space-y-2 flex-1 flex flex-col justify-between'}>
+        <div
+          className={
+            compact && showMicroBehaviors
+              ? 'space-y-1.5'
+              : 'space-y-2 flex-1 flex flex-col justify-between'
+          }
+        >
           {funnelSteps.map((step) => (
             <div
               key={step.label}
@@ -2949,53 +3020,19 @@ export const UserBehaviorFunnelCard: React.FC<{
       </div>
 
       {/* Deep User Micro-Behaviors (~40% balanced equal-height card on wide view) */}
-      <div
-        className={`${
-          compact ? '' : 'lg:col-span-5'
-        } rounded-2xl bg-[#F8FAFC] border border-slate-200/75 p-4 flex flex-col gap-3`}
-      >
-        <div className="flex items-center justify-between gap-2 shrink-0">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800">
-            <Users className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>Hành vi tương tác chi tiết</span>
-          </span>
-          {(metrics.purchase_value || 0) > 0 && (
-            <span className="px-2 py-0.5 rounded-md bg-emerald-100/80 text-emerald-800 text-[10.5px] font-extrabold tabular-nums whitespace-nowrap">
-              Doanh thu {formatDomMoneyShort(metrics.purchase_value || 0, currency)} · ROAS{' '}
-              {(metrics.roas || 0).toFixed(2)}x
-            </span>
-          )}
-        </div>
-
-        {microSignals.length > 0 ? (
-          <div
-            className={`grid gap-2 ${
-              compact
-                ? 'grid-cols-2 sm:grid-cols-3'
-                : 'grid-cols-1 sm:grid-cols-2 content-start flex-1'
-            }`}
-          >
-            {microSignals.map((sig) => (
-              <div
-                key={sig.label}
-                className="rounded-xl bg-white border border-slate-200/80 px-3 py-2.5 flex items-center justify-between gap-2 shadow-[0_1px_2px_rgba(15,23,42,0.03)]"
-              >
-                <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-slate-600 min-w-0 leading-tight">
-                  <span className={`w-2 h-2 rounded-full shrink-0 ${sig.dot}`} />
-                  <span>{sig.label}</span>
-                </span>
-                <strong className="text-xs font-extrabold text-slate-900 tabular-nums shrink-0">
-                  {formatDomNumber(sig.val)}
-                </strong>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-xs text-slate-400 text-center py-6">
-            Chưa ghi nhận hành vi tương tác vi mô trong giai đoạn này
-          </div>
-        )}
-      </div>
+      {showMicroBehaviors && (
+        <MicroBehaviorSignalsCard
+          metrics={metrics}
+          currency={currency}
+          surfaceClassName={`${
+            compact ? '' : 'lg:col-span-5'
+          } rounded-2xl bg-[#F8FAFC] border border-slate-200/75 p-4 flex flex-col gap-3`}
+          columnsClassName={
+            compact ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 content-start flex-1'
+          }
+          titleSizeClassName="text-xs font-bold text-slate-800"
+        />
+      )}
     </div>
   );
 };
