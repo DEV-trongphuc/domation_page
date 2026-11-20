@@ -567,6 +567,13 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     activeGadsAccountIdRef.current = activeGadsAccountId;
   }, [activeGadsAccountId]);
   const [gadsLoading, setGadsLoading] = useState(false);
+  const [gadsError, setGadsError] = useState<string | null>(null);
+  const gadsReqSeqRef = useRef(0);
+  const gadsConfigSnapshotRef = useRef<{ enabled: boolean; isMccQuick: boolean; targetCid: string }>({
+    enabled: false,
+    isMccQuick: false,
+    targetCid: '',
+  });
   const [gadsData, setGadsData] = useState<{
     currentRows: DomGoogleAdsRow[];
     prevRows: DomGoogleAdsRow[];
@@ -727,6 +734,39 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   useEffect(() => {
     let cancelled = false;
     const ctx = stableAuthContext;
+
+    const gadsSnap = gadsConfigSnapshotRef.current;
+    let earlyGadsTarget: string | null = null;
+    if (gadsSnap.enabled && (!gadsSnap.isMccQuick || gadsSnap.targetCid)) {
+      const earlySeq = ++gadsReqSeqRef.current;
+      earlyGadsTarget = gadsSnap.targetCid;
+      setGadsLoading(true);
+      setGadsError(null);
+      loadDomGoogleAdsDataset(ctx, resolvedRange, {
+        ...(earlyGadsTarget ? { customerId: earlyGadsTarget } : {}),
+      })
+        .then((gd) => {
+          if (!cancelled && gadsReqSeqRef.current === earlySeq) {
+            setGadsData(gd);
+            setGadsError(null);
+          }
+        })
+        .catch((err: unknown) => {
+          if (!cancelled && gadsReqSeqRef.current === earlySeq) {
+            setGadsError(
+              err instanceof Error && err.message
+                ? err.message
+                : 'Không thể tải dữ liệu Google Ads.'
+            );
+          }
+        })
+        .finally(() => {
+          if (!cancelled && gadsReqSeqRef.current === earlySeq) {
+            setGadsLoading(false);
+          }
+        });
+    }
+
     const run = async () => {
       try {
         // Zero-Friction Auto-Connect in embedded CRM/ERP mode when Meta token already exists
@@ -821,27 +861,56 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 ? cfg.google_ads.customer_id
                 : connectedList[0]?.customer_id || '';
           if (resolvedGadsTarget && resolvedGadsTarget !== prevSelectedCid) {
+            activeGadsAccountIdRef.current = resolvedGadsTarget;
             setActiveGadsAccountId(resolvedGadsTarget);
           }
 
+          gadsConfigSnapshotRef.current = {
+            enabled: true,
+            isMccQuick,
+            targetCid: resolvedGadsTarget,
+          };
+
           if (!isMccQuick || connectedList.length > 0) {
-            setGadsLoading(true);
-            loadDomGoogleAdsDataset(ctx, resolvedRange, {
-              ...(resolvedGadsTarget ? { customerId: resolvedGadsTarget } : {}),
-            })
-              .then((gd) => {
-                if (!cancelled) setGadsData(gd);
+            if (earlyGadsTarget !== resolvedGadsTarget) {
+              const reqSeq = ++gadsReqSeqRef.current;
+              setGadsLoading(true);
+              setGadsError(null);
+              loadDomGoogleAdsDataset(ctx, resolvedRange, {
+                ...(resolvedGadsTarget ? { customerId: resolvedGadsTarget } : {}),
               })
-              .catch(() => {
-                if (!cancelled) setGadsData(null);
-              })
-              .finally(() => {
-                if (!cancelled) setGadsLoading(false);
-              });
+                .then((gd) => {
+                  if (!cancelled && gadsReqSeqRef.current === reqSeq) {
+                    setGadsData(gd);
+                    setGadsError(null);
+                  }
+                })
+                .catch((err: unknown) => {
+                  if (!cancelled && gadsReqSeqRef.current === reqSeq) {
+                    setGadsError(
+                      err instanceof Error && err.message
+                        ? err.message
+                        : 'Không thể tải dữ liệu Google Ads.'
+                    );
+                  }
+                })
+                .finally(() => {
+                  if (!cancelled && gadsReqSeqRef.current === reqSeq) {
+                    setGadsLoading(false);
+                  }
+                });
+            }
           } else {
+            gadsReqSeqRef.current += 1;
+            setGadsLoading(false);
+            setGadsError(null);
             setGadsData(null);
           }
         } else {
+          gadsConfigSnapshotRef.current = { enabled: false, isMccQuick: false, targetCid: '' };
+          gadsReqSeqRef.current += 1;
+          setGadsLoading(false);
+          setGadsError(null);
           setGadsData(null);
         }
 
@@ -1437,13 +1506,36 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   );
 
   const handleSelectGadsAccount = (nextCid: string) => {
+    activeGadsAccountIdRef.current = nextCid;
     setActiveGadsAccountId(nextCid);
+    if (gadsConfigSnapshotRef.current.enabled) {
+      gadsConfigSnapshotRef.current = { ...gadsConfigSnapshotRef.current, targetCid: nextCid };
+    }
     if (!config.google_ads.enabled) return;
+    const reqSeq = ++gadsReqSeqRef.current;
     setGadsLoading(true);
+    setGadsError(null);
     loadDomGoogleAdsDataset(authContext, resolvedRange, { customerId: nextCid })
-      .then((gd) => setGadsData(gd))
-      .catch(() => setGadsData(null))
-      .finally(() => setGadsLoading(false));
+      .then((gd) => {
+        if (gadsReqSeqRef.current === reqSeq) {
+          setGadsData(gd);
+          setGadsError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (gadsReqSeqRef.current === reqSeq) {
+          setGadsError(
+            err instanceof Error && err.message
+              ? err.message
+              : 'Không thể tải dữ liệu Google Ads.'
+          );
+        }
+      })
+      .finally(() => {
+        if (gadsReqSeqRef.current === reqSeq) {
+          setGadsLoading(false);
+        }
+      });
   };
 
   const handleGoogleAdsConfigUpdated = (nextGads: DomMetaGoogleAdsConfig) => {
@@ -3051,6 +3143,82 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     </div>
   );
 
+  const applyDateSelection = (
+    nextPreset: DomMetaDatePreset,
+    nextStartInput: string,
+    nextEndInput: string
+  ) => {
+    setDatePreset(nextPreset);
+    if (nextPreset === 'custom_range') {
+      const sMin = nextStartInput <= nextEndInput ? nextStartInput : nextEndInput;
+      const sMax = nextStartInput <= nextEndInput ? nextEndInput : nextStartInput;
+      setCustomStart(sMin);
+      setCustomEnd(sMax);
+    }
+    setError(null);
+    setGadsError(null);
+    if (config.google_ads.enabled) {
+      setGadsLoading(true);
+    }
+    if (!(effectiveView === 'google_ads' && config.google_ads.enabled)) {
+      setLoading(true);
+    }
+    setReloadTick((t) => t + 1);
+    setDateMenuOpen(false);
+  };
+
+  const googleAdsSkeleton = (
+    <div data-testid="google-ads-skeleton" className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <div className="lg:col-span-3 rounded-2xl bg-white border border-slate-200/80 p-3.5 space-y-2.5">
+          <div className="h-[92px] rounded-xl dom-meta-skeleton" />
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-[60px] rounded-xl dom-meta-skeleton-soft p-3 flex flex-col justify-between">
+              <div className="h-2.5 w-20 rounded dom-meta-skeleton" />
+              <div className="h-4 w-24 rounded dom-meta-skeleton" />
+            </div>
+          ))}
+        </div>
+        <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="h-4 w-36 rounded dom-meta-skeleton" />
+            <div className="h-7 w-24 rounded-full dom-meta-skeleton-soft" />
+          </div>
+          <div className="h-[220px] rounded-xl dom-meta-skeleton-soft mt-4" />
+        </div>
+        <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <div className="h-4 w-40 rounded dom-meta-skeleton" />
+            <div className="h-7 w-24 rounded-full dom-meta-skeleton-soft" />
+          </div>
+          <div className="h-[220px] rounded-xl dom-meta-skeleton-soft mt-4" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <div className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3">
+          <div className="h-4 w-48 rounded dom-meta-skeleton" />
+          <div className="h-48 rounded-xl dom-meta-skeleton-soft" />
+        </div>
+        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[0, 1].map((i) => (
+            <div key={i} className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3">
+              <div className="h-4 w-40 rounded dom-meta-skeleton" />
+              <div className="h-48 rounded-xl dom-meta-skeleton-soft" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-2.5">
+        <div className="h-5 w-44 rounded dom-meta-skeleton" />
+        {[0, 1, 2, 3].map((r) => (
+          <div key={r} className="h-12 rounded-xl dom-meta-skeleton-soft" />
+        ))}
+      </div>
+    </div>
+  );
+
   const datePickerControl = (
     <div ref={datePickerRef} className="relative flex items-center gap-2 shrink-0">
       <button
@@ -3112,6 +3280,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       if (parts[0] && parts[1]) {
                         setCalendarMonth({ year: parts[0], month: parts[1] - 1 });
                       }
+                      applyDateSelection(opt.key, next.since, next.until);
                     }
                   }}
                   className={`w-full px-2.5 py-2 rounded-xl flex items-center gap-2 text-left text-xs transition-colors cursor-pointer ${
@@ -3251,17 +3420,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setDatePreset(draftPreset);
-                    if (draftPreset === 'custom_range') {
-                      const sMin = draftStart <= draftEnd ? draftStart : draftEnd;
-                      const sMax = draftStart <= draftEnd ? draftEnd : draftStart;
-                      setCustomStart(sMin);
-                      setCustomEnd(sMax);
-                    }
-                    setLoading(true);
-                    setDateMenuOpen(false);
-                  }}
+                  onClick={() => applyDateSelection(draftPreset, draftStart, draftEnd)}
                   className="px-4 py-2 sm:py-1.5 rounded-xl bg-[#1E40FF] hover:bg-blue-700 text-xs font-semibold text-white shadow-xs cursor-pointer text-center"
                 >
                   Update
@@ -4329,6 +4488,20 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             </div>
           )}
 
+          {loading && !config.google_ads.enabled && effectiveView === 'google_ads' && googleAdsSkeleton}
+
+          {loading && effectiveView === 'settings' && (
+            <div className="rounded-2xl bg-white border border-slate-200/80 p-5 space-y-3.5">
+              <div className="h-6 w-48 rounded dom-meta-skeleton" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="h-24 rounded-xl dom-meta-skeleton-soft" />
+                ))}
+              </div>
+              <div className="h-56 rounded-xl dom-meta-skeleton-soft" />
+            </div>
+          )}
+
         {/* ====================================================================
             VIEW 1: DASHBOARD — Executive Overview Layout + Campaign Tree at Bottom
            ==================================================================== */}
@@ -5388,7 +5561,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
         {/* ====================================================================
             VIEW 5: GOOGLE ADS REPORT (ONLY WHEN TOGGLED ON!)
            ==================================================================== */}
-        {!loading && config.google_ads.enabled && effectiveView === 'google_ads' && (
+        {config.google_ads.enabled && effectiveView === 'google_ads' && (
           <div className="space-y-4">
             <div className="rounded-2xl bg-white border border-slate-200/80 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2.5 text-xs font-medium text-slate-600">
@@ -5506,8 +5679,24 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 )}
               </div>
             ) : gadsLoading ? (
-              <div className="rounded-2xl bg-white border border-slate-200 p-10 text-center text-xs text-slate-500">
-                Đang đồng bộ dữ liệu Google Ads...
+              googleAdsSkeleton
+            ) : gadsError ? (
+              <div className="rounded-2xl bg-rose-50 border border-rose-200 px-5 py-4 flex items-center justify-between gap-4 text-xs font-medium text-rose-700">
+                <span>{gadsError}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleSelectGadsAccount(
+                      activeGadsAccountId ||
+                        config.google_ads.customer_id ||
+                        connectedGadsAccounts[0]?.customer_id ||
+                        'all'
+                    )
+                  }
+                  className="px-3.5 py-1.5 rounded-xl bg-white border border-rose-200 text-rose-700 font-semibold cursor-pointer shrink-0 dom-ios-press"
+                >
+                  Thử tải lại
+                </button>
               </div>
             ) : (
               <>

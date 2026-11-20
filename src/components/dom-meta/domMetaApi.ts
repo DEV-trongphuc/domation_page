@@ -3370,12 +3370,42 @@ function parseDeviceField(val: unknown): { clicks: number; spent: number } {
   return { clicks: 0, spent: 0 };
 }
 
+function normalizeGoogleAdsDateIso(raw: unknown): string {
+  const s = String(raw || '').trim();
+  if (!s) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  if (/^\d{4}\/\d{2}\/\d{2}$/.test(s)) return s.replace(/\//g, '-');
+  const dmy = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (dmy) {
+    return `${dmy[3]}-${dmy[2].padStart(2, '0')}-${dmy[1].padStart(2, '0')}`;
+  }
+  if (/^\d{4}-\d{2}-\d{2}[T\s]/.test(s)) {
+    if (/(?:Z|[+-]\d{2}:?\d{2})$/i.test(s)) {
+      const parsed = new Date(s);
+      if (!Number.isNaN(parsed.getTime())) {
+        try {
+          return new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          }).format(parsed);
+        } catch {
+          return s.slice(0, 10);
+        }
+      }
+    }
+    return s.slice(0, 10);
+  }
+  return s;
+}
+
 function mapGoogleAdsObjectRow(obj: Record<string, unknown>): DomGoogleAdsRow {
   const mob = parseDeviceField(obj.mobile);
   const desk = parseDeviceField(obj.desktop);
   const tab = parseDeviceField(obj.tablet);
   return {
-    date: String(obj.date || obj.day || ''),
+    date: normalizeGoogleAdsDateIso(obj.date || obj.day || ''),
     campaign: String(obj.campaign || obj.campaign_name || 'Google Campaign'),
     campaign_id: String(obj.campaign_id || obj.campaignId || ''),
     customer_id: obj.customer_id ? String(obj.customer_id) : undefined,
@@ -3597,6 +3627,8 @@ export async function loadDomGoogleAdsDataset(
       'time_range',
       JSON.stringify({ since: range.prevSince, until: range.until })
     );
+    target.searchParams.set('since', range.prevSince);
+    target.searchParams.set('until', range.until);
     const cid = options?.customerId || ctx.directGoogleAds.customer_id;
     if (cid && cid !== 'all') {
       target.searchParams.set('account_id', cid);
