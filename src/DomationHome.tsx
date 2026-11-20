@@ -11,7 +11,6 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
-  Compass,
   Cpu,
   Database,
   ExternalLink,
@@ -42,10 +41,7 @@ import { WebEstimatorModal } from './components/WebEstimatorModal';
 import { PartnersTrustSection } from './components/PartnersTrustSection';
 import { SectionQuickDock } from './components/SectionQuickDock';
 import { DomationFooter } from './components/DomationFooter';
-import {
-  ClosedLoopFlywheelSection,
-  type FlywheelProduct,
-} from './components/ClosedLoopFlywheelSection';
+import { ClosedLoopFlywheelSection } from './components/ClosedLoopFlywheelSection';
 import {
   CASE_STUDY_SPOTLIGHTS,
   DECOR_PNGS,
@@ -54,17 +50,9 @@ import {
 } from './data/enterpriseData';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
-import { handleSpaLinkClick, navigateTo } from './utils/navigation';
+import { handleSpaLinkClick } from './utils/navigation';
 import { HOME_FAQS, getHomeSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
-import {
-  EcosystemFocusTourModal,
-  type EcosystemTourSystemKey,
-} from './components/onboarding/EcosystemFocusTourModal';
-import {
-  NonCoderSetupModal,
-  type SetupProductKey,
-} from './components/onboarding/NonCoderSetupModal';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 
 const DEDICATED_APP_LINKS = [
@@ -438,38 +426,6 @@ export const DomationHome: React.FC = () => {
   } | null>(null);
   const [billingYearly, setBillingYearly] = useState(true);
   const [showBackTop, setShowBackTop] = useState(false);
-  const [focusTourOpen, setFocusTourOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
-  );
-  const [focusTourSystem, setFocusTourSystem] = useState<EcosystemTourSystemKey>(() => {
-    if (typeof window === 'undefined') return 'flywheel';
-    const p = new URLSearchParams(window.location.search).get('product');
-    return p === 'dommeta' || p === 'erp' || p === 'autodata' || p === 'automation' ? p : 'flywheel';
-  });
-  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('setup') === 'quick'
-  );
-  const [setupGuideProduct, setSetupGuideProduct] = useState<SetupProductKey>(() => {
-    if (typeof window === 'undefined') return 'autodata';
-    const p = new URLSearchParams(window.location.search).get('product');
-    return p === 'dommeta' || p === 'erp' ? p : 'autodata';
-  });
-
-  const openFocusTourModal = (product?: FlywheelProduct | EcosystemTourSystemKey) => {
-    setFocusTourSystem(
-      product === 'dommeta' || product === 'erp' || product === 'autodata' || product === 'automation'
-        ? product
-        : 'flywheel'
-    );
-    setFocusTourOpen(true);
-  };
-
-  const openSetupGuideModal = (product?: FlywheelProduct) => {
-    setSetupGuideProduct(product === 'dommeta' || product === 'erp' ? product : 'autodata');
-    setSetupGuideOpen(true);
-  };
 
   const openInspection = (tab: InspectionTabId) => {
     setInspectionTab(tab);
@@ -494,28 +450,6 @@ export const DomationHome: React.FC = () => {
     const onScroll = () => setShowBackTop(window.scrollY > 560);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  // M4 Modal & Focus Tour Hooks (CustomEvents)
-  useEffect(() => {
-    const onFocusTour = (rawEvent: Event) => {
-      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
-      ev.preventDefault();
-      openFocusTourModal(ev.detail?.product || 'flywheel');
-    };
-
-    const onSetupGuide = (rawEvent: Event) => {
-      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
-      ev.preventDefault();
-      openSetupGuideModal(ev.detail?.product || 'autodata');
-    };
-
-    window.addEventListener('domation:open-focus-tour', onFocusTour);
-    window.addEventListener('domation:open-setup-guide', onSetupGuide);
-    return () => {
-      window.removeEventListener('domation:open-focus-tour', onFocusTour);
-      window.removeEventListener('domation:open-setup-guide', onSetupGuide);
-    };
   }, []);
 
   const currentAutoData = AUTODATA_SCREENS[activeAutoDataIdx] || AUTODATA_SCREENS[0];
@@ -633,25 +567,6 @@ export const DomationHome: React.FC = () => {
                     <span>Màn Hình Thực Tế</span>
                   </button>
                 </div>
-
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => openFocusTourModal('flywheel')}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
-                    <span>Tour Hướng Dẫn</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => openSetupGuideModal('autodata')}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Thiết lập nhanh 3 bước</span>
-                  </button>
-                </div>
               </div>
 
               {/* Right Enlarged Interactive Brand Sphere */}
@@ -744,11 +659,7 @@ export const DomationHome: React.FC = () => {
         {/* ================================================================ */}
         {/* 3. CLOSED-LOOP INTELLIGENCE CIRCLE (META ADS <-> CRM <-> CAPI)   */}
         {/* ================================================================ */}
-        <ClosedLoopFlywheelSection
-          variant="home"
-          onOpenFocusTour={openFocusTourModal}
-          onOpenSetupGuide={openSetupGuideModal}
-        />
+        <ClosedLoopFlywheelSection variant="home" />
 
         {/* ================================================================ */}
         {/* 4. CRM AUTO DATA — LAYOUT 1: SPLIT EDITORIAL + LIVE APP SWITCHER */}
@@ -2098,44 +2009,6 @@ export const DomationHome: React.FC = () => {
       <ImageZoomModal
         image={zoomedShot}
         onClose={() => setZoomedShot(null)}
-      />
-
-      <EcosystemFocusTourModal
-        open={focusTourOpen}
-        initialSystem={focusTourSystem}
-        onClose={() => setFocusTourOpen(false)}
-        onOpenSetupGuide={(product) => {
-          setFocusTourOpen(false);
-          openSetupGuideModal(product);
-        }}
-        onStartTrial={(system) => {
-          setFocusTourOpen(false);
-          if (system === 'dommeta') {
-            navigateTo('/meta-report');
-          } else if (system === 'erp') {
-            navigateTo('/erp#tu-van');
-          } else {
-            navigateTo('/data?setup=quick');
-          }
-        }}
-      />
-
-      <NonCoderSetupModal
-        open={setupGuideOpen}
-        initialProduct={setupGuideProduct}
-        onClose={() => setSetupGuideOpen(false)}
-        onLaunchAutodataWizard={() => {
-          setSetupGuideOpen(false);
-          navigateTo('/data?setup=quick');
-        }}
-        onOpenMetaReport={() => {
-          setSetupGuideOpen(false);
-          navigateTo('/meta-report');
-        }}
-        onNavigate={(path) => {
-          setSetupGuideOpen(false);
-          navigateTo(path);
-        }}
       />
     </div>
   );

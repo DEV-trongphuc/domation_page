@@ -1396,7 +1396,7 @@ export function collectEntityThumbs(
   const result: string[] = [];
   const seen = new Set<string>();
   for (const ad of ads) {
-    const url = (ad.thumbnail_url || ad.image_url || '').trim();
+    const url = (ad.image_url || ad.thumbnail_url || '').trim();
     if (url && !seen.has(url)) {
       seen.add(url);
       result.push(url);

@@ -13,7 +13,6 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-  Compass,
   Cookie,
   Cpu,
   CreditCard,
@@ -38,25 +37,16 @@ import {
   Webhook,
   Workflow,
   X,
-  Zap,
   ZoomIn,
 } from 'lucide-react';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { Navbar } from './Navbar';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
-import { ClosedLoopFlywheelSection, type FlywheelProduct } from './components/ClosedLoopFlywheelSection';
+import { ClosedLoopFlywheelSection } from './components/ClosedLoopFlywheelSection';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
-import { handleSpaLinkClick, navigateTo } from './utils/navigation';
-import {
-  EcosystemFocusTourModal,
-  type EcosystemTourSystemKey,
-} from './components/onboarding/EcosystemFocusTourModal';
-import {
-  NonCoderSetupModal,
-  type SetupProductKey,
-} from './components/onboarding/NonCoderSetupModal';
+import { handleSpaLinkClick } from './utils/navigation';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 import { AUTODATA_FAQS, getDataSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
@@ -342,65 +332,11 @@ export function DomationDataLanding() {
   // Zoomable screenshot lightbox
   const [zoomImage, setZoomImage] = useState<ScreenshotItem | null>(null);
   const [activeFusionShotIdx, setActiveFusionShotIdx] = useState(0);
-  const [focusTourOpen, setFocusTourOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
-  );
-  const [focusTourSystem, setFocusTourSystem] = useState<EcosystemTourSystemKey>(() => {
-    if (typeof window === 'undefined') return 'autodata';
-    const p = new URLSearchParams(window.location.search).get('product');
-    return p === 'dommeta' || p === 'erp' || p === 'flywheel' || p === 'automation' ? p : 'autodata';
-  });
-  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('setup') === 'quick'
-  );
-  const [setupGuideProduct, setSetupGuideProduct] = useState<SetupProductKey>(() => {
-    if (typeof window === 'undefined') return 'autodata';
-    const p = new URLSearchParams(window.location.search).get('product');
-    return p === 'dommeta' || p === 'erp' ? p : 'autodata';
-  });
-
-  const openFocusTourModal = (product?: FlywheelProduct | EcosystemTourSystemKey) => {
-    setFocusTourSystem(
-      product === 'dommeta' || product === 'erp' || product === 'flywheel' || product === 'automation'
-        ? product
-        : 'autodata'
-    );
-    setFocusTourOpen(true);
-  };
-
-  const openSetupGuideModal = (product?: FlywheelProduct) => {
-    setSetupGuideProduct(product === 'dommeta' || product === 'erp' ? product : 'autodata');
-    setSetupGuideOpen(true);
-  };
 
   useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 560);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  // M4 Modal & Focus Tour Hooks (CustomEvents)
-  useEffect(() => {
-    const onSetupGuide = (rawEvent: Event) => {
-      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
-      ev.preventDefault();
-      openSetupGuideModal(ev.detail?.product || 'autodata');
-    };
-
-    const onFocusTour = (rawEvent: Event) => {
-      const ev = rawEvent as CustomEvent<{ product?: FlywheelProduct }>;
-      ev.preventDefault();
-      openFocusTourModal(ev.detail?.product || 'autodata');
-    };
-
-    window.addEventListener('domation:open-setup-guide', onSetupGuide);
-    window.addEventListener('domation:open-focus-tour', onFocusTour);
-    return () => {
-      window.removeEventListener('domation:open-setup-guide', onSetupGuide);
-      window.removeEventListener('domation:open-focus-tour', onFocusTour);
-    };
   }, []);
 
   // Sync live dynamic catalog & platform defaults from real backend bridge
@@ -697,25 +633,6 @@ export function DomationDataLanding() {
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => openFocusTourModal('autodata')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[44px]"
-              >
-                <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
-                <span>Tour Hướng Dẫn</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => openSetupGuideModal('autodata')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[44px]"
-              >
-                <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Thiết lập 3 bước</span>
-              </button>
-            </div>
-
             <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] sm:text-xs text-slate-500">
               <span>
                 Miễn phí <strong className="text-slate-900">{catalog.trial_duration_months} tháng đầu ({catalog.trial_duration_days} ngày)</strong>
@@ -760,11 +677,7 @@ export function DomationDataLanding() {
           </div>
         </section>
 
-      <ClosedLoopFlywheelSection
-        variant="data"
-        onOpenFocusTour={openFocusTourModal}
-        onOpenSetupGuide={openSetupGuideModal}
-      />
+      <ClosedLoopFlywheelSection variant="data" />
 
       {/* ====================================================================
           REAL PARTNERS STRIP (#partners)
@@ -2890,43 +2803,6 @@ export function DomationDataLanding() {
         }}
       />
 
-      <EcosystemFocusTourModal
-        open={focusTourOpen}
-        initialSystem={focusTourSystem}
-        onClose={() => setFocusTourOpen(false)}
-        onOpenSetupGuide={(product) => {
-          setFocusTourOpen(false);
-          openSetupGuideModal(product);
-        }}
-        onStartTrial={(system) => {
-          setFocusTourOpen(false);
-          if (system === 'dommeta') {
-            navigateTo('/meta-report');
-          } else if (system === 'erp') {
-            navigateTo('/erp#tu-van');
-          } else {
-            openFullScreenApp(session ? 'workspace_router' : 'register');
-          }
-        }}
-      />
-
-      <NonCoderSetupModal
-        open={setupGuideOpen}
-        initialProduct={setupGuideProduct}
-        onClose={() => setSetupGuideOpen(false)}
-        onLaunchAutodataWizard={() => {
-          setSetupGuideOpen(false);
-          openFullScreenApp(session ? 'workspace_router' : 'register');
-        }}
-        onOpenMetaReport={() => {
-          setSetupGuideOpen(false);
-          navigateTo('/meta-report');
-        }}
-        onNavigate={(path) => {
-          setSetupGuideOpen(false);
-          navigateTo(path);
-        }}
-      />
     </div>
   );
 }

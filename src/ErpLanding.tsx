@@ -8,7 +8,6 @@ import {
   Camera,
   CheckCircle2,
   Clock,
-  Compass,
   CreditCard,
   Database,
   ExternalLink,
@@ -35,9 +34,6 @@ import { DECOR_PNGS } from './data/enterpriseData';
 import { getErpSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
-import { EcosystemFocusTourModal } from './components/onboarding/EcosystemFocusTourModal';
-import { NonCoderSetupModal } from './components/onboarding/NonCoderSetupModal';
-import { navigateTo } from './utils/navigation';
 
 /* ───────────────────────────── Data ───────────────────────────── */
 
@@ -551,31 +547,9 @@ export const ErpLanding: React.FC = () => {
   const [activeId, setActiveId] = useState<string>(ERP_SHOTS[0].id);
   const [lightbox, setLightbox] = useState<LightboxItem | null>(null);
   const [showContactModal, setShowContactModal] = useState(false);
-  const [focusTourOpen, setFocusTourOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
-  );
-  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('setup') === 'quick'
-  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const onTour = (ev: Event) => {
-      ev.preventDefault();
-      setFocusTourOpen(true);
-    };
-    const onSetup = (ev: Event) => {
-      ev.preventDefault();
-      setSetupGuideOpen(true);
-    };
-    window.addEventListener('domation:open-focus-tour', onTour);
-    window.addEventListener('domation:open-setup-guide', onSetup);
-    return () => {
-      window.removeEventListener('domation:open-focus-tour', onTour);
-      window.removeEventListener('domation:open-setup-guide', onSetup);
-    };
   }, []);
 
   // Warm the cache for every screen once the browser is idle so tab switches feel instant.
@@ -662,25 +636,6 @@ export const ErpLanding: React.FC = () => {
                 <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1E40FF] shrink-0" />
                 <span>Xem Giao Diện Thực Tế</span>
               </a>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => setFocusTourOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[40px]"
-              >
-                <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
-                <span>Tour Hướng Dẫn</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSetupGuideOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[40px]"
-              >
-                <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Hướng dẫn triển khai</span>
-              </button>
             </div>
           </div>
 
@@ -1219,44 +1174,6 @@ export const ErpLanding: React.FC = () => {
       </AnimatePresence>
 
       <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} />
-
-      <EcosystemFocusTourModal
-        open={focusTourOpen}
-        initialSystem="erp"
-        onClose={() => setFocusTourOpen(false)}
-        onOpenSetupGuide={() => {
-          setFocusTourOpen(false);
-          setSetupGuideOpen(true);
-        }}
-        onStartTrial={(system) => {
-          setFocusTourOpen(false);
-          if (system === 'erp') {
-            setShowContactModal(true);
-          } else if (system === 'dommeta') {
-            navigateTo('/meta-report');
-          } else {
-            navigateTo('/data?setup=quick');
-          }
-        }}
-      />
-
-      <NonCoderSetupModal
-        open={setupGuideOpen}
-        initialProduct="erp"
-        onClose={() => setSetupGuideOpen(false)}
-        onLaunchAutodataWizard={() => {
-          setSetupGuideOpen(false);
-          navigateTo('/data?setup=quick');
-        }}
-        onOpenMetaReport={() => {
-          setSetupGuideOpen(false);
-          navigateTo('/meta-report');
-        }}
-        onNavigate={(path) => {
-          setSetupGuideOpen(false);
-          navigateTo(path);
-        }}
-      />
     </div>
   );
 };

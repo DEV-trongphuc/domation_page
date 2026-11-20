@@ -8,7 +8,6 @@ import {
   Check,
   CheckCircle2,
   Clock,
-  Compass,
   Cookie,
   Cpu,
   Database,
@@ -40,8 +39,6 @@ import { usePageSeo } from './utils/seo';
 import { ErrorBoundary } from './components/autodata/cloned/components/ErrorBoundary';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 import { ClosedLoopFlywheelCockpit } from './components/dom-meta/ClosedLoopFlywheelCockpit';
-import { EcosystemFocusTourModal } from './components/onboarding/EcosystemFocusTourModal';
-import { NonCoderSetupModal } from './components/onboarding/NonCoderSetupModal';
 import {
   apiRequest,
   clearAutodataSessionV2,
@@ -593,32 +590,6 @@ export const MetaAdReport: React.FC = () => {
   const [zoomShot, setZoomShot] = useState<MetaLiveShot | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [pricingCycle, setPricingCycle] = useState<'annual' | 'monthly'>('annual');
-  const [focusTourOpen, setFocusTourOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('tour') === 'ecosystem'
-  );
-  const [setupGuideOpen, setSetupGuideOpen] = useState(() =>
-    typeof window !== 'undefined' &&
-    new URLSearchParams(window.location.search).get('setup') === 'quick'
-  );
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const onTour = (ev: Event) => {
-      ev.preventDefault();
-      setFocusTourOpen(true);
-    };
-    const onSetup = (ev: Event) => {
-      ev.preventDefault();
-      setSetupGuideOpen(true);
-    };
-    window.addEventListener('domation:open-focus-tour', onTour);
-    window.addEventListener('domation:open-setup-guide', onSetup);
-    return () => {
-      window.removeEventListener('domation:open-focus-tour', onTour);
-      window.removeEventListener('domation:open-setup-guide', onSetup);
-    };
-  }, []);
   const [demoGAdsConfig, setDemoGAdsConfig] = useState<DomMetaGoogleAdsConfig>({
     enabled: false,
     customer_id: '',
@@ -1263,25 +1234,6 @@ export const MetaAdReport: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => setFocusTourOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs font-semibold text-slate-700 hover:text-[#1E40FF] transition-colors cursor-pointer min-h-[40px]"
-              >
-                <Compass className="w-3.5 h-3.5 text-[#1E40FF]" />
-                <span>Tour Hướng Dẫn</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSetupGuideOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/90 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-semibold text-slate-700 hover:text-emerald-700 transition-colors cursor-pointer min-h-[40px]"
-              >
-                <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Thiết lập 3 bước</span>
-              </button>
-            </div>
-
             <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] sm:text-xs text-slate-500">
               <span>
                 Miễn phí <strong className="text-slate-900">trọn vẹn 1 tháng đầu</strong>
@@ -1384,14 +1336,14 @@ export const MetaAdReport: React.FC = () => {
               ))}
             </div>
 
-            {/* Red Connect-Link Divider: Bridging Dashboard Step 3 into CRM Auto Closed-Loop Optimization */}
+            {/* Brand Sapphire Connect-Link Divider: Bridging Dashboard Step 3 into CRM Auto Closed-Loop Optimization */}
             <div className="relative py-3 flex items-center justify-center">
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-rose-300 to-transparent" />
-              <div className="relative z-10 inline-flex items-center gap-2 rounded-full border border-rose-200 bg-rose-50/95 px-3.5 sm:px-4 py-1.5 shadow-xs">
-                <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
+              <div className="relative z-10 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-[#F4F8FF]/95 px-3.5 sm:px-4 py-1.5 shadow-xs">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#0284C7] text-white flex items-center justify-center shrink-0 shadow-xs">
                   <Link2 className="w-3.5 h-3.5" />
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-rose-700">
+                <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#1E40FF]">
                   Kết Hợp Auto Data CRM • Vòng Tròn Tối Ưu Khép Kín
                 </span>
               </div>
@@ -1399,11 +1351,11 @@ export const MetaAdReport: React.FC = () => {
 
             <div
               data-testid="meta-crm-closed-loop-bridge"
-              className="rounded-2xl bg-gradient-to-br from-rose-50/60 via-white to-blue-50/70 border border-rose-200/75 p-4 sm:p-5 space-y-4 text-left"
+              className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-[#ECFEFF]/75 border border-blue-200/80 p-4 sm:p-5 space-y-4 text-left"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-600">
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#1E40FF]">
                     <RefreshCw className="w-3.5 h-3.5 shrink-0" />
                     <span>Từ Dashboard Bước 03 → Vận Hành CRM &amp; Học Tệp CAPI Tự Động</span>
                   </div>
@@ -1415,7 +1367,7 @@ export const MetaAdReport: React.FC = () => {
                   type="button"
                   data-testid="meta-crm-connect-now"
                   onClick={() => navigateTo('/data?setup=quick')}
-                  className="self-start sm:self-center inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-600 to-[#1E40FF] hover:from-rose-700 hover:to-[#1E3A8A] text-white px-5 py-2.5 min-h-[44px] text-xs font-bold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0"
+                  className="self-start sm:self-center inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white px-5 py-2.5 min-h-[44px] text-xs font-bold shadow-[0_6px_18px_rgba(30,64,255,0.28)] transition-all cursor-pointer whitespace-nowrap shrink-0"
                 >
                   <Link2 className="w-3.5 h-3.5 shrink-0" />
                   <span>Connect ngay</span>
@@ -1423,42 +1375,66 @@ export const MetaAdReport: React.FC = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
                 {[
                   {
                     badge: 'Từ Bước 03 → Chia Sale < 5s',
                     title: 'Chia cho từng Sale tư vấn chăm sóc',
                     desc: 'Lead đổ về từ bài Ads trên Dashboard được lọc trùng 180 ngày và chia vòng công bằng 1:1 tới Zalo/Telegram của từng Sale chỉ trong dưới 5 giây.',
+                    renderLogo: () => (
+                      <img
+                        src="/assets/brands/zalobot-logo.webp"
+                        alt="ZaloBot Chia Sale"
+                        className="w-9 h-9 rounded-xl object-contain bg-white border border-blue-100 p-1 shrink-0"
+                      />
+                    ),
                   },
                   {
                     badge: 'Đối soát 2 chiều theo từng Ads',
                     title: 'Báo cáo trạng thái từng Lead trên từng Ads',
                     desc: 'Hiển thị trực tiếp từng Lead thuộc bài quảng cáo nào đang Hẹn gặp, Tiềm năng, Chốt đơn hay Số rác — biết chính xác bài nào ra doanh thu thật.',
+                    renderLogo: () => (
+                      <div className="w-9 h-9 rounded-xl bg-[#F4F8FF] border border-blue-100 flex items-center justify-center shrink-0">
+                        <DomationLogoMark size={22} />
+                      </div>
+                    ),
                   },
                   {
                     badge: 'Vòng tròn tối ưu thuật toán Meta',
                     title: 'Bắn Meta CAPI học tệp tối ưu',
                     desc: 'Tự động mã hóa SHA-256 và gửi ngược tín hiệu chất lượng (Qualified, Purchase) về Meta CAPI để thuật toán né số ảo, nhân bản đúng tệp khách chốt.',
+                    renderLogo: () => (
+                      <img
+                        src="/assets/brands/meta-icon.svg"
+                        alt="Meta CAPI SHA-256"
+                        className="w-9 h-9 rounded-xl object-contain bg-white border border-blue-100 p-1 shrink-0"
+                      />
+                    ),
                   },
                 ].map((stage, idx) => (
                   <div
                     key={stage.badge}
-                    className="rounded-xl bg-white/95 border border-slate-200/85 p-3.5 flex flex-col gap-1.5 shadow-2xs"
+                    className="rounded-2xl bg-white/95 hover:bg-white border border-slate-200/85 p-4 flex flex-col gap-2.5 shadow-2xs transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600">
-                        {stage.badge}
-                      </span>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {stage.renderLogo()}
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-[#1E40FF] truncate">
+                            {stage.badge}
+                          </div>
+                          <div className="text-sm font-bold text-slate-900 leading-snug">
+                            {stage.title}
+                          </div>
+                        </div>
+                      </div>
                       {idx < 2 && (
-                        <ArrowRight className="hidden lg:block w-3.5 h-3.5 text-rose-400 shrink-0" />
+                        <span className="hidden lg:inline-flex w-6 h-6 rounded-full bg-slate-50 border border-slate-200 text-[#1E40FF] items-center justify-center shrink-0">
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
                       )}
                     </div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
-                      {stage.title}
-                    </div>
-                    <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
-                      {stage.desc}
-                    </p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{stage.desc}</p>
                   </div>
                 ))}
               </div>
@@ -1727,7 +1703,7 @@ export const MetaAdReport: React.FC = () => {
             {/* Old vs DOM Meta Comparison */}
             <div className="mb-6 rounded-2xl sm:rounded-[24px] bg-white/95 border border-slate-200/80 shadow-sm grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
               <div className="p-5 sm:p-6 bg-slate-100/95 space-y-1.5">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 border border-rose-200 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-200/85 border border-slate-300 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">
                   Cách xem thủ công • Rời rạc &amp; Tốn giờ
                 </div>
                 <div className="text-sm font-bold text-slate-700">
@@ -2428,48 +2404,6 @@ export const MetaAdReport: React.FC = () => {
 
       {/* Standalone Onboarding & Login Modal */}
       {renderAuthModal()}
-
-      <EcosystemFocusTourModal
-        open={focusTourOpen}
-        initialSystem="dommeta"
-        onClose={() => setFocusTourOpen(false)}
-        onOpenSetupGuide={(product) => {
-          setFocusTourOpen(false);
-          if (product === 'dommeta') {
-            setSetupGuideOpen(true);
-          } else {
-            navigateTo(product === 'erp' ? '/erp?setup=quick' : '/data?setup=quick');
-          }
-        }}
-        onStartTrial={(system) => {
-          setFocusTourOpen(false);
-          if (system === 'dommeta') {
-            openStartFlow('register');
-          } else if (system === 'erp') {
-            navigateTo('/erp#tu-van');
-          } else {
-            navigateTo('/data?setup=quick');
-          }
-        }}
-      />
-
-      <NonCoderSetupModal
-        open={setupGuideOpen}
-        initialProduct="dommeta"
-        onClose={() => setSetupGuideOpen(false)}
-        onOpenMetaReport={() => {
-          setSetupGuideOpen(false);
-          openStartFlow('register');
-        }}
-        onLaunchAutodataWizard={() => {
-          setSetupGuideOpen(false);
-          navigateTo('/data?setup=quick');
-        }}
-        onNavigate={(path) => {
-          setSetupGuideOpen(false);
-          navigateTo(path);
-        }}
-      />
     </div>
   );
 };

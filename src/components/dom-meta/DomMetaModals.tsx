@@ -755,7 +755,7 @@ export const AdEntityDetailModal: React.FC<{
     .sort((a, b) => b[1] - a[1]);
 
   const entityThumbs = isAd
-    ? [adNode.thumbnail_url || adNode.image_url].filter(Boolean)
+    ? [adNode.image_url || adNode.thumbnail_url].filter(Boolean)
     : isCamp
       ? collectEntityThumbs((campNode.adsets || []).flatMap((as) => as.ads || []), 3)
       : collectEntityThumbs(adsetNode.ads || [], 3);

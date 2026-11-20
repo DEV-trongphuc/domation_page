@@ -4994,7 +4994,17 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     {grp.ads.slice(0, 16).map((ad, idx) => (
                       <div
                         key={ad.id}
-                        className="rounded-2xl bg-white border border-slate-200/85 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                        role="button"
+                        tabIndex={0}
+                        onMouseEnter={() => handleHoverPrefetchEntity(ad, 'ad')}
+                        onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setDetailModal({ entity: ad, type: 'ad' });
+                          }
+                        }}
+                        className="group rounded-2xl bg-white border border-slate-200/85 hover:border-blue-300 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-pointer text-left"
                       >
                         <div>
                           <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-900 via-[#1E40FF]/90 to-[#0284C7] overflow-hidden">
@@ -5007,11 +5017,11 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                                 {ad.optimization_goal || 'META CREATIVE'}
                               </span>
                             </div>
-                            {(ad.thumbnail_url || ad.image_url) && (
+                            {(ad.image_url || ad.thumbnail_url) && (
                               <img
-                                src={ad.thumbnail_url || ad.image_url}
+                                src={ad.image_url || ad.thumbnail_url}
                                 alt={ad.name}
-                                className="relative z-10 w-full h-full object-cover bg-slate-100"
+                                className="relative z-10 w-full h-full object-cover bg-slate-100 group-hover:scale-[1.02] transition-transform duration-300"
                                 loading={idx < 8 ? 'eager' : 'lazy'}
                                 referrerPolicy="no-referrer"
                                 onError={(e) => {
@@ -5033,7 +5043,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                             <div className="text-[10.5px] font-medium text-[#1E40FF] truncate">
                               {ad.campaign_name}
                             </div>
-                            <h3 className="text-xs sm:text-sm font-semibold text-slate-800 line-clamp-2">
+                            <h3 className="text-xs sm:text-sm font-semibold text-slate-800 group-hover:text-[#1E40FF] transition-colors line-clamp-2">
                               {ad.name}
                             </h3>
                             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
@@ -5061,13 +5071,14 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                               return (
                                 <button
                                   type="button"
-                                  onClick={() =>
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     setDetailModal({
                                       entity: ad,
                                       type: 'ad',
                                       initialTab: 'crm_leads',
-                                    })
-                                  }
+                                    });
+                                  }}
                                   className="w-full mt-1 rounded-xl bg-[#F4F8FF] hover:bg-blue-100/70 border border-blue-200/80 px-3 py-2 text-left space-y-1.5 transition-colors cursor-pointer"
                                 >
                                   <div className="flex items-center justify-between gap-2 text-[11px]">
@@ -5107,20 +5118,16 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                         </div>
 
                         <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                          <button
-                            type="button"
-                            onMouseEnter={() => handleHoverPrefetchEntity(ad, 'ad')}
-                            onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
-                            className="text-xs font-semibold text-[#1E40FF] hover:underline cursor-pointer"
-                          >
+                          <span className="text-xs font-semibold text-[#1E40FF] group-hover:underline">
                             Xem Insight Chi Tiết →
-                          </button>
+                          </span>
                           {ad.post_url && (
                             <a
                               href={ad.post_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-slate-400 hover:text-slate-700"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-slate-400 hover:text-slate-700 p-1 -m-1"
                               title="Mở bài viết Facebook"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />

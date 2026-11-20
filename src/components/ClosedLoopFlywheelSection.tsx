@@ -3,28 +3,21 @@ import {
   Activity,
   ArrowRight,
   CheckCircle2,
-  Compass,
   Cpu,
+  ExternalLink,
   Filter,
   GitMerge,
   Lock,
-  PlayCircle,
   RefreshCw,
   ShieldCheck,
   Sparkles,
-  TrendingDown,
   Users,
-  Wand2,
   Zap,
 } from 'lucide-react';
-import { DomResponsiveSubtabs } from './dom-meta/DomMetaSelect';
-
-export type FlywheelProduct = 'autodata' | 'dommeta' | 'erp';
+import { navigateTo } from '../utils/navigation';
 
 export interface ClosedLoopFlywheelSectionProps {
   variant?: 'home' | 'data';
-  onOpenSetupGuide?: (product?: FlywheelProduct) => void;
-  onOpenFocusTour?: (product?: FlywheelProduct) => void;
   className?: string;
 }
 
@@ -143,7 +136,7 @@ const CYCLE_STEPS: CycleStep[] = [
       'Tự động loại trừ chân dung tệp rác nhờ tín hiệu DisqualifiedLead gửi ngược về Meta.',
     ],
     icon: RefreshCw,
-    accentBg: 'from-[#0F172A] to-[#1E40FF]',
+    accentBg: 'from-[#1E40FF] to-[#4F46E5]',
     accentText: 'text-[#1E40FF]',
     accentBorder: 'border-indigo-200',
   },
@@ -235,8 +228,6 @@ const CAPI_STAGES: CapiStage[] = [
 
 export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps> = ({
   variant = 'home',
-  onOpenSetupGuide,
-  onOpenFocusTour,
   className = '',
 }) => {
   const [activeStepIdx, setActiveStepIdx] = useState(0);
@@ -246,36 +237,14 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
   const activeStage = CAPI_STAGES.find((s) => s.id === activeStageId) || CAPI_STAGES[4];
   const ActiveIcon = activeStep.icon;
 
-  const defaultProduct: FlywheelProduct = 'autodata';
-
-  const triggerFocusTour = (product: FlywheelProduct = defaultProduct) => {
-    if (onOpenFocusTour) {
-      onOpenFocusTour(product);
-      return;
-    }
+  const navigateLiveDemo = () => {
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(
-        new CustomEvent('domation:open-focus-tour', {
-          cancelable: true,
-          detail: { product, source: 'closed_loop_flywheel' },
-        })
-      );
+      window.open('https://meta.domation.net/ecolifesignature', '_blank', 'noopener,noreferrer');
     }
   };
 
-  const triggerSetupGuide = (product: FlywheelProduct = defaultProduct) => {
-    if (onOpenSetupGuide) {
-      onOpenSetupGuide(product);
-      return;
-    }
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(
-        new CustomEvent('domation:open-setup-guide', {
-          cancelable: true,
-          detail: { product, source: 'closed_loop_flywheel' },
-        })
-      );
-    }
+  const navigateAutoData = () => {
+    navigateTo('/data');
   };
 
   return (
@@ -293,7 +262,8 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                 <span>VÒNG TRÒN TỐI ƯU KHÉP KÍN • META ADS ↔ CRM ↔ CAPI</span>
               </div>
               <h2 className="text-xl sm:text-3xl lg:text-[34px] font-bold text-slate-900 leading-[1.22] tracking-tight">
-                Quảng Cáo Hút Khách — Chia Số &lt; 5s —{' '}
+                Quảng Cáo Hút Khách — Chia Số{' '}
+                <span className="whitespace-nowrap">&lt;&nbsp;5s</span> —{' '}
                 <span className="text-gradient-inkica">Bắn Ngược CAPI Tự Thông Minh</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
@@ -301,23 +271,23 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
               </p>
             </div>
 
-            {/* Dual M4 Modal/Tour Hooks */}
+            {/* Direct Live Product Entrypoints (No Static Tour Modal) */}
             <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
               <button
                 type="button"
-                onClick={() => triggerFocusTour(defaultProduct)}
+                onClick={navigateLiveDemo}
                 className="btn-inkica-primary min-h-[44px] rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
               >
-                <Compass className="w-4 h-4 shrink-0" />
-                <span>Xem Focus Tour Hệ Sinh Thái</span>
+                <ExternalLink className="w-4 h-4 shrink-0" />
+                <span>Mở Báo Cáo Meta Live</span>
               </button>
               <button
                 type="button"
-                onClick={() => triggerSetupGuide(defaultProduct)}
+                onClick={navigateAutoData}
                 className="ql-btn-outline min-h-[44px] rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
               >
-                <Wand2 className="w-4 h-4 text-[#1E40FF] shrink-0" />
-                <span>Setup Từng Bước Không Cần Code</span>
+                <Zap className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                <span>Mở Workspace AutoData</span>
               </button>
             </div>
           </div>
@@ -336,26 +306,9 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                 </span>
               </div>
 
-              {/* Circular Orbit Visual */}
-              <div className="relative py-2">
-                {/* Connecting Circular Ring (Desktop/Tablet visual) */}
-                <div
-                  aria-hidden="true"
-                  className="hidden sm:block absolute inset-x-10 inset-y-6 rounded-[44px] border-2 border-dashed border-blue-200/90 pointer-events-none"
-                />
-
-                {/* Center Flywheel Core */}
-                <div className="sm:hidden mb-3 rounded-2xl bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#0284C7] text-white px-4 py-3 flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-300">
-                      Vòng Lặp Tự Tiến Hóa
-                    </div>
-                    <div className="text-xs font-bold">Mỗi cuộc gọi nuôi máy học Meta Ads</div>
-                  </div>
-                  <TrendingDown className="w-5 h-5 text-cyan-300 shrink-0" />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
+              {/* 4-Node Closed-Loop Grid (Balanced Heights, Bright Light Surface) */}
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {CYCLE_STEPS.map((step, idx) => {
                     const Icon = step.icon;
                     const isActive = idx === activeStepIdx;
@@ -365,31 +318,37 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                         type="button"
                         onClick={() => setActiveStepIdx(idx)}
                         aria-pressed={isActive}
-                        className={`text-left rounded-2xl p-3.5 sm:p-4 border transition-all cursor-pointer flex flex-col justify-between gap-2.5 ${
+                        className={`text-left h-full min-h-[126px] rounded-2xl p-4 border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
                           isActive
-                            ? 'bg-gradient-to-br from-[#EEF4FF] via-white to-[#ECFEFF] border-[#1E40FF] shadow-[0_12px_28px_-12px_rgba(30,64,255,0.35)] ring-1 ring-[#1E40FF]/30'
-                            : 'bg-slate-50/85 border-slate-200/85 hover:bg-white hover:border-blue-300'
+                            ? 'bg-gradient-to-br from-[#EEF4FF] via-white to-[#F0FDFA] border-[#1E40FF] shadow-[0_12px_28px_-12px_rgba(30,64,255,0.24)] ring-1 ring-[#1E40FF]/25'
+                            : 'bg-slate-50/90 border-slate-200/85 hover:bg-white hover:border-blue-300'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span
-                            className={`w-8 h-8 rounded-xl bg-gradient-to-br ${step.accentBg} text-white flex items-center justify-center shrink-0 shadow-xs`}
+                            className={`w-9 h-9 rounded-xl bg-gradient-to-br ${step.accentBg} text-white flex items-center justify-center shrink-0 shadow-xs`}
                           >
                             <Icon className="w-4 h-4" />
                           </span>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
-                            {step.step} • {step.latency}
+                          <span
+                            className={`text-[10.5px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${
+                              isActive
+                                ? 'bg-blue-50 border-blue-200 text-[#1E40FF]'
+                                : 'bg-white border-slate-200 text-slate-600'
+                            }`}
+                          >
+                            {step.step} · {step.latency}
                           </span>
                         </div>
                         <div>
                           <div
-                            className={`text-xs sm:text-sm font-bold leading-snug ${
+                            className={`text-sm font-bold leading-snug ${
                               isActive ? 'text-[#1E40FF]' : 'text-slate-900'
                             }`}
                           >
                             {step.shortLabel}
                           </div>
-                          <div className="text-[11px] text-slate-500 mt-0.5 line-clamp-2">
+                          <div className="text-[11.5px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
                             {step.title}
                           </div>
                         </div>
@@ -398,11 +357,26 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                   })}
                 </div>
 
-                {/* Desktop Center Flywheel Pill */}
-                <div className="hidden sm:flex justify-center mt-3">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#0284C7] text-white px-4 py-1.5 text-[11px] font-semibold shadow-md">
-                    <RefreshCw className="w-3.5 h-3.5 text-cyan-300" />
-                    <span>Meta Ads ↔ AI Pre-Score ↔ Sale 9 Nấc ↔ SHA-256 CAPI</span>
+                {/* Clean Light Closed-Loop Flow Bar (Zero Dark Background / Zero Dashed Overlap) */}
+                <div className="rounded-2xl bg-gradient-to-r from-[#EEF4FF] via-[#F5F9FF] to-[#ECFEFF] border border-blue-200/80 px-3.5 py-2.5 flex items-center justify-between gap-2 text-[11px]">
+                  <div className="flex flex-wrap items-center gap-1.5 text-slate-700 font-semibold">
+                    <RefreshCw className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                    {['Meta Ads', 'AI Pre-Score', 'Sale 9 Nấc', 'SHA-256 CAPI'].map((tag, i) => (
+                      <React.Fragment key={tag}>
+                        {i > 0 && <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />}
+                        <button
+                          type="button"
+                          onClick={() => setActiveStepIdx(i)}
+                          className={`px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                            activeStepIdx === i
+                              ? 'bg-[#1E40FF] text-white font-bold shadow-2xs'
+                              : 'bg-white/90 text-slate-700 border border-slate-200/70 hover:text-[#1E40FF]'
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -475,43 +449,86 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                 </div>
               </div>
 
-              {/* Interactive 9-Stage CAPI Signal Preview */}
-              <div className="rounded-2xl bg-slate-950 text-white p-4 sm:p-5 space-y-3 border border-slate-800">
+              {/* Interactive 9-Stage CAPI Signal Preview (Bright Light Brand UI) */}
+              <div className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-[#F0FDFA]/80 text-slate-800 p-4 sm:p-5 space-y-3 border border-blue-200/80 shadow-[0_6px_22px_-12px_rgba(30,64,255,0.12)]">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-cyan-400 shrink-0" />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-300">
+                    <span className="w-6 h-6 rounded-lg bg-blue-100/90 text-[#1E40FF] flex items-center justify-center shrink-0">
+                      <Activity className="w-3.5 h-3.5" />
+                    </span>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-800">
                       9 Trạng Thái CRM → Tín Hiệu Meta CAPI (SHA-256)
                     </span>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-300 bg-white/10 px-2 py-0.5 rounded-full">
-                    <Lock className="w-3 h-3 text-cyan-300" />
+                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                    <Lock className="w-3 h-3 text-emerald-600" />
                     Forward-Only
                   </span>
                 </div>
 
-                {/* 9 Stage Interactive Pills */}
-                <DomResponsiveSubtabs
-                  tabs={CAPI_STAGES.map((stage) => ({
-                    id: stage.id,
-                    label: `${stage.crmLabel} → ${stage.capiEvent}`,
-                  }))}
-                  value={activeStage.id}
-                  onChange={setActiveStageId}
-                  maxMobile={2}
-                  className="[&>button]:min-h-[44px] sm:[&>button]:min-h-0"
-                />
+                {/* Readable 9-Stage Interactive Chip Selector (No awkward label truncation) */}
+                <div className="flex flex-wrap gap-1.5">
+                  {CAPI_STAGES.map((stage) => {
+                    const selected = stage.id === activeStage.id;
+                    const dotColor =
+                      stage.polarity === 'positive'
+                        ? 'bg-emerald-500'
+                        : stage.polarity === 'negative'
+                          ? 'bg-rose-500'
+                          : 'bg-amber-400';
+                    const activeBtnStyle =
+                      stage.polarity === 'negative'
+                        ? 'bg-rose-600 text-white border-rose-600 shadow-xs'
+                        : stage.polarity === 'neutral'
+                          ? 'bg-[#0284C7] text-white border-[#0284C7] shadow-xs'
+                          : 'bg-[#1E40FF] text-white border-[#1E40FF] shadow-xs';
+                    return (
+                      <button
+                        key={stage.id}
+                        type="button"
+                        onClick={() => setActiveStageId(stage.id)}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap min-h-[34px] ${
+                          selected
+                            ? activeBtnStyle
+                            : 'bg-white border-slate-200/90 text-slate-700 hover:border-blue-300 hover:text-[#1E40FF]'
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                            selected ? 'bg-white' : dotColor
+                          }`}
+                        />
+                        <span>{stage.crmLabel}</span>
+                        <span className={selected ? 'text-white/80 font-normal' : 'text-slate-400 font-normal'}>
+                          · {stage.viLabel}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
 
                 {/* Selected Stage Payload Effect */}
-                <div className="rounded-xl bg-white/5 border border-white/10 px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+                <div className="rounded-xl bg-white border border-slate-200/85 px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-[11px] shadow-2xs">
                   <div className="space-y-0.5">
-                    <div className="font-semibold text-white">
-                      {activeStage.crmLabel} ({activeStage.viLabel}) →{' '}
-                      <span className="text-cyan-300 font-mono">{activeStage.capiEvent}</span>
+                    <div className="font-bold text-slate-900 flex flex-wrap items-center gap-1.5">
+                      <span>
+                        {activeStage.crmLabel} ({activeStage.viLabel}) →
+                      </span>
+                      <span
+                        className={`px-2 py-0.5 rounded-md font-mono text-[10.5px] font-bold border ${
+                          activeStage.polarity === 'positive'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : activeStage.polarity === 'negative'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
+                              : 'bg-sky-50 text-[#0284C7] border-sky-200'
+                        }`}
+                      >
+                        {activeStage.capiEvent}
+                      </span>
                     </div>
-                    <div className="text-slate-300">{activeStage.signalEffect}</div>
+                    <div className="text-slate-600 leading-relaxed">{activeStage.signalEffect}</div>
                   </div>
-                  <code className="text-[10px] font-mono text-cyan-200 bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-white/10 shrink-0 break-all max-w-full">
+                  <code className="text-[10.5px] font-mono text-[#1E40FF] bg-[#F4F8FF] px-2.5 py-1.5 rounded-lg border border-blue-200/80 shrink-0 break-all max-w-full">
                     {activeStage.hashSample}
                   </code>
                 </div>
@@ -539,19 +556,19 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
             <div className="flex items-center gap-3 shrink-0">
               <button
                 type="button"
-                onClick={() => triggerFocusTour('dommeta')}
+                onClick={navigateLiveDemo}
                 className="min-h-[44px] sm:min-h-0 px-2 inline-flex items-center gap-1 font-semibold text-[#1E40FF] hover:underline cursor-pointer"
               >
-                <PlayCircle className="w-3.5 h-3.5" />
-                <span>Tour DomMeta Report</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Xem Báo Cáo Demo Live</span>
               </button>
               <span className="text-slate-300">|</span>
               <button
                 type="button"
-                onClick={() => triggerSetupGuide('autodata')}
+                onClick={navigateAutoData}
                 className="min-h-[44px] sm:min-h-0 px-2 inline-flex items-center gap-1 font-semibold text-slate-700 hover:text-[#1E40FF] cursor-pointer"
               >
-                <span>Check-step Setup 60s</span>
+                <span>Mở CRM AutoData</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

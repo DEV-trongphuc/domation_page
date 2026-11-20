@@ -1455,7 +1455,7 @@ export async function loadFullDomMetaDataset(
         graph_path: `${actPath}/ads`,
         params: {
           fields:
-            'id,name,adset_id,campaign_id,status,effective_status,creative{id,title,body,call_to_action_type,link_url,instagram_permalink_url,thumbnail_url,image_url,effective_object_story_id}',
+            'id,name,adset_id,campaign_id,status,effective_status,creative.thumbnail_width(720).thumbnail_height(720){id,title,body,call_to_action_type,link_url,instagram_permalink_url,thumbnail_url,image_url,effective_object_story_id}',
           limit: 250,
         },
       },
@@ -1656,24 +1656,24 @@ export async function loadFullDomMetaDataset(
         ctx,
         cleanAcc,
         missingSpendingAdIds.map((aid) => ({
-          key: `ad_${aid}`,
-          graph_path: aid,
-          params: {
-            fields:
-              'id,name,adset_id,campaign_id,status,effective_status,creative{id,title,body,call_to_action_type,link_url,instagram_permalink_url,thumbnail_url,image_url,effective_object_story_id}',
-          },
-        }))
-      );
-      for (const aid of missingSpendingAdIds) {
-        const item = backfill[`ad_${aid}`] as unknown as GraphAdRow | null | undefined;
-        if (item && item.id) {
-          adMetaMap.set(String(item.id), item);
-        }
+        key: `ad_${aid}`,
+        graph_path: aid,
+        params: {
+          fields:
+            'id,name,adset_id,campaign_id,status,effective_status,creative.thumbnail_width(720).thumbnail_height(720){id,title,body,call_to_action_type,link_url,instagram_permalink_url,thumbnail_url,image_url,effective_object_story_id}',
+        },
+      }))
+    );
+    for (const aid of missingSpendingAdIds) {
+      const item = backfill[`ad_${aid}`] as unknown as GraphAdRow | null | undefined;
+      if (item && item.id) {
+        adMetaMap.set(String(item.id), item);
       }
-    } catch {
-      // Non-fatal: continue with insights metadata
     }
+  } catch {
+    // Non-fatal: continue with insights metadata
   }
+}
 
   const normalizeMetaCdnUrl = (raw: unknown): string => {
     const u = String(raw || '').trim();
@@ -1711,7 +1711,7 @@ export async function loadFullDomMetaDataset(
       status: String(meta.status || 'ACTIVE'),
       effective_status: String(meta.effective_status || meta.status || 'ACTIVE'),
       thumbnail_url: normThumb || normImage,
-      image_url: normThumb || normImage,
+      image_url: normImage || normThumb,
       post_url: postUrl,
       story_id: storyId,
       creative_title: meta.creative?.title ? String(meta.creative.title) : undefined,
