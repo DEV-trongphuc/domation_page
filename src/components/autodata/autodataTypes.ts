@@ -322,6 +322,7 @@ export interface TenantSessionV2 {
   admin_email: string;
   user_id?: string;
   user_name?: string;
+  user_avatar?: string | null;
   role?: 'tenant_admin' | 'manager' | 'sale' | string;
   is_external_agency?: boolean;
   auth_provider?: 'password' | 'google';

@@ -5,6 +5,7 @@ import {
   Building2,
   Check,
   CheckCircle2,
+  ChevronDown,
   HelpCircle,
   KeyRound,
   Loader2,
@@ -222,6 +223,7 @@ const GisOfficialButton: React.FC<GisOfficialButtonProps> = ({
 interface RecentGoogleAccountItem {
   email: string;
   full_name: string;
+  avatar_url?: string | null;
   updated_at: string;
 }
 
@@ -249,15 +251,28 @@ function loadRecentGoogleAccounts(): RecentGoogleAccountItem[] {
   }
 }
 
-function rememberRecentGoogleAccount(email: string, fullName: string): RecentGoogleAccountItem[] {
+function rememberRecentGoogleAccount(
+  email: string,
+  fullName: string,
+  avatarUrl?: string | null
+): RecentGoogleAccountItem[] {
   const cleanEmail = email.trim().toLowerCase();
   if (!cleanEmail || !cleanEmail.includes('@') || typeof window === 'undefined') {
     return loadRecentGoogleAccounts();
   }
+  const existing = loadRecentGoogleAccounts();
+  const prevMatch = existing.find((item) => item.email === cleanEmail);
+  const resolvedAvatar =
+    avatarUrl && avatarUrl.trim() ? avatarUrl.trim() : prevMatch?.avatar_url || null;
   const cleanName = fullName.trim() || cleanEmail.split('@')[0] || 'Quản trị viên';
   const nextList: RecentGoogleAccountItem[] = [
-    { email: cleanEmail, full_name: cleanName, updated_at: new Date().toISOString() },
-    ...loadRecentGoogleAccounts().filter((item) => item.email !== cleanEmail),
+    {
+      email: cleanEmail,
+      full_name: cleanName,
+      avatar_url: resolvedAvatar,
+      updated_at: new Date().toISOString(),
+    },
+    ...existing.filter((item) => item.email !== cleanEmail),
   ].slice(0, 6);
   try {
     window.localStorage.setItem(RECENT_GOOGLE_ACCOUNTS_KEY, JSON.stringify(nextList));
@@ -322,7 +337,7 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
   // Login & Workspace Discovery fields
   const [loginEmail, setLoginEmail] = useState(existingUserEmail);
   const [loginPassword, setLoginPassword] = useState('');
-  const [loginSlug, setLoginSlug] = useState(requestedSlug || '');
+  const [showPasswordLogin, setShowPasswordLogin] = useState(false);
   const [accountToken, setAccountToken] = useState<string | null>(existingAccountToken);
   const [authProvider, setAuthProvider] = useState<'password' | 'google'>(
     existingAccountToken ? 'google' : 'password'
@@ -471,9 +486,12 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
       adminName.trim() ||
       resolvedEmail.split('@')[0] ||
       'Admin';
+    const resolvedAvatar = d.user?.avatar_url || d.account?.avatar_url || null;
 
     if (provider === 'google' && resolvedEmail) {
-      setRecentGoogleAccounts(rememberRecentGoogleAccount(resolvedEmail, resolvedName));
+      setRecentGoogleAccounts(
+        rememberRecentGoogleAccount(resolvedEmail, resolvedName, resolvedAvatar)
+      );
     }
 
     const session: TenantSessionV2 = {
@@ -486,6 +504,7 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
       admin_email: resolvedEmail,
       user_id: d.user?.id,
       user_name: resolvedName,
+      user_avatar: resolvedAvatar,
       role: (d.user?.role as TenantSessionV2['role']) || 'tenant_admin',
       auth_provider: provider,
       subscription: d.subscription,
@@ -531,9 +550,10 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
     const userEmail = d.user?.email || d.account?.email || fallbackEmail || '';
     const userFullName =
       d.user?.full_name || d.account?.full_name || (userEmail ? userEmail.split('@')[0] : '');
+    const userAvatar = d.user?.avatar_url || d.account?.avatar_url || null;
 
     if (provider === 'google' && userEmail) {
-      setRecentGoogleAccounts(rememberRecentGoogleAccount(userEmail, userFullName));
+      setRecentGoogleAccounts(rememberRecentGoogleAccount(userEmail, userFullName, userAvatar));
     }
 
     // 0 Workspaces -> transition directly into Create Workspace wizard (no password required!)
@@ -573,7 +593,7 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
       (d.action === 'enter_workspace' || discovered.length === 1 || !d.action) &&
       d.access_token
     ) {
-      buildAndEmitSession(d, provider, userEmail, loginSlug.trim().toLowerCase());
+      buildAndEmitSession(d, provider, userEmail, requestedSlug?.trim().toLowerCase());
       return;
     }
 
@@ -604,7 +624,7 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
         body: {
           email: loginEmail.trim(),
           password: loginPassword,
-          ...(loginSlug.trim() ? { tenant_slug: loginSlug.trim().toLowerCase() } : {}),
+          ...(requestedSlug?.trim() ? { tenant_slug: requestedSlug.trim().toLowerCase() } : {}),
         },
       });
       await processAuthPayload(payload, 'password', loginEmail.trim());
@@ -989,8 +1009,7 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
                   Đăng Nhập DOM Meta Workspace
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
-                  Sử dụng chung tài khoản Google hoặc Email với hệ thống Auto Chia Data &amp;
-                  DOMATION ERP.
+                  Sử dụng tài khoản Google hoặc tài khoản đã phân quyền để truy cập báo cáo.
                 </p>
               </div>
 
@@ -1009,70 +1028,76 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
                 onFallbackClick={handleGoogleSignInClick}
               />
 
-              <div className="relative flex items-center py-0.5">
-                <div className="flex-grow border-t border-slate-200" />
-                <span className="shrink-0 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                  Hoặc Email &amp; Mật khẩu
-                </span>
-                <div className="flex-grow border-t border-slate-200" />
+              <div className="flex items-center gap-3 pt-1">
+                <div className="flex-grow border-t border-slate-200/80" />
+                <button
+                  type="button"
+                  data-testid="toggle-password-login"
+                  aria-expanded={showPasswordLogin}
+                  onClick={() => {
+                    setError(null);
+                    setShowPasswordLogin((v) => !v);
+                  }}
+                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-slate-500 hover:text-[#1E40FF] hover:bg-blue-50/70 transition-colors cursor-pointer"
+                >
+                  <span>Hoặc đăng nhập bằng tài khoản</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      showPasswordLogin ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                <div className="flex-grow border-t border-slate-200/80" />
               </div>
 
-              <form onSubmit={(e) => void handleLogin(e)} className="space-y-3.5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Email quản trị
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    placeholder="ceo@doanhnghiep.vn"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] px-3.5 py-2.5 text-sm outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Mật khẩu</label>
-                  <input
-                    type="password"
-                    required
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] px-3.5 py-2.5 text-sm outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Đường dẫn Workspace{' '}
-                    <span className="font-normal text-slate-400">
-                      (Tùy chọn — để trống để tự liệt kê tất cả Workspace của bạn)
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    value={loginSlug}
-                    onChange={(e) => setLoginSlug(e.target.value)}
-                    placeholder="VD: ecolifesignature"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] px-3.5 py-2.5 text-xs font-mono outline-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              {showPasswordLogin && (
+                <form
+                  data-testid="password-login-form"
+                  onSubmit={(e) => void handleLogin(e)}
+                  className="space-y-3.5 pt-1"
                 >
-                  {submitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <ArrowRight className="w-4 h-4" />
-                  )}
-                  <span>Vào Báo Cáo Meta Ads</span>
-                </button>
-              </form>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Email quản trị
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="ceo@doanhnghiep.vn"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] px-3.5 py-2.5 text-sm outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Mật khẩu
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1E40FF] px-3.5 py-2.5 text-sm outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                  >
+                    {submitting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
+                    <span>Vào Báo Cáo Meta Ads</span>
+                  </button>
+                </form>
+              )}
             </div>
           )}
 

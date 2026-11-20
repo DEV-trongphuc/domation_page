@@ -679,6 +679,7 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
       admin_email: resolvedEmail,
       user_id: payload.user?.id,
       user_name: resolvedName,
+      user_avatar: payload.user?.avatar_url || payload.account?.avatar_url || null,
       role: payload.user?.role,
       is_external_agency: Boolean(payload.user?.is_external_agency ?? isExternalAgency),
       auth_provider: provider,

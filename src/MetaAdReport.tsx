@@ -79,6 +79,7 @@ interface PreviewInjectionConfig {
   authContext: DomMetaAuthContext;
   workspaceName: string;
   userDisplayName: string;
+  userAvatarUrl?: string | null;
   userRoleLabel: string;
   mode?: 'standalone' | 'embedded';
   enableCrmAttribution?: boolean;
@@ -514,7 +515,7 @@ interface SwitchWorkspaceResponse {
   account_token?: string;
   tenant?: { id?: string; slug?: string; name?: string; industry?: string };
   workspace?: { id?: string; slug?: string; company_name?: string; industry?: string };
-  user?: { id?: string; email?: string; full_name?: string; role?: string };
+  user?: { id?: string; email?: string; full_name?: string; avatar_url?: string | null; role?: string };
   subscription?: ClientSubscriptionSnapshot;
   workspaces?: WorkspaceSummaryItem[];
 }
@@ -790,6 +791,7 @@ export const MetaAdReport: React.FC = () => {
             admin_email: d.user?.email || session.admin_email,
             user_id: d.user?.id || session.user_id,
             user_name: d.user?.full_name || session.user_name,
+            user_avatar: d.user?.avatar_url || session.user_avatar || null,
             role: d.user?.role || session.role,
             access_token: d.access_token,
             refresh_token: d.refresh_token || session.refresh_token,
@@ -1048,6 +1050,9 @@ export const MetaAdReport: React.FC = () => {
         }
         userDisplayName={
           initialPreview?.userDisplayName || effectiveSession?.user_name || 'Signature'
+        }
+        userAvatarUrl={
+          initialPreview?.userAvatarUrl || effectiveSession?.user_avatar || null
         }
         userRoleLabel={initialPreview?.userRoleLabel || effectiveSession?.role || 'admin'}
         canManageConfig={Boolean(

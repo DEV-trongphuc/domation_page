@@ -102,6 +102,7 @@ export async function refreshAutodataSessionV2(
         admin_email: d.user?.email || current.admin_email,
         user_id: d.user?.id || current.user_id,
         user_name: d.user?.full_name || current.user_name,
+        user_avatar: d.user?.avatar_url || d.account?.avatar_url || current.user_avatar || null,
         role: d.user?.role || current.role,
         workspaces: Array.isArray(d.workspaces) ? d.workspaces : current.workspaces,
         subscription: d.subscription || current.subscription,

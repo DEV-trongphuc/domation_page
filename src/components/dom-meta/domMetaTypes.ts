@@ -93,6 +93,7 @@ export interface DomMetaShareMember {
   id?: string;
   email: string;
   full_name: string;
+  avatar_url?: string | null;
   role: 'tenant_admin' | 'viewer' | string;
   is_tenant_owner?: boolean;
   added_at?: string;
@@ -170,6 +171,44 @@ export type DomMetaNavView =
   | 'google_ads'
   | 'meta_capi'
   | 'settings';
+
+export const DOM_META_SIDEBAR_STATE_EVENT = 'dom-meta-sidebar-state';
+export const DOM_META_SELECT_VIEW_EVENT = 'dom-meta-select-view';
+
+export interface DomMetaSidebarStateDetail {
+  activeView: DomMetaNavView;
+  googleAdsEnabled: boolean;
+  isCrmEnabled: boolean;
+  hasCapi: boolean;
+  capiLabel?: string;
+  hasAiKey?: boolean;
+}
+
+export interface DomMetaSidebarSubItem {
+  id: DomMetaNavView;
+  label: string;
+}
+
+export function getDomMetaSidebarSubItems(opts?: {
+  googleAdsEnabled?: boolean;
+  isCrmEnabled?: boolean;
+  hasCapi?: boolean;
+  capiLabel?: string;
+}): DomMetaSidebarSubItem[] {
+  const isCrm = opts?.isCrmEnabled ?? true;
+  const hasCapi = opts?.hasCapi ?? true;
+  const gads = Boolean(opts?.googleAdsEnabled);
+  return [
+    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'ad_detail', label: 'Campaign details' },
+    ...(isCrm ? [{ id: 'lead_attribution' as const, label: 'Đối chiếu Lead' }] : []),
+    { id: 'ad_library', label: 'Ads Library' },
+    { id: 'account', label: 'Ad Account' },
+    ...(gads ? [{ id: 'google_ads' as const, label: 'Google ads' }] : []),
+    ...(hasCapi ? [{ id: 'meta_capi' as const, label: opts?.capiLabel || 'Meta CAPI' }] : []),
+    { id: 'settings', label: 'Cài đặt hệ thống' },
+  ];
+}
 
 export type DomMetaSettingsTab =
   | 'brand'

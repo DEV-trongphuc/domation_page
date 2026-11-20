@@ -147,9 +147,11 @@ const AppTabs: React.FC = () => {
           <Suspense fallback={<PageLoader />}>
             <DomMetaReportWorkspace
               mode="embedded"
+              externalSidebarNav={true}
               authContext={{ accessToken: token || undefined, tenantSlug: tenantSlug || undefined }}
               workspaceName={companyName || 'AutoData Workspace'}
               userDisplayName={user?.name || 'Admin'}
+              userAvatarUrl={user?.avatar || undefined}
               userRoleLabel={user?.role || 'admin'}
               canManageConfig={user?.role === 'admin' || user?.role === 'superadmin'}
               enableCrmAttribution={true}

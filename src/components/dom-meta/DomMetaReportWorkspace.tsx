@@ -65,8 +65,11 @@ import {
   type DomMetaDatePreset,
   type DomMetaEntityHourPoint,
   type DomMetaGoogleAdsConfig,
+  DOM_META_SELECT_VIEW_EVENT,
+  DOM_META_SIDEBAR_STATE_EVENT,
   type DomMetaNavView,
   type DomMetaSettingsTab,
+  type DomMetaSidebarStateDetail,
   type DomMetaWorkspaceConfig,
   type DomMetaWorkspacePatch,
 } from './domMetaTypes';
@@ -115,6 +118,7 @@ import {
   ColumnPresetModal,
   CrmUpgradeShowcaseModal,
   DomMetaSettingsPage,
+  DomMetaUserAvatar,
   GoogleAdsKeywordModal,
   PerformanceCompareModal,
   ShareAccessModal,
@@ -203,9 +207,11 @@ export interface DomMetaReportWorkspaceProps {
   authContext: DomMetaAuthContext;
   workspaceName?: string;
   userDisplayName?: string;
+  userAvatarUrl?: string | null;
   userRoleLabel?: string;
   daysRemaining?: number;
   canManageConfig?: boolean;
+  externalSidebarNav?: boolean;
   initialView?: DomMetaNavView;
   initialDatePreset?: DomMetaDatePreset;
   initialCustomRange?: { since: string; until: string };
@@ -433,9 +439,11 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
   authContext,
   workspaceName = 'DOM Workspace',
   userDisplayName = 'Admin',
+  userAvatarUrl,
   userRoleLabel = 'admin',
   daysRemaining = 30,
   canManageConfig = true,
+  externalSidebarNav = false,
   initialView = 'dashboard',
   initialDatePreset = 'last_7days',
   initialCustomRange,
@@ -686,6 +694,35 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     (!isCrmEnabled && activeView === 'lead_attribution')
       ? 'dashboard'
       : activeView;
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const detail: DomMetaSidebarStateDetail = {
+      activeView: effectiveView,
+      googleAdsEnabled: Boolean(config.google_ads?.enabled),
+      isCrmEnabled,
+      hasCapi: Boolean(capiPanel),
+      capiLabel: capiTabLabel,
+      hasAiKey: Boolean(config.ai_config?.has_api_key),
+    };
+    window.dispatchEvent(new CustomEvent<DomMetaSidebarStateDetail>(DOM_META_SIDEBAR_STATE_EVENT, { detail }));
+  }, [effectiveView, config.google_ads?.enabled, isCrmEnabled, capiPanel, capiTabLabel, config.ai_config?.has_api_key]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onSelectView = (event: Event) => {
+      const nextView = (event as CustomEvent<{ view?: DomMetaNavView }>).detail?.view;
+      if (!nextView) return;
+      setActiveView(nextView);
+      if (nextView === 'settings') {
+        setSettingsTab('brand');
+      }
+    };
+    window.addEventListener(DOM_META_SELECT_VIEW_EVENT, onSelectView as EventListener);
+    return () => {
+      window.removeEventListener(DOM_META_SELECT_VIEW_EVENT, onSelectView as EventListener);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -3821,22 +3858,24 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 </button>
               )}
 
-              <div className="hidden lg:block min-w-0">
-                <DomResponsiveSubtabs
-                  variant="segmented"
-                  maxMobile={2}
-                  maxTablet={4}
-                  maxDesktop={6}
-                  value={effectiveView}
-                  onChange={(id) => setActiveView(id as DomMetaNavView)}
-                  tabs={navItems.map((item) => ({
-                    id: item.id,
-                    label: item.shortLabel,
-                    shortLabel: item.shortLabel,
-                    testId: `nav-${item.id}`,
-                  }))}
-                />
-              </div>
+              {!(mode === 'embedded' && externalSidebarNav) && (
+                <div className="hidden lg:block min-w-0">
+                  <DomResponsiveSubtabs
+                    variant="segmented"
+                    maxMobile={2}
+                    maxTablet={4}
+                    maxDesktop={6}
+                    value={effectiveView}
+                    onChange={(id) => setActiveView(id as DomMetaNavView)}
+                    tabs={navItems.map((item) => ({
+                      id: item.id,
+                      label: item.shortLabel,
+                      shortLabel: item.shortLabel,
+                      testId: `nav-${item.id}`,
+                    }))}
+                  />
+                </div>
+              )}
             </div>
           )}
 
@@ -4015,9 +4054,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             {/* Standalone Desktop User Profile Block (Aligned with data.domation.net CRM Header) */}
             {mode === 'standalone' && (
               <div className="hidden lg:flex items-center gap-2.5 pl-2.5 border-l border-slate-200/80">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-xs font-bold flex items-center justify-center shadow-xs shrink-0">
-                  {userDisplayName.slice(0, 1).toUpperCase()}
-                </div>
+                <DomMetaUserAvatar
+                  name={userDisplayName}
+                  avatarUrl={userAvatarUrl}
+                />
                 <div className="leading-tight">
                   <div className="text-xs font-bold text-slate-900 max-w-[125px] truncate">
                     {userDisplayName}
@@ -4031,7 +4071,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           </div>
 
           {/* Embedded Mobile/Tablet Dedicated View Subtabs Row (< lg): Clean full-width row with zero header collision */}
-          {mode === 'embedded' && (
+          {mode === 'embedded' && !externalSidebarNav && (
             <div className="lg:hidden w-full pt-1.5 border-t border-slate-100 min-w-0">
               <DomResponsiveSubtabs
                 variant="segmented"
@@ -4709,10 +4749,10 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                 </div>
               </div>
 
-              {/* Deep Row B (50 / 50): Detailed Micro-Behavior Signals + Top 10 Campaigns by Spend */}
+              {/* Deep Row B (42 / 58): Compact Micro-Behavior Signals + Top 10 Campaigns by Spend (~5 visible + scroll) */}
               <div
                 data-testid="dashboard-behavior-top10-row"
-                className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
               >
                 <MicroBehaviorSignalsCard
                   metrics={{
@@ -4720,12 +4760,12 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                     result: dashboardTotalResults,
                   }}
                   currency={currency}
-                  surfaceClassName="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3 h-full"
-                  columnsClassName="grid-cols-1 sm:grid-cols-2 auto-rows-fr flex-1"
+                  surfaceClassName="lg:col-span-5 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3 h-full"
+                  columnsClassName="grid-cols-1 sm:grid-cols-2 content-start max-h-[304px] overflow-y-auto pr-0.5 dom-meta-table-scroll"
                   titleSizeClassName="text-sm font-semibold text-slate-800"
                 />
 
-                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2.5 h-full">
+                <div className="lg:col-span-7 rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2.5 h-full">
                   <div className="flex items-center justify-between shrink-0">
                     <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
@@ -4739,7 +4779,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       Xem tất cả →
                     </button>
                   </div>
-                  <div className="space-y-1.5 flex-1 flex flex-col justify-between">
+                  <div data-testid="top-campaigns-list" className="space-y-1.5 max-h-[304px] overflow-y-auto pr-1 dom-meta-table-scroll">
                     {(() => {
                       const top10 = [...filteredCampaigns]
                         .sort((a, b) => b.spend - a.spend)

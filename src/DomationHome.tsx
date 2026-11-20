@@ -15,6 +15,8 @@ import {
   Database,
   ExternalLink,
   Globe,
+  Layers,
+  Link2,
   Mail,
   MonitorSmartphone,
   MousePointerClick,
@@ -676,6 +678,220 @@ export const DomationHome: React.FC = () => {
                   <span>Xem App Nội Bộ</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* 3. CONNECTED 4-IN-1 ECOSYSTEM ARCHITECTURE + WEB / 3D STRIP     */}
+        {/* ================================================================ */}
+        <section id="ecosystem-architecture" className="relative py-10 sm:py-14 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="rounded-[28px] bg-white/90 backdrop-blur-xl border border-slate-200/85 shadow-sm p-5 sm:p-8">
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-7">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/75 text-[11px] font-semibold uppercase tracking-wider text-[#1E40FF] mb-2.5">
+                    <Link2 className="w-3.5 h-3.5" />
+                    <span>4 HỆ THỐNG NÂNG CẤP TRONG 1 NỀN TẢNG</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-slate-900 tracking-tight leading-snug">
+                    Kiến Trúc Đồng Bộ{' '}
+                    <span className="text-gradient-inkica">4 Tầng Liên Kết Tức Thì</span>
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
+                  Bắt đầu từ đo Ads Realtime, mở rộng liền mạch sang Chia Data tức thì, Marketing Automation đến ERP toàn doanh nghiệp trên <strong className="font-semibold text-slate-900">1 kho dữ liệu hợp nhất</strong>.
+                </p>
+              </div>
+
+              {/* Connected Pipeline Grid: 4 Upgrade-in-1 Cards with Linked Connectors */}
+              <div className="relative">
+                {/* Horizontal glowing spine connecting the 4 cards on desktop */}
+                <div
+                  aria-hidden="true"
+                  className="hidden lg:block absolute top-1/2 left-[6%] right-[6%] h-[2px] -translate-y-1/2 bg-gradient-to-r from-[#1E40FF]/35 via-[#0284C7]/45 via-emerald-500/35 to-indigo-600/35 pointer-events-none"
+                />
+
+                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 items-stretch">
+                  {[
+                    {
+                      step: '01',
+                      tier: 'NỀN TẢNG ĐO LƯỜNG',
+                      title: 'Realtime - Report',
+                      subtitle: 'Báo cáo Ads Real-time & CAPI',
+                      desc: 'Tổng hợp Meta & Google Ads real-time, Hook/Hold Rate creative, đối chiếu Lead chất lượng & bắn tín hiệu Meta CAPI chuẩn.',
+                      linkHint: 'Đổ tín hiệu nguồn',
+                      href: '/meta-report',
+                      accentBar: 'from-[#1E40FF] to-[#0284C7]',
+                      badgeCls: 'bg-blue-50 text-[#1E40FF] border-blue-200/80',
+                      iconWrapCls: 'from-[#1E40FF] to-[#0284C7] shadow-blue-500/20',
+                      icon: BarChart3,
+                    },
+                    {
+                      step: '02',
+                      tier: 'NÂNG CẤP CHIA SỐ',
+                      title: 'Data Automation',
+                      subtitle: 'Chia Data Tức Thì • SLA 120s',
+                      desc: 'Thu Lead tức thì từ Ads/Form/Web, khử trùng 6 tháng, chia vòng công bằng 1:1 cho Sale & tự thu hồi khi quá hạn nhận.',
+                      linkHint: 'Kích hoạt chia vòng',
+                      href: '/data',
+                      accentBar: 'from-[#0284C7] to-cyan-500',
+                      badgeCls: 'bg-sky-50 text-[#0369A1] border-sky-200/80',
+                      iconWrapCls: 'from-[#0284C7] to-cyan-500 shadow-sky-500/20',
+                      icon: Zap,
+                    },
+                    {
+                      step: '03',
+                      tier: 'NÂNG CẤP TỰ ĐỘNG',
+                      title: 'Marketing Automation',
+                      subtitle: 'AI Agent & Zalo ZNS Đa Kịch Bản',
+                      desc: 'Tự động gửi Zalo ZNS, Email nuôi dưỡng, AI Pre-screener lọc nhu cầu & nhắc lịch chăm sóc Sale không bỏ sót khách.',
+                      linkHint: 'Nuôi dưỡng & chốt',
+                      href: '/automation',
+                      accentBar: 'from-emerald-600 to-teal-500',
+                      badgeCls: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
+                      iconWrapCls: 'from-emerald-600 to-teal-500 shadow-emerald-500/20',
+                      icon: Bot,
+                    },
+                    {
+                      step: '04',
+                      tier: 'NÂNG CẤP TOÀN DIỆN',
+                      title: 'ERP Doanh Nghiệp',
+                      subtitle: 'Vận Hành May Đo • Tài Chính & HR',
+                      desc: 'Hợp nhất hợp đồng, công nợ, kho vận, phê duyệt đa cấp, nhân sự & CEO Cockpit doanh thu thực trên cùng một dữ liệu gốc.',
+                      linkHint: 'Hệ sinh thái 4-in-1',
+                      href: '/erp',
+                      accentBar: 'from-indigo-600 to-violet-600',
+                      badgeCls: 'bg-indigo-50 text-indigo-700 border-indigo-200/80',
+                      iconWrapCls: 'from-indigo-600 to-violet-600 shadow-indigo-500/20',
+                      icon: Building2,
+                    },
+                  ].map((card, idx, arr) => {
+                    const CardIcon = card.icon;
+                    const hasNext = idx < arr.length - 1;
+                    return (
+                      <div key={card.step} className="relative flex flex-col">
+                        <a
+                          href={card.href}
+                          onClick={(e) => handleSpaLinkClick(e, card.href)}
+                          className="group relative flex-1 flex flex-col justify-between rounded-2xl bg-white/95 hover:bg-white border border-slate-200/90 hover:border-[#1E40FF]/40 p-5 shadow-[0_2px_14px_rgba(15,23,42,0.03)] hover:shadow-[0_14px_30px_rgba(30,64,255,0.09)] hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+                        >
+                          <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.accentBar}`} />
+
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-3.5">
+                              <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-bold tracking-wider ${card.badgeCls}`}>
+                                <span>{card.step}</span>
+                                <span className="opacity-50">•</span>
+                                <span>{card.tier}</span>
+                              </span>
+                              <span
+                                title="Đồng bộ dữ liệu 2 chiều trong hệ sinh thái DOMATION"
+                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-500 bg-slate-50 border border-slate-200/80 rounded-full px-2 py-0.5"
+                              >
+                                <Link2 className="w-3 h-3 text-[#1E40FF]" />
+                                <span className="hidden xl:inline">Linked</span>
+                              </span>
+                            </div>
+
+                            <div className="flex items-start gap-3 mb-2.5">
+                              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.iconWrapCls} shadow-md text-white flex items-center justify-center shrink-0`}>
+                                <CardIcon className="w-5 h-5" />
+                              </div>
+                              <div className="min-w-0">
+                                <h3 className="text-[15px] sm:text-base font-bold text-slate-900 group-hover:text-[#1E40FF] transition-colors leading-tight">
+                                  {card.title}
+                                </h3>
+                                <p className="text-[11.5px] font-semibold text-[#0284C7] mt-0.5">
+                                  {card.subtitle}
+                                </p>
+                              </div>
+                            </div>
+
+                            <p className="text-xs text-slate-600 leading-relaxed">
+                              {card.desc}
+                            </p>
+                          </div>
+
+                          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-[11px]">
+                            <span className="inline-flex items-center gap-1 font-medium text-slate-500">
+                              <Layers className="w-3.5 h-3.5 text-slate-400" />
+                              <span>{card.linkHint}</span>
+                            </span>
+                            <span className="inline-flex items-center gap-1 font-semibold text-[#1E40FF] group-hover:translate-x-0.5 transition-transform">
+                              <span>Xem chi tiết</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </span>
+                          </div>
+                        </a>
+
+                        {/* Linked Connector Bridge between Card i and Card i+1 on Desktop */}
+                        {hasNext && (
+                          <div
+                            aria-hidden="true"
+                            className="hidden lg:flex items-center justify-center absolute -right-[25px] top-1/2 -translate-y-1/2 z-20 w-[26px] h-[26px] rounded-full bg-white border border-blue-200/90 shadow-[0_4px_12px_rgba(30,64,255,0.14)] text-[#1E40FF]"
+                            title="Kết nối dữ liệu liền mạch"
+                          >
+                            <Link2 className="w-3.5 h-3.5" />
+                          </div>
+                        )}
+                        {/* Mobile stacked linked connector pill between cards */}
+                        {hasNext && (
+                          <div
+                            aria-hidden="true"
+                            className="sm:hidden flex items-center justify-center my-1.5 text-slate-400"
+                          >
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-50 border border-slate-200 text-[10px] font-semibold text-[#1E40FF]">
+                              <Link2 className="w-3 h-3" />
+                              <span>Kết nối nâng cấp</span>
+                              <ArrowRight className="w-3 h-3 rotate-90" />
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Compact Secondary Bar: Website, Landing Page & Web 3D WebGL */}
+              <div className="mt-4 rounded-2xl bg-gradient-to-r from-slate-50 via-blue-50/40 to-cyan-50/40 border border-slate-200/85 px-4 py-3 sm:px-5 sm:py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-start sm:items-center gap-3 min-w-0">
+                  <span className="w-8 h-8 rounded-lg bg-white border border-slate-200 shadow-xs flex items-center justify-center text-[#1E40FF] shrink-0">
+                    <Globe className="w-4 h-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-slate-900">
+                      Dịch Vụ Mặt Tiền Thu Hút &amp; Đổ Lead Về Hệ Thống 4 Trong 1
+                    </div>
+                    <p className="text-[11px] text-slate-600 mt-0.5">
+                      Chuẩn tốc độ, theo dõi Pixel/CAPI và đồng bộ trực tiếp về Data Automation ngay khi khách điền form.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  {[
+                    { label: 'Website Doanh Nghiệp', href: '/web-design' },
+                    { label: 'Landing Page Chuyển Đổi', href: '/web-design' },
+                    { label: 'Web 3D & WebGL', href: '/web-design', accent: true },
+                  ].map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      onClick={(e) => handleSpaLinkClick(e, item.href)}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11.5px] font-semibold border transition-all ${
+                        item.accent
+                          ? 'bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white border-transparent shadow-xs hover:brightness-110'
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-[#1E40FF]/40 hover:text-[#1E40FF]'
+                      }`}
+                    >
+                      {item.accent && <Box className="w-3.5 h-3.5" />}
+                      <span>{item.label}</span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

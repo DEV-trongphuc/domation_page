@@ -7106,9 +7106,47 @@ export interface ShareMemberEntry {
   id?: string;
   email: string;
   name?: string;
+  avatarUrl?: string | null;
   role: 'admin' | 'viewer';
   isOwner?: boolean;
 }
+
+export const DomMetaUserAvatar: React.FC<{
+  name: string;
+  avatarUrl?: string | null;
+  sizeClassName?: string;
+  textClassName?: string;
+}> = ({
+  name,
+  avatarUrl,
+  sizeClassName = 'w-8 h-8',
+  textClassName = 'text-xs',
+}) => {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  const cleanUrl = avatarUrl ? avatarUrl.trim() : '';
+  const showImage = Boolean(cleanUrl && failedUrl !== cleanUrl);
+  const initial = (name || 'U').trim().slice(0, 1).toUpperCase() || 'U';
+
+  if (showImage) {
+    return (
+      <img
+        src={cleanUrl}
+        alt={name || 'User avatar'}
+        referrerPolicy="no-referrer"
+        onError={() => setFailedUrl(cleanUrl)}
+        className={`${sizeClassName} rounded-full object-cover border border-slate-200/80 shadow-xs shrink-0 bg-slate-100`}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={`${sizeClassName} rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white ${textClassName} font-bold flex items-center justify-center shadow-xs shrink-0`}
+    >
+      {initial}
+    </div>
+  );
+};
 
 export interface ShareAccessModalProps {
   open: boolean;
@@ -7213,6 +7251,7 @@ export const ShareAccessModal: React.FC<ShareAccessModalProps> = ({
           id: m.id,
           email: m.email,
           name: m.full_name,
+          avatarUrl: m.avatar_url || null,
           role: mapServerRoleToUi(m.role, m.is_tenant_owner),
           isOwner: Boolean(m.is_tenant_owner),
         }));
@@ -7241,6 +7280,7 @@ export const ShareAccessModal: React.FC<ShareAccessModalProps> = ({
       id: m.id,
       email: m.email,
       name: m.full_name,
+      avatarUrl: m.avatar_url || null,
       role: mapServerRoleToUi(m.role, m.is_tenant_owner),
       isOwner: Boolean(m.is_tenant_owner),
     }));
@@ -7531,9 +7571,10 @@ export const ShareAccessModal: React.FC<ShareAccessModalProps> = ({
                     className="px-4 py-3 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                        {(m.name || m.email).slice(0, 1).toUpperCase()}
-                      </div>
+                      <DomMetaUserAvatar
+                        name={m.name || m.email}
+                        avatarUrl={m.avatarUrl}
+                      />
                       <div className="min-w-0">
                         <div className="text-xs font-semibold text-slate-800 truncate">
                           {m.name || m.email}

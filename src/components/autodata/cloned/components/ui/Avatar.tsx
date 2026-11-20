@@ -89,6 +89,7 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 'md', classNam
         <img 
           src={resolvedSrc} 
           alt={name} 
+          referrerPolicy="no-referrer"
           className={styles.image} 
           onError={() => setHasError(true)} 
         />

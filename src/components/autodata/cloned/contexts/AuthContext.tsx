@@ -36,6 +36,7 @@ function sessionToUser(sess: TenantSessionV2 | null): ClonedUser | null {
     role,
     email: sess.admin_email,
     consultant_id: role === 'sale' ? sess.user_id : undefined,
+    avatar: sess.user_avatar || undefined,
   };
 }
 
@@ -107,6 +108,7 @@ export const AuthProvider: React.FC<{
           role: boot.user?.role || session.role,
           user_id: boot.user?.id || session.user_id,
           user_name: boot.user?.full_name || session.user_name,
+          user_avatar: boot.user?.avatar_url || session.user_avatar || null,
           subscription: boot.tenant?.subscription || session.subscription,
           workspaces: boot.workspaces || session.workspaces || [],
           screen_tours: boot.onboarding?.screen_tours || session.screen_tours || {},

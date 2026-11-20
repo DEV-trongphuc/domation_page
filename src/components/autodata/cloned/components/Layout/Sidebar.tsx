@@ -1,5 +1,15 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, GitBranch, Settings, ChevronLeft, Webhook, Link2, Database, ShieldCheck, Ticket, Plus, Scale, Filter, BarChart3 } from 'lucide-react';
+import {
+  LayoutDashboard, Users, GitBranch, Settings, ChevronLeft, Webhook, Link2, Database,
+  ShieldCheck, Ticket, Plus, Scale, Filter, BarChart3, List, Images, CreditCard, TrendingUp
+} from 'lucide-react';
+import {
+  DOM_META_SELECT_VIEW_EVENT,
+  DOM_META_SIDEBAR_STATE_EVENT,
+  getDomMetaSidebarSubItems,
+  type DomMetaNavView,
+  type DomMetaSidebarStateDetail,
+} from '../../../../dom-meta/domMetaTypes';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useEffect, useState, useRef, Fragment } from 'react';
@@ -31,6 +41,33 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onMobileC
 
   const [sliderStyle, setSliderStyle] = useState({ top: 0, height: 0 });
   const navContainerRef = useRef<HTMLDivElement>(null);
+  const [metaSidebarState, setMetaSidebarState] = useState<DomMetaSidebarStateDetail>({
+    activeView: 'dashboard',
+    googleAdsEnabled: false,
+    isCrmEnabled: true,
+    hasCapi: false,
+    hasAiKey: false,
+  });
+
+  useEffect(() => {
+    const onMetaState = (event: Event) => {
+      const detail = (event as CustomEvent<DomMetaSidebarStateDetail>).detail;
+      if (detail) setMetaSidebarState(detail);
+    };
+    window.addEventListener(DOM_META_SIDEBAR_STATE_EVENT, onMetaState as EventListener);
+    return () => window.removeEventListener(DOM_META_SIDEBAR_STATE_EVENT, onMetaState as EventListener);
+  }, []);
+
+  const metaSubViewIcons: Record<DomMetaNavView, typeof LayoutDashboard> = {
+    dashboard: LayoutDashboard,
+    ad_detail: List,
+    lead_attribution: Link2,
+    ad_library: Images,
+    account: CreditCard,
+    google_ads: TrendingUp,
+    meta_capi: Webhook,
+    settings: Settings,
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -370,6 +407,58 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isMobileOpen, onMobileC
                       </>
                     )}
                   </NavLink>
+                  {href === '/meta-report' && location.pathname === '/meta-report' && !isCollapsed && (
+                    <div
+                      data-testid="crm-meta-sidebar-subtabs"
+                      style={{
+                        marginLeft: '1.5rem',
+                        marginRight: '0.875rem',
+                        marginTop: '0.25rem',
+                        marginBottom: '0.375rem',
+                        paddingLeft: '0.625rem',
+                        borderLeft: '2px solid rgba(30, 64, 255, 0.22)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                      }}
+                    >
+                      {getDomMetaSidebarSubItems(metaSidebarState).map((sub) => {
+                        const SubIcon = metaSubViewIcons[sub.id] || LayoutDashboard;
+                        const isSubActive = metaSidebarState.activeView === sub.id;
+                        return (
+                          <button
+                            key={sub.id}
+                            type="button"
+                            data-testid={`sidebar-meta-sub-${sub.id}`}
+                            onClick={() => {
+                              setMetaSidebarState((prev) => ({ ...prev, activeView: sub.id }));
+                              window.dispatchEvent(new CustomEvent(DOM_META_SELECT_VIEW_EVENT, { detail: { view: sub.id } }));
+                              if (onMobileClose) onMobileClose();
+                            }}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              width: '100%',
+                              textAlign: 'left',
+                              padding: '0.45rem 0.65rem',
+                              borderRadius: '8px',
+                              border: 'none',
+                              cursor: 'pointer',
+                              fontSize: '0.8125rem',
+                              fontWeight: isSubActive ? 700 : 500,
+                              color: isSubActive ? '#1E40FF' : '#475569',
+                              background: isSubActive ? 'rgba(30, 64, 255, 0.1)' : 'transparent',
+                              transition: 'all 0.15s ease',
+                            }}
+                          >
+                            <SubIcon size={14} color={isSubActive ? '#1E40FF' : '#64748B'} />
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </Fragment>
               );
             })}
