@@ -2977,14 +2977,14 @@ export const AdEntityDetailModal: React.FC<{
                   </div>
                 </div>
 
-                {/* Row 5A: Dayparting Heatmap (Left 8 cols) + Device Breakdown (Right 4 cols) */}
+                {/* Row 5A: Dayparting Heatmap (Left 7 cols) + Device Breakdown (Right 5 cols) */}
                 <div
                   data-dom-drawer-row="heatmap-device"
                   className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
                 >
                   <div
                     data-dom-drawer-card="heatmap"
-                    className="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col lg:min-h-[365px]"
+                    className="lg:col-span-7 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col lg:min-h-[365px]"
                   >
                     <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
                       <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
@@ -3023,7 +3023,7 @@ export const AdEntityDetailModal: React.FC<{
 
                   <div
                     data-dom-drawer-card="device"
-                    className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3 lg:min-h-[365px]"
+                    className="lg:col-span-5 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col gap-3 lg:min-h-[365px]"
                   >
                     <div className="flex items-center justify-between gap-2 shrink-0">
                       <div>

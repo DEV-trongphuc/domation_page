@@ -1464,17 +1464,17 @@ export const DeviceDonutCard: React.FC<{
                   : 'bg-slate-50/90 border-slate-100'
               }`}
             >
-              <div className="flex items-center gap-2 min-w-0">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
                 <span
                   className="w-1.5 h-5 rounded-full shrink-0"
                   style={{ backgroundColor: s.color }}
                 />
                 <DeviceBrandLogo device={s.rawKey} size="xs" />
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="text-[11.5px] font-bold text-slate-800 truncate leading-tight">
                     {s.label}
                   </div>
-                  <div className="text-[10px] text-slate-500 tabular-nums whitespace-nowrap leading-tight mt-0.5">
+                  <div className="text-[10px] text-slate-500 tabular-nums truncate leading-tight mt-0.5">
                     {s.result > 0
                       ? `${formatDomNumber(s.result)} KQ · CPR ${formatDomMoneyShort(s.cpr, currency)}`
                       : `${s.pct.toFixed(1)}%${s.clicks > 0 ? ` · ${formatDomNumber(s.clicks)} clicks` : ''}`}
