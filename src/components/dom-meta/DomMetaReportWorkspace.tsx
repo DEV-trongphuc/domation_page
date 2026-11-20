@@ -4721,11 +4721,11 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   }}
                   currency={currency}
                   surfaceClassName="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3 h-full"
-                  columnsClassName="grid-cols-2 sm:grid-cols-3 content-start flex-1"
+                  columnsClassName="grid-cols-1 sm:grid-cols-2 auto-rows-fr flex-1"
                   titleSizeClassName="text-sm font-semibold text-slate-800"
                 />
 
-                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-3 h-full">
+                <div className="rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_2px_12px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col gap-2.5 h-full">
                   <div className="flex items-center justify-between shrink-0">
                     <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-sm bg-[#0284C7]" />
@@ -4739,7 +4739,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       Xem tất cả →
                     </button>
                   </div>
-                  <div className="space-y-2 flex-1">
+                  <div className="space-y-1.5 flex-1 flex flex-col justify-between">
                     {(() => {
                       const top10 = [...filteredCampaigns]
                         .sort((a, b) => b.spend - a.spend)
@@ -4757,7 +4757,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                             type="button"
                             onMouseEnter={() => handleHoverPrefetchEntity(c, 'campaign')}
                             onClick={() => setDetailModal({ entity: c, type: 'campaign' })}
-                            className="w-full rounded-xl bg-slate-50/90 hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200/80 px-2.5 py-2 flex items-center justify-between gap-2.5 text-xs text-left cursor-pointer dom-ios-press"
+                            className="w-full rounded-xl bg-slate-50/90 hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200/80 px-2.5 py-1.5 flex items-center justify-between gap-2.5 text-xs text-left cursor-pointer dom-ios-press"
                           >
                             <div className="flex items-center gap-2.5 min-w-0 flex-1">
                               <span

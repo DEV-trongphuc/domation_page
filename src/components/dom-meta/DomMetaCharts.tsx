@@ -2808,13 +2808,13 @@ export const MicroBehaviorSignalsCard: React.FC<{
           {microSignals.map((sig) => (
             <div
               key={sig.label}
-              className="rounded-xl bg-white border border-slate-200/80 px-3 py-2.5 flex items-center justify-between gap-2 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:border-blue-200/80 transition-colors"
+              className="rounded-xl bg-slate-50/75 hover:bg-white border border-slate-200/80 px-3.5 py-2.5 flex items-center justify-between gap-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:border-blue-200/80 transition-colors"
             >
-              <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-slate-600 min-w-0 leading-tight">
+              <span className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 min-w-0 leading-snug">
                 <span className={`w-2 h-2 rounded-full shrink-0 ${sig.dot}`} />
-                <span className="truncate">{sig.label}</span>
+                <span>{sig.label}</span>
               </span>
-              <strong className="text-xs font-extrabold text-slate-900 tabular-nums shrink-0">
+              <strong className="text-[13px] font-extrabold text-slate-900 tabular-nums shrink-0">
                 {formatDomNumber(sig.val)}
               </strong>
             </div>
