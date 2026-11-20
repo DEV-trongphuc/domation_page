@@ -4868,8 +4868,17 @@ export const AccountManagerModal: React.FC<{
     token: string,
     selected: Array<{ ad_account_id: string; name?: string }>
   ) => Promise<void>;
+  onCreateWorkspace?: () => void;
   onClose: () => void;
-}> = ({ open, config, onSelectPrimary, onDiscoverAccounts, onConnectAccounts, onClose }) => {
+}> = ({
+  open,
+  config,
+  onSelectPrimary,
+  onDiscoverAccounts,
+  onConnectAccounts,
+  onCreateWorkspace,
+  onClose,
+}) => {
   const [addingToken, setAddingToken] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [rawToken, setRawToken] = useState('');
@@ -5014,14 +5023,30 @@ export const AccountManagerModal: React.FC<{
                   )}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setAddingToken(true)}
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Kết Nối Meta Access Token Mới</span>
-                </button>
+                <div className={onCreateWorkspace ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5' : ''}>
+                  <button
+                    type="button"
+                    onClick={() => setAddingToken(true)}
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Kết Nối Meta Access Token Mới</span>
+                  </button>
+                  {onCreateWorkspace && (
+                    <button
+                      type="button"
+                      data-testid="modal-create-workspace"
+                      onClick={() => {
+                        onClose();
+                        onCreateWorkspace();
+                      }}
+                      className="w-full py-3 rounded-2xl bg-[#F4F8FF] hover:bg-blue-100/75 border border-blue-200/90 text-[#1E40FF] text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Tạo Workspace mới</span>
+                    </button>
+                  )}
+                </div>
               </>
             ) : (
               <div className="space-y-4">
@@ -5176,6 +5201,7 @@ const WorkspaceSettingsTabContent: React.FC<{
   onTestGoogleAds?: (cfg: DomMetaGoogleAdsConfig) => Promise<{ rowsCount: number }>;
   onOpenAccountManager?: () => void;
   onOpenShareModal?: () => void;
+  onOpenCrmUpgrade?: () => void;
 }> = ({
   tab,
   config,
@@ -5200,6 +5226,7 @@ const WorkspaceSettingsTabContent: React.FC<{
   onTestGoogleAds,
   onOpenAccountManager,
   onOpenShareModal,
+  onOpenCrmUpgrade,
 }) => (
   <>
     {!canManageConfig && (tab === 'brand' || tab === 'goals' || tab === 'google_ads') && (
@@ -5529,6 +5556,38 @@ const WorkspaceSettingsTabContent: React.FC<{
             </div>
           </div>
         </div>
+
+        {onOpenCrmUpgrade && (
+          <div className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-blue-50/70 border border-blue-200/80 shadow-[0_6px_18px_-8px_rgba(30,64,255,0.16)] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1.5 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-blue-100 text-[#1E40FF] text-[10px] font-extrabold uppercase tracking-wide">
+                  <Sparkles className="w-3 h-3" />
+                  <span>CRM AutoData</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/70 text-emerald-700 text-[10px] font-bold">
+                  Dùng thử 30d 0₫
+                </span>
+              </div>
+              <div className="text-sm font-bold text-slate-900">
+                Auto Chia Số &amp; Track Lead
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Đồng bộ khách nét về từng Ad &lt;1s · Chia vòng Sale tự động 1:1 · Bắn ngược tín hiệu
+                chốt đơn SHA-256 về Meta CAPI.
+              </p>
+            </div>
+            <button
+              type="button"
+              data-testid="settings-plan-crm-upgrade-btn"
+              onClick={onOpenCrmUpgrade}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm cursor-pointer dom-ios-press shrink-0"
+            >
+              <Rocket className="w-4 h-4" />
+              <span>Upgrade CRM</span>
+            </button>
+          </div>
+        )}
       </div>
     )}
   </>
@@ -8995,6 +9054,7 @@ export const DomMetaSettingsPage: React.FC<{
   onTestGoogleAds?: (cfg: DomMetaGoogleAdsConfig) => Promise<{ rowsCount: number }>;
   onOpenAccountManager?: () => void;
   onOpenShareModal?: () => void;
+  onOpenCrmUpgrade?: () => void;
 }> = ({
   activeTab,
   onTabChange,
@@ -9009,6 +9069,7 @@ export const DomMetaSettingsPage: React.FC<{
   onTestGoogleAds,
   onOpenAccountManager,
   onOpenShareModal,
+  onOpenCrmUpgrade,
 }) => {
   const [brands, setBrands] = useState<DomMetaBrandFilter[]>(() => [
     ...(config.brand_filters || []),
@@ -9228,6 +9289,37 @@ export const DomMetaSettingsPage: React.FC<{
               </button>
             );
           })}
+
+          {onOpenCrmUpgrade && (
+            <div className="pt-2 mt-2 border-t border-slate-100">
+              <div className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-blue-50/70 border border-blue-200/80 shadow-[0_6px_18px_-8px_rgba(30,64,255,0.16)] p-3 space-y-2.5">
+                <div className="flex items-center justify-between gap-1.5">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-blue-100 text-[#1E40FF] text-[9.5px] font-extrabold uppercase tracking-wide">
+                    <Sparkles className="w-2.5 h-2.5" />
+                    <span>CRM AutoData</span>
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9.5px] font-bold">
+                    30d 0₫
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-600 leading-snug px-0.5">
+                  <strong className="text-slate-900 block text-[11.5px]">
+                    Auto Chia Số &amp; Track Lead
+                  </strong>
+                  Đồng bộ khách nét về từng Ad &lt;1s
+                </div>
+                <button
+                  type="button"
+                  data-testid="open-crm-upgrade-modal"
+                  onClick={onOpenCrmUpgrade}
+                  className="w-full py-2 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer dom-ios-press"
+                >
+                  <Rocket className="w-3.5 h-3.5" />
+                  <span>Upgrade CRM</span>
+                </button>
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Right Detail Editor Pane */}
@@ -9287,6 +9379,7 @@ export const DomMetaSettingsPage: React.FC<{
                 onTestGoogleAds={onTestGoogleAds}
                 onOpenAccountManager={onOpenAccountManager}
                 onOpenShareModal={onOpenShareModal}
+                onOpenCrmUpgrade={onOpenCrmUpgrade}
               />
             )}
           </div>

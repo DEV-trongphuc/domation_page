@@ -909,7 +909,7 @@ export const MetaGoalBarChart: React.FC<{
 
 const PLATFORM_SLICE_COLORS: Record<string, string> = {
   Facebook: '#1877F2',
-  Instagram: '#E1306C',
+  Instagram: '#EC4899',
   Messenger: '#7C3AED',
   'Audience Network': '#0284C7',
   Threads: '#0F172A',
@@ -2270,13 +2270,19 @@ export const DaypartingHeatmapGrid: React.FC<{
         )}
       </div>
 
-      {/* Full 24-Hour Heatmap Grid (Always visible >= sm, or opt-in horizontal scroll on mobile) */}
+      {/* Full 24-Hour Heatmap Grid (Zero scrollbars on desktop; opt-in horizontal scroll only on mobile expand) */}
       <div
         className={`${
-          mobileFull24h ? 'block' : 'hidden sm:block'
-        } dom-table-scroll-x w-full max-w-full overflow-x-auto`}
+          mobileFull24h ? 'block overflow-x-auto sm:overflow-visible' : 'hidden sm:block overflow-visible'
+        } w-full max-w-full`}
       >
-        <div className="min-w-[620px] flex flex-col gap-1.5">
+        <div
+          className={
+            mobileFull24h
+              ? 'min-w-[620px] sm:min-w-0 flex flex-col gap-1'
+              : 'w-full flex flex-col gap-1'
+          }
+        >
         <div className="flex items-center gap-1 pl-12">
           {Array.from({ length: 24 }, (_, h) => (
             <div key={h} className="flex-1 text-center text-[10px] font-normal text-slate-400">
@@ -2309,7 +2315,7 @@ export const DaypartingHeatmapGrid: React.FC<{
                 <div
                   key={h}
                   title={detailTip}
-                  className="flex-1 h-6 sm:h-[26px] rounded-[5px] transition-transform hover:scale-110 cursor-pointer"
+                  className="flex-1 h-5 sm:h-[22px] rounded-[5px] transition-all hover:brightness-95 hover:ring-2 hover:ring-[#1E40FF]/35 cursor-pointer"
                   style={{ backgroundColor: bg }}
                 />
               );
@@ -2931,7 +2937,7 @@ export const UserBehaviorFunnelCard: React.FC<{
                   </strong>
                 </div>
               </div>
-              <div className="h-2.5 rounded-full bg-slate-100/90 overflow-hidden flex justify-center p-[1px]">
+              <div className="h-2.5 rounded-full bg-slate-100/90 overflow-hidden flex justify-start p-[1px]">
                 <div
                   className={`h-full rounded-full bg-gradient-to-r ${step.color} transition-all duration-300`}
                   style={{ width: `${Math.max(4, Math.round(step.pctOfTop))}%` }}

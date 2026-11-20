@@ -24,8 +24,6 @@ import {
   LogOut,
   MapPin,
   Menu,
-  PlusCircle,
-  Rocket,
   Search,
   Settings,
   Share2,
@@ -3184,37 +3182,20 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   <ChevronDown className="w-4 h-4 text-white/90 shrink-0" />
                 </button>
 
-                {(onRequestSwitchWorkspace || onRequestCreateWorkspace) && (
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {onRequestSwitchWorkspace && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          onRequestSwitchWorkspace();
-                        }}
-                        className="px-2.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center justify-center gap-1.5 cursor-pointer dom-ios-press"
-                      >
-                        <Building2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-                        <span className="truncate">
-                          /{authContext.tenantSlug || 'workspace'}
-                        </span>
-                      </button>
-                    )}
-                    {onRequestCreateWorkspace && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          onRequestCreateWorkspace();
-                        }}
-                        className="px-2.5 py-2 rounded-xl bg-[#F4F8FF] border border-blue-200 text-[11px] font-semibold text-[#1E40FF] flex items-center justify-center gap-1 cursor-pointer dom-ios-press"
-                      >
-                        <PlusCircle className="w-3.5 h-3.5 shrink-0" />
-                        <span>Tạo mới</span>
-                      </button>
-                    )}
-                  </div>
+                {onRequestSwitchWorkspace && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onRequestSwitchWorkspace();
+                    }}
+                    className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 flex items-center justify-center gap-1.5 cursor-pointer dom-ios-press"
+                  >
+                    <Building2 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                    <span className="truncate">
+                      /{authContext.tenantSlug || 'workspace'}
+                    </span>
+                  </button>
                 )}
 
                 {config.brand_filters.length > 0 && (
@@ -3288,20 +3269,6 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             </div>
 
             <div className="p-3 border-t border-slate-200/80 space-y-1.5 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setCrmUpgradeOpen(true);
-                }}
-                className="w-full px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] text-white flex items-center justify-between gap-2 text-xs font-bold shadow-sm cursor-pointer dom-ios-press"
-              >
-                <span className="inline-flex items-center gap-2">
-                  <Rocket className="w-4 h-4 shrink-0" />
-                  <span>Upgrade lên CRM AutoData</span>
-                </span>
-                <span className="px-1.5 py-0.5 rounded bg-white/20 text-[10px]">30d 0₫</span>
-              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -3542,114 +3509,15 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       </div>
                     )}
                   </button>
-
-                  {onRequestCreateWorkspace && (
-                    <button
-                      type="button"
-                      data-testid="standalone-create-workspace"
-                      onClick={onRequestCreateWorkspace}
-                      title={isSidebarCollapsed ? 'Tạo Workspace mới' : undefined}
-                      className={`w-full rounded-xl flex items-center text-slate-600 font-medium hover:bg-blue-50/50 hover:text-[#1E40FF] transition-all cursor-pointer dom-ios-press ${
-                        isSidebarCollapsed
-                          ? 'justify-center py-2 px-0'
-                          : 'px-3 py-2 gap-3 text-[13px]'
-                      }`}
-                    >
-                      <span className="w-9 h-9 rounded-[10px] bg-white border border-slate-200/80 flex items-center justify-center text-[#1E40FF] shrink-0">
-                        <PlusCircle className="w-[17px] h-[17px]" />
-                      </span>
-                      {!isSidebarCollapsed && <span className="truncate">Tạo Workspace mới</span>}
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Lower Sidebar Architectural Blueprint Decor + Upgrade to CRM AutoData CTA */}
+          {/* Lower Sidebar Architectural Blueprint Decor + Logout */}
           <div className="relative overflow-hidden shrink-0">
-            {/* Subtle Architectural '+' Crosshair & Hairline Blueprint Decor (matching workspace canvas corner) */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 overflow-hidden select-none"
-            >
-              <div className="absolute left-4 top-0 bottom-0 w-px bg-[#1E40FF]/[0.09]" />
-              <div className="absolute left-0 right-0 top-3.5 h-px bg-[#1E40FF]/[0.09]" />
-              <span className="absolute left-[11.5px] top-[5px] text-[13px] font-medium leading-none text-[#1E40FF]/45">
-                +
-              </span>
-              {!isSidebarCollapsed && (
-                <>
-                  <div className="absolute right-4 top-0 bottom-0 w-px bg-[#1E40FF]/[0.06]" />
-                  <span className="absolute right-[11.5px] top-[5px] text-[12px] font-medium leading-none text-[#1E40FF]/30">
-                    +
-                  </span>
-                  <svg
-                    viewBox="0 0 260 150"
-                    className="absolute inset-0 w-full h-full opacity-75"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M -10,125 C 65,65 145,140 270,55"
-                      fill="none"
-                      stroke="#1E40FF"
-                      strokeWidth="1"
-                      strokeOpacity="0.14"
-                    />
-                    <path
-                      d="M -10,145 C 80,95 160,150 270,82"
-                      fill="none"
-                      stroke="#0284C7"
-                      strokeWidth="0.9"
-                      strokeOpacity="0.11"
-                    />
-                  </svg>
-                </>
-              )}
-            </div>
-
-            {/* Upgrade to CRM AutoData Card / Button (Compact Light UI) */}
-            <div className={`relative z-10 ${isSidebarCollapsed ? 'px-2 pt-3 pb-2 flex justify-center' : 'px-3 pt-3 pb-2'}`}>
-              {isSidebarCollapsed ? (
-                <button
-                  type="button"
-                  data-testid="open-crm-upgrade-modal"
-                  onClick={() => setCrmUpgradeOpen(true)}
-                  title="Upgrade lên CRM AutoData (Dùng thử 30 ngày 0₫)"
-                  className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white shadow-[0_6px_14px_rgba(30,64,255,0.28)] flex items-center justify-center cursor-pointer dom-ios-press"
-                >
-                  <Rocket className="w-4 h-4" />
-                </button>
-              ) : (
-                <div className="rounded-2xl bg-gradient-to-br from-[#F4F8FF] via-white to-blue-50/70 backdrop-blur-md border border-blue-200/80 shadow-[0_6px_18px_-8px_rgba(30,64,255,0.16)] p-2.5 space-y-2">
-                  <div className="flex items-center justify-between gap-1.5">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-blue-100 text-[#1E40FF] text-[9.5px] font-extrabold uppercase tracking-wide">
-                      <Sparkles className="w-2.5 h-2.5" />
-                      <span>CRM AutoData</span>
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9.5px] font-bold">
-                      30d 0₫
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-slate-600 leading-snug px-0.5">
-                    <strong className="text-slate-900 block text-[11.5px]">Auto Chia Số &amp; Track Lead</strong>
-                    Đồng bộ khách nét về từng Ad &lt;1s
-                  </div>
-                  <button
-                    type="button"
-                    data-testid="open-crm-upgrade-modal"
-                    onClick={() => setCrmUpgradeOpen(true)}
-                    className="w-full py-1.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer dom-ios-press"
-                  >
-                    <Rocket className="w-3 h-3" />
-                    <span>Upgrade CRM</span>
-                  </button>
-                </div>
-              )}
-            </div>
-
             {onLogout && (
-              <div className="relative z-10 px-2.5 py-2 border-t border-slate-200/75 bg-white/75 backdrop-blur-sm">
+              <div className="relative z-10 px-2.5 py-2.5 border-t border-slate-200/75 bg-white/75 backdrop-blur-sm">
                 <button
                   type="button"
                   onClick={onLogout}
@@ -5881,6 +5749,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
             }}
             onOpenAccountManager={() => setAccountModalOpen(true)}
             onOpenShareModal={() => setShareModalOpen(true)}
+            onOpenCrmUpgrade={() => setCrmUpgradeOpen(true)}
           />
         )}
         </div>
@@ -6118,6 +5987,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           setConfig(nextCfg);
           setReloadTick((t) => t + 1);
         }}
+        onCreateWorkspace={onRequestCreateWorkspace}
         onClose={() => setAccountModalOpen(false)}
       />
 
