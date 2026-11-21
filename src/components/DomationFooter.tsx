@@ -123,9 +123,26 @@ export const DomationFooter: React.FC<DomationFooterProps> = ({ onOpenContact })
 
             <div className="md:col-span-4 space-y-3">
               <div className="text-xs font-semibold uppercase tracking-widest text-cyan-300">
-                Kết Nối Solution Architect
+                Founder &amp; CEO • Solution Architect
               </div>
               <div className="space-y-2 text-xs text-slate-300">
+                <div className="text-white font-bold">
+                  Huỳnh Trọng Phúc (TurnioDEV)
+                  <span className="block text-[11px] font-normal text-slate-300 mt-0.5">
+                    Chuyên gia AI Automation • Digital Marketing • Hệ thống A–Z
+                  </span>
+                </div>
+                <div>
+                  Portfolio TurnioDEV:{' '}
+                  <a
+                    href="https://portfo-turnio.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-cyan-300 hover:text-cyan-200 hover:underline"
+                  >
+                    portfo-turnio.vercel.app
+                  </a>
+                </div>
                 <div>
                   Hotline / Zalo:{' '}
                   <a
@@ -146,8 +163,25 @@ export const DomationFooter: React.FC<DomationFooterProps> = ({ onOpenContact })
                     turniodev@gmail.com
                   </a>
                 </div>
-                <div>
-                  Facebook:{' '}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <a
+                    href="https://www.linkedin.com/in/turnio-dev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-white hover:text-cyan-300"
+                  >
+                    LinkedIn
+                  </a>
+                  <span className="text-slate-600">•</span>
+                  <a
+                    href="https://github.com/DEV-trongphuc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-white hover:text-cyan-300"
+                  >
+                    GitHub
+                  </a>
+                  <span className="text-slate-600">•</span>
                   <a
                     href="https://www.facebook.com/turni0"
                     target="_blank"
@@ -175,14 +209,14 @@ export const DomationFooter: React.FC<DomationFooterProps> = ({ onOpenContact })
               <span>Bespoke Enterprise Architecture • AI Agent Systems.</span>
               <span className="hidden sm:inline text-slate-600">•</span>
               <span>
-                Powered by{' '}
+                Founded &amp; Architected by{' '}
                 <a
-                  href="https://turnio.vercel.app/"
+                  href="https://portfo-turnio.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-cyan-300 hover:text-cyan-200 hover:underline font-semibold"
                 >
-                  Turnio DEV
+                  Huỳnh Trọng Phúc (TurnioDEV)
                 </a>
               </span>
             </div>

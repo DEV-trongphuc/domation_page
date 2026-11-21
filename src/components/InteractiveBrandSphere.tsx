@@ -96,11 +96,24 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
 
   useEffect(() => {
     let rafId = 0;
+    let isVisible = true;
+    const boxEl = containerRef.current;
+
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined' && boxEl) {
+      io = new IntersectionObserver(
+        (entries) => {
+          isVisible = Boolean(entries[0]?.isIntersecting);
+        },
+        { threshold: 0.02 }
+      );
+      io.observe(boxEl);
+    }
 
     const renderFrame = () => {
       const state = rotationRef.current;
       const box = containerRef.current;
-      if (box) {
+      if (box && isVisible) {
         if (!state.isDragging) {
           if (state.isHovered) {
             state.vx *= 0.88;
@@ -151,7 +164,10 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
     };
 
     rafId = requestAnimationFrame(renderFrame);
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      io?.disconnect();
+    };
   }, [basePoints]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -198,8 +214,8 @@ export const InteractiveBrandSphere: React.FC<InteractiveBrandSphereProps> = ({
       <div className="pointer-events-none absolute w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] rounded-full border border-dashed border-slate-300/60" />
       <div className="pointer-events-none absolute w-[350px] h-[350px] sm:w-[470px] sm:h-[470px] lg:w-[530px] lg:h-[530px] rounded-full border border-slate-200/70" />
 
-      {/* Radial soft glow behind DOMATION core */}
-      <div className="pointer-events-none absolute w-52 h-52 sm:w-72 sm:h-72 rounded-full bg-gradient-to-br from-[#1E40FF]/14 via-sky-400/12 to-cyan-300/16 blur-2xl" />
+      {/* Radial soft glow behind DOMATION core (desktop only for mobile 60fps scroll) */}
+      <div className="hidden lg:block pointer-events-none absolute w-72 h-72 rounded-full bg-gradient-to-br from-[#1E40FF]/14 via-sky-400/12 to-cyan-300/16 blur-2xl" />
 
       {/* Center DOMATION Core Hub */}
       <div className="relative z-20 w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-3xl bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-[0_20px_50px_-10px_rgba(30,64,255,0.22)] flex flex-col items-center justify-center p-2 pointer-events-none">

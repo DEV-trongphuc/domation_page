@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -23,6 +23,20 @@ export const CustomModal: React.FC<CustomModalProps> = ({
   showCloseIcon = true,
   disableAnimation = false
 }) => {
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 767px)').matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    setIsMobile(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -32,6 +46,34 @@ export const CustomModal: React.FC<CustomModalProps> = ({
     }
     return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
+
+  const sheetBody = (
+    <>
+      <div className={styles.grabHandleWrap} aria-hidden="true">
+        <div className={styles.grabHandle} />
+      </div>
+
+      {title && (
+        <div className={styles.header}>
+          <h3 className={styles.title}>{title}</h3>
+          {showCloseIcon && (
+            <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Close">
+              <X size={20} />
+            </button>
+          )}
+        </div>
+      )}
+      {!title && showCloseIcon && (
+        <button type="button" className={`${styles.closeBtn} ${styles.floatingClose}`} onClick={onClose} aria-label="Close">
+          <X size={20} />
+        </button>
+      )}
+
+      <div className={`${styles.content} custom-scrollbar`}>
+        {children}
+      </div>
+    </>
+  );
 
   const modalContent = (
     <AnimatePresence>
@@ -44,28 +86,10 @@ export const CustomModal: React.FC<CustomModalProps> = ({
             />
 
             <div
-              className={styles.modal}
+              className={`${styles.modal} ${isMobile ? styles.mobileSheetStatic : ''}`}
               style={width ? { width, maxWidth: '95vw' } : {}}
             >
-              {title && (
-                <div className={styles.header}>
-                  <h3 className={styles.title}>{title}</h3>
-                  {showCloseIcon && (
-                    <button className={styles.closeBtn} onClick={onClose}>
-                      <X size={20} />
-                    </button>
-                  )}
-                </div>
-              )}
-              {!title && showCloseIcon && (
-                <button className={`${styles.closeBtn} ${styles.floatingClose}`} onClick={onClose}>
-                  <X size={20} />
-                </button>
-              )}
-
-              <div className={`${styles.content} custom-scrollbar`}>
-                {children}
-              </div>
+              {sheetBody}
             </div>
           </div>
         ) : (
@@ -75,36 +99,23 @@ export const CustomModal: React.FC<CustomModalProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: isMobile ? 0.2 : 0.22 }}
               onClick={onClose}
             />
 
             <motion.div
               className={styles.modal}
               style={width ? { width, maxWidth: '95vw' } : {}}
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ type: "spring", duration: 0.4, bounce: 0.12 }}
+              initial={isMobile ? { opacity: 0.9, y: 48 } : { opacity: 0, scale: 0.95, y: 15 }}
+              animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+              exit={isMobile ? { opacity: 0, y: 48 } : { opacity: 0, scale: 0.95, y: 15 }}
+              transition={
+                isMobile
+                  ? { type: 'spring', stiffness: 420, damping: 36, mass: 0.9 }
+                  : { type: 'spring', duration: 0.4, bounce: 0.12 }
+              }
             >
-              {title && (
-                <div className={styles.header}>
-                  <h3 className={styles.title}>{title}</h3>
-                  {showCloseIcon && (
-                    <button className={styles.closeBtn} onClick={onClose}>
-                      <X size={20} />
-                    </button>
-                  )}
-                </div>
-              )}
-              {!title && showCloseIcon && (
-                <button className={`${styles.closeBtn} ${styles.floatingClose}`} onClick={onClose}>
-                  <X size={20} />
-                </button>
-              )}
-
-              <div className={`${styles.content} custom-scrollbar`}>
-                {children}
-              </div>
+              {sheetBody}
             </motion.div>
           </div>
         )

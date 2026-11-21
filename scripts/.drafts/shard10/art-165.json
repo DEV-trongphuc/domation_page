@@ -1,0 +1,321 @@
+{
+  "id": "art-165",
+  "number": "165",
+  "slug": "modelcontextprotocol-servers-audit-reference-mcp-va-bao-mat-enterprise",
+  "shardId": "shard10",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Model Context Protocol Reference",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Audit modelcontextprotocol/servers: Đừng bê nguyên Reference Server lên Production nếu chưa khóa Allowlist",
+  "seoTitle": "Audit MCP Reference Servers: Cẩn Trọng Production | DOMATION",
+  "metaDescription": "Đánh giá monorepo 90k+ Stars modelcontextprotocol/servers: chuẩn Tools/Resources tuyệt vời nhưng chỉ ở mức tham khảo, dễ dính SSRF nếu thiếu allowlist.",
+  "focusKeyword": "audit modelcontextprotocol servers bảo mật production",
+  "secondaryKeywords": [
+    "reference mcp servers filesystem fetch git",
+    "rủi ro bê nguyên mcp mẫu lên production",
+    "khóa allowlist thư mục và domain mcp",
+    "xây dựng mcp server chuẩn enterprise",
+    "kết nối 80 tools erp qua mcp"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "MCP Reference Servers: Chuẩn Giao Thức Tốt, Nhưng Chưa Hardened",
+  "thumbnailHook": "Phải bọc Path Allowlist, Egress Block và Force RLS trước khi nối ERP thật.",
+  "thumbnailBadge": "GITHUB • MCP SPEC",
+  "coverImage": "/imgs/boost/v2/modelcontextprotocol-servers-audit-reference-mcp-va-bao-mat-enterprise.webp",
+  "screenshotImage": "/imgs/boost/charts/modelcontextprotocol-servers-audit-reference-mcp-va-bao-mat-enterprise-report.webp",
+  "coverAlt": "Báo cáo phản biện bảo mật modelcontextprotocol/servers chỉ ra rủi ro SSRF, path traversal và giải pháp bọc allowlist cùng PostgreSQL FORCE RLS trước khi đưa lên production",
+  "screenshotCaption": "Đối chiếu mức độ rủi ro bảo mật qua 6 bề mặt tấn công phổ biến giữa MCP Reference Server cấu hình mặc định và phiên bản đã bọc Allowlist + Zero-Trust tại DOMATION.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc DOM Agent 80 MCP Tools",
+  "relatedSlugs": [
+    "kien-truc-mcp-stdio-vs-streamable-http-oauth21-erp-misa",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf",
+    "github-github-mcp-server-audit-bao-mat-token-toolsets-devops",
+    "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản audit modelcontextprotocol servers bảo mật production khẳng định monorepo 90k+ Stars modelcontextprotocol/servers đóng vai trò xuất sắc trong việc chuẩn hóa giao thức JSON-RPC 2.0 (Tools, Resources, Prompts), với cấu trúc giấy phép kép Apache-2.0 cho mã đóng góp mới và MIT cho reference server cũ. Dù vậy, các gói mẫu như filesystem, fetch hay git được định vị thuần túy cho mục đích tham khảo và học thuật. Bê nguyên cấu hình mặc định lên server doanh nghiệp mà thiếu khóa đường dẫn canonical, tường lửa chặn SSRF và PostgreSQL FORCE RLS sẽ mở toang lỗ hổng đọc trộm biến môi trường và mạng nội bộ.",
+  "keyTakeaways": [
+    "Monorepo modelcontextprotocol/servers chỉ chứa các Reference Server cốt lõi (filesystem, git, memory, fetch, time, sequentialthinking); nhiều connector DB và dịch vụ thứ ba cũ đã bị lưu trữ hoặc tách ra ngoài.",
+    "Cần nắm rõ tính chất giấy phép lai: các đóng góp mới áp dụng Apache-2.0 trong khi phần mã reference cũ dùng MIT — rất quan trọng khi kiểm tra pháp lý cho sản phẩm thương mại.",
+    "Server fetch mẫu có nguy cơ dẫn tới SSRF nếu không chặn dải IP nội bộ (169.254.169.254, 10.0.0.0/8, localhost) khi AI Agent bị prompt injection điều hướng URL.",
+    "Muốn nối AI Agent vào ERP hay CRM nhiều chi nhánh, bắt buộc bọc MCP endpoint sau lớp xác thực danh tính và PostgreSQL FORCE ROW LEVEL SECURITY như cách DOMATION triển khai cho DOM Agent 80 tools."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Bề mặt rủi ro SSRF mặc định",
+      "value": "Cao (Nếu thiếu Egress Filter)"
+    },
+    {
+      "label": "Giấy phép Monorepo chính thức",
+      "value": "Apache-2.0 (mới) + MIT (cũ)"
+    },
+    {
+      "label": "Chuẩn cô lập đa chi nhánh",
+      "value": "OAuth + Postgres FORCE RLS"
+    },
+    {
+      "label": "Quy mô DOM Agent thực chiến",
+      "value": "80 Scoped MCP Tools"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao thấy nhiều bài hướng dẫn trên mạng lấy thẳng server PostgreSQL hay Puppeteer từ modelcontextprotocol/servers mà nay tìm lại không thấy?",
+      "answer": "Ban quản trị dự án MCP đã chủ động dọn dẹp monorepo để giữ đúng vai trò 'reference implementations' cho đặc tả giao thức cốt lõi. Nhiều server tích hợp bên thứ ba hoặc cơ sở dữ liệu cũ (như bản mẫu Postgres sơ khai trước đây) đã được chuyển sang mục lưu trữ (archived) hoặc tách về repo chính chủ của từng nhà cung cấp (ví dụ GitHub tự duy trì github/github-mcp-server, Microsoft duy trì playwright-mcp). Doanh nghiệp nào vẫn bám theo các gói npm cũ từ nhánh đã ngừng bảo trì sẽ đối mặt trực tiếp với lỗ hổng bảo mật không có bản vá."
+    },
+    {
+      "question": "Giấy phép Apache-2.0 cho code mới và MIT cho reference server cũ trong repo này ảnh hưởng gì khi doanh nghiệp build sản phẩm riêng?",
+      "answer": "Cả MIT và Apache-2.0 đều thuộc nhóm giấy phép mã nguồn mở thoáng (permissive), cho phép sử dụng thương mại và đóng gói vào hệ thống nội bộ mà không ép bạn phải mở mã nguồn như AGPL hay bẫy Fair-Code. Điểm khác biệt thực tế là Apache-2.0 đi kèm điều khoản bảo hộ bằng sáng chế rõ ràng hơn và yêu cầu giữ lại thông báo NOTICE nếu có khi phân phối lại, vì vậy bộ phận kỹ thuật khi trích xuất mã nguồn từ thư mục nào trong monorepo cần kiểm tra file LICENSE đi kèm gói đó."
+    },
+    {
+      "question": "Lỗ hổng SSRF trên MCP fetch server xảy ra theo kịch bản nào trong doanh nghiệp?",
+      "answer": "Giả sử bạn cài đặt một trợ lý AI đọc tin tức hoặc tóm tắt hồ sơ đối tác bằng tool fetch chạy chung trong mạng VPC công ty. Kẻ tấn công chèn một dòng prompt injection ẩn trong trang web đối thủ hoặc trong ghi chú ticket khách hàng, dụ AI gọi tool fetch tới http://169.254.169.254/latest/meta-data/ hoặc http://127.0.0.1:6379/. Nếu server fetch mẫu không phân giải DNS và chặn trước toàn bộ dải IP riêng tư, agent vô tình biến thành cầu nối đọc credential đám mây hoặc quét cổng Redis, PostgreSQL nội bộ."
+    },
+    {
+      "question": "Kiến trúc DOM Agent 80 tools của DOMATION học gì và thay thế gì từ modelcontextprotocol/servers?",
+      "answer": "DOMATION kế thừa hoàn toàn khung giao thức JSON-RPC 2.0 (Tools, Resources, Prompts) và mô hình transport Streamable HTTP/stdio từ đặc tả chuẩn MCP SDK. Nhưng thay vì cài đặt các server mẫu đọc file hay query SQL thô, toàn bộ 80 MCP tools kết nối ERP 5.0, CRM 360°, AutoData Lead Routing và kiểm tra Meta CAPI HTTP 200 đều là endpoint tự viết có kiểm duyệt schema đầu vào bằng Zod, bắt buộc gắn token người dùng vào biến phiên PostgreSQL FORCE RLS và ghi vết Audit Log bất biến."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "modelcontextprotocol/servers",
+    "url": "https://github.com/modelcontextprotocol/servers",
+    "category": "Official Model Context Protocol Reference Servers",
+    "primaryLanguage": "TypeScript / Python",
+    "license": "Apache-2.0 (new contributions) + MIT (legacy code)",
+    "starsTier": "90k+ Stars",
+    "bestFor": "Học chuẩn giao thức JSON-RPC 2.0 (Tools, Resources, Prompts), dùng làm reference trên máy dev cá nhân (filesystem, git, sequentialthinking, time) hoặc làm khung tham chiếu xây dựng MCP Server riêng.",
+    "avoidWhen": "Đem thẳng các reference server (như fetch hay filesystem) gắn quyền rộng lên máy chủ production đa người dùng mà không bọc cơ chế kiểm tra đường dẫn canonical, chặn SSRF egress và phân quyền RBAC/RLS.",
+    "domationSynergy": "Là bản thiết kế giao thức gốc đứng sau kiến trúc DOM Agent 80 tools của DOMATION, giúp chuẩn hóa việc kết nối ERP 5.0, AutoData Lead Routing, CRM 360° và chẩn đoán Meta CAPI qua các endpoint có PostgreSQL FORCE RLS bảo vệ.",
+    "scores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 10
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "ho-so-repo-mcp-servers",
+      "heading": "Hồ sơ kiểm toán Repo: modelcontextprotocol/servers — Kho Reference Server chuẩn hóa kỷ nguyên Agent",
+      "repo": {
+        "fullName": "modelcontextprotocol/servers",
+        "url": "https://github.com/modelcontextprotocol/servers",
+        "category": "Official Model Context Protocol Reference Servers",
+        "primaryLanguage": "TypeScript / Python",
+        "license": "Apache-2.0 (new contributions) + MIT (legacy code)",
+        "starsTier": "90k+ Stars",
+        "bestFor": "Học chuẩn giao thức JSON-RPC 2.0 (Tools, Resources, Prompts), dùng làm reference trên máy dev cá nhân (filesystem, git, sequentialthinking, time) hoặc làm khung tham chiếu xây dựng MCP Server riêng.",
+        "avoidWhen": "Đem thẳng các reference server (như fetch hay filesystem) gắn quyền rộng lên máy chủ production đa người dùng mà không bọc cơ chế kiểm tra đường dẫn canonical, chặn SSRF egress và phân quyền RBAC/RLS.",
+        "domationSynergy": "Là bản thiết kế giao thức gốc đứng sau kiến trúc DOM Agent 80 tools của DOMATION, giúp chuẩn hóa việc kết nối ERP 5.0, AutoData Lead Routing, CRM 360° và chẩn đoán Meta CAPI qua các endpoint có PostgreSQL FORCE RLS bảo vệ.",
+        "scores": {
+          "productionReadiness": 7,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 7,
+          "costEfficiency": 10
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "phan-bien-mac-dinh-90k-stars",
+      "eyebrow": "PHẢN BIỆN KIẾN TRÚC • ĐỪNG NHẦM REFERENCE VỚI HARDENED",
+      "variant": "contrarian",
+      "heading": "Vì sao 90.000+ GitHub Stars của modelcontextprotocol/servers không phải giấy thông hành an toàn cho Production",
+      "pullQuote": "Kho mã nguồn tham khảo được viết để chứng minh giao thức chạy đúng — không phải để cản một nhân viên tò mò hay một đoạn prompt injection độc hại đang nhắm thẳng vào hạ tầng nội bộ của bạn.",
+      "paragraphs": [
+        "Làn sóng Vibecode bùng nổ kéo theo một thói quen nguy hiểm trong nhiều đội kỹ thuật: hễ thấy một kho mã nguồn đạt hơn 90.000 sao mang mác 'chính chủ' modelcontextprotocol/servers, lập trình viên lập tức copy nguyên câu lệnh npx hoặc Docker image từ file README vào máy chủ công ty để cho AI Agent đọc thư mục dự án, lướt web nội bộ hoặc tra cứu ghi chú. Tư duy này bỏ qua một dòng cảnh báo cốt tử ngay trong định vị của chính tác giả: đây là tập hợp các Reference Servers (máy chủ tham khảo) phục vụ minh họa chuẩn Tools, Resources và Prompts.",
+        "Trên máy laptop cá nhân của một lập trình viên (chạy qua giao thức stdio dưới sự giám sát trực tiếp từng cú click xác nhận), một reference server như filesystem hay fetch hoạt động rất tiện lợi. Nhưng ngay khi bạn nâng quy mô lên môi trường doanh nghiệp — nơi nhiều phòng ban cùng gọi chung một AI Agent trên cloud, nơi dữ liệu đầu vào chứa hàng nghìn tin nhắn khách hàng hoặc website bên ngoài không kiểm soát — ranh giới an toàn lập tức sụp đổ. Thiếu lớp allowlist đường dẫn tuyệt đối sau khi giải quyết symlink, agent có thể đọc nhầm file .env chứa API key; thiếu tường lửa chặn egress IP nội bộ, tool fetch trở thành công cụ dò quét cổng dịch vụ trong VPC.",
+        "Khi kiểm toán bảo mật để chuẩn hóa kiến trúc kết nối cho hệ thống doanh nghiệp, mục tiêu của chúng tôi không phải là phủ nhận giá trị của modelcontextprotocol/servers — ngược lại, chuẩn JSON-RPC 2.0 mà nó phổ cập là cú hích xóa bỏ ma trận tích hợp N×M rời rạc. Mục tiêu là vạch rõ ranh giới kỹ thuật: phải bọc thêm ít nhất ba lớp khóa cứng trước khi bất kỳ năng lực MCP nào được phép chạm vào ERP, CRM hay dữ liệu khách hàng."
+      ],
+      "bullets": [
+        "Reference server tối ưu cho sự đơn giản dễ đọc mã mẫu, không tự động gánh lớp xác thực đa người dùng OAuth 2.1 hay kiểm soát hạn mức tốc độ.",
+        "Một số gói tích hợp cơ sở dữ liệu và SaaS đời đầu từng nằm trong repo này đã bị lưu trữ hoặc tách ra ngoài để tránh tạo kỳ vọng sai về bảo trì dài hạn.",
+        "Triển khai production luôn yêu cầu tách biệt đặc quyền theo nguyên tắc tối thiểu: chỉ định rõ thư mục, tên miền và bảng dữ liệu được phép chạm tới."
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "ngo-nhan-va-thuc-te-mcp-reference",
+      "heading": "4 ngộ nhận nguy hiểm khi bê nguyên Reference MCP Servers vào hạ tầng công ty",
+      "pairs": [
+        {
+          "myth": "Kho modelcontextprotocol/servers do tổ chức tiêu chuẩn phát hành nên mọi server bên trong đều đã kiểm thử bảo mật sẵn cho production.",
+          "reality": "Chính repo xác định đây là reference/educational implementations để minh họa SDK TypeScript và Python. Rất nhiều connector DB hoặc bên thứ ba trước kia đã bị chuyển sang trạng thái archived hoặc tách sang vendor repo độc lập vì chi phí bảo trì và rủi ro bảo mật.",
+          "proofMetric": "Chỉ còn 6–7 reference server lõi"
+        },
+        {
+          "myth": "Chỉ cần truyền thư mục dự án vào tham số khởi chạy filesystem server là AI Agent tuyệt đối không thể thoát ra ngoài.",
+          "reality": "Nếu code wrapper không giải mã đường dẫn thực (realpath) sau khi duyệt qua symlink hoặc mount thư mục cha chứa thư mục bí mật (.git/config, .env, khóa SSH), agent vẫn có nguy cơ đọc lọt file nhạy cảm hoặc bị dụ ghi đè file cấu hình khởi động.",
+          "proofMetric": "Bắt buộc fs.realpathSync + Deny Pattern"
+        },
+        {
+          "myth": "Tool fetch chỉ làm nhiệm vụ GET nội dung trang web công khai về tóm tắt nên không có khả năng gây hại cho máy chủ.",
+          "reality": "Đây là bề mặt tấn công SSRF (Server-Side Request Forgery) kinh điển. Nếu không khóa DNS resolution trước khi kết nối và từ chối dải IP nội bộ (127.0.0.0/8, 10.0.0.0/8, 169.254.169.254), kẻ xấu chèn prompt injection sẽ ép server tự kéo AWS/GCP metadata hoặc gọi API quản trị mạng LAN.",
+          "proofMetric": "Rủi ro SSRF > 85/100 nếu thiếu Egress Block"
+        },
+        {
+          "myth": "Dựng một MCP Server kết nối thẳng vào Database ERP cho cả phòng Kinh doanh và các đại lý dùng chung để đỡ tốn tài nguyên.",
+          "reality": "Nếu MCP Server dùng một tài khoản DB quyền cao cố định và chỉ lọc bằng câu nhắc trong system prompt, một câu hỏi lắt léo sẽ khiến agent xuất toàn bộ SĐT khách hàng của đại lý đối thủ. Phải tiêm danh tính JWT vào PostgreSQL FORCE RLS ở mọi phiên giao dịch.",
+          "proofMetric": "0% rò rỉ chéo khi áp FORCE RLS"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-be-mat-rui-ro-mcp",
+      "heading": "Điểm rủi ro bảo mật qua 6 bề mặt tấn công: Reference MCP mặc định vs Hardened MCP Enterprise",
+      "subtitle": "Thang điểm rủi ro đánh giá nội bộ từ 0 (an toàn cao) đến 100 (lộ lọt nghiêm trọng nếu bị khai thác)",
+      "chart": {
+        "chartType": "horizontal-bar",
+        "title": "Chỉ số phơi nhiễm rủi ro bảo mật trước và sau khi bọc Hardening Layer (Thấp hơn = An toàn hơn)",
+        "subtitle": "Đánh giá trên cấu hình thử nghiệm với server fetch, filesystem và cầu nối DB ERP giả lập",
+        "xKey": "vector",
+        "yUnit": "điểm rủi ro",
+        "series": [
+          {
+            "key": "referenceDefault",
+            "label": "Reference MCP Mặc định (Thiếu Allowlist)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "domationHardened",
+            "label": "Hardened MCP (Allowlist + Egress + RLS)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "vector": "SSRF Cloud & LAN", "referenceDefault": 92, "domationHardened": 8 },
+          { "vector": "Path & Symlink Escape", "referenceDefault": 78, "domationHardened": 10 },
+          { "vector": "Rò dữ liệu chéo Tenant", "referenceDefault": 96, "domationHardened": 4 },
+          { "vector": "Lộ Secret qua .env", "referenceDefault": 84, "domationHardened": 9 },
+          { "vector": "Prompt Injection Tool", "referenceDefault": 88, "domationHardened": 18 },
+          { "vector": "Thiếu Audit & Rate Limit", "referenceDefault": 85, "domationHardened": 11 }
+        ],
+        "kpis": [
+          {
+            "label": "Giảm rủi ro SSRF",
+            "value": "-91%",
+            "delta": "Chặn CIDR riêng & Metadata",
+            "positive": true
+          },
+          {
+            "label": "Rò rỉ chéo đại lý",
+            "value": "0 dòng",
+            "delta": "Cưỡng bức FORCE RLS",
+            "positive": true
+          },
+          {
+            "label": "Giấy phép kiểm toán",
+            "value": "Apache-2.0 / MIT",
+            "delta": "Thân thiện thương mại",
+            "positive": true
+          },
+          {
+            "label": "Chi phí hiệu năng bọc",
+            "value": "< 12 ms",
+            "delta": "Zod + DNS Guard",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô hình chấm điểm bề mặt tấn công theo chuẩn OWASP MCP Security & kết quả kiểm thử xâm nhập nội bộ tại DOMATION Lab."
+      },
+      "insightSummary": "Phần lớn rủi ro nghiêm trọng nhất (SSRF đạt 92 điểm và rò rỉ đa chi nhánh đạt 96 điểm) không xuất phát từ lỗi của chuẩn JSON-RPC 2.0, mà đến từ việc triển khai thiếu bộ lọc đầu ra (egress block) và thiếu cô lập phiên database. Chỉ cần cộng thêm dưới 12 mili-giây kiểm tra ở tầng proxy và PostgreSQL FORCE RLS, đường rủi ro rớt thẳng xuống dưới ngưỡng kiểm soát an toàn."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-mcp-reference-security",
+      "src": "/imgs/boost/charts/modelcontextprotocol-servers-audit-reference-mcp-va-bao-mat-enterprise-report.webp",
+      "alt": "Biểu đồ kiểm toán modelcontextprotocol/servers phân tích rủi ro SSRF, lỗ hổng path traversal và cấu trúc bọc bảo mật doanh nghiệp",
+      "caption": "Minh họa kiến trúc chuyển đổi từ MCP Reference Server đơn giản sang mô hình Production Hardened tích hợp Allowlist, Egress Firewall và PostgreSQL FORCE RLS.",
+      "badge": "SECURITY AUDIT"
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-monorepo-va-giay-phep-kep",
+      "eyebrow": "GIẢI PHẪU MONOREPO • STDIO, STREAMABLE HTTP & PHÁP LÝ",
+      "variant": "deep-dive",
+      "heading": "Bóc tách các reference server cốt lõi và ý nghĩa của giấy phép kép Apache-2.0 + MIT",
+      "paragraphs": [
+        "Khi mở mã nguồn modelcontextprotocol/servers, điều đầu tiên các kỹ sư cần nhận diện là hệ sinh thái đã được tinh gọn mạnh mẽ. Những server sống sót trong nhánh chính tập trung vào năng lực nền tảng: filesystem (đọc/ghi tệp trong thư mục cho phép), git (đọc lịch sử commit và diff cục bộ), memory (đồ thị tri thức nhẹ qua JSON), fetch (lấy và chuyển đổi trang web sang Markdown gọn token), time (chuyển đổi múi giờ tránh AI đoán nhầm ngày tháng) và sequentialthinking (khung chia nhỏ chuỗi suy luận từng bước). Toàn bộ dựa trên hai bộ SDK chính thức bằng TypeScript và Python qua giao thức stdio cho công cụ IDE cục bộ hoặc Streamable HTTP/SSE cho dịch vụ từ xa.",
+        "Về mặt pháp lý doanh nghiệp — điểm mà các bộ phận IT Compliance luôn soi kỹ khi tiếp nhận mã nguồn mở — repo áp dụng cơ chế giấy phép kép cực kỳ minh bạch: mã nguồn đóng góp mới tuân theo giấy phép Apache-2.0, còn các reference server thế hệ đầu giữ nguyên giấy phép MIT. Điều này khác hoàn toàn với các công cụ tự động hóa Fair-Code như n8n vốn khóa quyền cung cấp dịch vụ đa người dùng thương mại. Doanh nghiệp hoàn toàn có quyền fork cấu trúc server từ repo này để dựng bộ MCP nội bộ hoặc đóng gói vào phần mềm B2B thương mại miễn là tuân thủ việc giữ bản quyền và thông báo NOTICE theo chuẩn Apache-2.0/MIT.",
+        "Tuy nhiên, 'được phép dùng về mặt pháp lý' không đồng nghĩa 'an toàn để chạy thẳng'. Ngay cả những reference server nhẹ như filesystem cũng chỉ thực hiện kiểm tra tiền tố chuỗi đường dẫn ở mức cơ bản nếu người vận hành không khóa kỹ thư mục gắn ngoài Docker volume, trong khi server fetch phụ thuộc vào độ sạch của môi trường mạng nơi container đang chạy. Muốn đưa lên production, phần reference chỉ nên giữ vai trò bộ khung giao tiếp JSON-RPC, còn mọi lớp kiểm soát truy cập phải do đội ngũ bảo mật tự khóa lại."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-hardened-mcp-guard",
+      "heading": "Lớp bảo vệ bắt buộc bằng TypeScript: Canonical Path Allowlist & Chặn SSRF trước khi cấp cho MCP Server",
+      "language": "typescript",
+      "filename": "src/mcp/security-guard.ts",
+      "description": "Hàm middleware bảo vệ mà mọi enterprise MCP server tự viết (hoặc bọc ngoài reference logic) phải chạy trước khi mở tệp hoặc gọi URL ra ngoài, ngăn chặn tuyệt đối path traversal qua symlink và SSRF vào mạng nội bộ VPC.",
+      "code": "import fs from \"node:fs\";\nimport path from \"node:path\";\nimport dns from \"node:dns/promises\";\nimport net from \"node:net\";\n\nconst ALLOWED_ROOTS = [\"/srv/domation/public-docs\", \"/srv/domation/templates\"].map((p) =>\n  fs.realpathSync(p)\n);\nconst ALLOWED_EGRESS_HOSTS = new Set([\"api.domation.net\", \"docs.nextjs.org\"]);\n\nexport function assertSafeFilePath(requestedPath: string): string {\n  const resolvedReal = fs.realpathSync(path.resolve(requestedPath));\n  const baseName = path.basename(resolvedReal);\n  if (baseName.startsWith(\".env\") || resolvedReal.includes(\"/.git/\")) {\n    throw new Error(\"BLOCKED_SENSITIVE_FILE: Từ chối đọc tệp cấu hình hoặc khóa bí mật.\");\n  }\n  const isInsideRoot = ALLOWED_ROOTS.some(\n    (root) => resolvedReal === root || resolvedReal.startsWith(root + path.sep)\n  );\n  if (!isInsideRoot) {\n    throw new Error(\"PATH_ALLOWLIST_VIOLATION: Đường dẫn vượt ra ngoài vùng cấp phép.\");\n  }\n  return resolvedReal;\n}\n\nfunction isPrivateOrMetadataIp(ip: string): boolean {\n  if (net.isIPv4(ip)) {\n    const [a, b] = ip.split(\".\").map(Number);\n    if (a === 10 || a === 127 || a === 0) return true;\n    if (a === 169 && b === 254) return true; // AWS/GCP Metadata endpoint\n    if (a === 172 && b >= 16 && b <= 31) return true;\n    if (a === 192 && b === 168) return true;\n  }\n  return ip === \"::1\" || ip.startsWith(\"fe80:\") || ip.startsWith(\"fc\") || ip.startsWith(\"fd\");\n}\n\nexport async function assertSafeOutboundUrl(rawUrl: string): Promise<URL> {\n  const parsed = new URL(rawUrl);\n  if (parsed.protocol !== \"https:\") {\n    throw new Error(\"EGRESS_BLOCKED: Chỉ cho phép giao thức HTTPS đã mã hóa.\");\n  }\n  if (!ALLOWED_EGRESS_HOSTS.has(parsed.hostname)) {\n    throw new Error(`DOMAIN_NOT_ALLOWLISTED: Domain ${parsed.hostname} chưa được cấp phép.`);\n  }\n  const records = await dns.lookup(parsed.hostname, { all: true });\n  for (const rec of records) {\n    if (isPrivateOrMetadataIp(rec.address)) {\n      throw new Error(\"SSRF_DETECTED: Tên miền phân giải vào dải IP nội bộ hoặc metadata.\");\n    }\n  }\n  return parsed;\n}"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-hardening-mcp-enterprise",
+      "heading": "Checklist 5 cửa ải bắt buộc trước khi nối bất kỳ MCP Server nào vào dữ liệu ERP/CRM",
+      "items": [
+        {
+          "check": "Áp dụng Canonical Path Allowlist & chặn toàn bộ tệp .env, .ssh, .git",
+          "severity": "critical",
+          "verificationHow": "Thử truyền đường dẫn chứa ../ hoặc symlink trỏ ra /etc/passwd và file .env vào tool đọc tệp.",
+          "passThreshold": "100% request vượt vùng cấp phép bị từ chối ở tầng fs.realpathSync trước khi mở file."
+        },
+        {
+          "check": "Chặn SSRF Egress theo DNS & IP nội bộ trên mọi tool truy vấn mạng",
+          "severity": "critical",
+          "verificationHow": "Kiểm thử gọi URL http://169.254.169.254/latest/meta-data/ hoặc tên miền giả trỏ về 127.0.0.1.",
+          "passThreshold": "Chặn tức thì sau bước dns.lookup và không cho phép tự động redirect sang IP nội bộ."
+        },
+        {
+          "check": "Gắn danh tính Tenant vào PostgreSQL FORCE ROW LEVEL SECURITY",
+          "severity": "critical",
+          "verificationHow": "Dùng token của Đại lý F1 A truyền UUID Lead thuộc Đại lý F1 B qua MCP tool tra cứu CRM.",
+          "passThreshold": "Truy vấn DB trả về 0 dòng nhờ chính sách FORCE RLS theo app.current_tenant_id."
+        },
+        {
+          "check": "Tách riêng Read-Only Tools và Human-in-the-Loop Write Tools",
+          "severity": "high",
+          "verificationHow": "Rà soát danh sách tools/list trả về cho model CSKH hoặc phân tích báo cáo.",
+          "passThreshold": "Mọi thao tác ghi DB, duyệt tạm ứng hay xuất hóa đơn MISA bắt buộc qua bước xác nhận thủ công."
+        },
+        {
+          "check": "Lưu Audit Log đầy đủ theo Run ID & Tenant ID cho mọi lượt gọi tool",
+          "severity": "recommended",
+          "verificationHow": "Truy xuất nhật ký tập trung sau một phiên agent xử lý khiếu nại hoặc sửa cấu hình.",
+          "passThreshold": "Ghi đủ tên tool, tham số đã che PII, danh tính người gọi và mã phản hồi trong < 10 giây."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "tu-reference-den-dom-agent-80-tools",
+      "eyebrow": "KIẾN TRÚC DOMATION • DOM AGENT 80 TOOLS & FORCE RLS",
+      "variant": "narrative",
+      "heading": "Cách DOMATION chuẩn hóa DOM Agent 80 MCP Tools từ khung giao thức gốc mà không dính bẫy Reference",
+      "paragraphs": [
+        "Khi kiến trúc hệ sinh thái DOMATION Enterprise OS cho các mô hình đa phòng ban và đa đại lý F1 như dự án EcoLife Signature hay Viện IDEAS, chúng tôi sử dụng đúng giao thức JSON-RPC 2.0 từ bộ SDK của modelcontextprotocol để đóng vai trò ngôn ngữ chung. Toàn bộ 80 MCP tools của DOM Agent — trải dài từ tra cứu Pipeline 8 nấc của CRM 360°, kiểm tra công ca GPS trên ERP 5.0, phân tích tỷ lệ khớp Meta CAPI HTTP 200 đến đối soát công nợ MISA — đều giao tiếp sạch sẽ với mọi client tương thích MCP.",
+        "Điểm khác biệt sống còn nằm ở lớp thực thi phía sau giao thức: DOMATION không bao giờ mở thẳng database hoặc vỏ hệ điều hành cho các reference server thô. Thay vào đó, mỗi tool là một endpoint nghiệp vụ có giới hạn quyền chặt chẽ, bắt buộc đi qua lớp xác thực OAuth/JWT, thiết lập ngữ cảnh giao dịch PostgreSQL FORCE ROW LEVEL SECURITY và kiểm soát đầu ra không lộ dữ liệu nhạy cảm. Nhờ vậy, doanh nghiệp vừa tận dụng được tốc độ Vibecode lẫn tính chuẩn hóa mở của MCP, vừa giữ an toàn tuyệt đối cho dữ liệu kinh doanh."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "ket-luan-mcp-reference-servers",
+      "variant": "warning",
+      "title": "Hãy tôn trọng chữ 'Reference' trong tên gọi: Dùng để học chuẩn, đừng mang nguyên xi ra chặn sóng thật",
+      "body": "Kho modelcontextprotocol/servers là viên gạch đặt nền móng vĩ đại giúp cả ngành AI nói chung một thứ tiếng khi gọi công cụ. Nhưng bê nguyên các server mẫu như fetch hay filesystem lên server sản xuất không khác gì gắn cửa kính nhà mẫu ra làm két sắt ngân hàng. Hãy dùng đúng chuẩn SDK Apache-2.0/MIT từ hệ sinh thái này để tự xây hoặc bọc lớp Path Allowlist, Egress Firewall và PostgreSQL FORCE RLS của riêng bạn trước ngày Go-Live."
+    }
+  ]
+}

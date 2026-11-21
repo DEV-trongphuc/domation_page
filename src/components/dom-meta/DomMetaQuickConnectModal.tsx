@@ -24,6 +24,7 @@ import {
   type DomMetaAuthContext,
 } from './domMetaApi';
 import { DOM_META_MODAL_BASE_Z, DomMetaModalPortal } from './DomMetaModals';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 
 export interface DomMetaQuickConnectModalProps {
   open: boolean;
@@ -229,7 +230,7 @@ export const DomMetaQuickConnectModal: React.FC<DomMetaQuickConnectModalProps> =
   };
 
   return (
-    <DomMetaModalPortal>
+    <DomMetaModalPortal onClose={onClose} overlayId="dom-meta-quick-connect-modal">
       <div
         role="dialog"
         aria-modal="true"
@@ -313,6 +314,7 @@ export const DomMetaQuickConnectModal: React.FC<DomMetaQuickConnectModalProps> =
 
           {/* Body */}
           <div className="flex-1 overflow-y-auto p-6 space-y-5">
+            <ZaloSpecialistBanner context="setup" variant="compact" />
             {loadingStatus && (
               <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 flex items-center gap-2 text-xs text-slate-600">
                 <Loader2 className="w-4 h-4 animate-spin text-[#1E40FF]" />

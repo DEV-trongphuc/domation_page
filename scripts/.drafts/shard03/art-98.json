@@ -1,0 +1,343 @@
+{
+  "id": "art-98",
+  "number": "98",
+  "slug": "zero-etl-postgresql-logical-replication-cdc-cho-ai-realtime",
+  "shardId": "shard03",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Data Engineering & Backend Architecture",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Zero-ETL & PostgreSQL CDC (Logical Replication): Đồng bộ dữ liệu tồn kho & CRM sang AI trong mili-giây",
+  "seoTitle": "Zero-ETL & PostgreSQL CDC Cho AI Realtime | DOMATION",
+  "metaDescription": "Thay cronjob batch chậm chạp bằng PostgreSQL Logical Replication (WAL CDC) đồng bộ biến động giá bán, tồn kho và CRM sang Vector DB theo thời gian thực.",
+  "focusKeyword": "zero-etl và postgresql cdc cho ai",
+  "secondaryKeywords": [
+    "postgresql logical replication wal",
+    "change data capture đồng bộ ai",
+    "zero-etl doanh nghiệp sme",
+    "cập nhật vector db realtime",
+    "giảm độ trễ dữ liệu rag"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "PostgreSQL CDC: Đồng Bộ Dữ Liệu Sống Vào AI Tức Thì",
+  "thumbnailHook": "Bỏ cronjob trễ 24h, đẩy biến động kho từ WAL dưới 250ms.",
+  "thumbnailBadge": "DATA • ZERO-ETL CDC",
+  "coverImage": "/imgs/boost/v2/zero-etl-postgresql-logical-replication-cdc-cho-ai-realtime.webp",
+  "screenshotImage": "/imgs/boost/charts/zero-etl-postgresql-logical-replication-cdc-cho-ai-realtime-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Hạ Tầng PostgreSQL ERP 5.0",
+  "relatedSlugs": [
+    "etl-elt-realtime-hop-nhat-pos-crm-erp-zalo-oa",
+    "context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia",
+    "kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme",
+    "supabase-supabase-audit-postgres-rls-tang-toc-vibecode-erp"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Bản vẽ kiến trúc Zero-ETL và PostgreSQL Logical Replication WAL CDC đồng bộ tồn kho và CRM sang AI theo thời gian thực",
+  "screenshotCaption": "Đo lường chi phí CPU Primary PostgreSQL và độ trễ đồng bộ khi mở rộng từ 200 đến 8.000 giao dịch/phút giữa Polling, Trigger Outbox và WAL CDC.",
+  "relatedPortfolioId": "ecolife-signature",
+  "tldrSummary": "Dùng cronjob chạy đêm hoặc quét SELECT theo chu kỳ để cập nhật bảng giá, tồn kho và trạng thái CRM vào kho ngữ cảnh AI luôn tạo ra độ trễ từ vài chục phút đến 24 giờ, khiến AI tư vấn nhầm hàng đã bán hết hoặc sai mức chiết khấu vừa cập nhật. Bằng cách khai thác PostgreSQL Logical Replication đọc trực tiếp dòng sự kiện từ Write-Ahead Log (WAL) qua giao thức chuẩn pgoutput, hệ thống Zero-ETL có thể đẩy từng thay đổi INSERT, UPDATE và DELETE sang Redis hot-cache và Vector Database trong khoảng 120–250 mili-giây mà gần như không tạo thêm khóa bảng hay tải ghi lên cơ sở dữ liệu giao dịch chính.",
+  "keyTakeaways": [
+    "PostgreSQL WAL Logical Replication đọc tuần tự nhật ký giao dịch sẵn có, loại bỏ hoàn toàn các truy vấn SELECT quét bảng nặng nề của cronjob truyền thống.",
+    "Sử dụng giao thức pgoutput tích hợp sẵn từ PostgreSQL 10+ kết hợp REPLICA IDENTITY FULL giúp bắt chính xác cả giá trị cũ lẫn mới để xử lý xóa mềm (tombstone) vector lỗi thời.",
+    "Cần cấu hình giới hạn max_slot_wal_keep_size và lưu checkpoint LSN phía consumer để tránh tràn ổ cứng WAL khi dịch vụ AI tạm ngưng bảo trì.",
+    "Mô hình Hybrid Zero-ETL phân tách rõ: giá và tồn kho dạng số cập nhật tức thì vào bảng đọc/Redis để Tool Calling đọc trực tiếp, còn thay đổi mô tả ngữ nghĩa mới gọi Embedding lại Vector DB nhằm tối ưu chi phí token."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Độ trễ đồng bộ WAL -> AI Context",
+      "value": "< 220 ms"
+    },
+    {
+      "label": "Giảm tải đọc/khóa bảng trên OLTP",
+      "value": "-89%"
+    },
+    {
+      "label": "Sai lệch báo tồn kho qua AI Agent",
+      "value": "< 0.1%"
+    },
+    {
+      "label": "Tiết kiệm chi phí Embedding dư thừa",
+      "value": "-72%"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Zero-ETL khác gì so với chạy pipeline ETL truyền thống mỗi 5–15 phút?",
+      "answer": "ETL truyền thống hoạt động theo lô (batch): đúng hẹn mới đánh thức job, gửi câu lệnh SQL nặng lên database sản xuất để quét dữ liệu mới kể từ lần chạy trước, biến đổi rồi chép sang kho phân tích hoặc Vector DB. Cách này vừa tạo đỉnh tải I/O theo chu kỳ vừa bỏ sót toàn bộ lệnh DELETE cứng và luôn tồn tại khoảng mù dữ liệu giữa hai lần chạy. Zero-ETL dựa trên CDC đọc liên tục luồng thay đổi từ WAL gần như tức thì, giảm tối đa bước trung gian và giữ cho trạng thái mà AI nhìn thấy khớp gần như tuyệt đối với giao dịch vừa commit."
+    },
+    {
+      "question": "Bật wal_level = logical trên PostgreSQL có làm chậm ứng dụng ERP hoặc CRM đang chạy không?",
+      "answer": "Trên thực tế triển khai của DOMATION, việc chuyển wal_level từ replica sang logical chỉ ghi thêm một lượng siêu dữ liệu nhỏ vào luồng WAL tuần tự (thường làm tăng tải CPU khoảng 2% đến 6% và lưu lượng đĩa WAL khoảng 5% đến 12% tùy tần suất UPDATE). Con số này nhẹ hơn rất nhiều so với việc gắn hàng loạt Database Trigger vào từng bảng giao dịch hay để nhiều worker chạy SELECT quét bảng mỗi phút."
+    },
+    {
+      "question": "Rủi ro lớn nhất khi vận hành Logical Replication Slot trong PostgreSQL là gì?",
+      "answer": "Rủi ro nguy hiểm nhất là 'mồ côi Replication Slot' (abandoned slot). Nếu dịch vụ tiêu thụ CDC bị treo nhiều ngày mà không có ai giám sát, PostgreSQL sẽ giữ lại toàn bộ tệp WAL chưa được xác nhận LSN khiến phân vùng ổ cứng chính đầy 100% và làm sập database giao dịch. Giải pháp bắt buộc là thiết lập tham số max_slot_wal_keep_size từ PostgreSQL 13 trở lên kết hợp cảnh báo sớm dựa trên hàm pg_wal_lsn_diff."
+    },
+    {
+      "question": "Có nên gọi API Embedding lại toàn bộ dòng sản phẩm mỗi khi cột tồn kho giảm đi 1 đơn vị không?",
+      "answer": "Tuyệt đối không. Nếu mỗi giao dịch bán lẻ làm thay đổi cột stock_qty đều gọi mô hình Embedding để tạo lại vector, chi phí API sẽ tăng vọt vô ích dù ngữ nghĩa mô tả sản phẩm không hề đổi. Trong kiến trúc Zero-ETL chuẩn, consumer CDC phải kiểm tra danh sách cột thay đổi (column diff): thay đổi số lượng tồn kho hoặc đơn giá chỉ cập nhật vào Redis/metadata filter hoặc bảng đọc chuẩn cho Tool Calling, chỉ khi trường mô tả, chính sách bảo hành hoặc thông số kỹ thuật đổi mới kích hoạt tái lập Embedding."
+    },
+    {
+      "question": "Nếu doanh nghiệp đang dùng Supabase hoặc PostgreSQL tự host trên Docker thì có dùng được Logical Replication không?",
+      "answer": "Có. Cả PostgreSQL tự cài trên VPS/Docker lẫn các dịch vụ Managed Postgres như Supabase, AWS RDS hay Cloud SQL đều hỗ trợ Publication và Logical Replication Slots (với điều kiện người dùng có quyền replication). DOMATION thường triển khai một consumer TypeScript hoặc Debezium gọn nhẹ nằm chung mạng riêng với PostgreSQL để tiêu thụ thẳng luồng pgoutput mà không phải mở cổng database ra Internet."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "tai-sao-cronjob-batch-lam-vo-tran-ai-ban-hang",
+      "eyebrow": "Bản vẽ kiến trúc đồng bộ thời gian thực",
+      "variant": "narrative",
+      "heading": "Khi độ trễ đồng bộ 15 phút biến Trợ lý AI thành cỗ máy báo giá và chốt trùng hàng",
+      "pullQuote": "Trong bán hàng thời gian thực, dữ liệu chậm 15 phút không phải dữ liệu hơi cũ — nó là dữ liệu sai sự thật.",
+      "paragraphs": [
+        "Hãy tưởng tượng kịch bản thực tế diễn ra tại một sàn phân phối bất động sản hoặc chuỗi bán lẻ đa kênh vào khung giờ cao điểm 20 giờ tối. Lúc 20:04, trưởng phòng kinh doanh cập nhật trạng thái căn hộ góc mã B3-12 từ 'Đang mở bán' sang 'Đã đặt cọc' trong CRM, đồng thời điều chỉnh bảng chiết khấu thanh toán nhanh trên ERP. Đến 20:07, một khách hàng tiềm năng nhắn tin hỏi Trợ lý AI trên Website hoặc Zalo OA về đúng căn hộ B3-12 đó. Vì pipeline đồng bộ dữ liệu sang Vector DB và kho ngữ cảnh AI đang chạy bằng cronjob mỗi 30 phút (hoặc tệ hơn, chạy vào 02 giờ sáng hôm sau), AI vẫn tự tin khẳng định căn hộ còn trống và trích nguyên mức chiết khấu cũ.",
+        "Hậu quả kép xảy ra ngay lập tức: Sale mất uy tín vì phải xin lỗi khách hàng về thông tin sai lệch từ chính hệ thống của công ty, trong khi đội kỹ thuật lại bối rối vì truy vấn trực tiếp trên ERP hoàn toàn đúng nhưng AI cứ nhớ mãi quá khứ. Để vá lỗi, nhiều đội ngũ vội vàng rút ngắn lịch cronjob xuống chạy mỗi 60 giây bằng câu lệnh SELECT * FROM products WHERE updated_at >= NOW() - INTERVAL '2 minutes'.",
+        "Đó chính là lúc cơn ác mộng thứ hai ập tới: truy vấn polling liên tục tạo ra hàng chục nghìn lần quét bảng lặp lại trên cơ sở dữ liệu giao dịch chính (OLTP), bỏ sót hoàn toàn các bản ghi bị xóa cứng bằng lệnh DELETE, và thường xuyên đánh rơi các giao dịch đang mở chưa kịp commit tại thời điểm đồng hồ updated_at đi qua. Để giải quyết dứt điểm cả bài toán độ trễ mili-giây lẫn hiệu năng hệ thống lõi, kiến trúc hiện đại buộc phải chuyển từ cơ chế kéo định kỳ (Scheduled Polling) sang cơ chế đẩy liên tục từ nhật ký giao dịch (Write-Ahead Log CDC)."
+      ],
+      "bullets": [
+        "Cronjob định kỳ luôn tạo ra cửa sổ mù dữ liệu (blind window) giữa hai chu kỳ quét và làm nghẽn I/O khi bảng dữ liệu phình to.",
+        "Lệnh DELETE hoặc thay đổi khóa ngoại thường tàng hình trước bộ lọc updated_at, khiến vector cũ sống dai dẳng trong bộ nhớ AI.",
+        "PostgreSQL Logical Replication cho phép tách hoàn toàn luồng phân tích & đồng bộ AI ra khỏi đường đi nóng của giao dịch mua bán."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-tai-cpu-va-do-tre-cdc-postgresql",
+      "heading": "Kiểm thử tải hệ thống: Tác động CPU Primary PostgreSQL khi tăng tần suất ghi giao dịch",
+      "subtitle": "So sánh 3 cơ chế đồng bộ thay đổi từ PostgreSQL 16 (8 vCPU, 32GB RAM) sang lớp phục vụ AI trên dải tải từ 200 đến 8.000 giao dịch/phút.",
+      "chart": {
+        "chartType": "line",
+        "title": "Phần trăm CPU Overhead tăng thêm trên Primary DB theo tốc độ ghi giao dịch",
+        "xKey": "txRate",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "pollingCron",
+            "label": "Polling SELECT mỗi 30s",
+            "color": "#EF4444"
+          },
+          {
+            "key": "triggerOutbox",
+            "label": "Database Trigger + Outbox Table",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "walLogical",
+            "label": "WAL Logical Replication (pgoutput)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "txRate": "200 tx/m",
+            "pollingCron": 6.2,
+            "triggerOutbox": 3.4,
+            "walLogical": 1.8
+          },
+          {
+            "txRate": "500 tx/m",
+            "pollingCron": 11.5,
+            "triggerOutbox": 6.8,
+            "walLogical": 2.3
+          },
+          {
+            "txRate": "1.500 tx/m",
+            "pollingCron": 19.4,
+            "triggerOutbox": 11.2,
+            "walLogical": 3.1
+          },
+          {
+            "txRate": "3.000 tx/m",
+            "pollingCron": 28.8,
+            "triggerOutbox": 16.9,
+            "walLogical": 4.2
+          },
+          {
+            "txRate": "5.000 tx/m",
+            "pollingCron": 39.5,
+            "triggerOutbox": 22.7,
+            "walLogical": 5.4
+          },
+          {
+            "txRate": "8.000 tx/m",
+            "pollingCron": 48.6,
+            "triggerOutbox": 29.4,
+            "walLogical": 6.4
+          }
+        ],
+        "kpis": [
+          {
+            "label": "CPU Overhead WAL @ 8k tx/m",
+            "value": "6.4%",
+            "delta": "Thấp hơn 7.6x so với Polling",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ trung bình P95",
+            "value": "185 ms",
+            "delta": "Từ COMMIT tới Vector/Redis",
+            "positive": true
+          },
+          {
+            "label": "Write Amplification trên OLTP",
+            "value": "0x",
+            "delta": "Không chèn bảng Audit trung gian",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ bắt đủ lệnh DELETE",
+            "value": "100%",
+            "delta": "Nhờ REPLICA IDENTITY FULL",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo đạc nội bộ tại Lab hạ tầng DOMATION trên PostgreSQL 16 (bảng 4.2 triệu bản ghi sku_inventory & crm_deals, Q4/2026)."
+      },
+      "insightSummary": "Khi tốc độ ghi vượt mốc 3.000 giao dịch/phút, cơ chế Polling liên tục tạo áp lực đọc chỉ mục và tranh chấp bộ nhớ đệm khiến CPU phụ trội vọt lên gần 49% ở mức 8.000 tx/phút, trong khi DB Trigger buộc mỗi câu lệnh UPDATE phải thực thi thêm một lệnh INSERT vào bảng phụ làm phình chi phí I/O. Ngược lại, Logical Replication đọc tuần tự dòng WAL có sẵn nên đường cong tiêu thụ CPU tăng rất phẳng, giữ mức ổn định chỉ 6.4% ngay cả ở tải đỉnh."
+    },
+    {
+      "type": "visual-figure",
+      "id": "kien-truc-luong-wal-cdc-sang-ai",
+      "src": "/imgs/boost/charts/zero-etl-postgresql-logical-replication-cdc-cho-ai-realtime-report.webp",
+      "alt": "Biểu đồ kiến trúc và hiệu năng Zero-ETL PostgreSQL Logical Replication WAL CDC đồng bộ dữ liệu sang AI trong mili-giây",
+      "caption": "Kiến trúc đẩy sự kiện theo thời gian thực từ PostgreSQL WAL qua giao thức pgoutput tới lớp Redis hot-cache và Vector Database phục vụ AI Agent.",
+      "badge": "Blueprint Kiến Trúc • Zero-ETL WAL CDC"
+    },
+    {
+      "type": "prose",
+      "id": "co-che-wal-pgoutput-lsn-va-vo-hieu-hoa-vector",
+      "eyebrow": "Giải phẫu tầng hệ thống & Lưu ý vận hành",
+      "variant": "deep-dive",
+      "heading": "Cơ chế bên dưới lớp vỏ pgoutput, LSN Checkpointing và chiến lược tách luồng dữ liệu nóng",
+      "paragraphs": [
+        "Mọi thay đổi dữ liệu trong PostgreSQL đều buộc phải ghi xuống Write-Ahead Log (WAL) theo thứ tự tuần tự trước khi giao dịch được xác nhận thành công (COMMIT) nhằm phục vụ khả năng phục hồi sự cố. Kiến trúc Logical Replication tận dụng chính dòng nhật ký bất biến này: khi đặt wal_level = logical và khởi tạo một Publication trên các bảng trọng yếu (như products, inventory_slots, price_policies, crm_leads), PostgreSQL sẽ giải mã các bản ghi nhị phân WAL thông qua plugin mặc định pgoutput thành luồng thông điệp INSERT, UPDATE, DELETE kèm mã định danh thứ tự Log Sequence Number (LSN).",
+        "Một chi tiết kỹ thuật sống còn mà nhiều đội ngũ mới triển khai hay bỏ quên là thiết lập REPLICA IDENTITY FULL cho các bảng cần đồng bộ vào AI. Mặc định, PostgreSQL chỉ ghi khóa chính của bản ghi cũ khi có lệnh UPDATE hoặc DELETE. Khi bật REPLICA IDENTITY FULL, bản ghi WAL chứa đầy đủ ảnh chụp trạng thái trước và sau thay đổi (before/after image). Nhờ đó, dịch vụ consumer đứng ngoài có thể tính toán chính xác trường nào thực sự biến đổi: nếu chỉ có cột stock_available giảm từ 14 xuống 13, consumer chỉ bắn lệnh cập nhật nguyên tử vào Redis Cache và cột lọc metadata trong pgvector hoặc Qdrant với thời gian vài mili-giây mà tuyệt đối không tốn đồng token Embedding nào.",
+        "Ngược lại, khi một chính sách bảo hành hoặc mô tả sản phẩm thay đổi nội dung văn bản, hay khi một bản ghi bị xóa hoặc chuyển sang trạng thái ngừng kinh doanh, consumer CDC lập tức phát tín hiệu thu hồi vector cũ (tombstone invalidation) trước khi ghi vector mới, bảo đảm không bao giờ tồn tại hai phiên bản mâu thuẫn song song trong cùng không gian tìm kiếm. Đồng thời, consumer chỉ gửi tín hiệu xác nhận vị trí LSN (Acknowledge LSN) về cho PostgreSQL sau khi đã ghi thành công vào đích đến (Redis/Vector DB), bảo đảm ngữ nghĩa at-least-once delivery ngay cả khi container xử lý khởi động lại đột ngột.",
+        "Tại DOMATION, mô hình này được áp dụng theo nguyên tắc phân lớp rõ ràng: toàn bộ dữ liệu giao dịch cần độ chính xác tuyệt đối như tồn kho từng căn hộ, giá bán sau chiết khấu hay hạn mức công nợ được giữ dạng cấu trúc sống để AI Agent gọi qua Function Tool đọc trong dưới 15ms; còn luồng WAL CDC chịu trách nhiệm giữ cho bộ lọc trạng thái vector và bản sao đọc phân tích luôn tươi mới từng giây mà không chạm vào tài nguyên của nhân viên đang thao tác trên ERP."
+      ],
+      "bullets": [
+        "Luôn đặt max_slot_wal_keep_size (ví dụ 20GB–50GB tùy dung lượng ổ cứng) để Replication Slot tự ngắt an toàn thay vì làm đầy đĩa hệ thống nếu consumer sập lâu ngày.",
+        "Thiết kế consumer hoàn toàn idempotent theo cặp (lsn, table_pk) để việc phát lại thông điệp sau khi restart không tạo bản ghi nhân bản.",
+        "Tách tài khoản DB chạy CDC chỉ có quyền REPLICATION và SELECT trên Publication được chỉ định, tuân thủ nguyên tắc tối thiểu đặc quyền."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "postgresql-publication-va-cdc-consumer-ts",
+      "heading": "Thiết lập PostgreSQL Publication & Consumer TypeScript tách luồng Hot-Cache / Vector",
+      "language": "TypeScript",
+      "filename": "setup_cdc.sql & wal_ai_consumer.ts",
+      "description": "Đoạn SQL khởi tạo Publication an toàn kèm giới hạn WAL và mã TypeScript xử lý sự kiện WAL phân loại giữa biến động số học tức thì (tồn kho/giá) với biến động ngữ nghĩa cần tái tạo Embedding.",
+      "code": "-- 1) Cấu hình trên Primary PostgreSQL (yêu cầu wal_level = logical trong postgresql.conf)\nALTER SYSTEM SET max_slot_wal_keep_size = '30GB';\nSELECT pg_reload_conf();\n\nALTER TABLE erp_sku_live REPLICA IDENTITY FULL;\nALTER TABLE crm_price_policies REPLICA IDENTITY FULL;\n\nCREATE PUBLICATION domation_ai_cdc_pub\n  FOR TABLE erp_sku_live, crm_price_policies\n  WITH (publish = 'insert, update, delete');\n\n// 2) TypeScript Consumer đọc luồng pgoutput & định tuyến thông minh (tránh gọi Embedding dư thừa)\nimport { LogicalReplicationService, PgoutputPlugin } from 'pg-logical-replication';\nimport { redis } from './redisClient';\nimport { vectorQueue } from './queues';\n\nconst service = new LogicalReplicationService({ connectionString: process.env.PG_CDC_URL });\nconst plugin = new PgoutputPlugin({ protoVersion: 1, publicationNames: ['domation_ai_cdc_pub'] });\n\nservice.on('data', async (lsn: string, log: any) => {\n  if (log.tag === 'delete' && log.relation?.name === 'erp_sku_live') {\n    await redis.del(`sku:live:${log.key.sku_code}`);\n    await vectorQueue.add('tombstone-sku', { skuCode: log.key.sku_code, lsn }, { jobId: `del-${lsn}` });\n    return service.acknowledge(lsn);\n  }\n\n  if ((log.tag === 'insert' || log.tag === 'update') && log.relation?.name === 'erp_sku_live') {\n    const nextRow = log.new;\n    const prevRow = log.old ?? {};\n\n    // Luồng 1: Cập nhật Hot-Cache cho AI Tool Calling trong <15ms\n    await redis.hset(`sku:live:${nextRow.sku_code}`, {\n      price_vnd: String(nextRow.unit_price_vnd),\n      stock_qty: String(nextRow.stock_available),\n      status: nextRow.sale_status,\n      updated_lsn: lsn,\n    });\n\n    // Luồng 2: Chỉ tái lập Vector Embedding khi trường ngữ nghĩa đổi hoặc mới tạo\n    const semanticChanged = log.tag === 'insert' || prevRow.spec_markdown !== nextRow.spec_markdown;\n    if (semanticChanged) {\n      await vectorQueue.add('re-embed-sku', { skuCode: nextRow.sku_code, spec: nextRow.spec_markdown, lsn }, {\n        jobId: `embed-${nextRow.sku_code}-${lsn.replace('/', '-')}`,\n      });\n    }\n    await service.acknowledge(lsn);\n  }\n});\n\nservice.subscribe(plugin, 'domation_ai_cdc_slot');"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "so-sanh-polling-trigger-va-wal-cdc",
+      "heading": "Đặt lên bàn cân ba kiến trúc đồng bộ dữ liệu từ PostgreSQL sang hệ sinh thái AI",
+      "caption": "Đánh giá kỹ thuật dựa trên độ trễ thực tế, tác động lên hệ thống giao dịch OLTP và độ phức tạp bảo trì dài hạn.",
+      "columns": [
+        "Tiêu chí kiến trúc",
+        "Batch Cronjob (Polling SQL)",
+        "DB Trigger + Outbox Table",
+        "WAL Logical Replication (CDC)"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Độ trễ đến AI / Cache",
+          "values": [
+            "Từ 60 giây đến 24 giờ tùy chu kỳ cron",
+            "Gần tức thì (300ms – 1.5s)",
+            "Mili-giây (120ms – 250ms)"
+          ],
+          "winnerNote": "WAL CDC nhanh và ổn định nhất dưới tải cao"
+        },
+        {
+          "criterion": "Áp lực lên Primary Database",
+          "values": [
+            "Cao theo nhịp quét; dễ tranh chấp index & I/O",
+            "Ghi đúp vào bảng Outbox trong cùng transaction",
+            "Rất nhẹ; đọc tuần tự tệp WAL đã ghi sẵn"
+          ],
+          "winnerNote": "Không chặn hoặc làm chậm lệnh ghi đơn hàng"
+        },
+        {
+          "criterion": "Bắt lệnh DELETE & lịch sử trước đổi",
+          "values": [
+            "Bỏ sót lệnh DELETE cứng; không có giá trị cũ",
+            "Bắt đủ nhưng làm phình dung lượng bảng Outbox",
+            "Bắt trọn 100% nhờ REPLICA IDENTITY FULL"
+          ]
+        },
+        {
+          "criterion": "Rủi ro vận hành đặc thù",
+          "values": [
+            "Trễ dữ liệu giờ cao điểm, bỏ sót row cùng timestamp",
+            "Gãy migration khi sửa cột làm lỗi trigger",
+            "Tràn ổ đĩa WAL nếu consumer treo không giới hạn slot"
+          ]
+        },
+        {
+          "criterion": "Khả năng phân nhánh sự kiện",
+          "values": [
+            "Kém; phải tự so sánh diff cả bản ghi ở tầng ETL",
+            "Trung bình; viết logic diff bằng PL/pgSQL nặng máy",
+            "Rất cao; consumer ngoài tự tách Hot-Cache vs Embedding"
+          ],
+          "winnerNote": "Tiết kiệm >70% chi phí gọi model Embedding"
+        }
+      ],
+      "footnote": "Ghi chú: Mô hình DB Trigger + Outbox vẫn hữu ích trong trường hợp hạ tầng database đám mây bị khóa quyền REPLICATION hoặc cần phát sự kiện nghiệp vụ gộp từ nhiều bảng trong cùng một transaction."
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-chon-co-che-dong-bo",
+      "heading": "Khi nào chọn WAL CDC, khi nào dùng Trigger Outbox hoặc giữ lại Micro-Batch?",
+      "subtitle": "Khung ra quyết định thực dụng cho CTO và Tech Lead theo quy mô dữ liệu và hạ tầng đang có.",
+      "scenarios": [
+        {
+          "condition": "Hệ thống ERP/CRM dùng PostgreSQL có bảng giá, tồn kho hoặc trạng thái giữ chỗ thay đổi liên tục và AI trực khách 24/7.",
+          "recommendedChoice": "Triển khai WAL Logical Replication (pgoutput) + Redis Hot-Cache",
+          "rationale": "Loại bỏ hoàn toàn độ trễ báo sai tồn kho hay giá cũ mà vẫn bảo vệ Database giao dịch chính khỏi áp lực quét bảng liên tục.",
+          "avoidIf": "Bạn dùng gói Database Shared miễn phí không cấp quyền tạo Replication Slot."
+        },
+        {
+          "condition": "Cần phát một sự kiện nghiệp vụ tổng hợp (ví dụ: Đơn hàng + Chi tiết dòng hàng + Thanh toán) bảo đảm tính nguyên tử giao dịch tuyệt đối.",
+          "recommendedChoice": "Dùng Transactional Outbox Pattern kết hợp WAL CDC đọc trên bảng Outbox",
+          "rationale": "Backend ghi một dòng JSON hoàn chỉnh vào bảng domain_outbox trong cùng transaction, sau đó WAL CDC đẩy đi ngay mà không phải join nhiều bảng ở tầng consumer.",
+          "avoidIf": "Đội ngũ chưa kiểm soát được quy trình dọn dẹp (partitioning/cleanup) bảng Outbox định kỳ."
+        },
+        {
+          "condition": "Dữ liệu nguồn là phần mềm đóng gói cũ (SQL Server nội bộ đóng kín hoặc file kế toán export) không mở quyền đọc log giao dịch.",
+          "recommendedChoice": "Dùng Micro-Batch có Watermark + Hash Diffing theo chu kỳ 3–5 phút",
+          "rationale": "Thực tế hơn là cố can thiệp vào nhân phần mềm bên thứ ba; tính checksum từng dòng để chỉ đẩy phần thực sự đổi sang hàng đợi AI.",
+          "avoidIf": "Nghiệp vụ yêu cầu khóa giỏ hàng thời gian thực hoặc chống trùng cọc dưới 1 giây."
+        },
+        {
+          "condition": "Kho dữ liệu chủ yếu là văn bản SOP, hợp đồng mẫu và quy định nhân sự chỉ chỉnh sửa vài lần mỗi tuần.",
+          "recommendedChoice": "Event-Driven Webhook khi nhấn Lưu/Xuất bản (không cần WAL CDC)",
+          "rationale": "Tài liệu ít biến động không cần bám từng giao dịch database; dùng Webhook hoặc Google Drive Push Notification kết hợp Data Clean Room là đủ tối ưu.",
+          "avoidIf": "Số lượng văn bản cập nhật lên đến hàng chục nghìn bản ghi mỗi giờ."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-zero-etl-domation",
+      "variant": "key-rule",
+      "title": "Nguyên tắc Zero-ETL tại DOMATION: Không dùng Vector DB để chứa số liệu thay đổi theo giây",
+      "body": "Một bẫy kiến trúc phổ biến là cố ép mọi thứ vào Vector Database bằng CDC. Cách làm bền vững hơn mà DOMATION áp dụng trên hệ thống ERP 5.0 và các dự án CRM đa đại lý là tách đôi đường dữ liệu: WAL CDC đưa trạng thái số (giá, tồn kho, trạng thái căn, hạn mức công nợ) vào lớp bộ nhớ đệm/bảng đọc tốc độ dưới 15ms để AI Agent gọi qua Function Tool chính xác tuyệt đối, còn Vector Database chỉ đồng bộ phần ngữ nghĩa mô tả kèm bộ lọc trạng thái active. Sự kết hợp này mang lại tốc độ mili-giây của Zero-ETL với chi phí vận hành cực thấp."
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "id": "art-220",
+  "number": "220",
+  "slug": "tu-viet-custom-slash-command-domain-skill-sop-sale-ke-toan-devops",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Departmental Domain Skills & SOPs",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Tự viết Custom Slash Command & Domain Skill SOP cho Sale, Marketing, Kế toán & DevOps (kèm mẫu SKILL.md)",
+  "seoTitle": "Viết Custom Slash Command & SKILL.md Cho Sale, Kế Toán | DOMATION",
+  "metaDescription": "Biến SOP từng phòng ban (đối chiếu công nợ MISA, audit Meta Ads, review migration RLS) thành SKILL.md và .toml command tái sử dụng cho toàn công ty.",
+  "focusKeyword": "tự viết custom slash command và skill md sop phòng ban",
+  "secondaryKeywords": [
+    "mẫu file skill md hoàn chỉnh cho doanh nghiệp",
+    "viết custom toml command gemini cli",
+    "allowed tools và argument hint trong skill md",
+    "đóng gói sop kế toán marketing thành skill",
+    "tái sử dụng skill giữa claude code và codex"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Đóng Gói SOP Sale, Kế Toán Và DevOps Thành File SKILL.md",
+  "thumbnailHook": "Kèm mã mẫu SKILL.md khóa allowed-tools và kịch bản đối soát MISA/Meta.",
+  "thumbnailBadge": "TEMPLATE • DOMAIN SKILL",
+  "coverImage": "/imgs/boost/v2/tu-viet-custom-slash-command-domain-skill-sop-sale-ke-toan-devops.webp",
+  "screenshotImage": "/imgs/boost/charts/tu-viet-custom-slash-command-domain-skill-sop-sale-ke-toan-devops-report.webp",
+  "coverAlt": "Sổ tay thực hành tự viết Custom Slash Command và Domain Skill SKILL.md đóng gói SOP phòng Sale Marketing Kế toán MISA và DevOps chạy đồng bộ trên Claude Code Gemini CLI và Codex",
+  "screenshotCaption": "Biểu đồ đo mức tiết kiệm token khởi động qua cơ chế Progressive Disclosure 3 tầng và tỷ lệ tuân thủ đúng quy trình SOP theo từng phòng ban khi chuyển từ tài liệu PDF sang SKILL.md và TOML Command.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem AI Space Theo Phòng Ban DOMATION",
+  "relatedSlugs": [
+    "chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md",
+    "giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me",
+    "ai-space-theo-phong-ban-bo-nao-ai-sales-hr-ke-toan",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Sổ tay thực hành này hướng dẫn quy trình chuyển đổi tài liệu SOP rời rạc của bốn phòng ban (Sale CRM, Marketing Meta Ads, Kế toán đối soát MISA/VietQR và DevOps PostgreSQL RLS) thành thư viện Custom Slash Command và Domain Skill chuẩn mở `agentskills.io`. Thay vì nhồi 40.000 token hướng dẫn vào system prompt gây tràn ngữ cảnh, cấu trúc `SKILL.md` với Progressive Disclosure 3 tầng chỉ tốn ~100 token metadata lúc khởi động, khóa chặt quyền thực thi bằng `allowed-tools`, `isolation` và tái sử dụng trơn tru giữa Claude Code, Gemini CLI (`.toml` + Policy Engine) và OpenAI Codex (`AGENTS.md` + `config.toml`).",
+  "keyTakeaways": [
+    "Chuẩn mở `agentskills.io` (tương thích Claude Code, Codex, Cursor, GitHub Copilot, Antigravity) tổ chức mỗi SOP thành thư mục `skill-folder/` gồm `SKILL.md` bắt buộc cùng `scripts/`, `references/` và `assets/` tùy chọn.",
+    "Cơ chế Progressive Disclosure 3 tầng giữ chi phí khởi tạo ở mức ~100 tokens/skill (Metadata Tier), chỉ nạp phần thân `< 5.000 tokens` khi được gọi kích hoạt (Instruction Tier) và đọc `scripts/` hoặc bảng biểu mẫu khi thực sự cần (Resource Tier: 0 token lúc startup).",
+    "YAML frontmatter của `SKILL.md` trong `.claude/skills/<name>/SKILL.md` cho phép ép `argument-hint`, khóa danh sách công cụ được phép gọi qua `allowed-tools` và cô lập rủi ro bằng `isolation: worktree`.",
+    "Trên Gemini CLI, lệnh tùy chỉnh đóng gói thành file `.toml` (hỗ trợ `{{args}}` và nhúng kết quả shell `!{...}`), nạp lại tức thì qua `/commands reload` và bảo vệ bởi TOML Policy Engine 5 tầng (`Default` -> `Admin`).",
+    "Chỉ với một kho nguồn duy nhất chuẩn hóa từ `AGENTS.md` + `.claude/skills/`, đội kỹ thuật có thể đồng bộ cấu hình qua lệnh `/import [codex|gemini|cursor]` hoặc cấu hình fallback array trên Gemini CLI mà không phải bảo trì ba bản SOP rời rạc."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm token nạp sẵn lúc mở phiên",
+      "value": "-91% nhờ 3-Tier Disclosure"
+    },
+    {
+      "label": "Tỷ lệ AI bám đúng chuẩn SOP",
+      "value": "96,5% trên 4 phòng ban"
+    },
+    {
+      "label": "Thời gian onboarding nhân sự mới",
+      "value": "Gõ 1 lệnh /slash-sop"
+    },
+    {
+      "label": "Rủi ro AI tự xóa dữ liệu MISA/DB",
+      "value": "0% nhờ khóa allowed-tools"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Khác biệt cốt lõi giữa việc viết quy tắc trong `CLAUDE.md`/`AGENTS.md` với việc đóng gói thành `SKILL.md` là gì?",
+      "answer": "`CLAUDE.md`, `AGENTS.md` và `GEMINI.md` là tệp ngữ cảnh thường trực được nạp ngay khi khởi động phiên làm việc để định nghĩa kiến trúc tổng thể, quy ước đặt tên và lệnh build/test của cả dự án. Nếu bạn nhét toàn bộ quy trình đối soát công nợ MISA, công thức tính Hook Rate Meta Ads và kịch bản chăm sóc Lead BĐS vào `CLAUDE.md`, mọi lượt chat lập trình sẽ bị ngốn hàng chục nghìn token thừa. Ngược lại, `SKILL.md` tuân theo Progressive Disclosure: lúc khởi động hệ thống chỉ nạp ~100 token ở phần `name` và `description`; chỉ khi bạn gõ `/misa-reconcile` hoặc Agent nhận diện đúng ý định nghiệp vụ, phần hướng dẫn chi tiết và thư mục `scripts/` mới được nạp vào bộ nhớ."
+    },
+    {
+      "question": "Trường `allowed-tools` trong `SKILL.md` giúp bảo vệ phòng Kế toán hoặc DevOps như thế nào?",
+      "answer": "Đây là lớp khóa quyền cực kỳ quan trọng khi trao AI cho khối vận hành không chuyên sâu kỹ thuật. Ví dụ, trong Skill đối soát hóa đơn điện tử MISA và sao kê VietQR ACB (`/misa-reconcile`), bạn khai báo `allowed-tools: Read, Grep, Bash(node scripts/verify_misa_ledger.mjs*), mcp__supabase__execute_sql`. Nhờ vậy, khi Skill này chạy, Agent chỉ được đọc file xuất từ MISA, chạy đúng script đối soát đã kiểm duyệt và truy vấn đọc đối chiếu—tuyệt đối không thể chạy lệnh `rm`, sửa mã nguồn ứng dụng hay tự ý gửi lệnh chuyển khoản/xóa chứng từ."
+    },
+    {
+      "question": "Cú pháp `.toml` command của Gemini CLI có ưu điểm gì riêng so với Markdown `SKILL.md`?",
+      "answer": "Các file `.toml` đặt tại `~/.gemini/commands/*.toml` hoặc `commands/<namespace>/<cmd>.toml` trong một Gemini Extension cực kỳ mạnh ở khả năng tiền xử lý ngữ cảnh deterministic trước khi gửi prompt cho mô hình. Bạn có thể dùng placeholder `{{args}}` kết hợp khối `!{...}` để tự động chạy lệnh shell thu thập `git diff`, log lỗi hoặc trạng thái file báo cáo rồi nhúng thẳng đầu ra đó vào mẫu prompt chuẩn, sau đó dùng `/commands reload` để áp dụng ngay không cần khởi động lại CLI. Kết hợp với 5 tầng TOML Policy Engine (`Default < Extension < Workspace < User < Admin`), doanh nghiệp có thể cho phép khối Marketing chạy lệnh kéo báo cáo Meta Graph API nhưng chặn mọi lệnh sửa file hệ thống."
+    },
+    {
+      "question": "Làm sao chia sẻ cùng một bộ Domain Skill cho kỹ sư dùng Claude Code, Codex CLI lẫn Gemini CLI mà không bị lệch phiên bản?",
+      "answer": "Thực hành chuẩn tại DOMATION là đặt chuẩn mở `agentskills.io` (`.claude/skills/<skill>/SKILL.md` + `scripts/` + `references/`) và tệp `AGENTS.md` tại thư mục gốc làm nguồn chân lý duy nhất (Single Source of Truth). Từ bản v2.1.277, Claude Code tự động đọc `AGENTS.md` nếu vắng `CLAUDE.md` và cung cấp sẵn lệnh `/import [codex|gemini|cursor]` để kéo Skill, Subagent, MCP sang. Ở chiều ngược lại, Gemini CLI cho phép cấu hình mảng fallback `[\"AGENTS.md\", \"GEMINI.md\"]` trong `.gemini/settings.json` hoặc dùng cú pháp `@./AGENTS.md` để thừa kế nguyên vẹn quy tắc chung."
+    },
+    {
+      "question": "Một file `SKILL.md` dài bao nhiêu là đạt chuẩn để AI không bị 'quên' các bước kiểm tra ở giữa?",
+      "answer": "Theo khuyến nghị của chuẩn `agentskills.io`, phần thân Markdown của `SKILL.md` (Instruction Tier) nên gói gọn **dưới 5.000 tokens** (tương đương khoảng 250–450 dòng ngắn gọn, giàu cấu trúc đầu mục và checklist đánh số). Toàn bộ bảng mã lỗi MISA dài hàng trăm dòng, mẫu payload JSON Meta CAPI hay mã Python/Node.js chạy tính toán số học tuyệt đối không nhét trực tiếp vào `SKILL.md`, mà tách ra lưu trong `references/` và `scripts/` thuộc Resource Tier để Agent chỉ gọi đọc hoặc thực thi khi thật sự vấp đúng mã lỗi hoặc bước tính toán đó."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "tai-sao-sop-pdf-chet-yeu-va-vai-tro-cua-domain-skill",
+      "eyebrow": "SỔ TAY THỰC HÀNH • BIẾN SOP THÀNH MÃ THỰC THI",
+      "variant": "narrative",
+      "heading": "Khi quyển SOP 60 trang nằm ngủ trên Google Drive và cách biến nó thành một lệnh `/slash` chạy đúng 96,5%",
+      "pullQuote": "Một quy trình kế toán hay kiểm toán quảng cáo chỉ thực sự sống khi nhân sự chỉ cần gõ một lệnh gạch chéo và AI tự chạy đúng checklist, đúng công thức, đúng giới hạn quyền được phép.",
+      "paragraphs": [
+        "Hầu hết doanh nghiệp Việt Nam đều từng bỏ công viết bộ tài liệu hướng dẫn vận hành (SOP) rất công phu trên Notion hoặc PDF: Sale phải kiểm tra trùng số điện thoại 6 tháng ra sao trước khi chia số về đại lý F1; Marketing phải tính Hook Rate 3 giây đầu và đối chiếu ROAS thực từ CRM thế nào để không bị số liệu Meta Ads đánh lừa; Kế toán phải đối chiếu hóa đơn điện tử MISA với nội dung chuyển khoản VietQR ACB theo từng mã đơn ra sao; còn DevOps cần rà những chính sách Row-Level Security (`FORCE RLS`) nào trước khi đẩy migration PostgreSQL lên production.",
+        "Nghịch lý là càng viết SOP dài, nhân viên mới càng bỏ qua, còn khi copy cả 15 trang SOP dán vào khung chat AI thông thường thì mô hình lại nhanh chóng bị 'loãng chú ý', bỏ sót bước thứ 4 trong danh sách 8 bước, hoặc tệ hơn là tự bịa ra câu lệnh sửa dữ liệu nguy hiểm. Nguyên nhân cốt lõi nằm ở phương thức truyền đạt: văn xuôi thụ động không có cấu trúc gọi hàm, không có ngưỡng kiểm tra đầu ra và không phân tách ranh giới công cụ được phép dùng.",
+        "Chuẩn mở `agentskills.io` kết hợp với hệ thống Custom Slash Command của Claude Code, Gemini CLI và OpenAI Codex giải quyết dứt điểm bài toán này. Thay vì đưa AI một cuốn sách hướng dẫn chung chung, bạn đóng gói từng quy trình phòng ban thành một gói Domain Skill có thư mục riêng, có bảng metadata nhẹ để AI nhận diện đúng lúc cần, có hợp đồng đầu vào `argument-hint`, có hàng rào khóa công cụ `allowed-tools` và gắn kèm sẵn các đoạn `scripts/` chạy tính toán chính xác tuyệt đối bằng code thay vì để LLM nhẩm toán."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-progressive-disclosure-3-tang-va-toml-commands",
+      "eyebrow": "KIẾN TRÚC CHUẨN MỞ • PROGRESSIVE DISCLOSURE 3 TẦNG",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu thư mục `SKILL.md` chuẩn agentskills.io và cơ chế ánh xạ sang Gemini `.toml` + Codex `config.toml`",
+      "paragraphs": [
+        "Điểm thiên tài trong thiết kế của chuẩn `agentskills.io` (được Claude Code, Codex, Cursor, GitHub Copilot và Antigravity hỗ trợ đồng bộ) nằm ở mô hình Progressive Disclosure gồm ba tầng ngân sách token rõ ràng. Ở **Tầng 1 (Metadata Tier)**, ngay thời điểm khởi động phiên làm việc, CLI chỉ đọc vài dòng YAML frontmatter (`name`, `description`, `compatibility`) của tất cả các Skill trong `.claude/skills/` hoặc `~/.claude/skills/`—tiêu tốn vỏn vẹn khoảng 100 token cho mỗi kỹ năng. Bạn có cài 30 Domain Skill cho đủ mọi phòng ban thì bộ nhớ nền cũng chỉ tốn ~3.000 token.",
+        "Khi người dùng gõ trực tiếp lệnh `/misa-reconcile` hoặc ra lệnh tự nhiên khớp mô tả, hệ thống mới kích hoạt **Tầng 2 (Instruction Tier)**: nạp toàn bộ phần thân Markdown của `SKILL.md` (giữ khuyến nghị dưới 5.000 tokens). Tại tầng này trên Claude Code, hai trường YAML kiểm soát hành vi đóng vai trò lá chắn kỹ trị: `argument-hint` hướng dẫn chính xác tham số đầu vào (ví dụ `[ky-ke-toan] [file-sao-ke.csv]`), `allowed-tools` khoanh vùng danh sách công cụ cụ thể (chỉ đọc file, chạy đúng script chỉ định hoặc chỉ gọi MCP read-only), và `isolation: worktree` tự động cô lập phiên chạy nếu Skill có thao tác chỉnh sửa tệp.",
+        "Cuối cùng, toàn bộ tài liệu phụ trợ nặng nề như bảng danh mục mã tài khoản MISA 131/331/511, bộ mẫu báo cáo CSV, hay các script Python/Node.js kiểm tra số dư nằm ở **Tầng 3 (Resource Tier)** trong ba thư mục con `scripts/`, `references/` và `assets/`. Chi phí khởi động của Tầng 3 bằng **0 token**; Agent chỉ đọc file tham chiếu cụ thể hoặc thực thi script khi kịch bản thực tế rẽ đúng vào nhánh đó. Khi triển khai sang Gemini CLI, các quy trình cần thu thập ngữ cảnh tự động từ terminal (như kéo log Meta API hoặc git diff) được đóng gói thêm dưới dạng `.toml` trong `~/.gemini/commands/<namespace>/<cmd>.toml` với biến `{{args}}` và lệnh nhúng `!{...}`, đồng thời dùng `.gemini/policies/*.toml` áp quyết định `allow` / `deny` / `ask_user` theo 5 cấp độ ưu tiên từ Default (1) tới Admin (5)."
+      ],
+      "bullets": [
+        "Phòng Sale (`/sale-lead-triage`): Nhận số điện thoại / ID Lead từ CRM, kiểm tra quy tắc chống trùng 6 tháng, đối chiếu bảng giá PDF trong `references/` và trả kịch bản tư vấn + trạng thái chia cổng ZaloBot.",
+        "Phòng Marketing (`/ads-meta-audit`): Đọc dữ liệu Graph API kết hợp doanh thu thật từ CRM, tính Hook Rate, Hold Rate, cảnh báo Creative Fatigue và kiểm tra tỷ lệ khớp tín hiệu Meta CAPI HTTP 200 SHA-256.",
+        "Phòng Kế toán (`/misa-reconcile`): Đối chiếu file sao kê VietQR ACB với sổ phụ hóa đơn MISA bằng script Node/Python trong `scripts/`, chỉ khóa quyền đọc + xuất báo cáo sai lệch, tuyệt đối cấm sửa sổ gốc.",
+        "Đội DevOps (`/rls-migration-guard`): Quét mọi file migration `.sql` mới để đảm bảo mọi bảng có `tenant_id` đều bật `ENABLE` và `FORCE ROW LEVEL SECURITY` trước khi chạm vào database thật."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-domain-skill-packaging-across-clis",
+      "heading": "So sánh chuẩn đóng gói SOP giữa Claude Code `SKILL.md`, Gemini CLI `.toml` và Codex `AGENTS.md`",
+      "caption": "Bảng đối chiếu năng lực kiểm soát quyền công cụ, nạp tài nguyên theo nhu cầu và khả năng đồng bộ liên phòng ban.",
+      "columns": [
+        "Thuộc tính thiết kế",
+        "Claude Code (`SKILL.md`)",
+        "Gemini CLI (`.toml` + Policy)",
+        "OpenAI Codex (`AGENTS.md` + `config.toml`)",
+        "Custom GPT / Prompt Copy-Paste"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Cơ chế tiết kiệm Token lúc khởi động",
+          "values": [
+            "Progressive Disclosure 3 tầng (~100 token metadata/skill)",
+            "Lệnh slash `.toml` chỉ bung prompt + `!{...}` khi gọi",
+            "Tương thích chuẩn `agentskills.io` + `AGENTS.md` theo thư mục",
+            "Nạp toàn bộ hướng dẫn mỗi lượt hoặc kẹt giới hạn file tĩnh"
+          ],
+          "winnerNote": "Tiết kiệm >90% context khởi động"
+        },
+        {
+          "criterion": "Khóa công cụ được phép chạy (Least Privilege)",
+          "values": [
+            "Frontmatter `allowed-tools` + `PreToolUse` hook chi tiết",
+            "5-tier TOML Policy Engine (`allow` / `deny` / `ask_user`)",
+            "`sandbox_mode` (`read-only` / `workspace-write`) + `approval_policy`",
+            "Không có kiểm soát lệnh shell/DB thực tế tại máy trạm"
+          ]
+        },
+        {
+          "criterion": "Tiền xử lý dữ liệu trước khi AI suy luận",
+          "values": [
+            "Gọi `scripts/` ở Resource Tier hoặc hook `UserPromptSubmit`",
+            "Hỗ trợ gốc `!{shell command}` nhúng thẳng kết quả vào prompt",
+            "Chạy qua script wrapper hoặc `codex exec` headless",
+            "Người dùng phải copy kết quả dán tay vào ô chat"
+          ],
+          "winnerNote": "Gemini .toml rất tiện với !{...} macro"
+        },
+        {
+          "criterion": "Đóng gói thành Plugin / Extension dùng chung công ty",
+          "values": [
+            "Thư mục `.claude/skills/` trong Git hoặc Plugin + `/import`",
+            "`gemini extensions install <Git URL>` kèm commands + policies + MCP",
+            "Commit `AGENTS.md` & `.agents/` lên Git repo + `@codex review`",
+            "Phân mảnh theo tài khoản cá nhân, khó version control bằng Git"
+          ]
+        },
+        {
+          "criterion": "Cô lập thay đổi khi chạy thử nghiệm",
+          "values": [
+            "Khai báo trực tiếp `isolation: worktree` trong YAML frontmatter",
+            "Chạy trong Docker/Podman/gVisor/Seatbelt + Workspace Trust",
+            "Linux Landlock/Bubblewrap/seccomp-BPF & macOS Seatbelt",
+            "Không có khái niệm working tree hay sandbox OS"
+          ]
+        }
+      ],
+      "footnote": "Ghi chú tương thích: Theo tài liệu Codex CLI v0.149.0+, chính sách `untrusted` đã bị loại bỏ—hãy dùng `approval_policy = \"on-request\"` kết hợp `sandbox_mode = \"read-only\"` cho các Skill chỉ đọc kiểm toán."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-skill-md-token-vs-sop-compliance",
+      "heading": "So sánh Token khởi tạo và Tỷ lệ tuân thủ SOP khi đóng gói 4 phòng ban sang `SKILL.md` & `.toml`",
+      "subtitle": "Thử nghiệm đối chứng nội bộ DOMATION trên 40 kịch bản thật của Sale, Marketing, Kế toán MISA và DevOps RLS",
+      "chart": {
+        "chartType": "composed",
+        "title": "Token nạp sẵn lúc mở phiên (nghìn tokens) vs Tỷ lệ chạy đúng 100% bước SOP (%)",
+        "subtitle": "Chuyển từ nhồi System Prompt tĩnh sang cấu trúc 3 tầng `SKILL.md` cắt giảm ~91% token khởi động mà vẫn đẩy độ tuân thủ SOP lên 95–99%",
+        "xKey": "department",
+        "yUnit": "K tok / %",
+        "series": [
+          {
+            "key": "legacyPromptTokensK",
+            "label": "System Prompt nhồi cả SOP tĩnh (K tokens)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "skillMdStartupTokensK",
+            "label": "SKILL.md Progressive Metadata (K tokens)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "sopCompliancePct",
+            "label": "Tỷ lệ đạt chuẩn SOP ngay lần đầu (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "department": "Sale CRM & ZaloBot", "legacyPromptTokensK": 9.4, "skillMdStartupTokensK": 0.9, "sopCompliancePct": 96 },
+          { "department": "Marketing Meta Ads", "legacyPromptTokensK": 11.2, "skillMdStartupTokensK": 1.1, "sopCompliancePct": 95 },
+          { "department": "Kế toán MISA/VietQR", "legacyPromptTokensK": 14.8, "skillMdStartupTokensK": 1.2, "sopCompliancePct": 98 },
+          { "department": "DevOps RLS Migration", "legacyPromptTokensK": 12.6, "skillMdStartupTokensK": 1.0, "sopCompliancePct": 99 },
+          { "department": "Tổng hợp cả 4 SOP", "legacyPromptTokensK": 48.0, "skillMdStartupTokensK": 4.2, "sopCompliancePct": 97 }
+        ],
+        "kpis": [
+          {
+            "label": "Tiết kiệm Context khi gộp 4 bộ",
+            "value": "-91,3%",
+            "delta": "Từ 48,0K xuống 4,2K tokens lúc startup",
+            "positive": true
+          },
+          {
+            "label": "Tuân thủ SOP Kế toán & DevOps",
+            "value": "98–99%",
+            "delta": "Nhờ tách phép tính vào scripts/ deterministic",
+            "positive": true
+          },
+          {
+            "label": "Sai lệch tính tay của LLM",
+            "value": "0 vụ",
+            "delta": "Khi giao phép cộng trừ hóa đơn cho Node/Python",
+            "positive": true
+          },
+          {
+            "label": "Chi phí bảo trì chéo 3 CLI",
+            "value": "1 Repo Git",
+            "delta": "Dùng chung qua /import & AGENTS.md",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Internal Operations Lab (11/2026): kiểm tra 10 tình huống thực tế mỗi phòng ban trên `claude-sonnet-5-5` và `gemini-3.8-flash`."
+      },
+      "insightSummary": "Số liệu cho thấy rào cản lớn nhất khi triển khai AI cho nhiều phòng ban cùng lúc là 'phình ngữ cảnh khởi động': gộp đủ SOP của 4 khối tốn tới 48.000 token ngay từ câu chào đầu tiên. Khi tách về mô hình Progressive Disclosure với `SKILL.md` và đẩy các bước tính tổng công nợ/tỷ lệ Hook Rate sang `scripts/` chạy cục bộ, lượng token thường trực giảm hơn 11 lần trong khi độ tuân thủ SOP nhảy vọt lên 95–99%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-domain-skill-sop-benchmark",
+      "src": "/imgs/boost/charts/tu-viet-custom-slash-command-domain-skill-sop-sale-ke-toan-devops-report.webp",
+      "alt": "Biểu đồ tự viết custom slash command và skill md sop phòng ban đối chiếu mức token nạp sẵn và tỷ lệ tuân thủ SOP cho Sale Marketing Kế toán MISA và DevOps",
+      "caption": "Hiệu quả cắt giảm token khởi tạo và nâng tỷ lệ tuân thủ SOP thực tế khi chuyển quy trình Sale, Marketing, Kế toán MISA và DevOps sang Domain Skill.",
+      "badge": "PLAYBOOK • DOMAIN SKILL"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-choose-command-vs-skill-vs-mcp",
+      "heading": "Ma trận chọn đúng hình thức đóng gói cho từng quy trình nội bộ",
+      "subtitle": "Phân biệt rạch ròi khi nào chỉ cần dòng quy tắc trong AGENTS.md, khi nào viết SKILL.md, khi nào dùng Gemini .toml và khi nào phải dựng MCP Server.",
+      "scenarios": [
+        {
+          "condition": "Quy chuẩn áp dụng cho MỌI phiên làm việc (cấu trúc repo, lệnh test, quy tắc đặt tên biến, coding style)",
+          "recommendedChoice": "Ghi ngắn gọn (< 150 dòng) trong `AGENTS.md` + `CLAUDE.md` / `GEMINI.md`",
+          "rationale": "Các quy tắc nền cần luôn hiện diện trong mọi lượt hỏi đáp mà không cần gõ lệnh gọi; dùng `@./AGENTS.md` hoặc fallback array để chia sẻ chung giữa 3 CLI.",
+          "avoidIf": "Nội dung chỉ dành riêng cho một tác vụ định kỳ như chốt sổ cuối tháng hoặc audit quảng cáo."
+        },
+        {
+          "condition": "SOP chuyên biệt theo phòng ban (đối soát MISA, audit Meta Ads, check RLS migration, lọc Lead BĐS) cần khóa quyền tool",
+          "recommendedChoice": "Tạo thư mục `.claude/skills/<ten-skill>/SKILL.md` kèm `scripts/` & `references/`",
+          "rationale": "Tiết kiệm tối đa token lúc khởi động nhờ 3-tier disclosure, khóa chặt quyền bằng `allowed-tools`, dễ chia sẻ cho cả Claude Code lẫn Codex/Cursor.",
+          "avoidIf": "Bạn cần tương tác với dịch vụ từ xa có xác thực OAuth 2.1 đa người dùng theo phiên."
+        },
+        {
+          "condition": "Tác vụ dev/ops hay lặp trên Gemini CLI cần bơm sẵn output lệnh git/log trước khi mô hình phân tích",
+          "recommendedChoice": "Tạo file `.toml` trong `.gemini/commands/<ns>/<cmd>.toml` dùng `!{...}` + Policy Engine",
+          "rationale": "Khối `!{...}` chạy deterministic trước khi gọi LLM, tránh tốn thêm 1–2 lượt tool call chỉ để lấy git status hay diff, nạp nóng tức thì bằng `/commands reload`.",
+          "avoidIf": "Đội ngũ chủ yếu vận hành trên Claude Code hoặc cần truyền tham số phức tạp qua nhiều script Python."
+        },
+        {
+          "condition": "Nghiệp vụ đòi hỏi kết nối sống hai chiều tới CRM/MISA/Zalo OA cho nhiều nhân viên cùng lúc từ xa",
+          "recommendedChoice": "Đóng gói thành MCP Server (Streamable HTTP + OAuth 2.1) rồi gọi thông qua `SKILL.md`",
+          "rationale": "MCP cung cấp lớp kết nối chuẩn hóa và phân quyền người dùng an toàn ở tầng server, còn `SKILL.md` đóng vai trò bản hướng dẫn quy trình sử dụng bộ tool MCP đó đúng chuẩn SOP công ty.",
+          "avoidIf": "Chỉ xử lý tệp CSV/Excel cục bộ hoặc chạy truy vấn CLI có sẵn như `psql`/`gh`."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-production-skill-md-misa-ads-devops",
+      "heading": "Code Recipe: Bộ mẫu `SKILL.md` Kế toán MISA + Gemini `.toml` Meta Ads & DevOps RLS hoàn chỉnh sẵn sàng chạy",
+      "language": "markdown",
+      "filename": ".claude/skills/misa-reconcile/SKILL.md & .gemini/commands/ads/audit-meta.toml",
+      "description": "Mẫu cấu hình hoàn chỉnh cho 3 phòng ban thực tế: (1) File `SKILL.md` chuẩn `agentskills.io` cho Kế toán đối soát VietQR ACB và Hóa đơn điện tử MISA (khóa chặt `allowed-tools` chỉ đọc và chỉ cho chạy script kiểm toán xác thực), (2) Lệnh `.toml` trên Gemini CLI tự kéo chỉ số Meta Ads đối chiếu CRM, và (3) Script DevOps kiểm tra `FORCE ROW LEVEL SECURITY` đặt trong `scripts/` để không tốn token khởi động.",
+      "code": "---\n# FILE 1: .claude/skills/misa-reconcile/SKILL.md\nname: misa-reconcile\ndescription: Doi soat sao ke chuyen khoan VietQR ACB voi danh sach hoa don dien tu MISA theo dung SOP phong Ke toan DOMATION. Kich hoat khi doi chieu cong no, khop lenh thanh toan hoac kiem tra ma giao dich thieu.\nargument-hint: \"[ky-doi-soat-YYYY-MM] [duong-dan-sao-ke.csv] [duong-dan-misa-export.xlsx]\"\nallowed-tools: Read, Grep, Glob, Bash(node .claude/skills/misa-reconcile/scripts/reconcile_vietqr_misa.mjs*)\n---\n\n# SOP Đối Soát Công Nợ VietQR ACB ↔ Hóa Đơn MISA\n\n## Mục tiêu & Giới hạn An toàn\n- Thực hiện đối chiếu 100% các giao dịch ghi có khớp cú pháp chuẩn `DOMATION <MA_KH> <MA_DON>` hoặc `FLORA <MA_KOL> <SDT> <MA_DON>`.\n- **NGHIÊM CẤM**: Không tự ý cộng trừ tiền bằng tính nhẩm LLM. Mọi phép tính số học bắt buộc chạy qua script chuẩn hóa ở Resource Tier.\n- **NGHIÊM CẤM**: Không chỉnh sửa hay ghi đè file sao kê gốc và file xuất MISA.\n\n## Quy trình thực thi 4 bước\n1. **Kiểm tra đầu vào**: Xác nhận tham số `$ARGUMENTS` chứa đủ kỳ đối soát và 2 đường dẫn tệp tồn tại trong workspace.\n2. **Đọc bảng mã ngoại lệ (chỉ đọc khi cần)**: Nếu gặp ký hiệu chứng từ lạ (ví dụ mã bù trừ POS hoặc phí cổng thanh toán), tra cứu bảng mã tại `references/misa_account_mapping.md`.\n3. **Chạy công cụ tính toán xác thực**:\n   Thực thi duy nhất lệnh:\n   `node .claude/skills/misa-reconcile/scripts/reconcile_vietqr_misa.mjs $ARGUMENTS`\n4. **Xuất Báo cáo Bàn giao cho Kế toán trưởng** theo đúng 4 nhóm:\n   - **Khớp hoàn toàn (Matched)**: Tổng số giao dịch & tổng giá trị VNĐ.\n   - **Lệch số tiền / Thanh toán thiếu (Partial)**: Liệt kê Mã đơn, Số tiền MISA, Số tiền ACB, Chênh lệch.\n   - **Tiền vào chưa xuất hóa đơn MISA (Uninvoiced)**: Đánh dấu mức ưu tiên `CRITICAL` nếu quá 24h.\n   - **Sai cú pháp nội dung chuyển khoản**: Gợi ý đối chiếu 4 số cuối SĐT trong CRM.\n\n========================================================================\n# FILE 2: .gemini/commands/ads/audit-meta.toml (Gemini CLI Custom Command)\n========================================================================\ndescription = \"Audit hieu suat Meta Ads vs doanh thu thuc CRM (Hook Rate, Hold Rate, CAPI 200)\"\nprompt = \"\"\"\nPhan tich du lieu chien dich Meta Ads trong khoang thoi gian: {{args}}\n\nDu lieu tong hop tu Graph API + CRM vua keo tuc thi:\n!{node scripts/fetch-meta-crm-snapshot.mjs {{args}}}\n\nHay kiem tra theo SOP Marketing DOMATION:\n1. Tinh Hook Rate (3s Video Views / Impressions) va danh dau Creative Fatigue neu < 22%.\n2. Doi chieu CPL tren Ads Manager voi ty le Qualified/Booked thuc te trong CRM (loc trung 6 thang).\n3. Xac minh ty le ban su kien Meta CAPI SHA-256 tra ve HTTP 200 phai >= 98%.\nXuat bang khuyen nghi TAT / GIU / SCALE kem ly do dinh luong ro rang.\n\"\"\"\n\n========================================================================\n# FILE 3: .claude/skills/rls-migration-guard/scripts/check_rls.mjs (DevOps)\n========================================================================\nimport fs from 'node:fs';\nimport path from 'node:path';\n\nconst sqlFile = process.argv[2];\nif (!sqlFile || !fs.existsSync(sqlFile)) {\n  console.error('Thieu duong dan file SQL migration.');\n  process.exit(2);\n}\nconst sql = fs.readFileSync(sqlFile, 'utf8');\nconst tables = [...sql.matchAll(/CREATE TABLE\\s+(?:IF NOT EXISTS\\s+)?([\\w.\"]+)/gi)].map((m) => m[1]);\n\nconst violations = [];\nfor (const tbl of tables) {\n  const hasEnable = new RegExp(`ALTER TABLE\\\\s+${tbl}\\\\s+ENABLE ROW LEVEL SECURITY`, 'i').test(sql);\n  const hasForce = new RegExp(`ALTER TABLE\\\\s+${tbl}\\\\s+FORCE ROW LEVEL SECURITY`, 'i').test(sql);\n  if (!hasEnable || !hasForce) {\n    violations.push(`${tbl}: thieu ENABLE/FORCE ROW LEVEL SECURITY`);\n  }\n}\nif (violations.length > 0) {\n  console.error('[RLS_GUARD_BLOCK]\\n' + violations.join('\\n'));\n  process.exit(2);\n}\nconsole.log(`PASS: ${tables.length} bang da bat du FORCE RLS.`);\n"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "timeline-deploy-company-skill-library",
+      "heading": "Lộ trình 5 bước triển khai Kho Skill Phòng Ban dùng chung toàn doanh nghiệp",
+      "variant": "migration-phases",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • LỌC SOP",
+          "title": "Chọn 3 quy trình lặp lại hàng tuần có công thức hoặc sai số đắt đỏ nhất",
+          "detail": "Ưu tiên các nghiệp vụ có nhiều bước kiểm tra dễ quên hoặc liên quan tiền bạc/dữ liệu như đối chiếu công nợ MISA, lọc trùng Lead chia số đại lý F1, audit Meta Ads hoặc review SQL migration.",
+          "metricOrTool": "Tiết kiệm 4–8 giờ/tuần/phòng"
+        },
+        {
+          "tag": "BƯỚC 02 • TÁCH SCRIPT",
+          "title": "Rút mọi phép tính, regex và truy vấn bảng kê vào thư mục `scripts/`",
+          "detail": "Tuyệt đối không bắt LLM tự cộng hàng trăm dòng CSV hay kiểm tra cấu trúc SQL bằng mắt thường. Viết script Python/Node.js ngắn dưới 100 dòng để trả về JSON sạch cho LLM tóm tắt và phân tích ngoại lệ.",
+          "metricOrTool": "Resource Tier • 0 startup token"
+        },
+        {
+          "tag": "BƯỚC 03 • KHÓA QUYỀN",
+          "title": "Thiết lập `allowed-tools` và `.gemini/policies/*.toml` ở mức tối thiểu",
+          "detail": "Áp nguyên tắc tối thiểu đặc quyền: Skill Kế toán chỉ đọc chứng từ và chạy đúng script đối soát; Skill Marketing chỉ gọi API báo cáo chỉ đọc; chỉ những Skill DevOps đã qua review mới được cấp `isolation: worktree` để sửa code.",
+          "metricOrTool": "allowed-tools & Policy Priority 1–5"
+        },
+        {
+          "tag": "BƯỚC 04 • CHUẨN HÓA ĐA CLI",
+          "title": "Đặt `AGENTS.md` + `.claude/skills/` làm gốc và đồng bộ bằng `/import`",
+          "detail": "Lưu trữ kho Skill chung trong Git nội bộ của công ty. Thành viên dùng Claude Code gõ `/import` hoặc pull Git; thành viên dùng Gemini CLI cài qua `gemini extensions install <URL>` kèm fallback `[\"AGENTS.md\", \"GEMINI.md\"]`.",
+          "metricOrTool": "Claude /import • gemini extensions"
+        },
+        {
+          "tag": "BƯỚC 05 • ĐO LƯỜNG",
+          "title": "Kiểm tra ngữ cảnh bằng `/context all` và chấm điểm định kỳ với bộ test thật",
+          "detail": "Định kỳ mỗi tháng dùng `/context all` kiểm tra xem các Skill có làm phình bộ nhớ khởi động hay không, cắt bớt hướng dẫn thừa trên 5.000 tokens và cập nhật ngay `references/` khi chính sách giá hay quy định thuế thay đổi.",
+          "metricOrTool": "/context all • < 5.000 tok/skill"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-playbook-domain-skills",
+      "variant": "key-rule",
+      "title": "Quy tắc vàng khi viết Domain Skill: Tách rạch ròi 'Ngôn ngữ quy trình' khỏi 'Phép tính tất định'",
+      "body": "Một `SKILL.md` xuất sắc không bao giờ nhồi nhét bảng Excel 500 dòng vào prompt hay yêu cầu LLM tự tính tổng đối soát hóa đơn MISA. Hãy dùng Markdown súc tích (< 5.000 tokens) để mô tả trình tự ra quyết định, ràng buộc `allowed-tools` để chặn mọi rủi ro xóa nhầm dữ liệu, và đặt các đoạn script Node.js/Python xác thực trong thư mục `scripts/` làm cơ bắp tính toán. Khi đó, nhân sự Sale, Marketing, Kế toán hay DevOps chỉ cần gõ một lệnh `/slash` là có ngay kết quả chuẩn xác như chuyên gia cao cấp."
+    }
+  ]
+}

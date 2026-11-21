@@ -1,13 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
 import { 
-    Check, ArrowUp, ShieldCheck, Zap, MonitorPlay, Component, Target, 
+    Check, ShieldCheck, Zap, MonitorPlay, Component, Target, 
     Layers, Users, Share2, MapPin, LayoutDashboard, Server, Globe2, Sparkles, X, Send, Download
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
+import { BackToTopPill } from './components/BackToTopPill';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
+import { MotionVideoShowcase } from './components/MotionVideoShowcase';
+import { ResponsiveSlideDeck } from './components/ResponsiveSlideDeck';
 import { DECOR_PNGS } from './data/enterpriseData';
 import { getWebDesignSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
@@ -492,13 +496,18 @@ export const WebDesignPricing: React.FC = () => {
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50/90 border border-blue-200 text-[#1E40FF] text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
                             <Zap className="w-3.5 h-3.5" /> Source Code Sở Hữu Vĩnh Viễn
                         </motion.div>
-                        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-[1.24] md:leading-[1.22] tracking-tight">
+                        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-[24px] sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-5 sm:mb-6 leading-[1.22] tracking-tight">
                             Bảng Báo Giá Dịch Vụ <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E40FF] via-[#0284C7] to-[#06B6D4]">Thiết Kế Website</span>
                         </motion.h1>
                         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-slate-600 text-base md:text-xl max-w-3xl mx-auto leading-relaxed">
                             Mẫu giao diện và chức năng tương đương website tiêu chuẩn quốc tế. Cấu trúc chuẩn SEO, thiết kế may đo riêng, tăng cường chuyển đổi.
                         </motion.p>
+                    </div>
+
+                    {/* Motion Showcase 60 FPS (Web 3D & Landing CRO) */}
+                    <div id="motion-showcase" className="mb-12 md:mb-16">
+                        <MotionVideoShowcase variant="spotlight" videoId="web3d" />
                     </div>
 
                     {/* Main Content Order Wrapper */}
@@ -516,12 +525,13 @@ export const WebDesignPricing: React.FC = () => {
                                         <Counter to={totalPrice} /> <span className="text-xl md:text-2xl text-[#1E40FF] font-bold">VNĐ</span>
                                     </div>
                                     
-                                    <div className="w-full max-w-sm mx-auto flex flex-col sm:flex-row gap-3 mb-8">
-                                        <button onClick={() => setShowModal(true)} className="flex-1 btn-inkica-primary py-3.5 rounded-xl text-sm font-black shadow-[0_12px_28px_rgba(30,64,255,0.28)] active:scale-95 transition-transform cursor-pointer">
+                                    <div className="w-full max-w-sm mx-auto grid grid-cols-2 gap-2.5 sm:gap-3 mb-8">
+                                        <button onClick={() => setShowModal(true)} className="min-h-[44px] btn-inkica-primary py-3 px-3 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap shadow-[0_12px_28px_rgba(30,64,255,0.28)] active:scale-95 transition-transform cursor-pointer">
                                             Yêu cầu tư vấn
                                         </button>
-                                        <button onClick={exportToExcel} className="flex-1 ql-btn-outline bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 py-3.5 rounded-xl text-sm font-bold shadow-sm active:scale-95 transition-transform cursor-pointer flex items-center justify-center gap-2">
-                                            <Download className="w-4 h-4 text-emerald-600" /> Xuất Báo Giá
+                                        <button onClick={exportToExcel} className="min-h-[44px] ql-btn-outline bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 py-3 px-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap shadow-sm active:scale-95 transition-transform cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2">
+                                            <Download className="w-4 h-4 text-emerald-600 shrink-0" />
+                                            <span>Xuất Báo Giá</span>
                                         </button>
                                     </div>
 
@@ -631,7 +641,43 @@ export const WebDesignPricing: React.FC = () => {
                         </FadeIn>
 
                         {/* 3. Pricing Grid (Bottom on Mobile) */}
-                        <div className="order-3 md:order-1 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-16">
+                        <div className="order-3 md:order-1 md:hidden mb-14">
+                            <ResponsiveSlideDeck
+                                items={modules}
+                                perPage={1}
+                                colsClass="grid-cols-1 gap-4"
+                                label="Hạng mục thiết kế Website"
+                                accent="blue"
+                                renderItem={(mod, i) => (
+                                    <div key={i} className="inkica-glass-card relative rounded-[24px] p-5 flex flex-col h-full border border-white/90">
+                                        <div className="flex items-center gap-3.5 mb-5">
+                                            <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${mod.gradient}14`, border: `1px solid ${mod.gradient}28` }}>
+                                                <mod.icon className="w-5 h-5" style={{ color: mod.gradient }} />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-base font-bold text-slate-900 leading-tight">{mod.title}</h2>
+                                                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                                    <span className="text-lg font-black" style={{ color: mod.gradient }}>
+                                                        {String(mod.price) !== "0" ? `${mod.price} VNĐ` : "Miễn Phí"}
+                                                    </span>
+                                                    {mod.suffix && <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700">{mod.suffix}</span>}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <ul className="space-y-2.5 flex-1">
+                                            {mod.features.map((feature, j) => (
+                                                <li key={j} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600">
+                                                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: mod.gradient }} />
+                                                    <span className="leading-relaxed">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            />
+                        </div>
+                        <div className="order-3 md:order-1 hidden md:grid md:grid-cols-2 gap-8 mb-16">
                             {modules.map((mod, i) => (
                                 <FadeIn key={i} delay={i * 0.05} className="h-full">
                                     <div className="inkica-glass-card relative rounded-[24px] p-6 lg:p-8 flex flex-col h-full border border-white/90 hover:-translate-y-1 transition-all duration-300 group">
@@ -664,6 +710,11 @@ export const WebDesignPricing: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+                <FounderAuthorityBlock
+                    variant="subtle"
+                    contextNote="Website thương hiệu, Landing Page CRO & Sa bàn 3D WebGL được trực tiếp định hướng kiến trúc bởi Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION, Chuyên gia Digital Marketing & Fullstack Systems A–Z."
+                />
             </main>
             
             {/* Footer */}
@@ -690,15 +741,8 @@ export const WebDesignPricing: React.FC = () => {
                 </div>
             </footer>
 
-            {/* Centered Scroll-to-Top Pill (above fixed price bar) */}
-            <button
-                type="button"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="fixed bottom-[94px] sm:bottom-[90px] left-1/2 -translate-x-1/2 z-40 min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-xs font-bold text-slate-800 hover:border-blue-300 hover:text-[#1E40FF] active:scale-95 transition-all cursor-pointer"
-            >
-                <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
-                <span>Đầu trang</span>
-            </button>
+            {/* Centered Blue Back to Top Pill (above fixed price bar) */}
+            <BackToTopPill bottomClassName="bottom-[94px] sm:bottom-[90px]" />
 
             {/* Fixed Bottom Price Bar (Mobile + PC) */}
             <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-200 z-[50] shadow-[0_-12px_36px_rgba(15,23,42,0.08)] transition-all duration-300">

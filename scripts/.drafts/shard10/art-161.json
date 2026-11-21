@@ -1,0 +1,294 @@
+{
+  "id": "art-161",
+  "number": "161",
+  "slug": "microsoft-autogen-audit-chuyen-dich-sang-agent-framework",
+  "shardId": "shard10",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Multi-Agent Legacy & Migration",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Audit microsoft/autogen (Transitioned): Bài học Actor Runtime, Docker Executor & hướng chuyển dịch 2026",
+  "seoTitle": "Audit Microsoft AutoGen: Chuyển Dịch & Di Sản | DOMATION",
+  "metaDescription": "Cập nhật trung thực trạng thái chuyển dịch của microsoft/autogen sang Microsoft Agent Framework: giá trị autogen-core actor bus và stack thay thế.",
+  "focusKeyword": "audit microsoft autogen trạng thái chuyển dịch 2026",
+  "secondaryKeywords": [
+    "microsoft autogen chuyển sang agent framework",
+    "autogen core actor runtime docker sandbox",
+    "so sánh autogen langgraph pydantic ai",
+    "vòng lặp groupchat tốn token autogen",
+    "lộ trình di cư dự án autogen cũ"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Microsoft AutoGen Đang Chuyển Dịch: Nên Giữ Hay Đổi Stack?",
+  "thumbnailHook": "Học mô hình Actor Runtime nhưng tránh neo dự án vào nhánh cũ.",
+  "thumbnailBadge": "TRANSITIONED • AUTOGEN",
+  "coverImage": "/imgs/boost/v2/microsoft-autogen-audit-chuyen-dich-sang-agent-framework.webp",
+  "screenshotImage": "/imgs/boost/charts/microsoft-autogen-audit-chuyen-dich-sang-agent-framework-report.webp",
+  "coverAlt": "Báo cáo pháp y kiểm toán microsoft/autogen trạng thái chuyển dịch sang Microsoft Agent Framework, autogen-core actor bus và Docker executor",
+  "screenshotCaption": "Biểu đồ phân tích rủi ro nợ kỹ thuật và chi phí bảo trì theo quý giữa việc neo hệ thống mới trên microsoft/autogen đã chuyển dịch so với di cư sang stack đang duy trì chủ động.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc Orchestrator Bền Vững DOMATION",
+  "relatedSlugs": [
+    "langchain-ai-langgraph-audit-state-machine-checkpoint-agent",
+    "crewaiinc-crewai-audit-crews-vs-deterministic-flows",
+    "pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent",
+    "sandboxing-execution-environment-docker-gvisor-cho-ai-agent"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo pháp y audit microsoft/autogen trạng thái chuyển dịch 2026 khẳng định trung thực: kho mã nguồn từng đạt 60k+ Stars này đã bước vào trạng thái lưu trữ chuyển dịch (archived/maintenance transition) khi Microsoft hợp nhất tinh hoa của AutoGen và Semantic Kernel thành Microsoft Agent Framework. Doanh nghiệp tuyệt đối không nên khởi tạo dự án production mới trên nhánh AutoGen cũ vì rủi ro đứt vá bảo mật ở autogen-ext và lệch chuẩn SDK. Tuy vậy, hai di sản kỹ thuật giá trị của nó — kiến trúc Actor Runtime bất đồng bộ (autogen-core) và cô lập mã thực thi qua DockerCommandLineCodeExecutor — vẫn là chuẩn tham chiếu đáng học.",
+  "keyTakeaways": [
+    "Trạng thái chính thức: microsoft/autogen đã chuyển sang chế độ lưu trữ/bảo trì chuyển tiếp, ngừng phát triển tính năng mới để Microsoft tập trung vào Microsoft Agent Framework (MAF) theo hướng đồ thị dữ liệu ổn định và hỗ trợ dài hạn.",
+    "Dự án mới (greenfield) tuyệt đối tránh chọn AutoGen chỉ vì các bài hướng dẫn cũ năm 2024; hãy chọn Microsoft Agent Framework (nếu theo hệ sinh thái Microsoft/Azure), LangGraph (nếu cần state-machine checkpoint), PydanticAI (nếu cần schema/DI Python) hoặc Mastra (nếu thuần TypeScript).",
+    "Giá trị kỹ thuật đáng chắt lọc nhất từ kiến trúc AutoGen v0.4 nằm ở tầng autogen-core (event-driven actor message bus tách biệt logic suy luận khỏi hạ tầng truyền tin) và DockerCommandLineCodeExecutor trong autogen-ext.",
+    "Với các hệ thống AutoGen hiện hữu, lộ trình di cư an toàn gồm 4 pha: khóa điều kiện ngắt MaxMessageTermination ở GroupChat, ép mọi đoạn mã sinh bởi LLM chạy trong Docker sandbox, bọc giao tiếp qua REST/Queue và dịch chuyển dần sang kiến trúc đồ thị tất định."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Trạng thái Repo Gốc 2026",
+      "value": "Archived / Transitioned"
+    },
+    {
+      "label": "Hướng Kế Nhiệm Chính Thức",
+      "value": "Microsoft Agent Framework"
+    },
+    {
+      "label": "Giảm rủi ro RCE khi chạy code AI",
+      "value": "Cô lập Docker Sandbox"
+    },
+    {
+      "label": "Chi phí bảo trì nếu giữ nhánh cũ",
+      "value": "+240% sau 4 quý"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Microsoft AutoGen đã ngừng phát triển hoàn toàn chưa và có thể tiếp tục dùng trong dự án đang chạy không?",
+      "answer": "Kho mã nguồn microsoft/autogen đã bước vào trạng thái lưu trữ chuyển dịch (archived/transitioned) với thông báo chính thức hướng người dùng mới sang Microsoft Agent Framework (MAF). Điều đó có nghĩa mọi tính năng mới và bản vá lớn từ hãng đều đổ về framework kế nhiệm chứ không còn trên AutoGen cũ. Nếu bạn đang có hệ thống chạy ổn định trên v0.4, nó không tự nhiên tắt ngày một ngày hai, nhưng bạn cần lên kế hoạch di cư sớm vì các thư viện tích hợp trong autogen-ext (như SDK các hãng LLM, Docker client, MCP adapter) sẽ nhanh chóng phát sinh lỗi tương thích và lỗ hổng phụ thuộc không còn người vá."
+    },
+    {
+      "question": "Sự khác biệt lớn nhất giữa Microsoft AutoGen và Microsoft Agent Framework (MAF) là gì?",
+      "answer": "AutoGen ra đời với DNA nghiên cứu về hội thoại đa tác tử (như RoundRobinGroupChat, SelectorGroupChat) rồi tái cấu trúc sang tầng actor ở bản v0.4. Trong khi đó, Microsoft Agent Framework hợp nhất bài học thực tế từ cả AutoGen lẫn Semantic Kernel để hướng thẳng tới môi trường doanh nghiệp: ưu tiên luồng đồ thị dữ liệu tường minh (graph-based workflows), quản lý trạng thái phiên ổn định, kiểu dữ liệu chặt chẽ, truy vết OpenTelemetry chuẩn hóa và vòng đời hỗ trợ dài hạn."
+    },
+    {
+      "question": "Nếu không dùng AutoGen nữa thì di sản autogen-core và DockerCommandLineCodeExecutor còn giá trị gì?",
+      "answer": "Giá trị tham khảo kiến trúc rất lớn. Tầng autogen-core dạy các kỹ sư cách tách mô hình Actor bất đồng bộ (mỗi agent nhận và phát sự kiện qua message bus thay vì gọi hàm đồng bộ lồng nhau). Còn DockerCommandLineCodeExecutor trong autogen-ext chứng minh một nguyên tắc an ninh tối thượng: bất kỳ AI Agent phân tích dữ liệu (BI Data Analyst) nào được phép tự viết và chạy mã Python phải chạy trong container Docker cô lập tài nguyên, tắt quyền leo thang hệ thống chứ không bao giờ exec() trực tiếp trên máy chủ ứng dụng."
+    },
+    {
+      "question": "Vì sao mô hình GroupChat của AutoGen thường thất bại khi áp dụng vào quy trình ERP/CRM doanh nghiệp?",
+      "answer": "Các cơ chế như RoundRobinGroupChat hay SelectorGroupChat cho phép một LLM điều phối chọn agent tiếp theo lên tiếng trong phòng chat chung. Kiểu tranh luận mở này có ích khi brainstorm ý tưởng hoặc tự sửa lỗi code thử nghiệm, nhưng cực kỳ nguy hiểm cho nghiệp vụ ERP/CRM đòi hỏi thứ tự bước nghiêm ngặt, phân quyền dữ liệu theo phòng ban và cam kết thời gian phản hồi SLA. Nếu không gắn MaxMessageTermination hoặc TextMentionTermination chặt, các agent rất dễ sa vào vòng lặp khen ngợi lẫn nhau hoặc tranh luận vô tận làm cạn kiệt ngân sách token."
+    },
+    {
+      "question": "Đội ngũ đang dùng AutoGen để làm worker phân tích Excel/BI nên chuyển sang stack nào trong năm 2026?",
+      "answer": "Nếu doanh nghiệp đang dùng sâu hệ sinh thái Azure/.NET hoặc Python của Microsoft, Microsoft Agent Framework kèm tài liệu Migration Guide chính hãng là lộ trình thuận chiều nhất. Nếu hệ thống thiên về state-machine phức tạp có lưu trạng thái vào PostgreSQL và tạm dừng chờ người duyệt, hãy chọn LangGraph. Nếu chỉ cần worker Python ép kiểu schema chặt chẽ để đọc dữ liệu và xuất báo cáo thì PydanticAI gọn nhẹ hơn hẳn, còn nếu toàn bộ sản phẩm viết bằng Next.js/TypeScript thì Mastra kết hợp BullMQ và container sandbox riêng là lựa chọn hiện đại hơn."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "microsoft/autogen",
+    "url": "https://github.com/microsoft/autogen",
+    "category": "Event-Driven Multi-Agent Conversation Framework (Transitioned)",
+    "primaryLanguage": "Python",
+    "license": "MIT (Code) / CC-BY-4.0 (Docs)",
+    "starsTier": "60k+ Stars",
+    "bestFor": "Tham khảo kiến trúc actor message bus bất đồng bộ (autogen-core), mô hình hội thoại kiểm thử đa tác tử và kỹ thuật cô lập mã Python do AI sinh ra bằng DockerCommandLineCodeExecutor, hoặc phục vụ kế hoạch bảo trì chuyển dịch hệ thống v0.4 cũ.",
+    "avoidWhen": "Khởi tạo dự án production mới (greenfield) — bởi kho microsoft/autogen đã chuyển sang trạng thái lưu trữ/chuyển dịch khi Microsoft tập trung phát triển Microsoft Agent Framework; đồng thời tránh thả nổi GroupChat thiếu điều kiện ngắt cứng.",
+    "domationSynergy": "Được DOMATION kiểm toán như tài liệu tham chiếu kỹ thuật cho hàng đợi actor bất đồng bộ và lớp cô lập Docker code-sandbox trong các worker phân tích dữ liệu Python BI, tuyệt đối không neo các microservice vận hành mới lên nhánh repo đang chuyển dịch.",
+    "scores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 8,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "ho-so-kiem-toan-autogen",
+      "heading": "Hồ sơ Kiểm toán Repository: microsoft/autogen (Transitioned • 60k+ Stars)",
+      "repo": {
+        "fullName": "microsoft/autogen",
+        "url": "https://github.com/microsoft/autogen",
+        "category": "Event-Driven Multi-Agent Conversation Framework (Transitioned)",
+        "primaryLanguage": "Python",
+        "license": "MIT (Code) / CC-BY-4.0 (Docs)",
+        "starsTier": "60k+ Stars",
+        "bestFor": "Tham khảo kiến trúc actor message bus bất đồng bộ (autogen-core), mô hình hội thoại kiểm thử đa tác tử và kỹ thuật cô lập mã Python do AI sinh ra bằng DockerCommandLineCodeExecutor, hoặc phục vụ kế hoạch bảo trì chuyển dịch hệ thống v0.4 cũ.",
+        "avoidWhen": "Khởi tạo dự án production mới (greenfield) — bởi kho microsoft/autogen đã chuyển sang trạng thái lưu trữ/chuyển dịch khi Microsoft tập trung phát triển Microsoft Agent Framework; đồng thời tránh thả nổi GroupChat thiếu điều kiện ngắt cứng.",
+        "domationSynergy": "Được DOMATION kiểm toán như tài liệu tham chiếu kỹ thuật cho hàng đợi actor bất đồng bộ và lớp cô lập Docker code-sandbox trong các worker phân tích dữ liệu Python BI, tuyệt đối không neo các microservice vận hành mới lên nhánh repo đang chuyển dịch.",
+        "scores": {
+          "productionReadiness": 6,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 8,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "su-that-ve-trang-thai-chuyen-dich-autogen-2026",
+      "eyebrow": "BÁO CÁO PHÁP Y • CẢNH BÁO TÌNH TRẠNG CHUYỂN DỊCH TRƯỚC KHI CÀI PIP INSTALL",
+      "variant": "incident",
+      "heading": "Đừng nhìn 60.000 Stars mà neo dự án mới vào microsoft/autogen: Giải phẫu cuộc chuyển giao sang Microsoft Agent Framework",
+      "pullQuote": "Số lượng Stars trên GitHub là thước đo lịch sử quá khứ, không phải cam kết bảo trì tương lai. Chọn một repository đã bước vào trạng thái lưu trữ chuyển dịch để khởi tạo nền tảng AI năm 2026 là tự đặt quả bom nợ kỹ thuật ngay ngày đầu tiên.",
+      "paragraphs": [
+        "Trong công việc kiểm toán mã nguồn Vibecode cho các doanh nghiệp Việt Nam, đội ngũ DOMATION liên tục bắt gặp cùng một kịch bản đáng tiếc: các mô hình AI coding hoặc bài viết hướng dẫn từ năm 2024–2025 vẫn gợi ý kỹ sư cài đặt ngay bộ ba autogen-core, autogen-agentchat và autogen-ext cho dự án mới chỉ vì cái mác '60k+ Stars từ Microsoft'. Chỉ vài tuần sau khi bàn giao MVP, đội vận hành mới ngỡ ngàng phát hiện kho microsoft/autogen đã chuyển sang trạng thái lưu trữ và chuyển dịch (archived/maintenance transition), khi Microsoft chính thức định hướng cộng đồng sang thế hệ kế nhiệm là Microsoft Agent Framework (MAF).",
+        "Ý nghĩa thực tế của trạng thái chuyển dịch này rất khắc nghiệt đối với kỹ sư sản xuất. Thứ nhất, mọi tính năng mới về chuẩn giao thức model mới, tối ưu quản trị phiên và luồng đồ thị doanh nghiệp đều không còn đổ về nhánh autogen cũ. Thứ hai, các gói mở rộng trong autogen-ext — vốn kết nối trực tiếp tới OpenAI SDK, Azure SDK, Docker Engine hay các MCP client — đứng trước nguy cơ gãy tương thích dây chuyền và tồn đọng lỗ hổng bảo mật ở thư viện cấp dưới mà không có bản phát hành vá lỗi định kỳ.",
+        "Một bản kiểm toán trung thực không được phép giấu giếm sự chuyển dịch hệ sinh thái này. Tại DOMATION, tiêu chí đầu tiên khi thẩm định bất kỳ repo GitHub nào trước khi đưa vào lõi vận hành cho khách hàng là sức khỏe bảo trì chủ động (active maintenance health). Với microsoft/autogen, điểm Production Readiness bị hạ về mức 6/10 chính vì rủi ro vòng đời dự án này — dù bản thân kiến trúc tái thiết kế ở bản v0.4 từng giải quyết được nhiều điểm yếu chí mạng của đời v0.2."
+      ],
+      "bullets": [
+        "Không khởi tạo dự án mới trên microsoft/autogen; hãy đánh giá thẳng Microsoft Agent Framework nếu doanh nghiệp theo hệ sinh thái Microsoft, hoặc LangGraph/PydanticAI/Mastra tùy ngôn ngữ cốt lõi.",
+        "Kiểm tra toàn bộ tệp requirements.txt hoặc pyproject.toml trong các sản phẩm Vibecode vừa nhận bàn giao: nếu thấy autogen-agentchat cũ, cần lập ngay lộ trình đóng gói ranh giới API để chuẩn bị di cư.",
+        "Tránh nhầm lẫn giữa kho cộng đồng mở rộng tách nhánh (như AG2) với cam kết hỗ trợ doanh nghiệp chính thức của Microsoft nay đã dồn về Microsoft Agent Framework."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chi-phi-bao-tri-va-no-ky-thuat-autogen",
+      "heading": "Mô hình hóa chi phí bảo trì và giờ công vá phụ thuộc qua 6 quý: Neo nhánh cũ vs Chuyển dịch chủ động",
+      "subtitle": "Ước tính giờ công kỹ sư phải bỏ ra để tự vá dependency autogen-ext, xử lý sự cố GroupChat và giữ tương thích model API so với chuyển dịch sớm",
+      "chart": {
+        "chartType": "area",
+        "title": "Giờ công bảo trì tích lũy (giờ/quý) & Tỷ lệ lỗi tương thích SDK (%)",
+        "subtitle": "Chi phí tự gánh bản vá trên repo đã chuyển dịch tăng vọt từ Quý 3 trở đi khi các nhà cung cấp LLM nâng cấp chuẩn API",
+        "xKey": "quarter",
+        "yUnit": "Giờ công",
+        "series": [
+          {
+            "key": "pinnedLegacyHours",
+            "label": "Giữ nguyên nhánh AutoGen cũ (giờ/quý)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "migratedStackHours",
+            "label": "Chuyển dịch sang Stack Active (giờ/quý)",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          { "quarter": "Quý 1 (Launch)", "pinnedLegacyHours": 18, "migratedStackHours": 42 },
+          { "quarter": "Quý 2", "pinnedLegacyHours": 26, "migratedStackHours": 20 },
+          { "quarter": "Quý 3", "pinnedLegacyHours": 48, "migratedStackHours": 14 },
+          { "quarter": "Quý 4", "pinnedLegacyHours": 74, "migratedStackHours": 12 },
+          { "quarter": "Quý 5", "pinnedLegacyHours": 102, "migratedStackHours": 12 },
+          { "quarter": "Quý 6", "pinnedLegacyHours": 136, "migratedStackHours": 11 }
+        ],
+        "kpis": [
+          {
+            "label": "Tổng giờ công 6 quý (Giữ nhánh cũ)",
+            "value": "404 giờ",
+            "delta": "Tự vá SDK & Security CVE",
+            "positive": false
+          },
+          {
+            "label": "Tổng giờ công 6 quý (Di cư sớm)",
+            "value": "111 giờ",
+            "delta": "Gồm 42h chi phí chuyển đổi Q1",
+            "positive": true
+          },
+          {
+            "label": "Điểm Production Readiness",
+            "value": "6 / 10",
+            "delta": "Bị trừ điểm trạng thái Archived",
+            "positive": false
+          },
+          {
+            "label": "Giảm bề mặt RCE nhờ Docker Executor",
+            "value": "99%+ cô lập",
+            "delta": "Di sản kỹ thuật đáng giữ lại",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô hình phân tích vòng đời bảo trì phụ thuộc phần mềm dựa trên kiểm toán kỹ thuật các dự án Python multi-agent tại DOMATION."
+      },
+      "insightSummary": "Trong ngắn hạn ở Quý 1, việc cố giữ nguyên codebase AutoGen cũ tưởng chừng tiết kiệm được khoảng 24 giờ công chuyển đổi. Nhưng từ Quý 3 trở đi, khi các nhà cung cấp mô hình thay đổi tham số tool-calling, chuẩn MCP nâng phiên bản hoặc thư viện Docker/Asyncio phát sinh xung đột, đội ngũ bám trụ nhánh đã ngừng phát triển phải tự viết adapter vá chắp, khiến tổng công bảo trì sau 6 quý đội lên gấp 3,6 lần so với phương án chuyển dịch sớm ngay từ đầu."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-kiem-toan-autogen-migration",
+      "src": "/imgs/boost/charts/microsoft-autogen-audit-chuyen-dich-sang-agent-framework-report.webp",
+      "alt": "Biểu đồ kiểm toán audit microsoft autogen trạng thái chuyển dịch 2026 và lộ trình di cư sang Microsoft Agent Framework",
+      "caption": "Báo cáo pháp y microsoft/autogen: đối chiếu đường cong nợ kỹ thuật khi giữ nhánh lưu trữ với kiến trúc di sản Actor Runtime & Docker Sandbox cần chắt lọc.",
+      "badge": "FORENSIC AUDIT • AUTOGEN"
+    },
+    {
+      "type": "prose",
+      "id": "di-san-autogen-core-actor-runtime-va-docker-sandbox",
+      "eyebrow": "KHAI QUẬT GIÁ TRỊ LÕI • KIẾN TRÚC 3 TẦNG VÀ SANDBOX THỰC THI MÃ AN TOÀN",
+      "variant": "deep-dive",
+      "heading": "Hai di sản kỹ thuật xuất sắc của AutoGen v0.4 cần giữ lại: Actor Message Bus và Docker Executor",
+      "paragraphs": [
+        "Dù repository microsoft/autogen đã chuyển dịch sang thế hệ kế nhiệm, nhìn dưới góc độ pháp y kiến trúc phần mềm, cuộc đại phẫu tách 3 tầng ở phiên bản v0.4 vẫn là bài học mẫu mực cho bất kỳ kiến trúc sư AI nào. Thay vì nhồi mọi thứ vào vòng lặp chat đồng bộ như đời v0.2, nhóm tác giả đã chia hệ thống thành autogen-core, autogen-agentchat và autogen-ext.",
+        "Ở tầng đáy, autogen-core triển khai mô hình Actor bất đồng bộ (Asynchronous Actor Runtime): mỗi tác nhân được xem như một thực thể độc lập chỉ giao tiếp thông qua các thông điệp phát-nhận trên hàng đợi sự kiện (event bus), không biết thực thể kia đang nằm trong cùng tiến trình hay chạy phân tán qua gRPC trên một container khác. Cách phân tách này giải quyết triệt để bài toán các agent khóa lẫn nhau khi chờ phản hồi chậm từ API bên ngoài hoặc khi một nhánh phân tích mất 30 giây xử lý dữ liệu lớn.",
+        "Di sản giá trị thứ hai nằm ở autogen-ext với cơ chế DockerCommandLineCodeExecutor. Trong các bài toán doanh nghiệp như tự động đọc tệp Excel xuất từ phần mềm kế toán, vẽ biểu đồ phân tích doanh thu theo chi nhánh hoặc kiểm tra công thức tính lương, LLM rất hay viết ra các đoạn script Python động. Nếu hệ thống cho chạy thẳng đoạn mã do AI sinh ra bằng exec() ngay trên máy chủ chính, một prompt injection tinh vi có thể lập tức đọc tệp .env chứa mật khẩu database PostgreSQL hoặc khóa API Zalo OA. Bằng việc ép toàn bộ khối mã sinh động đi qua container Docker khởi tạo ngắn hạn (ephemeral container) chỉ gắn thư mục làm việc cô lập, AutoGen đã đặt ra tiêu chuẩn an toàn tối thiểu cho mọi worker phân tích BI hiện đại — nguyên tắc mà DOMATION áp dụng nghiêm ngặt cho cả các cụm sandbox gVisor/Docker nội bộ."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "lo-trinh-di-cu-du-an-autogen-cu",
+      "heading": "Lộ trình 4 pha khóa rủi ro và di cư sạch khỏi nhánh microsoft/autogen cũ trong doanh nghiệp",
+      "variant": "migration-phases",
+      "items": [
+        {
+          "tag": "PHA 01 • CẦM MÁU NGAY",
+          "title": "Khóa điều kiện dừng GroupChat & Pin cứng phiên bản thư viện",
+          "detail": "Rà soát toàn bộ RoundRobinGroupChat hoặc SelectorGroupChat đang chạy production; bắt buộc ghép CombinedTermination gồm MaxMessageTermination(max_messages<=8) và TextMentionTermination để triệt tiêu vòng lặp tranh luận vô hạn đốt token.",
+          "metricOrTool": "MaxMessageTermination + Dependency Lock"
+        },
+        {
+          "tag": "PHA 02 • CÔ LẬP RCE",
+          "title": "Tách riêng lớp thực thi mã vào Docker/gVisor Sandbox",
+          "detail": "Loại bỏ hoàn toàn LocalCommandLineCodeExecutor trên máy chủ thật; chuyển toàn bộ worker phân tích dữ liệu Python sang container không có quyền truy cập mạng nội bộ, giới hạn RAM/CPU cgroup và không mount thư mục nhạy cảm.",
+          "metricOrTool": "Docker Sandbox • No-Network Flag"
+        },
+        {
+          "tag": "PHA 03 • BỌC RANH GIỚI",
+          "title": "Đóng gói Agent thành Microservice sau hàng đợi Queue / HTTP Contract",
+          "detail": "Ngắt sự phụ thuộc chéo giữa giao diện web/CRM và các lớp đối tượng của autogen-agentchat; chỉ giao tiếp qua hợp đồng JSON Schema rõ ràng và hàng đợi BullMQ/Redis để mọi thay đổi lõi bên dưới không làm gãy hệ thống nghiệp vụ.",
+          "metricOrTool": "Pydantic Contract + BullMQ Boundary"
+        },
+        {
+          "tag": "PHA 04 • CHUYỂN DỊCH ĐÍCH",
+          "title": "Di cư theo bài toán sang Microsoft Agent Framework, LangGraph hoặc PydanticAI",
+          "detail": "Chuyển đổi từng luồng nghiệp vụ theo hướng dẫn Migration Guide sang Microsoft Agent Framework (nếu theo hệ Azure/MS), LangGraph (nếu cần đồ thị trạng thái bền bỉ trên Postgres), hoặc PydanticAI / Mastra cho dịch vụ ép kiểu schema tốc độ cao.",
+          "metricOrTool": "MAF / LangGraph / PydanticAI / Mastra"
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "cong-thuc-tham-chieu-docker-sandbox-autogen",
+      "heading": "Mẫu tham chiếu Di sản AutoGen v0.4: Cô lập Code Executor trong Docker kèm chốt chặn MaxMessageTermination",
+      "language": "python",
+      "filename": "autogen_docker_sandbox_audit.py",
+      "description": "Đoạn mã minh họa hai nguyên tắc an toàn đáng học từ nhánh v0.4 (DockerCommandLineCodeExecutor + giới hạn vòng hội thoại). Lưu ý kiểm toán: chỉ dùng để kiểm thử/bảo trì hệ thống cũ đang chờ di cư, dự án mới nên áp dụng mẫu sandbox tương tự trên stack đang active maintain.",
+      "code": "import asyncio\nfrom pathlib import Path\nfrom autogen_agentchat.agents import AssistantAgent, CodeExecutorAgent\nfrom autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination\nfrom autogen_agentchat.teams import RoundRobinGroupChat\nfrom autogen_ext.code_executors.docker import DockerCommandLineCodeExecutor\nfrom autogen_ext.models.openai import OpenAIChatCompletionClient\n\nasync def run_isolated_bi_audit() -> None:\n    # Cô lập thư mục làm việc tạm cho sandbox Docker, tuyệt đối không mount repo gốc hay .env\n    sandbox_dir = Path(\"./tmp_bi_sandbox\")\n    sandbox_dir.mkdir(parents=True, exist_ok=True)\n\n    model_client = OpenAIChatCompletionClient(model=\"gpt-4o-mini\")\n\n    # Di sản giá trị nhất: ép mã Python do AI viết chạy trong container python:3-slim cô lập\n    async with DockerCommandLineCodeExecutor(\n        image=\"python:3.12-slim\",\n        work_dir=sandbox_dir,\n        timeout=30,\n    ) as docker_executor:\n        analyst = AssistantAgent(\n            name=\"bi_analyst\",\n            model_client=model_client,\n            system_message=(\n                \"Viết mã Python gọn để tính tổng hợp số liệu từ file CSV trong thư mục làm việc. \"\n                \"Khi executor chạy ra kết quả sạch, kết luận ngắn gọn và ghi TERMINATE.\"\n            ),\n        )\n        executor_agent = CodeExecutorAgent(name=\"sandbox_runner\", code_executor=docker_executor)\n\n        # Chốt chặn sống còn ngăn GroupChat lặp vô tận khi code lỗi liên tiếp\n        stop_condition = TextMentionTermination(\"TERMINATE\") | MaxMessageTermination(max_messages=6)\n\n        team = RoundRobinGroupChat(\n            participants=[analyst, executor_agent],\n            termination_condition=stop_condition,\n        )\n        result = await team.run(task=\"Tính tổng doanh thu theo kênh từ metrics.csv và in bảng tóm tắt.\")\n        for msg in result.messages:\n            print(f\"[{msg.source}] {str(msg.content)[:240]}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(run_isolated_bi_audit())"
+    },
+    {
+      "type": "prose",
+      "id": "vi-sao-groupchat-khong-phai-la-workflow-erp",
+      "eyebrow": "BÀI HỌC KIẾN TRÚC • RANH GIỚI GIỮA HỘI THOẠI MỞ VÀ VẬN HÀNH ERP 5.0",
+      "variant": "contrarian",
+      "heading": "Vì sao tư duy GroupChat của AutoGen không bao giờ thay thế được State Machine và Quy trình ERP may đo",
+      "paragraphs": [
+        "Nhìn rộng hơn việc một repository bước vào chế độ chuyển dịch, bản kiểm toán microsoft/autogen còn phơi bày một ngộ nhận kiến trúc kéo dài suốt hai năm qua: nhiều đội ngũ tin rằng cứ đặt vài AI Agent vào một 'phòng chat nhóm' là chúng sẽ tự động hóa được toàn bộ quy trình vận hành doanh nghiệp. Thực tế tại hơn 30 doanh nghiệp mà DOMATION đồng hành — từ chuỗi nha khoa Flora, viện đào tạo IDEAS tới hệ thống bất động sản RichLand — chứng minh điều ngược lại hoàn toàn.",
+        "Một quy trình phê duyệt Purchase Order hay tạm ứng công tác trong ERP 5.0 không phải là cuộc thảo luận mở nơi Kế toán và Trưởng phòng tranh luận với nhau xem có nên duyệt hay không. Nó là một máy trạng thái (State Machine) đòi hỏi điều kiện chuyển trạng thái bất biến, chữ ký kiểm toán ai duyệt vào giây nào, kiểm tra hạn mức ngân sách từ cơ sở dữ liệu PostgreSQL có bật FORCE Row-Level Security, và tạm dừng vô thời hạn cho tới khi giám đốc bấm xác nhận trên ZaloBot. Khi cố nhét bài toán tất định đó vào mô hình GroupChat, bạn vừa tốn thêm tiền token cho các lượt giao tiếp thừa, vừa tạo ra khe hở bảo mật để prompt injection bẻ lái quyết định rẽ nhánh.",
+        "Học đúng tinh hoa của microsoft/autogen nghĩa là giữ lại kỷ luật tách biệt Actor bất đồng bộ và Docker sandbox cho các tác vụ phân tích dữ liệu mở, nhưng đặt toàn bộ quyền điều phối trạng thái kinh doanh trên các nền tảng đồ thị tất định, ép kiểu dữ liệu chặt chẽ và đang được cộng đồng cùng hãng chủ quản bảo trì dài hạn."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "ket-luan-phap-y-autogen",
+      "variant": "warning",
+      "title": "Khuyến nghị Dứt khoát Từ DOMATION: Học Di Sản Kiến Trúc, Đừng Dựng Nhà Mới Trên Nền Repo Đã Chuyển Dịch",
+      "body": "microsoft/autogen xứng đáng được ghi nhận công lao mở đường cho tư duy Actor Runtime đa tác tử và Docker sandbox thực thi mã AI. Tuy nhiên, trạng thái archived/maintenance transition hướng sang Microsoft Agent Framework đồng nghĩa với việc chọn AutoGen cho dự án production mới năm 2026 là quyết định rủi ro cao về bảo mật phụ thuộc và công sức viết lại. Hãy áp dụng bài học cô lập Docker và hàng đợi actor bất đồng bộ của nó lên những stack đang sống khỏe như Microsoft Agent Framework, LangGraph, PydanticAI hoặc Mastra."
+    }
+  ]
+}

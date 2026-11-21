@@ -1,0 +1,322 @@
+{
+  "id": "art-77",
+  "number": "77",
+  "slug": "van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls",
+  "shardId": "shard01",
+  "pillar": "crm-misa-sales",
+  "pillarLabel": "CRM 360° & Hóa Đơn MISA",
+  "industry": "Bất Động Sản & Sàn Phân Phối F1",
+  "clusterId": "kw-industry-bds-edu",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Nỗi đau vận hành sàn BĐS F1 đa đại lý: Giải pháp giỏ hàng Live chống trùng cọc & phân tầng RLS",
+  "seoTitle": "Giỏ Hàng BĐS Live Chống Trùng Cọc & Phân Tầng RLS | DOMATION",
+  "metaDescription": "Cách xử lý đứt gãy giỏ hàng Excel giữa Chủ đầu tư và các sàn F1: khóa căn realtime, chia hoa hồng minh bạch và cô lập dữ liệu bằng PostgreSQL FORCE RLS.",
+  "focusKeyword": "giỏ hàng bất động sản live rls",
+  "secondaryKeywords": [
+    "phần mềm giỏ hàng bđs f1",
+    "chống trùng cọc bất động sản",
+    "quản lý sàn f1 f2 bđs",
+    "phân quyền rls bất động sản",
+    "crm chia hoa hồng môi giới"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Chấm Dứt Trùng Cọc Sàn F1 Với Giỏ Hàng Live RLS",
+  "thumbnailHook": "Khóa căn tức thì 0ms, tách dữ liệu 3 sàn F1 bằng PostgreSQL RLS.",
+  "thumbnailBadge": "BĐS GIỎ HÀNG LIVE",
+  "coverImage": "/imgs/boost/v2/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls.webp",
+  "screenshotImage": "/imgs/boost/charts/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls-report.webp",
+  "coverAlt": "Bảng điều phối giỏ hàng bất động sản live chống trùng cọc và phân quyền PostgreSQL RLS cho đa đại lý F1 của DOMATION",
+  "screenshotCaption": "Báo cáo thực địa so sánh tỷ lệ trùng cọc, độ trễ cập nhật bảng hàng và chênh lệch phân bổ Lead giữa 3 sàn F1 trước và sau khi vận hành giỏ hàng Live RLS cùng AutoData ZaloBot.",
+  "relatedPortfolioId": "ecolife-signature",
+  "relatedModuleUrl": "/crm",
+  "relatedModuleLabel": "Khám Phá DOMATION CRM & Giỏ Hàng Live",
+  "relatedSlugs": [
+    "minh-bach-chia-gio-hang-bu-ticket-loi-3-dai-ly-f1-ecolife",
+    "auto-chia-data-zalobot-5-giay-chong-rot-lead-bds",
+    "multi-tenant-rls-postgresql-vector-db-co-lap-du-lieu-dai-ly",
+    "saas-sprawl-12-cong-cu-roi-rac-bai-toan-hop-nhat-enterprise-os"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Vận hành giỏ hàng bất động sản live rls giúp Chủ đầu tư và các sàn F1 chấm dứt hoàn toàn thảm họa trùng cọc trên Google Sheets trong ngày mở bán. Nhờ kết hợp khóa nguyên tử PostgreSQL SKIP LOCKED với Redis TTL theo từng mã căn, mọi thao tác giữ chỗ đồng bộ thời gian thực dưới một giây. Tầng bảo mật PostgreSQL FORCE ROW LEVEL SECURITY cô lập tuyệt đối SĐT khách hàng giữa các đại lý F1, kết nối ZaloBot bù ticket lỗi 1:1 và đồng bộ công nợ MISA.",
+  "keyTakeaways": [
+    "Thay bảng hàng Google Sheets trễ 10–15 phút bằng Atomic Lock (Redis TTL 15 phút + PostgreSQL SKIP LOCKED) triệt tiêu race condition giờ mở bán.",
+    "Cưỡng bức PostgreSQL FORCE ROW LEVEL SECURITY theo cặp tenant_id và agency_id để 3–5 sàn F1 bán chung rổ hàng mà không đọc chéo SĐT hay hoa hồng của nhau.",
+    "AutoData ZaloBot chia Lead Round-Robin kèm cơ chế báo lỗi và bù ticket 1:1 giữ độ lệch chia số giữa các đại lý F1 tiệm cận 0%.",
+    "Nối CRM 360° Pipeline 8 nấc với kế toán MISA và Meta CAPI SHA-256 HTTP 200 để đối soát tiền cọc, hoa hồng và ROAS thực từng sàn."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tỷ lệ trùng cọc ngày mở bán",
+      "value": "0% (từ 6,4%)"
+    },
+    {
+      "label": "Độ lệch chia Lead 3 sàn F1",
+      "value": "~0% (Bù 1:1)"
+    },
+    {
+      "label": "Độ trễ đồng bộ bảng hàng",
+      "value": "< 250 ms"
+    },
+    {
+      "label": "ROAS đỉnh có Meta CAPI",
+      "value": "8.2x (EcoLife)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Giỏ hàng Live dùng khóa Redis hay khóa PostgreSQL thì an toàn hơn khi 200 môi giới bấm lock cùng một giây?",
+      "answer": "Phải dùng cả hai lớp bổ trợ nhau. Redis giữ vai trò chốt chặn nhanh (SET NX PX TTL 900 giây) để ngăn request lặp từ giao diện và chạy đồng hồ đếm ngược giữ chỗ. Trạng thái sở hữu chính thức của mã căn bắt buộc ghi qua giao dịch ACID trong PostgreSQL bằng SELECT ... FOR UPDATE SKIP LOCKED và Partial Unique Index trên trạng thái LOCKED/DEPOSITED, đảm bảo không bao giờ phát sinh hai phiếu cọc hợp lệ cho cùng một unit_id kể cả khi Redis khởi động lại."
+    },
+    {
+      "question": "Làm sao nhiều sàn F1 dùng chung giỏ hàng bất động sản live rls mà không bị lộ SĐT khách hàng sang sàn đối thủ?",
+      "answer": "Thay vì lọc WHERE agency_id = ? ở tầng API dễ bị sót khi thêm báo cáo mới, DOMATION kích hoạt FORCE ROW LEVEL SECURITY ngay tại tầng bảng PostgreSQL. Mỗi request thiết lập SET LOCAL app.current_agency_id trong phiên giao dịch. Các sàn F1 nhìn thấy cùng ma trận trạng thái căn hộ (Trống / Đang giữ / Đã cọc), nhưng câu truy vấn Lead, SĐT và bảng hoa hồng tự động cô lập tuyệt đối theo từng đại lý."
+    },
+    {
+      "question": "Khi sàn F1 nhận Lead từ Chủ đầu tư nhưng gặp số thuê bao khóa máy hoặc sai nhu cầu, hệ thống bù ticket vận hành ra sao?",
+      "answer": "Tại mô hình 3 sàn F1 như dự án EcoLife Signature Đà Nẵng, Sale nhận Lead qua ZaloBot và gọi kiểm tra trong khung SLA quy định. Nếu gặp thuê bao sai hoặc ngoài vùng, Trưởng sàn gắn ticket báo lỗi kèm log cuộc gọi. Khi Admin Chủ đầu tư duyệt hợp lệ, bộ đếm phân bổ của sàn đó trừ lùi 1 điểm để vòng sau tự động cấp bù 1:1, đồng thời bắn tín hiệu Notlead về Meta CAPI giúp Ads tự tối ưu lại tệp."
+    },
+    {
+      "question": "Cơ chế tính hoa hồng cho sàn F1, F2 và đối soát MISA xử lý thế nào khi khách đổi căn hoặc thanh lý cọc?",
+      "answer": "CRM 360° tách riêng sổ cái giao dịch (commission_ledger) khỏi bảng trạng thái căn. Mọi nghiệp vụ chuyển căn hoặc hủy cọc đều tạo bút toán điều chỉnh bất biến thay vì ghi đè số cũ. Khi hợp đồng đạt điều kiện thanh toán đợt 1, hệ thống tự động tính hoa hồng bậc thang cho F1, trích F2 và đẩy chứng từ thu chi hai chiều sang kế toán MISA."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "bds-live-metrics",
+      "heading": "Chỉ số kiểm toán thực địa khi thay bảng hàng Google Sheets bằng Giỏ Hàng Live RLS",
+      "stats": [
+        {
+          "value": "0 vụ",
+          "label": "Trùng cọc trên cùng mã căn",
+          "context": "Khóa nguyên tử SQL + TTL Redis 15 phút",
+          "trend": "down"
+        },
+        {
+          "value": "< 250ms",
+          "label": "Độ trễ cập nhật bảng hàng",
+          "context": "Phản hồi WebSocket đa sàn F1 tức thì",
+          "trend": "up"
+        },
+        {
+          "value": "~0%",
+          "label": "Độ lệch chia Lead giữa 3 sàn F1",
+          "context": "Cơ chế bù ticket lỗi minh bạch 1:1",
+          "trend": "neutral"
+        },
+        {
+          "value": "35%",
+          "label": "Ngân sách Ads tiết kiệm được",
+          "context": "Lọc trùng SĐT 180 ngày trước khi chia",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "hien-truong-mo-ban-block-a",
+      "eyebrow": "BÁO CÁO THỰC ĐỊA • SỰ CỐ GIỜ G",
+      "variant": "incident",
+      "heading": "9 giờ 14 phút sáng ngày mở bán Block A: Khi một căn góc nhận hai phiếu cọc cùng lúc",
+      "pullQuote": "Niềm tin giữa Chủ đầu tư và sàn F1 không gãy vì hoa hồng chênh 0,5%, mà gãy ngay giây phút một căn góc bị bán trùng và bảng Excel không phân xử nổi ai chuyển tiền trước.",
+      "paragraphs": [
+        "Đúng 9 giờ 14 phút sáng thứ Bảy tại lễ mở bán một dự án căn hộ ven biển, ba đội kinh doanh thuộc ba đại lý F1 cùng chốt được khách cho căn góc A16-08. Thư ký giỏ hàng của Chủ đầu tư khi đó vẫn điều phối theo kiểu thủ công: một file Google Sheets mở quyền sửa cho ba Trưởng nhóm kết hợp nhóm Zalo nhắn cú pháp xin giữ căn. Chỉ trong 90 giây cao điểm, nhóm chat trôi qua 47 ảnh chụp chuyển khoản. Sàn thứ nhất thấy ô bảng tính còn màu xanh nên thu cọc 100 triệu đồng; sàn thứ hai thực tế đã chuyển khoản trước 12 giây nhưng Admin chưa kịp tô đỏ ô Excel.",
+        "Hậu quả kéo theo là phải hoàn cọc cho khách VIP, hai Giám đốc sàn F1 đối chất suốt buổi chiều vì nghi ngờ thiên vị rổ hàng, và tệ hơn nữa: cuối tuần kiểm tra lại, một tư vấn viên bên ngoài đã sao chép toàn bộ cột SĐT khách hàng của cả 3 sàn từ một tab ẩn chưa khóa quyền. Khi trực tiếp triển khai hạ tầng số hóa cho EcoLife Signature Đà Nẵng của Capital House (điều phối đồng thời 3 đại lý F1: Địa Ốc Tùng Long, BĐS Hợp Nhất và Tập Đoàn IHD) cũng như mô hình CRM DataBank cho Rich Land, đội ngũ DOMATION xác định bảng tính chia sẻ hoàn toàn bất lực trước ba yêu cầu lõi của giỏ hàng bất động sản live rls: xử lý tranh chấp đồng thời ở mức mili-giây, cô lập dữ liệu cạnh tranh giữa các sàn và đối soát minh bạch chất lượng Lead quảng cáo."
+      ],
+      "bullets": [
+        "Độ trễ cập nhật thủ công từ tin nhắn Zalo sang bảng tính đạt 4–12 phút vào giờ cao điểm, tạo khoảng trống trùng cọc.",
+        "Hàm kiểm tra trùng lặp thủ công bỏ sót khi khách nhập thiếu số 0 đầu hoặc điền form qua nhiều kênh quảng cáo khác nhau.",
+        "Không có tín hiệu phản hồi ngược về nền tảng Ads khiến ngân sách tiếp tục đốt vào tệp số điện thoại rác."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-doi-soat-f1",
+      "heading": "Biến động độ trễ khóa căn và tỷ lệ trùng cọc qua 6 đợt mở bán đa sàn",
+      "subtitle": "So sánh quy trình Google Sheets + Zalo thủ công (Đợt 1–2) với DOMATION Giỏ Hàng Live RLS + AutoData ZaloBot (Đợt 3–6)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ trễ đồng bộ bảng hàng (giây) vs Tỷ lệ trùng cọc / khiếu nại (%)",
+        "subtitle": "Cột thể hiện độ trễ cập nhật bảng hàng đa sàn; đường line thể hiện tỷ lệ tranh chấp giữ chỗ",
+        "xKey": "label",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "a",
+            "label": "Độ trễ đồng bộ (giây)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "b",
+            "label": "Tỷ lệ trùng cọc (%)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "label": "Đợt 1 (Sheets)", "a": 420, "b": 6.4 },
+          { "label": "Đợt 2 (Sheets)", "a": 365, "b": 5.8 },
+          { "label": "Đợt 3 (Go-Live)", "a": 1.2, "b": 0.4 },
+          { "label": "Đợt 4 (Live RLS)", "a": 0.3, "b": 0 },
+          { "label": "Đợt 5 (Live RLS)", "a": 0.2, "b": 0 },
+          { "label": "Đợt 6 (Live RLS)", "a": 0.2, "b": 0 }
+        ],
+        "kpis": [
+          {
+            "label": "Thời gian giữ căn an toàn",
+            "value": "0.22 giây",
+            "delta": "-99.9%",
+            "positive": true
+          },
+          {
+            "label": "Trùng cọc Đợt 4–6",
+            "value": "0 ca",
+            "delta": "-100%",
+            "positive": true
+          },
+          {
+            "label": "Độ lệch chia số F1",
+            "value": "~0%",
+            "delta": "Bù ticket 1:1",
+            "positive": true
+          },
+          {
+            "label": "Meta CAPI HTTP 200",
+            "value": "99.4%",
+            "delta": "Chuẩn SHA-256",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo kiểm tải thực tế 180 phiên môi giới đồng thời và đối soát phân bổ Lead mô hình 3 đại lý F1 trên DOMATION CRM & AutoData."
+      },
+      "insightSummary": "Ngay tại Đợt 3 khi thay thao tác tô màu thủ công bằng WebSocket và khóa dòng PostgreSQL, độ trễ giảm từ hơn 6 phút xuống còn 1,2 giây. Từ Đợt 4 trở đi khi kết hợp Redis Hold TTL 15 phút cùng bù ticket ZaloBot, tỷ lệ trùng cọc về mức 0 tuyệt đối."
+    },
+    {
+      "type": "visual-figure",
+      "id": "dashboard-bao-cao-gio-hang",
+      "src": "/imgs/boost/charts/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls-report.webp",
+      "alt": "Báo cáo tổng hợp hiệu suất giỏ hàng bất động sản live rls, chia Lead 3 sàn F1 và đối soát Meta CAPI trên hệ thống DOMATION",
+      "caption": "Bảng điều hành DOMATION CRM & AutoData: giám sát đồng thời ma trận trạng thái căn hộ thời gian thực, tỷ trọng chia vòng công bằng giữa các sàn F1, lịch sử bù ticket lỗi 1:1 và công nợ cọc đồng bộ MISA.",
+      "badge": "REPORT DASHBOARD"
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-ky-thuat-atomic-rls",
+      "eyebrow": "KIẾN TRÚC LÕI • KHÓA CĂN & CÔ LẬP DỮ LIỆU",
+      "variant": "deep-dive",
+      "heading": "Lớp phòng thủ kép: Khóa nguyên tử SKIP LOCKED, PostgreSQL FORCE RLS và Sa bàn 3D WebGL",
+      "paragraphs": [
+        "Sai lầm phổ biến nhất khi code giỏ hàng BĐS là kiểm tra kiểu đọc-trước-ghi-sau ở tầng Backend: chạy SELECT thấy căn đang AVAILABLE rồi mới chạy UPDATE sang LOCKED. Khi hai môi giới từ hai sàn F1 bấm nút giữ căn cách nhau 15 mili-giây, cả hai luồng đều đọc thấy trạng thái trống và ghi đè lên nhau. DOMATION loại bỏ triệt để rủi ro này bằng khóa hai lớp: Redis distributed lock (TTL 900 giây) chặn nhấn đúp và chạy đồng hồ đếm ngược trên giao diện, kết hợp giao dịch ACID PostgreSQL dùng SELECT ... FOR UPDATE SKIP LOCKED cùng Partial Unique Index trên bảng reservations. Người đến sau chỉ 1 mili-giây lập tức nhận mã xung đột và thấy căn chuyển sang Đang giữ chỗ qua WebSocket.",
+        "Song song với khóa căn là bài toán bảo mật giữa các sàn F1 cạnh tranh trực tiếp. Chỉ cần lập trình viên quên gắn bộ lọc agency_id ở một API tìm kiếm hay xuất báo cáo mới, danh sách khách VIP sẽ lộ ra ngoài. Vì vậy, DOMATION cưỡng bức chính sách PostgreSQL FORCE ROW LEVEL SECURITY ngay tại tầng bảng dữ liệu: mọi phiên truy vấn đều khóa chặt theo biến ngữ cảnh app.current_agency_id. Các đại lý cùng xem ma trận trạng thái căn và Sa bàn 3D WebGL (nén Draco GLB dưới 3.5MB/căn từ file 80MB như EcoLife Signature), nhưng hồ sơ khách, SĐT gốc và tỷ lệ hoa hồng riêng bị cô lập hoàn toàn. Kết hợp bộ AutoData Router lọc trùng 180 ngày (giảm 35% chi phí Ads), chia vòng hoặc tranh nhận Pool Claim qua ZaloBot và bắn Meta CAPI SHA-256 HTTP 200, toàn bộ chu trình bán hàng trở nên khép kín."
+      ],
+      "bullets": [
+        "Tự động nhả căn về kho chung nếu quá TTL 15 phút chưa tải chứng từ chuyển khoản, loại bỏ tình trạng găm căn ảo.",
+        "Phân tách hai lớp dữ liệu: trạng thái rổ hàng công khai toàn dự án, còn thông tin định danh khách hàng khóa chặt bằng FORCE RLS.",
+        "Sa bàn 3D Three.js chuẩn Draco chạy mượt trên iPhone Safari giúp Sale tư vấn chốt căn từ xa ngay tại điểm bán."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "quy-trinh-van-hanh-5-buoc",
+      "heading": "Chuỗi 5 pha vận hành từ lúc đổ Lead quảng cáo đến khóa căn & chia hoa hồng MISA",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "PHA 01 • < 1 GIÂY",
+          "title": "Thu Lead đa kênh & Lọc trùng chuẩn hóa 180 ngày",
+          "detail": "Tiếp nhận Lead từ Web 3D, Meta Instant Form, TikTok và 25 ấn phẩm OOH gắn QR. Hệ thống chuẩn hóa đầu số, lọc trùng trong kho DataBank 6 tháng để gắn trả đúng Sale đang chăm thay vì tính trùng chi phí chia mới.",
+          "metricOrTool": "AutoData V2 • Dedup 180 ngày"
+        },
+        {
+          "tag": "PHA 02 • CHIA VÒNG F1",
+          "title": "Điều phối ZaloBot tức thì & Bù ticket lỗi 1:1",
+          "detail": "Chia vòng Round-Robin hoặc Pool Claim tới nhóm ZaloBot các sàn F1. Nếu quá SLA không nhận sẽ tự thu hồi; số sai nhu cầu hoặc thuê bao được gắn ticket lỗi kèm bằng chứng để Admin duyệt bù 1:1.",
+          "metricOrTool": "ZaloBot / Telegram • Ratio 1:1"
+        },
+        {
+          "tag": "PHA 03 • LIVE CART",
+          "title": "Giữ căn nguyên tử trên Bảng hàng Live & Sa bàn 3D",
+          "detail": "Sale khóa căn tức thì với Redis TTL 15 phút và khóa dòng PostgreSQL; WebSocket phát trạng thái chờ duyệt kèm mã QR chuyển khoản định danh tới toàn bộ màn hình F1 trong < 250ms.",
+          "metricOrTool": "Postgres SKIP LOCKED + Redis TTL"
+        },
+        {
+          "tag": "PHA 04 • FORCE RLS",
+          "title": "Cô lập hồ sơ đại lý & Bắn Meta CAPI HTTP 200",
+          "detail": "Thông tin CCCD, ghi chú tài chính nằm gọn trong phân vùng FORCE RLS từng đại lý. Khi hồ sơ sang nấc Thiện chí hoặc Đặt cọc trong Pipeline 8 nấc, server gửi tín hiệu SHA-256 về Meta CAPI.",
+          "metricOrTool": "FORCE RLS • Meta CAPI SHA-256"
+        },
+        {
+          "tag": "PHA 05 • MISA SYNC",
+          "title": "Gạch nợ tiền cọc, Bút toán hoa hồng & Đồng bộ MISA",
+          "detail": "Kế toán xác nhận tiền vào tài khoản, căn hộ khóa sang Đã cọc. Sổ cái sinh bút toán hoa hồng cho F1, F2 và thưởng nóng, đẩy chứng từ thu và hóa đơn điện tử hai chiều về MISA.",
+          "metricOrTool": "CRM 360° Ledger ↔ MISA"
+        }
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-rls-bds",
+      "heading": "Checklist kiểm toán kỹ thuật trước khi vận hành giỏ hàng đa đại lý F1",
+      "items": [
+        {
+          "check": "Bật cưỡng bức FORCE ROW LEVEL SECURITY trên các bảng leads, deals và commission_ledger",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra pg_class.relforcerowsecurity và chạy truy vấn chéo bằng token Sàn A gọi UUID hồ sơ của Sàn B.",
+          "passThreshold": "100% truy vấn chéo tenant hoặc thiếu session context trả về 0 dòng dữ liệu."
+        },
+        {
+          "check": "Stress test khóa căn đồng thời (Concurrency Lock Test)",
+          "severity": "critical",
+          "verificationHow": "Bắn 100 request POST /units/{id}/lock cùng lúc từ 5 đại lý khác nhau trong 100ms bằng k6.",
+          "passThreshold": "Đúng 1 request nhận 201 Created, 99 request nhận 409 Conflict và không phát sinh deadlock."
+        },
+        {
+          "check": "Tự động giải phóng căn giữ chỗ hết hạn TTL 15 phút",
+          "severity": "high",
+          "verificationHow": "Tạo phiếu giữ căn thử nghiệm không nộp chứng từ và theo dõi worker nhả trạng thái.",
+          "passThreshold": "Căn tự động về trạng thái AVAILABLE sau tối đa 15 phút + 5 giây đồng bộ WebSocket."
+        },
+        {
+          "check": "Che mờ SĐT (Phone Masking) tại màn hình tổng hợp và DomMeta BI",
+          "severity": "high",
+          "verificationHow": "Soi payload JSON tại màn hình báo cáo Chủ đầu tư và bảng đối soát tỷ lệ chia số.",
+          "passThreshold": "Hiển thị dạng 0909***678 trên mọi báo cáo tổng; giải mã SĐT gốc phải ghi Audit Log."
+        },
+        {
+          "check": "Kiểm tra mã hóa SHA-256 và tỷ lệ khớp Meta Conversions API",
+          "severity": "recommended",
+          "verificationHow": "Đối chiếu log phản hồi từ Graph API và trường event_id chống đếm trùng với Pixel trình duyệt.",
+          "passThreshold": "Tỷ lệ phản hồi HTTP 200 đạt >= 99% không lỗi sai định dạng băm."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ket-noi-hoa-hong-va-roas",
+      "eyebrow": "TÀI CHÍNH & TĂNG TRƯỞNG • ĐÓNG VÒNG P&L",
+      "variant": "narrative",
+      "heading": "Từ bảng hàng không trùng cọc đến báo cáo ROAS thật và đối soát hoa hồng cuối quý",
+      "paragraphs": [
+        "Giỏ hàng Live chỉ giải quyết một nửa bài toán nếu khâu đối soát tiền quảng cáo và công nợ hoa hồng phía sau vẫn đứt gãy. Khi nối liền AutoData Router qua Pipeline 8 nấc của DOMATION CRM 360° sang MISA, Chủ đầu tư sở hữu một nguồn sự thật duy nhất: DomMeta BI gắn thẳng chi phí từng bài quảng cáo Facebook/Google/OOH với danh sách khách hàng phân bổ cho từng đại lý F1, số lượng đặt chỗ thực tế và tổng giá trị hợp đồng chốt được. Nhờ dạy lại thuật toán bằng sự kiện Qualified/Booked HTTP 200 và loại bỏ 35% tệp trùng 6 tháng, dự án EcoLife Signature đã đạt ROAS đỉnh tới 8.2x.",
+        "Ở góc độ tài chính đại lý, sổ cái hoa hồng tách bạch rõ trạng thái Dự kiến, Đủ điều kiện giải ngân đợt 1 và Đã thanh toán qua MISA. Mọi trường hợp đổi căn hoặc thanh lý cọc đều lưu vết kiểm toán bất biến, rút ngắn cuộc họp đối soát cuối quý giữa Chủ đầu tư và các sàn F1 xuống còn 15 phút minh bạch tuyệt đối."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-bds",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng vá một cuộc chiến mở bán bằng quy chế phạt miệng — hãy khóa nó ngay tại tầng Database",
+      "body": "Khi trực tiếp thiết kế trọn bộ 7 trụ cột số hóa cho EcoLife Signature của Capital House và hạ tầng CRM cho Rich Land, bài học lớn nhất tôi rút ra là mọi quy định hành chính kiểu 'ai nhắn Zalo trước được giữ căn' đều vỡ vụn khi rổ hàng chỉ còn 10 căn đẹp cuối cùng. Công nghệ phải đứng ra phân xử sòng phẳng thay con người: dùng khóa nguyên tử PostgreSQL quyết định ở mức mili-giây, dùng FORCE RLS bảo vệ tệp khách sống còn của từng sàn F1, và dùng ZaloBot bù ticket 1:1 để giữ vững niềm tin hợp tác dài hạn."
+    }
+  ]
+}

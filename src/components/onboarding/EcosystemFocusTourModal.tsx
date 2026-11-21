@@ -12,7 +12,9 @@ import {
   X,
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import { DomResponsiveSubtabs } from '../dom-meta/DomMetaSelect';
+import { lockBodyScroll, pushOverlay, unlockBodyScroll } from '../../utils/overlayStack';
 
 export type EcosystemTourSystemKey = 'flywheel' | 'autodata' | 'dommeta' | 'automation' | 'erp';
 
@@ -176,10 +178,9 @@ export const EcosystemFocusTourModal: React.FC<EcosystemFocusTourModalProps> = (
 
   useEffect(() => {
     if (!open) return;
+    lockBodyScroll();
+    const unregister = pushOverlay('ecosystem-focus-tour-modal', () => handleClose(), 235);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        handleClose();
-      }
       if (e.key === 'ArrowRight') {
         setOverrideIdx((prev) => Math.min(TOUR_SLIDES.length - 1, (prev ?? initialIdx) + 1));
       }
@@ -188,7 +189,11 @@ export const EcosystemFocusTourModal: React.FC<EcosystemFocusTourModalProps> = (
       }
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      unlockBodyScroll();
+      unregister();
+    };
   }, [open, handleClose, initialIdx]);
 
   if (!open) return null;
@@ -207,7 +212,7 @@ export const EcosystemFocusTourModal: React.FC<EcosystemFocusTourModalProps> = (
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-3xl rounded-t-[26px] sm:rounded-3xl bg-white border border-slate-200 shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden"
+        className="w-full max-w-3xl rounded-t-[26px] sm:rounded-3xl bg-white border border-slate-200 shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden dom-macos-modal-enter dom-ios-modal-panel"
       >
         <div className="sm:hidden flex justify-center pt-2.5 pb-1 shrink-0">
           <span className="w-10 h-1 rounded-full bg-slate-300" />
@@ -320,6 +325,11 @@ export const EcosystemFocusTourModal: React.FC<EcosystemFocusTourModalProps> = (
               </div>
             )}
           </div>
+
+          <ZaloSpecialistBanner
+            context={slide.id === 'erp' ? 'custom' : 'setup'}
+            variant="compact"
+          />
 
           {/* Step Dots */}
           <div className="hidden sm:flex items-center justify-center gap-0.5" aria-hidden="true">

@@ -114,6 +114,7 @@ import {
   DomResponsiveSubtabs,
 } from './DomMetaSelect';
 import { GoogleAdsSetupGuide } from './GoogleAdsSetupGuide';
+import { SPECIALIST_ZALO_URL, ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 
 export const DOM_META_MODAL_BASE_Z = 2147483636;
 export const DOM_META_MODAL_NESTED_Z = 2147483638;
@@ -121,12 +122,33 @@ export const DOM_META_MODAL_NESTED_Z = 2147483638;
 let activeDomMetaModalLocks = 0;
 let savedScrollLocks: Array<{ el: HTMLElement; overflow: string; overscrollBehavior: string }> = [];
 
-/** Reference-counted scroll lock across documentElement, body, and any scrollable workspace shell */
+interface DomationOverlayBridgeLike {
+  pushOverlay?: (id: string, close: () => void | boolean, priority?: number) => () => void;
+  lockBodyScroll?: () => void;
+  unlockBodyScroll?: () => void;
+}
+
+function getDomationOverlayBridge(): DomationOverlayBridgeLike | null {
+  if (typeof window === 'undefined') return null;
+  const win = window as Window & { __DOMATION_OVERLAY_BRIDGE__?: DomationOverlayBridgeLike };
+  return win.__DOMATION_OVERLAY_BRIDGE__ ?? null;
+}
+
+/** Reference-counted scroll lock across documentElement, body (via unified overlay bridge), and scrollable workspace shells */
 function useLockBodyAndShellScroll(locked = true): void {
   useEffect(() => {
     if (!locked || typeof document === 'undefined') return;
+    const bridge = getDomationOverlayBridge();
+    const usesBridgeBodyLock = Boolean(
+      bridge && typeof bridge.lockBodyScroll === 'function' && typeof bridge.unlockBodyScroll === 'function'
+    );
+    if (usesBridgeBodyLock && bridge?.lockBodyScroll) {
+      bridge.lockBodyScroll();
+    }
     if (activeDomMetaModalLocks === 0) {
-      const targets = new Set<HTMLElement>([document.documentElement, document.body]);
+      const targets = new Set<HTMLElement>(
+        usesBridgeBodyLock ? [document.documentElement] : [document.documentElement, document.body]
+      );
       document
         .querySelectorAll<HTMLElement>('main, [data-dom-scroll-shell="true"]')
         .forEach((el) => targets.add(el));
@@ -142,6 +164,9 @@ function useLockBodyAndShellScroll(locked = true): void {
     }
     activeDomMetaModalLocks += 1;
     return () => {
+      if (usesBridgeBodyLock && bridge?.unlockBodyScroll) {
+        bridge.unlockBodyScroll();
+      }
       activeDomMetaModalLocks = Math.max(0, activeDomMetaModalLocks - 1);
       if (activeDomMetaModalLocks === 0) {
         for (const item of savedScrollLocks) {
@@ -154,11 +179,56 @@ function useLockBodyAndShellScroll(locked = true): void {
   }, [locked]);
 }
 
-export const DomMetaModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DomMetaModalPortal: React.FC<{
+  children: React.ReactNode;
+  onClose?: () => void;
+  overlayId?: string;
+  priority?: number;
+}> = ({ children, onClose, overlayId, priority = DOM_META_MODAL_BASE_Z }) => {
   useLockBodyAndShellScroll(true);
+  const portalRef = React.useRef<HTMLDivElement | null>(null);
+  const onCloseRef = React.useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+  const reactId = React.useId();
+  const resolvedId = overlayId || `dom_meta_modal_${reactId.replace(/:/g, '')}`;
+
+  useEffect(() => {
+    const bridge = getDomationOverlayBridge();
+    if (!bridge || typeof bridge.pushOverlay !== 'function') return;
+
+    return bridge.pushOverlay(
+      resolvedId,
+      () => {
+        if (typeof onCloseRef.current === 'function') {
+          onCloseRef.current();
+          return;
+        }
+        // Automatic fallback: click visible close button inside this portal
+        const root = portalRef.current;
+        if (root) {
+          const btn = root.querySelector<HTMLElement>(
+            '[data-dom-overlay-close="true"], button[aria-label*="Đóng"], button[aria-label*="Close"], button[title*="Đóng"], button[title*="Close"]'
+          );
+          if (btn) {
+            btn.click();
+            return;
+          }
+        }
+        // Last resort: dispatch marked synthetic Escape event (ignored by overlayStack ESC handler to prevent recursion)
+        const syntheticEsc = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+        Object.defineProperty(syntheticEsc, '__domOverlaySyntheticEsc', { value: true });
+        window.dispatchEvent(syntheticEsc);
+      },
+      priority
+    );
+  }, [resolvedId, priority]);
+
   if (typeof document === 'undefined') return null;
   return createPortal(
     <div
+      ref={portalRef}
       data-modal-portal="true"
       className="mkt-scope dom-meta-scope"
       style={{ display: 'contents' }}
@@ -607,17 +677,20 @@ export const AdEntityDetailModal: React.FC<{
     tab: 'insights' | 'crm_leads';
     saleId: string;
     quality: string;
+    insightsStage: string;
   }>({
     key: '',
     tab: 'insights',
     saleId: 'all',
     quality: 'all',
+    insightsStage: 'all',
   });
 
   const activeModalTab: 'insights' | 'crm_leads' =
     tabState.key === entityKey ? tabState.tab : initialTab;
   const saleFilter = tabState.key === entityKey ? tabState.saleId : 'all';
   const qualityFilter = tabState.key === entityKey ? tabState.quality : 'all';
+  const insightsStageFilter = tabState.key === entityKey ? tabState.insightsStage : 'all';
 
   // Close drawer on Escape key
   useEffect(() => {
@@ -677,7 +750,7 @@ export const AdEntityDetailModal: React.FC<{
   } | null>(null);
 
   const expectedFetchKey =
-    entity && enableCrmAttribution && activeModalTab === 'crm_leads' && authContext && dateRange
+    entity && enableCrmAttribution && authContext && dateRange
       ? `${entityType}:${entity.id}:${dateRange.since}:${dateRange.until}:${saleFilter}:${qualityFilter}`
       : '';
 
@@ -871,13 +944,13 @@ export const AdEntityDetailModal: React.FC<{
         }));
 
   const updateTabState = (
-    patch: Partial<{ tab: 'insights' | 'crm_leads'; saleId: string; quality: string }>
+    patch: Partial<{ tab: 'insights' | 'crm_leads'; saleId: string; quality: string; insightsStage: string }>
   ) => {
     setTabState((prev) => {
       const base =
         prev.key === entityKey
           ? prev
-          : { key: entityKey, tab: initialTab, saleId: 'all', quality: 'all' };
+          : { key: entityKey, tab: initialTab, saleId: 'all', quality: 'all', insightsStage: 'all' };
       return { ...base, ...patch };
     });
   };
@@ -1988,14 +2061,14 @@ export const AdEntityDetailModal: React.FC<{
               </div>
             ) : (
               <>
-                {/* Row 1: 4 Hero Metrics */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-                  <div className="rounded-2xl bg-gradient-to-br from-[#1E40FF] via-[#1B4DFF] to-[#0284C7] text-white p-4 shadow-[0_10px_24px_-8px_rgba(30,64,255,0.4)]">
+                {/* Row 1: 4 Hero Metrics (Classic DOMATION META unified container) */}
+                <div className="rounded-2xl bg-white border border-slate-200/80 p-3 grid grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div className="rounded-xl bg-gradient-to-br from-[#1E40FF] via-[#1B4DFF] to-[#06B6D4] text-white p-3.5 sm:p-4 shadow-[0_10px_24px_-8px_rgba(30,64,255,0.42)] flex flex-col justify-between">
                     <div className="text-xs font-medium text-white/85">Spent</div>
                     <div className="text-xl sm:text-2xl font-bold mt-1 tabular-nums">
                       {formatDomMoney(entity.spend, currency)}
                     </div>
-                    {(isCamp || isAdset) && (
+                    {(isCamp || isAdset) ? (
                       <div className="text-[11px] text-white/80 mt-1.5 truncate">
                         {Number((entity as DomMetaCampaignNode).daily_budget || 0) > 0
                           ? `Daily: ${formatDomMoney(Number((entity as DomMetaCampaignNode).daily_budget || 0), currency)}`
@@ -2005,37 +2078,43 @@ export const AdEntityDetailModal: React.FC<{
                               ? 'Ngân sách CBO Chiến dịch'
                               : 'Ngân sách cấp Adset (ABO)'}
                       </div>
+                    ) : (
+                      <div className="text-[11px] text-white/80 mt-1.5 truncate">
+                        {entity.effective_status?.toUpperCase() === 'ACTIVE'
+                          ? 'Đang chạy phân phối'
+                          : `Trạng thái: ${entity.effective_status || 'Active'}`}
+                      </div>
                     )}
                   </div>
 
-                  <div className="rounded-2xl bg-white border border-slate-200/80 p-4 flex flex-col justify-between">
+                  <div className="rounded-xl bg-slate-50/90 border border-slate-100 p-3.5 sm:p-4 flex flex-col justify-between">
                     <div className="text-xs font-medium text-slate-500">Optimization Goal</div>
                     <div className="text-base sm:text-lg font-bold text-slate-800 mt-1 truncate">
                       {entity.optimization_goal || 'QUALITY LEAD'}
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1.5">
+                    <div className="text-[11px] text-slate-500 mt-1.5">
                       Reach: <strong className="text-slate-700">{formatDomNumber(entity.reach)}</strong> · Impr:{' '}
                       <strong className="text-slate-700">{formatDomNumber(entity.impressions)}</strong>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl bg-white border border-slate-200/80 p-4 flex flex-col justify-between">
+                  <div className="rounded-xl bg-slate-50/90 border border-slate-100 p-3.5 sm:p-4 flex flex-col justify-between">
                     <div className="text-xs font-medium text-slate-500">Results</div>
                     <div className="text-xl sm:text-2xl font-bold text-slate-800 mt-1 tabular-nums">
                       {formatDomNumber(entity.result)}
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1.5">
+                    <div className="text-[11px] text-slate-500 mt-1.5">
                       CTR: <strong className="text-slate-700">{entity.ctr.toFixed(2)}%</strong> · Link Clicks:{' '}
                       <strong className="text-slate-700">{formatDomNumber(entity.link_click)}</strong>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl bg-white border border-slate-200/80 p-4 flex flex-col justify-between">
+                  <div className="rounded-xl bg-slate-50/90 border border-slate-100 p-3.5 sm:p-4 flex flex-col justify-between">
                     <div className="text-xs font-medium text-slate-500">{cprHeaderLabel}</div>
                     <div className="text-xl sm:text-2xl font-bold text-[#1E40FF] mt-1 tabular-nums">
                       {entity.result > 0 ? formatDomMoney(entity.cpr, currency) : '—'}
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1.5">
+                    <div className="text-[11px] text-slate-500 mt-1.5">
                       CPM: <strong className="text-slate-700">{formatDomMoney(entity.cpm, currency)}</strong> · CPC:{' '}
                       <strong className="text-slate-700">{formatDomMoney(entity.cpc, currency)}</strong>
                     </div>
@@ -3360,6 +3439,210 @@ export const AdEntityDetailModal: React.FC<{
                     </div>
                   </div>
                 )}
+
+                {/* Row 6C: Connected CRM Lead List & Pipeline Status inside Ad Insights */}
+                {enableCrmAttribution && (isLoadingLeads || totalCrmLeads > 0 || currentLeads.length > 0) && (() => {
+                  const stageOrder = [
+                    { key: 'Qualified', label: 'Thiện chí' },
+                    { key: 'Booked', label: 'Hẹn gặp' },
+                    { key: 'Booking', label: 'Booking' },
+                    { key: 'Deposited', label: 'Đặt cọc' },
+                    { key: 'Closed', label: 'Đã chốt' },
+                    { key: 'BadTiming', label: 'Hẹn gọi lại' },
+                    { key: 'NoAnswer', label: 'KNM' },
+                    { key: 'Notlead', label: 'Notlead' },
+                    { key: 'unrated', label: 'Chưa ĐG' },
+                  ];
+                  const resolveStageKey = (ld: DomMetaCrmLeadItem) => {
+                    const raw = String(ld.stage_key || ld.quality_status || '').trim();
+                    if (!raw || raw.toLowerCase() === 'pending') return 'unrated';
+                    return raw;
+                  };
+                  const stageCounts: Record<string, number> = {};
+                  for (const ld of currentLeads) {
+                    const sk = resolveStageKey(ld);
+                    stageCounts[sk] = (stageCounts[sk] || 0) + 1;
+                  }
+                  const filteredInlineLeads =
+                    insightsStageFilter === 'all'
+                      ? currentLeads
+                      : currentLeads.filter(
+                          (ld) => resolveStageKey(ld).toLowerCase() === insightsStageFilter.toLowerCase()
+                        );
+                  return (
+                    <div
+                      data-testid="entity-insights-crm-leads"
+                      className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 space-y-3 min-w-0"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <h4 className="text-sm font-bold text-slate-800 truncate">
+                            Danh Sách Lead &amp; Trạng Thái Pipeline
+                          </h4>
+                          <span className="px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#1E40FF] text-[10.5px] font-bold shrink-0">
+                            {formatDomNumber(currentLeads.length || totalCrmLeads)} Lead CRM
+                          </span>
+                          {qualifiedCrmLeads > 0 && (
+                            <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10.5px] font-semibold shrink-0">
+                              {qualifiedCrmLeads} Chất lượng ({crmPositiveRate}%)
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => updateTabState({ tab: 'crm_leads' })}
+                          className="text-xs font-semibold text-[#1E40FF] hover:underline cursor-pointer shrink-0"
+                        >
+                          Mở chi tiết Lead &amp; Sale →
+                        </button>
+                      </div>
+
+                      {currentLeads.length > 0 && (
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => updateTabState({ insightsStage: 'all' })}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors cursor-pointer ${
+                              insightsStageFilter === 'all'
+                                ? 'bg-[#1E40FF] text-white border-[#1E40FF]'
+                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                            }`}
+                          >
+                            Tất cả ({currentLeads.length})
+                          </button>
+                          {stageOrder
+                            .filter((st) => (stageCounts[st.key] || 0) > 0)
+                            .map((st) => {
+                              const cnt = stageCounts[st.key] || 0;
+                              const isSelected = insightsStageFilter === st.key;
+                              return (
+                                <button
+                                  key={st.key}
+                                  type="button"
+                                  onClick={() =>
+                                    updateTabState({
+                                      insightsStage: isSelected ? 'all' : st.key,
+                                    })
+                                  }
+                                  className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-[#1E40FF] text-white border-[#1E40FF]'
+                                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-blue-50/70 hover:text-[#1E40FF]'
+                                  }`}
+                                >
+                                  {st.label} ({cnt})
+                                </button>
+                              );
+                            })}
+                        </div>
+                      )}
+
+                      {isLoadingLeads ? (
+                        <div className="space-y-2 py-2">
+                          {[0, 1, 2].map((i) => (
+                            <div key={i} className="h-10 rounded-xl dom-meta-skeleton-soft" />
+                          ))}
+                        </div>
+                      ) : filteredInlineLeads.length === 0 ? (
+                        <div className="py-5 text-center text-xs text-slate-400">
+                          Chưa ghi nhận Lead CRM nào trong bài quảng cáo này ở bộ lọc hiện tại.
+                        </div>
+                      ) : (
+                        <div className="dom-meta-table-scroll overflow-x-auto overflow-y-auto max-h-[265px] rounded-xl border border-slate-100">
+                          <table className="w-full text-left border-collapse text-xs">
+                            <thead>
+                              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+                                <th className="sticky top-0 z-10 bg-slate-50 py-2 px-3">Khách hàng</th>
+                                <th className="sticky top-0 z-10 bg-slate-50 py-2 px-3">Pipeline</th>
+                                <th className="sticky top-0 z-10 bg-slate-50 py-2 px-3">Sale phụ trách</th>
+                                <th className="sticky top-0 z-10 bg-slate-50 py-2 px-3">CAPI</th>
+                                <th className="sticky top-0 z-10 bg-slate-50 py-2 px-3 text-right">Thời gian</th>
+                                {onOpenLead && (
+                                  <th className="sticky top-0 z-10 bg-slate-50 py-2 px-3 text-right">Hồ sơ</th>
+                                )}
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                              {filteredInlineLeads.map((ld) => {
+                                const qBadge = getQualityStatusDisplay(ld.quality_status, ld.stage_key);
+                                return (
+                                  <tr key={ld.id} className="hover:bg-slate-50/80 transition-colors">
+                                    <td className="py-2 px-3">
+                                      <div className="font-semibold text-slate-800">{ld.name}</div>
+                                      <div className="text-[11px] font-mono text-slate-500">
+                                        {ld.phone || '—'}
+                                      </div>
+                                    </td>
+                                    <td className="py-2 px-3 whitespace-nowrap">
+                                      <span
+                                        className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${qBadge.className}`}
+                                      >
+                                        {qBadge.label}
+                                      </span>
+                                    </td>
+                                    <td className="py-2 px-3">
+                                      <div className="flex items-center gap-2">
+                                        {ld.assigned_to_avatar ? (
+                                          <img
+                                            src={ld.assigned_to_avatar}
+                                            alt={ld.assigned_to_name}
+                                            className="w-5 h-5 rounded-full object-cover shrink-0"
+                                          />
+                                        ) : (
+                                          <div className="w-5 h-5 rounded-full bg-blue-100 text-[#1E40FF] text-[9.5px] font-bold flex items-center justify-center shrink-0">
+                                            {getInitials(ld.assigned_to_name)}
+                                          </div>
+                                        )}
+                                        <span className="font-medium text-slate-700 truncate max-w-[140px]">
+                                          {ld.assigned_to_name}
+                                        </span>
+                                      </div>
+                                    </td>
+                                    <td className="py-2 px-3 whitespace-nowrap">
+                                      {ld.capi_last_status === 'sent' ? (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10.5px] font-semibold">
+                                          <CheckCircle2 className="w-3 h-3" />
+                                          <span>{ld.capi_last_event || 'Lead'}</span>
+                                        </span>
+                                      ) : (
+                                        <span className="text-[11px] text-slate-400">—</span>
+                                      )}
+                                    </td>
+                                    <td className="py-2 px-3 text-right text-[11px] text-slate-500 whitespace-nowrap tabular-nums">
+                                      {ld.created_at
+                                        ? new Date(ld.created_at).toLocaleDateString('vi-VN', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: false,
+                                          })
+                                        : '—'}
+                                    </td>
+                                    {onOpenLead && (
+                                      <td className="py-2 px-3 text-right whitespace-nowrap">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            onOpenLead(ld);
+                                            onClose();
+                                          }}
+                                          className="px-2 py-0.5 rounded-lg bg-blue-50 hover:bg-[#1E40FF] text-[#1E40FF] hover:text-white text-[11px] font-semibold transition-colors cursor-pointer"
+                                        >
+                                          Xem
+                                        </button>
+                                      </td>
+                                    )}
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Row 7: Full Actions Detail (Compact Bounded List — Zero Screen Wall) */}
                 <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 space-y-3">
@@ -5115,6 +5398,7 @@ export const AccountManagerModal: React.FC<{
               </>
             ) : (
               <div className="space-y-4">
+                <ZaloSpecialistBanner context="setup" variant="compact" />
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold uppercase tracking-wider text-slate-700">
                     Meta Access Token (EAA...)
@@ -5698,6 +5982,8 @@ const WorkspaceSettingsTabContent: React.FC<{
             </button>
           </div>
         )}
+
+        <ZaloSpecialistBanner context="upgrade" variant="compact" />
       </div>
     )}
   </>
@@ -8027,7 +8313,7 @@ export const CrmUpgradeShowcaseModal: React.FC<CrmUpgradeShowcaseModalProps> = (
 
   const handleQuickUpgradeSupport = async () => {
     if (!authContext?.accessToken) {
-      window.open('https://domation.net/lien-he', '_blank', 'noopener,noreferrer');
+      window.open(SPECIALIST_ZALO_URL, '_blank', 'noopener,noreferrer');
       return;
     }
     setBusyAction('quick_support');
@@ -8281,6 +8567,8 @@ export const CrmUpgradeShowcaseModal: React.FC<CrmUpgradeShowcaseModalProps> = (
                       </div>
                     ))}
                   </div>
+
+                  <ZaloSpecialistBanner context="setup" variant="compact" />
                 </div>
               </>
             ) : (
@@ -8550,25 +8838,26 @@ export const CrmUpgradeShowcaseModal: React.FC<CrmUpgradeShowcaseModalProps> = (
                   />
                 )}
                 <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
-                  <button
-                    type="button"
+                  <a
+                    href={SPECIALIST_ZALO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     data-testid="crm-upgrade-fast-support-btn"
-                    disabled={busyAction === 'quick_support'}
-                    onClick={() => void handleQuickUpgradeSupport()}
-                    className="px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#1E40FF] border border-blue-200 text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60"
+                    onClick={() => {
+                      if (authContext?.accessToken && supportPhone.trim()) {
+                        void handleQuickUpgradeSupport();
+                      }
+                    }}
+                    className="min-h-[40px] px-3 py-2 rounded-xl bg-[#0068FF] hover:bg-[#0057D9] text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shadow-xs"
                   >
-                    {busyAction === 'quick_support' ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-                    ) : (
-                      <PhoneCall className="w-3.5 h-3.5 shrink-0" />
-                    )}
-                    <span className="truncate">Hỗ Trợ Setup</span>
-                  </button>
+                    <PhoneCall className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">Chat Zalo Setup</span>
+                  </a>
                   <a
                     href={crmWorkspaceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 sm:px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5"
+                    className="min-h-[40px] px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-[#1E40FF] to-[#0284C7] hover:brightness-110 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 whitespace-nowrap"
                   >
                     <span className="truncate">Vào CRM Ngay</span>
                     <ArrowRight className="w-3.5 h-3.5 shrink-0" />
@@ -9020,6 +9309,8 @@ const AiKeyInlineSettingsPanel: React.FC<{
           dùng chung cho cả CRM AutoData và DOM Meta Report.
         </div>
       </div>
+
+      <ZaloSpecialistBanner context="setup" variant="compact" />
 
       {loading ? (
         <div className="py-8 flex items-center justify-center gap-2 text-xs text-slate-500">

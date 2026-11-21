@@ -7,6 +7,7 @@ import { AiDomationChatbot } from './components/AiDomationChatbot';
 import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { ErrorBoundary } from './components/autodata/cloned/components/ErrorBoundary';
 import { DOMATION_NAV_EVENT } from './utils/navigation';
+import { useNativeAppBackGuard } from './hooks/useNativeAppBackGuard';
 import './index.css';
 
 const App = lazy(() => import('./App'));
@@ -21,6 +22,9 @@ const DomationDataLanding = lazy(() =>
 );
 const MetaAdReport = lazy(() =>
   import('./MetaAdReport').then((m) => ({ default: m.MetaAdReport }))
+);
+const DomAiLanding = lazy(() =>
+  import('./DomAiLanding').then((m) => ({ default: m.DomAiLanding }))
 );
 const WebDesignPricing = lazy(() =>
   import('./WebDesignPricing').then((m) => ({ default: m.WebDesignPricing }))
@@ -55,6 +59,9 @@ const Main = () => {
   const [locationKey, setLocationKey] = useState(() =>
     typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/'
   );
+
+  // Global 3-layer mobile/tablet swipe-back & modal/drawer LIFO back protection
+  useNativeAppBackGuard(locationKey);
 
   useEffect(() => {
     const splash = document.getElementById('domation-boot-splash');
@@ -110,6 +117,12 @@ const Main = () => {
     : null;
 
   const isAutomation = path === '/automation';
+  const isDomAi =
+    path === '/dom-ai' ||
+    path.startsWith('/dom-ai/') ||
+    path === '/ai-assistant' ||
+    path.startsWith('/ai-assistant/') ||
+    search.includes('page=dom-ai');
   const isMetaReport =
     path === '/meta-report' ||
     path.startsWith('/meta-report/') ||
@@ -155,6 +168,14 @@ const Main = () => {
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
+        isDomAi && <DomAiLanding />}
+      {!singlePostSlug &&
+        !isBoostHub &&
+        !isPortfolio &&
+        !isErp &&
+        !isWebDesign &&
+        !isMagnific &&
+        !isDomAi &&
         isMetaReport && <MetaAdReport />}
       {!singlePostSlug &&
         !isBoostHub &&
@@ -162,6 +183,7 @@ const Main = () => {
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
+        !isDomAi &&
         !isMetaReport &&
         isCrm && <CrmLanding />}
       {!singlePostSlug &&
@@ -170,6 +192,7 @@ const Main = () => {
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
+        !isDomAi &&
         !isMetaReport &&
         !isCrm &&
         isData && <DomationDataLanding />}
@@ -179,6 +202,7 @@ const Main = () => {
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
+        !isDomAi &&
         !isMetaReport &&
         !isCrm &&
         !isData &&
@@ -189,6 +213,7 @@ const Main = () => {
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
+        !isDomAi &&
         !isMetaReport &&
         !isCrm &&
         !isData &&
@@ -200,6 +225,7 @@ const Main = () => {
         !isErp &&
         !isWebDesign &&
         !isMagnific &&
+        !isDomAi &&
         !isMetaReport &&
         !isCrm &&
         !isData &&

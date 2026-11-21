@@ -107,6 +107,23 @@ export const DomMetaSpotlightTour: React.FC<DomMetaSpotlightTourProps> = ({
   const safeIndex = Math.max(0, Math.min(steps.length - 1, activeStepIndex));
   const current = steps[safeIndex];
 
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!open || typeof window === 'undefined') return;
+    const win = window as Window & {
+      __DOMATION_OVERLAY_BRIDGE__?: {
+        pushOverlay?: (id: string, close: () => void | boolean, priority?: number) => () => void;
+      };
+    };
+    const bridge = win.__DOMATION_OVERLAY_BRIDGE__;
+    if (!bridge || typeof bridge.pushOverlay !== 'function') return;
+    return bridge.pushOverlay('dom-meta-spotlight-tour', () => onCloseRef.current(), 2147483645);
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e: KeyboardEvent) => {

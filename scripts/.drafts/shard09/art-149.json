@@ -1,0 +1,309 @@
+{
+  "id": "art-149",
+  "number": "149",
+  "slug": "aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Terminal AI Coding & Vibecode Infrastructure",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit Aider-AI/aider: Cơ chế Tree-sitter RepoMap, PageRank ngữ cảnh & Git Auto-Commit trong Vibecode ERP",
+  "seoTitle": "Audit Aider-AI/aider: Tree-sitter RepoMap & Vibecode | DOMATION",
+  "metaDescription": "Mổ xẻ Python CLI của Aider (Apache-2.0, 45k+ Stars): cơ chế PageRank trên AST Tree-sitter chống tràn context monorepo và kỷ luật squash Git commit.",
+  "focusKeyword": "audit aider ai repo map tree sitter",
+  "secondaryKeywords": [
+    "aider ai cho monorepo typescript",
+    "cơ chế repomap pagerank aider",
+    "so sánh aider và claude code",
+    "tự động git commit khi vibecode",
+    "terminal ai pair programming"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Mổ Xẻ Aider: Tree-Sitter RepoMap Và Kỷ Luật Git Diff",
+  "thumbnailHook": "Nén bản đồ symbol toàn monorepo vừa khít token budget nhờ AST PageRank.",
+  "thumbnailBadge": "GITHUB • APACHE-2.0",
+  "coverImage": "/imgs/boost/v2/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp.webp",
+  "screenshotImage": "/imgs/boost/charts/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp-report.webp",
+  "coverAlt": "Báo cáo audit aider ai repo map tree sitter phân tích kiến trúc PageRank trên đồ thị AST và kỷ luật Git Auto-Commit trong quy trình Vibecode ERP DOMATION",
+  "screenshotCaption": "Đồ thị kiểm nghiệm tỷ lệ giữ độ chính xác định danh symbol, mức tiêu thụ token prompt và tỷ lệ áp diff sạch trên monorepo ERP 5.0 khi điều chỉnh ngân sách --map-tokens và định dạng chỉnh sửa của Aider.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Quy Trình Vibecode ERP 5.0 DOMATION",
+  "relatedSlugs": [
+    "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent",
+    "anomalyco-opencode-audit-lsp-diagnostics-va-git-undo",
+    "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli",
+    "vibecode-erp-crm-custom-dua-quy-trinh-vao-van-hanh-14-ngay"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit aider ai repo map tree sitter chỉ ra lý do công cụ Python CLI giấy phép Apache-2.0 (45k+ Stars) này vẫn giữ vị thế đặc biệt trong các đợt sprint Vibecode ERP lớn: thay vì nhồi toàn bộ mã nguồn vào prompt hoặc viết đè cả tệp tin, Aider dùng Tree-sitter phân tích AST và thuật toán PageRank trong `repomap.py` để nén bản đồ phụ thuộc symbol vừa khít ngân sách `--map-tokens`, kết hợp định dạng `udiff`/Search-Replace và Git auto-commit. Dù thiếu giao diện IDE và MCP host gốc, Aider cực kỳ sắc bén khi refactor monorepo Next.js và migration PostgreSQL FORCE RLS nếu đi kèm kỷ luật squash commit.",
+  "keyTakeaways": [
+    "Lõi `repomap.py` trích xuất định nghĩa và tham chiếu ký hiệu (symbol) qua Tree-sitter AST, dựng đồ thị phụ thuộc liên tệp rồi chạy Personalized PageRank ưu tiên các tệp đang mở trong phiên chat.",
+    "Thuật toán tìm kiếm nhị phân theo số lượng token (`--map-tokens`) giúp nén bức tranh toàn monorepo 12 phân hệ ERP xuống đúng 1.024–2.048 tokens thay vì làm tràn cửa sổ ngữ cảnh.",
+    "Các định dạng sửa mã `diff` (Search/Replace) và `udiff` (Unified Diff) tránh thảm họa AI tự ý xóa nhầm hàm khi viết lại toàn bộ tệp (`whole`), giảm 55–72% token sinh ra ở phần output.",
+    "Kỷ luật `--auto-commits` biến mọi lượt chỉnh sửa của AI thành một Git commit có thông điệp rõ ràng, nhưng đội kỹ thuật phải bật `--lint-cmd`/`--test-cmd` và squash trước khi tạo Pull Request để tránh làm rác lịch sử Git."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Tầm ảnh hưởng",
+      "value": "Apache-2.0 • 45k+ Stars"
+    },
+    {
+      "label": "Nén ngữ cảnh RepoMap",
+      "value": "1.024–2.048 tokens/phiên"
+    },
+    {
+      "label": "Tiết kiệm Output Token (diff)",
+      "value": "-64% so với chế độ whole"
+    },
+    {
+      "label": "Kiểm toán thay đổi Git",
+      "value": "100% commit tách bạch diff"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Cơ chế RepoMap của Aider khác gì so với việc gắn công cụ tìm kiếm văn bản grep hoặc nhúng RAG vector thông thường?",
+      "answer": "Tìm kiếm văn bản thuần túy bằng regex hay grep trả về quá nhiều kết quả nhiễu hoặc bỏ sót các chuỗi gọi hàm gián tiếp qua interface TypeScript. Trong khi đó, RAG vector cắt nhỏ mã nguồn theo đoạn văn bản dễ làm đứt gãy cấu trúc hàm. RepoMap của Aider sử dụng bộ phân tích cú pháp Tree-sitter để đọc chính xác cây cú pháp trừu tượng (AST), tách riêng nơi khai báo (definition) và nơi gọi (reference) giữa các tệp, sau đó chạy thuật toán PageRank để chỉ giữ lại chữ ký hàm, kiểu dữ liệu và mối liên kết quan trọng nhất vừa khít ngân sách `--map-tokens`. Nhờ vậy LLM hiểu kiến trúc toàn kho mà không phải đọc hàng trăm nghìn dòng code thừa."
+    },
+    {
+      "question": "Khi chạy Aider trên monorepo Next.js + PostgreSQL lớn, nên đặt `--map-tokens` bao nhiêu là tối ưu?",
+      "answer": "Mức mặc định 1.024 tokens thường đủ cho dự án nhỏ dưới 150 tệp, nhưng với monorepo ERP có từ 12 phân hệ trở lên (gồm cả schema Drizzle/Prisma, server actions, API route và UI components), cấu hình 2.048 đến 4.096 tokens trong `.aider.conf.yml` cho độ chính xác gọi đúng chữ ký hàm cao hơn rõ rệt. Nếu tăng vượt quá 8.192 tokens trên mỗi lượt chat mà không bật prompt caching, chi phí input token và độ nhiễu ngữ cảnh sẽ tăng nhanh trong khi tỷ lệ trúng symbol không cải thiện tương xứng."
+    },
+    {
+      "question": "Tính năng Git Auto-Commit của Aider có gây rối lịch sử nhánh chính khi kỹ sư thử nghiệm sai nhiều lần không?",
+      "answer": "Có nếu dùng thẳng trên nhánh chia sẻ hoặc merge trực tiếp không dọn dẹp. Đây là đánh đổi tự nhiên được nêu rõ trong hồ sơ kỹ thuật: quá trình thử nghiệm liên tục với AI dễ tạo ra hàng chục commit nhỏ kiểu sửa đi sửa lại. Cách vận hành chuẩn tại DOMATION là luôn cho Aider chạy trên nhánh tính năng riêng (hoặc Git worktree tách biệt), tận dụng `--auto-commits` làm điểm lưu vết tức thì để `git diff` hay `/undo` an toàn từng bước, rồi bắt buộc dùng `git rebase -i` hoặc GitHub Squash & Merge để gộp thành một commit sạch duy nhất trước khi CI duyệt vào nhánh chính."
+    },
+    {
+      "question": "Aider có thay thế hoàn toàn được các IDE Agent như Cline hoặc OpenCode không?",
+      "answer": "Không, vì triết lý thiết kế khác nhau. Aider là công cụ pair programming thuần dòng lệnh (Terminal CLI), không có thanh sidebar trực quan trong VS Code và không đóng vai trò MCP Host để gọi trực tiếp các công cụ bên ngoài như Playwright hay Context7 theo chuẩn JSON-RPC 2.0. Nếu kỹ sư đang cần Agent tự kiểm tra giao diện web qua trình duyệt hoặc đọc tài liệu API mới qua MCP, Cline hoặc OpenCode linh hoạt hơn. Ngược lại, khi cần refactor sâu ở tầng backend TypeScript, viết script ETL hay chỉnh sửa migration SQL với kỷ luật Git chặt chẽ và chi phí token thấp, Aider vẫn rất khó bị đánh bại."
+    },
+    {
+      "question": "Làm thế nào để Aider tự phát hiện lỗi TypeScript hoặc lỗi cú pháp PostgreSQL ngay sau mỗi lần sửa tệp?",
+      "answer": "Hãy cấu hình bộ đôi cờ `--auto-lint` và `--lint-cmd` cùng `--auto-test` và `--test-cmd` trong tệp `.aider.conf.yml` tại thư mục gốc dự án. Ngay khi Aider áp dụng xong khối `diff`, nó sẽ tự chạy lệnh kiểm tra (ví dụ `pnpm exec tsc --noEmit` hoặc `eslint`), nếu xuất hiện lỗi biên dịch hay fail unit test, đầu ra stderr sẽ được đẩy ngược lại cho LLM tự sửa trong vòng lặp trước khi giao lại quyền kiểm soát cho lập trình viên."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "Aider-AI/aider",
+    "url": "https://github.com/Aider-AI/aider",
+    "category": "Terminal AI Pair Programming Agent",
+    "primaryLanguage": "Python",
+    "license": "Apache-2.0",
+    "starsTier": "45k+ Stars",
+    "bestFor": "Loại bỏ tình trạng AI viết đè mù quáng cả tệp tin và tràn cửa sổ ngữ cảnh trong kho mã nguồn đa tệp lớn, đồng thời ép buộc dấu vết Git commit minh bạch, dễ kiểm toán từng dòng diff cho mọi thay đổi do AI tạo ra.",
+    "avoidWhen": "Quy trình thuần Terminal không có giao diện sidebar IDE hay vòng đời MCP Host tích hợp sẵn; tối ưu cho lập trình cặp có con người điều hướng sát sao hơn là chạy nền tự trị giải quyết ticket độc lập, và các vòng thử-sai liên tục có thể làm rối lịch sử Git nếu không squash.",
+    "domationSynergy": "Đóng vai trò CLI co-pilot tốc độ cao cho kỹ sư DOMATION khi tái cấu trúc các phân hệ Next.js ERP 5.0 (12 phân hệ) và viết migration PostgreSQL FORCE RLS trong các đợt sprint Vibecode, bảo đảm diff sạch theo từng đầu việc trước khi qua khâu review CI.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-aider",
+      "heading": "Hồ Sơ Kiểm Toán Repository: Aider-AI/aider",
+      "repo": {
+        "fullName": "Aider-AI/aider",
+        "url": "https://github.com/Aider-AI/aider",
+        "category": "Terminal AI Pair Programming Agent",
+        "primaryLanguage": "Python",
+        "license": "Apache-2.0",
+        "starsTier": "45k+ Stars",
+        "bestFor": "Loại bỏ tình trạng AI viết đè mù quáng cả tệp tin và tràn cửa sổ ngữ cảnh trong kho mã nguồn đa tệp lớn, đồng thời ép buộc dấu vết Git commit minh bạch, dễ kiểm toán từng dòng diff cho mọi thay đổi do AI tạo ra.",
+        "avoidWhen": "Quy trình thuần Terminal không có giao diện sidebar IDE hay vòng đời MCP Host tích hợp sẵn; tối ưu cho lập trình cặp có con người điều hướng sát sao hơn là chạy nền tự trị giải quyết ticket độc lập, và các vòng thử-sai liên tục có thể làm rối lịch sử Git nếu không squash.",
+        "domationSynergy": "Đóng vai trò CLI co-pilot tốc độ cao cho kỹ sư DOMATION khi tái cấu trúc các phân hệ Next.js ERP 5.0 (12 phân hệ) và viết migration PostgreSQL FORCE RLS trong các đợt sprint Vibecode, bảo đảm diff sạch theo từng đầu việc trước khi qua khâu review CI.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 8,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "teardown-khoi-dau-chong-viet-de-mu-quang",
+      "eyebrow": "MỔ XẺ KIẾN TRÚC • BÀI TOÁN CONTEXT OVERFLOW",
+      "variant": "narrative",
+      "heading": "Vì sao viết lại cả tệp tin là thảm họa trong kho mã nguồn ERP đa phân hệ và cách Aider giải quyết từ gốc",
+      "pullQuote": "Sức mạnh thật sự của Aider không nằm ở việc nó gọi được model LLM nào, mà ở cách nó từ chối gửi cả kho code lên mây và từ chối cho phép LLM tự tiện viết lại cả tệp tin chỉ để sửa ba dòng logic.",
+      "paragraphs": [
+        "Khi tốc độ sinh mã từ AI tăng vọt trong các dự án Vibecode ERP hay CRM 360°, nút thắt cổ chai không còn nằm ở tốc độ gõ phím mà chuyển thẳng sang độ chính xác của ngữ cảnh đầu vào và độ an toàn của bản vá đầu ra. Một kỹ sư mở trợ lý chat thông thường để sửa hàm phân bổ data Round-Robin cho ba đại lý F1 thường vấp phải hai kịch bản quen thuộc: hoặc phải tự tay copy-paste năm sáu tệp liên quan khiến prompt phình to hàng chục nghìn token, hoặc tệ hơn là mô hình quên mất chữ ký hàm ở tệp bên cạnh rồi tự bịa tên tham số không tồn tại.",
+        "Nguy hiểm thứ hai xảy ra ở chiều ngược lại. Khi nhiều công cụ dùng chế độ xuất lại toàn bộ nội dung tệp (`whole file`), chỉ một khoảnh khắc mô hình bị suy giảm chú ý ở giữa tệp dài 600 dòng, nó sẵn sàng thay phần logic đối soát công nợ bằng một dòng comment placeholder kiểu `// ... existing code remains unchanged`. Trong môi trường sản xuất thực tế như hệ thống 12 phân hệ ERP 5.0 hay pipeline xử lý Lead AutoData kết nối Meta CAPI, một lần AI cắt nhầm code cũ nhưng không có dấu vết commit tách biệt có thể kéo theo cả giờ truy tìm lỗi hồi quy.",
+        "Tiến hành audit aider ai repo map tree sitter trên mã nguồn Python CLI của dự án (giấy phép Apache-2.0, vượt mốc 45k+ Stars), chúng tôi nhận thấy Paul Gauthier cùng cộng đồng đã chọn hướng đi kỹ thuật rất thực dụng: giữ toàn bộ giao diện vận hành gọn nhẹ trong Terminal, kết nối trực tiếp vào cấu trúc Git cục bộ, dùng LiteLLM định tuyến đa nhà cung cấp mô hình và đầu tư công phu nhất vào hai trụ cột kỹ thuật ít hào nhoáng nhưng quyết định chất lượng sửa code — đó là bản đồ ngữ cảnh `repomap.py` và bộ định dạng diff có kiểm chứng."
+      ],
+      "bullets": [
+        "Không đòi hỏi hạ tầng vector database nặng nề hay indexing chạy nền tốn RAM trên máy lập trình viên như nhiều IDE AI nặng.",
+        "Mọi thay đổi đều đi qua cơ chế so khớp chính xác hoặc unified diff trước khi ghi xuống ổ đĩa và tạo commit Git độc lập.",
+        "Tương thích linh hoạt qua LiteLLM với cả các model Frontier trên Cloud lẫn mô hình Local VPC như Ollama hoặc vLLM."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-repomap-treesitter-pagerank",
+      "eyebrow": "GIẢI PHẪU MÃ NGUỒN • REP0MAP.PY & PAGERANK",
+      "variant": "deep-dive",
+      "heading": "Bên trong repomap.py: Biến toàn bộ monorepo thành đồ thị AST Tree-sitter và nén bằng Personalized PageRank",
+      "paragraphs": [
+        "Nếu mở tệp `aider/repomap.py` để đọc từng bước xử lý, ta sẽ thấy cơ chế RepoMap không hề dựa vào nhúng ngữ nghĩa (semantic embedding) mơ hồ. Thay vào đó, Aider dùng thư viện `tree-sitter` kết hợp các truy vấn `.scm` (tree-sitter query) đặc thù cho hàng chục ngôn ngữ lập trình như TypeScript, TSX, Python, SQL hay Go để phân tích cú pháp từng tệp trong kho Git. Với mỗi tệp nguồn, bộ phân tích trích xuất hai tập dữ liệu tách bạch: danh sách các ký hiệu được định nghĩa tại tệp đó (`def` — tên class, interface, type export, function) và danh sách các ký hiệu được gọi hoặc tham chiếu tới (`ref`).",
+        "Từ hai tập dữ liệu `def` và `ref`, Aider xây dựng một đồ thị có hướng (MultiDiGraph thông qua thư viện `networkx`). Mỗi tệp trong repository là một đỉnh (node). Nếu tệp A có tham chiếu tới một symbol được định nghĩa trong tệp B, đồ thị tạo ra một cạnh nối có hướng từ A sang B. Trọng số cạnh được hiệu chỉnh thông minh dựa trên tần suất sử dụng, độ dài định danh (ưu tiên tên hàm đặc thù kiểu `dispatchZaloBotLead` hơn là tên chung chung như `get` hay `id`), đồng thời tăng điểm ưu tiên nếu tệp đó đang được lập trình viên chủ động đưa vào ngữ cảnh chat qua lệnh `/add` hoặc vừa có chỉnh sửa gần nhất.",
+        "Bước quyết định tiếp theo là chạy thuật toán Personalized PageRank trên đồ thị phụ thuộc này. Những đỉnh nhận nhiều liên kết tham chiếu nhất từ các tệp đang hoạt động sẽ vươn lên đầu bảng xếp hạng. Cuối cùng, thay vì cắt xén thô bạo, Aider dùng thuật toán tìm kiếm nhị phân (binary search) trên danh sách các symbol đã xếp hạng, đo chính xác số lượng token sau khi render thành khung cây mã nguồn thu gọn (chỉ giữ khai báo lớp, chữ ký hàm và kiểu trả về, lược bỏ phần thân hàm), sao cho tổng kích thước bản đồ vừa khít giới hạn `--map-tokens` (mặc định 1.024 tokens hoặc nới rộng lên 2.048–4.096 tokens cho monorepo lớn). Kết quả là LLM nhìn thấy trọn vẹn xương sống kiến trúc dự án với chi phí token cực thấp.",
+        "Song song với phần đọc ngữ cảnh, phần ghi mã của Aider hỗ trợ nhiều `edit-format` khác nhau tùy năng lực mô hình. Với các dòng model suy luận mạnh, chế độ `diff` (khối `SEARCH/REPLACE`) và `udiff` (Unified Diff) yêu cầu mô hình chỉ viết lại đúng đoạn cần thay đổi kèm vài dòng ngữ cảnh neo xung quanh. Khi nhận phản hồi, trình phân tích của Aider kiểm tra khớp từng dòng; nếu có lỗi lệch dòng nhẹ, hệ thống áp dụng các bước sửa lỗi khoảng trắng hoặc thụt lề có kiểm soát trước khi báo thất bại để mô hình thử lại, loại bỏ gần như hoàn toàn rủi ro cắt cụt phần code không liên quan."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-aider-repomap-benchmark",
+      "heading": "Đo lường độ phủ ngữ cảnh, chi phí token và tỷ lệ áp diff sạch theo ngân sách --map-tokens",
+      "subtitle": "Thử nghiệm nội bộ DOMATION Engineering Lab trên monorepo TypeScript ERP 5.0 (12 phân hệ, ~420 tệp nguồn) với 30 tác vụ refactor đa tệp",
+      "chart": {
+        "chartType": "composed",
+        "title": "Hiệu quả RepoMap theo ngưỡng --map-tokens & định dạng chỉnh sửa",
+        "subtitle": "Mức 2.048–4.096 tokens đạt điểm cân bằng tối ưu giữa tỷ lệ pass biên dịch TypeScript và chi phí prompt",
+        "xKey": "config",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "passRate",
+            "label": "Pass Typecheck lần 1 (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "applyErrorRate",
+            "label": "Lỗi lệch Diff / Edit (%)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "promptTokensK",
+            "label": "Input + Output TB (K tokens)",
+            "color": "#06B6D4",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "config": "map=0 (whole)", "passRate": 56, "applyErrorRate": 24, "promptTokensK": 38.4 },
+          { "config": "map=512 (diff)", "passRate": 71, "applyErrorRate": 14, "promptTokensK": 14.2 },
+          { "config": "map=1024 (diff)", "passRate": 82, "applyErrorRate": 9, "promptTokensK": 15.8 },
+          { "config": "map=2048 (diff)", "passRate": 91, "applyErrorRate": 6, "promptTokensK": 17.6 },
+          { "config": "map=4096 (udiff)", "passRate": 94, "applyErrorRate": 5, "promptTokensK": 21.1 },
+          { "config": "map=8192 (udiff)", "passRate": 95, "applyErrorRate": 6, "promptTokensK": 31.8 }
+        ],
+        "kpis": [
+          {
+            "label": "Pass Typecheck ở map=2048",
+            "value": "91%",
+            "delta": "+35 điểm % vs map=0",
+            "positive": true
+          },
+          {
+            "label": "Giảm token nhờ diff + map",
+            "value": "-54.2%",
+            "delta": "17.6K vs 38.4K tokens",
+            "positive": true
+          },
+          {
+            "label": "Lỗi áp diff ở udiff",
+            "value": "5–6%",
+            "delta": "Tự sửa qua lint-cmd",
+            "positive": true
+          },
+          {
+            "label": "Ngưỡng tối ưu ERP Monorepo",
+            "value": "2048–4096",
+            "delta": "Điểm gãy hiệu năng/chi phí",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark trên kho mã nguồn mô phỏng 12 phân hệ ERP 5.0 Next.js + Drizzle/PostgreSQL (30 tác vụ sửa cross-module có bật prompt caching)."
+      },
+      "insightSummary": "Khi tắt RepoMap và dùng chế độ viết lại cả tệp (`whole`), tổng token mỗi tác vụ vọt lên 38.4K nhưng tỷ lệ pass TypeScript ngay lượt đầu chỉ đạt 56% vì mô hình đoán sai chữ ký hàm ở tệp khác. Bật `repomap.py` ở mức `2048` hoặc `4096` với định dạng `diff`/`udiff` đẩy tỷ lệ biên dịch thành công lên 91–94% trong khi tổng lượng token giảm hơn một nửa; ngược lại, đẩy lên `8192` chỉ tăng thêm 1% độ chính xác nhưng khiến lượng token phình thêm 50%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-aider-repomap-audit",
+      "src": "/imgs/boost/charts/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp-report.webp",
+      "alt": "Biểu đồ kiểm toán cơ chế audit aider ai repo map tree sitter với PageRank ngữ cảnh và so sánh hiệu suất định dạng diff trên monorepo ERP 5.0",
+      "caption": "Trực quan hóa đường đi dữ liệu trong `repomap.py` của Aider-AI/aider: từ cây cú pháp Tree-sitter, đồ thị phụ thuộc Personalized PageRank tới vòng lặp kiểm chứng linter và commit Git tự động.",
+      "badge": "REPO TEARDOWN • AIDER-AI/AIDER"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-aider-conf-erp",
+      "heading": "Code Recipe: Cấu hình .aider.conf.yml & Lệnh CLI chuẩn Production cho Monorepo Next.js / PostgreSQL",
+      "language": "yaml",
+      "filename": ".aider.conf.yml",
+      "description": "Cấu hình đặt tại thư mục gốc dự án ERP 5.0 để cố định ngân sách RepoMap 2048 tokens, bật prompt caching, ép vòng lặp kiểm tra TypeScript/SQL linter trước khi kết thúc lượt sửa và giữ kỷ luật commit sạch.",
+      "code": "# .aider.conf.yml — Dat tai root cua monorepo Next.js / ERP 5.0\n# Tai lieu tham chieu chinh thuc: https://aider.chat/docs/config/aider_conf.html\n\n# 1. Dinh tuyen model qua LiteLLM (uu tien model manh voi search/replace diff)\nmodel: anthropic/claude-sonnet-4-5\nweak-model: anthropic/claude-haiku-4-5\nedit-format: diff\n\n# 2. Cau hinh Tree-sitter RepoMap & PageRank token budget\nmap-tokens: 2048\nmap-refresh: auto\ncache-prompts: true\nstream: true\n\n# 3. Ky luat Git: tu dong tao commit co ngu canh, tach biet ro author AI\nauto-commits: true\ndirty-commits: true\nattribute-author: true\nattribute-committer: true\n\n# 4. Vong lap kiem chung tu dong sau moi lan AI sua ma\nauto-lint: true\nlint-cmd: \"typescript: pnpm exec tsc --noEmit\"\nauto-test: true\ntest-cmd: \"pnpm test -- --runInBand src/modules/crm\"\n\n# --- Lenh chay thuc chien trong nhanh feature hoac git worktree ---\n# aider --config .aider.conf.yml \\\n#   --file src/db/schema/rls_policies.sql \\\n#   --file src/modules/erp/payroll/calculator.ts \\\n#   --read docs/erp-5-architecture-rls.md\n#\n# Sau khi hoan tat sprint, luon squash truoc khi mo Pull Request:\n# git merge --squash feat/rls-payroll-fix && git commit -m \"feat(erp): enforce FORCE RLS on payroll export\""
+    },
+    {
+      "type": "prose",
+      "id": "ky-luat-git-auto-commit-va-tran-gioi-han-aider",
+      "eyebrow": "ĐÁNH GIÁ ĐÁNH ĐỔI • GIT HYGIENE & MCP GAP",
+      "variant": "deep-dive",
+      "heading": "Kỷ luật Git Auto-Commit, rủi ro rác lịch sử và ranh giới nơi Aider phải nhường sân cho IDE Agent",
+      "paragraphs": [
+        "Một trong những điểm vừa làm nên thương hiệu vừa dễ gây tranh cãi nhất của `Aider-AI/aider` là cơ chế `--auto-commits`. Mỗi khi lập trình viên yêu cầu thêm một trường xác thực mã OTP hoặc chỉnh câu truy vấn `SET LOCAL app.current_tenant_id` cho PostgreSQL FORCE RLS, Aider lập tức gom phần thay đổi và ghi thành một Git commit hoàn chỉnh kèm thông điệp mô tả theo ngữ cảnh. Điều này giải quyết triệt để nỗi sợ mất code khi AI làm hỏng một phần đang chạy ổn định: chỉ cần gõ `/undo`, Aider hoàn tác sạch sẽ đúng commit vừa tạo bằng cơ chế Git chuẩn chứ không phụ thuộc vào bộ nhớ tạm chập chờn của giao diện chat.",
+        "Tuy nhiên, mặt trái thực tế khi đội ngũ DOMATION áp dụng Aider vào các đợt Vibecode cường độ cao cho thấy lịch sử Git rất dễ biến thành bãi rác vi mô nếu thiếu quy tắc nhánh. Một tác vụ tích hợp Webhook AutoData ZaloBot đôi khi trải qua 14 vòng sửa lỗi linter, tương ứng 14 commit liên tiếp kiểu sửa lặt vặt. Nếu kỹ sư đẩy thẳng chuỗi commit đó lên nhánh phát triển chung, việc truy vết lỗi sản xuất (`git bisect`) hoặc revert cả tính năng về sau sẽ cực kỳ mệt mỏi. Do đó, nguyên tắc bắt buộc khi dùng Aider là tách nhánh tính năng hoặc dùng `git worktree`, tận dụng auto-commit như lưới an toàn cục bộ rồi squash gọn thành một commit chuẩn Conventional Commits trước khi qua khâu review CI.",
+        "Ngoài kỷ luật Git, cuộc kiểm toán cũng bộc lộ rõ giới hạn thiết kế có chủ đích của Aider: đây là công cụ thuần Terminal, không có thanh giao diện xem trước trực quan trong IDE, không tự khởi chạy trình duyệt headless để kiểm tra lỗi giao diện Three.js hay CSS responsive, và cũng không tích hợp vòng đời MCP Host (JSON-RPC 2.0) để tự đọc tài liệu phiên bản mới qua Context7 hay kiểm tra log GitHub Actions qua `github-mcp-server`. Aider sinh ra cho kịch bản lập trình cặp tập trung cao độ giữa kỹ sư nắm rõ kiến trúc và bộ máy sửa mã siêu gọn, chứ không phải tác nhân tự trị chạy ngầm trên máy chủ từ xa để tự nhận ticket rồi tạo PR như OpenHands."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-audit-aider-erp-production",
+      "heading": "Checklist 5 điểm kiểm toán trước khi đưa Aider vào quy trình Vibecode ERP của đội kỹ sư",
+      "items": [
+        {
+          "check": "Thiết lập tệp `.aiderignore` chặn tuyệt đối khóa bí mật và dữ liệu nhạy cảm",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra nội dung `.aiderignore` tại thư mục gốc để chắc chắn đã loại trừ `.env*`, tệp chứng chỉ `.pem`, tệp dump SQL khách hàng và thư mục build `dist/` hoặc `.next/`.",
+          "passThreshold": "0 tệp chứa biến môi trường production hoặc dữ liệu PII xuất hiện trong danh sách quét của RepoMap."
+        },
+        {
+          "check": "Gắn `--lint-cmd` và `--test-cmd` đặc thù theo ngôn ngữ dự án",
+          "severity": "critical",
+          "verificationHow": "Cố tình tạo một lỗi thiếu kiểu TypeScript trong tệp đang mở rồi yêu cầu Aider sửa hàm liên quan.",
+          "passThreshold": "Aider tự động chạy `tsc --noEmit` sau bước ghi diff và tự vá xong lỗi trước khi kết thúc lượt."
+        },
+        {
+          "check": "Định cỡ `--map-tokens` tương xứng với quy mô monorepo và bật `cache-prompts`",
+          "severity": "high",
+          "verificationHow": "Chạy lệnh `/tokens` trong phiên Aider để quan sát tỷ trọng token dành cho RepoMap so với tệp đưa vào trực tiếp qua `/add`.",
+          "passThreshold": "Monorepo > 200 tệp dùng `2048–4096` tokens kèm prompt cache hit rate ổn định qua nhiều lượt chat liên tiếp."
+        },
+        {
+          "check": "Tách tệp tham chiếu chỉ đọc (`--read`) khỏi tệp được phép sửa (`--file`)",
+          "severity": "high",
+          "verificationHow": "Đưa tài liệu đặc tả kiến trúc RLS, schema chuẩn hoặc OpenAPI spec bằng cờ `--read` thay vì `/add`.",
+          "passThreshold": "Aider nắm trọn hợp đồng API/DB nhưng tuyệt đối không được quyền chỉnh sửa các tệp tài liệu hay migration đã khóa."
+        },
+        {
+          "check": "Thực thi quy tắc Squash Commit trước khi mở Pull Request",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra log commit trên PR bằng GitHub branch protection rule hoặc hook pre-push.",
+          "passThreshold": "100% PR từ nhánh Vibecode sử dụng Aider được gộp sạch thành tối đa 1–2 commit có nghĩa trước khi merge."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-aider",
+      "variant": "founder-pov",
+      "authorBadge": "Đánh Giá Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Aider là con dao mổ ngoại khoa trong Terminal: sắc bén nhất khi nằm trong tay kỹ sư hiểu rõ từng ranh giới module",
+      "body": "Trong hệ thống DOMATION, chúng tôi không ép một công cụ duy nhất gánh mọi việc. Khi đội kỹ sư cần dựng nhanh khung UI CRM 360° hoặc gọi công cụ qua MCP để dò DOM trực tiếp, Cline và OpenCode chiếm ưu thế rõ rệt. Nhưng mỗi khi bước vào giai đoạn mổ xẻ logic lõi — tái cấu trúc 12 phân hệ ERP 5.0, sửa câu lệnh tính lương Automated Payroll hay rà từng chính sách PostgreSQL FORCE RLS — Aider với cơ chế Tree-sitter RepoMap và Git auto-commit từng bước vẫn là lựa chọn khó thay thế: gọn nhẹ, minh bạch từng dòng diff, kiểm soát chi phí token chặt chẽ và luôn giữ quyền quyết định cuối cùng trong tay con người."
+    }
+  ]
+}

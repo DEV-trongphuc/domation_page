@@ -1,0 +1,327 @@
+{
+  "id": "art-143",
+  "number": "143",
+  "slug": "on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds",
+  "shardId": "shard08",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Y Tế, Tài Chính, Pháp Chế & BĐS Lớn",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "On-Prem Private LLM (vLLM/Ollama) vs Cloud Frontier API cho Y tế, Tài chính & BĐS: Ma trận TCO & Bảo mật",
+  "seoTitle": "On-Prem Private LLM vs Cloud API Cho Ngành Mật | DOMATION",
+  "metaDescription": "Đừng mua server GPU chỉ vì sợ Cloud, cũng đừng đẩy bệnh án lên API mở thiếu Gateway. So sánh chi phí phần cứng, độ trễ và mô hình Hybrid tối ưu.",
+  "focusKeyword": "on-prem private llm vs cloud api doanh nghiệp",
+  "secondaryKeywords": [
+    "triển khai private llm cho y tế tài chính",
+    "chi phí đầu tư server gpu chạy vllm",
+    "so sánh local llm và api cloud",
+    "mô hình hybrid private llm kết hợp cloud",
+    "bảo mật dữ liệu nhạy cảm với private llm"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "Private LLM Tại Chỗ Hay Cloud API Cho Ngành Mật?",
+  "thumbnailHook": "Tính TCO GPU 24 tháng, hòa vốn và mô hình Hybrid tách mật.",
+  "thumbnailBadge": "ARENA ON-PREM VS CLOUD",
+  "coverImage": "/imgs/boost/v2/on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds.webp",
+  "screenshotImage": "/imgs/boost/charts/on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds-report.webp",
+  "coverAlt": "Sàn đấu phân tích on-prem private llm vs cloud api doanh nghiệp theo TCO 24 tháng, độ trễ vLLM PagedAttention và bảo mật Y tế Tài chính BĐS",
+  "screenshotCaption": "Đồ thị đường cong tổng chi phí sở hữu (TCO) 24 tháng theo lưu lượng triệu token/tháng giữa Cloud Frontier ZDR API, kiến trúc Hybrid Split-Routing DOMATION và cụm GPU On-Premise chạy vLLM.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tư Vấn Hạ Tầng Private AI Doanh Nghiệp",
+  "relatedSlugs": [
+    "vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise",
+    "ollama-ollama-audit-trien-khai-private-llm-workstation",
+    "data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam",
+    "ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Quyết định chọn on-prem private llm vs cloud api doanh nghiệp trong ngành Y tế, Tài chính và BĐS không thể dựa vào cảm tính sợ rủi ro hay lời quảng cáo phần cứng. Bài phân tích đối đầu Ollama workstation, cụm vLLM PagedAttention và Cloud Frontier API có cam kết Zero Data Retention (ZDR) qua bài toán TCO 24 tháng, thông lượng đồng thời và độ chính xác Tool Calling. Dưới ngưỡng 1,3 tỷ token/tháng, kiến trúc Hybrid Split-Routing giữ bệnh án, CCCD và bảng lương tại nội địa nhưng đẩy tác vụ sạch ra ZDR Singapore giúp tiết kiệm 62% vốn mà vẫn an toàn tuyệt đối.",
+  "keyTakeaways": [
+    "Đừng vội chi 1,5–2,8 tỷ đồng mua server GPU nếu lưu lượng thực tế chưa vượt ngưỡng hòa vốn (~1,2–1,5 tỷ token/tháng): chi phí khấu hao phần cứng, điện làm mát IDC và nhân sự MLOps thường đắt gấp 2,5–3 lần tiền thuê Cloud ZDR API ở mức dưới 300 triệu token/tháng.",
+    "Nếu buộc phải tự host Private LLM cho hơn 15 nhân sự dùng đồng thời, hãy chọn `vllm-project/vllm` nhờ cơ chế PagedAttention phân trang bộ nhớ KV Cache và continuous batching; tránh dùng `ollama/ollama` (cấp phát slot KV cache tĩnh `OLLAMA_NUM_PARALLEL` dễ nghẽn hàng đợi).",
+    "Các mô hình Cloud API phân khúc tầm trung cuối 2026 như Gemini 3.8 Flash ($0.75 in / $3.75 out) hay GPT-5.6 Luna/Terra và Claude Sonnet 5.5 mang lại độ tin cậy JSON Schema Tool Calling vượt xa các model 8B–32B lượng tử hóa 4-bit cục bộ.",
+    "Kiến trúc Hybrid Split-Routing của DOMATION giải quyết triệt để mâu thuẫn: dữ liệu cá nhân nhạy cảm Khoản 4 Điều 2 NĐ 13/2023 và Luật 91/2025/QH15 (bệnh án, CCCD, tài chính) xử lý khép kín bằng Local LLM + Presidio, còn phân tích chiến dịch hoặc hỏi đáp không PII định tuyến sang ZDR Singapore."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Điểm hòa vốn On-Prem GPU vs Cloud",
+      "value": "~1,3 tỷ token/tháng"
+    },
+    {
+      "label": "Tiết kiệm TCO 24T của Hybrid (250M/th)",
+      "value": "-62% vs Cụm 2x GPU"
+    },
+    {
+      "label": "Thông lượng vLLM vs Ollama (32 luồng)",
+      "value": "Nhanh hơn 3,8x TPS"
+    },
+    {
+      "label": "Dữ liệu mật Điều 2.4 rời khỏi VPC",
+      "value": "0 byte (Local Route)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao nhiều doanh nghiệp mua máy chủ gắn GPU đắt tiền về cài Ollama xong chỉ được 2 tuần là nhân viên chê chậm và bỏ không dùng?",
+      "answer": "Có hai nguyên nhân kỹ thuật phổ biến. Thứ nhất, `ollama/ollama` thiết kế dựa trên `llama.cpp` cấp phát trước bộ nhớ KV cache tĩnh theo số slot song song (`OLLAMA_NUM_PARALLEL`), cực kỳ tuyệt vời cho 1–3 kỹ sư dùng trên workstation cá nhân, nhưng khi 20 nhân viên Sale và CSKH nhắn cùng lúc thì hàng đợi bị nghẽn và VRAM cạn rất nhanh. Thứ hai, để nhét vừa model vào 1–2 card 24GB/48GB VRAM, đội IT thường chạy bản lượng tử hóa 4-bit GGUF cỡ nhỏ (8B–14B), dẫn tới khả năng hiểu tiếng Việt chuyên ngành BĐS/Y tế và tỷ lệ gọi đúng cấu trúc JSON Tool bị tụt mạnh so với mô hình Frontier."
+    },
+    {
+      "question": "Khi đã tự host vLLM đặt tại Việt Nam thì có cần kiểm soát PII hoặc phân quyền PostgreSQL FORCE RLS nữa không?",
+      "answer": "Vẫn bắt buộc. Tự chạy vLLM tại văn phòng hoặc Viettel/CMC IDC chỉ giải quyết bài toán không truyền dữ liệu ra máy chủ bên thứ ba qua Internet, chứ không ngăn được rò rỉ nội bộ giữa các phòng ban. Nếu trợ lý AI nội bộ nạp chung Vector DB bảng lương ban giám đốc, bệnh án khách VIP và tài liệu bán hàng mà thiếu phân quyền `FORCE ROW LEVEL SECURITY` hay Payload Filter theo vai trò, bất kỳ nhân viên mới nào cũng có thể hỏi Private LLM đọc ra thông tin mật của phòng khác."
+    },
+    {
+      "question": "Với ngành Y tế (nha khoa, phòng khám) và Tài chính có dữ liệu nhạy cảm theo Luật 91/2025/QH15, dùng Cloud API ZDR có hợp pháp không?",
+      "answer": "Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 (hiệu lực 01/01/2026) và Nghị định 13/2023/NĐ-CP đặt yêu cầu rất chặt cho việc chuyển dữ liệu cá nhân (đặc biệt dữ liệu sức khỏe, tài chính thuộc Khoản 4 Điều 2) ra ngoài lãnh thổ Việt Nam, buộc phải lập hồ sơ DPIA/TIA gửi Cục A05 và có sự đồng ý rõ ràng. Do đó, chiến lược khôn ngoan nhất của DOMATION cho các hệ thống nha khoa hoặc tài chính là áp dụng Split-Routing: hồ sơ bệnh án, ảnh chụp phim, CCCD và dữ liệu ngân hàng xử lý hoàn toàn trên node nội địa tại Việt Nam; chỉ những văn bản đã khử sạch mọi yếu tố định danh (de-identified) hoặc hỏi đáp quy trình chung mới được phép gửi qua cổng Zero Data Retention (ZDR) khu vực Singapore (`asia-southeast1`)."
+    },
+    {
+      "question": "Làm thế nào tính đúng ngưỡng token hòa vốn trước khi quyết định đầu tư Server GPU chạy vLLM?",
+      "answer": "Hãy cộng tổng chi phí 24 tháng của cụm On-Premise: (1) Giá máy chủ trang bị 2x–4x GPU cấp trung tâm dữ liệu đủ chạy model 32B–70B FP8 thoải mái + RAM ECC + NVMe; (2) Phí thuê tủ rack, băng thông và điện nguồn làm mát tại Data Center trong 24 tháng; (3) Chi phí kỹ sư MLOps vận hành bản vá CUDA/vLLM và dự phòng phần cứng hỏng. Chia tổng số này cho 24 rồi đối chiếu với đơn giá token Cloud tầm trung (ví dụ Gemini 3.8 Flash hoặc GPT-5.6 Luna/Terra sau khi áp dụng Prompt Caching). Với hầu hết SME dưới 150 nhân sự tiêu thụ 50–300 triệu token/tháng, Cloud ZDR kết hợp Local SLM cho khâu nhạy cảm rẻ hơn rất nhiều."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "hai-thai-cuc-so-cloud-va-ngay-tho-api",
+      "eyebrow": "SÀN ĐẤU HẠ TẦNG AI • ON-PREM GPU VS CLOUD FRONTIER ZDR",
+      "variant": "contrarian",
+      "heading": "Đừng đốt 2 tỷ mua server GPU chỉ để né nỗi sợ Cloud — và cũng đừng ném bệnh án lên API mở thiếu Gateway",
+      "pullQuote": "Bảo mật không được đo bằng số lượng card đồ họa nằm trong phòng server của bạn, mà được đo bằng mức độ phân loại dữ liệu nhạy cảm và ranh giới kiểm soát dòng chảy của từng gói tin.",
+      "paragraphs": [
+        "Trên bàn họp đầu tư công nghệ của các chuỗi phòng khám nha khoa, công ty tài chính tiêu dùng và tập đoàn bất động sản cuối năm 2026, cuộc tranh luận về on-prem private llm vs cloud api doanh nghiệp thường bị bóp méo thành hai phe cực đoan. Một bên là các phòng ban tăng trưởng nóng, chỉ muốn lấy API Key kết nối thẳng tới mô hình mạnh nhất rồi bơm nguyên bảng Excel khách hàng vay vốn, bệnh án nha khoa, sao kê giao dịch và hợp đồng đặt cọc có số CCCD ra ngoài để chatbot trả lời nhanh cho kịp KPI. Bên còn lại là hội đồng thẩm định rủi ro: sau khi nhìn thấy khung chế tài tới 5% doanh thu của Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 đối với sai phạm chuyển dữ liệu xuyên biên giới, lập tức đề xuất chi vài tỷ đồng mua dàn GPU đặt tại văn phòng nhằm 'tự chủ AI hoàn toàn'.",
+        "Thực tế triển khai tại DOMATION cho thấy cả hai lựa chọn cực đoan đều trả giá rất đắt. Doanh nghiệp chọn On-Premise hoàn toàn thường sốc nặng sau tháng thứ ba: hóa đơn máy chủ 2x đến 4x GPU cấp doanh nghiệp, chi phí thuê chỗ đặt rack và điện điều hòa tại Data Center, cộng thêm bài toán thiếu kỹ sư MLOps chuyên trị lỗi CUDA, OOM (tràn VRAM) và tối ưu `vLLM` khi nâng cấp trọng số model mới. Tệ hơn nữa, một mô hình mã nguồn mở tầm trung chạy cục bộ thường bị hụt hơi rõ rệt khi thực hiện các chuỗi suy luận sâu hoặc gọi chính xác 10–15 công cụ CRM/ERP liên tiếp bằng tiếng Việt.",
+        "Ở thái cực ngược lại, gọi API đám mây mặc định mà không ký Zero Data Retention (ZDR), không cố định vùng địa lý Đông Nam Á và thiếu lớp che chắn định danh PII biến doanh nghiệp thành con mồi dễ tổn thương trước thanh tra tuân thủ. Sàn đấu này đặt 4 kiến trúc thực tế lên cùng một bàn cân đo đạc thẳng thắn về TCO 24 tháng, thông lượng đồng thời và độ an toàn pháp lý tại Việt Nam."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "ma-tran-dau-tu-on-prem-vs-cloud-vs-hybrid",
+      "heading": "Ma trận đối đầu 4 đấu thủ hạ tầng LLM cho Y tế, Tài chính, Pháp chế và Bất động sản",
+      "caption": "So sánh dựa trên thông số vận hành thực tế của Ollama, vLLM V1 PagedAttention, Cloud Frontier API (Q4/2026) và mô hình Hybrid Split-Routing",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "Ollama Workstation (GGUF / llama.cpp)",
+        "On-Prem vLLM Cluster (PagedAttention)",
+        "Cloud Frontier API (ZDR + SG Endpoint)",
+        "Hybrid Split-Routing (DOMATION VPC + ZDR)"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Chi phí đầu tư & vận hành 24 tháng (250M token/tháng)",
+          "values": [
+            "~190–280 triệu ₫ (1 máy trạm GPU RTX/Pro, tự quản lý)",
+            "~1,45–2,35 tỷ ₫ (Server 2x–4x GPU + IDC + MLOps)",
+            "~340–480 triệu ₫ (Trả theo token dùng thực tế)",
+            "~490–660 triệu ₫ (Node Local PII/SLM + Cloud ZDR)"
+          ],
+          "winnerNote": "Hybrid tiết kiệm ~62% so với dựng cụm vLLM hoàn chỉnh"
+        },
+        {
+          "criterion": "Xử lý đồng thời > 25 nhân viên / phiên Zalo OA",
+          "values": [
+            "Kém — cấp phát KV cache tĩnh dễ nghẽn hàng đợi",
+            "Rất tốt — PagedAttention + Continuous Batching",
+            "Tuyệt vời — Autoscaling không giới hạn ở phía Cloud",
+            "Tuyệt vời — Luồng nhẹ/mật vào Local, tải cao đi Cloud ZDR"
+          ],
+          "winnerNote": "vLLM và Cloud vượt trội Ollama dưới tải đồng thời cao"
+        },
+        {
+          "criterion": "Độ tin cậy JSON Schema & Multi-Tool ERP",
+          "values": [
+            "Trung bình khá (GGUF 4-bit dễ sai cú pháp tool phức tạp)",
+            "Khá tốt (nếu đủ VRAM chạy model >= 32B/70B FP8)",
+            "Xuất sắc (Gemini 3.8 Flash, Sonnet 5.5, GPT-5.6)",
+            "Xuất sắc cho nghiệp vụ khó + Đủ dùng cho bóc tách PII"
+          ]
+        },
+        {
+          "criterion": "Tuân thủ NĐ 13/2023 & Luật 91/2025 cho dữ liệu Điều 2.4",
+          "values": [
+            "Rất cao — Dữ liệu nằm gọn tại máy nội bộ",
+            "Tuyệt đối — Không gói tin nào rời IDC Việt Nam",
+            "Trung bình — Phải làm DPIA/TIA đầy đủ & không chứa PII nhạy cảm",
+            "Rất cao — Bệnh án, lương, CCCD khóa 100% ở Node nội địa VN"
+          ],
+          "winnerNote": "Hybrid giữ 0 byte dữ liệu nhạy cảm rời biên giới"
+        },
+        {
+          "criterion": "Gánh nặng bảo trì kỹ thuật & nâng cấp model",
+          "values": [
+            "Thấp cho cá nhân; thiếu HA cho toàn công ty",
+            "Cao — Tự vá CUDA, PyTorch container và thay phần cứng lỗi",
+            "Gần như bằng 0 — Đổi model ID qua API Gateway trong 1 phút",
+            "Thấp — Node Local cố định ổn định cho bóc tách/OCR/SLM"
+          ]
+        }
+      ],
+      "footnote": "Đơn giá API tham khảo mức giá chuẩn Q4/2026: Gemini 3.8 Flash ($0.75 in / $3.75 out intro), Gemini 3.5 Flash-Lite ($0.30 / $2.50), Claude Sonnet 5.5 ($2.00 / $10.00), GPT-5.6 Terra ($2.00 / $12.00)."
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-tco-24-thang-va-pagedattention-vs-ollama",
+      "eyebrow": "TOÁN HỌC TCO & KỸ THUẬT SUY LUẬN • ĐỪNG NHẦM WORKSTATION VỚI DATA CENTER",
+      "variant": "deep-dive",
+      "heading": "Khi nào Ollama gãy nhịp trước vLLM PagedAttention, và phép tính điểm hòa vốn 1,3 tỷ token/tháng",
+      "paragraphs": [
+        "Sai lầm phổ biến nhất của các đội IT khi thử nghiệm Private LLM là đánh đồng tốc độ thử nghiệm của một người ngồi trước `ollama/ollama` với năng lực chịu tải của một tổ chức 80–200 nhân sự. Nhờ đóng gói gọn gàng trên lõi Go và `llama.cpp`, Ollama biến việc chạy mô hình GGUF trên máy trạm (như các trạm Local LLM nội bộ cho nghiệp vụ ít đồng thời) thành chuyện vài dòng lệnh. Nhưng về mặt giải thuật, Ollama dùng cơ chế cấp phát slot KV Cache tĩnh (`OLLAMA_NUM_PARALLEL`): nếu một nhân sự gửi tài liệu PDF dài 16K token để tóm tắt, bộ nhớ VRAM bị chiếm cứng và nhiều yêu cầu đến sau phải xếp hàng chờ đợi. Ngược lại, `vllm-project/vllm` dùng kiến trúc PagedAttention chia nhỏ bộ nhớ KV Cache thành từng trang ảo không liền kề giống bộ nhớ ảo của hệ điều hành, kết hợp Continuous Batching ở từng vòng lặp giải mã token và Prefix Caching cho System Prompt dùng chung. Thử nghiệm thực tế ở mức 32 luồng hội thoại đồng thời cho thấy vLLM đạt thông lượng token mỗi giây (TPS) cao gấp 3,8 lần so với cấu hình mặc định trên cùng phần cứng GPU.",
+        "Tuy nhiên, sở hữu một cụm vLLM chạy trơn tru cho mô hình trọng số đủ lớn (từ 32B–70B FP8 trở lên để xử lý tiếng Việt tài chính/pháp chế không bị ngô nghê) kéo theo hóa đơn CAPEX và OPEX không hề nhỏ. Một cấu hình máy chủ 2x GPU cấp trung tâm dữ liệu kèm RAM ECC tốc độ cao và hệ thống lưu trữ NVMe tối thiểu đã ngốn từ 850 triệu đến 1,4 tỷ đồng; cộng thêm phí thuê tủ rack, điện năng và làm mát tại Data Center chuẩn Tier 3 trong 24 tháng (~350–450 triệu) cùng nhân sự MLOps kiêm nhiệm vận hành (~250–500 triệu phân bổ), tổng chi phí 24 tháng dễ dàng chạm mốc 1,45–2,35 tỷ đồng chưa kể rủi ro lỗi phần cứng sau bảo hành.",
+        "Khi đem con số đó chia cho biểu giá Cloud API cuối năm 2026 (nơi các model hạng trung như `Gemini 3.8 Flash` ở mức $0.75/$3.75 trên 1 triệu token hoặc `GPT-5.6 Luna` ở mức $0.20/$1.20 và `Claude Haiku 5.5` từ $0.10/$0.50 kèm giảm giá Prompt Cache tới 90%), một doanh nghiệp dùng 250 triệu token/tháng thực chất chỉ tốn khoảng 14–20 triệu đồng tiền API mỗi tháng — tức chưa tới một nửa chi phí điện + khấu hao của máy chủ GPU tự mua! Chỉ khi doanh nghiệp bước qua ngưỡng ~1,2–1,5 tỷ token ổn định mỗi tháng, hoặc rơi vào chế tài cấm tuyệt đối kết nối ra ngoài mạng nội bộ (Air-gapped), đầu tư cụm GPU On-Premise mới thực sự thắng ở bài toán kinh tế."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "duong-cong-tco-24-thang-va-diem-hoa-von",
+      "heading": "Đường cong TCO tích lũy 24 tháng (Triệu VNĐ) theo quy mô lưu lượng từ 50M đến 2.000M token/tháng",
+      "subtitle": "Bao gồm chi phí CAPEX server GPU + Rack IDC + Bảo trì MLOps vs Đơn giá token Cloud ZDR hỗn hợp (70% Lightweight/Midweight + 30% Heavyweight, 50% Cache Hit)",
+      "chart": {
+        "chartType": "line",
+        "title": "Tổng chi phí sở hữu 24 tháng (Triệu VNĐ) theo mức tiêu thụ Token hàng tháng",
+        "subtitle": "Điểm giao cắt hòa vốn giữa Hybrid Split-Routing và Cụm GPU vLLM On-Premise nằm quanh mốc 1.300 triệu token/tháng",
+        "xKey": "monthlyTokens",
+        "yUnit": "tr ₫",
+        "series": [
+          {
+            "key": "cloudZdrOnly",
+            "label": "Cloud ZDR API Thuần (Pay-as-you-go)",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "hybridDomation",
+            "label": "Hybrid Split-Routing (Node VN + ZDR SG)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "onPremVllm",
+            "label": "Full On-Premise GPU Cluster (vLLM)",
+            "color": "#EF4444"
+          }
+        ],
+        "data": [
+          { "monthlyTokens": "50M/tháng", "cloudZdrOnly": 95, "hybridDomation": 275, "onPremVllm": 1480 },
+          { "monthlyTokens": "250M/tháng", "cloudZdrOnly": 410, "hybridDomation": 540, "onPremVllm": 1560 },
+          { "monthlyTokens": "600M/tháng", "cloudZdrOnly": 920, "hybridDomation": 980, "onPremVllm": 1720 },
+          { "monthlyTokens": "1.000M/tháng", "cloudZdrOnly": 1490, "hybridDomation": 1420, "onPremVllm": 1890 },
+          { "monthlyTokens": "1.300M/tháng", "cloudZdrOnly": 1910, "hybridDomation": 1760, "onPremVllm": 1980 },
+          { "monthlyTokens": "2.000M/tháng", "cloudZdrOnly": 2880, "hybridDomation": 2480, "onPremVllm": 2210 }
+        ],
+        "kpis": [
+          {
+            "label": "Ngưỡng hòa vốn cụm GPU",
+            "value": "~1,3 tỷ/tháng",
+            "delta": "Tương đương ~43M token/ngày",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm Hybrid ở 250M/th",
+            "value": "-65% vs vLLM",
+            "delta": "540 tr vs 1.560 tr (24T)",
+            "positive": true
+          },
+          {
+            "label": "Chi phí cố định 24T On-Prem",
+            "value": "~1,48 tỷ ₫",
+            "delta": "Kể cả khi không có truy cập",
+            "positive": false
+          },
+          {
+            "label": "Khấu hao phần cứng trễ",
+            "value": "24–36 tháng",
+            "delta": "Rủi ro GPU lỗi thời nhanh",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Mô hình tính TCO tại DOMATION Infrastructure Lab (Q4/2026): giả định tỷ lệ input:output 4:1, Prompt Caching hit 50%, chi phí 1 node Local PII/SLM tầm trung ~180 tr/24 tháng và cụm vLLM 2x–4x Enterprise GPU + rack VN IDC + MLOps ~1,48 tỷ cơ sở."
+      },
+      "insightSummary": "Ở vùng lưu lượng phổ biến của hầu hết SME và doanh nghiệp vừa Việt Nam (50M đến 600M token mỗi tháng), phương án mua cụm server GPU On-Premise đắt gấp 1,7 đến 5,3 lần so với kiến trúc Hybrid Split-Routing. Chỉ khi vượt mốc 1,3 tỷ token/tháng — tương ứng hàng trăm nghìn lượt hỏi đáp phức tạp mỗi ngày — biểu đồ đường đỏ của cụm vLLM mới cắt xuống dưới để sinh lợi kinh tế."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-tco-private-llm-vs-cloud-api",
+      "src": "/imgs/boost/charts/on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds-report.webp",
+      "alt": "Báo cáo phân tích TCO 24 tháng on-prem private llm vs cloud api doanh nghiệp cho ngành Y tế, Tài chính và Bất động sản",
+      "caption": "So sánh tổng chi phí sở hữu 24 tháng, điểm hòa vốn token và kiến trúc phân luồng dữ liệu nhạy cảm Hybrid Split-Routing giữa Local vLLM/Ollama và Cloud Frontier ZDR API.",
+      "badge": "TCO & SOVEREIGNTY ARENA"
+    },
+    {
+      "type": "decision-tree",
+      "id": "chon-kien-truc-private-vs-cloud-theo-nganh",
+      "heading": "Khung chọn hạ tầng LLM cho 4 nhóm doanh nghiệp trọng yếu tại Việt Nam",
+      "subtitle": "Kết hợp phân loại dữ liệu theo Luật 91/2025/QH15 với ngưỡng lưu lượng token để ra quyết định đầu tư chính xác",
+      "scenarios": [
+        {
+          "condition": "Chuỗi Nha khoa, Phòng khám Y tế 3–15 cơ sở có bệnh án, X-Quang, đơn thuốc & tổng đài Zalo OA",
+          "recommendedChoice": "Hybrid Split-Routing (Local SLM/Presidio cho Bệnh án + Cloud ZDR cho CSKH công khai)",
+          "rationale": "Bệnh án và hồ sơ sức khỏe là Dữ liệu cá nhân nhạy cảm bậc cao. Toàn bộ bước đọc đơn thuốc, phân tích tiền sử khám và nhắc lịch ZNS xử lý khép kín tại server VN; câu hỏi bảng giá dịch vụ và chăm sóc chung đi qua Cloud ZDR đã che SĐT.",
+          "avoidIf": "Đẩy ảnh phim chụp kèm họ tên, số điện thoại bệnh nhân lên Chatbot hoặc API nước ngoài thiếu che chắn."
+        },
+        {
+          "condition": "Sàn Bất động sản đa đại lý F1 & Doanh nghiệp Giáo dục/B2B (50–300 triệu token/tháng)",
+          "recommendedChoice": "VPS Nội địa (PostgreSQL FORCE RLS + Presidio Gateway) + Cloud Midweight ZDR",
+          "rationale": "Số điện thoại khách VIP và giỏ hàng live khóa chặt tại PostgreSQL Việt Nam. Khi cần trợ lý AI tóm tắt nhu cầu khách hoặc soạn kịch bản tư vấn, PII Gateway đổi SĐT/tên sang token giả trước khi gọi Gemini 3.8 Flash hoặc Sonnet 5.5 vùng Singapore.",
+          "avoidIf": "Chôn hơn 1,5 tỷ mua server GPU khi chưa chạm 300 triệu token/tháng và cần triển khai nhanh trong 1–2 tuần."
+        },
+        {
+          "condition": "Công ty Tài chính, Pháp chế, Kiểm toán xử lý hợp đồng M&A & báo cáo thuế chưa công bố",
+          "recommendedChoice": "Dedicated Private vLLM Cluster tại VN IDC (FP8 32B–70B) cho tài liệu mật",
+          "rationale": "Các văn bản định giá thương vụ hoặc hồ sơ tín dụng chứa thực thể đặc thù không thể tách rời tên đối tác để ẩn danh. Đầu tư node vLLM riêng đặt tại Viettel/CMC IDC kết hợp Docling parser cục bộ đảm bảo không một byte văn bản mật nào ra Internet.",
+          "avoidIf": "Dùng Ollama workstation 1 GPU cho 40 chuyên viên pháp chế truy cập đồng thời gây nghẽn hàng đợi."
+        },
+        {
+          "condition": "Doanh nghiệp quy mô lớn / AI Studio xử lý > 1,5 tỷ token/tháng hoặc chạy Pipeline Batch 24/7",
+          "recommendedChoice": "Dedicated vLLM Cluster + Prefix Caching + Speculative Decoding",
+          "rationale": "Ở lưu lượng trên 1,5 tỷ token/tháng, cụm GPU chuyên dụng có PagedAttention vượt qua điểm hòa vốn TCO, đồng thời kiểm soát trọn vẹn độ trễ ổn định và chi phí cố định theo tháng.",
+          "avoidIf": "Không có đội ngũ MLOps tối thiểu 1–2 kỹ sư phụ trách tối ưu VRAM, giám sát nhiệt độ GPU và sao lưu dự phòng."
+        }
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "bon-thong-so-quyet-dinh-on-prem-vs-cloud",
+      "heading": "Bốn con số chốt hạ trong bài toán lựa chọn On-Premise LLM và Cloud API",
+      "stats": [
+        {
+          "value": "1,3 tỷ",
+          "label": "Ngưỡng token/tháng hòa vốn GPU",
+          "context": "Dưới mốc này, Cloud ZDR + Node Local rẻ hơn hẳn mua cụm vLLM",
+          "trend": "neutral"
+        },
+        {
+          "value": "-62%",
+          "label": "Tiết kiệm TCO 24 tháng của Hybrid",
+          "context": "So với đầu tư cụm 2x–4x GPU ở lưu lượng 250M token/tháng",
+          "trend": "down"
+        },
+        {
+          "value": "3,8x",
+          "label": "Thông lượng vLLM vs Ollama (32 user)",
+          "context": "Nhờ PagedAttention + Continuous Batching thay vì KV Cache tĩnh",
+          "trend": "up"
+        },
+        {
+          "value": "0 byte",
+          "label": "Bệnh án/CCCD thô rời VPC Việt Nam",
+          "context": "Khóa bằng Split-Routing + Presidio PII Gateway trước bước suy luận",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-on-prem-vs-cloud",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng mua GPU vì tin đồn — hãy phân loại dữ liệu theo Luật 91/2025 rồi định tuyến thông minh qua AI Gateway",
+      "body": "Từ kinh nghiệm dựng trạm Local LLM cho NavaTek đến hạ tầng bảo mật bệnh án Nha khoa Flora, ImplantSwiss và AI 3D CAD INKICA, tôi luôn khuyên ban giám đốc nhìn thẳng vào hai bảng tính: bảng phân loại dữ liệu mật và bảng lưu lượng token thực tế hàng tháng. Hãy giữ 100% cơ sở dữ liệu khách hàng, chứng từ tài chính và bệnh án trong VPC tại Việt Nam; dùng node Local SLM cho những hồ sơ tuyệt đối không thể che danh tính; và tận dụng sức mạnh suy luận sắc bén của các mô hình Cloud vùng Singapore đã ký ZDR qua Gateway che PII cho các tác vụ còn lại. Đó là cách vừa tiết kiệm hàng tỷ đồng tiền phần cứng vừa đứng vững trước mọi cuộc kiểm toán."
+    }
+  ]
+}

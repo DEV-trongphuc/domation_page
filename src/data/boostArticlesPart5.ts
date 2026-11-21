@@ -1658,4 +1658,250 @@ export const BOOST_ARTICLES_PART_5: BoostArticle[] = [
       },
     ],
   },
+  {
+    id: 'art-75',
+    number: '75',
+    slug: 'huynh-trong-phuc-turniodev-founder-ceo-domation-chuyen-gia-ai-automation-digital-marketing',
+    title:
+      'Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION: Chuyên Gia AI Automation, Digital Marketing & Kiến Trúc 35+ Hệ Thống Từ A–Z',
+    seoTitle: 'Huỳnh Trọng Phúc (TurnioDEV) | Founder & CEO DOMATION • AI Automation',
+    metaDescription:
+      'Hồ sơ chuyên gia Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION, Chuyên gia AI Automation, Digital Marketing (ROAS 4.8x–8.2x) & Kiến trúc sư 35+ hệ thống từ A–Z.',
+    focusKeyword: 'Huỳnh Trọng Phúc TurnioDEV Founder CEO DOMATION',
+    secondaryKeywords: [
+      'Portfolio TurnioDEV',
+      'Huỳnh Trọng Phúc chuyên gia AI Automation',
+      'Huỳnh Trọng Phúc chuyên gia Digital Marketing',
+      'Founder CEO DOMATION',
+      'xây dựng hệ thống doanh nghiệp từ A-Z',
+      'Turnio DEV MarTech Việt Nam',
+    ],
+    pillar: 'multi-agent-ai',
+    pillarLabel: 'Chân Dung Kiến Trúc Sư & Multi-Agent AI',
+    industry: 'AI Automation • Digital Marketing • Enterprise OS',
+    searchIntent: 'Informational',
+    readingMinutes: 9,
+    publishedAt: '2026-11-21',
+    updatedAt: '2026-11-21',
+    coverImage: '/landingpage_avatar/portfolio.webp',
+    coverAlt:
+      'Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION, Chuyên gia AI Automation & Digital Marketing',
+    screenshotImage: '/imgs/enterprise/hero-domation-hub.webp',
+    screenshotCaption:
+      'Hệ sinh thái DOMATION Enterprise OS & Portfolio TurnioDEV (portfo-turnio.vercel.app) — 35+ hệ thống thực chiến từ A–Z.',
+    tldrSummary:
+      'Huỳnh Trọng Phúc (TurnioDEV / Turnio DEV) là Founder & CEO Công Ty TNHH DOMATION Việt Nam, Chuyên Gia AI Automation, Chuyên Gia Digital Marketing & MarTech, và Kiến Trúc Sư Phần Mềm Fullstack trực tiếp tham gia xây dựng 35+ hệ thống doanh nghiệp từ A–Z cho 30+ thương hiệu lớn (Capital House EcoLife Signature 3D, INKICA AI 208 SKU, Viện IDEAS ERP 5.0, Phúc Lộc Thọ 30+ cửa hàng, Tập đoàn Ampersand, En Group, Nha khoa Flora, RichLand, NavaTek). Anh xử lý hơn 150,000+ Leads thực tế, tối ưu chiến dịch đạt ROAS 4.8x–8.2x và là tác giả cuốn sách "Facebook Ads: AI Chạy Không Được" (154 trang).',
+    keyTakeaways: [
+      'Giao thoa hiếm có giữa 3 năng lực lõi: Digital Marketing thực chiến + Kỹ nghệ phần mềm Fullstack từ A–Z + AI Automation & Multi-Agent.',
+      'Đã bàn giao 35+ hệ thống App, Web 3D, CRM 360°, ERP 5.0 (12 phân hệ), Meta CAPI & AI Studio cho 30+ doanh nghiệp đa ngành.',
+      'Portfolio chính thức tại https://portfo-turnio.vercel.app/ và hồ sơ dự án doanh nghiệp tại https://domation.net/portfolio.',
+      'Tác giả sách 154 trang "Facebook Ads: AI Chạy Không Được" (500+ doanh nghiệp đọc), 8 chứng chỉ xác thực (FreeCodeCamp, F8, TOP CV) và cộng đồng 10.5K+ followers.',
+    ],
+    painPoints: [
+      {
+        title: 'Khoảng trống đứt gãy giữa đội chạy Digital Marketing và đội lập trình Phần mềm',
+        detail:
+          'Phần lớn doanh nghiệp thuê đội Ads riêng, đội Web riêng và đội ERP riêng dẫn tới lead về không đo được ROAS thật, dữ liệu khách hàng thất thoát và không ai chịu trách nhiệm doanh thu cuối cùng.',
+        impactMetric: 'Thất thoát 30%–45% ngân sách quảng cáo & Lead nguội',
+      },
+      {
+        title: 'Áp dụng AI rời rạc theo phong trào, không gắn vào luồng dữ liệu & doanh thu thật',
+        detail:
+          'Chatbot AI không nối CRM/ERP, không phân quyền theo phòng ban, dễ bịa giá và không kích hoạt được hành động chia số hay chăm sóc tự động.',
+        impactMetric: '0% tác động lên doanh số & tốn thời gian kiểm soát thủ công',
+      },
+    ],
+    implementationChallenges: [
+      {
+        challenge: 'Kết nối liền mạch từ chiến dịch Digital Marketing (Meta/Google Ads) xuống tận hạ tầng vận hành ERP/CRM & Kế toán',
+        rootCause:
+          'Người làm Marketing thường thiếu chiều sâu kiến trúc Database/API/RLS, còn kỹ sư phần mềm thuần túy lại không am hiểu cơ chế đấu giá thầu Meta CAPI, Creative Hook Rate và tâm lý chốt Sale.',
+        domationFix:
+          'Huỳnh Trọng Phúc (TurnioDEV) trực tiếp đứng ở giao điểm MarTech × Fullstack × AI Automation: thiết kế khép kín từ điểm chạm Web 3D/Landing Page, GTM Server-Side, Auto Chia Data ZaloBot < 4s, CRM 360° MISA cho tới bắn ngược Meta CAPI SHA-256.',
+      },
+    ],
+    solutionSteps: [
+      {
+        step: '01',
+        title: 'Giai đoạn 2019–2022: Nền Tảng Digital Marketing & Fullstack Engineering',
+        detail:
+          'Tốt nghiệp QTKD – Marketing ĐH Ngân hàng TP.HCM (BUH), sở hữu 8 chứng chỉ chuyên môn (FreeCodeCamp, F8 Fullstack, TOP CV SEO & JS Top 20%), điều hành >1.2 tỷ VNĐ ngân sách F&B Ads, bàn giao hợp đồng VITRAC 136.4M và xuất bản sách 154 trang "Facebook Ads: AI Chạy Không Được".',
+        techStack: 'Performance Ads • Technical SEO • React • Node.js',
+      },
+      {
+        step: '02',
+        title: 'Giai đoạn 2023–2024: Kiến Trúc MarTech, Server-Side Tracking & Auto Data Router',
+        detail:
+          'Xây dựng Router chia data đa kênh < 4 giây và GTM Server-Side trên Cloudflare Workers; đồng hành giúp Viện IDEAS tăng +300% quy mô MBA (-30% CPA, 12,600+ Leads) và chuỗi Phúc Lộc Thọ mở rộng 20+ cửa hàng nhượng quyền (1,600+ Leads, ROAS 5+).',
+        techStack: 'Meta CAPI • Cloudflare Workers • ZaloBot • Zalo Mini App',
+      },
+      {
+        step: '03',
+        title: 'Giai đoạn 2025–2026+: Founder & CEO DOMATION • Tổng Thầu Hệ Thống AI Automation A–Z',
+        detail:
+          'Sáng lập Công Ty TNHH DOMATION Việt Nam phát triển hệ sinh thái 18 phân hệ (AutoData SaaS, ERP 5.0 12 phân hệ, DomMeta BI, DOM Agent 80 tools), kiến trúc sư Fullstack INKICA AI POD 208 SKU 3D CAD (20+ ONNX Models) và tổng thầu số hóa 7 trụ cột dự án EcoLife Signature (Capital House, đỉnh ROAS 8.2x).',
+        techStack: 'ERP 5.0 • Multi-Agent RAG • PostgreSQL RLS • Three.js 3D • ONNX',
+      },
+    ],
+    sections: [
+      {
+        id: 'triet-ly-xay-dung-he-thong-turniodev',
+        heading: 'Triết lý thực chiến của Huỳnh Trọng Phúc (TurnioDEV): Chống thất thoát dữ liệu & Làm chủ hệ thống',
+        paragraphs: [
+          'Khác với mô hình tư vấn lý thuyết, mọi kiến trúc trong hệ sinh thái DOMATION và Portfolio TurnioDEV (https://portfo-turnio.vercel.app/) đều xuất phát từ nỗi đau vận hành có thật khi Huỳnh Trọng Phúc trực tiếp điều hành ngân sách quảng cáo 500 triệu/tháng và tự tay lập trình hệ thống từ dòng code đầu tiên đến lúc Go-live.',
+          'Trên toàn bộ 35+ sản phẩm đã triển khai — từ AI Prepress 300 DPI tại INKICA, hệ thống Affiliate KOL VietQR ACB cho Nha khoa Flora, trạm AI Local LLM cho NavaTek đến hệ sinh thái đa tenant DOMATION — anh kiên định với kỷ luật Empirical Ground Truth (mọi số liệu phải đối soát trên dữ liệu thật) và Zero-Deceptive-Fallback.',
+        ],
+        bullets: [
+          'Portfolio chính thức TurnioDEV: https://portfo-turnio.vercel.app/ (tích hợp Turnio AI RAG Vector 768-dim & 18 bài viết thực chiến).',
+          'Hệ sinh thái doanh nghiệp DOMATION: https://domation.net/ và Hồ sơ dự án https://domation.net/portfolio.',
+          'Kết nối trực tiếp Founder & CEO Huỳnh Trọng Phúc: Zalo/Hotline 0378.859.736 • LinkedIn linkedin.com/in/turnio-dev • Email turniodev@gmail.com.',
+        ],
+      },
+    ],
+    metricsOutcome: [
+      { label: 'Hệ thống xây dựng từ A–Z', value: '35+ App/Web/AI Systems' },
+      { label: 'Doanh nghiệp đồng hành', value: '30+ Thương hiệu lớn' },
+      { label: 'Lưu lượng Lead thực chiến', value: '150,000+ Leads' },
+      { label: 'Hiệu suất Digital Marketing', value: 'ROAS 4.8x – 8.2x' },
+    ],
+    relatedPortfolioId: 'turnio-executive-portal',
+    relatedModuleUrl: '/portfolio',
+    relatedModuleLabel: 'Xem Toàn Bộ Portfolio & Case Study A–Z',
+    faqs: [
+      {
+        question: 'Huỳnh Trọng Phúc (TurnioDEV) là ai và đảm nhiệm vai trò gì tại DOMATION?',
+        answer:
+          'Huỳnh Trọng Phúc (nghệ danh TurnioDEV / TURNIO) là Founder & CEO Công Ty TNHH DOMATION Việt Nam, đồng thời là Chuyên Gia AI Automation, Chuyên Gia Digital Marketing & MarTech và Kiến Trúc Sư Hệ Thống Fullstack với 35+ hệ thống thực chiến đã bàn giao cho 30+ doanh nghiệp.',
+      },
+      {
+        question: 'Có thể xem Portfolio chi tiết và liên hệ trực tiếp Huỳnh Trọng Phúc (TurnioDEV) ở đâu?',
+        answer:
+          'Bạn có thể xem Portfolio cá nhân đầy đủ của TurnioDEV tại https://portfo-turnio.vercel.app/, xem Case Study doanh nghiệp tại https://domation.net/portfolio, hoặc kết nối trực tiếp qua Zalo 0378.859.736, Email turniodev@gmail.com và LinkedIn https://www.linkedin.com/in/turnio-dev/.',
+      },
+    ],
+  },
+  {
+    id: 'art-76',
+    number: '76',
+    slug: 'kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev',
+    title:
+      'Kinh Nghiệm Xây Dựng Hệ Thống Doanh Nghiệp Từ A–Z: Blueprint AI Automation, CRM/ERP & Digital Marketing Của TurnioDEV',
+    seoTitle: 'Kinh Nghiệm Xây Dựng Hệ Thống Từ A–Z | TurnioDEV • DOMATION',
+    metaDescription:
+      'Đúc kết kinh nghiệm tham gia xây dựng 35+ hệ thống doanh nghiệp từ A–Z của Huỳnh Trọng Phúc (TurnioDEV): kiến trúc DB RLS, Auto Data CAPI, ERP 5.0 & AI Automation.',
+    focusKeyword: 'kinh nghiệm xây dựng hệ thống doanh nghiệp từ A-Z',
+    secondaryKeywords: [
+      'tham gia xây dựng hệ thống từ A-Z',
+      'chuyên gia AI Automation Việt Nam',
+      'kiến trúc sư hệ thống TurnioDEV',
+      'Huỳnh Trọng Phúc xây dựng ERP CRM',
+      'chuyên gia Digital Marketing MarTech',
+      'blueprint xây dựng hệ thống DOMATION',
+    ],
+    pillar: 'erp-operations',
+    pillarLabel: 'Kiến Trúc Hệ Thống Từ A–Z & ERP 5.0',
+    industry: 'Enterprise Architecture • AI Automation • MarTech',
+    searchIntent: 'Informational',
+    readingMinutes: 10,
+    publishedAt: '2026-11-21',
+    updatedAt: '2026-11-21',
+    coverImage: '/imgs/enterprise/sol-multi-agent.webp',
+    coverAlt:
+      'Blueprint xây dựng hệ thống doanh nghiệp từ A-Z kết hợp AI Automation và Digital Marketing bởi TurnioDEV',
+    screenshotImage: '/imgs/erp-screens/dashboard-lead.webp',
+    screenshotCaption:
+      'Kiến trúc trục dữ liệu hợp nhất từ Digital Marketing Ads đến CRM/ERP 5.0 & AI Agent do Huỳnh Trọng Phúc (TurnioDEV) thiết kế.',
+    tldrSummary:
+      'Xây dựng một hệ thống phần mềm doanh nghiệp thành công từ A–Z không bắt đầu từ việc chọn ngôn ngữ lập trình, mà bắt đầu từ bài toán dòng tiền, tốc độ xử lý Lead và nút thắt phê duyệt giữa các phòng ban. Bài viết đúc kết quy trình 6 bước thực chiến của Huỳnh Trọng Phúc (TurnioDEV — Founder & CEO DOMATION) qua hơn 35 hệ thống vận hành thật tại Capital House, INKICA AI, IDEAS Business, Phúc Lộc Thọ, Nha khoa Flora và RichLand.',
+    keyTakeaways: [
+      'Bước 1–2: Luôn bắt đầu từ Audit quy trình thực tế & bài toán P&L/ROAS trước khi vẽ ERD Database (chuẩn Multi-Tenant RLS chống rò rỉ chéo).',
+      'Bước 3–4: Hợp nhất điểm chạm Digital Marketing (Web 3D, Tracking, Meta CAPI SHA-256) trực tiếp vào lõi Auto Chia Data & CRM/ERP 5.0 thay vì chắp vá thủ công.',
+      'Bước 5–6: Tích hợp AI Automation (Multi-Agent RAG, AI Pre-Score, Computer Vision) có hàng rào phân quyền RBAC/Department-ACL và kiểm chứng bằng dữ liệu thật trước Go-live.',
+    ],
+    painPoints: [
+      {
+        title: 'Viết phần mềm xong nhân sự không chịu dùng vì thao tác nặng hơn Excel',
+        detail:
+          'Hệ thống thiết kế xa rời thói quen thực tế của đội Sale, HR và Kế toán, thiếu thông báo tức thời qua Zalo/Telegram khiến dữ liệu nhanh chóng bị bỏ hoang.',
+        impactMetric: '70% dự án phần mềm đóng gói bị đắp chiếu sau 6 tháng',
+      },
+      {
+        title: 'Hệ thống sập hoặc rò rỉ dữ liệu khách hàng khi mở rộng đa chi nhánh / đại lý',
+        detail:
+          'Không thiết kế khóa ngoại hợp chất và Row-Level Security (RLS) ngay từ đầu dẫn đến phình chi phí sửa lỗi và rủi ro lộ SĐT giữa các đại lý F1.',
+        impactMetric: 'Mất niềm tin đối tác phân phối & chi phí viết lại gấp 3 lần',
+      },
+    ],
+    implementationChallenges: [
+      {
+        challenge: 'Làm thế nào để vừa triển khai nhanh (2–4 tuần), vừa đáp ứng quy trình riêng của từng doanh nghiệp mà vẫn đạt độ ổn định Enterprise?',
+        rootCause:
+          'Xây mới hoàn toàn từ số 0 tốn 6–12 tháng, còn dùng SaaS đóng gói lại bị trói cứng quy trình và không kết nối sâu được Meta CAPI, ZaloBot hay MISA.',
+        domationFix:
+          'TurnioDEV xây dựng lõi DOMATION Enterprise OS có sẵn 12 phân hệ chuẩn hóa (PostgreSQL FORCE RLS, 4-tier RBAC, Event Bus, Webhook HMAC, Meta CAPI v21, Payroll Engine) rồi may đo linh hoạt theo sơ đồ tổ chức của từng khách hàng.',
+      },
+    ],
+    solutionSteps: [
+      {
+        step: '01',
+        title: 'Khảo Sát Dòng Tiền, Phễu Digital Marketing & Nút Thắt Vận Hành',
+        detail: 'Đo chính xác điểm rớt Lead, độ trễ phản hồi Sale, tỷ lệ sai lệch công lương và điểm đứt gãy giữa Ads — CRM — Kế toán.',
+        techStack: 'Process Audit • P&L & ROAS Mapping',
+      },
+      {
+        step: '02',
+        title: 'Thiết Kế Kiến Trúc Dữ Liệu Bảo Mật & Multi-Tenant RLS Ngay Từ Ngày 1',
+        detail: 'Chuẩn hóa sơ đồ bảng PostgreSQL/MariaDB với FORCE ROW LEVEL SECURITY, AES-256-GCM Vault cho Token bên thứ ba và Audit Log bất biến.',
+        techStack: 'PostgreSQL RLS • AES-256-GCM • Event Sourcing',
+      },
+      {
+        step: '03',
+        title: 'Hợp Nhất Mặt Tiền Web/3D, Meta CAPI & Bộ Máy Auto Chia Data + ERP 5.0',
+        detail: 'Nối thẳng Form Web/Meta/TikTok vào Router chia vòng ZaloBot < 4s, CRM Pipeline 9 nấc, chấm công GPS AI, phê duyệt PO và bắn ngược CAPI HTTP 200.',
+        techStack: 'React 19 • Node.js • Meta CAPI • ZaloBot • MISA',
+      },
+      {
+        step: '04',
+        title: 'Cắm Lớp AI Automation, Multi-Agent RAG & Kiểm Chứng Empirical Ground Truth',
+        detail: 'Triển khai trợ lý AI theo từng phòng ban (Department-ACL RAG), kiểm thử tự động E2E toàn luồng, đào tạo đội ngũ và bàn giao làm chủ hoàn toàn.',
+        techStack: 'Gemini RAG • Multi-Agent Orchestrator • E2E QA',
+      },
+    ],
+    sections: [
+      {
+        id: 'kinh-nghiem-thuc-chien-da-nganh-turniodev',
+        heading: 'Bài học cốt lõi từ 35+ hệ thống thực chiến đa ngành của Huỳnh Trọng Phúc (TurnioDEV)',
+        paragraphs: [
+          'Qua quá trình trực tiếp làm Solution Architect và xây dựng trọn gói từ A–Z cho Bất động sản (Capital House, RichLand), Giáo dục (IDEAS Business), Chuỗi F&B 30+ cửa hàng (Phúc Lộc Thọ, Ampersand, En Group), Nha khoa (Flora) và AI POD toàn cầu (INKICA 208 SKU 3D), bài học lớn nhất là: Công nghệ phải phục vụ tăng trưởng đo được bằng tiền thật.',
+          'Khi tư duy của một Chuyên gia Digital Marketing gặp kỷ luật của một Kỹ sư Hệ thống Fullstack & AI Automation, doanh nghiệp không chỉ có một phần mềm đẹp mắt mà sở hữu một "cỗ máy tăng trưởng khép kín" tự học, tự tối ưu chi phí Ads và tự vận hành 24/7.',
+        ],
+        bullets: [
+          'Không hardcode nghiệp vụ: mọi hạn mức SLA, công thức KPI, quy trình duyệt và ngôn ngữ ngành nghề đều cấu hình động.',
+          'Bảo mật là nền móng (Fail-Closed): phân quyền đến từng màn hình, từng trường SĐT (PII Masking) và cô lập dữ liệu từng phòng ban.',
+          'Khám phá thêm 18 bài viết kỹ thuật & bản đồ 35+ dự án tại Portfolio TurnioDEV: https://portfo-turnio.vercel.app/.',
+        ],
+      },
+    ],
+    metricsOutcome: [
+      { label: 'Thời gian Go-live lõi hệ thống', value: '2 – 4 tuần' },
+      { label: 'Giảm tác vụ lặp thủ công', value: '-76% (~140h/tháng)' },
+      { label: 'Độ ổn định Webhook & SLA', value: '99.94% Uptime' },
+      { label: 'Cải thiện hiệu quả chuyển đổi', value: '+34% tỷ lệ chốt' },
+    ],
+    relatedPortfolioId: 'ideas-business',
+    relatedModuleUrl: '/portfolio',
+    relatedModuleLabel: 'Xem 10 Case Study A–Z Tại Portfolio DOMATION',
+    faqs: [
+      {
+        question: 'Huỳnh Trọng Phúc (TurnioDEV) có trực tiếp tham gia khảo sát và thiết kế kiến trúc hệ thống cho doanh nghiệp không?',
+        answer:
+          'Có. Với các dự án Bespoke Enterprise ERP 5.0, CRM 360°, AI Automation hoặc hệ sinh thái Digital Marketing khép kín, Founder & CEO Huỳnh Trọng Phúc (TurnioDEV) trực tiếp chủ trì khảo sát quy trình, chốt kiến trúc kỹ thuật và đồng hành đến lúc vận hành ổn định.',
+      },
+      {
+        question: 'Doanh nghiệp cần chuẩn bị gì trước khi bắt đầu xây dựng hệ thống từ A–Z cùng DOMATION?',
+        answer:
+          'Chỉ cần sơ đồ phòng ban hiện tại, các file Excel/quy trình đang dùng và mục tiêu tăng trưởng (Lead/Doanh thu/Kiểm soát chi phí). Đội ngũ DOMATION sẽ chuẩn hóa thành bản thiết kế luồng dữ liệu và demo trực quan trong 48 giờ.',
+      },
+    ],
+  },
 ];

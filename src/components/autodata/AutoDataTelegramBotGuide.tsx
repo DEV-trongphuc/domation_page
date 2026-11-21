@@ -12,6 +12,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import type { TelegramIntegrationState } from './autodataTypes';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 
 interface AutoDataTelegramBotGuideProps {
   accessToken: string;
@@ -64,7 +65,7 @@ export function AutoDataTelegramBotGuide({
   const [copiedWebhook, setCopiedWebhook] = useState(false);
 
   const webhookEndpoint =
-    savedTelegram?.webhook_url || 'http://localhost:3100/api/v1/integrations/telegram/webhook';
+    savedTelegram?.webhook_url || 'https://data.domation.net/api/v1/integrations/telegram/webhook';
 
   const handleSaveTelegram = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -240,6 +241,8 @@ export function AutoDataTelegramBotGuide({
           </div>
         ))}
       </div>
+
+      <ZaloSpecialistBanner context="setup" variant="compact" />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Vault Settings + Silent Mode Control */}

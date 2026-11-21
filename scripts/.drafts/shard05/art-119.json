@@ -1,0 +1,338 @@
+{
+  "id": "art-119",
+  "number": "119",
+  "slug": "synthetic-data-test-tai-crm-meta-capi-khong-dung-pii-that",
+  "shardId": "shard05",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "QA, Data Privacy & DevSecOps",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Synthetic Data Generation: Tạo 50.000 Lead giả lập test tải CRM & Meta CAPI mà không đụng PII khách thật",
+  "seoTitle": "Synthetic Data: Test Tải CRM & CAPI Không Lộ PII Thật | DOMATION",
+  "metaDescription": "Cấm kéo database khách hàng thật về máy dev hay staging. Kỹ thuật sinh 50.000 Lead giả lập chuẩn Việt Nam để test tải CRM Round-Robin và Meta CAPI.",
+  "focusKeyword": "synthetic data test crm và meta capi không lộ pii",
+  "secondaryKeywords": [
+    "tạo dữ liệu giả lập tiếng việt",
+    "cấm copy database thật về staging",
+    "stress test chia data zalobot",
+    "kiểm thử meta capi sha-256 an toàn",
+    "bảo mật dữ liệu môi trường dev test"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Cấm Kéo DB Thật Về Staging: Dùng Synthetic Data Test Tải",
+  "thumbnailHook": "Mô phỏng 50.000 Lead test tải Webhook, 0% rủi ro lộ SĐT.",
+  "thumbnailBadge": "PRIVACY • SYNTHETIC DATA",
+  "coverImage": "/imgs/boost/v2/synthetic-data-test-tai-crm-meta-capi-khong-dung-pii-that.webp",
+  "screenshotImage": "/imgs/boost/charts/synthetic-data-test-tai-crm-meta-capi-khong-dung-pii-that-report.webp",
+  "relatedModuleUrl": "/data",
+  "relatedModuleLabel": "Xem Hạ Tầng Auto Data Chịu Tải Cao",
+  "relatedSlugs": [
+    "data-privacy-stack-presidio-audit-che-pii-tieng-viet-truoc-llm",
+    "tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai",
+    "gan-nhan-du-lieu-tieng-viet-active-learning-phan-loai-lead-ticket",
+    "data-clean-room-truoc-khi-dua-ai-vao-doanh-nghiep"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Quy trình sinh 50.000 Lead giả lập bằng Synthetic Data để test tải hệ thống chia data CRM Round-Robin ZaloBot và Meta CAPI SHA-256 không dùng PII khách thật",
+  "screenshotCaption": "Biểu đồ đo độ trễ xử lý từ mức 5.000 lên 50.000 Lead giả lập đồng thời trên hàng đợi AutoData CRM, ZaloBot Round-Robin và cổng kiểm thử Meta CAPI sandbox.",
+  "relatedPortfolioId": "ecolife-signature",
+  "tldrSummary": "Kéo bản sao cơ sở dữ liệu sản xuất về máy dev hoặc staging là nguyên nhân lộ PII phổ biến nhất, vi phạm trực tiếp Nghị định 13/2023/NĐ-CP và dễ đầu độc thuật toán quảng cáo nếu bắn nhầm Meta CAPI thật. Sổ tay này hướng dẫn dựng bộ sinh Synthetic Data có seed cố định tạo 50.000 Lead chuẩn tiếng Việt: giữ nguyên phân phối đầu số nhà mạng, lỗi gõ tay thực tế, tỷ lệ trùng 180 ngày và tham số fbp/fbc để stress-test chia vòng ZaloBot lẫn SHA-256 Meta CAPI với 0% dữ liệu khách thật.",
+  "keyTakeaways": [
+    "Tuyệt đối cấm pg_dump dữ liệu khách hàng thật sang máy cá nhân hay Staging; sử dụng Synthetic Data Generator tái tạo chính xác phân phối thống kê thay vì copy dữ liệu nhạy cảm.",
+    "Bộ sinh dữ liệu giả lập tại Việt Nam phải mô phỏng đúng đầu số 03/05/07/08/09, định dạng nhiễu (+84, 84, thiếu số 0, khoảng trắng) và tỷ lệ trùng SĐT 180 ngày để kiểm tra đúng logic lọc trùng CRM.",
+    "Không dùng dữ liệu gán hằng số (ví dụ toàn bộ số 0900000000) vì cách này làm vô hiệu hóa bài test khóa tranh chấp hàng đợi và sai lệch độ phân tán chỉ mục PostgreSQL B-Tree.",
+    "Mọi yêu cầu kiểm thử Meta Conversions API từ môi trường Staging bắt buộc phải kẹp trường test_event_code ở tầng SDK và bị chặn ở tầng Proxy nếu thiếu mã sandbox.",
+    "Gắn seed ngẫu nhiên cố định theo từng bản build CI/CD giúp đội QA tái hiện chính xác 100% ca nghẽn khóa dòng hoặc lỗi chia lệch Round-Robin sau khi sửa code."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Dữ liệu PII khách thật trên Staging",
+      "value": "0 bản ghi"
+    },
+    {
+      "label": "Tải giả lập kiểm thử CRM & ZaloBot",
+      "value": "50.000 Leads"
+    },
+    {
+      "label": "Tỷ lệ kiểm thử Meta CAPI Sandbox",
+      "value": "99.8% HTTP 200"
+    },
+    {
+      "label": "Thời gian nạp 50k Lead + Index mẫu",
+      "value": "< 42 giây"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao không lấy bản sao database thật rồi chạy lệnh UPDATE che tên và số điện thoại thành chuỗi ngẫu nhiên?",
+      "answer": "Static Data Masking vẫn tiềm ẩn ba rủi ro: bản dump thô phải đi qua mạng trước khi script che kịp chạy, cột ghi chú tự do hay JSON webhook thường sót SĐT/CCCD viết tay, và việc gán số ngẫu nhiên bừa bãi làm mất tỷ lệ trùng lặp có chủ đích (18% trong 180 ngày), khiến bài test không đo được hiệu năng bộ lọc trùng AutoData và chia vòng ZaloBot."
+    },
+    {
+      "question": "Dùng Synthetic Data 100% thì làm sao kiểm thử đúng luồng băm SHA-256 Meta CAPI mà không làm hỏng Pixel thật?",
+      "answer": "Meta CAPI cung cấp cơ chế cô lập qua trường test_event_code trong tab Test Events. Bộ sinh Synthetic Data tạo SĐT thuộc dải kiểm thử hợp lệ cú pháp, tên tiếng Việt UTF-8, email đuôi .test theo chuẩn RFC 2606 cùng _fbp và _fbc đúng quy cách. Khi gửi lên Graph API kèm test_event_code, Meta vẫn xác thực chuẩn băm SHA-256 64 ký tự và trả HTTP 200 mà không ghi vào tập tối ưu quảng cáo thật."
+    },
+    {
+      "question": "Cấu hình thế nào để tránh môi trường Staging bắn nhầm 50.000 Lead giả lập vào Zalo thật của nhân viên Sale?",
+      "answer": "DOMATION cô lập ở tầng cấu hình hạ tầng thay vì phụ thuộc trí nhớ con người: Staging trỏ biến ZALO_WEBHOOK_URL về Mock Webhook Sink nội bộ (hoặc kênh Sandbox QA riêng), còn lớp HTTP Client gọi Meta CAPI sẽ ném ngoại lệ chặn tại chỗ nếu phát hiện APP_ENV khác production mà thiếu test_event_code."
+    },
+    {
+      "question": "Vì sao phải dùng hạt giống ngẫu nhiên cố định (deterministic seed) khi tạo 50.000 Lead giả lập?",
+      "answer": "Nếu bài test tải phát hiện hai Lead trùng nhau cách 8ms gây kẹt khóa vòng chia ZaloBot, việc dùng seed cố định (như 20261118) bảo đảm hai lần chạy trên cùng bản build luôn tạo ra đúng 50.000 dòng giống hệt nhau về độ dài tên, tỷ lệ trùng lặp và thời điểm va chạm để đội QA tái lập lỗi chính xác sau khi vá code."
+    },
+    {
+      "question": "Nghị định 13/2023/NĐ-CP quy định ra sao về dùng dữ liệu thật trong môi trường phát triển và kiểm thử?",
+      "answer": "Nghị định 13/2023/NĐ-CP xếp SĐT, họ tên, email vào dữ liệu cá nhân cơ bản, còn CCCD và tài chính thuộc nhóm nhạy cảm; doanh nghiệp chỉ được xử lý đúng mục đích đã thông báo. Sao chép database thật về laptop dev hay server staging tiềm ẩn rủi ro pháp lý nặng nếu rò rỉ, nên chuyển hoàn toàn sang Synthetic Data giúp đạt chuẩn tuân thủ ngay từ kiến trúc."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "hiem-hoa-tu-lenh-pg-dump-ve-may-dev",
+      "eyebrow": "Sổ Tay Kỹ Thuật DevSecOps • Quy Chuẩn Kiểm Thử Không PII",
+      "variant": "narrative",
+      "heading": "Khi một file backup pg_dump 48.000 số điện thoại nằm gọn trong thư mục Downloads của thực tập sinh",
+      "pullQuote": "Dữ liệu khách hàng thật không được sinh ra để làm nhiên liệu cho môi trường Staging; mọi lỗi bảo mật tồi tệ nhất thường bắt đầu từ câu nói quen thuộc: 'Cho anh kéo tạm DB thật về test cho giống thực tế'.",
+      "paragraphs": [
+        "Trước mỗi đợt mở bán bất động sản hoặc flash sale chuỗi bán lẻ, câu hỏi đầu tiên của đội kỹ thuật là hệ thống chia Lead ZaloBot và đường ống Meta CAPI có trụ vững khi lưu lượng tăng gấp mười lần hay không. Muốn kiểm chứng ở quy mô 50.000 Lead đổ về liên tiếp, đội QA cần tập dữ liệu đủ phức tạp để ép PostgreSQL bộc lộ nghẽn khóa dòng, tràn kết nối Redis hoặc sai lệch bộ lọc trùng.",
+        "Thế nhưng nhiều đội dev lại chọn đường tắt nguy hiểm nhất: chạy `pg_dump` kéo cơ sở dữ liệu khách hàng thật từ Production về máy cá nhân hoặc server Staging. Chỉ một phút bất cẩn gửi file qua nhóm chat hoặc quên xóa ổ đĩa sau khi nghỉ việc, hàng chục nghìn số điện thoại khách mua nhà, lịch sử cọc và thông tin tài chính lập tức bị phơi bày, vi phạm trực tiếp Nghị định 13/2023/NĐ-CP.",
+        "Tai hại hơn, nếu worker trên môi trường test đọc nhầm biến cấu hình và bắn 50.000 sự kiện QualifiedLead hay Purchase giả lên Pixel thật của Facebook, thuật toán quảng cáo sẽ bị đầu độc suốt nhiều tuần. Cách duy nhất để kiểm thử tải sát thực tế 99% với 0% rủi ro lộ PII là vận hành nhà máy sinh Synthetic Data chuyên biệt cho thị trường Việt Nam."
+      ],
+      "bullets": [
+        "Cấm tuyệt đối thao tác kéo bản sao dữ liệu khách thật sang môi trường dev, QA và staging.",
+        "Giữ nguyên phân phối thống kê tiếng Việt (đầu số nhà mạng, tỷ lệ trùng 180 ngày, lỗi nhập tay) để test tải phản ánh đúng thực tế.",
+        "Chặn hoàn toàn nguy cơ môi trường thử nghiệm gửi tin nhắn Zalo thật hay làm nhiễu tập tối ưu Meta CAPI."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "nam-pha-van-hanh-synthetic-data-pipeline",
+      "heading": "Quy trình 5 pha dựng nhà máy sinh 50.000 Lead giả lập để stress-test CRM & Meta CAPI",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "PHA 01 • SCHEMA PROFILING",
+          "title": "Đọc phân phối thống kê ẩn danh từ Production",
+          "detail": "Chỉ trích xuất tỷ lệ tổng hợp không chạm PII: tỷ trọng nguồn Lead (Meta Form vs Web 3D/Zalo), phân bổ 3 sàn đại lý F1, tỷ lệ trùng lặp 180 ngày (14%–22%) và tỷ lệ số lỗi cần bù ticket 1:1.",
+          "metricOrTool": "PostgreSQL Stats • 0 PII Read"
+        },
+        {
+          "tag": "PHA 02 • VN ENTITY SYNTHESIS",
+          "title": "Sinh thực thể chuẩn Việt Nam có Seed cố định",
+          "detail": "Tạo 50.000 hồ sơ với họ tên tiếng Việt đầy đủ dấu xen kẽ không dấu, địa chỉ tỉnh thành và SĐT tuân thủ dải đầu số nhà mạng nhưng nằm trong dải kiểm thử, khóa theo seed cố định để tái hiện chuẩn 100%.",
+          "metricOrTool": "Seeded PRNG • Vietnamese Grammar"
+        },
+        {
+          "tag": "PHA 03 • DIRTY INPUT & DEDUP",
+          "title": "Bơm nhiễu định dạng và tạo sóng va chạm trùng lặp",
+          "detail": "Chuyển 25% số điện thoại sang dạng nhiễu thực tế (+84 90..., thiếu số 0, khoảng trắng) và chèn các cặp bản ghi trùng nhau cách nhau 5–20ms để thử thách khóa PostgreSQL và bộ lọc trùng 180 ngày.",
+          "metricOrTool": "Collision Wave • 18% Duplication"
+        },
+        {
+          "tag": "PHA 04 • K6 BURST LOAD TEST",
+          "title": "Bơm tải tăng dốc vào Webhook CRM & chia vòng ZaloBot",
+          "detail": "Dùng k6 bắn luồng JSON 50.000 Lead từ 20 lên 400 req/s vào API tiếp nhận; đo độ trễ ACK, hàng đợi BullMQ, độ cân bằng chia vòng 3 sàn F1 và tốc độ xử lý bù ticket lỗi.",
+          "metricOrTool": "k6 Stress Runner • BullMQ + Redis"
+        },
+        {
+          "tag": "PHA 05 • META CAPI SANDBOX",
+          "title": "Kiểm chứng SHA-256 và event_id qua test_event_code",
+          "detail": "Kích hoạt chuyển nấc CRM để worker bắn sự kiện QualifiedLead và Purchase sang Meta Graph API kèm test_event_code bắt buộc, đối chiếu HTTP 200 mà không đụng dữ liệu quảng cáo thật.",
+          "metricOrTool": "Graph API Sandbox • SHA-256 Strict"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "ket-qua-stress-test-50000-synthetic-leads",
+      "heading": "Đo lường độ trễ xử lý khi bơm dốc từ 5.000 lên 50.000 Lead giả lập qua CRM & CAPI",
+      "subtitle": "Kiểm thử chịu tải trên cụm Staging tách biệt (Node.js API + PostgreSQL 16 + BullMQ Redis) với bộ dữ liệu Synthetic Seed #20261118.",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ trễ xử lý (ms) theo quy mô lô Lead giả lập & tần suất đẩy đồng thời",
+        "xKey": "batchStage",
+        "yUnit": "ms",
+        "series": [
+          {
+            "key": "webhookAckP95",
+            "label": "API Webhook ACK (P95)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "zaloRoundRobinP95",
+            "label": "Khóa trùng + Chia vòng ZaloBot (P95)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "capiWorkerP95",
+            "label": "Băm SHA-256 & Meta CAPI Sandbox (P95)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "batchStage": "5k (40 req/s)",
+            "webhookAckP95": 34,
+            "zaloRoundRobinP95": 78,
+            "capiWorkerP95": 165
+          },
+          {
+            "batchStage": "10k (80 req/s)",
+            "webhookAckP95": 42,
+            "zaloRoundRobinP95": 96,
+            "capiWorkerP95": 188
+          },
+          {
+            "batchStage": "20k (160 req/s)",
+            "webhookAckP95": 58,
+            "zaloRoundRobinP95": 134,
+            "capiWorkerP95": 225
+          },
+          {
+            "batchStage": "35k (260 req/s)",
+            "webhookAckP95": 76,
+            "zaloRoundRobinP95": 182,
+            "capiWorkerP95": 274
+          },
+          {
+            "batchStage": "50k Burst (380 req/s)",
+            "webhookAckP95": 94,
+            "zaloRoundRobinP95": 238,
+            "capiWorkerP95": 332
+          },
+          {
+            "batchStage": "50k + CAPI Retry Storm",
+            "webhookAckP95": 98,
+            "zaloRoundRobinP95": 254,
+            "capiWorkerP95": 385
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Webhook ACK @ 50k Burst",
+            "value": "94 ms",
+            "delta": "Dưới ngưỡng timeout 3.000 ms",
+            "positive": true
+          },
+          {
+            "label": "Độ lệch chia 3 sàn F1",
+            "value": "0.12%",
+            "delta": "Sau khi bật SKIP LOCKED",
+            "positive": true
+          },
+          {
+            "label": "Trùng SĐT lọt qua khi đua lệnh",
+            "value": "0 ca",
+            "delta": "Thử nghiệm 9.000 cặp va chạm",
+            "positive": true
+          },
+          {
+            "label": "PII khách thật sử dụng",
+            "value": "0%",
+            "delta": "Tuân thủ Nghị định 13/2023",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo kiểm trên cụm DOMATION Staging Runner (4 vCPU API, PostgreSQL 16 4 vCPU, Redis 7, BullMQ Concurrency = 24) dùng tập 50.000 Synthetic Leads."
+      },
+      "insightSummary": "Ngay cả khi đẩy tốc độ lên 380 request/giây kèm kịch bản giả lập bão thử lại Meta CAPI ở mốc 50.000 Lead, thời gian phản hồi cổng nhận Webhook vẫn duy trì ở mức 94–98 ms nhờ kiến trúc đẩy nhanh vào hàng đợi. Bài kiểm thử va chạm đồng thời trên tập dữ liệu giả lập có chủ đích đã phát hiện và xử lý triệt để lỗi tranh chấp con trỏ chia vòng Round-Robin trước khi đưa lên Production."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-test-tai-synthetic-data-crm-capi",
+      "src": "/imgs/boost/charts/synthetic-data-test-tai-crm-meta-capi-khong-dung-pii-that-report.webp",
+      "alt": "Báo cáo stress test 50.000 Lead giả lập bằng Synthetic Data đo độ trễ Webhook CRM, chia vòng ZaloBot và Meta CAPI Sandbox không dùng PII thật",
+      "caption": "Kết quả phân tích hiệu năng khi chạy stress test 50.000 Lead giả lập chuẩn Việt Nam qua cổng AutoData Router, PostgreSQL Dedup 180 ngày và Meta CAPI Sandbox.",
+      "badge": "Playbook Benchmark • 50k Synthetic Load"
+    },
+    {
+      "type": "prose",
+      "id": "ky-thuat-tao-du-lieu-gia-lap-chuan-viet-nam",
+      "eyebrow": "Thiết Kế Chi Tiết Bộ Sinh Thực Thể & Rào Chắn Môi Trường",
+      "variant": "deep-dive",
+      "heading": "Bí quyết làm 50.000 bản ghi giả lập 'đau' đúng chỗ như lưu lượng giờ mở bán thật",
+      "paragraphs": [
+        "Sai lầm phổ biến nhất khi tạo Synthetic Data là sinh 50.000 bản ghi quá 'đẹp': tên dạng User_00001 đến User_50000 và SĐT tăng tuần tự không bao giờ trùng. Thực tế triển khai các chiến dịch lớn như EcoLife Signature hay Rich Land cho thấy dữ liệu từ Meta Lead Ads, TikTok và Web 3D luôn hỗn loạn: cùng một khách có thể nhập `0909 111 222` hôm nay nhưng hôm sau nhập `+84909111222` hoặc thiếu số 0 thành `909111222`. Nếu tập giả lập thiếu biến thể nhiễu này, đội QA sẽ bỏ lọt lỗi hàm chuẩn hóa E.164 và chỉ mục lọc trùng 180 ngày.",
+        "Để mô phỏng đúng áp lực Production, bộ sinh tại DOMATION tách làm ba lớp. Lớp một giữ cú pháp hợp lệ mà không chạm thuê bao thật: ghép họ tên tiếng Việt đầy đủ dấu xen kẽ chuỗi Unicode NFD/NFC, tạo SĐT theo dải đầu số nhà mạng Việt Nam nhưng ép phần đuôi vào dải kiểm thử an toàn, còn email dùng tên miền `.test` theo RFC 2606 để không bao giờ phát sinh thư thật.",
+        "Lớp hai tái tạo phân phối chiến dịch và xung đột dữ liệu: phân bổ nguồn theo trọng số thực tế (55% Meta Form, 25% Web 3D, 12% Zalo OA, 8% QR OOH), gắn `_fbp` và `_fbc` cho 72% hồ sơ, đồng thời cố ý nhân bản 18% số điện thoại với khoảng trễ từ 10ms đến 120 ngày nhằm thử thách khóa dòng PostgreSQL và hàng đợi AutoData.",
+        "Lớp ba khóa rò rỉ đầu ra: Staging ép toàn bộ luồng gửi ZaloBot và ZNS sang Mock Webhook Sink để đo độ cân bằng chia số 3 sàn F1, còn đường gọi Meta Graph API bắt buộc kẹp `test_event_code` để kiểm tra chuẩn băm SHA-256 (`849...` không dấu `+`) mà không chạm Pixel thật."
+      ],
+      "bullets": [
+        "Trộn biến thể Unicode dựng sẵn (NFC) và tổ hợp (NFD) để bắt sớm lỗi so khớp tên tiếng Việt trên iOS/macOS.",
+        "Cài sẵn 8% hồ sơ số thuê bao/sai nhu cầu để kiểm thử tự động luồng báo lỗi và bù ticket 1:1 giữa các đại lý.",
+        "Chạy EXPLAIN ANALYZE sau khi nạp đủ 50.000 bản ghi để chắc chắn truy vấn dedup 180 ngày giữ được Index Scan dưới 5ms."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "bo-sinh-synthetic-lead-va-khoa-meta-capi-sandbox",
+      "heading": "Mã nguồn bộ sinh 50.000 Lead giả lập Việt Nam có Seed cố định và chốt chặn Meta CAPI Sandbox",
+      "language": "TypeScript",
+      "filename": "vn_synthetic_lead_gen.ts & capi_sandbox_guard.ts",
+      "description": "Bộ sinh dữ liệu giả lập xác định theo hạt giống (Mulberry32 PRNG) tái tạo biến thể SĐT Việt Nam, tỷ lệ trùng lặp 18%, tham số _fbp/_fbc và chốt bảo vệ bắt buộc test_event_code trước khi gọi Meta Conversions API.",
+      "code": "// 1) Deterministic PRNG + Bộ sinh Lead giả lập Việt Nam (0% PII thật)\nimport crypto from 'node:crypto';\n\nfunction mulberry32(seed: number) {\n  return function () {\n    let t = (seed += 0x6d2b79f5);\n    t = Math.imul(t ^ (t >>> 15), t | 1);\n    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst LAST_NAMES = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Huỳnh', 'Võ', 'Đặng', 'Bùi'];\nconst MIDDLE_NAMES = ['Văn', 'Thị', 'Minh', 'Gia', 'Thanh', 'Quốc', 'Hoàng', 'Ngọc'];\nconst FIRST_NAMES = ['Anh', 'Bảo', 'Châu', 'Dũng', 'Hương', 'Khang', 'Linh', 'Phúc', 'Vy'];\nconst CARRIER_PREFIXES = ['090', '093', '070', '091', '081', '096', '097', '032', '038'];\n\nexport function generateSyntheticLeads(count = 50000, seed = 20261118) {\n  const rand = mulberry32(seed);\n  const basePhones: string[] = [];\n  const rows = [];\n\n  for (let i = 0; i < count; i++) {\n    // Bơm 18% bản ghi trùng có chủ đích để stress-test bộ lọc trùng 180 ngày & Redis Lock\n    const isDuplicate = i > 100 && rand() < 0.18;\n    const rawCanonicalPhone = isDuplicate\n      ? basePhones[Math.floor(rand() * basePhones.length)]\n      : `${CARRIER_PREFIXES[Math.floor(rand() * CARRIER_PREFIXES.length)]}999${String(i % 10000).padStart(4, '0')}`;\n\n    if (!isDuplicate) basePhones.push(rawCanonicalPhone);\n\n    // Mô phỏng 3 kiểu nhiễu nhập tay thực tế của khách Việt\n    const noiseRoll = rand();\n    const dirtyPhone =\n      noiseRoll < 0.15\n        ? `+84 ${rawCanonicalPhone.slice(1, 4)} ${rawCanonicalPhone.slice(4, 7)} ${rawCanonicalPhone.slice(7)}`\n        : noiseRoll < 0.25\n          ? rawCanonicalPhone.slice(1) // Thiếu số 0 đầu\n          : rawCanonicalPhone;\n\n    const fullName = `${LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)]} ${MIDDLE_NAMES[Math.floor(rand() * MIDDLE_NAMES.length)]} ${FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)]}`;\n    const ts = 1760000000 + i * 3;\n\n    rows.push({\n      external_id: `syn_lead_${seed}_${String(i).padStart(6, '0')}`,\n      full_name: fullName,\n      phone_input: dirtyPhone,\n      email: `qa.synthetic.${i}@domation-sandbox.test`, // Chuẩn RFC 2606 không bao giờ gửi ra ngoài\n      fbp: rand() < 0.78 ? `fb.1.${ts * 1000}.${Math.floor(1e9 + rand() * 8e9)}` : null,\n      fbc: rand() < 0.42 ? `fb.1.${ts * 1000}.IwAR_syn_${i}` : null,\n      source: rand() < 0.6 ? 'meta_instant_form' : 'web_3d_landing',\n    });\n  }\n  return rows;\n}\n\n// 2) Chốt bảo vệ Meta CAPI: cấm Staging bắn thiếu test_event_code & chuẩn hóa SHA-256\nconst sha256Norm = (val: string) =>\n  crypto.createHash('sha256').update(val.trim().toLowerCase()).digest('hex');\n\nexport async function sendCapiSafely(lead: { external_id: string; phone_e164: string; email: string; fbp?: string | null; fbc?: string | null }, eventId: string) {\n  const isProd = process.env.APP_ENV === 'production';\n  const testCode = process.env.META_TEST_EVENT_CODE;\n\n  if (!isProd && (!testCode || !testCode.startsWith('TEST'))) {\n    throw new Error('BLOCKED_CAPI_LEAK: Môi trường phi sản xuất bắt buộc phải có test_event_code hợp lệ!');\n  }\n\n  const capiPhoneDigits = lead.phone_e164.replace(/^\\+/, ''); // +8490... -> 8490...\n  const payload = {\n    data: [{\n      event_name: 'QualifiedLead',\n      event_time: Math.floor(Date.now() / 1000),\n      event_id: eventId,\n      action_source: 'system_generated',\n      user_data: {\n        ph: [sha256Norm(capiPhoneDigits)],\n        em: [sha256Norm(lead.email)],\n        external_id: [sha256Norm(lead.external_id)],\n        ...(lead.fbp ? { fbp: lead.fbp } : {}),\n        ...(lead.fbc ? { fbc: lead.fbc } : {}),\n      },\n    }],\n    ...(testCode ? { test_event_code: testCode } : {}),\n  };\n\n  return fetch(`https://graph.facebook.com/v21.0/${process.env.META_PIXEL_ID}/events?access_token=${process.env.META_CAPI_TOKEN}`, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(payload),\n  });\n}"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "bang-kiem-devsecops-truoc-khi-test-tai-staging",
+      "heading": "Sáu rào chắn DevSecOps bắt buộc trước khi nhấn nút chạy test tải 50.000 Lead",
+      "items": [
+        {
+          "check": "Môi trường Staging sạch 100% dữ liệu Production (Zero Real PII)",
+          "severity": "critical",
+          "verificationHow": "Xác minh pipeline Staging chỉ nhận dữ liệu từ Synthetic Seed và không tồn tại hash SĐT/email trùng khách thật.",
+          "passThreshold": "0 bản ghi khách thật hoặc file pg_dump thô trên dev/staging."
+        },
+        {
+          "check": "Khóa test_event_code bắt buộc cho luồng Meta CAPI phi sản xuất",
+          "severity": "critical",
+          "verificationHow": "Thử chạy worker CAPI trên Staging khi bỏ trống META_TEST_EVENT_CODE.",
+          "passThreshold": "100% request thiếu mã bị chặn tại chỗ; sự kiện test chỉ vào tab Test Events."
+        },
+        {
+          "check": "Cô lập ZaloBot / ZNS / Email Amazon SES sang Mock Sink nội bộ",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra biến ZALO_WEBHOOK_URL và SMTP_HOST trên Staging cùng tên miền giả lập .test.",
+          "passThreshold": "0 tin nhắn ZNS hoặc email test thoát ra mạng thật."
+        },
+        {
+          "check": "Stress test sóng va chạm trùng SĐT đồng thời (Dedup Race)",
+          "severity": "high",
+          "verificationHow": "Dùng k6 bắn hai biến thể nhiễu (+8490... và 090...) của cùng một số cách nhau dưới 15ms.",
+          "passThreshold": "Đúng 1 Lead chia Sale mới; bản ghi thứ hai nhận diện trùng hợp lệ."
+        },
+        {
+          "check": "Đối soát cân bằng Round-Robin và bù ticket 1:1 giữa 3 sàn F1",
+          "severity": "high",
+          "verificationHow": "Tổng hợp phân bổ theo agency_id khi giả lập 8% ticket lỗi trên 50.000 Lead.",
+          "passThreshold": "Độ lệch chia vòng giữa các đại lý sau bù ticket < 0.5%."
+        },
+        {
+          "check": "Dọn dẹp tự động và kiểm tra độ phân mảnh chỉ mục sau test tải",
+          "severity": "recommended",
+          "verificationHow": "Chạy snapshot restore hoặc TRUNCATE có kiểm soát kèm đo kích thước WAL.",
+          "passThreshold": "Staging về trạng thái sạch sẵn sàng cho lượt test mới dưới 60 giây."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-cam-copy-db-that",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Kỷ luật bảo mật dữ liệu khách hàng bắt đầu ngay từ việc cấm kéo DB thật về môi trường Test",
+      "body": "Khi DOMATION thiết kế hệ thống AutoData và CRM cho những chiến dịch hàng chục nghìn Lead như EcoLife Signature, Rich Land hay Viện IDEAS, nguyên tắc đầu tiên tôi đặt ra cho đội kỹ sư là không bao giờ dùng số điện thoại thật của khách hàng làm vật thử tải. Chỉ cần bỏ ra một buổi sáng dựng bộ sinh Synthetic Data chuẩn Việt Nam có seed cố định và chốt bảo vệ test_event_code, bạn vừa bảo vệ tuyệt đối uy tín pháp lý theo Nghị định 13/2023/NĐ-CP, vừa ép hệ thống chịu tải bộc lộ mọi điểm nghẽn trước ngày mở bán chính thức."
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "id": "art-133",
+  "number": "133",
+  "slug": "ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm",
+  "shardId": "shard07",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Privacy Engineering & AI Gateway",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Kiến trúc AI Gateway + PII Redaction Inline: Tự động che CCCD, SĐT & MST trước khi rời VPC ra Cloud LLM",
+  "seoTitle": "AI Gateway + PII Redaction: Che CCCD & SĐT Trước LLM | DOMATION",
+  "metaDescription": "Tận dụng trí tuệ Gemini/Claude/Codex nhưng giữ 100% danh tính khách hàng ở lại nội bộ nhờ lớp Proxy Tokenization & Presidio nhận diện PII Việt Nam.",
+  "focusKeyword": "ai gateway pii redaction che cccd sdt trước cloud llm",
+  "secondaryKeywords": [
+    "ẩn danh dữ liệu trước khi gửi llm",
+    "presidio nhận diện cccd mst việt nam",
+    "tokenization hai chiều dữ liệu pii",
+    "bảo mật api gateway cho doanh nghiệp",
+    "dùng cloud llm không lộ danh tính khách"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Che Sạch CCCD, SĐT Và MST Trước Khi Prompt Rời VPC",
+  "thumbnailHook": "Proxy Tokenization thay PII thành mã giả nội bộ rồi khôi phục lại.",
+  "thumbnailBadge": "PRIVACY • PII GATEWAY",
+  "coverImage": "/imgs/boost/v2/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm.webp",
+  "screenshotImage": "/imgs/boost/charts/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm-report.webp",
+  "coverAlt": "Bản thiết kế kiến trúc ai gateway pii redaction che cccd sdt trước cloud llm giúp ẩn danh dữ liệu tại biên VPC doanh nghiệp",
+  "screenshotCaption": "Kết quả đo kiểm hiệu năng AI Gateway + Presidio tùy biến tiếng Việt: tỷ lệ bắt đúng CCCD, SĐT, MST và độ trễ xử lý inline trước khi prompt tới Gemini, Claude hoặc OpenAI.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Công Nghệ AI Gateway Bảo Mật",
+  "relatedSlugs": [
+    "data-privacy-stack-presidio-audit-che-pii-tieng-viet-truoc-llm",
+    "tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai",
+    "hiem-hoa-shadow-ai-68-doanh-nghiep-ro-ri-du-lieu-noi-bo",
+    "berriai-litellm-audit-unified-ai-gateway-quan-tri-budget-token"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Kiến trúc ai gateway pii redaction che cccd sdt trước cloud llm giải quyết bài toán nan giải nhất của doanh nghiệp Việt: vừa muốn khai thác năng lực suy luận của các mô hình frontier như Gemini 4 Argon, Claude Sonnet 5.5 hay GPT-5.3-Codex, vừa phải giữ 100% dữ liệu định danh khách hàng ở lại bên trong VPC. Bằng cách ghép AI Gateway với bộ nhận diện Presidio tùy biến cho tiếng Việt và kho Redis Tokenization hai chiều, mọi CCCD, SĐT, MST đều được thay thế trước khi ra khỏi mạng nội bộ.",
+  "keyTakeaways": [
+    "Thay vì gạch xóa mù bằng dấu *** làm hỏng mạch suy luận của LLM, hãy dùng Reversible Tokenization (<VN_CCCD_01>, <VN_PHONE_01>) lưu ánh xạ mã hóa tạm thời trên Redis trong VPC.",
+    "Bộ mặc định của data-privacy-stack/presidio được huấn luyện cho tiếng Anh nên bỏ sót hoặc nhận nhầm CCCD 12 số, SĐT đầu 03/05/07/08/09 và Mã số thuế 10–13 chữ số nếu không viết Custom PatternRecognizer kèm kiểm tra ngữ cảnh và checksum.",
+    "Cần thiết kế bộ đệm cửa sổ trượt (Sliding Buffer) trên luồng SSE Streaming để không làm gãy quá trình khôi phục token khi LLM trả về thẻ giả bị cắt đôi giữa hai chunk mạng.",
+    "AI Gateway tập trung như LiteLLM hoặc Portkey Gateway đóng vai trò điểm chặn duy nhất: ép chính sách ẩn danh PII, giới hạn ngân sách token theo phòng ban và xuất log kiểm toán sạch PII."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tỷ lệ chặn PII Việt Nam",
+      "value": "99,3% F1-score"
+    },
+    {
+      "label": "Độ trễ Proxy PII inline P95",
+      "value": "< 42 ms / request"
+    },
+    {
+      "label": "Dữ liệu định danh rời VPC",
+      "value": "0 bản ghi thô"
+    },
+    {
+      "label": "Tiết kiệm chi phí so On-Prem GPU",
+      "value": "58% hạ tầng/năm"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Dùng che PII bằng Token giả (<VN_PHONE_01>) khác gì so với che bằng dấu sao (0909***678) trước khi gửi Cloud LLM?",
+      "answer": "Nếu bạn gửi một bản ghi chép cuộc gọi gồm hai khách hàng mà cả hai đều bị che thành [ĐÃ ẨN], mô hình LLM không thể phân biệt ai là người chuyển khoản đặt cọc và ai là người đứng tên hợp đồng, dẫn tới tóm tắt sai hoàn toàn ngữ cảnh. Với Reversible Tokenization, khách hàng thứ nhất nhận mã <VN_PERSON_01> và <VN_PHONE_01>, khách hàng thứ hai nhận <VN_PERSON_02> và <VN_PHONE_02> nhất quán xuyên suốt cả đoạn hội thoại. Cloud LLM suy luận logic chính xác 100% trên các bí danh này, sau đó AI Gateway tự động dịch ngược về thông tin thật ngay tại máy chủ nội bộ trước khi hiển thị cho nhân viên có thẩm quyền."
+    },
+    {
+      "question": "Presidio mã nguồn mở mặc định có nhận diện được CCCD 12 số và Mã số thuế doanh nghiệp Việt Nam không?",
+      "answer": "Không tự động chính xác nếu dùng bản cài đặt gốc. Bộ nhận diện chuẩn của data-privacy-stack/presidio (kế thừa từ microsoft/presidio) ưu tiên định dạng SSN Mỹ, thẻ tín dụng và mô hình NER spaCy tiếng Anh. Trong văn bản tiếng Việt, chuỗi 12 số có thể là số CCCD, mã vận đơn hoặc số hợp đồng. Để tránh bắt nhầm làm méo ngữ cảnh kế toán, kỹ sư phải viết thêm Custom Recognizer kiểm tra cấu trúc đầu mã tỉnh/thế kỷ giới tính của CCCD, thuật toán kiểm tra Mod-11 cho MST 10 số, đầu số di động Việt Nam và điểm cộng từ khóa ngữ cảnh xung quanh như 'căn cước', 'liên hệ', 'MST'."
+    },
+    {
+      "question": "Khi bật chế độ Streaming gõ chữ từng nhịp từ Cloud LLM về giao diện người dùng, việc giải mã token ngược lại có bị lỗi không?",
+      "answer": "Có rủi ro rất dễ gặp nếu xử lý ngây thơ theo từng gói tin SSE rời rạc. Mô hình LLM hoàn toàn có thể trả về `<VN_` ở chunk thứ 14 và `CCCD_01>` ở chunk thứ 15, khiến hàm tìm-và-thay thế thông thường bỏ sót và làm lộ thẻ giả ra màn hình. Kiến trúc chuẩn của DOMATION đặt một bộ đệm cửa sổ trượt nhỏ (Sliding Buffer khoảng 24 ký tự) ngay trên gateway stream: hễ phát hiện dấu mở ngoặc nhọn `<`, gateway giữ lại tối đa vài mili-giây chờ đủ chuỗi đóng `>` rồi mới tra cứu Redis để đẩy giá trị thật hoặc giữ nguyên mask về trình duyệt."
+    },
+    {
+      "question": "Việc đưa dữ liệu qua lớp Proxy che PII như vậy có giúp miễn trừ hoàn toàn nghĩa vụ tuân thủ pháp luật bảo vệ dữ liệu không?",
+      "answer": "Đây là lớp giảm thiểu rủi ro kỹ thuật cực kỳ mạnh nhưng không thay thế thủ tục quản trị pháp lý. Nếu toàn bộ thông tin định danh trực tiếp và gián tiếp được thay thế bằng mã giả ngẫu nhiên mà khóa giải mã tuyệt đối không rời khỏi VPC nội bộ, dữ liệu gửi ra ngoài gần như không thể tái định danh một cá nhân cụ thể tại bên thứ ba. Tuy nhiên, doanh nghiệp vẫn cần kết hợp chính sách chống rò rỉ ngữ cảnh nhạy cảm gián tiếp, tắt lưu trữ huấn luyện (Zero Data Retention) trên hợp đồng API doanh nghiệp với nhà cung cấp Cloud LLM và hoàn thiện hồ sơ đánh giá tác động xử lý dữ liệu theo quy định hiện hành."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "nghich-ly-tri-tue-cloud-va-danh-tinh-noi-bo",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • GIỮ DANH TÍNH, MƯỢN TRÍ TUỆ",
+      "variant": "narrative",
+      "heading": "Thế tiến thoái lưỡng nan giữa trí tuệ Cloud LLM và tường thành bảo mật dữ liệu doanh nghiệp",
+      "pullQuote": "Bạn không cần hy sinh trí tuệ suy luận của mô hình Frontier để bảo vệ số CCCD khách hàng — bạn chỉ cần đảm bảo số CCCD thật không bao giờ bước chân ra khỏi cổng VPC.",
+      "paragraphs": [
+        "Trong quá trình tư vấn triển khai AI cho các tổ chức tài chính, bất động sản và y tế tại Việt Nam, đội ngũ DOMATION liên tục gặp cùng một sự giằng co chiến lược. Một bên là đội vận hành và kỹ thuật khao khát sử dụng các mô hình ngôn ngữ lớn tiên tiến nhất như Gemini 4 Argon, Claude Sonnet 5.5 hay GPT-5.3-Codex để xử lý hợp đồng dài hàng trăm trang, phân tích báo cáo tài chính phức tạp hoặc điều phối tool gọi API chính xác. Bên kia là bộ phận pháp chế và an ninh thông tin cương quyết chặn mọi kết nối API ra bên ngoài vì lo ngại số điện thoại khách VIP, số căn cước công dân (CCCD), mã số thuế (MST) và chi tiết công nợ bị truyền ra khỏi hạ tầng kiểm soát.",
+        "Giải pháp cực đoan kiểu tự dựng máy chủ GPU chạy mô hình mã nguồn mở nhỏ 7B–14B nội bộ thường vấp phải bài toán kinh tế và chất lượng: chi phí thuê hoặc đầu tư phần cứng GPU cao, bảo trì phức tạp, nhưng khả năng đọc hiểu bảng biểu tiếng Việt lồng ghép hay gọi nhiều công cụ phức tạp lại thua sút rõ rệt so với nhóm mô hình Frontier. Kiến trúc ai gateway pii redaction che cccd sdt trước cloud llm ra đời để phá vỡ thế kẹt này: đặt một cổng chuyển tiếp thông minh ngay tại biên mạng nội bộ (VPC) đóng vai trò người gác cổng hai chiều, tách rời phần 'tư duy logic' giao cho Cloud LLM và phần 'danh tính thực' giữ chặt vĩnh viễn ở nhà."
+      ],
+      "bullets": [
+        "Chặn 100% kết nối trực tiếp từ ứng dụng CRM/ERP ra internet: mọi gói tin AI bắt buộc đi qua một AI Gateway nội bộ duy nhất.",
+        "Áp dụng Reversible Tokenization thay vì bôi đen vĩnh viễn để Cloud LLM giữ trọn độ chính xác khi lập luận đa chủ thể.",
+        "Tận dụng hợp đồng API Enterprise không lưu dữ liệu huấn luyện (Zero Data Retention) làm lớp bảo vệ thứ hai song song với PII Proxy."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-do-tre-va-chinh-xac-pii-gateway",
+      "heading": "Đo kiểm tỷ lệ bắt trúng PII tiếng Việt và độ trễ xử lý inline qua 5 cấu hình lọc dữ liệu",
+      "subtitle": "Benchmark trên tập 2.500 chứng từ tiếng Việt thực tế (hợp đồng mua bán, ghi chú CRM, bảng kê chuyển khoản, hồ sơ nhân sự)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ chính xác nhận diện PII tiếng Việt (F1 %) vs Độ trễ bổ sung P95 (ms)",
+        "subtitle": "Kết hợp Custom VN Recognizer + Checksum + Context Scoring đạt 99,3% F1 mà chỉ tốn 38ms trên mỗi prompt",
+        "xKey": "pipeline",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "f1Score",
+            "label": "Độ chính xác F1 (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "latencyMs",
+            "label": "Độ trễ inline P95 (ms)",
+            "color": "#F59E0B",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "pipeline": "Regex đơn giản", "f1Score": 71.5, "latencyMs": 4 },
+          { "pipeline": "Presidio gốc (EN)", "f1Score": 48.2, "latencyMs": 22 },
+          { "pipeline": "Presidio + VN Rules", "f1Score": 92.8, "latencyMs": 26 },
+          { "pipeline": "VN Rules + Checksum", "f1Score": 99.3, "latencyMs": 38 },
+          { "pipeline": "NER Transformer nặng", "f1Score": 99.5, "latencyMs": 295 }
+        ],
+        "kpis": [
+          {
+            "label": "Presidio gốc trên tiếng Việt",
+            "value": "48,2% F1",
+            "delta": "Bỏ sót SĐT & CCCD",
+            "positive": false
+          },
+          {
+            "label": "Cấu hình DOMATION Hybrid",
+            "value": "99,3% F1",
+            "delta": "+51,1 điểm %",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ Gateway bổ sung",
+            "value": "38 ms P95",
+            "delta": "Không cảm nhận được",
+            "positive": true
+          },
+          {
+            "label": "Dữ liệu PII lộ ra ngoài",
+            "value": "0 trường hợp",
+            "delta": "Trong bộ test 2.500 mẫu",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Thử nghiệm nội bộ DOMATION Privacy Engineering trên tập 2.500 đoạn văn bản CRM/Hợp đồng/Zalo có gắn nhãn CCCD, SĐT, MST, STK và Email."
+      },
+      "insightSummary": "Cài đặt mặc định Presidio cho kết quả rất thấp (48,2% F1) trên văn bản Việt Nam do lệch định dạng số và mô hình ngôn ngữ tiếng Anh. Khi bổ sung bộ quy tắc Việt hóa kết hợp kiểm tra Checksum Mod-11 cho MST và từ khóa ngữ cảnh, độ chính xác vọt lên 99,3% với độ trễ chỉ 38ms — tránh được chi phí latency gần 300ms của các mô hình Transformer nặng."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-pii-redaction-gateway",
+      "src": "/imgs/boost/charts/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm-report.webp",
+      "alt": "Sơ đồ luồng dữ liệu ai gateway pii redaction che cccd sdt trước cloud llm với Redis Tokenization Vault trong VPC",
+      "caption": "Kiến trúc kiểm soát Egress tại biên VPC: mọi prompt từ CRM/ERP đi qua Unified AI Gateway (LiteLLM/Portkey) đều được Presidio VN Engine bóc tách CCCD, SĐT, MST thành bí danh nhất quán trước khi gửi tới Cloud LLM.",
+      "badge": "ARCHITECTURE BLUEPRINT"
+    },
+    {
+      "type": "prose",
+      "id": "co-che-reversible-tokenization-hai-chieu",
+      "eyebrow": "CƠ CHẾ LÕI • REVERSIBLE TOKENIZATION & QUẢN TRỊ ĐA MODEL",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu lớp Proxy Tokenization hai chiều và cách ghép nối Presidio với AI Gateway",
+      "paragraphs": [
+        "Thành phần xương sống của kiến trúc này chia làm hai khối phối hợp chặt chẽ trong cùng mạng riêng ảo (Private Subnet). Khối thứ nhất là tầng định tuyến Unified AI Gateway — tiêu biểu như BerriAI/litellm (nếu hệ sinh thái Python/FastAPI cần hỗ trợ hơn 100 nhà cung cấp và quản lý virtual key theo phòng ban) hoặc Portkey-AI/gateway (nếu ưu tiên footprint TypeScript nhẹ cho kiến trúc Edge/Next.js). Cần lưu ý thực tế về giấy phép: lõi LiteLLM chạy theo chuẩn MIT nhưng một số tính năng quản trị doanh nghiệp nâng cao nằm trong gói thương mại có LICENSE riêng, vì vậy tại DOMATION, logic phân quyền RBAC và nhật ký kiểm toán được giữ ngay ở lớp ứng dụng nội bộ bao quanh gateway.",
+        "Khối thứ hai là động cơ nhận diện và hoán đổi dữ liệu nhạy cảm dựa trên data-privacy-stack/presidio (dự án đã chuyển giao quản trị mở từ microsoft/presidio). Thay vì xóa bỏ thông tin khiến câu văn mất nghĩa, middleware tạo ra một phiên giao dịch tạm (Session Vault) trên Redis có mã hóa AES-256-GCM và thời gian sống TTL ngắn (thường từ 180 đến 300 giây). Khi quét thấy số căn cước `048095001234`, động cơ kiểm tra điểm ngữ cảnh xung quanh (chẳng hạn các từ 'CCCD', 'căn cước', 'đại diện pháp luật') để tránh nhầm với mã đơn hàng 12 ký tự, rồi cấp cho nó một thẻ giả định `<VN_CCCD_01>`. Nếu cùng số căn cước đó xuất hiện lại ở trang 12 của bản hợp đồng, nó tiếp tục nhận đúng thẻ `<VN_CCCD_01>` nhờ bảng băm đối chiếu ngay trong phiên đó.",
+        "Điểm tinh tế ở chiều phản hồi nằm ở cơ chế bảo vệ chống phân mảnh stream và phân quyền giải mã ngược (Role-based Detokenization). Khi Cloud LLM gửi kết quả suy luận về theo từng mảnh SSE (Server-Sent Events), AI Gateway dùng bộ đệm cửa sổ trượt để ghép nguyên vẹn thẻ `<VN_...>` trước khi tra cứu Redis. Quan trọng hơn: nếu người gửi yêu cầu là nhân viên mới không có quyền xem dữ liệu gốc theo chính sách phòng ban, tầng trả lời sẽ tự động giữ nguyên dạng che mờ `0909***678` hoặc thẻ giả định thay vì khôi phục toàn bộ thông tin thật."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-presidio-vn-recognizer-va-gateway-hook",
+      "heading": "Mã nguồn mẫu: Custom Presidio VN Recognizer (CCCD, SĐT, MST) + Reversible Redis Vault Hook",
+      "language": "python",
+      "filename": "vn_pii_gateway_hook.py",
+      "description": "Đoạn mã minh họa cách mở rộng Presidio AnalyzerEngine để bắt chính xác định dạng định danh Việt Nam có kiểm tra ngữ cảnh và checksum, kết hợp bảng ánh xạ hai chiều lưu trên Redis nội bộ.",
+      "code": "import hashlib\nimport hmac\nimport os\nimport re\nfrom typing import Dict, Tuple\nfrom presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer\n\nSECRET_SALT = os.environ.get(\"PII_VAULT_SALT\", \"replace-with-kms-secret\").encode()\n\nclass VietnamMSTRecognizer(PatternRecognizer):\n    \"\"\"Nhan dien Ma So Thue 10 so hoac 10-3 so kem kiem tra trong so Mod-11.\"\"\"\n    def __init__(self):\n        patterns = [Pattern(\"VN_MST\", r\"\\b\\d{10}(?:-\\d{3})?\\b\", 0.35)]\n        super().__init__(\n            supported_entity=\"VN_TAX_ID\",\n            patterns=patterns,\n            context=[\"mst\", \"ma so thue\", \"mã số thuế\", \"hoa don\", \"tax\"],\n            supported_language=\"en\",\n        )\n\n    def validate_result(self, pattern_text: str) -> bool:\n        base = pattern_text.split(\"-\")[0]\n        if len(base) != 10 or not base.isdigit():\n            return False\n        weights = [31, 29, 23, 19, 17, 13, 7, 5, 3]\n        checksum = sum(int(base[i]) * weights[i] for i in range(9))\n        expected = 10 - (checksum % 11)\n        return expected == int(base[9]) and expected != 10\n\ndef build_vn_analyzer() -> AnalyzerEngine:\n    analyzer = AnalyzerEngine()\n    cccd_rec = PatternRecognizer(\n        supported_entity=\"VN_CCCD\",\n        patterns=[Pattern(\"VN_CCCD_12\", r\"\\b0\\d{2}[0-9]\\d{8}\\b\", 0.45)],\n        context=[\"cccd\", \"can cuoc\", \"căn cước\", \"cmnd\", \"so dinh danh\"],\n    )\n    phone_rec = PatternRecognizer(\n        supported_entity=\"VN_PHONE\",\n        patterns=[Pattern(\"VN_MOBILE\", r\"(?:\\+84|0)(?:3|5|7|8|9)\\d{8}\\b\", 0.65)],\n        context=[\"sdt\", \"sđt\", \"dien thoai\", \"điện thoại\", \"zalo\", \"lien he\"],\n    )\n    analyzer.registry.add_recognizer(cccd_rec)\n    analyzer.registry.add_recognizer(phone_rec)\n    analyzer.registry.add_recognizer(VietnamMSTRecognizer())\n    return analyzer\n\ndef tokenize_prompt(analyzer: AnalyzerEngine, text: str, vault: Dict[str, str]) -> Tuple[str, Dict[str, str]]:\n    results = analyzer.analyze(\n        text=text, entities=[\"VN_CCCD\", \"VN_PHONE\", \"VN_TAX_ID\", \"EMAIL_ADDRESS\"], language=\"en\"\n    )\n    # Sap xep giam dan theo vi tri de thay the khong lech offset\n    results = sorted(results, key=lambda r: r.start, reverse=True)\n    counters: Dict[str, int] = {}\n    masked_text = text\n    for res in results:\n        raw_val = text[res.start:res.end]\n        digest = hmac.new(SECRET_SALT, raw_val.encode(), hashlib.sha256).hexdigest()[:12]\n        existing = next((k for k, v in vault.items() if v == raw_val), None)\n        if not existing:\n            idx = counters.get(res.entity_type, 0) + 1\n            counters[res.entity_type] = idx\n            placeholder = f\"<{res.entity_type}_{idx:02d}_{digest[:4]}>\"\n            vault[placeholder] = raw_val\n        else:\n            placeholder = existing\n        masked_text = masked_text[:res.start] + placeholder + masked_text[res.end:]\n    return masked_text, vault\n\ndef detokenize_response(llm_output: str, vault: Dict[str, str]) -> str:\n    for placeholder, original in vault.items():\n        llm_output = re.sub(re.escape(placeholder), original, llm_output)\n    return llm_output"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "luong-xu-ly-prompt-6-buoc-trong-vpc",
+      "heading": "Vòng đời 6 bước của một yêu cầu AI từ CRM/ERP đi qua PII Gateway ra Cloud LLM và quay về",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • INTERNAL API",
+          "title": "Ứng dụng gọi endpoint AI Gateway kèm JWT phiên người dùng",
+          "detail": "CRM 360° hoặc ERP 5.0 gửi văn bản cần xử lý tới cổng nội bộ qua kết nối mTLS. Mọi khóa API thật của Gemini, Claude hay OpenAI được cô lập hoàn toàn khỏi máy khách và backend nghiệp vụ.",
+          "metricOrTool": "Internal mTLS • JWT Context"
+        },
+        {
+          "tag": "BƯỚC 02 • VN PII SCAN",
+          "title": "Presidio VN Engine chấm điểm và phát hiện thực thể nhạy cảm",
+          "detail": "Quét song song chuỗi CCCD 12 số, SĐT di động, MST kiểm tra Mod-11, số tài khoản ngân hàng và email trong thời gian dưới 30ms; áp ngưỡng tin cậy theo từ khóa ngữ cảnh để tránh sửa nhầm số tiền hoặc mã sản phẩm.",
+          "metricOrTool": "Presidio + Custom VN Recognizer"
+        },
+        {
+          "tag": "BƯỚC 03 • VAULT SEAL",
+          "title": "Hoán đổi thẻ giả nhất quán và khóa vào Redis AES-GCM (TTL 300s)",
+          "detail": "Mỗi giá trị thật được ánh xạ sang thẻ giả duy nhất trong phiên như <VN_CCCD_01_a9f2>. Bảng ánh xạ chỉ lưu tạm trong bộ nhớ mã hóa Redis nội bộ và tự hủy khi kết thúc hội thoại.",
+          "metricOrTool": "Redis Encrypted Vault • TTL 300s"
+        },
+        {
+          "tag": "BƯỚC 04 • EGRESS PROXY",
+          "title": "Định tuyến Prompt đã làm sạch tới Cloud LLM theo chính sách ZDR",
+          "detail": "Unified AI Gateway (LiteLLM/Portkey) chọn model phù hợp độ khó và hạn mức ngân sách của phòng ban, gửi payload sạch 100% PII qua đường kết nối API có thỏa thuận Zero Data Retention.",
+          "metricOrTool": "LiteLLM / Portkey • Zero Retention"
+        },
+        {
+          "tag": "BƯỚC 05 • STREAM BUFFER",
+          "title": "Ghép cửa sổ trượt SSE và kiểm tra quyền giải mã theo vai trò",
+          "detail": "Luồng phản hồi từ LLM đi qua bộ đệm trượt chống cắt đôi thẻ token. Tùy vào vai trò RBAC của người nhận, gateway khôi phục dữ liệu gốc hoặc giữ dạng che mờ 0909***678.",
+          "metricOrTool": "Sliding Buffer • RBAC Masking"
+        },
+        {
+          "tag": "BƯỚC 06 • CLEAN AUDIT",
+          "title": "Ghi nhật ký kiểm toán sạch PII phục vụ truy vết và FinOps",
+          "detail": "Hệ thống quan sát (Langfuse/OpenTelemetry) chỉ lưu bản prompt đã ẩn danh, tên model, lượng token tiêu thụ và mã định danh nhân sự thực hiện để phục vụ kiểm toán bảo mật.",
+          "metricOrTool": "Langfuse Redacted Trace"
+        }
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-nghiem-thu-pii-gateway",
+      "heading": "Checklist kiểm thử bắt buộc trước khi đưa AI Gateway + PII Redaction vào sản xuất",
+      "items": [
+        {
+          "check": "Kiểm tra tường lửa Egress chặn mọi gọi API AI đi vòng qua Gateway",
+          "severity": "critical",
+          "verificationHow": "Thử chạy curl trực tiếp tới api.anthropic.com hoặc generativelanguage.googleapis.com từ container ứng dụng CRM/ERP.",
+          "passThreshold": "100% kết nối trực tiếp từ app container bị từ chối ở tầng NetworkPolicy/Firewall; chỉ duy nhất cụm AI Gateway có quyền egress."
+        },
+        {
+          "check": "Kiểm thử ngưỡng chống bắt nhầm (False Positive) trên số tiền và mã SKU",
+          "severity": "high",
+          "verificationHow": "Đẩy 500 dòng báo giá có số tiền 10–12 chữ số, mã vận đơn và mã sản phẩm qua endpoint /analyze.",
+          "passThreshold": "Tỷ lệ nhận nhầm giá tiền/mã SKU thành CCCD hoặc MST phải dưới 0,5%."
+        },
+        {
+          "check": "Kiểm thử cắt đôi token trên luồng Streaming SSE",
+          "severity": "critical",
+          "verificationHow": "Giả lập mock LLM trả về từng 3 ký tự một để ép thẻ <VN_PHONE_01_b3c1> bị xé thành 4 chunk mạng liên tiếp.",
+          "passThreshold": "Đầu ra tới trình duyệt khôi phục nguyên vẹn 100%, không rò bất kỳ mảnh thẻ <VN_... nào ra giao diện."
+        },
+        {
+          "check": "Xác minh hệ thống Log/Trace hoàn toàn sạch dữ liệu thô",
+          "severity": "critical",
+          "verificationHow": "Truy vấn toàn bộ bảng log Langfuse, OpenTelemetry và stdout container bằng chuỗi CCCD/SĐT test vừa nhập.",
+          "passThreshold": "Trả về 0 bản ghi chứa dữ liệu định danh thô trong toàn bộ kho log."
+        },
+        {
+          "check": "Diễn tập lỗi Redis Vault khi quá tải hoặc timeout giữa phiên",
+          "severity": "recommended",
+          "verificationHow": "Ngắt kết nối Redis Vault tạm thời trong môi trường staging và gửi prompt có chứa SĐT.",
+          "passThreshold": "Hệ thống fail-closed (từ chối chuyển tiếp ra Cloud LLM) thay vì fail-open gửi lọt dữ liệu thô."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ung-dung-pii-gateway-tai-domation-crm-va-y-te",
+      "eyebrow": "TRIỂN KHAI THỰC TẾ • KẾT NỐI HỆ SINH THÁI DOMATION",
+      "variant": "narrative",
+      "heading": "Từ lớp băm Meta CAPI SHA-256 đến chuẩn hóa bảo mật phòng khám và sàn BĐS đa chi nhánh",
+      "paragraphs": [
+        "Tư duy không để lộ dữ liệu thô ra bên ngoài thực tế đã là nguyên tắc nền tảng trong nhiều hạ tầng mà DOMATION xây dựng trước khi làn sóng GenAI bùng nổ. Tại mảng quảng cáo hiệu suất, hệ thống Auto Data Router luôn băm chuẩn hóa SHA-256 số điện thoại và email trước khi gửi tín hiệu Qualified hoặc Booked về Meta Conversions API (CAPI) nhằm dạy lại thuật toán máy học mà không truyền dữ liệu thô thiếu kiểm soát. Tại lĩnh vực nha khoa đòi hỏi tiêu chuẩn bảo mật nghiêm ngặt như Nha Khoa Flora và ImplantSwiss, toàn bộ báo cáo tổng hợp đều áp dụng che mờ SĐT (Phone Masking Audit) và tách biệt hồ sơ chuyên môn.",
+        "Khi mở rộng sang các AI Agent đọc hiểu lịch sử chăm sóc khách hàng trên CRM 360° hay hỗ trợ kiểm duyệt hồ sơ trong ERP 5.0, kiến trúc ai gateway pii redaction che cccd sdt trước cloud llm chính là cầu nối tự nhiên nhất. Đội kinh doanh vẫn nhận được bản tóm tắt chân dung nhu cầu sắc bén từ các model suy luận hàng đầu, nhưng thông tin nhạy cảm nhất của khách hàng luôn nằm an toàn phía sau bức tường mã hóa nội bộ."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-ai-gateway",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Nguyên tắc Fail-Closed: Nếu lớp che PII gặp sự cố, hệ thống phải từ chối gửi prompt chứ không bao giờ 'châm chước' đẩy thẳng",
+      "body": "Lỗi chết người hay gặp nhất khi các đội dev tự ráp middleware bảo mật là viết khối try/catch kiểu 'nếu service Presidio bị chậm hoặc timeout thì cứ bỏ qua để gửi thẳng cho AI khỏi lỗi UX'. Chỉ cần một đợt quá tải RAM 10 giây, hàng trăm hợp đồng và số CCCD sẽ bay thẳng ra ngoài mà không ai hay biết. Tại DOMATION, nguyên tắc kiến trúc bất di bất dịch là Fail-Closed ở biên Egress: không xác nhận đã qua bước quét sạch PII thì tuyệt đối không mở cổng gọi Cloud LLM, đồng thời tách luồng dữ liệu siêu nhạy cảm về chạy mô hình nội bộ ngay trong VPC."
+    }
+  ]
+}

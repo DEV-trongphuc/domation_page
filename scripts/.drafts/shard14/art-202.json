@@ -1,0 +1,387 @@
+{
+  "id": "art-202",
+  "number": "202",
+  "slug": "deep-reasoning-arena-claude-fable-5-2-vs-gemini-3-1-pro-vs-gpt-5-6-sol-terra",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Ultra Deep Reasoning & Long-Horizon",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "executive-dossier",
+  "title": "Hạng Suy Luận Sâu: Claude Fable 5.2 vs Gemini 3.1 Pro (-customtools) vs GPT-5.6 Sol/Terra",
+  "seoTitle": "Fable 5.2 vs Gemini 3.1 Pro vs GPT-5.6 Sol/Terra | DOMATION",
+  "metaDescription": "Cân đo nhóm Deep Reasoning 2026: Fable 5.2 ($8/$40), Gemini 3.1 Pro customtools ($2/$12) và GPT-5.6 Sol/Terra (~1.05M + phụ phí >272K) cho debug sâu.",
+  "focusKeyword": "claude fable 5.2 vs gemini 3.1 pro vs gpt-5.6 sol",
+  "secondaryKeywords": [
+    "claude fable 5.2 adaptive thinking max",
+    "gemini 3.1 pro preview customtools",
+    "gpt 5.6 sol terra phụ phí 272k token",
+    "so sánh model suy luận sâu 2026",
+    "chẩn đoán bug đa tầng bằng deep reasoning"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "Fable 5.2 vs Gemini 3.1 Pro vs GPT-5.6 Sol",
+  "thumbnailHook": "Cân trí tuệ Fable $8/$40, CustomTools $2/$12 và phụ phí >272K của GPT-5.6.",
+  "thumbnailBadge": "ARENA • DEEP REASONING",
+  "coverImage": "/imgs/boost/v2/deep-reasoning-arena-claude-fable-5-2-vs-gemini-3-1-pro-vs-gpt-5-6-sol-terra.webp",
+  "screenshotImage": "/imgs/boost/charts/deep-reasoning-arena-claude-fable-5-2-vs-gemini-3-1-pro-vs-gpt-5-6-sol-terra-report.webp",
+  "coverAlt": "Hồ sơ thẩm định claude fable 5.2 vs gemini 3.1 pro vs gpt-5.6 sol cho bài toán suy luận sâu và chẩn đoán bug đa tầng hệ thống doanh nghiệp",
+  "screenshotCaption": "Đồ thị chi phí mỗi phiên chẩn đoán lỗi đa tầng khi ngữ cảnh tăng từ 50K lên 800K token: đối chiếu vách đá phụ phí >272K (2x/1.5x) của GPT-5.6 Sol/Terra, bậc 200K của Gemini 3.1 Pro và đường cong phẳng nhờ Cache Read $0.20 của Claude Fable 5.2.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tư Vấn Chọn Model Suy Luận Doanh Nghiệp",
+  "relatedSlugs": [
+    "heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex",
+    "ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code",
+    "ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp",
+    "kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Hồ sơ đối chiếu claude fable 5.2 vs gemini 3.1 pro vs gpt-5.6 sol cho nhóm Deep Reasoning chuyên trị lỗi đa tầng. Claude Fable 5.2 ($8/$40, effort tối đa max) giữ độ chính xác suy diễn cao nhất với Cache Read chỉ $0.20/1M (-97.5%), nhưng cực đắt nếu trượt cache hoặc bật Fast Mode ($16/$80). Gemini 3.1 Pro bản -customtools ($2/$12 <=200K, $4/$18 >200K) vượt trội khi chạy bash kết hợp custom tool. GPT-5.6 Sol ($4/$20) và Terra ($2/$12) mở ~1.05M token nhưng gài phụ phí: vượt 272K input sẽ nhân toàn bộ request 2x input/cache và 1.5x output.",
+  "keyTakeaways": [
+    "Claude Fable 5.2 (ra mắt 09/11/2026) là tầng trí tuệ cao nhất của Anthropic: Adaptive Thinking luôn bật, effort mặc định high (tối đa max), giá niêm yết $8/$40 nhưng Cache Read chỉ $0.20/1M — giúp phiên debug 15 vòng lặp trên ngữ cảnh lặp lại rẻ bất ngờ nếu khóa prefix tốt.",
+    "Gemini 3.1 Pro Preview sở hữu biến thể chuyên dụng gemini-3.1-pro-preview-customtools tối ưu riêng cho chuỗi gọi hỗn hợp bash + custom tool + SQL/API ở mức giá dễ chịu ($2/$12 dưới 200K, $4/$18 trên 200K).",
+    "Cảnh báo tài chính số 1 của gia đình GPT-5.6 (Sol $4/$20, Terra $2/$12): mặc dù mở cửa sổ ~1.05M token, bất kỳ request nào vượt mốc 272.000 input token sẽ bị nhân hệ số 2x cho toàn bộ input/cache read và 1.5x cho toàn bộ output.",
+    "Đừng nhầm lẫn nhiệm vụ: nhóm Deep Reasoning chỉ nên chiếm 3%–8% tổng lưu lượng hệ thống (chốt phương án xử lý deadlock, kiểm toán lỗ hổng RLS, truy vết lỗi đa dịch vụ), tuyệt đối không dùng để gõ code CRUD thường ngày.",
+    "Kinh nghiệm DOMATION trên ca debug hệ thống INKICA & Auto Data V2: gọi Gemini 3.1 Pro -customtools làm trinh sát kéo log/truy vấn DB trước, sau đó mới đẩy gói bằng chứng đã cô đặc (< 180K token) cho Fable 5.2 max hoặc GPT-5.6 Sol Ultra chốt nguyên nhân gốc."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Chiết khấu Cache Fable 5.2",
+      "value": "$0.20 / 1M (-97.5%)"
+    },
+    {
+      "label": "Bậc giá Gemini 3.1 Pro",
+      "value": "$2/$12 (<=200K) → $4/$18"
+    },
+    {
+      "label": "Vách đá phụ phí GPT-5.6",
+      "value": ">272K: 2x In / 1.5x Out"
+    },
+    {
+      "label": "Tỷ trọng lưu lượng hợp lý",
+      "value": "3%–8% (Escalation Only)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Sự khác biệt thực tế giữa Claude Fable 5.2 và Claude Opus 5.5 khi cùng hỗ trợ 1M context và Adaptive Thinking là gì?",
+      "answer": "Cả Fable 5.2 (ra mắt 09/11/2026) và Opus 5.5 (22/09/2026) đều có cửa sổ 1M input / 128K output và dùng Adaptive Thinking luôn bật, nhưng khác nhau ở độ sâu suy diễn mặc định và giá thành. Opus 5.5 đặt effort mặc định là medium với giá $4/$20 để cày các tác vụ kiến trúc và coding hạng nặng hàng ngày. Fable 5.2 đặt effort mặc định là high (và hỗ trợ đẩy lên max) với đơn giá $8/$40, được thiết kế cho những bài toán suy luận dây chuyền dài như tìm race condition qua 6 microservice, kiểm toán bảo mật Row-Level Security hoặc chứng minh tính đúng đắn của thuật toán chia thưởng/tính lương trước khi deploy."
+    },
+    {
+      "question": "Khi nào kỹ sư bắt buộc phải chọn endpoint gemini-3.1-pro-preview-customtools thay vì bản gemini-3.1-pro-preview tiêu chuẩn?",
+      "answer": "Nếu quy trình debug chỉ gửi văn bản/code và nhận câu trả lời phân tích thì bản tiêu chuẩn đã đủ. Nhưng khi bạn xây dựng một Autonomous Debugger Agent buộc model phải luân phiên gọi lệnh bash (đọc log Kubernetes, chạy pytest, curl healthcheck) xen kẽ với hàng loạt custom tool nội bộ (như query_postgres_readonly, inspect_bullmq_dlq, fetch_misa_sync_trace), mô hình tiêu chuẩn đôi lúc lạm dụng bash thay vì gọi tool chuyên biệt hoặc trượt tham số JSON khi chuỗi gọi kéo dài 15–20 bước. Google phát hành riêng endpoint gemini-3.1-pro-preview-customtools để tối ưu hóa độ chính xác chọn lựa giữa bash và custom tool trong các đường ống phức tạp."
+    },
+    {
+      "question": "Cơ chế phụ phí vượt 272.000 token của GPT-5.6 Sol và Terra tính tiền ra sao? Có phải chỉ phần token vượt mới bị nhân giá?",
+      "answer": "Không — đây chính là bẫy ngân sách khiến nhiều đội ngũ bất ngờ khi xem hóa đơn cuối tháng. Theo đặc tả của OpenAI cho dòng GPT-5.6 (Sol, Terra và cả Luna), nếu tổng input token của một request vượt ngưỡng 272.000 token, hệ thống sẽ áp dụng phụ phí long-context cho TOÀN BỘ request đó chứ không tính theo lũy tiến từng phần: toàn bộ input và cache read bị nhân 2x, còn toàn bộ output bị nhân 1.5x. Cụ thể trên GPT-5.6 Sol ($4/$20), một request 280K token sẽ nhảy đơn giá lên $8/1M input (cache read từ $0.40 lên $0.80) và $30/1M output. Vì vậy luôn đặt trần nén ngữ cảnh ở mức 250K–260K token."
+    },
+    {
+      "question": "Tại sao nói Gemini 3.1 Pro có nhược điểm ở ngưỡng output 64K so với 128K của Fable 5.2 và GPT-5.6?",
+      "answer": "Gemini 3.1 Pro Preview tách riêng ngân sách 1.048.576 input và 65.536 output, đồng thời token suy luận (thinking tokens) được cộng chung vào ngân sách output đó. Trong các phiên phân tích hồ sơ lớn đòi hỏi model vừa suy luận cực sâu ở thinking_level='high' vừa viết ra báo cáo audit kèm bộ patch đầy đủ cho 15 tệp mã nguồn, việc tiêu tốn 35K thinking tokens chỉ còn chừa lại khoảng 30K token cho văn bản trả lời cuối cùng — dễ chạm trần cắt cụt nếu không chia nhỏ bước xuất. Ngược lại, cả Fable 5.2 và GPT-5.6 Sol/Terra đều cho phép tối đa 128.000 output tokens."
+    },
+    {
+      "question": "DOMATION định tuyến khi nào nâng cấp (escalate) một ca lỗi lên tầng Deep Reasoning thay vì để tầng Midweight xử lý?",
+      "answer": "Trong pipeline vận hành 35+ hệ thống tại DOMATION, tầng Midweight (Sonnet 5.5 hoặc Gemini 3.8 Flash) tự xử lý khoảng 85–90% lỗi thông thường. Hệ thống chỉ tự động đẩy ca lỗi lên tầng Deep Reasoning (Fable 5.2, Gemini 3.1 Pro -customtools hoặc GPT-5.6 Sol) khi xảy ra một trong ba tín hiệu: (1) vòng lặp sửa lỗi tự động thất bại liên tiếp 2 lần trên cùng một ca test; (2) lỗi liên quan tới giao dịch tài chính, khóa chéo PostgreSQL, đồng bộ hóa đơn MISA hoặc sai lệch chia Lead Fair-Share; (3) phát hiện nghi vấn lỗ hổng OWASP / rò rỉ dữ liệu đa tenant trên RLS."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "dossier-executive-brief-deep-reasoning",
+      "eyebrow": "HỒ SƠ THẨM ĐỊNH KỸ THUẬT • PHÂN KHÚC DEEP REASONING",
+      "variant": "narrative",
+      "heading": "Bản chất của tầng Deep Reasoning: Dùng dao mổ não cho đúng 5% ca bệnh hiểm nghèo của hệ thống",
+      "pullQuote": "Nếu bạn mang một bộ não suy luận sâu giá $40/1M token đi viết giao diện form liên hệ, đó không phải là đầu tư chất lượng — đó là lỗi thiết kế kiến trúc tài chính.",
+      "paragraphs": [
+        "Trong hệ thống phân cấp mô hình cuối năm 2026, tồn tại một ranh giới sinh tử giữa nhóm Heavyweight Coding (như Opus 5.5, Argon 4, 5.3-Codex — vốn ưu tiên tốc độ thao tác mã nguồn và làm việc dài hơi trên kho code) với nhóm Long-Horizon Deep Reasoning: Claude Fable 5.2, Gemini 3.1 Pro (-customtools) và gia đình GPT-5.6 Sol / Terra. Đây là những 'chuyên gia hội chẩn cấp cao' chỉ nên được gọi tên khi mọi công cụ thông thường đã bó tay trước các lỗi đa tầng, tranh chấp đồng thời (race condition), kẹt hàng đợi phân tán hoặc lỗ hổng bảo mật tinh vi.",
+        "Hồ sơ thẩm định dưới đây kiểm tra sức mạnh suy luận và cấu trúc chi phí của bộ ba claude fable 5.2 vs gemini 3.1 pro vs gpt-5.6 sol trên những kịch bản thực tế mà đội ngũ DOMATION & TurnioDEV từng trực tiếp tháo gỡ: từ lỗi lệch transaction khi đồng bộ hóa đơn MISA từ CRM Pipeline 8 nấc, hiện tượng treo worker ONNX trong pipeline 208 SKU của INKICA, cho tới kiểm toán chính sách PostgreSQL FORCE RLS ngăn rò rỉ chéo giữa 3 Đại lý bất động sản F1."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-deep-reasoning-2026",
+      "heading": "Hồ sơ đối chiếu tầng Deep Reasoning: Fable 5.2 vs Gemini 3.1 Pro (-customtools) vs GPT-5.6 Sol/Terra",
+      "caption": "So sánh cùng hạng cân các mô hình suy luận sâu & điều tra đa tầng theo thông số API tháng 11/2026",
+      "columns": [
+        "Thông số thẩm định",
+        "Claude Fable 5.2 (Anthropic)",
+        "Gemini 3.1 Pro / -customtools (Google)",
+        "GPT-5.6 Sol & Terra (OpenAI)"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Model ID & Thời điểm cập nhật",
+          "values": [
+            "claude-fable-5-2 (Ra mắt 09/11/2026, Cutoff 06/2026)",
+            "gemini-3.1-pro-preview & -customtools (Cập nhật 02/2026)",
+            "gpt-5.6-sol (alias gpt-5.6) & gpt-5.6-terra (07/2026)"
+          ],
+          "winnerNote": "Fable 5.2 có tri thức mới nhất (06/2026)"
+        },
+        {
+          "criterion": "Ngữ cảnh Input / Trần Output",
+          "values": [
+            "1.000.000 input / 128.000 output",
+            "1.048.576 input / 65.536 output (tách biệt)",
+            "~1.050.000 (tới 1.1M) input / 128.000 output"
+          ],
+          "winnerNote": "Fable & GPT-5.6 gấp đôi trần output (128K)"
+        },
+        {
+          "criterion": "Đơn giá Chuẩn (/1M USD)",
+          "values": [
+            "$8.00 in / $40.00 out (Fast Mode: $16 / $80)",
+            "<=200K: $2.00 in / $12.00 out; >200K: $4.00 / $18.00",
+            "Sol: $4.00 in / $20.00 out; Terra: $2.00 in / $12.00 out"
+          ],
+          "winnerNote": "Gemini 3.1 Pro & 5.6 Terra rẻ nhất khi <200K"
+        },
+        {
+          "criterion": "Bẫy Phụ Phí & Caching",
+          "values": [
+            "Write 5p $10 / 1h $16; Cache Read chỉ $0.20 (-97.5%!); Fast tách pool cache",
+            "Cached <=200K $0.20 / >200K $0.40; phí lưu trữ explicit cache $4.50/1M/giờ",
+            "Vượt 272K input: toàn bộ request bị nhân 2x In/Cache và 1.5x Out! Cache write 1.25x, read -90% (min 30p)"
+          ],
+          "winnerNote": "Fable 5.2 có tỷ lệ giảm giá Cache Read sâu nhất"
+        },
+        {
+          "criterion": "Nấc điều chỉnh Suy luận",
+          "values": [
+            "Adaptive Thinking luôn bật; effort: low, medium, high (mặc định), max",
+            "thinking_level: low, medium, high (mặc định)",
+            "reasoning.effort: none, low, medium (mặc định), high, xhigh, max (+ Sol Ultra)"
+          ],
+          "winnerNote": "GPT-5.6 có 6 nấc effort chi tiết nhất"
+        },
+        {
+          "criterion": "Lợi thế Điều tra Đặc thù",
+          "values": [
+            "Chứng minh bất biến logic, phát hiện lỗ hổng kiến trúc & phân tích tĩnh cực sâu",
+            "Bản -customtools tối ưu gọi hỗn hợp bash + custom tool + Search/File Search + Batch giảm 50%",
+            "Dung lượng 1.05M + chế độ Ultra Sol cho bài toán suy diễn nhiều giả thuyết"
+          ],
+          "winnerNote": "Gemini 3.1 Pro -customtools vô địch vòng lặp tool hỗn hợp"
+        }
+      ],
+      "footnote": "Lưu ý: GPT-5.6 Sol đã giảm từ mức giá lúc mới ra mắt ($5/$30) xuống còn $4/$20 nhưng vẫn áp dụng quy tắc nhân hệ số toàn bộ request khi vượt 272K token."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-deep-reasoning-cost-cliff",
+      "heading": "Đường cong chi phí một phiên Hội chẩn Bug Đa tầng (10 vòng lặp) theo độ dài ngữ cảnh",
+      "subtitle": "Giả định phiên điều tra gồm 1 lượt nạp gốc + 9 lượt đọc cache (50% hit) + tổng sinh 24.000 output/thinking tokens (đơn vị: USD/phiên)",
+      "chart": {
+        "chartType": "line",
+        "title": "Chi phí phiên Debug 10 vòng lặp (USD) khi ngữ cảnh mở rộng từ 50K đến 800K token",
+        "subtitle": "Quan sát cú nhảy vọt ở mốc >200K (Gemini 3.1 Pro) và vách đá >272K nhân 2x input + 1.5x output của GPT-5.6 Sol/Terra",
+        "xKey": "contextSize",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "fable52",
+            "label": "Claude Fable 5.2 (1h Cache $0.20 read)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "gemini31Pro",
+            "label": "Gemini 3.1 Pro -customtools",
+            "color": "#10B981"
+          },
+          {
+            "key": "gpt56Sol",
+            "label": "GPT-5.6 Sol (>272K: 2x/1.5x)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "gpt56Terra",
+            "label": "GPT-5.6 Terra (>272K: 2x/1.5x)",
+            "color": "#F59E0B"
+          }
+        ],
+        "data": [
+          {
+            "contextSize": "50K",
+            "fable52": 1.62,
+            "gemini31Pro": 0.44,
+            "gpt56Sol": 0.81,
+            "gpt56Terra": 0.45
+          },
+          {
+            "contextSize": "150K",
+            "fable52": 2.98,
+            "gemini31Pro": 0.74,
+            "gpt56Sol": 1.41,
+            "gpt56Terra": 0.75
+          },
+          {
+            "contextSize": "250K",
+            "fable52": 4.34,
+            "gemini31Pro": 1.98,
+            "gpt56Sol": 2.01,
+            "gpt56Terra": 1.05
+          },
+          {
+            "contextSize": "320K (Vượt 272K)",
+            "fable52": 5.29,
+            "gemini31Pro": 2.46,
+            "gpt56Sol": 4.91,
+            "gpt56Terra": 2.57
+          },
+          {
+            "contextSize": "500K",
+            "fable52": 7.74,
+            "gemini31Pro": 3.68,
+            "gpt56Sol": 7.25,
+            "gpt56Terra": 3.74
+          },
+          {
+            "contextSize": "800K",
+            "fable52": 11.82,
+            "gemini31Pro": 5.72,
+            "gpt56Sol": 11.15,
+            "gpt56Terra": 5.69
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Chênh lệch GPT-5.6 Sol qua mốc 272K",
+            "value": "+144% / phiên",
+            "delta": "Từ $2.01 (250K) vọt lên $4.91 (320K)",
+            "positive": false
+          },
+          {
+            "label": "Kinh tế tối ưu <=200K",
+            "value": "Gemini 3.1 Pro ($0.44–$0.74)",
+            "delta": "Rẻ hơn Fable 5.2 tới 4 lần",
+            "positive": true
+          },
+          {
+            "label": "Sức mạnh Cache Read Fable 5.2",
+            "value": "$0.20 / 1M (-97.5%)",
+            "delta": "Bằng đúng giá read của Opus & Terra",
+            "positive": true
+          },
+          {
+            "label": "Điểm hòa vốn Sol vs Fable ở 800K",
+            "value": "~$11.15 vs $11.82",
+            "delta": "Phụ phí 2x biến Sol đắt ngang Fable",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Mô hình toán học DOMATION FinOps tính theo bảng giá API chính thức tháng 11/2026 (đã tính cache read/write và phụ phí >200K của Gemini 3.1 Pro, >272K của GPT-5.6)."
+      },
+      "insightSummary": "Đường cong tài chính chỉ ra một phát hiện cực kỳ giá trị cho kiến trúc sư hệ thống: ở ngưỡng dưới 200K token, Gemini 3.1 Pro và GPT-5.6 Terra giữ chi phí thấp gấp 3,5–4 lần so với Claude Fable 5.2. Thế nhưng ngay khi bước qua vách đá 272K token, cơ chế nhân 2x input và 1.5x output của GPT-5.6 Sol khiến hóa đơn tăng vọt +144% và tiến sát mức giá của Fable 5.2 ở ngưỡng 500K–800K — trong khi Fable 5.2 lại giữ được mức Cache Read rẻ kỷ lục $0.20/1M."
+    },
+    {
+      "type": "prose",
+      "id": "dossier-anatomize-three-contenders",
+      "eyebrow": "PHÂN TÍCH GIẢI PHẪU • THẾ MẠNH TỪNG ỨNG VIÊN",
+      "variant": "deep-dive",
+      "heading": "Khi nào Fable 5.2 Max cứu cả ca trực, còn -customtools và GPT-5.6 Sol tạo lợi thế khác biệt?",
+      "paragraphs": [
+        "Trên thực tế vận hành các hệ thống xử lý tiền và dữ liệu nhạy cảm — tiêu biểu như hệ thống kiểm tra biến động số dư VietQR ngân hàng ACB cho chuỗi Nha khoa Flora hay luồng Automated Payroll xuất phiếu lương PDF cho Viện IDEAS — có những lỗi không bao giờ tái hiện bằng một file code đơn lẻ. Chúng nằm ở giao điểm giữa khóa cô lập giao dịch SQL, độ trễ hàng đợi Redis và thứ tự thực thi bất đồng bộ của webhook.",
+        "Trong các bài kiểm tra nội bộ dạng 'truy tìm bất biến bị phá vỡ' (invariant violation hunting), Claude Fable 5.2 khi bật effort='max' thể hiện khả năng giữ chuỗi suy diễn logic dài nhất mà không tự suy đoán lấp liếm (hallucinate assumption). Điểm đáng giá hơn cả về mặt FinOps là chính sách chiết khấu Prompt Cache của Fable 5.2: dù giá đầu vào niêm yết là $8.00/1M, giá đọc cache chỉ còn $0.20/1M (giảm tới 97,5%). Nghĩa là nếu bạn khóa cứng toàn bộ tài liệu kiến trúc và 200K token mã nguồn vào khối cache 1 giờ, 10 lượt hỏi đáp chẩn đoán nối tiếp hầu như chỉ tốn tiền cho vài nghìn token output mới sinh ra.",
+        "Ngược lại, nếu bài toán điều tra không nằm sẵn trong log tĩnh mà đòi hỏi Agent phải tự tung hàng chục mũi dò ra hạ tầng sống — chạy lệnh bash đọc container Docker, gọi MCP truy vấn EXPLAIN ANALYZE trên PostgreSQL, đối chiếu trạng thái Redis — thì gemini-3.1-pro-preview-customtools là vũ khí vượt trội về tỷ lệ hiệu năng/giá. Nhờ biến thể -customtools được Google tinh chỉnh riêng để phối hợp bash song song với hàm tùy biến của người dùng ở mức thinking_level='high', mô hình này ít khi rơi vào vòng lặp gọi sai tham số và chỉ tốn $2/$12 dưới ngưỡng 200K (hoặc giảm một nửa xuống $1/$6 nếu chạy qua Batch/Flex cho các cuộc rà soát ban đêm).",
+        "Còn với gia đình GPT-5.6 phát hành tháng 07/2026, OpenAI đã chia rất rõ hai mũi nhọn: GPT-5.6 Terra ($2/$12) đóng vai trò tầng suy luận cân bằng để thay thế khoảng trống suy luận sâu chi phí vừa phải, trong khi GPT-5.6 Sol ($4/$20 cùng chế độ Ultra) đánh thẳng vào các bài toán dài hơi lên tới ~1.05M token với 6 mức reasoning.effort từ none đến max. Tuy nhiên, như biểu đồ trên đã phơi bày, sức hấp dẫn của cửa sổ 1.05M trên GPT-5.6 chỉ phát huy hiệu quả kinh tế tối đa nếu kỹ sư chủ động giữ dung lượng đầu vào dưới vạch 272.000 token."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-deep-reasoning-dossier",
+      "src": "/imgs/boost/charts/deep-reasoning-arena-claude-fable-5-2-vs-gemini-3-1-pro-vs-gpt-5-6-sol-terra-report.webp",
+      "alt": "Biểu đồ thẩm định tầng Deep Reasoning claude fable 5.2 vs gemini 3.1 pro vs gpt-5.6 sol trên bài toán chẩn đoán bug đa tầng",
+      "caption": "Sơ đồ so sánh kinh tế học suy luận sâu: cách đặt ngưỡng Context Budget (200K / 272K) và tỷ lệ Cache Read quyết định trực tiếp tổng chi phí cho mỗi ca hội chẩn hệ thống.",
+      "badge": "EXECUTIVE DOSSIER • DEEP REASONING"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-deep-reasoning-routing",
+      "heading": "Khung phân định vai trò giữa 3 mô hình Deep Reasoning trong quy trình Engineering",
+      "subtitle": "Tránh sai lầm đẩy prompt 350K token mù quáng vào mô hình bị nhân phụ phí 2x",
+      "scenarios": [
+        {
+          "condition": "Điều tra Agentic đa công cụ: phải liên tục chạy bash + custom tools (DB, Redis, Kubernetes, MCP) với ngữ cảnh <= 200K token",
+          "recommendedChoice": "Gemini 3.1 Pro Preview (-customtools, thinking_level='high')",
+          "rationale": "Biến thể -customtools giữ độ chuẩn xác cao nhất khi chuyển đổi giữa shell và custom function calling ở mức giá $2/$12 (rẻ nhất nhóm <= 200K).",
+          "avoidIf": "Bạn cần câu trả lời xuất ra dài vượt trần 65.536 token trong một lượt gọi duy nhất."
+        },
+        {
+          "condition": "Kiểm toán bảo mật RLS, chứng minh logic tài chính/tính lương phức tạp hoặc bug đã bế tắc > 2 lượt ở tầng Midweight",
+          "recommendedChoice": "Claude Fable 5.2 (effort='high' hoặc 'max', khóa 1h Prompt Cache)",
+          "rationale": "Khả năng suy diễn chính xác cao nhất, 128K output thoải mái viết báo cáo kèm patch đầy đủ, và mức Cache Read $0.20/1M giúp các vòng hỏi xoáy cực kỳ kinh tế.",
+          "avoidIf": "Mỗi câu hỏi đều thay đổi 100% ngữ cảnh từ đầu (cache miss toàn tập ở giá $8/$40) hoặc lạm dụng Fast Mode $16/$80."
+        },
+        {
+          "condition": "Suy luận sâu cân bằng chi phí trong hệ thống OpenAI sẵn có, giữ payload <= 272K token",
+          "recommendedChoice": "GPT-5.6 Terra (reasoning.effort='high'/'xhigh')",
+          "rationale": "Đơn giá $2/$12 ngang bằng Gemini 3.1 Pro <=200K nhưng nới rộng trần không bị nhân giá lên tới 272K token và cho phép output tối đa 128K.",
+          "avoidIf": "Lỡ tay bơm quá 272.000 input token làm kích hoạt cơ chế nhân 2x input và 1.5x output cho cả request."
+        },
+        {
+          "condition": "Thử nghiệm nhiều giả thuyết song song trên bài toán R&D dài hạn với ngữ cảnh cô đặc < 272K",
+          "recommendedChoice": "GPT-5.6 Sol (chế độ Ultra / effort='xhigh' hoặc 'max')",
+          "rationale": "Độ sâu suy luận tiệm cận Fable 5.2 với chi phí danh nghĩa bằng một nửa ($4/$20 so với $8/$40) miễn là nằm dưới vạch 272K.",
+          "avoidIf": "Không có bộ đếm token pre-flight chặn ngưỡng 272K trước khi gửi API."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-customtools-debugger-and-272k-guard",
+      "heading": "Code Recipe: Tác nhân Điều tra Bug bằng Gemini 3.1 Pro -customtools kèm chốt chặn 272K trước khi escalate lên Fable 5.2 / GPT-5.6",
+      "language": "python",
+      "filename": "deep_reasoning_triage_router.py",
+      "description": "Kịch bản điều phối thực tế theo mô hình DOMATION: bước 1 dùng gemini-3.1-pro-preview-customtools (SDK google-genai >= 3.2.0) chạy hàm truy vết log + PostgreSQL với thinking_level='high'; bước 2 kiểm tra ngân sách token trước khi leo thang sang GPT-5.6 Sol (khóa cứng trần < 270K để tránh phụ phí 2x/1.5x) hoặc Claude Fable 5.2.",
+      "code": "import os\nfrom google import genai\nfrom google.genai import types\n\nclient = genai.Client(api_key=os.environ[\"GEMINI_API_KEY\"])\n\ndef inspect_postgres_lock(tenant_id: str) -> dict:\n    \"\"\"Custom tool truy van pg_stat_activity va trang thai khoa dong cho tenant.\"\"\"\n    return {\"tenant_id\": tenant_id, \"blocked_queries\": 3, \"lock_wait_ms\": 4820}\n\ndef run_shell_diagnostic(cmd: str) -> str:\n    \"\"\"Custom bash tool chi cho phep doc log container an toan.\"\"\"\n    return f\"[READONLY_EXEC] {cmd} -> worker_pool=saturated\"\n\ndef scout_with_gemini_customtools(incident_brief: str) -> str:\n    # Su dung bien the -customtools toi uu cho phoi hop bash + custom tool\n    response = client.models.generate_content(\n        model=\"gemini-3.1-pro-preview-customtools\",\n        contents=incident_brief,\n        config=types.GenerateContentConfig(\n            thinking_config=types.ThinkingConfig(thinking_level=\"high\"),\n            tools=[inspect_postgres_lock, run_shell_diagnostic],\n            max_output_tokens=16384,\n        ),\n    )\n    return response.text\n\ndef select_escalation_model(evidence_tokens: int) -> dict:\n    \"\"\"Chot chan FinOps tranh vach da 272K (2x input / 1.5x output) cua GPT-5.6.\"\"\"\n    if evidence_tokens <= 265000:\n        return {\n            \"provider\": \"openai\",\n            \"model\": \"gpt-5.6-sol\",\n            \"reasoning_effort\": \"xhigh\",\n            \"note\": \"Nam duoi nguong 272K: don gia chuan $4/$20\",\n        }\n    # Vuot 272K: tranh phi phat 2x/1.5x cua GPT-5.6 -> chuyen sang Fable 5.2 + 1h Cache Read $0.20\n    return {\n        \"provider\": \"anthropic\",\n        \"model\": \"claude-fable-5-2\",\n        \"effort\": \"max\",\n        \"cache_ttl\": \"1h\",\n        \"note\": \"Fable 5.2 khong bi nhan he so >272K va Cache Read chi $0.20/1M\",\n    }\n"
+    },
+    {
+      "type": "stat-grid",
+      "id": "stat-grid-deep-reasoning-finops",
+      "heading": "4 chỉ số chốt chặn vận hành tầng Deep Reasoning tại DOMATION",
+      "stats": [
+        {
+          "value": "< 265K",
+          "label": "Trần token an toàn cho GPT-5.6",
+          "context": "Chặn cứng trước vạch 272K tránh nhân 2x input / 1.5x output",
+          "trend": "down"
+        },
+        {
+          "value": "$0.20",
+          "label": "Giá Cache Read của Fable 5.2",
+          "context": "Giảm 97.5% so với $8.00 input gốc khi khóa tốt tiền tố",
+          "trend": "up"
+        },
+        {
+          "value": "-50%",
+          "label": "Giảm giá Batch API (Fable & 3.1 Pro)",
+          "context": "Dùng cho job kiểm toán bảo mật & đối soát chạy ban đêm",
+          "trend": "up"
+        },
+        {
+          "value": "2 bước",
+          "label": "Quy trình Trinh sát → Hội chẩn",
+          "context": "-customtools thu bằng chứng <200K rồi mới gọi Fable/Sol",
+          "trend": "neutral"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-deep-reasoning-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Muốn xài Deep Reasoning mà không cháy túi: Cho Gemini 3.1 Pro -customtools đi gom bằng chứng, rồi mới gọi Fable 5.2 Max chốt hạ",
+      "body": "Trong 35+ hệ thống DOMATION đã triển khai cho doanh nghiệp, những ca lỗi đắt đỏ nhất luôn đến từ việc thả một model $40/1M token tự đi lần mò đọc log từ con số zero. Quy tắc sắt của chúng tôi là tách đôi đường ống: dùng gemini-3.1-pro-preview-customtools ($2/$12 dưới 200K) đóng vai trinh sát chạy bash và SQL để cô đặc gói bằng chứng xuống dưới 150K token. Nếu vẫn chưa ra nguyên nhân, gói bằng chứng sạch đó mới được đẩy lên Claude Fable 5.2 effort='max' (khóa cache 1h để trả $0.20/1M read) hoặc GPT-5.6 Sol dưới trần 272K. Nhờ vậy, tỷ lệ giải quyết tận gốc các lỗi đa tầng đạt ngưỡng tuyệt đối mà hóa đơn Deep Reasoning hàng tháng vẫn nằm gọn dưới 8% tổng ngân sách AI."
+    }
+  ]
+}

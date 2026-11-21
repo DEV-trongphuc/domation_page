@@ -1,0 +1,382 @@
+{
+  "id": "art-137",
+  "number": "137",
+  "slug": "data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam",
+  "shardId": "shard07",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Cloud Infrastructure & Data Sovereignty",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "Data Residency & Sovereign AI VPC: Kiến trúc giữ dữ liệu lõi tại Việt Nam khi kết nối mô hình AI toàn cầu",
+  "seoTitle": "Data Residency & Sovereign AI VPC Cho Doanh Nghiệp VN | DOMATION",
+  "metaDescription": "Kiến trúc Hybrid Sovereignty: đặt PostgreSQL, Vector DB, MinIO và PII Gateway tại máy chủ Việt Nam/Singapore, kiểm soát chặt điểm chạm Zero-Retention API.",
+  "focusKeyword": "data residency và sovereign ai vpc việt nam",
+  "secondaryKeywords": [
+    "lưu trữ dữ liệu khách hàng tại việt nam",
+    "hạ tầng private vps cho erp ai",
+    "chủ quyền dữ liệu doanh nghiệp",
+    "hybrid vpc cho ai rag",
+    "zero data retention api llm"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Chủ Quyền Dữ Liệu Việt Nam Trên Hạ Tầng AI Hybrid",
+  "thumbnailHook": "Giữ DB gốc trên VPS nội địa, gửi ngữ cảnh đã lọc API.",
+  "thumbnailBadge": "SOVEREIGNTY • DATA VPC",
+  "coverImage": "/imgs/boost/v2/data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam.webp",
+  "screenshotImage": "/imgs/boost/charts/data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Triển Khai Private Server DOMATION",
+  "relatedSlugs": [
+    "on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds",
+    "tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai",
+    "coollabsio-coolify-audit-tu-chu-paas-vps-giam-chi-phi-cloud",
+    "vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Kiến trúc Data Residency và Sovereign AI VPC giữ PostgreSQL, Vector DB, MinIO tại máy chủ Việt Nam khi kết nối Zero-Retention API tại Singapore",
+  "screenshotCaption": "Biểu đồ radar so sánh 6 trục năng lực giữa All-Cloud US Default, Full On-Premise GPU Việt Nam và kiến trúc Hybrid Sovereign AI VPC tại DOMATION.",
+  "relatedPortfolioId": "turnio-executive-portal",
+  "tldrSummary": "Khi Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 có hiệu lực từ 01/01/2026 song hành cùng Nghị định 13/2023/NĐ-CP và Nghị định 53/2022/NĐ-CP, doanh nghiệp Việt không thể đẩy nguyên vẹn bảng khách hàng, CCCD hay bệnh án sang máy chủ LLM tại Mỹ. Tuy nhiên, tự đầu tư cụm GPU On-Premise lại đội chi phí phần cứng và làm giảm độ chính xác khi gọi công cụ phức tạp. Giải pháp cân bằng nhất là Hybrid Sovereign AI VPC: giữ PostgreSQL, Vector DB và MinIO tại Data Center Việt Nam, kết hợp PII Gateway ẩn danh trước khi gọi Zero-Retention API tại Singapore.",
+  "keyTakeaways": [
+    "Phân biệt rạch ròi Data Plane (nơi lưu trữ bền vững PostgreSQL, Qdrant/pgvector, MinIO và Audit Log đặt cố định tại IDC Việt Nam) với Stateless Intelligence Plane (tầng suy luận không lưu trạng thái).",
+    "Khoản vi phạm chuyển dữ liệu cá nhân xuyên biên giới theo Luật 91/2025/QH15 có thể bị phạt tới 5% tổng doanh thu năm trước liền kề; việc làm sạch PII trước khi rời VPC giúp thu hẹp triệt để phạm vi rủi ro pháp lý.",
+    "Google Vertex AI tại Singapore (`asia-southeast1`), OpenAI Singapore Regional Endpoint (`sg.api.openai.com`) và Claude qua Vertex AI hỗ trợ cố định vùng xử lý gần Việt Nam (~35ms RTT), tránh điều hướng sang cụm máy chủ Mỹ.",
+    "Bản miễn phí/Pro chat web hoặc API mặc định thường lưu nhật ký kiểm soát lạm dụng 30–90 ngày; doanh nghiệp bắt buộc ký thỏa thuận Zero Data Retention (ZDR) hoặc chạy Local SLM cho dữ liệu mật cấp cao.",
+    "Tối ưu TCO: kiến trúc Hybrid Sovereign AI VPC tiết kiệm tới 68% chi phí năm đầu so với tự mua GPU H100/L40S mà vẫn giữ được chất lượng Tool Calling và ERP Automation vượt trội."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "PII thô rời khỏi VPS Việt Nam",
+      "value": "0 byte (đã Tokenize)"
+    },
+    {
+      "label": "Độ trễ truy vấn dữ liệu nội địa",
+      "value": "< 8 ms tại VN IDC"
+    },
+    {
+      "label": "Tiết kiệm TCO năm đầu vs On-Prem GPU",
+      "value": "-68% chi phí hạ tầng"
+    },
+    {
+      "label": "Khóa vùng suy luận API tối đa",
+      "value": "asia-southeast1 (ZDR)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Đặt PostgreSQL tại Việt Nam nhưng vẫn gọi API OpenAI/Anthropic mặc định thì có tính là chuyển dữ liệu ra nước ngoài theo Nghị định 13/2023 và Luật 91/2025 không?",
+      "answer": "Có. Theo Nghị định 13/2023/NĐ-CP và Luật 91/2025/QH15 (hiệu lực 01/01/2026), việc gửi dữ liệu định danh công dân Việt Nam (họ tên, SĐT, CCCD, bệnh án) sang máy chủ API đặt ngoài lãnh thổ đều tính là chuyển dữ liệu ra nước ngoài, buộc lập Hồ sơ đánh giá tác động (DPIA/TIA) gửi Bộ Công an (A05) trong 60 ngày. Đặt PII Tokenization Gateway ngay trong VPC Việt Nam để thay định danh bằng mã giả (`[CUST_8812]`) trước khi rời biên giới giúp thu hẹp triệt để phạm vi dữ liệu phải giải trình."
+    },
+    {
+      "question": "Tại sao gọi Claude qua Google Cloud Vertex AI lại đáp ứng Data Residency Đông Nam Á tốt hơn gọi trực tiếp Anthropic API?",
+      "answer": "Anthropic Direct API hiện vận hành cụm xử lý chủ lực tại Mỹ và chưa hỗ trợ ghim cứng vùng Đông Nam Á trên console phổ thông. Ngược lại, Google Cloud Vertex AI cho phép cố định vùng `asia-southeast1` (Singapore) cho cả Gemini lẫn Claude dưới khung xử lý dữ liệu của Google Cloud, giữ dữ liệu tại khu vực gần Việt Nam với độ trễ chỉ ~32–42ms."
+    },
+    {
+      "question": "Zero Data Retention (ZDR) khác gì với cam kết 'Không dùng dữ liệu để train model'?",
+      "answer": "Cam kết không train model vẫn cho phép nhà cung cấp lưu prompt và response trên đĩa từ 30 đến 90 ngày để kiểm soát lạm dụng (abuse monitoring). Hợp đồng Zero Data Retention (ZDR) nâng mức bảo vệ lên tối đa: toàn bộ ngữ cảnh đầu vào và câu trả lời bị xóa ngay trong RAM sau khi trả kết quả, không lưu trữ bền vững trên máy chủ bên thứ ba."
+    },
+    {
+      "question": "Doanh nghiệp Việt nên đặt Sovereign AI VPC tại những Data Center nội địa nào?",
+      "answer": "Nên ưu tiên các IDC đạt chuẩn Tier 3 trở lên tại TP.HCM hoặc Hà Nội như Viettel IDC, VNPT IDC, FPT Telecom hoặc CMC Telecom (có tuyến kết nối thẳng sang Singapore). DOMATION triển khai Private Server trên VLAN tách biệt, bật mã hóa phân vùng đĩa cứng AES-256 và sao lưu chéo vùng ngay trong lãnh thổ Việt Nam."
+    },
+    {
+      "question": "Khi nào doanh nghiệp bắt buộc đầu tư GPU On-Premise thay vì dùng Hybrid Sovereign AI VPC?",
+      "answer": "Chỉ khi đơn vị thuộc nhóm quốc phòng, ngân hàng lõi yêu cầu cô lập mạng hoàn toàn (Air-gapped), dữ liệu R&D không thể ẩn danh khi suy luận, hoặc lưu lượng ổn định trên 2 tỷ token/tháng khiến chi phí thuê API vượt quá khấu hao phần cứng GPU."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "the-luong-nan-giua-phap-ly-viet-nam-va-tri-tue-ai-toan-cau",
+      "eyebrow": "Sàn Đấu Chủ Quyền Hạ Tầng AI",
+      "variant": "contrarian",
+      "heading": "Ảo tưởng về nút bấm 'Private Cloud' và bài toán kẹp giữa Luật 91/2025 với nhu cầu dùng AI đỉnh cao",
+      "pullQuote": "Mua một máy chủ GPU đặt trong nước không tự động biến hệ thống thành bảo mật, cũng như gọi API AI toàn cầu không đồng nghĩa với việc phải nộp trắng toàn bộ danh bạ khách hàng ra khỏi biên giới.",
+      "paragraphs": [
+        "Trong các cuộc họp kiến trúc hệ thống tại Việt Nam giai đoạn 2025–2026, ban giám đốc và pháp chế thường chia làm hai thái cực đối lập. Một phe bơm thẳng hợp đồng PDF, bảng lương, danh sách SĐT CRM và ảnh CCCD lên API AI tại Mỹ để lấy tốc độ triển khai. Phe còn lại, khi đối chiếu Nghị định 13/2023/NĐ-CP, Điều 26 Nghị định 53/2022/NĐ-CP và Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15 (hiệu lực 01/01/2026, phạt chuyển dữ liệu xuyên biên giới vi phạm tới 5% doanh thu), lập tức cấm toàn bộ Cloud AI và đòi mua dàn GPU hàng tỷ đồng đặt tại văn phòng.",
+        "Cả hai cực đoan này đều bế tắc. Đẩy PII ra ngoài không kiểm soát tạo rủi ro pháp lý lẫn lộ bí mật trong nhật ký 30 ngày của nhà cung cấp. Ngược lại, tự chạy Local SLM 7B–32B trên GPU văn phòng thường gãy ở các tác vụ ERP 5.0 thực tế như gọi chuỗi 15 hàm Tool Calling, bóc tách hóa đơn tiếng Việt hay đối soát chứng từ MISA.",
+        "Từ kinh nghiệm triển khai Private Server và hạ tầng AI cho hơn 30 doanh nghiệp Việt (từ sàn BĐS đa đại lý F1 đến chuỗi Nha khoa lưu bệnh án và trạm Local LLM), DOMATION đưa 4 kiến trúc hạ tầng phổ biến nhất lên bàn cân kiểm chứng thực địa."
+      ],
+      "bullets": [
+        "Đặt lên sàn đấu 4 mô hình: All-Cloud US API mặc định, Full On-Premise GPU Việt Nam, Pure Singapore Cloud Region và kiến trúc Hybrid Sovereign AI VPC.",
+        "Đo đạc thực tế trên 6 tiêu chí sống còn: tuân thủ lưu trữ dữ liệu tại Việt Nam, hồ sơ chuyển dữ liệu ra nước ngoài, trí tuệ Tool Calling, độ trễ mạng, tổng chi phí TCO năm đầu và tốc độ nâng cấp công nghệ."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "doi-dau-4-kien-truc-data-residency-ai",
+      "heading": "Bảng đối đầu trực diện 4 kiến trúc lưu trữ và xử lý AI cho doanh nghiệp tại Việt Nam",
+      "caption": "So sánh dựa trên khung pháp lý Việt Nam (NĐ 53/2022, NĐ 13/2023, Luật 91/2025/QH15) và thông số hạ tầng thực nghiệm tại TP.HCM / Singapore",
+      "columns": [
+        "Tiêu chí kiến trúc & Pháp lý",
+        "All-Cloud US API Mặc Định",
+        "Full On-Premise GPU (VN)",
+        "100% Cloud Singapore (SG)",
+        "Hybrid Sovereign AI VPC (DOMATION)"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Vị trí lưu trữ dữ liệu gốc (DB, File, Vector)",
+          "values": [
+            "Mỹ / EU • Vi phạm lưu trữ nội địa với nhóm ngành buộc đặt máy chủ VN",
+            "100% Data Center tại Việt Nam • Làm chủ vật lý tuyệt đối",
+            "Singapore (`asia-southeast1`) • Toàn bộ dữ liệu nằm ngoài lãnh thổ VN",
+            "100% IDC Việt Nam (PostgreSQL, Qdrant, MinIO) • Giữ chủ quyền gốc"
+          ],
+          "winnerNote": "Full On-Prem & Hybrid VPC giữ trọn dữ liệu lõi tại VN"
+        },
+        {
+          "criterion": "Rủi ro chuyển PII xuyên biên giới (NĐ 13 & Luật 91/2025)",
+          "values": [
+            "Rất cao • Đẩy thẳng SĐT, CCCD, bệnh án qua Mỹ và lưu log 30 ngày",
+            "Bằng 0 • Không có bất kỳ gói tin nào rời khỏi mạng nội bộ",
+            "Cao • Toàn bộ CRM và Vector nằm tại SG, phải làm DPIA toàn phần",
+            "Rất thấp • PII Gateway thay bằng mã giả trước khi gọi SG ZDR"
+          ],
+          "winnerNote": "Giảm >90% phạm vi dữ liệu nhạy cảm phải giải trình"
+        },
+        {
+          "criterion": "Năng lực suy luận & Tool Calling ERP/CRM",
+          "values": [
+            "Rất mạnh (Model Frontier mới nhất)",
+            "Trung bình khá (SLM 8B–70B dễ lỗi JSON khi nối nhiều tool)",
+            "Rất mạnh (Gemini / Claude / Codex trên Vertex & SG Endpoint)",
+            "Rất mạnh • Routing linh hoạt Local SLM (dữ liệu mật) + SG Frontier ZDR"
+          ],
+          "winnerNote": "Hybrid giữ nguyên sức mạnh Frontier AI cho tác vụ phức tạp"
+        },
+        {
+          "criterion": "Độ trễ mạng từ TP.HCM / Hà Nội (RTT)",
+          "values": [
+            "180 – 260 ms tới US West/East + Time-to-first-token chậm",
+            "1 – 4 ms nội bộ nhưng chậm khi GPU quá tải đồng thời",
+            "32 – 45 ms qua cáp biển đi Singapore cho cả truy vấn DB",
+            "< 8 ms cho DB/RAG nội địa VN; ~38 ms chỉ cho bước gọi suy luận SG"
+          ]
+        },
+        {
+          "criterion": "Tổng chi phí năm đầu (SME 100 nhân sự / 150M token/tháng)",
+          "values": [
+            "~180 – 320 triệu ₫ (rủi ro rò rỉ và phạt pháp lý không tính trước)",
+            "1,4 – 2,8 tỷ ₫ (CAPEX máy chủ GPU + điện làm mát + kỹ sư MLOps)",
+            "~240 – 390 triệu ₫ (tính phí Cloud DB + Regional Endpoint uplift)",
+            "~220 – 360 triệu ₫ (Private VPS VN + trả token theo sử dụng thực)"
+          ],
+          "winnerNote": "Tiết kiệm ~68%–80% năm đầu so với tự mua cụm GPU"
+        },
+        {
+          "criterion": "Khả năng cô lập Multi-Tenant & Bảo trì",
+          "values": [
+            "Phụ thuộc hoàn toàn vào cấu hình nhà cung cấp SaaS",
+            "Tự gánh 100% bản vá CUDA, vLLM, thay GPU hỏng phần cứng",
+            "Tốt nhưng băng thông kéo file PDF/ảnh lớn về VN tốn cước egress",
+            "Tối ưu • PostgreSQL FORCE RLS tại VN + nâng cấp model ZDR trong 5 phút"
+          ]
+        }
+      ],
+      "footnote": "Chi phí ước tính cho quy mô doanh nghiệp vừa (50–200 nhân sự, ~5.000 lượt tương tác RAG & ERP Automation/ngày) theo mặt bằng giá IDC Việt Nam và Cloud API Q4/2026."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "radar-so-sanh-chu-quyen-du-lieu-sovereign-ai-vpc",
+      "heading": "Đồ thị Radar 6 trục: Điểm cân bằng giữa Chủ quyền dữ liệu, Chi phí và Trí tuệ mô hình",
+      "subtitle": "Đánh giá tổng hợp trên thang điểm 0–100 cho bài toán triển khai ERP 5.0, CRM 360° và AI RAG tại thị trường Việt Nam.",
+      "chart": {
+        "chartType": "radar",
+        "title": "Điểm năng lực kiến trúc Hạ tầng AI Doanh nghiệp Việt (Thang 0–100)",
+        "xKey": "axis",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "allCloudUs",
+            "label": "All-Cloud US API Mặc Định",
+            "color": "#EF4444"
+          },
+          {
+            "key": "fullOnPrem",
+            "label": "Full On-Premise GPU (VN)",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "hybridSovereign",
+            "label": "Hybrid Sovereign AI VPC",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "axis": "Lưu trữ DB lõi tại VN",
+            "allCloudUs": 15,
+            "fullOnPrem": 100,
+            "hybridSovereign": 98
+          },
+          {
+            "axis": "Giảm rủi ro NĐ13 & Luật 91",
+            "allCloudUs": 22,
+            "fullOnPrem": 99,
+            "hybridSovereign": 94
+          },
+          {
+            "axis": "Trí tuệ suy luận & Tool Use",
+            "allCloudUs": 95,
+            "fullOnPrem": 64,
+            "hybridSovereign": 95
+          },
+          {
+            "axis": "Hiệu quả TCO (Vốn & Vận hành)",
+            "allCloudUs": 82,
+            "fullOnPrem": 31,
+            "hybridSovereign": 89
+          },
+          {
+            "axis": "Tốc độ đáp ứng SLA (<400ms)",
+            "allCloudUs": 58,
+            "fullOnPrem": 76,
+            "hybridSovereign": 91
+          },
+          {
+            "axis": "Khả năng Scale & Đổi Model",
+            "allCloudUs": 94,
+            "fullOnPrem": 42,
+            "hybridSovereign": 93
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Chủ quyền dữ liệu gốc",
+            "value": "98 / 100",
+            "delta": "100% DB & File ở lại VN",
+            "positive": true
+          },
+          {
+            "label": "Trí tuệ Agent & Tool Call",
+            "value": "95 / 100",
+            "delta": "+31 điểm vs Local SLM",
+            "positive": true
+          },
+          {
+            "label": "TCO so với tự mua GPU",
+            "value": "-68%",
+            "delta": "Không chôn vốn CAPEX",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ sang Singapore ZDR",
+            "value": "38 ms",
+            "delta": "Nhanh hơn 5.2x so với US",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo lường độ trễ RTT từ cụm VPS Viettel/FPT TP.HCM tới asia-southeast1 (Singapore) và US-West cùng chi phí mô phỏng vận hành tại DOMATION Infrastructure Lab (Q4/2026)."
+      },
+      "insightSummary": "Biểu đồ Radar cho thấy vùng phủ màu xanh dương (Hybrid Sovereign AI VPC) ôm trọn các trục quan trọng nhất mà không bị khuyết góc chí mạng nào. All-Cloud US đạt điểm cao ở trí tuệ mô hình nhưng sụp đổ hoàn toàn ở chủ quyền dữ liệu (15 điểm) và tuân thủ pháp lý Việt Nam (22 điểm). Full On-Premise GPU đạt điểm tuyệt đối về cách ly vật lý nhưng bị kéo tụt nặng ở bài toán TCO (31 điểm), khả năng mở rộng đột biến (42 điểm) và độ chính xác gọi tool phức tạp."
+    },
+    {
+      "type": "visual-figure",
+      "id": "so-do-kien-truc-hybrid-sovereign-ai-vpc",
+      "src": "/imgs/boost/charts/data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam-report.webp",
+      "alt": "Báo cáo phân tích kiến trúc Hybrid Sovereign AI VPC giữ dữ liệu lõi tại Việt Nam và kết nối Zero-Retention API Singapore",
+      "caption": "Ranh giới phân tách Data Plane nội địa Việt Nam và Stateless Intelligence Plane kết nối Zero-Retention API tại khu vực Singapore.",
+      "badge": "Sovereign AI Architecture • VN IDC"
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-ba-lop-tach-data-plane-va-intelligence-plane",
+      "eyebrow": "Thiết Kế Thực Chiến Tại Việt Nam",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu 3 lớp tách bạch Data Plane nội địa và Stateless ZDR Endpoint trong kiến trúc DOMATION",
+      "paragraphs": [
+        "Sức mạnh của **Hybrid Sovereign AI VPC** nằm ở nguyên tắc tách đôi vòng đời dữ liệu: **Data Plane không bao giờ rời lãnh thổ Việt Nam**, còn **Intelligence Plane hoàn toàn phi trạng thái (Stateless)** và mù danh tính cá nhân.",
+        "Tại lớp Sovereign Data Plane đặt ở Viettel IDC, VNPT, FPT hay CMC Telecom, toàn bộ PostgreSQL (`FORCE ROW LEVEL SECURITY`), kho vector Qdrant/`pgvector`, kho tệp MinIO chứa hợp đồng và bảng Audit Log bất biến được lưu trữ, sao lưu và mã hóa đĩa cứng nội địa. Nhờ vậy, lọc trùng 6 tháng, chia số ZaloBot và hạch toán MISA chạy dưới 8 mili-giây.",
+        "Tại lớp Sovereign AI Gateway ngay cửa ngõ ra Internet, hệ thống áp dụng **Reversible Tokenization** lưu ánh xạ trong Redis nội địa (TTL 15 phút): biến `Nguyễn Văn Hùng - 079200012345 - 0909888777` thành `[PERSON_A1] - [CCCD_92] - [PHONE_31]` trước khi rời Việt Nam rồi khôi phục lại lúc trả về nhân viên. Dữ liệu tuyệt mật như bảng lương cấp cao sẽ tự rẽ nhánh sang Local SLM nội bộ.",
+        "Tại lớp Regional ZDR Compute Plane, API bắt buộc ghim cứng endpoint Singapore (`asia-southeast1` Vertex AI cho Gemini/Claude hoặc `sg.api.openai.com` có Zero Data Retention). Tường lửa Egress chặn mọi kết nối trôi sang vùng Mỹ hoặc endpoint lưu nhật ký mặc định."
+      ],
+      "bullets": [
+        "Khóa tường lửa Egress Outbound: chỉ cho phép máy chủ AI Gateway giao tiếp đúng IP/Domain của `asia-southeast1-aiplatform.googleapis.com` hoặc `sg.api.openai.com`, chặn toàn bộ API AI chưa ký ZDR.",
+        "Áp dụng Split-Storage cho RAG: văn bản gốc và metadata chứa SĐT, địa chỉ, lịch sử mua hàng giữ 100% tại PostgreSQL Việt Nam; các đoạn chunk đưa qua API nhúng/suy luận chỉ chứa nội dung sản phẩm hoặc bản đã khử PII.",
+        "Đơn giản hóa Hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài (DPIA/TIA theo Điều 25 NĐ 13/2023): vì dữ liệu đi qua biên giới đã mất khả năng nhận diện cá nhân cụ thể (de-identified), doanh nghiệp giảm thiểu tối đa bề mặt dữ liệu cá nhân nhạy cảm phải kê khai."
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-chon-ha-tang-sovereign-ai",
+      "heading": "Khung ra quyết định Data Residency theo ngành nghề và quy mô doanh nghiệp Việt",
+      "subtitle": "Chọn đúng tỷ lệ nội địa hóa hạ tầng để không trả quá nhiều tiền phần cứng mà vẫn đứng vững trước thanh tra tuân thủ",
+      "scenarios": [
+        {
+          "condition": "SME Giáo dục, Thương mại điện tử, Agency 30–180 nhân sự dùng CRM 360°, AI CSKH Zalo OA & Meta CAPI",
+          "recommendedChoice": "Hybrid Sovereign AI VPC (VPS VN + ZDR Singapore)",
+          "rationale": "Đặt toàn bộ Database khách hàng, MinIO và PII Gateway trên VPS Việt Nam (từ 3–10 triệu/tháng), ẩn danh PII trước khi gọi Gemini/Claude trên `asia-southeast1`. Đạt SLA < 400ms và tuân thủ gọn gàng NĐ 13/2023.",
+          "avoidIf": "Doanh nghiệp thuộc nhóm ngân hàng lõi hoặc quốc phòng có quy định cấm tuyệt đối kết nối Cloud ngoài lãnh thổ."
+        },
+        {
+          "condition": "Chuỗi Nha khoa, Phòng khám Y tế, Thẩm mỹ viện có hồ sơ bệnh án & ảnh X-Quang (Dữ liệu cá nhân nhạy cảm)",
+          "recommendedChoice": "VPC Nội địa VN + Local OCR/SLM cho Bệnh án, ZDR SG chỉ xử lý FAQ công khai",
+          "rationale": "Bệnh án và thông tin sức khỏe thuộc nhóm Dữ liệu cá nhân nhạy cảm bậc cao theo NĐ 13 và Luật 91/2025. Toàn bộ phân tích bệnh án và nhắc lịch ZNS xử lý khép kín trên server đặt tại Việt Nam; chỉ câu hỏi bảng giá dịch vụ công khai mới đi qua ZDR.",
+          "avoidIf": "Đừng đẩy nguyên bản chụp bệnh án hoặc toa thuốc kèm tên bệnh nhân lên chatbot công cộng hoặc API không có ZDR."
+        },
+        {
+          "condition": "Sàn Bất Động Sản đa đại lý F1, Doanh nghiệp B2B có đối soát VietQR, Hợp đồng & Hóa đơn MISA",
+          "recommendedChoice": "Private Server VN (PostgreSQL FORCE RLS) + Tokenization Proxy",
+          "rationale": "Số điện thoại khách VIP và số tài khoản ngân hàng tuyệt đối nằm lại trên Private Server Việt Nam có phân quyền RLS từng đại lý F1. AI hỗ trợ soạn hợp đồng chỉ nhận khung điều khoản đã thay thế bằng token giả.",
+          "avoidIf": "Tránh lưu chung file hợp đồng có chữ ký số và CCCD lên Google Drive công cộng không quản lý quyền chia sẻ."
+        },
+        {
+          "condition": "Tập đoàn Sản xuất, Định chế Tài chính, Doanh nghiệp xử lý > 2 tỷ token/tháng dữ liệu mật R&D",
+          "recommendedChoice": "Full On-Premise GPU Cluster tại VN IDC (vLLM + Qwen/Llama)",
+          "rationale": "Khi lưu lượng cực đại hoặc tài liệu chứa bí mật công thức sản xuất không thể tách rời khỏi ngữ cảnh để ẩn danh, đầu tư cụm 2–4 GPU tại Viettel/CMC IDC giúp hoàn vốn phần cứng trong 14–18 tháng và cách ly mạng hoàn toàn.",
+          "avoidIf": "Không nên mua GPU riêng nếu đội ngũ chưa có nhân sự MLOps túc trực và lưu lượng thực tế chưa tới 200 triệu token/tháng."
+        }
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "chi-so-trien-khai-sovereign-vpc",
+      "heading": "Kết quả đo kiểm thực tế khi chuyển đổi từ All-Cloud sang Hybrid Sovereign AI VPC",
+      "stats": [
+        {
+          "value": "0 byte",
+          "label": "PII thô rời lãnh thổ Việt Nam",
+          "context": "CCCD, SĐT, Email và MST bị thay thế bằng Token cục bộ trước Gateway",
+          "trend": "up"
+        },
+        {
+          "value": "7.2 ms",
+          "label": "Độ trễ truy vấn CRM & Vector VN",
+          "context": "Đặt PostgreSQL + Qdrant tại cụm IDC TP.HCM/Hà Nội gần người dùng",
+          "trend": "up"
+        },
+        {
+          "value": "-68%",
+          "label": "Chi phí năm đầu vs tự mua GPU",
+          "context": "Không gánh CAPEX phần cứng, điện điều hòa và nhân sự bảo trì CUDA",
+          "trend": "down"
+        },
+        {
+          "value": "38 ms",
+          "label": "RTT tới ZDR Singapore (`asia-southeast1`)",
+          "context": "Nhanh hơn 5.2 lần so với gọi về máy chủ mặc định tại bờ Tây nước Mỹ",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-sovereign-ai-vpc-turniodev",
+      "variant": "founder-pov",
+      "title": "Quan điểm kiến trúc từ DOMATION: Chủ quyền dữ liệu nằm ở quyền làm chủ Data Plane, không nằm ở việc tự đốt tiền mua GPU",
+      "body": "Qua các dự án Private Server và ERP 5.0 thiết kế riêng cho doanh nghiệp Việt, nguyên tắc cốt lõi của tôi rất rõ ràng: cơ sở dữ liệu khách hàng, giỏ hàng bất động sản, chứng từ MISA và tệp hợp đồng gốc phải nằm gọn trên máy chủ nội địa Việt Nam dưới sự bảo vệ của PostgreSQL FORCE RLS và mã hóa cục bộ. Trí tuệ AI chỉ là động cơ tính toán đi thuê theo từng mili-giây: hãy bịt mắt nó trước mọi danh tính cá nhân bằng PII Gateway, khóa chặt tuyến đường sang khu vực Singapore có Zero Data Retention, và chỉ giữ lại GPU vật lý cho đúng những lớp dữ liệu mật không thể ẩn danh.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • Founder & CEO DOMATION"
+    }
+  ]
+}

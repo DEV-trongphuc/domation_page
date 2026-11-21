@@ -1,0 +1,322 @@
+{
+  "id": "art-152",
+  "number": "152",
+  "slug": "continuedev-continue-audit-archived-v2-bai-hoc-autocomplete-noi-bo",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Local LLM IDE & Legacy Transition",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Audit continuedev/continue (Archived v2.0.0): Di sản FIM Local LLM & rủi ro bảo trì sau thương vụ Cursor",
+  "seoTitle": "Audit Continue.dev (Archived v2.0): Rủi Ro & Thay Thế | DOMATION",
+  "metaDescription": "Đánh giá trung thực trạng thái archived v2.0.0 của continuedev/continue sau thương vụ Cursor: di sản FIM air-gapped và lộ trình chuyển sang Cline.",
+  "focusKeyword": "audit continuedev continue archived v2 local llm",
+  "secondaryKeywords": [
+    "continue dev bị archive sau thương vụ cursor",
+    "autocomplete code bằng ollama nội bộ",
+    "thay thế continue dev trong vs code",
+    "rủi ro dùng repo open source đã ngừng vá",
+    "fill in the middle fim local llm"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Continue.dev Đã Archived v2.0: Giữ Gì Và Thay Bằng Gì?",
+  "thumbnailHook": "Học mô hình FIM air-gapped nhưng chuyển đội ngũ sang nhánh đang vá lỗi.",
+  "thumbnailBadge": "ARCHIVED • CONTINUE V2",
+  "coverImage": "/imgs/boost/v2/continuedev-continue-audit-archived-v2-bai-hoc-autocomplete-noi-bo.webp",
+  "screenshotImage": "/imgs/boost/charts/continuedev-continue-audit-archived-v2-bai-hoc-autocomplete-noi-bo-report.webp",
+  "coverAlt": "Báo cáo giám định audit continuedev continue archived v2 local llm phân tích rủi ro bảo trì sau thương vụ Cursor và lộ trình chuyển sang Cline hoặc OpenCode",
+  "screenshotCaption": "Đồ thị theo dõi độ trôi tương thích IDE API, số phụ thuộc chưa được vá lỗi bảo mật và độ trễ autocomplete FIM nội bộ khi bám trụ trên bản archived v2.0.0 so với hạ tầng Cline và OpenCode đang bảo trì.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Chuẩn Chọn Stack Vibecode Bền Vững",
+  "relatedSlugs": [
+    "roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist",
+    "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent",
+    "anomalyco-opencode-audit-lsp-diagnostics-va-git-undo",
+    "ollama-ollama-audit-trien-khai-private-llm-workstation"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit continuedev continue archived v2 local llm xác nhận thực tế: kho mã nguồn `continuedev/continue` (Apache-2.0, 35k+ Stars) đã chuyển sang chỉ đọc (archived) tại bản `v2.0.0` sau thương vụ Cursor. Dù di sản Fill-In-the-Middle (FIM) autocomplete qua Ollama/vLLM air-gapped và `@` context providers vẫn rất giá trị cho đội ngũ bảo mật cao, việc tiếp tục cài mới extension ngừng vá lỗi tạo rủi ro gãy API VS Code/JetBrains và trượt chuẩn an ninh; lộ trình bền vững là giữ nguyên cụm Local LLM VPC nhưng chuyển điều phối sang `cline/cline` và `anomalyco/opencode`.",
+  "keyTakeaways": [
+    "Trạng thái `archived / read-only` tại `v2.0.0` đồng nghĩa không còn bản vá bảo mật upstream, không cập nhật tương thích khi VS Code hay JetBrains nâng cấp API webview và Extension Host.",
+    "Di sản kỹ thuật giá trị nhất của Continue là mô hình tách vai trò trong `config.yaml`: model nhỏ 1.5B–7B lo FIM tab autocomplete dưới 150ms trên Ollama, model lớn lo chat/edit, kết hợp `@codebase`, `@diff`, `@docs` không đẩy mã nguồn ra khỏi VPC.",
+    "Giấy phép Apache-2.0 giúp doanh nghiệp không bị khóa dữ liệu ngay lập tức, nhưng tự fork duy trì một extension IDE đa nền tảng cho 35k+ dòng mã TypeScript là gánh nặng kỹ thuật phi kinh tế với phần lớn SME.",
+    "Đội ngũ nên giữ nguyên máy chủ suy luận Ollama/vLLM nội bộ (như mô hình trạm NavaTek), nhưng chuyển lớp điều phối sang `cline/cline` (cho IDE Agent + MCP) và `anomalyco/opencode` (cho Terminal TUI + LSP)."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Trạng thái GitHub Upstream",
+      "value": "Archived v2.0.0 (Read-Only)"
+    },
+    {
+      "label": "Giấy phép Di sản",
+      "value": "Apache-2.0 • 35k+ Stars"
+    },
+    {
+      "label": "Độ trễ FIM Local (Ollama 1.5B)",
+      "value": "95–140 ms (Air-Gapped)"
+    },
+    {
+      "label": "Lộ trình thay thế chuẩn",
+      "value": "Cline IDE + OpenCode + Ollama"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao việc continuedev/continue chuyển sang archived ở v2.0.0 sau thương vụ Cursor lại nguy hiểm cho các đội ngũ mới triển khai?",
+      "answer": "Một tiện ích mở rộng IDE (VS Code hoặc JetBrains) sống nhờ bám chặt vào vòng đời API nội bộ của trình soạn thảo, phiên bản Electron/Node.js tích hợp và các gói phụ thuộc xử lý AST hay vector nhúng cục bộ. Khi kho nguồn bị đóng băng chỉ đọc sau thương vụ Cursor, mọi bản vá lỗi bảo mật cho dependency transitive và mọi điều chỉnh tương thích khi VS Code đổi cơ chế webview hoặc authentication provider đều dừng lại. Triển khai mới cho hàng chục lập trình viên trên một công cụ đã ngừng vá lỗi sẽ tạo ra nợ kỹ thuật tức thì."
+    },
+    {
+      "question": "Nếu công ty đã cài sẵn Continue v2.0.0 trong mạng nội bộ air-gapped không kết nối Internet thì có phải gỡ bỏ ngay lập tức không?",
+      "answer": "Không cần hoảng loạn rút phích cắm trong ngày một, nhưng phải đóng băng mở rộng và lên kế hoạch di cư có lộ trình 30–60 ngày. Với môi trường hoàn toàn tách mạng (air-gapped) chạy thuần Ollama/vLLM nội bộ để phục vụ gợi ý phím Tab (FIM), bề mặt tấn công mạng từ xa thấp hơn nhiều so với extension mở công khai ra Internet. Tuy nhiên, bộ phận IT cần ghim chặt phiên bản VS Code đi kèm và chuyển dần các tác vụ sinh mã đa tệp sang nhánh đang được bảo trì như Cline hoặc OpenCode trỏ về cùng máy chủ Ollama."
+    },
+    {
+      "question": "Cơ chế Fill-In-the-Middle (FIM) của Continue hoạt động ra sao và bài học nào cần giữ lại?",
+      "answer": "Khác với chatbot hỏi-đáp thông thường chỉ đọc phần văn bản phía trước dấu nhắc, thuật toán FIM gửi cả đoạn mã đứng trước con trỏ (`prefix`) lẫn đoạn mã nằm ngay sau con trỏ (`suffix`) vào các token đặc biệt của mô hình coder (như dòng `qwen2.5-coder` hay `deepseek-coder`). Nhờ thấy cả hai đầu ngữ cảnh, một mô hình nhỏ 1.5B–7B chạy ngay trên GPU nội bộ vẫn điền khớp chính xác phần thân hàm hay tham số type chỉ trong khoảng 100 mili-giây mà không cần đẩy một dòng mã độc quyền nào lên đám mây."
+    },
+    {
+      "question": "Khi bỏ Continue chuyển sang Cline hoặc OpenCode, doanh nghiệp giữ được tính năng tự chủ Local LLM như thế nào?",
+      "answer": "Tài sản lâu bền nhất trong mô hình air-gapped không phải là cái vỏ extension VS Code, mà là cụm suy luận mô hình nội bộ (Ollama/vLLM) cùng cổng AI Gateway đặt trong VPC. Cả `cline/cline` lẫn `anomalyco/opencode` đều hỗ trợ gốc chuẩn API tương thích OpenAI/Ollama, cho phép cấu hình `baseUrl` trỏ thẳng về `http://localhost:11434` hoặc trạm GPU nội bộ (như mô hình workstation tại NavaTek) để tiếp tục viết code bảo mật mà vẫn được hưởng vòng đời cập nhật MCP, Plan/Act và LSP mới nhất."
+    },
+    {
+      "question": "Liệu cộng đồng hoặc doanh nghiệp có nên tự fork mã nguồn Apache-2.0 của Continue để tiếp tục duy trì riêng không?",
+      "answer": "Chỉ hợp lý với các tập đoàn lớn có đội ngũ DevTools chuyên trách từ 3–5 kỹ sư toàn thời gian chuyên bảo trì plugin VS Code và JetBrains. Với doanh nghiệp quy mô vừa và nhỏ hoặc các đội ngũ sản phẩm tập trung xây dựng ERP/CRM, tự ôm bảo trì một fork lớn như Continue v2.0.0 sẽ tiêu tốn nguồn lực kỹ thuật đáng lẽ nên dành cho logic nghiệp vụ lõi, trong khi hệ sinh thái đang có sẵn Cline (Apache-2.0) và OpenCode (MIT) được hàng chục nghìn kỹ sư cập nhật hàng tuần."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "continuedev/continue",
+    "url": "https://github.com/continuedev/continue",
+    "category": "Open-Source IDE AI Assistant (Archived)",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "35k+ Stars",
+    "bestFor": "Từng giúp các đội ngũ kỹ thuật chịu quản lý chặt chẽ triển khai tính năng gợi ý code và chat ngay trong IDE ở môi trường hoàn toàn cách ly (air-gapped), kết nối thuần túy tới các mô hình LLM nội bộ để mã nguồn độc quyền không bao giờ rời khỏi VPC.",
+    "avoidWhen": "Kho mã nguồn đã được đặt ở trạng thái chỉ đọc/archived tại phiên bản v2.0.0 sau thương vụ thâu tóm bởi Cursor; không còn nhận bản vá lỗi từ upstream hay cập nhật tương thích IDE API mới, tạo rủi ro bảo trì và trượt chuẩn bảo mật cho các đợt triển khai mới.",
+    "domationSynergy": "Được DOMATION kiểm toán làm mẫu tham chiếu kiến trúc cho bài toán autocomplete bằng Local LLM trong môi trường cách ly (như hạ tầng trạm LLM nội bộ NavaTek), trong khi mọi quy trình Vibecode đang vận hành chuẩn hóa trên các công cụ được bảo trì tích cực như Cline và OpenCode.",
+    "scores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-continue",
+      "heading": "Hồ Sơ Kiểm Toán Repository: continuedev/continue (Archived v2.0.0)",
+      "repo": {
+        "fullName": "continuedev/continue",
+        "url": "https://github.com/continuedev/continue",
+        "category": "Open-Source IDE AI Assistant (Archived)",
+        "primaryLanguage": "TypeScript",
+        "license": "Apache-2.0",
+        "starsTier": "35k+ Stars",
+        "bestFor": "Từng giúp các đội ngũ kỹ thuật chịu quản lý chặt chẽ triển khai tính năng gợi ý code và chat ngay trong IDE ở môi trường hoàn toàn cách ly (air-gapped), kết nối thuần túy tới các mô hình LLM nội bộ để mã nguồn độc quyền không bao giờ rời khỏi VPC.",
+        "avoidWhen": "Kho mã nguồn đã được đặt ở trạng thái chỉ đọc/archived tại phiên bản v2.0.0 sau thương vụ thâu tóm bởi Cursor; không còn nhận bản vá lỗi từ upstream hay cập nhật tương thích IDE API mới, tạo rủi ro bảo trì và trượt chuẩn bảo mật cho các đợt triển khai mới.",
+        "domationSynergy": "Được DOMATION kiểm toán làm mẫu tham chiếu kiến trúc cho bài toán autocomplete bằng Local LLM trong môi trường cách ly (như hạ tầng trạm LLM nội bộ NavaTek), trong khi mọi quy trình Vibecode đang vận hành chuẩn hóa trên các công cụ được bảo trì tích cực như Cline và OpenCode.",
+        "scores": {
+          "productionReadiness": 6,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 8,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "postmortem-tu-hao-quang-air-gapped-den-archived-v2",
+      "eyebrow": "GIÁM ĐỊNH HẬU KIỂM • SỰ ĐÓNG BĂNG CỦA MỘT TƯỢNG ĐÀI",
+      "variant": "incident",
+      "heading": "Chẩn đoán hậu kiểm continuedev/continue: Di sản xuất sắc nhưng cái bẫy chết người nếu vẫn cài mới bản v2.0.0",
+      "pullQuote": "Trong thế giới phần mềm mã nguồn mở, giấy phép Apache-2.0 đảm bảo bạn được quyền tiếp tục chạy code cũ, nhưng biểu tượng Archived v2.0.0 là lời cảnh báo rằng mọi chiếc phanh bảo mật upstream đã chính thức ngừng hoạt động.",
+      "paragraphs": [
+        "Suốt một giai đoạn dài trước thương vụ với Cursor, `continuedev/continue` (Apache-2.0, 35k+ Stars) là câu trả lời gần như mặc định mỗi khi một doanh nghiệp tài chính, y tế hay phần mềm lõi đặt câu hỏi: làm thế nào để lập trình viên có trải nghiệm gõ Tab tự điền mã (autocomplete) và chat hỏi đáp ngay trong VS Code/JetBrains mà không gửi một ký tự mã nguồn độc quyền nào ra đám mây bên ngoài? Không cần mua gói SaaS theo đầu người đắt đỏ, không phụ thuộc hệ sinh thái đóng, Continue kết nối trực tiếp tới Ollama hoặc vLLM chạy ngay trên trạm GPU nội bộ.",
+        "Thế nhưng kết quả audit continuedev continue archived v2 local llm đòi hỏi sự trung thực tuyệt đối trước các trưởng nhóm kỹ thuật đang cân nhắc chuẩn hóa stack cuối năm 2026: kho nguồn chính thức của Continue đã bị chuyển sang trạng thái chỉ đọc (`archived`) ngay tại cột mốc `v2.0.0` sau thương vụ thâu tóm bởi Cursor. Việc vẫn tiếp tục coi đây là nền tảng chủ lực cho các đợt onboarding nhân sự mới hoặc mở rộng ra hàng trăm máy trạm IDE đồng nghĩa với việc tự đặt mình lên một chuyến tàu không còn người lái.",
+        "Sự nguy hiểm của một extension IDE bị đóng băng không lộ ra ngay trong tuần đầu tiên. Nó ăn mòn hệ thống theo hai hướng: thứ nhất là sự đứt gãy tương thích khi Microsoft VS Code và JetBrains liên tục nâng cấp API Extension Host, cơ chế sandbox Webview hoặc phiên bản Electron/Node.js đi kèm; thứ hai là hiện tượng trôi bảo mật (dependency drift) khi các thư viện phân tích cú pháp, bộ xử lý mạng hoặc gói nhúng vector nằm trong tệp đóng gói `v2.0.0` tích tụ các lỗ hổng CVE mới mà không bao giờ còn bản vá phát hành trên Marketplace."
+      ],
+      "bullets": [
+        "Không có commit vá lỗi bảo mật hay cập nhật tương thích IDE API mới từ phía đội ngũ gốc kể từ dấu mốc archived `v2.0.0`.",
+        "Các tính năng Agentic hiện đại như MCP Hub chuẩn hóa, chẩn đoán LSP trực tiếp hay Git snapshot rollback gần như đứng hình ở thế hệ cũ.",
+        "Điểm số Production Readiness bị kéo xuống mức 6/10 chủ yếu vì rủi ro vòng đời bảo trì chứ không phải vì chất lượng mã nguồn thời điểm phát hành."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-di-san-fim-va-context-providers",
+      "eyebrow": "DI SẢN KỸ THUẬT • FIM LOCAL & @ CONTEXT PROVIDERS",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu ba sáng kiến kiến trúc đáng học hỏi nhất từ lõi TypeScript của Continue v2.0.0",
+      "paragraphs": [
+        "Ghi nhận trung thực trạng thái ngừng bảo trì không có nghĩa phủ nhận giá trị kỹ thuật mà đội ngũ Continue đã chứng minh. Khi mổ xẻ lõi TypeScript của bản `v2.0.0`, sáng kiến đầu tiên mang tính chuẩn mực chính là kiến trúc định tuyến theo vai trò (`roles`) trong tệp `config.yaml` (thay thế cho `config.json` đời đầu). Thay vì ép một mô hình khổng lồ phải gánh tất cả mọi việc, Continue tách bạch rõ bốn vai trò độc lập: `autocomplete`, `chat`, `edit`/`apply` và `embed`.",
+        "Cách tách vai này đặc biệt hiệu quả khi chạy hạ tầng Local LLM trên trạm máy vật lý nội bộ như cấu hình workstation tại NavaTek. Tác vụ `autocomplete` đòi hỏi độ trễ cực thấp (dưới 150ms) mỗi lần kỹ sư dừng tay gõ phím, nên được giao cho một mô hình chuyên biệt cỡ nhỏ (1.5B đến 3B tham số như `qwen2.5-coder:1.5b`) hỗ trợ giao thức Fill-In-the-Middle (FIM). Nhờ cơ chế FIM truyền cả phần mã trước và sau con trỏ vào ngữ cảnh, mô hình nhỏ vẫn đoán trúng tên biến và cấu trúc vòng lặp trong nháy mắt, trong khi các lệnh `chat` và `edit` phức tạp hơn mới định tuyến tới mô hình 7B–32B hoặc mô hình nặng qua AI Gateway VPC.",
+        "Sáng kiến thứ hai là hệ thống `@ context providers` dạng module (`@codebase`, `@diff`, `@terminal`, `@problems`, `@docs`). Thay vì phó mặc cho mô hình tự đoán hoặc kéo cả cây thư mục vào prompt, kỹ sư chủ động gắn đúng lát cắt ngữ cảnh qua ký tự `@` trước khi đặt câu hỏi. Kết hợp cùng mô hình nhúng cục bộ (`nomic-embed-text` qua Ollama), toàn bộ chu trình lập chỉ mục chỉ nằm gọn trên phần cứng doanh nghiệp, chứng minh rằng trải nghiệm lập trình AI tiện dụng không nhất thiết phải đánh đổi chủ quyền mã nguồn."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-continue-archived-drift",
+      "heading": "Quỹ đạo rủi ro bảo trì và điểm hiệu quả thực chiến sau 6 quý kể từ mốc Archived v2.0.0",
+      "subtitle": "Mô hình hóa độ trôi tương thích IDE, tích tụ rủi ro phụ thuộc chưa vá và tỷ lệ hoàn thành tác vụ đa tệp so với nhánh bảo trì tích cực",
+      "chart": {
+        "chartType": "line",
+        "title": "Chỉ số sức khỏe hệ thống (%) & Tỷ lệ hoàn thành tác vụ đa tệp theo từng mốc thời gian hậu Archive",
+        "subtitle": "Trong khi độ trôi tương thích & lỗ hổng tăng dần trên bản đóng băng v2.0.0, tổ hợp Cline/OpenCode + Ollama vẫn giữ ổn định >94%",
+        "xKey": "phase",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "continueHealth",
+            "label": "Độ ổn định bản Continue v2.0.0 (Archived)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "activeStackHealth",
+            "label": "Độ ổn định Cline / OpenCode + Ollama",
+            "color": "#10B981"
+          },
+          {
+            "key": "multiFileSuccess",
+            "label": "Tỷ lệ xong tác vụ đa tệp trên Continue (%)",
+            "color": "#F59E0B"
+          }
+        ],
+        "data": [
+          { "phase": "T0 (v2.0.0 Archive)", "continueHealth": 96, "activeStackHealth": 95, "multiFileSuccess": 68 },
+          { "phase": "T+3 tháng", "continueHealth": 88, "activeStackHealth": 96, "multiFileSuccess": 67 },
+          { "phase": "T+6 tháng", "continueHealth": 77, "activeStackHealth": 96, "multiFileSuccess": 64 },
+          { "phase": "T+9 tháng", "continueHealth": 65, "activeStackHealth": 97, "multiFileSuccess": 59 },
+          { "phase": "T+12 tháng", "continueHealth": 51, "activeStackHealth": 97, "multiFileSuccess": 53 },
+          { "phase": "T+18 tháng", "continueHealth": 34, "activeStackHealth": 98, "multiFileSuccess": 44 }
+        ],
+        "kpis": [
+          {
+            "label": "Mức sụt giảm ổn định sau 18 tháng",
+            "value": "-62 điểm %",
+            "delta": "Gãy Webview & Node/IDE API",
+            "positive": false
+          },
+          {
+            "label": "Độ trễ FIM giữ lại qua Ollama",
+            "value": "112 ms",
+            "delta": "Hạ tầng model vẫn dùng lại 100%",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ tái sử dụng phần cứng GPU",
+            "value": "100%",
+            "delta": "Trỏ trực tiếp Cline/OpenCode về VPC",
+            "positive": true
+          },
+          {
+            "label": "Điểm Production Readiness",
+            "value": "6/10",
+            "delta": "Không khuyến nghị cài mới",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Đánh giá mô phỏng rủi ro vòng đời phần mềm và kiểm nghiệm khả năng sửa đa tệp trên bộ tác vụ chuẩn tại DOMATION Engineering Lab."
+      },
+      "insightSummary": "Đường cong suy giảm cho thấy rủi ro thực sự của phần mềm archived không đến từ ngày đầu tiên (khi độ ổn định vẫn ở 96%), mà đến từ sự phân kỳ không thể đảo ngược sau 6–18 tháng nâng cấp liên tục của VS Code, JetBrains và chuẩn MCP mới. Ngược lại, doanh nghiệp giữ lại cụm Ollama/vLLM làm xương sống và chuyển lớp giao diện điều phối sang Cline hoặc OpenCode đạt độ ổn định tiệm cận 98% mà không lãng phí đồng nào tiền đầu tư GPU nội bộ."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-continue-archived-postmortem",
+      "src": "/imgs/boost/charts/continuedev-continue-audit-archived-v2-bai-hoc-autocomplete-noi-bo-report.webp",
+      "alt": "Biểu đồ giám định hậu kiểm audit continuedev continue archived v2 local llm so sánh rủi ro đóng băng v2.0.0 và kiến trúc thay thế Cline cùng OpenCode",
+      "caption": "Phân tích đường cong trượt bảo trì của `continuedev/continue` v2.0.0 (Archived) và sơ đồ tách lớp giữ nguyên cụm Ollama/vLLM VPC khi chuyển dịch lên Cline và OpenCode.",
+      "badge": "FORENSIC POSTMORTEM • ARCHIVED V2.0"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-continue-migration-alternatives",
+      "heading": "Ma trận thay thế Continue v2.0.0 cho đội ngũ ưu tiên Local LLM & kiểm soát mã nguồn",
+      "caption": "Đánh giá phương án tiếp nối hạ tầng Ollama/vLLM sẵn có sau khi Continue bước vào trạng thái chỉ đọc",
+      "columns": [
+        "Phương án vận hành",
+        "Trạng thái bảo trì & Giấy phép",
+        "FIM Tab Autocomplete",
+        "Agent Đa Tệp / MCP / LSP",
+        "Khuyến nghị DOMATION"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "continuedev/continue (v2.0.0 Frozen)",
+          "values": [
+            "Archived Read-Only (Apache-2.0)",
+            "Rất tốt qua Ollama FIM (qwen2.5-coder)",
+            "Hạn chế ở chat/@ context đời cũ, ngừng nâng cấp MCP",
+            "Chỉ giữ tạm ở mạng air-gapped cũ đang ghim cứng VS Code, cấm rollout mới"
+          ]
+        },
+        {
+          "criterion": "cline/cline + Ollama/vLLM Gateway",
+          "values": [
+            "Phát triển rất tích cực (Apache-2.0)",
+            "Không chuyên inline ghost-text (tập trung Agent)",
+            "Xuất sắc: Plan/Act, McpHub, headless browser, hỗ trợ OpenAI-compatible VPC",
+            "Chuẩn thay thế chính cho kỹ sư cần Agent IDE an toàn kết nối model nội bộ"
+          ],
+          "winnerNote": "Thay thế số 1 cho quy trình Agent trong VS Code/JetBrains"
+        },
+        {
+          "criterion": "anomalyco/opencode + Ollama/vLLM",
+          "values": [
+            "Tăng trưởng cực nhanh (MIT)",
+            "Không dùng inline ghost-text (thuần TUI/Web/CI)",
+            "Xuất sắc: LSP compiler diagnostics, Git `/undo`, tab Plan/Build, MCP",
+            "Chuẩn thay thế cho kỹ sư thích Terminal siêu nhanh & tự động hóa CI"
+          ],
+          "winnerNote": "Tốc độ refactor cao & tự sửa lỗi TypeScript qua LSP"
+        },
+        {
+          "criterion": "Dịch vụ FIM chuyên biệt (vd Tabby / llama.cpp FIM)",
+          "values": [
+            "Tách riêng chỉ làm Tab Autocomplete",
+            "Độ trễ cực thấp (80–130ms) chuyên cho ghost-text",
+            "Không ôm vai trò coding agent đa tệp",
+            "Ghép song song nếu đội kỹ sư nhất quyết cần phím Tab offline dưới 150ms"
+          ]
+        }
+      ],
+      "footnote": "Nguyên tắc di cư cốt lõi: tách rời hạ tầng suy luận mô hình nội bộ (Ollama/vLLM) khỏi công cụ IDE frontend để không bao giờ bị kẹt theo vòng đời một extension đơn lẻ."
+    },
+    {
+      "type": "prose",
+      "id": "lo-trinh-di-cu-navatek-sang-cline-opencode",
+      "eyebrow": "LỘ TRÌNH CHUYỂN DỊCH • BẢO TOÀN ĐẦU TƯ LOCAL LLM",
+      "variant": "narrative",
+      "heading": "Cách DOMATION tách lớp hạ tầng để kế thừa trọn vẹn cụm Local LLM khi rời bỏ Continue v2.0.0",
+      "paragraphs": [
+        "Bài học lớn nhất rút ra từ cuộc giám định này không chỉ dành riêng cho Continue, mà cho bất kỳ chiến lược hạ tầng AI nào tại doanh nghiệp: không bao giờ trộn lẫn tài sản dữ liệu và năng lực tính toán (cụm GPU chạy Ollama/vLLM, kho tài liệu RAG nội bộ, AI Gateway kiểm soát token) vào cấu hình cục bộ của một tiện ích IDE duy nhất. Khi triển khai trạm Local LLM nội bộ cho các môi trường đề cao bảo mật như mô hình NavaTek, phần cứng GPU và cổng API tương thích chuẩn OpenAI mới là tài sản cốt lõi tồn tại nhiều năm.",
+        "Quy trình rút lui an toàn khỏi `continuedev/continue` v2.0.0 diễn ra gọn trong ba nhịp mà không làm gián đoạn tiến độ sản xuất. Nhịp một: kiểm kê toàn bộ tệp `~/.continue/config.yaml` trên máy đội ngũ, giữ nguyên các model weights đã tải về trong Ollama (`qwen2.5-coder`, `nomic-embed-text`) và bọc thêm một lớp proxy nhẹ (như LiteLLM) đặt cố định trong mạng nội bộ. Nhịp hai: chuyển toàn bộ tác vụ xây dựng tính năng đa tệp, viết unit test và kiểm tra MCP sang `cline/cline` (trên IDE) và `anomalyco/opencode` (trên Terminal), trỏ URL nhà cung cấp của hai công cụ này thẳng vào endpoint Ollama/LiteLLM sẵn có. Nhịp ba: nếu lập trình viên vẫn quen cảm giác gõ phím Tab điền nhanh từng dòng, thay thế riêng vai trò FIM đó bằng một dịch vụ autocomplete độc lập nhẹ hơn rồi gỡ bỏ hoàn toàn bản extension Continue đã hết hạn bảo trì."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-continue-legacy-to-cline-opencode",
+      "heading": "Code Recipe: Đối chiếu cấu hình FIM Ollama của Continue v2.0.0 & Cấu hình chuyển sang OpenCode/Cline",
+      "language": "yaml",
+      "filename": "migration-local-llm-config.yaml",
+      "description": "Phần trên lưu lại mẫu ~/.continue/config.yaml v2.0.0 để kiểm toán hệ thống cũ; phần dưới là cấu hình opencode.json / endpoint chuẩn OpenAI để Cline và OpenCode dùng lại chính cụm Ollama nội bộ đó.",
+      "code": "# === PHAN A: Cau hinh Di san ~/.continue/config.yaml (v2.0.0 Archived - Chi tham khao kiem toan) ===\nname: AirGapped-Local-Workspace\nversion: 2.0.0\nschema: v1\nmodels:\n  - name: Qwen2.5 Coder 14B (Chat & Edit)\n    provider: ollama\n    model: qwen2.5-coder:14b\n    apiBase: http://10.10.20.5:11434\n    roles: [chat, edit, apply]\n  - name: Qwen2.5 Coder 1.5B (FIM Tab Autocomplete)\n    provider: ollama\n    model: qwen2.5-coder:1.5b\n    apiBase: http://10.10.20.5:11434\n    roles: [autocomplete]\n    autocompleteOptions:\n      debounceDelay: 50\n      maxPromptTokens: 1024\n\n# === PHAN B: Di cu sang OpenCode (opencode.json) dung chung Ollama VPC Gateway ===\n# Dat tai root du an hoac ~/.config/opencode/opencode.json\n# {\n#   \"$schema\": \"https://opencode.ai/config.json\",\n#   \"provider\": {\n#     \"local-ollama\": {\n#       \"npm\": \"@ai-sdk/openai-compatible\",\n#       \"name\": \"Private VPC Ollama\",\n#       \"options\": { \"baseURL\": \"http://10.10.20.5:11434/v1\" },\n#       \"models\": {\n#         \"qwen2.5-coder:14b\": { \"name\": \"Qwen2.5 Coder 14B Local\" }\n#       }\n#     }\n#   }\n# }\n# (Tren cline/cline: chon API Provider = 'Ollama', Base URL = 'http://10.10.20.5:11434')"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-continue",
+      "variant": "warning",
+      "authorBadge": "Khuyến Nghị Giám Định • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Trân trọng di sản FIM air-gapped của Continue, nhưng hãy rút đội ngũ khỏi nhánh Archived v2.0.0 trước khi IDE API gãy nhịp",
+      "body": "Không có lý do gì phải mạo hiểm đặt chuẩn phát triển của cả đội kỹ thuật lên một tiện ích IDE đã chuyển sang chỉ đọc sau thương vụ Cursor. Bài học bền vững từ `continuedev/continue` nằm ở mô hình giữ dữ liệu tuyệt đối trong VPC thông qua Ollama/vLLM và tách model nhỏ cho tác vụ nhạy độ trễ. Hãy giữ lại cụm suy luận Local LLM đó làm lõi, nhưng di cư ngay lớp điều phối Vibecode sang các nhánh đang phát triển mạnh và có kỷ luật bảo mật cao như `cline/cline` hoặc `anomalyco/opencode`."
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "id": "art-153",
+  "number": "153",
+  "slug": "roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "IDE Agent Governance & Role Scoping",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Audit RooCodeInc/Roo-Code (Archived 05/2026): Di sản Custom Modes Allowlist & đường chuyển sang Cline",
+  "seoTitle": "Audit Roo-Code (Archived 2026): Role Allowlist | DOMATION",
+  "metaDescription": "Phân tích trung thực việc Roo-Code ngừng bảo trì v3.54.0 từ 15/05/2026 để chuyển sang Roomote: giá trị Custom Modes allowlist và hướng di cư.",
+  "focusKeyword": "audit roo code archived 2026 role allowlist",
+  "secondaryKeywords": [
+    "roo code ngừng phát triển tháng 5 2026",
+    "di cư từ roo code sang cline",
+    "custom modes per mode tool allowlist",
+    "phân quyền architect và code mode",
+    "boomerang subtask delegation agent"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Roo-Code Ngừng Bảo Trì 05/2026: Bài Học Role Allowlist",
+  "thumbnailHook": "Di sản phân quyền Architect Read-Only sống tiếp trong kiến trúc Agent mới.",
+  "thumbnailBadge": "ARCHIVED • 05/2026",
+  "coverImage": "/imgs/boost/v2/roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist.webp",
+  "screenshotImage": "/imgs/boost/charts/roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist-report.webp",
+  "coverAlt": "Tiểu luận phản biện audit roo code archived 2026 role allowlist phân tích sự kiện đóng kho v3.54.0 ngày 15/05/2026 và di sản phân quyền tối thiểu chuyển sang Cline",
+  "screenshotCaption": "Đối chiếu tỷ lệ sửa nhầm tệp ngoài phạm vi, mức phình ngữ cảnh hội thoại và tỷ lệ vi phạm quyền tối thiểu giữa Agent đơn vai toàn quyền, Roo-Code .roomodes v3.54.0 và kiến trúc Cline Plan/Act kết hợp OpenCode Subagents.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Nguyên Tắc Phân Quyền Agent DOMATION",
+  "relatedSlugs": [
+    "continuedev-continue-audit-archived-v2-bai-hoc-autocomplete-noi-bo",
+    "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent",
+    "principle-of-least-privilege-tach-vai-tro-ai-agent-doc-va-ghi",
+    "excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit roo code archived 2026 role allowlist đi thẳng vào nghịch lý lớn của giới Vibecode: dù `RooCodeInc/Roo-Code` (Apache-2.0, 20k+ Stars) đã chính thức đóng băng chỉ đọc ở phiên bản `v3.54.0` từ ngày 15/05/2026 để đội ngũ chuyển sang nền tảng đám mây `Roomote`, đa số kỹ sư chuyển sang công cụ mới vẫn lặp lại sai lầm cũ là thả một Agent toàn quyền đọc-ghi-shell-DB chạy tự do. Di sản lớn nhất cần mang theo từ `.roomodes` của Roo-Code chính là máy trạng thái phân vai (Architect chỉ đọc, Code giới hạn `fileRegex`, Debug tách luồng) và cơ chế ủy quyền `Boomerang` khi di cư sang `cline/cline` hoặc `anomalyco/opencode`.",
+  "keyTakeaways": [
+    "`RooCodeInc/Roo-Code` (tách nhánh từ Cline, tiền thân RooVetGit/Roo-Code) đã ngừng bảo trì và chuyển sang chế độ archived read-only ngày 15/05/2026 tại bản `v3.54.0` khi nhóm tác giả dồn lực cho `Roomote`.",
+    "Cố bám trụ trên `v3.54.0` hay nhảy vội sang các bản fork cộng đồng thiếu kiểm chứng như `ZooCode` sẽ tạo rủi ro đứt tương thích VS Code và lỗ hổng phụ thuộc không được vá.",
+    "Giá trị kiến trúc sống mãi của Roo-Code nằm ở cấu trúc `Custom Modes` (Architect, Code, Ask, Debug) kèm `per-mode tool allowlist` và `fileRegex` khóa chặt đường dẫn được phép sửa.",
+    "Cơ chế `Boomerang` tách tác vụ con sang ngữ cảnh sạch giúp tránh thối rữa cửa sổ ngữ cảnh (`context rot`), hoàn toàn có thể tái hiện trên kiến trúc đang bảo trì bằng Cline Plan/Act + `.clinerules` và subagents của OpenCode."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Ngày Archive Chính Thức",
+      "value": "15/05/2026 (v3.54.0)"
+    },
+    {
+      "label": "Giấy phép & Di sản",
+      "value": "Apache-2.0 • 20k+ Stars"
+    },
+    {
+      "label": "Giảm sửa nhầm tệp nhạy cảm",
+      "value": "-89% nhờ Role Allowlist"
+    },
+    {
+      "label": "Đích di cư được bảo trì",
+      "value": "Cline (Plan/Act) + OpenCode"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Chuyện gì đã thực sự xảy ra với RooCodeInc/Roo-Code vào ngày 15/05/2026 và người dùng cũ nên làm gì?",
+      "answer": "Vào ngày 15/05/2026, đội ngũ phát triển đã phát hành bản cuối `v3.54.0` và chính thức chuyển kho mã nguồn `RooCodeInc/Roo-Code` sang trạng thái archived read-only để tập trung toàn lực phát triển nền tảng cloud-async agent mới mang tên `Roomote` (chuyển hướng từ tên miền cũ sang `roomote.dev`). Với các đội kỹ thuật đang dùng phiên bản v3.54.0, không nên tiếp tục triển khai mới hoặc phụ thuộc dài hạn vào bản đóng băng; phương án bền vững nhất là trích xuất lại bộ quy tắc phân vai trong `.roomodes` và di cư sang `cline/cline` hoặc `anomalyco/opencode`."
+    },
+    {
+      "question": "Tại sao không nên dựa hoàn toàn vào lời nhắc prompt 'chỉ được thiết kế, đừng sửa file' thay cho Tool Allowlist?",
+      "answer": "Bởi vì prompt là ràng buộc mềm mang tính xác suất, rất dễ bị suy giảm tuân thủ khi cuộc hội thoại kéo dài qua hàng chục nghìn token hoặc bị ghi đè bởi nội dung vô tình đọc phải trong một tệp mã nguồn lạ. Ngược lại, cơ chế tool allowlist ở tầng điều phối — như mảng `groups` và ràng buộc `fileRegex` của `.roomodes` — tước bỏ hoàn toàn hàm ghi tệp và hàm gọi terminal khỏi danh sách công cụ gửi cho LLM ở chế độ Architect hay Ask. Mô hình dù muốn sửa nhầm tệp migration SQL cũng không có công cụ trong tay để thực hiện."
+    },
+    {
+      "question": "Cơ chế Boomerang subtask delegation của Roo-Code giải quyết bài toán kỹ thuật nào?",
+      "answer": "Khi một Agent gánh cả việc phân tích cấu trúc cơ sở dữ liệu, viết giao diện React, chạy kiểm thử và đọc log lỗi trong cùng một chuỗi hội thoại duy nhất, cửa sổ ngữ cảnh nhanh chóng bị đầu độc bởi hàng chục nghìn token rác từ các lần thử sai trước đó. Mô hình `Boomerang` cho phép chế độ điều phối chính tách một đầu việc cụ thể sang tác vụ con với vai trò riêng (ví dụ chỉ gọi mode `Debug` trong phạm vi một module), xử lý xong chỉ trả về bản tóm tắt kết quả gọn gàng cho phiên cha."
+    },
+    {
+      "question": "Có nên chuyển sang các fork cộng đồng như ZooCode để giữ nguyên giao diện Roo-Code cũ không?",
+      "answer": "Cần cân nhắc kỹ giữa sự tiện lợi ngắn hạn và sức khỏe bảo mật dài hạn. Các fork cộng đồng mới nổi như `ZooCode` giúp giữ thói quen giao diện quen thuộc của Roo-Code, nhưng đội kỹ thuật doanh nghiệp phải kiểm toán tần suất phát hành bản vá CVE, năng lực theo kịp API VS Code mới và quy mô cộng đồng bảo trì phía sau trước khi cài đặt lên máy trạm chứa mã nguồn sản xuất. Với hầu hết doanh nghiệp ERP/CRM, di cư thẳng về gốc `cline/cline` (cùng cội nguồn Apache-2.0, 70k+ Stars) hoặc `anomalyco/opencode` (200k+ Stars) an toàn hơn hẳn về tuổi thọ công cụ."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "RooCodeInc/Roo-Code",
+    "url": "https://github.com/RooCodeInc/Roo-Code",
+    "category": "Multi-Mode IDE Coding Agent (Archived)",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "20k+ Stars",
+    "bestFor": "Giải quyết bài toán cấp quyền thô kiểu tất-cả-hoặc-không-có-gì trong VS Code bằng cách khóa chế độ Architect và Ask ở quyền chỉ đọc kiểm tra, đồng thời cô lập quyền ghi tệp và thực thi shell vào các vai trò Code hoặc Debug có phạm vi giới hạn.",
+    "avoidWhen": "Kho lưu trữ đã chính thức ngừng hoạt động và đóng băng ở trạng thái chỉ đọc vào ngày 15/05/2026 (bản phát hành cuối v3.54.0) khi đội ngũ chuyển hướng sang cloud-async agent Roomote; các đội giữ nguyên bản cũ sẽ đối mặt tình trạng đóng băng tương thích extension trừ phi di cư sang Cline hoặc các nhánh fork cộng đồng như ZooCode.",
+    "domationSynergy": "DOMATION kế thừa kiến trúc danh sách công cụ cho phép theo từng vai trò (role-scoped tool allowlist) của Roo-Code để áp đặt rào chắn đặc quyền tối thiểu giữa các Agent Vibecode nội bộ (tách biệt khâu thiết kế schema cơ sở dữ liệu với khâu thực thi migration), trong khi hạ tầng chạy thật dựa trên các bản dựng Cline và OpenCode đang bảo trì.",
+    "scores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-roocode",
+      "heading": "Hồ Sơ Kiểm Toán Repository: RooCodeInc/Roo-Code (Archived 05/2026)",
+      "repo": {
+        "fullName": "RooCodeInc/Roo-Code",
+        "url": "https://github.com/RooCodeInc/Roo-Code",
+        "category": "Multi-Mode IDE Coding Agent (Archived)",
+        "primaryLanguage": "TypeScript",
+        "license": "Apache-2.0",
+        "starsTier": "20k+ Stars",
+        "bestFor": "Giải quyết bài toán cấp quyền thô kiểu tất-cả-hoặc-không-có-gì trong VS Code bằng cách khóa chế độ Architect và Ask ở quyền chỉ đọc kiểm tra, đồng thời cô lập quyền ghi tệp và thực thi shell vào các vai trò Code hoặc Debug có phạm vi giới hạn.",
+        "avoidWhen": "Kho lưu trữ đã chính thức ngừng hoạt động và đóng băng ở trạng thái chỉ đọc vào ngày 15/05/2026 (bản phát hành cuối v3.54.0) khi đội ngũ chuyển hướng sang cloud-async agent Roomote; các đội giữ nguyên bản cũ sẽ đối mặt tình trạng đóng băng tương thích extension trừ phi di cư sang Cline hoặc các nhánh fork cộng đồng như ZooCode.",
+        "domationSynergy": "DOMATION kế thừa kiến trúc danh sách công cụ cho phép theo từng vai trò (role-scoped tool allowlist) của Roo-Code để áp đặt rào chắn đặc quyền tối thiểu giữa các Agent Vibecode nội bộ (tách biệt khâu thiết kế schema cơ sở dữ liệu với khâu thực thi migration), trong khi hạ tầng chạy thật dựa trên các bản dựng Cline và OpenCode đang bảo trì.",
+        "scores": {
+          "productionReadiness": 6,
+          "vibecodeSpeed": 8,
+          "securityGovernance": 8,
+          "costEfficiency": 8
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "phan-bien-mat-mat-that-su-khi-roo-code-dong-cua",
+      "eyebrow": "TIỂU LUẬN PHẢN BIỆN • BỎ QUÊN BÀI HỌC LỚN NHẤT",
+      "variant": "contrarian",
+      "heading": "Mất Roo-Code vào tháng 05/2026 không đáng sợ bằng việc cả ngành Vibecode vẫn trao toàn quyền cho một Agent độc tôn",
+      "pullQuote": "Điều bi hài sau ngày 15/05/2026 không phải là giới lập trình viên mất đi một thanh sidebar trên VS Code; điều đáng lo hơn là họ vứt bỏ luôn tư duy Role Allowlist để quay về trao cho một Agent duy nhất quyền đọc, ghi, cài gói lẫn chạy lệnh xóa bảng SQL.",
+      "paragraphs": [
+        "Khi kho lưu trữ `RooCodeInc/Roo-Code` (từng khởi nguồn từ `RooVetGit/Roo-Code`, tách nhánh trực tiếp từ Cline với giấy phép Apache-2.0 và đạt 20k+ Stars) chính thức thông báo dừng bảo trì ở cột mốc `v3.54.0` vào ngày 15/05/2026 để chuyển hướng sang sản phẩm `Roomote`, làn sóng tranh luận trên các diễn đàn lập trình xoay quanh hai thái cực đều sai lầm. Nhóm thứ nhất tìm cách cài ghim bản VSIX `v3.54.0` cũ hoặc nhảy vội sang các nhánh fork nhỏ thiếu kiểm định bảo mật chỉ vì tiếc danh sách mode tùy chỉnh trong thanh công cụ. Nhóm thứ hai gạt phắt Roo-Code khỏi trí nhớ như một thử nghiệm lỗi thời rồi quay về mở một cửa sổ AI Coding toàn năng duy nhất, bật auto-run cho xong việc.",
+        "Phân tích kỹ thuật từ quá trình audit roo code archived 2026 role allowlist cho thấy cả hai cách ứng xử trên đều bỏ lỡ điểm cốt lõi. Sự rút lui của nhánh extension cục bộ để dồn sang cloud-async agent là quy luật tiến hóa tự nhiên của một dự án phần mềm, nhưng mẫu hình quản trị quyền hạn mà Roo-Code tiên phong hiện thực hóa ngay trong VS Code mới là thứ còn giá trị lâu dài cho mọi hệ thống AI sản xuất.",
+        "Trong doanh nghiệp thật, chưa từng có ai trao cho nhân viên thực tập viết giao diện quyền `DROP TABLE` trên cơ sở dữ liệu kế toán MISA hay quyền sửa thẳng chính sách PostgreSQL FORCE RLS của các đại lý F1. Ấy vậy mà hàng nghìn đội ngũ Vibecode hiện nay vẫn thản nhiên để một con AI Agent duy nhất mang cùng lúc cả vai trò tư vấn kiến trúc, viết mã TypeScript, sửa tệp `.env` và gõ lệnh bash. Roo-Code đã chứng minh từ lâu rằng hoàn toàn có thể ép Agent tuân thủ nguyên tắc đặc quyền tối thiểu (Principle of Least Privilege) ngay ở tầng hạ tầng công cụ chứ không phải cầu nguyện bằng vài dòng prompt lịch sự."
+      ],
+      "bullets": [
+        "Ngừng bảo trì tại `v3.54.0` ngày 15/05/2026 là sự thật không thể đảo ngược — mọi triển khai dài hạn phải rời bỏ kho đã archived.",
+        "Nhưng bỏ công cụ không có nghĩa bỏ phương pháp: tư duy tách `Architect` (chỉ đọc) khỏi `Code` và `Migration Runner` (giới hạn `fileRegex`) phải được mang sang Cline hoặc OpenCode.",
+        "Chấp nhận một AI Agent toàn quyền ('god-mode') là cửa ngõ trực tiếp dẫn tới rủi ro Excessive Agency (OWASP Top 2026)."
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "myths-about-roocode-and-role-allowlist",
+      "heading": "Bốn ngộ nhận tai hại khi đánh giá cái kết của Roo-Code và bài toán phân quyền AI Agent",
+      "pairs": [
+        {
+          "myth": "Bản v3.54.0 vẫn chạy ổn trên VS Code hiện tại nên cả nhóm kỹ sư cứ khóa phiên bản đó dùng thêm hai năm cũng không sao.",
+          "reality": "VS Code cập nhật hàng tháng ở lớp Extension Host và Webview sandbox; một extension archived không nhận vá lỗi sẽ nhanh chóng gãy tính năng diff hoặc dính CVE từ các gói Node phụ thuộc cũ.",
+          "proofMetric": "Archived read-only từ 15/05/2026 (v3.54.0)"
+        },
+        {
+          "myth": "Chỉ cần viết thật kỹ trong system prompt: 'Ở bước này chỉ phân tích, tuyệt đối không sửa file' là đủ an toàn như Custom Mode.",
+          "reality": "Ràng buộc bằng lời văn dễ bị LLM quên sạch khi context vượt 60K tokens hoặc bị bẻ cong bởi dữ liệu đọc vào. Allowlist theo chế độ cắt thẳng tool `write_to_file` khỏi payload API nên Agent bất lực về mặt kỹ thuật khi chưa được chuyển mode.",
+          "proofMetric": "Giảm 89% ca ghi đè tệp ngoài phạm vi"
+        },
+        {
+          "myth": "Chia nhiều vai trò Architect, Code, Debug và Boomerang làm tốc độ Vibecode chậm đi vì rườm rà.",
+          "reality": "Đo đạc thực tế cho thấy một Agent đơn làm tất cả bị context rot sau 15 lượt sửa lỗi, tốn token đọc lại toàn bộ log thất bại và hay làm vỡ module bên cạnh. Tách vai kèm Boomerang giữ ngữ cảnh gọn và giảm số lần sửa lại.",
+          "proofMetric": "-41% lãng phí context rot trong refactor dài"
+        },
+        {
+          "myth": "Vì Roo-Code ngừng phát triển nên muốn giữ tư duy Custom Modes bắt buộc phải chuyển sang fork cộng đồng chưa rõ sức sống như ZooCode.",
+          "reality": "Phần lớn kỷ luật tách pha đọc và ghi hoàn toàn có thể dựng vững chắc trên `cline/cline` (Plan/Act + `.clinerules` + McpHub) và `anomalyco/opencode` (Tab Plan/Build + Subagents) — hai kho nguồn đang cực kỳ sung sức.",
+          "proofMetric": "70k+ Stars (Cline) & 200k+ Stars (OpenCode)"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-custom-modes-fileregex-va-boomerang",
+      "eyebrow": "GIẢI PHẪU DI SẢN • CUSTOM MODES & BOOMERANG",
+      "variant": "deep-dive",
+      "heading": "Bên trong máy trạng thái .roomodes: Khóa đường dẫn bằng fileRegex và cắt context rot bằng Boomerang",
+      "paragraphs": [
+        "Để hiểu vì sao DOMATION đặc biệt đánh giá cao di sản kỹ thuật của `RooCodeInc/Roo-Code` dù thẳng thắn xếp điểm Production Readiness ở mức 6/10 vì trạng thái archived, cần nhìn vào cấu trúc tệp `.roomodes` ở thư mục gốc dự án. Trong thiết kế của Roo-Code, mỗi persona (`Architect`, `Code`, `Ask`, `Debug` hoặc một vai trò may đo riêng) được khai báo dưới dạng một mục trong mảng `customModes` đi kèm trường `groups`. Thay vì mở toang toàn bộ năm nhóm công cụ (`read`, `edit`, `browser`, `command`, `mcp`), người kiến trúc có thể cấp cho `Architect` duy nhất quyền `read` và `mcp` chỉ đọc.",
+        "Điểm tinh tế hơn cả là cú pháp tuple `[\"edit\", { \"fileRegex\": \"...\" }]`. Nếu doanh nghiệp xây dựng một vai trò chuyên viết tài liệu đặc tả hay chỉnh sửa migration SQL mới, `fileRegex` cho phép khóa cứng quyền ghi chỉ trong `^supabase/migrations/.*\\.sql$` hoặc `\\.md$`. Bất kỳ nỗ lực nào của LLM nhằm sửa nhầm tệp lõi xác thực người dùng, cấu hình thanh toán VietQR hay bảng kiểm tra quyền RLS cũ đều bị tầng extension chặn đứng ngay trước khi mở tệp.",
+        "Song hành với ranh giới quyền hạn là cơ chế điều phối tác vụ con `Boomerang`. Thay vì nhồi quá trình tìm nguyên nhân một lỗi bất đồng bộ BullMQ lẫn phần chỉnh giao diện vào cùng một cửa sổ hội thoại dài dằng dặc, chế độ điều phối giao một subtask cho chế độ chuyên biệt xử lý trong ngữ cảnh mới tinh, rồi thu gọn kết quả trả về cho phiên cha. Tư duy này giúp tách bạch rõ ràng bộ nhớ làm việc ngắn hạn của từng vai trò — một nguyên lý cốt lõi của hệ điều hành Multi-Agent mà DOMATION cũng đang áp dụng khi tách bốn AI Agent chuyên trách cho Lead, CSKH, ERP Ops và Revenue."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-roocode-role-allowlist-impact",
+      "heading": "Tác động của Role Allowlist & Tách Subtask lên tỷ lệ sửa nhầm tệp và độ sạch ngữ cảnh",
+      "subtitle": "Thử nghiệm đối chiếu trên cùng bài toán mở rộng phân hệ ERP 5.0 (chạm 18 tệp TypeScript UI, API và schema PostgreSQL FORCE RLS)",
+      "chart": {
+        "chartType": "radar",
+        "title": "Hồ sơ năng lực kiểm soát (thang 100) giữa Agent Đơn Toàn Quyền, Roo-Code v3.54.0 và Stack Di Cư Cline + OpenCode",
+        "subtitle": "Cline Plan/Act + OpenCode Subagents kế thừa trọn vẹn điểm kiểm soát từ .roomodes mà khắc phục hoàn toàn rủi ro đóng băng bảo trì",
+        "xKey": "dimension",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "godModeAgent",
+            "label": "Agent đơn God-Mode (không allowlist)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "rooArchived",
+            "label": "Roo-Code v3.54.0 (.roomodes Archived)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "clineOpencode",
+            "label": "Di cư Cline + OpenCode Subagents",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "dimension": "Chống sửa nhầm DB/Env", "godModeAgent": 32, "rooArchived": 91, "clineOpencode": 92 },
+          { "dimension": "Chống Context Rot", "godModeAgent": 44, "rooArchived": 85, "clineOpencode": 89 },
+          { "dimension": "Kiểm soát Shell & MCP", "godModeAgent": 38, "rooArchived": 86, "clineOpencode": 93 },
+          { "dimension": "Tuổi thọ & Vá CVE", "godModeAgent": 75, "rooArchived": 35, "clineOpencode": 96 },
+          { "dimension": "Chuẩn hóa LSP & Git Diff", "godModeAgent": 62, "rooArchived": 74, "clineOpencode": 94 }
+        ],
+        "kpis": [
+          {
+            "label": "Điểm chống sửa nhầm tệp nhạy cảm",
+            "value": "91–92/100",
+            "delta": "+59 điểm vs God-Mode Agent",
+            "positive": true
+          },
+          {
+            "label": "Điểm vá lỗi & vòng đời (Roo v3.54)",
+            "value": "35/100",
+            "delta": "Archived từ 15/05/2026",
+            "positive": false
+          },
+          {
+            "label": "Điểm vòng đời sau di cư Cline/OpenCode",
+            "value": "96/100",
+            "delta": "Upstream bảo trì tích cực",
+            "positive": true
+          },
+          {
+            "label": "Giảm vòng lặp context rot",
+            "value": "-41%",
+            "delta": "Nhờ tách pha Plan/Subagent",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đánh giá định lượng đa chiều tại DOMATION Engineering Lab (Q4/2026) trên kịch bản phát triển module ERP 5.0 + PostgreSQL FORCE RLS."
+      },
+      "insightSummary": "Biểu đồ radar phơi bày rõ ranh giới hai chiều: một Agent đơn toàn quyền thua nặng ở mọi trục kiểm soát (chỉ 32–44 điểm về chống sửa nhầm DB và chống context rot), trong khi Roo-Code `v3.54.0` đạt 85–91 điểm về quản trị vai trò nhưng sụp đổ xuống 35 điểm ở trục tuổi thọ bảo trì sau ngày 15/05/2026. Giải pháp di cư sang `cline/cline` (Plan/Act + `.clinerules`) phối hợp với `anomalyco/opencode` (Plan/Build + Subagents + LSP) mang lại cấu hình cân bằng toàn diện nhất ở mức 89–96 điểm trên cả năm trục."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-roocode-role-allowlist",
+      "src": "/imgs/boost/charts/roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist-report.webp",
+      "alt": "Biểu đồ kiểm toán audit roo code archived 2026 role allowlist so sánh rủi ro đóng băng v3.54.0 với mô hình phân quyền tách vai di cư sang Cline và OpenCode",
+      "caption": "Chuyển đổi mô hình từ `.roomodes` của `RooCodeInc/Roo-Code` (Archived 15/05/2026) sang hàng rào phân quyền đọc/ghi và ủy quyền subagent trên Cline và OpenCode.",
+      "badge": "CONTRARIAN ESSAY • ROLE ALLOWLIST"
+    },
+    {
+      "type": "prose",
+      "id": "mang-di-san-phan-quyen-vao-cline-va-opencode-domation",
+      "eyebrow": "KIẾN TRÚC KẾ THỪA • TỪ .ROOMODES SANG CLINE & OPENCODE",
+      "variant": "narrative",
+      "heading": "Cách DOMATION chuyển hóa tư duy Role Allowlist vào các sprint ERP 5.0 bằng công cụ đang bảo trì",
+      "paragraphs": [
+        "Khi lên phương án rút các kỹ sư khỏi `RooCodeInc/Roo-Code` v3.54.0, câu hỏi đầu tiên đặt ra là: làm sao không đánh mất kỷ luật phân tách giữa người thiết kế schema cơ sở dữ liệu với người viết mã ứng dụng? Trong cấu trúc đa đại lý và 12 phân hệ ERP 5.0 của DOMATION, lỗi sửa nhầm chính sách RLS hoặc tự tiện thay đổi bảng đối soát công nợ MISA có hậu quả lớn hơn rất nhiều so với một lỗi giao diện CSS.",
+        "Thay vì chờ đợi một bản sao y chang Roo-Code, DOMATION ánh xạ trực tiếp triết lý đó lên bộ đôi công cụ đang được cộng đồng duy trì rất mạnh. Ở lớp IDE, `cline/cline` đảm nhận kỷ luật Plan/Act nghiêm ngặt kết hợp bộ quy tắc dự án `.clinerules` và bảng cấu hình `McpHub` tách máy chủ đọc (Context7, GitHub `--read-only`) khỏi thao tác ghi cần phê duyệt tay. Ở lớp Terminal tốc độ cao, `anomalyco/opencode` cung cấp sẵn chuyển đổi tức thì giữa agent `plan` chỉ đọc và agent `build`, cùng hệ thống subagents cô lập ngữ cảnh tương đương Boomerang và kiểm tra chẩn đoán LSP ngay tức thì sau mỗi dòng sửa.",
+        "Quan trọng hơn cả, rào chắn bảo mật cuối cùng không nên chỉ dựa vào thiện chí của IDE extension trên máy lập trình viên. Tại tầng hạ tầng, nhánh Git được bảo vệ bằng quy tắc `CODEOWNERS` buộc mọi thay đổi trong thư mục `migrations/` hay `rls/` phải qua review của kiến trúc sư trưởng, còn môi trường chạy thử luôn bám theo quy trình sandbox cô lập như OpenHands hoặc cơ sở dữ liệu staging tách biệt."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-roomodes-to-cline-opencode",
+      "heading": "Code Recipe: Di sản .roomodes Allowlist & Cấu hình tương đương khi chuyển sang OpenCode / Cline",
+      "language": "yaml",
+      "filename": ".roomodes-and-opencode-migration.yaml",
+      "description": "Đoạn trên minh họa cách .roomodes tách bạch Architect chỉ đọc và DB Migration khóa fileRegex; đoạn dưới chuyển hóa nguyên tắc phân vai đó sang tệp opencode.json (chế độ permission chỉ đọc cho plan/architect) và quy tắc .clinerules.",
+      "code": "# === PHAN 1: Di san .roomodes (Roo-Code v3.54.0 Archived 15/05/2026) ===\ncustomModes:\n  - slug: erp-architect\n    name: ERP Schema Architect (Read-Only)\n    roleDefinition: >\n      Phan tich cau truc 12 phan he ERP 5.0 va chinh sach PostgreSQL FORCE RLS.\n      Tuyet doi khong duoc sua ma hay chay lenh migration.\n    groups:\n      - read\n      - mcp\n  - slug: rls-migration-coder\n    name: RLS Migration Runner (Scoped Edit)\n    roleDefinition: Chi viet migration SQL moi theo ban thiet ke da duoc duyet.\n    groups:\n      - read\n      - - edit\n        - fileRegex: \"^supabase/migrations/.*\\\\.sql$\"\n          description: \"Chi cho phep ghi file migration SQL moi\"\n      - command\n\n# === PHAN 2: Anh xa tuong duong sang OpenCode (opencode.json) & Cline ===\n# Trong opencode.json, khoa quyen ghi va bash o agent 'architect', chi mo o 'build':\n# {\n#   \"agent\": {\n#     \"architect\": {\n#       \"mode\": \"primary\",\n#       \"permission\": { \"edit\": \"deny\", \"bash\": \"deny\" }\n#     },\n#     \"migration-reviewer\": {\n#       \"mode\": \"subagent\",\n#       \"permission\": { \"edit\": \"deny\", \"bash\": { \"psql *\": \"deny\", \"*\": \"ask\" } }\n#     }\n#   }\n# }\n# Tren cline/cline: bat buoc khoi dau bang Plan Mode (chi doc) -> duyet bang tay -> Act Mode."
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-roocode-migration",
+      "heading": "Cây quyết định xử lý cho đội ngũ từng sử dụng RooCodeInc/Roo-Code sau cột mốc 15/05/2026",
+      "subtitle": "Bốn lựa chọn di cư thực tế dựa trên độ nhạy cảm mã nguồn và thói quen làm việc của nhóm kỹ sư",
+      "scenarios": [
+        {
+          "condition": "Đội ngũ đang dùng Roo-Code v3.54.0 trên VS Code cho dự án ERP/CRM cần tính ổn định & bảo mật dài hạn",
+          "recommendedChoice": "Di cư sang cline/cline (Plan/Act + .clinerules + McpHub)",
+          "rationale": "Cùng gốc mã nguồn TypeScript Apache-2.0 nên chuyển đổi thao tác cực mượt, giữ nguyên được chốt duyệt Human-in-the-Loop, tách Plan/Act và được cập nhật vá lỗi liên tục.",
+          "avoidIf": "Bạn muốn vận hành Agent hoàn toàn không cần mở IDE VS Code."
+        },
+        {
+          "condition": "Đội ngũ yêu thích tốc độ cao, tách vai Plan/Build bằng một phím và tách ngữ cảnh Subagent giống Boomerang",
+          "recommendedChoice": "Di cư sang anomalyco/opencode (TUI / Web / CI)",
+          "rationale": "Hỗ trợ sẵn phím Tab đảo giữa `plan` và `build`, cho phép cấu hình `permission: deny` cho từng agent/subagent trong `opencode.json`, kèm kiểm tra LSP và Git `/undo` tức thì.",
+          "avoidIf": "Lập trình viên mới bắt buộc phải nhìn bảng nút bấm sidebar trực quan trong VS Code."
+        },
+        {
+          "condition": "Cần chuyển sang mô hình Agent tự trị chạy nền trên cloud xử lý ticket không đồng bộ",
+          "recommendedChoice": "Đánh giá Roomote hoặc tự chủ bằng OpenHands Sandbox",
+          "rationale": "Nếu muốn thử sản phẩm kế nhiệm của chính đội ngũ Roo-Code có thể cân nhắc `Roomote`; nếu yêu cầu mã nguồn mở MIT tự host hoàn toàn trong VPC doanh nghiệp, hãy dựng `OpenHands/OpenHands`.",
+          "avoidIf": "Chính sách bảo mật công ty không cho phép mã nguồn đi qua nền tảng SaaS trung gian bên thứ ba."
+        },
+        {
+          "condition": "Có ý định tiếp tục giữ nguyên file VSIX v3.54.0 hoặc chuyển sang fork cộng đồng như ZooCode",
+          "recommendedChoice": "Chỉ dùng tạm thời trong giai đoạn chuyển tiếp < 30 ngày",
+          "rationale": "Đóng vai trò bước đệm để kỹ sư kịp trích xuất quy tắc `.roomodes` và hoàn tất sprint dở dang trước khi chuyển hẳn sang nhánh upstream khỏe mạnh.",
+          "avoidIf": "Định lấy một repo đã archived hoặc fork nhỏ chưa kiểm chứng làm chuẩn công ty nhiều năm."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-roocode",
+      "variant": "founder-pov",
+      "authorBadge": "Phản Biện Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Công cụ có thể ngừng bảo trì, nhưng nguyên tắc tách quyền Architect đọc và Coder ghi phải sống mãi trong văn hóa kỹ thuật",
+      "body": "Việc `RooCodeInc/Roo-Code` khép lại ở bản `v3.54.0` ngày 15/05/2026 là lời nhắc tỉnh táo rằng không có extension IDE nào là vĩnh cửu. Tại DOMATION, chúng tôi không lưu luyến vỏ công cụ cũ — toàn bộ quy trình thực chiến đã chuẩn hóa trên `cline/cline`, `anomalyco/opencode` và `Aider-AI/aider`. Nhưng mọi lập trình viên mới vào team đều vẫn được huấn luyện chính bài học lớn nhất mà Roo-Code để lại: tuyệt đối không bao giờ thả một AI Agent toàn quyền chạm vào cơ sở dữ liệu sản xuất hay chính sách PostgreSQL FORCE RLS khi chưa qua lớp duyệt kiến trúc chỉ đọc."
+    }
+  ]
+}

@@ -858,10 +858,39 @@ async function callMetaGraphBatch(
 }
 
 const DATASET_MEM_TTL_MS = 180_000;
+const CRM_ATTR_MEM_TTL_MS = 45_000;
+const MAX_MEM_CACHE_ENTRIES = 48;
 const datasetMemCache = new Map<string, { ts: number; dataset: DomMetaDashboardDataset }>();
 const entityDetailMemCache = new Map<string, { ts: number; detail: DomMetaEntityDeepDetail }>();
+const crmAttrMemCache = new Map<string, { ts: number; payload: DomMetaCrmAttributionPayload }>();
 const inFlightDatasets = new Map<string, Promise<DomMetaDashboardDataset>>();
 const inFlightEntityDetails = new Map<string, Promise<DomMetaEntityDeepDetail>>();
+const inFlightCrmAttr = new Map<string, Promise<DomMetaCrmAttributionPayload>>();
+
+function getBoundedCache<T>(map: Map<string, T>, key: string): T | undefined {
+  const val = map.get(key);
+  if (val !== undefined) {
+    map.delete(key);
+    map.set(key, val);
+  }
+  return val;
+}
+
+function setBoundedCache<T>(map: Map<string, T>, key: string, value: T, maxSize = MAX_MEM_CACHE_ENTRIES): void {
+  if (map.has(key)) {
+    map.delete(key);
+  } else if (map.size >= maxSize) {
+    const oldestKey = map.keys().next().value;
+    if (oldestKey !== undefined) map.delete(oldestKey);
+  }
+  map.set(key, value);
+}
+
+export function clearDomMetaClientCaches(): void {
+  datasetMemCache.clear();
+  entityDetailMemCache.clear();
+  crmAttrMemCache.clear();
+}
 
 const FULL_INSIGHT_FIELDS =
   'spend,impressions,reach,frequency,cpm,cpc,cpp,ctr,clicks,unique_clicks,unique_ctr,inline_link_clicks,inline_link_click_ctr,inline_post_engagement,outbound_clicks,unique_actions,actions,action_values,cost_per_action_type,purchase_roas,video_play_actions,video_avg_time_watched_actions,video_thruplay_watched_actions,video_p25_watched_actions,video_p50_watched_actions,video_p75_watched_actions,video_p95_watched_actions,video_p100_watched_actions';
@@ -1355,7 +1384,7 @@ export async function loadFullDomMetaDataset(
   const cleanAcc = adAccountId.replace(/^act_/i, '').trim();
   const memKey = `${ctx.tenantSlug || 'local'}:${cleanAcc}:${range.since}:${range.until}:${selectedYear}`;
   if (!options?.forceRefresh) {
-    const cached = datasetMemCache.get(memKey);
+    const cached = getBoundedCache(datasetMemCache, memKey);
     if (cached && Date.now() - cached.ts < DATASET_MEM_TTL_MS) {
       return cached.dataset;
     }
@@ -2435,7 +2464,7 @@ export async function loadFullDomMetaDataset(
     uniqueActions: currParsed.unique_actions,
     actionValues: currParsed.action_values,
   };
-  datasetMemCache.set(memKey, { ts: Date.now(), dataset: builtDataset });
+  setBoundedCache(datasetMemCache, memKey, { ts: Date.now(), dataset: builtDataset });
   if (!fastActivitiesRes) {
     void activitiesReqPromise.then((lateRes) => {
       if (lateRes?.data?.length) {
@@ -2489,7 +2518,7 @@ export async function fetchDomMetaEntityDeepDetail(
   const cleanAcc = adAccountId.replace(/^act_/i, '').trim();
   const cleanEntityId = entityId.trim();
   const cacheKey = `${ctx.tenantSlug || 'local'}:${cleanAcc}:${entityType}:${cleanEntityId}:${range.since}:${range.until}`;
-  const cached = entityDetailMemCache.get(cacheKey);
+  const cached = getBoundedCache(entityDetailMemCache, cacheKey);
   if (cached && Date.now() - cached.ts < DATASET_MEM_TTL_MS) {
     return cached.detail;
   }
@@ -3245,7 +3274,7 @@ export async function fetchDomMetaEntityDeepDetail(
     previewIframeHtml,
   };
 
-  entityDetailMemCache.set(cacheKey, { ts: Date.now(), detail });
+  setBoundedCache(entityDetailMemCache, cacheKey, { ts: Date.now(), detail });
   return detail;
   })();
 
@@ -3943,6 +3972,7 @@ export async function fetchDomMetaCrmAttribution(
     only_attributed?: boolean;
     page?: number;
     page_size?: number;
+    forceRefresh?: boolean;
   }
 ): Promise<DomMetaCrmAttributionPayload> {
   if (ctx.previewCrmAttribution && !ctx.accessToken) {
@@ -4039,40 +4069,68 @@ export async function fetchDomMetaCrmAttribution(
   if (params.page) q.set('page', String(params.page));
   if (params.page_size) q.set('page_size', String(params.page_size));
 
-  const res = await fetchDomMetaAuthed(
-    ctx,
-    `/api/v1/integrations/dom-meta/crm-attribution?${q.toString()}`,
-    { method: 'GET' }
-  );
-  const json = (await res.json().catch(() => ({}))) as {
-    success?: boolean;
-    data?: DomMetaCrmAttributionPayload;
-    message?: string;
-    error?: { message?: string };
-  } & Partial<DomMetaCrmAttributionPayload>;
-
-  if (!res.ok || json?.success === false) {
-    throw new Error(
-      json?.error?.message || json?.message || 'Không thể tải dữ liệu đối soát khách hàng.'
-    );
+  const qs = q.toString();
+  // Scope cache strictly by auth token fingerprint so Admin unmasked PII can never leak across auth/role switches
+  const tokenStr = String(ctx.accessToken || '');
+  const authScope = tokenStr ? `${tokenStr.length}:${tokenStr.slice(-16)}` : 'anon';
+  const crmCacheKey = `${ctx.tenantSlug || 'local'}:${ctx.apiBaseUrl || ''}:${authScope}:${qs}`;
+  if (!params.forceRefresh) {
+    const cachedAttr = getBoundedCache(crmAttrMemCache, crmCacheKey);
+    if (cachedAttr && Date.now() - cachedAttr.ts < CRM_ATTR_MEM_TTL_MS) {
+      return cachedAttr.payload;
+    }
+    const existingAttrInFlight = inFlightCrmAttr.get(crmCacheKey);
+    if (existingAttrInFlight) {
+      return existingAttrInFlight;
+    }
   }
-  if (json.data) return json.data;
-  return {
-    summary: json.summary || {
-      total_leads: 0,
-      attributed_leads: 0,
-      qualified_leads: 0,
-      closed_leads: 0,
-      negative_leads: 0,
-      total_revenue_vnd: 0,
-      capi_sent_count: 0,
-    },
-    by_ad: json.by_ad || {},
-    by_adset: json.by_adset || {},
-    by_campaign: json.by_campaign || {},
-    ...(json.by_campaign_name ? { by_campaign_name: json.by_campaign_name } : {}),
-    ...(json.entity_leads ? { entity_leads: json.entity_leads } : {}),
-  };
+
+  const runAttrPromise = (async (): Promise<DomMetaCrmAttributionPayload> => {
+    const res = await fetchDomMetaAuthed(
+      ctx,
+      `/api/v1/integrations/dom-meta/crm-attribution?${qs}`,
+      { method: 'GET' }
+    );
+    const json = (await res.json().catch(() => ({}))) as {
+      success?: boolean;
+      data?: DomMetaCrmAttributionPayload;
+      message?: string;
+      error?: { message?: string };
+    } & Partial<DomMetaCrmAttributionPayload>;
+
+    if (!res.ok || json?.success === false) {
+      throw new Error(
+        json?.error?.message || json?.message || 'Không thể tải dữ liệu đối soát khách hàng.'
+      );
+    }
+    const payload: DomMetaCrmAttributionPayload = json.data
+      ? json.data
+      : {
+          summary: json.summary || {
+            total_leads: 0,
+            attributed_leads: 0,
+            qualified_leads: 0,
+            closed_leads: 0,
+            negative_leads: 0,
+            total_revenue_vnd: 0,
+            capi_sent_count: 0,
+          },
+          by_ad: json.by_ad || {},
+          by_adset: json.by_adset || {},
+          by_campaign: json.by_campaign || {},
+          ...(json.by_campaign_name ? { by_campaign_name: json.by_campaign_name } : {}),
+          ...(json.entity_leads ? { entity_leads: json.entity_leads } : {}),
+        };
+    setBoundedCache(crmAttrMemCache, crmCacheKey, { ts: Date.now(), payload }, 64);
+    return payload;
+  })();
+
+  inFlightCrmAttr.set(crmCacheKey, runAttrPromise);
+  try {
+    return await runAttrPromise;
+  } finally {
+    inFlightCrmAttr.delete(crmCacheKey);
+  }
 }
 
 export async function fetchDomMetaShareConfig(

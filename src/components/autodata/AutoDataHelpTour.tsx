@@ -8,6 +8,7 @@ import {
   X,
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
+import { SPECIALIST_ZALO_URL } from '../common/ZaloSpecialistBanner';
 import type { HelpTopicKey } from './autodataTypes';
 
 export interface SpotlightTourStep {
@@ -472,6 +473,20 @@ export function AutoDataSpotlightTour({
             ))}
           </div>
         )}
+
+        <div className="rounded-xl bg-[#F4F8FF] border border-blue-200/80 px-3 py-2 flex items-center justify-between gap-2 text-[11px]">
+          <span className="font-semibold text-slate-700 truncate">
+            Chuyên viên hỗ trợ setup toàn bộ A–Z
+          </span>
+          <a
+            href={SPECIALIST_ZALO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-[#0068FF] hover:underline whitespace-nowrap shrink-0"
+          >
+            Chat Zalo →
+          </a>
+        </div>
 
         {/* Footer: Progress Dots + Back / Next (strictly <= 2 buttons) */}
         <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">

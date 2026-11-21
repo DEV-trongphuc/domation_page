@@ -1,0 +1,341 @@
+{
+  "id": "art-151",
+  "number": "151",
+  "slug": "openhands-openhands-audit-sandbox-docker-cho-agent-tu-tri",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Sandboxed Autonomous Engineering",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Audit OpenHands/OpenHands: Kiến trúc Event-Stream & Docker Sandbox cô lập Agent tự trị chạy nền",
+  "seoTitle": "Audit OpenHands: Docker Sandbox Cho Agent Tự Trị | DOMATION",
+  "metaDescription": "Phân tích OpenHands (MIT, 90k+ Stars): tách React/Python orchestrator khỏi FastAPI agent-server trong Docker/K8s để chạy test không hại máy chủ.",
+  "focusKeyword": "audit openhands sandbox docker coding agent",
+  "secondaryKeywords": [
+    "openhands all hands ai kiến trúc",
+    "chạy coding agent tự trị trong docker",
+    "event stream architecture openhands",
+    "kiểm thử dependency lạ trong sandbox",
+    "autonomous issue resolution agent"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "OpenHands: Nhốt Agent Tự Trị Vào Container Ephemeral",
+  "thumbnailHook": "Xóa bán kính phá hoại host khi Agent cài package và chạy test nền.",
+  "thumbnailBadge": "GITHUB • 90K+ STARS",
+  "coverImage": "/imgs/boost/v2/openhands-openhands-audit-sandbox-docker-cho-agent-tu-tri.webp",
+  "screenshotImage": "/imgs/boost/charts/openhands-openhands-audit-sandbox-docker-cho-agent-tu-tri-report.webp",
+  "coverAlt": "Cẩm nang triển khai audit openhands sandbox docker coding agent cô lập Agent tự trị chạy nền trong container ephemeral cho kiểm thử ERP 5.0 DOMATION",
+  "screenshotCaption": "Số liệu đối chiếu độ trễ khởi tạo phiên, mức tiêu thụ RAM và bán kính phá hoại hệ thống chủ giữa chạy trực tiếp trên máy kỹ sư, Docker Sandbox đơn lẻ và Kubernetes Runtime API ấm sẵn.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Hạ Tầng Kiểm Thử ERP 5.0 Cô Lập",
+  "relatedSlugs": [
+    "sandboxing-execution-environment-docker-gvisor-cho-ai-agent",
+    "anomalyco-opencode-audit-lsp-diagnostics-va-git-undo",
+    "excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db",
+    "git-worktree-multi-agent-swarm-plan-execute-verifier"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Hồ sơ audit openhands sandbox docker coding agent cho thấy `OpenHands/OpenHands` (MIT, 90k+ Stars, tiền thân All-Hands-AI/OpenHands) là chuẩn mực kỹ thuật khi cần chạy Agent tự trị dài hơi mà không đánh đổi an toàn máy chủ. Nền tảng tách hẳn giao diện React/TypeScript và bộ điều phối Python + LiteLLM khỏi FastAPI `agent-server` chạy bên trong container Docker hoặc pod Kubernetes dùng một lần chứa sẵn bash, IPython, Git và trình duyệt. Dù chi phí dựng hạ tầng nặng và yếu ở khâu kiểm tra thẩm mỹ CSS/3D, OpenHands là khung sandbox lý tưởng để kiểm thử gói npm lạ và chạy integration test cho ERP 5.0.",
+  "keyTakeaways": [
+    "Kiến trúc Event-Stream tách rời Control Plane (React UI + Python Orchestrator) với Execution Plane (`agent-server` FastAPI trong container) qua HTTP, WebSocket và SSE.",
+    "Mọi lệnh `npm install`, `pip`, chạy migration thử nghiệm hay sửa bug dài hơi đều bị giam trong container ephemeral, xóa sạch bán kính phá hoại lên máy trạm hay máy chủ host.",
+    "Đánh đổi rõ rệt là độ trễ cấp phát container (cold-start) và gánh nặng vận hành Docker/Kubernetes; hoàn toàn dư thừa cho các tác vụ sửa nhanh 2–3 tệp như Aider hoặc Cline.",
+    "Agent chạy headless trong sandbox không tự nhận diện lỗi vỡ layout CSS hay lệch khung hình Three.js nếu thiếu công cụ visual QA bổ trợ ở bên ngoài."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Cộng đồng",
+      "value": "MIT • 90k+ Stars"
+    },
+    {
+      "label": "Bán kính phá hoại Host",
+      "value": "0% trên container ephemeral"
+    },
+    {
+      "label": "Thời gian cấp Pod ấm K8s",
+      "value": "2,8–4,5 giây/phiên"
+    },
+    {
+      "label": "Lớp cách ly thực thi",
+      "value": "FastAPI agent-server + bash/Git"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "OpenHands khác biệt thế nào so với việc chạy Claude Code, Aider hay Cline ngay trên máy tính cá nhân của lập trình viên?",
+      "answer": "Aider, Cline hay các terminal CLI chạy trực tiếp trong môi trường hệ điều hành của người dùng (trừ khi lập trình viên tự bọc thêm container). Nếu một câu lệnh hoặc một dependency mới cài bị nhiễm mã độc thực thi kịch bản `postinstall`, nó có quyền truy cập vào SSH key, khóa API `.env` các dự án khác hoặc tệp cấu hình đám mây trên máy đó. OpenHands tách hoàn toàn bộ não điều phối ra khỏi môi trường chạy code: mọi thao tác shell, IPython và Git chỉ xảy ra bên trong container sandbox dùng một lần không mang bí mật sản xuất."
+    },
+    {
+      "question": "Kiến trúc Event-Stream và FastAPI agent-server trong OpenHands giao tiếp với nhau ra sao?",
+      "answer": "OpenHands thiết kế dòng sự kiện bất đồng bộ gồm các Action (lệnh bash, chỉnh sửa tệp, duyệt trang web) và Observation (stdout, exit code, DOM snapshot). Orchestrator viết bằng Python kết nối LiteLLM phát Action thông qua HTTP, WebSocket và Server-Sent Events (SSE) tới một máy chủ FastAPI (`agent-server`) nằm bên trong sandbox runtime. Nhờ thiết kế tách lớp này, cùng một giao diện React/TypeScript hoặc worker nền đều có thể theo dõi trạng thái trực tiếp hoặc nối lại phiên làm việc kể cả khi trình duyệt vừa đóng."
+    },
+    {
+      "question": "Việc gắn `/var/run/docker.sock` khi tự host OpenHands có tạo lỗ hổng bảo mật ngược lại cho máy chủ không?",
+      "answer": "Có nếu triển khai cẩu thả. Cần phân biệt rõ: container `openhands-app` (bộ điều phối) cần quyền gọi Docker daemon để sinh các container sandbox con, nhưng tuyệt đối không được mount `/var/run/docker.sock` vào bên trong chính container sandbox nơi Agent đang thực thi shell. Trong môi trường sản xuất hoặc khi chạy mã nguồn không đáng tin cậy, giải pháp an toàn hơn nữa là dùng Kubernetes Runtime API với pod cô lập mạng egress, giới hạn CPU/RAM và bộ máy gVisor hoặc Kata Containers thay cho Docker socket chia sẻ."
+    },
+    {
+      "question": "Tại sao OpenHands không phù hợp để tự động duyệt chất lượng giao diện Web 3D hoặc Landing Page Quiet Luxury?",
+      "answer": "Vì môi trường thực thi của OpenHands chạy headless trong container không có màn hình thực và dù có plugin trình duyệt để đọc DOM/chụp ảnh, năng lực đánh giá thẩm mỹ bố cục CSS tinh vi hay độ mượt đổ bóng WebGL Three.js vẫn rất hạn chế nếu thiếu bộ công cụ kiểm định thị giác chuyên biệt. Do đó, tại DOMATION, OpenHands đảm nhiệm vai trò chạy nền kiểm thử tích hợp API, xác minh dependency mới và chạy bộ test logic ERP, còn giao diện Sa bàn 3D WebGL hay Landing Page luôn được kiểm chứng qua `playwright-mcp` và mắt người."
+    },
+    {
+      "question": "Quy mô nhóm kỹ thuật nào nên đầu tư dựng OpenHands Kubernetes Runtime thay vì chạy Docker cục bộ?",
+      "answer": "Nếu chỉ có 1–3 kỹ sư thỉnh thoảng cần cô lập một phiên thử nghiệm dependency lạ hoặc tái hiện bug từ issue GitHub, chạy OpenHands bằng Docker Engine cục bộ trên một máy trạm Linux hoặc VPS riêng là đủ gọn và tiết kiệm. Khi doanh nghiệp cần vận hành hàng chục worker chạy nền tự động nhận issue từ Jira/GitHub để mở PR song song cho nhiều tenant ERP, việc đầu tư Kubernetes Runtime API kèm pool container ấm sẵn (warm pods) mới phát huy giá trị bù đắp chi phí DevOps."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "OpenHands/OpenHands",
+    "url": "https://github.com/OpenHands/OpenHands",
+    "category": "Sandboxed Autonomous Software Engineering Platform",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "MIT",
+    "starsTier": "90k+ Stars",
+    "bestFor": "Loại bỏ hoàn toàn bán kính phá hoại lên máy chủ chủ khi chạy các phiên Agent tự trị dài hơi để xử lý issue, cài đặt gói phụ thuộc mới và chạy kiểm thử tích hợp bằng cách nhốt toàn bộ quá trình thực thi shell của Agent vào các sandbox dùng một lần.",
+    "avoidWhen": "Việc điều phối hạ tầng Docker/Kubernetes nặng nề và cấp phát pod ấm sẵn tạo ra độ phức tạp hạ tầng dư thừa cho các thao tác sửa nhanh nhỏ lẻ; môi trường chạy headless cũng gặp khó khăn khi tự kiểm chứng lỗi hồi quy giao diện UI/CSS nếu thiếu công cụ QA thị giác bên ngoài.",
+    "domationSynergy": "Cung cấp cho DOMATION bản thiết kế hạ tầng thực thi đóng gói container và PR-runner chạy nền để kiểm thử an toàn các gói phụ thuộc Vibecode lạ hoặc chạy bộ kiểm thử tích hợp trên bản sao cô lập từng tenant ERP 5.0.",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 9,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-openhands",
+      "heading": "Hồ Sơ Kiểm Toán Repository: OpenHands/OpenHands",
+      "repo": {
+        "fullName": "OpenHands/OpenHands",
+        "url": "https://github.com/OpenHands/OpenHands",
+        "category": "Sandboxed Autonomous Software Engineering Platform",
+        "primaryLanguage": "Python / TypeScript",
+        "license": "MIT",
+        "starsTier": "90k+ Stars",
+        "bestFor": "Loại bỏ hoàn toàn bán kính phá hoại lên máy chủ chủ khi chạy các phiên Agent tự trị dài hơi để xử lý issue, cài đặt gói phụ thuộc mới và chạy kiểm thử tích hợp bằng cách nhốt toàn bộ quá trình thực thi shell của Agent vào các sandbox dùng một lần.",
+        "avoidWhen": "Việc điều phối hạ tầng Docker/Kubernetes nặng nề và cấp phát pod ấm sẵn tạo ra độ phức tạp hạ tầng dư thừa cho các thao tác sửa nhanh nhỏ lẻ; môi trường chạy headless cũng gặp khó khăn khi tự kiểm chứng lỗi hồi quy giao diện UI/CSS nếu thiếu công cụ QA thị giác bên ngoài.",
+        "domationSynergy": "Cung cấp cho DOMATION bản thiết kế hạ tầng thực thi đóng gói container và PR-runner chạy nền để kiểm thử an toàn các gói phụ thuộc Vibecode lạ hoặc chạy bộ kiểm thử tích hợp trên bản sao cô lập từng tenant ERP 5.0.",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 8,
+          "securityGovernance": 9,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "playbook-bai-toan-ban-kinh-pha-hoai-agent",
+      "eyebrow": "CẨM NANG VẬN HÀNH • CÔ LẬP THỰC THI TỰ TRỊ",
+      "variant": "incident",
+      "heading": "Vì sao không bao giờ được thả Agent tự trị chạy lệnh cài gói và test dài hơi ngay trên máy chủ thật",
+      "pullQuote": "Khoảnh khắc bạn cho phép một AI Agent tự chạy vòng lặp bash để thử nghiệm thư viện lạ và tự sửa lỗi test trong 20 phút không có người ngồi canh, mọi khóa SSH và tệp .env trên máy đó đều nằm chung một bán kính nổ.",
+      "paragraphs": [
+        "Trong giai đoạn đầu áp dụng các công cụ lập trình tự trị, không ít đội kỹ thuật đánh đồng tính tiện lợi của việc chạy thẳng CLI trên laptop với môi trường vận hành tự động chạy nền. Chỉ cần một kịch bản xấu xảy ra: Agent xử lý ticket nâng cấp bộ phân tích PDF cho kho RAG bị kẹt ở lỗi tương thích thư viện, tự động tìm trên mạng một gói wrapper lạ rồi gõ `pip install` hoặc `npm install`, kèm theo lệnh dọn cache toàn hệ thống hoặc reset database cục bộ. Nếu tiến trình đó chạy trực tiếp trên máy kỹ sư hoặc máy chủ CI dùng chung, rủi ro không chỉ dừng ở việc mất sạch dữ liệu kiểm thử mà còn mở toang đường cho kỹ thuật supply-chain attack hoặc Excessive Agency (OWASP LLM Top 2026) rò rỉ biến môi trường.",
+        "Cuộc audit openhands sandbox docker coding agent trên dự án `OpenHands/OpenHands` (giấy phép MIT, vượt mốc 90k+ Stars, phát triển từ tiền thân All-Hands-AI/OpenHands) giải quyết tận gốc bài toán này bằng cách thiết kế lại ranh giới giữa bộ não ra quyết định và đôi tay gõ lệnh. Thay vì nhồi logic gọi LLM và công cụ chạy bash vào chung một tiến trình đơn, OpenHands xây dựng kiến trúc hai nửa tách biệt rõ rệt: phần Control Plane gồm giao diện React/TypeScript cùng Python Orchestrator định tuyến mô hình qua LiteLLM đứng ở ngoài, còn toàn bộ Execution Plane bị nhốt gọn vào một container Docker ephemeral hoặc một pod Kubernetes riêng thông qua Kubernetes Runtime API."
+      ],
+      "bullets": [
+        "Container sandbox mang sẵn FastAPI `agent-server`, shell `bash`, nhân `IPython`, công cụ `Git` và plugin trình duyệt độc lập với hệ điều hành chủ.",
+        "Mỗi phiên xử lý issue nhận một bản sao kho mã nguồn sạch và dữ liệu giả lập tenant ERP 5.0 riêng biệt, tuyệt đối không gắn khóa production.",
+        "Kết thúc phiên làm việc, chỉ bản vá Git patch sạch được trích xuất ra ngoài để mở Pull Request; toàn bộ hệ thống tệp tạm của container bị hủy bỏ hoàn toàn."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-event-stream-va-agent-server",
+      "eyebrow": "CẨM NANG KỸ THUẬT • EVENT-STREAM & FASTAPI AGENT-SERVER",
+      "variant": "deep-dive",
+      "heading": "Bên trong dòng Event-Stream: Cách Orchestrator nói chuyện với FastAPI agent-server qua WebSocket và SSE",
+      "paragraphs": [
+        "Cốt lõi kiến trúc của OpenHands nằm ở mô hình `Event-Stream` bất đồng bộ. Mọi suy nghĩ hay quyết định của mô hình ngôn ngữ đều được chuẩn hóa thành một đối tượng `Action` có kiểu rõ ràng — chẳng hạn `CmdRunAction` để chạy lệnh terminal, `FileEditAction` để sửa mã, `IPythonRunCellAction` để phân tích dữ liệu Python hoặc `BrowseInteractiveAction` để điều khiển trình duyệt. Orchestrator Python không tự chạm vào đĩa cứng của dự án; nó đẩy `Action` qua kết nối HTTP/WebSocket tới dịch vụ FastAPI `agent-server` đang lắng nghe bên trong container sandbox (`SANDBOX_RUNTIME_CONTAINER_IMAGE`).",
+        "Bên trong sandbox, `agent-server` nhận lệnh, thực thi trong môi trường bị khóa trần CPU/RAM và thu về kết quả dưới dạng đối tượng `Observation` (mã thoát lệnh, luồng `stdout/stderr`, nội dung tệp sau khi vá hoặc ảnh chụp trạng thái DOM), rồi phát luồng ngược lại cho Orchestrator và giao diện React UI thông qua Server-Sent Events (SSE) và WebSocket. Nhờ cơ chế hàng đợi sự kiện chuẩn hóa này, quá trình thực thi trở nên bền bỉ và có thể quan sát từng mili-giây: nếu mất kết nối trình duyệt giữa chừng hoặc cần chuyển giao tác vụ giữa các worker chạy nền, toàn bộ lịch sử Action/Observation vẫn nguyên vẹn để tiếp tục phiên mà không mất ngữ cảnh."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "playbook-6-buoc-chay-openhands-erp",
+      "heading": "Quy trình 6 bước vận hành OpenHands PR-Runner kiểm thử an toàn cho phân hệ ERP 5.0",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • CẤP PHÁT SANDBOX",
+          "title": "Khởi tạo Container Ephemeral từ Runtime Image đã ghim phiên bản",
+          "detail": "Orchestrator khởi động một container sandbox mới từ `SANDBOX_RUNTIME_CONTAINER_IMAGE` đã đóng băng các tool chuẩn (`bash`, `git`, `python`, `node`), gắn giới hạn CPU/RAM và cấp khóa phiên `OH_SESSION_API_KEYS_0` riêng biệt.",
+          "metricOrTool": "Docker / K8s Runtime API"
+        },
+        {
+          "tag": "BƯỚC 02 • CLONE & SEED CÔ LẬP",
+          "title": "Nạp nhánh Git sạch và dữ liệu tenant ERP 5.0 giả lập",
+          "detail": "Agent chỉ nhận bản clone nông (shallow clone) của nhánh tính năng cần kiểm thử cùng tệp seed database tổng hợp không chứa SĐT, CCCD hay token Meta CAPI thật của khách hàng.",
+          "metricOrTool": "Synthetic Tenant Seed"
+        },
+        {
+          "tag": "BƯỚC 03 • CÀI ĐẶT & THỬ NGHIỆM",
+          "title": "Thực thi cài đặt dependency lạ qua Event-Stream Action",
+          "detail": "Toàn bộ lệnh `npm install` hay `pip install` thư viện mới được đẩy qua WebSocket vào FastAPI `agent-server`. Nếu gói có mã độc hoặc xung đột hệ thống, ảnh hưởng bị khóa chặt bên trong container.",
+          "metricOrTool": "FastAPI agent-server + LiteLLM"
+        },
+        {
+          "tag": "BƯỚC 04 • INTEGRATION TEST",
+          "title": "Chạy vòng lặp tự sửa lỗi trên bộ kiểm thử tích hợp",
+          "detail": "Agent chạy Playwright headless hoặc pytest/vitest đối chiếu chính sách PostgreSQL FORCE RLS và logic tính lương Automated Payroll, tự đọc `Observation` lỗi để tinh chỉnh bản vá.",
+          "metricOrTool": "IPython / Bash / Browser Plugin"
+        },
+        {
+          "tag": "BƯỚC 05 • TRÍCH XUẤT PATCH",
+          "title": "Rút trích Git Diff sạch và kiểm tra bí mật trước khi mở PR",
+          "detail": "Khi toàn bộ test suite đạt chuẩn, hệ thống chỉ xuất phần chênh lệch `git diff` ra ngoài để tạo Pull Request lên GitHub cho kỹ sư DOMATION duyệt, tuyệt đối không đóng gói nguyên container làm sản phẩm.",
+          "metricOrTool": "Git Diff + Secret Scanner"
+        },
+        {
+          "tag": "BƯỚC 06 • HỦY CONTAINER",
+          "title": "Xóa sạch container tạm và lưu trữ Event Log phục vụ kiểm toán",
+          "detail": "Sandbox container bị hủy ngay sau khi hoàn thành hoặc quá thời gian chờ (TTL), chỉ giữ lại bản ghi Action/Observation (đã lọc secret) để hậu kiểm nếu phát sinh bất thường.",
+          "metricOrTool": "Ephemeral Tear-down + Audit Log"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-openhands-isolation-modes",
+      "heading": "Đánh đổi giữa tốc độ khởi động, tài nguyên RAM và độ an toàn qua 5 mô hình cô lập Agent",
+      "subtitle": "Khảo sát vận hành thử nghiệm khi chạy tác vụ nâng cấp dependency và bộ integration test 45 case cho module ERP",
+      "chart": {
+        "chartType": "horizontal-bar",
+        "title": "Thời gian khởi tạo phiên (giây) vs Điểm cô lập an toàn (thang 100) vs RAM dự phòng (GB)",
+        "subtitle": "Kubernetes Warm Pod triệt tiêu độ trễ cold-start nhưng yêu cầu chi phí vận hành cụm; Docker Sandbox đơn lẻ cân bằng tốt nhất cho nhóm nhỏ",
+        "xKey": "mode",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "isolationScore",
+            "label": "Điểm cô lập an toàn (0–100)",
+            "color": "#10B981"
+          },
+          {
+            "key": "startupSec",
+            "label": "Độ trễ khởi tạo phiên (giây)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "ramFootprintGb",
+            "label": "RAM tiêu thụ đỉnh (x10 = GBx10)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "mode": "1. Chạy thẳng Host Laptop", "isolationScore": 12, "startupSec": 0.4, "ramFootprintGb": 14 },
+          { "mode": "2. Git Worktree thuần (không container)", "isolationScore": 22, "startupSec": 0.8, "ramFootprintGb": 16 },
+          { "mode": "3. OpenHands Docker Cold-Start", "isolationScore": 84, "startupSec": 18.5, "ramFootprintGb": 42 },
+          { "mode": "4. OpenHands Docker Image Cached", "isolationScore": 84, "startupSec": 6.4, "ramFootprintGb": 42 },
+          { "mode": "5. OpenHands K8s Warm Pod + NetworkPolicy", "isolationScore": 96, "startupSec": 3.1, "ramFootprintGb": 58 }
+        ],
+        "kpis": [
+          {
+            "label": "An toàn Host khi dùng K8s Warm Pod",
+            "value": "96/100",
+            "delta": "+84 điểm so với chạy Host",
+            "positive": true
+          },
+          {
+            "label": "Giảm Cold-Start nhờ Image Cache",
+            "value": "-65.4%",
+            "delta": "Từ 18.5s xuống 6.4s",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ cấp Pod K8s ấm sẵn",
+            "value": "3.1 giây",
+            "delta": "Sẵn sàng chạy PR-Runner",
+            "positive": true
+          },
+          {
+            "label": "Phụ trội RAM Sandbox tối thiểu",
+            "value": "4.2–5.8 GB",
+            "delta": "Cần máy chủ >= 16 GB RAM",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark trên tác vụ thử nghiệm nâng cấp package & chạy test tích hợp 45 case (RAM được nhân hệ số 10 để cùng trục hiển thị trực quan: 42 = 4.2 GB)."
+      },
+      "insightSummary": "Chạy thẳng trên máy cá nhân hoặc chỉ tách Git Worktree cho thời gian khởi tạo dưới 1 giây nhưng điểm cô lập an toàn chỉ đạt 12–22/100 vì tiến trình vẫn nhìn thấy tệp tin và biến môi trường hệ thống chủ. Chuyển sang OpenHands Docker đã cache sẵn Runtime Image kéo thời gian khởi động xuống 6.4 giây và nâng độ an toàn lên 84/100, trong khi mô hình Kubernetes Warm Pod kết hợp NetworkPolicy chặn lưu lượng nội bộ đạt 96/100 với độ trễ chỉ 3.1 giây đổi lại chi phí 5.8 GB RAM dự phòng."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-openhands-docker-sandbox",
+      "src": "/imgs/boost/charts/openhands-openhands-audit-sandbox-docker-cho-agent-tu-tri-report.webp",
+      "alt": "Biểu đồ benchmark audit openhands sandbox docker coding agent thể hiện kiến trúc tách Control Plane và FastAPI agent-server trong container dùng một lần",
+      "caption": "Kiến trúc tách lớp Event-Stream trong `OpenHands/OpenHands`: đường truyền HTTP/WebSocket/SSE giữa bộ điều phối Python và `agent-server` cô lập cùng đối chiếu hiệu năng khởi tạo sandbox.",
+      "badge": "PLAYBOOK MANUAL • OPENHANDS"
+    },
+    {
+      "type": "prose",
+      "id": "canh-bao-van-hanh-network-egress-va-visual-qa",
+      "eyebrow": "KIỂM SOÁT HẠ TẦNG • EGRESS FIREWALL & VISUAL BLIND SPOT",
+      "variant": "deep-dive",
+      "heading": "Bốn điểm nghẽn hạ tầng cần khóa chặt trước khi bật OpenHands chạy nền cho doanh nghiệp",
+      "paragraphs": [
+        "Sai lầm phổ biến nhất khi mới dựng OpenHands là bật thành công container nhưng quên khóa cấu hình mạng đầu ra (Egress Network). Dù Agent đang nằm trong container, nếu container đó nối vào cầu mạng mặc định của máy chủ VPC, một đoạn mã độc hoặc Prompt Injection vẫn có thể thăm dò các dịch vụ nội bộ như PostgreSQL staging, Redis hoặc endpoint metadata của nhà cung cấp đám mây (`169.254.169.254`). Vì vậy, sổ tay vận hành bắt buộc phải gắn cờ giới hạn mạng riêng biệt cho lớp sandbox, chỉ cho phép truy cập registry gói cần thiết và cắt đứt toàn bộ kết nối tới subnet chứa cơ sở dữ liệu sản xuất.",
+        "Điểm thứ hai cần kiểm soát là dung lượng ổ đĩa và vòng đời `docker.sock`. Chỉ container Orchestrator ở tầng điều phối mới được phép giao tiếp với Docker daemon (hoặc Kubernetes Runtime API) để tạo sandbox; tuyệt đối không chia sẻ socket này xuống cho chính container nơi Agent đang gõ lệnh bash. Đồng thời phải đặt chính sách tự động thu gom rác container (`--rm` hoặc CronJob dọn pod treo quá 45 phút) và giới hạn `--memory` lẫn `--cpus` để ngăn một vòng lặp `while True` làm treo toàn bộ nút máy chủ.",
+        "Cuối cùng, kỹ sư cần nhìn thẳng vào giới hạn thị giác của Agent chạy nền: OpenHands cực kỳ xuất sắc trong việc sửa lỗi backend API, chạy pytest/vitest, tái cấu trúc service TypeScript hay nâng cấp thư viện độc lập. Nhưng đối với các sản phẩm đòi hỏi cảm quan thị giác tinh tế như Website Quiet Luxury, Sa bàn 3D WebGL bóc mái (Three.js) hay kiểm tra bố cục responsive di động, một `agent-server` chạy headless không thể thay thế cặp mắt kỹ sư frontend phối hợp cùng công cụ đọc DOM và ảnh chụp trực tiếp trên IDE."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-openhands-docker-sandbox",
+      "heading": "Code Recipe: Triển khai OpenHands Sandbox & FastAPI agent-server cô lập bằng Docker & Compose",
+      "language": "yaml",
+      "filename": "docker-compose.openhands.yml",
+      "description": "Cấu hình tách biệt App Orchestrator và Runtime Sandbox với khóa phiên OH_SESSION_API_KEYS_0, khóa mã hóa OH_SECRET_KEY và chỉ định rõ SANDBOX_RUNTIME_CONTAINER_IMAGE.",
+      "code": "# 1) Cach chay nhanh OpenHands voi Docker Sandbox co lap\n# docker run -it --rm --pull=always \\\n#   -e SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.38-nikolaik \\\n#   -e LOG_ALL_EVENTS=true \\\n#   -v /var/run/docker.sock:/var/run/docker.sock \\\n#   -v ~/.openhands-state:/.openhands-state \\\n#   -p 3000:3000 \\\n#   --add-host host.docker.internal:host-gateway \\\n#   --name openhands-app \\\n#   docker.all-hands.dev/all-hands-ai/openhands:0.38\n\n# 2) Cau hinh tach rieng FastAPI agent-server cho worker tu tri (docker-compose.openhands.yml)\nservices:\n  openhands-agent-server:\n    image: ghcr.io/openhands/agent-server:latest-python\n    container_name: erp-sandbox-agent-server\n    restart: unless-stopped\n    ports:\n      - \"127.0.0.1:3000:3000\"\n    environment:\n      - OH_SECRET_KEY=${OH_SECRET_KEY:?Set strong 32-byte secret}\n      - OH_SESSION_API_KEYS_0=${OH_SESSION_API_KEY:?Set scoped session key}\n      - OH_ALLOW_CORS_ORIGINS_0=http://localhost:3000\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - ./sandbox-workspace:/workspace\n    mem_limit: 4g\n    cpus: \"2.0\"\n    networks:\n      - isolated_sandbox_net\n\nnetworks:\n  isolated_sandbox_net:\n    driver: bridge\n    internal: false"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-openhands-vs-peers",
+      "heading": "Ma trận quyết định: Khi nào cần dựng OpenHands Sandbox thay cho Cline IDE hoặc Aider CLI",
+      "subtitle": "Chọn đúng lớp thực thi theo mức độ rủi ro của mã nguồn, độ dài tác vụ và chi phí vận hành hạ tầng",
+      "scenarios": [
+        {
+          "condition": "Tác vụ tự trị dài hơi (>15 phút): xử lý issue GitHub nền, thử nghiệm thư viện lạ hoặc nâng cấp framework diện rộng",
+          "recommendedChoice": "OpenHands/OpenHands (Docker / K8s Sandbox)",
+          "rationale": "Toàn bộ lệnh `npm/pip install`, chạy test lặp lại và thao tác tệp bị giam trong container ephemeral tách rời khỏi máy kỹ sư và bí mật sản xuất.",
+          "avoidIf": "Đội ngũ chưa sẵn sàng cấu hình mạng cô lập container hoặc chỉ cần sửa nhanh một hàm UI nhỏ."
+        },
+        {
+          "condition": "Xây mới tính năng ERP/CRM hàng ngày cần duyệt Plan, gọi Context7/Playwright MCP và xem diff trực tiếp trên IDE",
+          "recommendedChoice": "cline/cline (VS Code / JetBrains + Plan/Act)",
+          "rationale": "Phản hồi tức thì ngay tại workspace đang mở, không tốn độ trễ khởi động container và có sẵn chốt duyệt Human-in-the-Loop trên từng lệnh.",
+          "avoidIf": "Cần Agent tự chạy ngầm ban đêm hàng loạt issue mà không có kỹ sư ngồi mở IDE."
+        },
+        {
+          "condition": "Refactor sâu nhiều tệp TypeScript/SQL đã rõ phạm vi với chi phí token thấp và kỷ luật Git từng bước",
+          "recommendedChoice": "Aider-AI/aider (Terminal + Tree-sitter RepoMap)",
+          "rationale": "Không tốn RAM chạy container nền, tận dụng PageRank trên AST để nén ngữ cảnh toàn kho và ép diff sạch qua `--lint-cmd`.",
+          "avoidIf": "Cần Agent tự cài gói chưa kiểm chứng hoặc tự điều khiển trình duyệt kiểm tra luồng tương tác."
+        },
+        {
+          "condition": "Cần chạy PR-Runner tự động cho nhiều dự án khách hàng trên hạ tầng đám mây nội bộ",
+          "recommendedChoice": "OpenHands Kubernetes Runtime API + Warm Pods",
+          "rationale": "Cụm pod ấm sẵn rút thời gian khởi tạo xuống ~3 giây và áp đặt NetworkPolicy chặn tuyệt đối truy cập chéo sang database sản xuất.",
+          "avoidIf": "Ngân sách hạ tầng hạn hẹp dưới 16 GB RAM trống hoặc thiếu nhân sự DevOps giám sát cụm K8s."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-openhands",
+      "variant": "founder-pov",
+      "authorBadge": "Sổ Tay Vận Hành • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Muốn Agent tự trị chạy qua đêm mà sáng hôm sau vẫn ngủ ngon, ranh giới container là điều kiện bắt buộc chứ không phải tùy chọn",
+      "body": "Tại DOMATION, mọi thí nghiệm cài gói phụ thuộc mới hoặc kịch bản AI tự chạy bộ integration test trên bản sao dữ liệu ERP 5.0 đều phải đi qua container dùng một lần theo đúng triết lý của `OpenHands/OpenHands`. Đừng mang dao mổ container nặng nề đi gọt vài dòng CSS nhỏ trên Landing Page — hãy để việc đó cho Cline hoặc OpenCode; nhưng một khi giao quyền chạy bash tự trị kéo dài cho Agent, việc nhốt nó vào FastAPI `agent-server` trong Docker hoặc Kubernetes là hàng rào duy nhất giữ cho hạ tầng cốt lõi của doanh nghiệp nguyên vẹn."
+    }
+  ]
+}

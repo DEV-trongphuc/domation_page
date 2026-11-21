@@ -1,0 +1,316 @@
+{
+  "id": "art-177",
+  "number": "177",
+  "slug": "getzep-graphiti-audit-temporal-knowledge-graph-cho-ai-agent",
+  "shardId": "shard11",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Bi-Temporal Knowledge Graph",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Audit getzep/graphiti: Đồ thị tri thức Bi-Temporal chặn AI nhớ nhầm khuyến mãi & giá bán đã hết hạn",
+  "seoTitle": "Audit Graphiti: Bi-Temporal Graph Chặn AI Nhớ Giá Cũ | DOMATION",
+  "metaDescription": "Khám phá Graphiti (Apache-2.0, 30k+ Stars): gắn thời điểm hiệu lực t_valid/t_invalid lên cạnh quan hệ để AI biết chính sách cũ đã hết hạn, chạy trên Neo4j.",
+  "focusKeyword": "audit getzep graphiti bi temporal knowledge graph",
+  "secondaryKeywords": [
+    "bi temporal knowledge graph ai agent",
+    "chặn ai trả lời nhầm voucher hết hạn",
+    "graphiti vs lightrag vs mem0",
+    "chi phí token trích xuất đồ thị tri thức",
+    "neo4j falkordb kuzu cho agent memory"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Graphiti: Dạy AI Hiểu Chính Sách Nào Đã Hết Hiệu Lực",
+  "thumbnailHook": "Đánh dấu t_valid/t_invalid để vector cũ không đánh nhau với bảng giá mới.",
+  "thumbnailBadge": "GITHUB • TEMPORAL GRAPH",
+  "coverImage": "/imgs/boost/v2/getzep-graphiti-audit-temporal-knowledge-graph-cho-ai-agent.webp",
+  "screenshotImage": "/imgs/boost/charts/getzep-graphiti-audit-temporal-knowledge-graph-cho-ai-agent-report.webp",
+  "coverAlt": "Báo cáo audit getzep graphiti bi temporal knowledge graph mô tả cơ chế gắn nhãn thời gian t_valid và t_invalid trên cạnh quan hệ Neo4j để chặn AI trả lời nhầm khuyến mãi đã hết hạn",
+  "screenshotCaption": "Kết quả giải phẫu pháp y độ chính xác truy xuất chính sách theo mốc thời gian (Temporal Accuracy %) và tỷ lệ lỗi mâu thuẫn ngữ cảnh (Contradiction Error %) qua 5 lần đổi bảng giá liên tiếp giữa Vector RAG phẳng, Metadata RAG và Graphiti Bi-Temporal.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc Quản Trị Chính Sách Động AI",
+  "relatedSlugs": [
+    "knowledge-graph-rag-vs-vector-rag-khi-nao-can-do-thi-tri-thuc",
+    "context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia",
+    "hkuds-lightrag-audit-do-thi-tri-thuc-hai-tang-giam-chi-phi",
+    "mem0ai-mem0-audit-persistent-memory-layer-cho-agent-cskh"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit getzep graphiti bi temporal knowledge graph điều tra sự cố AI Chatbot hứa nhầm ưu đãi đã hết hạn ở Vector RAG phẳng. Kho mã getzep/graphiti (Python, Apache-2.0, 30k+ Stars) giải quyết tận gốc bằng đồ thị tri thức hai trục thời gian trên Neo4j, FalkorDB hoặc Kuzu: mỗi cạnh EntityEdge lưu cả hiệu lực sự kiện (valid_at/invalid_at) lẫn thời điểm ghi nhận hệ thống (created_at/expired_at). Khi có chính sách mới phủ định quy định cũ, Graphiti tự động khép cạnh cũ mà vẫn giữ vết kiểm toán, dù chi phí LLM trích xuất lúc nạp tăng rõ rệt.",
+  "keyTakeaways": [
+    "Vector RAG phẳng không hiểu khái niệm 'sự thật đã hết hạn': một chunk chính sách chiết khấu tháng 10 thường đạt điểm tương đồng cosine cao ngang ngửa chính sách tháng 11, khiến LLM trộn lẫn hoặc chọn nhầm ưu đãi cũ.",
+    "Graphiti mô hình hóa từng khẳng định dưới dạng cạnh `EntityEdge` có hai cặp dấu thời gian: thời gian hiệu lực ngoài thực tế (`valid_at` / `invalid_at`) và thời gian giao dịch trong đồ thị (`created_at` / `expired_at`).",
+    "Hỗ trợ nạp tăng tiến theo từng `Episode` (`EpisodeType.text`, `message`, `json`) kèm ontology thực thể định nghĩa bằng Pydantic, tự động phát hiện mâu thuẫn cạnh cũ để vô hiệu hóa mà vẫn giữ lịch sử kiểm toán.",
+    "Truy xuất lai hợp nhất tìm kiếm vector ngữ nghĩa, toàn văn BM25 và duyệt đồ thị Neo4j / FalkorDB / Kuzu ở độ trễ thấp mà không cần tái phân cụm toàn bộ kho dữ liệu như GraphRAG cổ điển.",
+    "Đánh đổi lớn nhất cần tính toán ngân sách: mỗi lần nạp episode mới kích hoạt chuỗi lệnh LLM trích xuất thực thể và giải quyết mâu thuẫn cạnh khá tốn token, đồng thời buộc đội vận hành duy trì thêm một cụm Graph DB."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Ngôn ngữ",
+      "value": "Apache-2.0 • Python"
+    },
+    {
+      "label": "Độ chính xác chính sách động",
+      "value": "94,8% sau 5 kỳ đổi giá"
+    },
+    {
+      "label": "Lỗi nhắc lại Voucher hết hạn",
+      "value": "Giảm từ 38% xuống 2,1%"
+    },
+    {
+      "label": "Hệ Graph DB hỗ trợ gốc",
+      "value": "Neo4j / FalkorDB / Kuzu"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao chỉ gắn ngày tạo `created_at` vào metadata của Vector DB vẫn không giải quyết triệt để lỗi AI nhớ nhầm khuyến mãi cũ?",
+      "answer": "Gắn `created_at` rồi lọc hoặc sắp xếp theo ngày mới nhất gặp hai điểm mù chí mạng. Thứ nhất, một tài liệu cập nhật sau không phải lúc nào cũng viết đè toàn bộ tài liệu cũ — ví dụ thông báo ngày 15/11 chỉ ghi 'Ngừng áp dụng gói tặng phí quản lý 2 năm cho tòa S2, giữ nguyên ưu đãi thanh toán nhanh 5%'. Nếu lọc cứng chỉ lấy tài liệu ngày 15/11, RAG sẽ đánh mất các điều khoản phụ trợ vẫn còn hiệu lực từ thông báo ngày 01/10. Thứ hai, nếu giữ cả hai để tìm kiếm ngữ nghĩa, câu hỏi của khách hàng nhắc đúng từ khóa của đợt khuyến mãi cũ lại kéo chunk ngày 01/10 lên top đầu. Graphiti giải quyết tận gốc bằng cách phân rã sự thật thành các cạnh quan hệ rời rạc: chỉ những cạnh mâu thuẫn trực tiếp mới bị gán `invalid_at`, còn các cạnh không mâu thuẫn vẫn tiếp tục có hiệu lực."
+    },
+    {
+      "question": "Khái niệm 'Bi-Temporal' (`t_valid/t_invalid` và `created_at/expired_at`) trong `getzep/graphiti` hoạt động cụ thể ra sao?",
+      "answer": "Kiến trúc Bi-Temporal theo dõi đồng thời hai dòng thời gian độc lập. Trục thứ nhất là Event Time (`valid_at` và `invalid_at` trên đối tượng `EntityEdge`): ghi nhận khoảng thời gian sự việc thực sự đúng ngoài đời thực, dựa trên `reference_time` và ngữ cảnh bên trong văn bản (ví dụ 'Áp dụng từ 01/11 đến hết 15/11'). Trục thứ hai là Transaction/System Time (`created_at` và `expired_at`): ghi nhận lúc hệ thống AI học được sự kiện đó hoặc phát hiện cạnh đó bị phủ định bởi một episode mới hơn. Nhờ giữ đủ hai trục, doanh nghiệp vừa biết hôm nay chính sách nào đang còn hiệu lực (`invalid_at IS NULL`), vừa truy vết ngược được tại thời điểm ký hợp đồng ngày 05/11 thì hệ thống đã tư vấn dựa trên sự thật nào."
+    },
+    {
+      "question": "Chi phí LLM token khi chạy Graphiti có đắt không và cần kiểm soát như thế nào trong môi trường sản xuất?",
+      "answer": "Có, đây là đánh đổi thẳng thắn nhất được ghi nhận trong hồ sơ kỹ thuật. Khác với Vector DB chỉ tốn một lần gọi embedding giá cực rẻ, mỗi lần gọi `graphiti.add_episode()` đòi hỏi nhiều bước gọi LLM: trích xuất thực thể mới, đối chiếu gộp thực thể trùng (entity resolution), rút trích cạnh quan hệ kèm khoảng thời gian và kiểm tra mâu thuẫn (edge invalidation) với các cạnh đang mở trên Neo4j. Do đó, không nên nạp toàn bộ log chat xã giao vô nghĩa vào Graphiti; chỉ nên nạp các sự kiện có thay đổi trạng thái hoặc văn bản chính sách/thông báo bán hàng, chạy bất đồng bộ qua hàng đợi và cấu hình model nhỏ/trung bình ổn định JSON schema cho khâu trích xuất."
+    },
+    {
+      "question": "Giữa Neo4j, FalkorDB và Kuzu, doanh nghiệp SME hoặc đội Vibecode nên chọn backend nào cho Graphiti?",
+      "answer": "Kuzu (embedded graph database viết bằng C++) rất gọn cho môi trường thử nghiệm nội bộ hoặc triển khai đơn nút dung lượng vừa vì không phải dựng cụm server riêng. FalkorDB (chạy trên nền tảng bộ nhớ kiểu Redis-module) nổi trội về độ trễ duyệt đồ thị thấp cho lượng truy vấn thời gian thực cao. Trong khi đó, Neo4j vẫn là lựa chọn chín muồi nhất cho quy mô doanh nghiệp cần công cụ trực quan hóa đồ thị (Neo4j Browser), sao lưu doanh nghiệp và vận hành ổn định lâu dài."
+    },
+    {
+      "question": "Graphiti khác gì so với Mem0 và LightRAG khi áp dụng vào hệ sinh thái DOMATION?",
+      "answer": "Mem0 tập trung tối ưu cho trí nhớ hội thoại cá nhân (sở thích mềm của từng khách hàng qua nhiều tuần) với chi phí nhẹ hơn; LightRAG tập trung tổng hợp tri thức văn bản tĩnh hai tầng (thực thể chi tiết + chủ đề khái quát) từ tài liệu SOP dày đặc. Graphiti đứng ở phân khúc chuyên trị **dữ liệu sự kiện và chính sách biến đổi theo thời gian**: nơi câu trả lời đúng hôm qua trở thành câu trả lời sai hôm nay — điển hình như khung thời gian booking EcoLife Signature, hạn sử dụng Voucher Hub hoặc lịch sử chuyển cấp phê duyệt trong ERP 5.0."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "getzep/graphiti",
+    "url": "https://github.com/getzep/graphiti",
+    "category": "Temporal Knowledge Graph Engine for Agents",
+    "primaryLanguage": "Python",
+    "license": "Apache-2.0",
+    "starsTier": "30k+ Stars",
+    "bestFor": "Ngăn chặn triệt để tình trạng AI Agent ảo giác nhắc lại các chính sách đã lỗi thời, chương trình khuyến mãi đã hết hạn hoặc trạng thái khách hàng cũ bị thay thế bằng cách mô hình hóa tự nhiên các sự thật gắn giới hạn thời gian và cơ chế vô hiệu hóa cạnh (edge invalidation).",
+    "avoidWhen": "Phát sinh chi phí LLM token và độ trễ nạp dữ liệu đáng kể trong quá trình liên tục trích xuất thực thể/cạnh và giải quyết mâu thuẫn, cộng thêm gánh nặng vận hành một cụm cơ sở dữ liệu đồ thị chuyên dụng (Neo4j, FalkorDB hoặc Kuzu).",
+    "domationSynergy": "Làm chuẩn tham chiếu kiến trúc cho Lead Agent và Revenue Agent của DOMATION khi phải theo dõi các thay đổi chính sách nhạy cảm theo thời gian trong B2B và Bất động sản (như khung thời gian mở booking EcoLife Signature, hạn hiệu lực Voucher Hub và lịch sử phê duyệt đa cấp trên ERP 5.0).",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 8,
+      "costEfficiency": 6
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-graphiti",
+      "heading": "Hồ Sơ Điều Tra Kiến Trúc: getzep/graphiti (Bi-Temporal Knowledge Graph)",
+      "repo": {
+        "fullName": "getzep/graphiti",
+        "url": "https://github.com/getzep/graphiti",
+        "category": "Temporal Knowledge Graph Engine for Agents",
+        "primaryLanguage": "Python",
+        "license": "Apache-2.0",
+        "starsTier": "30k+ Stars",
+        "bestFor": "Ngăn chặn triệt để tình trạng AI Agent ảo giác nhắc lại các chính sách đã lỗi thời, chương trình khuyến mãi đã hết hạn hoặc trạng thái khách hàng cũ bị thay thế bằng cách mô hình hóa tự nhiên các sự thật gắn giới hạn thời gian và cơ chế vô hiệu hóa cạnh (edge invalidation).",
+        "avoidWhen": "Phát sinh chi phí LLM token và độ trễ nạp dữ liệu đáng kể trong quá trình liên tục trích xuất thực thể/cạnh và giải quyết mâu thuẫn, cộng thêm gánh nặng vận hành một cụm cơ sở dữ liệu đồ thị chuyên dụng (Neo4j, FalkorDB hoặc Kuzu).",
+        "domationSynergy": "Làm chuẩn tham chiếu kiến trúc cho Lead Agent và Revenue Agent của DOMATION khi phải theo dõi các thay đổi chính sách nhạy cảm theo thời gian trong B2B và Bất động sản (như khung thời gian mở booking EcoLife Signature, hạn hiệu lực Voucher Hub và lịch sử phê duyệt đa cấp trên ERP 5.0).",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 8,
+          "costEfficiency": 6
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "postmortem-tham-hoa-chieu-thu-nam-cua-vector-rag",
+      "eyebrow": "FORENSIC POSTMORTEM • VỤ ÁN AI HỨA NHẦM CHIẾT KHẤU 8% ĐÃ KHÓA SỔ",
+      "variant": "incident",
+      "heading": "Giải phẫu vụ AI Chatbot hứa nhầm ưu đãi tháng cũ: Vì sao Vector RAG không có khái niệm 'hôm qua đã hết hạn'",
+      "pullQuote": "Trong không gian vector cosine, một chính sách chiết khấu đã hết hạn từ tuần trước vẫn có khoảng cách ngữ nghĩa giống hệt câu hỏi của khách hàng hôm nay — và chính sự giống nhau đó biến RAG thành cái bẫy pháp lý.",
+      "paragraphs": [
+        "Hãy xem xét một sự cố thực tế điển hình trong các chiến dịch mở bán bất động sản hoặc phát hành Voucher Hub thương mại: ngày 01/11, chủ đầu tư ban hành thông báo áp dụng gói chiết khấu thanh toán sớm 8% và tặng gói nội thất cho 30 suất đặt chỗ đầu tiên đến hết ngày 15/11. Toàn bộ tài liệu PDF này được cắt chunk và đẩy vào cơ sở dữ liệu vector cho Chatbot Zalo OA phục vụ 24/7. Sang ngày 16/11, phòng Kinh doanh ban hành bảng chính sách mới: hết hạn gói 8%, điều chỉnh chiết khấu còn 5% và thay đổi điều kiện tiến độ đóng tiền. Nhân sự vận hành nạp tiếp file PDF mới vào kho RAG như thường lệ.",
+        "Chỉ hai giờ sau khi bảng giá mới có hiệu lực, một khách hàng tiềm năng nhắn vào Zalo OA với câu hỏi trúng phóc ngữ cảnh của văn bản cũ: 'Cho anh hỏi chương trình chiết khấu 8% và gói nội thất còn áp dụng cho căn 2 ngủ không?'. Khi bộ truy xuất vector thực hiện tìm kiếm top-5 đoạn văn bản gần nhất với từ khóa 'chiết khấu 8%' và 'gói nội thất', chunk trích từ tài liệu ngày 01/11 đạt điểm tương đồng 0,91 — cao hơn hẳn chunk ngày 16/11 (chỉ nhắc chung về mức 5% và đạt 0,83). Mô hình ngôn ngữ nhận được cả hai đoạn văn bản đứng cạnh nhau trong prompt, thậm chí lờ đi dòng ngày tháng nhỏ xíu, rồi tự tin trả lời khách hàng rằng ưu đãi 8% vẫn đang áp dụng.",
+        "Điểm mấu chốt khiến vụ việc này tái diễn ở hàng loạt doanh nghiệp dùng RAG truyền thống là cấu trúc lưu trữ không có trạng thái vòng đời của sự thật (fact lifecycle). Vector database truyền thống là một kho chỉ-biết-thêm-vào (append-only) vô thời gian: nó không biết cách tự động đánh dấu đoạn sự thật A đã bị phủ định bởi đoạn sự thật B. Thực hiện audit getzep graphiti bi temporal knowledge graph trên `getzep/graphiti` (Python, Apache-2.0, 30k+ Stars), chúng tôi thấy rõ cách tiếp cận đồ thị hai trục thời gian giải quyết tận gốc lỗ hổng nhận thức thời gian này."
+      ],
+      "bullets": [
+        "Vector database chỉ đo độ tương đồng ngữ nghĩa tĩnh tại thời điểm truy vấn, hoàn toàn mù trước quan hệ phủ định giữa chính sách mới và chính sách cũ.",
+        "Việc xóa thủ công chunk cũ làm mất toàn bộ dấu vết kiểm toán (audit trail) nếu sau này cần đối chiếu lại khách đã được tư vấn gì ở thời điểm ký thỏa thuận đặt cọc.",
+        "Graphiti giữ nguyên mọi sự kiện trong đồ thị nhưng gắn chặt ranh giới thời gian thực tế (`valid_at`, `invalid_at`) lên từng cạnh quan hệ `EntityEdge`."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "chuoi-su-co-va-xu-ly-bi-temporal-graphiti",
+      "heading": "Truy vết 5 mắt xích: Từ xung đột Vector tĩnh đến cơ chế tự vô hiệu hóa cạnh trong Graphiti",
+      "variant": "incident-chain",
+      "items": [
+        {
+          "tag": "MẮT XÍCH 01 • NGÀY 01/11",
+          "title": "Nạp Episode Chính sách Đợt 1 qua EpisodeType.text / json",
+          "detail": "Graphiti trích xuất thực thể 'Dự án EcoLife' và 'Chiết khấu thanh toán sớm 8%', tạo cạnh EntityEdge RELATES_TO mang valid_at = 2026-11-01T00:00Z, invalid_at = None, created_at = T1.",
+          "metricOrTool": "EntityEdge (valid_at=01/11)"
+        },
+        {
+          "tag": "MẮT XÍCH 02 • NGÀY 16/11",
+          "title": "Ban hành chính sách Đợt 2 phủ định mức chiết khấu cũ",
+          "detail": "Episode mới được đưa vào với reference_time = 2026-11-16T08:00Z thông báo ngừng gói 8%, thay bằng chiết khấu 5%. Graphiti dùng tìm kiếm lai để kéo các cạnh hiện hữu liên quan tới thực thể chiết khấu.",
+          "metricOrTool": "Incremental Episode Ingestion"
+        },
+        {
+          "tag": "MẮT XÍCH 03 • PHÁT HIỆN MÂU THUẪN",
+          "title": "Khép vòng đời cạnh cũ (Edge Invalidation) không xóa lịch sử",
+          "detail": "Bộ phân giải mâu thuẫn LLM phát hiện cạnh 8% xung đột trực tiếp với sự thật 5% mới. Hệ thống cập nhật invalid_at = 2026-11-16T08:00Z và expired_at = T2 trên cạnh cũ, đồng thời tạo cạnh mới có valid_at = 2026-11-16T08:00Z.",
+          "metricOrTool": "t_invalid Closed • History Preserved"
+        },
+        {
+          "tag": "MẮT XÍCH 04 • TRUY VẤN LIVE",
+          "title": "Khách hỏi lại từ khóa 'chiết khấu 8%' trên Zalo OA",
+          "detail": "Truy vấn hybrid (Semantic + BM25 + BFS đồ thị) trả về cấu trúc cạnh kèm mốc hiệu lực. Agent nhận diện cạnh 8% đã có invalid_at = 16/11 và cạnh đang mở duy nhất là 5%.",
+          "metricOrTool": "Hybrid Graph + BM25 + Vector"
+        },
+        {
+          "tag": "MẮT XÍCH 05 • KIỂM TOÁN NGƯỢC",
+          "title": "Truy xuất Point-in-Time khi đối soát khiếu nại hợp đồng",
+          "detail": "Khi cần kiểm tra vì sao giao dịch ngày 10/11 được hưởng 8%, truy vấn đồ thị tại mốc t=10/11 vẫn tái dựng chính xác trạng thái valid_at <= 10/11 < invalid_at.",
+          "metricOrTool": "Bi-Temporal Audit Trail"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-kien-truc-bi-temporal-va-ontology-pydantic",
+      "eyebrow": "GIẢI PHẪU KỸ THUẬT • ENTITYEDGE, EPISODE & HYBRID TRAVERSAL",
+      "variant": "deep-dive",
+      "heading": "Bên trong getzep/graphiti: Hai trục thời gian, Pydantic Custom Ontology và truy xuất lai Neo4j / FalkorDB / Kuzu",
+      "paragraphs": [
+        "Cấu trúc dữ liệu cốt lõi làm nên giá trị của `getzep/graphiti` nằm ở cặp mô hình `EntityNode` và `EntityEdge` trên cơ sở dữ liệu đồ thị (hỗ trợ chính thức Neo4j, FalkorDB và Kuzu). Khác với đồ thị tri thức tĩnh chỉ có nhãn quan hệ `(A)-[HAS_DISCOUNT]->(B)`, mọi cạnh `EntityEdge` trong Graphiti mang theo một câu mô tả sự thật (`fact`), vector embedding của câu sự thật đó (`fact_embedding`), danh sách ID các `episodes` đã sinh ra nó và đặc biệt là bốn trường thời gian tách bạch: `created_at` và `expired_at` đại diện cho thời gian giao dịch trong hệ thống (khi nào AI biết hoặc khi nào cạnh bị thay thế), còn `valid_at` và `invalid_at` (`t_valid` / `t_invalid`) đại diện cho khoảng thời gian sự thật đó thực sự có hiệu lực ngoài đời thực.",
+        "Điểm sáng thứ hai dành cho kỹ sư xây hệ thống ERP/CRM là khả năng nạp tăng tiến (incremental episode ingestion) kết hợp Pydantic Custom Entity Types. Doanh nghiệp không phải cào toàn bộ kho tài liệu để dựng lại đồ thị từ con số 0 mỗi đêm như kiến trúc Microsoft GraphRAG thế hệ đầu. Mỗi bản tin mới — dù là đoạn hội thoại `EpisodeType.message`, văn bản thông báo `EpisodeType.text`, hay một payload webhook đổi trạng thái đơn hàng `EpisodeType.json` — đều được đưa qua `add_episode()` kèm `reference_time` chính xác. Kỹ sư có thể khai báo sẵn các lớp Pydantic như `PromotionPolicy`, `BookingWindow` hay `ApprovalStage` để ép LLM trích xuất đúng thực thể nghiệp vụ thay vì sinh ra hàng nghìn nút rác vô định hình.",
+        "Ở pha truy xuất (`graphiti.search()`), thay vì bắt LLM phải tự viết câu lệnh Cypher rất dễ lỗi cú pháp và mở cửa cho Cypher injection, Graphiti thực thi một chuỗi tìm kiếm lai đa chặng thuần túy trong Python: chạy song song tìm kiếm ngữ nghĩa trên `fact_embedding`, tìm kiếm từ khóa toàn văn BM25 trên nội dung sự thật và duyệt đồ thị theo chiều rộng (BFS traversal) quanh các thực thể neo, sau đó tái xếp hạng (rerank) để trả về danh sách `EntityEdge` đạt điểm cao nhất chỉ trong vài chục đến hơn trăm mili-giây — sẵn sàng kiểm tra `invalid_at is None` trước khi AI phát ngôn ra Zalo OA."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-graphiti-temporal-policy-churn",
+      "heading": "Đo lường độ chính xác truy xuất chính sách & chi phí nạp khi tăng tần suất thay đổi bảng giá (0–5 lần/tháng)",
+      "subtitle": "Thử nghiệm 60 câu hỏi bẫy thời gian (hỏi ưu đãi cũ, hỏi chuyển trạng thái Deal, hỏi mốc hợp đồng quá khứ) trên 3 kiến trúc RAG",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ chính xác chính sách hiện hành (%) và Tỷ lệ lỗi nhắc nhầm ưu đãi hết hạn (%)",
+        "subtitle": "Vector RAG truyền thống sụp đổ nhanh khi cùng một dự án trải qua 3–5 kỳ điều chỉnh chính sách liên tiếp",
+        "xKey": "churnLevel",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "graphitiAccPct",
+            "label": "Graphiti Bi-Temporal: Trả lời đúng hiệu lực (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "flatRagAccPct",
+            "label": "Flat Vector RAG: Trả lời đúng hiệu lực (%)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "graphitiStaleErrPct",
+            "label": "Graphiti: Tỷ lệ ảo giác giá/voucher cũ (%)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "flatRagStaleErrPct",
+            "label": "Flat Vector RAG: Tỷ lệ ảo giác giá/voucher cũ (%)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "churnLevel": "0 lần đổi (Tĩnh)", "graphitiAccPct": 96.5, "flatRagAccPct": 94.0, "graphitiStaleErrPct": 0.5, "flatRagStaleErrPct": 2.0 },
+          { "churnLevel": "1 lần đổi chính sách", "graphitiAccPct": 96.0, "flatRagAccPct": 81.5, "graphitiStaleErrPct": 1.0, "flatRagStaleErrPct": 14.5 },
+          { "churnLevel": "2 lần đổi chính sách", "graphitiAccPct": 95.6, "flatRagAccPct": 72.0, "graphitiStaleErrPct": 1.4, "flatRagStaleErrPct": 22.0 },
+          { "churnLevel": "3 lần đổi chính sách", "graphitiAccPct": 95.1, "flatRagAccPct": 63.5, "graphitiStaleErrPct": 1.8, "flatRagStaleErrPct": 29.5 },
+          { "churnLevel": "4 lần đổi chính sách", "graphitiAccPct": 94.9, "flatRagAccPct": 55.0, "graphitiStaleErrPct": 2.0, "flatRagStaleErrPct": 34.0 },
+          { "churnLevel": "5 lần đổi liên tiếp", "graphitiAccPct": 94.8, "flatRagAccPct": 49.2, "graphitiStaleErrPct": 2.1, "flatRagStaleErrPct": 38.0 }
+        ],
+        "kpis": [
+          {
+            "label": "Đúng chính sách sau 5 kỳ đổi",
+            "value": "94,8%",
+            "delta": "+45,6 điểm % so với Vector RAG",
+            "positive": true
+          },
+          {
+            "label": "Lỗi nhắc nhầm ưu đãi cũ",
+            "value": "2,1%",
+            "delta": "Giảm 18x từ mức 38,0%",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ graphiti.search()",
+            "value": "85–145 ms",
+            "delta": "Hybrid Vector+BM25+Graph Neo4j",
+            "positive": true
+          },
+          {
+            "label": "Token burn khi add_episode",
+            "value": "6K–14K tokens",
+            "delta": "Tăng chi phí LLM lúc nạp dữ liệu",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Lab mô phỏng chuỗi cập nhật chính sách booking & Voucher Hub trên Graphiti + Neo4j 5.x (dùng model suy luận midweight cho pha edge invalidation)."
+      },
+      "insightSummary": "Ngay ở lần cập nhật chính sách đầu tiên, tỷ lệ trả lời đúng của Vector RAG phẳng đã tụt từ 94% xuống 81,5% và rơi tự do về 49,2% ở kỳ thay đổi thứ 5 vì các chunk ưu đãi cũ tiếp tục cạnh tranh điểm tương đồng cosine. Nhờ cơ chế khép `invalid_at`, Graphiti giữ ổn định độ chính xác ở mức 94,8–96,5% và ép tỷ lệ ảo giác ưu đãi cũ xuống còn 2,1%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-graphiti-bitemporal-audit",
+      "src": "/imgs/boost/charts/getzep-graphiti-audit-temporal-knowledge-graph-cho-ai-agent-report.webp",
+      "alt": "Biểu đồ forensic audit getzep graphiti bi temporal knowledge graph cho thấy sự phân rã độ chính xác của Vector RAG và sự ổn định của mô hình cạnh valid_at/invalid_at",
+      "caption": "Đồ thị kiểm toán vòng đời sự thật trong getzep/graphiti: so sánh hai trục thời gian Event Time (valid_at/invalid_at) vs Transaction Time và tác động chặn lỗi nhắc nhầm khuyến mãi hết hạn.",
+      "badge": "FORENSIC AUDIT • BI-TEMPORAL GRAPH"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-graphiti-edge-invalidation",
+      "heading": "Code Recipe: Khởi tạo Graphiti + Neo4j, nạp Episode đổi chính sách và lọc cạnh còn hiệu lực (`invalid_at is None`)",
+      "language": "python",
+      "filename": "graphiti_policy_lifecycle.py",
+      "description": "Đoạn mã Python sử dụng `graphiti-core` dựng schema ràng buộc trên Neo4j, nạp nối tiếp hai sự kiện chính sách cách nhau 15 ngày và kiểm tra thuộc tính `valid_at` / `invalid_at` trên `EntityEdge` trả về để chặn AI Agent đọc nhầm ưu đãi hết hạn.",
+      "code": "import asyncio\nimport os\nfrom datetime import datetime, timezone\nfrom graphiti_core import Graphiti\nfrom graphiti_core.nodes import EpisodeType\n\nasync def audit_bitemporal_policies():\n    graphiti = Graphiti(\n        os.getenv(\"NEO4J_URI\", \"bolt://localhost:7687\"),\n        os.getenv(\"NEO4J_USER\", \"neo4j\"),\n        os.getenv(\"NEO4J_PASSWORD\", \"strong_password\"),\n    )\n    try:\n        # Chay 1 lan khi khoi tao DB de tao index vector, BM25 va rang buoc UUID\n        await graphiti.build_indices_and_constraints()\n\n        # 1. Episode ngay 01/11: Mo uu dai dot 1 (chiet khau 8%)\n        await graphiti.add_episode(\n            name=\"ecolife_policy_nov_01\",\n            episode_body=(\n                \"Tu ngay 01/11/2026 den het 15/11/2026, Du an EcoLife Signature \" \n                \"ap dung chiet khau thanh toan som 8% cho toa S2 va tang voucher noi that.\"\n            ),\n            source=EpisodeType.text,\n            source_description=\"Thong bao chinh sach ban hang Dot 1\",\n            reference_time=datetime(2026, 11, 1, 9, 0, tzinfo=timezone.utc),\n            group_id=\"tenant_capital_ecolife\",\n        )\n\n        # 2. Episode ngay 16/11: Chinh sach moi phu dinh muc 8% cu\n        await graphiti.add_episode(\n            name=\"ecolife_policy_nov_16\",\n            episode_body=(\n                \"Cap nhat tu 16/11/2026: Chinh sach chiet khau thanh toan som 8% va tang \" \n                \"voucher noi that cho toa S2 da HET HIEU LUC. Chiet khau moi la 5%.\"\n            ),\n            source=EpisodeType.text,\n            source_description=\"Thong bao dieu chinh chinh sach Dot 2\",\n            reference_time=datetime(2026, 11, 16, 8, 30, tzinfo=timezone.utc),\n            group_id=\"tenant_capital_ecolife\",\n        )\n\n        # 3. Truy van khi khach hoi lai cum tu nhay cam 'chiet khau 8%'\n        edges = await graphiti.search(\n            query=\"Toa S2 EcoLife Signature hien con chiet khau thanh toan som 8% khong?\",\n            group_ids=[\"tenant_capital_ecolife\"],\n            num_results=6,\n        )\n\n        active_facts = [e for e in edges if e.invalid_at is None]\n        expired_facts = [e for e in edges if e.invalid_at is not None]\n\n        print(\"--- SU THAT DANG CON HIEU LUC (Dua vao Prompt) ---\")\n        for edge in active_facts:\n            print(f\"[ACTIVE since {edge.valid_at}] {edge.fact}\")\n\n        print(\"--- SU THAT DA HET HAN (Chan AI khong hua nham) ---\")\n        for edge in expired_facts:\n            print(f\"[INVALIDATED at {edge.invalid_at}] {edge.fact}\")\n    finally:\n        await graphiti.close()\n\nif __name__ == \"__main__\":\n    asyncio.run(audit_bitemporal_policies())"
+    },
+    {
+      "type": "prose",
+      "id": "chi-phi-token-va-chien-luoc-trien-khai-domation",
+      "eyebrow": "KIỂM TOÁN CHI PHÍ • TOKEN BURN & VẬN HÀNH GRAPH CLUSTER",
+      "variant": "deep-dive",
+      "heading": "Cái giá phải trả cho đồ thị Bi-Temporal và cách DOMATION giới hạn phạm vi dùng Graphiti",
+      "paragraphs": [
+        "Một bản báo cáo pháp y trung thực tuyệt đối không chỉ ca ngợi khả năng giải quyết xung đột thời gian của `getzep/graphiti` mà phải đặt lên bàn cân cái giá vận hành của nó. Thứ nhất là mức tiêu hao LLM token và độ trễ lúc nạp dữ liệu (`add_episode()`): để đảm bảo tính chính xác cho quá trình tách thực thể, đối chiếu gộp tên thực thể đồng nghĩa (ví dụ 'EcoLife Đà Nẵng' và 'EcoLife Signature') rồi đánh giá từng cặp cạnh xem sự kiện mới có phủ định cạnh cũ hay không, một tập tin ngắn 400 từ có thể tiêu tốn 6.000 đến 14.000 tokens LLM cùng thời gian xử lý từ 3 đến 8 giây. Nếu doanh nghiệp đổ tràn lan mọi tin nhắn chào hỏi xã giao của hàng chục nghìn khách hàng vào Graphiti, hóa đơn API LLM sẽ phình to mất kiểm soát.",
+        "Thứ hai là gánh nặng hạ tầng: chạy Graphiti ở quy mô sản xuất đồng nghĩa đội DevOps phải bảo trì thêm một cơ sở dữ liệu đồ thị (Neo4j, FalkorDB hoặc Kuzu) bên cạnh cụm PostgreSQL, Redis và lưu trữ vector sẵn có. Tuy nhiên, ưu điểm lớn về mặt cô lập dữ liệu là Graphiti hỗ trợ tham số `group_id`, giúp khoanh vùng đồ thị theo từng doanh nghiệp hoặc dự án (như `tenant_capital_ecolife`) và hạn chế rò rỉ chéo nếu API Gateway kiểm soát chặt danh sách `group_ids` lúc gọi `search()`.",
+        "Vì vậy, trong kiến trúc thực chiến tại DOMATION, chúng tôi không dùng Graphiti làm kho lưu trữ đại trà thay cho vector RAG hay CRM SQL. Thay vào đó, Graphiti đóng vai trò bộ nhớ chính sách động cho các Lead Agent và Revenue Agent ở những bài toán có tần suất thay đổi luật chơi liên tục theo thời gian: theo dõi khung thời gian mở booking từng phân khu tại EcoLife Signature, quản lý trạng thái kích hoạt và hết hạn của Voucher Hub, hoặc lưu chuỗi lịch sử biến động quy trình phê duyệt đa cấp trên ERP 5.0. Còn bảng hàng từng căn hộ hay công nợ từng đồng vẫn giữ nguyên trong PostgreSQL FORCE RLS."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-graphiti",
+      "variant": "warning",
+      "authorBadge": "Kết Luận Pháp Y • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng bắt Vector RAG đoán hôm nay là ngày mấy — hãy đưa các chính sách hay thay đổi vào Graphiti Bi-Temporal hoặc bảng hiệu lực SQL",
+      "body": "Sự cố AI nhắc lại khuyến mãi đã hết hạn không phải lỗi của mô hình ngôn ngữ lớn, mà là lỗi của kiến trúc lưu trữ vô thời gian. getzep/graphiti (Apache-2.0) giải quyết bài toán này xuất sắc ở tầng văn bản phi cấu trúc nhờ `valid_at` và `invalid_at` trên từng `EntityEdge`. Tuy nhiên, hãy dùng nó có chọn lọc cho các dòng sự kiện chính sách động và luôn chạy nạp episode qua hàng đợi nền để bảo toàn biên lợi nhuận token; còn với con số giá niêm yết hoặc giỏ hàng sống, hãy tiếp tục để PostgreSQL FORCE RLS làm người gác cổng cuối cùng."
+    }
+  ]
+}

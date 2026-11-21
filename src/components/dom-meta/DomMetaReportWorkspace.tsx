@@ -137,7 +137,6 @@ import {
   DOM_META_TOUR_STORAGE_KEY,
   DomMetaSpotlightTour,
 } from './DomMetaSpotlightTour';
-import { ClosedLoopFlywheelCockpit } from './ClosedLoopFlywheelCockpit';
 import { useWorkspaceIpProtection } from '../../utils/workspaceIpGuard';
 
 const DomMetaQuickConnectModal = lazy(() =>
@@ -2020,7 +2019,8 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
 
   const renderCrmAttributionCells = (
     entity: DomMetaCampaignNode | DomMetaAdsetNode | DomMetaAdNode,
-    type: 'campaign' | 'adset' | 'ad'
+    type: 'campaign' | 'adset' | 'ad',
+    collapseWrap = false
   ) => {
     if (!showCrmColumns) return null;
     const bucket = getEntityCrmBucket(type, entity.id, entity.name);
@@ -2038,116 +2038,132 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
     const salesTooltip = sales
       .map((s) => `${s.name}: ${s.lead_count} khách (${s.qualified_count} chất lượng)`)
       .join(' · ');
+    const wrap = (node: React.ReactNode) =>
+      collapseWrap ? (
+        <div className="dom-table-cell-collapse">
+          <div>{node}</div>
+        </div>
+      ) : (
+        node
+      );
 
     return (
       <>
         <td className="py-2 px-3 whitespace-nowrap">
-          {total > 0 ? (
-            <button
-              type="button"
-              data-testid={`open-crm-leads-${entity.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setDetailModal({ entity, type, initialTab: 'crm_leads' });
-              }}
-              title="Bấm xem danh sách khách hàng & Sale phụ trách"
-              className="text-left group/crm cursor-pointer space-y-1 min-w-[98px]"
-            >
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-slate-800 group-hover/crm:text-[#1E40FF] tabular-nums">
-                  {formatDomNumber(total)}
-                </span>
-                <span className="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-semibold tabular-nums">
-                  {bucket?.positive_rate || 0}% CL
-                </span>
-              </div>
-              <div
-                className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden flex"
-                title={`Chất lượng: ${qual} · Chờ xử lý: ${pend} · Không phù hợp: ${neg}`}
+          {wrap(
+            total > 0 ? (
+              <button
+                type="button"
+                data-testid={`open-crm-leads-${entity.id}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDetailModal({ entity, type, initialTab: 'crm_leads' });
+                }}
+                title="Bấm xem danh sách khách hàng & Sale phụ trách"
+                className="text-left group/crm cursor-pointer space-y-1 min-w-[98px]"
               >
-                {qualPct > 0 && (
-                  <div className="h-full bg-emerald-500" style={{ width: `${qualPct}%` }} />
-                )}
-                {pendPct > 0 && (
-                  <div className="h-full bg-amber-400" style={{ width: `${pendPct}%` }} />
-                )}
-                {negPct > 0 && (
-                  <div className="h-full bg-rose-400" style={{ width: `${negPct}%` }} />
-                )}
-              </div>
-            </button>
-          ) : (
-            <span className="text-slate-300">—</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-semibold text-slate-800 group-hover/crm:text-[#1E40FF] tabular-nums">
+                    {formatDomNumber(total)}
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-semibold tabular-nums">
+                    {bucket?.positive_rate || 0}% CL
+                  </span>
+                </div>
+                <div
+                  className="w-20 h-1.5 rounded-full bg-slate-100 overflow-hidden flex"
+                  title={`Chất lượng: ${qual} · Chờ xử lý: ${pend} · Không phù hợp: ${neg}`}
+                >
+                  {qualPct > 0 && (
+                    <div className="h-full bg-emerald-500" style={{ width: `${qualPct}%` }} />
+                  )}
+                  {pendPct > 0 && (
+                    <div className="h-full bg-amber-400" style={{ width: `${pendPct}%` }} />
+                  )}
+                  {negPct > 0 && (
+                    <div className="h-full bg-rose-400" style={{ width: `${negPct}%` }} />
+                  )}
+                </div>
+              </button>
+            ) : (
+              <span className="text-slate-300">—</span>
+            )
           )}
         </td>
 
         <td className="py-2 px-3 whitespace-nowrap tabular-nums">
-          {cpql > 0 ? (
-            <span className="font-semibold text-[#1E40FF]">
-              {formatDomMoney(cpql, currency)}
-            </span>
-          ) : (
-            <span className="text-slate-300">—</span>
+          {wrap(
+            cpql > 0 ? (
+              <span className="font-semibold text-[#1E40FF]">
+                {formatDomMoney(cpql, currency)}
+              </span>
+            ) : (
+              <span className="text-slate-300">—</span>
+            )
           )}
         </td>
 
         {showCrmRevenueCol && (
           <td className="py-2 px-3 whitespace-nowrap tabular-nums">
-            {rev > 0 ? (
-              <div>
-                <span className="font-semibold text-emerald-700">
-                  {formatDomMoneyShort(rev, currency)}
-                </span>
-                {realRoas > 0 && (
-                  <span className="block text-[10px] font-medium text-slate-500">
-                    {realRoas.toFixed(1)}x ROAS
+            {wrap(
+              rev > 0 ? (
+                <div>
+                  <span className="font-semibold text-emerald-700">
+                    {formatDomMoneyShort(rev, currency)}
                   </span>
-                )}
-              </div>
-            ) : (
-              <span className="text-slate-300">—</span>
+                  {realRoas > 0 && (
+                    <span className="block text-[10px] font-medium text-slate-500">
+                      {realRoas.toFixed(1)}x ROAS
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <span className="text-slate-300">—</span>
+              )
             )}
           </td>
         )}
 
         <td className="py-2 px-3 whitespace-nowrap">
-          {sales.length > 0 ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setDetailModal({ entity, type, initialTab: 'crm_leads' });
-              }}
-              title={salesTooltip}
-              className="inline-flex items-center gap-1.5 cursor-pointer group/sale"
-            >
-              <div className="flex items-center -space-x-1.5">
-                {sales.slice(0, 3).map((s) =>
-                  s.avatar ? (
-                    <img
-                      key={s.user_id}
-                      src={s.avatar}
-                      alt={s.name}
-                      className="w-6 h-6 rounded-full object-cover ring-2 ring-white"
-                    />
-                  ) : (
-                    <span
-                      key={s.user_id}
-                      className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-[9.5px] font-semibold flex items-center justify-center ring-2 ring-white"
-                    >
-                      {getSaleInitials(s.name)}
+          {wrap(
+            sales.length > 0 ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDetailModal({ entity, type, initialTab: 'crm_leads' });
+                }}
+                title={salesTooltip}
+                className="inline-flex items-center gap-1.5 cursor-pointer group/sale"
+              >
+                <div className="flex items-center -space-x-1.5">
+                  {sales.slice(0, 3).map((s) =>
+                    s.avatar ? (
+                      <img
+                        key={s.user_id}
+                        src={s.avatar}
+                        alt={s.name}
+                        className="w-6 h-6 rounded-full object-cover ring-2 ring-white"
+                      />
+                    ) : (
+                      <span
+                        key={s.user_id}
+                        className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1E40FF] to-[#06B6D4] text-white text-[9.5px] font-semibold flex items-center justify-center ring-2 ring-white"
+                      >
+                        {getSaleInitials(s.name)}
+                      </span>
+                    )
+                  )}
+                  {sales.length > 3 && (
+                    <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-[9.5px] font-semibold flex items-center justify-center ring-2 ring-white">
+                      +{sales.length - 3}
                     </span>
-                  )
-                )}
-                {sales.length > 3 && (
-                  <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-[9.5px] font-semibold flex items-center justify-center ring-2 ring-white">
-                    +{sales.length - 3}
-                  </span>
-                )}
-              </div>
-            </button>
-          ) : (
-            <span className="text-slate-300">—</span>
+                  )}
+                </div>
+              </button>
+            ) : (
+              <span className="text-slate-300">—</span>
+            )
           )}
         </td>
       </>
@@ -2633,95 +2649,111 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                   </div>
 
                   {/* Nested Mobile Adsets & Ads */}
-                  {isOpen && camp.adsets.length > 0 && (
-                    <div className="pt-2 border-t border-slate-100 space-y-2">
-                      {camp.adsets.map((as) => {
-                        const asOpen = Boolean(expandedAdsets[as.id]);
-                        return (
-                          <div
-                            key={as.id}
-                            className="rounded-xl bg-slate-50/90 border border-slate-200/75 p-2.5 space-y-2"
-                          >
-                            <div
-                              onClick={
-                                as.ads.length > 0
-                                  ? () =>
-                                      setExpandedAdsets((prev) => ({
-                                        ...prev,
-                                        [as.id]: !asOpen,
-                                      }))
-                                  : undefined
-                              }
-                              className={`flex items-center justify-between gap-2 min-w-0 ${
-                                as.ads.length > 0 ? 'cursor-pointer' : ''
-                              }`}
-                            >
-                              <div className="min-w-0 flex-1">
-                                <div className="text-xs font-semibold text-slate-800 line-clamp-1">
-                                  {as.name}
-                                </div>
-                                <div className="text-[10.5px] text-slate-500 tabular-nums mt-0.5">
-                                  {formatDomMoneyShort(as.spend, currency)} · {formatDomNumber(as.result)} KQ
-                                  {as.result > 0 ? ` · CPR ${formatDomMoneyShort(as.cpr, currency)}` : ''}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-1.5">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setExpandedAdsets((prev) => ({ ...prev, [as.id]: !asOpen }))
-                                }
-                                className="py-1.5 px-2 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 inline-flex items-center justify-center gap-1 cursor-pointer"
+                  {camp.adsets.length > 0 && (
+                    <div
+                      className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+                      }`}
+                    >
+                      <div className="overflow-hidden min-h-0">
+                        <div className="pt-2 border-t border-slate-100 space-y-2">
+                          {camp.adsets.map((as) => {
+                            const asOpen = Boolean(expandedAdsets[as.id]);
+                            return (
+                              <div
+                                key={as.id}
+                                className="rounded-xl bg-slate-50/90 border border-slate-200/75 p-2.5 space-y-2"
                               >
-                                <ChevronDown
-                                  className={`w-3 h-3 transition-transform ${asOpen ? 'rotate-180' : ''}`}
-                                />
-                                <span>Bài Ad ({as.ads.length})</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setDetailModal({ entity: as, type: 'adset' })}
-                                className="py-1.5 px-2 rounded-lg bg-blue-50 text-[#1E40FF] text-[11px] font-semibold inline-flex items-center justify-center gap-1 cursor-pointer"
-                              >
-                                <span>Chi tiết Adset</span>
-                              </button>
-                            </div>
-
-                            {asOpen && as.ads.length > 0 && (
-                              <div className="space-y-1.5 pt-1">
-                                {as.ads.map((ad) => (
+                                <div
+                                  onClick={
+                                    as.ads.length > 0
+                                      ? () =>
+                                          setExpandedAdsets((prev) => ({
+                                            ...prev,
+                                            [as.id]: !asOpen,
+                                          }))
+                                      : undefined
+                                  }
+                                  className={`flex items-center justify-between gap-2 min-w-0 ${
+                                    as.ads.length > 0 ? 'cursor-pointer' : ''
+                                  }`}
+                                >
+                                  <div className="min-w-0 flex-1">
+                                    <div className="text-xs font-semibold text-slate-800 line-clamp-1">
+                                      {as.name}
+                                    </div>
+                                    <div className="text-[10.5px] text-slate-500 tabular-nums mt-0.5">
+                                      {formatDomMoneyShort(as.spend, currency)} · {formatDomNumber(as.result)} KQ
+                                      {as.result > 0 ? ` · CPR ${formatDomMoneyShort(as.cpr, currency)}` : ''}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-1.5">
                                   <button
-                                    key={ad.id}
                                     type="button"
-                                    onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
-                                    className="w-full rounded-lg bg-white border border-slate-200/80 p-2 flex items-center justify-between gap-2 text-left cursor-pointer dom-ios-press"
+                                    onClick={() =>
+                                      setExpandedAdsets((prev) => ({ ...prev, [as.id]: !asOpen }))
+                                    }
+                                    className="py-1.5 px-2 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 inline-flex items-center justify-center gap-1 cursor-pointer"
                                   >
-                                    <div className="flex items-center gap-2 min-w-0 flex-1">
-                                      <CreativeThumbFan
-                                        urls={[ad.thumbnail_url || ad.image_url].filter(Boolean)}
-                                        goal={ad.optimization_goal || as.optimization_goal}
-                                        active={ad.effective_status.toUpperCase() === 'ACTIVE'}
-                                        variant="ad"
-                                        alt={ad.name}
-                                      />
-                                      <div className="min-w-0 flex-1">
-                                        <div className="text-[11.5px] font-semibold text-slate-800 truncate">
-                                          {ad.name}
-                                        </div>
-                                        <div className="text-[10px] text-slate-500 tabular-nums">
-                                          {formatDomMoneyShort(ad.spend, currency)} · {formatDomNumber(ad.result)} KQ
-                                        </div>
+                                    <ChevronDown
+                                      className={`w-3 h-3 transition-transform duration-200 ${asOpen ? 'rotate-180' : ''}`}
+                                    />
+                                    <span>Bài Ad ({as.ads.length})</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setDetailModal({ entity: as, type: 'adset' })}
+                                    className="py-1.5 px-2 rounded-lg bg-blue-50 text-[#1E40FF] text-[11px] font-semibold inline-flex items-center justify-center gap-1 cursor-pointer"
+                                  >
+                                    <span>Chi tiết Adset</span>
+                                  </button>
+                                </div>
+
+                                {as.ads.length > 0 && (
+                                  <div
+                                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                                      asOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+                                    }`}
+                                  >
+                                    <div className="overflow-hidden min-h-0">
+                                      <div className="space-y-1.5 pt-1">
+                                        {as.ads.map((ad) => (
+                                          <button
+                                            key={ad.id}
+                                            type="button"
+                                            onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
+                                            className="w-full rounded-lg bg-white border border-slate-200/80 p-2 flex items-center justify-between gap-2 text-left cursor-pointer dom-ios-press"
+                                          >
+                                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                                              <CreativeThumbFan
+                                                urls={[ad.thumbnail_url || ad.image_url].filter(Boolean)}
+                                                goal={ad.optimization_goal || as.optimization_goal}
+                                                active={ad.effective_status.toUpperCase() === 'ACTIVE'}
+                                                variant="ad"
+                                                alt={ad.name}
+                                              />
+                                              <div className="min-w-0 flex-1">
+                                                <div className="text-[11.5px] font-semibold text-slate-800 truncate">
+                                                  {ad.name}
+                                                </div>
+                                                <div className="text-[10px] text-slate-500 tabular-nums">
+                                                  {formatDomMoneyShort(ad.spend, currency)} · {formatDomNumber(ad.result)} KQ
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <ChevronRight className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                                          </button>
+                                        ))}
                                       </div>
                                     </div>
-                                    <ChevronRight className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-                                  </button>
-                                ))}
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -2906,7 +2938,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       <td className="py-2.5 px-3">
                         <div className="flex items-center gap-2.5 text-left font-medium text-slate-800 group-hover/row:text-[#1E40FF] min-w-0">
                           <ChevronRight
-                            className={`w-4 h-4 text-slate-400 transition-transform shrink-0 ${
+                            className={`w-4 h-4 text-slate-400 transition-transform duration-200 ease-out shrink-0 ${
                               isOpen ? 'rotate-90 text-[#1E40FF]' : ''
                             }`}
                           />
@@ -2950,132 +2982,160 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
                       </td>
                     </tr>
 
-                    {/* Expanded Adsets */}
-                    {isOpen &&
-                      camp.adsets.map((as, asIdx) => {
-                        const asOpen = Boolean(
-                          expandedAdsets[as.id] ?? as.id === pendingFocusMatch?.adsetId
-                        );
-                        const asThumbs = collectEntityThumbs(as.ads, 2);
-                        const asActive = as.effective_status.toUpperCase() === 'ACTIVE';
-                        return (
-                          <React.Fragment key={as.id}>
-                            <tr
-                              onClick={
-                                as.ads.length > 0
-                                  ? () =>
-                                      setExpandedAdsets((prev) => ({
-                                        ...prev,
-                                        [as.id]: !asOpen,
-                                      }))
-                                  : undefined
-                              }
-                              className={`group/row bg-slate-50/55 hover:bg-blue-50/35 transition-colors ${
-                                as.ads.length > 0 ? 'cursor-pointer' : ''
-                              }`}
-                            >
-                              <td className="py-2 px-3" />
-                              <td className="py-2 pl-8 pr-3">
-                                <div className="flex items-center gap-2.5 text-left font-medium text-slate-700 group-hover/row:text-[#1E40FF] min-w-0">
-                                  <ChevronRight
-                                    className={`w-3.5 h-3.5 text-slate-400 transition-transform shrink-0 ${
-                                      asOpen ? 'rotate-90 text-[#1E40FF]' : ''
-                                    }`}
-                                  />
-                                  <CreativeThumbFan
-                                    urls={asThumbs}
-                                    goal={as.optimization_goal}
-                                    active={asActive}
-                                    variant="adset"
-                                    eager={asIdx < 6}
-                                    alt={as.name}
-                                  />
-                                  <div className="min-w-0">
-                                    <span className="line-clamp-1 font-medium text-slate-800 group-hover/row:text-[#1E40FF] transition-colors">
-                                      {as.name}
-                                    </span>
-                                    <span className="block text-[10px] font-mono text-slate-400 mt-0.5">
-                                      {as.ads.length} ads · ID: {as.id}
-                                    </span>
+                    {/* Expanded Adsets (Smooth 60fps accordion transition) */}
+                    {camp.adsets.map((as, asIdx) => {
+                      const asOpen = Boolean(
+                        expandedAdsets[as.id] ?? as.id === pendingFocusMatch?.adsetId
+                      );
+                      const adsetExpanded = isOpen;
+                      const asThumbs = collectEntityThumbs(as.ads, 2);
+                      const asActive = as.effective_status.toUpperCase() === 'ACTIVE';
+                      return (
+                        <React.Fragment key={as.id}>
+                          <tr
+                            data-open={adsetExpanded ? 'true' : 'false'}
+                            aria-hidden={!adsetExpanded}
+                            onClick={
+                              adsetExpanded && as.ads.length > 0
+                                ? () =>
+                                    setExpandedAdsets((prev) => ({
+                                      ...prev,
+                                      [as.id]: !asOpen,
+                                    }))
+                                : undefined
+                            }
+                            className={`dom-table-collapse-row group/row bg-slate-50/55 hover:bg-blue-50/35 transition-colors ${
+                              as.ads.length > 0 ? 'cursor-pointer' : ''
+                            }`}
+                          >
+                            <td className="py-2 px-3" />
+                            <td className="py-2 pl-8 pr-3">
+                              <div className="dom-table-cell-collapse">
+                                <div>
+                                  <div className="flex items-center gap-2.5 text-left font-medium text-slate-700 group-hover/row:text-[#1E40FF] min-w-0">
+                                    <ChevronRight
+                                      className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ease-out shrink-0 ${
+                                        asOpen ? 'rotate-90 text-[#1E40FF]' : ''
+                                      }`}
+                                    />
+                                    <CreativeThumbFan
+                                      urls={asThumbs}
+                                      goal={as.optimization_goal}
+                                      active={asActive}
+                                      variant="adset"
+                                      eager={adsetExpanded && asIdx < 6}
+                                      alt={as.name}
+                                    />
+                                    <div className="min-w-0">
+                                      <span className="line-clamp-1 font-medium text-slate-800 group-hover/row:text-[#1E40FF] transition-colors">
+                                        {as.name}
+                                      </span>
+                                      <span className="block text-[10px] font-mono text-slate-400 mt-0.5">
+                                        {as.ads.length} ads · ID: {as.id}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
+                              </div>
+                            </td>
+                            {config.column_config.activeColumns.map((colId) => (
+                              <td
+                                key={colId}
+                                className="py-2 px-3 tabular-nums whitespace-nowrap"
+                              >
+                                <div className="dom-table-cell-collapse">
+                                  <div>{renderMetricCell(colId, as, camp)}</div>
+                                </div>
                               </td>
-                              {config.column_config.activeColumns.map((colId) => (
-                                <td
-                                  key={colId}
-                                  className="py-2 px-3 tabular-nums whitespace-nowrap"
-                                >
-                                  {renderMetricCell(colId, as, camp)}
-                                </td>
-                              ))}
-                              {renderCrmAttributionCells(as, 'adset')}
-                              <td className="py-2 px-3 text-right">
-                                <button
-                                  type="button"
-                                  onMouseEnter={() => handleHoverPrefetchEntity(as, 'adset')}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setDetailModal({ entity: as, type: 'adset' });
-                                  }}
-                                  className="px-2.5 py-1 rounded-lg bg-white border border-blue-200 text-[#1E40FF] font-medium cursor-pointer"
-                                >
-                                  Adset
-                                </button>
-                              </td>
-                            </tr>
+                            ))}
+                            {renderCrmAttributionCells(as, 'adset', true)}
+                            <td className="py-2 px-3 text-right">
+                              <div className="dom-table-cell-collapse">
+                                <div>
+                                  <button
+                                    type="button"
+                                    tabIndex={adsetExpanded ? 0 : -1}
+                                    onMouseEnter={() => handleHoverPrefetchEntity(as, 'adset')}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setDetailModal({ entity: as, type: 'adset' });
+                                    }}
+                                    className="px-2.5 py-1 rounded-lg bg-white border border-blue-200 text-[#1E40FF] font-medium cursor-pointer"
+                                  >
+                                    Adset
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
 
-                            {asOpen &&
-                              as.ads.map((ad, adIdx) => (
-                                <tr
-                                  key={ad.id}
-                                  className="group/row bg-white hover:bg-blue-50/20 transition-colors"
-                                >
-                                  <td className="py-2 px-3" />
-                                  <td className="py-2 pl-24 pr-3">
-                                    <div className="flex items-center gap-2.5 min-w-0 pl-2.5 border-l-2 border-slate-200/80">
-                                      <CreativeThumbFan
-                                        urls={[ad.thumbnail_url || ad.image_url].filter(Boolean)}
-                                        goal={ad.optimization_goal || as.optimization_goal}
-                                        active={ad.effective_status.toUpperCase() === 'ACTIVE'}
-                                        variant="ad"
-                                        eager={adIdx < 6}
-                                        alt={ad.name}
-                                      />
-                                      <div className="min-w-0">
-                                        <span className="font-normal text-slate-700 line-clamp-1">
-                                          {ad.name}
-                                        </span>
-                                        <span className="block text-[10px] font-mono text-slate-400">
-                                          ID: {ad.id}
-                                        </span>
+                          {as.ads.map((ad, adIdx) => {
+                            const adExpanded = adsetExpanded && asOpen;
+                            return (
+                              <tr
+                                key={ad.id}
+                                data-open={adExpanded ? 'true' : 'false'}
+                                aria-hidden={!adExpanded}
+                                className="dom-table-collapse-row group/row bg-white hover:bg-blue-50/20 transition-colors"
+                              >
+                                <td className="py-2 px-3" />
+                                <td className="py-2 pl-24 pr-3">
+                                  <div className="dom-table-cell-collapse">
+                                    <div>
+                                      <div className="flex items-center gap-2.5 min-w-0 pl-2.5 border-l-2 border-slate-200/80">
+                                        <CreativeThumbFan
+                                          urls={[ad.thumbnail_url || ad.image_url].filter(Boolean)}
+                                          goal={ad.optimization_goal || as.optimization_goal}
+                                          active={ad.effective_status.toUpperCase() === 'ACTIVE'}
+                                          variant="ad"
+                                          eager={adExpanded && adIdx < 6}
+                                          alt={ad.name}
+                                        />
+                                        <div className="min-w-0">
+                                          <span className="font-normal text-slate-700 line-clamp-1">
+                                            {ad.name}
+                                          </span>
+                                          <span className="block text-[10px] font-mono text-slate-400">
+                                            ID: {ad.id}
+                                          </span>
+                                        </div>
                                       </div>
                                     </div>
+                                  </div>
+                                </td>
+                                {config.column_config.activeColumns.map((colId) => (
+                                  <td
+                                    key={colId}
+                                    className="py-2 px-3 tabular-nums whitespace-nowrap"
+                                  >
+                                    <div className="dom-table-cell-collapse">
+                                      <div>{renderMetricCell(colId, ad)}</div>
+                                    </div>
                                   </td>
-                                  {config.column_config.activeColumns.map((colId) => (
-                                    <td
-                                      key={colId}
-                                      className="py-2 px-3 tabular-nums whitespace-nowrap"
-                                    >
-                                      {renderMetricCell(colId, ad)}
-                                    </td>
-                                  ))}
-                                  {renderCrmAttributionCells(ad, 'ad')}
-                                  <td className="py-2 px-3 text-right">
-                                    <button
-                                      type="button"
-                                      onMouseEnter={() => handleHoverPrefetchEntity(ad, 'ad')}
-                                      onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
-                                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1E40FF] text-white font-medium cursor-pointer"
-                                    >
-                                      <Eye className="w-3 h-3" />
-                                      <span>Ad</span>
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))}
-                          </React.Fragment>
-                        );
-                      })}
+                                ))}
+                                {renderCrmAttributionCells(ad, 'ad', true)}
+                                <td className="py-2 px-3 text-right">
+                                  <div className="dom-table-cell-collapse">
+                                    <div>
+                                      <button
+                                        type="button"
+                                        tabIndex={adExpanded ? 0 : -1}
+                                        onMouseEnter={() => handleHoverPrefetchEntity(ad, 'ad')}
+                                        onClick={() => setDetailModal({ entity: ad, type: 'ad' })}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1E40FF] text-white font-medium cursor-pointer"
+                                      >
+                                        <Eye className="w-3 h-3" />
+                                        <span>Ad</span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </React.Fragment>
+                      );
+                    })}
                   </React.Fragment>
                 );
               })
@@ -4834,21 +4894,6 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
            ==================================================================== */}
         {!loading && isCrmEnabled && effectiveView === 'lead_attribution' && (
           <div className="space-y-4">
-            <ClosedLoopFlywheelCockpit
-              compact
-              metrics={{
-                spendVnd: dataset?.currentTotals.spend || 0,
-                adLeads: dataset?.currentTotals.leads || 0,
-                crmAttributedLeads: crmAttribution?.summary?.attributed_leads || 0,
-                qualifiedLeads: crmAttribution?.summary?.qualified_leads || 0,
-                closedRevenueVnd: crmAttribution?.summary?.total_revenue_vnd || 0,
-                capiSentCount: crmAttribution?.summary?.capi_sent_count || 0,
-                blockedJunkCount: crmAttribution?.summary?.negative_leads || 0,
-              }}
-              onOpenCampaigns={() => setActiveView('ad_detail')}
-              onOpenAttribution={() => setActiveView('lead_attribution')}
-              onOpenCapi={capiPanel ? () => setActiveView('meta_capi') : undefined}
-            />
             <Suspense
               fallback={
                 <DomationProgressLoader
@@ -5143,7 +5188,7 @@ export const DomMetaReportWorkspace: React.FC<DomMetaReportWorkspaceProps> = ({
           <div className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
               <div className="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 p-5 flex flex-col justify-between gap-3.5">
-                <div className="rounded-2xl bg-gradient-to-br from-[#0F172A] via-[#1E40FF] to-[#0284C7] text-white p-5 space-y-2">
+                <div className="rounded-xl bg-gradient-to-br from-[#0F172A] via-[#1E40FF] to-[#0284C7] text-white p-5 space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-medium text-cyan-200 truncate">
                       {dataset.accountOverview?.name || activeAccountObj?.name || 'Meta Ad Account'}

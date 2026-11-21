@@ -75,7 +75,7 @@ export const BoostSeoClusterSection: React.FC = () => {
       workbook.creator = 'DOMATION.NET SEO Engine';
       workbook.created = new Date();
 
-      const sheetClusters = workbook.addWorksheet('12 Keyword Clusters', {
+      const sheetClusters = workbook.addWorksheet(`${BOOST_KEYWORD_CLUSTERS.length} Keyword Clusters`, {
         properties: { tabColor: { argb: 'FF1E40FF' } },
       });
       sheetClusters.columns = [
@@ -119,7 +119,7 @@ export const BoostSeoClusterSection: React.FC = () => {
         }
       }
 
-      const sheetTopics = workbook.addWorksheet('74 Chu De Blog SEO', {
+      const sheetTopics = workbook.addWorksheet(`${BOOST_74_SEO_TOPICS.length} Chu De Blog SEO`, {
         properties: { tabColor: { argb: 'FF06B6D4' } },
       });
       sheetTopics.columns = [
@@ -161,7 +161,7 @@ export const BoostSeoClusterSection: React.FC = () => {
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      saveAs(blob, 'Ke_Hoach_SEO_Cluster_74_Bai_DOMATION.xlsx');
+      saveAs(blob, `Ke_Hoach_SEO_Cluster_${BOOST_74_SEO_TOPICS.length}_Bai_DOMATION.xlsx`);
     } finally {
       setExporting(false);
     }
@@ -182,10 +182,10 @@ export const BoostSeoClusterSection: React.FC = () => {
           </div>
           <h2
             id="seo-clusters-heading"
-            className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight"
+            className="text-[20px] sm:text-2xl lg:text-3xl font-extrabold text-slate-900 leading-[1.24] tracking-tight"
           >
-            Kiến Trúc 12 Cụm Từ Khóa &amp; 74 Bài Content SEO Cluster Đẩy Top{' '}
-            <span className="text-gradient-inkica">DOMATION (/boost)</span>
+            Kiến Trúc {BOOST_KEYWORD_CLUSTERS.length} Cụm Từ Khóa &amp;{' '}
+            <span className="text-gradient-inkica">{BOOST_74_SEO_TOPICS.length} Bài SEO DOMATION</span>
           </h2>
           <p className="text-sm text-slate-600 leading-relaxed">
             Quy hoạch chặt chẽ từ khóa ngắn (Short-tail) &amp; dài (Long-tail), từ khóa chính &amp;
@@ -371,7 +371,7 @@ export const BoostSeoClusterSection: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h3 className="text-lg sm:text-xl font-bold text-slate-900">
-              Ma Trận 74 Chủ Đề SEO &amp; SLUG Đã Index Trên Blog /boost
+              Ma Trận {BOOST_74_SEO_TOPICS.length} Chủ Đề SEO &amp; SLUG Đã Index Trên Blog /boost
             </h3>
             <p className="text-xs text-slate-600 mt-0.5">
               Lọc theo tầng phễu TOFU / MOFU / BOFU hoặc tìm theo từ khóa để kiểm tra internal link.
@@ -406,8 +406,8 @@ export const BoostSeoClusterSection: React.FC = () => {
             type="search"
             value={topicQuery}
             onChange={(e) => setTopicQuery(e.target.value)}
-            placeholder="Lọc trong 74 chủ đề SEO theo tiêu đề, từ khóa chính/phụ, vibecode, ERP may đo, tối ưu quảng cáo..."
-            aria-label="Lọc danh sách 74 chủ đề SEO"
+            placeholder={`Lọc trong ${BOOST_74_SEO_TOPICS.length} chủ đề SEO theo tiêu đề, từ khóa chính/phụ, vibecode, ERP may đo, tối ưu quảng cáo...`}
+            aria-label={`Lọc danh sách ${BOOST_74_SEO_TOPICS.length} chủ đề SEO`}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/30 focus:border-[#1E40FF]"
           />
         </div>

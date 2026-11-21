@@ -1,0 +1,496 @@
+[
+  {
+    "shardId": "shard09",
+    "fullName": "Aider-AI/aider",
+    "url": "https://github.com/Aider-AI/aider",
+    "category": "Terminal AI Pair Programming Agent",
+    "primaryLanguage": "Python",
+    "license": "Apache-2.0",
+    "starsTier": "45k+ Stars",
+    "coreArchitecture": "Python CLI runtime anchored by Tree-sitter AST parsing (repomap.py), which builds a cross-file symbol dependency graph ranked via PageRank within a strict token budget. Uses unified-diff and search/replace edit formats, LiteLLM multi-provider routing, automatic linter/test loop verification, and deterministic Git auto-staging/commits per edit.",
+    "enterprisePainSolved": "Eliminates blind whole-file rewrites and context-window overflow in large multi-file repositories while enforcing an immutable, diff-auditable Git commit trail for every AI-generated change.",
+    "honestTradeoff": "Terminal-only workflow with no native IDE sidebar or built-in MCP host lifecycle; optimized for tight human-steered pair programming rather than autonomous background ticket execution, and rapid trial-and-error iterations can clutter Git history unless squashed.",
+    "domationSynergy": "Serves as a fast CLI co-pilot for DOMATION engineers refactoring Next.js ERP 5.0 modules (12 phân hệ) and PostgreSQL RLS migrations during Vibecode sprints, guaranteeing clean per-task Git diffs before CI review.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "cline/cline",
+    "url": "https://github.com/cline/cline",
+    "category": "IDE-Native Autonomous Coding Agent & MCP Host",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "70k+ Stars",
+    "coreArchitecture": "TypeScript VS Code/JetBrains extension, CLI, and React webview runtime featuring dual Plan/Act mode separation, AST and ripgrep workspace indexing, headless browser inspection, and a native McpHub host managing JSON-RPC 2.0 MCP servers over stdio and HTTP/SSE with explicit human-in-the-loop approval checkpoints.",
+    "enterprisePainSolved": "Solves black-box autonomous code modification by forcing architectural Plan review before Act execution and requiring explicit developer sign-off prior to shell commands, file writes, or external MCP tool calls.",
+    "honestTradeoff": "Per-action approval gates cause confirmation fatigue on sprawling refactors; execution remains tethered to active IDE/workspace sessions and can escalate LLM token spend quickly when loading large MCP schemas or subagent loops.",
+    "domationSynergy": "Acts as DOMATION's primary IDE Vibecode agent for building CRM 360° pipelines and AutoData ZaloBot/Meta CAPI webhooks, bridging directly to GitHub, Playwright, and Context7 MCP servers under strict human-in-the-loop audit.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "OpenHands/OpenHands",
+    "url": "https://github.com/OpenHands/OpenHands",
+    "category": "Sandboxed Autonomous Software Engineering Platform",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "MIT",
+    "starsTier": "90k+ Stars",
+    "coreArchitecture": "Decoupled event-stream platform (React/TypeScript UI + Python orchestrator + LiteLLM routing) communicating over HTTP/WebSocket/SSE with an isolated FastAPI agent-server inside ephemeral Docker containers or Kubernetes Runtime API pods equipped with bash, IPython, Git, and browser plugins (formerly All-Hands-AI/OpenHands).",
+    "enterprisePainSolved": "Removes host-machine blast radius when running long-horizon autonomous issue resolution, dependency installs, and integration tests by confining agent shell execution inside disposable sandboxes.",
+    "honestTradeoff": "Heavy Docker/Kubernetes runtime orchestration and warm-pod provisioning add infrastructure complexity that is overkill for small quick edits; headless execution struggles to verify visual UI/CSS regressions without external visual QA tools.",
+    "domationSynergy": "Provides DOMATION with a containerized execution blueprint and background PR-runner for safely testing untrusted Vibecode dependencies or running automated integration suites against isolated ERP 5.0 tenant clones.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 9,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "continuedev/continue",
+    "url": "https://github.com/continuedev/continue",
+    "category": "Open-Source IDE AI Assistant (Archived)",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "35k+ Stars",
+    "coreArchitecture": "VS Code/JetBrains extension and TypeScript core engine combining Fill-In-the-Middle (FIM) tab autocomplete, modular @ context providers (codebase embeddings, docs, Git diffs), custom slash commands, and model-agnostic routing to local Ollama/vLLM or cloud APIs.",
+    "enterprisePainSolved": "Enabled regulated engineering teams to deploy private, air-gapped IDE autocomplete and inline chat backed exclusively by on-premise LLMs so proprietary source code never leaves the VPC.",
+    "honestTradeoff": "Repository was set to read-only/archived at v2.0.0 following its acquisition by Cursor; no longer receives active upstream patches or new IDE API updates, creating maintenance and security drift risk for new enterprise rollouts.",
+    "domationSynergy": "Audited by DOMATION as a reference pattern for private local-LLM IDE autocomplete in air-gapped deployments (e.g., NavaTek local LLM workstation setups), while active Vibecode workflows standardize on maintained tools like Cline and OpenCode.",
+    "suggestedScores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "RooCodeInc/Roo-Code",
+    "url": "https://github.com/RooCodeInc/Roo-Code",
+    "category": "Multi-Mode IDE Coding Agent (Archived)",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "20k+ Stars",
+    "coreArchitecture": "Cline-derived VS Code extension (originally RooVetGit/Roo-Code) featuring a Custom Modes state machine (Architect, Code, Ask, Debug, and custom personas), per-mode tool allowlists, Boomerang subtask delegation, MCP client integration, and automated IDE diff/terminal execution.",
+    "enterprisePainSolved": "Solved coarse all-or-nothing agent permissions in VS Code by restricting Architect and Ask modes to read-only inspection while isolating file-write and shell execution inside scoped Code/Debug roles.",
+    "honestTradeoff": "Officially shut down and archived read-only on May 15, 2026 (final release v3.54.0) as the team pivoted to the Roomote cloud-async agent; pinned teams face frozen extension compatibility unless migrating to Cline or community forks like ZooCode.",
+    "domationSynergy": "DOMATION borrows Roo-Code's role-scoped tool allowlist architecture to enforce least-privilege guardrails across internal Vibecode agents (separating database schema design from migration execution), while relying on active Cline/OpenCode builds.",
+    "suggestedScores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "anomalyco/opencode",
+    "url": "https://github.com/anomalyco/opencode",
+    "category": "Multi-Surface Open-Source AI Coding Agent",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "200k+ Stars",
+    "coreArchitecture": "TypeScript/Bun Turborepo monorepo (canonical successor to sst/opencode) decoupling an internal HTTP session server from multi-surface clients (Terminal TUI, Desktop app, Web UI, and GitHub Actions runner), featuring live LSP compiler diagnostics, Tab-switchable read-only plan vs build agents, subagents, MCP support, and Git snapshot /undo and /redo primitives.",
+    "enterprisePainSolved": "Eliminates closed-vendor CLI lock-in while coupling model-agnostic coding agents with real-time LSP type diagnostics, instant Git snapshot rollback, and native headless GitHub Actions PR automation.",
+    "honestTradeoff": "High-velocity multi-client surface area (TUI, Desktop, Web, CI) introduces occasional configuration/plugin drift across releases; client-server execution still relies on external repo or container boundaries for strict multi-developer isolation.",
+    "domationSynergy": "High-speed Vibecode terminal and CI co-pilot for DOMATION's TypeScript monorepos—verifies Next.js/ERP 5.0 edits directly against live LSP diagnostics, connects to internal MCP servers, and automates PR fixes across CRM and AutoData services.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "stackblitz-labs/bolt.diy",
+    "url": "https://github.com/stackblitz-labs/bolt.diy",
+    "category": "In-Browser Full-Stack AI App Builder",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "20k+ Stars",
+    "coreArchitecture": "Remix/Vite workspace powered by StackBlitz WebContainers (a WebAssembly-compiled Node.js runtime inside the browser tab) paired with Vercel AI SDK routing across 20+ cloud and local Ollama providers, streaming file diffs, an embedded dev preview server, and Git/MCP hooks.",
+    "enterprisePainSolved": "Eliminates cloud VM/Docker spin-up delays during UI/UX prototyping by installing npm packages and booting interactive full-stack frontend previews instantaneously in-browser with full BYOK LLM freedom.",
+    "honestTradeoff": "Browser WebContainers cannot execute native Linux binaries, Dockerfiles, Python C-extensions, or real PostgreSQL databases (e.g., FORCE RLS engines), and large multi-package codebases rapidly hit browser RAM and WebAssembly filesystem ceilings.",
+    "domationSynergy": "Ideal rapid UI sandbox for DOMATION's Web Design & Sa bàn 3D WebGL (Three.js) client sales prototypes before exporting validated React components into production Next.js + PostgreSQL FORCE RLS repositories.",
+    "suggestedScores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "browser-use/browser-use",
+    "url": "https://github.com/browser-use/browser-use",
+    "category": "Autonomous AI Browser Control Library",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "120k+ Stars",
+    "coreArchitecture": "Async Python Agent runtime controlling Chromium over the Chrome DevTools Protocol (CDP), pairing indexed DOM extraction with viewport screenshots per reasoning step, supporting persistent browser profiles/cookies, custom tool callbacks, and queue-backed containerized worker scaling.",
+    "enterprisePainSolved": "Automates legacy B2B portals, tax/accounting dashboards, and supplier extranets lacking REST APIs where fragile CSS/XPath RPA scripts break on minor UI changes.",
+    "honestTradeoff": "Continuous DOM + screenshot vision loops generate high token spend and multi-second step latency; remains vulnerable to anti-bot CAPTCHAs, DOM drift, and prompt-injection/session-leakage risks when operating inside authenticated tabs without strict isolation.",
+    "domationSynergy": "Bridges non-API legacy partner portals during DOMATION ERP 5.0 / CRM 360° data onboarding and executes exploratory E2E verification across live client landing pages and ad/Zalo web consoles.",
+    "suggestedScores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 6,
+      "costEfficiency": 6
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "langchain-ai/langgraph",
+    "url": "https://github.com/langchain-ai/langgraph",
+    "category": "Stateful Cyclic Multi-Agent Graph Orchestrator",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "40k+ Stars",
+    "coreArchitecture": "Deterministic cyclic state-machine engine (StateGraph, typed channel reducers, conditional routing edges) featuring native persistence via Checkpointer snapshots (thread_id, SqliteSaver, PostgresSaver), interrupt() human-in-the-loop pause/resume, time-travel replay, and supervisor/swarm multi-actor topologies.",
+    "enterprisePainSolved": "Solves broken linear chains and lost execution context in long-running enterprise agent workflows by persisting every state transition to PostgreSQL for crash recovery, replay, and human sign-off.",
+    "honestTradeoff": "Steep conceptual overhead around state reducers, super-steps, and parallel branch merges; evolving graph schemas require careful migration planning for long-lived paused threads, and LangChain ecosystem conventions add abstraction weight.",
+    "domationSynergy": "Architectural reference for DOMATION's Multi-Agent Orchestrator Core and multi-level ERP approval workflows (Purchase Order / Tạm ứng pause-and-resume via ZaloBot confirmation backed by PostgreSQL checkpoints).",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard09",
+    "fullName": "langgenius/dify",
+    "url": "https://github.com/langgenius/dify",
+    "category": "Visual LLMOps, RAG & Agent Workflow Platform",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "Apache-2.0 Modified (Dify Open Source License — restricts multi-tenant SaaS & console branding removal)",
+    "starsTier": "160k+ Stars",
+    "coreArchitecture": "Full-stack LLMOps platform combining a Next.js visual DAG workflow builder, Python API + Celery async workers, Redis broker/cache, PostgreSQL metadata store, pluggable vector databases (Qdrant/Weaviate/Milvus/pgvector), visual RAG chunk/retrieval tuning, and sandboxed plugin execution.",
+    "enterprisePainSolved": "Empowers cross-functional ops and engineering teams to ship visual RAG assistants, prompt chains, and trace-monitored AI APIs rapidly without hand-building vector ingestion UIs and model-gateway glue.",
+    "honestTradeoff": "Modified Apache-2.0 license explicitly prohibits offering Dify as a commercial multi-tenant managed service or removing frontend branding without a commercial license; full multi-container stack (API, worker, Redis, Postgres, vector DB, sandbox) carries heavy ops overhead.",
+    "domationSynergy": "Suitable for dedicated single-tenant private-VPS departmental RAG deployments, while DOMATION keeps its core multi-tenant SaaS orchestration engine independent to comply strictly with Dify's multi-tenant license restriction.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "n8n-io/n8n",
+    "url": "https://github.com/n8n-io/n8n",
+    "category": "Fair-Code Visual Workflow & AI Automation Engine",
+    "primaryLanguage": "TypeScript",
+    "license": "Sustainable Use License (Fair-code) + n8n Enterprise License (.ee files)",
+    "starsTier": "210k+ Stars",
+    "coreArchitecture": "Node.js/TypeScript DAG workflow engine with 400+ connectors, native LangChain AI Agent nodes, webhook/schedule triggers, and horizontal Queue Mode (EXECUTIONS_MODE=queue) decoupling main UI/webhook nodes from stateless workers via BullMQ + Redis and PostgreSQL state storage.",
+    "enterprisePainSolved": "Eliminates punitive per-operation Zapier/Make SaaS bills for high-volume lead webhooks, CRM pipelines, and AI triage flows while keeping PII and credentials inside a self-hosted VPC.",
+    "honestTradeoff": "Sustainable Use License is source-available rather than OSI open-source—you cannot white-label or host n8n as a multi-tenant commercial product where external tenants build workflows without an Enterprise License; single-process mode hits memory ceilings on heavy payloads unless Queue Mode is provisioned.",
+    "domationSynergy": "Complements DOMATION's internal Visual Flow Builder & BullMQ stack as a dedicated single-tenant client ops bus (syncing MISA accounting, Amazon SES, Zalo ZNS, and Meta CAPI alerts) configured cleanly within SUL consulting boundaries.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "crewAIInc/crewAI",
+    "url": "https://github.com/crewAIInc/crewAI",
+    "category": "Role-Based Multi-Agent & Event-Driven Flow Framework",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "60k+ Stars",
+    "coreArchitecture": "Standalone Python framework (independent of LangChain) separating Crews (role/goal/backstory agents executing sequential or manager-delegated hierarchical tasks with shared memory and Pydantic outputs) from Flows (event-driven @start/@listen/@router deterministic state orchestration).",
+    "enterprisePainSolved": "Bridges business org-chart thinking and code-first agent orchestration so teams can rapidly assemble specialized research, synthesis, and QA agents governed by deterministic Flow routing.",
+    "honestTradeoff": "Hierarchical manager-agent delegation can trigger non-deterministic conversation loops, latency spikes, and runaway token bills if stop conditions are loose; offers weaker low-level checkpoint replay and time-travel debugging than graph-first engines like LangGraph.",
+    "domationSynergy": "Aligns closely with DOMATION's 4-agent departmental separation (Lead Routing, CSKH, ERP Ops, Revenue Agent), using deterministic Flows/BullMQ as the IF/ELSE backbone while borrowing CrewAI role-delegation patterns for multi-step reporting.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "microsoft/autogen",
+    "url": "https://github.com/microsoft/autogen",
+    "category": "Event-Driven Multi-Agent Conversation Framework (Transitioned)",
+    "primaryLanguage": "Python",
+    "license": "MIT (Code) / CC-BY-4.0 (Docs)",
+    "starsTier": "60k+ Stars",
+    "coreArchitecture": "Layered Python architecture separating autogen-core (asynchronous actor/event-driven message runtime for distributed agents), autogen-agentchat (RoundRobinGroupChat and SelectorGroupChat conversational abstractions), and autogen-ext (Docker code-execution sandboxes and MCP adapters).",
+    "enterprisePainSolved": "Pioneered asynchronous multi-agent debate and Docker-sandboxed code-execution loops for complex data analytics, automated verification, and collaborative problem solving.",
+    "honestTradeoff": "Legacy repository has entered archived/maintenance transition as Microsoft steers greenfield adoption toward the newer Microsoft Agent Framework; unconstrained group chats risk infinite turn loops and unpredictable token spend without strict termination rules.",
+    "domationSynergy": "Audited by DOMATION as a reference for asynchronous actor message buses and Docker code-sandbox isolation in Python BI workers, without anchoring new production services on the transitioning repository.",
+    "suggestedScores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 8,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "pydantic/pydantic-ai",
+    "url": "https://github.com/pydantic/pydantic-ai",
+    "category": "Type-Safe Structured Python Agent SDK",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "20k+ Stars",
+    "coreArchitecture": "FastAPI-inspired Python Agent SDK enforcing static generic typing across deps_type dependency injection and output_type Pydantic schema validation with automatic validation-error retry loops, pydantic-graph state machines, pydantic-evals, and native OpenTelemetry/Logfire observability.",
+    "enterprisePainSolved": "Eliminates fragile JSON parsing failures and untyped prompt glue in production AI microservices by enforcing deterministic schema contracts, DI testability, and end-to-end telemetry.",
+    "honestTradeoff": "Schema validation guarantees structural JSON shape rather than factual truth, and automatic validation retries silently multiply token cost and tail latency on weak models; strictly Python-native, requiring HTTP/queue boundaries for TypeScript cores.",
+    "domationSynergy": "Prime Python SDK for DOMATION's structured Lead Qualification scoring, Meta Ad Creative Hook analytics parsing, and MISA invoice/contract extraction workers where strict Pydantic schemas and OpenTelemetry traces are non-negotiable.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "mastra-ai/mastra",
+    "url": "https://github.com/mastra-ai/mastra",
+    "category": "TypeScript-First AI Agent & Workflow Framework",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0 (Core) + Mastra Enterprise License (ee/ modules)",
+    "starsTier": "25k+ Stars",
+    "coreArchitecture": "Modular TypeScript AI framework built over Vercel AI SDK unified model routing, providing typed Agent memory/threads, Zod-validated step Workflows with suspend/resume, vector RAG stores (LibSQL/pgvector), built-in MCP client/server authoring, local dev studio UI, and OpenTelemetry evals.",
+    "enterprisePainSolved": "Eliminates cross-language Python-bridge tax for Next.js and Node.js product teams by unifying typed agents, Zod tool contracts, workflows, and API routes inside one TypeScript codebase.",
+    "honestTradeoff": "Younger third-party connector ecosystem than Python incumbents; advanced enterprise ee/ features fall under a commercial Mastra Enterprise License, and teams must provision and operate their own backing Postgres, vector DB, and queue infrastructure.",
+    "domationSynergy": "Natural architectural fit for DOMATION's TypeScript + Next.js + PostgreSQL stack—accelerates Vibecode construction of CRM 360° copilots, typed RAG endpoints, and custom MCP tools without introducing Python sidecar latency.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "triggerdotdev/trigger.dev",
+    "url": "https://github.com/triggerdotdev/trigger.dev",
+    "category": "Durable Background Jobs & Long-Running Agent Engine",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "15k+ Stars",
+    "coreArchitecture": "TypeScript durable execution platform combining PostgreSQL (task state/metadata), Redis (queues/concurrency), ClickHouse (OpenTelemetry logs/traces), and containerized workers supporting wait.for/wait.forToken checkpoint-and-resume across hours or days with realtime React progress streams and zero serverless timeout limits.",
+    "enterprisePainSolved": "Eliminates 10–60s serverless function timeouts on long-running AI agent loops, batch payroll PDF generation, multi-day follow-up sequences, and 3D prepress/media pipelines.",
+    "honestTradeoff": "Deeply TypeScript/Node-centric (Python ML workloads require subprocess or external service bridges); self-hosting the full stack (Postgres + Redis + ClickHouse + worker coordinator) carries significant DevOps overhead, and updating code for in-flight checkpointed tasks demands versioned migrations.",
+    "domationSynergy": "Strong durable-execution complement to DOMATION's BullMQ workers for long-horizon human-in-the-loop waits (Zalo ZNS sequences, multi-level ERP PO approvals) and heavy INKICA/AutoData batch jobs with ClickHouse observability.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "modelcontextprotocol/servers",
+    "url": "https://github.com/modelcontextprotocol/servers",
+    "category": "Official Model Context Protocol Reference Servers",
+    "primaryLanguage": "TypeScript / Python",
+    "license": "Apache-2.0 (new contributions) + MIT (legacy code)",
+    "starsTier": "90k+ Stars",
+    "coreArchitecture": "Canonical monorepo of JSON-RPC 2.0 MCP reference implementations (filesystem, git, memory, fetch, time, sequentialthinking) built on official TypeScript and Python MCP SDKs over stdio and Streamable HTTP/SSE transports, exposing standardized Tools, Resources, and Prompts.",
+    "enterprisePainSolved": "Replaces bespoke N-by-M tool integrations with one universal open protocol so any AI coding client or enterprise orchestrator can securely invoke files, Git, and external resources.",
+    "honestTradeoff": "Explicitly positioned as reference/educational implementations rather than production-hardened enterprise servers (several third-party/DB servers were archived or split out); deploying reference tools without strict directory/network allowlists risks path-traversal or SSRF abuse.",
+    "domationSynergy": "Serves as the protocol blueprint behind DOMATION's DOM Agent (80 tools), exposing ERP 5.0, AutoData Lead Routing, CRM 360°, and Meta CAPI diagnostics via scoped MCP endpoints backed by PostgreSQL FORCE RLS.",
+    "suggestedScores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 10
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "github/github-mcp-server",
+    "url": "https://github.com/github/github-mcp-server",
+    "category": "Official GitHub Platform MCP Server",
+    "primaryLanguage": "Go",
+    "license": "MIT",
+    "starsTier": "30k+ Stars",
+    "coreArchitecture": "Compiled Go binary and GHCR container (ghcr.io/github/github-mcp-server) speaking JSON-RPC over stdio and remote Streamable HTTP/OAuth, featuring modular --toolsets scoping (repos, issues, pull_requests, actions, dependabot), --read-only guardrails, and --dynamic-toolsets on-demand discovery across 60+ GitHub tools.",
+    "enterprisePainSolved": "Replaces fragile CLI scraping and bloated OpenAPI specs with typed, context-efficient PR review, issue triage, CI log inspection, and Dependabot auditing directly inside AI coding agents.",
+    "honestTradeoff": "Loading all 60+ tools simultaneously wastes prompt tokens and confuses tool selection unless --toolsets or --dynamic-toolsets is enabled; misconfigured classic PATs with broad org scopes create high write blast radius if --read-only is omitted.",
+    "domationSynergy": "Standard DevOps MCP server for DOMATION's engineering squad—enabling Cline and OpenCode to inspect failed builds, audit tenant ERP PRs, and triage Dependabot alerts using least-privilege fine-grained tokens.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "upstash/context7",
+    "url": "https://github.com/upstash/context7",
+    "category": "Live Version-Pinned Documentation MCP Server",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "65k+ Stars",
+    "coreArchitecture": "Open-source TypeScript MCP server (@upstash/context7-mcp), CLI (ctx7), and Vercel AI SDK toolset connecting over stdio or remote Streamable HTTP/SSE to Upstash's proprietary hosted doc-crawling/indexing engine, exposing two precision tools: resolve-library-id and get-library-docs.",
+    "enterprisePainSolved": "Eliminates Vibecode hallucinations caused by stale LLM training weights (breaking changes in Next.js, Three.js, Tailwind, or @google/genai SDKs) by injecting live, version-accurate code snippets at prompt time.",
+    "honestTradeoff": "Only the client MCP/CLI wrapper is MIT open-source—the underlying documentation crawler, parser, and search backend are proprietary cloud infrastructure hosted by Upstash, blocking pure air-gapped use and introducing upstream rate-limit dependencies.",
+    "domationSynergy": "Essential daily Vibecode MCP for DOMATION developers shipping Next.js, Three.js 3D WebGL sa bàn, and Gemini Interactions API integrations, while proprietary internal ERP/CRM documentation stays strictly inside private RAG.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard10",
+    "fullName": "activepieces/activepieces",
+    "url": "https://github.com/activepieces/activepieces",
+    "category": "Open-Source No-Code Automation & MCP Pieces Platform",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT (Community Core & Pieces) + Commercial Enterprise License (ee/)",
+    "starsTier": "25k+ Stars",
+    "coreArchitecture": "Modular TypeScript workflow engine built on Fastify (high-throughput API/webhooks), PostgreSQL + TypeORM, BullMQ + Redis distributed job queues, sandboxed custom TypeScript code steps, and isolated connector modules (Pieces) natively exportable as MCP tools.",
+    "enterprisePainSolved": "Delivers an MIT-licensed, embeddable Zapier alternative that eliminates per-task SaaS pricing cliffs while enabling ops teams to mix visual workflows with sandboxed TypeScript code and AI agent steps.",
+    "honestTradeoff": "Long-tail SaaS connector library is smaller than Zapier, Make, or n8n (often needing custom Piece or HTTP fallback steps); single-container setups bottleneck under heavy concurrent webhook bursts without scaled BullMQ workers, and multi-tenant SSO/RBAC lives in paid ee/ code.",
+    "domationSynergy": "MIT-licensed Piece pattern avoids n8n's Sustainable Use License multi-tenant friction and aligns cleanly with DOMATION's Fastify/BullMQ/PostgreSQL architecture for building modular Zalo OA, MISA, and POS webhook connectors.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "firecrawl/firecrawl",
+    "url": "https://github.com/firecrawl/firecrawl",
+    "category": "LLM-Ready Web Crawling & Structured Extraction Engine",
+    "primaryLanguage": "TypeScript / Rust",
+    "license": "AGPL-3.0 (Core) + MIT (SDKs) + Proprietary Cloud (Fire-engine)",
+    "starsTier": "200k+ Stars",
+    "coreArchitecture": "Polyglot distributed crawler (formerly mendableai/firecrawl) pairing a Node.js/TypeScript API control plane and BullMQ + Redis job queues with Rust native modules via napi-rs for fast HTML cleaning, sitemap parsing, and document conversion, plus Playwright workers for dynamic JS rendering and LLM schema extraction.",
+    "enterprisePainSolved": "Replaces brittle custom scraper scripts by transforming dynamic SPA websites, sitemaps, and nested pages into clean, citation-ready Markdown or structured JSON for AI agents and RAG pipelines.",
+    "honestTradeoff": "AGPL-3.0 copyleft requires open-sourcing modified backend code if exposed over a network service without a commercial license; the self-hosted OSS edition lacks Firecrawl's proprietary cloud Fire-engine anti-bot/CAPTCHA proxy layer.",
+    "domationSynergy": "Accelerates competitive catalog intelligence and external knowledge ingestion for DOMATION's Multi-Agent RAG—consumed via isolated internal batch jobs or managed API keys to avoid AGPL-3.0 contamination of DOMATION's commercial SaaS codebase.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "unclecode/crawl4ai",
+    "url": "https://github.com/unclecode/crawl4ai",
+    "category": "Open-Source Async Python Web Crawler for AI & RAG",
+    "primaryLanguage": "Python",
+    "license": "Apache-2.0",
+    "starsTier": "85k+ Stars",
+    "coreArchitecture": "Async Python AsyncWebCrawler driving Playwright/Chromium with memory-adaptive concurrency dispatchers, BrowserConfig/CrawlerRunConfig session profiles, BM25/pruning content filters for LLM-ready Markdown, CSS/XPath/cosine/LLM extraction strategies (LiteLLM/Ollama), and built-in Docker REST & MCP interfaces.",
+    "enterprisePainSolved": "Gives AI engineering teams a permissive Apache-2.0, zero-SaaS-fee crawler capable of rendering dynamic JS sites into clean token-efficient Markdown and structured JSON without AGPL licensing traps.",
+    "honestTradeoff": "Headless Chromium rendering carries high RAM/CPU overhead compared to static HTTP scrapers; LLM-driven extraction adds latency and API cost compared to deterministic CSS schemas, and heavy Cloudflare/CAPTCHA sites still demand external proxy rotation.",
+    "domationSynergy": "Primary Apache-2.0 web ingestion engine for DOMATION's private enterprise RAG workers—safely embedded inside dedicated client Docker nodes to index property portals, product catalogs, and competitor pricing sheets.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "microsoft/playwright-mcp",
+    "url": "https://github.com/microsoft/playwright-mcp",
+    "category": "Accessibility-Tree Browser Automation MCP Server",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "35k+ Stars",
+    "coreArchitecture": "TypeScript MCP server (stdio and HTTP/SSE transports) wrapping Playwright across Chromium, Firefox, and WebKit that serializes the browser's semantic Accessibility Tree (roles, labels, focus states) instead of raw pixels/screenshots, allowing text-only LLMs to execute deterministic clicks, fills, and navigation.",
+    "enterprisePainSolved": "Slashes vision-token spend and brittle pixel-coordinate guessing in AI QA and browser automation by giving agents lightweight, deterministic semantic DOM structure.",
+    "honestTradeoff": "Live browser sessions consume heavy RAM/CPU under parallel agent loads; WebGL/canvas interfaces or poorly labeled custom widgets yield sparse accessibility trees, and unrestricted browser sessions pose security risks (unintended destructive clicks or cookie leakage) without domain allowlists.",
+    "domationSynergy": "Core Vibecode E2E verification server for DOMATION—lets coding agents smoke-test CRM 8-step pipelines, checkout/VietQR flows, and form tracking after builds (paired with visual screenshot checks for Three.js 3D WebGL sa bàn canvases).",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "infiniflow/ragflow",
+    "url": "https://github.com/infiniflow/ragflow",
+    "category": "Deep-Document-Understanding Enterprise RAG Engine",
+    "primaryLanguage": "Python / Go",
+    "license": "Apache-2.0",
+    "starsTier": "90k+ Stars",
+    "coreArchitecture": "Hybrid Go high-concurrency server (ragflow_server) + Python AI/ingestion workers centered on DeepDoc (vision layout analysis, OCR, and complex table recognition), backed by Elasticsearch/Infinity/OpenSearch hybrid dense+BM25 retrieval, MySQL, Redis, MinIO object storage, and a visual Agent Canvas with grounded inline citations.",
+    "enterprisePainSolved": "Eliminates RAG hallucinations on dense enterprise PDFs, multi-column contracts, and merged pricing tables where naive fixed-token splitters shred tabular context.",
+    "honestTradeoff": "Heavyweight multi-container deployment (Elasticsearch/Infinity, MySQL, Redis, MinIO, typically needing 32GB+ RAM for smooth self-hosting); opinionated end-to-end platform structure makes surgical customization of core retrieval internals harder than composable SDKs.",
+    "domationSynergy": "Serves as DOMATION's architectural benchmark for Multi-Agent Departmental RAG (Sales, Legal, HR, Real-Estate pricing books), modeling DeepDoc-grade table fidelity and inline citation checks before AI replies ship to Zalo OA or Messenger.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 9,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "run-llama/llama_index",
+    "url": "https://github.com/run-llama/llama_index",
+    "category": "Modular Context & Agentic RAG Data Framework",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "50k+ Stars",
+    "coreArchitecture": "Composable Python ecosystem built around llama-index-core and 300+ llama-index-integrations packages (LlamaHub), providing hierarchical/semantic NodeParsers, vector and PropertyGraph indices, event-driven async Workflows, router query engines, and native Docling/LlamaParse document connectors.",
+    "enterprisePainSolved": "Unifies fragmented enterprise knowledge sources (SQL, S3, Notion, PDFs) behind standardized hybrid retrieval, reranking, and multi-document query routing primitives.",
+    "honestTradeoff": "Aggressive release velocity causes frequent minor-version deprecations and deep abstraction stacks that obscure runtime latency tuning; remains strictly a code-first glue SDK requiring teams to separately host vector stores, parsers, and observability.",
+    "domationSynergy": "Provides modular Python RAG retrieval plumbing for DOMATION's custom enterprise Knowledge Hubs—pairing llama-index-core workflows with PostgreSQL pgvector (filtered by tenant FORCE RLS claims) and Docling parsers.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "docling-project/docling",
+    "url": "https://github.com/docling-project/docling",
+    "category": "High-Fidelity Multimodal Document Parsing Engine",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "70k+ Stars",
+    "coreArchitecture": "Modular Python DocumentConverter pipeline (formerly DS4SD/docling) routing PDF, DOCX, PPTX, XLSX, HTML, audio, and images through RT-DETR computer-vision layout analysis, TableFormer table-structure recovery, OCR, and optional VLM enrichments into a unified lossless DoclingDocument JSON/Markdown representation.",
+    "enterprisePainSolved": "Fixes garbage-in/garbage-out RAG ingestion by extracting accurate reading order, multi-page tables, and code blocks from scanned PDFs and Office decks locally without leaking sensitive files to cloud parsing APIs.",
+    "honestTradeoff": "PyTorch, OCR, and CV dependencies bloat container image sizes and serverless builds; batch OCR/layout inference on scanned PDFs is slow on CPU and requires GPU acceleration at scale; narrow ingestion-only scope without built-in vector storage or retrieval UI.",
+    "domationSynergy": "Ideal private, MIT-licensed document parser inside DOMATION's async ingestion workers—transforming real-estate fee matrices, HR policies, and MISA/contract PDFs into lossless Markdown before tenant-isolated vector indexing.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 10,
+      "costEfficiency": 8
+    }
+  }
+]

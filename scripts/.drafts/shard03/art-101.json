@@ -1,0 +1,323 @@
+{
+  "id": "art-101",
+  "number": "101",
+  "slug": "data-contracts-chong-gay-pipeline-ai-khi-backend-doi-schema",
+  "shardId": "shard03",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Engineering & AI Platform Teams",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Data Contracts: Chống gãy ngầm pipeline AI & BI khi Backend tự ý đổi tên cột hay kiểu dữ liệu",
+  "seoTitle": "Data Contracts: Chống Gãy AI Pipeline Khi Đổi Schema | DOMATION",
+  "metaDescription": "Một cú đổi tên cột database có thể làm sập ngầm AI Pre-Scorer và báo cáo nhiều ngày. Hướng dẫn ép Data Contracts bằng Zod và Pydantic ngay trong CI/CD.",
+  "focusKeyword": "data contracts chống gãy pipeline ai",
+  "secondaryKeywords": [
+    "schema drift bảo vệ dữ liệu ai",
+    "zod pydantic data contract",
+    "kiểm thử schema trong ci cd",
+    "ngăn gãy pipeline rag và bi",
+    "quản trị thay đổi database"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Một Cú Đổi Tên Cột Làm Tê Liệt Hệ Thống AI",
+  "thumbnailHook": "Áp dụng Data Contracts bằng Zod và Pydantic để chặn Schema Drift tại PR.",
+  "thumbnailBadge": "RELIABILITY • CONTRACTS",
+  "coverImage": "/imgs/boost/v2/data-contracts-chong-gay-pipeline-ai-khi-backend-doi-schema.webp",
+  "screenshotImage": "/imgs/boost/charts/data-contracts-chong-gay-pipeline-ai-khi-backend-doi-schema-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Tiêu Chuẩn Kỹ Thuật DOMATION Core",
+  "relatedSlugs": [
+    "pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent",
+    "data-observability-freshness-sla-phat-hien-ket-queue-webhook",
+    "phat-hien-data-drift-concept-drift-trong-he-thong-ai",
+    "mastra-ai-mastra-audit-typescript-agent-workflow-zod"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Hồ sơ điều tra sự cố Schema Drift và kiến trúc Data Contracts dùng Zod và Pydantic chống gãy ngầm pipeline AI",
+  "screenshotCaption": "Biểu đồ truy vết sự cố Schema Drift kéo dài 6 ngày: Uptime API vẫn giữ 99.98% trong khi tỷ lệ trường rớt về mặc định tăng lên 100% và tỷ lệ chia Lead chất lượng cao lao dốc.",
+  "relatedPortfolioId": "turnio-executive-portal",
+  "tldrSummary": "Khi một kỹ sư Backend đổi tên cột từ `lead_budget_vnd` sang `estimated_budget` hoặc đổi đơn vị từ VNĐ sang triệu đồng mà không báo cho nhóm AI và BI, ứng dụng web vẫn chạy xanh đèn HTTP 200 và không bắn bất kỳ cảnh báo lỗi nào lên Sentry. Thế nhưng ở hạ lưu, AI Pre-Scorer âm thầm rớt về giá trị mặc định 0, bảng điều khiển doanh thu sai lệch và tín hiệu Meta CAPI ngừng học khách hàng giá trị cao suốt nhiều ngày liền. Hồ sơ điều tra sự cố này phân tích giải phẫu một ca gãy ngầm Schema Drift điển hình, đồng thời cung cấp bộ Data Contracts liên ngôn ngữ dùng Zod (TypeScript Producer) kết hợp Pydantic v2 (Python AI Consumer) và cổng kiểm tra phá vỡ tương thích ngược ngay tại Pull Request CI/CD.",
+  "keyTakeaways": [
+    "Lỗi nguy hiểm nhất của pipeline AI và BI không phải HTTP 500 làm sập server, mà là Silent Schema Drift khiến hệ thống vẫn trả 200 OK nhưng chấm điểm và báo cáo sai hoàn toàn.",
+    "Loại bỏ thói quen viết code phòng thủ mù quáng kiểu `payload.get('budget') or 0` ở AI Consumer; nếu thiếu trường bắt buộc trong hợp đồng, bản ghi phải bị đẩy vào Quarantine Queue và nổ cảnh báo tức thì.",
+    "Đặt Data Contract làm nguồn chân lý chung: Backend TypeScript xuất bản JSON Schema từ Zod, Python AI và BI tự động kiểm chứng tương thích bằng Pydantic v2 trước khi hợp nhất code.",
+    "Mọi thay đổi làm phá vỡ cấu trúc (xóa cột, đổi tên trường, thu hẹp kiểu Enum, đổi đơn vị tiền tệ) bắt buộc đi qua cơ chế Expand-and-Contract (ghi song song v1 + v2) trong tối thiểu một chu kỳ chuyển tiếp.",
+    "Chặn Breaking Schema Change ngay tại Pull Request trên GitHub Actions thay vì đợi đến 17 giờ chiều thứ Sáu trên môi trường Production mới phát hiện."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Sự cố gãy ngầm do đổi Schema",
+      "value": "0 ca / năm"
+    },
+    {
+      "label": "Thời gian phát hiện vi phạm Contract",
+      "value": "Ngay tại PR"
+    },
+    {
+      "label": "Độ chính xác ép kiểu AI Pre-Scorer",
+      "value": "100% Strict"
+    },
+    {
+      "label": "Dữ liệu lỗi bị cách ly an toàn",
+      "value": "100% Quarantine"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Data Contract khác gì với việc viết tài liệu API bằng Swagger hoặc OpenAPI thông thường?",
+      "answer": "Tài liệu Swagger thường chỉ mô tả hợp đồng ở bề mặt HTTP request/response giữa Frontend và Backend và rất hay bị trôi lệch so với các sự kiện phát qua Webhook, Message Queue hay cột trong Database/CDC mà AI và BI đang đọc trực tiếp. Data Contract bao phủ toàn bộ ranh giới phát sinh dữ liệu phân tích (sự kiện ELT, bảng CDC, payload gửi sang AI Agent) kèm theo các ràng buộc ngữ nghĩa như đơn vị đo (VNĐ hay triệu VNĐ), ngưỡng giá trị hợp lệ, chính sách ẩn danh PII, tên chủ sở hữu dữ liệu và được kiểm thử tự động trong CI/CD."
+    },
+    {
+      "question": "Tại sao không để AI Consumer tự sửa lỗi thiếu trường bằng giá trị mặc định 0 hoặc chuỗi rỗng?",
+      "answer": "Vì việc tự động thay một trường bị đổi tên bằng số 0 hay chuỗi rỗng tạo ra 'cái chết êm ái' (silent failure): hệ thống không báo lỗi ngoại lệ, đồ thị giám sát uptime vẫn xanh 100%, nhưng mô hình chấm điểm khách hàng hoặc dự báo tồn kho sẽ nhận toàn số 0 và đưa ra quyết định kinh doanh sai lệch suốt nhiều tuần. Thay vào đó, Consumer phải áp dụng nguyên tắc Fail-Loud với chế độ nghiêm ngặt (như extra='forbid' hoặc required fields trên Pydantic), đẩy các sự kiện sai hợp đồng vào làn cách ly Quarantine và kích hoạt cảnh báo cho đúng chủ sở hữu nguồn phát."
+    },
+    {
+      "question": "Áp dụng Data Contracts có làm chậm tốc độ phát triển tính năng (Vibecode) của đội Backend không?",
+      "answer": "Ngược lại. Khi chưa có Data Contract, mỗi lần Backend sửa cột database đều phải nhắn tin hỏi chéo nhóm AI, nhóm Data BI và đội Ads xem có ai đang dùng trường đó không, hoặc tệ hơn là sửa xong rồi mất cả tuần đi dập lửa truy tìm vì sao báo cáo lệch. Khi đã thiết lập hợp đồng bằng Zod và chạy kiểm tra tương thích ngược tự động trong 10 giây trên GitHub Actions, lập trình viên biết ngay lập tức thay đổi của mình có an toàn để merge hay cần mở thêm trường song song."
+    },
+    {
+      "question": "Khi thực sự cần đổi tên cột hoặc thay đổi cấu trúc trường cho tính năng mới thì làm thế nào đúng chuẩn?",
+      "answer": "Quy chuẩn chuẩn mực là mẫu thiết kế Expand-and-Contract gồm 3 pha: Pha 1 (Expand) thêm trường mới vào schema và ghi song song cả trường cũ lẫn trường mới (dual-write); Pha 2 (Migrate) nâng cấp toàn bộ AI Consumer, Webhook CAPI và câu truy vấn BI sang đọc trường mới và xác nhận tỷ lệ đọc trường cũ về 0%; Pha 3 (Contract) mới được phép gỡ bỏ trường cũ khỏi schema và cập nhật phiên bản hợp đồng."
+    },
+    {
+      "question": "Doanh nghiệp dùng kiến trúc đa ngôn ngữ TypeScript (Backend) và Python (AI Agents) nên chia sẻ Data Contract qua định dạng nào?",
+      "answer": "Cách gọn nhẹ và thực dụng nhất mà DOMATION đang áp dụng là dùng Zod ở phía Backend TypeScript làm nguồn định nghĩa trung tâm, xuất ra chuẩn JSON Schema thông qua thư viện chuyển đổi trong bước build CI, sau đó dùng công cụ sinh mã hoặc đối chiếu tự động sang mô hình Pydantic v2 ở kho mã Python AI. Cả hai phía đều chạy bộ test kiểm chứng trên cùng một thư mục fixture payload mẫu đặt chung trong repo."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "ho-so-su-co-thu-sau-chieu-schema-drift",
+      "eyebrow": "Hồ sơ điều tra sự cố (Postmortem #PM-2026-11)",
+      "variant": "incident",
+      "heading": "Chiều thứ Sáu xanh đèn 100% và 6 ngày AI chấm điểm 0 đồng toàn bộ khách VIP",
+      "pullQuote": "Không có lỗi HTTP 500 nào vang lên, không một cảnh báo Sentry nào nổ, nhưng suốt 6 ngày liền hệ thống AI đã đẩy hàng trăm khách hàng ngân sách tỷ đồng xuống đáy hàng đợi.",
+      "paragraphs": [
+        "16 giờ 40 phút chiều thứ Sáu, một kỹ sư Backend hoàn tất đợt dọn dẹp kỹ thuật cho module tiếp nhận Lead CRM. Nhận thấy cái tên `lead_budget_vnd` đôi khi gây hiểu nhầm khi hiển thị giao diện nhập khoảng ngân sách, anh đổi tên cột trong payload sự kiện sang `estimated_budget` và chuyển giá trị lưu trữ từ số nguyên VNĐ sang chuỗi rút gọn dạng '2.5 ty'. Trình biên dịch TypeScript báo 0 lỗi sau khi sửa đồng bộ các component Frontend, bộ Unit Test nội bộ chạy xanh toàn bộ, và bản phát hành lên Production trôi chảy đúng trước giờ tan tầm.",
+        "Suốt từ tối thứ Sáu đến trưa thứ Tư tuần sau, mọi bảng đo kỹ thuật đều đẹp như mơ: tỷ lệ HTTP 200 của cổng Webhook đạt 99.98%, hàng đợi BullMQ xả hết trong dưới 150ms, không có bất kỳ log crash nào trên dịch vụ Python AI Lead Pre-Scorer. Nhưng ở tầng vận hành kinh doanh, một thảm họa âm thầm đang diễn ra. Đoạn mã Python đọc sự kiện từ hàng đợi có viết một dòng xử lý phòng thủ quen thuộc: `budget = float(event.get('lead_budget_vnd') or 0)`.",
+        "Vì trường `lead_budget_vnd` không còn tồn tại trong JSON mới (và nếu đọc nhầm sang chuỗi chữ cũng gãy ép kiểu), 100% khách hàng mới đổ về trong 6 ngày đều bị AI Pre-Scorer gán mức ngân sách bằng 0. Kết quả là chuỗi phản ứng dây chuyền bùng phát: các Lead khách hàng doanh nghiệp và nhà đầu tư giá trị cao bị xếp hạng thấp, không được đẩy tức thì qua ZaloBot cho đội Sale chủ lực mà bị chuyển sang luồng gửi Email nuôi dưỡng tự động; đồng thời sự kiện QualifiedLead gửi về Meta CAPI sụt giảm thê thảm khiến thuật toán quảng cáo chuyển hướng sang kéo toàn tệp khách giá rẻ. Sự cố chỉ lộ diện vào sáng thứ Năm khi Giám đốc Kinh doanh chất vấn vì sao chi phí quảng cáo vẫn chạy đều mà sáu ngày không có hồ sơ VIP nào nổi lên bảng nóng.",
+        "Khi đội ngũ DOMATION tiến hành giải phẫu các sự cố dữ liệu tương tự ở doanh nghiệp tăng trưởng nhanh, 100% nguyên nhân đều bắt nguồn từ một căn bệnh chung: dữ liệu di chuyển từ Backend sang AI và BI qua các gói JSON vô định hình, hoàn toàn thiếu vắng một bản Data Contract được ép kiểm định tự động."
+      ],
+      "bullets": [
+        "Thời gian phát hiện sự cố thực tế: 6 ngày (144 giờ mù dữ liệu kinh doanh).",
+        "Nguyên nhân trực tiếp: Đổi tên trường và kiểu dữ liệu JSON sự kiện mà không có kiểm tra tương thích ngược giữa Producer và Consumer.",
+        "Tác nhân che giấu lỗi: Dòng code `or 0` bên phía AI Consumer nuốt trọn ngoại lệ thiếu trường thay vì báo động."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "telemetry-6-ngay-su-co-schema-drift",
+      "heading": "Truy vết Telemetry 6 ngày sự cố: Khi Uptime API lừa dối toàn bộ đội ngũ vận hành",
+      "subtitle": "Đối chiếu chỉ số sống của Backend API với tỷ lệ trường ngân sách rơi về mặc định và tỷ lệ phân tuyến đúng Lead chất lượng cao.",
+      "chart": {
+        "chartType": "line",
+        "title": "Diễn biến Uptime Backend (%) so với Tỷ lệ Null Fallback & Chia đúng Lead VIP (%)",
+        "xKey": "day",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "backendUptime",
+            "label": "HTTP 200 Uptime Backend API",
+            "color": "#10B981"
+          },
+          {
+            "key": "qualifiedRouteRate",
+            "label": "Tỷ lệ Lead VIP vào đúng làn Sale nóng",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "schemaNullRate",
+            "label": "Tỷ lệ rơi về Fallback mặc định (budget=0)",
+            "color": "#EF4444"
+          }
+        ],
+        "data": [
+          {
+            "day": "Ngày 0 (Ổn định)",
+            "backendUptime": 99.98,
+            "qualifiedRouteRate": 88.4,
+            "schemaNullRate": 0.4
+          },
+          {
+            "day": "Ngày 1 (Đổi Schema)",
+            "backendUptime": 99.98,
+            "qualifiedRouteRate": 14.2,
+            "schemaNullRate": 100.0
+          },
+          {
+            "day": "Ngày 2 (Mù dữ liệu)",
+            "backendUptime": 99.97,
+            "qualifiedRouteRate": 12.0,
+            "schemaNullRate": 100.0
+          },
+          {
+            "day": "Ngày 3 (Tụt CAPI)",
+            "backendUptime": 99.99,
+            "qualifiedRouteRate": 11.5,
+            "schemaNullRate": 100.0
+          },
+          {
+            "day": "Ngày 4 (Lệch BI)",
+            "backendUptime": 99.98,
+            "qualifiedRouteRate": 12.8,
+            "schemaNullRate": 100.0
+          },
+          {
+            "day": "Ngày 5 (Hồi phục)",
+            "backendUptime": 99.99,
+            "qualifiedRouteRate": 89.2,
+            "schemaNullRate": 0.3
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Uptime API đánh lừa monitor",
+            "value": "99.98%",
+            "delta": "Không phát ra cảnh báo 500",
+            "positive": false
+          },
+          {
+            "label": "Tỷ lệ rơi trường ngân sách",
+            "value": "100%",
+            "delta": "Suốt 4+ ngày Schema Drift",
+            "positive": false
+          },
+          {
+            "label": "Sụt giảm định tuyến Lead VIP",
+            "value": "-76.9%",
+            "delta": "Từ 88.4% tụt xuống 11.5%",
+            "positive": false
+          },
+          {
+            "label": "Sau khi bật Data Contract CI",
+            "value": "0.3%",
+            "delta": "Chặn Breaking PR trước deploy",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tái dựng chuỗi telemetry điều tra sự cố Schema Drift trên mô hình Pipeline CRM -> AI Pre-Scorer tại Lab độ tin cậy DOMATION (Q4/2026)."
+      },
+      "insightSummary": "Đồ thị phơi bày nghịch lý kinh điển của các hệ thống thiếu Data Contract: đường xanh lá cây (HTTP 200 Uptime) phẳng lì ở mức 99.98% suốt thời gian sự cố khiến trực ban kỹ thuật hoàn toàn an tâm, trong khi đường đỏ (tỷ lệ rơi về mặc định do sai tên trường) nhảy dựng lên 100% và kéo đường xanh dương (tỷ lệ Lead VIP đi đúng luồng Sale nóng) sụp từ 88.4% xuống còn 11.5%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "do-thi-truy-vet-schema-drift",
+      "src": "/imgs/boost/charts/data-contracts-chong-gay-pipeline-ai-khi-backend-doi-schema-report.webp",
+      "alt": "Biểu đồ điều tra sự cố Schema Drift khi Backend đổi tên cột làm gãy ngầm AI Pre-Scorer và giải pháp Data Contracts Zod Pydantic",
+      "caption": "Khoảng mù giám sát trong sự cố Schema Drift: hệ thống vẫn trả HTTP 200 nhưng pipeline AI mất toàn bộ trường dữ liệu trọng yếu trước khi áp dụng Data Contracts.",
+      "badge": "Forensic Postmortem • Schema Drift"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-data-contracts-va-expand-contract",
+      "eyebrow": "Biện pháp khắc phục triệt để",
+      "variant": "deep-dive",
+      "heading": "Thiết lập Data Contracts liên ngôn ngữ Zod – Pydantic và quy tắc Expand-and-Contract trong CI/CD",
+      "paragraphs": [
+        "Để sự cố chiều thứ Sáu không bao giờ lặp lại, nguyên tắc quản trị dữ liệu hiện đại chuyển quyền sở hữu hợp đồng từ chỗ 'Backend tự sửa, đội AI tự rượt theo dọn rác' sang mô hình Data Contract rõ ràng giữa Producer và Consumer. Một Data Contract hoàn chỉnh phải định nghĩa cứng ba tầng: cấu trúc trường và kiểu dữ liệu bắt buộc (Structural Schema), bất biến ngữ nghĩa và đơn vị đo (Semantic Invariants — chẳng hạn trường `budget_vnd` bắt buộc là số nguyên dương tính theo đồng Việt Nam chứ không chấp nhận chuỗi '2.5 ty'), và cam kết SLA về độ tươi lẫn chính sách phân loại PII.",
+        "Trong hệ sinh thái công nghệ phổ biến của doanh nghiệp Việt gồm Backend TypeScript/Node.js kết hợp các AI Agent viết bằng Python, cặp đôi Zod và Pydantic v2 là bộ giáp hoàn hảo nhất. Phía Producer dùng Zod định nghĩa schema sự kiện ở thư mục dùng chung (`contracts/events/lead_scored.schema.ts`) và chặn mọi Payload không khớp chuẩn ngay trước khi đẩy vào BullMQ hoặc ghi PostgreSQL Outbox. Quan trọng hơn, bước kiểm thử trên GitHub Actions tự động xuất JSON Schema từ Zod rồi chạy trình kiểm tra tương thích ngược (Backward Compatibility Check): nếu một Pull Request vô tình xóa trường đang có người đăng ký, đổi tên cột, chuyển `number` thành `string`, hoặc thu hẹp tập giá trị Enum, pipeline CI/CD lập tức đánh rớt PR và chặn nút Merge.",
+        "Ở phía đầu nhận Python AI Pre-Scorer hay pipeline nạp BI, mọi đoạn code phòng thủ kiểu `.get('key') or 0` bị cấm tuyệt đối đối với các trường lõi trong hợp đồng. Thay vào đó, Pydantic v2 dùng cấu hình `ConfigDict(extra='forbid', strict=True)` để xác thực nghiêm ngặt từng gói tin vừa lấy khỏi hàng đợi. Nếu vì lý do bất khả kháng có gói tin cũ hoặc biến dị lọt qua, Worker lập tức ném lỗi xác thực, chuyển nguyên gói tin đó sang hàng đợi cách ly `dlq_schema_quarantine` và gửi cảnh báo kèm diff trường bị sai về kênh kỹ thuật trong chưa đầy 10 giây, tuyệt đối không để dữ liệu bẩn đầu độc bảng điểm AI hay mô hình quảng cáo Meta CAPI."
+      ],
+      "bullets": [
+        "Luôn nhúng trường `schema_version` (ví dụ '2.0.0') vào mọi Event Envelope để Consumer biết chính xác hợp đồng nào đang áp dụng.",
+        "Khi buộc phải đổi tên cột hay cấu trúc, áp dụng quy trình 3 bước Expand-and-Contract (ghi song song cả tên cũ và tên mới trước khi ngừng hỗ trợ bản cũ).",
+        "Gắn mã kiểm tra phân phối giá trị (Data Distribution Guard): nếu tỷ lệ trường `budget_vnd == 0` đột ngột vượt ngưỡng 15% trong cửa sổ 10 phút, kích hoạt cảnh báo bất thường dù HTTP vẫn 200."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-zod-va-pydantic-data-contract",
+      "heading": "Hợp đồng dữ liệu song ngữ Zod (TypeScript Producer) + Pydantic v2 (Python AI Consumer)",
+      "language": "TypeScript",
+      "filename": "lead_contract.zod.ts & lead_consumer.py",
+      "description": "Thiết lập hợp đồng dữ liệu chặt chẽ ở cả hai đầu dây chuyền: Producer TypeScript ép chuẩn đơn vị VNĐ và phiên bản hợp đồng bằng Zod trước khi phát sự kiện, Consumer Python dùng Pydantic v2 chặn rơi giá trị mặc định âm thầm.",
+      "code": "// 1) Producer Contract (TypeScript + Zod) - Lưu tại packages/contracts/lead_created.v2.ts\nimport { z } from 'zod';\n\nexport const LeadCreatedContractV2 = z.object({\n  schema_version: z.literal('2.0.0'),\n  event_id: z.string().uuid(),\n  occurred_at: z.string().datetime(),\n  lead_id: z.string().min(6),\n  phone_e164: z.string().regex(/^\\+84[35789]\\d{8}$/, 'Must be strict VN E.164'),\n  // Không chấp nhận chuỗi mơ hồ; bắt buộc số nguyên VNĐ không âm\n  budget_vnd: z.number().int().nonnegative(),\n  lead_source: z.enum(['meta_form', 'web_3d', 'zalo_oa', 'pos_qr']),\n  // Giữ trường legacy trong giai đoạn Expand-and-Contract (deprecated)\n  lead_budget_vnd: z.number().int().nonnegative().optional(),\n}).strict();\n\nexport type LeadCreatedV2 = z.infer<typeof LeadCreatedContractV2>;\n\nexport function publishLeadEventSafe(rawInput: unknown) {\n  const parsed = LeadCreatedContractV2.parse(rawInput); // Ném lỗi ngay tại nguồn nếu sai Contract\n  return queue.add('lead.created.v2', parsed);\n}\n\n# 2) Consumer Contract (Python + Pydantic v2) - Cấm fallback 'or 0' làm hỏng AI Scorer\nfrom pydantic import BaseModel, ConfigDict, Field, ValidationError\nfrom typing import Literal\n\nclass LeadCreatedV2(BaseModel):\n    model_config = ConfigDict(extra='forbid', strict=True)\n    schema_version: Literal['2.0.0']\n    event_id: str\n    occurred_at: str\n    lead_id: str\n    phone_e164: str = Field(pattern=r'^\\+84[35789]\\d{8}$')\n    budget_vnd: int = Field(ge=0)\n    lead_source: Literal['meta_form', 'web_3d', 'zalo_oa', 'pos_qr']\n    lead_budget_vnd: int | None = None\n\ndef consume_for_ai_prescorer(raw_payload: dict):\n    try:\n        lead = LeadCreatedV2.model_validate(raw_payload)\n    except ValidationError as exc:\n        send_to_quarantine_dlq(raw_payload, reason=exc.errors())\n        trigger_ops_alert(f'SCHEMA_CONTRACT_BREACH: {exc.error_count()} errors')\n        raise\n    return run_prescorer_model(budget_vnd=lead.budget_vnd, source=lead.lead_source)"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-chan-schema-drift-ci-cd",
+      "heading": "Sáu chốt chặn kỹ thuật ngăn Schema Drift phá hủy pipeline AI & BI",
+      "items": [
+        {
+          "check": "Kiểm tra tương thích ngược Schema tự động trên mọi Pull Request",
+          "severity": "critical",
+          "verificationHow": "Chạy step diff JSON Schema trong GitHub Actions đối chiếu nhánh hiện tại với bản Contract đang phát hành trên main.",
+          "passThreshold": "PR tự động fail nếu xóa trường bắt buộc, đổi kiểu dữ liệu hoặc thu hẹp giá trị Enum mà không nâng major version."
+        },
+        {
+          "check": "Loại bỏ hoàn toàn fallback mù (`|| 0`, `or ''`) cho trường cốt lõi tại AI/BI Consumer",
+          "severity": "critical",
+          "verificationHow": "Rà soát code Python AI Scorer và DBT/SQL transformation để bảo đảm mọi trường nằm trong Contract đều qua trình xác thực strict.",
+          "passThreshold": "100% gói tin thiếu trường bắt buộc bị chuyển sang Quarantine DLQ và kích hoạt cảnh báo trong < 30 giây."
+        },
+        {
+          "check": "Gắn đơn vị đo lường minh bạch trực tiếp vào tên trường và ràng buộc miền giá trị",
+          "severity": "high",
+          "verificationHow": "Kiểm toán toàn bộ schema sự kiện tiền tệ, thời lượng và khối lượng (ví dụ `budget_vnd`, `latency_ms`, `weight_grams`).",
+          "passThreshold": "Không tồn tại tên trường mơ hồ như `amount`, `budget`, `duration` thiếu hậu tố đơn vị."
+        },
+        {
+          "check": "Tuân thủ chu trình Expand-and-Contract khi thay đổi cấu trúc trường dữ liệu",
+          "severity": "high",
+          "verificationHow": "Kiểm tra lịch sử migration database và lịch sử phát hành hợp đồng trong 3 tháng gần nhất.",
+          "passThreshold": "Mọi thay đổi tên cột đều có pha dual-write tối thiểu 7 ngày và xác nhận 0 consumer đọc trường cũ trước khi xóa."
+        },
+        {
+          "check": "Giám sát phân phối thống kê giá trị (Anomaly / Zero-Spike Alert)",
+          "severity": "recommended",
+          "verificationHow": "Theo dõi tỷ lệ null hoặc giá trị 0 trên các trường đặc trưng đầu vào của mô hình AI theo cửa sổ trượt 15 phút.",
+          "passThreshold": "Cảnh báo tự động kích hoạt ngay khi tỷ lệ null/0 vượt quá 3 độ lệch chuẩn so với tuần trước."
+        },
+        {
+          "check": "Chạy Golden Fixture Payload Test chéo giữa kho TypeScript và Python",
+          "severity": "recommended",
+          "verificationHow": "Lưu tập file JSON mẫu thật trong thư mục contracts/fixtures và chạy test xác thực bằng cả Zod lẫn Pydantic trong CI.",
+          "passThreshold": "100% fixture hợp lệ pass cả hai phía và 100% fixture sai lệch bị chặn ở cả hai phía."
+        }
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "ngo-nhan-ve-quan-tri-schema-va-backend",
+      "heading": "Bốn ngộ nhận về quản trị Schema thường biến kỹ sư giỏi thành tác nhân gây sập AI",
+      "pairs": [
+        {
+          "myth": "Code Frontend với Backend đã dùng chung TypeScript và `tsc` biên dịch xanh lét rồi thì làm sao gãy dữ liệu được.",
+          "reality": "TypeScript chỉ kiểm tra kiểu tĩnh bên trong mã nguồn TypeScript tại thời điểm biên dịch. Ngay khi JSON chạy qua mạng tới dịch vụ AI Python, kho BI hoặc webhook đối tác, toàn bộ kiểu tĩnh biến mất nếu bạn không ép xác thực runtime bằng Data Contract.",
+          "proofMetric": "Trên 70% ca Schema Drift xảy ra giữa hai dịch vụ cùng pass CI unit test riêng lẻ"
+        },
+        {
+          "myth": "Viết `payload.get('field') or 0` giúp AI Worker không bị crash khi thiếu dữ liệu từ bên ngoài.",
+          "reality": "Đó là cách nhanh nhất để che giấu lỗi kỹ thuật và biến một lỗi tích hợp dễ sửa thành nhiều tuần ra quyết định kinh doanh sai. Thà đẩy bản ghi lỗi vào Quarantine Queue để kỹ sư xử lý còn hơn đầu độc bảng điểm AI bằng số 0 giả tạo.",
+          "proofMetric": "Thời gian phát hiện sự cố rút từ 6 ngày xuống 15 giây khi chuyển sang Fail-Loud Quarantine"
+        },
+        {
+          "myth": "Đội ngũ startup/SME làm Vibecode cần chạy nhanh, dựng Data Contract bằng Zod và Pydantic sẽ làm chậm tiến độ.",
+          "reality": "Trong hệ thống 18 phân hệ và Multi-Agent AI của DOMATION, chính việc định nghĩa sẵn Zod & Pydantic Contract ngay từ đầu giúp AI coding assistant sinh code Frontend, Backend và Agent khớp nhau tuyệt đối trong một lượt mà không phải dò đoán tên trường.",
+          "proofMetric": "Giảm 60% thời gian debug lệch payload giữa Backend và AI Agent"
+        },
+        {
+          "myth": "Chỉ cần đặt Database Foreign Key là đủ bảo vệ dữ liệu rồi, không cần tầng hợp đồng sự kiện.",
+          "reality": "Khóa ngoại PostgreSQL chỉ bảo vệ tính nhất quán giữa các bảng trong cùng một database tại một thời điểm, không thể ngăn việc đổi ý nghĩa cột, đổi đơn vị tiền tệ hay đổi cấu trúc gói JSON đẩy sang hàng đợi sự kiện và Vector DB.",
+          "proofMetric": "100% sự cố đổi đơn vị tiền tệ đều vượt qua được khóa ngoại SQL thông thường"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "canh-bao-kien-truc-data-contract-domation",
+      "variant": "warning",
+      "title": "Cảnh báo từ đội ngũ DOMATION Core: Đừng bao giờ gắn AI lên một dòng dữ liệu không có Contract",
+      "body": "Kinh nghiệm xây dựng hơn 35 hệ thống từ A–Z của Huỳnh Trọng Phúc (TurnioDEV) và đội ngũ DOMATION cho thấy một quy luật sắt đá: AI Agent và mô hình chấm điểm càng tự động hóa sâu vào quy trình chia Lead, duyệt công nợ và bắn Meta CAPI, sức tàn phá của một cú đổi tên cột âm thầm càng lớn. Khi bạn ép buộc mọi ranh giới truyền dữ liệu phải đi qua Zod ở tầng Backend TypeScript, Pydantic v2 ở tầng Python AI và chặn Breaking Change ngay tại Pull Request, hệ thống không chỉ an toàn hơn mà còn tăng tốc gấp bội vì mọi phân hệ đều nói cùng một ngôn ngữ chuẩn xác."
+    }
+  ]
+}

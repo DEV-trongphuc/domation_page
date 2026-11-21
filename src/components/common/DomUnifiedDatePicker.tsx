@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, ChevronDown, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import {
@@ -13,6 +13,18 @@ import {
   type UnifiedDateFilterValue,
   type UnifiedDatePreset,
 } from './unifiedDateFilter';
+
+interface DomationOverlayBridgeLike {
+  pushOverlay?: (id: string, close: () => void | boolean, priority?: number) => () => void;
+  lockBodyScroll?: () => void;
+  unlockBodyScroll?: () => void;
+}
+
+function getOverlayBridge(): DomationOverlayBridgeLike | undefined {
+  if (typeof window === 'undefined') return undefined;
+  return (window as Window & { __DOMATION_OVERLAY_BRIDGE__?: DomationOverlayBridgeLike })
+    .__DOMATION_OVERLAY_BRIDGE__;
+}
 
 export interface DomUnifiedDatePickerProps {
   value: UnifiedDateFilterValue;
@@ -82,6 +94,8 @@ export const DomUnifiedDatePicker: React.FC<DomUnifiedDatePickerProps> = ({
 }) => {
   const triggerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const reactId = useId();
+  const overlayId = useMemo(() => `dom_date_picker_${reactId.replace(/:/g, '')}`, [reactId]);
 
   const [open, setOpen] = useState(false);
   const [domIsDark, setDomIsDark] = useState<boolean>(() => readIsDarkMode());
@@ -192,6 +206,12 @@ export const DomUnifiedDatePicker: React.FC<DomUnifiedDatePickerProps> = ({
 
   useEffect(() => {
     if (!open) return;
+    const bridge = getOverlayBridge();
+    const unregisterOverlay = bridge?.pushOverlay?.(overlayId, () => setOpen(false), 260);
+    const shouldLockScroll = popoverCoords.isMobile;
+    if (shouldLockScroll) {
+      bridge?.lockBodyScroll?.();
+    }
     const onPointerDown = (e: MouseEvent) => {
       const target = e.target as Node;
       if (triggerRef.current?.contains(target)) return;
@@ -199,15 +219,19 @@ export const DomUnifiedDatePicker: React.FC<DomUnifiedDatePickerProps> = ({
       setOpen(false);
     };
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (!unregisterOverlay && e.key === 'Escape') setOpen(false);
     };
     document.addEventListener('mousedown', onPointerDown);
     document.addEventListener('keydown', onKeyDown);
     return () => {
       document.removeEventListener('mousedown', onPointerDown);
       document.removeEventListener('keydown', onKeyDown);
+      if (shouldLockScroll) {
+        bridge?.unlockBodyScroll?.();
+      }
+      unregisterOverlay?.();
     };
-  }, [open]);
+  }, [open, overlayId, popoverCoords.isMobile]);
 
   const handleToggleOpen = () => {
     if (!open) {
@@ -273,6 +297,8 @@ export const DomUnifiedDatePicker: React.FC<DomUnifiedDatePickerProps> = ({
             )}
             <div
               ref={popoverRef}
+              role="dialog"
+              aria-modal={popoverCoords.isMobile ? 'true' : undefined}
               data-testid={popoverTestId}
               style={
                 popoverCoords.isMobile
@@ -390,6 +416,7 @@ export const DomUnifiedDatePicker: React.FC<DomUnifiedDatePickerProps> = ({
                     {popoverCoords.isMobile && (
                       <button
                         type="button"
+                        data-dom-overlay-close="true"
                         onClick={() => setOpen(false)}
                         aria-label={lang === 'en' ? 'Close' : 'Đóng'}
                         className={`w-7 h-7 rounded-lg border-0 flex items-center justify-center cursor-pointer ${

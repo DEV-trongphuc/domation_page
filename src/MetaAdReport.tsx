@@ -2,7 +2,6 @@ import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity,
   ArrowRight,
-  ArrowUp,
   Award,
   BarChart3,
   Check,
@@ -14,6 +13,7 @@ import {
   ExternalLink,
   Eye,
   FileText,
+  Film,
   KeyRound,
   Layers,
   Maximize2,
@@ -27,10 +27,16 @@ import {
 } from 'lucide-react';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { Navbar } from './Navbar';
+import { BackToTopPill } from './components/BackToTopPill';
+import { ClosedLoopSixCardSection } from './components/ClosedLoopSixCardSection';
+import { MobileAppShowcaseSection } from './components/MobileAppShowcaseSection';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
+import { ZaloSpecialistBanner } from './components/common/ZaloSpecialistBanner';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
+import { MOTION_VIDEO_BY_ID } from './data/motionVideos';
 import { DOMATION_NAV_EVENT, handleSpaLinkClick } from './utils/navigation';
 import { META_REPORT_FAQS, getMetaReportSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
@@ -523,7 +529,12 @@ interface SwitchWorkspaceResponse {
 export const MetaAdReport: React.FC = () => {
   usePageSeo(getMetaReportSeoConfig());
 
-  const initialPreview = typeof window !== 'undefined' ? window.__DOM_META_PREVIEW__ || null : null;
+  const allowDevPreview =
+    typeof window !== 'undefined' &&
+    (import.meta.env.DEV ||
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1');
+  const initialPreview = allowDevPreview ? window.__DOM_META_PREVIEW__ || null : null;
   const initialSlug = detectMetaPathSlug();
   const initialActionPath = detectMetaActionPath();
 
@@ -615,7 +626,43 @@ export const MetaAdReport: React.FC = () => {
   const [shotCat, setShotCat] = useState<MetaShotCat>('all');
   const [zoomShot, setZoomShot] = useState<MetaLiveShot | null>(null);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [demoVideoTab, setDemoVideoTab] = useState<'motion' | 'youtube'>('motion');
+  const metaMotionSpec = MOTION_VIDEO_BY_ID['meta-report'];
+  const metaMotionVideoRef = useRef<HTMLVideoElement | null>(null);
+  const metaMotionContainerRef = useRef<HTMLDivElement | null>(null);
+  const [metaMotionTime, setMetaMotionTime] = useState<number>(metaMotionSpec.initialTime ?? 0);
+  const [metaMotionDuration, setMetaMotionDuration] = useState<number>(metaMotionSpec.durationSec || 44);
   const [pricingCycle, setPricingCycle] = useState<'annual' | 'monthly'>('annual');
+
+  useEffect(() => {
+    const target = metaMotionContainerRef.current;
+    const vid = metaMotionVideoRef.current;
+    if (!target || !vid || demoVideoTab !== 'motion') {
+      return;
+    }
+    const cueTime = metaMotionSpec.initialTime ?? 0;
+    if (vid.readyState >= 1) {
+      vid.currentTime = cueTime;
+    }
+    if (typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            const p = vid.play();
+            if (p && typeof p.catch === 'function') p.catch(() => {});
+          } else {
+            vid.pause();
+          }
+        }
+      },
+      { threshold: 0.35 }
+    );
+    obs.observe(target);
+    return () => obs.disconnect();
+  }, [demoVideoTab]);
   const [demoGAdsConfig, setDemoGAdsConfig] = useState<DomMetaGoogleAdsConfig>({
     enabled: false,
     customer_id: '',
@@ -1221,10 +1268,10 @@ export const MetaAdReport: React.FC = () => {
               <span>BÁO CÁO META ADS TỰ ĐỘNG</span>
             </div>
 
-            <h1 className="text-[1.68rem] sm:text-4xl md:text-[2.5rem] lg:text-5xl xl:text-[52px] font-black text-slate-900 leading-[1.22] tracking-[-0.02em]">
-              Kiểm soát từng đồng Meta Ads,
+            <h1 className="text-[1.48rem] sm:text-4xl lg:text-5xl xl:text-[52px] font-black text-slate-900 leading-[1.2] tracking-[-0.02em]">
+              Kiểm soát từng đồng Ads,
               <span className="block text-gradient-inkica mt-1">
-                biết rõ nội dung nào ra khách.
+                rõ bài nào ra khách.
               </span>
             </h1>
 
@@ -1296,9 +1343,9 @@ export const MetaAdReport: React.FC = () => {
                   <BarChart3 className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                   <span>GIAO DIỆN BÁO CÁO THỰC TẾ</span>
                 </div>
-                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Trải Nghiệm Trực Quan Từng Màn Hình{' '}
-                  <span className="text-gradient-inkica">Biểu Đồ &amp; Phân Tích Chuyên Sâu</span>
+                <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                  Trải Nghiệm Màn Hình{' '}
+                  <span className="text-gradient-inkica">Báo Cáo Chuyên Sâu</span>
                 </h2>
               </div>
 
@@ -1316,7 +1363,51 @@ export const MetaAdReport: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {/* Mobile & Tablet (< lg): Swipeable Gallery with SlideDots */}
+            <div className="lg:hidden">
+              <ResponsiveSlideDeck
+                items={filteredShots}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={2}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-4"
+                ariaLabel="Thư viện màn hình DOM Meta Report"
+                keyExtractor={(shot) => shot.id}
+                renderItem={(shot) => (
+                  <div
+                    onClick={() => setZoomShot(shot)}
+                    className="group h-full rounded-2xl bg-white/95 border border-slate-200/85 shadow-sm overflow-hidden cursor-zoom-in flex flex-col"
+                  >
+                    <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-100">
+                      <img
+                        src={shot.src}
+                        alt={shot.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-top"
+                      />
+                      <div className="absolute top-2.5 left-2.5">
+                        <span className="px-2.5 py-0.5 rounded-full bg-white/95 border border-blue-100 text-[#1E40FF] text-[10px] font-bold shadow-xs">
+                          {shot.tag}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
+                        <Maximize2 className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                    <div className="p-4 space-y-1 flex-1">
+                      <h3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
+                        {shot.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">{shot.desc}</p>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="hidden lg:grid lg:grid-cols-3 gap-5">
               {filteredShots.map((shot) => (
                 <div
                   key={shot.id}
@@ -1364,9 +1455,9 @@ export const MetaAdReport: React.FC = () => {
                 <div className="ql-eyebrow mb-2.5 mx-auto md:mx-0">
                   <span>GIẢI QUYẾT ĐÚNG NỖI ĐAU CHẠY ADS</span>
                 </div>
-                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
                   Loại Bỏ Bẫy Chỉ Số Ảo —{' '}
-                  <span className="text-gradient-inkica">Đọc Đúng Hiệu Quả Trong Vài Giây</span>
+                  <span className="text-gradient-inkica">Đọc Rõ Hiệu Quả</span>
                 </h2>
               </div>
               <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
@@ -1402,7 +1493,35 @@ export const MetaAdReport: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
+            <div className="md:hidden">
+              <ResponsiveSlideDeck
+                items={analyticsPillars}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                gapClass="gap-3"
+                ariaLabel="6 giá trị phân tích báo cáo Ads"
+                keyExtractor={(card) => card.title}
+                renderItem={(card, i) => {
+                  const Icon = card.icon;
+                  return (
+                    <div className="h-full rounded-2xl bg-white border border-slate-200/85 p-5 shadow-xs space-y-3">
+                      <div className="inline-flex items-center gap-2.5">
+                        <span className="w-9 h-9 rounded-xl bg-[#F4F8FF] border border-blue-100 text-[#1E40FF] flex items-center justify-center shrink-0">
+                          <Icon className="w-4 h-4" />
+                        </span>
+                        <span className="text-[11px] font-semibold tracking-wider text-slate-400 font-mono">
+                          0{i + 1}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 leading-snug">{card.title}</h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">{card.desc}</p>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
               {analyticsPillars.map((card, i) => {
                 const Icon = card.icon;
                 return (
@@ -1449,10 +1568,10 @@ export const MetaAdReport: React.FC = () => {
                   <Users className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                   <span>ĐỐI SOÁT KHÉP KÍN TỪ QUẢNG CÁO ĐẾN DOANH THU</span>
                 </div>
-                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Biết Rõ Nội Dung Nào Ra Khách —{' '}
+                <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                  Đo Nội Dung Ra Khách —{' '}
                   <span className="text-gradient-inkica">
-                    Biết Rõ Khách Nào Từ Nội Dung Nào
+                    Đối Soát Từng Lead Về Ads
                   </span>
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -1460,22 +1579,24 @@ export const MetaAdReport: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2.5 shrink-0">
+              <div className="grid grid-cols-2 sm:inline-flex items-center justify-center lg:justify-end gap-2 sm:gap-2.5 w-full sm:w-auto shrink-0">
                 <a
                   href="/data"
                   onClick={(e) => handleSpaLinkClick(e, '/data')}
-                  className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs font-bold"
+                  className="btn-inkica-primary min-h-[44px] justify-center rounded-full px-3 sm:px-5 py-2.5 text-[11.5px] sm:text-xs font-bold whitespace-nowrap"
                 >
-                  <span>Khám phá CRM Auto Data</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span className="sm:hidden">Auto Data</span>
+                  <span className="hidden sm:inline">Khám phá CRM Auto Data</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                 </a>
                 <a
                   href="/erp"
                   onClick={(e) => handleSpaLinkClick(e, '/erp')}
-                  className="ql-btn-outline rounded-full px-5 py-2.5 text-xs font-bold"
+                  className="ql-btn-outline min-h-[44px] justify-center rounded-full px-3 sm:px-5 py-2.5 text-[11.5px] sm:text-xs font-bold whitespace-nowrap"
                 >
-                  <span>Khám phá DOMATION ERP</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span className="sm:hidden">DOM ERP 5.0</span>
+                  <span className="hidden sm:inline">Khám phá DOMATION ERP</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                 </a>
               </div>
             </div>
@@ -1580,6 +1701,13 @@ export const MetaAdReport: React.FC = () => {
         </section>
 
         {/* ====================================================================
+            6-CARD (3x2) CLOSED-LOOP FLOW WITH CENTER BRIDGE (#closed-loop)
+           ==================================================================== */}
+        <ClosedLoopSixCardSection variant="meta" />
+
+        <MobileAppShowcaseSection variant="meta" />
+
+        {/* ====================================================================
             VIDEO WALKTHROUGH & DEMO CLIP (#video-demo)
            ==================================================================== */}
         <section
@@ -1636,19 +1764,118 @@ export const MetaAdReport: React.FC = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-7">
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_20px_50px_-16px_rgba(15,23,42,0.2)] border border-slate-200 bg-slate-950">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`${META_VIDEO_EMBED_URL}?rel=0`}
-                    title="Video hướng dẫn hệ thống báo cáo Meta Ads DOMATION"
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full border-0"
-                  />
+              <div className="lg:col-span-7 space-y-3.5" ref={metaMotionContainerRef}>
+                {/* 2-Tab Switcher: Motion Showcase 60fps | Video Hướng Dẫn YouTube */}
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="inline-flex items-center p-1 rounded-full bg-slate-100 border border-slate-200/80">
+                    <button
+                      type="button"
+                      onClick={() => setDemoVideoTab('motion')}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        demoVideoTab === 'motion'
+                          ? 'bg-[#1E40FF] text-white shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <Film className="w-3.5 h-3.5" />
+                      <span>Motion Showcase 60fps</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDemoVideoTab('youtube')}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        demoVideoTab === 'youtube'
+                          ? 'bg-slate-900 text-white shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <Play className="w-3 h-3" fill="currentColor" />
+                      <span>Video Hướng Dẫn Chi Tiết</span>
+                    </button>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-[#1E40FF] bg-blue-50 border border-blue-200/80 px-2.5 py-1 rounded-full">
+                    {demoVideoTab === 'motion' ? 'ECOSYSTEM 60 FPS • REPORT BI' : 'WALKTHROUGH FULL'}
+                  </span>
                 </div>
+
+                {demoVideoTab === 'motion' ? (
+                  <div className="group relative rounded-2xl overflow-hidden shadow-[0_20px_50px_-16px_rgba(30,64,255,0.22)] border border-slate-200 bg-slate-950">
+                    <div className="relative aspect-video w-full">
+                      <video
+                        ref={metaMotionVideoRef}
+                        src={metaMotionSpec.videoSrc}
+                        poster={metaMotionSpec.posterSrc}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        onLoadedMetadata={(e) => {
+                          if (Number.isFinite(e.currentTarget.duration) && e.currentTarget.duration > 0) {
+                            setMetaMotionDuration(e.currentTarget.duration);
+                          }
+                          const target = metaMotionSpec.initialTime ?? 0;
+                          if (Math.abs(e.currentTarget.currentTime - target) > 0.3) {
+                            e.currentTarget.currentTime = target;
+                          }
+                        }}
+                        onTimeUpdate={(e) => setMetaMotionTime(e.currentTarget.currentTime)}
+                        className="w-full h-full object-cover pointer-events-none select-none"
+                      />
+                      {/* Minimalist Drag-Seekable Timeline Scrubber */}
+                      <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-slate-950/60 via-slate-950/20 to-transparent flex items-end px-3 pb-2.5">
+                        <div className="relative w-full h-3 flex items-center cursor-pointer">
+                          <div className="w-full h-1 group-hover:h-1.5 transition-all rounded-full bg-white/30 overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] rounded-full"
+                              style={{
+                                width: `${metaMotionDuration > 0 ? Math.min(100, Math.max(0, (metaMotionTime / metaMotionDuration) * 100)) : 0}%`,
+                              }}
+                            />
+                          </div>
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-[#1E40FF] shadow-md transition-transform group-hover:scale-110"
+                            style={{
+                              left: `${metaMotionDuration > 0 ? Math.min(100, Math.max(0, (metaMotionTime / metaMotionDuration) * 100)) : 0}%`,
+                            }}
+                          />
+                          <input
+                            type="range"
+                            min={0}
+                            max={metaMotionDuration}
+                            step={0.1}
+                            value={Math.min(metaMotionDuration, metaMotionTime)}
+                            onChange={(e) => {
+                              const next = parseFloat(e.target.value);
+                              setMetaMotionTime(next);
+                              const v = metaMotionVideoRef.current;
+                              if (v) {
+                                v.currentTime = next;
+                                if (v.paused) v.play().catch(() => {});
+                              }
+                            }}
+                            aria-label="Kéo tua thời gian video"
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_20px_50px_-16px_rgba(15,23,42,0.2)] border border-slate-200 bg-slate-950">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={`${META_VIDEO_EMBED_URL}?rel=0`}
+                      title="Video hướng dẫn hệ thống báo cáo Meta Ads DOMATION"
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full border-0"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1668,9 +1895,9 @@ export const MetaAdReport: React.FC = () => {
                   <Award className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                   <span>ĐỒNG HÀNH CÙNG {PARTNER_BRANDS.length}+ THƯƠNG HIỆU</span>
                 </div>
-                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Được Tin Dùng Bởi Chủ Đầu Tư, Chuỗi Dịch Vụ &amp;{' '}
-                  <span className="text-gradient-inkica">Đội Ngũ Marketing Đa Ngành</span>
+                <h2 className="text-[20px] sm:text-[26px] lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                  Được Tin Dùng Bởi Chủ Đầu Tư &amp;{' '}
+                  <span className="text-gradient-inkica">Đội Ngũ Marketing</span>
                 </h2>
               </div>
               <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
@@ -1763,9 +1990,9 @@ export const MetaAdReport: React.FC = () => {
                 <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
                 <span>LINH HOẠT SỬ DỤNG ĐỘC LẬP HOẶC ĐỒNG BỘ HỆ SINH THÁI</span>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                Dùng Độc Lập Miễn Phí 1 Tháng Hoặc{' '}
-                <span className="text-gradient-inkica">Mở Ngay Trong ERP &amp; Auto Chia Data</span>
+              <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.24] tracking-tight">
+                Dùng Độc Lập Free 1 Tháng Hoặc{' '}
+                <span className="text-gradient-inkica">Mở Trong ERP</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Khởi tạo không gian báo cáo riêng chỉ trong 3 bước đơn giản; khi doanh nghiệp mở rộng
@@ -1773,8 +2000,8 @@ export const MetaAdReport: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              {[
+            {(() => {
+              const ecoCards = [
                 {
                   badge: 'Độc lập • Miễn phí 1 tháng',
                   icon: TrendingUp,
@@ -1800,55 +2027,118 @@ export const MetaAdReport: React.FC = () => {
                   ctaLabel: 'Khám phá DOMATION ERP',
                   href: '/erp',
                 },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.title}
-                    className={`rounded-3xl bg-white border p-6 sm:p-7 flex flex-col justify-between gap-5 ${
-                      item.primary
-                        ? 'border-blue-300 shadow-[0_20px_50px_-24px_rgba(30,64,255,0.22)]'
-                        : 'border-slate-200/85 shadow-sm'
-                    }`}
-                  >
-                    <div className="space-y-3.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="w-10 h-10 rounded-2xl bg-[#F4F8FF] border border-blue-100 text-[#1E40FF] flex items-center justify-center">
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[10.5px] font-bold">
-                          {item.badge}
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </div>
-
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        onClick={(e) => handleSpaLinkClick(e, item.href!)}
-                        className="ql-btn-outline rounded-full px-5 py-2.5 text-xs font-bold justify-center"
-                      >
-                        <span>{item.ctaLabel}</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={item.onClick}
-                        className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs font-bold justify-center cursor-pointer"
-                      >
-                        <span>{item.ctaLabel}</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
+              ];
+              return (
+                <>
+                  <div className="lg:hidden">
+                    <ResponsiveSlideDeck
+                      items={ecoCards}
+                      mobilePerPage={1}
+                      mobileColsClass="grid-cols-1"
+                      tabletPerPage={2}
+                      tabletColsClass="grid-cols-2"
+                      gapClass="gap-4"
+                      ariaLabel="Tùy chọn triển khai DOM Meta Report"
+                      keyExtractor={(c) => c.title}
+                      renderItem={(item) => {
+                        const Icon = item.icon;
+                        return (
+                          <div
+                            className={`h-full rounded-3xl bg-white border p-5 sm:p-6 flex flex-col justify-between gap-4 ${
+                              item.primary
+                                ? 'border-blue-300 shadow-[0_16px_40px_-20px_rgba(30,64,255,0.20)]'
+                                : 'border-slate-200/85 shadow-sm'
+                            }`}
+                          >
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="w-10 h-10 rounded-2xl bg-[#F4F8FF] border border-blue-100 text-[#1E40FF] flex items-center justify-center">
+                                  <Icon className="w-5 h-5" />
+                                </div>
+                                <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[10.5px] font-bold">
+                                  {item.badge}
+                                </span>
+                              </div>
+                              <h3 className="text-base font-bold text-slate-900 leading-snug">{item.title}</h3>
+                              <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                            </div>
+                            {item.href ? (
+                              <a
+                                href={item.href}
+                                onClick={(e) => handleSpaLinkClick(e, item.href!)}
+                                className="ql-btn-outline min-h-[44px] rounded-full px-4 py-2.5 text-xs font-bold justify-center whitespace-nowrap"
+                              >
+                                <span>{item.ctaLabel}</span>
+                                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                              </a>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={item.onClick}
+                                className="btn-inkica-primary min-h-[44px] rounded-full px-4 py-2.5 text-xs font-bold justify-center cursor-pointer whitespace-nowrap"
+                              >
+                                <span>{item.ctaLabel}</span>
+                                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      }}
+                    />
                   </div>
-                );
-              })}
-            </div>
+                  <div className="hidden lg:grid lg:grid-cols-3 gap-5">
+                    {ecoCards.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <div
+                          key={item.title}
+                          className={`rounded-3xl bg-white border p-6 sm:p-7 flex flex-col justify-between gap-5 ${
+                            item.primary
+                              ? 'border-blue-300 shadow-[0_20px_50px_-24px_rgba(30,64,255,0.22)]'
+                              : 'border-slate-200/85 shadow-sm'
+                          }`}
+                        >
+                          <div className="space-y-3.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="w-10 h-10 rounded-2xl bg-[#F4F8FF] border border-blue-100 text-[#1E40FF] flex items-center justify-center">
+                                <Icon className="w-5 h-5" />
+                              </div>
+                              <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[10.5px] font-bold">
+                                {item.badge}
+                              </span>
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
+                            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                              {item.desc}
+                            </p>
+                          </div>
+
+                          {item.href ? (
+                            <a
+                              href={item.href}
+                              onClick={(e) => handleSpaLinkClick(e, item.href!)}
+                              className="ql-btn-outline rounded-full px-5 py-2.5 text-xs font-bold justify-center"
+                            >
+                              <span>{item.ctaLabel}</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={item.onClick}
+                              className="btn-inkica-primary rounded-full px-5 py-2.5 text-xs font-bold justify-center cursor-pointer"
+                            >
+                              <span>{item.ctaLabel}</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </section>
 
@@ -2019,6 +2309,8 @@ export const MetaAdReport: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            <ZaloSpecialistBanner context="setup" className="mt-8" />
           </div>
         </section>
 
@@ -2030,6 +2322,11 @@ export const MetaAdReport: React.FC = () => {
           heading="Câu Hỏi Thường Gặp Về Báo Cáo Meta Ads"
           subtitle="Thông tin chi tiết về gói dùng thử miễn phí 1 tháng, luồng đồng bộ Google Sheets, mở rộng Google Ads và liên thông hệ sinh thái."
           faqs={META_REPORT_FAQS}
+        />
+
+        <FounderAuthorityBlock
+          variant="subtle"
+          contextNote="DOM Meta Report được kiến tạo bởi Huỳnh Trọng Phúc (TurnioDEV) — Chuyên gia Digital Marketing (tác giả sách 'Facebook Ads: AI Chạy Không Được' 154 trang), Founder & CEO DOMATION."
         />
       </main>
 
@@ -2236,16 +2533,7 @@ export const MetaAdReport: React.FC = () => {
         }}
       />
 
-      {showBackTop && !authModalOpen && (
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 cursor-pointer"
-        >
-          <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
-          <span>Đầu trang</span>
-        </button>
-      )}
+      <BackToTopPill show={showBackTop && !authModalOpen} />
 
       {/* Standalone Onboarding & Login Modal */}
       {renderAuthModal()}

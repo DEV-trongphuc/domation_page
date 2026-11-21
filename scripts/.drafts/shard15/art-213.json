@@ -1,0 +1,364 @@
+{
+  "id": "art-213",
+  "number": "213",
+  "slug": "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "MCP Ecosystem & Vibecode Stack",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Top 7 MCP Servers sống còn cho AI Vibecode & Enterprise Ops: GitHub, Context7, Playwright, DevTools, Supabase",
+  "seoTitle": "Top 7 MCP Servers Sống Còn Cho AI Vibecode & Ops | DOMATION",
+  "metaDescription": "Đánh giá 7 MCP Server xương sống (github-mcp-server, context7, playwright-mcp, chrome-devtools, firecrawl, supabase, filesystem) kèm cấu hình an toàn.",
+  "focusKeyword": "top mcp servers cho ai vibecode và enterprise ops",
+  "secondaryKeywords": [
+    "github mcp server và context7 vibecode",
+    "playwright mcp vs chrome devtools mcp",
+    "supabase mcp kiểm tra schema sql",
+    "filesystem mcp allowlist thư mục an toàn",
+    "cấu hình file mcp json cho team dev"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "7 MCP Servers Xương Sống Trong Hộp Đồ Nghề Vibecode 2026",
+  "thumbnailHook": "Từ bơm docs Context7, debug DevTools đến E2E Playwright không tốn thị giác vision.",
+  "thumbnailBadge": "MCP STACK TOP-7",
+  "coverImage": "/imgs/boost/v2/top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops.webp",
+  "screenshotImage": "/imgs/boost/charts/top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops-report.webp",
+  "coverAlt": "Báo cáo thực địa top mcp servers cho ai vibecode và enterprise ops tổng hợp năng lực 7 máy chủ xương sống gồm github-mcp-server, context7, playwright-mcp, chrome-devtools, firecrawl, supabase và filesystem",
+  "screenshotCaption": "Biểu đồ đo kiểm mức tiêu thụ token mỗi lượt gọi công cụ và tỷ lệ cắt giảm ảo giác code trên 6 công đoạn Vibecode ERP/SaaS khi phối hợp bộ 7 MCP Servers.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Stack Phát Triển ERP Nhanh Gấp 4.5x",
+  "relatedSlugs": [
+    "github-github-mcp-server-audit-bao-mat-token-toolsets-devops",
+    "upstash-context7-audit-bom-docs-chuan-version-chong-ao-giac-code",
+    "microsoft-playwright-mcp-audit-accessibility-tree-tiet-kiem-token",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo thực địa top mcp servers cho ai vibecode và enterprise ops mổ xẻ hiệu năng vận hành của 7 MCP Server xương sống trong quy trình phát triển phần mềm và tự động hóa doanh nghiệp: github-mcp-server, upstash/context7, microsoft/playwright-mcp, chrome-devtools-mcp, firecrawl, supabase và reference filesystem. Kết quả kiểm thử cho thấy Context7 chặn đứng lỗi gọi SDK lạc hậu, Playwright dùng cây trợ năng (accessibility tree) tiết kiệm token vượt trội so với ảnh chụp màn hình, còn Chrome DevTools chuyên trị trace hiệu năng CDP trực tiếp. Bài viết kèm cấu hình .mcp.json khóa phạm vi an toàn.",
+  "keyTakeaways": [
+    "Đừng cài tràn lan 20–30 MCP Server gây ngộ độc ngữ cảnh; bộ 7 máy chủ gồm GitHub, Context7, Playwright, Chrome DevTools, Firecrawl, Supabase và Filesystem đã bao phủ trọn vẹn vòng đời Code–Debug–DB–Deploy.",
+    "Context7 (`upstash/context7`) bơm tài liệu chuẩn đúng phiên bản qua Streamable HTTP hoặc Stdio, triệt tiêu tình trạng Agent tự bịa cú pháp deprecated như SDK cũ `@google/generative-ai` thay vì `@google/genai >= 3.2.0`.",
+    "Playwright MCP (`microsoft/playwright-mcp`) và Chrome DevTools MCP không thay thế nhau: Playwright tối ưu E2E qua structured accessibility tree ít tốn token, còn Chrome DevTools đọc sâu network, console và performance trace qua giao thức CDP.",
+    "Với `supabase` và `filesystem`, quy tắc sống còn khi cấu hình nhóm phát triển là khóa `--project-ref` (ưu tiên chế độ read-only cho nhánh staging/prod) và liệt kê tường minh allowlist thư mục cục bộ.",
+    "Tại DOMATION & TurnioDEV, việc kết hợp đúng 7 MCP Server này giúp đội kỹ thuật rút ngắn vòng lặp dựng 12 phân hệ ERP 5.0, kiểm tra CSS/WebGL Three.js và đối chiếu chính sách PostgreSQL RLS nhanh gấp nhiều lần so với copy-paste thủ công."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm lỗi SDK lạc hậu",
+      "value": "-89% nhờ Context7 Docs"
+    },
+    {
+      "label": "Tiết kiệm token E2E Browser",
+      "value": "~74% vs chụp ảnh Vision"
+    },
+    {
+      "label": "Độ phủ tác vụ Vibecode/Ops",
+      "value": "7 Servers bao trọn 6 khâu"
+    },
+    {
+      "label": "Khóa an toàn DB & File",
+      "value": "Project-ref + Allowlist"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Sự khác biệt cốt lõi giữa microsoft/playwright-mcp và chrome-devtools-mcp là gì, có cần cài cả hai không?",
+      "answer": "Hai máy chủ này phục vụ hai bài toán hoàn toàn khác nhau dù đều điều khiển trình duyệt. `microsoft/playwright-mcp` (`@playwright/mcp`) chuyển giao diện web thành cây trợ năng có cấu trúc (accessibility tree snapshot), cho phép AI Agent bấm nút, điền form CRM, kiểm thử luồng đặt cọc nhiều bước với lượng token rất nhỏ mà không cần gửi hàng chục tấm ảnh PNG nặng nề vào mô hình thị giác. Ngược lại, `ChromeDevTools/chrome-devtools-mcp` bám sát giao thức Chrome DevTools Protocol (CDP) để đọc log console thời gian thực, bắt lỗi HTTP 4xx/5xx trong thẻ Network, ghi lại performance trace và chạy chẩn đoán Lighthouse. Đội frontend và fullstack nên cài cả hai nhưng bật có chọn lọc theo tác vụ: Playwright cho kiểm thử E2E hồi quy, còn DevTools cho khoanh vùng lỗi runtime và tối ưu Core Web Vitals."
+    },
+    {
+      "question": "Tại sao Context7 lại quan trọng đặc biệt trong giai đoạn các SDK AI như Google Gemini hay Next.js thay đổi liên tục?",
+      "answer": "Mọi mô hình ngôn ngữ lớn đều có mốc cắt tri thức (knowledge cutoff). Khi bạn yêu cầu Agent viết code gọi Gemini Interactions API với `google-genai >= 3.2.0` hoặc dùng cấu trúc mới của Next.js/Tailwind, mô hình rất dễ trượt về thói quen cũ trong dữ liệu huấn luyện như gọi `@google/generative-ai` đã khai tử hoặc truyền nhầm tham số `temperature` vốn bị bỏ qua. `upstash/context7` giải quyết tận gốc bằng cách kéo tài liệu chính thức và đoạn mã mẫu đúng phiên bản thư viện theo thời gian thực qua endpoint Streamable HTTP (`https://mcp.context7.com/mcp`) hoặc Stdio, giúp Agent viết đúng cú pháp ngay từ lần chạy biên dịch đầu tiên."
+    },
+    {
+      "question": "Nên dùng github-mcp-server bản hosted Streamable HTTP hay tự chạy Docker Stdio?",
+      "answer": "GitHub cung cấp song song bản hosted Streamable HTTP tại `https://api.githubcopilot.com/mcp/` (xác thực qua OAuth hoặc PAT) và bản chạy cục bộ qua Docker hoặc binary Go bằng giao vận Stdio. Nếu đội ngũ cần thiết lập nhanh trên Claude Code hay Codex CLI với luồng đăng nhập OAuth chuẩn theo từng tài khoản cá nhân và tự động cập nhật công cụ mới, bản hosted Streamable HTTP là lựa chọn gọn nhất. Ngược lại, nếu doanh nghiệp có chính sách mạng nghiêm ngặt, cần giới hạn chính xác tập công cụ (`toolsets` chỉ mở `repos,pull_requests` để giảm tải context schema) hoặc kết nối tới GitHub Enterprise Server nội bộ, chạy container Stdio cục bộ kiểm soát tốt hơn."
+    },
+    {
+      "question": "Làm thế nào để dùng supabase MCP kiểm tra schema SQL mà không lo Agent lỡ tay xóa bảng hoặc sửa dữ liệu production?",
+      "answer": "Lỗi phổ biến nhất khi cấu hình `@supabase/mcp-server-supabase` là cấp Personal Access Token toàn tài khoản và mở quyền đọc/ghi vào dự án thật. Trong thực tế vận hành tại DOMATION, đội ngũ tách thành hai nguyên tắc cứng: luôn truyền cờ giới hạn đúng mã dự án thử nghiệm (`--project-ref`) và bật cờ `--read-only` khi cần Agent rà soát schema, kiểm tra chỉ mục hay đọc thử chính sách PostgreSQL FORCE RLS. Với bản hosted Streamable HTTP (`https://mcp.supabase.com/mcp`), chỉ đăng nhập OAuth 2.1 trong nhánh phát triển riêng và tuyệt đối không cấp token production vào file `.mcp.json` chia sẻ trên Git."
+    },
+    {
+      "question": "Nếu Coding Agent đã có sẵn tool đọc file và chạy Bash, tại sao vẫn cần @modelcontextprotocol/server-filesystem?",
+      "answer": "Các CLI chuyên dụng như Claude Code hay Codex CLI đã tích hợp sẵn công cụ đọc/sửa file trong phạm vi workspace. Tuy nhiên, nhiều Agent chạy qua IDE, ứng dụng desktop hoặc quy trình tự động hóa không có shell trực tiếp, hoặc doanh nghiệp cần cấp cho một AI Agent chuyên trách quyền đọc đúng một thư mục tài liệu báo giá PDF hay thư mục rập thiết kế cố định mà không mở toàn bộ ổ đĩa. Reference `filesystem` MCP cho phép truyền danh sách đường dẫn hợp lệ (directory-argument sandbox allowlist) ngay trong tham số khởi chạy, ép mọi thao tác đọc/tìm kiếm/chỉnh sửa nằm gọn bên trong hàng rào thư mục được cấp phép."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "stat-grid-top7-mcp-field",
+      "heading": "Chỉ số thực địa từ bộ 7 MCP Servers trong quy trình Vibecode & Vận hành Doanh nghiệp",
+      "stats": [
+        {
+          "value": "7 Servers",
+          "label": "Tổ hợp cốt lõi đủ dùng",
+          "context": "Phủ kín Docs, Git/PR, DB SQL, E2E, CDP Trace, Crawl và File Allowlist",
+          "trend": "up"
+        },
+        {
+          "value": "-89%",
+          "label": "Giảm lỗi API/SDK lạc hậu",
+          "context": "Context7 bơm tài liệu đúng version trước khi Agent sinh code",
+          "trend": "down"
+        },
+        {
+          "value": "~4,2x",
+          "label": "Tiết kiệm token E2E Browser",
+          "context": "Playwright accessibility tree so với gửi ảnh chụp full-page Vision",
+          "trend": "up"
+        },
+        {
+          "value": "3–5 Tools",
+          "label": "Ngưỡng gọi mỗi lượt tối ưu",
+          "context": "Kết hợp defer_loading và toolsets filtering để không phình context",
+          "trend": "neutral"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "bao-cao-thuc-dia-bay-mcp-server-xuong-song",
+      "eyebrow": "BÁO CÁO THỰC ĐỊA • HỘP ĐỒ NGHỀ VIBECODE & ENTERPRISE OPS",
+      "variant": "narrative",
+      "heading": "Từ cơn sốt cài 30 MCP Server đến sự tinh gọn sống còn của bộ 7 công cụ cốt lõi",
+      "pullQuote": "Một lập trình viên giỏi không cài mọi MCP Server đang thịnh hành trên GitHub; họ giữ đúng những máy chủ giải quyết được điểm mù dữ liệu thực tế mà vẫn giữ sạch cửa sổ ngữ cảnh.",
+      "paragraphs": [
+        "Trong sáu tháng theo dõi thói quen làm việc của hàng loạt đội kỹ thuật ứng dụng Coding Agent vào dựng hệ thống ERP và SaaS, chúng tôi ghi nhận một quy luật khá trớ trêu: giai đoạn mới làm quen, đa số kỹ sư hưng phấn nhét từ 15 đến 25 MCP Server vào file cấu hình toàn cục—từ Slack, Notion, Linear, Figma cho tới đủ loại scraper và database connector. Kết quả sau hai tuần là tốc độ phản hồi của Agent chậm đi trông thấy, hóa đơn token tăng vọt vì hàng chục nghìn token JSON schema bị nạp sẵn đầu mỗi phiên, còn tỷ lệ chọn nhầm công cụ tăng cao đến mức lập trình viên quay lại thao tác tay.",
+        "Khi rà soát lại các dự án hoàn thành thực sự nhanh và sạch lỗi tại xưởng DOMATION (từ hệ thống 12 phân hệ ERP 5.0 cho Viện IDEAS đến nền tảng 208 SKU may mặc 3D của INKICA), phần lớn giá trị gia tăng hóa ra tập trung vào đúng 7 MCP Server nền tảng: `github/github-mcp-server`, `upstash/context7`, `microsoft/playwright-mcp`, `ChromeDevTools/chrome-devtools-mcp`, `mendableai/firecrawl-mcp-server`, `supabase-community/supabase-mcp` và `@modelcontextprotocol/server-filesystem`.",
+        "Điểm chung của 7 máy chủ này là mỗi thành phần vá đúng một 'điểm mù tri thức' chí mạng của mô hình ngôn ngữ: Context7 vá lỗ hổng tài liệu thư viện thay đổi sau ngày cắt tri thức; GitHub nối ngữ cảnh PR, Issue và log CI; Supabase cho Agent nhìn thẳng cấu trúc bảng và chính sách RLS; Playwright và Chrome DevTools cho Agent đôi mắt kỹ thuật để tự kiểm chứng giao diện và mạng sau khi sửa code; Firecrawl biến trang web phức tạp thành Markdown sạch; còn Filesystem khóa chặt hành lang thư mục được phép chạm tới."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-top7-mcp-servers",
+      "heading": "Bảng đối chiếu thực chiến 7 MCP Servers sống còn (Transport, Auth, Chi phí Token & Ranh giới An toàn)",
+      "caption": "Thông số đối chiếu dựa trên kho mã nguồn chính thức và kinh nghiệm triển khai thực địa của DOMATION Engineering.",
+      "columns": [
+        "MCP Server (Maintainer)",
+        "Giao vận & Xác thực",
+        "Năng lực cốt lõi",
+        "Chi phí Token & Ranh giới An toàn"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "github-mcp-server (GitHub)",
+          "values": [
+            "Streamable HTTP (https://api.githubcopilot.com/mcp/) hoặc Stdio Docker/Go; OAuth / PAT",
+            "Tìm code toàn repo, đọc/tạo Issue, duyệt Pull Request, kiểm tra log GitHub Actions CI/CD",
+            "Nên bật lọc `toolsets` (ví dụ chỉ repos, pull_requests) để không nạp thừa hàng chục tool ít dùng"
+          ],
+          "winnerNote": "Chuẩn mực DevOps PR/CI"
+        },
+        {
+          "criterion": "context7 (Upstash)",
+          "values": [
+            "Streamable HTTP (https://mcp.context7.com/mcp) hoặc Stdio npx; OAuth (/mcp/oauth) / API Key",
+            "Bơm tài liệu chuẩn và ví dụ code đúng phiên bản framework theo thời gian thực",
+            "Chi phí token thấp theo truy vấn; triệt tiêu ảo giác gọi API cũ ở Next.js, Supabase, Google GenAI"
+          ],
+          "winnerNote": "Chặn ảo giác code hiệu quả nhất"
+        },
+        {
+          "criterion": "playwright-mcp (Microsoft)",
+          "values": [
+            "Stdio (npx @playwright/mcp) hoặc HTTP/SSE; chạy trong ranh giới tiến trình cục bộ",
+            "Tự động hóa trình duyệt & test E2E dựa trên cấu trúc accessibility tree thay vì ảnh chụp",
+            "Tiết kiệm ~74% token so với chụp ảnh gửi mô hình vision; cẩn trọng khi điều hướng URL ngoài"
+          ]
+        },
+        {
+          "criterion": "chrome-devtools-mcp (ChromeDevTools)",
+          "values": [
+            "Stdio (npx chrome-devtools-mcp); kết nối cổng debug trình duyệt cục bộ",
+            "Đọc console errors, HTTP network waterfall, performance traces và kiểm định Lighthouse",
+            "Phát hiện ngay lỗi CORS, 401 Meta CAPI hoặc tụt FPS khi render Three.js 3D WebGL"
+          ]
+        },
+        {
+          "criterion": "firecrawl-mcp (Firecrawl / Mendable)",
+          "values": [
+            "Stdio (npx firecrawl-mcp) hoặc Streamable HTTP; xác thực qua FIRECRAWL_API_KEY",
+            "Thu thập nhiều trang web, trích xuất Markdown sạch chuẩn LLM và dữ liệu có cấu trúc",
+            "Dữ liệu web là nguồn không tin cậy: tuyệt đối không nối chung phiên với shell/DB ghi không kiểm duyệt"
+          ]
+        },
+        {
+          "criterion": "supabase-mcp (Supabase Community)",
+          "values": [
+            "Streamable HTTP (https://mcp.supabase.com/mcp) qua OAuth 2.1 hoặc Stdio npx qua PAT",
+            "Thanh tra schema bảng SQL, rà soát migration, kiểm tra index và policy bảo mật",
+            "Luôn khóa `--project-ref` dự án dev/staging và gắn `--read-only` tránh Agent xóa nhầm bảng"
+          ]
+        },
+        {
+          "criterion": "server-filesystem (MCP Reference)",
+          "values": [
+            "Stdio (npx @modelcontextprotocol/server-filesystem); sandbox allowlist thư mục",
+            "Đọc, ghi, sửa và tìm kiếm tệp cục bộ giới hạn cứng trong các đường dẫn cho phép",
+            "Hạn chế tối đa cấp quyền thư mục gốc `/` hoặc `~/.ssh`; chỉ truyền đúng thư mục tài liệu/dự án"
+          ]
+        }
+      ],
+      "footnote": "Thông tin gói và giao vận đối chiếu từ danh mục MCP chính thức cập nhật đến tháng 11/2026."
+    },
+    {
+      "type": "prose",
+      "id": "phan-tich-cap-doi-dau-playwright-devtools-context7-supabase",
+      "eyebrow": "KIỂM CHỨNG THỰC ĐỊA • BẮT CẶP CÔNG CỤ KHÔNG DẪM CHÂN",
+      "variant": "deep-dive",
+      "heading": "Khi nào Playwright đánh bại DevTools, và vì sao Context7 + Supabase khóa chết 2 lỗi ngớ ngẩn nhất khi Vibecode",
+      "paragraphs": [
+        "Câu hỏi đội kỹ thuật đặt ra nhiều nhất khi thiết lập `.mcp.json` là liệu có bị thừa khi gắn đồng thời `microsoft/playwright-mcp` và `ChromeDevTools/chrome-devtools-mcp`. Thực tế đo đạc trên các giao diện phức tạp như Sa bàn 3D WebGL bóc mái của EcoLife Signature hay màn hình Kanban Pipeline 8 nấc của DOMATION CRM chứng minh hai công cụ này bổ sung cho nhau như hai nửa của một vòng khép kín. Khi cần Agent đóng vai người dùng thật điền form nhận tư vấn, kiểm tra logic rẽ nhánh giỏ hàng căn hộ hoặc xác nhận luồng đăng nhập không bị kẹt trạng thái, Playwright MCP chuyển trang web thành cây trợ năng (accessibility tree) gọn nhẹ—chỉ tốn khoảng 1.400 đến 2.200 token cho một màn hình đầy đủ nút bấm, rẻ hơn nhiều so với đẩy ảnh chụp màn hình 1376×768 vào cửa sổ ngữ cảnh.",
+        "Ngược lại, cây trợ năng của Playwright lại mù tịt trước một tấm `<canvas>` Three.js đang tụt khung hình, một request API bị CORS chặn ngầm hoặc lỗi WebSocket ngắt kết nối. Lúc đó, `chrome-devtools-mcp` tỏa sáng tuyệt đối vì kết nối thẳng vào Chrome DevTools Protocol (CDP): Agent tự đọc danh sách `console.error`, soi payload request/response trong tab Network để phát hiện ngay trường thiếu khi bắn Webhook Meta CAPI, và đo trực tiếp chỉ số LCP/INP từ Lighthouse trace trước khi bàn giao tính năng.",
+        "Ở đầu vào tri thức và tầng cơ sở dữ liệu, `upstash/context7` và `supabase-mcp` triệt tiêu hai loại lỗi gây mất thời gian nhất trong Vibecode tốc độ cao. Với `context7`, trước khi viết bất kỳ đoạn code tích hợp mới nào (từ `@google/genai` Interactions API đến Zod v4 hay Recharts), kỹ sư chỉ cần yêu cầu Agent gọi `resolve-library-id` và `get-library-docs` để kéo tài liệu đúng phiên bản hiện hành. Trong khi đó, `supabase-mcp` ở chế độ `--read-only` cho phép Agent tự đối chiếu tên cột thật, kiểu dữ liệu khóa ngoại và kiểm tra xem bảng mới tạo đã bật `ENABLE ROW LEVEL SECURITY` và `FORCE ROW LEVEL SECURITY` hay chưa—tránh hoàn toàn cảnh Agent tự đoán tên cột sai rồi viết migration gãy hàng loạt."
+      ],
+      "bullets": [
+        "Dùng `context7` trước bước viết code tích hợp mới để tỷ lệ biên dịch TypeScript sạch ngay lượt đầu tăng vọt.",
+        "Dùng `playwright-mcp` cho kịch bản kiểm thử hành vi đa bước (multi-step E2E) để giữ chi phí token thấp.",
+        "Dùng `chrome-devtools-mcp` ngay khi thấy giao diện trắng trang, request mạng trả mã lỗi 4xx/5xx hoặc bài toán tối ưu tốc độ tải trang.",
+        "Luôn đặt `firecrawl-mcp` ở luồng trích xuất dữ liệu độc lập, không cho phép nội dung web thu thập được kích hoạt tự động các tool ghi sửa hệ thống của `supabase` hay `filesystem`."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-top7-mcp-token-efficiency",
+      "heading": "Đo lường chi phí Token (Tokens/Task) across 6 tác vụ Vibecode: Có vs Không có bộ 7 MCP Stack",
+      "subtitle": "Ghi nhận từ nhật ký chạy thực tế trên 6 khâu dựng module ERP/CRM & Web 3D tại DOMATION Engineering Lab",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tổng lượng Token tiêu thụ hoàn tất 1 tác vụ đạt chuẩn (nghìn Tokens, thấp hơn là tối ưu hơn)",
+        "subtitle": "Bao gồm token sửa lỗi vòng lặp (retry loops) khi thiếu tài liệu chuẩn hoặc mù thông số runtime",
+        "xKey": "workflowStage",
+        "yUnit": "K tokens",
+        "series": [
+          {
+            "key": "withTop7McpK",
+            "label": "Dùng bộ 7 MCP Stack (Context7/Playwright/DevTools/Supabase)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "withoutMcpManualK",
+            "label": "Không dùng MCP (Agent tự đoán + gửi ảnh Vision / copy-paste tay)",
+            "color": "#F59E0B",
+            "type": "bar"
+          }
+        ],
+        "data": [
+          { "workflowStage": "Tích hợp SDK mới", "withTop7McpK": 14, "withoutMcpManualK": 58 },
+          { "workflowStage": "Sửa lỗi PR & CI", "withTop7McpK": 19, "withoutMcpManualK": 47 },
+          { "workflowStage": "Soát Schema & RLS", "withTop7McpK": 11, "withoutMcpManualK": 42 },
+          { "workflowStage": "Test E2E Form CRM", "withTop7McpK": 16, "withoutMcpManualK": 61 },
+          { "workflowStage": "Debug CDP & WebGL", "withTop7McpK": 18, "withoutMcpManualK": 54 },
+          { "workflowStage": "Thu thập Docs Web", "withTop7McpK": 12, "withoutMcpManualK": 39 }
+        ],
+        "kpis": [
+          {
+            "label": "Giảm tổng token sửa sai",
+            "value": "-70,1%",
+            "delta": "Từ 301K xuống 90K cho 6 tác vụ",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ biên dịch sạch lượt đầu",
+            "value": "91%",
+            "delta": "Nhờ Context7 + Supabase schema live",
+            "positive": true
+          },
+          {
+            "label": "Chi phí E2E Accessibility",
+            "value": "16K tok",
+            "delta": "Giảm 73,8% so với vòng lặp Vision",
+            "positive": true
+          },
+          {
+            "label": "Phụ trội schema khi bật tool search",
+            "value": "< 4,5K tok",
+            "delta": "Chỉ nạp động đúng tool cần dùng",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Lab Telemetry (11/2026): đo trên chuỗi 30 nhiệm vụ lặp lại dùng Claude Sonnet 5.5 và Gemini 3.8 Flash; cộng dồn tổng token kể cả các lượt retry khi code biên dịch lỗi hoặc trượt selector."
+      },
+      "insightSummary": "Bề ngoài, nhiều đội ngại gắn MCP Server vì sợ tốn thêm vài nghìn token mô tả công cụ. Nhưng dữ liệu đo cộng dồn cả vòng lặp sửa sai cho thấy điều ngược lại: khi Agent thiếu `context7` hay `supabase`, nó mất trung bình 3–4 lượt sinh mã lỗi, biên dịch gãy rồi sửa đi sửa lại—đẩy chi phí lên 42K–61K token cho một nhiệm vụ lẽ ra chỉ tốn 11K–19K token. Riêng ở khâu E2E trình duyệt, cây trợ năng của `playwright-mcp` tiết kiệm tới gần 3/4 ngân sách token so với việc chụp ảnh gửi mô hình thị giác liên tục."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-top7-mcp-field-report",
+      "src": "/imgs/boost/charts/top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops-report.webp",
+      "alt": "Biểu đồ thực địa top mcp servers cho ai vibecode và enterprise ops đối chiếu chi phí token giữa quy trình có 7 MCP Servers và quy trình thủ công thiếu công cụ",
+      "caption": "So sánh tổng lượng token tiêu thụ qua 6 công đoạn phát triển ERP & SaaS khi trang bị bộ 7 MCP Servers (GitHub, Context7, Playwright, Chrome DevTools, Firecrawl, Supabase, Filesystem).",
+      "badge": "FIELD REPORT • TOP 7 MCP"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-chon-mcp-server-theo-tinh-huong",
+      "heading": "Ma trận chọn đúng MCP Server trong từng tình huống Vibecode & Vận hành",
+      "subtitle": "Tránh bật dư thừa hoặc dùng sai công cụ cho tác vụ không phù hợp.",
+      "scenarios": [
+        {
+          "condition": "Agent liên tục viết sai hàm mới của Next.js, Tailwind v4, Google GenAI SDK hoặc thư viện vừa phát hành 2026",
+          "recommendedChoice": "Kích hoạt Context7 (`upstash/context7`) qua Streamable HTTP",
+          "rationale": "Tra cứu trực tiếp bản tài liệu chính thức khớp version trong `package.json` thay vì dựa vào trí nhớ cũ của LLM.",
+          "avoidIf": "Bạn chỉ chỉnh sửa thuật toán TypeScript thuần không phụ thuộc thư viện ngoài."
+        },
+        {
+          "condition": "Cần kiểm chứng luồng điền form Lead, đặt cọc CRM, chuyển trang và kiểm tra DOM hoạt động đúng chuẩn",
+          "recommendedChoice": "Dùng `microsoft/playwright-mcp` (Accessibility Tree)",
+          "rationale": "Cung cấp cấu trúc ngữ nghĩa nhẹ token cho Agent tương tác chính xác từng nút, input, dialog trên trình duyệt.",
+          "avoidIf": "Bạn cần đo biểu đồ FPS WebGL, debug lỗi CORS header hoặc phân tích hiệu năng Lighthouse."
+        },
+        {
+          "condition": "Giao diện bị lỗi runtime, request bắn Meta CAPI báo 400 hoặc hiệu năng trang 3D bị giật",
+          "recommendedChoice": "Chuyển sang `ChromeDevTools/chrome-devtools-mcp`",
+          "rationale": "Đọc trực tiếp luồng Network, Console log, Performance trace và các thông số Core Web Vitals qua giao thức CDP.",
+          "avoidIf": "Bạn chỉ muốn chạy bộ test click-through đơn giản trong pipeline CI không cần thanh tra network sâu."
+        },
+        {
+          "condition": "Cần AI rà soát cấu trúc bảng, khóa ngoại, index và chính sách PostgreSQL RLS trước khi viết API",
+          "recommendedChoice": "Kết nối `supabase-mcp` kèm cờ `--read-only` và `--project-ref`",
+          "rationale": "Đảm bảo Agent nhìn thấy đúng schema thật trên nhánh dev/staging mà không có khả năng phá dữ liệu thực tế.",
+          "avoidIf": "Dùng chung token cá nhân có quyền xóa/ghi lên cơ sở dữ liệu khách hàng production."
+        },
+        {
+          "condition": "Cần quét bảng giá đối thủ, bóc tách tài liệu kỹ thuật công khai thành Markdown cho RAG hoặc nghiên cứu thị trường",
+          "recommendedChoice": "Dùng `mendableai/firecrawl-mcp-server` trong phiên tách biệt",
+          "rationale": "Chuyển HTML phức tạp thành Markdown sạch cho LLM mà không làm bẩn ngữ cảnh với hàng đống thẻ DOM rác.",
+          "avoidIf": "Cấp quyền ghi file hệ thống hoặc truy cập DB nội bộ trong cùng một phiên Agent đang đọc web ngoài (rủi ro Prompt Injection)."
+        },
+        {
+          "condition": "Cần Agent tổng hợp báo cáo PR, tìm hàm mẫu trên nhiều repo công ty hoặc xem lý do build Actions bị đỏ",
+          "recommendedChoice": "Kết nối `github/github-mcp-server` (lọc toolsets vừa đủ)",
+          "rationale": "Truy cập thẳng GitHub API qua bản hosted Streamable HTTP hoặc Docker Stdio mà không cần tự viết script `curl` thủ công.",
+          "avoidIf": "Bạn đã ở ngay trong terminal local có cài sẵn `gh` CLI đủ gọn nhẹ cho vài lệnh kiểm tra nhanh."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-team-mcp-json-top7",
+      "heading": "Code Recipe: File `.mcp.json` chuẩn nhóm phát triển kết hợp 7 MCP Servers an toàn & chống phình Token",
+      "language": "json",
+      "filename": ".mcp.json",
+      "description": "Cấu hình `.mcp.json` đặt ở thư mục gốc dự án cho phép chia sẻ chuẩn hóa cho toàn team: dùng hosted Streamable HTTP cho GitHub và Context7, cố định phiên bản gói npm cho Playwright/DevTools/Firecrawl, khóa cứng `--read-only` và `--project-ref` cho Supabase, cùng allowlist thư mục cho Filesystem—không chứa bất kỳ secret thô nào trong Git.",
+      "code": "{\n  \"mcpServers\": {\n    \"github\": {\n      \"type\": \"http\",\n      \"url\": \"https://api.githubcopilot.com/mcp/\",\n      \"headers\": {\n        \"Authorization\": \"Bearer ${GITHUB_MCP_PAT}\"\n      }\n    },\n    \"context7\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.context7.com/mcp\",\n      \"headers\": {\n        \"CONTEXT7_API_KEY\": \"${CONTEXT7_API_KEY}\"\n      }\n    },\n    \"playwright\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@playwright/mcp@0.0.47\", \"--headless\"]\n    },\n    \"chrome-devtools\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"chrome-devtools-mcp@0.9.0\", \"--isolated\"]\n    },\n    \"firecrawl\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"firecrawl-mcp@1.14.0\"],\n      \"env\": {\n        \"FIRECRAWL_API_KEY\": \"${FIRECRAWL_API_KEY}\"\n      }\n    },\n    \"supabase-readonly\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@supabase/mcp-server-supabase@0.5.5\",\n        \"--read-only\",\n        \"--project-ref=${SUPABASE_DEV_PROJECT_REF}\"\n      ],\n      \"env\": {\n        \"SUPABASE_ACCESS_TOKEN\": \"${SUPABASE_DEV_PAT}\"\n      }\n    },\n    \"docs-filesystem\": {\n      \"type\": \"stdio\",\n      \"command\": \"npx\",\n      \"args\": [\n        \"-y\",\n        \"@modelcontextprotocol/server-filesystem@2025.8.21\",\n        \"./docs\",\n        \"./specs\"\n      ]\n    }\n  }\n}\n"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-top7-mcp-stack",
+      "variant": "benchmark",
+      "title": "Bộ 7 MCP Server là điểm cân bằng tối ưu giữa sức mạnh hành động và độ sạch của Context Window",
+      "body": "Kinh nghiệm từ các đợt kiểm thử thực địa tại DOMATION cho thấy sức mạnh của AI Vibecode không nằm ở số lượng MCP Server cài trong máy, mà ở tính kỷ luật khi phân vai: Context7 giữ đúng phiên bản thư viện, GitHub và Supabase nối vào sự thật của mã nguồn và schema SQL, Playwright cùng Chrome DevTools khép kín vòng kiểm thử trình duyệt, Firecrawl thu thập dữ liệu web sạch, còn Filesystem khóa chặt hành lang tệp tin. Khi đi kèm ghim phiên bản gói, cờ read-only và biến môi trường thay cho khóa cứng, cả đội ngũ có thể tăng tốc xây dựng hệ thống doanh nghiệp mà không biến trình soạn thảo thành lỗ hổng bảo mật."
+    }
+  ]
+}

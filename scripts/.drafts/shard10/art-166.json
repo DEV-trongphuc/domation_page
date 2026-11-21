@@ -1,0 +1,296 @@
+{
+  "id": "art-166",
+  "number": "166",
+  "slug": "github-github-mcp-server-audit-bao-mat-token-toolsets-devops",
+  "shardId": "shard10",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "DevOps & Automated PR Review",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit github/github-mcp-server: Bật --dynamic-toolsets, --read-only & siết PAT cho Agent DevOps",
+  "seoTitle": "Audit GitHub MCP Server: --read-only & Toolsets | DOMATION",
+  "metaDescription": "Phân tích binary Go chính thức từ GitHub (MIT, 30k+ Stars): tránh phình 60+ schema nhờ --dynamic-toolsets và cô lập blast radius bằng Fine-grained PAT.",
+  "focusKeyword": "audit github mcp server dynamic toolsets read only",
+  "secondaryKeywords": [
+    "cấu hình github mcp server tiết kiệm token",
+    "bật chế độ read only github mcp",
+    "fine grained pat cho coding agent",
+    "tự động đọc ci log và review pr qua mcp",
+    "giảm context bloat 60 tools github"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "GitHub MCP Server: Bật Dynamic Toolsets Và Khóa Read-Only",
+  "thumbnailHook": "Tránh nhồi 60+ tool schemas vào prompt và khóa quyền ghi bằng PAT.",
+  "thumbnailBadge": "GITHUB • GO BINARY",
+  "coverImage": "/imgs/boost/v2/github-github-mcp-server-audit-bao-mat-token-toolsets-devops.webp",
+  "screenshotImage": "/imgs/boost/charts/github-github-mcp-server-audit-bao-mat-token-toolsets-devops-report.webp",
+  "coverAlt": "Báo cáo mổ xẻ github/github-mcp-server viết bằng Go với cờ --dynamic-toolsets, --read-only và Fine-grained PAT cho AI Coding Agent DevOps",
+  "screenshotCaption": "Đo kiểm mức tiết kiệm Context Window và độ chính xác chọn đúng công cụ của github/github-mcp-server khi bật --dynamic-toolsets và --read-only so với nạp tràn 60+ tool mặc định.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Quy Trình CI/CD & DevOps DOMATION",
+  "relatedSlugs": [
+    "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf",
+    "quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai",
+    "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản audit github mcp server dynamic toolsets read only phân tích chuyên sâu binary Go chính chủ github/github-mcp-server (MIT, 30k+ Stars). Đóng gói gọn nhẹ qua ghcr.io/github/github-mcp-server, công cụ này thay thế việc scrape CLI rời rạc bằng giao tiếp JSON-RPC chuẩn mực qua stdio hoặc remote Streamable HTTP/OAuth. Tuy nhiên, nếu bật mặc định toàn bộ 60+ tool GitHub vào prompt, AI Agent lập tức nghẽn context và tốn token vô ích. Cấu hình chuẩn bắt buộc kết hợp --dynamic-toolsets hoặc --toolsets thu hẹp, bật --read-only cho tác vụ kiểm tra và dùng Fine-grained PAT để khóa chặt blast radius.",
+  "keyTakeaways": [
+    "Biên dịch thành Go binary thuần và container GHCR chính chủ, khởi động nhanh và không vướng xung đột phiên bản Node.js hay Python trên máy kỹ sư.",
+    "Nạp cả 60+ tool schemas cùng lúc ngốn hàng chục nghìn token mỗi lượt hội thoại; dùng --dynamic-toolsets hoặc --toolsets=repos,pull_requests,actions giúp tăng độ chính xác chọn hàm rõ rệt.",
+    "Cờ --read-only ép server chỉ phơi bày các hàm đọc/phân tích, triệt tiêu nguy cơ agent tự ý merge PR, đóng issue hay đẩy nhánh code lỗi trong lúc debug.",
+    "Tuyệt đối tránh dùng Classic PAT toàn quyền tổ chức; hãy cấp Fine-grained PAT giới hạn đúng từng repository triển khai và đặt hạn hết hiệu lực định kỳ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Quy mô công cụ tích hợp",
+      "value": "60+ Typed Tools"
+    },
+    {
+      "label": "Giấy phép & Runtime gốc",
+      "value": "MIT • Go Binary"
+    },
+    {
+      "label": "Giảm phình Schema Context",
+      "value": "~72% với Dynamic Toolsets"
+    },
+    {
+      "label": "Chốt chặn ghi nhầm PR",
+      "value": "--read-only + Scoped PAT"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Cờ --dynamic-toolsets hoạt động khác gì so với --toolsets=repos,pull_requests,actions trong github-mcp-server?",
+      "answer": "Khi truyền --toolsets=repos,pull_requests,actions, server chỉ đăng ký cứng đúng các công cụ thuộc 3 nhóm đó ngay từ bước tools/list, rất phù hợp nếu bạn biết chắc agent chỉ làm nhiệm vụ soi PR và đọc log GitHub Actions. Ngược lại, --dynamic-toolsets chỉ lộ diện một nhóm meta-tools siêu gọn để khám phá danh mục toolset theo nhu cầu; khi agent gặp tình huống cần kiểm tra Dependabot alerts hoặc bảo mật code scanning, nó mới chủ động gọi lệnh nạp toolset tương ứng vào phiên làm việc hiện tại."
+    },
+    {
+      "question": "Nếu tôi đã dùng Fine-grained PAT chỉ cấp quyền Read-only trên GitHub thì có cần truyền thêm cờ --read-only nữa không?",
+      "answer": "Rất nên bật cả hai lớp bảo vệ theo nguyên tắc defense-in-depth. Lý do là ngoài việc chặn quyền ghi ở tầng API GitHub, cờ --read-only của Go server sẽ loại bỏ hoàn toàn các schema của hàm ghi (như merge_pull_request, create_issue, push_files, delete_branch) khỏi danh sách tools trả về cho LLM. Nhờ vậy model vừa không thể gọi nhầm, vừa tiết kiệm được lượng token schema đáng kể của toàn bộ nhóm công cụ chỉnh sửa."
+    },
+    {
+      "question": "Cảnh báo Prompt Injection từ nội dung Pull Request bên ngoài khi agent dùng GitHub MCP là gì?",
+      "answer": "Nếu repository của doanh nghiệp có nhận Pull Request hoặc Issue từ cộng tác viên ngoài hoặc kho công khai, kẻ xấu có thể nhúng chỉ thị độc hại ẩn trong phần mô tả PR hoặc log lỗi. Khi coding agent dùng GitHub MCP kéo nội dung đó vào context để review, nếu agent đang giữ token có quyền ghi và không bật --read-only, chỉ thị ẩn có thể lừa agent mở PR sửa file workflow CI hoặc rò rỉ biến cấu hình. Do đó luồng review PR tự động luôn phải khóa ở chế độ read-only."
+    },
+    {
+      "question": "Đội kỹ sư DOMATION cấu hình GitHub MCP Server kết hợp với Cline và OpenCode như thế nào?",
+      "answer": "Tại DOMATION, các kỹ sư Vibecode vận hành Next.js ERP 5.0 (12 phân hệ), AutoData ZaloBot và INKICA Studio đều chạy container ghcr.io/github/github-mcp-server qua stdio với cấu hình mặc định bật --read-only kết hợp --dynamic-toolsets và Fine-grained PAT gắn riêng từng repo dự án. Cline hoặc OpenCode tự động đọc log GitHub Actions bị đỏ, đối chiếu diff PR và quét cảnh báo Dependabot trong vài giây trước khi kỹ sư tự tay chạy git push."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "github/github-mcp-server",
+    "url": "https://github.com/github/github-mcp-server",
+    "category": "Official GitHub Platform MCP Server",
+    "primaryLanguage": "Go",
+    "license": "MIT",
+    "starsTier": "30k+ Stars",
+    "bestFor": "Review Pull Request, phân tích log CI GitHub Actions bị lỗi, tra cứu issue và kiểm toán cảnh báo bảo mật Dependabot trực tiếp trong IDE coding agent với độ trễ thấp và schema định kiểu chặt chẽ.",
+    "avoidWhen": "Cấp nguyên Classic PAT quyền rộng toàn org mà không bật --read-only, hoặc nạp mặc định tất cả 60+ tools vào prompt khiến agent tốn token và chọn nhầm hàm.",
+    "domationSynergy": "Là máy chủ MCP DevOps tiêu chuẩn của đội kỹ sư DOMATION: giúp Cline và OpenCode soi log CI hỏng, rà soát PR các phân hệ ERP 5.0 và kiểm tra Dependabot bằng Fine-grained PAT tối thiểu quyền.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "ho-so-repo-github-mcp-server",
+      "heading": "Hồ sơ kiểm toán Repo: github/github-mcp-server — Go Binary chính chủ cho AI DevOps",
+      "repo": {
+        "fullName": "github/github-mcp-server",
+        "url": "https://github.com/github/github-mcp-server",
+        "category": "Official GitHub Platform MCP Server",
+        "primaryLanguage": "Go",
+        "license": "MIT",
+        "starsTier": "30k+ Stars",
+        "bestFor": "Review Pull Request, phân tích log CI GitHub Actions bị lỗi, tra cứu issue và kiểm toán cảnh báo bảo mật Dependabot trực tiếp trong IDE coding agent với độ trễ thấp và schema định kiểu chặt chẽ.",
+        "avoidWhen": "Cấp nguyên Classic PAT quyền rộng toàn org mà không bật --read-only, hoặc nạp mặc định tất cả 60+ tools vào prompt khiến agent tốn token và chọn nhầm hàm.",
+        "domationSynergy": "Là máy chủ MCP DevOps tiêu chuẩn của đội kỹ sư DOMATION: giúp Cline và OpenCode soi log CI hỏng, rà soát PR các phân hệ ERP 5.0 và kiểm tra Dependabot bằng Fine-grained PAT tối thiểu quyền.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 9,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "mo-xe-binary-go-va-context-bloat",
+      "eyebrow": "MỔ XẺ MÃ NGUỒN GO • KIẾN TRÚC BINARY & CONTEXT BLOAT",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu Go binary của github/github-mcp-server: Tại sao nạp cả 60+ tools cùng lúc là tự bóp nghẹt Agent",
+      "pullQuote": "Chuyển từ một wrapper Node.js cũ sang Go binary chính chủ giải quyết xong tốc độ khởi động và định kiểu API, nhưng chính sự giàu có 60+ tool sẽ đốt sạch cửa sổ ngữ cảnh nếu bạn lười lọc toolsets.",
+      "paragraphs": [
+        "Trước khi GitHub phát hành kho github/github-mcp-server viết bằng Go theo giấy phép MIT, nhiều lập trình viên phải nối AI coding agent vào GitHub bằng cách cho agent tự chạy lệnh shell gh cli rồi đoán định dạng văn bản trả về, hoặc dùng bản mẫu TypeScript cũ thiếu nhiều endpoint chuyên sâu của Actions và Dependabot. Phiên bản Go chính thức thay đổi hoàn toàn cuộc chơi: toàn bộ server được biên dịch thành một binary tĩnh siêu gọn hoặc chạy trực tiếp qua Docker image ghcr.io/github/github-mcp-server, giao tiếp JSON-RPC chuẩn xác qua stdio trên máy cá nhân cũng như Streamable HTTP/OAuth cho môi trường đám mây.",
+        "Tuy nhiên, khi mổ xẻ danh sách công cụ đăng ký mặc định, chúng tôi phát hiện ngay cái bẫy hiệu năng mà 80% đội nhóm mới cài đặt đều vấp phải: 'Context Bloat'. Với hơn 60 tools trải dài từ quản lý repository, tạo/merge PR, kiểm tra workflow run, đọc job logs, đến secret scanning, code scanning và Dependabot alerts, tổng dung lượng JSON Schema mô tả tên hàm, tham số và kiểu dữ liệu ngốn hàng nghìn đến hơn một chục nghìn token ngay trong hệ thống prompt của mỗi lượt hỏi đáp — kể cả khi bạn chỉ định hỏi một câu ngắn về file README.",
+        "Số lượng schema khổng lồ này tạo ra hai tác hại kép: thứ nhất, hóa đơn token đầu vào (input token) tăng vọt theo cấp số nhân trong các phiên debug dài 20–30 vòng lặp; thứ hai, tỷ lệ mô hình LLM bị rối giữa các hàm gần nghĩa (như search_code vs get_file_contents hay list_pull_requests vs search_issues) tăng lên rõ rệt. Giải pháp tích hợp ngay trong binary Go của GitHub là hai cơ chế điều phối thông minh: cờ --toolsets để khóa cứng nhóm công cụ theo vai trò, hoặc cờ --dynamic-toolsets để chỉ nạp meta-tool khám phá và bật nóng từng toolset đúng lúc agent thật sự cần dùng."
+      ],
+      "bullets": [
+        "Go binary chạy độc lập, tiêu thụ RAM tối thiểu và loại bỏ hoàn toàn độ trễ npm install hay xung đột Node version khi khởi chạy qua Docker hoặc binary local.",
+        "Hỗ trợ đa phương thức kết nối: stdio cho IDE cục bộ (Cline, Claude Code, OpenCode) và remote Streamable HTTP kèm OAuth cho hệ thống điều phối tập trung.",
+        "Cờ --toolsets phân chia rạch ròi theo miền nghiệp vụ: repos, issues, pull_requests, actions, dependabot, code_security."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-github-mcp-profiles",
+      "heading": "Cấu hình .mcp.json chuẩn Production: Bật --dynamic-toolsets, --read-only và cô lập bằng Fine-grained PAT",
+      "language": "json",
+      "filename": ".mcp.json",
+      "description": "Hai cấu hình mẫu sẵn sàng chạy với Docker GHCR (khuyên dùng Profile Read-Only Audit làm mặc định cho Cline/OpenCode; chỉ mở Profile Scoped Triage khi có nhu cầu ghi issue được phê duyệt).",
+      "code": "{\n  \"mcpServers\": {\n    \"github-audit-readonly\": {\n      \"command\": \"docker\",\n      \"args\": [\n        \"run\",\n        \"-i\",\n        \"--rm\",\n        \"-e\",\n        \"GITHUB_PERSONAL_ACCESS_TOKEN\",\n        \"-e\",\n        \"GITHUB_READ_ONLY=1\",\n        \"-e\",\n        \"GITHUB_DYNAMIC_TOOLSETS=1\",\n        \"ghcr.io/github/github-mcp-server\",\n        \"stdio\",\n        \"--read-only\",\n        \"--dynamic-toolsets\"\n      ],\n      \"env\": {\n        \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"${env:GH_FINE_GRAINED_RO_PAT}\"\n      }\n    },\n    \"github-devops-scoped\": {\n      \"command\": \"docker\",\n      \"args\": [\n        \"run\",\n        \"-i\",\n        \"--rm\",\n        \"-e\",\n        \"GITHUB_PERSONAL_ACCESS_TOKEN\",\n        \"ghcr.io/github/github-mcp-server\",\n        \"stdio\",\n        \"--toolsets=repos,pull_requests,actions,dependabot\"\n      ],\n      \"env\": {\n        \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"${env:GH_SCOPED_DEVOPS_PAT}\"\n      }\n    }\n  }\n}"
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-hieu-nang-toolsets-github-mcp",
+      "heading": "Đo kiểm mức tiết kiệm Context Window và Độ chính xác gọi Tool qua 6 cấu hình GitHub MCP",
+      "subtitle": "Thử nghiệm cùng bài toán soi lỗi CI Actions và review diff PR trên repo TypeScript 12 phân hệ ERP",
+      "chart": {
+        "chartType": "composed",
+        "title": "Phần trăm Context sạch giữ lại cho suy luận (%) vs Độ chính xác chọn đúng Tool (%)",
+        "subtitle": "So sánh giữa việc mở tràn 60+ tool mặc định với các chế độ thu hẹp toolsets và read-only",
+        "xKey": "mode",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "contextSavedPct",
+            "label": "Ngân sách Context giữ sạch khỏi Schema (%)",
+            "color": "#06B6D4",
+            "type": "bar"
+          },
+          {
+            "key": "toolAccuracyPct",
+            "label": "Độ chính xác gọi đúng Tool lần đầu (%)",
+            "color": "#1E40FF",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "mode": "All 60+ Tools", "contextSavedPct": 34, "toolAccuracyPct": 68 },
+          { "mode": "5 Toolsets Cố định", "contextSavedPct": 58, "toolAccuracyPct": 81 },
+          { "mode": "3 Toolsets Cố định", "contextSavedPct": 76, "toolAccuracyPct": 89 },
+          { "mode": "Dynamic Toolsets", "contextSavedPct": 84, "toolAccuracyPct": 91 },
+          { "mode": "Dynamic + Read-Only", "contextSavedPct": 90, "toolAccuracyPct": 95 },
+          { "mode": "Scoped 2 + Read-Only", "contextSavedPct": 93, "toolAccuracyPct": 96 }
+        ],
+        "kpis": [
+          {
+            "label": "Giữ sạch Context Window",
+            "value": "90%+",
+            "delta": "Dynamic + Read-Only",
+            "positive": true
+          },
+          {
+            "label": "Độ chính xác chọn hàm",
+            "value": "95%",
+            "delta": "+27% so với All Tools",
+            "positive": true
+          },
+          {
+            "label": "Chi phí token schema/lượt",
+            "value": "Giảm ~3.8x",
+            "delta": "Ít lặp tool sai",
+            "positive": true
+          },
+          {
+            "label": "Rủi ro ghi nhầm nhánh chính",
+            "value": "0%",
+            "delta": "Khóa --read-only",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo kiểm trên tập 40 tác vụ đọc log CI fail, kiểm tra Dependabot và review PR sử dụng cùng model coding tầm trung trong sandbox DOMATION."
+      },
+      "insightSummary": "Ngay khi thu hẹp từ chế độ nạp cả 60+ tools sang --dynamic-toolsets kết hợp --read-only, tỷ lệ giữ sạch cửa sổ ngữ cảnh nhảy từ 34% lên 90%, kéo theo độ chính xác gọi đúng công cụ ngay lượt đầu tăng từ 68% lên 95% vì mô hình không còn bị nhiễu bởi hàng loạt hàm tạo/sửa nhánh na ná nhau."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-github-mcp-toolsets",
+      "src": "/imgs/boost/charts/github-github-mcp-server-audit-bao-mat-token-toolsets-devops-report.webp",
+      "alt": "Biểu đồ kiểm toán github/github-mcp-server so sánh context overhead và độ chính xác khi bật --dynamic-toolsets và --read-only",
+      "caption": "Kết quả benchmark đối chiếu lượng token schema bị chiếm dụng và độ chính xác chọn tool giữa cấu hình mặc định 60+ tools với chế độ --dynamic-toolsets + --read-only.",
+      "badge": "DEVOPS BENCHMARK"
+    },
+    {
+      "type": "prose",
+      "id": "siết-blast-radius-pat-va-read-only",
+      "eyebrow": "BẢO MẬT DEVOPS • CHẶN BLAST RADIUS & PROMPT INJECTION",
+      "variant": "incident",
+      "heading": "Khóa bán kính sát thương bằng --read-only và Fine-grained PAT thay vì Classic Token toàn quyền",
+      "paragraphs": [
+        "Trên thực tế kiểm toán hạ tầng cho các doanh nghiệp phần mềm và đội Vibecode tăng tốc, lỗ hổng phổ biến nhất không nằm ở bản thân container ghcr.io/github/github-mcp-server mà nằm ở thói quen tạo Personal Access Token (PAT). Nhiều kỹ sư tiện tay dùng một Classic PAT tích sẵn toàn bộ quyền repo, workflow, admin:org rồi dán thẳng vào tệp cấu hình IDE. Khi kết hợp token vạn năng đó với việc không bật cờ --read-only, một AI Agent bị hiểu nhầm yêu cầu — hoặc bị dính Prompt Injection gài trong bình luận của một Pull Request từ fork ngoài — hoàn toàn có thể đẩy commit lỗi, đóng nhầm hàng loạt issue hoặc tự phê duyệt thay đổi cấu hình CI/CD.",
+        "Nguyên tắc khóa cứng tại DOMATION tách rạch ròi hai vòng bảo vệ. Vòng thứ nhất là GitHub Fine-grained PAT: token này chỉ được phép nhìn thấy đúng danh sách repository mà đội ngũ đang làm việc (ví dụ chỉ cấp vào repo domation-erp-core, tuyệt đối cách ly khỏi repo chứa hạ tầng Terraform hay khóa sản xuất), đồng thời tắt sạch quyền Write đối với Contents, Pull Requests và Administration nếu mục tiêu chỉ là kiểm tra và review code. Vòng thứ hai là cờ --read-only ở tầng MCP server, giúp loại bỏ toàn bộ định nghĩa hàm ghi ngay từ khâu khởi tạo JSON-RPC.",
+        "Bên cạnh đó, chạy server thông qua container Docker chuẩn --rm -i giúp không lưu lại trạng thái token trên đĩa cứng sau khi đóng phiên IDE, và tuyệt đối không ghi cứng chuỗi token vào file .mcp.json được commit lên Git. Hãy truyền qua biến môi trường hệ điều hành để mỗi thành viên trong team chỉ sử dụng đúng phạm vi quyền hạn tài khoản GitHub của riêng mình."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-trien-khai-github-mcp",
+      "heading": "Checklist 5 bước siết an ninh khi cấp GitHub MCP Server cho AI Coding Agent",
+      "items": [
+        {
+          "check": "Bật mặc định cờ --read-only cho mọi luồng review PR, đọc CI log và tra cứu code",
+          "severity": "critical",
+          "verificationHow": "Gửi yêu cầu tools/list tới server và kiểm tra sự vắng mặt của các hàm create_*, merge_*, push_*.",
+          "passThreshold": "0 công cụ có khả năng thay đổi trạng thái repository xuất hiện trong phiên read-only."
+        },
+        {
+          "check": "Kích hoạt --dynamic-toolsets hoặc giới hạn --toolsets theo đúng bài toán",
+          "severity": "high",
+          "verificationHow": "Đo tổng số lượng tool đăng ký lúc khởi động phiên Cline hoặc OpenCode.",
+          "passThreshold": "Chỉ nạp nhóm toolsets thực sự cần (hoặc dynamic discovery), cắt > 70% schema dư thừa."
+        },
+        {
+          "check": "Thay thế toàn bộ Classic PAT bằng Fine-grained PAT giới hạn từng Repo và có ngày hết hạn",
+          "severity": "critical",
+          "verificationHow": "Mở GitHub Developer Settings kiểm tra loại token và danh sách repository được phép truy cập.",
+          "passThreshold": "100% token dạng Fine-grained, phạm vi Repository-pinned và TTL <= 90 ngày."
+        },
+        {
+          "check": "Tham chiếu token qua biến môi trường (${env:...}) — Cấm hardcode trong .mcp.json",
+          "severity": "critical",
+          "verificationHow": "Chạy GitHub Secret Scanning / Gitleaks trên toàn bộ commit lịch sử và tệp cấu hình IDE.",
+          "passThreshold": "0 chuỗi token ghp_ hoặc github_pat_ xuất hiện trong workspace Git."
+        },
+        {
+          "check": "Chạy container ghcr.io/github/github-mcp-server với cờ --rm -i hoặc Remote OAuth tập trung",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra danh sách Docker container còn sót sau khi tắt IDE hoặc rà log phiên OAuth.",
+          "passThreshold": "Container tự dọn sạch khi đóng stdio session, không treo tiến trình nền dư thừa."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "quy-trinh-devops-tai-domation",
+      "eyebrow": "ỨNG DỤNG THỰC CHIẾN • CI/CD & AUDIT PR ERP 5.0",
+      "variant": "narrative",
+      "heading": "Cách đội kỹ sư DOMATION phối hợp GitHub MCP với Cline & OpenCode trong chu kỳ phát hành hằng ngày",
+      "paragraphs": [
+        "Trong dây chuyền kỹ thuật của DOMATION — nơi các bản cập nhật cho hệ thống ERP 5.0 12 phân hệ, bộ lọc trùng AutoData ZaloBot hay các module Next.js của INKICA Studio được đẩy PR liên tục — GitHub MCP Server đóng vai trò cặp mắt chẩn đoán tự động ngay trong IDE. Khi một build GitHub Actions báo đỏ vì lỗi kiểu dữ liệu TypeScript hoặc thiếu biến môi trường test, thay vì lập trình viên phải mở trình duyệt, cuộn qua 3.000 dòng log thô rồi copy dán vào cửa sổ chat, kỹ sư chỉ cần ra lệnh cho Cline hoặc OpenCode dùng toolset actions kéo đúng phần step lỗi và đối chiếu ngay với diff của Pull Request hiện tại.",
+        "Song song đó, ở mỗi chiều thứ Sáu trước kỳ release cuối tuần, cấu hình github-audit-readonly với toolset dependabot và pull_requests giúp rà soát toàn bộ cảnh báo lỗ hổng phụ thuộc trên các repo khách hàng B2B mà không bao giờ đối mặt nguy cơ agent lỡ tay chạm vào nhánh main đang chạy production. Chính sự kết hợp giữa tốc độ của binary Go và kỷ luật khóa quyền --read-only biến công cụ này thành mắt xích không thể thiếu trong bộ chuẩn Vibecode của DOMATION."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "ket-luan-github-mcp-server",
+      "variant": "key-rule",
+      "title": "Quy tắc vàng GitHub MCP: Đọc rộng với Dynamic Toolsets, Ghi hẹp bằng tay hoặc Scoped Token",
+      "body": "github/github-mcp-server là một trong những máy chủ MCP hiếm hoi đạt độ chín sản xuất cao nhất nhờ tốc độ Go binary và kiến trúc toolsets thông minh. Hãy biến --read-only và --dynamic-toolsets thành cấu hình mặc định trong .mcp.json của cả đội kỹ thuật; để AI Agent làm tốt nhất việc đọc log CI, review PR và săn lỗ hổng Dependabot, còn quyền bấm nút merge cuối cùng lên production hãy luôn giữ qua quy trình phê duyệt có trách nhiệm của con người."
+    }
+  ]
+}

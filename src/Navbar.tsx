@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   BookOpen,
+  Bot,
   Briefcase,
   ChevronDown,
   Cpu,
   Database,
   ExternalLink,
+  Home,
+  Layers,
   LayoutGrid,
   Menu,
   Sparkles,
@@ -25,6 +28,7 @@ export interface NavbarProps {
     | 'data'
     | 'automation'
     | 'meta-report'
+    | 'dom-ai'
     | 'web-design'
     | 'ideas'
     | 'boost'
@@ -36,67 +40,72 @@ export interface NavbarProps {
   mobileContactLabel?: string;
 }
 
-const HOME_ANCHORS = [
-  { href: '#solutions', label: 'Hệ Sinh Thái' },
-  { href: '#crm-data', label: 'Data & Ads' },
-  { href: '#erp-suite', label: 'ERP & AI' },
-  { href: '#touchpoints', label: 'Web & 3D' },
-  { href: '#pricing', label: 'Đầu Tư' },
-];
-
-const ECOSYSTEM_ROUTES = [
+const PRIMARY_APP_ROUTES = [
   {
-    id: 'data',
+    id: 'home' as const,
+    href: '/',
+    label: 'Trang chủ',
+    icon: Home,
+  },
+  {
+    id: 'meta-report' as const,
+    href: '/meta-report',
+    label: 'Realtime Report',
+    icon: TrendingUp,
+  },
+  {
+    id: 'data' as const,
     href: '/data',
-    label: 'Auto Data & Meta CAPI',
-    desc: 'Chia Lead ZaloBot Tức Thì & HTTP 200',
+    label: 'Chia data',
     icon: Database,
   },
   {
-    id: 'automation',
+    id: 'automation' as const,
     href: '/automation',
-    label: 'Automation & AI RAG',
-    desc: 'Visual Flow & AI Phòng Ban 24/7',
+    label: 'Marketing Automation',
     icon: Workflow,
   },
   {
-    id: 'web-design',
+    id: 'erp' as const,
+    href: '/erp',
+    label: 'Full ERP',
+    icon: Cpu,
+  },
+  {
+    id: 'dom-ai' as const,
+    href: '/dom-ai',
+    label: 'AI Agent',
+    icon: Bot,
+    isFree: true,
+  },
+  {
+    id: 'boost' as const,
+    href: '/boost',
+    label: 'Blog',
+    icon: BookOpen,
+  },
+];
+
+const OTHER_ROUTES = [
+  {
+    id: 'crm' as const,
+    href: '/crm',
+    label: 'DOMATION CRM 360°',
+    desc: 'Quản lý khách hàng tập trung & quy trình chốt đơn',
+    icon: Layers,
+  },
+  {
+    id: 'web-design' as const,
     href: '/web-design',
     label: 'Thiết Kế Web & 3D',
-    desc: 'Website chuẩn SEO, Sa bàn 3D & Báo giá trực quan',
+    desc: 'Website chuẩn chuyển đổi, sa bàn 3D & báo giá trực quan',
     icon: LayoutGrid,
   },
   {
-    id: 'meta-report',
-    href: '/meta-report',
-    label: 'Meta Ad Report',
-    desc: 'Hệ thống báo cáo hiệu suất Meta Ads tích hợp AI',
-    icon: TrendingUp,
-  },
-];
-
-const PROMINENT_ROUTES = [
-  {
-    id: 'erp',
-    href: '/erp',
-    label: 'Enterprise ERP 5.0',
-    icon: Cpu,
-  },
-];
-
-const GROWTH_ROUTES = [
-  {
-    id: 'boost',
-    href: '/boost',
-    label: 'Blog DOMATION • Triển Khai & SEO',
-    desc: '74+ bài chuyên sâu: ERP may đo, Vibecode, AI 5.0 & tối ưu Ads',
-    icon: BookOpen,
-  },
-  {
-    id: 'portfolio',
+    id: 'portfolio' as const,
     href: '/portfolio',
     label: 'Portfolio & Case Study Đa Ngành',
-    desc: 'Capital House, INKICA, IDEAS, Phúc Lộc Thọ',
+    desc: 'Capital House, EcoLife, RichLand, Viện IDEAS, Flora',
     icon: Briefcase,
   },
 ];
@@ -109,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [ecoDropdownOpen, setEcoDropdownOpen] = useState(false);
+  const [otherDropdownOpen, setOtherDropdownOpen] = useState(false);
   const [internalContactOpen, setInternalContactOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -123,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setEcoDropdownOpen(false);
+        setOtherDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', onClickOutside);
@@ -139,7 +148,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  const isEcosystemSubpage = ECOSYSTEM_ROUTES.some((r) => r.id === activePage) || activePage === 'ideas';
+  const isOtherSubpage =
+    OTHER_ROUTES.some((r) => r.id === activePage) || activePage === 'ideas';
 
   return (
     <>
@@ -151,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         }`}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2">
-          {/* Left: Brand SVG Monogram D Logo */}
+          {/* Left: Brand Logo (Links to Home /) */}
           <a
             href="/"
             onClick={(e) => handleSpaLinkClick(e, '/')}
@@ -168,65 +178,41 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </a>
 
-          {/* Center: Frosted Pill Menu (Desktop) */}
+          {/* Center: Synchronized Primary Routes + Khác Dropdown Across ALL Pages */}
           <nav
             aria-label="Điều hướng chính"
-            className="hidden lg:flex items-center gap-0.5 xl:gap-1 p-1 rounded-full bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm"
+            className="hidden lg:flex items-center gap-0.5 p-1 rounded-full bg-white/90 backdrop-blur-xl border border-slate-200/85 shadow-sm"
           >
-            {activePage === 'home' ? (
-              HOME_ANCHORS.map((link) => (
+            {PRIMARY_APP_ROUTES.map((route) => {
+              const isActive = activePage === route.id;
+              return (
                 <a
-                  key={link.href}
-                  href={link.href}
-                  className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-[#1E40FF] hover:bg-blue-50/70 transition-colors whitespace-nowrap"
+                  key={route.id}
+                  href={route.href}
+                  onClick={(e) => handleSpaLinkClick(e, route.href)}
+                  className={`px-2.5 xl:px-3 py-1.5 rounded-full text-[11px] xl:text-xs font-bold transition-colors whitespace-nowrap inline-flex items-center gap-1.5 ${
+                    isActive
+                      ? 'bg-blue-50 text-[#1E40FF]'
+                      : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
+                  }`}
                 >
-                  {link.label}
+                  <span>{route.label}</span>
+                  {route.isFree && (
+                    <span className="px-1.5 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-extrabold leading-none tracking-wide">
+                      FREE
+                    </span>
+                  )}
                 </a>
-              ))
-            ) : (
-              <a
-                href="/"
-                onClick={(e) => handleSpaLinkClick(e, '/')}
-                className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-[#1E40FF] hover:bg-blue-50/70 transition-colors whitespace-nowrap"
-              >
-                Trang Chủ
-              </a>
-            )}
+              );
+            })}
 
-            <a
-              href="/boost"
-              onClick={(e) => handleSpaLinkClick(e, '/boost')}
-              className={`px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap ${
-                activePage === 'boost'
-                  ? 'bg-blue-50 text-[#1E40FF]'
-                  : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
-              }`}
-            >
-              Blog
-            </a>
-
-            {PROMINENT_ROUTES.map((route) => (
-              <a
-                key={route.id}
-                href={route.href}
-                onClick={(e) => handleSpaLinkClick(e, route.href)}
-                className={`px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap ${
-                  activePage === route.id
-                    ? 'bg-blue-50 text-[#1E40FF]'
-                    : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
-                }`}
-              >
-                {route.label}
-              </a>
-            ))}
-
-            {/* Ecosystem Apps Dropdown */}
+            {/* Unified Khác Dropdown: CRM + Web 3D + Portfolio */}
             <div ref={dropdownRef} className="relative">
               <button
                 type="button"
-                onClick={() => setEcoDropdownOpen((v) => !v)}
-                className={`px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer whitespace-nowrap ${
-                  isEcosystemSubpage || ecoDropdownOpen
+                onClick={() => setOtherDropdownOpen((v) => !v)}
+                className={`px-2.5 xl:px-3 py-1.5 rounded-full text-[11px] xl:text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer whitespace-nowrap ${
+                  isOtherSubpage || otherDropdownOpen
                     ? 'bg-blue-50 text-[#1E40FF]'
                     : 'text-slate-700 hover:text-[#1E40FF] hover:bg-blue-50/70'
                 }`}
@@ -234,18 +220,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Khác</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform ${
-                    ecoDropdownOpen ? 'rotate-180' : ''
+                    otherDropdownOpen ? 'rotate-180' : ''
                   }`}
                 />
               </button>
 
-              {ecoDropdownOpen && (
+              {otherDropdownOpen && (
                 <div className="absolute right-0 mt-2.5 w-[356px] rounded-2xl bg-white border border-slate-200 shadow-[0_24px_54px_-12px_rgba(15,23,42,0.28)] p-2 z-50">
                   <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-                    Chuyên Trang Sản Phẩm Độc Lập
+                    Giải Pháp Bổ Trợ
                   </div>
                   <div className="space-y-1">
-                    {ECOSYSTEM_ROUTES.map((route) => {
+                    {OTHER_ROUTES.map((route) => {
                       const Icon = route.icon;
                       const isActive = activePage === route.id;
                       return (
@@ -253,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           key={route.id}
                           href={route.href}
                           onClick={(e) => {
-                            setEcoDropdownOpen(false);
+                            setOtherDropdownOpen(false);
                             handleSpaLinkClick(e, route.href);
                           }}
                           className={`flex items-start gap-3 p-2.5 rounded-xl transition-colors ${
@@ -284,52 +270,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       );
                     })}
                   </div>
-
-                  <div className="mt-2 pt-2 border-t border-slate-100">
-                    <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-                      Blog &amp; Portfolio
-                    </div>
-                    <div className="space-y-1">
-                      {GROWTH_ROUTES.map((route) => {
-                        const Icon = route.icon;
-                        const isActive = activePage === route.id;
-                        return (
-                          <a
-                            key={route.id}
-                            href={route.href}
-                            onClick={(e) => {
-                              setEcoDropdownOpen(false);
-                              handleSpaLinkClick(e, route.href);
-                            }}
-                            className={`flex items-start gap-3 p-2.5 rounded-xl transition-colors ${
-                              isActive
-                                ? 'bg-blue-50/90 text-[#1E40FF]'
-                                : 'hover:bg-slate-50 text-slate-800'
-                            }`}
-                          >
-                            <div
-                              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                                isActive
-                                  ? 'bg-[#1E40FF] text-white'
-                                  : 'bg-emerald-50 text-emerald-700'
-                              }`}
-                            >
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="text-xs font-semibold flex items-center justify-between">
-                                <span>{route.label}</span>
-                                <ExternalLink className="w-3 h-3 opacity-45" />
-                              </div>
-                              <div className="text-[11px] text-slate-500 mt-0.5 truncate">
-                                {route.desc}
-                              </div>
-                            </div>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
@@ -358,43 +298,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Mobile Drawer */}
+        {/* Synchronized Mobile Drawer */}
         {mobileOpen && (
           <div className="lg:hidden mt-2 mx-4 rounded-2xl bg-white border border-slate-200 shadow-2xl p-4 space-y-4">
-            {activePage === 'home' && (
-              <div className="grid grid-cols-2 gap-2">
-                {HOME_ANCHORS.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2 rounded-xl bg-slate-50 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-[#1E40FF]"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            )}
-
-            <a
-              href="/boost"
-              onClick={(e) => {
-                setMobileOpen(false);
-                handleSpaLinkClick(e, '/boost');
-              }}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-[#1E40FF] flex items-center gap-2"
-            >
-              <BookOpen className="w-4 h-4 shrink-0" />
-              <span>Blog DOMATION • Kiến Thức &amp; SEO</span>
-            </a>
-
-            <div className="border-t border-slate-100 pt-3">
+            <div>
               <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-2">
-                Chuyên Trang Sản Phẩm
+                Điều Hướng Chính
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {[...PROMINENT_ROUTES, ...ECOSYSTEM_ROUTES].map((route) => {
+                {PRIMARY_APP_ROUTES.map((route) => {
                   const Icon = route.icon;
+                  const isActive = activePage === route.id;
                   return (
                     <a
                       key={route.id}
@@ -403,7 +317,48 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setMobileOpen(false);
                         handleSpaLinkClick(e, route.href);
                       }}
-                      className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-slate-800"
+                      className={`flex items-center justify-between gap-2.5 p-2.5 rounded-xl transition-colors ${
+                        isActive
+                          ? 'bg-blue-50 text-[#1E40FF]'
+                          : 'hover:bg-slate-50 text-slate-800'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <Icon className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                        <span className="text-xs font-bold">{route.label}</span>
+                      </span>
+                      {route.isFree && (
+                        <span className="px-1.5 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-extrabold">
+                          FREE
+                        </span>
+                      )}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="border-t border-slate-100 pt-3">
+              <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                Giải Pháp Bổ Trợ
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {OTHER_ROUTES.map((route) => {
+                  const Icon = route.icon;
+                  const isActive = activePage === route.id;
+                  return (
+                    <a
+                      key={route.id}
+                      href={route.href}
+                      onClick={(e) => {
+                        setMobileOpen(false);
+                        handleSpaLinkClick(e, route.href);
+                      }}
+                      className={`flex items-center gap-2.5 p-2 rounded-xl transition-colors ${
+                        isActive
+                          ? 'bg-blue-50 text-[#1E40FF]'
+                          : 'hover:bg-slate-50 text-slate-800'
+                      }`}
                     >
                       <Icon className="w-4 h-4 text-[#1E40FF] shrink-0" />
                       <span className="text-xs font-bold">{route.label}</span>

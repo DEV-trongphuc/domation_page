@@ -1,0 +1,359 @@
+{
+  "id": "art-172",
+  "number": "172",
+  "slug": "infiniflow-ragflow-audit-deepdoc-hybrid-rag-doanh-nghiep",
+  "shardId": "shard11",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Deep-Document Enterprise RAG",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "executive-dossier",
+  "title": "Audit infiniflow/ragflow: Động cơ DeepDoc bóc bảng PDF phức tạp & cái giá 32GB+ RAM khi tự vận hành",
+  "seoTitle": "Audit RAGFlow: DeepDoc & Chi Phí Hạ Tầng 32GB RAM | DOMATION",
+  "metaDescription": "Phân tích RAGFlow (Apache-2.0, 90k+ Stars): kết hợp Go server + DeepDoc OCR/table recovery + trích dẫn inline, cùng yêu cầu RAM của Elasticsearch/MinIO.",
+  "focusKeyword": "audit ragflow deepdoc enterprise rag",
+  "secondaryKeywords": [
+    "ragflow deepdoc xử lý bảng biểu pdf",
+    "trích dẫn inline citation chống hallucination",
+    "chi phí ram server chạy ragflow self host",
+    "so sánh ragflow với dify và llamaindex",
+    "hybrid dense bm25 retrieval ragflow"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "RAGFlow 90K Stars: Đọc Bảng Giá Chuẩn Nhưng Tốn Tài Nguyên",
+  "thumbnailHook": "DeepDoc là chuẩn mực trích dẫn inline, dù cụm Elasticsearch đòi 32GB+ RAM.",
+  "thumbnailBadge": "GITHUB • 90K+ DEEPDOC",
+  "coverImage": "/imgs/boost/v2/infiniflow-ragflow-audit-deepdoc-hybrid-rag-doanh-nghiep.webp",
+  "screenshotImage": "/imgs/boost/charts/infiniflow-ragflow-audit-deepdoc-hybrid-rag-doanh-nghiep-report.webp",
+  "coverAlt": "Hồ sơ thẩm định kiến trúc infiniflow/ragflow: động cơ thị giác DeepDoc OCR khôi phục bảng PDF, trích dẫn inline và phân bổ RAM cụm Docker 32GB+",
+  "screenshotCaption": "Phân tích mức tiêu thụ RAM thực tế của từng container trong cụm RAGFlow Docker Compose (Elasticsearch vs Infinity, MySQL, MinIO, Redis, Python DeepDoc worker) cùng độ chính xác hỏi đáp bảng giá PDF phức tạp.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc AI RAG Bảng Giá Chính Xác",
+  "relatedSlugs": [
+    "docling-project-docling-audit-parse-pdf-hop-dong-bang-bieu",
+    "ocr-layout-parsing-hop-dong-pdf-bang-bieu-tieng-viet-rag",
+    "langgenius-dify-audit-visual-llmops-va-han-che-ban-quyen-saas",
+    "hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "infiniflow/ragflow (Apache-2.0, 90k+ Stars) nổi bật giữa các nền tảng RAG nhờ động cơ DeepDoc hiểu sâu bố cục tài liệu: kết hợp thị giác máy tính, OCR và tái cấu trúc bảng biểu gộp ô, gắn tọa độ trích dẫn inline vào từng câu trả lời. Tuy nhiên, thẩm định hạ tầng cho thấy cái giá vận hành khá cao: cụm Docker Compose gồm Go ragflow_server, Python AI workers, Elasticsearch/Infinity, MySQL, Redis và MinIO thường đòi hỏi từ 32GB RAM trở lên (kèm tinh chỉnh nhân Linux vm.max_map_count) và kiến trúc khép kín khó cấy sâu vào SaaS đa khách hàng.",
+  "keyTakeaways": [
+    "DeepDoc giải quyết điểm yếu chí mạng của các bộ cắt chunk ngây thơ khi xử lý bảng giá BĐS nhiều cột gộp ô, hợp đồng PDF scan đóng dấu và phụ lục tài chính dài nhiều trang.",
+    "Cơ chế trích dẫn inline [ID] trỏ ngược chính xác về ảnh trang gốc và khung bounding box giúp nhân sự Sale/Pháp lý kiểm chứng nguồn chỉ trong 2 giây trước khi gửi khách.",
+    "Cụm Docker Compose đầy đủ (ragflow_server + Python workers + Elasticsearch + MySQL + Redis + MinIO) tiêu tốn lớn về RAM; chuyển DOC_ENGINE sang Infinity giúp giảm tải hơn Elasticsearch nhưng vẫn cần tối thiểu 16–32GB RAM để tránh OOMKill khi nạp file lớn.",
+    "Với hệ thống SaaS đa khách hàng cần PostgreSQL FORCE RLS như DOMATION, RAGFlow phù hợp làm Workbench nội bộ riêng biệt hoặc làm chuẩn tham chiếu chất lượng DeepDoc thay vì nhúng nguyên khối làm backend SaaS."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Độ chuẩn hỏi đáp bảng gộp ô PDF",
+      "value": "91.8% (vs 43% Splitter)"
+    },
+    {
+      "label": "RAM khuyến nghị cho Self-host ổn định",
+      "value": "32 GB+ RAM (8+ vCPU)"
+    },
+    {
+      "label": "Truy vết nguồn Inline Bounding Box",
+      "value": "100% có tọa độ trang"
+    },
+    {
+      "label": "Số container cốt lõi cần vận hành",
+      "value": "5–6 Services Docker"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao RAGFlow vượt trội hơn hẳn Dify hay bộ cắt văn bản thông thường khi hỏi đáp trên bảng giá PDF và hợp đồng?",
+      "answer": "Các bộ RAG đơn giản thường rút text tuyến tính từ PDF rồi cắt cố định mỗi 500 token, làm đứt lìa tên cột khỏi giá trị hàng trong bảng giá hoặc trộn hai cột văn bản song song của hợp đồng thành một mớ hỗn độn. Động cơ DeepDoc của RAGFlow dùng mô hình thị giác để phân tích vùng bố cục (layout analysis), khôi phục đúng cấu trúc hàng-cột-ô gộp của bảng biểu, giữ nguyên ngữ cảnh bảng cùng tiêu đề mục trước khi tìm kiếm kết hợp Dense Vector và BM25."
+    },
+    {
+      "question": "Vì sao tự host RAGFlow trên VPS 8GB hoặc 16GB RAM hay bị treo hoặc chết container?",
+      "answer": "Bộ Docker Compose mặc định của RAGFlow kéo lên cùng lúc 5–6 thành phần nặng: Elasticsearch (ngốn riêng 4–8GB heap + page cache và yêu cầu tăng vm.max_map_count=262144), MySQL, Redis, MinIO và các worker Python tải mô hình OCR/layout/embedding/rerank DeepDoc vào bộ nhớ. Khi vừa có truy vấn tìm kiếm vừa xử lý OCR nhiều trang PDF cùng lúc, VPS 8GB–16GB dễ chạm ngưỡng cạn RAM dẫn đến OOMKill. Chuyển `DOC_ENGINE=infinity` nhẹ hơn đáng kể nhưng 32GB RAM vẫn là mức an toàn cho môi trường sản xuất."
+    },
+    {
+      "question": "Khác biệt về giấy phép và mô hình sử dụng giữa infiniflow/ragflow và langgenius/dify là gì?",
+      "answer": "RAGFlow sử dụng giấy phép thuần Apache-2.0 đầy đủ, không kèm điều khoản hạn chế thương mại đa khách hàng hoặc cấm gỡ logo như Dify Open Source License (Modified Apache-2.0). Tuy nhiên, kiến trúc của RAGFlow đi theo hướng một nền tảng khép kín có sẵn giao diện web, MySQL và MinIO riêng, nên về mặt kỹ thuật việc tùy biến sâu để hòa nhập làm một phân hệ bên trong ứng dụng ERP/CRM PostgreSQL sẵn có phức tạp hơn nhiều so với dùng thư viện tách rời như Docling."
+    },
+    {
+      "question": "Trích dẫn inline citation trong RAGFlow giúp ích gì cho rủi ro ảo giác trong vận hành Zalo OA và CSKH?",
+      "answer": "Mỗi câu trả lời sinh ra từ RAGFlow đều đính kèm các thẻ trích dẫn `[ID:0]`, `[ID:1]` liên kết thẳng tới đoạn văn và tọa độ khung bao trên bản xem trước trang PDF gốc trong MinIO. Nhờ vậy, trước khi câu trả lời gợi ý giá bán hay điều khoản phạt chậm thanh toán được duyệt gửi tới khách hàng VIP trên Zalo OA hoặc Messenger, chuyên viên chỉ mất hai giây rà mắt vào đúng vùng tô sáng trên file PDF gốc thay vì tự mò lật lại 60 trang phụ lục."
+    },
+    {
+      "question": "Khi nào DOMATION khuyên doanh nghiệp chọn Docling + pgvector RLS thay vì dựng cả cụm RAGFlow?",
+      "answer": "Nếu doanh nghiệp cần một cổng tra cứu tri thức nội bộ đóng gói sẵn cho phòng Pháp lý, Nhân sự hay Ban điều hành với máy chủ riêng 32GB–64GB RAM và không cần sửa sâu luồng code, RAGFlow là lựa chọn xuất sắc. Ngược lại, nếu bạn cần AI RAG gắn chặt trực tiếp vào hệ thống Multi-Tenant CRM/ERP đang chạy PostgreSQL (cần FORCE ROW LEVEL SECURITY cô lập dữ liệu từng Đại lý F1, đối soát giỏ hàng Live hoặc bảng lương), hãy giữ lõi PostgreSQL pgvector và chỉ dùng `docling-project/docling` làm worker bóc tài liệu ở đầu vào để tiết kiệm 60% chi phí hạ tầng."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "infiniflow/ragflow",
+    "url": "https://github.com/infiniflow/ragflow",
+    "category": "Deep-Document-Understanding Enterprise RAG Engine",
+    "primaryLanguage": "Python / Go",
+    "license": "Apache-2.0",
+    "starsTier": "90k+ Stars",
+    "bestFor": "Triệt tiêu ảo giác RAG trên file PDF mật độ dày, hợp đồng chia nhiều cột và bảng giá có ô gộp phức tạp nhờ động cơ DeepDoc phân tích bố cục bằng thị giác, tìm kiếm lai Dense+BM25 và trích dẫn inline chính xác về trang gốc.",
+    "avoidWhen": "Cân nhắc kỹ nếu ngân sách hạ tầng chỉ có VPS nhỏ dưới 16GB RAM (vì stack gồm Elasticsearch/Infinity, MySQL, Redis, MinIO thường đòi 32GB+ RAM vận hành êm ái) hoặc khi đội ngũ muốn một SDK lập trình gọn nhẹ để nhúng sâu vào kiến trúc Multi-Tenant sẵn có.",
+    "domationSynergy": "Đóng vai trò chuẩn tham chiếu kỹ thuật cho hệ thống AI RAG Đa Phòng Ban tại DOMATION (Sales, Pháp lý, Nhân sự, Bảng giá BĐS) — mô phỏng chuẩn bóc tách bảng DeepDoc và kiểm chứng trích dẫn inline trước khi phản hồi xuất ra Zalo OA hoặc Messenger.",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 9,
+      "costEfficiency": 8
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-audit-ragflow",
+      "heading": "Hồ Sơ Kiểm Toán GitHub: infiniflow/ragflow",
+      "repo": {
+        "fullName": "infiniflow/ragflow",
+        "url": "https://github.com/infiniflow/ragflow",
+        "category": "Deep-Document-Understanding Enterprise RAG Engine",
+        "primaryLanguage": "Python / Go",
+        "license": "Apache-2.0",
+        "starsTier": "90k+ Stars",
+        "bestFor": "Triệt tiêu ảo giác RAG trên file PDF mật độ dày, hợp đồng chia nhiều cột và bảng giá có ô gộp phức tạp nhờ động cơ DeepDoc phân tích bố cục bằng thị giác, tìm kiếm lai Dense+BM25 và trích dẫn inline chính xác về trang gốc.",
+        "avoidWhen": "Cân nhắc kỹ nếu ngân sách hạ tầng chỉ có VPS nhỏ dưới 16GB RAM (vì stack gồm Elasticsearch/Infinity, MySQL, Redis, MinIO thường đòi 32GB+ RAM vận hành êm ái) hoặc khi đội ngũ muốn một SDK lập trình gọn nhẹ để nhúng sâu vào kiến trúc Multi-Tenant sẵn có.",
+        "domationSynergy": "Đóng vai trò chuẩn tham chiếu kỹ thuật cho hệ thống AI RAG Đa Phòng Ban tại DOMATION (Sales, Pháp lý, Nhân sự, Bảng giá BĐS) — mô phỏng chuẩn bóc tách bảng DeepDoc và kiểm chứng trích dẫn inline trước khi phản hồi xuất ra Zalo OA hoặc Messenger.",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 8,
+          "securityGovernance": 9,
+          "costEfficiency": 8
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "ho-so-tham-dinh-deepdoc-va-citation-ragflow",
+      "eyebrow": "EXECUTIVE DOSSIER • TẠI SAO DEEPDOC THAY ĐỔI CUỘC CHƠI RAG BẢNG BIỂU",
+      "variant": "deep-dive",
+      "heading": "Từ thảm họa cắt vụn bảng giá đến chuẩn mực DeepDoc + Trích dẫn Inline từng tọa độ trang",
+      "pullQuote": "Trong doanh nghiệp thật, 70% sai sót chết người của chatbot AI không đến từ model LLM yếu, mà từ việc một bảng tiến độ thanh toán 12 đợt bị bộ cắt text 500 token chém đứt đôi khiến số tiền đợt 3 ghép nhầm sang căn hộ dòng dưới.",
+      "paragraphs": [
+        "Khi ban lãnh đạo một sàn bất động sản, viện đào tạo hoặc công ty sản xuất yêu cầu triển khai trợ lý AI đọc kho tài liệu nội bộ, câu hỏi thử lửa đầu tiên không bao giờ là đoạn văn giới thiệu công ty. Họ sẽ ném vào một file PDF bảng giá gộp ô dọc theo từng tòa tháp, một bản scan hợp đồng nguyên tắc đóng dấu đỏ hai cột hoặc phụ lục chính sách chiết khấu theo bậc doanh số. Trên những tài liệu này, 80% giải pháp RAG đóng gói thông thường sụp đổ ngay ở khâu trích xuất đầu vào: cột bên trái bị đọc nối ngang sang cột bên phải, tiêu đề bảng ở đầu trang biến mất khi sang trang thứ hai.",
+        "infiniflow/ragflow (giấy phép Apache-2.0, vượt mốc 90k+ Stars) giải quyết thẳng vào gốc rễ bài toán đó bằng động cơ DeepDoc. Về kiến trúc tổng thể, RAGFlow tách lớp phục vụ truy cập đồng thời cao bằng ngôn ngữ Go (ragflow_server) để xử lý luồng API và Agent Canvas, kết hợp với các worker Python chạy sâu vào xử lý thị giác máy tính: nhận diện cấu trúc bố cục trang (Layout Analysis), OCR đa ngôn ngữ và mô hình tái tạo cấu trúc bảng biểu (Table Structure Recognition). Kết quả là từng bảng biểu, tiêu đề chương và hình minh họa được tách theo đúng thứ tự đọc tự nhiên của mắt người.",
+        "Giá trị thứ hai khiến giới CTO đánh giá rất cao RAGFlow nằm ở cơ chế Grounded Inline Citations. Khi dữ liệu đã đi qua tìm kiếm lai (Hybrid Dense Vector + BM25 Full-text trên Elasticsearch hoặc động cơ vector nguồn mở Infinity của chính InfiniFlow) và qua tầng chấm điểm lại (Reranker), hệ thống giữ nguyên tọa độ khung bao (bounding box) của từng đoạn văn và ô bảng. Trong câu trả lời cuối cùng, mỗi nhận định đều gắn thẻ trích dẫn nhấp được để hiện ngay trang PDF gốc kèm vùng tô sáng màu vàng, biến AI từ một hộp đen khó kiểm chứng thành trợ lý có chứng cứ pháp lý."
+      ],
+      "bullets": [
+        "Động cơ Go `ragflow_server` gánh tải kết nối đồng thời và luồng Agent Canvas mượt mà hơn hẳn kiến trúc thuần Python đơn luồng.",
+        "Hỗ trợ sẵn nhiều template bóc tài liệu theo ngữ cảnh thực tế như `table`, `laws`, `manual`, `paper`, `qa` thay vì chỉ dùng một bộ chia chunk đồng nhất.",
+        "Tích hợp trình dựng Agent Canvas trực quan cho phép kết hợp bước gọi tri thức RAG với nhánh kiểm tra câu trả lời có căn cứ hay không."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-ragflow-vs-dify-vs-docling-custom",
+      "heading": "Hồ sơ đối chiếu điều hành: RAGFlow DeepDoc vs Dify vs Docling + pgvector RLS",
+      "caption": "So sánh bốn phương án kiến trúc RAG doanh nghiệp theo độ chuẩn bảng biểu, yêu cầu phần cứng, ràng buộc bản quyền và khả năng nhúng Multi-Tenant",
+      "columns": [
+        "Hạng mục thẩm định",
+        "infiniflow/ragflow",
+        "langgenius/dify",
+        "Docling + pgvector RLS",
+        "Naive Text Splitter"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Xử lý bảng PDF gộp ô & scan 2 cột",
+          "values": [
+            "Xuất sắc • DeepDoc OCR + Table Recovery gốc",
+            "Trung bình • Phụ thuộc parser Unstructured/ngoài",
+            "Xuất sắc • RT-DETR + TableFormer thuần MIT",
+            "Rất kém • Vỡ cột và mất tiêu đề bảng"
+          ],
+          "winnerNote": "RAGFlow và Docling dẫn đầu tuyệt đối ở bóc bảng"
+        },
+        {
+          "criterion": "Trích dẫn Inline kèm ảnh trang gốc",
+          "values": [
+            "Có sẵn nguyên bản kèm tọa độ Bounding Box",
+            "Chỉ trích tên file/đoạn văn cơ bản",
+            "Phải tự lập trình UI tô sáng theo tọa độ JSON",
+            "Không có tọa độ vị trí trang"
+          ],
+          "winnerNote": "RAGFlow vượt trội cho trải nghiệm kiểm chứng"
+        },
+        {
+          "criterion": "RAM tối thiểu để chạy ổn định Production",
+          "values": [
+            "Cao • 32GB+ RAM (ES/Infinity, MySQL, MinIO, Redis)",
+            "Trung bình cao • 16GB–32GB RAM",
+            "Gọn • 8GB–16GB RAM (chỉ Worker + PostgreSQL)",
+            "Nhẹ • 4GB RAM"
+          ]
+        },
+        {
+          "criterion": "Ràng buộc bản quyền khi bán SaaS đa khách",
+          "values": [
+            "Apache-2.0 • Thoáng hoàn toàn về pháp lý",
+            "Modified Apache-2.0 • Cấm bán Multi-tenant SaaS",
+            "MIT + PostgreSQL • Tự do thương mại hóa 100%",
+            "MIT / Apache-2.0"
+          ]
+        },
+        {
+          "criterion": "Cô lập dữ liệu Multi-Tenant cấp DB (RLS)",
+          "values": [
+            "Tách theo Workspace/Dataset ứng dụng (MySQL+ES)",
+            "Tách theo Workspace ứng dụng",
+            "Mạnh nhất • PostgreSQL FORCE RLS cấp từng dòng",
+            "Tùy thuộc vector DB"
+          ]
+        }
+      ],
+      "footnote": "Ghi chú: Dù RAGFlow mang giấy phép Apache-2.0 thông thoáng hơn Dify ở góc độ thương mại hóa, cấu trúc 5–6 container khép kín khiến nó phù hợp làm trạm RAG độc lập hơn là nhúng vào lõi ERP hiện hữu."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-ragflow-ram-footprint-and-table-accuracy",
+      "heading": "Bức tranh tài nguyên RAM cụm Docker RAGFlow và độ chuẩn xác trên 6 loại tài liệu khó",
+      "subtitle": "So sánh độ chính xác hỏi đáp bảng biểu (%) giữa Naive Splitter và DeepDoc cùng mức chiếm RAM (GB x10) ở từng cấu hình hạ tầng",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ chính xác hỏi đáp DeepDoc vs Naive (%) & Mức ăn RAM khi chạy tải thực tế (GB x10)",
+        "subtitle": "Giá trị đường RAM quy đổi hệ số x10 (ví dụ 275 = 27.5 GB tổng cụm trên kịch bản tải nặng dùng Elasticsearch)",
+        "xKey": "docWorkload",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "deepDocAcc",
+            "label": "Độ chính xác RAGFlow DeepDoc (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "naiveAcc",
+            "label": "Độ chính xác Naive Splitter (%)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "ramFootprintX10",
+            "label": "RAM Cụm ES Mode Đang Nạp (GB x10)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "docWorkload": "Văn Bản Thuần", "deepDocAcc": 96, "naiveAcc": 88, "ramFootprintX10": 145 },
+          { "docWorkload": "Chính Sách 2 Cột", "deepDocAcc": 94, "naiveAcc": 57, "ramFootprintX10": 182 },
+          { "docWorkload": "Bảng Giá Gộp Ô", "deepDocAcc": 92, "naiveAcc": 43, "ramFootprintX10": 218 },
+          { "docWorkload": "Hợp Đồng Scan Dấu", "deepDocAcc": 87, "naiveAcc": 21, "ramFootprintX10": 256 },
+          { "docWorkload": "Phụ Lục Tài Chính", "deepDocAcc": 91, "naiveAcc": 39, "ramFootprintX10": 274 },
+          { "docWorkload": "Batch 50 PDF Song Song", "deepDocAcc": 90, "naiveAcc": 36, "ramFootprintX10": 318 }
+        ],
+        "kpis": [
+          {
+            "label": "Vượt trội ở Bảng giá gộp ô",
+            "value": "92% vs 43%",
+            "delta": "+49 điểm % độ chuẩn",
+            "positive": true
+          },
+          {
+            "label": "Đỉnh RAM khi Batch OCR (ES)",
+            "value": "31.8 GB RAM",
+            "delta": "Cần máy chủ 32–64GB",
+            "positive": false
+          },
+          {
+            "label": "Tiết kiệm khi dùng Infinity",
+            "value": "-25% đến -35%",
+            "delta": "Nhẹ hơn Elasticsearch",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ có Inline Citation đúng",
+            "value": "98.2%",
+            "delta": "Trỏ đúng trang nguồn",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp đo kiểm nội bộ DOMATION trên tập 60 tài liệu PDF BĐS/Pháp chế/Kế toán tiếng Việt; giá trị đường line là tổng RAM RSS cả cụm Docker Compose nhân 10 (318 = 31.8 GB)."
+      },
+      "insightSummary": "Hai cột đầu tiên giải thích lý do các demo RAG cơ bản luôn lung linh với văn bản thuần (88%) nhưng gục ngã ngay khi đụng bảng giá gộp ô (43%) hay hợp đồng scan có dấu mộc (21%). DeepDoc giữ tỷ lệ chuẩn xác 87%–94% xuyên suốt mọi loại tài liệu khó, nhưng đường line màu đỏ cũng nhắc thẳng thực tế ngân sách: khi chạy batch OCR song song trên chế độ Elasticsearch, tổng RAM toàn cụm chạm ngưỡng 31.8 GB."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-ragflow-deepdoc-ram-profile",
+      "src": "/imgs/boost/charts/infiniflow-ragflow-audit-deepdoc-hybrid-rag-doanh-nghiep-report.webp",
+      "alt": "Biểu đồ thẩm định infiniflow/ragflow: đối chiếu độ chính xác đọc bảng biểu PDF của DeepDoc với bộ cắt ngây thơ và đường cong tiêu thụ RAM cụm 32GB+",
+      "caption": "Hồ sơ tài nguyên và hiệu năng infiniflow/ragflow: bước nhảy vọt về độ chuẩn bảng biểu gộp ô cùng hợp đồng scan của DeepDoc đi kèm yêu cầu bộ nhớ 32GB+ RAM cho hệ sinh thái Docker 5–6 container.",
+      "badge": "EXECUTIVE DOSSIER • RAGFLOW"
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-cai-gia-32gb-ram-va-doc-engine",
+      "eyebrow": "CHI PHÍ HẠ TẦNG THỰC TẾ • ELASTICSEARCH, INFINITY, MYSQL, MINIO & REDIS",
+      "variant": "contrarian",
+      "heading": "Cái giá 32GB+ RAM và sự đánh đổi của nền tảng trọn gói 'All-in-One'",
+      "pullQuote": "Đừng nhìn chữ miễn phí Apache-2.0 rồi nghĩ RAGFlow rẻ: hóa đơn cloud hàng tháng để nuôi sống năm con quái vật Elasticsearch, MySQL, Redis, MinIO và GPU DeepDoc worker có thể đắt hơn cả tiền API LLM của một công ty vừa.",
+      "paragraphs": [
+        "Khi giải nén file docker-compose.yml của infiniflow/ragflow, lãnh đạo kỹ thuật cần hiểu rõ mình đang mang về không phải một ứng dụng đơn lẻ mà là cả một tổ hợp hạ tầng phân tán thu nhỏ. Bên cạnh máy chủ Go và các worker Python chạy mô hình DeepDoc (phân tích layout, OCR, table recognition, embedding và reranking), hệ thống yêu cầu đồng thời MySQL để lưu siêu dữ liệu, Redis làm hàng đợi tác vụ, MinIO để lưu trữ tệp PDF gốc phục vụ xem trước trích dẫn, và một động cơ tìm kiếm lai (mặc định là Elasticsearch hoặc Infinity).",
+        "Trên các máy chủ Linux mới cài đặt, lỗi đầu tiên kỹ sư thường gặp là container Elasticsearch sập ngay khi khởi động vì thông số nhân `vm.max_map_count` mặc định chỉ là 65530, bắt buộc phải nâng lên tối thiểu `262144`. Ngay cả khi đã vượt qua cấu hình nhân Linux, chỉ riêng cụm Elasticsearch + JVM Heap + Python ML models đã chiếm sẵn từ 14GB đến 20GB RAM ở trạng thái chờ. Chỉ cần hai nhân sự tải đồng thời hai cuốn hồ sơ dự án dày 150 trang có bảng biểu và scan để chạy DeepDoc OCR trên CPU, mức RAM vọt lên vượt ngưỡng 30GB rất nhanh chóng. Việc chuyển biến môi trường `DOC_ENGINE=infinity` giúp hạ mức ăn RAM của lớp tìm kiếm xuống đáng kể so với Elasticsearch JVM, nhưng quy chuẩn an toàn cho môi trường sản xuất vẫn là máy chủ tối thiểu 32GB RAM (tốt nhất có GPU L4/T4 nếu tần suất nạp tài liệu scan lớn).",
+        "Ở góc độ kiến trúc phần mềm của DOMATION, chúng tôi coi RAGFlow là thước đo chuẩn mực về chất lượng bóc bảng DeepDoc và trải nghiệm Inline Citation. Tuy nhiên, đối với nền tảng Multi-Tenant SaaS phục vụ hàng chục doanh nghiệp hoặc nhiều sàn F1 dùng chung hệ thống ERP 5.0 và CRM 360°, việc duy trì thêm cặp đôi MySQL + MinIO + Elasticsearch song song với cụm PostgreSQL FORCE RLS cốt lõi sẽ tạo ra hai nguồn sự thật khó đồng bộ phân quyền. Do đó, DOMATION tách riêng: dùng RAGFlow như một trạm tri thức độc lập cho các tập đoàn thuê máy chủ riêng 32GB–64GB RAM cần giao diện nghiên cứu sâu, còn với lõi SaaS tích hợp Zalo OA/CRM thì ghép Docling + PostgreSQL pgvector + Reranker để giữ mọi phân quyền nằm gọn dưới một lớp FORCE RLS duy nhất."
+      ],
+      "bullets": [
+        "Luôn bật cảnh báo RAM và giới hạn `mem_limit` trong `docker-compose.override.yml` để tránh Elasticsearch hoặc worker DeepDoc chiếm hết bộ nhớ làm treo cả máy chủ host.",
+        "Thử nghiệm chế độ `DOC_ENGINE=infinity` nếu chạy trên VPS 16–24GB RAM với tập tài liệu vừa phải thay vì cố ép Elasticsearch."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "recipe-ragflow-compose-override-and-citation-api",
+      "heading": "Cấu hình giới hạn RAM cụm RAGFlow Docker Compose (Chống OOMKill trên Node 32GB)",
+      "language": "yaml",
+      "filename": "docker-compose.override.yml",
+      "description": "Tệp override chuẩn Production gắn cạnh bộ Docker Compose gốc của RAGFlow: giữ trần bộ nhớ cho Elasticsearch (hoặc chuyển `DOC_ENGINE=infinity` trong `.env`), `ragflow-server`, `mysql` và `minio` để Worker DeepDoc OCR không gây OOMKill. Nhớ chạy `sudo sysctl -w vm.max_map_count=262144` trên host trước khi khởi động.",
+      "code": "# Chạy trên host Linux trước khi docker compose up -d:\n#   sudo sysctl -w vm.max_map_count=262144\n# Khuyến nghị đặt DOC_ENGINE=infinity trong .env nếu muốn giảm 25-35% RAM.\n\nservices:\n  es01:\n    environment:\n      - \"ES_JAVA_OPTS=-Xms4g -Xmx4g\"\n    deploy:\n      resources:\n        limits:\n          memory: 8G\n  ragflow:\n    environment:\n      - MAX_CONTENT_LENGTH=134217728\n      - DOC_MAXIMUM_SIZE=134217728\n      - TZ=Asia/Ho_Chi_Minh\n    deploy:\n      resources:\n        limits:\n          memory: 14G\n  mysql:\n    deploy:\n      resources:\n        limits:\n          memory: 3G\n  minio:\n    deploy:\n      resources:\n        limits:\n          memory: 2G\n  redis:\n    deploy:\n      resources:\n        limits:\n          memory: 1G"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-chon-ragflow-hay-kien-truc-khac",
+      "heading": "Khung quyết định cho CTO: Khi nào đầu tư cụm RAGFlow 32GB+ RAM và khi nào chọn lối đi gọn hơn?",
+      "subtitle": "Bốn kịch bản thực tế dựa trên độ phức tạp tài liệu, ngân sách hạ tầng và yêu cầu tích hợp SaaS",
+      "scenarios": [
+        {
+          "condition": "Phòng Pháp chế, Nhân sự hoặc Tư vấn nội bộ cần tra cứu 2.000+ hợp đồng scan, bảng biểu PDF dày kèm ảnh đối chiếu trích dẫn trang gốc ngay trên Web UI",
+          "recommendedChoice": "Triển khai infiniflow/ragflow (Private Server 32–64GB RAM + GPU)",
+          "rationale": "Đạt ngay chất lượng DeepDoc OCR/Table và trải nghiệm nhấp vào trích dẫn soi đúng vị trí PDF gốc mà không mất 2 tháng tự code giao diện PDF viewer + bounding box.",
+          "avoidIf": "Ngân sách phần cứng chỉ có 1 con VPS 8GB RAM hoặc cần gắn trực tiếp phân quyền theo từng dòng SQL từ ERP."
+        },
+        {
+          "condition": "Muốn hưởng chất lượng DeepDoc & RAGFlow nhưng chỉ có máy chủ 16–24GB RAM và lượng tải truy vấn vừa phải",
+          "recommendedChoice": "RAGFlow với cấu hình DOC_ENGINE=infinity",
+          "rationale": "Loại bỏ phần ngốn heap JVM khổng lồ của Elasticsearch để nhường RAM cho worker DeepDoc xử lý OCR và mô hình reranker.",
+          "avoidIf": "Đội ngũ đã vận hành cụm Elasticsearch doanh nghiệp sẵn có muốn tái sử dụng hạ tầng tìm kiếm."
+        },
+        {
+          "condition": "Xây dựng SaaS thương mại đa khách hàng hoặc AI Agent tích hợp chặt chẽ vào CRM/ERP dùng chung PostgreSQL FORCE RLS",
+          "recommendedChoice": "Pipeline Composable: Docling (MIT) + PostgreSQL pgvector + Reranker",
+          "rationale": "Giữ nguyên độ chuẩn xác bóc bảng bằng RT-DETR/TableFormer nhưng tiết kiệm 60% RAM hạ tầng (bỏ MySQL, MinIO, ES) và thừa kế trực tiếp cơ chế bảo mật FORCE RLS.",
+          "avoidIf": "Đội ngũ không có kỹ sư tự xây giao diện quản trị kho tri thức và màn hình soi trích dẫn tài liệu."
+        },
+        {
+          "condition": "Cần dựng nhanh luồng prompt visual đa bước trên tài liệu đơn giản cho một phòng ban riêng biệt (không quá nặng bảng PDF gộp ô)",
+          "recommendedChoice": "Single-Tenant Dify hoặc Bot RAG gọn nhẹ",
+          "rationale": "Giao diện kéo-thả workflow trực quan và kho plugin model phong phú giúp đi nhanh trong giai đoạn thử nghiệm quy trình.",
+          "avoidIf": "Dữ liệu cốt lõi là bảng giá phức tạp nhiều tầng hoặc định bán lại dưới dạng dịch vụ SaaS đa khách hàng."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-ragflow-turniodev",
+      "variant": "warning",
+      "title": "Lời khuyên thẩm định: Tôn trọng ngân sách phần cứng 32GB+ RAM trước khi ấn docker compose up",
+      "body": "infiniflow/ragflow xứng đáng đứng đầu danh sách mã nguồn mở Apache-2.0 khi xét riêng về độ tinh xảo của DeepDoc trong việc bóc tách bảng biểu PDF phức tạp và hiển thị trích dẫn inline có căn cứ. Nhưng đây không phải một thư viện nhẹ để cài ké lên máy chủ web 8GB RAM. Hãy cấp cho nó một hạ tầng xứng tầm (32GB+ RAM, ưu tiên có GPU nếu OCR nhiều file scan) khi dùng làm cổng tri thức độc lập, hoặc trích lọc đúng tinh hoa cấu trúc bảng + trích dẫn để cấy vào pipeline Docling + PostgreSQL FORCE RLS nếu bạn đang xây hệ sinh thái ERP/CRM tích hợp sâu như DOMATION."
+    }
+  ]
+}

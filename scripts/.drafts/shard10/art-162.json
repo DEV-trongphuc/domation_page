@@ -1,0 +1,301 @@
+{
+  "id": "art-162",
+  "number": "162",
+  "slug": "pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent",
+  "shardId": "shard10",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Type-Safe Python Agent Engineering",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Audit pydantic/pydantic-ai: Dependency Injection, ép schema output & OpenTelemetry chuẩn FastAPI cho AI",
+  "seoTitle": "Audit PydanticAI: Ép Kiểu Schema & DI Cho Agent Python | DOMATION",
+  "metaDescription": "Đánh giá PydanticAI (MIT, 20k+ Stars): hết lỗi JSON hỏng khi bóc hóa đơn MISA và chấm điểm Lead nhờ deps_type, output_type và retry có kiểm soát.",
+  "focusKeyword": "audit pydantic ai schema validation và di",
+  "secondaryKeywords": [
+    "pydantic ai dependency injection agent",
+    "ép kiểu json output llm không bị lỗi",
+    "bóc tách hóa đơn misa bằng pydantic ai",
+    "pydantic graph và logfire opentelemetry",
+    "cảnh báo retry âm thầm tốn token pydantic"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "PydanticAI: Mang Kỷ Luật FastAPI Vào Từng AI Microservice",
+  "thumbnailHook": "Khóa hợp đồng JSON bằng static typing, cần giới hạn retry chống tốn token.",
+  "thumbnailBadge": "GITHUB • TYPE-SAFE MIT",
+  "coverImage": "/imgs/boost/v2/pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent.webp",
+  "screenshotImage": "/imgs/boost/charts/pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent-report.webp",
+  "coverAlt": "Cẩm nang thực hành kiểm toán pydantic/pydantic-ai với deps_type Dependency Injection, ép schema output_type và OpenTelemetry Logfire",
+  "screenshotCaption": "Biểu đồ đo tỷ lệ parse JSON thành công ở lượt đầu, chi phí token khi ModelRetry lặp trên các độ phức tạp tài liệu hóa đơn MISA và mức giảm lỗi schema tại DOMATION.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem AI Pre-Scorer & Bóc Tách Tài Liệu",
+  "relatedSlugs": [
+    "mastra-ai-mastra-audit-typescript-agent-workflow-zod",
+    "data-contracts-chong-gay-pipeline-ai-khi-backend-doi-schema",
+    "improper-output-handling-xss-sqli-khi-tin-tuong-json-llm",
+    "confident-ai-deepeval-audit-unit-test-rag-trong-ci-cd"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản kiểm toán pydantic/pydantic-ai (MIT, 20k+ Stars) cho thấy đây là SDK Python mang lại cảm giác kỹ thuật chuẩn chỉnh nhất cho đội ngũ quen FastAPI. Nhờ thiết kế generic Agent[DepsType, OutputType], cơ chế Dependency Injection qua RunContext[Deps] cho phép test cô lập bằng TestModel, ép kiểu output_type Pydantic và truy vết gốc OpenTelemetry/Logfire, các lỗi JSON rớt ngoặc khi bóc tách hóa đơn MISA hay chấm điểm Lead gần như bị xóa sổ. Tuy nhiên, kỹ sư bắt buộc phải gắn UsageLimits để chặn vòng lặp ModelRetry âm thầm đốt token trên các mô hình nhỏ.",
+  "keyTakeaways": [
+    "Khác với các framework nặng tính trừu tượng prompt, PydanticAI đặt static typing ở trung tâm: công cụ Pyright/mypy bắt ngay lỗi lệch kiểu giữa deps_type, RunContext trong tool và output_type trả về trước khi chạy.",
+    "Dependency Injection (deps_type + RunContext) giúp tách sạch chuỗi kết nối PostgreSQL, tenant_id hay client MISA khỏi định nghĩa Agent, cho phép chạy hàng trăm unit test trong CI/CD bằng TestModel với 0 đồng chi phí API.",
+    "Hai điểm mù chí mạng cần phòng thủ: (1) hợp lệ Pydantic schema chỉ bảo đảm đúng cấu trúc JSON chứ không bảo đảm LLM không bịa con số thực tế; (2) cơ chế ModelRetry tự động sẽ âm thầm nhân 3–5 lần hóa đơn token nếu thiếu UsageLimits(request_limit, total_tokens_limit).",
+    "Vì thuần Python, khi phối hợp cùng lõi Next.js/TypeScript của DOMATION, PydanticAI nên chạy thành worker Python chuyên biệt cho bóc tách chứng từ MISA, AI Lead Score và phân tích Creative Hook Rate qua hàng đợi HTTP/BullMQ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tỷ lệ Parse JSON hợp lệ (với retry có trần)",
+      "value": "99,4% chứng từ"
+    },
+    {
+      "label": "Chi phí chạy Unit Test Schema trong CI",
+      "value": "0 USD (TestModel)"
+    },
+    {
+      "label": "Mức tăng Token nếu thả nổi Retry model yếu",
+      "value": "+260% đến +410%"
+    },
+    {
+      "label": "Chuẩn Truy Vết Production",
+      "value": "OpenTelemetry / Logfire"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "PydanticAI khác gì so với việc tự dùng thư viện OpenAI/Gemini SDK kết hợp Pydantic model_validate?",
+      "answer": "Nếu chỉ gọi một lượt sinh JSON tĩnh không cần gọi công cụ (tool calling), gọi thẳng SDK gốc kèm structured outputs đã rất gọn. PydanticAI tỏa sáng khi tác vụ cần vòng lặp tool calling nhiều bước, tiêm các phụ thuộc động theo từng khách hàng (ví dụ DB pool có lọc tenant_id qua RunContext), kiểm tra nghiệp vụ tùy biến bằng @agent.output_validator để ném ModelRetry phản hồi cho LLM tự sửa đúng trường sai, và tự động sinh span OpenTelemetry cho từng bước gọi model lẫn thời gian chạy tool."
+    },
+    {
+      "question": "Làm thế nào để ngăn ModelRetry trong PydanticAI âm thầm đốt hết ngân sách token?",
+      "answer": "Mỗi khi Pydantic validation lỗi hoặc hàm @agent.output_validator ném ngoại lệ ModelRetry, PydanticAI tự động gửi thông báo lỗi quay lại mô hình để thử lại tối đa theo tham số retries. Nếu gặp một file PDF scan mờ khiến model nhỏ lặp đi lặp lại lỗi cộng sai tổng tiền, tổng token tiêu thụ sẽ bị nhân lên 3 đến 4 lần rất âm thầm. Cách khắc phục bắt buộc là luôn truyền UsageLimits(request_limit=4, total_tokens_limit=6000) vào mọi lệnh agent.run() hoặc agent.run_sync() và bắt ngoại lệ UsageLimitExceeded để đẩy hồ sơ sang hàng đợi nhân sự kiểm tra tay."
+    },
+    {
+      "question": "Nếu PydanticAI đã ép kiểu output_type chuẩn xác, dữ liệu bóc từ hóa đơn MISA đã có thể đẩy thẳng vào sổ kế toán chưa?",
+      "answer": "Tuyệt đối chưa. Ép kiểu Pydantic chỉ chứng minh văn bản trả về khớp kiểu dữ liệu (chẳng hạn mã số thuế là chuỗi 10 chữ số, đơn giá là số nguyên dương), chứ không chứng minh LLM không bịa một con số trông rất hợp lý. Với nghiệp vụ tài chính MISA, bạn phải viết thêm lớp tool tra cứu đối chiếu (ví dụ dùng @agent.output_validator hoặc bước hậu kiểm kiểm tra tổng tiền cộng từng dòng hàng có bằng tổng cộng thanh toán, đối chiếu mã số thuế nhà cung cấp có tồn tại trong bảng master ERP hay không)."
+    },
+    {
+      "question": "Cài PydanticAI có bắt buộc phải mua hoặc đẩy log lên nền tảng Pydantic Logfire đám mây không?",
+      "answer": "Không bắt buộc. Dù PydanticAI tích hợp siêu mượt với Pydantic Logfire chỉ qua hai dòng cấu hình, toàn bộ cơ chế truy vết của thư viện được xây dựng trên chuẩn mở OpenTelemetry (OTel). Doanh nghiệp có thể trỏ OTel exporter thẳng về hệ thống tự host nội bộ như Jaeger, Grafana Tempo, ClickHouse hoặc Arize Phoenix trong VPC để bảo đảm dữ liệu chứng từ, CCCD và số điện thoại khách hàng không rời khỏi hạ tầng riêng."
+    },
+    {
+      "question": "Hệ thống chính viết bằng Next.js và TypeScript như DOMATION tích hợp với PydanticAI theo mô hình nào?",
+      "answer": "Do PydanticAI là SDK thuần Python, DOMATION không nhúng nó vào cùng tiến trình Node.js mà triển khai theo ranh giới microservice hoặc worker Python chuyên biệt (chạy FastAPI hoặc consumer đọc job từ hàng đợi). Khi CRM cần chấm điểm Lead nâng cao hoặc trích xuất hợp đồng PDF phục vụ đồng bộ MISA, lõi TypeScript đẩy job vào queue; worker PydanticAI xử lý, kiểm chứng schema và trả kết quả JSON chuẩn kèm trace ID về lại PostgreSQL FORCE RLS."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "pydantic/pydantic-ai",
+    "url": "https://github.com/pydantic/pydantic-ai",
+    "category": "Type-Safe Structured Python Agent SDK",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "20k+ Stars",
+    "bestFor": "Kỹ sư Python quen chuẩn FastAPI cần xây các AI microservice ép kiểu dữ liệu đầu ra tuyệt đối (output_type Pydantic), tiêm phụ thuộc theo RunContext/deps_type dễ test trong CI/CD và gắn sẵn OpenTelemetry/Logfire.",
+    "avoidWhen": "Tin rằng khớp JSON schema đồng nghĩa với đúng sự thật nghiệp vụ, để mặc vòng lặp ModelRetry chạy không có UsageLimits trên model yếu gây nhân chi phí token, hoặc hệ thống thuần TypeScript/Next.js muốn tránh duy trì thêm runtime Python.",
+    "domationSynergy": "SDK Python chủ lực cho các worker bóc tách hóa đơn/hợp đồng MISA, chấm điểm Lead Qualification và phân tích Creative Hook Rate của DOMATION nơi hợp đồng JSON bất biến, chặn UsageLimits và trace OpenTelemetry là điều kiện sống còn.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 8
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "ho-so-kiem-toan-pydantic-ai",
+      "heading": "Hồ sơ Kiểm toán Repository: pydantic/pydantic-ai (MIT • Type-Safe Agent SDK)",
+      "repo": {
+        "fullName": "pydantic/pydantic-ai",
+        "url": "https://github.com/pydantic/pydantic-ai",
+        "category": "Type-Safe Structured Python Agent SDK",
+        "primaryLanguage": "Python",
+        "license": "MIT",
+        "starsTier": "20k+ Stars",
+        "bestFor": "Kỹ sư Python quen chuẩn FastAPI cần xây các AI microservice ép kiểu dữ liệu đầu ra tuyệt đối (output_type Pydantic), tiêm phụ thuộc theo RunContext/deps_type dễ test trong CI/CD và gắn sẵn OpenTelemetry/Logfire.",
+        "avoidWhen": "Tin rằng khớp JSON schema đồng nghĩa với đúng sự thật nghiệp vụ, để mặc vòng lặp ModelRetry chạy không có UsageLimits trên model yếu gây nhân chi phí token, hoặc hệ thống thuần TypeScript/Next.js muốn tránh duy trì thêm runtime Python.",
+        "domationSynergy": "SDK Python chủ lực cho các worker bóc tách hóa đơn/hợp đồng MISA, chấm điểm Lead Qualification và phân tích Creative Hook Rate của DOMATION nơi hợp đồng JSON bất biến, chặn UsageLimits và trace OpenTelemetry là điều kiện sống còn.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 9,
+          "costEfficiency": 8
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "mang-ky-luat-fastapi-vao-ai-microservice",
+      "eyebrow": "CẨM NANG KỸ THUẬT • DEPENDENCY INJECTION & HỢP ĐỒNG STATIC TYPING",
+      "variant": "deep-dive",
+      "heading": "Khi đội ngũ xây Pydantic mang kỷ luật FastAPI vào phát triển Agent: Xóa sổ lỗi JSON hỏng và biến toàn cục",
+      "pullQuote": "Chín mươi phần trăm lỗi sản xuất của AI microservice đến từ hai thứ rất đời thường: cấu trúc JSON trả về bị sai kiểu và hàm gọi công cụ viết dính cứng vào kết nối database thật nên không ai dám viết unit test.",
+      "paragraphs": [
+        "Nếu từng phát triển backend bằng FastAPI, bạn hiểu cảm giác nhẹ nhõm khi Pydantic kiểm định toàn bộ payload đầu vào/đầu ra và hệ thống Dependency Injection tự động bơm kết nối cơ sở dữ liệu theo từng request. Đội ngũ tác giả của thư viện Pydantic — vốn là nền tảng nằm dưới gần như toàn bộ hệ sinh thái AI Python — đã bê nguyên triết lý kỹ thuật phần mềm chuẩn mực đó vào pydantic/pydantic-ai thay vì tạo ra thêm một lớp bọc prompt cồng kềnh.",
+        "Trọng tâm của cẩm nang thực hành PydanticAI nằm ở cặp tham số generic Agent[DepsType, OutputType]. Khi bạn khai báo deps_type=ErpContext và output_type=MisaInvoicePayload, mọi trình kiểm tra kiểu tĩnh như Pyright hay mypy lập tức kiểm soát hợp đồng dữ liệu xuyên suốt từ lúc gọi agent.run(), đi qua từng hàm @agent.tool nhận RunContext[ErpContext], cho tới thuộc tính result.output trả về cho API caller. Không còn cảnh kỹ sư gõ nhầm tên trường dict hay nhận về một chuỗi văn bản giải thích dài dòng thay vì object JSON cần thiết để ghi vào bảng công nợ.",
+        "Giá trị thực chiến lớn thứ hai của Dependency Injection qua deps_type là khả năng kiểm thử (testability). Trước đây, để test một AI Agent kiểm tra tồn kho hay đối chiếu đơn vị F1, lập trình viên thường phải bật database thật và tốn tiền gọi API LLM thật cho mỗi lần chạy pytest. Với PydanticAI, trong bộ test tự động CI/CD, bạn chỉ cần truyền vào đối tượng deps giả lập (mock repository) và bọc agent bằng context manager `with agent.override(model=TestModel()):`. Toàn bộ pipeline tiền xử lý, gọi tool và ép kiểu Pydantic được kiểm tra sạch sẽ trong vài chục mili-giây với chi phí API bằng không."
+      ],
+      "bullets": [
+        "Luôn tách thông tin định danh tenant_id, kết nối database chỉ đọc và khóa API bên ngoài vào dataclass deps_type thay vì dùng biến môi trường toàn cục bên trong hàm tool.",
+        "Khai báo Field(description=..., ge=..., pattern=...) thật tường minh trên từng trường của BaseModel output_type: chính mô tả trường này được chuyển hóa thành JSON Schema hướng dẫn LLM điền đúng định dạng ngay từ lượt đầu.",
+        "Kết hợp pydantic-evals và OpenTelemetry ngay từ tuần đầu triển khai để theo dõi thời gian thực thi từng tool song song với lượng token từng request."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "cong-thuc-pydantic-ai-boc-hoa-don-misa",
+      "heading": "Playbook Python PydanticAI: Bóc hóa đơn MISA với DI, @output_validator, UsageLimits & Logfire OTel",
+      "language": "python",
+      "filename": "misa_invoice_extractor.py",
+      "description": "Kịch bản thực chiến bóc tách chứng từ kế toán: tiêm ErpDeps theo tenant, kiểm chứng tổng tiền khớp cộng dòng hàng bằng @output_validator + ModelRetry, kích hoạt OpenTelemetry và khóa trần chi phí bằng UsageLimits.",
+      "code": "from __future__ import annotations\nfrom dataclasses import dataclass\nfrom decimal import Decimal\nimport logfire\nfrom pydantic import BaseModel, Field\nfrom pydantic_ai import Agent, ModelRetry, RunContext\nfrom pydantic_ai.exceptions import UsageLimitExceeded\nfrom pydantic_ai.usage import UsageLimits\n\n# 1. Kích hoạt OpenTelemetry/Logfire (có thể trỏ OTel collector nội bộ trong VPC)\nlogfire.configure(send_to_logfire=\"if-token-present\")\nlogfire.instrument_pydantic_ai()\n\n@dataclass\nclass ErpDeps:\n    tenant_id: str\n    known_tax_codes: set[str]  # Giả lập tra cứu danh mục NCC theo RLS của tenant\n\nclass InvoiceLineItem(BaseModel):\n    description: str\n    quantity: int = Field(gt=0)\n    unit_price_vnd: int = Field(ge=0)\n    line_total_vnd: int = Field(ge=0)\n\nclass MisaInvoicePayload(BaseModel):\n    tax_code: str = Field(pattern=r\"^\\d{10}(-\\d{3})?$\", description=\"Mã số thuế 10 hoặc 13 số\")\n    invoice_number: str = Field(min_length=1)\n    items: list[InvoiceLineItem] = Field(min_length=1)\n    subtotal_vnd: int = Field(ge=0)\n    vat_vnd: int = Field(ge=0)\n    grand_total_vnd: int = Field(ge=0)\n\ninvoice_agent = Agent(\n    \"google-gla:gemini-2.5-flash\",\n    deps_type=ErpDeps,\n    output_type=MisaInvoicePayload,\n    retries=2,\n    system_prompt=(\n        \"Trích xuất chính xác hóa đơn GTGT để đồng bộ MISA. \"\n        \"Luôn đối chiếu mã số thuế qua tool verify_vendor_tax_code trước khi chốt.\"\n    ),\n)\n\n@invoice_agent.tool\ndef verify_vendor_tax_code(ctx: RunContext[ErpDeps], tax_code: str) -> str:\n    \"\"\"Kiểm tra mã số thuế có nằm trong danh mục nhà cung cấp hợp lệ của tenant.\"\"\"\n    if tax_code in ctx.deps.known_tax_codes:\n        return f\"VALID: MST {tax_code} tồn tại trong ERP của tenant {ctx.deps.tenant_id}.\"\n    return f\"UNKNOWN: MST {tax_code} chưa có trong danh mục NCC, cần gắn cờ kiểm tra.\"\n\n@invoice_agent.output_validator\ndef check_arithmetic_consistency(ctx: RunContext[ErpDeps], data: MisaInvoicePayload) -> MisaInvoicePayload:\n    \"\"\"Chặn ảo giác số học: buộc tổng dòng hàng + VAT phải khớp grand_total_vnd.\"\"\"\n    computed_sub = sum(item.line_total_vnd for item in data.items)\n    if abs(computed_sub - data.subtotal_vnd) > 10:\n        raise ModelRetry(\n            f\"Tổng cộng tiền hàng ({computed_sub}) lệch với subtotal_vnd ({data.subtotal_vnd}). Hãy rà lại từng dòng.\"\n        )\n    if abs((data.subtotal_vnd + data.vat_vnd) - data.grand_total_vnd) > 10:\n        raise ModelRetry(\n            f\"subtotal_vnd + vat_vnd không khớp grand_total_vnd ({data.grand_total_vnd}).\"\n        )\n    return data\n\ndef extract_invoice(raw_ocr_text: str, deps: ErpDeps) -> MisaInvoicePayload | None:\n    # Chốt chặn sống còn ngăn ModelRetry âm thầm đốt token trên chứng từ lỗi\n    limits = UsageLimits(request_limit=4, total_tokens_limit=6000)\n    try:\n        result = invoice_agent.run_sync(raw_ocr_text, deps=deps, usage_limits=limits)\n        return result.output\n    except UsageLimitExceeded as exc:\n        logfire.warn(\"Chứng từ vượt ngưỡng token retry, đẩy hàng đợi duyệt tay\", err=str(exc))\n        return None"
+    },
+    {
+      "type": "prose",
+      "id": "can-than-bay-modelretry-va-ao-giac-hop-le-schema",
+      "eyebrow": "PHÒNG THỦ CHI PHÍ & ĐỘ TIN CẬY • HAI BẪY CHÍ MẠNG KHI DÙNG PYDANTIC-AI",
+      "variant": "contrarian",
+      "heading": "Hợp lệ Pydantic Schema không đồng nghĩa đúng sự thật — và cái bẫy ModelRetry âm thầm nhân hóa đơn API",
+      "paragraphs": [
+        "Trên mặt giấy lý thuyết, cơ chế tự động phản hồi lỗi validation quay lại cho LLM (ModelRetry) nghe như phép màu tự chữa lành. Khi mô hình trả thiếu một trường hoặc cộng sai tổng tiền hóa đơn, PydanticAI âm thầm gửi lại thông báo lỗi chi tiết để mô hình sửa bài ở lượt tiếp theo mà ứng dụng bên ngoài không hề bị văng ngoại lệ. Nhưng trong kiểm toán vận hành thực tế, chính tính năng tiện lợi này lại là nguyên nhân tạo ra những hóa đơn token phình to bất thường vào cuối tháng.",
+        "Hãy hình dung hệ thống tiếp nhận 500 bản scan hóa đơn đầu vào mỗi ngày và kỹ sư chọn một mô hình siêu rẻ để tiết kiệm chi phí. Khi gặp 15% chứng từ chụp nghiêng hoặc bị mờ chữ số thuế VAT, mô hình nhỏ không thể tự suy luận ra phép cộng đúng. Ở mỗi lượt sửa sai do ModelRetry kích hoạt, toàn bộ văn bản chứng từ dài hàng nghìn token cùng lịch sử tool calling trước đó lại bị đẩy đi đẩy lại 3 đến 4 vòng. Tổng token thực tế của một ca trích xuất lỗi cao gấp 3,5 đến 4,2 lần dự tính ban đầu, đồng thời kéo độ trễ P95 vọt lên mức báo động.",
+        "Điểm mù thứ hai nguy hiểm không kém là sự tự tin giả tạo vào hợp lệ kiểu dữ liệu. Pydantic chỉ kiểm tra hình dạng (structural contract): một mã số thuế 10 chữ số bị mô hình bịa hoàn toàn từ xác suất vẫn vượt qua regex `^\\d{10}$` một cách hoàn hảo nếu bạn không cài bước kiểm chứng đối chiếu với danh mục thực tế trong DB qua tool hoặc @output_validator. Đó là lý do mọi Playbook chuẩn tại DOMATION đều bắt buộc khóa UsageLimits ngay trong lời gọi run() và tách rạch ròi giữa kiểm định cấu trúc JSON với kiểm chứng sự thật nghiệp vụ."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-ty-le-pass-json-va-token-retry-pydantic-ai",
+      "heading": "Đo kiểm tỷ lệ vượt Schema và mức tiêu thụ Token theo độ phức tạp chứng từ khi bật/tắt UsageLimits",
+      "subtitle": "Đối chiếu 6 mức độ phức tạp payload thực tế: Prompt thuần vs PydanticAI thả nổi Retry vs PydanticAI có UsageLimits + Arithmetic Validator",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tỷ lệ JSON hợp lệ (%) & Chi phí Token tương đối khi xử lý 6 loại tài liệu doanh nghiệp",
+        "subtitle": "PydanticAI đưa tỷ lệ pass schema lên 98–99,8%, nhưng nếu thiếu UsageLimits chi phí token ở chứng từ scan mờ vọt lên +340%",
+        "xKey": "docType",
+        "yUnit": "% / kTok",
+        "series": [
+          {
+            "key": "rawPromptPassPct",
+            "label": "Prompt thuần Pass Schema (%)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "pydanticAiPassPct",
+            "label": "PydanticAI Pass Schema (%)",
+            "color": "#10B981",
+            "type": "bar"
+          },
+          {
+            "key": "unboundedTokenX",
+            "label": "Retry Thả Nổi (k Token/10 doc)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "cappedTokenX",
+            "label": "Có UsageLimits (k Token/10 doc)",
+            "color": "#1E40FF",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "docType": "Lead Score 5 field", "rawPromptPassPct": 88, "pydanticAiPassPct": 99.8, "unboundedTokenX": 14, "cappedTokenX": 13 },
+          { "docType": "Hook Ads JSON", "rawPromptPassPct": 82, "pydanticAiPassPct": 99.5, "unboundedTokenX": 24, "cappedTokenX": 20 },
+          { "docType": "HĐ MISA 5 dòng", "rawPromptPassPct": 74, "pydanticAiPassPct": 99.2, "unboundedTokenX": 49, "cappedTokenX": 31 },
+          { "docType": "HĐ MISA 20 dòng", "rawPromptPassPct": 61, "pydanticAiPassPct": 98.7, "unboundedTokenX": 96, "cappedTokenX": 52 },
+          { "docType": "HĐ Scan Bẩn/Mờ", "rawPromptPassPct": 44, "pydanticAiPassPct": 94.5, "unboundedTokenX": 168, "cappedTokenX": 64 },
+          { "docType": "Phụ Lục Hợp Đồng", "rawPromptPassPct": 58, "pydanticAiPassPct": 98.1, "unboundedTokenX": 128, "cappedTokenX": 58 }
+        ],
+        "kpis": [
+          {
+            "label": "Tỷ lệ JSON hợp lệ trung bình",
+            "value": "99,4%",
+            "delta": "HĐ chuẩn vs 68% prompt thuần",
+            "positive": true
+          },
+          {
+            "label": "Chặn lạm phát Token ở Scan Mờ",
+            "value": "-62%",
+            "delta": "Nhờ UsageLimits + Fall-back tay",
+            "positive": true
+          },
+          {
+            "label": "Độ phủ Type Check Static",
+            "value": "100% Pyright",
+            "delta": "Bắt lỗi lệch field trước deploy",
+            "positive": true
+          },
+          {
+            "label": "Ràng buộc ngôn ngữ lõi",
+            "value": "Python Only",
+            "delta": "Tách Queue/HTTP với Next.js",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Tổng hợp mô phỏng kiểm toán bóc tách chứng từ kế toán, chấm điểm Lead và phân tích Creative Ads trên môi trường PydanticAI + OpenTelemetry."
+      },
+      "insightSummary": "Trên tài liệu sạch (Lead Score, hóa đơn điện tử XML/PDF chuẩn), PydanticAI nâng độ ổn định parse schema từ 61–88% lên ngưỡng gần tuyệt đối >99% mà gần như không tốn thêm token retry. Nhưng ngay khi gặp tài liệu scan mờ hoặc bảng giá phức tạp, sự có mặt của UsageLimits tạo ra khác biệt một trời một vực: cắt đứt vòng lặp thử vô vọng ở ngưỡng 64k token/10 tài liệu và chuyển ca khó sang nhân sự thay vì âm thầm đốt 168k token không hiệu quả."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-kiem-toan-pydantic-ai",
+      "src": "/imgs/boost/charts/pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent-report.webp",
+      "alt": "Biểu đồ audit pydantic ai schema validation và di đo tỷ lệ pass JSON và hiệu quả UsageLimits",
+      "caption": "Bảng điều khiển kiểm toán pydantic/pydantic-ai: đối chiếu tỷ lệ đạt hợp đồng JSON schema và kiểm soát chi phí vòng lặp ModelRetry khi bóc chứng từ MISA và chấm điểm Lead.",
+      "badge": "PLAYBOOK AUDIT • PYDANTIC-AI"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-dua-pydantic-ai-len-production",
+      "heading": "Checklist 5 chốt kiểm soát bắt buộc trước khi đẩy microservice PydanticAI ra production",
+      "items": [
+        {
+          "check": "Gắn UsageLimits(request_limit, total_tokens_limit) ở mọi lời gọi run/run_sync",
+          "severity": "critical",
+          "verificationHow": "Quét tĩnh AST hoặc grep toàn bộ lời gọi .run( / .run_sync( trong repo Python bảo đảm có tham số usage_limits và khối try/except UsageLimitExceeded.",
+          "passThreshold": "100% endpoint AI có trần token & fallback queue khi vượt hạn mức"
+        },
+        {
+          "check": "Phân tách xác thực sự thật nghiệp vụ khỏi kiểm định kiểu JSON",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra các validator trong @agent.output_validator có đối chiếu tổng tiền, mã số thuế hoặc ID sản phẩm thực từ DB qua RunContext deps thay vì chỉ dùng regex.",
+          "passThreshold": "0% dữ liệu tài chính/MISA tự ghi sổ mà chưa qua bước kiểm toán số học & master ID"
+        },
+        {
+          "check": "Cô lập PII trước khi đẩy trace sang OpenTelemetry / Logfire",
+          "severity": "high",
+          "verificationHow": "Xem cấu hình scrubbing callback của OTel/Logfire trên span attributes để chắc chắn SĐT, CCCD và số tài khoản được che trước khi lưu trace.",
+          "passThreshold": "Không xuất hiện raw CCCD/SĐT khách hàng trong dashboard telemetry"
+        },
+        {
+          "check": "Chạy bộ kiểm thử hồi quy bằng TestModel & FunctionModel trong CI/CD",
+          "severity": "high",
+          "verificationHow": "Kiểm tra pipeline GitHub Actions chạy pytest dùng agent.override(model=TestModel()) test toàn bộ nhánh tool và validator không cần API key thật.",
+          "passThreshold": "Độ phủ test tool & output_validator >= 85% chạy xong < 15 giây"
+        },
+        {
+          "check": "Định nghĩa ranh giới kết nối rõ ràng với lõi TypeScript/Next.js",
+          "severity": "recommended",
+          "verificationHow": "Xác minh dịch vụ PydanticAI giao tiếp với core CRM/ERP qua JSON contract bất đồng bộ (Queue hoặc FastAPI timeout < 15s có retry idempotent).",
+          "passThreshold": "Không để UI Next.js chờ kết nối HTTP đồng bộ > 10s khi bóc file PDF lớn"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "ket-luan-playbook-pydantic-ai",
+      "variant": "benchmark",
+      "title": "Phán quyết từ DOMATION Engineering: Chuẩn vàng mới cho các Worker AI Python cần hợp đồng dữ liệu thép",
+      "body": "Nếu đội kỹ sư của bạn viết backend bằng Python và đã ngán ngẩm những framework ma thuật khó debug, pydantic/pydantic-ai (MIT) là lựa chọn nâng cấp chất lượng kỹ thuật rõ rệt nhất hiện nay. Sự kết hợp giữa deps_type Dependency Injection, output_type Pydantic, TestModel và OpenTelemetry giải quyết dứt điểm cơn ác mộng bóc chứng từ MISA hay AI Lead Score sai định dạng. Chỉ cần nhớ hai kỷ luật sắt: luôn khóa UsageLimits để dập tắt bão ModelRetry trên model nhỏ, và giữ một đường ống tách bạch khi nối về lõi vận hành TypeScript/Next.js."
+    }
+  ]
+}

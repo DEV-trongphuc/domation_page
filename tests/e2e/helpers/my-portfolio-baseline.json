@@ -1,0 +1,18 @@
+{
+  "capturedAt": "2026-11-19T12:58:25Z",
+  "repoPath": "D:\\GITHUB_SPACE\\MY_PORTFOLIO",
+  "head": "ccb41dcf5615bafd9b96fd1c6996c7acd3473638",
+  "porcelain": [
+    " M components/Sections/Hero.tsx",
+    " M constants/partners.ts",
+    "?? .agents/",
+    "?? TEST_INFRA.md",
+    "?? TEST_READY.md",
+    "?? imgs/partner_the_crumb_club.jpg",
+    "?? playwright.config.ts",
+    "?? test-results/",
+    "?? tests/"
+  ],
+  "diffSha256": "e5fca10008dc138b4f978d9d49233067412b5a5d43667783445e39fd0ba2496a",
+  "diffBytes": 3341
+}

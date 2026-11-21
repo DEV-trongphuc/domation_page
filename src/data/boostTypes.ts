@@ -6,7 +6,180 @@ export type BoostPillarId =
   | 'multi-agent-ai'
   | 'web3d-ads-seo'
   | 'vibecode-ops'
-  | 'ads-cro-seo';
+  | 'ads-cro-seo'
+  | 'ai-data-security'
+  | 'github-vibecode-audit'
+  | 'llm-models-mcp-skills';
+
+export type EditorialFormatId =
+  | 'field-report'
+  | 'forensic-postmortem'
+  | 'contrarian-essay'
+  | 'repo-teardown'
+  | 'head-to-head-arena'
+  | 'architecture-blueprint'
+  | 'playbook-manual'
+  | 'executive-dossier';
+
+export type ArticleSchemaType =
+  | 'BlogPosting'
+  | 'TechArticle'
+  | 'Report'
+  | 'AnalysisNewsArticle';
+
+export type ThumbnailThemeId =
+  | 'slate-cobalt-exec'
+  | 'midnight-cyan-data'
+  | 'crimson-obsidian-sec'
+  | 'swiss-editorial-paper'
+  | 'github-terminal-audit'
+  | 'arena-peer-vs';
+
+export interface ArticleChartSeries {
+  key: string;
+  label: string;
+  color: string;
+  type?: 'bar' | 'line' | 'area';
+  unit?: string;
+}
+
+export interface ArticleChartSpec {
+  chartType: 'bar' | 'horizontal-bar' | 'line' | 'area' | 'composed' | 'radar' | 'donut';
+  title: string;
+  subtitle?: string;
+  xKey: string;
+  yUnit?: string;
+  series: ArticleChartSeries[];
+  data: Record<string, string | number>[];
+  kpis?: { label: string; value: string; delta?: string; positive?: boolean }[];
+  sourceNote?: string;
+}
+
+export interface RepoAuditMeta {
+  fullName: string;
+  url: string;
+  category: string;
+  primaryLanguage: string;
+  license: string;
+  starsTier: string;
+  bestFor: string;
+  avoidWhen: string;
+  domationSynergy: string;
+  scores: {
+    productionReadiness: number;
+    vibecodeSpeed: number;
+    securityGovernance: number;
+    costEfficiency: number;
+  };
+}
+
+export type ArticleContentBlock =
+  | {
+      type: 'prose';
+      id: string;
+      heading: string;
+      eyebrow?: string;
+      variant?: 'narrative' | 'incident' | 'contrarian' | 'deep-dive';
+      paragraphs: string[];
+      pullQuote?: string;
+      bullets?: string[];
+    }
+  | {
+      type: 'chart-dashboard';
+      id: string;
+      heading: string;
+      subtitle?: string;
+      chart: ArticleChartSpec;
+      insightSummary: string;
+    }
+  | {
+      type: 'comparison-matrix';
+      id: string;
+      heading: string;
+      caption?: string;
+      columns: string[];
+      highlightColumn?: number;
+      rows: { criterion: string; values: string[]; winnerNote?: string }[];
+      footnote?: string;
+    }
+  | {
+      type: 'repo-card';
+      id: string;
+      heading?: string;
+      repo: RepoAuditMeta;
+    }
+  | {
+      type: 'callout-verdict';
+      id?: string;
+      variant: 'founder-pov' | 'warning' | 'benchmark' | 'key-rule' | 'anti-pattern';
+      title: string;
+      body: string;
+      authorBadge?: string;
+    }
+  | {
+      type: 'code-recipe';
+      id: string;
+      heading: string;
+      language: string;
+      filename?: string;
+      description?: string;
+      code: string;
+    }
+  | {
+      type: 'timeline-flow';
+      id: string;
+      heading: string;
+      variant?: 'steps' | 'incident-chain' | 'migration-phases';
+      items: { tag: string; title: string; detail: string; metricOrTool?: string }[];
+    }
+  | {
+      type: 'checklist-audit';
+      id: string;
+      heading: string;
+      items: {
+        check: string;
+        severity: 'critical' | 'high' | 'recommended';
+        verificationHow: string;
+        passThreshold: string;
+      }[];
+    }
+  | {
+      type: 'visual-figure';
+      id: string;
+      src: string;
+      alt: string;
+      caption: string;
+      badge?: string;
+    }
+  | {
+      type: 'stat-grid';
+      id?: string;
+      heading: string;
+      stats: {
+        value: string;
+        label: string;
+        context?: string;
+        trend?: 'up' | 'down' | 'neutral';
+      }[];
+    }
+  | {
+      type: 'myth-vs-reality';
+      id: string;
+      heading: string;
+      pairs: { myth: string; reality: string; proofMetric?: string }[];
+    }
+  | {
+      type: 'decision-tree';
+      id: string;
+      heading: string;
+      subtitle?: string;
+      scenarios: {
+        condition: string;
+        recommendedChoice: string;
+        rationale: string;
+        avoidIf?: string;
+      }[];
+    };
 
 export type SearchIntentType =
   | 'Informational'
@@ -82,6 +255,51 @@ export interface BoostArticle {
   relatedModuleUrl: string;
   relatedModuleLabel: string;
   faqs: ArticleFaq[];
+  editorialFormat?: EditorialFormatId;
+  schemaType?: ArticleSchemaType;
+  clusterId?: string;
+  relatedSlugs?: string[];
+  thumbnailTheme?: ThumbnailThemeId;
+  thumbnailTitle?: string;
+  thumbnailHook?: string;
+  thumbnailBadge?: string;
+  repoMeta?: RepoAuditMeta;
+  blocks?: ArticleContentBlock[];
+  shardId?: string;
+}
+
+export interface BoostArticleSummary {
+  id: string;
+  number: string;
+  slug: string;
+  title: string;
+  seoTitle: string;
+  metaDescription: string;
+  focusKeyword: string;
+  secondaryKeywords: string[];
+  pillar: BoostPillarId;
+  pillarLabel: string;
+  industry: string;
+  searchIntent: SearchIntentType;
+  readingMinutes: number;
+  publishedAt: string;
+  updatedAt: string;
+  coverImage: string;
+  coverAlt: string;
+  screenshotImage: string;
+  screenshotCaption: string;
+  relatedPortfolioId?: string;
+  relatedModuleUrl: string;
+  relatedModuleLabel: string;
+  shardId: string;
+  wordCount?: number;
+  editorialFormat?: EditorialFormatId;
+  schemaType?: ArticleSchemaType;
+  clusterId?: string;
+  relatedSlugs?: string[];
+  thumbnailHook?: string;
+  thumbnailBadge?: string;
+  repoFullName?: string;
 }
 
 export interface SeoTopicItem {

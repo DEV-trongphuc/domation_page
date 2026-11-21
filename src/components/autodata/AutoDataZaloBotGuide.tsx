@@ -10,6 +10,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { AutoDataHelpTrigger } from './AutoDataHelpTour';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import type { HelpTopicKey, ZaloBotSavedState, ZaloVerifyResult } from './autodataTypes';
 
 interface AutoDataZaloBotGuideProps {
@@ -220,6 +221,8 @@ export function AutoDataZaloBotGuide({
           </div>
         ))}
       </div>
+
+      <ZaloSpecialistBanner context="setup" variant="compact" />
 
       {/* 4-Step A-Z Visual Guide */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">

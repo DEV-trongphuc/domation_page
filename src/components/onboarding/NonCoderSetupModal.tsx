@@ -12,7 +12,9 @@ import {
   Zap,
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import { DomResponsiveSubtabs } from '../dom-meta/DomMetaSelect';
+import { lockBodyScroll, pushOverlay, unlockBodyScroll } from '../../utils/overlayStack';
 
 export type SetupProductKey = 'autodata' | 'dommeta' | 'erp';
 
@@ -73,7 +75,7 @@ const PRODUCT_GUIDES: Record<
           'Dán mã Bot hoặc bấm "Bỏ qua & vào ngay" để test chia khách tức thì, có thể gắn Bot sau bất cứ lúc nào.',
       },
     ],
-    techSnippet: `POST https://domation.net/api/v1/webhooks/<slug>\nHeader: Content-Type: application/json\nBody: { "full_name": "Nguyễn Văn A", "phone": "0987654321", "source": "meta_lead_ads" }`,
+    techSnippet: `POST https://data.domation.net/api/v1/webhooks/<tenant_slug>/<connection_token>\nHeader: Content-Type: application/json\nBody: { "full_name": "Nguyễn Văn A", "phone": "0987654321", "source": "meta_lead_ads" }`,
     primaryCta: 'Mở Trình Tạo Workspace 3 Bước',
   },
   dommeta: {
@@ -184,13 +186,12 @@ export const NonCoderSetupModal: React.FC<NonCoderSetupModalProps> = ({
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        handleClose();
-      }
+    lockBodyScroll();
+    const unregister = pushOverlay('non-coder-setup-modal', () => handleClose(), 230);
+    return () => {
+      unlockBodyScroll();
+      unregister();
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
   }, [open, handleClose]);
 
   if (!open) return null;
@@ -227,8 +228,9 @@ export const NonCoderSetupModal: React.FC<NonCoderSetupModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl rounded-t-[26px] sm:rounded-3xl bg-white border border-slate-200 shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden"
+        className="w-full max-w-2xl rounded-t-[26px] sm:rounded-3xl bg-white border border-slate-200 shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden dom-macos-modal-enter dom-ios-modal-panel"
       >
+        <div className="sm:hidden w-10 h-1.5 rounded-full bg-slate-300/80 mx-auto mt-2.5 shrink-0" />
         {/* Mobile bottom-sheet grabber */}
         <div className="sm:hidden flex justify-center pt-2.5 pb-1 shrink-0">
           <span className="w-10 h-1 rounded-full bg-slate-300" />
@@ -376,6 +378,8 @@ export const NonCoderSetupModal: React.FC<NonCoderSetupModalProps> = ({
               </pre>
             )}
           </div>
+
+          <ZaloSpecialistBanner context="setup" />
 
           <div className="rounded-xl bg-blue-50/70 border border-blue-100 p-3 flex items-center gap-2.5 text-xs text-slate-700">
             <ShieldCheck className="w-4 h-4 text-[#1E40FF] shrink-0" />

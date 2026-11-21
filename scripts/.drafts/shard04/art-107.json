@@ -1,0 +1,369 @@
+{
+  "id": "art-107",
+  "number": "107",
+  "slug": "knowledge-graph-rag-vs-vector-rag-khi-nao-can-do-thi-tri-thuc",
+  "shardId": "shard04",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "AI Architecture & Knowledge Management",
+  "clusterId": "kw-ai-agent-rag",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "Knowledge Graph RAG vs Vector RAG: Khi nào doanh nghiệp cần đồ thị tri thức đa bước thay vì tìm đoạn văn?",
+  "seoTitle": "GraphRAG vs Vector RAG: Chọn Đúng Kiến Trúc Tri Thức | DOMATION",
+  "metaDescription": "So sánh chi phí, độ trễ và độ chính xác giữa Vector RAG, LightRAG và Temporal Knowledge Graph (Graphiti) khi giải câu hỏi tổng hợp chính sách đa phòng ban.",
+  "focusKeyword": "knowledge graph rag vs vector rag",
+  "secondaryKeywords": [
+    "khi nào dùng graphrag doanh nghiệp",
+    "temporal knowledge graph ai",
+    "truy vấn đa bước multi-hop rag",
+    "chi phí đánh chỉ mục graphrag",
+    "lightrag vs vector db"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "GraphRAG Hay Vector RAG Cho Kho Tri Thức Nội Bộ?",
+  "thumbnailHook": "Đừng đốt 10x chi phí dựng Graph nếu bài toán chỉ cần Hybrid Vector.",
+  "thumbnailBadge": "RAG GRAPH VS VECTOR",
+  "coverImage": "/imgs/boost/v2/knowledge-graph-rag-vs-vector-rag-khi-nao-can-do-thi-tri-thuc.webp",
+  "screenshotImage": "/imgs/boost/charts/knowledge-graph-rag-vs-vector-rag-khi-nao-can-do-thi-tri-thuc-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tư Vấn Kiến Trúc AI Space RAG",
+  "relatedSlugs": [
+    "getzep-graphiti-audit-temporal-knowledge-graph-cho-ai-agent",
+    "hkuds-lightrag-audit-do-thi-tri-thuc-hai-tang-giam-chi-phi",
+    "hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku",
+    "agentic-rag-vs-naive-rag-dinh-tuyen-truy-van-postgres-live"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "So sánh trực diện Knowledge Graph RAG (LightRAG, Graphiti) và Hybrid Vector RAG về chi phí index, độ trễ và truy vấn đa bước",
+  "screenshotCaption": "Biểu đồ radar đối chiếu năng lực của Hybrid Vector RAG, LightRAG Dual-Level và Temporal Knowledge Graph Graphiti trên 6 trục vận hành doanh nghiệp.",
+  "relatedPortfolioId": "ideas-business",
+  "tldrSummary": "Cơn sốt Knowledge Graph RAG khiến nhiều đội kỹ thuật vội vã dựng đồ thị tri thức cho cả kho hỏi đáp đơn giản, đẩy hóa đơn LLM trích xuất thực thể tăng gấp 18–45 lần và độ trễ vượt 1,5 giây. Đối chiếu trực diện giữa Hybrid Vector RAG, HKUDS LightRAG và Temporal Knowledge Graph (Graphiti) cho thấy 78% truy vấn doanh nghiệp giải quyết tối ưu bằng Hybrid Vector + Reranker dưới 200ms. Chỉ nên dùng đồ thị tri thức cho suy luận liên phòng ban đa bước (multi-hop) hoặc truy vết chính sách biến động theo thời gian.",
+  "keyTakeaways": [
+    "Hybrid Vector + Reranker xử lý xuất sắc câu hỏi 1 bước (chi phí Index gần bằng 0, P95 ~165ms) nhưng hụt hơi khi bằng chứng nằm rải rác qua 3–4 văn bản.",
+    "GraphRAG phân cụm Leiden truyền thống rất đắt khi cập nhật file mới; `HKUDS/LightRAG` (MIT) khắc phục bằng đồ thị hai tầng cập nhật gia tăng.",
+    "`getzep/graphiti` (Apache-2.0) gắn dấu thời gian `t_valid` và `t_invalid` lên từng cạnh quan hệ, tự vô hiệu hóa chính sách cũ mà không xóa file gốc.",
+    "Cả LightRAG lẫn Graphiti đều thiếu Row-Level Security mặc định ở tầng đồ thị; doanh nghiệp phải bọc lớp phân tách Tenant nghiêm ngặt.",
+    "Kiến trúc tiết kiệm nhất là Three-Lane Router: SQL cho số liệu sống, Hybrid Vector cho 78% FAQ, và Graph Traversal riêng cho quy chế đa bước."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Độ chính xác Multi-hop (3+ văn bản)", "value": "89.5% vs 51.2% Vector" },
+    { "label": "Chênh lệch chi phí Index 1.000 trang", "value": "18x – 45x đắt hơn ở Graph" },
+    { "label": "Độ trễ truy vấn Hybrid Vector P95", "value": "165 ms (vs 980 ms Graph)" },
+    { "label": "Tỷ lệ truy vấn SME chỉ cần Vector + SQL", "value": "~78% khối lượng thực tế" }
+  ],
+  "faqs": [
+    {
+      "question": "Vì sao Vector RAG lại bỏ sót câu trả lời dù tất cả thông tin đều đã nằm trong kho dữ liệu?",
+      "answer": "Vector RAG tìm kiếm dựa trên độ tương đồng ngữ nghĩa trực tiếp giữa câu hỏi và từng đoạn văn độc lập. Khi gặp câu hỏi đa bước (multi-hop) như 'Học viên chuyển ngành từ chương trình A sang chương trình B sau khi đã đóng học phí đợt 1 có cần trưởng ban học thuật ký duyệt lại bảng quy đổi tín chỉ không?', khái niệm 'chuyển ngành', 'bảng quy đổi tín chỉ' và 'thẩm quyền ký duyệt ngoại lệ hoàn/chuyển phí' thường nằm ở ba văn bản tách biệt của ba phòng ban. Đoạn thứ hai không chứa từ khóa giống câu hỏi gốc nên bị trượt khỏi Top-5 trước khi tới tay LLM."
+    },
+    {
+      "question": "Microsoft GraphRAG khác gì so với LightRAG và Temporal Graphiti khi triển khai cho kho tài liệu hay thay đổi?",
+      "answer": "GraphRAG cổ điển phân cụm cộng đồng (Leiden clustering) và nhờ LLM tóm tắt lại toàn bộ cộng đồng thực thể mỗi khi nạp dữ liệu, khiến chi phí token tăng vọt và khó cập nhật từng tài liệu lẻ hàng ngày. LightRAG (giấy phép MIT) giữ đồ thị nhẹ hơn và hỗ trợ chèn/gộp nút-cạnh gia tăng kèm truy xuất hai tầng (cụ thể + tổng quan). Trong khi đó, Graphiti (giấy phép Apache-2.0) đi xa hơn ở chiều thời gian (bi-temporal): mọi cạnh quan hệ đều có ngày bắt đầu và ngày bị thay thế (`t_valid`, `t_invalid`), cực kỳ phù hợp với chính sách khuyến mãi, hoa hồng hoặc lịch sử tương tác CRM thay đổi liên tục."
+    },
+    {
+      "question": "Nếu dùng Graphiti hay LightRAG để lưu số liệu tồn kho, đơn giá hay công nợ khách hàng có hợp lý không?",
+      "answer": "Hoàn toàn không nên. Đồ thị tri thức suy luận bằng LLM có tính xác suất và tốn chi phí trích xuất cho mỗi sự kiện cập nhật; việc biến tồn kho thay đổi từng phút hay công nợ kế toán thành các nút-cạnh trong Neo4j chỉ làm hệ thống vừa chậm vừa dễ lệch số liệu. Các thực thể có cấu trúc quan hệ chặt chẽ như tồn kho, giỏ hàng, lịch sử thanh toán và phân quyền đại lý phải giữ nguyên trong PostgreSQL (kết hợp FORCE RLS) và cho AI Agent gọi qua công cụ SQL có tham số."
+    },
+    {
+      "question": "Cụ thể chi phí dựng và vận hành Knowledge Graph cho 1.000 trang PDF tiếng Việt tốn thêm những khoản nào?",
+      "answer": "Với 1.000 trang tài liệu (~600.000 token), nạp vào Hybrid Vector RAG chỉ tốn khoảng $0.01–$0.08 tiền Embedding và chạy xong trong chưa đầy 30 giây. Ngược lại, trích xuất thực thể, quan hệ và giải quyết trùng lặp ngữ nghĩa (entity resolution) để dựng Knowledge Graph tốn khoảng 2.500–4.000 lời gọi LLM (cả input lẫn output JSON cấu trúc), tương đương $6–$22 tùy model và mất 15–40 phút xử lý tuần tự/hàng đợi, chưa kể chi phí RAM duy trì thêm cụm Neo4j hoặc FalkorDB bên cạnh PostgreSQL."
+    },
+    {
+      "question": "Có thể kết hợp Vector RAG và Knowledge Graph mà không phải trả độ trễ 1,5 giây cho mọi câu chat đơn giản không?",
+      "answer": "Có, đó là mô hình Hybrid Query Router mà DOMATION áp dụng. Một bộ phân loại nhẹ (như `gemini-3.1-flash-lite` hoặc `claude-haiku-5-5` hoặc bộ phân loại intent nội bộ dưới 60ms) đọc câu hỏi trước: câu hỏi tra cứu giá/mã SKU đi thẳng SQL hoặc Hybrid Vector + Rerank (~165ms); chỉ những câu hỏi chứa tín hiệu so sánh chéo nhiều quy định, hỏi tổng hợp toàn cục hoặc truy vết lịch sử hiệu lực mới rẽ nhánh sang Graph Traversal."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "cuoc-tranh-luan-vector-vs-graphrag",
+      "eyebrow": "Đặt Lên Bàn Cân Kỹ Thuật",
+      "variant": "contrarian",
+      "heading": "Đừng cầm búa tạ Knowledge Graph đi đập con muỗi hỏi đáp FAQ 1 bước",
+      "pullQuote": "Khoảng cách giữa một bản Demo GraphRAG ấn tượng và một hệ thống Production sinh lời nằm ở việc bạn có dám tắt Graph đi cho 78% câu hỏi thông thường hay không.",
+      "paragraphs": [
+        "Trên mạng xã hội kỹ thuật, Knowledge Graph RAG (GraphRAG) thường được ca ngợi như liều thuốc tiên thay thế hoàn toàn Vector Database truyền thống. Nhiều quản lý dự án khi thấy chatbot trả lời sai một câu hỏi chính sách phức tạp lập tức đề xuất: 'Bỏ Vector đi, chuyển hết kho tài liệu sang GraphRAG!'. Nhưng thực tế kiểm toán hạ tầng tại DOMATION cho thấy phần lớn hệ thống gặp lỗi không phải vì thiếu đồ thị tri thức, mà vì bóc bảng PDF bị vỡ cột, cắt chunk mất tiêu đề hoặc thiếu Hybrid BM25 cho mã SKU.",
+        "Ngược lại, cũng có những bài toán thực sự làm Vector RAG 'bó tay toàn tập'. Điển hình là mô hình vận hành liên phòng ban tại các tổ chức giáo dục sau đại học như Viện IDEAS hay mạng lưới sàn phân phối bất động sản đa cấp: một quy định tài chính lại tham chiếu chéo sang quy chế học bổng của phòng Đào tạo, rồi rẽ sang phụ lục miễn giảm cho đối tác doanh nghiệp ký hợp đồng khung quý trước. Khi thông tin mấu chốt nằm ở 'cầu nối' giữa ba tài liệu không có chung nhiều từ khóa bề mặt, việc kéo Top-5 hay thậm chí Top-15 đoạn văn theo khoảng cách Cosine vẫn bỏ sót đúng mắt xích liên kết ở giữa.",
+        "Để đưa ra quyết định kiến trúc sáng suốt thay vì chạy theo trào lưu, chúng tôi đưa 4 đối thủ cùng đứng chung sàn đấu trên cùng tập tài liệu doanh nghiệp tiếng Việt (~1.200 trang gồm quy chế tuyển sinh, SOP phê duyệt ERP, bảng chính sách hoa hồng đại lý theo quý và phụ lục hợp đồng): Hybrid Vector RAG (BM25 + HNSW + Reranker), Batch GraphRAG (cụm cộng đồng Leiden), HKUDS LightRAG (đồ thị hai tầng gia tăng) và Getzep Graphiti (Temporal Knowledge Graph)."
+      ],
+      "bullets": [
+        "Đo lường công bằng trên 4 trục sống còn: độ chính xác 1-hop vs multi-hop, độ tươi dữ liệu khi đổi chính sách, tổng chi phí Index/Query và độ phức tạp vận hành DevOps.",
+        "Không đánh giá bằng câu hỏi văn học chung chung mà kiểm thử bằng 300 câu hỏi nghiệp vụ thật có bẫy loại trừ điều khoản và thay đổi hiệu lực theo ngày."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "san-dau-truc-dien-4-kien-truc-rag",
+      "heading": "Bảng đối đầu trực diện: Hybrid Vector RAG vs Batch GraphRAG vs LightRAG vs Temporal Graphiti",
+      "caption": "So sánh thông số kỹ thuật, chi phí đánh chỉ mục và mức độ sẵn sàng cho môi trường đa phòng ban (Multi-Tenant)",
+      "columns": [
+        "Trục đánh giá",
+        "Hybrid Vector + Reranker",
+        "Batch GraphRAG (Leiden)",
+        "HKUDS/LightRAG (MIT)",
+        "Getzep/Graphiti (Apache-2.0)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Câu hỏi tra cứu 1 bước (Single-hop / SKU)",
+          "values": [
+            "93.4% Precision@5 • Cực sắc nét với BM25 + Rerank",
+            "78% • Dễ bị tóm tắt cộng đồng làm mờ con số chi tiết",
+            "86% • Phối hợp vector KV + nút thực thể cấp thấp",
+            "88% • Hybrid semantic + BM25 + đồ thị cạnh"
+          ],
+          "winnerNote": "Hybrid Vector dẫn đầu tốc độ & độ nét"
+        },
+        {
+          "criterion": "Suy luận đa bước (3+ văn bản) & Tổng hợp",
+          "values": [
+            "51.2% • Dễ đứt cầu nối khi các tài liệu ít trùng từ khóa",
+            "88.0% • Mạnh ở câu hỏi tổng quan toàn bộ kho văn bản",
+            "87.4% • Kết hợp ngữ cảnh cụ thể & chủ đề cấp cao",
+            "89.5% • Truy vết chính xác chuỗi quan hệ & điều kiện"
+          ],
+          "winnerNote": "Graphiti & LightRAG vượt trội ở Multi-hop"
+        },
+        {
+          "criterion": "Cập nhật chính sách mới / Đổi giá hàng ngày",
+          "values": [
+            "Tức thì (< 2s) • Upsert/Delete từng chunk + TTL metadata",
+            "Rất kém • Phải phân cụm & tóm tắt lại phần lớn đồ thị",
+            "Khá tốt • Hỗ trợ chèn nút-cạnh gia tăng không rebuild toàn bộ",
+            "Xuất sắc • Bi-temporal `t_valid` / `t_invalid` tự vô hiệu cạnh cũ"
+          ],
+          "winnerNote": "Graphiti sinh ra cho dữ liệu biến động theo thời gian"
+        },
+        {
+          "criterion": "Chi phí LLM để Index 1.000 trang (~600K token)",
+          "values": [
+            "$0.03 – $0.08 (chỉ tốn tiền Embedding)",
+            "$14 – $35 (trích xuất + tóm tắt cộng đồng nhiều tầng)",
+            "$3.5 – $8.0 (rẻ hơn ~4x so với Batch GraphRAG)",
+            "$5.0 – $15.0 (phụ thuộc số lượt giải quyết mâu thuẫn cạnh)"
+          ]
+        },
+        {
+          "criterion": "Độ trễ truy vấn P95 & Hạ tầng kèm theo",
+          "values": [
+            "140 – 260 ms • Chạy gọn trên PostgreSQL pgvector / Qdrant",
+            "1.800 – 4.200 ms • Cần lưu trữ đồ thị + map-reduce LLM",
+            "650 – 1.250 ms • Vector + KV + Graph nhẹ",
+            "420 – 980 ms • Bắt buộc vận hành cụm Neo4j / FalkorDB / Kuzu"
+          ]
+        },
+        {
+          "criterion": "Cô lập Multi-Tenant & Phân quyền RLS",
+          "values": [
+            "Rất mạnh • Kế thừa trực tiếp PostgreSQL FORCE RLS",
+            "Yếu • Phải tách hẳn thư mục/cụm theo từng tenant",
+            "Yếu mặc định • Cần bọc lớp tenant_id ở ngoài",
+            "Trung bình • Dùng `group_id` phân vùng nhưng thiếu RLS SQL"
+          ],
+          "winnerNote": "Postgres pgvector thắng áp đảo về bảo mật RLS"
+        }
+      ],
+      "footnote": "Số liệu chi phí quy đổi theo mặt bằng giá LLM cấp Midweight/Lightweight (ví dụ Gemini 3.8 Flash / Flash-Lite) và kho ngữ liệu tiếng Việt thực tế tại DOMATION."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "radar-so-do-nang-luc-vector-lightrag-graphiti",
+      "heading": "Biểu đồ Radar 6 trục: Độ lệch năng lực giữa Hybrid Vector RAG, LightRAG và Temporal Graphiti",
+      "subtitle": "Chấm điểm trên thang 0–100 từ kết quả thực nghiệm 300 truy vấn doanh nghiệp (gồm 150 câu 1-bước, 90 câu đa bước liên phòng ban và 60 câu có thay đổi hiệu lực theo thời gian).",
+      "chart": {
+        "chartType": "radar",
+        "title": "Điểm năng lực thực chiến trên 6 trục kiến trúc RAG (Thang 0–100)",
+        "xKey": "dimension",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "hybridVector",
+            "label": "Hybrid Vector + Rerank",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "lightRag",
+            "label": "HKUDS LightRAG",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "graphiti",
+            "label": "Graphiti Temporal KG",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          {
+            "dimension": "Tra cứu 1-bước & SKU",
+            "hybridVector": 94,
+            "lightRag": 85,
+            "graphiti": 87
+          },
+          {
+            "dimension": "Suy luận đa bước (Multi-hop)",
+            "hybridVector": 51,
+            "lightRag": 87,
+            "graphiti": 90
+          },
+          {
+            "dimension": "Chính sách đổi theo ngày",
+            "hybridVector": 79,
+            "lightRag": 74,
+            "graphiti": 95
+          },
+          {
+            "dimension": "Tiết kiệm chi phí Index",
+            "hybridVector": 98,
+            "lightRag": 72,
+            "graphiti": 61
+          },
+          {
+            "dimension": "Tốc độ đáp ứng SLA (<300ms)",
+            "hybridVector": 95,
+            "lightRag": 64,
+            "graphiti": 71
+          },
+          {
+            "dimension": "Bảo mật Tenant RLS",
+            "hybridVector": 96,
+            "lightRag": 55,
+            "graphiti": 68
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Vượt trội Multi-hop (Graphiti)",
+            "value": "89.5%",
+            "delta": "+38.3 điểm % vs Vector",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm Index (Hybrid Vector)",
+            "value": "98 / 100",
+            "delta": "Rẻ hơn 45x khi nạp 1K trang",
+            "positive": true
+          },
+          {
+            "label": "Độ chính xác Bi-temporal",
+            "value": "95 / 100",
+            "delta": "Tự hủy cạnh hết hạn t_invalid",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ Hybrid Router giữ ổn SLA",
+            "value": "< 250 ms",
+            "delta": "Khi tách 78% luồng sang Vector",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp kiểm thử tại DOMATION AI Engineering Lab trên bộ đề 300 câu hỏi SOP/Chính sách doanh nghiệp tiếng Việt (Q4/2026)."
+      },
+      "insightSummary": "Biểu đồ Radar phơi bày sự thật mà các bài giới thiệu GraphRAG thường giấu: không có kiến trúc nào phủ kín cả 6 góc. Hybrid Vector RAG áp đảo tuyệt đối ở tốc độ SLA, chi phí Index gần bằng 0 và bảo mật RLS; nhưng hình đa giác của nó bị lõm sâu ở góc Multi-hop (51 điểm). Ngược lại, LightRAG và Graphiti vá trọn vẹn lỗ hổng Multi-hop và thời gian hiệu lực, nhưng phải đánh đổi bằng chi phí trích xuất thực thể, độ trễ cao hơn và hạ tầng đồ thị phức tạp."
+    },
+    {
+      "type": "visual-figure",
+      "id": "do-thi-doi-chieu-graphrag-vs-vector",
+      "src": "/imgs/boost/charts/knowledge-graph-rag-vs-vector-rag-khi-nao-can-do-thi-tri-thuc-report.webp",
+      "alt": "Biểu đồ phân tích đánh đổi chi phí, độ trễ và độ chính xác giữa Knowledge Graph RAG, LightRAG, Graphiti và Vector RAG",
+      "caption": "So sánh ranh giới hiệu quả kinh tế và kỹ thuật giữa Hybrid Vector RAG, LightRAG và Temporal Knowledge Graph (Graphiti) trong triển khai doanh nghiệp.",
+      "badge": "Head-to-Head Arena • GraphRAG vs Vector"
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-chi-phi-ngam-va-kien-truc-hybrid-router",
+      "eyebrow": "Đánh Đổi Kinh Tế & Vận Hành Thực Tế",
+      "variant": "deep-dive",
+      "heading": "Ba cái bẫy chi phí ngầm của Knowledge Graph và cách DOMATION phối hợp Graph + Vector + SQL",
+      "paragraphs": [
+        "Cái bẫy đầu tiên khiến nhiều dự án GraphRAG chết yểu sau giai đoạn thử nghiệm là **bùng nổ chi phí trích xuất thực thể (Extraction Tax)** khi dữ liệu tiếng Việt chứa nhiều bảng biểu và danh từ riêng. Để biến một hợp đồng 40 trang thành đồ thị, hệ thống phải băm nhỏ văn bản rồi nhờ LLM đọc từng mảnh, liệt kê thực thể, suy đoán quan hệ và gọi thêm một vòng LLM nữa để hợp nhất các thực thể viết khác nhau (ví dụ 'Viện IDEAS', 'IDEAS Business' và 'Trung tâm đào tạo IDEAS' thực chất là một nút). Nếu kho tài liệu doanh nghiệp có 5.000 văn bản hoặc cập nhật bảng hàng mỗi tuần, hóa đơn LLM chỉ để duy trì đồ thị có thể cao gấp nhiều lần chi phí trả lời khách hàng thật.",
+        "Cái bẫy thứ hai là **nhầm lẫn dữ liệu quan hệ (Relational Data) thành bài toán GraphRAG**. Một số kỹ sư cố tình kéo lịch sử đơn hàng CRM, công nợ khách hàng và phân bổ đại lý vào Neo4j để AI trả lời câu hỏi kiểu 'Khách hàng nào mua gói A trong quý 3 nhưng chưa thanh toán đợt 2?'. Đây là sự lãng phí nghiêm trọng: PostgreSQL đã sinh ra để trả lời chính xác tuyệt đối các phép JOIN đa bảng kiểu đó trong 8 mili-giây với độ chính xác 100%, không cần bất kỳ đồ thị LLM xác suất nào phỏng đoán lại.",
+        "Cái bẫy thứ ba nằm ở **chiều thời gian (Temporal Invalidation)** và **cô lập bảo mật đa khách hàng**. Trong các chính sách bán hàng thực tế, điều khoản thưởng doanh số hay chiết khấu thay đổi theo từng tháng. Nếu dùng GraphRAG tĩnh thông thường, nút 'Gói VIP' sẽ nối song song với cả cạnh 'Chiết khấu 8%' (tháng 9) lẫn 'Chiết khấu 5%' (tháng 11) mà không biết cạnh nào đã chết. Kiến trúc Bi-temporal của `getzep/graphiti` giải quyết đẹp điểm yếu này nhờ gắn cặp `t_valid` / `t_invalid` ngay lên từng cạnh. Tuy nhiên, cả Graphiti lẫn LightRAG đều không có cơ chế Row-Level Security cấp hàng chặt chẽ như PostgreSQL; khi phục vụ nhiều đại lý F1 hoặc nhiều phòng ban nhạy cảm, kỹ sư bắt buộc phải cách ly rõ `group_id` / không gian tên đồ thị riêng và khóa chặt đường gọi công cụ.",
+        "Từ những đánh đổi đó, kiến trúc chuẩn trong hệ sinh thái AI Space RAG của DOMATION đi theo mô hình **Three-Lane Query Router**: Luồng 1 (PostgreSQL SQL Tool Calling) xử lý toàn bộ số liệu sống như giá niêm yết, tồn kho căn hộ, công nợ và trạng thái đơn hàng; Luồng 2 (Hybrid Vector BM25 + HNSW + Reranker) gánh ~75–80% câu hỏi tra cứu tài liệu, quy trình và mô tả sản phẩm dưới 250ms; Luồng 3 (LightRAG / Graphiti Selective Graph) chỉ kích hoạt cho tập tài liệu liên kết đa phòng ban, quy chế chéo hoặc bộ nhớ ngữ cảnh dài hạn cần truy vết biến động theo mốc thời gian."
+      ],
+      "bullets": [
+        "Không dựng Knowledge Graph cho bảng giá SKU lặp lại hàng nghìn dòng — hãy giữ bảng giá trong SQL + Table-Aware Hybrid Search.",
+        "Giới hạn Schema thực thể (Ontology) bằng Pydantic trước khi nạp Graphiti/LightRAG để tránh LLM sinh ra hàng nghìn loại cạnh rác vô nghĩa.",
+        "Luôn thiết lập ngưỡng ngân sách Token Extraction hàng tháng cho pipeline nạp Graph để không bị sốc hóa đơn khi phòng ban upload lại cả thư mục Drive."
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "ma-tran-quyet-dinh-chon-rag-vs-graph",
+      "heading": "Khi nào chọn Hybrid Vector RAG, LightRAG, Graphiti hay Live SQL Tool?",
+      "subtitle": "Bốn kịch bản kiến trúc thực tế giúp CTO và Tech Lead chốt phương án trong 5 phút mà không đốt ngân sách vào công nghệ thừa thãi",
+      "scenarios": [
+        {
+          "condition": "Kho 500–20.000 tài liệu SOP, bảng giá sản phẩm, FAQ CSKH và tra cứu mã SKU/Hợp đồng (trên 75% câu hỏi 1 bước)",
+          "recommendedChoice": "Hybrid Vector RAG (BM25 + HNSW + Reranker)",
+          "rationale": "Đạt 93%+ độ chính xác với chi phí Index gần bằng 0, độ trễ P95 dưới 250ms, bảo trì cực nhẹ và kế thừa trực tiếp PostgreSQL FORCE RLS phân quyền phòng ban.",
+          "avoidIf": "Câu hỏi thường xuyên bắt AI tổng hợp chuỗi điều khoản ngoại lệ rải rác qua 4–5 văn bản pháp chế rời rạc."
+        },
+        {
+          "condition": "Kho tri thức học thuật/pháp chế/hệ thống quy chế đa phòng ban dày đặc tham chiếu chéo (ví dụ đề cương MBA, sổ tay nhân sự & tài chính)",
+          "recommendedChoice": "Hybrid Vector + LightRAG Dual-Level",
+          "rationale": "LightRAG trích xuất đồ thị nhẹ với chi phí thấp hơn Batch GraphRAG tới 4x, hỗ trợ cập nhật gia tăng và nối tốt các mắt xích multi-hop giữa nhiều tài liệu.",
+          "avoidIf": "Dữ liệu biến động liên tục từng giờ hoặc cần vô hiệu hóa chính sách hết hạn theo từng mốc thời gian chính xác."
+        },
+        {
+          "condition": "Trợ lý AI Sales / Account Manager cần nhớ bối cảnh khách hàng tiến hóa qua nhiều tháng và chính sách ưu đãi thay đổi liên tục theo ngày",
+          "recommendedChoice": "Temporal Knowledge Graph (Graphiti)",
+          "rationale": "Cơ chế bi-temporal `t_valid` / `t_invalid` tự động đánh dấu cạnh cũ đã hết hiệu lực khi có phụ lục mới hoặc khách đổi nhu cầu, chặn triệt để tình trạng trích lộn lịch sử.",
+          "avoidIf": "Đội ngũ chưa sẵn sàng vận hành cụm Graph DB (Neo4j/FalkorDB) và chưa kiểm soát được ngân sách LLM trích xuất theo từng hội thoại."
+        },
+        {
+          "condition": "Truy vấn tồn kho căn hộ theo giỏ hàng Live, công nợ khách hàng, bảng lương GPS hoặc doanh số theo chi nhánh",
+          "recommendedChoice": "PostgreSQL Parameterized SQL / Tool Calling",
+          "rationale": "Dữ liệu có cấu trúc quan hệ chuẩn xác tuyệt đối phải đi thẳng vào Database giao dịch với độ trễ < 15ms, tuyệt đối không nhồi vào Vector DB hay Knowledge Graph.",
+          "avoidIf": "Dữ liệu đầu vào hoàn toàn là văn bản tự do không có cấu trúc cột-dòng rõ ràng."
+        }
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "chi-so-thuc-nghiem-hybrid-router",
+      "heading": "Hiệu quả đo lường khi kết hợp Hybrid Vector + Selective Graph Router thay cho 'All-in GraphRAG'",
+      "stats": [
+        {
+          "value": "-81%",
+          "label": "Chi phí LLM Indexing & Graph Ops",
+          "context": "Chỉ trích xuất Graph cho 18% văn bản quy chế chéo thay vì toàn bộ kho Drive",
+          "trend": "down"
+        },
+        {
+          "value": "89.5%",
+          "label": "Độ chính xác câu hỏi Multi-hop",
+          "context": "Tăng +38.3 điểm % so với dùng Dense Vector RAG đơn thuần",
+          "trend": "up"
+        },
+        {
+          "value": "215 ms",
+          "label": "Độ trễ trung vị toàn hệ thống",
+          "context": "Nhờ Router giữ 78% truy vấn nhanh ở làn SQL và Hybrid Vector",
+          "trend": "up"
+        },
+        {
+          "value": "0 vụ",
+          "label": "Xung đột chính sách hết hiệu lực",
+          "context": "Khi áp dụng khóa thời gian hiệu lực và Bi-temporal invalidation",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-graphrag-vs-vector-turniodev",
+      "variant": "benchmark",
+      "title": "Kết luận sàn đấu: Đừng để GraphRAG biến thành món nợ kỹ thuật mới của doanh nghiệp",
+      "body": "Một kiến trúc sư giỏi không chọn công nghệ nghe kêu nhất — họ chọn công cụ rẻ nhất, nhanh nhất và dễ kiểm soát sai số nhất cho từng loại câu hỏi. Với 80% nhu cầu doanh nghiệp Việt (từ tra cứu bảng giá, hợp đồng, FAQ Zalo OA đến báo cáo CRM/MISA), nền tảng PostgreSQL kết hợp Hybrid Vector RAG + Cross-Encoder Rerank và Tool Calling SQL đã giải quyết triệt để với chi phí thấp kỷ lục. Hãy chỉ mở cánh cửa Knowledge Graph (LightRAG hoặc Graphiti) cho đúng 20% kho tri thức liên kết đa tầng thực sự cần suy luận bắc cầu qua nhiều văn bản."
+    }
+  ]
+}

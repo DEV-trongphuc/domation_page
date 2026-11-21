@@ -1,0 +1,369 @@
+{
+  "id": "art-127",
+  "number": "127",
+  "slug": "vector-embedding-weaknesses-hidden-context-exposure-rag",
+  "shardId": "shard06",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Vector DB & RAG Security",
+  "clusterId": "kw-ai-security-owasp",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Vector & Embedding Weaknesses (OWASP LLM08): Đầu độc kho tri thức RAG & lỗ hổng quên lọc Tenant",
+  "seoTitle": "Bảo Mật Vector DB & RAG: Chống Đầu Độc & Rò Tenant | DOMATION",
+  "metaDescription": "Khám nghiệm 3 đòn tấn công tầng Vector: đầu độc kho tri thức RAG, đảo ngược Embedding khôi phục văn bản gốc và lỗi query thiếu bộ lọc tenant_id.",
+  "focusKeyword": "bảo mật vector db chống đầu độc rag owasp",
+  "secondaryKeywords": [
+    "vector and embedding weaknesses owasp",
+    "tấn công đầu độc tri thức rag",
+    "embedding inversion attack là gì",
+    "cô lập tenant trong qdrant pgvector",
+    "hidden context exposure rag"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Lỗ Hổng Tầng Vector: Một Filter Sai Lộ Cả Kho",
+  "thumbnailHook": "Ép filter tenant_id ở lõi DB/Index và kiểm định nguồn nạp RAG.",
+  "thumbnailBadge": "OWASP #08 VECTOR-SEC",
+  "coverImage": "/imgs/boost/v2/vector-embedding-weaknesses-hidden-context-exposure-rag.webp",
+  "screenshotImage": "/imgs/boost/charts/vector-embedding-weaknesses-hidden-context-exposure-rag-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Giải Pháp Cô Lập Kho Tri Thức RAG",
+  "relatedSlugs": [
+    "multi-tenant-rls-postgresql-vector-db-co-lap-du-lieu-dai-ly",
+    "qdrant-qdrant-audit-vector-search-hybrid-filtering-enterprise",
+    "sensitive-information-disclosure-chan-ai-lo-sdt-gia-von-rag",
+    "data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Phân tích kỹ thuật lỗ hổng bảo mật Vector DB và Embedding OWASP LLM08/LLM09: đầu độc kho tri thức RAG, đảo ngược vector Vec2Text và rò rỉ đa đại lý",
+  "screenshotCaption": "Biểu đồ radar đánh giá đa chiều (0–100 điểm) so sánh độ an toàn cô lập Tenant, khả năng chống Overfiltering HNSW, kháng đảo ngược Embedding và độ trễ P95 giữa kiến trúc Filter ứng dụng, RLS thiếu Iterative Scan và pgvector 0.8+ FORCE RLS / Qdrant is_tenant=True.",
+  "tldrSummary": "Tầng lưu trữ Vector đang trở thành điểm mù bảo mật trọng yếu, được cảnh báo qua OWASP Vector and Embedding Weaknesses (LLM08:2025 / LLM09:2026) và Hidden Context Exposure (LLM08:2026). Ba đòn tấn công chí mạng gồm đầu độc tri thức RAG làm sai lệch câu trả lời, đảo ngược vector số thực (Vec2Text) khôi phục tới 90% văn bản mật, và lỗi thiếu bộ lọc hoặc overfiltering tenant_id. Giải pháp bảo mật vector db chống đầu độc rag owasp bắt buộc dùng pgvector 0.8+ FORCE RLS kèm iterative_scan hoặc Qdrant is_tenant=True kết hợp kiểm định nguồn nạp.",
+  "keyTakeaways": [
+    "Dense Embedding không phải là hàm băm mật mã một chiều: các kỹ thuật Embedding Inversion như Vec2Text chứng minh kẻ tấn công nắm được mảng số thực có thể khôi phục 50% đến trên 90% nội dung gốc.",
+    "Trong kiến trúc PostgreSQL pgvector dưới phiên bản 0.8.0, bật Row-Level Security trên chỉ mục HNSW thường gây ra lỗi Overfiltering (trả về rỗng hoặc thiếu Top-K) nếu không bật `hnsw.iterative_scan`.",
+    "Áp dụng hai chuẩn cô lập lõi: PostgreSQL 0.8+ `FORCE ROW LEVEL SECURITY` + `hnsw.iterative_scan = strict_order` cho dữ liệu quan hệ chặt chẽ, hoặc Qdrant `is_tenant=True` lọc ngay trong bước duyệt đồ thị HNSW.",
+    "Chống đầu độc kho RAG và Hidden Context Exposure bằng bảng kê nguồn gốc bất biến (SHA-256 checksum, trust_tier, trạng thái hiệu lực và loại bỏ comment/chữ ẩn trước khi Embedding).",
+    "Bảo vệ Vector Database và file backup bằng mã hóa lưu trữ (Encryption-at-Rest), kiểm soát truy cập RBAC nghiêm ngặt và che sạch PII trước khi đưa văn bản qua mô hình Embedding."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Rò rỉ chéo giữa Tenant RAG",
+      "value": "0 ca (FORCE RLS / DB)"
+    },
+    {
+      "label": "Tỷ lệ sót Recall khi lọc HNSW",
+      "value": "< 0.8% (Iterative Scan)"
+    },
+    {
+      "label": "Chặn chunk độc hại đầu độc RAG",
+      "value": "100% (Provenance SHA-256)"
+    },
+    {
+      "label": "Khôi phục PII qua Vec2Text",
+      "value": "0% (Redact Pre-Embed)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao nhiều kỹ sư nghĩ lưu mảng Vector số thực vào Qdrant hoặc pgvector thì không cần bảo mật chặt như lưu văn bản gốc?",
+      "answer": "Đây là ngộ nhận phổ biến coi vector embedding giống như mã băm SHA-256 không thể dịch ngược. Nghiên cứu Vec2Text của Morris và cộng sự đã chứng minh hoàn toàn ngược lại: vì mô hình embedding được thiết kế để bảo toàn ngữ nghĩa và cấu trúc từ vựng trong không gian đa chiều, kẻ tấn công sở hữu vector thô có thể chạy vòng lặp tối ưu hóa văn bản giả định đến khi khoảng cách vector tiến sát vector mục tiêu, qua đó khôi phục từ 50% đến hơn 90% câu chữ gốc bao gồm tên người, mã bệnh án hoặc điều khoản hợp đồng mật. Vector bắt buộc phải được bảo vệ ngang hàng với dữ liệu thô."
+    },
+    {
+      "question": "Lỗi HNSW Overfiltering khi bật RLS trong PostgreSQL pgvector là gì và phiên bản 0.8.0+ giải quyết ra sao?",
+      "answer": "Trước phiên bản pgvector 0.8.0, chỉ mục HNSW tìm kiếm Top-K hàng xóm gần nhất trên toàn bộ bảng trước rồi mới áp dụng bộ lọc `WHERE` hoặc chính sách Row-Level Security (RLS) ở bước sau. Nếu bảng có 100 đại lý và đại lý A chỉ chiếm 1% số dòng, chỉ mục duyệt xong 40 ứng viên đầu tiên nhưng bị RLS loại bỏ tới 39 dòng của đại lý khác, dẫn đến kết quả trả về cho câu hỏi RAG bị hụt hoặc rỗng hoàn toàn. Từ pgvector 0.8.0, tham số `hnsw.iterative_scan = strict_order` (hoặc `relaxed_order`) cho phép Postgres tự động quét nối tiếp đồ thị HNSW cho đến khi thu đủ số lượng `LIMIT` hợp lệ thuộc đúng tenant mà vẫn giữ chuẩn RLS."
+    },
+    {
+      "question": "Cơ chế `is_tenant=True` của Qdrant có gì khác biệt so với việc viết thêm câu lệnh lọc `must` thông thường?",
+      "answer": "Khi đánh dấu `is_tenant=True` trên trường payload `tenant_id` (kiểu `KEYWORD`), bộ tối ưu lưu trữ của Qdrant (viết bằng Rust) chủ động gom nhóm các phân đoạn dữ liệu theo từng tenant và tích hợp điều kiện lọc vào chính quá trình duyệt đồ thị HNSW (filterable HNSW traversal). Điều này mang lại hai lợi ích lớn: ngăn hệ thống tốn CPU đi lang thang qua cụm vector của các công ty khác và duy trì độ trễ ổn định lẫn độ chính xác Recall cao ngay cả khi hệ thống chứa hàng nghìn tenant có quy mô tài liệu lệch nhau."
+    },
+    {
+      "question": "Kẻ tấn công đầu độc kho tri thức RAG (RAG Knowledge Poisoning) bằng cách nào khi chúng không có quyền Admin DB?",
+      "answer": "Trong thực tế, kho tri thức RAG thường tự động nạp dữ liệu từ nhiều nguồn bán công khai như biểu mẫu hỗ trợ khách hàng, email đối tác, tài liệu tải lên từ cộng tác viên hoặc các trang web thu thập qua crawler. Nếu kẻ xấu gửi một tài liệu chứa nhiều từ khóa câu hỏi phổ biến kèm đoạn chỉ thị ẩn hoặc bảng giá giả, các đoạn chunk đó sẽ đạt điểm cosine similarity cực cao và chiếm trọn Top-3 kết quả truy xuất, buộc AI trả lời sai lệch hoặc dẫn khách sang liên kết lừa đảo."
+    },
+    {
+      "question": "Khi nào nên chọn PostgreSQL pgvector FORCE RLS và khi nào nên dùng Qdrant cho bài toán RAG đa doanh nghiệp?",
+      "answer": "Nếu dữ liệu RAG gắn chặt với giao dịch ERP/CRM, quyền theo từng cấp bậc nhân sự phức tạp và số lượng chunk nằm dưới vài triệu đến vài chục triệu dòng (như hồ sơ khách hàng, bảng hàng BĐS, chính sách nội bộ), PostgreSQL pgvector 0.8+ kết hợp FORCE RLS giúp đồng bộ ACID tức thì và không phải lo đồng bộ hóa hai cơ sở dữ liệu. Ngược lại, với kho tri thức hàng chục triệu đến hàng trăm triệu đoạn cần tìm kiếm lai Dense + Sparse (BM25), lượng tử hóa tiết kiệm RAM và sharding phân tán ngang, Qdrant với payload index `is_tenant=True` vượt trội hơn hẳn về thông lượng."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "kham-nghiem-vu-ro-ri-tang-vector",
+      "eyebrow": "HỒ SƠ KHÁM NGHIỆM • LỖ HỔNG TẦNG VECTOR",
+      "variant": "incident",
+      "heading": "Một dòng API tìm kiếm quên lọc `tenant_id`, một tập backup vector bị lộ và bản án cho ảo tưởng 'Embedding là vô hại'",
+      "pullQuote": "Dù bạn khóa chặt bảng PostgreSQL đến đâu, chỉ cần tầng Vector Database thiếu một điều kiện cách ly ở gốc chỉ mục, trợ lý AI sẽ trở thành đường ống hút cạn bí mật kinh doanh giữa các khách hàng với nhau.",
+      "paragraphs": [
+        "Trong một cuộc điều tra sự cố cho nền tảng SaaS B2B tích hợp Trợ lý AI hỏi đáp hợp đồng cho nhiều công ty thành viên, đội ngũ kiểm toán phát hiện một kịch bản rò rỉ âm thầm kéo dài suốt sáu tuần. Khi một nhân viên tại Công ty A gõ câu hỏi về điều khoản phạt chậm thanh toán, giao diện vẫn hiển thị bình thường, nhưng đoạn trích dẫn RAG thứ ba lại lôi ra nguyên văn phụ lục hợp đồng bảo trì kèm tên giám đốc và mức chiết khấu đặc biệt của Công ty B — đối thủ cạnh tranh trực tiếp cùng thuê hệ thống. Rà soát nhật ký mã nguồn cho thấy hai nguyên nhân nối tiếp nhau: lập trình viên mới khi viết thêm endpoint tìm kiếm lai (hybrid search) đã quên truyền biến lọc `tenant_id` từ JWT vào hàm truy vấn Vector DB, và bảng lưu chunk không được bảo vệ bởi chính sách cách ly bắt buộc ở cấp cơ sở dữ liệu.",
+        "Sự cố chưa dừng lại ở đó. Quá trình khám nghiệm sâu hơn còn phơi bày hai lỗ hổng nghiêm trọng khác nằm trọn trong phạm vi cảnh báo của OWASP Vector and Embedding Weaknesses (LLM08 trong phiên bản 2025 và giữ vị trí trọng yếu LLM09:2026 bên cạnh nhóm rủi ro mới LLM08:2026 Hidden Context Exposure). Thứ nhất, một tệp snapshot sao lưu của kho Vector chứa hàng trăm nghìn mảng số thực 1536 chiều đã được lưu trữ ở vùng bucket thiếu kiểm soát truy cập chặt chẽ vì đội hạ tầng tin rằng 'chỉ có các con số float vô nghĩa thì không ai đọc được chữ'. Thứ hai, ba tài liệu từ luồng ticket khách hàng tự động đồng bộ vào RAG chứa các khối chú thích ẩn và từ khóa lặp dày đặc, khiến mỗi khi nhân viên hỏi về số tài khoản thanh toán công ty, đoạn chunk bị đầu độc luôn lọt Top-1 kết quả truy xuất.",
+        "Trường hợp này là lời nhắc đanh thép cho mọi kiến trúc sư AI khi triển khai bảo mật vector db chống đầu độc rag owasp: cơ sở dữ liệu vector không phải một kho lưu trữ phụ vô hại đứng ngoài vòng kiểm soát IAM. Nếu không khóa ranh giới đa thuê bao ngay tại lõi chỉ mục, không ẩn danh hóa PII trước khi chuyển văn bản sang vector và không kiểm chứng nguồn gốc từng đoạn tài liệu khi nạp vào, toàn bộ lớp bảo vệ ở giao diện hay System Prompt đều trở nên vô nghĩa."
+      ],
+      "bullets": [
+        "Lỗ hổng quên filter tầng ứng dụng (Application-Layer Filtering) rất dễ tái diễn mỗi khi đội ngũ thêm tính năng tìm kiếm mới hoặc viết script đồng bộ dữ liệu.",
+        "Mảng số thực Embedding giữ lại lượng thông tin ngữ nghĩa khổng lồ đủ để thuật toán đảo ngược khôi phục nguyên văn đoạn văn bản chứa PII.",
+        "Văn bản bị đầu độc với mật độ từ khóa cao có thể thống trị bảng xếp hạng tương đồng cosine và điều khiển câu trả lời RAG mà không cần chạm vào Prompt."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-3-don-tan-cong-tang-vector-va-vec2text",
+      "eyebrow": "KHÁM NGHIỆM CHUYÊN SÂU • VEC2TEXT, POISONING & OVERFILTERING",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu ba điểm yếu chí mạng: Đảo ngược Vec2Text, Đầu độc RAG và cái bẫy HNSW Overfiltering",
+      "paragraphs": [
+        "Điểm yếu đầu tiên cần xóa bỏ ngay trong tư duy kỹ thuật là huyền thoại 'Embedding giống như mật mã một chiều'. Công trình nghiên cứu Vec2Text do nhóm Morris và cộng sự công bố đã chứng minh rằng kẻ tấn công chỉ cần sở hữu vector embedding mục tiêu và quyền gọi hộp đen mô hình embedding tương ứng là có thể huấn luyện vòng lặp tinh chỉnh chuỗi từ (iterative reconstruction): bắt đầu từ một câu văn đoán sơ bộ, mã hóa thành vector, đo khoảng cách tới vector mục tiêu rồi dùng mô hình seq2seq hiệu chỉnh từng bước. Kết quả thực nghiệm cho thấy Vec2Text khôi phục được từ 50% đến hơn 90% từ ngữ gốc chính xác, bao gồm tên riêng, chẩn đoán y khoa và thông số nhạy cảm. Do đó, mọi bảng lưu vector (`pgvector` hoặc `Qdrant`) phải chịu cùng cấp độ mã hóa lưu trữ (AES-256/KMS), tách mạng nội bộ, cấm hoàn toàn API xuất vector thô và bắt buộc chạy bộ che mờ PII (như Presidio tiếng Việt) trước khi tạo vector.",
+        "Điểm yếu thứ hai là RAG Knowledge Poisoning kết hợp Hidden Context Exposure (LLM08:2026). Kẻ tấn công lợi dụng các luồng nạp dữ liệu bán tự động (như email hỗ trợ, form góp ý, file PDF đối tác hoặc trang web cào tự động) để chèn những đoạn văn bản có độ tương đồng ngữ nghĩa cực cao với các truy vấn phổ biến như 'hướng dẫn chuyển khoản', 'chính sách bảo hành' hoặc 'thông tin liên hệ'. Khi người dùng hỏi, chunk độc hại chiếm Top-K trong cửa sổ ngữ cảnh và âm thầm dẫn dắt LLM trả lời sai sự thật. Hàng rào phòng thủ bắt buộc là thiết lập Ingestion Provenance Manifest: mỗi tài liệu trước khi tách đoạn và tính embedding đều phải bóc sạch comment/thuộc tính ẩn, gán nhãn `source_trust_tier` (phân biệt rõ tài liệu nội bộ đã ký duyệt với dữ liệu từ bên ngoài), tính mã băm SHA-256 bất biến và gắn điều kiện hết hạn (`effective_status = 'ACTIVE'`).",
+        "Điểm yếu thứ ba mang tính cạm bẫy hiệu năng lẫn bảo mật trong hệ thống đa khách hàng (Multi-Tenant): nhiều đội ngũ khi chuyển từ lọc ở tầng API sang bật PostgreSQL Row-Level Security (RLS) trên bảng chứa `pgvector` bỗng gặp lỗi truy vấn RAG trả về kết quả rỗng hoặc mất sạch độ chính xác dù dữ liệu có tồn tại. Nguyên nhân nằm ở thuật toán HNSW truyền thống thực hiện tìm kiếm hàng xóm gần nhất trên toàn bộ đồ thị trước, rồi mới để RLS loại bỏ các dòng không thuộc `tenant_id` hiện tại (hiện tượng Overfiltering). Kể từ phiên bản `pgvector 0.8.0`, vấn đề này được giải quyết triệt để bằng cơ chế `hnsw.iterative_scan = strict_order` (hoặc `relaxed_order`), cho phép bộ máy Postgres tự động quét tiếp chỉ mục theo từng vòng lặp đến khi thu đủ số lượng `LIMIT` hợp lệ thuộc đúng tenant. Nếu hạ tầng sử dụng `qdrant/qdrant` (Apache-2.0, viết bằng Rust) cho kho tri thức quy mô lớn, kỹ sư cần khai báo chỉ mục payload `tenant_id` với cờ `is_tenant=True` để Qdrant gom nhóm phân đoạn lưu trữ và áp đặt điều kiện lọc ngay trong từng bước nhảy của đồ thị HNSW."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-radar-kien-truc-vector-security",
+      "heading": "Benchmark đa chiều 3 kiến trúc cô lập & bảo vệ kho Vector RAG (Thang điểm 0–100)",
+      "subtitle": "Đánh giá trên cụm 2 triệu đoạn vector phân bổ cho 120 doanh nghiệp/đại lý (tỷ lệ dữ liệu mỗi tenant từ 0.2% đến 15%)",
+      "chart": {
+        "chartType": "radar",
+        "title": "Hồ sơ năng lực Bảo mật & Hiệu năng truy xuất Vector Đa Tenant",
+        "subtitle": "So sánh Share Index lọc ở Code, RLS thiếu Iterative Scan và Chuẩn pgvector 0.8+ FORCE RLS / Qdrant is_tenant=True",
+        "xKey": "dimension",
+        "yUnit": "điểm/100",
+        "series": [
+          {
+            "key": "appFilter",
+            "label": "Shared Index + App Filter",
+            "color": "#EF4444"
+          },
+          {
+            "key": "legacyRls",
+            "label": "RLS cũ thiếu Iterative Scan",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "hardenedVector",
+            "label": "pgvector 0.8+ / Qdrant is_tenant",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "dimension": "Cô lập Tenant lõi DB",
+            "appFilter": 25,
+            "legacyRls": 96,
+            "hardenedVector": 100
+          },
+          {
+            "dimension": "Kháng Overfiltering HNSW",
+            "appFilter": 85,
+            "legacyRls": 32,
+            "hardenedVector": 96
+          },
+          {
+            "dimension": "Chống đảo ngược Vec2Text",
+            "appFilter": 20,
+            "legacyRls": 45,
+            "hardenedVector": 95
+          },
+          {
+            "dimension": "Kiểm định Chống Đầu Độc",
+            "appFilter": 30,
+            "legacyRls": 40,
+            "hardenedVector": 98
+          },
+          {
+            "dimension": "Độ chính xác Recall@10",
+            "appFilter": 94,
+            "legacyRls": 48,
+            "hardenedVector": 95
+          },
+          {
+            "dimension": "Tốc độ Truy vấn P95",
+            "appFilter": 88,
+            "legacyRls": 62,
+            "hardenedVector": 92
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Cô lập Tenant ở lớp cứng",
+            "value": "100 / 100",
+            "delta": "FORCE RLS / Qdrant Payload",
+            "positive": true
+          },
+          {
+            "label": "Recall@10 của Tenant nhỏ",
+            "value": "95% vs 48%",
+            "delta": "+47 điểm nhờ Iterative Scan",
+            "positive": true
+          },
+          {
+            "label": "Rủi ro lộ PII qua Vec2Text",
+            "value": "0%",
+            "delta": "Redact PII trước Embedding",
+            "positive": true
+          },
+          {
+            "label": "Truy vấn chéo Tenant lỗi",
+            "value": "0 dòng",
+            "delta": "Chặn tại Storage Engine",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo kiểm thực nghiệm trên bộ dữ liệu 2M chunks lệch phân phối tenant tại DOMATION Vector Security Lab (pgvector 0.8 & Qdrant v1.x)."
+      },
+      "insightSummary": "Mô hình chỉ lọc `WHERE tenant_id = ?` ở code ứng dụng đạt điểm Recall cao nhưng sụp đổ hoàn toàn ở tiêu chí bảo mật lõi (25/100) vì chỉ một API quên gắn filter là lộ cả kho. Ngược lại, bật RLS trên pgvector phiên bản cũ lại đánh mất Recall cho những đại lý nhỏ (rớt xuống 48/100) do Overfiltering. Chỉ khi kết hợp `pgvector 0.8+ FORCE RLS + iterative_scan` hoặc `Qdrant is_tenant=True` cùng che PII trước lúc Embedding, cả 6 trục bảo mật và hiệu năng đều đạt 92–100 điểm."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-radar-bao-mat-vector-db",
+      "src": "/imgs/boost/charts/vector-embedding-weaknesses-hidden-context-exposure-rag-report.webp",
+      "alt": "Biểu đồ báo cáo kiểm toán OWASP LLM08/LLM09 Vector và Embedding Weaknesses so sánh cách ly đa thuê bao trên pgvector 0.8+ và Qdrant",
+      "caption": "Đối chiếu toàn diện năng lực cô lập Tenant ở tầng cơ sở dữ liệu, chống mất kết quả HNSW Overfiltering, bảo vệ trước Vec2Text và kiểm định chống đầu độc tri thức RAG.",
+      "badge": "Báo Cáo Forensic • OWASP Vector-Sec"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-pgvector-force-rls-iterative-scan-va-qdrant",
+      "heading": "Code Recipe: Cưỡng bức FORCE RLS + hnsw.iterative_scan (pgvector 0.8+) & cấu hình Qdrant is_tenant",
+      "language": "sql",
+      "filename": "migrations/014_hardened_multitenant_vector_rls.sql",
+      "description": "Kịch bản SQL chuẩn sản xuất cho PostgreSQL pgvector 0.8.0+ kết hợp FORCE ROW LEVEL SECURITY, kiểm chứng nguồn gốc SHA-256 và chế độ hnsw.iterative_scan chống Overfiltering, kèm mẫu khởi tạo payload index `is_tenant=True` tương đương trên Qdrant.",
+      "code": "-- ============================================================\n-- PHAN 1: POSTGRESQL PGVECTOR 0.8.0+ (FORCE RLS + ITERATIVE SCAN)\n-- ============================================================\nCREATE EXTENSION IF NOT EXISTS vector;\n\nCREATE TABLE rag_document_chunks (\n  chunk_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  tenant_id      TEXT NOT NULL,\n  agency_id      TEXT NOT NULL,\n  source_sha256  CHAR(64) NOT NULL,\n  trust_tier     TEXT NOT NULL CHECK (trust_tier IN ('INTERNAL_VERIFIED', 'EXTERNAL_SANITIZED')),\n  effective_stat TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (effective_stat IN ('ACTIVE', 'ARCHIVED')),\n  clean_content  TEXT NOT NULL,\n  embedding      VECTOR(1536) NOT NULL,\n  created_at     TIMESTAMPTZ NOT NULL DEFAULT now()\n);\n\nCREATE INDEX idx_rag_chunks_hnsw ON rag_document_chunks USING hnsw (embedding vector_cosine_ops);\nCREATE INDEX idx_rag_chunks_tenant_active ON rag_document_chunks (tenant_id, agency_id, effective_stat);\n\nALTER TABLE rag_document_chunks ENABLE ROW LEVEL SECURITY;\nALTER TABLE rag_document_chunks FORCE ROW LEVEL SECURITY;\n\nCREATE POLICY rag_tenant_isolation_policy ON rag_document_chunks\n  USING (\n    tenant_id = current_setting('app.current_tenant_id', true)\n    AND agency_id = current_setting('app.current_agency_id', true)\n    AND effective_stat = 'ACTIVE'\n  );\n\n-- Truy van an toan trong 1 transaction: chong ro ri chéo & chong Overfiltering\nBEGIN;\n  SET LOCAL app.current_tenant_id = 'tenant_ecolife';\n  SET LOCAL app.current_agency_id = 'agency_f1_tunglong';\n  SET LOCAL hnsw.iterative_scan = strict_order;\n  SET LOCAL hnsw.max_scan_tuples = 20000;\n\n  SELECT chunk_id, trust_tier, clean_content, 1 - (embedding <=> $1::vector) AS similarity\n  FROM rag_document_chunks\n  WHERE trust_tier = 'INTERNAL_VERIFIED'\n  ORDER BY embedding <=> $1::vector\n  LIMIT 6;\nCOMMIT;\n\n/* ============================================================\n   PHAN 2: QDRANT EQUIVALENT (Python SDK - Hard HNSW Tenant Index)\n   client.create_payload_index(\n       collection_name=\"enterprise_rag_v2\",\n       field_name=\"tenant_id\",\n       field_schema=models.PayloadSchemaType.KEYWORD,\n       is_tenant=True,\n   )\n   ============================================================ */"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-vector-db-rag",
+      "heading": "Checklist kiểm toán bảo mật tầng Vector DB & Pipeline RAG trước khi đưa lên Production",
+      "items": [
+        {
+          "check": "Bật FORCE ROW LEVEL SECURITY (pgvector) hoặc payload index `is_tenant=True` (Qdrant) trên toàn bộ tập vector",
+          "severity": "critical",
+          "verificationHow": "Chạy truy vấn tìm kiếm tương đồng bằng token của Tenant A nhưng truyền vào câu hỏi đặc thù chỉ có trong dữ liệu Tenant B và xác nhận log truy vấn DB.",
+          "passThreshold": "100% truy vấn trả về 0 kết quả của Tenant B kể cả khi tầng API cố tình bỏ sót mệnh đề WHERE."
+        },
+        {
+          "check": "Kích hoạt `hnsw.iterative_scan` trên PostgreSQL pgvector >= 0.8.0 để chống hụt Top-K ở tenant nhỏ",
+          "severity": "critical",
+          "verificationHow": "Tạo một tenant thử nghiệm chỉ chiếm 0.3% tổng số bản ghi trong bảng 1 triệu vector và chạy truy vấn `LIMIT 8`.",
+          "passThreshold": "Hệ thống trả về đủ 8 đoạn liên quan thuộc đúng tenant đó với Recall@8 đạt >= 94%."
+        },
+        {
+          "check": "Ẩn danh hóa toàn bộ PII (CCCD, SĐT, Email cá nhân, Lương) trước khi tạo Vector Embedding",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra cột `clean_content` đi vào mô hình Embedding trên mẫu hồ sơ khách hàng và nhân sự.",
+          "passThreshold": "0 dãy CCCD hoặc SĐT thô tồn tại trong đoạn text dùng để sinh mảng vector, triệt tiêu giá trị khai thác của đòn Vec2Text."
+        },
+        {
+          "check": "Ghi sổ nguồn gốc bất biến (SHA-256 + `trust_tier` + `effective_stat`) chống đầu độc kho tri thức RAG",
+          "severity": "high",
+          "verificationHow": "Thử đẩy một tài liệu chưa qua phê duyệt hoặc chứa comment HTML ẩn vào luồng nạp tự động và thực hiện tìm kiếm.",
+          "passThreshold": "Tài liệu chưa ký duyệt bị gán `EXTERNAL_SANITIZED` hoặc kẹt ở cổng kiểm dịch, không thể chen vào tập `INTERNAL_VERIFIED`."
+        },
+        {
+          "check": "Khóa API xuất mảng vector thô và mã hóa toàn bộ Snapshot / Backup của Vector DB bằng KMS",
+          "severity": "high",
+          "verificationHow": "Rà soát quyền IAM của bucket lưu backup Qdrant/Postgres và kiểm tra các endpoint API tìm kiếm xem có trả về trường `vector` trong JSON response hay không.",
+          "passThreshold": "Response API tìm kiếm ẩn 100% mảng số thực embedding; 100% bản sao lưu được mã hóa AES-256 ở trạng thái nghỉ."
+        },
+        {
+          "check": "Triển khai bài kiểm thử chéo Tenant tự động trong pipeline CI/CD trước khi phát hành thay đổi Index",
+          "severity": "recommended",
+          "verificationHow": "Chạy script kiểm thử xác thực chéo 2 tenant sau mỗi lần thay đổi schema bảng chunk hoặc nâng cấp bộ chia văn bản.",
+          "passThreshold": "Tỷ lệ rò rỉ chéo bằng 0 và thời gian truy vấn P95 dưới ngưỡng SLA thiết kế."
+        }
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "ma-tran-so-sanh-chien-luoc-co-lap-vector",
+      "heading": "So sánh 4 chiến lược cô lập đa thuê bao (Multi-Tenant) cho Vector Database doanh nghiệp",
+      "caption": "Đánh giá thực tế từ góc độ bảo mật OWASP LLM08/LLM09, tính đồng bộ giao dịch ERP/CRM và chi phí vận hành dài hạn",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "Shared Table + Lọc ở App",
+        "pgvector 0.8+ FORCE RLS",
+        "Qdrant Payload is_tenant=True",
+        "Tách Collection/DB riêng"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Độ an toàn chống quên filter ở API mới",
+          "values": [
+            "Thấp — chỉ cần 1 lập trình viên quên WHERE là lộ sạch dữ liệu.",
+            "Rất cao — Database tự cưỡng bức theo phiên giao dịch.",
+            "Cao — ép buộc qua lớp gateway + HNSW payload traversal.",
+            "Tuyệt đối — tách vật lý hoàn toàn không gian lưu trữ."
+          ],
+          "winnerNote": "FORCE RLS & Tách vật lý khóa cứng rủi ro lỗi người code"
+        },
+        {
+          "criterion": "Khắc phục Overfiltering HNSW của tenant nhỏ",
+          "values": [
+            "Thường bị thiếu kết quả nếu không tinh chỉnh ef_search.",
+            "Giải quyết gọn bằng `hnsw.iterative_scan` từ bản 0.8.0.",
+            "Tối ưu gốc nhờ clustering phân đoạn theo `is_tenant=True`.",
+            "Không bị ảnh hưởng chéo vì mỗi tenant có đồ thị HNSW riêng."
+          ],
+          "winnerNote": "pgvector 0.8+ & Qdrant xử lý mượt ngay trên 1 cụm"
+        },
+        {
+          "criterion": "Đồng bộ giao dịch ACID với CRM / ERP / MISA",
+          "values": [
+            "Khá tốt nếu dùng chung Postgres nhưng thiếu an toàn.",
+            "Xuất sắc — sửa giá hay hủy tài liệu là cập nhật cùng 1 transaction.",
+            "Trung bình — cần cơ chế CDC/Outbox đồng bộ từ Postgres sang.",
+            "Phức tạp — phải quản lý kết nối và đồng bộ hàng trăm kho."
+          ],
+          "winnerNote": "pgvector thắng tuyệt đối khi RAG gắn liền ERP/CRM"
+        },
+        {
+          "criterion": "Chi phí RAM & Vận hành ở quy mô 200+ Tenant",
+          "values": [
+            "Thấp nhất nhưng không đạt chuẩn kiểm toán bảo mật.",
+            "Tối ưu cao — 1 bộ chỉ mục và connection pool dùng chung.",
+            "Rất tốt — hỗ trợ Scalar/Binary Quantization giảm 4x–32x RAM.",
+            "Rất đắt và nặng — phình RAM vì hàng trăm chỉ mục HNSW rời."
+          ],
+          "winnerNote": "Qdrant Quantization & pgvector Shared Index tiết kiệm nhất"
+        },
+        {
+          "criterion": "Phạm vi ứng dụng khuyến nghị tại DOMATION",
+          "values": [
+            "Cấm sử dụng trên môi trường sản xuất.",
+            "Mặc định cho hệ thống ERP 5.0, CRM đa đại lý F1 & dữ liệu nhạy cảm.",
+            "Khuyên dùng cho kho tri thức 10M+ chunks cần tìm kiếm lai tốc độ cao.",
+            "Dành riêng cho Tập đoàn ký gói Private Server chuyên biệt."
+          ],
+          "winnerNote": "Phối hợp pgvector FORCE RLS + Qdrant theo từng phân tầng tải"
+        }
+      ],
+      "footnote": "Ghi chú: Không phụ thuộc vào chiến lược lưu trữ nào, toàn bộ vector đều phải qua bước che PII trước khi tạo Embedding để vô hiệu hóa đòn đảo ngược Vec2Text."
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-lai-pgvector-va-qdrant-tai-domation",
+      "eyebrow": "ÁP DỤNG THỰC CHIẾN • KIẾN TRÚC DOMATION ENTERPRISE",
+      "variant": "narrative",
+      "heading": "Khi nào DOMATION chọn pgvector FORCE RLS và khi nào kết hợp cùng Qdrant `is_tenant=True`",
+      "paragraphs": [
+        "Trên các hệ thống vận hành may đo phục vụ nhiều đại lý F1 hoặc chuỗi nhượng quyền đa chi nhánh như EcoLife Signature hay Phúc Lộc Thọ, tài liệu hỏi đáp của Trợ lý AI gắn liền từng phút với dữ liệu giao dịch đang thay đổi: một căn hộ vừa chốt cọc trong CRM 360° hoặc một chương trình Voucher Hub vừa hết ngân sách phải biến mất khỏi kết quả tìm kiếm ngay lập tức. Với bài toán này, lưu trữ vector ngay bên trong PostgreSQL pgvector 0.8+ kết hợp `FORCE ROW LEVEL SECURITY` và `hnsw.iterative_scan` là lựa chọn tối ưu nhất vì mọi thay đổi trạng thái ở ERP đều đồng bộ tức thì cùng một giao dịch ACID, tuyệt đối không có độ trễ đồng bộ hay nguy cơ đại lý này đọc nhầm khách hàng của đại lý khác.",
+        "Ở chiều ngược lại, khi triển khai các kho tri thức chuyên sâu quy mô hàng chục triệu đoạn tài liệu phục vụ tìm kiếm lai ngữ nghĩa kết hợp từ khóa (Dense + Sparse BM25) cho trung tâm đào tạo lớn hoặc hệ thống nghiên cứu sản phẩm, DOMATION sử dụng Qdrant chạy trên cụm máy chủ riêng với chỉ mục `is_tenant=True` và lượng tử hóa bộ nhớ để giữ tốc độ truy xuất dưới ngưỡng mili-giây. Dù đứng trên nền PostgreSQL hay Qdrant, cả hai tuyến đều tuân thủ chung một luật thép: làm sạch dữ liệu ẩn trước lúc băm đoạn, ẩn danh hóa PII tiếng Việt trước khi tính Embedding và khóa chặt API không bao giờ để lọt mảng số thực vector ra ngoài."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-vector-sec",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy coi mỗi mảng số thực Vector Embedding như một bản sao văn bản rõ đã được nén lại — tuyệt đối không phải khóa mã hóa",
+      "body": "Rất nhiều hệ thống AI RAG trông cực kỳ hào nhoáng trên bản demo nhưng lại sập ngay bài kiểm tra bảo mật đầu tiên chỉ vì thiếu cô lập ở tầng Vector DB. Tại DOMATION, nguyên tắc bắt buộc khi dựng kho tri thức cho nhiều đại lý hay nhiều phòng ban là: khóa tenant ngay trong lõi cơ sở dữ liệu bằng PostgreSQL 0.8+ FORCE RLS hoặc Qdrant is_tenant=True, che sạch PII tiếng Việt trước khi sinh vector để triệt tiêu nguy cơ Vec2Text, và gắn chữ ký kiểm chứng nguồn gốc cho từng đoạn tri thức nạp vào."
+    }
+  ]
+}

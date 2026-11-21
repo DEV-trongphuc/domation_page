@@ -1,0 +1,328 @@
+{
+  "id": "art-136",
+  "number": "136",
+  "slug": "ap-dung-iso-iec-42001-nist-ai-rmf-cho-doanh-nghiep-viet",
+  "shardId": "shard07",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "AI Governance & Enterprise Compliance",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "field-report",
+  "title": "Áp dụng ISO/IEC 42001 & NIST AI RMF cho doanh nghiệp Việt: Biến tiêu chuẩn quốc tế thành checklist thực thi",
+  "seoTitle": "ISO/IEC 42001 & NIST AI RMF Cho Doanh Nghiệp Việt | DOMATION",
+  "metaDescription": "Khung quản trị AI (AIMS) ISO/IEC 42001 và 4 hàm Govern–Map–Measure–Manage của NIST AI RMF rút gọn thành lộ trình kiểm soát 90 ngày cho SME Việt Nam.",
+  "focusKeyword": "iso iec 42001 và nist ai rmf doanh nghiệp việt",
+  "secondaryKeywords": [
+    "hệ thống quản lý ai iso 42001",
+    "quản trị rủi ro ai nist rmf",
+    "ai governance framework cho sme",
+    "kiểm toán hệ thống ai doanh nghiệp",
+    "phân loại mức độ rủi ro ai agent"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "ISO/IEC 42001 Và NIST AI RMF Phiên Bản Thực Chiến SME",
+  "thumbnailHook": "Rút gọn tiêu chuẩn AI quốc tế thành 4 mốc kiểm soát 90 ngày.",
+  "thumbnailBadge": "GOVERNANCE • ISO 42001",
+  "coverImage": "/imgs/boost/v2/ap-dung-iso-iec-42001-nist-ai-rmf-cho-doanh-nghiep-viet.webp",
+  "screenshotImage": "/imgs/boost/charts/ap-dung-iso-iec-42001-nist-ai-rmf-cho-doanh-nghiep-viet-report.webp",
+  "coverAlt": "Báo cáo thực địa triển khai iso iec 42001 và nist ai rmf doanh nghiệp việt theo lộ trình quản trị 90 ngày của DOMATION",
+  "screenshotCaption": "Biểu đồ radar đo mức trưởng thành quản trị AI trên 6 trục kiểm soát cốt lõi (Kiểm kê Shadow AI, Bảo vệ PII, Đánh giá Red-Teaming, Human-in-the-Loop, Kill-Switch và Tuân thủ DPIA) qua mốc Ngày 0, Ngày 45 và Ngày 90.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Hạ Tầng Quản Trị Doanh Nghiệp 5.0",
+  "relatedSlugs": [
+    "tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai",
+    "xay-dung-chinh-sach-su-dung-ai-noi-bo-va-dao-tao-nhan-su",
+    "immutable-audit-log-truy-vet-quyet-dinh-ai-agent",
+    "ai-red-teaming-dinh-ky-voi-promptfoo-truoc-moi-ban-release"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Áp dụng iso iec 42001 và nist ai rmf doanh nghiệp việt không đồng nghĩa với việc biến một SME 50–300 nhân sự thành bộ máy hành chính cồng kềnh. Báo cáo thực địa của DOMATION chứng minh cách ghép cấu trúc hệ thống quản lý AI (AIMS Clauses 4–10 & Annex A) của ISO/IEC 42001 với bốn hàm vận hành thực thi Govern–Map–Measure–Manage của NIST AI RMF thành lộ trình 90 ngày gọn nhẹ: kiểm kê mọi AI Agent, phân tầng rủi ro Tier 1–2–3, tự động hóa kiểm thử adversarial bằng Promptfoo và thiết lập Kill-Switch dưới 10 giây.",
+  "keyTakeaways": [
+    "ISO/IEC 42001 cung cấp khung chứng nhận hệ thống quản lý AI (Clauses 4–10 + Annex A) tương thích hoàn toàn cấu trúc Annex SL của ISO 27001, còn NIST AI RMF cung cấp sổ tay kỹ thuật thực thi theo 4 hàm Govern, Map, Measure, Manage.",
+    "Không áp chung một quy trình kiểm duyệt nặng nề cho mọi AI: hãy phân tầng 3 mức rủi ro (Tier 1 Hỗ trợ nội bộ, Tier 2 Giao tiếp khách hàng, Tier 3 Quyết định Tài chính/Nhân sự/Pháp lý có Human-in-the-Loop bắt buộc).",
+    "Chứng cứ kiểm toán AI thời đại mới không phải biên bản họp ký tay, mà là log chạy test đối kháng Promptfoo trong CI/CD, dấu vết telemetry Langfuse và sổ cái bất biến `agent_decision_logs`.",
+    "Lộ trình 90 ngày của DOMATION giúp SME Việt Nam nâng điểm trưởng thành quản trị AI từ mức tự phát (< 25/100) lên mức sẵn sàng đấu thầu B2B và kiểm toán nội bộ (> 85/100)."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Chu kỳ chuẩn hóa AI Governance",
+      "value": "90 ngày (4 pha)"
+    },
+    {
+      "label": "Tỷ lệ chặn lỗi trước release",
+      "value": ">= 95% Promptfoo"
+    },
+    {
+      "label": "Thời gian ngắt sự cố Kill-Switch",
+      "value": "< 10 giây toàn cục"
+    },
+    {
+      "label": "Điểm trưởng thành 6 trục (Ngày 90)",
+      "value": "88 / 100 điểm"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Doanh nghiệp SME Việt Nam chưa định đi thi chứng nhận ISO/IEC 42001 ngay thì có cần áp dụng khung này không?",
+      "answer": "Rất cần ở phiên bản thực thi tinh gọn, không cần chạy theo giấy tờ hình thức. Lý do thực tế nhất hiện nay là yêu cầu thẩm định nhà cung cấp (Vendor Due Diligence) từ các đối tác lớn, ngân hàng hoặc tập đoàn FDI: khi họ muốn tích hợp dữ liệu với phần mềm hay hệ thống bán hàng của bạn, câu hỏi đầu tiên họ đặt ra là 'Hệ thống AI của bạn có kiểm soát chống bịa đặt thông tin, chống lộ dữ liệu chéo và có log truy vết quyết định hay không?'. Áp dụng các kiểm soát lõi của ISO/IEC 42001 và NIST AI RMF giúp bạn giải quyết triệt để rủi ro vận hành nội bộ đồng thời sẵn sàng bộ bằng chứng thuyết phục khách hàng B2B."
+    },
+    {
+      "question": "Sự khác biệt thực tế giữa ISO/IEC 42001 và NIST AI RMF là gì, nên chọn cái nào trước?",
+      "answer": "Nếu hình dung trực quan, NIST AI RMF (do Viện Tiêu chuẩn và Công nghệ Quốc gia Hoa Kỳ ban hành) giống như cuốn sổ tay kỹ thuật của kỹ sư chỉ rõ cách xác định bối cảnh, đo lường thiên lệch, kiểm thử độ an toàn và xử lý rủi ro theo bốn vòng lặp Govern–Map–Measure–Manage. Trong khi đó, ISO/IEC 42001 là tiêu chuẩn Hệ thống quản lý AI (AIMS) có cấu trúc Clauses 4–10 và phụ lục Annex A dùng để đánh giá và cấp chứng nhận độc lập quốc tế. Cách hiệu quả nhất tại DOMATION là dùng NIST AI RMF làm bộ hành động kỹ thuật hàng ngày cho đội sản phẩm, còn cấu trúc hồ sơ thì sắp xếp đúng theo Clauses của ISO/IEC 42001 để không phải làm lại hai lần."
+    },
+    {
+      "question": "Làm sao để kiểm soát AI Chatbot báo giá trên Zalo OA hoặc Website không tự ý bịa mã giảm giá 50% gây thiệt hại tài chính?",
+      "answer": "Đó là ví dụ điển hình của bước Measure và Manage đối với AI Agent Tier 2. Về kỹ thuật, bạn phải áp ba lớp chặn: 1) Tách công cụ tra cứu giá và phát hành voucher ra thành hàm xác định (deterministic tool call) thay vì để LLM tự suy diễn từ văn bản tự do; 2) Cài bộ test tự động bằng Promptfoo chạy hàng loạt kịch bản lừa đảo giảm giá (prompt injection / social engineering) trong quy trình CI/CD trước khi đẩy bất kỳ bản sửa prompt nào lên production; 3) Gắn rào chắn đầu ra (Output Guardrail) phát hiện mọi con số phần trăm ưu đãi không khớp bảng giá chuẩn để chặn hiển thị tức thì."
+    },
+    {
+      "question": "Khi AI tham gia chấm điểm ứng viên hoặc đề xuất duyệt chi trong ERP, doanh nghiệp cần thiết kế cơ chế Human-in-the-Loop như thế nào để vừa an toàn vừa không chậm tiến độ?",
+      "answer": "Trong cấu trúc ERP 5.0, DOMATION phân tách rạch ròi giữa 'quyền đề xuất chuẩn bị' của AI và 'quyền phê duyệt cuối' của con người. AI Agent Tier 3 được phép tự động đọc hóa đơn, đối chiếu hạn mức công nợ, gắn cờ bất thường và soạn sẵn tờ trình tạm ứng hoặc bảng tóm tắt hồ sơ ứng viên chỉ trong 3 giây. Nhưng nút bấm giải ngân hoặc loại hồ sơ bắt buộc phải dừng ở trạng thái `pending_human_approval` chờ Trưởng bộ phận hoặc Kế toán trưởng bấm duyệt kèm chữ ký số phiên giao dịch. Mọi gợi ý của AI kèm nguồn dẫn chứng đều lưu vào bảng `agent_decision_logs` không thể sửa xóa."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "vi-sao-sme-viet-ngai-iso-42001-va-nist-ai-rmf",
+      "eyebrow": "BÁO CÁO THỰC ĐỊA • KÉO TIÊU CHUẨN QUỐC TẾ VỀ ĐỜI THỰC SME",
+      "variant": "narrative",
+      "heading": "Khi AI Agent bước từ phòng thử nghiệm ra quầy thu ngân: Một câu bịa giá đủ thổi bay lợi nhuận cả tháng",
+      "pullQuote": "Vấn đề không phải là doanh nghiệp Việt thiếu công cụ AI; vấn đề là phần lớn đội ngũ đang cho AI chạy tự do ngoài đường cao tốc mà không có đồng hồ tốc độ, không có phanh khẩn cấp và không có hộp đen hành trình.",
+      "paragraphs": [
+        "Trong sáu tháng qua, khi khảo sát hàng loạt doanh nghiệp Việt Nam đã mạnh dạn đưa AI Agent vào chăm sóc khách hàng trên Zalo OA, đọc hợp đồng, sàng lọc CV nhân sự và hỗ trợ báo giá đại lý, đội ngũ kỹ sư DOMATION ghi nhận một mẫu số chung đáng suy ngẫm. Ở giai đoạn demo tuần đầu tiên, ai cũng phấn khích vì chatbot trả lời mượt mà và tiết kiệm nhân lực. Nhưng chỉ sau hai tháng vận hành thực tế dưới áp lực khách hàng khó tính và dữ liệu thay đổi liên tục, những vết nứt bắt đầu lộ rõ: trợ lý AI tự tin cam kết chính sách hoàn tiền cũ đã hết hạn từ năm ngoái; nhân viên tự tạo thêm 4 workflow tự động kết nối API ngoài luồng không ai kiểm soát; hoặc tệ hơn, một bản nâng cấp prompt nhỏ khiến tỷ lệ trả lời sai giá tăng vọt suốt cuối tuần mà đến thứ Hai kiểm toán đơn hàng mới phát hiện.",
+        "Khi được gợi ý chuẩn hóa theo iso iec 42001 và nist ai rmf doanh nghiệp việt, phản ứng tự nhiên của hầu hết CEO và Tech Lead SME là lắc đầu: 'Những bộ tiêu chuẩn ISO 42001 hay NIST AI RMF đó nghe như dành cho tập đoàn ngân hàng ngàn tỷ với cả phòng ban pháp chế ngồi viết quy trình cả năm trời, doanh nghiệp 60 người lấy đâu ra nguồn lực?'. Cách nhìn này hoàn toàn dễ hiểu nếu bạn đọc nguyên văn tài liệu tiêu chuẩn mà không có lớp phiên dịch kỹ thuật. Nhưng thực chất, hai bộ khung này sinh ra để trả lời bốn câu hỏi sống còn rất đời thường: Công ty đang có bao nhiêu con AI chạy ở đâu (Map)? Rủi ro sai sót của từng con đo bằng con số nào (Measure)? Nếu nó nói sai hoặc lộ dữ liệu thì chặn và tắt nó ra sao (Manage)? Và ai chịu trách nhiệm cao nhất khi có sự cố (Govern)?",
+        "Báo cáo thực địa này đúc kết cách DOMATION chuyển hóa các điều khoản cốt lõi của ISO/IEC 42001 (Clauses 4–10 và Phụ lục kiểm soát Annex A) cùng bốn hàm Govern–Map–Measure–Manage của NIST AI RMF 1.0 thành một bộ khung vận hành 90 ngày tinh gọn, bám sát hạ tầng phần mềm thực tế của doanh nghiệp Việt."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "doi-chieu-iso-42001-vs-nist-ai-rmf-cho-sme",
+      "heading": "Bản đối chiếu thực chiến: Ghép cặp ISO/IEC 42001 và NIST AI RMF vào hệ điều hành SME Việt Nam",
+      "caption": "Thay vì chọn một bỏ một, hãy dùng NIST AI RMF làm động cơ hành động kỹ thuật và ISO/IEC 42001 làm cấu trúc hồ sơ kiểm toán thống nhất",
+      "columns": [
+        "Trục quản trị cốt lõi",
+        "ISO/IEC 42001 (AIMS — Chuẩn chứng nhận)",
+        "NIST AI RMF 1.0 (Khung kỹ thuật rủi ro)",
+        "Cách DOMATION thực thi cho SME 90 ngày"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Vai trò lãnh đạo & Văn hóa (Leadership & Accountability)",
+          "values": [
+            "Clause 5 (Cam kết lãnh đạo, Chính sách AI, Phân vai RACI) & Clause 7 (Năng lực nhân sự)",
+            "Hàm GOVERN (1.1–2.2): Xác lập khẩu vị rủi ro, cơ chế báo cáo sự cố và đào tạo đội ngũ",
+            "Ban hành AI Acceptable Use Policy 2 trang + chỉ định AI Governance Lead kiêm nhiệm + cấp Private Workspace"
+          ],
+          "winnerNote": "Chốt trách nhiệm rõ ràng trong tuần 1"
+        },
+        {
+          "criterion": "Kiểm kê hệ thống & Đánh giá tác động (Inventory & Impact)",
+          "values": [
+            "Clause 4 (Bối cảnh), Clause 6.1.2 (Đánh giá rủi ro) & Clause 6.1.4 (AI System Impact Assessment)",
+            "Hàm MAP (1.1–2.5): Khoanh vùng mục đích sử dụng, ranh giới dữ liệu và tác động tới con người",
+            "Lập sổ AI Asset Registry (gồm cả Shadow AI & Vibecode) + phân tầng rủi ro Tier 1 / Tier 2 / Tier 3"
+          ],
+          "winnerNote": "Thay thế bảng Excel rời bằng AI Registry"
+        },
+        {
+          "criterion": "Đo lường, Kiểm thử & Giám sát (Metrics & Red-Teaming)",
+          "values": [
+            "Clause 8.2, Clause 9.1 (Giám sát & Đo lường) & Annex A.7 (Kiểm định kỹ thuật & Chất lượng dữ liệu)",
+            "Hàm MEASURE (1.1–2.4): Đánh giá độ chính xác, tính công bằng, chống bịa đặt và trôi mô hình (drift)",
+            "Cắm OpenTelemetry/Langfuse theo dõi trace + chạy bộ test Promptfoo >= 95% pass trong CI/CD trước release"
+          ],
+          "winnerNote": "Tự động hóa 100% bằng chứng kiểm thử"
+        },
+        {
+          "criterion": "Xử lý rủi ro, PII & Bên thứ 3 (Treatment & Supply Chain)",
+          "values": [
+            "Clause 6.1.3 (Xử lý rủi ro), Clause 8.3 & Annex A.8/A.10 (Kiểm soát nhà cung cấp bên thứ ba)",
+            "Hàm MANAGE (1.1–3.4): Thực thi biện pháp giảm thiểu, kế hoạch ứng phó và thu hồi hệ thống lỗi",
+            "Ép AI Gateway + PII Redaction, PostgreSQL FORCE RLS cho RAG, Human-in-the-Loop Tier 3 và Kill-Switch < 10s"
+          ],
+          "winnerNote": "Khóa kỹ thuật thay vì nhắc nhở miệng"
+        },
+        {
+          "criterion": "Cải tiến & Pháp lý bản địa (Continuous Improvement & Law)",
+          "values": [
+            "Clause 10 (Khắc phục sự không phù hợp và cải tiến liên tục vòng đời AIMS)",
+            "Vòng lặp phản hồi hậu kiểm Manage 3.x cập nhật lại bản đồ Map khi phát sinh sự cố thực tế",
+            "Gắn thẳng phụ lục tuân thủ Nghị định 13/2023 & Luật BVDLCN 91/2025/QH15 + diễn tập sự cố hàng quý"
+          ]
+        }
+      ],
+      "footnote": "Ghi chú thực địa: Các doanh nghiệp đã áp dụng ISO/IEC 27001 cho an ninh thông tin có thể tái sử dụng gần 60% cấu trúc Clauses 4–10 (Annex SL) khi mở rộng sang ISO/IEC 42001."
+    },
+    {
+      "type": "prose",
+      "id": "phan-tang-rui-ro-ai-agent-va-giam-sat-vong-doi",
+      "eyebrow": "BÀI HỌC HIỆN TRƯỜNG • PHÂN TẦNG RỦI RO TIER 1–2–3 CHO MULTI-AGENT",
+      "variant": "deep-dive",
+      "heading": "Đừng kẹp cùng một chiếc khóa cho trợ lý tóm tắt họp và Agent phê duyệt tạm ứng ERP",
+      "paragraphs": [
+        "Sai lầm lớn nhất khiến các dự án quản trị AI chết yểu sau một tháng là áp cùng một quy trình phê duyệt năm bước cho mọi tính năng AI lớn nhỏ. Nếu một nhân viên Marketing muốn dùng AI tóm tắt biên bản họp nội bộ mà cũng phải làm hồ sơ đánh giá tác động dài 15 trang, tốc độ đổi mới của doanh nghiệp sẽ đóng băng ngay lập tức. Tại các hệ sinh thái thực chiến mà DOMATION xây dựng — từ Multi-Agent Prepress 208 SKU ở INKICA, Trợ lý tuyển sinh IDEAS, Trợ lý bán hàng 24/7 tại EcoLife Signature cho đến các Agent vận hành bên trong ERP 5.0 12 phân hệ — chúng tôi phân loại mọi tác vụ AI theo ba tầng rủi ro dứt khoát.",
+        "Tầng Tier 1 (Rủi ro Thấp — Hỗ trợ nội bộ không tự quyết): bao gồm tóm tắt tài liệu họp, gợi ý bản nháp bài viết, dịch thuật nội bộ hoặc giải thích quy trình SOP cho nhân viên. Nhóm này chỉ cần đi qua cổng Private AI Workspace có đăng nhập SSO, bật lớp PII Redaction che SĐT/CCCD và ghi log ngân sách token theo phòng ban — tốc độ triển khai gần như tức thì. Tầng Tier 2 (Rủi ro Trung bình — Tương tác khách hàng bên ngoài): bao gồm AI Chatbot trực Website, Zalo OA, Messenger tư vấn sản phẩm, gửi tài liệu PDF và đặt lịch hẹn khám hoặc xem nhà. Vì phát ngôn sai ở tầng này ảnh hưởng trực tiếp tới thương hiệu và cam kết giá, hệ thống bắt buộc trích dẫn đúng kho tri thức RAG đã kiểm duyệt (có cô lập tenant FORCE RLS), tách biệt lời gọi tool lấy giá bán từ cơ sở dữ liệu chính xác, và phải vượt qua bộ kiểm thử đối kháng `promptfoo` trước mọi lần chỉnh sửa prompt.",
+        "Tầng Tier 3 (Rủi ro Cao — Tác động Tài chính, Pháp lý, Nhân sự, Y tế): bao gồm AI đề xuất duyệt đơn Purchase Order/tạm ứng, tính toán điều chỉnh công ca GPS và bảng lương, phân tích bệnh án khách hàng hoặc trích xuất điều khoản hợp đồng thương mại. Tại tầng này, DOMATION áp đặt ba nguyên tắc cứng: bắt buộc Human-in-the-Loop (AI chỉ được phép dựng đề xuất và gắn cờ cảnh báo, con người phải ký xác nhận bước cuối), toàn bộ đầu vào-đầu ra-phiên bản model-tài liệu tham chiếu được ghi vào nhật ký bất biến `agent_decision_logs` để truy vết nguyên nhân gốc, và cấu hình công tắc Kill-Switch cho phép Quản trị viên cô lập hoàn toàn Agent hoặc hạ cấp về quy trình thủ công trong vòng dưới 10 giây nếu phát hiện bất thường."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-truong-thanh-ai-governance-90-ngay",
+      "heading": "Đồ thị trưởng thành quản trị AI trên 6 năng lực cốt lõi sau lộ trình 90 ngày áp dụng ISO/IEC 42001 & NIST AI RMF",
+      "subtitle": "Đối chiếu điểm đánh giá thực tế (thang 0–100) của một doanh nghiệp dịch vụ/B2B quy mô 120 nhân sự qua 3 cột mốc kiểm toán",
+      "chart": {
+        "chartType": "radar",
+        "title": "Hồ sơ trưởng thành AI Governance qua 6 trục kiểm soát (Ngày 0 -> Ngày 45 -> Ngày 90)",
+        "subtitle": "Điểm bình quân tăng từ 21/100 (tự phát) lên 88/100 (đạt chuẩn kiểm toán B2B & pháp lý VN)",
+        "xKey": "dimension",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "day0",
+            "label": "Ngày 0 (Tự phát)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "day45",
+            "label": "Ngày 45 (Map & Measure)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "day90",
+            "label": "Ngày 90 (ISO/NIST Ready)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "dimension": "Kiểm kê Shadow AI", "day0": 15, "day45": 78, "day90": 92 },
+          { "dimension": "PII & Data Lineage", "day0": 22, "day45": 68, "day90": 90 },
+          { "dimension": "Eval & Red-Teaming", "day0": 10, "day45": 62, "day90": 86 },
+          { "dimension": "Human-in-the-Loop", "day0": 30, "day45": 72, "day90": 89 },
+          { "dimension": "Incident Kill-Switch", "day0": 12, "day45": 58, "day90": 88 },
+          { "dimension": "DPIA & Audit Trail", "day0": 35, "day45": 65, "day90": 85 }
+        ],
+        "kpis": [
+          {
+            "label": "Điểm trung bình Ngày 0",
+            "value": "20,7 / 100",
+            "delta": "Mù kiểm soát Shadow AI",
+            "positive": false
+          },
+          {
+            "label": "Điểm trung bình Ngày 45",
+            "value": "67,2 / 100",
+            "delta": "+46,5 điểm",
+            "positive": true
+          },
+          {
+            "label": "Điểm trung bình Ngày 90",
+            "value": "88,3 / 100",
+            "delta": "Đạt chuẩn Vendor Audit",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ tự động hóa bằng chứng",
+            "value": "84%",
+            "delta": "Qua CI/CD & Gateway logs",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp thang chấm điểm trưởng thành AIMS rút gọn của DOMATION dựa trên đối chiếu Annex A ISO/IEC 42001 và bốn hàm NIST AI RMF."
+      },
+      "insightSummary": "Hai trục yếu nhất ở doanh nghiệp Việt tại Ngày 0 là Đánh giá & Red-Teaming (10/100) và Cơ chế ngắt sự cố Kill-Switch (12/100), khiến lỗi bịa thông tin hoặc rò rỉ dữ liệu thường kéo dài nhiều ngày mới phát hiện. Sau 45 ngày đầu hoàn tất Govern & Map và 45 ngày sau khóa bằng Measure & Manage kỹ thuật, cả 6 trục đều vượt ngưỡng 85/100."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-iso-42001-nist-ai-rmf-90-ngay",
+      "src": "/imgs/boost/charts/ap-dung-iso-iec-42001-nist-ai-rmf-cho-doanh-nghiep-viet-report.webp",
+      "alt": "Báo cáo lộ trình 90 ngày áp dụng iso iec 42001 và nist ai rmf doanh nghiệp việt trên hệ sinh thái DOMATION",
+      "caption": "Bảng điều hành AI Governance theo cấu trúc ISO/IEC 42001 & NIST AI RMF: quản lý danh mục AI Registry theo Tier 1–2–3, tỷ lệ đạt kiểm thử Promptfoo CI/CD, trạng thái PII Gateway và đồng hồ sẵn sàng Kill-Switch.",
+      "badge": "AI GOVERNANCE 90D"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "lo-trinh-90-ngay-govern-map-measure-manage",
+      "heading": "Lộ trình 90 ngày biến ISO/IEC 42001 & NIST AI RMF thành hệ thống vận hành thực tế",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "NGÀY 01–21 • GOVERN (Clause 5 & 7)",
+          "title": "Chốt chính sách dùng AI 2 trang, phân vai RACI và mở Private AI Workspace",
+          "detail": "CEO ký ban hành nguyên tắc phân loại dữ liệu được phép và cấm đưa lên AI công cộng; chỉ định đầu mối AI Governance Lead (phối hợp IT – Pháp chế – Vận hành); triển khai cổng AI nội bộ SSO để kéo nhân sự khỏi Shadow AI.",
+          "metricOrTool": "ISO Clause 5 & 7 • NIST Govern"
+        },
+        {
+          "tag": "NGÀY 22–45 • MAP (Clause 4 & 6.1.2/6.1.4)",
+          "title": "Kiểm kê AI Asset Registry, gắn nhãn Tier 1–2–3 và lập hồ sơ AIIA/DPIA",
+          "detail": "Đưa toàn bộ Chatbot CSKH, Workflow n8n/Visual Flow, Coding Agent và công cụ phòng ban vào danh mục kiểm soát chung; xác định ranh giới dữ liệu nhạy cảm theo Luật BVDLCN và đánh giá tác động cho nhóm Tier 2–3.",
+          "metricOrTool": "ISO Clause 6.1.4 • NIST Map"
+        },
+        {
+          "tag": "NGÀY 46–70 • MEASURE (Clause 9.1 & Annex A.7)",
+          "title": "Lắp Telemetry quan sát (Langfuse) và tự động hóa kiểm thử Promptfoo CI/CD",
+          "detail": "Định nghĩa bộ ngưỡng đo lường cho từng Agent: tỷ lệ bịa đặt (Hallucination), khả năng chống Prompt Injection, độ trễ P95 và chi phí token mỗi phiên. Chặn phát hành nếu bộ test đối kháng dưới 95%.",
+          "metricOrTool": "Promptfoo + Langfuse • NIST Measure"
+        },
+        {
+          "tag": "NGÀY 71–90 • MANAGE (Clause 6.1.3, 8.3 & 10)",
+          "title": "Siết PII Gateway, FORCE RLS, Human-in-the-Loop và diễn tập Kill-Switch",
+          "detail": "Cưỡng bức ẩn danh CCCD/SĐT qua AI Gateway, cô lập RAG bằng FORCE RLS, khóa bước duyệt con người cho Agent Tier 3, thiết lập sổ log bất biến và diễn tập ngắt Agent sự cố dưới 10 giây kèm rà soát nhà cung cấp AI.",
+          "metricOrTool": "Kill-Switch < 10s • NIST Manage"
+        }
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-ai-governance-truoc-release",
+      "heading": "Checklist kiểm toán AIMS rút gọn trước khi đưa bất kỳ AI Agent nào lên môi trường thật",
+      "items": [
+        {
+          "check": "Hồ sơ AI Asset Registry có chủ sở hữu (Owner) và phân tầng Tier 1/2/3 rõ ràng",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra danh mục hệ thống AI đang chạy webhook hoặc API key xem có mã Agent nào nằm ngoài bảng kiểm kê hay không.",
+          "passThreshold": "100% Agent và MCP tool có tên kỹ sư chịu trách nhiệm, cấp độ rủi ro và mục đích sử dụng được phê duyệt."
+        },
+        {
+          "check": "Bộ kiểm thử đối kháng Promptfoo vượt ngưỡng an toàn trước mỗi lần sửa Prompt hoặc đổi Model",
+          "severity": "critical",
+          "verificationHow": "Xem lịch sử GitHub Actions / CI pipeline của phiên bản prompt chuẩn bị phát hành.",
+          "passThreshold": "Pass >= 95% bộ ca kiểm thử OWASP LLM (Prompt Injection, Jailbreak, System Prompt Leak, Giá sai) không có ca lỗi mức Critical."
+        },
+        {
+          "check": "Khóa cứng Human-in-the-Loop và giới hạn quyền công cụ (Least Privilege MCP) cho Agent Tier 3",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra danh sách tool được cấp cho Agent và thử giả lập lệnh tự động giải ngân hoặc xóa dữ liệu.",
+          "passThreshold": "Agent chỉ có quyền đọc và tạo bản nháp trạng thái pending; mọi lệnh ghi tài chính/nhân sự đều bắt buộc xác nhận người thật."
+        },
+        {
+          "check": "Nhật ký quyết định bất biến (Immutable Decision Log) phục vụ truy vết sự cố",
+          "severity": "high",
+          "verificationHow": "Truy xuất một phiên tư vấn ngẫu nhiên từ 30 ngày trước trong kho `agent_decision_logs`.",
+          "passThreshold": "Truy được đầy đủ prompt template version, model ID, danh sách document ID đã trích từ RAG, đầu ra cuối cùng và kết quả PII mask."
+        },
+        {
+          "check": "Kiểm tra công tắc ngắt khẩn cấp (Kill-Switch) và phương án dự phòng không AI",
+          "severity": "high",
+          "verificationHow": "Bật cờ vô hiệu hóa một Agent Tier 2 trên bảng điều khiển cấu hình trung tâm và đo thời gian luồng Zalo OA chuyển về nhân viên trực.",
+          "passThreshold": "Toàn bộ lưu lượng chat chuyển mượt về hàng đợi nhân viên CSKH trong < 10 giây mà không mất tin nhắn khách hàng."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-ai-governance",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Quản trị AI không phải cái phanh kìm hãm tăng trưởng — nó là bộ khung gầm giúp doanh nghiệp chạy 120 km/h mà không lật xe",
+      "body": "Khi vận hành hơn 35 hệ thống thực tế từ chuỗi F&B, giáo dục đến nền tảng 6 AI Prepress Agents tại INKICA hay DOM Agent tích hợp 80 công cụ, tôi hiểu rõ nỗi sợ 'làm quy trình phức tạp sẽ giết chết tốc độ'. Vì vậy triết lý của DOMATION khi chuyển dịch ISO/IEC 42001 và NIST AI RMF về cho doanh nghiệp Việt là tự động hóa phần kiểm toán vào ngay hạ tầng: kiểm thử Promptfoo chạy ngầm trước lúc deploy, PII Redaction tự che trước khi ra Cloud, FORCE RLS tự khóa dưới Database và log hành vi tự lưu vết từng mili-giây. Bạn giữ được trọn vẹn tốc độ của doanh nghiệp 5.0 mà vẫn nắm chắc sự an toàn của một tổ chức chuẩn quốc tế."
+    }
+  ]
+}

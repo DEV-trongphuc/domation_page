@@ -26,10 +26,15 @@ import {
   Zap,
 } from 'lucide-react';
 import { Navbar } from './Navbar';
+import { BackToTopPill } from './components/BackToTopPill';
 import { ContactModal } from './ContactModal';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { PartnersTrustSection } from './components/PartnersTrustSection';
 import { DomationFooter } from './components/DomationFooter';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
+import { MobileAppShowcaseSection } from './components/MobileAppShowcaseSection';
+import { MotionVideoShowcase } from './components/MotionVideoShowcase';
+import { ResponsiveSlideDeck } from './components/ResponsiveSlideDeck';
 import { DECOR_PNGS } from './data/enterpriseData';
 import { getErpSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
@@ -465,7 +470,7 @@ const SectionHead: React.FC<{
         <Icon className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
         <span>{eyebrow}</span>
       </div>
-      <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">{children}</h2>
+      <h2 className="text-[20px] sm:text-[26px] lg:text-3xl font-bold text-slate-900 leading-[1.24] tracking-tight">{children}</h2>
     </div>
     {aside && (
       <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">{aside}</p>
@@ -602,12 +607,12 @@ export const ErpLanding: React.FC = () => {
           <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
             <div className="ql-eyebrow mx-auto">
               <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
-              <span>HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP 5.0 • AI AUTOMATION</span>
+              <span>ERP 5.0 MAY ĐO • AI WORKFLOW AUTOMATION</span>
             </div>
 
-            <h1 className="text-[1.75rem] sm:text-5xl xl:text-[52px] font-black text-slate-900 leading-[1.22] tracking-[-0.02em]">
-              Hệ Thống Quản Trị Doanh Nghiệp
-              <span className="block text-gradient-inkica mt-1">Toàn Diện &amp; Tự Động Hóa</span>
+            <h1 className="text-[1.45rem] sm:text-4xl lg:text-5xl xl:text-[52px] font-black text-slate-900 leading-[1.2] tracking-[-0.02em]">
+              Quản Trị Doanh Nghiệp
+              <span className="block text-gradient-inkica mt-1">May Đo &amp; Tự Động Hóa</span>
             </h1>
 
             <p className="max-w-2xl mx-auto text-sm sm:text-lg text-slate-600 leading-relaxed">
@@ -656,8 +661,8 @@ export const ErpLanding: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* KPI strip */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 max-w-6xl mx-auto mt-8 sm:mt-10 text-left">
+          {/* KPI strip (2x2 compact on mobile/sm, 4 cols on lg) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 max-w-6xl mx-auto mt-8 sm:mt-10 text-left">
             {KPIS.map((kpi, idx) => {
               const Icon = kpi.icon;
               return (
@@ -694,6 +699,15 @@ export const ErpLanding: React.FC = () => {
         {/* ═══════════════ PARTNER LOGOS (shared with home) ═══════════════ */}
         <PartnersTrustSection showEcosystemBrands={false} excludeFlagshipIds={['ecolife-signature']} />
 
+        {/* ═══════════════ MOTION VIDEO SHOWCASE (ERP 5.0 60FPS) ═══════════════ */}
+        <section id="motion-showcase" className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <MotionVideoShowcase variant="spotlight" videoId="erp" />
+          </div>
+        </section>
+
+        <MobileAppShowcaseSection variant="erp" />
+
         {/* ═══════════════ LIVE PRODUCT SHOWCASE ═══════════════ */}
         <section id="giao-dien-thuc-te" className="scroll-mt-24 py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -702,7 +716,7 @@ export const ErpLanding: React.FC = () => {
               icon={Maximize2}
               aside="Ảnh chụp trực tiếp từ DOM ERP đang chạy với dữ liệu demo (tenant EcoLife Signature). Tên khách hàng, số điện thoại và số liệu chỉ mang tính minh họa."
             >
-              Mọi Phân Hệ Hội Tụ{' '}
+              Mọi Phân Hệ{' '}
               <span className="text-gradient-inkica">Trên Một Màn Hình</span>
             </SectionHead>
 
@@ -810,10 +824,43 @@ export const ErpLanding: React.FC = () => {
               icon={Layers}
               aside="Toàn bộ chu trình vận hành từ khi khách hàng xuất hiện trên Ads đến chấm công, chia hoa hồng, tính lương và báo cáo tài chính đều được số hóa chặt chẽ."
             >
-              12 Phân Hệ Doanh Nghiệp <span className="text-gradient-inkica">Chuẩn Hóa</span>
+              12 Phân Hệ ERP <span className="text-gradient-inkica">Chuẩn Hóa</span>
             </SectionHead>
 
-            <div className="rounded-[28px] overflow-hidden border border-slate-200/80 bg-slate-200/70 shadow-xs">
+            {/* Mobile/Tablet (< lg): 12 Modules SlideDeck with SlideDots */}
+            <div className="lg:hidden">
+              <ResponsiveSlideDeck
+                items={ENTERPRISE_MODULES}
+                mobilePerPage={2}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={4}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-3"
+                ariaLabel="12 Phân hệ ERP chuẩn hóa"
+                keyExtractor={(mod) => mod.num}
+                renderItem={(mod) => {
+                  const Icon = mod.icon;
+                  return (
+                    <div className="h-full rounded-2xl bg-white/95 border border-slate-200/85 p-5 flex flex-col gap-3 shadow-2xs">
+                      <div className="flex items-center justify-between">
+                        <div
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${mod.color} text-white shadow-xs`}
+                        >
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <span className={`text-xl font-black tabular-nums ${mod.badgeCls}`}>
+                          {mod.num}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 leading-snug">{mod.title}</h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">{mod.desc}</p>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="hidden lg:block rounded-[28px] overflow-hidden border border-slate-200/80 bg-slate-200/70 shadow-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px">
                 {ENTERPRISE_MODULES.map((mod) => {
                   const Icon = mod.icon;
@@ -874,6 +921,8 @@ export const ErpLanding: React.FC = () => {
                   src={DECOR_PNGS.funnel}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
                   className="hidden sm:block pointer-events-none select-none absolute -top-10 -right-6 w-24 h-24 object-contain opacity-90 animate-float-decor z-20"
                 />
                 <ShotFigure
@@ -891,6 +940,8 @@ export const ErpLanding: React.FC = () => {
                   src={DECOR_PNGS.shield}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
                   className="hidden sm:block pointer-events-none select-none absolute -top-8 -left-6 w-24 h-24 object-contain opacity-90 animate-float-gentle z-20"
                 />
                 <ShotFigure
@@ -954,8 +1005,8 @@ export const ErpLanding: React.FC = () => {
               icon={TrendingUp}
               aside="Sự khác biệt giữa phần mềm đóng gói cứng nhắc và hệ thống vận hành custom may đo, thiết kế flow riêng cho doanh nghiệp thời đại mới."
             >
-              So Sánh ERP Truyền Thống vs{' '}
-              <span className="text-gradient-inkica">ERP DOMATION May Đo</span>
+              So Sánh ERP Cũ vs{' '}
+              <span className="text-gradient-inkica">DOMATION May Đo</span>
             </SectionHead>
 
             <div className="overflow-x-auto rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-xs">
@@ -1003,7 +1054,7 @@ export const ErpLanding: React.FC = () => {
                   <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/25 text-cyan-100 text-[11px] font-bold uppercase tracking-widest mb-5">
                     <Sparkles className="w-3.5 h-3.5 text-cyan-300" /> Sẵn sàng triển khai
                   </div>
-                  <h2 className="text-[1.75rem] sm:text-4xl lg:text-[42px] font-black leading-[1.18] tracking-tight mb-4 text-white">
+                  <h2 className="text-[20px] sm:text-3xl lg:text-[40px] font-black leading-[1.2] tracking-tight mb-4 text-white">
                     Sẵn Sàng Chuyển Đổi Số
                     <span className="block pb-1 bg-gradient-to-r from-cyan-300 via-sky-200 to-white bg-clip-text text-transparent">
                       Doanh Nghiệp Của Bạn?
@@ -1014,24 +1065,25 @@ export const ErpLanding: React.FC = () => {
                     kiến trúc ERP, bản dùng thử hệ thống và lộ trình triển khai chi tiết cho doanh nghiệp của bạn.
                   </p>
 
-                  <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center lg:justify-start gap-3 mb-7">
+                  <div className="grid grid-cols-2 sm:inline-flex items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mb-7 max-w-md sm:max-w-none mx-auto lg:mx-0">
                     <button
                       type="button"
                       onClick={() => setShowContactModal(true)}
-                      className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#1535C9] font-black text-sm shadow-[0_12px_32px_rgba(255,255,255,0.22)] hover:-translate-y-0.5 transition-all cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-7 py-3 sm:py-3.5 min-h-[44px] rounded-full bg-white text-[#1535C9] font-black text-xs sm:text-sm whitespace-nowrap shadow-[0_12px_32px_rgba(255,255,255,0.22)] hover:-translate-y-0.5 transition-all cursor-pointer"
                     >
-                      <MessageSquare className="w-4 h-4" />
-                      <span>Liên Hệ Tư Vấn Trực Tiếp</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                      <span>Tư Vấn Trực Tiếp</span>
+                      <ArrowRight className="hidden sm:inline w-4 h-4 shrink-0" />
                     </button>
                     <a
                       href="https://zalo.me/0378859736"
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#0068FF] hover:bg-[#1A7AFF] border border-white/30 text-white font-bold text-sm shadow-[0_10px_28px_rgba(0,104,255,0.5)] hover:-translate-y-0.5 transition-all"
+                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-7 py-3 sm:py-3.5 min-h-[44px] rounded-full bg-[#0068FF] hover:bg-[#1A7AFF] border border-white/30 text-white font-bold text-xs sm:text-sm whitespace-nowrap shadow-[0_10px_28px_rgba(0,104,255,0.5)] hover:-translate-y-0.5 transition-all"
                     >
-                      <PhoneCall className="w-4 h-4" />
-                      <span>Chat Zalo: 0378 859 736</span>
+                      <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                      <span className="sm:hidden">Chat Zalo 24/7</span>
+                      <span className="hidden sm:inline">Chat Zalo: 0378 859 736</span>
                     </a>
                   </div>
 
@@ -1100,19 +1152,17 @@ export const ErpLanding: React.FC = () => {
             </div>
           </div>
         </section>
+        <FounderAuthorityBlock
+          variant="subtle"
+          onOpenContact={() => setShowContactModal(true)}
+          contextNote="DOMATION ERP 5.0 (12 phân hệ) được thiết kế kiến trúc từ A–Z bởi Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION."
+        />
       </main>
 
       <DomationFooter onOpenContact={() => setShowContactModal(true)} />
 
-      {/* Back to top */}
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Lên đầu trang"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
-      >
-        ↑ Đầu trang
-      </button>
+      {/* Centered Blue Back to Top Pill */}
+      <BackToTopPill />
 
       {/* Lightbox */}
       <AnimatePresence>

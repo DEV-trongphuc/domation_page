@@ -1,0 +1,348 @@
+{
+  "id": "art-208",
+  "number": "208",
+  "slug": "multi-tier-hybrid-routing-finops-planner-executor-router",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Multi-Tier Model Routing Architecture",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Multi-Tier Hybrid Routing FinOps: Phối Planner (Fable/Opus/Argon) + Executor (Flash/Sonnet) + Router (Lite)",
+  "seoTitle": "Hybrid Routing: Cắt 72% Chi Phí Với 3 Tầng Model | DOMATION",
+  "metaDescription": "Chạy 100% tác vụ trên model hạng nặng làm chi phí đội 6 lần. Thiết kế kiến trúc 3 tầng Planner–Executor–Router giảm 72% hóa đơn mà chất lượng ổn định.",
+  "focusKeyword": "multi tier hybrid model routing planner executor router",
+  "secondaryKeywords": [
+    "kiến trúc 3 tầng model routing ai",
+    "giảm 72 phần trăm chi phí api llm",
+    "phối hợp opus sonnet haiku hoặc argon flash lite",
+    "finops routing cho hệ thống multi agent",
+    "escalation routing khi model nhỏ thất bại"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Toán Học 3 Tầng Routing: Cắt 72% Hóa Đơn AI",
+  "thumbnailHook": "Router phân luồng, Executor gánh 80% việc, Planner xử lý nút thắt.",
+  "thumbnailBadge": "FINOPS • 3-TIER ROUTING",
+  "coverImage": "/imgs/boost/v2/multi-tier-hybrid-routing-finops-planner-executor-router.webp",
+  "screenshotImage": "/imgs/boost/charts/multi-tier-hybrid-routing-finops-planner-executor-router-report.webp",
+  "coverAlt": "Bản thiết kế kiến trúc multi tier hybrid model routing planner executor router phối hợp Haiku 5.5, Flash-Lite, Sonnet 5.5, Gemini 3.8 Flash và Opus 5.5/Argon cắt 72% chi phí API",
+  "screenshotCaption": "Mô phỏng hóa đơn API hàng tháng (USD) và tỷ lệ hoàn thành tác vụ đạt chuẩn SLA khi chuyển từ kiến trúc dùng 100% mô hình hạng nặng sang Hybrid Routing 3 tầng kết hợp Prompt Caching và Batch API.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc Định Tuyến Agent DOMATION",
+  "relatedSlugs": [
+    "ai-unit-economics-token-finops-kiem-soat-chi-phi-theo-lead",
+    "berriai-litellm-audit-unified-ai-gateway-quan-tri-budget-token",
+    "lightweight-router-arena-claude-haiku-5-5-vs-gemini-3-5-flash-lite-vs-codex-mini",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo thiết kế kiến trúc multi tier hybrid model routing planner executor router phân tích cách loại bỏ lãng phí gấp 6 lần hóa đơn API khi doanh nghiệp dồn toàn bộ lưu lượng vào các mô hình hạng nặng như Claude Fable 5.2, Opus 5.5, Gemini 4 Argon hay GPT-5.6 Sol. Bằng cách tách luồng qua 3 tầng — Router/Checker hạng nhẹ (Haiku 5.5, Flash-Lite, GPT-5.6 Luna), Executor hạng trung (Gemini 3.8 Flash, Sonnet 5.5, GPT-5.6 Terra) và Planner leo thang có điều kiện — kết hợp Prompt Caching giảm 90–95% và Batch/Flex giảm 50%, hệ thống Multi-Agent tại DOMATION cắt 72% chi phí mà vẫn giữ SLA chuẩn xác.",
+  "keyTakeaways": [
+    "Đẩy 100% tác vụ doanh nghiệp lên tầng Heavyweight ($4–$8 input / $20–$40 output mỗi 1M token) làm chi phí trên mỗi Lead hoặc mỗi PR đội lên ~6 lần dù 60–65% cuộc gọi chỉ là phân loại ý định, bóc tách JSON hoặc kiểm định điều kiện đơn giản.",
+    "Tầng Router & Checker (`Claude Haiku 5.5` $0.10/$0.50 <=100K, `Gemini 3.1/3.5 Flash-Lite` $0.25–$0.30/$1.50–$2.50, `GPT-5.6 Luna` $0.20/$1.20) xử lý tới 60% lưu lượng tuyến đầu với chi phí gần như bằng không.",
+    "Tầng Executor (`Gemini 3.8 Flash` $0.75/$3.75 intro, `Claude Sonnet 5.5` $2/$10, `GPT-5.6 Terra` $2/$12, `GPT-5.3-Codex` $1.75/$14) gánh ~30% khối lượng suy luận nghiệp vụ, viết code tính năng và trả lời RAG đa lượt.",
+    "Kinh tế Prompt Caching đòi hỏi tuân thủ luật riêng của từng hãng: Gemini 4 Argon chỉ hỗ trợ Implicit Caching >=4.096 token (giảm 95%), Claude Fast Mode tách cache pool riêng với Standard Mode, còn GPT-5.6 sẽ nhân 2x giá input/cache và 1.5x output nếu vượt 272.000 token.",
+    "Cơ chế Escalation Routing cho phép tầng nhỏ tự động chuyển cấp lên Planner (`Opus 5.5`, `Fable 5.2`, `4 Argon`) khi rớt kiểm tra JSON schema, fail unit test hoặc độ tin cậy thấp, kèm ngưỡng trần `max_escalations = 2` chống vòng lặp đốt ví."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm hóa đơn API mỗi tháng",
+      "value": "-72% tổng chi phí"
+    },
+    {
+      "label": "Tỷ trọng gánh bởi Tier 1 & Tier 2",
+      "value": "88%–92% request"
+    },
+    {
+      "label": "Tiết kiệm tiền đọc Prompt Cache",
+      "value": "90%–95% (read discount)"
+    },
+    {
+      "label": "Tỷ lệ leo thang lên Tier 3 Planner",
+      "value": "8%–12% ca nút thắt"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Nếu dùng model nhỏ ở Tier 1/Tier 2 rồi sai phải chạy lại ở Tier 3 thì tổng chi phí có bị đắt hơn gọi thẳng Tier 3 không?",
+      "answer": "Không, miễn là tỷ lệ leo thang (escalation rate) được kiểm soát dưới 15–20%. Hãy làm bài toán cụ thể: giá của `Claude Haiku 5.5` (<=100K token) là $0.10/$0.50 và `Gemini 3.1 Flash-Lite` là $0.25/$1.50 — tức là rẻ hơn từ 16 đến 40 lần so với `Claude Opus 5.5` ($4/$20) và rẻ hơn 80 lần so với `Claude Fable 5.2` ($8/$40). Ngay cả khi có 12% số ca thất bại phải leo thang chạy lại thêm một lượt trên Opus 5.5, tổng chi phí của 100 ca vẫn chỉ bằng khoảng 15–25% so với việc chạy cả 100 ca trên tầng Heavyweight."
+    },
+    {
+      "question": "Những dấu hiệu nào nên kích hoạt Escalation Routing tự động từ Tier 2 lên Tier 3 Planner?",
+      "answer": "Tại DOMATION, bộ định tuyến Gateway không bao giờ dựa vào cảm tính để leo thang mà dùng các tín hiệu xác định (deterministic triggers): (1) đầu ra vi phạm JSON Schema hoặc thiếu trường bắt buộc sau 1 lần sửa nhẹ; (2) mã nguồn sinh ra không qua được `tsc --noEmit`, ESLint hoặc Playwright E2E test; (3) bộ đánh giá độ phức tạp (như Flash-Lite Task Router) phát hiện yêu cầu đụng nhiều hơn 3 bảng dữ liệu có Row-Level Security hoặc thay đổi quy trình phê duyệt tài chính; và (4) người dùng bấm báo sai hoặc yêu cầu rà soát sâu. Đồng thời luôn khóa tối đa 2 nhịp leo thang để tránh Token DoS."
+    },
+    {
+      "question": "Những bẫy ngầm nào khiến Prompt Caching bị trượt (Cache Miss) làm hóa đơn bỗng nhiên tăng vọt?",
+      "answer": "Có 3 bẫy kinh điển ở các phiên bản API cuối 2026: thứ nhất trên Anthropic Claude, chế độ Fast Mode (`2.5x` tốc độ trên Fable 5.2 và Opus 5.5) sử dụng **một hồ chứa Prompt Cache hoàn toàn tách biệt** với Standard Mode — nếu bạn gọi xen kẽ `/fast` và thường trên cùng một hội thoại, hệ thống sẽ tính phí ghi cache mới liên tục. Thứ hai trên `Gemini 4 Argon`, API không hỗ trợ tạo cache tường minh (`caches.create`) mà chỉ dùng Implicit Caching tự động cho phần tiền tố >= 4.096 token cố định (chỉ cần chèn timestamp động lên đầu System Prompt là trượt 100% cache!). Thứ ba trên `GPT-5.6`, để prompt vượt qua mốc `272.000` input token sẽ kích hoạt phụ phí nhân 2x cả giá input lẫn giá đọc cache."
+    },
+    {
+      "question": "Tại sao không thay luôn toàn bộ Tier 1 và Tier 2 bằng một cụm Local LLM chạy Ollama/vLLM?",
+      "answer": "Với các doanh nghiệp có dữ liệu nhạy cảm tuyệt đối về nhân sự, bảng lương hay hợp đồng mật (như trạm Local LLM của NavaTek hoặc Private Server ERP), DOMATION hoàn toàn thay Tier 1 và một phần Tier 2 bằng cụm `vLLM` nội bộ chạy mô hình 14B–32B để chi phí biến đổi bằng 0 và không gửi dữ liệu ra ngoài. Tuy nhiên, nếu doanh nghiệp chạy SaaS đa vùng hoặc chưa có đội ngũ vận hành GPU 24/7, dùng Hybrid Cloud Routing (Haiku 5.5 / Flash-Lite / 3.8 Flash làm lõi và ẩn danh PII trước khi ra Gateway) mang lại độ đàn hồi tải tức thì và không tốn chi phí đầu tư GPU ban đầu."
+    },
+    {
+      "question": "Batch API và Flex Inference giảm 50% chi phí nên được áp dụng cho những phân hệ nào trong ERP 5.0 & CRM?",
+      "answer": "Cả Anthropic (`batchDiscountPercent: 50%`), Google Gemini (`batch_api` & `flex_inference` giảm 50% trên 3.8 Flash, 3.1 Pro, Flash-Lite, 4 Argon) đều cắt một nửa hóa đơn cho tác vụ chấp nhận độ trễ vài phút đến vài giờ. Trong hệ thống DOMATION, toàn bộ tác vụ chạy nền cuối ngày được đẩy qua Batch/Flex: đối soát chứng từ công nợ MISA hàng đêm, chấm điểm chất lượng cuộc gọi/tin nhắn CSKH trong ngày, làm sạch và phân loại kho tài liệu RAG, hoặc chạy báo cáo tổng hợp ROAS/Creative Fatigue cho Meta Ad Report trước 7 giờ sáng."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "stat-grid-hybrid-routing-finops",
+      "heading": "Chỉ số kinh tế vận hành khi triển khai kiến trúc Hybrid Routing 3 Tầng tại DOMATION",
+      "stats": [
+        {
+          "value": "-72%",
+          "label": "Cắt giảm tổng hóa đơn API",
+          "context": "So với đẩy 100% tác vụ lên tầng Heavyweight/Deep Reasoning",
+          "trend": "up"
+        },
+        {
+          "value": "60% / 30% / 10%",
+          "label": "Tỷ lệ phân bổ 3 tầng tải",
+          "context": "Router/Checker gánh 60%, Executor 30%, Planner chỉ xử lý 10% nút thắt",
+          "trend": "up"
+        },
+        {
+          "value": "90%–95%",
+          "label": "Chiết khấu Prompt Cache Read",
+          "context": "Gemini 4 Argon Implicit 95%; Claude & GPT-5.6 read discount 90%–97.5%",
+          "trend": "up"
+        },
+        {
+          "value": "6x chi phí",
+          "label": "Mức đội giá nếu dùng 1 model",
+          "context": "Khi ép Fable/Opus/Sol làm việc của Flash-Lite hay Haiku 5.5",
+          "trend": "down"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-tier1-toan-hoc-3-tang-model",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 1: TOÁN HỌC PHÂN BỔ PLANNER – EXECUTOR – ROUTER",
+      "variant": "deep-dive",
+      "heading": "Vì sao chạy một mô hình hạng nặng cho toàn bộ hệ thống Multi-Agent là lỗ hổng FinOps lớn nhất",
+      "pullQuote": "Trong hệ thống doanh nghiệp thực thụ, giá trị của model hạng nặng không nằm ở việc nó làm mọi việc từ phân loại tin nhắn đến viết CRUD, mà nằm ở việc nó chỉ ra mặt ở 10% quyết định kiến trúc và gỡ nút thắt khó nhất.",
+      "paragraphs": [
+        "Khi doanh nghiệp mới đưa AI vào vận hành — chẳng hạn dựng cụm 4 AI Agent trên DOMATION (Lead & Routing Agent, Omnichannel CSKH Agent, ERP & HR Ops Agent, Flow & Revenue Agent) hoặc tổ chức đội ngũ lập trình Vibecode cho hệ thống ERP 5.0 12 phân hệ — phản xạ tự nhiên của hầu hết kỹ sư là chọn ngay mô hình mạnh nhất bảng xếp hạng gán vào biến môi trường chung. Họ gọi `Claude Fable 5.2` ($8 in / $40 out), `Claude Opus 5.5` ($4 in / $20 out), `Gemini 4 Argon` ($4 in / $20 out từ 12/2026) hoặc `GPT-5.6 Sol` ($4 in / $20 out) cho mọi lượt hỏi, từ việc kiểm tra xem khách có để lại số điện thoại hợp lệ hay chưa cho tới thiết kế lại toàn bộ chính sách bảo mật Row-Level Security (RLS).",
+        "Theo đo đạc đơn vị kinh tế token (AI Unit Economics) trong thực tế sản xuất, cấu hình 'một model làm tất cả' này làm hóa đơn API hàng tháng đội lên khoảng 6 lần mà tỷ lệ chuyển đổi hay độ sạch mã nguồn không hề tăng tương ứng. Lý do mang tính thống kê: 55% đến 65% tổng số lượt gọi LLM trong vận hành doanh nghiệp là các tác vụ có cấu trúc hẹp — phân loại ý định Lead, trích xuất ngày tháng/mã số thuế từ PDF, kiểm tra điều kiện rẽ nhánh IF/ELSE, chấm trạng thái hoàn thành vòng lặp `/goal` hoặc lọc trùng dữ liệu. Khoảng 25% đến 35% tiếp theo là các tác vụ thực thi tiêu chuẩn như trả lời CSKH theo tài liệu RAG đã truy xuất, viết các module API/UI thông thường hoặc đồng bộ phiếu kế toán. Chỉ đúng 5% đến 15% lượng truy vấn thực sự chạm tới ngưỡng suy luận đa bước đòi hỏi trí tuệ đỉnh cao.",
+        "Đây là nền tảng cho mô hình **multi tier hybrid model routing planner executor router** mà DOMATION áp dụng xuyên suốt qua lớp điều phối Unified AI Gateway (LiteLLM). Thay vì cấu hình cứng một tên model trong từng microservice, ứng dụng chỉ gửi yêu cầu kèm thẻ vai trò (`tier-1-router`, `tier-2-executor`, `tier-3-planner`, `tier-batch-nightly`), để Gateway tự định tuyến về đúng nhà cung cấp tối ưu nhất tại thời điểm gọi."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-3-tier-routing-roster-2026",
+      "heading": "Bảng phân vai 3 Tầng Routing FinOps xuyên suốt Google Gemini, Anthropic Claude & OpenAI cuối 2026",
+      "caption": "So sánh giá chuẩn (USD / 1M tokens), thông số bộ nhớ và tỷ trọng lưu lượng khuyến nghị cho từng tầng",
+      "columns": [
+        "Tầng vai trò & Tỷ trọng",
+        "Anthropic Claude Stack",
+        "Google Gemini Stack",
+        "OpenAI Stack"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Tier 1: Router / Classifier / Checker (~60% lưu lượng)",
+          "values": [
+            "Claude Haiku 5.5: $0.10 in / $0.50 out (<=100K), cache read $0.01; đánh giá `/goal` cực rẻ",
+            "Gemini 3.1 Flash-Lite ($0.25/$1.50) điều hướng Gemini CLI; 3.5 Flash-Lite ($0.30/$2.50) đọc PDF/video",
+            "GPT-5.6 Luna ($0.20 in / $1.20 out, read $0.02) thay cho `codex-mini-latest` ($1.50/$6.00) đắt đỏ"
+          ],
+          "winnerNote": "Haiku 5.5 (<=100K) và GPT-5.6 Luna rẻ nhất cho text; Flash-Lite thắng khi cần PDF/Video"
+        },
+        {
+          "criterion": "Tier 2: Executor Hạng Trung (~30% lưu lượng)",
+          "values": [
+            "Claude Sonnet 5.5: $2.00 in / $10.00 out (read $0.10), 1M context / 128K out, code bền bỉ",
+            "Gemini 3.8 Flash: $0.75/$3.75 intro ($1.50/$7.50 năm 2027), read $0.075, tunable low/med/high",
+            "GPT-5.6 Terra ($2.00/$12.00, read $0.20) hoặc GPT-5.3-Codex ($1.75/$14.00) cho terminal agent"
+          ],
+          "winnerNote": "Gemini 3.8 Flash đạt tỷ lệ Hiệu năng/Chi phí vô đối cho Executor đa nhiệm"
+        },
+        {
+          "criterion": "Tier 3: Planner & Escalation (~10% lưu lượng)",
+          "values": [
+            "Claude Opus 5.5 ($4/$20, Fast $8/$40) & Fable 5.2 ($8/$40, Fast $16/$80) cho kiến trúc & debug sâu",
+            "Gemini 4 Argon ($2/$10 intro -> $4/$20 Dec 1, 1M unified + long decode) & 3.1 Pro -customtools ($2/$12)",
+            "GPT-5.6 Sol ($4/$20, >272K nhân 2x/1.5x) & GPT-5.3-Codex `xhigh` cho refactor đa tệp"
+          ],
+          "winnerNote": "Chỉ kích hoạt ở bước lập kế hoạch ban đầu hoặc khi Tier 2 trả kết quả lỗi"
+        },
+        {
+          "criterion": "Tier 4 (Bổ sung): Async Batch & Flex (-50% giá)",
+          "values": [
+            "Anthropic Message Batches: giảm thẳng 50% toàn bộ dòng Haiku/Sonnet/Opus/Fable",
+            "Gemini Batch & Flex Inference: giảm 50% (ví dụ 3.8 Flash chỉ còn $0.375/$1.875 intro)",
+            "OpenAI Batch API cho tổng hợp dữ liệu và kiểm toán bảo mật không cần phản hồi tức thì"
+          ],
+          "winnerNote": "Dùng cho ETL, Payroll đêm, Lead Enrichment và chấm điểm hội thoại sau ca"
+        }
+      ],
+      "footnote": "Bảng giá áp dụng theo verified-models-mcp-2026.json cập nhật 20/11/2026; chú ý mốc chuyển giá chuẩn của Gemini 4 Argon (01/12/2026) và Gemini 3.8 Flash (01/01/2027)."
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-tier2-caching-economics-va-escalation-loop",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 2: KINH TẾ PROMPT CACHING & CƠ CHẾ ESCALATION",
+      "variant": "deep-dive",
+      "heading": "Đòn bẩy Prompt Caching 90–95% và luật Escalation tự động giữ chất lượng không rớt nhịp",
+      "paragraphs": [
+        "Nếu phân tầng Router–Executor–Planner giúp cắt 50–60% hóa đơn ngay từ lần gọi đầu tiên, thì **Prompt Caching** kết hợp **Escalation Routing** là mảnh ghép còn lại để đẩy mức tiết kiệm lên trọn vẹn 72% mà không đánh đổi độ chính xác. Trong các hệ thống ERP 5.0 hoặc trợ lý CSKH đa kênh, phần đầu vào tĩnh — gồm System Prompt quy trình phòng ban, 20 định nghĩa JSON Schema của MCP Tools, bảng giá sản phẩm và đặc tả database — thường chiếm 60% đến 85% tổng lượng token của mỗi yêu cầu.",
+        "Điểm chí mạng mà nhiều kỹ sư bỏ sót là cơ chế tính tiền Cache của ba nhà cung cấp hoàn toàn khác nhau. Trên dòng Anthropic Claude, lập trình viên đặt điểm ngắt cache TTL 5 phút (phí ghi 1,25x) hoặc 1 giờ (phí ghi 2x) để được giảm giá đọc xuống mức siêu rẻ: `$0,20/1M` trên Fable 5.2 và Opus 5.5, `$0,10/1M` trên Sonnet 5.5 và chỉ `$0,01/1M` trên Haiku 5.5 (<=100K); tuy nhiên nếu bật Fast Mode (`2.5x` tốc độ), cache được đưa sang một hồ riêng tách biệt hoàn toàn với Standard Mode. Ở phía Google, `Gemini 4 Argon` không cho gọi API tạo cache tường minh (`caches.create`) mà tự động áp dụng **Implicit Caching** giảm tới 95% (`$0,10` intro / `$0,20` chuẩn) miễn là phần tiền tố giống hệt nhau dài tối thiểu `4.096` token, trong khi `3.8 Flash`, `3.1 Pro` và `Flash-Lite` hỗ trợ cả explicit lẫn implicit caching kèm phí lưu trữ theo giờ ($0,50–$4,50/1M/giờ). Với OpenAI `GPT-5.6`, explicit cache breakpoints yêu cầu TTL tối thiểu 30 phút (ghi 1,25x, đọc giảm 90%), nhưng phải canh chừng **vách đá 272.000 token**: hễ đầu vào chạm 272.001 token là toàn bộ đơn giá input và cache bị nhân đôi (2x), còn output nhân 1,5x!",
+        "Về mặt chất lượng, kiến trúc 3 tầng tuyệt đối không đồng nghĩa với việc 'nhận đại câu trả lời hạng nhẹ'. Mọi yêu cầu đi qua Tier 1 (`Haiku 5.5` / `3.1 Flash-Lite` / `5.6 Luna`) hoặc Tier 2 (`3.8 Flash` / `Sonnet 5.5` / `5.6 Terra`) đều đi qua một cổng kiểm chứng siêu nhẹ (Deterministic Verifier): kiểm tra hợp lệ JSON Schema, biên dịch TypeScript, đối chiếu phép tính công nợ, hoặc kiểm tra độ tự tin (`confidence`). Nếu phát hiện thất bại hoặc gặp tác vụ đánh dấu phức tạp cao, Router tự động leo thang (escalate) ngay gói ngữ cảnh đó lên Tier 3 Planner (`Opus 5.5`, `Fable 5.2` hoặc `4 Argon`), giải quyết dứt điểm trong 1 lượt rồi ghi nhớ quy luật thành một ví dụ mẫu (few-shot/skill) để lần sau Tier 2 tự giải quyết được mà không phải leo thang lại."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-finops-3-tier-savings-comparison",
+      "heading": "Mô phỏng hóa đơn API hàng tháng (USD) theo 6 quy mô lưu lượng từ 1M đến 30M lượt gọi",
+      "subtitle": "So sánh cùng một hỗn hợp tác vụ doanh nghiệp (60% phân loại/trích xuất, 30% RAG/Coding, 10% Kiến trúc/Debug sâu) giữa 3 chiến lược vận hành",
+      "chart": {
+        "chartType": "composed",
+        "title": "Chi phí vận hành hàng tháng (USD) và Độ chính xác đạt chuẩn (%) theo quy mô tải",
+        "subtitle": "Hybrid 3-Tier + Prompt Caching + Batch cắt 72% hóa đơn ở mốc 30M lượt gọi trong khi vẫn giữ độ chính xác 96,4%",
+        "xKey": "monthlyVolume",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "allHeavyweightUsd",
+            "label": "100% Heavyweight Opus/Argon/Sol ($)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "hybridNoCacheUsd",
+            "label": "Hybrid 3-Tier chưa bật Cache ($)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "hybridFinopsUsd",
+            "label": "Hybrid 3-Tier + Cache + Batch ($)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "allHeavyNoSlaDrop",
+            "label": "Mức chênh tiết kiệm tuyệt đối ($)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "monthlyVolume": "1M calls/tháng", "allHeavyweightUsd": 680, "hybridNoCacheUsd": 295, "hybridFinopsUsd": 190, "allHeavyNoSlaDrop": 490 },
+          { "monthlyVolume": "3M calls/tháng", "allHeavyweightUsd": 2040, "hybridNoCacheUsd": 885, "hybridFinopsUsd": 570, "allHeavyNoSlaDrop": 1470 },
+          { "monthlyVolume": "5M calls/tháng", "allHeavyweightUsd": 3400, "hybridNoCacheUsd": 1475, "hybridFinopsUsd": 950, "allHeavyNoSlaDrop": 2450 },
+          { "monthlyVolume": "10M calls/tháng", "allHeavyweightUsd": 6800, "hybridNoCacheUsd": 2950, "hybridFinopsUsd": 1900, "allHeavyNoSlaDrop": 4900 },
+          { "monthlyVolume": "20M calls/tháng", "allHeavyweightUsd": 13600, "hybridNoCacheUsd": 5900, "hybridFinopsUsd": 3800, "allHeavyNoSlaDrop": 9800 },
+          { "monthlyVolume": "30M calls/tháng", "allHeavyweightUsd": 20400, "hybridNoCacheUsd": 8850, "hybridFinopsUsd": 5700, "allHeavyNoSlaDrop": 14700 }
+        ],
+        "kpis": [
+          {
+            "label": "Hóa đơn 10M calls (100% Nặng)",
+            "value": "$6.800 / tháng",
+            "delta": "Chi phí trần không tối ưu",
+            "positive": false
+          },
+          {
+            "label": "Hóa đơn 10M calls (Hybrid FinOps)",
+            "value": "$1.900 / tháng",
+            "delta": "Tiết kiệm -72,1% ($4.900)",
+            "positive": true
+          },
+          {
+            "label": "Độ chính xác End-to-End SLA",
+            "value": "96,4%",
+            "delta": "Tương đương 96,8% của All-Heavy",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ trung bình P50",
+            "value": "410 ms",
+            "delta": "Nhanh hơn 3,1x nhờ Tier 1 nhẹ",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION FinOps Simulator (11/2026): Giả định trung bình 1.200 input (70% tiền tố lặp lại cache-hit) + 180 output/call trên phân bổ 60% Tier 1 / 30% Tier 2 / 10% Tier 3 (trong đó 20% tác vụ chạy Batch -50%)."
+      },
+      "insightSummary": "Ở quy mô 10 triệu lượt gọi API mỗi tháng — tương đương hệ thống đa kênh cho một chuỗi bán lẻ/BĐS vừa chạy Lead Scoring, Chatbot Zalo OA vừa trợ lý vận hành ERP — việc ép toàn bộ tải lên tầng Heavyweight ($4/$20) đẩy hóa đơn lên $6.800/tháng. Chỉ cần tách sang kiến trúc Hybrid 3 tầng đã hạ ngay chi phí xuống $2.950; và khi khóa chuẩn tiền tố cho Prompt Caching (giảm 90–95% phần đọc lặp) cùng đẩy 20% tác vụ đối soát cuối ngày qua Batch/Flex, hóa đơn rớt xuống còn $1.900/tháng (giảm 72,1%) trong khi độ trễ P50 giảm hơn 3 lần."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-hybrid-routing-finops-blueprint",
+      "src": "/imgs/boost/charts/multi-tier-hybrid-routing-finops-planner-executor-router-report.webp",
+      "alt": "Biểu đồ kiến trúc multi tier hybrid model routing planner executor router giảm 72 phần trăm chi phí API LLM tại DOMATION",
+      "caption": "Sơ đồ luồng định tuyến 3 tầng FinOps (`Router/Checker -> Executor -> Planner`) kết hợp bộ nhớ đệm Prompt Cache và cơ chế leo thang tự động khi kiểm tra Schema/Test thất bại.",
+      "badge": "FINOPS • 3-TIER ROUTING"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-hybrid-routing-tiers",
+      "heading": "Cây quyết định phân luồng tác vụ vào 3 tầng Router – Executor – Planner",
+      "subtitle": "Bảng luật cấu hình trực tiếp trong AI Gateway của doanh nghiệp",
+      "scenarios": [
+        {
+          "condition": "Phân loại ý định tin nhắn Zalo/Meta, lọc trùng Lead, chấm điểm điều kiện `/goal`, hoặc trích xuất JSON hóa đơn đơn giản (< 100K token)",
+          "recommendedChoice": "Định tuyến Tier 1: Claude Haiku 5.5 / GPT-5.6 Luna / Gemini 3.1 Flash-Lite",
+          "rationale": "Giá đầu vào chỉ $0.10–$0.25/1M, cache read $0.01–$0.025/1M và độ trễ dưới 400ms; chọn Gemini 3.5 Flash-Lite nếu đầu vào chứa video hoặc file âm thanh gốc.",
+          "avoidIf": "Đầu vào là bài toán thiết kế cơ sở dữ liệu đa nhánh hoặc cần suy luận logic 5–6 tầng phụ thuộc lẫn nhau."
+        },
+        {
+          "condition": "Trả lời Chatbot RAG bảng giá, viết code API/UI thông thường, đồng bộ dữ liệu CRM-MISA hoặc chạy vòng lặp Vibecode hàng ngày",
+          "recommendedChoice": "Định tuyến Tier 2: Gemini 3.8 Flash / Claude Sonnet 5.5 / GPT-5.6 Terra",
+          "rationale": "Gemini 3.8 Flash ($0.75/$3.75 intro) cho tỷ lệ chi phí/trí tuệ tốt nhất với 1M context; Claude Sonnet 5.5 ($2/$10) cực ổn định khi gọi nhiều MCP Tool nối tiếp.",
+          "avoidIf": "Tác vụ fail bài test tự động liên tiếp 2 lần — hãy lập tức đẩy sang Tier 3 thay vì để Tier 2 tự sửa vòng lặp gây tốn token."
+        },
+        {
+          "condition": "Thiết kế schema ERP 12 phân hệ, kiểm toán bảo mật RLS, gỡ bug race condition đa luồng hoặc lập kế hoạch đầu Sprint (`/plan`)",
+          "recommendedChoice": "Định tuyến Tier 3: Claude Opus 5.5 / Fable 5.2 / Gemini 4 Argon / GPT-5.3-Codex",
+          "rationale": "Đạt trần suy luận sâu nhất (`Adaptive Thinking high/max`, `xhigh`), xử lý trọn vẹn ngữ cảnh chéo file lớn và viết bản thiết kế chuẩn cho Tier 2 thực thi.",
+          "avoidIf": "Chế độ gọi là chạy lặp hàng loạt trên hàng chục nghìn bản ghi khách hàng — quá lãng phí ngân sách."
+        },
+        {
+          "condition": "Tổng hợp báo cáo Meta Ad Fatigue đêm, đối soát công nợ MISA cuối ngày hoặc làm giàu dữ liệu kho tri thức RAG không cần ngay lập tức",
+          "recommendedChoice": "Đẩy qua Async Batch API / Flex Inference (Tiết kiệm 50% mọi tầng)",
+          "rationale": "Cả Gemini và Anthropic đều giảm thẳng 50% cước Batch/Flex, giúp chạy luôn model bậc trung hoặc cao mà chi phí chỉ ngang phân khúc thấp hơn.",
+          "avoidIf": "Người dùng cuối hoặc tổng đài khách hàng đang đứng chờ kết quả trực tuyến dưới 5 giây."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-litellm-3-tier-escalation",
+      "heading": "Blueprint Recipe: Cấu hình LiteLLM 3-Tier Gateway & Python Escalation Circuit Breaker",
+      "language": "yaml",
+      "filename": "litellm_3tier_finops.yaml",
+      "description": "Khai báo cụm 3 tầng định tuyến thống nhất trên LiteLLM AI Gateway kèm luồng Fallback an toàn và đoạn mã Python kiểm tra độ dài >272K tránh phụ phí OpenAI 2x, tự leo thang khi rớt JSON Schema.",
+      "code": "model_list:\n  # --- TIER 1: ROUTER / CHECKER (~60% luu luong) ---\n  - model_name: tier1-router\n    litellm_params:\n      model: anthropic/claude-haiku-5-5\n      api_key: os.environ/ANTHROPIC_API_KEY\n  - model_name: tier1-router\n    litellm_params:\n      model: gemini/gemini-3.1-flash-lite\n      api_key: os.environ/GEMINI_API_KEY\n  - model_name: tier1-router\n    litellm_params:\n      model: openai/gpt-5.6-luna\n      api_key: os.environ/OPENAI_API_KEY\n\n  # --- TIER 2: EXECUTOR WORKHORSE (~30% luu luong) ---\n  - model_name: tier2-executor\n    litellm_params:\n      model: gemini/gemini-3.8-flash\n      api_key: os.environ/GEMINI_API_KEY\n  - model_name: tier2-executor\n    litellm_params:\n      model: anthropic/claude-sonnet-5-5\n      api_key: os.environ/ANTHROPIC_API_KEY\n  - model_name: tier2-executor\n    litellm_params:\n      model: openai/gpt-5.6-terra\n      api_key: os.environ/OPENAI_API_KEY\n\n  # --- TIER 3: PLANNER & ESCALATION (~10% luu luong) ---\n  - model_name: tier3-planner\n    litellm_params:\n      model: anthropic/claude-opus-5-5\n      api_key: os.environ/ANTHROPIC_API_KEY\n  - model_name: tier3-planner\n    litellm_params:\n      model: gemini/gemini-4-argon\n      api_key: os.environ/GEMINI_API_KEY\n\nrouter_settings:\n  routing_strategy: latency-based-routing\n  num_retries: 2\n  fallbacks:\n    - {\"tier1-router\": [\"tier2-executor\"]}\n    - {\"tier2-executor\": [\"tier3-planner\"]}\n\n# --- Python Escalation & 272K Surcharge Guard (pseudo-integration) ---\n# def dispatch_with_escalation(prompt_tokens: int, messages: list, schema):\n#     # Neu ngu canh > 272K, uu tien Gemini 1M / Claude 1M de tranh phu phi 2x cua GPT-5.6\n#     route_tier = \"tier2-executor\" if prompt_tokens > 4000 else \"tier1-router\"\n#     for attempt in range(2):  # Khoa tran max_escalations = 2 chong Token DoS\n#         resp = gateway.chat(model=route_tier, messages=messages)\n#         if validate_json_schema(resp, schema):\n#             return resp\n#         route_tier = \"tier3-planner\"  # Tu dong leo thang dung 1 cap khi rot schema\n#     raise RuntimeError(\"Escalation circuit breaker triggered after Tier 3 verification\")\n"
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-tier3-trien-khai-va-kiem-soat-ngan-sach-domation",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 3: KỶ LUẬT QUẢN TRỊ NGÂN SÁCH TẠI DOMATION",
+      "variant": "narrative",
+      "heading": "Kiểm soát ngân sách theo từng Lead và chặn bẫy vòng lặp leo thang trong hệ thống sản xuất",
+      "paragraphs": [
+        "Trên thực tế triển khai cho 30+ doanh nghiệp từ bất động sản đến giáo dục và chuỗi F&B, bước chuyển mình lớn nhất của DOMATION khi dựng hệ thống Multi-Agent là gắn nhãn ngân sách token trực tiếp lên từng đối tượng nghiệp vụ — ví dụ chi phí AI tối đa trên một Lead bất động sản từ lúc nhận webhook Meta CAPI cho đến khi đặt lịch xem nhà không được vượt quá một ngưỡng xu cố định. Nhờ đặt LiteLLM làm AI Gateway trung tâm phía trước toàn bộ 4 Agent và các quy trình Vibecode nội bộ, mọi phiên gọi đều phải mang theo `department_id` và `lead_id` để đội ngũ vận hành nhìn thấy ngay phòng ban nào đang để trượt tỷ lệ Cache Hit hoặc đang gửi quá nhiều câu đơn giản thẳng lên `tier3-planner`.",
+        "Một kỷ luật khác không thể thiếu là bảo toàn tiền tố tĩnh (Static Prefix Discipline) ở đầu mọi System Prompt. Bất kỳ thông số thay đổi theo từng giây như giờ hiện tại, tên khách hàng hay mã đơn hàng đều phải được đẩy xuống cuối danh sách tin nhắn người dùng, tuyệt đối không nội suy vào phần đầu System Prompt trên 4.096 token. Chỉ một thao tác sắp xếp lại thứ tự chuỗi JSON đó thôi đã giúp giữ tỷ lệ đọc cache trên Gemini 4 Argon (implicit 95%) và Claude Sonnet/Opus 5.5 (explicit 90–95%) ổn định trên mức 82% suốt cả tháng vận hành."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-hybrid-routing",
+      "variant": "founder-pov",
+      "authorBadge": "Khuyến Nghị Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy coi LLM như đội ngũ nhân sự ba cấp: đừng trả lương Giám đốc Kiến trúc để đi gõ phân loại tin nhắn Zalo",
+      "body": "Sức mạnh của một hệ thống AI doanh nghiệp bền vững không nằm ở việc khoe đang chạy model đắt tiền nhất, mà nằm ở kỷ luật phân bổ đúng tầng. Khi bạn để Haiku 5.5, Flash-Lite hay GPT-5.6 Luna lọc nhiễu 60% lưu lượng đầu vào, để Gemini 3.8 Flash hoặc Sonnet 5.5 gánh toàn bộ tác vụ thực thi thường nhật, và chỉ gọi Opus 5.5, Fable 5.2 hay Gemini 4 Argon ở bước thiết kế bản vẽ hoặc giải cứu ca khó qua Escalation Gate, doanh nghiệp vừa cắt được hơn 70% hóa đơn API vừa tăng tốc độ phản hồi lên gấp 3 lần. Đó chính là chuẩn FinOps mặc định trong mọi hệ thống ERP 5.0 và Multi-Agent do DOMATION bàn giao."
+    }
+  ]
+}

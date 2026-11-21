@@ -60,7 +60,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
         {children}
         
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
+        <style>{`
+          @media (max-width: 767px) {
+            .confirm-modal-actions .btn {
+              flex: 1;
+              justify-content: center;
+            }
+          }
+        `}</style>
+        <div className="confirm-modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
           <button className="btn outline" style={{ minHeight: 44 }} onClick={onClose}>{t(cancelText)}</button>
           <button className={btnClass} style={{ minHeight: 44 }} onClick={() => { onConfirm(); onClose(); }}>{t(confirmText)}</button>
         </div>

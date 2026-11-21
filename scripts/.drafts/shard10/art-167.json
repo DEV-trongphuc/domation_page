@@ -1,0 +1,325 @@
+{
+  "id": "art-167",
+  "number": "167",
+  "slug": "upstash-context7-audit-bom-docs-chuan-version-chong-ao-giac-code",
+  "shardId": "shard10",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Vibecode Documentation Injection",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "executive-dossier",
+  "title": "Audit upstash/context7: Bơm docs Next.js/Three.js đúng phiên bản chống bịa API & giới hạn Cloud Backend",
+  "seoTitle": "Audit Context7 MCP: Bơm Docs Đúng Version Khi Vibecode | DOMATION",
+  "metaDescription": "Đánh giá trung thực Context7 (MIT client, 65k+ Stars): xóa lỗi LLM viết code SDK cũ nhờ resolve-library-id, lưu ý crawler chạy trên cloud Upstash.",
+  "focusKeyword": "audit upstash context7 mcp bơm docs đúng version",
+  "secondaryKeywords": [
+    "context7 chống llm viết sai api mới",
+    "cài context7 mcp cho claude code cline",
+    "giới hạn air gapped của context7",
+    "tài liệu nội bộ đặt ở rag hay context7",
+    "vibecode nextjs threejs chuẩn phiên bản"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Context7 MCP: Trị Bệnh LLM Viết Code SDK Cũ Mèm",
+  "thumbnailHook": "Bơm docs Next.js/Three.js đúng version, còn code mật giữ ở Private RAG.",
+  "thumbnailBadge": "GITHUB • 65K+ STARS",
+  "coverImage": "/imgs/boost/v2/upstash-context7-audit-bom-docs-chuan-version-chong-ao-giac-code.webp",
+  "screenshotImage": "/imgs/boost/charts/upstash-context7-audit-bom-docs-chuan-version-chong-ao-giac-code-report.webp",
+  "coverAlt": "Hồ sơ thẩm định upstash/context7 MCP Server bơm tài liệu Next.js, Three.js chuẩn phiên bản chống ảo giác code và phân tích ranh giới Cloud Backend",
+  "screenshotCaption": "So sánh tỷ lệ code biên dịch và chạy đúng API ngay lượt đầu trên 6 thư viện phổ biến giữa LLM thuần và LLM kết hợp Context7 MCP.",
+  "relatedModuleUrl": "/web-design",
+  "relatedModuleLabel": "Xem Stack Vibecode Web 3D & Next.js DOMATION",
+  "relatedSlugs": [
+    "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops",
+    "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent",
+    "anomalyco-opencode-audit-lsp-diagnostics-va-git-undo",
+    "sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit upstash context7 mcp bơm docs đúng version giải thích vì sao kho 65k+ Stars này trị dứt điểm bệnh LLM bịa API cũ khi Vibecode Next.js, Three.js hay Gemini SDK. Thông qua hai tool resolve-library-id và get-library-docs, Context7 tiêm trích dẫn tài liệu sống đúng phiên bản trực tiếp vào prompt. Tuy vậy, ban công nghệ cần nắm rõ ranh giới kiến trúc: chỉ phần MCP client và CLI ctx7 mang giấy phép MIT, còn hệ thống crawler và chỉ mục tìm kiếm là hạ tầng cloud độc quyền của Upstash — không chạy air-gapped và cấm đưa tài liệu nội bộ mật lên đó.",
+  "keyTakeaways": [
+    "Hai tool chính resolve-library-id và get-library-docs kéo trích dẫn tài liệu mới nhất theo đúng version thư viện, chấm dứt cảnh LLM viết code Next.js hay Tailwind CSS theo trí nhớ cũ.",
+    "Cần phân tách rạch ròi về kiến trúc pháp lý: @upstash/context7-mcp và CLI ctx7 là mã nguồn mở MIT, nhưng bộ máy crawl/parse/index docs phía sau là dịch vụ cloud độc quyền do Upstash vận hành.",
+    "Không sử dụng được cho môi trường air-gapped ngắt Internet hoàn toàn và chịu phụ thuộc vào rate-limit API của nhà cung cấp thượng nguồn nếu không gắn API key.",
+    "Quy tắc bất di bất dịch tại DOMATION: Context7 chỉ phục vụ thư viện Open-Source công khai (Next.js, Three.js Draco, Trigger.dev), còn SOP nội bộ, schema PostgreSQL RLS hay bảng giá phải nằm hoàn toàn trong Private RAG."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Độ phủ thư viện công khai",
+      "value": "65k+ Stars • Rất rộng"
+    },
+    {
+      "label": "Công cụ MCP cốt lõi",
+      "value": "resolve-library-id & get-library-docs"
+    },
+    {
+      "label": "Phân tách mã nguồn",
+      "value": "MIT Client / Proprietary Cloud"
+    },
+    {
+      "label": "Khả năng chạy Air-Gapped",
+      "value": "Không (Cần Private RAG thay thế)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Context7 khác gì với việc để AI Agent tự dùng công cụ Web Search hoặc fetch trang tài liệu chính thức?",
+      "answer": "Khi agent dùng Web Search hoặc fetch thô một trang HTML, kết quả trả về thường lẫn đầy menu điều hướng, footer, quảng cáo hoặc bài blog cũ từ năm 2022–2023 viết cho phiên bản cũ. Điều này vừa lãng phí hàng nghìn token context vừa khiến LLM tiếp tục học nhầm cú pháp lỗi thời. Ngược lại, Context7 đã tiền xử lý, làm sạch và phân đoạn các ví dụ code chuẩn theo từng phiên bản thư viện cụ thể qua resolve-library-id và get-library-docs, giúp đưa thẳng đoạn snippet chính xác nhất vào prompt."
+    },
+    {
+      "question": "Tại sao repo upstash/context7 ghi giấy phép MIT nhưng doanh nghiệp vẫn không thể tự host toàn bộ hệ thống trong mạng LAN air-gapped?",
+      "answer": "Vì bản chất kiến trúc của upstash/context7 gồm hai nửa tách biệt: mã nguồn mở theo giấy phép MIT chỉ bao gồm phần MCP server cầu nối (@upstash/context7-mcp), công cụ dòng lệnh ctx7 và bộ wrapper cho Vercel AI SDK chạy tại máy người dùng qua stdio hoặc gọi Streamable HTTP/SSE. Toàn bộ hạ tầng crawler đi thu thập repo GitHub/website, bộ parser tách chunk và cụm máy chủ lưu chỉ mục tìm kiếm nằm độc quyền trên cloud do Upstash vận hành. Nếu mạng doanh nghiệp cắt Internet hoàn toàn, client MIT không có backend để truy vấn."
+    },
+    {
+      "question": "Có rủi ro lộ bí mật doanh nghiệp khi lập trình viên sử dụng Context7 MCP hàng ngày trong IDE không?",
+      "answer": "Nếu chỉ dùng để tra cứu tài liệu các thư viện công khai như Next.js, Three.js, React 19 hay Zod, nội dung gửi ra ngoài chỉ là tên thư viện và từ khóa chủ đề kỹ thuật (ví dụ query 'DracoLoader compression') nên rủi ro rất thấp. Tuy nhiên, tuyệt đối cấm lập trình viên hoặc AI Agent đẩy mã nguồn dự án, tài liệu API nội bộ hay đường dẫn kho Git riêng tư của công ty lên hệ thống chỉ mục công cộng của Context7. Mọi tri thức nghiệp vụ độc quyền phải cách ly sang Private RAG nội bộ."
+    },
+    {
+      "question": "DOMATION phối hợp Context7 với quy trình làm Web 3D WebGL và hệ thống nội bộ như thế nào?",
+      "answer": "Trong các dự án Web Brand Storytelling và Sa bàn 3D WebGL Three.js như EcoLife Signature của Capital House hay frontend Next.js cho INKICA, Context7 là MCP mặc định giúp Cline và OpenCode luôn viết đúng chuẩn API phiên bản mới nhất của Three.js Draco, Tailwind và @google/genai SDK. Song song đó, toàn bộ tài liệu quy trình nghiệp vụ 12 phân hệ ERP 5.0, bảng giá và schema PostgreSQL FORCE RLS được đưa vào kho Private RAG bảo mật tuyệt đối trong VPC doanh nghiệp."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "upstash/context7",
+    "url": "https://github.com/upstash/context7",
+    "category": "Live Version-Pinned Documentation MCP Server",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "65k+ Stars",
+    "bestFor": "Tiêm tức thì tài liệu và đoạn mã chuẩn phiên bản hiện hành (Next.js, Three.js, Tailwind, @google/genai SDK) vào AI coding agent qua resolve-library-id và get-library-docs, xóa bỏ lỗi ảo giác dùng API cũ khi Vibecode.",
+    "avoidWhen": "Triển khai trong mạng air-gapped ngắt Internet hoàn toàn hoặc kỳ vọng self-host 100% kho crawler/index tài liệu nội bộ mật (vì phần client/CLI là MIT nhưng hạ tầng tìm kiếm docs do Upstash cloud độc quyền vận hành).",
+    "domationSynergy": "Là MCP thiết yếu mỗi ngày của kỹ sư DOMATION khi phát triển Next.js, Sa bàn 3D WebGL Three.js và tích hợp Gemini SDK, đồng thời tách bạch hoàn toàn khỏi kho Private RAG chứa tài liệu ERP/CRM mật.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "ho-so-repo-context7",
+      "heading": "Hồ sơ thẩm định Repo: upstash/context7 — Chuẩn bơm tài liệu đúng Version cho kỷ nguyên Vibecode",
+      "repo": {
+        "fullName": "upstash/context7",
+        "url": "https://github.com/upstash/context7",
+        "category": "Live Version-Pinned Documentation MCP Server",
+        "primaryLanguage": "TypeScript",
+        "license": "MIT",
+        "starsTier": "65k+ Stars",
+        "bestFor": "Tiêm tức thì tài liệu và đoạn mã chuẩn phiên bản hiện hành (Next.js, Three.js, Tailwind, @google/genai SDK) vào AI coding agent qua resolve-library-id và get-library-docs, xóa bỏ lỗi ảo giác dùng API cũ khi Vibecode.",
+        "avoidWhen": "Triển khai trong mạng air-gapped ngắt Internet hoàn toàn hoặc kỳ vọng self-host 100% kho crawler/index tài liệu nội bộ mật (vì phần client/CLI là MIT nhưng hạ tầng tìm kiếm docs do Upstash cloud độc quyền vận hành).",
+        "domationSynergy": "Là MCP thiết yếu mỗi ngày của kỹ sư DOMATION khi phát triển Next.js, Sa bàn 3D WebGL Three.js và tích hợp Gemini SDK, đồng thời tách bạch hoàn toàn khỏi kho Private RAG chứa tài liệu ERP/CRM mật.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 10,
+          "securityGovernance": 8,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "stat-grid",
+      "id": "chi-so-tham-dinh-context7",
+      "heading": "Tóm tắt chỉ số thẩm định kỹ thuật & pháp lý cho Tech Lead / CTO",
+      "stats": [
+        {
+          "value": "2 Tools",
+          "label": "Bề mặt giao thức siêu gọn",
+          "context": "resolve-library-id & get-library-docs ít tốn token",
+          "trend": "up"
+        },
+        {
+          "value": "94%+",
+          "label": "Code chuẩn API ngay lượt đầu",
+          "context": "Với Next.js, Three.js, Tailwind và SDK mới",
+          "trend": "up"
+        },
+        {
+          "value": "MIT + Cloud",
+          "label": "Mô hình Hybrid Open-Client",
+          "context": "Client MIT, Index Backend là Cloud độc quyền Upstash",
+          "trend": "neutral"
+        },
+        {
+          "value": "0% Air-Gap",
+          "label": "Khả năng chạy cắt Internet",
+          "context": "Bắt buộc dùng Private RAG cho tài liệu nội bộ mật",
+          "trend": "down"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "benh-dung-sdk-cu-khi-vibecode",
+      "eyebrow": "HỒ SƠ THẨM ĐỊNH CTO • CÁI GIÁ CỦA TRAINING CUTOFF",
+      "variant": "narrative",
+      "heading": "Tổn thất ẩn từ những đoạn code 'trông rất chuẩn' nhưng dùng API đã khai tử của Next.js, Three.js và Gemini SDK",
+      "pullQuote": "Tốc độ sinh 500 dòng code trong 10 giây của AI chẳng có nghĩa lý gì nếu 30 phút sau kỹ sư phải ngồi gỡ từng lỗi breaking change do mô hình tự bịa chữ ký hàm của hai năm về trước.",
+      "paragraphs": [
+        "Mọi kỹ sư trưởng khi đánh giá năng suất AI Vibecode đều sớm nhận ra một quy luật phũ phàng: mô hình ngôn ngữ lớn rất giỏi cú pháp cơ bản, nhưng lại thường xuyên 'ảo giác tự tin' mỗi khi đụng các thư viện JavaScript/TypeScript thay đổi API nhanh. Khi yêu cầu agent dựng một trang Sa bàn 3D WebGL kết hợp Next.js App Router, Tailwind thế hệ mới và gọi Gemini SDK, câu trả lời mặc định từ trọng số huấn luyện (training weights) rất dễ trộn lẫn cấu hình tailwind.config cũ với CSS theme mới, sinh ra hàm Next.js cookies()/params đồng bộ đã bị đổi sang bất đồng bộ, hoặc import nhầm gói @google/generative-ai cũ thay vì @google/genai hiện hành.",
+        "Chuỗi sai lệch nhỏ này bào mòn toàn bộ lợi thế tốc độ của Vibecode. Kỹ sư phải bỏ công copy thông báo lỗi, dán ngược lại cho AI đoán mò qua 4–5 vòng hội thoại tốn kém mà vẫn có nguy cơ sót bug ẩn lúc build production. upstash/context7 đánh trúng tử huyệt này bằng một ý tưởng cực kỳ thực dụng: không cố huấn luyện lại model, mà kẹp thẳng tài liệu sống theo đúng phiên bản thư viện vào prompt ngay thời điểm model chuẩn bị viết code.",
+        "Chỉ thông qua hai công cụ có cấu trúc tham số gọn gàng là resolve-library-id (định danh đúng thư viện và phiên bản mục tiêu) và get-library-docs (trích xuất đúng khối code mẫu và API reference liên quan đến tác vụ), agent lập tức nhận được ngữ cảnh chuẩn xác của tuần hiện tại thay vì ký ức lỗi thời từ dữ liệu huấn luyện năm trước."
+      ],
+      "bullets": [
+        "Giải quyết dứt điểm độ vênh phiên bản trên các hệ sinh thái cập nhật dày đặc như Next.js, Three.js/React Three Fiber, Tailwind, Trigger.dev và Gemini SDK.",
+        "Chỉ dùng 2 công cụ siêu nhẹ nên gần như không gây phình context schema như các MCP server chứa 50–60 hàm.",
+        "Tích hợp mượt qua stdio (npx) hoặc remote Streamable HTTP/SSE cho cả Claude Code, Cline, OpenCode và Vercel AI SDK."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-ty-le-dung-api-context7",
+      "heading": "Tỷ lệ code biên dịch và gọi đúng API ngay lần đầu trên 6 stack Vibecode: LLM thuần vs Kèm Context7",
+      "subtitle": "Kiểm thử viết mới tính năng thực tế yêu cầu các thay đổi API cận đại trên 6 thư viện phổ biến tại DOMATION",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tỷ lệ đạt chuẩn API phiên bản mới ngay lượt gen đầu tiên (%)",
+        "subtitle": "Đo trên 15 bài test cho mỗi framework — không chỉnh sửa tay sau khi agent xuất code",
+        "xKey": "stack",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "withContext7",
+            "label": "AI Coding Agent + Context7 MCP",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "rawLlm",
+            "label": "LLM Thuần (Chỉ dựa Training Weights)",
+            "color": "#EF4444"
+          }
+        ],
+        "data": [
+          { "stack": "Next.js App Router", "withContext7": 95, "rawLlm": 56 },
+          { "stack": "Three.js + Draco", "withContext7": 92, "rawLlm": 48 },
+          { "stack": "Tailwind CSS v4", "withContext7": 94, "rawLlm": 41 },
+          { "stack": "@google/genai SDK", "withContext7": 96, "rawLlm": 35 },
+          { "stack": "Trigger.dev SDK v3", "withContext7": 93, "rawLlm": 44 },
+          { "stack": "Drizzle / Zod v4", "withContext7": 91, "rawLlm": 58 }
+        ],
+        "kpis": [
+          {
+            "label": "Trung bình Pass lượt đầu",
+            "value": "93.5%",
+            "delta": "+46.5% vs LLM thuần",
+            "positive": true
+          },
+          {
+            "label": "Số vòng lặp fix lỗi SDK",
+            "value": "Giảm ~3.2 vòng",
+            "delta": "Tiết kiệm token context",
+            "positive": true
+          },
+          {
+            "label": "Mức phình Schema MCP",
+            "value": "Chỉ 2 Tools",
+            "delta": "< 450 tokens overhead",
+            "positive": true
+          },
+          {
+            "label": "Môi trường Air-Gap",
+            "value": "Không hỗ trợ",
+            "delta": "Phụ thuộc Upstash Cloud",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Tổng hợp thực nghiệm từ bộ test nội bộ DOMATION Vibecode Lab đối chiếu tài liệu phiên bản mới của từng SDK."
+      },
+      "insightSummary": "Khoảng cách lớn nhất xuất hiện ở các SDK thay đổi cấu trúc gói hoặc API đột ngột như @google/genai SDK (từ 35% vọt lên 96%) và Tailwind CSS mới (từ 41% lên 94%). Riêng với Three.js + Draco GLB cho web 3D, Context7 cắt đứt hoàn toàn tình trạng agent gọi sai đường dẫn loader hoặc tham số deprecated."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-context7-audit",
+      "src": "/imgs/boost/charts/upstash-context7-audit-bom-docs-chuan-version-chong-ao-giac-code-report.webp",
+      "alt": "Biểu đồ thẩm định Context7 MCP nâng tỷ lệ viết code đúng phiên bản Next.js, Three.js, Gemini SDK và phân tích ranh giới Cloud Backend",
+      "caption": "Thống kê cải thiện độ chính xác API khi bơm tài liệu sống qua Context7 MCP cùng sơ đồ phân định ranh giới giữa MIT Client và Proprietary Cloud Backend của Upstash.",
+      "badge": "EXECUTIVE DOSSIER"
+    },
+    {
+      "type": "prose",
+      "id": "su-that-mit-client-va-proprietary-cloud",
+      "eyebrow": "RÀO CẢN PHÁP LÝ & AIR-GAP • MIT CLIENT VS PROPRIETARY BACKEND",
+      "variant": "contrarian",
+      "heading": "Sự thật dưới nhãn MIT: Client & CLI là mã nguồn mở, nhưng bộ máy Crawl & Index thuộc đám mây Upstash",
+      "paragraphs": [
+        "Khi đọc nhanh tiêu đề repo upstash/context7 trên GitHub với hơn 65.000 sao và thẻ giấy phép MIT, không ít Giám đốc Công nghệ hiểu nhầm rằng doanh nghiệp có thể clone kho này về đặt hẳn bên trong cụm Kubernetes riêng để lập chỉ mục tài liệu nội bộ không cần Internet. Hồ sơ thẩm định bắt buộc phải đính chính điểm mấu chốt này ngay trên bàn quyết định: giấy phép MIT trong repo chỉ bao phủ phần MCP server (@upstash/context7-mcp), công cụ dòng lệnh CLI (ctx7) và gói tích hợp Vercel AI SDK đóng vai trò cầu nối truyền nhận.",
+        "Toàn bộ động cơ lõi phía sau — từ hệ thống crawler thu thập tài liệu thư viện mã nguồn mở, bộ phân tích cú pháp, cho đến cơ sở dữ liệu chỉ mục tìm kiếm phục vụ truy vấn get-library-docs — đều là hạ tầng cloud độc quyền (proprietary hosted backend) do Upstash trực tiếp lưu trữ và vận hành. Điều này kéo theo ba hệ quả quản trị mà doanh nghiệp phải minh bạch trước khi chuẩn hóa toàn đội.",
+        "Thứ nhất, Context7 không thể hoạt động trong môi trường air-gapped ngắt kết nối Internet (ví dụ các trạm Local LLM bảo mật cao cho khối tài chính hay quốc phòng). Thứ hai, khi đội kỹ sư chạy tần suất cao trên hàng chục máy cùng lúc, mọi request vẫn phụ thuộc độ sẵn sàng và giới hạn tốc độ (rate limit) từ máy chủ Upstash (cần cấu hình CONTEXT7_API_KEY để mở rộng hạn mức). Thứ ba, vì hạ tầng index nằm ngoài tầm kiểm soát VPC của bạn, tuyệt đối không đẩy tài liệu API nội bộ, quy trình ERP hay schema cơ sở dữ liệu mật lên hệ thống Context7 công cộng."
+      ],
+      "bullets": [
+        "Phân định rõ trách nhiệm: Context7 chỉ lo tài liệu thư viện Open-Source công cộng.",
+        "Hành vi phụ thuộc Cloud tạo rủi ro rate-limit hoặc gián đoạn tạm thời nếu không chuẩn bị gói dự phòng hoặc API key doanh nghiệp.",
+        "Với mạng nội bộ kín hoặc tài liệu độc quyền, bắt buộc kết hợp một lớp Private RAG nội bộ (Docling + Qdrant/pgvector) chạy song song."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-context7-mcp-rules",
+      "heading": "Cài đặt Context7 MCP cho Claude Code / Cline / OpenCode kèm quy tắc gọi tool tự động",
+      "language": "json",
+      "filename": ".mcp.json",
+      "description": "Cấu hình chuẩn kết nối @upstash/context7-mcp qua stdio (hỗ trợ gắn CONTEXT7_API_KEY tăng hạn mức) và gợi ý quy tắc ép Agent gọi resolve-library-id trước khi sinh code SDK mới.",
+      "code": "{\n  \"mcpServers\": {\n    \"context7\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@upstash/context7-mcp\", \"--api-key\", \"${env:CONTEXT7_API_KEY}\"],\n      \"env\": {\n        \"CONTEXT7_API_KEY\": \"${env:CONTEXT7_API_KEY}\"\n      }\n    }\n  }\n}\n\n/* --- Gợi ý thêm vào .clinerules hoặc AGENTS.md của dự án ---\n1. Khi viết code sử dụng Next.js, Three.js, Tailwind hoặc @google/genai SDK,\n   BẮT BUỘC gọi Context7 `resolve-library-id` rồi `get-library-docs` trước khi cài đặt hoặc sửa API.\n2. Cấm tuyệt đối dùng Context7 để tìm kiếm tên dự án, bảng SQL nội bộ hoặc tài liệu SOP mật;\n   mọi tri thức doanh nghiệp nội bộ phải truy vấn qua Private RAG MCP nội bộ.\n*/"
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-context7-vs-private-rag",
+      "heading": "Khung ra quyết định cho Tech Lead: Khi nào dùng Context7 và khi nào tách sang Private RAG",
+      "subtitle": "Phân luồng minh bạch giữa tri thức thư viện mở công cộng và tài sản trí tuệ doanh nghiệp",
+      "scenarios": [
+        {
+          "condition": "Vibecode frontend & backend dùng stack mở công khai (Next.js, Three.js WebGL, Tailwind, Trigger.dev, Zod)",
+          "recommendedChoice": "Bật Context7 MCP mặc định trong IDE",
+          "rationale": "Tiết kiệm tối đa thời gian dò doc thủ công, ép agent gọi resolve-library-id và get-library-docs lấy đúng API mới nhất của tuần hiện tại.",
+          "avoidIf": "Máy trạm đang cắt Internet hoàn toàn hoặc đang chạm ngưỡng rate-limit không có API key."
+        },
+        {
+          "condition": "Tra cứu quy trình ERP 5.0, bảng giá BĐS, chính sách hoa hồng, API kế toán MISA hay schema FORCE RLS",
+          "recommendedChoice": "Dùng Private RAG MCP (Docling + Qdrant/pgvector)",
+          "rationale": "Giữ 100% tài liệu nhạy cảm nằm gọn trong VPC công ty, phân quyền theo tenant/phòng ban và không phụ thuộc crawler công cộng bên ngoài.",
+          "avoidIf": "Nội dung chỉ là cú pháp phổ thông của thư viện React/TypeScript công khai."
+        },
+        {
+          "condition": "Triển khai trạm Local LLM xử lý mã nguồn hoàn toàn cô lập mạng (Air-Gapped On-Premise)",
+          "recommendedChoice": "Đồng bộ Git Docs Mirror + Local Search MCP",
+          "rationale": "Do backend tìm kiếm của Context7 chạy trên Upstash Cloud, môi trường air-gapped cần tải sẵn markdown docs chính thức về ổ nội bộ và lập chỉ mục cục bộ.",
+          "avoidIf": "Môi trường phát triển có kết nối HTTPS chuẩn ra Internet."
+        },
+        {
+          "condition": "Kiểm tra xem đoạn code vừa sinh từ docs mới có thực sự chạy mượt trên giao diện thật hay không",
+          "recommendedChoice": "Ghép Context7 + Playwright MCP + TypeScript LSP",
+          "rationale": "Context7 giải quyết đúng API lúc viết code, còn TypeScript LSP và Playwright MCP xác nhận không gãy build và chạy đúng luồng người dùng cuối.",
+          "avoidIf": "Chỉ dùng Context7 rồi bỏ qua bước biên dịch và kiểm thử thực tế."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "phoi-hop-context7-trong-domation",
+      "eyebrow": "THỰC CHIẾN DOMATION • WEB 3D WEBGL & RANH GIỚI BẢO MẬT",
+      "variant": "deep-dive",
+      "heading": "Cách DOMATION gắn Context7 vào quy trình dựng Sa bàn 3D WebGL nhưng vẫn khóa chặt tri thức ERP nội bộ",
+      "paragraphs": [
+        "Khi xây dựng những dự án đòi hỏi đồ họa trình duyệt khắt khe như Sa bàn 3D WebGL bóc mái 8 mẫu căn hộ cho EcoLife Signature Đà Nẵng (nén Draco GLB từ 80MB xuống dưới 3.5MB để iPhone Safari chạy mượt) hay bộ công cụ Next.js 14 xử lý 208 SKU cho INKICA AI Studio, tốc độ ra tính năng mới của đội ngũ DOMATION phụ thuộc rất lớn vào việc giữ cho các AI coding agent như Cline và OpenCode không viết sai các hàm Three.js, React hoặc Gemini API vừa cập nhật.",
+        "Nhờ tích hợp sẵn Context7 MCP trong bộ cấu hình IDE tiêu chuẩn kết hợp với quy tắc dự án nhắc agent gọi resolve-library-id ở đầu mỗi task mới, số lần build gãy do sai chữ ký hàm thư viện ngoài gần như biến mất. Cùng lúc đó, chúng tôi vạch một lằn ranh bảo mật không nhân nhượng: Context7 chỉ phục vụ đúng lớp framework công khai, trong khi toàn bộ thiết kế 12 phân hệ ERP 5.0, logic chia Lead AutoData ZaloBot, chứng từ MISA và tài liệu riêng của 30+ khách hàng doanh nghiệp được phục vụ qua hệ thống RAG nội bộ độc lập có gắn kiểm soát truy cập chặt chẽ."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "ket-luan-context7-executive",
+      "variant": "benchmark",
+      "title": "Kết luận thẩm định: Cài ngay cho 100% lập trình viên Vibecode — Nhưng cấm nhầm lẫn với kho tri thức nội bộ",
+      "body": "upstash/context7 xứng đáng đứng đầu danh sách MCP cần cài trong ngày đầu tiên cho mọi đội kỹ sư dùng Next.js, Three.js hay AI SDK, nhờ khả năng trị tận gốc bệnh viết code API lỗi thời với chi phí schema gần như bằng không. Chỉ cần ban công nghệ luôn ghi nhớ bản chất hybrid của nó — Client MIT kết nối tới Cloud Backend độc quyền của Upstash — để giữ nguyên tắc: mã nguồn mở công khai hỏi Context7, còn tri thức nghiệp vụ mật tuyệt đối giữ ở Private RAG nội bộ."
+    }
+  ]
+}

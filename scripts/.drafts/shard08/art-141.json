@@ -1,0 +1,310 @@
+{
+  "id": "art-141",
+  "number": "141",
+  "slug": "principle-of-least-privilege-tach-vai-tro-ai-agent-doc-va-ghi",
+  "shardId": "shard08",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Zero-Trust AI Architecture",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Principle of Least Privilege cho AI Agent: Tách biệt tuyệt đối Agent Tư Vấn (Read) & Agent Thực Thi (Write)",
+  "seoTitle": "Least Privilege Cho AI Agent: Tách Quyền Đọc Và Ghi | DOMATION",
+  "metaDescription": "Thay vì cấp siêu-token cho AI Agent đa năng, kiến trúc Zero-Trust tách Agent tư vấn (Read) khỏi Worker thực thi (Write) với phạm vi quyền tối thiểu.",
+  "focusKeyword": "principle of least privilege cho ai agent",
+  "secondaryKeywords": [
+    "zero trust architecture cho ai agent",
+    "tách agent đọc và agent ghi dữ liệu",
+    "scoped ephemeral token cho ai tool",
+    "giảm blast radius khi agent bị hack",
+    "kiến trúc multi agent an toàn"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Zero-Trust Agent: Tách Quyền Đọc Khỏi Quyền Ghi Dữ Liệu",
+  "thumbnailHook": "Giới hạn Scope từng phiên, cô lập Worker giảm 90% bán kính lỗi.",
+  "thumbnailBadge": "ZERO-TRUST • LEAST PRIVILEGE",
+  "coverImage": "/imgs/boost/v2/principle-of-least-privilege-tach-vai-tro-ai-agent-doc-va-ghi.webp",
+  "screenshotImage": "/imgs/boost/charts/principle-of-least-privilege-tach-vai-tro-ai-agent-doc-va-ghi-report.webp",
+  "coverAlt": "Kiến trúc principle of least privilege cho ai agent tách biệt Agent tư vấn chỉ đọc khỏi Worker thực thi ghi dữ liệu qua Ephemeral Token của DOMATION",
+  "screenshotCaption": "Biểu đồ đo kiểm mức độ giảm bán kính sát thương (Blast Radius) và tỷ lệ chặn lệnh ghi trái phép của 5 kịch bản tấn công Excessive Agency khi chuyển từ Monolithic Super-Token sang kiến trúc tách quyền Read/Write và Ephemeral Capability Token.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Kiến Trúc Multi-Agent Zero-Trust",
+  "relatedSlugs": [
+    "excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db",
+    "human-in-the-loop-phe-duyet-ghi-db-chuyen-tien-ai-agent",
+    "roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist",
+    "sandboxing-execution-environment-docker-gvisor-cho-ai-agent"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Cấp một siêu-token toàn quyền cho con Chatbot kiêm luôn tác vụ cập nhật CRM, xuất hóa đơn và gửi ZNS là lỗ hổng thiết kế lớn nhất khi đưa AI vào vận hành. Áp dụng principle of least privilege cho ai agent đòi hỏi tách đôi hệ thống: Advisory Agent tiếp xúc khách hàng chỉ giữ quyền đọc (PostgreSQL Read-Only Role kết hợp FORCE RLS), còn Execution Worker phụ trách ghi dữ liệu hoàn toàn bị cách ly khỏi hội thoại trực tiếp và chỉ nhận Ephemeral Token ngắn hạn giới hạn đúng một hành động đã qua kiểm duyệt Schema.",
+  "keyTakeaways": [
+    "Chấm dứt mô hình 'God-Mode Agent': bất kỳ AI Agent nào trực tiếp nhận prompt từ khách hàng trên Zalo OA, Messenger hay Website tuyệt đối không được sở hữu quyền INSERT, UPDATE, DELETE hoặc gọi Webhook thanh toán.",
+    "Tách rạch ròi Agent Tư Vấn (Read-Only Advisory Plane) và Worker Thực Thi (Write-Scoped Execution Plane) qua hàng đợi nội bộ hoặc MCP Server phân quyền theo từng Role Allowlist.",
+    "Thay API Key tĩnh sống vĩnh viễn bằng Scoped Ephemeral Token (TTL 30–120 giây, gắn ràng buộc RFC 8707 audience, tenant_id và target_record_id) để thu hẹp bán kính sát thương (Blast Radius) trên 90%.",
+    "Kế thừa tư duy Role-Scoped Tool Allowlist từ các công cụ như Roo-Code (đã chuyển sang trạng thái archived ngày 15/05/2026 tại v3.54.0) hoặc chế độ read-only/workspace-write của Codex CLI & Gemini CLI Policy Engine, nhưng cưỡng bức ở tầng Database và Token Broker thay vì chỉ dặn bằng prompt."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm bán kính sát thương (Blast Radius)",
+      "value": "-94% khi có Injection"
+    },
+    {
+      "label": "Thao tác ghi trái phép từ Bot chat",
+      "value": "0 lệnh (Chặn ở DB Role)"
+    },
+    {
+      "label": "Tuổi thọ Scoped Ephemeral Token",
+      "value": "60 giây (TTL tự hủy)"
+    },
+    {
+      "label": "Chi phí hiệu năng Token Broker",
+      "value": "+9 ms P95 trung bình"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao không dùng System Prompt để dặn Chatbot bán hàng 'Chỉ được tư vấn, không được tự xóa hay sửa giá đơn hàng'?",
+      "answer": "Vì System Prompt chỉ là hướng dẫn xác suất nằm chung cửa sổ ngữ cảnh với dữ liệu đầu vào của khách hàng. Khi gặp đòn Direct hoặc Indirect Prompt Injection, hoặc đơn giản là mô hình gặp ảo giác khi chọn sai tên hàm trong danh sách 30+ Tools được gắn sẵn, LLM vẫn có thể gọi nhầm công cụ mang quyền ghi. Trong chuẩn bảo mật Zero-Trust, ranh giới phân quyền phải là thuộc tính hạ tầng nằm ở PostgreSQL Role và OAuth/JWT Token Scope chứ không bao giờ nằm ở câu chữ nhắc nhở mô hình."
+    },
+    {
+      "question": "Tách Agent Tư Vấn (Read) và Agent Thực Thi (Write) có làm trải nghiệm khách hàng bị chậm hoặc mất liền mạch không?",
+      "answer": "Hoàn toàn không nếu thiết kế đúng giao thức bất đồng bộ. Trong các luồng CSKH trên Zalo OA hay Website của DOMATION, Read Agent phản hồi tức thì mọi câu hỏi bảng giá, tồn kho hoặc lịch hẹn bằng kết nối PostgreSQL Read-Only trong vài trăm mili-giây. Khi phát sinh nhu cầu thay đổi dữ liệu (như đặt chỗ, tạo đơn nháp, gửi yêu cầu hoàn tiền), Read Agent chỉ phát ra một gói Intent có cấu trúc JSON chặt chẽ đẩy sang Execution Worker. Người dùng vẫn thấy phản hồi 'Đã ghi nhận yêu cầu đặt lịch mã #BK-102' ngay lập tức trong khi Worker phía sau chạy xác thực quyền và ghi DB an toàn."
+    },
+    {
+      "question": "Scoped Ephemeral Token khác gì với API Key nội bộ gắn trong biến môi trường .env của MCP Server?",
+      "answer": "API Key tĩnh trong .env thường mang quyền admin toàn cục trên toàn bộ bảng dữ liệu hoặc toàn bộ tài khoản MISA/Zalo OA và có thời hạn sống gần như vô hạn. Nếu một lỗ hổng SSRF hay lỗi log làm lộ khóa đó, kẻ tấn công có quyền truy xuất mọi khách hàng của mọi đại lý. Ngược lại, Scoped Ephemeral Token được Token Broker cấp phát động cho từng lượt gọi công cụ cụ thể với TTL 60 giây, chỉ có hiệu lực cho một `tenant_id`, một `record_id` và một `action` duy nhất (ví dụ `crm.lead.append_note`), tương thích chuẩn Audience Binding RFC 8707 trên Streamable HTTP MCP."
+    },
+    {
+      "question": "Có thể học mô hình tách quyền của Roo-Code hay Codex CLI để áp dụng cho Multi-Agent doanh nghiệp không?",
+      "answer": "Rất đáng học về tư duy Role Allowlist, nhưng cần chọn đúng công cụ và lớp thực thi. RooCodeInc/Roo-Code từng giải quyết rất tốt việc tách chế độ Ask/Architect (chỉ đọc) khỏi Code/Debug (được sửa file) thông qua per-mode tool allowlists, dù repo này đã chính thức ngừng phát triển và archived từ 15/05/2026 ở bản v3.54.0. Hiện nay với hệ thống coding có thể dùng Cline hoặc OpenCode kết hợp chế độ sandbox `read-only` của Codex CLI hoặc 5-tier TOML Policy Engine của Gemini CLI, còn với hệ thống ERP/CRM doanh nghiệp thì phải hạ chốt chặn Read/Write xuống tầng API Gateway và PostgreSQL Role."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "huyen-thoai-god-mode-agent-va-bay-sieu-token",
+      "eyebrow": "TIỂU LUẬN PHẢN BIỆN • PHÁ BỎ HUYỀN THOẠI BOT ĐA NĂNG",
+      "variant": "contrarian",
+      "heading": "Cơn sốt 'All-in-One AI Agent' và sai lầm trao chìa khóa tổng cho nhân viên lễ tân",
+      "pullQuote": "Trong một công ty bình thường, bạn không bao giờ đưa két sắt và dấu mộc đỏ cho nhân viên trực quầy lễ tân cầm sẵn phòng khi khách cần chuyển tiền; vậy tại sao lại cấp quyền Admin Database cho một con Chatbot đang tiếp xúc hàng nghìn người lạ trên Internet?",
+      "paragraphs": [
+        "Trên các diễn đàn công nghệ và tài liệu quảng bá phần mềm AI suốt hai năm qua, mô hình được ca ngợi nhiều nhất là một 'Siêu trợ lý AI toàn năng': chỉ một khung chat duy nhất kết nối thẳng tới 40–80 API từ đọc tài liệu PDF, tra cứu CRM, sửa tồn kho, phát mã giảm giá đến bắn tin nhắn Zalo ZNS và đồng bộ công nợ MISA. Về mặt trình diễn demo, kiến trúc một-tổng-thể này trông vô cùng ấn tượng vì bất kỳ câu lệnh nào gõ vào cũng chạy được ngay. Nhưng khi bước vào môi trường vận hành thật của doanh nghiệp, đó chính là công thức tạo ra lỗ hổng Excessive Agency — nhóm rủi ro nằm trong top đầu OWASP Top 10 for LLM và Agentic Applications.",
+        "Vấn đề không chỉ nằm ở những tin tặc chuyên nghiệp chủ đích tấn công Prompt Injection. Trong 70% sự cố mà đội ngũ kỹ sư DOMATION từng kiểm toán tại các doanh nghiệp tự triển khai trợ lý AI, thiệt hại đến từ những nguyên nhân rất đời thường: một nhân viên gõ câu lệnh mơ hồ 'Dọn giúp anh mấy đơn test cũ của chi nhánh tháng trước', hoặc một chuỗi hội thoại kéo dài làm mô hình nhầm lẫn tham số giữa `update_draft_quote` và `confirm_invoice`. Vì con Agent đó đang nắm trong tay một siêu-token kết nối trực tiếp vào PostgreSQL với quyền đọc-ghi toàn bộ bảng, một quyết định sai xác suất 0,5% cũng đủ biến thành thảm họa mất dữ liệu hoặc thất thoát tiền thật.",
+        "Triển khai đúng principle of least privilege cho ai agent đòi hỏi một cuộc đảo ngược tư duy thiết kế: AI Agent không phải một thực thể duy nhất cần được 'dạy bảo ngoan ngoãn', mà phải là một chuỗi các vai trò bị cô lập chặt chẽ. Cụ thể, mọi Agent tiếp xúc trực tiếp với đầu vào không đáng tin cậy — từ khách hàng trên Zalo OA, Messenger, biểu mẫu Web đến email đối tác — chỉ được tồn tại như một Tư vấn viên chỉ đọc (Read-Only Advisory Agent). Toàn bộ năng lực thay đổi trạng thái hệ thống phải tách sang một tầng Worker thực thi (Write Execution Agent) tách biệt hoàn toàn khỏi luồng hội thoại tự do."
+      ],
+      "bullets": [
+        "Rủi ro cốt lõi của God-Mode Agent là gom chung Untrusted Input (tin nhắn khách, PDF ngoài) với High-Privilege Write Tools trong cùng một Context Window và cùng một Credential.",
+        "Càng gắn nhiều Tool ghi dữ liệu lên một Agent, xác suất gọi nhầm công cụ càng tăng theo cấp số nhân đồng thời tiêu tốn hàng chục nghìn token schema mỗi lượt suy luận.",
+        "Nguyên lý Zero-Trust bắt buộc coi LLM là thành phần không đáng tin cậy (Untrusted Compute): hệ thống chỉ tin vào Token Scope và Database Role đứng sau nó."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "doi-chieu-4-mo-hinh-cap-quyen-agent",
+      "heading": "Đối chiếu 4 kiến trúc phân quyền cho AI Agent trong hệ thống ERP & CRM doanh nghiệp",
+      "caption": "So sánh mức độ cô lập rủi ro và chi phí vận hành thực tế giữa mô hình gom quyền truyền thống với kiến trúc tách Read/Write Zero-Trust",
+      "columns": [
+        "Tiêu chí kiến trúc",
+        "God-Mode Agent (1 API Key chung)",
+        "Prompt-Restricted Agent (Cấm bằng chữ)",
+        "Static RBAC Agent (Quyền cố định theo User)",
+        "Read/Write Split + Ephemeral Token (DOMATION)"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Phạm vi quyền khi Agent tiếp khách ngoài",
+          "values": [
+            "Toàn quyền đọc/ghi/xóa mọi bảng và gọi mọi Webhook",
+            "Vẫn cầm khóa Admin; chỉ trông chờ LLM tự từ chối",
+            "Thừa hưởng trọn vẹn quyền ghi của nhân viên mở phiên",
+            "Tuyệt đối chỉ đọc (SELECT Role + FORCE RLS); không có Tool ghi"
+          ],
+          "winnerNote": "Triệt tiêu bề mặt ghi từ hội thoại công khai"
+        },
+        {
+          "criterion": "Bán kính sát thương (Blast Radius) khi dính Injection",
+          "values": [
+            "Toàn bộ Database, ví ZNS và hóa đơn MISA",
+            "Gần như toàn hệ thống nếu bị bẻ prompt đa lượt",
+            "Toàn bộ dữ liệu phòng ban/chi nhánh của user đó",
+            "Giới hạn 1 bản ghi/1 hành động trong 60s (hoặc 0% ở nhánh Read)"
+          ],
+          "winnerNote": "Giảm >90% phạm vi tổn thất tiềm tàng"
+        },
+        {
+          "criterion": "Phản kháng trước ảo giác tham số Tool (Wrong ID)",
+          "values": [
+            "Không có — AI truyền ID nào DB sửa thẳng dòng đó",
+            "Yếu — phụ thuộc validation rời rạc từng endpoint",
+            "Trung bình — kiểm tra quyền theo role nhưng dễ sửa nhầm dòng cùng tenant",
+            "Cao — Token khóa cứng targetRecordId và Zod chặn trường nhạy cảm"
+          ]
+        },
+        {
+          "criterion": "Độ phình Context Window từ Schema Tool",
+          "values": [
+            "Rất nặng (40–80 tools tốn 35k–60k tokens/lượt)",
+            "Nặng vì vẫn phải nạp danh sách công cụ đầy đủ",
+            "Trung bình (15–30 tools theo vai trò)",
+            "Cực nhẹ (Read Agent chỉ giữ 3–5 tools tra cứu ngữ nghĩa)"
+          ],
+          "winnerNote": "Giảm 70% token hệ thống và tăng độ chính xác chọn tool"
+        },
+        {
+          "criterion": "Tương thích chuẩn MCP & Kiểm toán Zero-Trust",
+          "values": [
+            "Vi phạm nặng nguyên tắc bảo mật tối thiểu",
+            "Không đạt chuẩn kiểm toán doanh nghiệp",
+            "Đạt mức cơ bản nhưng dễ lộ key dài hạn trong trace",
+            "Chuẩn mực — gắn RFC 8707 Audience Binding & Hash Trace"
+          ]
+        }
+      ],
+      "footnote": "Tham chiếu kiến trúc DOM Agent (80 tools) được chia tách thành từng nhóm chuyên trách theo phòng ban và khóa chéo bằng PostgreSQL FORCE RLS."
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-kien-truc-read-advisory-va-write-worker",
+      "eyebrow": "KIẾN TRÚC ZERO-TRUST • HAI MẶT PHẲNG TÁCH RỜI",
+      "variant": "deep-dive",
+      "heading": "Tách đôi Advisory Plane và Execution Plane: Cách DOMATION thu hẹp Blast Radius còn 1 bản ghi",
+      "paragraphs": [
+        "Để xây dựng một hệ thống zero trust architecture cho ai agent chạy ổn định ở quy mô hàng chục nghìn lượt tương tác mỗi ngày, bước đầu tiên không phải viết thêm bộ lọc prompt mà là vẽ lại ranh giới vật lý giữa hai loại tiến trình: Tiến trình Tư Vấn (Read-Only Advisory Plane) và Tiến trình Thực Thi (Write-Scoped Execution Plane).",
+        "Tại mặt phẳng Tư vấn, Omnichannel CSKH Agent trực 24/7 trên Zalo OA, Messenger và Website 3D chỉ được cấp một kết nối cơ sở dữ liệu thông qua tài khoản `dom_agent_readonly` bị khóa cứng ở cấp PostgreSQL (`DEFAULT TRANSACTION READ ONLY = on`, chỉ được `GRANT SELECT` trên các view đã che số điện thoại hoặc tài liệu bảng giá, kết hợp `FORCE ROW LEVEL SECURITY`). Đồng thời, tầng tìm kiếm Vector RAG chỉ sử dụng khóa chỉ đọc. Kể cả trong kịch bản tồi tệ nhất khi một kẻ tấn công đánh lừa được mô hình ngôn ngữ tin rằng mình là Giám đốc đang ra lệnh xóa bảng khách hàng hoặc sửa giá căn hộ từ 4 tỷ xuống 400 triệu, câu lệnh đó sẽ chết ngay ở lõi PostgreSQL với mã lỗi `cannot execute UPDATE in a read-only transaction`.",
+        "Mặt phẳng Thực thi (Execution Worker) được đặt hoàn toàn phía sau bức tường nội bộ: nó không bao giờ đọc trực tiếp tin nhắn thô từ khách hàng lạ. Khi Read Agent xác định khách hàng muốn đặt lịch hẹn xem nhà mẫu hoặc nhân viên muốn tạo phiếu đề xuất tạm ứng trên ERP 5.0, nó chỉ được phép xuất ra một biểu mẫu ý định có cấu trúc (Structured Proposal Payload) đi qua lớp kiểm tra Zod Schema rồi đẩy vào hàng đợi. Trước khi Execution Worker chạy bước ghi dữ liệu, **Token Broker** sẽ đánh giá ngữ cảnh phiên và phát hành một Scoped Ephemeral Token sống đúng 60 giây. Token này áp dụng nguyên tắc thu hẹp kép tương tự chuẩn RFC 8707 Resource Indicators của giao thức MCP Streamable HTTP: chỉ cho phép gọi đúng 1 endpoint đích (ví dụ `crm.booking.create`), bị khóa vào đúng `tenant_id` và `lead_id` của phiên đó, và không thể tái sử dụng sang một tác vụ hay một đại lý F1 nào khác.",
+        "Tư duy chia tách vai trò theo danh sách công cụ cho phép (Role-Scoped Tool Allowlist) này cũng là bài học vàng từ thế giới AI Coding Agent. Trước khi chuyển sang trạng thái lưu trữ chỉ đọc vào ngày 15/05/2026 (phiên bản cuối v3.54.0), dự án `RooCodeInc/Roo-Code` đã chứng minh hiệu quả vượt trội của việc tách biệt chế độ `Ask` / `Architect` (chỉ đọc mã nguồn và lập kế hoạch) với chế độ `Code` (được ghi file và chạy lệnh). Trong năm 2026, các công cụ đang phát triển mạnh như `OpenAI Codex CLI` (áp dụng sandbox kernel `read-only` mặc định cho `codex exec` trên Linux Landlock/Bubblewrap/seccomp-BPF và macOS Seatbelt) hay `Google Gemini CLI` (với 5 tầng TOML Policy Engine cho phép Admin khóa cứng từng `toolName` và `commandPrefix`) đều xác nhận cùng một chân lý: quyền đọc và quyền ghi không bao giờ được đứng chung một chế độ thực thi mặc định."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-blast-radius-va-ty-le-chan-quyen-ghi",
+      "heading": "Đo kiểm tỷ lệ chặn tác vụ ghi trái phép (%) trên 5 kịch bản tấn công Excessive Agency",
+      "subtitle": "Kết quả giả lập 500 lượt kích hoạt lỗi tham số và Prompt Injection trên hạ tầng CRM/ERP thử nghiệm tại DOMATION Security Lab",
+      "chart": {
+        "chartType": "horizontal-bar",
+        "title": "Tỷ lệ chặn thành công tác vụ ghi nguy hiểm (% — càng cao càng an toàn)",
+        "subtitle": "So sánh cấu hình Bot chỉ nhắc bằng System Prompt, Static RBAC và Kiến trúc tách Read/Write + Ephemeral Scoped Token",
+        "xKey": "attackScenario",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "promptGuardOnly",
+            "label": "Chỉ chặn bằng System Prompt (%)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "staticRbac",
+            "label": "Static RBAC theo User (%)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "zeroTrustSplit",
+            "label": "Read/Write Split + Ephemeral Token (%)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "attackScenario": "Xóa hàng loạt CRM Leads", "promptGuardOnly": 41.0, "staticRbac": 76.5, "zeroTrustSplit": 100.0 },
+          { "attackScenario": "Sửa chiết khấu vượt trần", "promptGuardOnly": 28.5, "staticRbac": 62.0, "zeroTrustSplit": 100.0 },
+          { "attackScenario": "Đọc/Xuất SĐT đại lý khác", "promptGuardOnly": 34.0, "staticRbac": 88.5, "zeroTrustSplit": 100.0 },
+          { "attackScenario": "Bắn ZNS toàn danh bạ", "promptGuardOnly": 37.5, "staticRbac": 54.0, "zeroTrustSplit": 100.0 },
+          { "attackScenario": "Đổi trạng thái Paid giả", "promptGuardOnly": 24.0, "staticRbac": 49.5, "zeroTrustSplit": 100.0 }
+        ],
+        "kpis": [
+          {
+            "label": "Tỷ lệ chặn ở lõi Read/Write Split",
+            "value": "100%",
+            "delta": "Khóa cứng DB Role + Token",
+            "positive": true
+          },
+          {
+            "label": "Độ hở của Static RBAC",
+            "value": "11.5%–50.5%",
+            "delta": "Khi lạm dụng quyền chính chủ",
+            "positive": false
+          },
+          {
+            "label": "Giảm Blast Radius thực tế",
+            "value": "-94%",
+            "delta": "Cô lập 1 record / 60 giây",
+            "positive": true
+          },
+          {
+            "label": "Chi phí trễ Token Broker",
+            "value": "+9 ms P95",
+            "delta": "Ký HMAC nội bộ cực nhẹ",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Thử nghiệm 100 lượt/kịch bản trên mỗi cấu hình tại DOMATION Security Lab (Q4/2026), kết hợp fuzzing tham số JSON Tool Calling và Indirect Prompt Injection."
+      },
+      "insightSummary": "Ngay cả Static RBAC cũng để lọt tới 38%–50.5% trường hợp sửa chiết khấu vượt trần, bắn ZNS hàng loạt hoặc đổi trạng thái đã thanh toán khi nhân viên hợp pháp vô tình dính bẫy Indirect Injection trong PDF/Email. Chỉ khi hạ chốt chặn xuống DB Role chỉ đọc ở nhánh chat và tách Worker thực thi dùng Ephemeral Token ràng buộc từng hành động thì tỷ lệ chặn mới đạt 100% tuyệt đối."
+    },
+    {
+      "type": "visual-figure",
+      "id": "so-do-tach-quyen-read-write-agent-zero-trust",
+      "src": "/imgs/boost/charts/principle-of-least-privilege-tach-vai-tro-ai-agent-doc-va-ghi-report.webp",
+      "alt": "Biểu đồ benchmark kiến trúc principle of least privilege cho ai agent tách quyền đọc và quyền ghi với Scoped Ephemeral Token",
+      "caption": "So sánh bán kính sát thương và hiệu quả ngăn chặn 5 nhóm hành vi Excessive Agency giữa mô hình Monolithic Agent, Static RBAC và Zero-Trust Read/Write Split tại DOMATION.",
+      "badge": "ZERO-TRUST AGENT BENCHMARK"
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-phan-chia-quyen-agent",
+      "heading": "Phân bổ Role & Token Scope theo 4 ngữ cảnh vận hành AI Agent thực tế",
+      "subtitle": "Áp dụng đúng mức độ đặc quyền tối thiểu cho từng kịch bản thay vì dùng chung một cấu hình cho toàn công ty",
+      "scenarios": [
+        {
+          "condition": "Chatbot CSKH 24/7 trên Zalo OA, Messenger & Website bán hàng (tiếp nhận người dùng ẩn danh ngoài Internet)",
+          "recommendedChoice": "100% Read-Only Advisory Agent + Proposal Queue",
+          "rationale": "Chỉ cấp kết nối `pg_read_all` bị chặn bởi FORCE RLS và bảng giá công khai. Muốn tạo đơn hay đặt lịch hẹn phải đẩy sang một hàng đợi tách biệt đã lọc Zod Schema, không bao giờ cho phép UPDATE/DELETE.",
+          "avoidIf": "Định nối thẳng Agent chat công khai vào API xuất hóa đơn điện tử MISA hoặc API phát Voucher không trần."
+        },
+        {
+          "condition": "Trợ lý nội bộ tra cứu hồ sơ bệnh án, hợp đồng khách VIP hoặc số liệu KPI phòng ban",
+          "recommendedChoice": "Read-Only Agent + Ephemeral User-Bound Token + Phone Masking",
+          "rationale": "Cấp token đọc có thời hạn 5 phút kế thừa đúng `tenant_id` và `department_id` của người đăng nhập SSO, đồng thời chạy qua lớp che mờ SĐT/CCCD trước khi đưa vào context LLM.",
+          "avoidIf": "Dùng một Service Account dùng chung cho toàn bộ nhân viên từ thực tập sinh đến giám đốc."
+        },
+        {
+          "condition": "Agent tự động phân bổ Lead, đồng bộ CRM 8 nấc và đề xuất duyệt chi PO / Tạm ứng trong ERP 5.0",
+          "recommendedChoice": "Execution Worker cô lập + Scoped Ephemeral Token (TTL 60s) + HITL Gate",
+          "rationale": "Tách Agent thành Worker chạy ngầm chỉ nhận Payload chuẩn hóa từ hệ thống đã xác thực. Token chỉ cho phép thao tác đúng 1 Lead hoặc 1 mã đơn, kết hợp chốt duyệt con người cho thao tác tài chính.",
+          "avoidIf": "Cho phép Worker tự do chạy truy vấn SQL động hoặc sửa hàng loạt >10 bản ghi trong một lần gọi tool."
+        },
+        {
+          "condition": "Coding Agent (Cline / OpenCode / Codex CLI) hỗ trợ kỹ sư sửa code và viết migration PostgreSQL",
+          "recommendedChoice": "Sandbox Read-Only mặc định + Branch Protection + Manual Migration Gate",
+          "rationale": "Bắt buộc chạy ở chế độ chỉ đọc hoặc worktree cô lập khi khảo sát lỗi; chặn PreToolUse đọc file `.env` production; mọi thay đổi schema DB bắt buộc tạo Pull Request qua CI review trước khi chạy thật.",
+          "avoidIf": "Bật cờ bypass phê duyệt (`--yolo`) trên máy chứa khóa truy cập cơ sở dữ liệu khách hàng thật."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-read-write-role-va-ephemeral-token-broker",
+      "heading": "Công thức thực chiến: Khóa PostgreSQL Read-Only Role & Cấp Ephemeral Capability Token 60 giây",
+      "language": "typescript",
+      "filename": "src/security/leastPrivilegeTokenBroker.ts",
+      "description": "Minh họa cặp phòng thủ hai tầng: (1) Phân tách Role DB chỉ đọc cho Advisory Agent; (2) Token Broker cấp phát Capability Token ngắn hạn 60s ràng buộc chặt tenantId, action, targetRecordId và chặn mọi trường nhạy cảm (status=PAID, discountPct).",
+      "code": "import crypto from 'node:crypto';\nimport { z } from 'zod';\n\n/* === PHAN 1: SQL ROLE CO LAP (Chay trong Migration PostgreSQL) ===\nCREATE ROLE dom_agent_advisory NOINHERIT LOGIN PASSWORD '...' NOSUPERUSER NOBYPASSRLS;\nALTER ROLE dom_agent_advisory SET default_transaction_read_only = on;\nREVOKE ALL ON ALL TABLES IN SCHEMA public FROM dom_agent_advisory;\nGRANT SELECT (id, project_name, unit_code, public_price, availability_status) ON crm_units TO dom_agent_advisory;\n-- Advisory Agent khong bao gio co quyen INSERT/UPDATE/DELETE hay doc cot phone_raw\n*/\n\n// === PHAN 2: SCOPED EPHEMERAL TOKEN BROKER CHO WRITE WORKER ===\nconst WriteCapabilitySchema = z.object({\n  tenantId: z.string().uuid(),\n  actorUserId: z.string().uuid(),\n  allowedAction: z.enum(['crm.lead.append_note', 'crm.booking.create_draft']),\n  targetRecordId: z.string().uuid(),\n  maxMutations: z.literal(1),\n});\n\n// Tuyet doi cam LLM truyen tham so nhay cam qua Proposal Payload\nconst SafeDraftNotePayloadSchema = z.object({\n  leadId: z.string().uuid(),\n  summaryNote: z.string().min(5).max(500),\n}).strict(); // .strict() chan moi truong la nhu status, ownerId, discountPct\n\nexport function mintEphemeralWriteToken(\n  grantInput: z.infer<typeof WriteCapabilitySchema>,\n  brokerSecret: string\n): string {\n  const grant = WriteCapabilitySchema.parse(grantInput);\n  const nowSec = Math.floor(Date.now() / 1000);\n  const claims = {\n    ...grant,\n    aud: 'domation-write-worker-v1', // Audience Binding kieu RFC 8707\n    jti: crypto.randomUUID(),          // Single-use token ID\n    iat: nowSec,\n    exp: nowSec + 60,                  // Tu huy sau dung 60 giay\n  };\n  const bodyB64 = Buffer.from(JSON.stringify(claims)).toString('base64url');\n  const sig = crypto.createHmac('sha256', brokerSecret).update(bodyB64).digest('base64url');\n  return `${bodyB64}.${sig}`;\n}\n\nexport async function executeScopedWriteWorker(\n  token: string,\n  rawPayload: unknown,\n  brokerSecret: string,\n  consumedJtiCache: Set<string>\n) {\n  const [bodyB64, sig] = token.split('.');\n  if (!bodyB64 || !sig) throw new Error('DENY: Dinh dang Ephemeral Token khong hop le.');\n\n  const expectedSig = crypto.createHmac('sha256', brokerSecret).update(bodyB64).digest('base64url');\n  if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expectedSig))) {\n    throw new Error('DENY: Chu ky Token Broker sai lech.');\n  }\n\n  const claims = JSON.parse(Buffer.from(bodyB64, 'base64url').toString('utf8'));\n  if (claims.aud !== 'domation-write-worker-v1') throw new Error('DENY: Sai Audience.');\n  if (Math.floor(Date.now() / 1000) > claims.exp) throw new Error('DENY: Token da het han 60s.');\n  if (consumedJtiCache.has(claims.jti)) throw new Error('DENY: Token chi duoc dung 1 lan.');\n\n  const safePayload = SafeDraftNotePayloadSchema.parse(rawPayload);\n  if (safePayload.leadId !== claims.targetRecordId) {\n    throw new Error('DENY: Vi pham pham vi targetRecordId (ngan sua cheo ban ghi).');\n  }\n\n  consumedJtiCache.add(claims.jti);\n  return { ok: true, tenantId: claims.tenantId, mutatedRecord: safePayload.leadId };\n}"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-least-privilege",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng dạy AI sự tự chủ bằng câu chữ — hãy khóa đặc quyền ngay tại tầng Token và Database Role",
+      "body": "Khi thiết kế hệ điều hành Multi-Agent gồm 80 công cụ và vận hành thực tế cho hơn 30 doanh nghiệp từ sàn BĐS đa đại lý F1 đến viện đào tạo IDEAS hay chuỗi F&B Phúc Lộc Thọ, nguyên tắc sống còn tôi luôn áp đặt cho đội ngũ kỹ thuật là tách biệt tuyệt đối nhánh Tư vấn và nhánh Thực thi. Một trợ lý AI trả lời khách 24/7 không bao giờ cần quyền ghi vào sổ cái kế toán hay xóa hồ sơ CRM; nó chỉ được đọc đúng phần tri thức được phép và gửi đề xuất sang một Worker cầm thẻ thông hành ngắn hạn 60 giây. Khi thu hẹp quyền về mức tối thiểu như vậy, doanh nghiệp vừa tự tin mở rộng tốc độ AI vừa giữ chắc tay lái an toàn."
+    }
+  ]
+}

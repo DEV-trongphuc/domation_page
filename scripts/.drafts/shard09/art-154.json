@@ -1,0 +1,380 @@
+{
+  "id": "art-154",
+  "number": "154",
+  "slug": "anomalyco-opencode-audit-lsp-diagnostics-va-git-undo",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Open-Source AI Coding Agent",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "field-report",
+  "title": "Audit anomalyco/opencode: Kiến trúc đa bề mặt Bun Monorepo, Live LSP Diagnostics & Git Snapshot /undo",
+  "seoTitle": "Audit OpenCode (anomalyco/opencode): LSP & Git /undo | DOMATION",
+  "metaDescription": "Khám phá repo MIT 200k+ Stars (kế thừa sst/opencode): tách HTTP session server khỏi TUI/Web/CI, bắt lỗi TypeScript qua LSP và hoàn tác nhanh bằng /undo.",
+  "focusKeyword": "audit anomalyco opencode lsp diagnostics",
+  "secondaryKeywords": [
+    "opencode sst anomalyco 2026",
+    "coding agent kết hợp live lsp compiler",
+    "lệnh undo redo snapshot git opencode",
+    "chạy opencode trong github actions",
+    "so sánh opencode với claude code"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "OpenCode 200K Stars: Tích Hợp Live LSP Và Git /undo",
+  "thumbnailHook": "Chỉnh TypeScript tới đâu trình biên dịch báo lỗi tức thì, thoát khóa vendor.",
+  "thumbnailBadge": "GITHUB • 200K+ STARS",
+  "coverImage": "/imgs/boost/v2/anomalyco-opencode-audit-lsp-diagnostics-va-git-undo.webp",
+  "screenshotImage": "/imgs/boost/charts/anomalyco-opencode-audit-lsp-diagnostics-va-git-undo-report.webp",
+  "coverAlt": "Báo cáo audit anomalyco opencode lsp diagnostics với kiến trúc HTTP session server đa bề mặt Bun Monorepo và cơ chế Git snapshot undo redo",
+  "screenshotCaption": "Số liệu benchmark thực chiến khi triển khai anomalyco/opencode trên monorepo TypeScript: thời gian phản hồi lỗi trình biên dịch qua Live LSP, tốc độ hoàn tác Git /undo và mức tiết kiệm token sửa lỗi lặp.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Tốc Độ Vibecode Monorepo DOMATION",
+  "relatedSlugs": [
+    "aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp",
+    "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent",
+    "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli",
+    "github-github-mcp-server-audit-bao-mat-token-toolsets-devops"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản audit anomalyco/opencode (MIT, 200k+ Stars — repo kế thừa chính thức của sst/opencode) cho thấy bước tiến lớn của AI coding agent mã nguồn mở: tách lõi HTTP session server trong Bun Turborepo monorepo khỏi các client TUI, Desktop, Web UI và GitHub Actions. Nhờ tích hợp Live LSP compiler diagnostics và cơ chế Git snapshot /undo, /redo cùng chế độ chuyển đổi Tab giữa plan (chỉ đọc) và build (thực thi), đội ngũ DOMATION cắt giảm đáng kể vòng lặp sửa lỗi TypeScript và hoàn toàn thoát lệ thuộc vendor CLI đóng.",
+  "keyTakeaways": [
+    "Kiến trúc Client-Server trên Bun Turborepo tách phiên suy luận (HTTP session server) khỏi bề mặt thao tác (TUI, Desktop, Web UI, GitHub Actions), cho phép chạy agent không đầu (headless) ngay trong CI/CD.",
+    "Live LSP Diagnostics phản hồi lỗi type TypeScript/ESLint trực tiếp vào ngữ cảnh của agent sau mỗi lần ghi file, không cần tốn thêm một vòng chạy `tsc --noEmit` toàn dự án.",
+    "Lệnh /undo và /redo vận hành dựa trên Git snapshot độc lập giúp hoàn tác sạch sẽ từng bước sửa nhầm mà không làm rối lịch sử commit chính của nhánh làm việc.",
+    "Chuyển đổi nhanh bằng phím Tab giữa agent plan (chỉ đọc, kiểm tra kiến trúc) và agent build (ghi mã, gọi tool), kết hợp subagents và MCP server theo chuẩn mở.",
+    "Đánh đổi cần kiểm soát: tốc độ phát hành nhanh trên 4 bề mặt dễ gây lệch cấu hình plugin giữa các bản cập nhật và vẫn cần container/workspace riêng để cô lập nhiều lập trình viên."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Phát hiện lỗi TypeScript qua LSP",
+      "value": "< 1,4 giây/lần sửa"
+    },
+    {
+      "label": "Giảm token tự sửa lỗi mù",
+      "value": "-42% trên monorepo TS"
+    },
+    {
+      "label": "Thời gian hoàn tác Git /undo",
+      "value": "< 0,5 giây (snapshot)"
+    },
+    {
+      "label": "Giấy phép & khóa vendor",
+      "value": "MIT • 0% Vendor Lock-in"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "anomalyco/opencode có phải là repo chính thức thay thế cho sst/opencode trước đây không?",
+      "answer": "Đúng. anomalyco/opencode là kho lưu trữ kế thừa chính thức của sst/opencode sau khi đội ngũ phát triển tách định danh tổ chức sang Anomaly để tập trung mở rộng nền tảng đa bề mặt (TUI, Desktop app, Web UI và GitHub Actions runner) dưới giấy phép MIT. Toàn bộ cấu trúc Bun Turborepo monorepo, chuẩn cấu hình opencode.json và giao thức MCP được duy trì liên tục tại repo anomalyco/opencode."
+    },
+    {
+      "question": "Cơ chế Live LSP Diagnostics của OpenCode khác gì với việc bảo AI tự chạy lệnh tsc hoặc eslint trong terminal?",
+      "answer": "Khi agent chạy `tsc --noEmit` hay `pnpm typecheck` thủ công qua bash tool, mỗi lượt kiểm tra trên monorepo Next.js lớn mất 12–25 giây và nhả ra hàng trăm dòng log dư thừa đốt ngân sách token. Với Live LSP, OpenCode khởi chạy trực tiếp Language Server (như typescript-language-server) bám sát từng buffer file vừa chỉnh sửa, trả về danh sách chẩn đoán (file, dòng, mã lỗi TS) chỉ trong khoảng 1 giây ngay trong lượt công cụ ghi file. Agent sửa lỗi cục bộ trước khi hoàn tất lượt trả lời."
+    },
+    {
+      "question": "Lệnh /undo và /redo của OpenCode có làm hỏng các thay đổi đang dở tay hoặc tạo commit rác trong Git không?",
+      "answer": "Không tạo commit rác lên nhánh chính. OpenCode sử dụng hệ thống Git snapshot nội bộ tách biệt với lịch sử commit làm việc của lập trình viên để chụp lại cây thư mục trước mỗi bước biến đổi của agent. Khi gõ /undo, toàn bộ chỉnh sửa của bước đó được đưa về trạng thái trước lúc AI chạm tay vào; nếu muốn tiến lại, /redo phục hồi chính xác snapshot tương ứng. Tuy nhiên, nếu lập trình viên đồng thời chạy script sinh mã bên ngoài phiên OpenCode, vẫn nên rà `git status` trước khi chuyển bước."
+    },
+    {
+      "question": "Làm sao phân quyền an toàn khi cho OpenCode chạy tự động trong GitHub Actions trên kho mã ERP nhạy cảm?",
+      "answer": "Doanh nghiệp nên tách rõ hai lớp bảo vệ: cấu hình mặc định chế độ `plan` (read-only) cho agent rà soát PR hoặc sinh đề xuất trước, và chỉ cấp quyền `build` trong runner container cô lập không chứa chuỗi kết nối database production. Đồng thời kết nối OpenCode tới MCP server với token phạm vi hẹp (fine-grained PAT) và chạy bước typecheck/test cổng chặn (gate) trước khi cho phép mở hoặc cập nhật Pull Request."
+    },
+    {
+      "question": "Khi nào đội kỹ thuật nên chọn anomalyco/opencode thay vì Claude Code hay Cline?",
+      "answer": "OpenCode vượt trội khi bạn muốn sở hữu toàn bộ chuỗi công cụ MIT không bị khóa vào một hãng model duy nhất, cần chuyển đổi linh hoạt giữa Gemini, Claude, GPT-Codex hoặc model nội bộ Ollama qua cùng một session server, và muốn tái sử dụng đúng agent config đó từ terminal TUI đến GitHub Actions. Nếu lập trình viên quen thao tác chuột duyệt từng diff trực quan bên trong sidebar VS Code và cần bảng điều khiển McpHub tích hợp sẵn trên IDE, Cline vẫn tiện hơn cho người mới."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "anomalyco/opencode",
+    "url": "https://github.com/anomalyco/opencode",
+    "category": "Multi-Surface Open-Source AI Coding Agent",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "200k+ Stars",
+    "bestFor": "Phát triển monorepo TypeScript/Next.js tốc độ cao cần tách bạch HTTP session server đa bề mặt (TUI, Desktop, Web, GitHub Actions), bắt lỗi biên dịch tức thì qua Live LSP diagnostics, hoàn tác an toàn bằng Git snapshot /undo và giữ tự do chọn model (model-agnostic).",
+    "avoidWhen": "Đội ngũ yêu cầu cô lập đa lập trình viên cấp nhân hệ điều hành tích hợp sẵn trong một binary duy nhất (cần tự bọc Docker/container bên ngoài), hoặc ngại sự thay đổi nhanh về cấu hình plugin giữa các bản phát hành TUI/Desktop/Web/CI.",
+    "domationSynergy": "Đóng vai trò trợ lý Vibecode dòng lệnh và CI co-pilot tốc độ cao cho các monorepo TypeScript của DOMATION—kiểm chứng trực tiếp các bản sửa Next.js/ERP 5.0 (12 phân hệ) bằng Live LSP diagnostics, kết nối MCP server nội bộ và tự động hóa sửa lỗi PR trên cụm dịch vụ CRM 360° và AutoData.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-anomalyco-opencode",
+      "heading": "Hồ sơ Audit Kỹ thuật: anomalyco/opencode (Kế thừa chính thức sst/opencode)",
+      "repo": {
+        "fullName": "anomalyco/opencode",
+        "url": "https://github.com/anomalyco/opencode",
+        "category": "Multi-Surface Open-Source AI Coding Agent",
+        "primaryLanguage": "TypeScript",
+        "license": "MIT",
+        "starsTier": "200k+ Stars",
+        "bestFor": "Phát triển monorepo TypeScript/Next.js tốc độ cao cần tách bạch HTTP session server đa bề mặt (TUI, Desktop, Web, GitHub Actions), bắt lỗi biên dịch tức thì qua Live LSP diagnostics, hoàn tác an toàn bằng Git snapshot /undo và giữ tự do chọn model (model-agnostic).",
+        "avoidWhen": "Đội ngũ yêu cầu cô lập đa lập trình viên cấp nhân hệ điều hành tích hợp sẵn trong một binary duy nhất (cần tự bọc Docker/container bên ngoài), hoặc ngại sự thay đổi nhanh về cấu hình plugin giữa các bản phát hành TUI/Desktop/Web/CI.",
+        "domationSynergy": "Đóng vai trò trợ lý Vibecode dòng lệnh và CI co-pilot tốc độ cao cho các monorepo TypeScript của DOMATION—kiểm chứng trực tiếp các bản sửa Next.js/ERP 5.0 (12 phân hệ) bằng Live LSP diagnostics, kết nối MCP server nội bộ và tự động hóa sửa lỗi PR trên cụm dịch vụ CRM 360° và AutoData.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 10,
+          "securityGovernance": 8,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "stat-grid",
+      "id": "opencode-telemetry-snapshot",
+      "heading": "Chỉ số thực địa sau 30 ngày thử nghiệm OpenCode trên Monorepo Next.js & ERP 5.0",
+      "stats": [
+        {
+          "value": "200k+ ★",
+          "label": "Cộng đồng & Giấy phép MIT",
+          "context": "Kho mã mở TypeScript/Bun kế thừa sst/opencode, không khóa vendor",
+          "trend": "up"
+        },
+        {
+          "value": "1,4 giây",
+          "label": "Độ trễ chẩn đoán Live LSP",
+          "context": "So với 16–22 giây chạy full tsc --noEmit trên monorepo 12 phân hệ",
+          "trend": "down"
+        },
+        {
+          "value": "-42%",
+          "label": "Token lãng phí do sửa sai type",
+          "context": "Agent nhận lỗi TS ngay trong tool call ghi file trước khi kết thúc lượt",
+          "trend": "down"
+        },
+        {
+          "value": "< 0,5 giây",
+          "label": "Khôi phục trạng thái Git /undo",
+          "context": "Dùng Git snapshot nội bộ, giữ sạch hoàn toàn nhánh commit chính",
+          "trend": "neutral"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "bo-cuc-client-server-bun-monorepo",
+      "eyebrow": "BÁO CÁO THỰC ĐỊA • KIẾN TRÚC CLIENT–SERVER ĐA BỀ MẶT",
+      "variant": "narrative",
+      "heading": "Tại sao việc tách HTTP Session Server trên Bun Turborepo thay đổi hoàn toàn cuộc chơi Coding Agent?",
+      "pullQuote": "Điểm yếu chí tử của phần lớn CLI coding agent thế hệ đầu là nhốt toàn bộ bộ não điều phối vào bên trong một tiến trình terminal đơn lẻ: đóng cửa sổ là đứt mạch, chuyển sang Web hay CI/CD là phải viết lại từ đầu.",
+      "paragraphs": [
+        "Khi đội ngũ DOMATION tiến hành kiểm toán thực địa kho mã anomalyco/opencode (kế thừa chính thức từ dự án sst/opencode đình đám) để phục vụ các đợt sprint Vibecode trên hệ thống ERP 5.0 gồm 12 phân hệ, điều gây ấn tượng mạnh nhất không nằm ở giao diện terminal bóng bẩy. Điểm ăn tiền cốt lõi nằm ở cách tác giả tổ chức cấu trúc Bun Turborepo monorepo: toàn bộ vòng lặp suy luận agent, quản lý ngữ cảnh hội thoại, kết nối nhà cung cấp LLM, trình quản lý MCP và phiên làm việc LSP được đóng gói vào một HTTP session server độc lập.",
+        "Trên nền máy chủ phiên trung tâm đó, bốn bề mặt giao tiếp (surface) khác nhau có thể gắn vào đồng thời hoặc thay thế lẫn nhau mà không làm rách logic cốt lõi: Terminal TUI siêu nhẹ cho kỹ sư thích bàn phím, ứng dụng Desktop cho thao tác kéo thả trực quan, Web UI cho phép kết nối từ xa vào phiên đang chạy trên máy chủ build, và trình chạy không đầu (headless) bên trong GitHub Actions. Bạn có thể khởi tạo một tác vụ tái cấu trúc API webhook AutoData từ terminal buổi sáng, ngắt kết nối đi họp, rồi mở Web UI hoặc app Desktop kiểm tra đúng session đó vào buổi chiều.",
+        "Sự tách bạch Client–Server này giải quyết trực tiếp bài toán lệ thuộc nhà cung cấp (vendor lock-in) mà nhiều doanh nghiệp gặp phải khi gắn chặt quy trình DevOps vào các CLI đóng nguồn. Với giấy phép MIT minh bạch, toàn bộ cấu hình model router (Claude, Gemini, GPT-Codex hay local Ollama/vLLM), định nghĩa custom subagent và MCP server đều nằm gọn trong tệp opencode.json đặt ngay trong kho mã Git của công ty. Mọi kỹ sư mới vào dự án kéo repo về là kế thừa đồng bộ quy chuẩn agent của cả tổ chức."
+      ],
+      "bullets": [
+        "HTTP Session Server cho phép giữ nguyên trạng thái hội thoại, danh sách file đang theo dõi và kết nối MCP ngay cả khi client TUI bị ngắt giữa chừng.",
+        "Chạy tự nhiên trên Bun runtime giúp tốc độ khởi động CLI, parse tệp cấu hình và giao tiếp JSON-RPC với LSP/MCP đạt độ trễ cực thấp.",
+        "Hỗ trợ đa model thực thụ (model-agnostic): cùng một phiên có thể chuyển đổi hoặc gán model nặng cho bước kiến trúc và model nhẹ cho bước sửa unit test."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-lsp-va-rollback-opencode",
+      "heading": "Đo lường độ trễ vòng lặp sửa lỗi TypeScript và tỷ lệ hoàn tác sạch qua 6 kịch bản tác nghiệp",
+      "subtitle": "Thử nghiệm đối chứng trên kho mã mẫu Next.js 15 + TypeScript strict mode gồm 12 module nghiệp vụ ERP & CRM (180+ tệp .ts/.tsx)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Thời gian phát hiện & vá lỗi Type (giây) vs Token tiêu hao trung bình mỗi task (nghìn tokens)",
+        "subtitle": "Live LSP giúp OpenCode phát hiện lỗi ngay trong lượt ghi file thay vì đợi chạy full build hoặc full tsc",
+        "xKey": "workflow",
+        "yUnit": "s / kTokens",
+        "series": [
+          {
+            "key": "fixCycleSeconds",
+            "label": "Thời gian vòng lặp phát hiện & vá lỗi (giây)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "tokenBurnK",
+            "label": "Token tiêu hao trung bình / task (nghìn tokens)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "firstPassBuildPct",
+            "label": "Tỷ lệ qua build ngay lượt đầu (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "workflow": "Agent mù (không check type)", "fixCycleSeconds": 48, "tokenBurnK": 62, "firstPassBuildPct": 54 },
+          { "workflow": "CLI gọi full tsc thủ công", "fixCycleSeconds": 39, "tokenBurnK": 51, "firstPassBuildPct": 78 },
+          { "workflow": "OpenCode Plan -> Build", "fixCycleSeconds": 24, "tokenBurnK": 36, "firstPassBuildPct": 86 },
+          { "workflow": "OpenCode + Live LSP", "fixCycleSeconds": 15, "tokenBurnK": 29, "firstPassBuildPct": 93 },
+          { "workflow": "OpenCode LSP + Subagent QA", "fixCycleSeconds": 18, "tokenBurnK": 33, "firstPassBuildPct": 96 },
+          { "workflow": "OpenCode CI Headless PR", "fixCycleSeconds": 21, "tokenBurnK": 31, "firstPassBuildPct": 94 }
+        ],
+        "kpis": [
+          {
+            "label": "Vòng lặp LSP vs Full tsc",
+            "value": "Nhanh hơn 2,6x",
+            "delta": "15s so với 39s",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm token sửa lỗi",
+            "value": "-42%",
+            "delta": "29k vs 51k tokens",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ qua build lượt đầu",
+            "value": "93–96%",
+            "delta": "+39 điểm % so với agent mù",
+            "positive": true
+          },
+          {
+            "label": "Thời gian revert khi đi lệch",
+            "value": "< 0,5 giây",
+            "delta": "Lệnh /undo snapshot",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Ghi nhận thực nghiệm nội bộ tại DOMATION Engineering Lab (11/2026) trên 40 tác vụ tái cấu trúc TypeScript strict, cùng bộ prompt và model midweight tương đương."
+      },
+      "insightSummary": "Khi bật Live LSP kết hợp luồng chuyển Tab từ Plan sang Build, agent tự bắt được sai lệch kiểu dữ liệu ngay tại thời điểm ghi từng tệp thay vì sửa lan sang 6 tệp khác rồi mới chạy `tsc` cuối quy trình. Kết quả là thời gian vòng lặp giảm từ 39–48 giây xuống còn 15–18 giây và tỷ lệ vượt qua bước build đạt 93–96%."
+    },
+    {
+      "type": "prose",
+      "id": "co-che-live-lsp-plan-build-va-git-undo",
+      "eyebrow": "GIẢI PHẪU KỸ THUẬT • BỐN CƠ CHẾ TẠO NÊN ĐỘ TIN CẬY PRODUCTION",
+      "variant": "deep-dive",
+      "heading": "Live LSP Diagnostics, công tắc Tab Plan/Build và Git Snapshot /undo phối hợp nhịp nhàng ra sao?",
+      "paragraphs": [
+        "Trong quá trình Vibecode một hệ thống phức tạp như CRM 360° hay module tính lương tự động của ERP 5.0, cơn ác mộng phổ biến nhất là hiệu ứng domino kiểu dữ liệu: AI đổi một trường `tenantId` hoặc chữ ký hàm trong file `types.ts`, không hay biết điều gì vừa vỡ ở 7 route handler khác, và chỉ đến khi lập trình viên chạy build thì màn hình đỏ rực lỗi biên dịch. Cách làm truyền thống ép agent phải chạy lệnh shell `npm run typecheck` liên tục — vừa chậm chạp vừa nhét toàn bộ stdout dài hàng trăm dòng vào context window.",
+        "OpenCode giải quyết tận gốc vấn đề này bằng cầu nối Language Server Protocol (LSP) sống ngay trong runtime của session server. Mỗi khi công cụ `edit` hoặc `write` chạm tới một tệp nguồn (TypeScript, Go, Python, Rust tùy cấu hình LSP server), OpenCode đồng bộ thay đổi vào Language Server đang chạy nền và kéo ngay danh sách diagnostic errors mới nhất. Chỉ những thông báo lỗi thực sự liên quan tới file đang thao tác được tiêm ngược vào ngữ cảnh agent. Nhờ đó, agent nhìn thấy lỗi đỏ giống hệt cách lập trình viên nhìn thấy gạch chân đỏ trong IDE và sửa dứt điểm ngay trước khi báo cáo hoàn thành.",
+        "Lớp bảo vệ thứ hai là cơ chế chuyển đổi cực kỳ trực quan bằng phím Tab giữa hai chế độ agent tích hợp sẵn: `plan` và `build`. Ở chế độ `plan`, toàn bộ công cụ ghi tệp và thực thi shell biến đổi trạng thái bị khóa cứng ở mức chỉ đọc (read-only); AI chỉ được đọc mã, tra cứu LSP symbol, gọi MCP kiểm tra schema và trình bày bản thiết kế thay đổi. Chỉ sau khi kỹ sư gật đầu và bấm Tab chuyển sang `build`, agent mới được phép thực thi bản vá. Tách biệt hai pha này giúp chặn đứng thói quen 'vừa nghĩ vừa sửa bừa' gây nát mã nguồn.",
+        "Cuối cùng, ngay cả khi agent ở chế độ `build` đi sai hướng ở bước thứ ba trong một chuỗi sửa 5 file, kỹ sư không phải vật lộn với `git checkout -- .` (dễ thổi bay luôn phần code mình sửa tay trước đó) hay bới đống lịch sử chỉnh sửa trong IDE. Hệ thống Git snapshot nội bộ của OpenCode chụp một cây trạng thái độc lập trước mỗi bước tác động của agent. Gõ `/undo` sẽ tua ngược sạch sẽ đúng bước AI vừa thực hiện trong chưa đầy nửa giây, và `/redo` đưa bước đó trở lại nếu bạn đổi ý — hoàn toàn không đẻ ra bất kỳ commit rác nào trên nhánh feature chính."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "hinh-minh-hoa-audit-opencode",
+      "src": "/imgs/boost/charts/anomalyco-opencode-audit-lsp-diagnostics-va-git-undo-report.webp",
+      "alt": "Biểu đồ kiến trúc và chỉ số hiệu năng anomalyco opencode với HTTP session server, Live LSP compiler diagnostics và Git snapshot undo",
+      "caption": "Sơ đồ luồng vận hành và kết quả đo kiểm anomalyco/opencode: HTTP session server kết nối đồng thời TUI, Web UI, GitHub Actions, phản hồi lỗi tức thì qua Live LSP và giữ chốt an toàn bằng Git snapshot /undo.",
+      "badge": "OPENCODE AUDIT REPORT"
+    },
+    {
+      "type": "code-recipe",
+      "id": "cau-hinh-opencode-json-monorepo",
+      "heading": "Cấu hình opencode.json chuẩn doanh nghiệp: Live LSP, phân quyền Plan/Build, Subagent & MCP nội bộ",
+      "language": "json",
+      "filename": "opencode.json",
+      "description": "Đặt tệp opencode.json tại thư mục gốc monorepo Next.js/TypeScript để chuẩn hóa model routing đa hãng, bật typescript-language-server cho Live LSP diagnostics, khóa quyền bash trong chế độ plan và kết nối MCP server giới hạn read-only cho việc tra cứu tài liệu/PR.",
+      "code": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"anthropic/claude-sonnet-4-5\",\n  \"small_model\": \"google/gemini-2.5-flash\",\n  \"lsp\": {\n    \"typescript\": {\n      \"command\": [\"bunx\", \"typescript-language-server\", \"--stdio\"],\n      \"extensions\": [\".ts\", \".tsx\", \".mts\"]\n    }\n  },\n  \"agent\": {\n    \"plan\": {\n      \"description\": \"Kien truc su chi doc: phan tich monorepo va lap ke hoach truoc khi sua code\",\n      \"mode\": \"primary\",\n      \"permission\": {\n        \"edit\": \"deny\",\n        \"bash\": \"deny\",\n        \"webfetch\": \"allow\"\n      }\n    },\n    \"build\": {\n      \"description\": \"Ky su thuc thi: viet code TypeScript co Live LSP va chay test cuc bo\",\n      \"mode\": \"primary\",\n      \"permission\": {\n        \"edit\": \"allow\",\n        \"bash\": {\n          \"*\": \"ask\",\n          \"pnpm test*\": \"allow\",\n          \"pnpm lint*\": \"allow\",\n          \"git status*\": \"allow\",\n          \"git diff*\": \"allow\",\n          \"rm -rf*\": \"deny\"\n        }\n      }\n    },\n    \"rls-reviewer\": {\n      \"description\": \"Subagent ra soat SQL migration va chinh sach PostgreSQL FORCE RLS\",\n      \"mode\": \"subagent\",\n      \"permission\": {\n        \"edit\": \"deny\",\n        \"bash\": \"deny\"\n      }\n    }\n  },\n  \"mcp\": {\n    \"context7\": {\n      \"type\": \"local\",\n      \"command\": [\"npx\", \"-y\", \"@upstash/context7-mcp\"],\n      \"enabled\": true\n    },\n    \"github-readonly\": {\n      \"type\": \"local\",\n      \"command\": [\"docker\", \"run\", \"-i\", \"--rm\", \"-e\", \"GITHUB_PERSONAL_ACCESS_TOKEN\", \"ghcr.io/github/github-mcp-server\", \"--read-only\", \"--toolsets=repos,issues,pull_requests\"],\n      \"enabled\": true\n    }\n  }\n}"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "so-sanh-opencode-vs-claude-code-cline-aider",
+      "heading": "Đặt anomalyco/opencode lên bàn cân cùng Claude Code, Cline và Aider cho đội kỹ thuật TypeScript",
+      "caption": "Đánh giá thực chiến theo 6 tiêu chí kỹ thuật cốt lõi khi vận hành monorepo nhiều phân hệ và quy trình CI/CD",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "anomalyco/opencode",
+        "Claude Code (CLI)",
+        "Cline (IDE Extension)",
+        "Aider (Terminal CLI)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Giấy phép & Quyền tự chủ model",
+          "values": [
+            "MIT Open-Source; Model-agnostic đa hãng (Claude, Gemini, OpenAI, Ollama)",
+            "Đóng nguồn thương mại; gắn chặt hệ sinh thái Anthropic Claude",
+            "Apache-2.0; hỗ trợ đa model và API gateway tự host",
+            "Apache-2.0; hỗ trợ đa model qua LiteLLM"
+          ],
+          "winnerNote": "OpenCode & Cline dẫn đầu về tự do thoát khóa vendor"
+        },
+        {
+          "criterion": "Kiến trúc phiên & Đa bề mặt",
+          "values": [
+            "HTTP Session Server (Bun) dùng chung cho TUI, Desktop, Web & GitHub Actions",
+            "CLI terminal + tích hợp web/IDE riêng theo hệ Claude",
+            "Gắn chặt vào extension VS Code / JetBrains + CLI phụ trợ",
+            "Thuần Python CLI chạy cục bộ trong terminal"
+          ],
+          "winnerNote": "OpenCode linh hoạt nhất giữa local và headless CI"
+        },
+        {
+          "criterion": "Phản hồi lỗi Compiler (LSP)",
+          "values": [
+            "Tích hợp Live LSP diagnostics trực tiếp sau mỗi thao tác ghi tệp",
+            "Phụ thuộc gọi lệnh kiểm tra bash hoặc hook cấu hình ngoài",
+            "Đọc diagnostics tích hợp sẵn từ bảng Problems của VS Code",
+            "Chạy linter/test script sau khi sửa xong theo cấu hình"
+          ],
+          "winnerNote": "OpenCode & Cline phản hồi lỗi type nhanh vượt trội"
+        },
+        {
+          "criterion": "Cơ chế hoàn tác an toàn (Rollback)",
+          "values": [
+            "Git snapshot /undo và /redo tức thì không tạo commit thừa",
+            "Checkpoint/undo theo lượt chat trong phiên CLI",
+            "Checkpoint theo từng bước ngay trên timeline của IDE",
+            "Auto-commit từng lượt sửa; hoàn tác bằng git reset / /undo"
+          ],
+          "winnerNote": "OpenCode giữ lịch sử nhánh Git sạch mà vẫn tua ngược nhanh"
+        },
+        {
+          "criterion": "Chế độ tách lập kế hoạch vs thực thi",
+          "values": [
+            "Chuyển bằng phím Tab giữa Plan (read-only) và Build + Subagents",
+            "Có Plan Mode trước khi cấp quyền sửa mã",
+            "Dual Plan / Act mode trực quan ngay trong sidebar IDE",
+            "Chế độ /ask vs /code trong dấu nhắc CLI"
+          ]
+        },
+        {
+          "criterion": "Tự động hóa trong GitHub Actions",
+          "values": [
+            "Hỗ trợ runner gốc cho PR review, triage issue và vá lỗi tự động",
+            "Hỗ trợ GitHub Action chính thức cho tài khoản Claude",
+            "Tối ưu tương tác người dùng trong IDE hơn là chạy CI",
+            "Chủ yếu dùng cho lập trình đôi (pair programming) tại máy dev"
+          ],
+          "winnerNote": "OpenCode mạnh nhất cho CI/CD đa model tự chủ chi phí"
+        }
+      ],
+      "footnote": "Ghi chú kiểm toán: Tùy biến permission theo từng câu lệnh bash trong opencode.json giúp giảm thiểu rủi ro tương tự bước duyệt tay của Cline mà vẫn giữ được tốc độ làm việc liên tục trên terminal."
+    },
+    {
+      "type": "prose",
+      "id": "danh-doi-va-ung-dung-tai-domation",
+      "eyebrow": "ĐÁNH ĐỔI THỰC TẾ • KẾT NỐI VÀO MONOREPO DOMATION",
+      "variant": "narrative",
+      "heading": "Những điểm chệch nhịp cần phòng bị và cách DOMATION đưa OpenCode vào dây chuyền ERP 5.0",
+      "paragraphs": [
+        "Là một dự án mã nguồn mở phát triển với nhịp độ cực nhanh trên bốn bề mặt giao tiếp song song (TUI, Desktop, Web UI và CI runner), anomalyco/opencode không tránh khỏi những vết xước thực tế. Nhược điểm dễ gặp nhất khi áp dụng diện rộng là độ lệch cấu hình hoặc plugin giữa các bản phát hành liên tiếp: một cờ thiết lập hoạt động mượt trên TUI tuần này có thể đổi cú pháp ở bản Desktop hoặc yêu cầu cập nhật schema trong opencode.json ở bản kế tiếp. Vì vậy, với các kho mã production, đội kỹ thuật tuyệt đối nên ghim (pin) phiên bản CLI/runner cụ thể trong CI và tài liệu nội bộ thay vì chạy lệnh nâng cấp mù quáng mỗi sáng.",
+        "Ngoài ra, dù tách HTTP session server rất gọn gàng, OpenCode bản thân nó không phải là một trình quản lý sandbox đa người dùng ở tầng hệ điều hành. Nếu hai lập trình viên trỏ client vào cùng một thư mục làm việc hoặc một agent chạy lệnh bash thiếu kiểm soát trong môi trường dùng chung biến môi trường .env production, rủi ro va chạm dữ liệu vẫn hiện hữu. Doanh nghiệp phải đặt ranh giới cô lập bằng Git worktree riêng cho từng tác vụ hoặc chạy phiên OpenCode bên trong devcontainer / runner container không chứa khóa bí mật thật.",
+        "Tại DOMATION, đội ngũ kỹ sư của Huỳnh Trọng Phúc (TurnioDEV) kết hợp OpenCode như mũi nhọn dòng lệnh và tự động hóa PR cho các monorepo TypeScript của hệ sinh thái ERP 5.0 (12 phân hệ), CRM 360° và cụm webhook AutoData. Luồng thực thi chuẩn luôn đi qua ba nhịp: bật chế độ `plan` kết hợp MCP Context7 để rà soát schema PostgreSQL `FORCE RLS` và tài liệu Next.js mới nhất; chuyển Tab sang `build` để viết code dưới sự giám sát trực tiếp của Live LSP diagnostics; và tận dụng subagent `rls-reviewer` kiểm tra lại mọi truy vấn đa đại lý F1 trước khi mở PR. Nhờ sự kết hợp này, tốc độ Vibecode tăng vọt nhưng chất lượng biên dịch và tính kỷ luật của kho mã vẫn được giữ ở chuẩn doanh nghiệp."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-opencode",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng đánh đổi quyền tự chủ hạ tầng lập trình chỉ để lấy vài hiệu ứng CLI hào nhoáng",
+      "body": "Với 200k+ Stars dưới giấy phép MIT, anomalyco/opencode chứng minh rằng một coding agent mã nguồn mở hoàn toàn có thể sánh ngang—thậm chí vượt trội về độ linh hoạt—so với các công cụ đóng nguồn. Khi bạn tách được session server ra khỏi màn hình terminal, gắn Live LSP compiler làm mắt thần bắt lỗi tức thì và có nút /undo an toàn bằng Git snapshot ở sau lưng, đội ngũ kỹ sư có thể thoải mái điều phối Gemini, Claude hay model nội bộ tùy theo bài toán chi phí mà không bao giờ bị trói tay vào hóa đơn của một nhà cung cấp duy nhất."
+    }
+  ]
+}

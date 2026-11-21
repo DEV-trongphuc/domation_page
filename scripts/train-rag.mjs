@@ -121,10 +121,11 @@ async function main() {
   console.log(`\n[DOMATION-RAG-TRAIN] Saved ${outPath} (${sizeKb} KB, ${chunks.length} chunks).`);
 
   const sampleQueries = [
+    'Huỳnh Trọng Phúc (TurnioDEV) là ai? Có kinh nghiệm xây dựng hệ thống A-Z, AI Automation và Digital Marketing như thế nào?',
     'Bên mình có những gói giá phần mềm SaaS và thiết kế Website nào?',
     'Hệ thống Auto Chia Data Meta CAPI hoạt động mất bao lâu?',
     'DOMATION triển khai dự án EcoLife Signature Capital House gồm những hạng mục gì?',
-    'Muốn liên hệ tư vấn hoặc nhắn Zalo thì liên hệ số nào?',
+    'Muốn xem Portfolio TurnioDEV hoặc liên hệ trực tiếp CEO Huỳnh Trọng Phúc ở đâu?',
   ];
   console.log('\n[DOMATION-RAG-TRAIN] Running live vector cosine similarity checks:');
   for (const q of sampleQueries) {

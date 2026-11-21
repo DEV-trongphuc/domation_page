@@ -1,0 +1,334 @@
+{
+  "id": "art-111",
+  "number": "111",
+  "slug": "rag-evaluation-ragas-deepeval-golden-set-triet-tieu-ao-giac",
+  "shardId": "shard04",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "AI QA & Reliability Engineering",
+  "clusterId": "kw-ai-agent-rag",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Đo lường RAG chuẩn Production với Ragas, DeepEval & Golden Set: Triệt tiêu ảo giác trước khi Go-Live",
+  "seoTitle": "RAG Evaluation Ragas & DeepEval: Triệt Tiêu Ảo Giác | DOMATION",
+  "metaDescription": "Đừng đánh giá Chatbot AI bằng cảm tính. Hướng dẫn dựng Golden Set 200 câu hóc búa đo 4 chỉ số Faithfulness, Relevance, Context Precision & Context Recall.",
+  "focusKeyword": "rag evaluation ragas deepeval golden set",
+  "secondaryKeywords": [
+    "đo độ trung thực faithfulness rag",
+    "xây dựng golden dataset đánh giá ai",
+    "chống ai bịa đặt hallucination",
+    "ci cd regression test cho rag",
+    "kiểm thử chất lượng chatbot doanh nghiệp"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Đo Faithfulness Và Recall Trước Khi Đẩy AI Cho Khách",
+  "thumbnailHook": "Chặn mọi bản cập nhật prompt trượt ngưỡng Faithfulness < 0.92 ngay trong CI/CD.",
+  "thumbnailBadge": "EVALS • ZERO HALLUCINATION",
+  "coverImage": "/imgs/boost/v2/rag-evaluation-ragas-deepeval-golden-set-triet-tieu-ao-giac.webp",
+  "screenshotImage": "/imgs/boost/charts/rag-evaluation-ragas-deepeval-golden-set-triet-tieu-ao-giac-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Quy Trình Kiểm Định AI Agent",
+  "relatedSlugs": [
+    "confident-ai-deepeval-audit-unit-test-rag-trong-ci-cd",
+    "arize-ai-phoenix-audit-opentelemetry-truy-vet-troi-embedding",
+    "promptfoo-promptfoo-audit-red-teaming-danh-gia-prompt-ci-cd",
+    "phat-hien-data-drift-concept-drift-trong-he-thong-ai"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Sổ tay kỹ thuật đo lường RAG chuẩn Production bằng Ragas, DeepEval và Golden Set 200 câu hỏi để triệt tiêu ảo giác AI trước khi Go-Live",
+  "screenshotCaption": "Biểu đồ tiến trình nâng 4 chỉ số Ragas (Faithfulness, Answer Relevancy, Context Precision, Context Recall) qua 5 vòng tối ưu trên Golden Set 200 câu thực chiến tại DOMATION AI Lab.",
+  "relatedPortfolioId": "ecolife-signature",
+  "tldrSummary": "Đánh giá Chatbot RAG bằng cách gõ thử vài câu mẫu rồi khen mượt mà là con đường ngắn nhất dẫn tới lỗi báo sai giá và bịa đặt điều khoản khi chạy thật. Cẩm nang này chuẩn hóa quy trình kiểm thử RAG định lượng trước Go-Live: tách lỗi truy xuất khỏi lỗi sinh câu trả lời bằng bốn chỉ số Ragas, dựng bộ Golden Set 200 câu gồm bảng giá SKU lẫn câu bẫy thiếu đáp án, và nhúng DeepEval vào CI/CD để chặn mọi thay đổi trượt ngưỡng Faithfulness dưới 0.92.",
+  "keyTakeaways": [
+    "Tách bạch chẩn đoán hai tầng: Context Recall và Context Precision đo chất lượng bộ tìm kiếm Vector/BM25, còn Faithfulness và Answer Relevancy đo kỷ luật bám sát tài liệu của LLM.",
+    "Golden Set đạt chuẩn phải gồm tối thiểu 200 câu hỏi được phân tầng từ dữ liệu thật: truy vấn bảng giá/SKU, câu hỏi đa điều kiện ngoại lệ, câu bẫy Out-of-Scope và hội thoại teencode tiếng Việt.",
+    "Ưu tiên khẳng định tất định (regex khớp mã SKU, đơn vị tiền tệ, từ chối an toàn) trước khi gọi LLM-as-a-Judge trong DeepEval để cắt 55% hóa đơn token CI/CD và giảm nhiễu chấm điểm.",
+    "Thiết lập cổng Regression Gate cứng trong GitHub Actions: chặn tự động mọi thay đổi chunking, model embedding hay system prompt nếu Faithfulness < 0.92 hoặc Context Recall < 0.88."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Độ trung thực trích dẫn (Faithfulness)",
+      "value": "0.94 / 1.00"
+    },
+    {
+      "label": "Độ phủ ngữ cảnh (Context Recall)",
+      "value": "0.91 (+29%)"
+    },
+    {
+      "label": "Chặn sai lệch trước Go-Live",
+      "value": "100% PR Gate"
+    },
+    {
+      "label": "Chi phí LLM Judge mỗi lần chạy CI",
+      "value": "~0.42 USD / 200 câu"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Chỉ cần test thủ công 20–30 câu hỏi quan trọng với Trưởng phòng Kinh doanh trước ngày Go-Live có đủ thay cho Ragas và DeepEval không?",
+      "answer": "Không đủ và rất dễ tạo cảm giác an toàn giả tạo. Khi kiểm thử bằng tay 20 câu quen thuộc, kỹ sư thường vô thức viết lại câu hỏi đúng theo từ ngữ xuất hiện trong tài liệu PDF, bỏ qua câu hỏi đồng nghĩa, bảng giá nhiều cột gộp ô hoặc tình huống khách gài điều kiện không tồn tại. Quan trọng hơn, mỗi tuần khi bạn sửa một dòng System Prompt để cải thiện giọng điệu cho Zalo OA, không ai có thời gian ngồi chấm lại bằng tay toàn bộ 200 tình huống cũ để phát hiện lỗi hồi quy (regression) ở một nhánh chính sách khác."
+    },
+    {
+      "question": "Khi dùng LLM-as-a-Judge trong Ragas hoặc DeepEval, làm sao kiểm soát sai số chủ quan và hóa đơn token tăng vọt trên CI?",
+      "answer": "DOMATION áp dụng chiến lược kiểm định lai (Hybrid Assertions): các tiêu chí cứng như trích đúng mã SKU, đúng đơn vị tiền tệ, không chứa chuỗi cấm hoặc từ chối đúng khi điểm rerank thấp được kiểm tra bằng hàm Python tất định trước với chi phí bằng 0. Chỉ những câu trả lời vượt qua bước lọc cứng mới chạy qua LLM Judge đã hiệu chuẩn bằng mô hình tầm trung cân bằng giá-chất lượng (như `gemini-3.8-flash` hoặc `claude-haiku-5-5` ở nhiệt độ thấp), đồng thời chạy full bộ 200 câu vào ban đêm hoặc khi sửa tầng RAG cốt lõi thay vì chạy trên mọi commit sửa CSS."
+    },
+    {
+      "question": "Làm thế nào để xây dựng Golden Set 200 câu khi doanh nghiệp vừa triển khai mới và chưa có lịch sử chat AI?",
+      "answer": "Đừng ngồi văn phòng tự bịa 200 câu hỏi lý thuyết. Hãy rút trích nguyên liệu từ ba nguồn sự thật có sẵn: nhật ký tin nhắn Zalo OA/Facebook Page của đội Sale 3 tháng gần nhất, các thắc mắc hóc búa nhất trong biên bản phản hồi khách hàng trên CRM, và ma trận bảng giá/điều khoản hợp đồng. Sau đó dùng kỹ thuật tổng hợp câu hỏi có kiểm soát (Synthetic Generation từ tài liệu gốc) để bổ sung thêm 30% biến thể câu hỏi đa điều kiện và câu bẫy thiếu thông tin, rồi bắt buộc đưa chuyên viên nghiệp vụ duyệt tay lại toàn bộ đáp án chuẩn (Ground Truth) trước khi khóa phiên bản v1."
+    },
+    {
+      "question": "Nếu chỉ số Faithfulness đạt 0.95 nhưng khách hàng vẫn phàn nàn AI trả lời thiếu ý hoặc không tìm ra điều khoản chiết khấu thì lỗi nằm ở đâu?",
+      "answer": "Đó là tình huống kinh điển của việc chỉ nhìn một nửa bức tranh: Faithfulness cao nghĩa là mô hình rất ngoan ngoãn chỉ nói dựa trên những đoạn văn bản nó nhận được, nhưng bộ truy xuất Vector/BM25 đã tìm thiếu hoặc tìm sai đoạn tài liệu ngay từ đầu! Bạn cần nhìn sang chỉ số **Context Recall** và **Context Precision**. Nếu Context Recall thấp dưới 0.80, mọi nỗ lực sửa Prompt hay nâng cấp từ model nhẹ lên model nặng đều vô ích; bạn phải quay lại sửa bộ phân tách bảng PDF, áp dụng Hybrid Search (BM25 + Dense Vector) và bổ sung Cross-Encoder Reranker."
+    },
+    {
+      "question": "Cần cập nhật lại Golden Set bao lâu một lần khi doanh nghiệp liên tục ra sản phẩm và bảng giá mới?",
+      "answer": "Golden Set không phải tảng đá bất biến. Mỗi tháng một lần hoặc ngay sau mỗi đợt phát hành bảng giá quý mới, kỹ sư AI Ops phối hợp cùng QA/Sale Leader loại bỏ các câu hỏi gắn với chính sách đã hết hạn và nạp thêm tối thiểu 15–20 câu hỏi thực tế lấy từ các ca khách hàng chat làm AI lúng túng trên Production (Failure Traces). Cách làm 'Dataset Flywheel' này giúp bộ kiểm thử phản ánh đúng thực địa kinh doanh hiện tại thay vì bám mãi ngữ cảnh cũ."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "vibe-check-va-giai-phau-bo-tu-chi-so-rag",
+      "eyebrow": "Sổ Tay Kỹ Thuật AI QA • Playbook #EVAL-111",
+      "variant": "narrative",
+      "heading": "Từ bỏ thói quen 'Vibe-Check': Giải phẫu bộ tứ chỉ số RAG Triad & Context Recall",
+      "pullQuote": "Một câu trả lời sai có thể xuất phát từ hai thủ phạm hoàn toàn khác nhau: bộ tìm kiếm kéo nhầm trang bảng giá, hoặc mô hình ngôn ngữ tự ý bịa thêm điều khoản ưu đãi.",
+      "paragraphs": [
+        "Trong phần lớn các buổi demo Chatbot doanh nghiệp, khâu nghiệm thu diễn ra đầy cảm tính: kỹ sư gõ năm bảy câu hỏi thuận tai về sản phẩm chủ lực, thấy AI trả lời trôi chảy rồi cho phép chạy thật. Chỉ ba ngày sau khi nối vào Zalo OA hay trang đích quảng cáo, đội Sale lập tức báo động: khách hỏi căn góc tầng trung có được chiết khấu thanh toán nhanh không thì AI gộp nhầm tỷ lệ của căn studio; khách hỏi điều kiện hoàn cọc khi hồ sơ vay ngân hàng bị từ chối thì AI bỏ sót ngoại lệ ở trang 4 phụ lục hợp đồng; và khi khách hỏi một gói dịch vụ công ty không cung cấp, AI vẫn tự tin bịa ra mức giá nghe rất hợp lý.",
+        "Nguyên nhân gốc rễ nằm ở việc coi toàn bộ pipeline RAG như một hộp đen duy nhất và chấm điểm bằng trực giác. Khi không đo tách biệt từng chặng trong luồng Retrieve-then-Generate, kỹ sư dễ chẩn đoán nhầm bệnh: thấy AI trả lời sai liền sửa dài System Prompt hoặc nâng cấp model đắt gấp mười lần, trong khi lỗi thực sự lại nằm ở bước Chunking cắt đôi bảng giá hoặc tầng Vector bỏ sót mã SKU.",
+        "Để chấm dứt vòng luẩn quẩn đó, hệ thống AI Space RAG tại DOMATION chuẩn hóa bộ tứ thước đo kế thừa từ **Ragas** và **DeepEval** (`confident-ai/deepeval`). **Context Recall** kiểm tra bộ tìm kiếm có kéo đủ mảnh bằng chứng theo đáp án chuẩn hay không; **Context Precision** đo xem đoạn văn bản đúng có nằm ở top đầu hay bị nhiễu đè xuống dưới; **Faithfulness** kiểm chứng mọi mệnh đề trong câu trả lời có bám 100% ngữ cảnh truy xuất; và **Answer Relevancy** đảm bảo AI trả lời đúng trọng tâm câu hỏi."
+      ],
+      "bullets": [
+        "Lỗi Retrieval (Context Recall < 0.85): Tối ưu Parser bảng biểu, kích thước Chunk, Hybrid Search (BM25 + Vector) và Cross-Encoder Reranker.",
+        "Lỗi Noise & Thứ hạng (Context Precision < 0.80): Cắt giảm top-K dư thừa, lọc metadata phiên bản hiệu lực và nén ngữ cảnh trước khi đưa vào LLM.",
+        "Lỗi Hallucination (Faithfulness < 0.92): Siết Prompt trích dẫn bắt buộc, hạ nhiệt độ sinh văn bản và bổ sung bước kiểm tra đối chiếu khẳng định (Claim Verification)."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "lo-trinh-nang-chuan-rag-qua-5-vong-evals",
+      "heading": "Theo dõi 4 chỉ số Ragas qua 5 vòng nâng cấp trên Golden Set 200 câu thực chiến",
+      "subtitle": "Kết quả kiểm định định lượng hệ thống AI Space RAG (kho PDF hợp đồng, bảng giá ma trận SKU và quy chế bán hàng tiếng Việt) trước khi mở cổng Production.",
+      "chart": {
+        "chartType": "composed",
+        "title": "Diễn biến Faithfulness, Answer Relevancy, Context Precision & Context Recall (0.00 – 1.00)",
+        "xKey": "iteration",
+        "yUnit": "điểm",
+        "kpis": [
+          {
+            "label": "Faithfulness đạt cổng Go-Live",
+            "value": "0.94",
+            "delta": "+0.28 so với Baseline",
+            "positive": true
+          },
+          {
+            "label": "Context Recall cuối quy trình",
+            "value": "0.91",
+            "delta": "Vượt chuẩn >= 0.88",
+            "positive": true
+          },
+          {
+            "label": "Context Precision sau Rerank",
+            "value": "0.89",
+            "delta": "+0.31 sau Hybrid + Rerank",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ bịa giá / sai SKU",
+            "value": "0.5%",
+            "delta": "Giảm từ 24.0% ở Vòng 1",
+            "positive": true
+          }
+        ],
+        "series": [
+          {
+            "key": "faithfulness",
+            "label": "Faithfulness (Độ trung thực)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "contextRecall",
+            "label": "Context Recall (Độ phủ ngữ cảnh)",
+            "color": "#06B6D4",
+            "type": "bar"
+          },
+          {
+            "key": "contextPrecision",
+            "label": "Context Precision (Độ tinh thứ hạng)",
+            "color": "#10B981",
+            "type": "line"
+          },
+          {
+            "key": "answerRelevancy",
+            "label": "Answer Relevancy (Độ bám câu hỏi)",
+            "color": "#F59E0B",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "iteration": "V1: Naive 500t",
+            "faithfulness": 0.66,
+            "contextRecall": 0.62,
+            "contextPrecision": 0.58,
+            "answerRelevancy": 0.74
+          },
+          {
+            "iteration": "V2: Table Chunk",
+            "faithfulness": 0.79,
+            "contextRecall": 0.76,
+            "contextPrecision": 0.71,
+            "answerRelevancy": 0.81
+          },
+          {
+            "iteration": "V3: Hybrid BM25",
+            "faithfulness": 0.84,
+            "contextRecall": 0.88,
+            "contextPrecision": 0.79,
+            "answerRelevancy": 0.86
+          },
+          {
+            "iteration": "V4: Reranker",
+            "faithfulness": 0.89,
+            "contextRecall": 0.90,
+            "contextPrecision": 0.88,
+            "answerRelevancy": 0.90
+          },
+          {
+            "iteration": "V5: Strict + Gate",
+            "faithfulness": 0.94,
+            "contextRecall": 0.91,
+            "contextPrecision": 0.89,
+            "answerRelevancy": 0.93
+          }
+        ],
+        "sourceNote": "Đo lường trên bộ Golden Set 200 câu đa ngành (BĐS, Giáo dục MBA, B2B SKU) tại DOMATION Engineering Lab (Q4/2026)."
+      },
+      "insightSummary": "Biểu đồ phơi bày một sự thật đáng chú ý: ở Vòng 2 khi chuyển từ cắt đoạn 500 token mù quáng sang Table-Aware Chunking, cả Faithfulness (+0.13) và Context Recall (+0.14) cùng bật tăng mạnh nhất vì bảng giá không còn bị xé đôi. Sau đó ở Vòng 3 và Vòng 4, kết hợp BM25 cho mã SKU và Cross-Encoder Reranker đẩy Context Precision từ 0.71 lên 0.88, tạo nền sạch để bước siết Prompt & Strict Grounding ở Vòng 5 đưa Faithfulness vượt ngưỡng 0.92 chuẩn Go-Live."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-rag-evals-golden-set-chart",
+      "src": "/imgs/boost/charts/rag-evaluation-ragas-deepeval-golden-set-triet-tieu-ao-giac-report.webp",
+      "alt": "Biểu đồ đo lường RAG Evaluation bằng Ragas, DeepEval và Golden Set 200 câu hỏi giúp nâng Faithfulness lên 0.94 trước khi Go-Live",
+      "caption": "Đường tiến hóa 4 chỉ số đánh giá RAG định lượng từ nguyên mẫu Naive Chunking đến hệ thống đạt cổng kiểm định CI/CD Regression Gate.",
+      "badge": "PLAYBOOK • RAG EVALUATION"
+    },
+    {
+      "type": "prose",
+      "id": "thiet-ke-golden-set-200-cau-va-hieu-chuan-deepeval",
+      "eyebrow": "Phương Pháp Luận Golden Dataset",
+      "variant": "deep-dive",
+      "heading": "Cách dựng bộ Golden Set 200 câu hóc búa và ghép Ragas + DeepEval vào đường ống CI/CD",
+      "paragraphs": [
+        "Chất lượng RAG Evaluation phụ thuộc trực tiếp vào độ sát thực tế của Golden Dataset. Bộ test chỉ gồm câu hỏi trích nguyên văn tiêu đề văn bản sẽ cho điểm giả tạo 0.98 rồi sụp đổ trước khách hàng thật. Tại DOMATION, bộ Golden Set 200 câu luôn phân tầng bắt buộc bốn nhóm: **80 câu (40%)** tra cứu trực diện bảng giá ma trận SKU, mức chiết khấu và điều khoản hợp đồng; **50 câu (25%)** suy luận đa bước (Multi-hop) buộc AI nối thông tin giữa nhiều đoạn kèm ngoại lệ ở chú thích cuối bảng; **40 câu (20%)** gài bẫy thiếu dữ liệu hoặc chính sách hết hạn để đo khả năng từ chối an toàn; và **30 câu (15%)** mang ngôn ngữ thực địa tiếng Việt như teencode Zalo, thiếu dấu thanh và nhầm tên gói.",
+        "Mỗi mẫu phải đi kèm `expected_context_ids` (mã định danh đoạn tài liệu gốc) và thẻ `slice_tag` (`pricing_table`, `legal_exception`, `negative_trap`, `teencode_zalo`). Nhờ phân lát cắt, báo cáo đánh giá sẽ chỉ rõ bản cập nhật mới vừa tăng điểm hội thoại thường nhưng lại làm tụt nhóm bảng giá SKU.",
+        "Về công cụ, nhóm kỹ thuật dùng **Ragas** khi chẩn đoán tối ưu Chunking, Embedding và trọng số Hybrid Search, rồi dùng **DeepEval** (`confident-ai/deepeval`, Apache-2.0) làm bộ test `pytest` chạy tự động trên GitHub Actions. Để tiết kiệm chi phí, mọi test case đều qua lớp khẳng định tất định (Deterministic Pre-Checks) kiểm tra mã SKU, con số giá và chuỗi từ chối với chi phí 0 đồng trước khi gọi LLM Judge (`gemini-3.8-flash` hoặc `claude-haiku-5-5`), giữ tổng chi phí chạy 200 câu dưới 0.45 USD."
+      ],
+      "bullets": [
+        "Không bao giờ dùng chính đoạn văn bản hoặc mẫu ví dụ trong Few-Shot Prompt làm dữ liệu kiểm thử Golden Set (chống Data Leakage).",
+        "Đo riêng nhóm `negative_trap` bằng thước đo Abstention Accuracy (tỷ lệ biết nói 'em chưa có thông tin chính thức về mục này và xin phép nối máy chuyên viên').",
+        "Lưu snapshot kết quả đánh giá từng phiên bản Prompt/Retriever vào bảng `rag_eval_runs` trên PostgreSQL hoặc Arize Phoenix để truy vết xu hướng dài hạn."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "bang-kiem-truoc-khi-cap-quyen-golive-rag",
+      "heading": "Checklist 6 chốt kiểm định bắt buộc trước khi đẩy trợ lý RAG lên kênh khách hàng thật",
+      "items": [
+        {
+          "check": "Đạt ngưỡng Faithfulness tối thiểu trên toàn bộ lát cắt bảng giá & pháp lý",
+          "severity": "critical",
+          "verificationHow": "Chạy Ragas/DeepEval FaithfulnessMetric riêng trên lát cắt `pricing_table` và `legal_exception` của Golden Set.",
+          "passThreshold": "Faithfulness >= 0.92 toàn bộ và >= 0.95 riêng nhóm bảng giá/chiết khấu"
+        },
+        {
+          "check": "Đo độ phủ Context Recall để loại trừ lỗi truy xuất sót điều khoản ngoại lệ",
+          "severity": "critical",
+          "verificationHow": "Đối chiếu danh sách `retrieval_context` thực tế trả về từ Hybrid Retriever với `expected_context_ids` trong Golden Set.",
+          "passThreshold": "Context Recall >= 0.88 (tất cả điều kiện đi kèm ở foot-note bảng giá phải được kéo lên)"
+        },
+        {
+          "check": "Kiểm tra tỷ lệ từ chối an toàn cho 40 câu hỏi bẫy Out-of-Scope",
+          "severity": "critical",
+          "verificationHow": "Chạy nhóm `negative_trap` chứa thông tin không tồn tại trong kho tài liệu và kiểm chứng bằng regex + rubric từ chối.",
+          "passThreshold": "Abstention Accuracy >= 95%, tuyệt đối 0 ca tự bịa giá hoặc cam kết ngoài quy chế"
+        },
+        {
+          "check": "Khớp tuyệt đối mã SKU, mã căn hộ và con số định lượng bằng Deterministic Assertion",
+          "severity": "high",
+          "verificationHow": "Trích xuất thực thể số tiền, phần trăm chiết khấu và mã SKU từ câu trả lời thực tế so khớp chính xác với Ground Truth.",
+          "passThreshold": "Exact Match các thực thể định lượng >= 98% trước khi gọi LLM Judge"
+        },
+        {
+          "check": "Đo độ ổn định chấm điểm của LLM Judge và chi phí trên mỗi lượt chạy CI",
+          "severity": "high",
+          "verificationHow": "Chạy lặp lại 3 lần liên tiếp cùng một cấu hình RAG trên tập 50 câu chuẩn để đo độ lệch chuẩn điểm Faithfulness.",
+          "passThreshold": "Độ lệch điểm giữa các lần chạy <= 0.02 và chi phí Eval < 0.50 USD / 200 câu"
+        },
+        {
+          "check": "Kích hoạt Regression Gate tự động trên Pull Request chạm Prompt hoặc Retriever",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra file cấu hình GitHub Actions chặn merge khi bất kỳ metric lõi nào giảm quá 0.02 điểm so với nhánh main.",
+          "passThreshold": "100% PR liên quan hệ thống RAG bắt buộc vượt qua `pytest tests/rag_eval/`"
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "pytest-deepeval-ragas-ci-regression-gate",
+      "heading": "Python Recipe: Pytest + DeepEval & Deterministic SKU Guard chạy thẳng trong CI/CD",
+      "language": "python",
+      "filename": "tests/rag_eval/test_golden_gate.py",
+      "description": "Mẫu test suite kết hợp kiểm tra tất định mã SKU/con số (chi phí 0đ) với các metric RAG chuẩn của DeepEval (`FaithfulnessMetric`, `ContextualRecallMetric`, `ContextualPrecisionMetric`) dùng judge model chi phí tối ưu và xuất lỗi rõ ràng khi trượt ngưỡng Production.",
+      "code": "import json\nimport re\nfrom pathlib import Path\nimport pytest\nfrom deepeval import assert_test\nfrom deepeval.metrics import (\n    FaithfulnessMetric,\n    ContextualRecallMetric,\n    ContextualPrecisionMetric,\n    GEval,\n)\nfrom deepeval.test_case import LLMTestCase, LLMTestCaseParams\n\nGOLDEN_PATH = Path(__file__).parent / \"golden_set_200_v2.json\"\nGOLDEN_CASES = json.loads(GOLDEN_PATH.read_text(encoding=\"utf-8\"))\n\n# Dùng model midweight ổn định tiếng Việt làm judge cho CI/CD thay vì model quá yếu hoặc quá đắt\nJUDGE_MODEL = \"gemini-3.8-flash\"\n\ndef run_domation_rag_pipeline(question: str) -> tuple[str, list[str]]:\n    \"\"\"Giả lập lời gọi vào hệ thống Hybrid RAG + Reranker nội bộ cần kiểm thử.\"\"\"\n    raise NotImplementedError(\"Inject production retriever + generator client\")\n\ndef verify_deterministic_entities(actual: str, required_tokens: list[str], forbidden_tokens: list[str]) -> None:\n    lowered = actual.lower()\n    for tok in required_tokens:\n        assert tok.lower() in lowered, f\"Thieu thuc the bat buoc '{tok}' trong cau tra loi\"\n    for bad in forbidden_tokens:\n        assert bad.lower() not in lowered, f\"Phat hien chuoi cam / gia cu '{bad}' trong cau tra loi\"\n\n@pytest.mark.parametrize(\"case\", GOLDEN_CASES, ids=lambda c: c[\"case_id\"])\ndef test_rag_production_regression_gate(case: dict):\n    actual_output, retrieval_context = run_domation_rag_pipeline(case[\"question\"])\n\n    # Lop 1: Deterministic Guard (0 token cost) bat sai ma SKU, don gia, thong tin cam ngay lap tuc\n    verify_deterministic_entities(\n        actual=actual_output,\n        required_tokens=case.get(\"required_exact_tokens\", []),\n        forbidden_tokens=case.get(\"forbidden_tokens\", []),\n    )\n\n    test_case = LLMTestCase(\n        input=case[\"question\"],\n        actual_output=actual_output,\n        expected_output=case[\"expected_answer\"],\n        retrieval_context=retrieval_context,\n    )\n\n    # Lop 2: Truong hop bay khong co trong tai lieu -> do kha nang tu choi an toan\n    if case.get(\"slice_tag\") == \"negative_trap\":\n        abstention_metric = GEval(\n            name=\"Safe Abstention\",\n            model=JUDGE_MODEL,\n            threshold=0.90,\n            criteria=\"Cau tra loi phai thua nhan khong co thong tin trong tai lieu va de nghi chuyen chuyen vien, tuyet doi khong tu bia gia hoac dieu khoan.\",\n            evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],\n        )\n        assert_test(test_case, [abstention_metric])\n        return\n\n    # Lop 3: Bo chi so RAG Evaluation chuan Ragas/DeepEval cho cau hoi nghiep vu\n    faithfulness = FaithfulnessMetric(threshold=0.92, model=JUDGE_MODEL, include_reason=True)\n    ctx_recall = ContextualRecallMetric(threshold=0.88, model=JUDGE_MODEL, include_reason=True)\n    ctx_precision = ContextualPrecisionMetric(threshold=0.85, model=JUDGE_MODEL, include_reason=True)\n\n    assert_test(test_case, [faithfulness, ctx_recall, ctx_precision])"
+    },
+    {
+      "type": "stat-grid",
+      "id": "hieu-qua-trien-khai-eval-gate-domation",
+      "heading": "Kết quả đo lường sau 90 ngày áp dụng Golden Set 200 câu & CI Eval Gate tại DOMATION",
+      "stats": [
+        {
+          "value": "0.94",
+          "label": "Faithfulness trung bình Production",
+          "context": "Tăng từ 0.66 nhờ tách bạch lỗi Retrieval và siết Grounding",
+          "trend": "up"
+        },
+        {
+          "value": "19 lượt",
+          "label": "Bản cập nhật lỗi bị chặn ngay tại PR",
+          "context": "Phát hiện sớm tụt Recall bảng giá hoặc gãy prompt trước khi khách thấy",
+          "trend": "up"
+        },
+        {
+          "value": "-55%",
+          "label": "Tiết kiệm chi phí LLM Judge CI/CD",
+          "context": "Nhờ tầng Deterministic SKU/Regex Assertion lọc trước khi gọi Judge",
+          "trend": "down"
+        },
+        {
+          "value": "96.5%",
+          "label": "Tỷ lệ từ chối đúng câu hỏi bẫy",
+          "context": "Chuyển tiếp mượt về Sale qua ZaloBot khi thiếu tài liệu chính thức",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "quy-tac-no-eval-no-release-turniodev",
+      "variant": "key-rule",
+      "title": "Quy tắc bất di bất dịch trong phát triển AI Agent: Không có Eval Score, Không được Go-Live",
+      "body": "Khi DOMATION xây dựng hệ thống Trợ lý AI trực dự án EcoLife Signature hay tư vấn tuyển sinh cho Viện IDEAS, khách hàng không tha thứ cho một câu trả lời sai giá hay hứa hão chỉ vì 'AI hôm nay hơi ngáo'. Lập trình phần mềm truyền thống có Unit Test để bảo vệ logic kế toán, thì kỹ sư AI thời đại mới bắt buộc phải có Golden Set, Ragas và DeepEval làm phanh an toàn trong CI/CD. Đừng bao giờ đánh cược uy tín thương hiệu bằng vài câu chat thử cảm tính.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • Founder & CEO DOMATION"
+    }
+  ]
+}

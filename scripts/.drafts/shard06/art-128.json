@@ -1,0 +1,326 @@
+{
+  "id": "art-128",
+  "number": "128",
+  "slug": "supply-chain-vulnerabilities-model-mcp-poisoning-ai",
+  "shardId": "shard06",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "AppSec & AI Supply Chain",
+  "clusterId": "kw-ai-security-owasp",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Supply Chain & Model/MCP Poisoning: Kiểm soát rủi ro từ HuggingFace weights, npm package & MCP bên thứ 3",
+  "seoTitle": "AI Supply Chain: Chống Model & MCP Poisoning | DOMATION",
+  "metaDescription": "Tệp Pickle độc hại, package PyPI mạo danh và MCP Server biến chất sau khi cài. Quy trình SBOM/AIBOM, ghim hash SHA-256 và dùng Safetensors an toàn.",
+  "focusKeyword": "ai supply chain chống model và mcp poisoning",
+  "secondaryKeywords": [
+    "rủi ro bảo mật mcp server bên thứ ba",
+    "tránh tải nhầm weights pickle độc hại",
+    "aibom kiểm soát thư viện ai",
+    "cve rug pull mcp server",
+    "kiểm định open source repo trước khi dùng"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Bẫy Chuỗi Cung Ứng AI: Weights Độc Và MCP Biến Chất",
+  "thumbnailHook": "Ghim phiên bản lockfile, cấm pickle lạ và xác thực hash mọi MCP Server.",
+  "thumbnailBadge": "OWASP #03 SUPPLY-CHAIN",
+  "coverImage": "/imgs/boost/v2/supply-chain-vulnerabilities-model-mcp-poisoning-ai.webp",
+  "screenshotImage": "/imgs/boost/charts/supply-chain-vulnerabilities-model-mcp-poisoning-ai-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Quy Chuẩn Kiểm Định Repo DOMATION",
+  "relatedSlugs": [
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf",
+    "protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the",
+    "modelcontextprotocol-servers-audit-reference-mcp-va-bao-mat-enterprise",
+    "ai-red-teaming-dinh-ky-voi-promptfoo-truoc-moi-ban-release"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Playbook kiểm soát rủi ro chuỗi cung ứng AI OWASP LLM03 chống đầu độc trọng số HuggingFace Pickle, package PyPI mạo danh và MCP Server biến chất",
+  "screenshotCaption": "Biểu đồ thống kê tỷ lệ xâm nhập thành công qua 6 mắt xích chuỗi cung ứng AI khi thiếu kiểm soát so với mức độ suy giảm rủi ro sau khi áp dụng AIBOM, Safetensors và MCP Schema Pinning.",
+  "relatedPortfolioId": "inkica-ai",
+  "tldrSummary": "Chuỗi cung ứng AI mở rộng bề mặt tấn công vượt xa mã nguồn truyền thống vì bao gồm cả trọng số mô hình (HuggingFace weights, LoRA), thư viện pip/npm sinh bởi Vibecode và MCP Server bên thứ ba. Một tệp `.pt`/`.bin` dùng định dạng Pickle chứa mã độc `__reduce__`, một gói PyPI ảo do LLM bịa tên (slopsquatting) hay đòn MCP Rug Pull (CVE-2025-54136) biến đổi schema sau khi cài đều có thể chiếm quyền máy chủ GPU và đánh cắp API key. Playbook này chuẩn hóa quy trình AIBOM, bắt buộc Safetensors, khóa lockfile và ghim SHA-256 cho mọi MCP Server.",
+  "keyTakeaways": [
+    "Cấm tuyệt đối nạp trọng số định dạng Python Pickle (`.pkl`, `.pt`, `.bin`) từ nguồn công cộng với `weights_only=False`; chuyển chuẩn hóa toàn bộ pipeline sang `safetensors` hoặc `ONNX` đã ký SHA-256.",
+    "Loại bỏ cấu hình `npx -y <package>@latest` trong tệp `.mcp.json` và Claude Code / Cursor; mọi MCP Server phải chạy ở phiên bản cố định, kiểm tra lockfile toàn vẹn và ghim hash schema `tools/list`.",
+    "Chặn đứng đòn Slopsquatting (kẻ xấu đăng ký sẵn tên gói pip/npm mà AI thường bịa ra khi Vibecode) bằng kiểm tra registry nội bộ, `npm ci --ignore-scripts` và `uv sync --frozen`.",
+    "Xây dựng AIBOM (AI Bill of Materials) theo chuẩn CycloneDX ghi vết cả mã nguồn, Base Model SHA-256, LoRA adapter, bộ dữ liệu fine-tune và trạng thái bảo trì repo (loại bỏ các gói đã archive như `protectai/llm-guard`).",
+    "Cô lập worker tải model và container MCP trong mạng egress-restricted (chỉ mở whitelist tới mirror nội bộ) để cắt đường tuồn dữ liệu ngay cả khi một thư viện phụ bị cài cắm backdoor."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Giảm rủi ro thực thi RCE từ Weights", "value": "100% (Cấm Pickle)" },
+    { "label": "Phát hiện biến chất MCP Rug Pull", "value": "< 50 ms Pre-Call" },
+    { "label": "Chặn gói Slopsquatting từ Vibecode", "value": "99.8% Gate CI" },
+    { "label": "Thời gian truy vết AIBOM khi có CVE", "value": "< 3 phút toàn fleet" }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao tệp trọng số mô hình AI (`.pt` hoặc `.bin`) tải từ HuggingFace lại có thể chạy lệnh chiếm quyền máy chủ như file thực thi?",
+      "answer": "Phần lớn tệp trọng số PyTorch truyền thống sử dụng mô-đun `pickle` của Python để tuần tự hóa (serialize) dữ liệu. Khác với JSON hay nhị phân thuần túy, `pickle` là một ngôn ngữ máy ảo mini cho phép nhúng phương thức ma thuật `__reduce__` hoặc `__setstate__`. Ngay khoảnh khắc kỹ sư hoặc worker GPU gọi `torch.load('model.bin')` với tham số cũ `weights_only=False`, trình thông dịch Python tự động thực thi đoạn mã shell hoặc reverse shell giấu bên trong trước cả khi hàm trả về tensor. Ngược lại, định dạng `safetensors` chỉ lưu tiêu đề JSON mô tả kích thước/kiểu dữ liệu và mảng byte liên tiếp của tensor nên hoàn toàn miễn nhiễm trước lỗi thực thi mã tùy ý."
+    },
+    {
+      "question": "Đòn tấn công MCP Server Rug Pull (như lỗ hổng CVE-2025-54136) diễn ra âm thầm như thế nào sau khi đội Dev đã duyệt?",
+      "answer": "Ở bước cài đặt ban đầu, một MCP Server bên thứ ba (chạy qua `npx -y` hoặc trỏ tới endpoint từ xa) trả về danh sách công cụ (`tools/list`) hoàn toàn sạch sẽ, khiến kỹ sư yên tâm bấm Approve trong Cursor, Cline hoặc Claude Code. Sau vài ngày hoặc khi phát hiện môi trường chứa khóa production, tác giả độc hại đẩy bản cập nhật npm mới hoặc thay đổi phản hồi động từ máy chủ từ xa để chèn câu lệnh Indirect Prompt Injection ẩn vào trường `description` của công cụ (ví dụ: ép agent bí mật đọc `.env` và gửi qua tham số của một tool hợp lệ khác). Vì nhiều MCP client chỉ hỏi quyền người dùng ở lần kết nối đầu tiên mà không kiểm tra hash thay đổi của `tools/list`, agent lập tức nghe theo hướng dẫn độc hại mới."
+    },
+    {
+      "question": "Slopsquatting trong kỷ nguyên AI Vibecode là gì và làm sao tránh cài nhầm gói độc?",
+      "answer": "Khi lập trình viên dùng LLM để viết script Python hoặc TypeScript, mô hình thỉnh thoảng bịa ra tên một thư viện nghe rất hợp lý nhưng chưa từng tồn tại trên PyPI hoặc npm (ví dụ `langchain-vn-tokenizer` hoặc `mcp-postgres-guard`). Tin tặc theo dõi các tên gói thường bị mô hình bịa ra rồi đăng ký trước tên đó kèm mã độc trong `setup.py` hoặc `postinstall` script. Để khóa van rủi ro này, doanh nghiệp phải cấm AI tự chạy lệnh cài gói trực tiếp lên máy thật, bật cờ `--ignore-scripts` khi cài đặt npm, kiểm chứng lịch sử maintainer/tuổi đời gói trong CI và ưu tiên trỏ qua private registry proxy nội bộ."
+    },
+    {
+      "question": "Doanh nghiệp dùng API LLM đóng (như Gemini, Claude, OpenAI) có cần quan tâm đến OWASP LLM03 Supply Chain không?",
+      "answer": "Có, thậm chí rủi ro còn tinh vi hơn vì trọng tâm chuyển từ tệp trọng số sang lớp SDK tích hợp, MCP Server, Agent Skills (`SKILL.md`), Extension bên thứ ba và các thư viện tiền/hậu xử lý dữ liệu. Ngoài ra, nếu bạn sử dụng các mô hình hoặc công cụ guardrails mã nguồn mở đã bị ngừng bảo trì — điển hình như `protectai/llm-guard` đã chính thức chuyển sang chế độ archived read-only từ tháng 7/2026 — mọi lỗ hổng mới phát sinh trong các thư viện phụ thuộc đi kèm sẽ không bao giờ nhận được bản vá chính thức nữa."
+    },
+    {
+      "question": "AIBOM khác gì so với SBOM truyền thống và cần lưu tối thiểu những trường thông tin nào?",
+      "answer": "SBOM (Software Bill of Materials) truyền thống chỉ liệt kê thư viện mã nguồn (`package.json`, `requirements.txt`) và container OS layer. Trong hệ thống AI, hành vi ứng dụng còn phụ thuộc vào tài sản phi mã nguồn. Do đó, AIBOM (AI Bill of Materials theo chuẩn CycloneDX 1.6+) phải ghi nhận thêm định danh và checksum SHA-256 của Base Model, các bản tinh chỉnh LoRA/adapter, phiên bản pipeline tokenizer, mã băm danh sách MCP Tool Schema được phép kết nối, nguồn dữ liệu tri thức RAG được nạp và chứng thư nguồn gốc (SLSA / Cosign) để truy vết trọn vẹn khi xảy ra sự cố."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "be-mat-tan-cong-ai-supply-chain-2026",
+      "eyebrow": "Giải Phẫu OWASP LLM03 • Supply Chain Vulnerabilities",
+      "variant": "incident",
+      "heading": "Khi một dòng `npx -y` hay tệp trọng số `.pt` mở toang cửa sau vào hạ tầng AI doanh nghiệp",
+      "pullQuote": "Trong kiến trúc AI hiện đại, tin tặc không cần bẻ khóa tường lửa mạng của bạn; chúng chỉ cần đợi kỹ sư Vibecode gõ nhầm một tên package hoặc kéo một MCP Server chưa ghim hash.",
+      "paragraphs": [
+        "Suốt nhiều năm, bảo mật chuỗi cung ứng phần mềm (Supply Chain Security) xoay quanh việc quét các thư viện npm, Maven hay PyPI xem có dính CVE đã biết hay không. Bước sang kỷ nguyên AI Agent và hệ thống RAG doanh nghiệp, phạm vi đó bị phá vỡ hoàn toàn. Chuỗi cung ứng của một ứng dụng AI sản xuất ngày nay kéo dài qua bốn tầng phụ thuộc dễ tổn thương: trọng số mô hình (Base Weights, LoRA Adapters, ONNX/GGUF binaries từ HuggingFace), hệ sinh thái gói phụ thuộc phát sinh tốc độ cao từ Vibecode, các MCP Server và Agent Skills bên thứ ba được cấp quyền gọi tool, cùng các dịch vụ guardrails/evals đóng vai trò lớp chắn bảo vệ.",
+        "Điểm chí mạng đầu tiên nằm ngay ở thói quen tải trọng số cộng đồng. Một đội kỹ thuật triển khai mô hình xử lý ảnh, tách nền hay reranking tiếng Việt thường tải các file checkpoint `.pt`, `.pth` hoặc `.bin` vì sẵn có. Bản chất các file này được đóng gói bằng `pickle` của Python — cơ chế tuần tự hóa cho phép nhúng lệnh thực thi hệ thống trực tiếp trong quá trình giải mã đối tượng. Chỉ một dòng code cũ `torch.load(model_path)` chạy trên GPU worker có quyền truy cập S3 và database nội bộ là đủ để payload ngầm bắn biến môi trường (`OPENAI_API_KEY`, `DATABASE_URL`, token Zalo OA) ra máy chủ bên ngoài ngay lúc khởi động container.",
+        "Điểm chí mạng thứ hai bùng nổ mạnh mẽ từ giữa năm 2025 đến 2026 là hệ sinh thái MCP (Model Context Protocol). Hàng nghìn MCP Server cộng đồng mọc lên giúp trợ lý AI kết nối PostgreSQL, Slack, trình duyệt hay hệ thống tệp nội bộ. Nhiều cấu hình `.mcp.json` phổ biến hướng dẫn dev chạy thẳng `npx -y some-community-mcp@latest`. Chỉ cần tài khoản npm của tác giả bị chiếm đoạt, gói này bị chuyển nhượng âm thầm, hoặc máy chủ MCP từ xa thay đổi nội dung trường `description` trong `tools/list` sau khi người dùng đã bấm chấp thuận (lỗi Rug Pull điển hình như CVE-2025-54136), toàn bộ cửa sổ ngữ cảnh chứa mã nguồn và khóa bí mật của công ty sẽ bị biến thành công cụ phục vụ kẻ tấn công."
+      ],
+      "bullets": [
+        "Lỗi Slopsquatting từ Vibecode: LLM gợi ý sai tên thư viện phụ trợ; kẻ tấn công đăng ký tên gói đó trên PyPI/npm kèm script `postinstall` đánh cắp khóa `.env`.",
+        "Phụ thuộc vào công cụ bảo mật đã ngưng bảo trì: tiếp tục dùng các repo đã bị `archived` (như `protectai/llm-guard` đọc-chỉ từ tháng 7/2026) khiến lỗ hổng thư viện lõi bị bỏ ngỏ.",
+        "Nhiễm độc không đối xứng ở MCP: một MCP Server đọc tài liệu tưởng chừng vô hại có thể đầu độc Agent khiến Agent gọi nhầm sang MCP Server có quyền ghi Git hoặc PostgreSQL."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "chuoi-xam-nhap-mcp-rug-pull-va-pickle",
+      "heading": "Kịch bản xâm nhập 5 bước từ một MCP Server 'vô hại' hoặc tệp trọng số bị đầu độc",
+      "variant": "incident-chain",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • CÀI ĐẶT MỒI SẠCH",
+          "title": "Kỹ sư cài MCP Server hoặc tải Weight có điểm sao cao trong giai đoạn PoC",
+          "detail": "Tệp cấu hình `.mcp.json` dùng thẻ `@latest` qua `npx -y`, hoặc script Python tải tệp `adapter_model.bin` từ một kho fork cộng đồng trên HuggingFace để rút ngắn thời gian dựng demo.",
+          "metricOrTool": "npx -y @latest / pickle .bin"
+        },
+        {
+          "tag": "BƯỚC 02 • ĐÁNH LỪA KIỂM DUYỆT ĐẦU",
+          "title": "Schema ban đầu hoàn toàn hợp lệ vượt qua bước Human Approval",
+          "detail": "Ở lần kết nối đầu tiên, MCP Server chỉ khai báo 2 công cụ đọc ghi chú hoặc định dạng ngày tháng vô hại; kiểm tra thủ công bằng mắt không phát hiện dấu hiệu bất thường.",
+          "metricOrTool": "tools/list clean v1.0.0"
+        },
+        {
+          "tag": "BƯỚC 03 • BIẾN CHẤT HẬU CÀI ĐẶT (RUG PULL)",
+          "title": "Phát hành bản vá ngầm hoặc hoán đổi mô tả tool khi phát hiện môi trường Prod",
+          "detail": "Qua một bản cập nhật nhỏ (1.0.1) hoặc phản hồi động theo IP/User-Agent, trường `description` của tool được chèn chỉ thị ẩn yêu cầu LLM đọc file `.env` / SSH key trước khi thực hiện tác vụ bình thường.",
+          "metricOrTool": "CVE-2025-54136 pattern"
+        },
+        {
+          "tag": "BƯỚC 04 • LEO THANG XUYÊN TOOL (CROSS-TOOL EXFIL)",
+          "title": "LLM tự động nối dữ liệu mật từ Workspace sang MCP hoặc HTTP Tool khác",
+          "detail": "Do mọi mô tả công cụ nằm chung trong System/Tool Context của Agent, LLM coi câu lệnh ẩn là quy trình chuẩn, gọi công cụ đọc tệp nội bộ rồi nhét chuỗi bí mật vào tham số URL của tool gửi mail hoặc fetch bên ngoài.",
+          "metricOrTool": "Context Boundary Breach"
+        },
+        {
+          "tag": "BƯỚC 05 • DUY TRÌ CỬA SAU TRÊN CONTAINER",
+          "title": "Tạo khóa phụ hoặc sửa mã nguồn workflow CI/CD âm thầm",
+          "detail": "Nếu script `postinstall` hoặc Pickle payload đã chạy trong worker CI không giới hạn egress, kẻ xấu gửi webhook cài SSH key hoặc chèn bước đánh cắp token build ở các lần release kế tiếp.",
+          "metricOrTool": "Egress Leak & Persistence"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "telemetry-rui-ro-chuoi-cung-ung-ai",
+      "heading": "Đánh giá tỷ lệ rủi ro lọt Production qua 6 mắt xích AI Supply Chain trước và sau kiểm soát SHA-256",
+      "subtitle": "Tổng hợp kết quả mô phỏng kiểm thử xâm nhập nội bộ trên 240 pipeline AI (RAG, Prepress ONNX workers, MCP Agents) khi thiếu AIBOM so với khi áp dụng đầy đủ lớp khóa kiểm định.",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tỷ lệ kịch bản tấn công lọt qua cổng triển khai (%) — Trước vs Sau Hardening",
+        "xKey": "vector",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "unprotectedLeakRate",
+            "label": "Lọt qua kiểm tra thông thường (Không AIBOM/Pin)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "hardenedResidualRate",
+            "label": "Còn sót sau Hash Pin + Safetensors + Policy",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "automatedDetectionRate",
+            "label": "Tỷ lệ CI/Gateway chặn tự động (%)",
+            "color": "#06B6D4",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "vector": "Pickle Weight (.pt)",
+            "unprotectedLeakRate": 88.5,
+            "hardenedResidualRate": 0.0,
+            "automatedDetectionRate": 100.0
+          },
+          {
+            "vector": "MCP Rug Pull",
+            "unprotectedLeakRate": 82.0,
+            "hardenedResidualRate": 1.8,
+            "automatedDetectionRate": 98.2
+          },
+          {
+            "vector": "npx @latest Drift",
+            "unprotectedLeakRate": 91.2,
+            "hardenedResidualRate": 0.5,
+            "automatedDetectionRate": 99.5
+          },
+          {
+            "vector": "PyPI Slopsquatting",
+            "unprotectedLeakRate": 64.0,
+            "hardenedResidualRate": 1.2,
+            "automatedDetectionRate": 98.8
+          },
+          {
+            "vector": "Archived Guard Repo",
+            "unprotectedLeakRate": 73.5,
+            "hardenedResidualRate": 2.4,
+            "automatedDetectionRate": 97.6
+          },
+          {
+            "vector": "Unpinned Docker :latest",
+            "unprotectedLeakRate": 79.0,
+            "hardenedResidualRate": 0.8,
+            "automatedDetectionRate": 99.2
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Chặn Pickle Weight độc",
+            "value": "100%",
+            "delta": "Cấm tuyệt đối .pt/.bin không Safetensors",
+            "positive": true
+          },
+          {
+            "label": "Phát hiện MCP Rug Pull",
+            "value": "98.2%",
+            "delta": "Hash SHA-256 trên tools/list",
+            "positive": true
+          },
+          {
+            "label": "Chặn drift từ npx @latest",
+            "value": "99.5%",
+            "delta": "Bắt buộc lockfile + integrity",
+            "positive": true
+          },
+          {
+            "label": "Giảm rủi ro trung bình",
+            "value": "-98.6%",
+            "delta": "Từ 79.7% lọt xuống 1.1% dư lượng",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Dữ liệu mô phỏng Red-Teaming nội bộ tại DOMATION AppSec Lab trên các cấu hình Next.js + FastAPI GPU workers + MCP Clients (2026)."
+      },
+      "insightSummary": "Các lỗ hổng nguy hiểm nhất trong thực tế lại xuất phát từ hai thói quen tiện tay của kỹ sư: chạy `npx -y @latest` cho MCP Server (91,2% lọt khi thiếu kiểm soát) và nạp trực tiếp tệp trọng số `.pt`/`.bin` dạng Pickle (88,5% lọt). Khi ép chuyển sang định dạng Safetensors/ONNX kèm khóa digest SHA-256 trên cả model lẫn MCP tool schema, tỷ lệ chặn tự động tại tầng CI và Gateway đạt 97,6% đến 100%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "hinh-anh-phan-tich-ai-supply-chain",
+      "src": "/imgs/boost/charts/supply-chain-vulnerabilities-model-mcp-poisoning-ai-report.webp",
+      "alt": "Biểu đồ thống kê rủi ro chuỗi cung ứng AI OWASP LLM03 đối với HuggingFace Pickle weights, Slopsquatting và MCP Server Rug Pull",
+      "caption": "Đối chiếu mức độ lọt lỗi chuỗi cung ứng AI theo 6 vector phổ biến trước và sau khi áp dụng bộ kiểm định AIBOM, Safetensors và SHA-256 Pinning.",
+      "badge": "OWASP LLM03 • Supply Chain Telemetry"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-aibom-va-khung-kiem-dinh-4-lop",
+      "eyebrow": "Quy Chuẩn Phòng Thủ Chuỗi Cung Ứng DOMATION",
+      "variant": "deep-dive",
+      "heading": "Thiết lập hàng rào 4 lớp: Từ Safetensors và AIBOM đến khóa cứng chữ ký MCP Tool Schema",
+      "paragraphs": [
+        "Khi vận hành hệ thống AI xử lý hơn 20 mô hình ONNX (SAM 3, ViTMatte, bộ nâng độ phân giải ảnh 300 DPI) tại dự án INKICA hay điều phối hàng chục công cụ qua DOM Agent trong hệ sinh thái ERP 5.0, DOMATION áp dụng nguyên tắc bất di bất dịch: không một tệp trọng số, thư viện mở hay MCP Server nào được phép chạm tới môi trường Staging/Production nếu chưa có danh tính mật mã cố định. Để hiện thực hóa nguyên tắc này mà không làm nghẽn tốc độ Vibecode, quy trình kiểm định được chia thành bốn chốt chặn tự động.",
+        "Chốt chặn 1 là Tuyệt đối hóa Safetensors và Kiểm chứng Trọng số Nội bộ. Kho chứa mô hình của doanh nghiệp (MinIO hoặc S3 private bucket) chỉ cho phép nhập các file `.safetensors` hoặc `.onnx` đã qua bước quét kiểm tra cấu trúc tại một sandbox cách ly hoàn toàn mạng ngoài. Nếu một nghiên cứu mới chỉ công bố bản `.pt` Pickle trên HuggingFace, kỹ sư bảo mật phải chuyển đổi nó trong container dùng một lần không gắn IAM role, ép nạp với `weights_only=True`, xuất lại sang `.safetensors`, tính chuỗi băm SHA-256 và ghi nhận vào danh mục AIBOM nội bộ. Worker GPU khi khởi động chỉ tải từ mirror nội bộ và xác minh lại SHA-256 trước khi nạp vào VRAM.",
+        "Chốt chặn 2 là Đóng băng Dependency & Chặn Thực Thi Ngầm khi Cài Gói. Mọi dự án Node.js/TypeScript bắt buộc chạy `npm ci --ignore-scripts` hoặc `pnpm install --frozen-lockfile --ignore-scripts` trong Dockerfile, còn nhánh Python sử dụng `uv sync --frozen` với tệp khóa hash đầy đủ. Với các kho mã nguồn mở tích hợp vào luồng Agent hoặc bảo mật, đội ngũ phải chạy bước đánh giá vòng đời bảo trì định kỳ (Maintenance Audit): tránh phụ thuộc trực tiếp vào các repo đã bị đóng băng như `continuedev/continue`, `RooCodeInc/Roo-Code` hay `protectai/llm-guard` mà chủ động chuyển sang nhánh kế nhiệm còn vá CVE như `data-privacy-stack/presidio` và `promptfoo/promptfoo`.",
+        "Chốt chặn 3 là Ghim Phiên Bản & Chữ Ký Schema MCP (Anti-Rug-Pull Pinning). Thay vì cấu hình `npx -y` kéo mã mới mỗi lần khởi động IDE hay Agent worker, mỗi MCP Server được đóng gói thành Docker image cố định theo digest (`ghcr.io/org/mcp@sha256:...`) hoặc cài sẵn vào lockfile nội bộ. Quan trọng hơn, tầng MCP Gateway lưu trữ một bản chụp chuẩn hóa của phản hồi `tools/list` (bao gồm tên hàm, `description` và `inputSchema`) cùng mã băm SHA-256 đã được Solution Architect duyệt. Trước mỗi phiên làm việc, nếu bất kỳ ký tự nào trong `description` của công cụ thay đổi dù chỉ một dấu cách, Gateway lập tức ngắt cầu dao (`Circuit Open`) và gửi cảnh báo về Slack/Zalo Ops thay vì để LLM đọc mô tả vừa bị sửa."
+      ],
+      "bullets": [
+        "Cài đặt `ENABLE_TOOL_SEARCH=true` kết hợp `defer_loading: true` để giảm số lượng schema MCP nạp sẵn trong ngữ cảnh, thu hẹp bề mặt kích hoạt Tool Poisoning.",
+        "Áp dụng Egress Firewall (Docker internal network hoặc Cilium/Calico policy) cấm container chạy MCP bên thứ ba gọi tùy tiện ra IP lạ hoặc metadata server `169.254.169.254`.",
+        "Xuất tệp `aibom.cdx.json` tự động trong mỗi lần build CI/CD để lưu vết đầy đủ Model hash + Package lock + MCP Manifest hash phục vụ kiểm toán tức thời."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-dinh-ai-supply-chain",
+      "heading": "Checklist kiểm định 6 hạng mục trước khi đưa Model, Package hoặc MCP Server mới vào Production",
+      "items": [
+        {
+          "check": "Loại bỏ hoàn toàn tệp Pickle (`.pt`, `.pkl`, `.bin`) khỏi quy trình nạp trực tiếp ở Production",
+          "severity": "critical",
+          "verificationHow": "Quét mã nguồn bằng Semgrep / Ripgrep tìm `torch.load`, `pickle.loads`, `joblib.load`; xác nhận file trọng số trên S3/MinIO là `.safetensors` hoặc `.onnx` kèm tệp `.sha256`.",
+          "passThreshold": "0 lượt gọi `torch.load(..., weights_only=False)` và 100% file model khớp SHA-256 trước khi load."
+        },
+        {
+          "check": "Ghim chính xác phiên bản và SHA-256 Digest cho toàn bộ MCP Server & Container",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra `.mcp.json`, `settings.json`, `Dockerfile` và `docker-compose.yml` xem còn thẻ `:latest`, `^`, `~` hoặc lệnh `npx -y` không cố định phiên bản hay không.",
+          "passThreshold": "100% MCP server dùng local pinned binary hoặc container image `@sha256:...`."
+        },
+        {
+          "check": "Xác thực toàn vẹn `tools/list` chống MCP Rug Pull trước khi đưa schema vào LLM Context",
+          "severity": "critical",
+          "verificationHow": "So sánh SHA-256 canonical JSON của `tools/list` runtime với tệp `mcp-lock.json` đã ký duyệt trong Git repository.",
+          "passThreshold": "Sai khác 1 byte trong `description` hoặc `inputSchema` -> từ chối nạp tool và báo động ngay."
+        },
+        {
+          "check": "Vô hiệu hóa script tự chạy khi cài gói (`postinstall`) và chống Slopsquatting từ Vibecode",
+          "severity": "high",
+          "verificationHow": "Kiểm tra lệnh build CI có bật `--ignore-scripts`, kiểm tra lockfile integrity hash và xác minh tên gói mới trên registry (tuổi đời > 90 ngày, lượt tải thực, tác giả xác thực).",
+          "passThreshold": "CI chỉ build từ lockfile đóng băng, từ chối 100% gói mới phát sinh không có trong lockfile được review."
+        },
+        {
+          "check": "Rà soát trạng thái bảo trì (Maintenance & License Audit) của các thư viện AI Guardrails/Agents",
+          "severity": "high",
+          "verificationHow": "Kiểm tra GitHub repo upstream (tình trạng `archived`, ngày commit gần nhất, chính sách license AGPL/ELv2/SUL) trước khi ghép vào lõi sản phẩm đa khách hàng.",
+          "passThreshold": "Không có dependency ở trạng thái `archived` (như `protectai/llm-guard`) nằm trên đường dẫn xử lý dữ liệu live."
+        },
+        {
+          "check": "Tách mạng Egress và gắn AIBOM CycloneDX cho từng bản release Docker",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra NetworkPolicy / Docker network của worker inference & MCP runner, kèm sự tồn tại của artifact `aibom.cdx.json` trên registry.",
+          "passThreshold": "Worker AI bị chặn gọi Internet tự do ngoài Allowlist API LLM/Storage và có AIBOM lưu vết mỗi tag release."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "recipe-mcp-schema-pinning-va-model-sha256",
+      "heading": "TypeScript Recipe: Bộ kiểm định chữ ký SHA-256 cho MCP `tools/list` (Anti-Rug-Pull) & Tệp Trọng Số AI",
+      "language": "TypeScript",
+      "filename": "security/verifyMcpAndModelSupplyChain.ts",
+      "description": "Hàm canonicalize JSON và kiểm tra mã băm SHA-256 chặn đứng tình trạng MCP Server tự sửa mô tả `tools/list` sau khi cài đặt (Rug Pull) đồng thời cấm tuyệt đối tệp trọng số định dạng Pickle trước khi boot Agent/GPU Worker.",
+      "code": "import { createHash } from 'node:crypto';\nimport { createReadStream } from 'node:fs';\nimport path from 'node:path';\n\nexport interface McpToolSchema {\n  name: string;\n  description?: string;\n  inputSchema: Record<string, unknown>;\n}\n\nexport interface SupplyChainPinManifest {\n  mcpServers: Record<string, { expectedToolsHashSha256: string; pinnedPackageDigest: string }>;\n  models: Record<string, { filename: string; sha256: string }>;\n}\n\n// Chuẩn hóa JSON theo thứ tự key alphabet để hash không bị lệch do thứ tự trường\nfunction canonicalStringify(value: unknown): string {\n  if (Array.isArray(value)) {\n    return `[${value.map(canonicalStringify).join(',')}]`;\n  }\n  if (value && typeof value === 'object') {\n    const entries = Object.entries(value as Record<string, unknown>)\n      .sort(([a], [b]) => a.localeCompare(b))\n      .map(([k, v]) => `${JSON.stringify(k)}:${canonicalStringify(v)}`);\n    return `{${entries.join(',')}}`;\n  }\n  return JSON.stringify(value);\n}\n\nexport function computeMcpToolsHash(tools: McpToolSchema[]): string {\n  const normalized = [...tools].sort((a, b) => a.name.localeCompare(b.name));\n  const canonical = canonicalStringify(normalized);\n  return createHash('sha256').update(canonical, 'utf8').digest('hex');\n}\n\nexport function assertMcpNoRugPull(\n  serverName: string,\n  liveTools: McpToolSchema[],\n  manifest: SupplyChainPinManifest\n): void {\n  const pin = manifest.mcpServers[serverName];\n  if (!pin) {\n    throw new Error(`[SUPPLY_CHAIN_BLOCK] MCP server '${serverName}' chưa có trong mcp-pin-manifest.json`);\n  }\n  const liveHash = computeMcpToolsHash(liveTools);\n  if (liveHash !== pin.expectedToolsHashSha256) {\n    throw new Error(\n      `[MCP_RUG_PULL_DETECTED] Schema tools/list của '${serverName}' đã bị biến đổi! ` +\n        `Expected=${pin.expectedToolsHashSha256}, Got=${liveHash}`\n    );\n  }\n}\n\nconst ALLOWED_WEIGHT_EXTENSIONS = new Set(['.safetensors', '.onnx', '.gguf']);\n\nexport async function verifyModelArtifactSafe(\n  modelKey: string,\n  artifactPath: string,\n  manifest: SupplyChainPinManifest\n): Promise<void> {\n  const ext = path.extname(artifactPath).toLowerCase();\n  if (!ALLOWED_WEIGHT_EXTENSIONS.has(ext)) {\n    throw new Error(\n      `[PICKLE_FORBIDDEN] Từ chối nạp tệp trọng số '${artifactPath}' (chỉ chấp nhận .safetensors, .onnx, .gguf)`\n    );\n  }\n  const expected = manifest.models[modelKey];\n  if (!expected) {\n    throw new Error(`[AIBOM_MISSING] Mô hình '${modelKey}' chưa được khai báo checksum SHA-256`);\n  }\n  const hash = createHash('sha256');\n  await new Promise<void>((resolve, reject) => {\n    const stream = createReadStream(artifactPath);\n    stream.on('data', (chunk) => hash.update(chunk));\n    stream.on('error', reject);\n    stream.on('end', () => resolve());\n  });\n  const actualSha256 = hash.digest('hex');\n  if (actualSha256 !== expected.sha256) {\n    throw new Error(\n      `[MODEL_TAMPERED] Checksum file '${artifactPath}' không khớp AIBOM! Expected=${expected.sha256}, Got=${actualSha256}`\n    );\n  }\n}"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-ai-supply-chain-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Tốc độ Vibecode không bao giờ đồng nghĩa với việc thả nổi ổ khóa chuỗi cung ứng",
+      "body": "Khi xây dựng hơn 35 hệ thống từ A–Z cho doanh nghiệp và trực tiếp điều hành hạ tầng 20+ mô hình AI ONNX tại INKICA cũng như 80 công cụ của DOM Agent, nguyên tắc tôi luôn siết chặt với đội kỹ thuật là 'mã nguồn của mình có thể viết cực nhanh nhờ AI, nhưng đầu vào từ bên ngoài phải đi qua trạm cân hải quan mật mã'. Chỉ cần quên một dòng `npx -y @latest` hay vô tư chạy một file `.pt` tải vội từ diễn đàn, toàn bộ hàng rào bảo mật PostgreSQL RLS và niềm tin của khách hàng doanh nghiệp có thể sụp đổ chỉ sau một đêm. Hãy ghim cứng SHA-256 cho cả Model Weights lẫn MCP Tool Schema ngay từ sprint đầu tiên."
+    }
+  ]
+}

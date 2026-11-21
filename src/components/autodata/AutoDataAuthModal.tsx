@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { LuxuryGoldBackdrop } from '../../LuxuryGoldBackdrop';
 import { DomationLogoMark } from '../DomationLogoMark';
+import { SPECIALIST_ZALO_URL, ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import { AutodataApiError, apiRequest, getErrorMessage, saveAutodataSessionV2 } from './autodataApi';
 import {
   AutoDataHelpTrigger,
@@ -1205,6 +1206,12 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                 })}
               </div>
 
+              <ZaloSpecialistBanner
+                context="setup"
+                variant="compact"
+                className="max-w-3xl mx-auto"
+              />
+
               {/* STEP 1: Required Org & Admin Info + Optional Domain Preset */}
               {step === 1 && (
                 <div className="space-y-6">
@@ -1766,9 +1773,17 @@ export const AutoDataAuthModal: React.FC<AutoDataAuthModalProps> = ({
                           </div>
                         </li>
                         <li className="rounded-xl bg-white p-3.5 border border-blue-100">
-                          <div className="font-bold text-slate-900">03. Lộ trình nâng cấp mở</div>
+                          <div className="font-bold text-slate-900">03. Lộ trình nâng cấp &amp; Custom riêng</div>
                           <div className="text-slate-500 mt-1 leading-relaxed">
-                            Từ Standard (20 Sale &amp; 5 Quản lý) nâng 1-click lên Growth (85 Sale &amp; 15 Quản lý), CRM 360° hoặc ERP 5.0 giữ 100% dữ liệu.
+                            Nâng 1-click lên Growth, CRM 360° / ERP 5.0 giữ 100% data — hoặc{' '}
+                            <a
+                              href={SPECIALIST_ZALO_URL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-bold text-[#0068FF] hover:underline"
+                            >
+                              nhắn Zalo chuyên viên setup toàn bộ →
+                            </a>
                           </div>
                         </li>
                       </ul>

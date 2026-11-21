@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Calculator, CheckSquare, ExternalLink, Sparkles, Square } from 'lucide-react';
 import { GlassModal } from './GlassModal';
+import { SPECIALIST_ZALO_URL } from './common/ZaloSpecialistBanner';
 import { DOMATION_WEB_ADDONS, DOMATION_WEB_MODULES } from '../data/enterpriseData';
 import { handleSpaLinkClick } from '../utils/navigation';
 
@@ -196,26 +197,36 @@ export const WebEstimatorModal: React.FC<WebEstimatorModalProps> = ({
             </div>
 
             <div className="space-y-2.5">
-              <button
-                type="button"
-                onClick={handleSubmitQuote}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] hover:brightness-110 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4" />
-                Gửi Dự Toán Này Để Tư Vấn Chi Tiết
-              </button>
-
               <a
-                href="/web-design"
-                onClick={(e) => {
-                  onClose();
-                  handleSpaLinkClick(e, '/web-design');
-                }}
-                className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold flex items-center justify-center gap-1.5 border border-white/15 transition-colors"
+                href={SPECIALIST_ZALO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full min-h-[44px] py-3 px-4 rounded-xl bg-[#0068FF] hover:bg-[#1A7AFF] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg transition-all whitespace-nowrap"
               >
-                <span>Mở Trang Bảng Giá Đầy Đủ</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <Sparkles className="w-4 h-4 shrink-0" />
+                <span>Nhờ Chuyên Viên Tạo Qua Zalo</span>
               </a>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={handleSubmitQuote}
+                  className="min-h-[44px] py-2.5 px-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-white/20 transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  <span>Gửi Dự Toán</span>
+                </button>
+                <a
+                  href="/web-design"
+                  onClick={(e) => {
+                    onClose();
+                    handleSpaLinkClick(e, '/web-design');
+                  }}
+                  className="min-h-[44px] py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold flex items-center justify-center gap-1.5 border border-white/15 transition-colors whitespace-nowrap"
+                >
+                  <span>Bảng Giá</span>
+                  <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                </a>
+              </div>
             </div>
           </div>
         </div>

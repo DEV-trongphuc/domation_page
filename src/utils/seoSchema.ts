@@ -1,3 +1,5 @@
+import type { ArticleSchemaType, RepoAuditMeta } from '../data/boostTypes.ts';
+
 export const SITE_URL = 'https://domation.net';
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/imgs/og-domation-v2.jpg`;
 export const BRAND_LOGO_URL = `${SITE_URL}/domation-logo.svg`;
@@ -6,6 +8,9 @@ export const FOUNDER_ID = `${SITE_URL}/#founder`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
 export const FOUNDER_PRIMARY_URL = 'https://turnio.vercel.app/';
 export const FOUNDER_PORTFOLIO_URL = 'https://portfo-turnio.vercel.app/';
+export const FOUNDER_LINKEDIN_URL = 'https://www.linkedin.com/in/turnio-dev/';
+export const FOUNDER_GITHUB_URL = 'https://github.com/DEV-trongphuc';
+export const FOUNDER_IMAGE_URL = `${SITE_URL}/assets/brands/founder_turnio.webp`;
 
 export interface PageFaqItem {
   question: string;
@@ -101,7 +106,12 @@ export function inferOgImageMeta(
 
   let width = config.ogImageWidth ?? known?.width;
   let height = config.ogImageHeight ?? known?.height;
-  if ((width === undefined || height === undefined) && relPath.startsWith('/imgs/boost/')) {
+  if (
+    (width === undefined || height === undefined) &&
+    (relPath.startsWith('/imgs/boost/') ||
+      relPath.startsWith('/imgs/boost/v2/') ||
+      relPath.startsWith('/imgs/boost/charts/'))
+  ) {
     width = 1376;
     height = 768;
   }
@@ -127,17 +137,47 @@ export function buildFounderSchema(): Record<string, unknown> {
     '@type': 'Person',
     '@id': FOUNDER_ID,
     name: 'Huỳnh Trọng Phúc (TurnioDEV)',
-    alternateName: ['Turnio DEV', 'TurnioDEV', 'Huỳnh Trọng Phúc'],
-    jobTitle: 'Founder & Solution Architect',
-    url: FOUNDER_PRIMARY_URL,
+    givenName: 'Trọng Phúc',
+    familyName: 'Huỳnh',
+    alternateName: ['TurnioDEV', 'Turnio DEV', 'TURNIO', 'Huỳnh Trọng Phúc'],
+    jobTitle:
+      'Founder & CEO DOMATION • Chuyên Gia AI Automation, Kiến Trúc Sư Hệ Thống Từ A–Z & Chuyên Gia Digital Marketing',
+    description:
+      'Huỳnh Trọng Phúc (TurnioDEV) là Founder & CEO Công Ty TNHH DOMATION Việt Nam, Chuyên Gia AI Automation, Chuyên Gia Digital Marketing & MarTech, trực tiếp kiến trúc và xây dựng 35+ hệ thống phần mềm doanh nghiệp từ A–Z (ERP 5.0 12 phân hệ, CRM 360°, AutoData Chia Lead & Meta CAPI, Multi-Agent AI RAG, INKICA AI 208 SKU 3D CAD, Web 3D WebGL) cho 30+ doanh nghiệp, xử lý 150,000+ Leads với ROAS bình quân 4.8x–8.2x và là tác giả sách "Facebook Ads: AI Chạy Không Được" (154 trang).',
+    image: FOUNDER_IMAGE_URL,
+    url: FOUNDER_PORTFOLIO_URL,
+    email: 'mailto:turniodev@gmail.com',
+    telephone: '+84378859736',
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'Đại học Ngân hàng TP. Hồ Chí Minh (Banking University of Ho Chi Minh City)',
+    },
     worksFor: {
       '@id': ORG_ID,
     },
+    knowsAbout: [
+      'AI Automation & Multi-Agent Orchestration',
+      'Xây dựng hệ thống doanh nghiệp từ A-Z (End-to-End Systems Architecture)',
+      'Digital Marketing & Performance Growth (Meta Ads, Google Ads, ROAS)',
+      'MarTech Architecture & Server-Side Tracking (Meta CAPI SHA-256)',
+      'Enterprise ERP 5.0 May Đo & CRM 360°',
+      'Fullstack Software Engineering (React 19, Next.js, Node.js, NestJS, PostgreSQL RLS)',
+      'AI RAG Vector Search & Enterprise Knowledge Assistants',
+      'OWASP LLM Security & Zero-Trust Enterprise AI Governance',
+      'Open-Source AI Repository Auditing & Vibecode Tooling',
+      'Multi-Model Peer Routing (Gemini, Claude, OpenAI Codex) & MCP Skills',
+      'Computer Vision ONNX & 3D WebGL (Three.js)',
+      'Zalo Mini App, ZaloBot & Zalo OA ZNS Automation',
+      'Technical SEO & GEO (Generative Engine Optimization / llms.txt)',
+    ],
     sameAs: [
-      FOUNDER_PRIMARY_URL,
       FOUNDER_PORTFOLIO_URL,
+      FOUNDER_PRIMARY_URL,
+      FOUNDER_LINKEDIN_URL,
+      FOUNDER_GITHUB_URL,
       'https://www.facebook.com/turni0',
       'https://zalo.me/0378859736',
+      `${SITE_URL}/portfolio`,
     ],
   };
 }
@@ -214,6 +254,9 @@ export function buildOrganizationSchema(): Record<string, unknown> {
       'Tối ưu Quảng cáo, Landing Page CRO & Chiến dịch Automation',
       'Thiết kế Website & Sa bàn 3D WebGL',
       'SEO 100%, GEO & LLMS.txt',
+      'Bảo mật dữ liệu thời đại AI & OWASP Top 10 for LLM',
+      'Audit Repo GitHub mã nguồn mở & Hạ tầng AI Vibecode',
+      'So sánh & phối hợp Model Gemini, Claude, OpenAI Codex & MCP Skills',
     ],
   };
 }
@@ -229,6 +272,12 @@ export function buildWebSiteSchema(): Record<string, unknown> {
     description:
       'Hệ sinh thái DOMATION hợp nhất Website & Landing Page 3D với CRM Auto Data Tức Thì, Báo cáo Meta & Google Ads gắn Lead, Automation Zalo ZNS & phần mềm ERP 5.0 tích hợp Đa Trợ Lý AI.',
     inLanguage: 'vi-VN',
+    copyrightYear: 2026,
+    copyrightHolder: {
+      '@id': ORG_ID,
+    },
+    license: `${SITE_URL}/ai.txt`,
+    usageInfo: `${SITE_URL}/.well-known/tdmrep.json`,
     publisher: {
       '@id': ORG_ID,
     },
@@ -349,6 +398,12 @@ export function buildSoftwareAppSchema(params: {
     publisher: {
       '@id': ORG_ID,
     },
+    copyrightYear: 2026,
+    copyrightHolder: {
+      '@id': ORG_ID,
+    },
+    license: `${SITE_URL}/ai.txt`,
+    usageInfo: `${SITE_URL}/.well-known/tdmrep.json`,
     offers: offersNode,
   };
 }
@@ -359,21 +414,35 @@ export function buildArticleSchema(params: {
   path: string;
   image: string;
   extraImages?: string[];
+  imageCaptions?: { url: string; caption: string }[];
   datePublished: string;
   dateModified: string;
   keywords: string[];
   articleSection: string;
   aboutIndustry: string;
   wordCount?: number;
+  schemaType?: ArticleSchemaType;
+  repoMeta?: RepoAuditMeta;
 }): Record<string, unknown> {
   const fullUrl = toAbsoluteUrl(params.path);
-  const images = Array.from(
+  const captionMap = new Map<string, string>();
+  for (const ic of params.imageCaptions || []) {
+    if (ic.url) captionMap.set(toAbsoluteUrl(ic.url), ic.caption);
+  }
+  const uniqueUrls = Array.from(
     new Set([params.image, ...(params.extraImages || [])].filter(Boolean).map(toAbsoluteUrl))
   );
+  const images = uniqueUrls.map((url) => ({
+    '@type': 'ImageObject',
+    url,
+    width: 1376,
+    height: 768,
+    ...(captionMap.has(url) ? { caption: captionMap.get(url) } : {}),
+  }));
 
-  return {
+  const schemaObj: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': params.schemaType || 'BlogPosting',
     '@id': `${fullUrl}#article`,
     mainEntityOfPage: {
       '@id': `${fullUrl}#webpage`,
@@ -384,7 +453,7 @@ export function buildArticleSchema(params: {
     url: fullUrl,
     headline: params.headline,
     description: params.description,
-    image: images,
+    image: images.length === 1 ? images[0] : images,
     datePublished: normalizeIsoDateTime(params.datePublished, '08:00:00+07:00'),
     dateModified: normalizeIsoDateTime(params.dateModified, '09:00:00+07:00'),
     inLanguage: 'vi-VN',
@@ -407,6 +476,21 @@ export function buildArticleSchema(params: {
       cssSelector: ['h1', '#geo-tldr'],
     },
   };
+
+  if (params.repoMeta) {
+    schemaObj.mentions = [
+      {
+        '@type': 'SoftwareSourceCode',
+        name: params.repoMeta.fullName,
+        codeRepository: params.repoMeta.url,
+        programmingLanguage: params.repoMeta.primaryLanguage,
+        license: params.repoMeta.license,
+        description: `${params.repoMeta.category} — ${params.repoMeta.bestFor}`,
+      },
+    ];
+  }
+
+  return schemaObj;
 }
 
 export function buildSeoGraphDocument(config: PageSeoConfig): Record<string, unknown> | null {
@@ -447,6 +531,10 @@ export function buildSeoGraphDocument(config: PageSeoConfig): Record<string, unk
       name: config.title,
       description: config.description,
       inLanguage: 'vi-VN',
+      copyrightYear: 2026,
+      copyrightHolder: { '@id': ORG_ID },
+      license: `${SITE_URL}/ai.txt`,
+      usageInfo: `${SITE_URL}/.well-known/tdmrep.json`,
       isPartOf: { '@id': WEBSITE_ID },
       about: { '@id': ORG_ID },
       primaryImageOfPage: {
@@ -479,6 +567,10 @@ export function buildSeoGraphDocument(config: PageSeoConfig): Record<string, unk
         url: canonicalUrl,
         description: config.description,
         inLanguage: 'vi-VN',
+        copyrightYear: 2026,
+        copyrightHolder: { '@id': ORG_ID },
+        license: `${SITE_URL}/ai.txt`,
+        usageInfo: `${SITE_URL}/.well-known/tdmrep.json`,
         isPartOf: { '@id': WEBSITE_ID },
         about: { '@id': ORG_ID },
         primaryImageOfPage: {

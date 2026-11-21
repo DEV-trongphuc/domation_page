@@ -1,6 +1,7 @@
 {
   "name": "domation_landing_export",
   "private": true,
+  "license": "UNLICENSED",
   "version": "0.0.0",
   "type": "module",
   "homepage": "https://dev-trongphuc.github.io/domation_page",
@@ -11,6 +12,8 @@
     "preview": "vite preview",
     "seo:generate": "node scripts/generate-seo-assets.mjs",
     "seo:index": "node scripts/submit-indexnow.mjs",
+    "seo:drip-status": "node scripts/seo-drip-status.mjs",
+    "seo:publish-today": "node scripts/generate-seo-assets.mjs && npm run build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

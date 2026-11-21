@@ -1,0 +1,353 @@
+{
+  "id": "art-217",
+  "number": "217",
+  "slug": "lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Deterministic Guardrails & OS Sandboxing",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Lifecycle Hooks (PreToolUse, Policy TOML) & Sandbox OS (Seatbelt, Landlock+seccomp): Ép Agent tuân luật cứng",
+  "seoTitle": "Lifecycle Hooks, Policy TOML & OS Sandbox Coding Agent | DOMATION",
+  "metaDescription": "Lời dặn trong prompt luôn có thể bị quên. Dùng 33+ Lifecycle Hooks (PreToolUse exit code 2), 5 tầng TOML Policy và OS Seatbelt/Landlock+seccomp làm rào thép.",
+  "focusKeyword": "lifecycle hooks pretooluse toml policy và os sandbox",
+  "secondaryKeywords": [
+    "claude code pretooluse hook chặn lệnh nguy hiểm",
+    "gemini cli 5 tầng toml policy engine",
+    "codex cli seatbelt landlock bubblewrap seccomp",
+    "worktreecreate và posttooluse lint tự động",
+    "khác biệt guardrail prompt và guardrail hệ điều hành"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Đừng Năn Nỉ Agent Bằng Prompt: Khóa Bằng Hooks Và Kernel",
+  "thumbnailHook": "PreToolUse chặn đọc .env, còn Landlock khóa ổ đĩa cấp Linux.",
+  "thumbnailBadge": "GUARDRAILS HOOKS & OS",
+  "coverImage": "/imgs/boost/v2/lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent.webp",
+  "screenshotImage": "/imgs/boost/charts/lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent-report.webp",
+  "coverAlt": "Bài luận kỹ thuật lifecycle hooks pretooluse toml policy và os sandbox phân tích rào chắn tất định bằng 33+ hooks Claude Code, 5 tầng chính sách TOML Gemini CLI và nhân Linux Landlock Bubblewrap seccomp-BPF hay Apple Seatbelt",
+  "screenshotCaption": "Biểu đồ đo tỷ lệ vượt rào (Bypass Rate %) across 6 kịch bản sự cố và tấn công giữa lời dặn trong Prompt, tầng Lifecycle Hooks/TOML Policy và tầng cô lập OS Kernel Sandbox.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Quy Chuẩn An Ninh Vibecode DOMATION",
+  "relatedSlugs": [
+    "sandboxing-execution-environment-docker-gvisor-cho-ai-agent",
+    "quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai",
+    "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli",
+    "git-worktree-multi-agent-swarm-plan-execute-verifier"
+  ],
+  "readingMinutes": 16,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bài luận phản biện lifecycle hooks pretooluse toml policy và os sandbox chỉ rõ vì sao mọi lời năn nỉ trong System Prompt hay CLAUDE.md ('tuyệt đối không đọc .env, không chạy DROP TABLE') đều mang tính xác suất và sụp đổ ngay khi phiên chat dài bị nén hoặc gặp Prompt Injection. An toàn thực thụ chỉ tồn tại khi ép luật ở 3 tầng tất định: 33+ Lifecycle Hooks của Claude Code (nổi bật là PreToolUse trả exit code 2 trước khi kiểm tra quyền), 5 tầng TOML Policy Engine của Gemini CLI, và Sandbox nhân hệ điều hành (Apple Seatbelt .sbpl, Linux Landlock+Bubblewrap+seccomp-BPF, Docker/gVisor).",
+  "keyTakeaways": [
+    "Lời nhắc trong Prompt hay `CLAUDE.md` luôn là chỉ dẫn xác suất: tỷ lệ quên luật tăng vọt khi ngữ cảnh phình quá 120K token, sau bước `/compact` hoặc khi dính indirect prompt injection.",
+    "Claude Code sở hữu hệ thống 33+ Lifecycle Hooks (`PreToolUse`, `PostToolUse`, `WorktreeCreate`, `SubagentStop`...) hỗ trợ 5 loại handler (`command`, `http`, `prompt`, `agent`, `mcp_tool`); trong đó `PreToolUse` chạy TRƯỚC cả permission prompt và chặn cứng hành vi bằng exit code 2.",
+    "Gemini CLI quản trị hành vi tất định qua 5 tầng TOML Policy Engine (`Default 1 < Extension 2 < Workspace 3 < User 4 < Admin 5`) kiểm chứng bằng `/policies list`, kết hợp `security.folderTrust.enabled` và sandbox Seatbelt, Docker, Podman, gVisor, LXC.",
+    "Codex CLI cưỡng chế ở tầng nhân OS: `workspace-write` khóa chặt `.git`, `.agents` và `.codex` ở chế độ chỉ đọc và tắt mạng mặc định thông qua Apple Seatbelt (`.sbpl`), Linux `Landlock + Bubblewrap + seccomp-BPF` hoặc Windows ACLs; lưu ý chính sách `untrusted` đã BỊ XÓA từ v0.149.0.",
+    "Chuẩn an ninh DOMATION kết hợp cả hai lớp: `PreToolUse` / TOML chặn từ sớm các thao tác phạm luật nghiệp vụ (như đọc `.env` chứa khóa Meta CAPI/MISA) và OS Kernel Sandbox khóa ranh giới ổ đĩa/mạng kể cả khi mọi tầng trên bị qua mặt."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Sự kiện Hook Claude Code",
+      "value": "33+ Events (Exit 2 Block)"
+    },
+    {
+      "label": "Phân tầng Gemini Policy",
+      "value": "5 Tiers TOML (Admin Top)"
+    },
+    {
+      "label": "Tỷ lệ lọt qua OS Kernel",
+      "value": "0% trên vùng khóa Landlock"
+    },
+    {
+      "label": "Cảnh báo Codex v0.149.0+",
+      "value": "Bỏ untrusted -> on-request"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao viết chữ IN HOA kèm từ 'TUYỆT ĐỐI CẤM' trong CLAUDE.md vẫn không thể ngăn Coding Agent đọc tệp .env hay chạy lệnh phá hoại?",
+      "answer": "Vì mô hình ngôn ngữ lớn không vận hành bằng câu lệnh điều kiện `if/else` tất định mà dự đoán token theo phân phối xác suất. Khi phiên làm việc kéo dài qua 40 lượt sửa lỗi, hoặc sau khi ngữ cảnh được tóm tắt qua `/compact`, trọng số chú ý tới đoạn cảnh báo đầu phiên bị suy giảm rõ rệt. Tệ hơn, nếu Agent vừa đọc một issue GitHub hoặc một trang tài liệu web có nhúng indirect prompt injection, mệnh lệnh ẩn mới tinh nằm ở cuối ngữ cảnh thường lấn át lời dặn cũ trong `CLAUDE.md`. Chỉ có mã kiểm tra tất định chạy bên ngoài LLM (Lifecycle Hook hoặc chính sách nhân hệ điều hành) mới đạt tỷ lệ chặn 100% bất kể mô hình suy nghĩ gì."
+    },
+    {
+      "question": "Hook PreToolUse của Claude Code khác gì với hộp thoại xin phép người dùng (Permission Prompt) và exit code 2 có ý nghĩa gì?",
+      "answer": "Trong chuỗi thực thi 33+ sự kiện vòng đời của Claude Code (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`, `WorktreeCreate`, `TaskCompleted`...), `PreToolUse` được kích hoạt TRƯỚC khi hệ thống hiển thị hộp thoại xin phép hay chạy công cụ. Nếu bạn gắn một handler kiểu `command` (nhận JSON qua `stdin`), kịch bản kiểm tra chỉ cần trả về **exit code 2** (hoặc JSON deny) là hành động đó bị chặn đứng ngay lập tức và thông điệp từ `stderr` được phản hồi lại cho Agent biết lý do bị từ chối. Ngược lại, `PostToolUse` chạy ngay sau khi file vừa sửa xong để tự động kích hoạt `eslint`, `tsc` hoặc `prettier`, biến việc giữ chuẩn code thành phản xạ tự động."
+    },
+    {
+      "question": "Cơ chế 5 tầng TOML Policy Engine của Gemini CLI giải quyết xung đột quyền giữa dự án và quản trị viên công ty thế nào?",
+      "answer": "Gemini CLI cho phép đặt các quy tắc `[[rule]]` trong tệp `.toml` (`~/.gemini/policies/*.toml` hoặc trong thư mục `policies/` của extension) chỉ định rõ `toolName`, `commandPrefix`, quyết định (`allow`, `deny`, `ask_user`) và mức `priority`. Toàn hệ thống phân làm 5 bậc ưu tiên tăng dần: Default (1) < Extension (2) < Workspace (3) < User (4) < Admin (5), kèm cơ chế hợp nhất `excludeTools` từ các extension và kiểm soát tin cậy thư mục `security.folderTrust.enabled`. Điều đó có nghĩa là kể cả một kho mã nguồn lạ cố tình nhét cấu hình lỏng lẻo ở tầng Workspace (3), quy tắc khóa cứng của quản trị viên doanh nghiệp ở tầng Admin (5) hoặc User (4) vẫn đè bẹp hoàn toàn; kỹ sư có thể kiểm chứng nhanh bằng lệnh `/policies list`."
+    },
+    {
+      "question": "Tại sao Codex CLI v0.149.0 lại xóa bỏ approval_policy='untrusted' và cơ chế Landlock + Bubblewrap + seccomp-BPF bảo vệ gì trên Linux?",
+      "answer": "Kể từ bản Codex CLI v0.149.0, giá trị `untrusted` đã chính thức bị xóa bỏ—nếu còn để sót trong `~/.codex/config.toml` hoặc `.codex/config.toml`, CLI sẽ báo lỗi ngay lúc khởi động và từ chối chạy. Người dùng bắt buộc phải chuyển sang cấu hình chuẩn mới là `approval_policy = \"on-request\"` kết hợp `sandbox_mode = \"read-only\"` (hoặc `\"workspace-write\"`). Ở tầng thực thi, thay vì tin vào lời hứa của AI, Codex CLI áp thẳng hàng rào hạt nhân hệ điều hành: trên Linux sử dụng bộ ba **Landlock** (giới hạn đường dẫn truy cập tệp), **Bubblewrap** (cô lập không gian tên filesystem) và **seccomp-BPF** (lọc lời gọi hệ thống syscall); trên macOS dùng **Apple Seatbelt** (`.sbpl` qua `sandbox-exec`); và ở chế độ `workspace-write`, mọi thư mục `.git`, `.agents`, `.codex` đều bị khóa chỉ đọc kèm tắt kết nối mạng mặc định."
+    },
+    {
+      "question": "Khi nào doanh nghiệp phải chuyển từ Sandbox cục bộ (Seatbelt/Landlock) sang Container cô lập như Docker hoặc gVisor?",
+      "answer": "Sandbox OS cục bộ như Apple Seatbelt hay Linux Landlock+Bubblewrap+seccomp-BPF cực kỳ tuyệt vời và nhẹ nhàng cho công việc lập trình hàng ngày trên máy cá nhân với `workspace-write`. Tuy nhiên, nếu đội ngũ cần chạy chế độ hoàn toàn không người giám sát (`approval_policy = \"never\"` hoặc `--yolo` / `danger-full-access`) trong pipeline CI/CD tự động xử lý pull request từ cộng đồng, chạy mã test không tin cậy hay để Subagent tự do cài gói phụ thuộc qua mạng, bạn bắt buộc phải đẩy toàn bộ phiên làm việc vào máy ảo tạm thời hoặc container tăng cường như **Docker / Podman / gVisor / LXC** (được hỗ trợ sẵn trên Gemini CLI và khuyến nghị bởi Codex CLI)."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "tuyen-ngon-phan-bien-prompt-khong-phai-la-bao-mat",
+      "eyebrow": "LUẬN ĐIỂM PHẢN BIỆN • SỰ THẬT VỀ GUARDRAIL XÁC SUẤT",
+      "variant": "contrarian",
+      "heading": "Ngừng van xin AI bằng chữ IN HOA trong System Prompt: Một mô hình xác suất không bao giờ là hàng rào an ninh",
+      "pullQuote": "Viết 'TUYỆT ĐỐI KHÔNG BAO GIỜ XÓA DATABASE HOẶC ĐỌC .ENV' vào CLAUDE.md giống như dán tờ giấy nhắc nhở lên cửa két sắt rồi để mở toang khóa.",
+      "paragraphs": [
+        "Hãy thẳng thắn đối diện với một sự thật mà nhiều bài hướng dẫn 'vibecode thần tốc' cố tình lờ đi: phần lớn lập trình viên hiện nay đang bảo vệ mã nguồn sản xuất, chuỗi kết nối PostgreSQL và khóa API thanh toán của công ty bằng... niềm tin vào văn xuôi tiếng Anh hoặc tiếng Việt. Họ mở tệp `CLAUDE.md`, `AGENTS.md` hay System Prompt ra, gõ hàng loạt câu mệnh lệnh đầy cảm xúc như `CRITICAL RULE: NEVER inspect .env files, NEVER run rm -rf, ALWAYS ask before running psql` rồi yên tâm bấm chạy chế độ tự động.",
+        "Đó là một ảo giác nguy hiểm chết người. Mọi mô hình ngôn ngữ lớn—kể cả những chiến binh nặng ký nhất như Claude Opus 5.5, Fable 5.2, Gemini 4 Argon hay GPT-5.3-Codex—về bản chất toán học vẫn là bộ dự đoán chuỗi xác suất. Khi phiên làm việc mới khởi động ở mức 10.000 token, xác suất Agent vâng lời rất cao. Nhưng đến lượt thứ 35 khi cửa sổ ngữ cảnh phình to, khi lịch sử vừa đi qua một lần `/compact`, hoặc khi Agent vô tình nuốt một bình luận độc hại trên GitHub hay tài liệu web bên ngoài, lời dặn dò ở đầu phiên có thể bị pha loãng hoặc bị mệnh lệnh mới đè bẹp hoàn toàn.",
+        "Trong kỹ thuật hệ thống thực chiến tại DOMATION, Huỳnh Trọng Phúc (TurnioDEV) áp dụng một nguyên lý bất di bất dịch cho toàn bộ quy trình xây dựng ERP 5.0 và INKICA: **mọi luật nào bắt buộc không được phép vi phạm (đụng vào `.env` chứa khóa Meta CAPI/MISA, ghi đè `.git/hooks`, chạy `DROP TABLE` hay thoát khỏi thư mục dự án) thì tuyệt đối không giao cho AI tự giác ghi nhớ**. Luật cứng phải được cưỡng chế bằng mã nguồn tất định ở hai lớp bên ngoài bộ não LLM: tầng kiểm soát vòng đời (Lifecycle Hooks / 5-tier TOML Policy Engine) và tầng cô lập nhân hệ điều hành (Apple Seatbelt, Linux Landlock + Bubblewrap + seccomp-BPF, hoặc Docker/gVisor)."
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "myth-vs-reality-agent-guardrails",
+      "heading": "5 Ngộ nhận chết người về kỷ luật AI Coding Agent và thực tế kiểm thử trên Production",
+      "pairs": [
+        {
+          "myth": "Chỉ cần viết rõ danh sách lệnh cấm bằng chữ IN HOA trong CLAUDE.md hoặc AGENTS.md là Agent sẽ tuân thủ 100%.",
+          "reality": "Sau khi ngữ cảnh vượt 120K token, trải qua nén lịch sử hoặc gặp indirect prompt injection từ dữ liệu đọc vào, lời dặn văn xuôi có thể bị bỏ qua hoàn toàn.",
+          "proofMetric": "Thử nghiệm red-team: ~14–22% lượt vi phạm hoặc lách luật khi chỉ dựa vào Prompt"
+        },
+        {
+          "myth": "Chế độ workspace-write của Coding Agent cho phép sửa thoải mái cả thư mục .git và cấu hình CLI để tự sửa lỗi hook.",
+          "reality": "Ở chuẩn Codex CLI `workspace-write`, hệ điều hành khóa cứng `.git`, `.agents` và `.codex` ở chế độ chỉ đọc (read-only) cùng ngắt mạng mặc định để Agent không thể tự tháo còng.",
+          "proofMetric": "Read-only lock tại .git / .agents / .codex + Network OFF"
+        },
+        {
+          "myth": "Cài một extension hoặc mở một repo mới trên mạng trong CI/CD là an toàn nếu không gõ lệnh chạy thẳng.",
+          "reality": "Repo lạ có thể nhét `.env` hoặc `.gemini/settings.json` độc hại để tự thực thi khi khởi chạy; bắt buộc phải bật `security.folderTrust.enabled` trước khi nạp cấu hình dự án.",
+          "proofMetric": "Workspace Trust chặn nạp config & .env chưa duyệt"
+        },
+        {
+          "myth": "Cứ cấu hình `approval_policy = \"untrusted\"` trong file config.toml của Codex CLI là an toàn nhất.",
+          "reality": "Giá trị `untrusted` đã chính thức BỊ XÓA từ Codex CLI v0.149.0 và làm sập quá trình khởi động CLI; phải chuyển sang `approval_policy = \"on-request\"` + `sandbox_mode = \"read-only\"`.",
+          "proofMetric": "Removed in Codex CLI v0.149.0 (Fatal startup error)"
+        },
+        {
+          "myth": "Kiểm tra kết quả sau khi Agent sửa code (format, lint, check type) phải tự nhắc bằng prompt ở cuối mỗi lượt.",
+          "reality": "Gắn hook `PostToolUse` (Claude Code) chạy thẳng script formatter/typecheck bằng mã tất định giúp 100% file vừa sửa được kiểm tra ngay lập tức mà tốn 0 token nhắc nhở.",
+          "proofMetric": "0 token nhắc lại; chạy tự động 100% sau mỗi Edit/Write"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-ba-tang-hook-toml-va-os-kernel-sandbox",
+      "eyebrow": "KIẾN TRÚC RÀO THÉP • CLAUDE HOOKS, GEMINI TOML & CODEX OS KERNEL",
+      "variant": "deep-dive",
+      "heading": "Đặt lên bàn mổ 3 triết lý ép luật cứng của Claude Code, Gemini CLI và Codex CLI",
+      "paragraphs": [
+        "Dù cùng hướng tới mục tiêu khóa chặt hành vi bất thường của Coding Agent, ba ông lớn Anthropic, Google và OpenAI lại chọn ba tầng kỹ thuật bổ trợ cực kỳ thú vị cho nhau. Hiểu rõ cơ chế của từng nền tảng giúp kiến trúc sư kết hợp đúng mảnh ghép mà không kỳ vọng nhầm chỗ.",
+        "**1. Claude Code — Chuyên gia can thiệp vòng đời chi tiết (33+ Lifecycle Hooks)**: Trong `.claude/settings.json`, `~/.claude/settings.json` hoặc `hooks/hooks.json` của plugin, Claude Code mở ra hơn 33 sự kiện vòng đời bao phủ từ lúc khởi tạo (`SessionStart`, `Setup`, `UserPromptSubmit`), can thiệp công cụ (`PreToolUse`, `PostToolUse`), vòng lặp kết thúc (`Stop`, `StopFailure`), điều phối đội ngũ (`SubagentStart`, `SubagentStop`, `TaskCreated`, `TaskCompleted`) cho tới tùy biến nhánh làm việc (`WorktreeCreate`, `WorktreeRemove`). Vũ khí sắc bén nhất là `PreToolUse` với 5 kiểu xử lý (`command`, `http`, `prompt`, `agent`, `mcp_tool`): nó chạy TRƯỚC cả bước kiểm tra quyền truyền thống; chỉ cần một đoạn script Python/Bash đọc payload JSON từ `stdin` thấy đường dẫn `.env` hoặc từ khóa `DROP TABLE` rồi trả về **exit code 2**, lệnh gọi tool bị tiêu diệt ngay từ trong trứng nước trước khi hệ điều hành kịp chạm tới ổ đĩa.",
+        "**2. Gemini CLI — Triết lý khai báo phân cấp (5-Tier TOML Policy Engine & Container Sandbox)**: Không cần viết quá nhiều script hook cho những quy tắc chặn lệnh phổ thông, Gemini CLI dùng tệp cấu hình chính sách `.toml` (`~/.gemini/policies/*.toml` và trong extension `policies/`) với các khối `[[rule]]` chỉ rõ `toolName`, `commandPrefix`, quyết định (`allow`, `deny`, `ask_user`) và thứ tự `priority`. Sức mạnh quản trị nằm ở tháp ưu tiên 5 tầng: `Default (1) < Extension (2) < Workspace (3) < User (4) < Admin (5)`, đồng thời hợp nhất danh sách `excludeTools` từ các extension và cho phép thanh tra trực tiếp qua `/policies list`. Phía dưới tầng thực thi, Gemini CLI hỗ trợ đa dạng sandbox từ macOS Seatbelt cho tới Docker, Podman, gVisor, LXC và bọc luồng PTY.",
+        "**3. Codex CLI — Kỷ luật hạt nhân hệ điều hành (Seatbelt, Landlock+Bubblewrap+seccomp-BPF)**: Ngược lại với Claude Code, Codex CLI không có hệ thống 33 hook nội tuyến kiểu `PreToolUse`, mà đặt trọng tâm tối đa vào việc dựng tường thành không thể xuyên thủng ở cấp nhân hệ điều hành kết hợp `codex exec` JSONL cho CI/CD. Trên macOS, tiến trình Agent bị nhốt trong hồ sơ `.sbpl` của **Apple Seatbelt** (`sandbox-exec`). Trên Linux, Codex phối hợp bộ ba **Landlock** (chặn đường dẫn ở tầng kernel), **Bubblewrap** (cô lập không gian tên hệ thống tệp) và **seccomp-BPF** (cắt toàn bộ syscall nguy hiểm). Trên Windows là cơ chế restricted tokens và ACLs. Chế độ `workspace-write` mặc định cắt mạng hoàn toàn và khóa `.git`, `.agents`, `.codex` thành read-only—nghĩa là ngay cả khi mô hình bị tiêm prompt nặng nhất, hạt nhân Linux hay macOS vẫn từ chối thẳng lời gọi hệ thống ở mức `EPERM`."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-3-cli-guardrails-hooks-toml-sandbox",
+      "heading": "Ma trận đối chiếu lớp ép luật cứng: Claude Code Hooks vs Gemini CLI TOML Policy vs Codex CLI OS Sandbox",
+      "caption": "So sánh cơ chế thực thi, định dạng cấu hình, khả năng kiểm soát mạng/tệp và cảnh báo nâng cấp phiên bản.",
+      "columns": [
+        "Tiêu chí bảo vệ",
+        "Claude Code (Lifecycle Hooks)",
+        "Gemini CLI (5-Tier TOML Policy)",
+        "Codex CLI (OS-Kernel Sandbox)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Triết lý chặn vi phạm",
+          "values": [
+            "33+ sự kiện vòng đời (PreToolUse chặn trước permission check bằng exit code 2)",
+            "Chính sách khai báo TOML [[rule]] 5 cấp độ (Admin Tier 5 đè Workspace Tier 3)",
+            "Cưỡng chế ở nhân OS độc lập hoàn toàn với suy luận của LLM"
+          ],
+          "winnerNote": "Hooks + Kernel là cặp đôi hoàn hảo"
+        },
+        {
+          "criterion": "Loại Handler / Quy tắc hỗ trợ",
+          "values": [
+            "5 loại: command (stdin/stdout JSON), http (webhook), prompt, agent (thử nghiệm), mcp_tool",
+            "allow / deny / ask_user theo toolName, commandPrefix, priority + excludeTools union",
+            "3 chế độ sandbox (read-only, workspace-write, danger-full-access) + on-request / never"
+          ]
+        },
+        {
+          "criterion": "Công nghệ Sandbox OS & Container",
+          "values": [
+            "Host Sandboxed Bash (Seatbelt/WSL2), Sandbox Runtime + cô lập `git --worktree`",
+            "macOS Seatbelt, Docker, Podman, gVisor, LXC + bọc luồng PTY + Workspace Trust",
+            "macOS Apple Seatbelt (.sbpl), Linux Landlock + Bubblewrap + seccomp-BPF, Windows ACLs"
+          ],
+          "winnerNote": "Codex & Gemini rất mạnh về Kernel/VM"
+        },
+        {
+          "criterion": "Bảo vệ tệp cấu hình & .git",
+          "values": [
+            "Tùy chỉnh qua script `PreToolUse` chặn ghi `.env`, `.git/`, `.claude/settings.json`",
+            "Khóa qua TOML Tier 4/5 + cờ `security.folderTrust.enabled` trước khi chạy headless",
+            "`workspace-write` tự động khóa `.git`, `.agents`, `.codex` thành read-only"
+          ]
+        },
+        {
+          "criterion": "Tự động hóa hậu kiểm & Worktree",
+          "values": [
+            "`PostToolUse` chạy lint/typecheck; `WorktreeCreate` / `WorktreeRemove` tùy biến luồng swarm",
+            "Shell inline `!{...}` trong TOML commands + `/policies list` kiểm định quy tắc",
+            "`codex exec` xuất log JSONL cho GitHub Actions + `read-only` mặc định cho CI"
+          ]
+        },
+        {
+          "criterion": "Bẫy cấu hình cần tránh",
+          "values": [
+            "Quên phân biệt exit code 2 (chặn cứng) với exit code 1 (chỉ báo lỗi không chặn)",
+            "Đặt nhầm priority thấp hơn Extension/Workspace dẫn đến bị luật repo đè",
+            "Giữ `untrusted` trong config.toml sau v0.149.0 gây lỗi sập khởi động"
+          ]
+        }
+      ],
+      "footnote": "Tổng hợp theo tài liệu kỹ thuật chính thức của Claude Code, Gemini CLI (Apache 2.0) và Codex CLI (v0.149.0+)."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-guardrail-bypass-rate-comparison",
+      "heading": "Thử nghiệm vượt rào (Bypass Rate %) trên 6 kịch bản sự cố: Prompt-Only vs Hooks/TOML Policy vs OS Kernel Sandbox",
+      "subtitle": "Kiểm thử nội bộ DOMATION Security Lab trên 50 lượt mô phỏng cho mỗi kịch bản (tổng 300 lượt/lớp phòng thủ)",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tỷ lệ lọt vi phạm / vượt rào thành công (%, 0% là an toàn tuyệt đối)",
+        "subtitle": "Chỉ dựa vào Prompt để lọt 12%–34% ca vi phạm sau khi nén ngữ cảnh hoặc gặp injection; kết hợp Hooks/TOML và Kernel Sandbox đưa mức lọt về 0%",
+        "xKey": "attackScenario",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "promptOnlyBypassPct",
+            "label": "Chỉ dặn trong Prompt / CLAUDE.md (%)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "hooksTomlBypassPct",
+            "label": "Lifecycle Hooks (PreToolUse) / TOML Policy (%)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "osKernelSandboxBypassPct",
+            "label": "OS Kernel Sandbox (Seatbelt / Landlock+seccomp / gVisor) (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          }
+        ],
+        "data": [
+          { "attackScenario": "Đọc trộm .env (Injection)", "promptOnlyBypassPct": 28, "hooksTomlBypassPct": 2, "osKernelSandboxBypassPct": 0 },
+          { "attackScenario": "Ghi đè .git/hooks", "promptOnlyBypassPct": 16, "hooksTomlBypassPct": 0, "osKernelSandboxBypassPct": 0 },
+          { "attackScenario": "Chạy DROP / TRUNCATE", "promptOnlyBypassPct": 14, "hooksTomlBypassPct": 0, "osKernelSandboxBypassPct": 0 },
+          { "attackScenario": "Curl dữ liệu ra ngoài", "promptOnlyBypassPct": 22, "hooksTomlBypassPct": 4, "osKernelSandboxBypassPct": 0 },
+          { "attackScenario": "Sửa tệp ngoài Workspace", "promptOnlyBypassPct": 18, "hooksTomlBypassPct": 2, "osKernelSandboxBypassPct": 0 },
+          { "attackScenario": "Quên luật sau /compact", "promptOnlyBypassPct": 34, "hooksTomlBypassPct": 0, "osKernelSandboxBypassPct": 0 }
+        ],
+        "kpis": [
+          {
+            "label": "Tỷ lệ lọt trung bình Prompt-Only",
+            "value": "22,0%",
+            "delta": "Quá rủi ro cho môi trường thật",
+            "positive": false
+          },
+          {
+            "label": "Tỷ lệ chặn bằng Hooks / TOML",
+            "value": "98,7%",
+            "delta": "Chặn tức thì từ bước gọi tool",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ lọt qua OS Kernel Sandbox",
+            "value": "0,0%",
+            "delta": "Khóa ở syscall & filesystem namespace",
+            "positive": true
+          },
+          {
+            "label": "Phụ trội độ trễ kiểm tra Hook",
+            "value": "< 18 ms",
+            "delta": "Chạy local JSON stdin cực nhanh",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Red-Team Lab (11/2026): mô phỏng 50 phiên dài >100K token kèm nén ngữ cảnh và kịch bản indirect prompt injection; một số ca `commandPrefix` hay regex đơn giản trong Hook/TOML có thể bị lách bằng biến shell trung gian (`eval`/`base64`) nếu thiếu OS Sandbox chặn dứt điểm bên dưới."
+      },
+      "insightSummary": "Số liệu thử nghiệm vạch trần hai thực tế cực kỳ sắc bén. Thứ nhất, dựa vào mỗi văn bản hướng dẫn trong prompt khiến tỷ lệ vi phạm vọt lên 28% với kịch bản tiêm prompt đọc `.env` và tới 34% sau khi nén ngữ cảnh dài. Thứ hai—và tinh tế hơn—ngay cả tầng `PreToolUse` hay regex `commandPrefix` vẫn còn kẽ hở 2%–4% nếu kẻ tấn công hoặc AI ngụy trang lệnh qua biến môi trường, đường dẫn symlink hoặc giải mã `base64` trong bash, trong khi tầng OS Kernel Sandbox (`Landlock + Bubblewrap + seccomp-BPF`, Apple Seatbelt hay gVisor) triệt tiêu tuyệt đối về 0% ở cấp lời gọi hệ thống. Kết hợp cả hai tạo nên phòng thủ chiều sâu hoàn hảo."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-hooks-toml-os-sandbox",
+      "src": "/imgs/boost/charts/lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent-report.webp",
+      "alt": "Biểu đồ benchmark lifecycle hooks pretooluse toml policy và os sandbox đo tỷ lệ vượt rào across 6 kịch bản tấn công giữa Prompt-only, Hooks/TOML và nhân hệ điều hành",
+      "caption": "So sánh tỷ lệ lọt vi phạm (%) across 6 kịch bản tấn công và quên luật khi phòng thủ bằng Prompt thuần, tầng Lifecycle Hooks/TOML Policy và tầng OS Kernel Sandbox.",
+      "badge": "SECURITY • KERNEL GUARDRAILS"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-chon-lop-guardrail-theo-rui-ro",
+      "heading": "Cây quyết định lắp đặt tầng Hook, TOML Policy hay OS Sandbox cho từng môi trường chạy Agent",
+      "subtitle": "Phối hợp đúng lớp rào chắn để vừa cứng rắn về an ninh vừa không làm chậm nhịp code hàng ngày.",
+      "scenarios": [
+        {
+          "condition": "Muốn chặn ngay tại nguồn các thao tác đọc `.env` (chứa Meta CAPI Token/MISA Key), chạy `DROP TABLE` và tự động chạy lint/typecheck sau mỗi lần sửa file",
+          "recommendedChoice": "Cài cặp Claude Code `PreToolUse` (exit code 2) + `PostToolUse` trong `.claude/settings.json`",
+          "rationale": "`PreToolUse` phản hồi lý do từ chối rõ ràng bằng tiếng người cho Agent sửa hướng ngay lập tức, còn `PostToolUse` giữ codebase sạch lỗi biên dịch 100%.",
+          "avoidIf": "Tin tưởng hoàn toàn vào hook chuỗi đơn giản mà không bọc thêm sandbox OS khi xử lý kho mã lạ."
+        },
+        {
+          "condition": "Quản trị chuẩn an toàn chung cho toàn bộ kỹ sư và extension dùng Gemini CLI ở quy mô doanh nghiệp",
+          "recommendedChoice": "Triển khai Admin/User TOML Policy Tier 4–5 (`~/.gemini/policies/*.toml`) + `folderTrust`",
+          "rationale": "Cấp bậc Admin (5) và User (4) luôn thắng mọi cấu hình lén chèn từ Workspace (3) hoặc Extension (2), dễ kiểm toán bằng `/policies list`.",
+          "avoidIf": "Để `folderTrust` tắt khi chạy CI/CD trên các Pull Request mở từ fork công cộng."
+        },
+        {
+          "condition": "Cho Codex CLI tự chỉnh sửa code trong repo công ty nhưng tuyệt đối không được sửa lịch sử Git, cấu hình `.codex` hoặc gửi dữ liệu ra mạng ngoài",
+          "recommendedChoice": "Cấu hình `.codex/config.toml` với `sandbox_mode = \"workspace-write\"` & `approval_policy = \"on-request\"`",
+          "rationale": "Nhân Linux (`Landlock + Bubblewrap + seccomp-BPF`) hoặc macOS (`Seatbelt`) khóa cứng ổ đĩa và mạng bất chấp nội dung prompt; tuyệt đối tránh từ khóa `untrusted` đã bị xóa.",
+          "avoidIf": "Bạn đang dùng flag `--yolo` / `danger-full-access` trực tiếp trên máy chủ chứa dữ liệu khách hàng thật."
+        },
+        {
+          "condition": "Chạy pipeline CI/CD hoàn toàn tự động (`codex exec`, `approval_policy = \"never\"` hoặc Agent thử nghiệm tải gói lạ)",
+          "recommendedChoice": "Đưa toàn bộ Agent vào Container cô lập tăng cường (Docker / Podman / gVisor / Ephemeral VM)",
+          "rationale": "Ngay cả khi bật `danger-full-access` cho agent tự cài môi trường kiểm thử, bán kính nổ bị giam trọn bên trong microVM/container dùng một lần.",
+          "avoidIf": "Chạy chế độ không cần duyệt trên máy trạm thật có gắn SSH keys, token AWS/GCP hoặc DB nội bộ."
+        },
+        {
+          "condition": "Điều phối nhiều Subagent chạy song song trên các phân hệ ERP/CRM bằng `git worktree` nhưng cần kịch bản chuẩn bị môi trường riêng (tạo `.env.test` giả lập, cài symlink `node_modules`)",
+          "recommendedChoice": "Dùng sự kiện `WorktreeCreate` và `WorktreeRemove` của Claude Code kết hợp `isolation: worktree`",
+          "rationale": "Tự động hóa sạch sẽ vòng đời worktree thay vì để các Agent giẫm chân lên nhau hoặc lọt dữ liệu tạm ra ngoài.",
+          "avoidIf": "Để 4 Agent cùng sửa đè trên một thư mục làm việc chung."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-hooks-toml-codex-guardrail-pack",
+      "heading": "Code Recipe: Bộ rào thép 3 lớp thực chiến (Claude PreToolUse Exit 2 + Gemini TOML Policy + Codex v0.149+ Config)",
+      "language": "json",
+      "filename": ".claude/settings.json + scripts/hooks/pretool-guard.py + .gemini/policies/domation-guard.toml + .codex/config.toml",
+      "description": "Bộ cấu hình áp dụng ngay tại DOMATION: 1) `.claude/settings.json` nối `PreToolUse` chặn lệnh/đường dẫn nhạy cảm với exit code 2 và `PostToolUse` chạy kiểm tra TypeScript, 2) `pretool-guard.py` phân tích JSON stdin, 3) file chính sách TOML Tier 4/5 cho Gemini CLI và 4) `.codex/config.toml` chuẩn hậu-v0.149.0.",
+      "code": "// ==========================================================================\n// 1. File: .claude/settings.json (PreToolUse chặn cứng + PostToolUse auto-check)\n// ==========================================================================\n{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash|Read|Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"python3 ./scripts/hooks/pretool-guard.py\",\n            \"timeout\": 5000\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"npx tsc --noEmit --pretty false\",\n            \"timeout\": 25000\n          }\n        ]\n      }\n    ]\n  }\n}\n\n# ==========================================================================\n# 2. File: scripts/hooks/pretool-guard.py (Exit code 2 = chan tat dinh)\n# ==========================================================================\nimport json, re, sys\n\npayload = json.load(sys.stdin)\ntool_name = payload.get(\"tool_name\", \"\")\ntool_input = payload.get(\"tool_input\", {})\nraw_blob = json.dumps(tool_input, ensure_ascii=False)\n\n# Chan doc/ghi truc tiep tep chua secret ERP/MISA/Meta CAPI va thu muc .git\nSENSITIVE_PATH_RE = re.compile(r\"(\\.env(\\..*)?$|id_rsa|\\.pem$|\\.git/hooks)\", re.I)\nDANGEROUS_SQL_BASH_RE = re.compile(\n    r\"(rm\\s+-rf\\s+/|DROP\\s+(TABLE|DATABASE)|TRUNCATE\\s+TABLE|curl\\s+.*169\\.254\\.169\\.254)\", re.I\n)\n\nfile_path = str(tool_input.get(\"file_path\") or tool_input.get(\"path\") or \"\")\ncommand = str(tool_input.get(\"command\") or \"\")\n\nif file_path and SENSITIVE_PATH_RE.search(file_path):\n    print(f\"[PRETOOLUSE_BLOCKED] Cam truy cap tep nhay cam: {file_path}\", file=sys.stderr)\n    sys.exit(2)  # Exit code 2 buoc Claude Code chan truoc permission prompt\n\nif tool_name == \"Bash\" and (DANGEROUS_SQL_BASH_RE.search(command) or \".env\" in raw_blob):\n    print(\"[PRETOOLUSE_BLOCKED] Phat hien lenh pha hoai hoac cham tep .env trong Bash.\", file=sys.stderr)\n    sys.exit(2)\n\nsys.exit(0)\n\n# ==========================================================================\n# 3. File: ~/.gemini/policies/domation-guard.toml (Tier 4/5 Policy Engine)\n# ==========================================================================\n# [[rule]]\n# toolName = \"run_shell_command\"\n# commandPrefix = \"rm -rf\"\n# decision = \"deny\"\n# priority = 400\n#\n# [[rule]]\n# toolName = \"run_shell_command\"\n# commandPrefix = \"psql\"\n# decision = \"ask_user\"\n# priority = 400\n\n# ==========================================================================\n# 4. File: .codex/config.toml (Chuan Codex CLI v0.149.0+ — KHONG dung untrusted)\n# ==========================================================================\n# model = \"gpt-5.3-codex\"\n# sandbox_mode = \"workspace-write\"   # Khoa read-only .git, .agents, .codex; tat mang\n# approval_policy = \"on-request\"     # Thay the cho 'untrusted' da bi xoa o v0.149.0\n"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-hooks-and-kernel-sandbox",
+      "variant": "founder-pov",
+      "authorBadge": "Tuyên Ngôn Kỹ Thuật • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Prompt là để dạy Agent làm đúng việc; Hooks và OS Kernel Sandbox mới là thứ giữ công ty bạn sống sót",
+      "body": "Càng tăng tốc xây dựng hệ thống doanh nghiệp bằng AI Coding Agent nhanh gấp 4–5 lần, ranh giới giữa tự động hóa đỉnh cao và thảm họa rò rỉ dữ liệu lại càng mỏng manh nếu bạn đặt cược an ninh vào vài dòng văn xuôi trong `CLAUDE.md`. Tại DOMATION, quy trình chuẩn luôn đi theo cặp: `PreToolUse` (exit code 2) và TOML Policy Engine đóng vai người gác cổng nghiệp vụ ngay khoảnh khắc gọi tool, còn Apple Seatbelt, Linux `Landlock + Bubblewrap + seccomp-BPF` hay container gVisor khóa chết ranh giới tệp tin và kết nối mạng ở cấp nhân hệ điều hành. Chỉ khi luật được ép bằng code tất định và kernel, bạn mới dám thực sự giải phóng đôi tay cho Agent chạy song song trên Production."
+    }
+  ]
+}

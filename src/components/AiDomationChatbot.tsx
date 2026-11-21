@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { DomationLogoMark } from './DomationLogoMark';
 import { handleSpaLinkClick, navigateTo } from '../utils/navigation';
+import { lockBodyScroll, pushOverlay, unlockBodyScroll } from '../utils/overlayStack';
 
 export interface RetrievedSource {
   id: string;
@@ -258,23 +259,17 @@ export const AiDomationChatbot: React.FC = () => {
   useEffect(() => {
     if (!isOpen || !isMobile) return;
     const prevHtmlOverflow = document.documentElement.style.overflow;
-    const prevBodyOverflow = document.body.style.overflow;
     document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
     return () => {
       document.documentElement.style.overflow = prevHtmlOverflow;
-      document.body.style.overflow = prevBodyOverflow;
+      unlockBodyScroll();
     };
   }, [isOpen, isMobile]);
 
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    if (!isOpen) return;
+    return pushOverlay('ai-domation-chatbot', () => setIsOpen(false), 180);
   }, [isOpen]);
 
   useEffect(() => {

@@ -374,7 +374,7 @@ export function buildGoogleAppsScriptSnippet(webhookUrl?: string, saleEmail?: st
   const targetUrl =
     webhookUrl && webhookUrl.trim().length > 0
       ? webhookUrl.trim()
-      : 'https://domation.net/api/autodata?action=webhook-test&slug=ten-cong-ty&token=whsec_xxx';
+      : 'https://data.domation.net/api/v1/webhooks/<tenant_slug>/<connection_token>';
   const ownerHint = saleEmail && saleEmail.trim().length > 0 ? saleEmail.trim() : 'sale01@doanhnghiep.vn';
   const safeUrlLiteral = JSON.stringify(targetUrl);
   const safeOwnerLiteral = JSON.stringify(ownerHint);

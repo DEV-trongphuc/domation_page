@@ -32,6 +32,11 @@ export const HOME_FAQS: PageFaqItem[] = [
     answer:
       'Auto Data CRM và DOM Meta Report đều có 30 ngày dùng thử miễn phí 0₫. Sau dùng thử: DOM Meta Report từ 490.000₫/tháng (năm); Auto Data Standard 1.500.000₫/tháng (20 Sale • 15.000 Leads); Auto Data Pro 3.000.000₫/tháng (85 Sale • 100.000 Leads); Automation • CRM 360° • ERP 5.0 6.000.000₫/tháng (9.999 Users • 1.000.000 Leads, giảm 15% khi đóng năm). Gói Bespoke Enterprise ERP 5.0 may đo theo quy mô, và Website/3D WebGL từ 12.000.000₫ thanh toán 1 lần sở hữu toàn bộ source code.',
   },
+  {
+    question: 'Ai là Founder & CEO sáng lập và trực tiếp kiến trúc hệ sinh thái DOMATION?',
+    answer:
+      'DOMATION được sáng lập và trực tiếp kiến trúc từ A–Z bởi Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION, Chuyên Gia AI Automation, Chuyên Gia Digital Marketing & MarTech với kinh nghiệm xây dựng 35+ hệ thống thực chiến cho 30+ doanh nghiệp (Capital House, INKICA AI, IDEAS Business, Phúc Lộc Thọ, Ampersand, En Group, Flora), xử lý 150,000+ Leads, ROAS 4.8x–8.2x và là tác giả sách "Facebook Ads: AI Chạy Không Được" (154 trang). Xem Portfolio chính thức tại https://portfo-turnio.vercel.app/.',
+  },
 ];
 
 export const AUTODATA_FAQS: PageFaqItem[] = [
@@ -192,6 +197,34 @@ export const IDEAS_FAQS: PageFaqItem[] = [
     question: 'Hiệu quả thực tế sau khi IDEAS triển khai hệ thống ERP & Automation may đo là gì?',
     answer:
       'Hệ thống giúp IDEAS tăng 300% quy mô lớp học MBA (từ 20 lên 60 học viên/khóa), giảm 30% chi phí thu học viên (CPA), vận hành hơn 12.600 Leads và tự động hóa chấm công GPS AI cùng Payroll PDF.',
+  },
+];
+
+export const DOM_AI_FAQS: PageFaqItem[] = [
+  {
+    question: 'DOM AI Assistant có thực sự miễn phí 100% trọn đời không?',
+    answer:
+      'Có. DOM AI Assistant hoàn toàn miễn phí 0₫/tháng trọn đời khi doanh nghiệp sử dụng theo mô hình BYOK (Bring Your Own Key) — cắm trực tiếp Gemini API Key miễn phí hoặc trả phí từ Google AI Studio của chính doanh nghiệp. DOMATION không thu phí thuê bao phần mềm cho Portal độc lập.',
+  },
+  {
+    question: 'Gemini API Key của doanh nghiệp có được bảo mật khi cắm vào DOM AI Assistant không?',
+    answer:
+      'Có. API Key được mã hóa AES-256 trên máy chủ và chỉ phục vụ riêng cho Portal của doanh nghiệp bạn. Hệ thống không bao giờ chia sẻ khóa API giữa các tenant khác nhau và có nút kiểm tra kết nối trực tiếp ngay trong Admin Suite.',
+  },
+  {
+    question: 'DOM AI Assistant hỗ trợ những chế độ đăng nhập và phân quyền nào?',
+    answer:
+      'Bạn có thể chuyển đổi 1 chạm giữa 3 chế độ: (1) Bypass mở công khai cho khách hàng tra cứu ngay không cần đăng nhập; (2) Đăng nhập mở bằng Email/Tên để lưu lịch sử chat và Group cá nhân; (3) Whitelist nội bộ chỉ cho phép các Email được cấp quyền truy cập đúng các Collection được phân công.',
+  },
+  {
+    question: 'AI trả lời có bịa đặt số liệu bảng giá hoặc chính sách nội bộ không?',
+    answer:
+      'Không. DOM AI Assistant vận hành theo kiến trúc RAG truy hồi trực tiếp từ Kho Tài Liệu & Collections của bạn, hiển thị thẻ Nguồn trích dẫn (Citations) bấm xem ngay tài liệu gốc. Ngoài ra, quản trị viên có thể biến mọi câu hỏi thực tế trong Log hội thoại thành cặp Q&A Huấn luyện chỉ với 1 cú nhấp chuột.',
+  },
+  {
+    question: 'Mất bao lâu để triển khai một Cổng Trợ Lý AI riêng mang thương hiệu công ty?',
+    answer:
+      'Chỉ mất khoảng 3 phút qua 3 bước: (1) Tạo Portal tùy biến Logo, màu chủ đạo, đường dẫn /ai/ten-du-an và dán Gemini API Key; (2) Nạp tài liệu (.md/.txt/.csv hoặc soạn Q&A) và chia Collections; (3) Chia sẻ link hoặc nhúng Iframe vào Website và theo dõi Dashboard thống kê.',
   },
 ];
 
@@ -665,6 +698,55 @@ export function getIdeasSeoConfig(): PageSeoConfig {
   };
 }
 
+export function getDomAiSeoConfig(): PageSeoConfig {
+  return {
+    title: 'DOM AI Assistant | Trợ Lý AI RAG Doanh Nghiệp Miễn Phí 100% (BYOK) | DOMATION',
+    description:
+      'Khởi tạo Cổng Trợ Lý AI RAG & Kho Tài Liệu mang thương hiệu riêng MIỄN PHÍ 100% trọn đời khi cắm Gemini API Key riêng: 3-Pane Studio, 3 chế độ phân quyền, Dashboard thống kê & 1-click Q&A Training.',
+    path: '/dom-ai',
+    keywords: [
+      'DOM AI Assistant',
+      'trợ lý AI doanh nghiệp miễn phí',
+      'AI RAG nội bộ doanh nghiệp',
+      'BYOK Gemini API Key',
+      'cổng tra cứu tài liệu AI',
+      'chatbot tài liệu nội bộ miễn phí',
+      'DOMATION AI Studio',
+      'trợ lý AI trích dẫn nguồn',
+    ],
+    ogImage: '/imgs/dom-ai/portal-chat.png',
+    ogImageAlt: 'DOM AI Assistant — Trợ Lý AI RAG Doanh Nghiệp Miễn Phí 100% BYOK từ DOMATION',
+    breadcrumbs: [
+      { name: 'Trang Chủ', url: '/' },
+      { name: 'DOM AI Assistant (Miễn Phí)', url: '/dom-ai' },
+    ],
+    faqs: DOM_AI_FAQS,
+    jsonLd: [
+      buildSoftwareAppSchema({
+        name: 'DOM AI Assistant — Trợ Lý AI RAG & Kho Tài Liệu Doanh Nghiệp (BYOK Free Forever)',
+        description:
+          'Sản phẩm độc lập miễn phí 100% trọn đời từ hệ sinh thái DOMATION khi cắm Gemini API Key riêng: 3-Pane AI Studio, Kho Tài Liệu RAG có trích dẫn, 3 chế độ Auth linh hoạt, Dashboard thống kê và 1-click Q&A Training.',
+        path: '/dom-ai',
+        screenshot: '/imgs/dom-ai/portal-chat.png',
+        featureList: [
+          'Miễn phí 100% trọn đời (0₫/tháng) với mô hình BYOK Gemini API Key mã hóa AES-256',
+          'Không gian làm việc 3-Pane AI Studio: Hội thoại AI, Kho Tài Liệu & Vault tra cứu nhanh',
+          '3 chế độ phân quyền truy cập: Bypass công khai, Đăng nhập lưu lịch sử & Whitelist theo Collection',
+          'Admin Dashboard thống kê lưu lượng hỏi, tỷ lệ hài lòng, tài liệu trích dẫn & 1-click Q&A Training',
+        ],
+        offers: [
+          {
+            name: 'DOM AI Assistant Standalone (BYOK)',
+            price: '0',
+            description: '0₫/tháng — Miễn phí trọn đời khi dùng với Gemini API Key riêng của doanh nghiệp',
+            url: '/dom-ai#pricing',
+          },
+        ],
+      }),
+    ],
+  };
+}
+
 export function getNotFoundSeoConfig(path = '/404'): PageSeoConfig {
   return {
     title: '404 — Không Tìm Thấy Trang | DOMATION.NET',
@@ -685,6 +767,7 @@ export function getCoreStaticRouteSeoConfigs(): PageSeoConfig[] {
     getCrmSeoConfig(),
     getAutomationSeoConfig(),
     getMetaReportSeoConfig(),
+    getDomAiSeoConfig(),
     getWebDesignSeoConfig(),
     getIdeasSeoConfig(),
   ];

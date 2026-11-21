@@ -261,33 +261,34 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                 <RefreshCw className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                 <span>VÒNG TRÒN TỐI ƯU KHÉP KÍN • META ADS ↔ CRM ↔ CAPI</span>
               </div>
-              <h2 className="text-xl sm:text-3xl lg:text-[34px] font-bold text-slate-900 leading-[1.22] tracking-tight">
-                Quảng Cáo Hút Khách — Chia Số{' '}
-                <span className="whitespace-nowrap">Tức Thì</span> —{' '}
-                <span className="text-gradient-inkica">Bắn Ngược CAPI Tự Thông Minh</span>
+              <h2 className="text-[20px] sm:text-[26px] lg:text-[34px] font-bold text-slate-900 leading-[1.22] tracking-tight">
+                Hút Khách — Chia Số Tức Thì —{' '}
+                <span className="text-gradient-inkica">Tự Tối Ưu CAPI</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
                 Chấm dứt tình trạng CPL trên Ads Manager rẻ nhưng toàn số rác hoặc Sale ôm số không gọi: mọi điểm chạm từ bài Ads, AI chấm điểm, Sale chốt đơn đến SHA-256 Meta CAPI khép thành một vòng học máy liên tục.
               </p>
             </div>
 
-            {/* Direct Live Product Entrypoints (No Static Tour Modal) */}
-            <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            {/* Direct Live Product Entrypoints — strictly 2 buttons 1 row on mobile & desktop */}
+            <div className="grid grid-cols-2 sm:inline-flex items-center gap-2 sm:gap-2.5 shrink-0 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={navigateLiveDemo}
-                className="btn-inkica-primary min-h-[44px] rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                className="btn-inkica-primary min-h-[44px] justify-center rounded-full px-3 sm:px-5 py-2.5 sm:py-3 text-[11.5px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
               >
-                <ExternalLink className="w-4 h-4 shrink-0" />
-                <span>Mở Báo Cáo Meta Live</span>
+                <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span className="sm:hidden">Báo Cáo Meta</span>
+                <span className="hidden sm:inline">Mở Báo Cáo Meta Live</span>
               </button>
               <button
                 type="button"
                 onClick={navigateAutoData}
-                className="ql-btn-outline min-h-[44px] rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                className="ql-btn-outline min-h-[44px] justify-center rounded-full px-3 sm:px-5 py-2.5 sm:py-3 text-[11.5px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
               >
-                <Zap className="w-4 h-4 text-[#1E40FF] shrink-0" />
-                <span>Mở Workspace AutoData</span>
+                <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1E40FF] shrink-0" />
+                <span className="sm:hidden">App AutoData</span>
+                <span className="hidden sm:inline">Mở Workspace AutoData</span>
               </button>
             </div>
           </div>
@@ -306,9 +307,9 @@ export const ClosedLoopFlywheelSection: React.FC<ClosedLoopFlywheelSectionProps>
                 </span>
               </div>
 
-              {/* 4-Node Closed-Loop Grid (Balanced Heights, Bright Light Surface) */}
+              {/* 4-Node Closed-Loop Grid (2x2 compact on mobile & sm, crisp interactive buttons) */}
               <div className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                   {CYCLE_STEPS.map((step, idx) => {
                     const Icon = step.icon;
                     const isActive = idx === activeStepIdx;

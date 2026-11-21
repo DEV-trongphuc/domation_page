@@ -1,0 +1,64 @@
+name: Daily SEO Drip Publish (15 Articles/Day)
+
+on:
+  schedule:
+    # Runs daily at 01:00 UTC (08:00 Asia/Ho_Chi_Minh ICT)
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  drip-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check today's drip schedule status
+        run: npm run seo:drip-status
+
+      - name: Regenerate sitemap, GEO manifests & Vercel rewrites for today's published batch
+        run: npm run seo:generate
+
+      - name: Detect whether new articles unlocked today
+        id: diff_check
+        run: |
+          if git diff --quiet public/sitemap.xml public/llms.txt public/llms-full.txt vercel.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No new articles unlocked today."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Verify TypeScript & static prerender build
+        if: steps.diff_check.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Commit & push daily drip batch (+15 articles max)
+        if: steps.diff_check.outputs.changed == 'true'
+        run: |
+          git config user.name "domation-seo-bot"
+          git config user.email "seo-bot@domation.net"
+          git add public/sitemap.xml public/llms.txt public/llms-full.txt vercel.json
+          TODAY_ICT=$(TZ="Asia/Ho_Chi_Minh" date +%Y-%m-%d)
+          git commit -m "chore(seo): drip-publish daily batch ($TODAY_ICT)"
+          git push
+
+      # Optional: wait ~90s for Vercel deployment & ping IndexNow with ONLY today's 15 URLs
+      # Set repository variable DOMATION_ENABLE_INDEXNOW=true when ready to enable
+      - name: Notify IndexNow (Today's batch only)
+        if: steps.diff_check.outputs.changed == 'true' && vars.DOMATION_ENABLE_INDEXNOW == 'true'
+        run: |
+          sleep 90
+          npm run seo:index

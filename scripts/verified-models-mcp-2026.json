@@ -1,0 +1,1110 @@
+{
+  "schemaVersion": "2026.11",
+  "asOfDate": "2026-11-20",
+  "title": "Authoritative AI Models, Agent CLIs, MCP & Skills Technical Reference (November 2026)",
+  "verificationSources": [
+    "Google Gemini API official docs (gemini-api-docs MCP: models, pricing, tokens, thinking, latest-model, omni, live-api)",
+    "Google Gemini CLI repository & docs (google-gemini/gemini-cli, geminicli.com)",
+    "Anthropic Claude API & Claude Code official docs (anthropic.com, claude.com)",
+    "OpenAI API, GPT-5.6, Codex & Codex CLI docs (openai.com, github.com/openai/codex, codex-docs.com)",
+    "Model Context Protocol & Agent Skills open specifications (modelcontextprotocol.io, agentskills.io)"
+  ],
+  "googleGeminiEcosystem": {
+    "sdkRequirements": {
+      "python": "google-genai >= 3.2.0 (legacy google-generativeai deprecated)",
+      "javascript": "@google/genai >= 3.2.0 (legacy @google/generative-ai deprecated)",
+      "primaryApi": "Interactions API (client.interactions.create on v1 GA; Managed Agents and Decisions API require v1beta)",
+      "statefulConversations": "previous_interaction_id with store=true (paid retains 55 days, free 1 day)"
+    },
+    "models": {
+      "gemini-4-argon": {
+        "displayName": "Gemini 4 Argon",
+        "modelId": "gemini-4-argon",
+        "status": "Stable (Latest Update: October 2026)",
+        "tier": "Heavyweight Flagship Frontier Reasoning & Coding",
+        "modalities": {
+          "inputs": ["text", "image", "video", "audio", "pdf"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "unifiedContextWindowTokens": 1048576,
+          "windowArchitecture": "Unified 1M token window shared across input, thinking, and output tokens",
+          "defaultSynchronousMaxOutputTokens": 65536,
+          "longDecodeMaxOutputTokens": 1048576,
+          "longDecodeRule": "Set background=true and max_output_tokens > 65536 (capped at 1,048,576 minus input tokens). Synchronous background=false with max_output_tokens > 65536 returns HTTP 400."
+        },
+        "thinkingBehavior": {
+          "tunableThinkingLevel": true,
+          "defaultLevel": "medium",
+          "supportedLevels": ["low", "medium", "high"],
+          "unsupportedLevels": ["minimal"],
+          "samplingParamsNote": "temperature, top_p, and top_k are deprecated/ignored in the Interactions API"
+        },
+        "pricingUsdPer1MTokens": {
+          "freeTierAvailable": false,
+          "introductoryThrough2026_11_30": {
+            "input": 2.0,
+            "outputIncludingThinking": 10.0,
+            "cachedInputImplicit": 0.1
+          },
+          "standardStarting2026_12_01": {
+            "input": 4.0,
+            "outputIncludingThinking": 20.0,
+            "cachedInputImplicit": 0.2
+          },
+          "caching": "Implicit caching only (>= 4,096 tokens, 95% discount on cache hits). Explicit cachedContents/caches.create is NOT supported.",
+          "grounding": "5,000 free search/maps requests/month shared across Gemini 3+, then $14 per 1,000 search queries (1,500/day cap)"
+        },
+        "capabilities": [
+          "agentic_video_understanding_ga",
+          "computer_use",
+          "code_execution",
+          "file_search",
+          "url_context",
+          "search_grounding",
+          "maps_grounding",
+          "function_calling",
+          "structured_outputs",
+          "batch_api",
+          "flex_inference",
+          "priority_inference",
+          "antigravity_managed_agent_support"
+        ]
+      },
+      "gemini-3.1-pro-preview": {
+        "displayName": "Gemini 3.1 Pro Preview",
+        "modelId": "gemini-3.1-pro-preview",
+        "variantEndpoints": ["gemini-3.1-pro-preview-customtools"],
+        "status": "Preview (Latest Update: February 2026)",
+        "tier": "Long-Horizon Deep Reasoning & Custom-Tool Agentic Pro",
+        "modalities": {
+          "inputs": ["text", "image", "video", "audio", "pdf"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "inputTokenLimit": 1048576,
+          "outputTokenLimit": 65536,
+          "windowArchitecture": "Separate 1M input and 64K output budgets"
+        },
+        "thinkingBehavior": {
+          "tunableThinkingLevel": true,
+          "defaultLevel": "high",
+          "supportedLevels": ["low", "medium", "high"]
+        },
+        "pricingUsdPer1MTokens": {
+          "freeTierAvailable": false,
+          "standardPromptsUpTo200k": {
+            "input": 2.0,
+            "outputIncludingThinking": 12.0,
+            "cachedInput": 0.2
+          },
+          "standardPromptsOver200k": {
+            "input": 4.0,
+            "outputIncludingThinking": 18.0,
+            "cachedInput": 0.4
+          },
+          "cacheStoragePer1MPerHour": 4.5,
+          "batchAndFlex": {
+            "upTo200kInput": 1.0,
+            "upTo200kOutput": 6.0,
+            "over200kInput": 2.0,
+            "over200kOutput": 9.0
+          },
+          "priority": {
+            "upTo200kInput": 3.6,
+            "upTo200kOutput": 21.6,
+            "over200kInput": 7.2,
+            "over200kOutput": 32.4
+          }
+        },
+        "capabilities": [
+          "customtools_endpoint_for_bash_plus_custom_tools",
+          "code_execution",
+          "file_search",
+          "url_context",
+          "search_grounding",
+          "maps_grounding",
+          "function_calling",
+          "structured_outputs",
+          "explicit_and_implicit_caching",
+          "batch_api",
+          "flex_inference",
+          "priority_inference"
+        ]
+      },
+      "gemini-3.8-flash": {
+        "displayName": "Gemini 3.8 Flash",
+        "modelId": "gemini-3.8-flash",
+        "status": "Stable (Latest Update: September 2026)",
+        "tier": "Midweight Daily Coding & Enterprise Agent Workhorse",
+        "modalities": {
+          "inputs": ["text", "image", "video", "audio", "pdf"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "inputTokenLimit": 1048576,
+          "outputTokenLimit": 65536
+        },
+        "thinkingBehavior": {
+          "tunableThinkingLevel": true,
+          "defaultLevel": "medium",
+          "supportedLevels": ["low", "medium", "high"],
+          "unsupportedLevels": ["minimal (returns API error)"]
+        },
+        "pricingUsdPer1MTokens": {
+          "freeTierAvailable": true,
+          "introductoryThrough2026_12_31": {
+            "input": 0.75,
+            "outputIncludingThinking": 3.75,
+            "cachedInput": 0.075,
+            "cacheStoragePer1MPerHour": 0.5,
+            "batchAndFlexInput": 0.375,
+            "batchAndFlexOutput": 1.875,
+            "priorityInput": 1.35,
+            "priorityOutput": 6.75
+          },
+          "standardStarting2027_01_01": {
+            "input": 1.5,
+            "outputIncludingThinking": 7.5,
+            "cachedInput": 0.15,
+            "cacheStoragePer1MPerHour": 1.0,
+            "batchAndFlexInput": 0.75,
+            "batchAndFlexOutput": 3.75,
+            "priorityInput": 2.7,
+            "priorityOutput": 13.5
+          }
+        },
+        "capabilities": [
+          "long_horizon_software_engineering",
+          "deterministic_tool_execution",
+          "computer_use",
+          "code_execution",
+          "file_search",
+          "url_context",
+          "search_grounding",
+          "maps_grounding",
+          "function_calling",
+          "structured_outputs",
+          "caching",
+          "batch_api",
+          "flex_inference",
+          "priority_inference",
+          "default_model_for_antigravity_agent_and_sdk"
+        ]
+      },
+      "gemini-3.5-flash-lite": {
+        "displayName": "Gemini 3.5 Flash-Lite",
+        "modelId": "gemini-3.5-flash-lite",
+        "status": "Stable (Latest Update: July 2026)",
+        "tier": "Lightweight High-Throughput Subagent & Document Parsing",
+        "modalities": {
+          "inputs": ["text", "image", "video", "audio", "pdf"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "inputTokenLimit": 1048576,
+          "outputTokenLimit": 65536
+        },
+        "thinkingBehavior": {
+          "tunableThinkingLevel": true,
+          "defaultLevel": "minimal",
+          "supportedLevels": ["minimal", "low", "medium", "high"]
+        },
+        "pricingUsdPer1MTokens": {
+          "freeTierAvailable": true,
+          "standard": {
+            "input": 0.3,
+            "outputIncludingThinking": 2.5,
+            "cachedInput": 0.03,
+            "cacheStoragePer1MPerHour": 1.0
+          },
+          "batchAndFlex": {
+            "input": 0.15,
+            "output": 1.25
+          },
+          "priority": {
+            "input": 0.54,
+            "output": 4.5
+          }
+        },
+        "capabilities": [
+          "subagent_orchestration",
+          "computer_use",
+          "code_execution",
+          "file_search",
+          "url_context",
+          "search_grounding",
+          "maps_grounding",
+          "function_calling",
+          "structured_outputs",
+          "caching",
+          "batch_api",
+          "flex_inference",
+          "priority_inference"
+        ]
+      },
+      "gemini-3.1-flash-lite": {
+        "displayName": "Gemini 3.1 Flash-Lite",
+        "modelId": "gemini-3.1-flash-lite",
+        "status": "Stable (Latest Update: May 2026; gemini-3.1-flash-lite-preview shut down May 25, 2026)",
+        "tier": "Ultra-Fast Low-Cost Classification & Model Routing",
+        "modalities": {
+          "inputs": ["text", "image", "video", "audio", "pdf"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "inputTokenLimit": 1048576,
+          "outputTokenLimit": 65536
+        },
+        "thinkingBehavior": {
+          "tunableThinkingLevel": true,
+          "supportedLevels": ["minimal", "low", "medium", "high"]
+        },
+        "pricingUsdPer1MTokens": {
+          "freeTierAvailable": true,
+          "standard": {
+            "inputTextImageVideo": 0.25,
+            "inputAudio": 0.5,
+            "outputIncludingThinking": 1.5,
+            "cachedInputTextImageVideo": 0.025,
+            "cachedInputAudio": 0.05,
+            "cacheStoragePer1MPerHour": 1.0
+          },
+          "batchAndFlex": {
+            "inputTextImageVideo": 0.125,
+            "inputAudio": 0.25,
+            "output": 0.75
+          },
+          "priority": {
+            "inputTextImageVideo": 0.45,
+            "inputAudio": 0.9,
+            "output": 2.7
+          }
+        },
+        "capabilities": [
+          "high_frequency_classification_and_routing",
+          "used_by_gemini_cli_task_router",
+          "code_execution",
+          "file_search",
+          "url_context",
+          "search_grounding",
+          "maps_grounding",
+          "function_calling",
+          "structured_outputs",
+          "caching",
+          "batch_api",
+          "flex_inference",
+          "priority_inference"
+        ],
+        "unsupportedCapabilities": ["computer_use", "live_api"]
+      },
+      "gemini-3.8-live": {
+        "displayName": "Gemini 3.8 Live",
+        "modelId": "gemini-3.8-live",
+        "siblingModels": [
+          "gemini-3.8-live-extended-thinking (supports LOW/MEDIUM/HIGH background reasoning with spoken conversational fillers)",
+          "gemini-3.5-transcribe-live",
+          "gemini-3.5-live-translate-preview"
+        ],
+        "status": "Stable GA (Latest Update: September 2026; supersedes gemini-3.1-flash-live-preview)",
+        "tier": "Real-Time Bidirectional Voice & Video Streaming (WebSockets)",
+        "modalities": {
+          "inputs": ["text", "image", "audio (PCM 16-bit LE mono 16kHz)"],
+          "outputs": ["text", "audio (PCM 16-bit LE mono 24kHz)"]
+        },
+        "contextAndOutputLimits": {
+          "inputTokenLimit": 131072,
+          "outputTokenLimit": 65536
+        },
+        "thinkingBehavior": {
+          "thinkingLevel": "MINIMAL (fixed on gemini-3.8-live for minimal time-to-first-audio; use gemini-3.8-live-extended-thinking for deeper reasoning)"
+        },
+        "pricingUsdPer1MTokens": {
+          "freeTierAvailable": true,
+          "standardInput": {
+            "text": 0.75,
+            "audio": "$3.00 / 1M (~$0.005/min)",
+            "imageAndVideo": "$1.00 / 1M (~$0.002/min)"
+          },
+          "standardOutput": {
+            "text": 4.5,
+            "audio": "$12.00 / 1M (~$0.018/min)"
+          }
+        },
+        "capabilities": [
+          "websocket_bidirectional_streaming",
+          "async_non_blocking_function_calling",
+          "proactive_audio",
+          "affective_dialogue",
+          "server_vad_hybrid_vad_and_push_to_talk",
+          "context_window_compression_and_session_resumption",
+          "ephemeral_client_tokens",
+          "send_client_content_full_lifecycle",
+          "search_grounding"
+        ]
+      },
+      "gemini-omni-1.2-flash": {
+        "displayName": "Gemini Omni 1.2 Flash",
+        "modelId": "gemini-omni-1.2-flash",
+        "predecessorModelId": "gemini-omni-1.1-flash",
+        "status": "Active Current Generation (supersedes gemini-omni-1.1-flash)",
+        "tier": "Generative Video Synthesis, Multi-Turn Conversational Video Editing & Extension",
+        "modalities": {
+          "inputs": ["text", "image (up to 6 reference images)", "video (up to 15s edit/extend source; reference videos for new generation only)"],
+          "outputs": ["video (mp4 with synchronized native audio)"]
+        },
+        "videoConstraints": {
+          "textAndSingleFrameGenerationSeconds": "3s to 15s (default 10s)",
+          "twoFrameKeyframeInterpolationSeconds": "3s to 10s",
+          "videoExtensionSeconds": "3s to 10s per turn (10s default), up to 30s cumulative",
+          "resolutions": ["360p", "720p (default)", "1080p", "4k"],
+          "aspectRatios": ["16:9", "9:16"],
+          "frameRate": 24,
+          "referenceRules": "Up to 6 reference images across R2V, video editing, and prompt-based extension; reference videos restricted to new video generation only (up to 3 for 3s-10s, max 1 for 11s-15s). Natural-language asset binding replaces deprecated <FIRST_FRAME>/<IMAGE_REF_*> tags.",
+          "audioEditingRule": "Preserves/adapts original audio by default; strip audio stream prior to upload to regenerate sound from scratch.",
+          "regionalRestrictions": "Uploading videos for edits, extensions, or video references is blocked in the EEA, Switzerland, UK, and select US states."
+        },
+        "pricingNotes": "Omni 1.1 Flash baseline billed at $1.50/1M input, $9.00/1M text out, $17.50/1M video out (~$0.10/sec at 720p, 5,792 tokens/sec); Omni 1.2 Flash reduces effective video generation rate by ~30% (~$0.07/sec at 720p)."
+      }
+    },
+    "geminiCli": {
+      "packageAndLicense": "google-gemini/gemini-cli (Open Source, Apache 2.0)",
+      "contextAndMemory": {
+        "instructionFile": "GEMINI.md",
+        "scopeHierarchy": "Global (~/.gemini/GEMINI.md), workspace root, and nested subdirectories; supports @./path imports and configurable context file fallback arrays (e.g., [\"AGENTS.md\", \"GEMINI.md\"])",
+        "memoryCommands": ["/init", "/memory show", "/memory add <text>", "/memory reload"]
+      },
+      "configurationAndTomlSystem": {
+        "settingsJsonPrecedence": [
+          "1. Hardcoded defaults",
+          "2. System defaults (C:\\ProgramData\\gemini-cli\\system-defaults.json or /etc/gemini-cli/system-defaults.json)",
+          "3. User settings (~/.gemini/settings.json)",
+          "4. Project settings (.gemini/settings.json)",
+          "5. System overrides, env vars, and CLI flags"
+        ],
+        "tomlCustomCommands": "Reusable slash commands defined as .toml files (e.g., ~/.gemini/commands/*.toml or extension commands/<ns>/<cmd>.toml) supporting prompt templates, {{args}}, and !{...} shell execution; reloaded via /commands reload",
+        "tomlPolicyEngine": "Granular tool-execution rules in ~/.gemini/policies/*.toml and extension policies/ using [[rule]] blocks (toolName, commandPrefix, decision: allow|deny|ask_user, priority). 5 priority tiers: Default (1) < Extension (2) < Workspace (3) < User (4) < Admin (5). Inspected via /policies list."
+      },
+      "mcpIntegration": {
+        "configuration": "mcpServers object in settings.json or extension manifest gemini-extension.json; supports ${ENV_VAR} expansion and gemini mcp add CLI command",
+        "commands": ["/mcp list", "/mcp reload", "/mcp auth", "Ctrl+T (toggle tool descriptions)"],
+        "promptExposure": "MCP prompts auto-surface as CLI slash commands"
+      },
+      "workspaceAndExtensions": {
+        "workspaceManagement": "/directory add <path>, /directory show, --include-directories; chat checkpoints via /chat",
+        "workspaceTrust": "security.folderTrust.enabled gates execution of repo .env files and .gemini/settings.json in headless/CI flows",
+        "extensionsSystem": "Git-packaged bundles (gemini-extension.json, TOML commands, TOML policies, MCP servers) installed via gemini extensions install <URL>",
+        "googleWorkspaceExtension": "Official github.com/gemini-cli-extensions/workspace integration connecting Google Docs, Drive, Calendar, Gmail, and Chat (e.g., /drive:search, /calendar:get-schedule)"
+      },
+      "sandboxingAndRouting": {
+        "sandboxBackends": ["macOS Seatbelt", "Docker", "Podman", "gVisor", "LXC", "PTY stream wrapping"],
+        "internalModelRouting": "Uses Flash-Lite complexity classifier to route simple vs complex tasks between Flash and Pro tiers"
+      }
+    }
+  },
+  "anthropicClaudeEcosystem": {
+    "models": {
+      "claude-fable-5-2": {
+        "displayName": "Claude Fable 5.2",
+        "modelId": "claude-fable-5-2",
+        "releaseDate": "2026-11-09",
+        "knowledgeCutoff": "June 2026",
+        "tier": "Long-Horizon Deep Reasoning & Maximum Frontier Intelligence",
+        "modalities": {
+          "inputs": ["text", "image"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 1000000,
+          "maxOutputTokens": 128000
+        },
+        "thinkingAndEffort": {
+          "adaptiveThinking": "Always on",
+          "defaultEffort": "high",
+          "supportedEffortLevels": ["low", "medium", "high", "max"]
+        },
+        "pricingUsdPer1MTokens": {
+          "standardInput": 8.0,
+          "standardOutput": 40.0,
+          "fastModeInput": 16.0,
+          "fastModeOutput": 80.0,
+          "fastModeSpeedNote": "Up to 2.5x output generation speed; separate prompt cache pool from standard mode",
+          "cacheWrite5Min": 10.0,
+          "cacheWrite1Hour": 16.0,
+          "cacheRead": 0.2,
+          "batchDiscountPercent": 50
+        }
+      },
+      "claude-opus-5-5": {
+        "displayName": "Claude Opus 5.5",
+        "modelId": "claude-opus-5-5",
+        "releaseDate": "2026-09-22",
+        "knowledgeCutoff": "June 2026",
+        "tier": "Heavyweight Architecture & Sustained Agentic Coding",
+        "modalities": {
+          "inputs": ["text", "image"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 1000000,
+          "maxOutputTokens": 128000
+        },
+        "thinkingAndEffort": {
+          "adaptiveThinking": "Always on",
+          "defaultEffort": "medium",
+          "supportedEffortLevels": ["low", "medium", "high", "max"]
+        },
+        "pricingUsdPer1MTokens": {
+          "standardInput": 4.0,
+          "standardOutput": 20.0,
+          "fastModeInput": 8.0,
+          "fastModeOutput": 40.0,
+          "cacheWrite5Min": 5.0,
+          "cacheWrite1Hour": 8.0,
+          "cacheRead": 0.2,
+          "batchDiscountPercent": 50
+        }
+      },
+      "claude-sonnet-5-5": {
+        "displayName": "Claude Sonnet 5.5",
+        "modelId": "claude-sonnet-5-5",
+        "releaseDate": "2026-09-28",
+        "knowledgeCutoff": "June 2026",
+        "tier": "Midweight Daily Coding & Balanced Speed/Intelligence",
+        "modalities": {
+          "inputs": ["text", "image"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 1000000,
+          "maxOutputTokens": 128000
+        },
+        "thinkingAndEffort": {
+          "adaptiveThinking": true,
+          "defaultEffort": "high",
+          "supportedEffortLevels": ["low", "medium", "high", "max"]
+        },
+        "pricingUsdPer1MTokens": {
+          "standardInput": 2.0,
+          "standardOutput": 10.0,
+          "cacheRead": 0.1,
+          "batchDiscountPercent": 50
+        }
+      },
+      "claude-haiku-5-5": {
+        "displayName": "Claude Haiku 5.5",
+        "modelId": "claude-haiku-5-5",
+        "releaseDate": "2026-10-07",
+        "knowledgeCutoff": "June 2026",
+        "tier": "Lightweight Subagent, Classification & High-Volume Routing",
+        "modalities": {
+          "inputs": ["text", "image"],
+          "outputs": ["text"]
+        },
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 1000000,
+          "maxOutputTokens": 128000
+        },
+        "thinkingAndEffort": {
+          "adaptiveThinking": true,
+          "defaultEffort": "medium",
+          "supportedEffortLevels": ["low", "medium", "high"]
+        },
+        "pricingUsdPer1MTokens": {
+          "promptsUpTo100k": {
+            "input": 0.1,
+            "output": 0.5,
+            "cacheWrite5Min": 0.125,
+            "cacheWrite1Hour": 0.2,
+            "cacheRead": 0.01
+          },
+          "promptsOver100k": {
+            "input": 0.5,
+            "output": 2.5,
+            "cacheWrite5Min": 0.625,
+            "cacheWrite1Hour": 1.0,
+            "cacheRead": 0.05
+          },
+          "batchDiscountPercent": 50
+        }
+      }
+    },
+    "claudeCode": {
+      "license": "Proprietary (Terminal, IDE, Desktop, Cloud)",
+      "instructionSystem": {
+        "primaryFile": "CLAUDE.md",
+        "fallbackInteroperability": "Natively reads AGENTS.md when CLAUDE.md is absent (since v2.1.277); if both exist at root, CLAUDE.md takes precedence and AGENTS.md is ignored",
+        "layerHierarchy": [
+          "1. Managed policy (/etc/claude-code/CLAUDE.md)",
+          "2. User (~/.claude/CLAUDE.md)",
+          "3. Project root (CLAUDE.md or .claude/CLAUDE.md)",
+          "4. Subdirectory CLAUDE.md files",
+          "5. Local git-ignored overrides (CLAUDE.local.md)"
+        ],
+        "modularFeatures": [
+          "@./path inline imports (max depth ~5)",
+          "Path-scoped .claude/rules/*.md with YAML frontmatter paths glob arrays"
+        ]
+      },
+      "skillsSystem": {
+        "directory": ".claude/skills/<skill-name>/SKILL.md (and ~/.claude/skills/); unified legacy .claude/commands/",
+        "frontmatterControls": ["name", "description", "argument-hint", "allowed-tools", "isolation"]
+      },
+      "mcpConfiguration": {
+        "scopesAndPrecedence": "Local (~/.claude.json per-project) > Project (.mcp.json checked into git, prompts user approval) > User (~/.claude.json global) > Plugin connectors (winner-takes-all per server name)",
+        "dynamicToolSearch": "Controlled via ENABLE_TOOL_SEARCH=true|auto|false and defer_loading: true; exposes lightweight tool search to reduce MCP schema context bloat by ~85%+"
+      },
+      "lifecycleHooks": {
+        "configLocations": [".claude/settings.json", "~/.claude/settings.json", "hooks/hooks.json (plugins)"],
+        "handlerTypes": ["command (stdin JSON, exit code 2 / stdout JSON)", "http (webhook POST)", "prompt (single-turn LLM judge)", "agent (experimental subagent judge)", "mcp_tool"],
+        "keyEvents33Plus": [
+          "SessionStart",
+          "SessionEnd",
+          "Setup",
+          "UserPromptSubmit",
+          "PreToolUse (can block/deny or modify before permission check)",
+          "PostToolUse",
+          "Stop",
+          "StopFailure",
+          "Notification",
+          "SubagentStart",
+          "SubagentStop",
+          "WorktreeCreate (overrides default git worktree creation)",
+          "WorktreeRemove",
+          "TaskCreated",
+          "TaskCompleted"
+        ]
+      },
+      "builtInSlashCommands": {
+        "/plan": "Enters read-only architectural planning mode before editing files or running shell commands",
+        "/compact": "Summarizes session history to reclaim context window space; accepts focus hint (/compact [focus])",
+        "/context": "Displays visual token breakdown of active context window and bloat diagnostics (/context all)",
+        "/mcp": "Inspects, authenticates, connects, and troubleshoots configured MCP servers",
+        "/review": "Runs automated code review against staged or uncommitted git changes",
+        "/fast": "Toggles Fast Mode (up to 2.5x output speed) on supported models such as Opus 5.5 and Fable 5.2",
+        "/import": "Imports configs, instructions, skills, subagents, and MCP setups from Codex, Gemini CLI, or Cursor (/import [codex|gemini|cursor])",
+        "/schedule": "Creates, manages, and runs persistent cloud-scheduled routines (replaces /routines); distinct from local /loop",
+        "/goal": "Sets an autonomous multi-turn completion condition evaluated per turn (by Haiku by default) until satisfied (/goal show|clear)"
+      },
+      "subagentsAndWorktreeIsolation": {
+        "subagents": "Isolated worker agents (e.g., Explore, Plan, custom agents) with clean context windows returning concise summaries to parent",
+        "worktreeIsolation": "CLI flag `claude --worktree <name>` (`-w`) and subagent frontmatter `isolation: worktree` spawn dedicated temporary Git worktrees; auto-cleaned if no edits occur, persisted if modified; customizable via WorktreeCreate/WorktreeRemove hooks"
+      }
+    }
+  },
+  "openaiCodexEcosystem": {
+    "models": {
+      "gpt-5.3-codex": {
+        "displayName": "GPT-5.3-Codex",
+        "modelId": "gpt-5.3-codex",
+        "releaseDate": "2026-02-05",
+        "status": "Active",
+        "tier": "Heavyweight Frontier Agentic Coding & Terminal Execution",
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 400000,
+          "effectiveMaxInputTokens": 272000,
+          "maxOutputTokens": 128000
+        },
+        "reasoningBehavior": {
+          "parameter": "reasoning.effort",
+          "supportsXHigh": true,
+          "billingRule": "All reasoning tokens (output_tokens_details.reasoning_tokens) are billed at the standard output token rate"
+        },
+        "pricingUsdPer1MTokens": {
+          "input": 1.75,
+          "cachedInput": 0.175,
+          "output": 14.0
+        },
+        "capabilities": [
+          "long_running_agentic_coding",
+          "tool_use",
+          "computer_operation",
+          "swe_bench_pro_and_terminal_bench_frontier"
+        ]
+      },
+      "gpt-5.6": {
+        "displayName": "GPT-5.6 (Sol / Terra / Luna Family)",
+        "releaseDate": "2026-07-09",
+        "knowledgeCutoff": "2026-02-16",
+        "sharedSpecs": {
+          "contextWindowTokens": 1050000,
+          "contextWindowNote": "Approximately 1.05M to 1.1M tokens",
+          "maxOutputTokens": 128000,
+          "reasoningEffortLevels": ["none", "low", "medium (default)", "high", "xhigh", "max"],
+          "longContextSurchargeRule": "Requests exceeding 272,000 input tokens scale entire request at 2x input/cache and 1.5x output",
+          "promptCaching": "Explicit cache breakpoints (30-min min TTL), 90% read discount, 1.25x cache write multiplier"
+        },
+        "tiers": {
+          "sol": {
+            "modelId": "gpt-5.6-sol",
+            "alias": "gpt-5.6",
+            "tier": "Long-Horizon Deep Reasoning & Heavyweight Flagship (includes Ultra mode)",
+            "pricingUsdPer1MTokens": {
+              "input": 4.0,
+              "initialLaunchInput": 5.0,
+              "output": 20.0,
+              "initialLaunchOutput": 30.0,
+              "cachedInputRead": 0.4,
+              "cacheWrite": 5.0
+            }
+          },
+          "terra": {
+            "modelId": "gpt-5.6-terra",
+            "tier": "Balanced Enterprise / Midweight Reasoning Tier",
+            "pricingUsdPer1MTokens": {
+              "input": 2.0,
+              "output": 12.0,
+              "cachedInputRead": 0.2,
+              "cacheWrite": 2.5
+            }
+          },
+          "luna": {
+            "modelId": "gpt-5.6-luna",
+            "tier": "High-Volume Cost-Efficient Tier (contextual sibling)",
+            "pricingUsdPer1MTokens": {
+              "input": 0.2,
+              "output": 1.2,
+              "cachedInputRead": 0.02,
+              "cacheWrite": 0.25
+            }
+          }
+        }
+      },
+      "gpt-5.2-codex": {
+        "displayName": "GPT-5.2-Codex",
+        "modelId": "gpt-5.2-codex",
+        "releaseDate": "2025-12-18",
+        "status": "Deprecated / Retired in favor of GPT-5.3-Codex and GPT-5.6 Sol/Terra-backed agentic models",
+        "tier": "Legacy Midweight Agentic Software Engineering",
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 400000,
+          "effectiveMaxInputTokens": 272000,
+          "maxOutputTokens": 128000
+        },
+        "historicalPricingUsdPer1MTokens": {
+          "input": 1.75,
+          "cachedInput": 0.175,
+          "output": 14.0
+        }
+      },
+      "codex-mini-latest": {
+        "displayName": "codex-mini-latest",
+        "modelId": "codex-mini-latest",
+        "releaseDate": "2025-05-16",
+        "status": "Legacy CLI Reasoning Tier (o4-mini-derived)",
+        "tier": "Lightweight CLI / Fast Coding Subagent",
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 200000,
+          "maxOutputTokens": 100000
+        },
+        "pricingUsdPer1MTokens": {
+          "input": 1.5,
+          "cachedInput": 0.375,
+          "output": 6.0
+        }
+      },
+      "gpt-5.1-codex-mini": {
+        "displayName": "GPT-5.1-Codex-Mini",
+        "modelId": "gpt-5.1-codex-mini",
+        "releaseDate": "2025-11-13",
+        "status": "Deprecated in GitHub Copilot / newer toolsets (~April 2026); superseded by newer mini/Terra/Luna tiers",
+        "tier": "Lightweight High-Quota IDE & CLI Coding",
+        "contextAndOutputLimits": {
+          "contextWindowTokens": 400000,
+          "maxOutputTokens": 128000
+        },
+        "pricingUsdPer1MTokens": {
+          "input": 0.25,
+          "cachedInput": 0.025,
+          "output": 2.0
+        }
+      }
+    },
+    "codexCli": {
+      "repositoryAndLicense": "openai/codex (Open Source, Apache 2.0)",
+      "configurationAndInstructions": {
+        "instructionFile": "AGENTS.md (open standard; supports `## Code Review Rules` section for automated PR reviews)",
+        "configToml": "~/.codex/config.toml (user) and .codex/config.toml (project overrides); configures model, sandbox_mode, approval_policy, [tools], and [mcp_servers.<name>]",
+        "ossSupport": "--oss flag for local OpenAI-compatible runtimes (Ollama / LM Studio)"
+      },
+      "sandboxArchitecture": {
+        "modes": {
+          "read-only": "Inspection only; no file writes or unapproved command execution (default for codex exec)",
+          "workspace-write": "Allows edits in workspace + $TMPDIR; keeps .git, .agents, and .codex strictly read-only; network disabled by default",
+          "danger-full-access": "Bypass alias --yolo / --dangerously-bypass-approvals-and-sandbox; recommended only inside ephemeral VMs or hardened containers"
+        },
+        "osEnforcementBackends": {
+          "macOS": "Apple Seatbelt kernel sandbox via sandbox-exec and .sbpl profiles",
+          "linux": "Landlock (path-based access control) + Bubblewrap (filesystem namespaces) + seccomp-BPF (syscall filtering)",
+          "windows": "Restricted user tokens, ACLs, and process/container isolation"
+        }
+      },
+      "approvalPolicies": {
+        "activePolicies": [
+          "on-request: Prompts human/reviewer when actions exceed sandbox or trust boundaries",
+          "never: Unattended execution without prompting"
+        ],
+        "deprecatedOrRemoved": [
+          "untrusted: Officially REMOVED in Codex CLI v0.149.0 (startup fails if left in config.toml; migrate to approval_policy=\"on-request\" + sandbox_mode=\"read-only\")",
+          "on-failure: Deprecated historical policy"
+        ]
+      },
+      "nonInteractiveCiMode": {
+        "command": "codex exec",
+        "features": ["Headless pipeline execution", "JSONL structured logging", "--skip-git-repo-check", "--output-last-message", "Default read-only sandbox"]
+      },
+      "nativeGitHubPrIntegration": {
+        "appConnector": "chatgpt-codex-connector GitHub integration",
+        "prWorkflows": [
+          "Comment `@codex review` on pull requests for on-demand review",
+          "Optional automatic review on PR creation governed by repo AGENTS.md `## Code Review Rules`",
+          "Codex Security GitHub Actions (CODEX_SECURITY_API_KEY) for scheduled cron scans, inline PR annotations, and job summaries"
+        ]
+      }
+    }
+  },
+  "peerTierPairingMatrix": {
+    "pairingRule": "Strict same-weight-class comparisons only (matched by operational role, latency/cost envelope, and capability tier)",
+    "tiers": [
+      {
+        "tierId": "heavyweight_architecture",
+        "tierName": "Heavyweight Architecture & Autonomous Engineering",
+        "peers": {
+          "anthropic": {
+            "model": "Claude Opus 5.5",
+            "modelId": "claude-opus-5-5",
+            "context": "1M in / 128K out",
+            "pricingPer1M": "$4.00 in / $20.00 out (Fast: $8 / $40)",
+            "keyAdvantage": "Adaptive thinking + Fast Mode (2.5x speed) + deep Claude Code/worktree orchestration"
+          },
+          "google": {
+            "model": "Gemini 4 Argon",
+            "modelId": "gemini-4-argon",
+            "context": "1M unified window / up to 1M long decode (64K sync default)",
+            "pricingPer1M": "$2.00 in / $10.00 out intro ($4 / $20 Dec 1, 2026)",
+            "keyAdvantage": "Unified 1M input+thinking+output pool, long decode >64K, native multimodal + Antigravity Managed Agent"
+          },
+          "openai": {
+            "model": "GPT-5.3-Codex",
+            "modelId": "gpt-5.3-codex",
+            "context": "400K (272K in / 128K out)",
+            "pricingPer1M": "$1.75 in / $14.00 out",
+            "keyAdvantage": "xhigh reasoning effort tuned for terminal, SWE-Bench Pro, and computer-use execution"
+          }
+        }
+      },
+      {
+        "tierId": "long_horizon_deep_reasoning",
+        "tierName": "Long-Horizon Deep Reasoning",
+        "peers": {
+          "anthropic": {
+            "model": "Claude Fable 5.2",
+            "modelId": "claude-fable-5-2",
+            "context": "1M in / 128K out",
+            "pricingPer1M": "$8.00 in / $40.00 out (Fast: $16 / $80)",
+            "keyAdvantage": "Highest Anthropic reasoning tier (default high effort, up to max), $0.20 cache read"
+          },
+          "google": {
+            "model": "Gemini 3.1 Pro",
+            "modelId": "gemini-3.1-pro-preview",
+            "context": "1M in / 64K out",
+            "pricingPer1M": "$2.00 in / $12.00 out <=200k ($4 / $18 >200k)",
+            "keyAdvantage": "Default high thinking + dedicated `-customtools` variant for bash/custom-tool heavy pipelines"
+          },
+          "openai": {
+            "model": "GPT-5.6 Sol / Terra",
+            "modelId": "gpt-5.6-sol / gpt-5.6-terra",
+            "context": "~1.05M in / 128K out",
+            "pricingPer1M": "Sol $4.00 / $20.00; Terra $2.00 / $12.00 (>272k surcharge 2x/1.5x)",
+            "keyAdvantage": "1M+ context expansion with granular reasoning effort (none..xhigh/max) and Ultra Sol mode"
+          }
+        }
+      },
+      {
+        "tierId": "midweight_daily_coding",
+        "tierName": "Midweight Daily Coding & Agent Loops",
+        "peers": {
+          "anthropic": {
+            "model": "Claude Sonnet 5.5",
+            "modelId": "claude-sonnet-5-5",
+            "context": "1M in / 128K out",
+            "pricingPer1M": "$2.00 in / $10.00 out ($0.10 cache read)",
+            "keyAdvantage": "Fast everyday coding workhorse with 1M context and halved cache read pricing"
+          },
+          "google": {
+            "model": "Gemini 3.8 Flash",
+            "modelId": "gemini-3.8-flash",
+            "context": "1M in / 64K out",
+            "pricingPer1M": "$0.75 in / $3.75 out intro ($1.50 / $7.50 Jan 1, 2027)",
+            "keyAdvantage": "Best cost-to-intelligence ratio with tunable low/medium/high thinking, Computer Use, and free tier"
+          },
+          "openai": {
+            "model": "GPT-5.2-Codex",
+            "modelId": "gpt-5.2-codex",
+            "context": "400K in / 128K out",
+            "pricingPer1M": "$1.75 in / $14.00 out (deprecated in 2026 in favor of 5.3-Codex / 5.6 Terra)",
+            "keyAdvantage": "400K multi-file refactoring baseline; active midweight OpenAI equivalent in late 2026 is GPT-5.6 Terra"
+          }
+        }
+      },
+      {
+        "tierId": "lightweight_subagent_router",
+        "tierName": "Lightweight Subagent, Classifier & Router",
+        "peers": {
+          "anthropic": {
+            "model": "Claude Haiku 5.5",
+            "modelId": "claude-haiku-5-5",
+            "context": "1M in / 128K out",
+            "pricingPer1M": "$0.10 in / $0.50 out <=100k ($0.50 / $2.50 >100k)",
+            "keyAdvantage": "Sub-second routing, /goal transcript evaluation, ultra-cheap short-prompt pricing"
+          },
+          "google": {
+            "model": "Gemini 3.5 Flash-Lite",
+            "modelId": "gemini-3.5-flash-lite",
+            "context": "1M in / 64K out",
+            "pricingPer1M": "$0.30 in / $2.50 out (sibling 3.1 Flash-Lite: $0.25 / $1.50)",
+            "keyAdvantage": "1M multimodal (video/audio/PDF) + Computer Use + minimal..high thinking for subagents"
+          },
+          "openai": {
+            "model": "codex-mini-latest",
+            "modelId": "codex-mini-latest",
+            "context": "200K in / 100K out (GPT-5.1-Codex-Mini: 400K / 128K)",
+            "pricingPer1M": "$1.50 in / $6.00 out (GPT-5.1-Codex-Mini: $0.25 / $2.00)",
+            "keyAdvantage": "Fast CLI execution model; note GPT-5.6 Luna ($0.20 / $1.20) fills ultra-low-cost routing in late 2026"
+          }
+        }
+      },
+      {
+        "tierId": "terminal_cli_tier",
+        "tierName": "Terminal Agentic CLI Harness",
+        "peers": {
+          "anthropic": {
+            "tool": "Claude Code",
+            "license": "Proprietary",
+            "configAndMemory": "CLAUDE.md (+ AGENTS.md fallback), .claude/rules/*.md, .claude/skills/SKILL.md, .mcp.json",
+            "sandboxing": "Host Sandboxed Bash (Seatbelt/WSL2) + Sandbox Runtime + git --worktree isolation",
+            "extensibility": "33+ Lifecycle Hooks (command/http/prompt/agent/mcp_tool), Dynamic Tool Search, /plan /compact /context /schedule /goal"
+          },
+          "openai": {
+            "tool": "Codex CLI",
+            "license": "Apache 2.0",
+            "configAndMemory": "AGENTS.md + ~/.codex/config.toml & .codex/config.toml",
+            "sandboxing": "read-only / workspace-write / danger-full-access via macOS Seatbelt, Linux Landlock+Bubblewrap+seccomp-BPF, Windows ACLs",
+            "extensibility": "codex exec non-interactive CI, approval policies (on-request/never), native @codex GitHub PR & Security Actions"
+          },
+          "google": {
+            "tool": "Gemini CLI",
+            "license": "Apache 2.0",
+            "configAndMemory": "GEMINI.md (configurable fallback array), settings.json, TOML custom slash commands",
+            "sandboxing": "Seatbelt, Docker, Podman, gVisor, LXC + Workspace Trust (folderTrust) + PTY isolation",
+            "extensibility": "5-tier TOML Policy Engine, Git extensions (gemini extensions install), official Google Workspace extension, native MCP"
+          }
+        }
+      }
+    ]
+  },
+  "mcpSlashCommandsSkillsStack": {
+    "transportsAndAuth": {
+      "stdio": {
+        "mechanism": "Local child subprocess spawned by MCP host; JSON-RPC over stdin/stdout",
+        "authModel": "Implicit OS process-boundary identity; credentials passed via env vars or OS keychain. OAuth 2.1 MUST NOT be used on stdio.",
+        "primaryRisks": "Untrusted repository config launching arbitrary shell commands without interactive approval"
+      },
+      "streamableHttp": {
+        "specMilestone": "Introduced in MCP spec 2025-03-26, refined in 2025-06-18 and 2025-11-25",
+        "mechanism": "Single remote HTTP endpoint accepting POST requests and optional SSE response streams; supports multi-client remote hosting",
+        "authModel": "OAuth 2.1 Resource Server: mandatory PKCE, RFC 9728 Protected Resource Metadata (401 + WWW-Authenticate), RFC 8414 / OIDC Discovery, RFC 7591 Dynamic Client Registration / Client ID Metadata Docs, RFC 8707 Resource Indicators (audience binding prohibiting token passthrough)",
+        "transportHardening": [
+          "Validate Origin header on all incoming connections (return 403 Forbidden if invalid to block DNS rebinding)",
+          "Bind local HTTP servers strictly to 127.0.0.1 rather than 0.0.0.0"
+        ]
+      }
+    },
+    "dynamicToolSearchAndContextBloat": {
+      "problem": "Preloading raw JSON tool schemas from multiple MCP servers consumes 50,000+ tokens upfront, degrading LLM reasoning, raising latency, and widening the Tool Poisoning attack surface.",
+      "mitigationPattern": "Deferred tool loading (`defer_loading: true`) paired with on-demand Tool Search (`ENABLE_TOOL_SEARCH=true|auto` in Claude Code), discovering only the 3-5 relevant tools per turn and cutting schema token overhead by ~85%+."
+    },
+    "mcpSecurityThreats": {
+      "toolPoisoning": {
+        "mechanism": "Malicious MCP server embeds hidden indirect prompt injection inside tool `description`, parameter schemas, or return values that the LLM treats as trusted instructions at discovery time.",
+        "mitigation": "Cryptographic schema hash pinning, human review of tool metadata, and MCP Gateway prompt-injection scanning."
+      },
+      "rugPull": {
+        "mechanism": "Server behaves benignly during initial vetting/approval, then mutates `tools/list` metadata or package behavior post-approval (e.g., CVE-2025-54136).",
+        "mitigation": "Pin exact tool schema hashes locally and invalidate approval / block execution on any description or signature drift."
+      },
+      "excessiveAgency": {
+        "mechanism": "Agent holds high-privilege local tools (filesystem write, shell, DB admin) simultaneously with untrusted external MCP servers, turning localized injection into full system compromise.",
+        "mitigation": "Least-privilege scoping, read-only default sandboxes, tool exclusion lists, and PreToolUse/TOML policy guardrails."
+      },
+      "ssrf": {
+        "mechanism": "Attacker manipulates MCP resource URLs or parameters to force server-side HTTP fetches to internal VPC microservices, cloud metadata IPs, or localhost ports.",
+        "mitigation": "Strict URL/domain allowlisting, private-IP egress blocking, input validation, and RFC 8707 audience-bound tokens."
+      }
+    },
+    "popularMcpServers": [
+      {
+        "name": "github-mcp-server",
+        "maintainer": "GitHub (github/github-mcp-server)",
+        "purpose": "Repository code search, file ops, issues, pull requests, and CI/CD workflow inspection",
+        "transports": ["streamable-http (hosted https://api.githubcopilot.com/mcp/)", "stdio (Docker/Go binary)"],
+        "auth": "OAuth / GitHub PAT"
+      },
+      {
+        "name": "context7",
+        "maintainer": "Upstash (upstash/context7, @upstash/context7-mcp)",
+        "purpose": "Real-time, version-aware framework documentation and code snippet injection to prevent stale API hallucinations",
+        "transports": ["streamable-http (hosted https://mcp.context7.com/mcp)", "stdio (npx)"],
+        "auth": "OAuth (/mcp/oauth) / API key"
+      },
+      {
+        "name": "playwright-mcp",
+        "maintainer": "Microsoft (microsoft/playwright-mcp, @playwright/mcp)",
+        "purpose": "Token-efficient browser automation and E2E testing via structured accessibility-tree snapshots rather than heavy screenshots",
+        "transports": ["stdio (npx)", "http/sse"],
+        "auth": "Local process boundary"
+      },
+      {
+        "name": "chrome-devtools",
+        "maintainer": "ChromeDevTools (ChromeDevTools/chrome-devtools-mcp, chrome-devtools-mcp)",
+        "purpose": "Live Chrome DevTools Protocol (CDP) inspection: console logs, network traffic, performance traces, and Lighthouse diagnostics",
+        "transports": ["stdio (npx)"],
+        "auth": "Local browser debugging port / process boundary"
+      },
+      {
+        "name": "firecrawl",
+        "maintainer": "Firecrawl / Mendable (mendableai/firecrawl-mcp-server, firecrawl-mcp)",
+        "purpose": "Multi-page web crawling, scraping, and clean LLM-ready Markdown or structured extraction",
+        "transports": ["stdio (npx)", "streamable-http"],
+        "auth": "FIRECRAWL_API_KEY"
+      },
+      {
+        "name": "supabase",
+        "maintainer": "Supabase (supabase-community/supabase-mcp, @supabase/mcp-server-supabase)",
+        "purpose": "Database schema inspection, SQL execution, migrations, and backend project management",
+        "transports": ["streamable-http (hosted https://mcp.supabase.com/mcp)", "stdio (npx)"],
+        "auth": "OAuth 2.1 (hosted) / Supabase Personal Access Token (stdio)"
+      },
+      {
+        "name": "filesystem",
+        "maintainer": "Model Context Protocol Reference (@modelcontextprotocol/server-filesystem)",
+        "purpose": "Controlled read/write/edit/search access constrained to explicitly allowlisted local directories",
+        "transports": ["stdio (npx)"],
+        "auth": "Directory-argument sandbox allowlist"
+      }
+    ],
+    "slashCommandsCatalog": [
+      {
+        "command": "/plan",
+        "classification": "Built-in (Claude Code)",
+        "purpose": "Transitions agent into read-only architectural planning mode to output and validate a step-by-step plan before mutating files."
+      },
+      {
+        "command": "/grill-me",
+        "classification": "Community Skill (Matt Pocock / agentskills.io pattern)",
+        "purpose": "Forces an interactive one-question-at-a-time design interrogation down every decision branch before writing code."
+      },
+      {
+        "command": "/compact",
+        "classification": "Built-in (Claude Code)",
+        "purpose": "Summarizes conversation history to free context capacity while respecting optional focus constraints (`/compact [focus]`)."
+      },
+      {
+        "command": "/context",
+        "classification": "Built-in (Claude Code)",
+        "purpose": "Displays a color-coded token grid and itemized bloat breakdown of the active context window (`/context all`)."
+      },
+      {
+        "command": "/mcp",
+        "classification": "Built-in (Claude Code & Gemini CLI)",
+        "purpose": "Inspects connected MCP servers, lists exposed tools/prompts, triggers OAuth flows (`/mcp auth`), or reloads connections."
+      },
+      {
+        "command": "/review",
+        "classification": "Built-in (Claude Code) / Custom TOML or `@codex review` pattern",
+        "purpose": "Runs automated defect, security, and style code review over staged/uncommitted local diffs or PR changes."
+      },
+      {
+        "command": "/teamwork",
+        "classification": "Custom Team Skill / Plugin Pattern (.claude/skills/teamwork/SKILL.md)",
+        "purpose": "Not a native Anthropic built-in command; team-standardized skill pattern for multi-agent handoffs, shared checklists, and cross-session status reports."
+      },
+      {
+        "command": "/boost",
+        "classification": "Custom Optimization Skill / Boost OS Pack Pattern (.claude/skills/boost/SKILL.md)",
+        "purpose": "Not a native Anthropic built-in command; productivity macro/skill pattern for aggressive lint, test, performance, and context optimization sweeps."
+      },
+      {
+        "command": "/goal",
+        "classification": "Built-in (Claude Code)",
+        "purpose": "Sets a persistent completion condition (`/goal <condition>`) driving autonomous multi-turn loops verified each turn by a Haiku evaluator (`/goal show`, `/goal clear`)."
+      },
+      {
+        "command": "/schedule",
+        "classification": "Built-in (Claude Code; replaces /routines)",
+        "purpose": "Creates, updates, and triggers persistent cloud-scheduled agent tasks and recurring background checks outside active terminal loops."
+      }
+    ],
+    "skillMdProgressiveDisclosure": {
+      "standard": "agentskills.io open specification (supported by Claude Code, Codex, Cursor, GitHub Copilot, Antigravity)",
+      "directoryStructure": "skill-folder/ containing required SKILL.md plus optional scripts/, references/, and assets/",
+      "threeTierTokenBudgeting": [
+        {
+          "tier": 1,
+          "name": "Metadata Tier",
+          "loadTime": "Session startup",
+          "budget": "~100 tokens per skill",
+          "contents": "YAML frontmatter `name`, `description`, `compatibility` used purely for intent matching"
+        },
+        {
+          "tier": 2,
+          "name": "Instruction Tier",
+          "loadTime": "Upon skill activation",
+          "budget": "< 5,000 tokens recommended",
+          "contents": "Full Markdown procedural body of SKILL.md"
+        },
+        {
+          "tier": 3,
+          "name": "Resource Tier",
+          "loadTime": "On explicit task need",
+          "budget": "Zero startup cost",
+          "contents": "Bundled scripts/, references/, and assets/ read or executed only when needed"
+        }
+      ]
+    },
+    "instructionFilesComparison": {
+      "CLAUDE.md": {
+        "primaryTool": "Claude Code",
+        "precedenceAndLoading": "Cumulative concatenation from Managed (/etc/claude-code) -> User (~/.claude) -> Project -> Subdirs -> CLAUDE.local.md; overrides AGENTS.md if both exist at root",
+        "specialFeatures": "@./path inline imports (depth ~5); conditional .claude/rules/*.md with YAML `paths` globs"
+      },
+      "AGENTS.md": {
+        "primaryTool": "OpenAI Codex CLI & cross-tool open standard (Cursor, Copilot, Claude Code fallback, Gemini CLI configurable fallback)",
+        "precedenceAndLoading": "Loaded from repo root/subdirs; Codex PR reviewer natively parses `## Code Review Rules`",
+        "specialFeatures": "Vendor-neutral single source of truth; can be imported via `@./AGENTS.md` inside GEMINI.md or CLAUDE.md"
+      },
+      "GEMINI.md": {
+        "primaryTool": "Gemini CLI",
+        "precedenceAndLoading": "Hierarchical concatenation (global ~/.gemini/GEMINI.md -> workspace root -> subdirs); .gemini/settings.json can configure fallback arrays like [\"AGENTS.md\", \"GEMINI.md\"]",
+        "specialFeatures": "@./path imports; runtime inspection/mutation via /memory show, /memory add, /memory reload, and /init"
+      }
+    },
+    "lifecycleHooksComparison": {
+      "claudeCode": {
+        "maturity": "33+ granular lifecycle events (SessionStart/End, UserPromptSubmit, PreToolUse/PostToolUse, Stop/StopFailure, SubagentStart/Stop, WorktreeCreate/Remove, TaskCreated/Completed)",
+        "handlers": ["command", "http", "prompt", "agent (experimental)", "mcp_tool"],
+        "enforcement": "PreToolUse runs before permission checks and deterministically blocks actions via exit code 2 or JSON deny"
+      },
+      "geminiCli": {
+        "maturity": "Declarative 5-tier TOML Policy Engine + Extension manifest hooks + PTY stream wrapping",
+        "handlers": ["TOML [[rule]] decisions (allow/deny/ask_user)", "custom TOML shell blocks !{...}"],
+        "enforcement": "Admin > User > Workspace > Extension > Default policy precedence; extension excludeTools union merging"
+      },
+      "codexCli": {
+        "maturity": "OS-kernel sandbox boundaries + approval policies + CI script wrappers (lacks Claude Code's 33-event inline PreToolUse hook system)",
+        "handlers": ["codex exec JSONL streams", "GitHub Actions workflows", "OS Seatbelt/Landlock/seccomp-BPF"],
+        "enforcement": "Kernel-level filesystem/network enforcement independent of model cooperation"
+      }
+    }
+  }
+}

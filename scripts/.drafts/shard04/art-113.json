@@ -1,0 +1,328 @@
+{
+  "id": "art-113",
+  "number": "113",
+  "slug": "context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia",
+  "shardId": "shard04",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Enterprise Knowledge Ops",
+  "clusterId": "kw-ai-agent-rag",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Context Freshness & Cache Invalidation: Xóa triệt để vector giá cũ ngay giây phòng Kinh doanh cập nhật",
+  "seoTitle": "Context Freshness: Xóa Vector Giá Cũ Khi Đổi Giá | DOMATION",
+  "metaDescription": "Lỗi nguy hiểm nhất của RAG là sót chunk bảng giá cũ từ quý trước khiến AI nói hai lời. Giải pháp Document Versioning, Soft-Tombstone và Re-index tự động.",
+  "focusKeyword": "vô hiệu hóa vector cũ khi cập nhật bảng giá rag",
+  "secondaryKeywords": [
+    "document versioning trong vector db",
+    "xóa chunk cũ khi cập nhật tài liệu",
+    "context freshness enterprise rag",
+    "đồng bộ chính sách mới vào ai",
+    "tránh mâu thuẫn dữ liệu vector"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Xóa Sạch Bóng Giá Cũ Trong Vector DB Trong 10 Giây",
+  "thumbnailHook": "Gắn Document Hash, Tombstone và CDC Re-index để AI không nói hai lời.",
+  "thumbnailBadge": "RAG • VERSION SYNC",
+  "coverImage": "/imgs/boost/v2/context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia.webp",
+  "screenshotImage": "/imgs/boost/charts/context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Hệ Thống Đồng Bộ Tri Thức AI Space",
+  "relatedSlugs": [
+    "zero-etl-postgresql-logical-replication-cdc-cho-ai-realtime",
+    "getzep-graphiti-audit-temporal-knowledge-graph-cho-ai-agent",
+    "chien-luoc-chunking-bang-gia-ma-tran-sku-chiet-khau-rag",
+    "data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Phân tích kỹ thuật Context Freshness và Cache Invalidation giúp vô hiệu hóa vector bảng giá cũ và Semantic Cache lỗi thời trong 10 giây",
+  "screenshotCaption": "Biểu đồ so sánh tỷ lệ AI trả nhầm bảng giá cũ trong 60 phút sau thời điểm cập nhật giữa Batch Cron, Naive Upload, Delete-then-Embed và DOMATION Soft-Tombstone + Cache Purge.",
+  "relatedPortfolioId": "ecolife-signature",
+  "tldrSummary": "Khi phòng Kinh doanh ban hành bảng giá mới, lỗi chết người của hầu hết hệ thống RAG là tải file PDF mới lên nhưng vẫn để sót chunk của bản cũ trong Vector Database hoặc giữ nguyên câu trả lời cũ trong tầng Semantic Cache Redis/Qdrant. Vì câu chữ điều khoản giống nhau tới 85%, cả hai phiên bản cùng đạt điểm tương đồng cao và khiến AI 'nói hai lời' với khách hàng. Áp dụng Document Versioning kết hợp Soft-Tombstone tức thời, CDC Re-index và xóa chọn lọc Semantic Cache theo đồ thị phụ thuộc giúp dọn sạch giá cũ trong dưới 10 giây.",
+  "keyTakeaways": [
+    "Vector DB không tự nhận biết phiên bản mới hay cũ qua ngày tháng trong tên file; thiếu khóa `doc_family_id` và `status`, hai bảng giá khác quý sẽ cạnh tranh nhau trên mọi truy vấn.",
+    "Không chạy `DELETE` cứng toàn bộ vector trước khi gọi API Embedding bản mới vì sẽ tạo ra 'khoảng mù' khiến Chatbot mất dữ liệu trong lúc chờ lập chỉ mục.",
+    "Sử dụng Soft-Tombstone trên payload (`status = 'superseded'`) kết hợp hoán đổi phiên bản nguyên tử sau khi chunk bảng giá mới được embed hoàn tất.",
+    "Mọi câu trả lời lưu trong Semantic Cache (Redis/Qdrant) bắt buộc gắn danh sách `source_doc_families` phụ thuộc để CDC tự động xóa đúng các cache key liên quan mà không làm sập hit rate FAQ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Thời gian vô hiệu hóa giá cũ",
+      "value": "< 10 giây (CDC)"
+    },
+    {
+      "label": "Tỷ lệ AI trích nhầm bảng giá cũ",
+      "value": "0.0% sau Purge"
+    },
+    {
+      "label": "Giữ nguyên Semantic Cache Hit FAQ",
+      "value": "64.8% (Selective)"
+    },
+    {
+      "label": "Thời gian gián đoạn khi Re-index",
+      "value": "0 ms (Atomic Swap)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Nếu phòng Kinh doanh gửi trước bảng giá mới sẽ có hiệu lực vào đầu tháng sau thì xử lý trong Vector DB thế nào?",
+      "answer": "Hệ thống nạp sẵn bảng giá mới với `status = 'active'` kèm `effective_from = '2026-12-01T00:00:00+07:00'`, trong khi bản hiện hành chốt `effective_to = '2026-11-30T23:59:59+07:00'`. Retriever luôn lọc `effective_from <= NOW() AND (effective_to IS NULL OR effective_to > NOW())`, giúp chuyển giao giá mới chính xác từng giây lúc đầu tháng mà không cần thức đêm re-index."
+    },
+    {
+      "question": "Tại sao không dùng `FLUSHDB` xóa sạch toàn bộ Redis Semantic Cache mỗi khi cập nhật một tài liệu bảng giá?",
+      "answer": "Khoảng 60–70% câu hỏi CSKH xoay quanh địa chỉ showroom, giờ làm việc, quy trình bảo hành không đổi. Nếu xóa sạch Semantic Cache mỗi lần Sales sửa một SKU, tỷ lệ Cache Hit rớt về 0% làm tăng độ trễ và chi phí token vào giờ cao điểm. Dependency Set (`cache_deps:<doc_family_id>`) chỉ thu hồi đúng các câu trả lời từng bám vào tài liệu vừa sửa."
+    },
+    {
+      "question": "Làm sao tránh mất dữ liệu trong mấy chục giây chờ API Embedding chạy lại bảng giá 100 trang PDF?",
+      "answer": "Không bao giờ xóa vector v1 trước khi v2 nạp xong. DOMATION ghi các chunk v2 ở trạng thái `staging` trong lúc parse và embed; khi xong 100% mới chạy giao dịch nguyên tử lật v1 sang `superseded` và v2 sang `active` cùng lúc, giữ khách hàng luôn thấy một bộ giá nhất quán."
+    },
+    {
+      "question": "Nếu phát hiện bảng giá v2 vừa publish bị gõ nhầm số chiết khấu thì có khôi phục ngược lại v1 tức thì được không?",
+      "answer": "Được, nhờ giữ Soft-Tombstone `superseded` trong 14–30 ngày trước khi dọn rác. Rollback chỉ mất dưới 1 giây bằng việc lật lại cờ `status` giữa v2 và v1 kèm xóa cache key phụ thuộc của `doc_family_id`."
+    },
+    {
+      "question": "Làm thế nào kiểm toán lại khi khách hàng khiếu nại AI đã báo giá khác tuần trước?",
+      "answer": "Mỗi câu trả lời tại DOMATION đều ghi vết `rag_answer_audit` trong PostgreSQL gồm `doc_family_id`, `doc_version`, `chunk_sha256` và cờ `from_semantic_cache`, giúp đối soát chính xác nguồn tri thức tại thời điểm trò chuyện."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "myth-vs-reality",
+      "id": "bon-ngo-nhan-ve-cap-nhat-bang-gia-rag",
+      "heading": "Bốn lầm tưởng phổ biến khiến RAG vẫn báo giá quý trước dù bạn đã nạp PDF mới",
+      "pairs": [
+        {
+          "myth": "Chỉ cần upload file 'Bang_gia_T11_moi.pdf' vào kho tri thức là AI sẽ tự hiểu đây là bản mới nhất thay thế bản cũ.",
+          "reality": "Thuật toán Cosine Similarity không có khái niệm thời gian hay tính pháp lý. Khi 85% từ khóa điều khoản giống nhau, chunk của file T9 và T11 đạt điểm gần tương đương nhau trong Top-5, khiến AI trộn cả giá cũ lẫn giá mới vào cùng một câu trả lời.",
+          "proofMetric": "46% ca 'AI nói hai lời' bắt nguồn từ việc nạp chồng file mới mà không đóng dấu tombstone bản cũ"
+        },
+        {
+          "myth": "Chạy cronjob quét và re-index lại toàn bộ kho tài liệu lúc 2 giờ sáng mỗi ngày là đủ an toàn cho vận hành.",
+          "reality": "Nếu phòng Kinh doanh đổi chiết khấu lúc 10 giờ sáng để chạy flash sale, từ 10h đến 2h sáng hôm sau là 16 tiếng đồng hồ Bot báo sai giá liên tục trên Zalo OA, gây thiệt hại trực tiếp vào biên lợi nhuận và tạo tranh chấp với khách đặt cọc.",
+          "proofMetric": "100% truy vấn trong cửa sổ chờ batch đều nhận ngữ cảnh lỗi thời nếu thiếu đồng bộ CDC"
+        },
+        {
+          "myth": "Để xóa sạch giá cũ, cứ chạy lệnh DELETE toàn bộ vector của tài liệu đó trước rồi mới gọi API Embedding tạo lại bản mới.",
+          "reality": "Quá trình bóc bảng PDF và gọi Embedding cho tài liệu dài có thể mất 30–120 giây. Khách hàng nhắn tin đúng vào khoảng trống đó sẽ nhận câu trả lời 'Không tìm thấy bảng giá' dù hệ thống vẫn đang hoạt động.",
+          "proofMetric": "Chiến lược Delete-then-Embed làm rớt tỷ lệ tìm thấy ngữ cảnh xuống 0% trong suốt cửa sổ re-index"
+        },
+        {
+          "myth": "Đã xóa sạch chunk cũ trong Vector DB thì chắc chắn Chatbot không thể trả lời theo giá cũ nữa.",
+          "reality": "Nếu hệ thống có bật Semantic Caching (Redis hoặc Qdrant Cache) để tiết kiệm 60% chi phí token, bản cache của câu hỏi 'Giá gói Growth bao nhiêu?' từ hôm qua vẫn tiếp tục trả về giá cũ trong 180ms mà không thèm chạm xuống Vector DB!",
+          "proofMetric": "Tới 68% lưu lượng câu hỏi giá phổ biến đi qua tầng Semantic Cache trước khi tới Retriever"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "bi-kich-ai-noi-hai-loi-va-bong-ma-semantic-cache",
+      "eyebrow": "Tiểu Luận Phản Biện • Enterprise Knowledge Ops",
+      "variant": "contrarian",
+      "heading": "Khoảnh khắc AI 'nói hai lời': Cái giá của một Vector DB không biết cách quên",
+      "pullQuote": "Trong hệ thống RAG doanh nghiệp, khả năng quên đúng lúc một bảng giá cũ quan trọng ngang bằng khả năng tìm trúng một điều khoản mới.",
+      "paragraphs": [
+        "Lúc 14:00 thứ Tư, Giám đốc Kinh doanh ký phụ lục giảm chiết khấu thanh toán nhanh từ 8% xuống 5% và tăng giá nhóm căn góc thêm 3%. Nhân viên vận hành cẩn thận upload file PDF mới lên kho tri thức Chatbot. Thế nhưng lúc 14:15, khách hỏi trên Website nhận mức chiết khấu 5%, còn khách hỏi trên Zalo OA bằng câu chữ hơi khác lại nhận nguyên mức 8% của tháng trước. Khi hai ảnh chụp màn hình nằm cạnh nhau trong nhóm chat đại lý, niềm tin vào AI sụp đổ ngay lập tức.",
+        "Thảm họa 'AI nói hai lời' bắt nguồn từ hai điểm mù kỹ thuật. Điểm mù thứ nhất là **sự bất tử ngoài ý muốn của Vector Chunk**: khi bảng giá SKU bị cắt thành các đoạn 400–600 token nạp bằng UUID ngẫu nhiên, liên kết với phiên bản tài liệu gốc bị đứt gãy. Nạp bản mới mà không vô hiệu hóa từng chunk thuộc họ cũ sẽ biến Vector DB thành bãi đỗ chứa đầy bản nháp tiền nhiệm.",
+        "Điểm mù thứ hai tinh vi hơn: **bóng ma ở tầng Semantic Cache**. Để giảm 60% hóa đơn token và hạ độ trễ dưới 300ms cho các câu hỏi lặp, nhiều kiến trúc đặt lớp Semantic Cache (Redis hoặc Qdrant Cache) ngay trước LLM. Nếu đổi bảng giá lúc 14:00 mà không báo cho tầng cache biết hàng trăm câu trả lời lưu từ sáng bám theo bản cũ, Semantic Cache vẫn vui vẻ trả về giá sai với chi phí 0 đồng suốt nhiều giờ liền!"
+      ],
+      "bullets": [
+        "Không gian Vector chỉ đo khoảng cách ngữ nghĩa giữa hai câu chữ, không bao giờ tự phân biệt được phiên bản v2.3 hay v2.4 là nguồn chân lý hiện hành.",
+        "Bảng giá ma trận SKU cần được chia chunk nguyên tử theo nhóm bảng kèm metadata `doc_family_id` để thay thế chính xác từng vùng đổi thay mà không cần nhúng lại toàn bộ kho.",
+        "Cập nhật Vector DB mà bỏ quên Semantic Cache Invalidation giống như bạn thay ổ khóa cửa trước nhưng vẫn mở toang cửa sau cho dữ liệu cũ đi ra."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "so-sanh-do-tre-xoa-gia-cu-60-phut",
+      "heading": "Tỷ lệ AI trả nhầm giá cũ trong 60 phút sau thời điểm phòng Kinh doanh cập nhật bảng giá",
+      "subtitle": "Mô phỏng thực nghiệm trên 1.200 truy vấn hỏi giá & chiết khấu SKU (có bật Semantic Cache tỷ lệ hit 65%) ngay sau mốc T=0 phát hành phiên bản mới.",
+      "chart": {
+        "chartType": "line",
+        "title": "Tỷ lệ rò rỉ thông tin bảng giá cũ (%) theo phút sau sự kiện Publish v2",
+        "xKey": "minute",
+        "yUnit": "%",
+        "kpis": [
+          {
+            "label": "Độ trễ dọn sạch DOMATION CDC",
+            "value": "8.4 giây",
+            "delta": "0.0% rò rỉ từ phút thứ 1",
+            "positive": true
+          },
+          {
+            "label": "Naive Upload (không xóa cũ)",
+            "value": "46.2% lỗi",
+            "delta": "Bám dai dẳng suốt 60+ phút",
+            "positive": false
+          },
+          {
+            "label": "Delete-then-Embed (khoảng mù)",
+            "value": "11.5% miss",
+            "delta": "Trống dữ liệu lúc chờ Embed",
+            "positive": false
+          },
+          {
+            "label": "Giữ Cache Hit nhóm FAQ tĩnh",
+            "value": "64.8%",
+            "delta": "Không làm sập hiệu năng Redis",
+            "positive": true
+          }
+        ],
+        "series": [
+          {
+            "key": "nightlyCron",
+            "label": "Batch Cron ban đêm (%)",
+            "color": "#94A3B8"
+          },
+          {
+            "key": "naiveReupload",
+            "label": "Upload đè không Tombstone (%)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "deleteThenEmbed",
+            "label": "Xóa cứng rồi mới Embed (%)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "domationCdcPurge",
+            "label": "DOMATION CDC Tombstone + Cache Purge (%)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "minute": "T+0 phút",
+            "nightlyCron": 100.0,
+            "naiveReupload": 96.0,
+            "deleteThenEmbed": 85.0,
+            "domationCdcPurge": 12.0
+          },
+          {
+            "minute": "T+1 phút",
+            "nightlyCron": 100.0,
+            "naiveReupload": 68.5,
+            "deleteThenEmbed": 44.0,
+            "domationCdcPurge": 0.0
+          },
+          {
+            "minute": "T+5 phút",
+            "nightlyCron": 100.0,
+            "naiveReupload": 51.2,
+            "deleteThenEmbed": 11.5,
+            "domationCdcPurge": 0.0
+          },
+          {
+            "minute": "T+15 phút",
+            "nightlyCron": 100.0,
+            "naiveReupload": 48.0,
+            "deleteThenEmbed": 6.2,
+            "domationCdcPurge": 0.0
+          },
+          {
+            "minute": "T+30 phút",
+            "nightlyCron": 100.0,
+            "naiveReupload": 46.8,
+            "deleteThenEmbed": 5.8,
+            "domationCdcPurge": 0.0
+          },
+          {
+            "minute": "T+60 phút",
+            "nightlyCron": 100.0,
+            "naiveReupload": 46.2,
+            "deleteThenEmbed": 5.4,
+            "domationCdcPurge": 0.0
+          }
+        ],
+        "sourceNote": "Đo lường trên bộ kiểm thử Context Freshness & Semantic Cache Invalidation tại DOMATION Engineering Lab (2026)."
+      },
+      "insightSummary": "Biểu đồ vạch trần cái giá của ba thói quen cũ: Batch Cron bỏ mặc 100% truy vấn suốt cả ngày; Upload đè không đóng dấu Tombstone khiến AI vĩnh viễn kẹt ở mức ~46% câu trả lời lẫn giá cũ; và Delete-then-Embed tuy sửa được Vector DB nhưng vẫn bị rò rỉ nhẹ do quên xóa Semantic Cache và tạo ra khoảng mù trong phút đầu tiên. Chỉ cơ chế Soft-Tombstone song song với Selective Cache Purge mới đưa tỷ lệ rò rỉ về 0.0% trước mốc 10 giây."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-context-freshness-cache-invalidation",
+      "src": "/imgs/boost/charts/context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia-report.webp",
+      "alt": "Biểu đồ hiệu năng Context Freshness và Cache Invalidation xóa vector giá cũ và Semantic Cache lỗi thời dưới 10 giây",
+      "caption": "So sánh tốc độ triệt tiêu thông tin bảng giá cũ trên Vector DB và tầng Semantic Cache sau khi phòng Kinh doanh bấm phát hành chính sách mới.",
+      "badge": "CONTRARIAN AUDIT • VERSION SYNC"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-tombstone-va-cache-dependency-graph",
+      "eyebrow": "Thiết Kế Đồng Bộ Hai Tầng",
+      "variant": "deep-dive",
+      "heading": "Đóng băng bóng ma giá cũ bằng Document Versioning, Atomic Flip và Selective Semantic Cache Purge",
+      "paragraphs": [
+        "Để triệt tiêu độ trễ tri thức mà vẫn bảo đảm trải nghiệm liền mạch, hệ thống AI Space tại DOMATION đồng bộ qua hai tầng. Ở **tầng Vector DB**, mọi bảng giá SKU mang khóa họ bất biến `doc_family_id`, số `doc_version`, mã băm `content_sha256` theo khối bảng nguyên tử (Table-Aware Chunk) và cờ `status` (`staging | active | superseded`). Khi chỉ sửa 2 phân khu trong file 60 trang, hệ thống chỉ tính lại Embedding cho đúng 2 khối bảng có `content_sha256` thay đổi.",
+        "Lúc phòng Kinh doanh bấm Publish trên ERP/CRM, PostgreSQL CDC nạp chunk mới ở trạng thái `staging`. Chỉ khi ghi xong vào Qdrant/`pgvector`, hệ thống chạy Atomic Flip lật bản cũ sang `status = 'superseded'` qua `set_payload` (< 50ms) và mở bản mới sang `status = 'active'`. Bộ lọc cứng `status = 'active'` trên mọi câu truy vấn khiến giá cũ biến mất tức thì không tạo khoảng trống dữ liệu.",
+        "Ở **tầng Semantic Cache Redis/Qdrant**, hệ thống duy trì tập phụ thuộc `SADD cache_deps:<doc_family_id> <cache_key>`. Ngay giây bản v2 kích hoạt, Worker đọc `SMEMBERS` và dùng lệnh `UNLINK` bất đồng bộ quét sạch các câu trả lời dính giá cũ dưới 15ms, giữ nguyên hit rate 64.8% cho các câu hỏi FAQ tĩnh."
+      ],
+      "bullets": [
+        "Dùng lệnh `UNLINK` thay vì `DEL` trên Redis khi xóa hàng nghìn cache key phụ thuộc để không khóa luồng đơn (single-thread) của Redis.",
+        "Luôn đặt chỉ mục payload (`Payload Index`) trên các trường `tenant_id`, `doc_family_id`, `status` và `doc_version` trong Qdrant để lệnh `set_payload` Tombstone không bị quét tuần tự.",
+        "Chạy Smoke Test 3–5 câu hỏi kiểm tra giá mới ngay sau khi Atomic Flip thành công để xác nhận dữ liệu trên Production khớp tuyệt đối."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "quy-trinh-10-giay-xoa-vector-va-cache-cu",
+      "heading": "Chuỗi 5 bước đồng bộ Context Freshness dưới 10 giây khi Kinh doanh bấm đổi giá",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "GIÂY 00 • CDC TRIGGER",
+          "title": "Bắt sự kiện Publish phiên bản bảng giá mới từ ERP/CRM",
+          "detail": "PostgreSQL WAL CDC hoặc DMS Webhook đẩy sự kiện đổi `doc_family_id` kèm mã băm SHA-256 sang hàng đợi xử lý ưu tiên cao.",
+          "metricOrTool": "Postgres WAL CDC / BullMQ"
+        },
+        {
+          "tag": "GIÂY 01–06 • DIFF & STAGING",
+          "title": "So khớp SHA-256 từng bảng SKU & Embed chunk mới ở trạng thái Staging",
+          "detail": "Chỉ tính lại Embedding cho các khối bảng thực sự đổi nội dung và ghi vào Vector DB với nhãn `status = 'staging'` để không đụng luồng khách đang chat.",
+          "metricOrTool": "Table-Aware Chunker • Embedding"
+        },
+        {
+          "tag": "GIÂY 07 • ATOMIC TOMBSTONE",
+          "title": "Đóng dấu Superseded cho v1 & Mở khóa Active cho v2 nguyên tử",
+          "detail": "Chạy `set_payload` chuyển các chunk phiên bản cũ sang `superseded` và kích hoạt `active` cho phiên bản mới dưới 50ms.",
+          "metricOrTool": "Qdrant set_payload / pgvector TX"
+        },
+        {
+          "tag": "GIÂY 08 • CACHE PURGE",
+          "title": "Xóa chọn lọc Semantic Cache phụ thuộc theo Dependency Set",
+          "detail": "Tra cứu `cache_deps:<doc_family_id>` trên Redis và dùng `UNLINK` xóa sạch các câu trả lời đã lưu theo giá cũ mà vẫn giữ cache FAQ tĩnh.",
+          "metricOrTool": "Redis UNLINK • Dependency Graph"
+        },
+        {
+          "tag": "GIÂY 09–10 • CANARY VERIFY",
+          "title": "Chạy nhanh Canary Probe & Lưu vết Audit Log",
+          "detail": "Thực thi câu hỏi mẫu kiểm chứng giá mới trả ra đúng trên RAG, ghi nhật ký kiểm toán và thông báo hoàn tất về ZaloBot Admin.",
+          "metricOrTool": "Canary Check • Audit Registry"
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "typescript-qdrant-tombstone-va-redis-cache-purge",
+      "heading": "TypeScript Recipe: Atomic Tombstone trên Qdrant & Selective Semantic Cache Purge trên Redis",
+      "language": "typescript",
+      "filename": "services/contextFreshnessSync.ts",
+      "description": "Quy trình hoán đổi phiên bản tài liệu không gián đoạn trên Qdrant (đóng dấu `superseded` cho vector cũ sau khi `staging` mới đã ghi xong) kết hợp xóa chọn lọc các entry Redis Semantic Cache phụ thuộc đúng `docFamilyId`.",
+      "code": "import type { QdrantClient } from '@qdrant/js-client-rest';\nimport type { Redis } from 'ioredis';\n\ninterface PublishVersionInput {\n  collection: string;\n  tenantId: string;\n  docFamilyId: string;\n  oldVersion: number;\n  newVersion: number;\n}\n\n/**\n * Đóng dấu vô hiệu hóa toàn bộ vector cũ và xóa sạch Semantic Cache phụ thuộc < 100ms.\n * Điều kiện tiên quyết: các chunk của newVersion đã được upsert xong với status = 'staging'.\n */\nexport async function promoteVersionAndPurgeCache(\n  qdrant: QdrantClient,\n  redis: Redis,\n  input: PublishVersionInput\n): Promise<{ purgedCacheKeys: number }> {\n  const { collection, tenantId, docFamilyId, oldVersion, newVersion } = input;\n\n  // 1. Kích hoạt phiên bản mới trước để tránh bất kỳ mili-giây rỗng ngữ cảnh nào\n  await qdrant.setPayload(collection, {\n    payload: { status: 'active', activated_at: new Date().toISOString() },\n    filter: {\n      must: [\n        { key: 'tenant_id', match: { value: tenantId } },\n        { key: 'doc_family_id', match: { value: docFamilyId } },\n        { key: 'doc_version', match: { value: newVersion } },\n        { key: 'status', match: { value: 'staging' } },\n      ],\n    },\n    wait: true,\n  });\n\n  // 2. Soft-Tombstone lập tức toàn bộ chunk phiên bản cũ (giữ lại 14 ngày để rollback/audit)\n  await qdrant.setPayload(collection, {\n    payload: { status: 'superseded', superseded_at: new Date().toISOString() },\n    filter: {\n      must: [\n        { key: 'tenant_id', match: { value: tenantId } },\n        { key: 'doc_family_id', match: { value: docFamilyId } },\n        { key: 'doc_version', match: { value: oldVersion } },\n        { key: 'status', match: { value: 'active' } },\n      ],\n    },\n    wait: true,\n  });\n\n  // 3. Selective Semantic Cache Invalidation: chỉ xóa cache key từng trích dẫn docFamilyId này\n  const depSetKey = `rag:cache_deps:${tenantId}:${docFamilyId}`;\n  const dependentCacheKeys = await redis.smembers(depSetKey);\n\n  if (dependentCacheKeys.length > 0) {\n    const pipeline = redis.pipeline();\n    pipeline.unlink(...dependentCacheKeys);\n    pipeline.unlink(depSetKey);\n    await pipeline.exec();\n  }\n\n  return { purgedCacheKeys: dependentCacheKeys.length };\n}"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "anti-pattern-ai-noi-hai-loi",
+      "variant": "anti-pattern",
+      "title": "Đừng tự động hóa báo giá bằng AI nếu bạn chưa trả lời được: 'Mất mấy giây để giết sạch một bảng giá cũ?'",
+      "body": "Trên chiến trường bán hàng thật, một Chatbot trả lời chậm hơn 2 giây khách có thể thông cảm, nhưng một Chatbot báo sai giá cũ từ quý trước khiến khách cọc hụt sẽ phá hủy uy tín của cả đội ngũ kinh doanh. Tại DOMATION, mọi trợ lý AI Space RAG kết nối ERP/CRM đều bắt buộc đi kèm khóa phiên bản tài liệu, Soft-Tombstone nguyên tử và xóa chọn lọc Semantic Cache theo sự kiện CDC — biến việc cập nhật giá thành thao tác 10 giây không chút rủi ro.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • DOMATION Enterprise RAG Standard"
+    }
+  ]
+}

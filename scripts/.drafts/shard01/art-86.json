@@ -1,0 +1,365 @@
+{
+  "id": "art-86",
+  "number": "86",
+  "slug": "b2b-dich-vu-du-an-quan-tri-hop-dong-milestone-duyet-po-cong-no",
+  "shardId": "shard01",
+  "pillar": "erp-operations",
+  "pillarLabel": "ERP 5.0 May Đo & Quản Trị",
+  "industry": "B2B Dịch Vụ, Kỹ Thuật & Dự Án",
+  "clusterId": "kw-erp-custom",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "playbook-manual",
+  "title": "Doanh nghiệp B2B Dịch vụ & Dự án: Quản trị hợp đồng theo Milestone, duyệt tạm ứng PO & cảnh báo công nợ",
+  "seoTitle": "ERP B2B Dịch Vụ: Milestone Dự Án, Duyệt PO & Công Nợ | DOMATION",
+  "metaDescription": "Kiểm soát lãi lỗ dự án B2B: gắn Kanban kỹ thuật với tiến độ nghiệm thu, duyệt tạm ứng PO đa cấp qua ZaloBot và tự động cảnh báo quá hạn công nợ.",
+  "focusKeyword": "quản trị hợp đồng milestone và công nợ b2b",
+  "secondaryKeywords": [
+    "erp doanh nghiệp dịch vụ kỹ thuật",
+    "quản lý lãi lỗ theo dự án",
+    "phê duyệt tạm ứng po qua zalo",
+    "cảnh báo quá hạn công nợ b2b",
+    "timesheet và kpi dự án"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Khóa Lãi Lỗ Dự Án B2B Từ Milestone Đến Công Nợ",
+  "thumbnailHook": "Liên thông Task Kanban, duyệt tạm ứng PO đa cấp và nhắc thu nợ.",
+  "thumbnailBadge": "B2B DỰ ÁN PO",
+  "coverImage": "/imgs/boost/v2/b2b-dich-vu-du-an-quan-tri-hop-dong-milestone-duyet-po-cong-no.webp",
+  "coverAlt": "Sổ tay vận hành ERP 5.0 cho doanh nghiệp B2B Dịch vụ và Dự án: liên kết hợp đồng Milestone, Task Kanban kỹ thuật, duyệt tạm ứng PO đa cấp và cảnh báo công nợ",
+  "screenshotImage": "/imgs/boost/charts/b2b-dich-vu-du-an-quan-tri-hop-dong-milestone-duyet-po-cong-no-report.webp",
+  "screenshotCaption": "Biểu đồ kiểm soát biên lãi dự án B2B theo từng mốc nghiệm thu Milestone, hạn mức giải ngân PO và tiến độ thu hồi công nợ tự động trong DOMATION ERP 5.0.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Module Dự Án, PO & Kanban ERP 5.0",
+  "relatedSlugs": [
+    "so-hoa-phe-duyet-da-cap-po-tam-ung-task-kanban-lien-phong-ban",
+    "kiem-soat-chi-phi-van-hanh-purchase-order-chong-vuot-ngan-sach",
+    "ai-du-bao-dong-tien-ton-kho-ket-hop-misa-pos-crm",
+    "tco-roi-24-thang-thue-saas-dong-goi-vs-dau-tu-he-thong-may-do"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Nhiều doanh nghiệp B2B dịch vụ, cơ điện M&E và tư vấn ký hợp đồng nhiều tỷ đồng với biên lãi gộp dự toán 22%, nhưng đến ngày quyết toán lại lỗ vốn vì ba đứt gãy: Task Kanban tách rời khỏi mốc nghiệm thu thu tiền, tạm ứng và Purchase Order (PO) duyệt qua Zalo không khóa trần dự toán, và kế toán quên nhắc công nợ đến hạn. Sổ tay ERP 5.0 của DOMATION khóa chặt Milestone hợp đồng, trần chi phí PO qua ZaloBot, Timesheet kỹ sư và nhắc nợ tự động nối MISA.",
+  "keyTakeaways": [
+    "Khóa trần ngân sách dự án theo từng Milestone ngay khi hợp đồng chuyển trạng thái Đã Ký từ CRM 360°.",
+    "Nối trực tiếp Task Kanban liên phòng ban với cổng nghiệm thu Milestone để kích hoạt đúng hạn đề nghị xuất hóa đơn MISA.",
+    "Số hóa duyệt tạm ứng và Purchase Order (PO) đa cấp qua ZaloBot: tự cộng dồn chi phí và bật cảnh báo đỏ khi vượt dự toán.",
+    "Gắn Timesheet giờ công và GPS kỹ sư hiện trường vào chi phí trực tiếp của mã hợp đồng, chặn 'lãi giấy lỗ công'.",
+    "Tự động nhắc nợ B2B theo mốc T-5, T0, T+7 qua Email Amazon SES và ZaloBot đồng bộ gạch nợ hai chiều từ MISA."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Thời gian duyệt PO & tạm ứng",
+      "value": "3.2 ngày -> 2 giờ"
+    },
+    {
+      "label": "Bảo toàn biên lãi dự án",
+      "value": "Giữ 94% dự toán"
+    },
+    {
+      "label": "Công nợ quá hạn > 15 ngày",
+      "value": "-68%"
+    },
+    {
+      "label": "PO gắn đúng Milestone",
+      "value": "100% Audit Log"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Khách B2B hay yêu cầu phát sinh ngoài hợp đồng (Scope Creep), ERP làm sao ngăn kỹ thuật làm miễn phí?",
+      "answer": "Mọi thẻ Task trên Kanban phải gắn vào một Milestone gốc hoặc một Phiếu Phát Sinh (Change Request - CR) đã duyệt thương mại. Nếu phát sinh hạng mục mới, PM tạo thẻ CR kèm báo giá trên CRM; kỹ thuật chỉ được kéo vào cột thực hiện khi khách xác nhận chi phí hoặc Ban Giám đốc duyệt ngoại lệ."
+    },
+    {
+      "question": "Giám đốc đi công trường xa thì duyệt PO và tạm ứng đa cấp qua ZaloBot bằng cách nào?",
+      "answer": "Hệ thống gửi thẻ thông báo có cấu trúc qua ZaloBot theo đúng hạn mức (VD: <10M Trưởng phòng duyệt, >=10M lên Ban Giám đốc), hiển thị rõ tỷ lệ % ngân sách đã tiêu của hợp đồng và link duyệt 1 chạm trong 10 giây, kèm cơ chế Delegate Approver khi người duyệt chính nghỉ phép."
+    },
+    {
+      "question": "Làm sao phân bổ đúng giờ công kỹ sư chạy song song 4–5 dự án vào lãi lỗ từng hợp đồng?",
+      "answer": "Bộ đếm phiên làm việc trên Task Kanban kết hợp chấm công GPS tại công trình tự động ghi nhận giờ công thực tế theo từng mã dự án và quy đổi theo đơn giá giờ chuẩn, giúp lãnh đạo thấy ngay hợp đồng nào đang ngốn công vượt định mức để kịp thời xử lý."
+    },
+    {
+      "question": "Phòng Kinh doanh và Kế toán hay trễ nhịp thu nợ Milestone, hệ thống tự động hóa bước này ra sao?",
+      "answer": "Khi toàn bộ Task của Milestone hoàn tất và có biên bản nghiệm thu, hệ thống đẩy đề nghị xuất hóa đơn sang MISA và kích hoạt chuỗi nhắc thanh toán tự động qua Amazon SES (T-5 ngày, T0 đúng hạn, T+7 quá hạn), đồng thời báo Sale qua ZaloBot."
+    },
+    {
+      "question": "Chuyển từ Trello/Asana và Excel sang DOMATION ERP 5.0 có mất nhiều tháng đào tạo đội ngũ không?",
+      "answer": "DOMATION triển khai thí điểm 14 ngày cho 3–5 hợp đồng giá trị lớn nhất đang chạy, giữ giao diện Kanban thân thiện với kỹ thuật nhưng nối ngầm sang Hộp thư PO, Timesheet và MISA. Đội ngũ thường làm quen và vận hành trơn tru ngay trong hai tuần đầu."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "so-tay-khoa-lai-lo-du-an-b2b-milestone-po",
+      "eyebrow": "Sổ Tay Vận Hành • B2B Project Margin Control",
+      "variant": "deep-dive",
+      "heading": "Vì sao hợp đồng B2B biên lãi dự kiến 22% lại âm 4% khi quyết toán? Lỗ hổng giữa Kanban, PO và Công nợ",
+      "pullQuote": "Trong kinh doanh dự án B2B, lợi nhuận không biến mất vào ngày thanh lý; nó rò rỉ từng 2% một qua mỗi lệnh tạm ứng không khóa trần và mỗi tuần trễ nghiệm thu Milestone.",
+      "paragraphs": [
+        "Trên bảng dự toán ký với khách hàng doanh nghiệp, một hợp đồng thi công cơ điện M&E, nội thất hay tư vấn giải pháp trị giá 2 tỷ đồng thường đặt mục tiêu biên lãi ròng 22% qua ba đợt thu tiền Milestone (30%–40%–30%). Thế nhưng sáu tháng sau khi cộng toàn bộ hóa đơn nhà cung cấp, phiếu tạm ứng công tác và bảng lương kỹ sư, nhiều giám đốc bàng hoàng nhận ra lãi thực thu chỉ còn 3% hoặc âm 4%.",
+        "Qua thực tiễn khảo sát vận hành doanh nghiệp B2B Việt Nam, DOMATION xác định ba vết nứt cấu trúc gây ra nghịch lý này. Thứ nhất là Task Kanban kỹ thuật và Mốc thu tiền hợp đồng nằm ở hai thế giới tách biệt: kỹ thuật xong việc nhưng quên xuất biên bản bàn giao cho kế toán, khiến Milestone 2 thu 800 triệu bị trễ sang tháng kế tiếp làm đứt dòng tiền.",
+        "Thứ hai là duyệt Purchase Order (PO) và tạm ứng qua tin nhắn Zalo thiếu tường lửa ngân sách. Khi công trường cần mua vật tư gấp, lãnh đạo gật đầu duyệt nhanh mà không thấy tổng chi phí cộng dồn của mã dự án đó đã chạm 95% dự toán. Vài lần 'duyệt gấp' cộng thêm hóa đơn hoàn ứng thất lạc đủ xóa sạch biên lợi nhuận của cả đợt nghiệm thu.",
+        "Thứ ba là giờ công phát sinh ngoài phạm vi (Scope Creep) và công nợ quá hạn kéo dài. Kỹ sư sửa theo lời nhờ của khách mà không lập thẻ Change Request, còn kế toán và Sale ngại nhắc nợ đúng hạn để tuổi nợ trôi qua 45–60 ngày. Sổ tay ERP 5.0 may đo của DOMATION biến mỗi hợp đồng thành một Sổ cái Lãi Lỗ Dự án khép kín: chốt deal CRM tự sinh Milestone và trần ngân sách PO, nối Kanban + Timesheet GPS, duyệt PO qua ZaloBot 1 chạm và đồng bộ nhắc nợ MISA."
+      ],
+      "bullets": [
+        "Ngân sách khóa theo Milestone: Mọi đơn PO và tạm ứng gắn mã Hợp đồng, tự chặn hoặc báo đỏ khi tổng chi chạm trần dự toán.",
+        "Kanban nối Cổng Nghiệm Thu: Hoàn tất 100% đầu việc Milestone tự động đẩy đề nghị xuất hóa đơn VAT sang MISA.",
+        "Phê duyệt đa cấp ZaloBot 1 chạm: Xem % ngân sách đã tiêu ngay trên điện thoại, có Delegate Approver khi sếp công tác.",
+        "Timesheet & GPS hiện trường: Quy đổi giờ công kỹ thuật trực tiếp vào P&L từng hợp đồng để phát hiện dự án ngốn công.",
+        "Nhắc nợ B2B đa tầng (T-5/T0/T+7): Gửi Email chứng từ qua Amazon SES và cảnh báo ZaloBot khi khoản thu quá hạn."
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "chi-so-hieu-qua-quan-tri-du-an-b2b",
+      "heading": "Chỉ số kiểm soát biên lãi và dòng tiền khi hợp nhất Kanban, Duyệt PO và Công nợ B2B trên ERP 5.0",
+      "stats": [
+        {
+          "value": "3.2 ngày -> 2 giờ",
+          "label": "Thời gian duyệt PO & tạm ứng",
+          "context": "Duyệt đa cấp 1 chạm kèm kiểm tra trần ngân sách qua ZaloBot",
+          "trend": "up"
+        },
+        {
+          "value": "94% dự toán",
+          "label": "Bảo toàn biên lãi ròng hợp đồng",
+          "context": "Khóa chi vượt trần PO và kiểm soát việc ngoài Scope",
+          "trend": "up"
+        },
+        {
+          "value": "-68%",
+          "label": "Công nợ B2B quá hạn > 15 ngày",
+          "context": "Nhờ kích hoạt nghiệm thu tự động và nhắc nợ T-5/T0/T+7",
+          "trend": "up"
+        },
+        {
+          "value": "100%",
+          "label": "PO gắn mã Milestone & Audit Log",
+          "context": "Truy vết người duyệt và khớp chứng từ MISA tức thì",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-bien-lai-va-dong-tien-du-an-b2b",
+      "heading": "Đường suy giảm biên lãi dự án B2B qua 6 cổng Milestone: Rời rạc vs Khóa PO trên ERP 5.0",
+      "subtitle": "Theo dõi biên lãi ròng lũy kế và tỷ lệ thu tiền đúng hạn qua 6 giai đoạn vòng đời hợp đồng (%)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Biên lãi dự án B2B (%) và tỷ lệ thu hồi công nợ đúng Milestone (%)",
+        "subtitle": "So sánh hợp đồng dự toán lãi 22% khi vận hành bằng Excel/Zalo so với DOMATION ERP 5.0",
+        "xKey": "giaiDoan",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "bienLaiRoiRac",
+            "label": "Biên lãi khi quản lý rời rạc (%)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "bienLaiErp5",
+            "label": "Biên lãi khóa PO & Scope ERP 5.0 (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "thuNoDungHan",
+            "label": "Thu tiền đúng hạn Milestone (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "giaiDoan": "M0 • Ký HĐ",
+            "bienLaiRoiRac": 22.0,
+            "bienLaiErp5": 22.0,
+            "thuNoDungHan": 98.0
+          },
+          {
+            "giaiDoan": "M1 • Khảo sát",
+            "bienLaiRoiRac": 19.5,
+            "bienLaiErp5": 21.8,
+            "thuNoDungHan": 96.5
+          },
+          {
+            "giaiDoan": "M2 • Mua PO",
+            "bienLaiRoiRac": 14.2,
+            "bienLaiErp5": 21.4,
+            "thuNoDungHan": 95.2
+          },
+          {
+            "giaiDoan": "M3 • Triển khai",
+            "bienLaiRoiRac": 8.6,
+            "bienLaiErp5": 20.9,
+            "thuNoDungHan": 94.8
+          },
+          {
+            "giaiDoan": "M4 • Nghiệm thu",
+            "bienLaiRoiRac": 4.1,
+            "bienLaiErp5": 21.3,
+            "thuNoDungHan": 94.0
+          },
+          {
+            "giaiDoan": "M5 • Quyết toán",
+            "bienLaiRoiRac": 2.8,
+            "bienLaiErp5": 21.1,
+            "thuNoDungHan": 95.4
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Biên lãi giữ lại ở M5",
+            "value": "21.1% vs 2.8%",
+            "delta": "+18.3 điểm % bảo toàn lợi nhuận",
+            "positive": true
+          },
+          {
+            "label": "Vùng rò rỉ nặng (M2->M3)",
+            "value": "-10.1 điểm %",
+            "delta": "Do PO & Timesheet thiếu khóa trần",
+            "positive": false
+          },
+          {
+            "label": "Thu tiền đúng hạn Milestone",
+            "value": "94% – 98%",
+            "delta": "Tự nhắc nợ & xuất VAT MISA",
+            "positive": true
+          },
+          {
+            "label": "Doanh thu thu thêm từ CR",
+            "value": "+3.5%",
+            "delta": "Nhờ khóa thẻ việc phát sinh",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô hình chuẩn hóa theo khung Kiểm toán Phê duyệt PO & Task Kanban trong DOMATION ERP 5.0."
+      },
+      "insightSummary": "Vùng chết của dự án B2B rơi đúng vào giai đoạn M2 Mua sắm PO đến M3 Triển khai hiện trường: ở mô hình rời rạc, biên lãi trượt dốc từ 19,5% xuống 8,6% rồi tụt về 2,8% lúc quyết toán M5 vì chi phát sinh không kiểm trần và hàng trăm giờ công làm miễn phí ngoài Scope. Khi áp dụng khóa ngân sách PO theo Milestone và thẻ Change Request trên ERP 5.0, biên lãi giữ ổn định 20,9%–21,3% xuyên suốt đến ngày thanh lý."
+    },
+    {
+      "type": "visual-figure",
+      "id": "minh-hoa-erp-b2b-milestone-po-kanban",
+      "src": "/imgs/boost/charts/b2b-dich-vu-du-an-quan-tri-hop-dong-milestone-duyet-po-cong-no-report.webp",
+      "alt": "Giao diện kiểm soát biên lãi dự án B2B, tiến độ Milestone Kanban, phê duyệt PO đa cấp và cảnh báo quá hạn công nợ trên DOMATION ERP 5.0",
+      "caption": "Bảng theo dõi tài chính dự án B2B: liên kết tiến độ nghiệm thu Milestone với hạn mức giải ngân PO và tuổi nợ khách hàng.",
+      "badge": "B2B PROJECT • PO & CÔNG NỢ"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "quy-trinh-khep-kin-du-an-b2b-tu-crm-den-cong-no",
+      "heading": "Quy trình vận hành chuẩn 6 bước từ lúc chốt Hợp đồng B2B đến khi thu hết Công nợ",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • CONTRACT LOCK",
+          "title": "Chuyển Deal CRM sang Hợp Đồng & Khóa Ngân Sách Milestone",
+          "detail": "Tự động tạo Mã Dự Án, chia các đợt Milestone thanh toán kèm trần ngân sách vật tư, thầu phụ và định mức giờ công.",
+          "metricOrTool": "CRM -> Project Ledger"
+        },
+        {
+          "tag": "BƯỚC 02 • KANBAN & TIMESHEET",
+          "title": "Sinh Bảng Task Kanban Liên Phòng Ban & Bật Đồng Hồ Giờ Công",
+          "detail": "Phân rã đầu việc cho từng bộ phận theo Milestone; mọi hạng mục phát sinh ngoài phạm vi bắt buộc lập thẻ Change Request.",
+          "metricOrTool": "Kanban • GPS & Timesheet"
+        },
+        {
+          "tag": "BƯỚC 03 • PO GUARDRAIL",
+          "title": "Lập Đề Nghị Tạm Ứng / Purchase Order Kiểm Tra Trần Dự Toán",
+          "detail": "Bắt buộc chọn Mã Dự Án; hệ thống kiểm tra tỷ lệ ngân sách đã tiêu và chặn đề xuất nếu còn hóa đơn hoàn ứng quá hạn.",
+          "metricOrTool": "PO Budget Guardrail"
+        },
+        {
+          "tag": "BƯỚC 04 • ZALOBOT APPROVAL",
+          "title": "Phê Duyệt Đa Cấp 1 Chạm Qua ZaloBot & Ủy Quyền Tự Động",
+          "detail": "Đơn luân chuyển theo hạn mức tiền (Trưởng phòng -> Kế toán -> Giám đốc); quá SLA 4 giờ tự nhắc hoặc chuyển Delegate Approver.",
+          "metricOrTool": "Approval Inbox • ZaloBot"
+        },
+        {
+          "tag": "BƯỚC 05 • MILESTONE MISA",
+          "title": "Nghiệm Thu Kanban Tự Kích Hoạt Xuất Hóa Đơn Điện Tử MISA",
+          "detail": "Đủ 100% Task Milestone và biên bản nghiệm thu, ERP đẩy đề nghị xuất VAT chuẩn MST sang MISA và trả link PDF về CRM.",
+          "metricOrTool": "MISA 2-Way API"
+        },
+        {
+          "tag": "BƯỚC 06 • AR AGING FLOW",
+          "title": "Cảnh Báo Công Nợ Quá Hạn T-5 / T0 / T+7 Qua SES & ZaloBot",
+          "detail": "Tự gửi email nhắc thanh toán đúng lịch hợp đồng và báo tuổi nợ hàng sáng cho Ban Giám đốc để kịp xử lý khoản quá hạn.",
+          "metricOrTool": "AR Aging Engine"
+        }
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "ma-tran-quan-tri-du-an-b2b-excel-vs-saas-vs-erp5",
+      "heading": "So sánh năng lực kiểm soát lãi lỗ dự án B2B: Excel vs SaaS Task vs DOMATION ERP 5.0",
+      "caption": "Đánh giá theo 5 điểm đau cốt lõi của doanh nghiệp dịch vụ kỹ thuật, M&E và tư vấn B2B.",
+      "columns": [
+        "Trục quản trị dự án B2B",
+        "Excel + Zalo Group",
+        "SaaS Task (Trello/Asana)",
+        "DOMATION ERP 5.0 B2B"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Nối Kanban với Milestone thu tiền",
+          "values": [
+            "Tách rời; kỹ thuật xong việc hay quên báo kế toán.",
+            "Chỉ quản lý thẻ việc, không hiểu đợt thanh toán.",
+            "Liên thông Kanban với cổng nghiệm thu & hóa đơn."
+          ],
+          "winnerNote": "Thu tiền nhanh hơn 7–14 ngày"
+        },
+        {
+          "criterion": "Khống chế trần ngân sách PO",
+          "values": [
+            "Duyệt miệng qua chat, quyết toán mới biết chi lố.",
+            "Không có module tài chính, ngân sách hay duyệt PO.",
+            "Cộng dồn PO + tạm ứng theo hợp đồng, báo đỏ vượt trần."
+          ],
+          "winnerNote": "Giữ 94% biên lãi dự toán"
+        },
+        {
+          "criterion": "Duyệt đa cấp & Ủy quyền ZaloBot",
+          "values": [
+            "Chờ ký giấy hoặc trôi tin nhắn trong nhóm chat.",
+            "Không có ma trận hạn mức tiền và Audit Trail.",
+            "Duyệt 1 chạm ZaloBot theo hạn mức, có Delegate."
+          ]
+        },
+        {
+          "criterion": "Timesheet & GPS hiện trường",
+          "values": [
+            "Không phân bổ được chi phí lương kỹ sư vào dự án.",
+            "Đếm giờ tham khảo, không nối vào bảng lương ERP.",
+            "GPS + Timesheet phân bổ thẳng vào P&L từng hợp đồng."
+          ],
+          "winnerNote": "Phát hiện sớm dự án ngốn công"
+        },
+        {
+          "criterion": "Đồng bộ MISA & Nhắc nợ AR",
+          "values": [
+            "Theo dõi công nợ bằng Excel, hay nhắc trễ 15–30 ngày.",
+            "Không nối được với kế toán MISA hay VietQR.",
+            "MISA 2 chiều + nhắc nợ T-5/T0/T+7 qua SES & ZaloBot."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "quy-tac-van-hanh-du-an-b2b-domation",
+      "variant": "key-rule",
+      "title": "Quy tắc triển khai 14 ngày: Thí điểm khóa chặt 3 hợp đồng B2B lớn nhất trước khi nhân rộng toàn công ty",
+      "body": "Sai lầm khiến nhiều công ty B2B dịch vụ thất bại khi số hóa là cố đưa toàn bộ dữ liệu cũ và hàng chục quy trình giấy lên phần mềm cùng lúc, gây phản kháng từ đội kỹ thuật. Từ thực tiễn triển khai lõi ERP 5.0 12 phân hệ cho các tổ chức như Viện Quản trị & Đào tạo IDEAS hay các doanh nghiệp dự án tại DOMATION, cách đi hiệu quả nhất là chọn 3 hợp đồng giá trị cao nhất đang chạy để đưa lên luồng khép kín: Milestone -> Task Kanban -> Duyệt PO ZaloBot -> Nhắc nợ MISA. Sau 14 ngày thấy rõ lãi ròng từng dự án trên điện thoại, toàn bộ đội ngũ sẽ tự nguyện bỏ hẳn file Excel rời rạc."
+    }
+  ]
+}

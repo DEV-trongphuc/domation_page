@@ -1099,7 +1099,7 @@ export const QuickAddLeadModal = () => {
 
               <div style={{ background: theme === 'dark' ? 'var(--color-surface)' : 'white', padding: '12px', borderRadius: 12, border: theme === 'dark' ? '1px solid var(--color-border)' : '1px solid #e2e8f0', marginTop: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {/* Dòng 1: Đại lý dự kiến nhận */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Avatar src={previewCons.consultant?.avatar} name={previewCons.consultant?.name || '?'} size={32} />
                     <div>
@@ -1190,7 +1190,7 @@ export const QuickAddLeadModal = () => {
 
               {showOverrideSelector && previewCons.consultant && (
                 <div style={{ marginTop: 12, padding: '12px 16px', background: theme === 'dark' ? 'rgba(245, 158, 11, 0.08)' : '#fefce8', border: theme === 'dark' ? '1px solid rgba(245, 158, 11, 0.15)' : '1px solid #fef08a', borderRadius: 8 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                     <div style={{ fontSize: '0.8125rem', color: theme === 'dark' ? '#fbbf24' : '#854d0e', fontWeight: 600 }}>
                       Tự động bù 1 lượt cho <strong style={{ color: theme === 'dark' ? '#f59e0b' : '#713f12' }}>{previewCons.consultant?.name}</strong> ở lượt tiếp theo
                     </div>
@@ -1288,7 +1288,32 @@ export const QuickAddLeadModal = () => {
           </div>
         </div>
       </div>
-      <div style={{ padding: '1rem', background: theme === 'dark' ? 'var(--color-surface)' : '#f8fafc', borderTop: '1px solid var(--color-border)', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', position: 'sticky', bottom: '-1.5rem', margin: '0 -1.5rem -1.5rem -1.5rem', zIndex: 10 }}>
+      <style>{`
+        .quick-add-sticky-footer {
+          padding: 1rem;
+          border-top: 1px solid var(--color-border);
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.75rem;
+          position: sticky;
+          bottom: -1.5rem;
+          margin: 0 -1.5rem -1.5rem -1.5rem;
+          z-index: 10;
+        }
+        @media (max-width: 767px) {
+          .quick-add-sticky-footer {
+            bottom: -16px;
+            margin: 0 -16px -16px -16px;
+            padding: 12px 16px;
+          }
+          .quick-add-sticky-footer .btn {
+            flex: 1;
+            min-height: 44px;
+            justify-content: center;
+          }
+        }
+      `}</style>
+      <div className="quick-add-sticky-footer" style={{ background: theme === 'dark' ? 'var(--color-surface)' : '#f8fafc' }}>
         <button className="btn outline" onClick={() => setIsOpen(false)}>{t('Hủy')}</button>
         <button className="btn primary" onClick={handleManualSubmit} disabled={isSubmittingManual || (!manualData.phone && !manualData.email)} style={{ background: 'var(--color-primary)' }}>
           {isSubmittingManual ? t('Đang lưu...') : t('Lưu & Giao Data')}

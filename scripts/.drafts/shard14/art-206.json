@@ -1,0 +1,359 @@
+{
+  "id": "art-206",
+  "number": "206",
+  "slug": "monorepo-long-context-gemini-1m-vs-claude-cache-vs-codex",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Long-Context & Prompt Caching FinOps",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Monorepo Long-Context & Prompt Caching: 1M Unified Gemini vs Claude Prompt Cache vs 400K Codex Compaction",
+  "seoTitle": "1M Gemini vs Claude Cache vs 400K Codex Compaction | DOMATION",
+  "metaDescription": "Kinh tế Prompt Caching trên monorepo ERP 300K+ token: Gemini 4 Argon implicit cache 95%, Claude TTL 5m/1h (tách Fast pool) và quy tắc >272K 2x GPT-5.6.",
+  "focusKeyword": "gemini 1m context vs claude prompt cache vs codex",
+  "secondaryKeywords": [
+    "prompt caching tiết kiệm 90% chi phí",
+    "gemini 4 argon implicit caching 95 phần trăm",
+    "claude cache 5 phút và 1 giờ fast mode",
+    "phụ phí vượt 272k token gpt 5.6",
+    "compaction ngữ cảnh monorepo lớn"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Prompt Caching Trên Monorepo 1M Token: Tối Ưu Từng Xu",
+  "thumbnailHook": "Nắm ngưỡng 4.096 token của Gemini, TTL Claude và bẫy x2 giá trên 272K.",
+  "thumbnailBadge": "FINOPS • PROMPT CACHE",
+  "coverImage": "/imgs/boost/v2/monorepo-long-context-gemini-1m-vs-claude-cache-vs-codex.webp",
+  "screenshotImage": "/imgs/boost/charts/monorepo-long-context-gemini-1m-vs-claude-cache-vs-codex-report.webp",
+  "coverAlt": "Sổ tay finops gemini 1m context vs claude prompt cache vs codex compaction tối ưu tới 95 phần trăm chi phí trên monorepo erp 300k token",
+  "screenshotCaption": "Biểu đồ đường chi phí phiên coding 20 vòng lặp trên monorepo từ 180K đến 750K token: đối chiếu Gemini 4 Argon Implicit Cache 95%, Claude Opus 5.5 1h Cache (Standard vs sập cache khi bật Fast Mode) và vách đá nhân 2x của GPT-5.6 Terra tại mốc 272K.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kỹ Thuật Tối Ưu Token DOMATION",
+  "relatedSlugs": [
+    "semantic-caching-context-compression-giam-60-chi-phi-token",
+    "heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex",
+    "giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me",
+    "kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Sổ tay FinOps gemini 1m context vs claude prompt cache vs codex tổng hợp cách giảm 85%–95% hóa đơn trên monorepo ERP 300K+ token. Gemini 4 Argon kích hoạt tự động Implicit Caching giảm 95% từ 4.096 token (không hỗ trợ caches.create, $0 phí lưu). Claude 1M cung cấp Explicit TTL 5 phút (1.25x) hoặc 1 giờ (2x) với giá đọc $0.10–$0.20, nhưng Fast Mode 2.5x tách pool cache riêng nên đổi mode giữa phiên gây trượt cache. Ở OpenAI, GPT-5.3-Codex nén quanh 272K/400K, còn GPT-5.6 vượt 272K bị nhân 2x input/cache và 1.5x output.",
+  "keyTakeaways": [
+    "Gemini 4 Argon chỉ dùng Implicit Caching (>= 4.096 token, chiết khấu 95% còn $0.10 intro / $0.20 từ 01/12/2026) và KHÔNG hỗ trợ explicit caches.create — mọi chỉ dẫn, schema DB và cây thư mục tĩnh phải đóng băng tuyệt đối ở đầu prompt để không vỡ tiền tố cache.",
+    "Trên Claude Fable 5.2, Opus 5.5 và Sonnet 5.5, chọn TTL 1 giờ (giá ghi 2x input) thay vì 5 phút (1.25x input) nếu phiên làm việc kéo dài qua các lần đọc code hay nghỉ thảo luận > 5 phút; đặc biệt CẤM bật tắt /fast (Fast Mode 2.5x) giữa chừng vì Fast Mode tách riêng Prompt Cache Pool.",
+    "Quy tắc sinh tử của GPT-5.6 (Sol/Terra/Luna): dù cửa sổ mở rộng tới ~1.05M token, hễ input vượt 272.000 token là TOÀN BỘ request (kể cả phần cache read) bị nhân 2x input và 1.5x output — vì thế hãy giữ ngữ cảnh dưới 265K hoặc dùng compaction của GPT-5.3-Codex (400K).",
+    "Kiểm soát phình tiền tố ngay từ lớp công cụ: bật ENABLE_TOOL_SEARCH=true (giảm >85% rác schema MCP), dùng /context all soi điểm phình và /compact [focus] thay vì để lịch sử chat trôi tự do làm hỏng cache hoặc chạm trần.",
+    "Áp dụng quy trình 'Đóng băng Tiền tố 3 Lớp + Chốt chặn 272K' trên chính kho mã DOMATION Enterprise OS và INKICA 208 SKU giúp tổng hóa đơn 20 vòng lặp debug monorepo giảm từ ~$24 xuống còn dưới $2.40."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Gemini 4 Argon Implicit Cache",
+      "value": "-95% (>= 4.096 tok)"
+    },
+    {
+      "label": "Claude Cache Read (Opus/Sonnet)",
+      "value": "$0.20 / $0.10 per 1M"
+    },
+    {
+      "label": "Ngưỡng nhân giá GPT-5.6",
+      "value": ">272K: 2x In / 1.5x Out"
+    },
+    {
+      "label": "Giảm Bloat MCP (Tool Search)",
+      "value": "-85%+ Schema Token"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao gọi client.caches.create() cho Gemini 4 Argon lại báo lỗi không hỗ trợ trong khi Gemini 3.1 Pro và 3.8 Flash vẫn dùng được?",
+      "answer": "Đây là sự khác biệt thiết kế lớn giữa dòng Gemini 3 và Gemini 4 Argon. Gemini 3.1 Pro Preview (phí lưu trữ $4.50/1M/giờ) và Gemini 3.8 Flash ($0.50/1M/giờ intro) hỗ trợ cả Explicit Caching lẫn Implicit Caching. Riêng với Gemini 4 Argon, Google bỏ hoàn toàn cơ chế tạo cache tường minh qua API cachedContents/caches.create và chuyển hẳn sang Implicit Caching tự động: bất kỳ phần tiền tố lặp lại nào dài từ 4.096 token trở lên sẽ tự động được giảm giá 95% ($0.10/1M trong tháng 11/2026 và $0.20/1M từ 01/12/2026) mà không mất tiền thuê kho lưu trữ cache theo giờ."
+    },
+    {
+      "question": "Khi nào nên dùng Prompt Cache TTL 5 phút (1.25x) và khi nào bắt buộc nâng lên TTL 1 giờ (2x) trên Claude Opus 5.5 / Sonnet 5.5?",
+      "answer": "Ghi cache 5 phút tốn 1.25x giá input ($5.00 trên Opus 5.5) và sẽ tự hết hạn nếu sau 5 phút không có lượt đọc mới (lưu ý mỗi lần cache hit sẽ làm mới lại đồng hồ 5 phút). Nếu bạn đang ngồi gõ lệnh liên tục cách nhau 1–3 phút, TTL 5 phút là tối ưu nhất — chỉ cần hit 2 lần là đã hòa vốn. Ngược lại, trong phiên họp rà soát kiến trúc, chờ pipeline CI chạy test mất 7–10 phút hoặc agent chạy nền theo chu kỳ, TTL 5 phút rất dễ hết hạn giữa chừng và bắt bạn trả tiền ghi lại liên tục. Lúc đó, đầu tư TTL 1 giờ (2x input = $8.00 trên Opus 5.5) sẽ giữ Cache Read ở mức $0.20 suốt một tiếng đồng hồ và rẻ hơn hẳn về tổng thể."
+    },
+    {
+      "question": "Điều gì xảy ra nếu đang chạy cache 300K token trên Claude Opus 5.5 Standard rồi gõ lệnh /fast để bật Fast Mode 2.5x?",
+      "answer": "Hệ thống sẽ bị Cache Miss 100%! Anthropic quy định rõ Fast Mode của Claude Opus 5.5 và Fable 5.2 vận hành trên một Prompt Cache Pool tách biệt hoàn toàn với Standard Mode. Nếu bạn đã tốn tiền ghi 300K token vào Standard pool rồi bật /fast ở lượt thứ 4, lượt gọi Fast Mode không đọc được cache cũ mà phải ghi mới toàn bộ 300K token với đơn giá Fast ($8 input / $40 output cho Opus 5.5, chưa kể hệ số ghi cache). Nếu xác định cần Fast Mode 2.5x cho một phiên làm việc, hãy bật ngay từ lượt đầu tiên và giữ nguyên chế độ đó đến hết phiên."
+    },
+    {
+      "question": "Với monorepo 350.000 token, nên tống hết vào GPT-5.6 Terra (1.05M) hay nén xuống dưới 272K bằng GPT-5.3-Codex?",
+      "answer": "Luôn ưu tiên nén hoặc cắt ngữ cảnh xuống dưới 272.000 token! Trên GPT-5.6 (cả Sol, Terra và Luna), dù cửa sổ hỗ trợ tới ~1.05M token và có Explicit Cache breakpoints (tối thiểu 30 phút TTL, chiết khấu đọc 90%), bất kỳ request nào vượt ngưỡng 272.000 input token đều kích hoạt phụ phí nhân 2x cho toàn bộ input lẫn cache read và nhân 1.5x cho output. Chẳng hạn trên GPT-5.6 Terra, gửi 350K token khiến giá cache read tăng gấp đôi từ $0.20 lên $0.40 và output từ $12 lên $18 — lúc đó dùng GPT-5.3-Codex với chiến lược compaction giữ ngữ cảnh lõi quanh 180K–240K token (cache read $0.175) hoặc chuyển sang Gemini 4 Argon / Claude Sonnet 5.5 sẽ kinh tế hơn rất nhiều."
+    },
+    {
+      "question": "Vì sao chỉ cần chèn ngày giờ hiện tại hoặc số thứ tự build lên đầu System Prompt lại làm bay sạch 95% chiết khấu Prompt Cache?",
+      "answer": "Mọi cơ chế Prompt Caching của cả Gemini (Implicit), Anthropic (Explicit TTL) lẫn OpenAI đều khớp tiền tố tuần tự chính xác từng byte/token từ vị trí số 0 trở đi (prefix matching). Chỉ cần một ký tự ở dòng đầu tiên của System Prompt thay đổi (ví dụ: `Current timestamp: 2026-11-21T09:15:02Z` hay ID phiên ngẫu nhiên), toàn bộ phần mã nguồn 300.000 token đứng phía sau đều bị coi là nội dung hoàn toàn mới và mất trắng 100% cache hit. Quy tắc bất di bất dịch là đặt mọi nội dung bất biến lên trên cùng, và đẩy dữ liệu biến động theo từng giây xuống cuối cùng của prompt."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "playbook-ch1-nguyen-ly-prompt-cache-monorepo",
+      "eyebrow": "SỔ TAY FINOPS • CHƯƠNG 1: NGUYÊN LÝ VẬT LÝ PROMPT CACHE",
+      "variant": "deep-dive",
+      "heading": "Chương 1 — Kinh tế học trên Monorepo ERP 300K+ Token: Khoảng cách giữa hóa đơn $24 và $2.40",
+      "pullQuote": "Khi một monorepo ERP chạm ngưỡng 300.000 token, tiền không chảy ra ở những câu lệnh sinh code đầu ra — 85% hóa đơn bốc hơi do đội ngũ gửi lặp đi lặp lại phần bối cảnh tĩnh mà không khớp được Prompt Cache.",
+      "paragraphs": [
+        "Trên các kho mã nguồn doanh nghiệp thực thụ mà DOMATION và TurnioDEV vận hành hàng ngày — chẳng hạn lõi DOMATION Enterprise OS gồm 18 phân hệ Next.js + PostgreSQL RLS, nền tảng AI Prepress INKICA 208 SKU kết hợp worker BullMQ và 20+ mô hình ONNX, hay cổng WebGL + ERP của EcoLife Signature — một phiên làm việc trung bình cần nạp cả sơ đồ database, hợp đồng kiểu dữ liệu Zod, tệp quy chuẩn AGENTS.md và 30–50 tệp mã liên quan. Khối ngữ cảnh ấy dễ dàng đạt mức 200.000 đến 450.000 token ngay ở lượt gửi đầu tiên.",
+        "Giả sử kỹ sư chạy một chu kỳ sửa lỗi và viết kiểm thử gồm 20 vòng lặp liên tiếp trên khối monorepo 300.000 token. Nếu không tận dụng đúng cơ chế lưu đệm (gemini 1m context vs claude prompt cache vs codex), hệ thống sẽ tính tiền 20 × 300.000 = 6.000.000 input token mới tinh: chỉ riêng phần đọc đầu vào trên mô hình giá $4/1M đã ngốn $24 cho đúng một task nhỏ! Thế nhưng nếu làm đúng bài bản Prompt Caching — nơi mỗi nhà cung cấp lại giấu một quy tắc kỹ thuật hoàn toàn khác nhau — chi phí phần đọc lặp lại rơi thẳng 90% đến 95%, kéo tổng hóa đơn cả phiên 20 lượt xuống chỉ còn khoảng $1.80 đến $2.60."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-prompt-caching-mechanics-2026",
+      "heading": "Bảng đối chiếu cơ chế Long-Context & Prompt Caching của 3 hệ sinh thái (Tháng 11/2026)",
+      "caption": "Tổng hợp chính xác ngưỡng kích hoạt, TTL, chi phí ghi/đọc cache và bẫy nhân hệ số trên monorepo lớn",
+      "columns": [
+        "Quy tắc kỹ thuật Cache",
+        "Google Gemini (4 Argon / 3.1 Pro / 3.8 Flash)",
+        "Anthropic Claude (Fable 5.2 / Opus 5.5 / Sonnet 5.5)",
+        "OpenAI (GPT-5.3-Codex 400K & GPT-5.6 1.05M)"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Loại hình & Ngưỡng kích hoạt",
+          "values": [
+            "4 Argon: CHỈ Implicit (>= 4.096 token); 3.1 Pro & 3.8 Flash: hỗ trợ cả Implicit & Explicit",
+            "Explicit cache_control breakpoints (cố định tiền tố tối đa nhiều lớp)",
+            "5.3-Codex: Compaction + Automatic cache; GPT-5.6: Explicit cache breakpoints"
+          ],
+          "winnerNote": "Gemini 4 Argon tự động hoàn toàn từ 4.096 token"
+        },
+        {
+          "criterion": "Thời hạn lưu (TTL) & Phí ghi / lưu trữ",
+          "values": [
+            "4 Argon: $0 phí ghi, $0 phí lưu/giờ! (3.1 Pro Explicit: $4.50/1M/giờ; 3.8 Flash: $0.50/1M/giờ intro)",
+            "2 lựa chọn TTL: 5 phút (ghi = 1.25x input) hoặc 1 giờ (ghi = 2.0x input), không tính phí theo giờ riêng",
+            "GPT-5.6: tối thiểu 30 phút TTL, hệ số ghi cache = 1.25x input"
+          ],
+          "winnerNote": "Argon không thu phí ghi thêm và 0đ phí lưu trữ"
+        },
+        {
+          "criterion": "Chiết khấu Cache Read (/1M USD)",
+          "values": [
+            "4 Argon -95% ($0.10 intro / $0.20 từ 01/12); 3.1 Pro $0.20 (<=200K) / $0.40 (>200K); 3.8 Flash $0.075 intro",
+            "Fable 5.2: $0.20 (-97.5%!); Opus 5.5: $0.20 (-95%); Sonnet 5.5: $0.10 (-95%); Haiku 5.5: $0.01 <=100K",
+            "5.3-Codex: $0.175 (-90%); GPT-5.6 Sol: $0.40, Terra: $0.20, Luna: $0.02 (-90%)"
+          ],
+          "winnerNote": "Claude Fable/Opus/Sonnet có tỷ lệ giảm Read 95%–97.5%"
+        },
+        {
+          "criterion": "Bẫy tăng giá theo ngưỡng Token (Cliff)",
+          "values": [
+            "4 Argon: Giá phẳng tới 1.048.576 Unified! (3.1 Pro tăng giá từ >200K: $2/$12 → $4/$18)",
+            "Fable/Opus/Sonnet: Giá phẳng tới 1M! (CHỈ Haiku 5.5 nhảy 5x khi >100K)",
+            "GPT-5.6: Vượt 272K input nhân TOÀN BỘ request 2x Input/Cache Read và 1.5x Output!"
+          ],
+          "winnerNote": "Sonnet/Opus/Argon không có vách đá 272K"
+        },
+        {
+          "criterion": "Bẫy phá vỡ Cache hay gặp nhất",
+          "values": [
+            "Gọi caches.create trên Argon (lỗi), hoặc đặt timestamp/git diff động lên đầu prompt làm trượt >=4.096 prefix",
+            "Bật/tắt /fast (Fast Mode 2.5x) giữa phiên (tách cache pool riêng!) hoặc nhồi 50K+ schema MCP chưa defer",
+            "Để monorepo phình qua 272K trên GPT-5.6 khiến cả cache read cũng bị nhân đôi"
+          ],
+          "winnerNote": "Đọc kỹ 3 bẫy này giúp tránh 90% tai nạn cháy ví"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-monorepo-20-turn-caching-cost",
+      "heading": "Chi phí một phiên Coding 20 vòng lặp trên Monorepo (USD) theo kích thước ngữ cảnh",
+      "subtitle": "Kịch bản: 1 lượt khởi tạo + 19 lượt lặp sửa lỗi/test (trung bình sinh 1.500 output token mỗi lượt) khi áp dụng hoặc làm hỏng Prompt Cache",
+      "chart": {
+        "chartType": "line",
+        "title": "Tổng hóa đơn 20 vòng lặp (USD) từ 180K đến 750K token trên Monorepo ERP",
+        "subtitle": "So sánh chi phí Không Cache vs Gemini 4 Argon Implicit Cache vs Claude Opus 5.5 1h Cache vs Lỗi đổi Fast Pool & Vách đá 272K GPT-5.6",
+        "xKey": "repoTokens",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "argonImplicitDec",
+            "label": "Gemini 4 Argon Implicit (-95%, Chuẩn $4/$20)",
+            "color": "#10B981"
+          },
+          {
+            "key": "opus1hStandard",
+            "label": "Claude Opus 5.5 (1h Cache Standard)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "gpt56Terra",
+            "label": "GPT-5.6 Terra (Vách đá >272K x2)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "opusFastPoolMiss",
+            "label": "Opus 5.5 Lỗi đổi /fast 2 lần giữa phiên",
+            "color": "#EF4444"
+          },
+          {
+            "key": "noCacheBaseline",
+            "label": "Không Cache ($4/$20 Baseline)",
+            "color": "#94A3B8"
+          }
+        ],
+        "data": [
+          {
+            "repoTokens": "180K",
+            "argonImplicitDec": 1.98,
+            "opus1hStandard": 2.72,
+            "gpt56Terra": 1.56,
+            "opusFastPoolMiss": 5.96,
+            "noCacheBaseline": 15.0
+          },
+          {
+            "repoTokens": "250K",
+            "argonImplicitDec": 2.51,
+            "opus1hStandard": 3.55,
+            "gpt56Terra": 2.02,
+            "opusFastPoolMiss": 7.92,
+            "noCacheBaseline": 20.6
+          },
+          {
+            "repoTokens": "320K (>272K)",
+            "argonImplicitDec": 3.04,
+            "opus1hStandard": 4.38,
+            "gpt56Terra": 4.98,
+            "opusFastPoolMiss": 9.88,
+            "noCacheBaseline": 26.2
+          },
+          {
+            "repoTokens": "500K",
+            "argonImplicitDec": 4.41,
+            "opus1hStandard": 6.5,
+            "gpt56Terra": 7.45,
+            "opusFastPoolMiss": 14.92,
+            "noCacheBaseline": 40.6
+          },
+          {
+            "repoTokens": "750K",
+            "argonImplicitDec": 6.31,
+            "opus1hStandard": 9.45,
+            "gpt56Terra": 10.89,
+            "opusFastPoolMiss": 21.92,
+            "noCacheBaseline": 60.6
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Tiết kiệm Implicit Cache (Argon 500K)",
+            "value": "$4.41 vs $40.60",
+            "delta": "Giảm 89% tổng hóa đơn phiên 20 lượt",
+            "positive": true
+          },
+          {
+            "label": "Thiệt hại đổi /fast giữa phiên Opus",
+            "value": "+132% chi phí",
+            "delta": "Từ $6.50 nhảy lên $14.92 ở 500K",
+            "positive": false
+          },
+          {
+            "label": "Độ dốc GPT-5.6 Terra qua 272K",
+            "value": "$2.02 → $4.98",
+            "delta": "Tăng vọt 2,46 lần chỉ vì thêm 70K token",
+            "positive": false
+          },
+          {
+            "label": "Chi phí thấp nhất ở <=250K",
+            "value": "5.6 Terra / Sonnet 5.5",
+            "delta": "Sonnet 5.5 read chỉ $0.10/1M",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION FinOps Simulator (11/2026): Argon tính theo giá chuẩn từ 01/12/2026 ($4/$20/$0.20) — trong tháng 11/2026 ở giá intro $2/$10/$0.10 chi phí Argon còn thấp hơn một nửa!"
+      },
+      "insightSummary": "Đồ thị chứng minh ba định luật sắt trên Monorepo lớn: (1) Đóng băng tốt tiền tố cho Gemini 4 Argon giúp bạn hưởng trọn vùng 320K–750K token ở mức chi phí thấp nhất ($3.04–$6.31 cho 20 lượt, kể cả sau đợt tăng giá 01/12); (2) Với Claude Opus 5.5, khóa TTL 1 giờ ở Standard Pool rẻ ngang ngửa Argon và rẻ hơn 9x so với không cache — nhưng chỉ cần lỡ tay bật tắt /fast vài lần giữa phiên, hóa đơn lập tức vọt lên gấp đôi; (3) GPT-5.6 Terra cực kỳ rẻ ở vùng <=250K ($2.02) nhưng trở nên đắt hơn cả Opus 5.5 ngay khi trượt qua vạch 272K."
+    },
+    {
+      "type": "prose",
+      "id": "playbook-ch2-ba-cai-bay-lam-vo-cache",
+      "eyebrow": "SỔ TAY FINOPS • CHƯƠNG 2: CÁC BẪY PHÁ CACHE & CÁCH PHÒNG THỦ",
+      "variant": "incident",
+      "heading": "Chương 2 — Giải mã 3 cái bẫy phá vỡ Prompt Cache: Pool Fast Mode của Claude, Vách đá 272K của OpenAI và Thứ tự Prefix của Gemini",
+      "paragraphs": [
+        "Bẫy thứ nhất nằm ngay trong thói quen gõ lệnh của lập trình viên trên Claude Code: bật /fast để đẩy tốc độ sinh mã lên 2.5 lần khi sốt ruột, rồi tắt đi khi thấy tốn tiền. Theo kiến trúc lưu đệm của Anthropic cho Opus 5.5 và Fable 5.2, Standard Mode và Fast Mode không dùng chung vùng nhớ Cache. Mỗi khi chuyển pool, toàn bộ 200K–500K token ngữ cảnh phải được tính toán và ghi lại vào cache mới (tính theo giá ghi Fast Mode $8 hoặc $16/1M trở lên). Ngoài ra, chọn TTL 5 phút (1.25x) cho một phiên mà kỹ sư mất 8 phút đọc tài liệu rồi mới gõ tiếp cũng làm hết hạn cache liên tục — hãy chủ động dùng TTL 1 giờ (2x) nếu chu kỳ tương tác giãn quá 5 phút.",
+        "Bẫy thứ hai là sự tự mãn với tính năng Auto-Context hoặc nhồi nhiều MCP Server cùng lúc. Trong Claude Code, nếu bạn kết nối 6 MCP server (GitHub, Supabase, Playwright, Chrome DevTools, Firecrawl, Context7) mà không bật ENABLE_TOOL_SEARCH=true (hoặc defer_loading: true), riêng phần JSON schema khai báo hàng trăm công cụ đã chiếm gọn 50.000+ token cố định ở đầu phiên. Trên GPT-5.6 Sol/Terra/Luna, 50K token rác này đẩy tổng ngữ cảnh từ 235K lên 285K — vừa đủ đạp qua lằn ranh 272.000 token để toàn bộ request bị nhân đôi giá input/cache read và nhân 1.5x output! Với Claude Code, hãy gõ /context all định kỳ để soi các khối phình và dùng /compact [focus] (ví dụ `/compact giữ lại schema FORCE RLS và lỗi MISA webhook`) để nén lịch sử chat mà không đánh mất trọng tâm.",
+        "Bẫy thứ ba diễn ra âm thầm trên Gemini 4 Argon: vì Argon chỉ hỗ trợ Implicit Caching từ 4.096 token trở lên (và từ chối lệnh caches.create), tỷ lệ cache hit phụ thuộc hoàn toàn vào sự ổn định tuyệt đối của phần đầu prompt. Nhiều hệ thống RAG hoặc CLI tự động chèn danh sách tệp đang mở sắp xếp theo thời gian sửa đổi mới nhất, hoặc nhét chuỗi ngày giờ hiện tại lên dòng đầu tiên của System Prompt. Chỉ một thay đổi nhỏ ở token thứ 120 sẽ vô hiệu hóa toàn bộ 400.000 token tài liệu phía sau."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-monorepo-prompt-cache-report",
+      "src": "/imgs/boost/charts/monorepo-long-context-gemini-1m-vs-claude-cache-vs-codex-report.webp",
+      "alt": "Biểu đồ sổ tay gemini 1m context vs claude prompt cache vs codex compaction tối ưu ngân sách monorepo 300k+ token",
+      "caption": "Sơ đồ cấu trúc đóng băng tiền tố 3 lớp và vị trí ranh giới 4.096 token (Gemini Argon), Pool Separation (Claude Fast Mode), 200K (3.1 Pro) và 272K (GPT-5.6 / 5.3-Codex).",
+      "badge": "FINOPS PLAYBOOK • MONOREPO CACHE"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-monorepo-cache-prefix-and-guard",
+      "heading": "Code Recipe: Bộ khung Đóng băng Tiền tố 3 Lớp cho Gemini 4 Argon Implicit Cache, Claude 1h TTL & Chốt chặn 272K GPT-5.6",
+      "language": "python",
+      "filename": "monorepo_cache_finops_kit.py",
+      "description": "Mẫu kỹ thuật áp dụng tại DOMATION: (1) Sắp xếp payload cho Gemini 4 Argon đúng thứ tự Bất biến (>= 4.096 tokens) -> Bán tĩnh -> Biến động để ăn trọn 95% Implicit Cache và giữ state 55 ngày qua previous_interaction_id; (2) Khai báo cache_control TTL 1h cho Claude đồng thời khóa cứng cờ không đổi pool giữa phiên; (3) Kiểm tra ngưỡng 265K trước khi gửi GPT-5.6.",
+      "code": "import os\nfrom google import genai\n\nclient = genai.Client(api_key=os.environ[\"GEMINI_API_KEY\"])\n\ndef build_cache_friendly_prompt(repo_tree: str, db_schema: str, recent_diff: str, user_task: str) -> list[str]:\n    \"\"\"Nguyen tac bat di bat dich: Bat bien (>4096 tok) o tren cung, Dong o duoi cung.\"\"\"\n    layer_1_immutable = f\"[SCHEMA & AGENTS.md - STATIC]\\n{db_schema}\\n{repo_tree}\"\n    layer_2_semi_static = f\"[RECENT GIT DIFF]\\n{recent_diff}\"\n    layer_3_dynamic = f\"[USER REQUEST]\\n{user_task}\"\n    return [layer_1_immutable, layer_2_semi_static, layer_3_dynamic]\n\ndef run_argon_cached_session(static_bundle: str, task: str, prev_id: str | None = None):\n    # Argon KHONG ho tro cachedContents.create; chi can giu prefix >= 4.096 tok giong het nhau\n    kwargs = {\n        \"model\": \"gemini-4-argon\",\n        \"store\": True,\n        \"config\": {\"thinking_level\": \"medium\", \"max_output_tokens\": 32768},\n    }\n    if prev_id:\n        # Tiet kiem toi da: chi gui delta task moi, noi tiep state tren server (luu 55 ngay)\n        return client.interactions.create(previous_interaction_id=prev_id, input=task, **kwargs)\n    return client.interactions.create(input=f\"{static_bundle}\\n\\n{task}\", **kwargs)\n\n# === Mau cau hinh Claude Prompt Cache TTL 1 gio (tranh bat /fast giua phien!) ===\nCLAUDE_SYSTEM_BLOCK = [\n    {\n        \"type\": \"text\",\n        \"text\": \"<300K_STATIC_MONOREPO_SCHEMA_AND_RULES>\",\n        \"cache_control\": {\"type\": \"ephemeral\", \"ttl\": \"1h\"},  # 2x write, $0.20/1M read (Opus/Fable)\n    }\n]\n\ndef check_openai_272k_cliff(input_tokens: int) -> str:\n    if input_tokens > 272000:\n        return \"WARNING: Vuot 272K! GPT-5.6 se nhan 2x Input/Cache & 1.5x Output. Hay compact xuong <260K hoac chuyen sang Argon/Sonnet.\"\n    return \"OK: Nam trong vung gia chuan (<=272K).\"\n"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-monorepo-caching-strategy",
+      "heading": "Cây quyết định chiến lược Context & Caching cho từng kích thước Monorepo",
+      "subtitle": "Áp dụng khi cấu hình môi trường coding và AI RAG doanh nghiệp",
+      "scenarios": [
+        {
+          "condition": "Monorepo vừa và gọn (<= 250K token sau khi bật ENABLE_TOOL_SEARCH) cần sửa lặp nhiều vòng",
+          "recommendedChoice": "Claude Sonnet 5.5 (TTL 5p/1h, read $0.10) hoặc GPT-5.6 Terra (read $0.20)",
+          "rationale": "Nằm gọn dưới vạch 272K của GPT-5.6 và hưởng giá Cache Read cực thấp ($0.10–$0.20) cùng chất lượng refactor UI/API sắc nét.",
+          "avoidIf": "Số lượng tệp + diff đẩy tổng token vượt sát vạch 270K mà chưa chạy compaction."
+        },
+        {
+          "condition": "Monorepo khổng lồ 300K–850K token hoặc kèm nhiều PDF/Video đặc tả lặp lại suốt tuần",
+          "recommendedChoice": "Gemini 4 Argon (Implicit Cache -95% + Interactions API store=true)",
+          "rationale": "Giá phẳng suốt cửa sổ 1.048.576 token, không tốn phí ghi cache 1.25x/2x hay phí thuê bộ nhớ $4.50/giờ, và không dính phạt 2x như GPT-5.6.",
+          "avoidIf": "Bạn liên tục chèn metadata động (ngày giờ, số ngẫu nhiên) lên đầu prompt làm vỡ prefix."
+        },
+        {
+          "condition": "Cần đọc đi đọc lại cùng một bộ hồ sơ kiến trúc 200K–600K token cho hàng loạt subagent / tác vụ Claude Code",
+          "recommendedChoice": "Claude Opus 5.5 / Sonnet 5.5 với Explicit TTL 1 giờ (giữ nguyên Standard Pool)",
+          "rationale": "Khóa chắc chắn 1 giờ Cache Read $0.10–$0.20 bằng breakpoint tường minh mà không lo mất cache do thao tác khác nhau ở phần đuôi.",
+          "avoidIf": "Kỹ sư có thói quen bật tắt /fast (Fast Mode) liên tục trong cùng một phiên."
+        },
+        {
+          "condition": "Chạy tác vụ sửa bug trong Codex CLI / CI với ngữ cảnh dự án thực tế lên tới 500K+ file",
+          "recommendedChoice": "GPT-5.3-Codex với chiến lược Compaction & chọn lọc tệp (< 240K effective input)",
+          "rationale": "Dùng ripgrep/tree index nạp đúng 150K–240K token lõi vào cửa sổ 400K của GPT-5.3-Codex thay vì nhồi mù quáng cả kho để tránh phình nhiễu và chi phí.",
+          "avoidIf": "Bài toán bắt buộc phải đối chiếu đồng thời 100% file toàn dự án trong một lần suy luận duy nhất."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "playbook-ch3-giao-thuc-20-vong-lap-domation",
+      "eyebrow": "SỔ TAY FINOPS • CHƯƠNG 3: GIAO THỨC VẬN HÀNH 20 VÒNG LẶP",
+      "variant": "narrative",
+      "heading": "Chương 3 — Giao thức 4 bước giữ Monorepo DOMATION chạy 20 vòng lặp không phình hóa đơn",
+      "paragraphs": [
+        "Để biến các nguyên tắc trên thành kỷ luật vận hành hàng ngày cho đội ngũ kỹ sư, DOMATION áp dụng giao thức 4 bước trên mọi dự án lớn từ RichLand, EcoLife Signature tới INKICA Studio. Bước 1: Dọn sạch phần đầu ngữ cảnh bằng cách bật Dynamic Tool Search trên toàn bộ máy trạm Claude Code (cắt 85%+ rác schema MCP) và cố định thứ tự thư mục quy chuẩn ở tầng bất biến đầu tiên. Bước 2: Dùng lệnh /context all trước khi bắt đầu một đợt refactor lớn để đo chính xác kích thước thực tế — nếu tiến sát 250K token mà đang chạy GPT-5.6 hoặc 5.3-Codex, lập tức chạy compaction hoặc tách module.",
+        "Bước 3: Khóa chặt chế độ suy luận và tốc độ ngay từ turn số 1 — tuyệt đối không đổi từ Standard sang Fast Mode giữa phiên trên Claude Opus 5.5/Fable 5.2, và giữ danh sách file tĩnh sắp xếp theo thứ tự bảng chữ cái cố định khi gọi Gemini 4 Argon. Bước 4: Ngay khi hoàn thành xong một sub-feature trong phiên 400K token, chạy `/compact chỉ giữ lại danh sách file đã sửa, schema bảng mới và kết quả lỗi test gần nhất` trước khi mở sang tính năng kế tiếp. Nhờ bộ giao thức giản dị này, một team 5–8 kỹ sư Vibecode tại DOMATION có thể vận hành 35+ hệ thống phức tạp liên tục mỗi ngày mà tổng hóa đơn LLM hàng tháng vẫn giữ ở mức cực kỳ lành mạnh."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-monorepo-caching-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Sổ Tay FinOps • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Prompt Caching là nghệ thuật sắp xếp thứ tự byte đầu vào và tôn trọng ranh giới giá 100K – 200K – 272K",
+      "body": "Đừng bao giờ tối ưu chi phí LLM bằng cách ép kỹ sư dùng model kém thông minh hơn cho những bài toán khó. Bí quyết giúp DOMATION chạy toàn bộ hệ sinh thái ERP 5.0 và AI Pipeline quy mô lớn với chi phí cực thấp nằm ở kỷ luật Prompt Caching: giữ nguyên model xịn, nhưng đóng băng 100% tiền tố tĩnh lên đầu, bật Dynamic Tool Search dẹp rác MCP, tuyệt đối không nhảy qua pool Fast Mode giữa phiên trên Claude, không gọi caches.create nhầm trên Gemini 4 Argon và luôn đặt còi báo động ở token thứ 265.000 trước vách đá 2x của GPT-5.6."
+    }
+  ]
+}

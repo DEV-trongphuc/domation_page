@@ -1,0 +1,399 @@
+{
+  "id": "art-222",
+  "number": "222",
+  "slug": "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "DOMATION Bespoke ERP Engineering Playbook",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "executive-dossier",
+  "title": "Thực chiến DOMATION & TurnioDEV: Phối Claude Code + Codex CLI + Gemini CLI + MCP + Skills tăng tốc 4.5x xây Bespoke ERP",
+  "seoTitle": "Thực Chiến DOMATION: 3 CLI + MCP Tăng Tốc 4.5x ERP | DOMATION",
+  "metaDescription": "Dossier từ Founder Huỳnh Trọng Phúc (TurnioDEV): phối 3 CLI, Context7/Playwright/GitHub MCP, Git Worktree và Verifier Hooks dựng ERP 12 phân hệ trong 14 ngày.",
+  "focusKeyword": "thực chiến domation turniodev phối claude codex gemini mcp",
+  "secondaryKeywords": [
+    "huỳnh trọng phúc turniodev quy trình vibecode",
+    "xây dựng bespoke erp nhanh gấp 4.5 lần",
+    "phối hợp claude code codex cli gemini cli",
+    "mcp và skill md tại domation",
+    "quy trình đưa erp may đo vào vận hành 14 ngày"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Xưởng DOMATION: Tăng Tốc 4.5x Xây Bespoke ERP",
+  "thumbnailHook": "Cách TurnioDEV phối bộ ba CLI, MCP và SKILL.md xuất xưởng ERP sạch lỗi.",
+  "thumbnailBadge": "CASE TURNIODEV 4.5X",
+  "coverImage": "/imgs/boost/v2/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x.webp",
+  "screenshotImage": "/imgs/boost/charts/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x-report.webp",
+  "coverAlt": "Hồ sơ điều hành thực chiến DOMATION và TurnioDEV phối hợp Claude Code Codex CLI Gemini CLI cùng MCP và Agent Skills tăng tốc 4,5 lần xây dựng Bespoke ERP 5.0 12 phân hệ trong 14 ngày",
+  "screenshotCaption": "Biểu đồ đối chiếu tổng giờ công phát triển truyền thống so với dây chuyền 3-CLI + Worktree Swarm của DOMATION trên 6 cụm hệ thống lõi (DB FORCE RLS, ERP 12 phân hệ, AutoData ZaloBot/CAPI, CRM MISA, WebGL 3D và QA Security Gate).",
+  "relatedModuleUrl": "/portfolio",
+  "relatedModuleLabel": "Xem 10+ Hệ Thống Thực Chiến Tại Portfolio",
+  "relatedSlugs": [
+    "kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev",
+    "domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu",
+    "multi-tier-hybrid-routing-finops-planner-executor-router",
+    "git-worktree-multi-agent-swarm-plan-execute-verifier"
+  ],
+  "readingMinutes": 16,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Hồ sơ điều hành từ Founder & CEO Huỳnh Trọng Phúc (TurnioDEV) công bố toàn bộ kiến trúc dây chuyền kỹ thuật giúp DOMATION rút ngắn chu kỳ xây dựng và bàn giao các hệ thống Bespoke Enterprise ERP 5.0 (12 phân hệ), AutoData ZaloBot/Meta CAPI, sa bàn WebGL 3D EcoLife Signature và nền tảng AI Prepress INKICA nhanh gấp 4,5 lần. Thay vì phụ thuộc một AI duy nhất, DOMATION phân vai rõ rệt bộ ba Claude Code (Worktree Swarm + 33+ Lifecycle Hooks), OpenAI Codex CLI (OS Sandbox + `codex exec` + PR Review Gate) và Gemini CLI (Multimodal 1M + TOML Policy), kết nối MCP (`ENABLE_TOOL_SEARCH=auto`) và kho `SKILL.md` chuẩn hóa.",
+  "keyTakeaways": [
+    "Không tôn sùng một model hay một CLI đơn lẻ: DOMATION tách vai Claude Code làm Kiến trúc sư & Worktree Swarm, Codex CLI giữ cổng OS Sandbox & PR Security Review, còn Gemini CLI xử lý tài liệu PDF/OOH/Video đa phương thức 1M tokens với chi phí tối ưu.",
+    "Chuẩn hóa 'Single Source of Truth' từ tệp `AGENTS.md` + kho `.claude/skills/<sop>/SKILL.md` giúp toàn đội đồng bộ qua `/import` và fallback array, loại bỏ tình trạng mỗi kỹ sư nhắc AI một kiểu.",
+    "Bật `ENABLE_TOOL_SEARCH=auto` và `defer_loading: true` cho bộ MCP cốt lõi (`context7`, `playwright-mcp`, `chrome-devtools`, `github-mcp-server`, `supabase`) để giữ schema context gọn nhẹ trong khi chống triệt để ảo giác API cũ.",
+    "Tốc độ 4,5x trên 14 ngày triển khai ERP 5.0 12 phân hệ chỉ an toàn khi đi kèm hàng rào kỹ trị cứng: `PreToolUse` và `SubagentStop` hook kiểm tra TypeScript, PostgreSQL `FORCE ROW LEVEL SECURITY` và E2E Accessibility Tree trước khi hợp nhất nhánh.",
+    "Hiệu quả được chứng minh trực tiếp trên các dự án thương mại thực tế: IDEAS (+300% quy mô MBA, -30% CPA, 12.600+ Leads), Capital House EcoLife Signature (8 mẫu căn 3D < 3,5MB, 3 Đại lý F1 lệch ~0%, ROAS đỉnh 8,2x) và INKICA (208 SKU 3D CAD, 6 AI Prepress Agents, 0 px lệch mép)."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tốc độ xuất xưởng Bespoke ERP",
+      "value": "4,5x (14 ngày Go-live)"
+    },
+    {
+      "label": "Hệ thống triển khai thực tế A–Z",
+      "value": "35+ hệ / 30+ thương hiệu"
+    },
+    {
+      "label": "Tỷ lệ sai lệch chia F1 & rập 3D",
+      "value": "~0% F1 / 0 px INKICA"
+    },
+    {
+      "label": "Tiết kiệm Context & Lỗi Review",
+      "value": "-85% Bloat / -72% Bug PR"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao DOMATION và TurnioDEV phải dùng phối hợp cả Claude Code, Codex CLI lẫn Gemini CLI thay vì chỉ mua gói Pro của một hãng?",
+      "answer": "Vì mỗi công cụ sở hữu một điểm mạnh không thể thay thế trong dây chuyền sản xuất phần mềm doanh nghiệp. Claude Code mạnh nhất ở khả năng điều phối đa nhánh `claude --worktree`, bộ 33+ lifecycle hooks (`PreToolUse`, `SubagentStop`, `WorktreeCreate`) để ép Verifier chạy trước merge, và đọc hiểu ngữ cảnh monorepo dài với `claude-opus-5-5` / `sonnet-5-5`. OpenAI Codex CLI nổi trội nhờ hộp cát cấp nhân OS (Linux Landlock/Bubblewrap/seccomp-BPF và Seatbelt), chế độ `codex exec` không tương tác trong CI và đánh giá PR tự động `@codex review` bằng `gpt-5.3-codex`. Trong khi đó, Gemini CLI lại rất mạnh khi nuốt trọn bộ tài liệu PDF quy trình, bảng giá BĐS, ảnh thiết kế OOH và gọi Google Workspace Extension trên cửa sổ 1M với `gemini-3.8-flash` ($0,75/$3,75) và `gemini-4-argon`."
+    },
+    {
+      "question": "Với tốc độ nhanh gấp 4,5 lần (14 ngày xong khung ERP 5.0 12 phân hệ), làm sao đảm bảo mã nguồn không biến thành 'code rác Vibecode' khó bảo trì?",
+      "answer": "Nguyên tắc bất di bất dịch của Huỳnh Trọng Phúc (TurnioDEV) là 'Tốc độ chỉ có nghĩa khi đi cùng Kỷ luật Kiến trúc và Verifier'. Giai đoạn ngày 1–2 luôn bắt buộc chạy `/grill-me` và `/plan` để khóa sạch hợp đồng dữ liệu và quy tắc nghiệp vụ với chủ doanh nghiệp trước khi viết dòng code đầu tiên. Toàn bộ bảng dữ liệu đa khách hàng (multi-tenant) bắt buộc vượt qua script kiểm tra `ENABLE` và `FORCE ROW LEVEL SECURITY`. Mọi PR từ Git Worktree đều phải qua cổng `SubagentStop` (`tsc --noEmit` + `playwright-mcp`) và được lớp thứ hai là `@codex review` đối chiếu `## Code Review Rules` trong `AGENTS.md` trước khi merge."
+    },
+    {
+      "question": "Các MCP Server nào thực sự được giữ lại trong môi trường chạy hằng ngày của DOMATION?",
+      "answer": "Sau khi loại bỏ các MCP thừa gây phình ngữ cảnh, bộ tiêu chuẩn tại DOMATION giữ lại đúng 5 MCP có giá trị trực tiếp và đều bật `ENABLE_TOOL_SEARCH=auto` + `defer_loading: true`: (1) `context7` để bơm tài liệu đúng phiên bản Next.js, Three.js, BullMQ chống AI bịa API cũ; (2) `playwright-mcp` chạy kiểm thử luồng người dùng cuối bằng Accessibility Tree siêu nhẹ token; (3) `chrome-devtools` soi Console/Network/LCP cho sa bàn WebGL 3D và Landing Page; (4) `github-mcp-server` quản lý Issue/PR/CI; và (5) `supabase` MCP xác thực OAuth 2.1 để kiểm tra cấu trúc SQL. Các thao tác `git`, `psql | jq` của dev vẫn chạy qua Bash/CLI trực tiếp."
+    },
+    {
+      "question": "DOMATION ứng dụng kho `SKILL.md` như thế nào cho cả đội lập trình lẫn khách hàng doanh nghiệp sau khi bàn giao?",
+      "answer": "Với nội bộ đội kỹ thuật, chúng tôi đóng gói sẵn các Domain Skill chuẩn `agentskills.io` như kiểm toán `FORCE RLS`, nén mô hình 3D Draco GLB dưới 3,5 MB/căn (áp dụng tại EcoLife Signature), hay tạo Adapter webhook VietQR ACB và Meta CAPI SHA-256. Còn với khách hàng doanh nghiệp sau khi bàn giao ERP 5.0, DOMATION tiếp tục đóng gói SOP từng phòng ban (Kế toán đối soát MISA, Marketing audit Hook Rate/Hold Rate, Tuyển sinh/Sale tra cứu Lead) thành các Agent Skill bảo vệ bằng `allowed-tools` để AI Space phòng ban vận hành chuẩn xác 24/7 mà không sợ nhân sự thao tác nhầm."
+    },
+    {
+      "question": "Doanh nghiệp vừa và lớn muốn thuê DOMATION xây dựng hệ thống Bespoke ERP / AutoData / Web 3D cần chuẩn bị gì trước buổi khảo sát?",
+      "answer": "Doanh nghiệp chỉ cần tập hợp đúng ba thứ: (1) Sơ đồ cơ cấu tổ chức cùng các luồng phê duyệt thực tế (mua hàng PO, tạm ứng, tính lương, chia số đại lý F1), (2) Các file Excel rời rạc, bảng giá PDF hoặc mẫu hóa đơn MISA hiện đang dùng hằng ngày, và (3) Chỉ tiêu kinh doanh ưu tiên nhất cần giải quyết trước (ví dụ cắt 35% chi phí Lead trùng, đẩy ROAS qua Meta CAPI hay tự động hóa phiếu lương PDF). Trong vòng 48 giờ khảo sát và chạy Spec `/grill-me`, TurnioDEV và đội Solution Architect sẽ trình bày bản đồ kiến trúc may đo cùng lộ trình bàn giao chi tiết."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "turniodev-flagship-metrics",
+      "heading": "Hiệu suất tổng hợp của Xưởng Kiến trúc DOMATION & TurnioDEV (Dữ liệu thực chiến 2025–2026)",
+      "stats": [
+        {
+          "value": "4,5x",
+          "label": "Tốc độ xuất xưởng Bespoke ERP",
+          "context": "Hoàn thiện khung ERP 5.0 12 phân hệ sạch CI trong 14 ngày thay vì 9–10 tuần",
+          "trend": "up"
+        },
+        {
+          "value": "35+ Hệ thống",
+          "label": "Bàn giao từ A–Z",
+          "context": "Phục vụ 30+ thương hiệu: Capital House, IDEAS, Phúc Lộc Thọ, INKICA, Flora",
+          "trend": "up"
+        },
+        {
+          "value": "~0% / 0 px",
+          "label": "Độ lệch chia F1 & Rập 3D",
+          "context": "Chia số 3 Đại lý F1 EcoLife minh bạch; 208 SKU AOP 3D INKICA khớp mép 300 DPI",
+          "trend": "down"
+        },
+        {
+          "value": "+300% / 8,2x",
+          "label": "Tăng trưởng thực tế khách hàng",
+          "context": "IDEAS nâng lớp MBA 20→60 HV (-30% CPA); EcoLife đạt ROAS đỉnh 8,2x qua CAPI",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ho-so-dieu-hanh-vi-sao-phai-la-bespoke-erp-va-bo-ba-cli",
+      "eyebrow": "HỒ SƠ ĐIỀU HÀNH ĐẶC BIỆT • HUỲNH TRỌNG PHÚC (TURNIODEV)",
+      "variant": "narrative",
+      "heading": "Bài toán 'May đo vừa khít 100% doanh nghiệp' và lý do một Coding Agent đơn lẻ không bao giờ đủ",
+      "pullQuote": "Doanh nghiệp Việt Nam chết mệt vì phải tự chặt gọt quy trình sống của mình để nhét vừa vào phần mềm đóng gói cứng nhắc. Chỉ khi làm chủ được dây chuyền 3 CLI + MCP + Skills, bạn mới có thể may đo hẳn một hệ điều hành ERP 5.0 riêng cho từng công ty với chi phí và tốc độ của phần mềm đóng gói.",
+      "paragraphs": [
+        "Suốt hơn bốn năm trực tiếp tham gia từ khâu khảo sát thực địa, thiết kế cơ sở dữ liệu Multi-Tenant đến lập trình Backend/Frontend và vận hành Performance Marketing cho hơn 30 thương hiệu như Capital House Group (EcoLife Signature), Viện Quản trị & Đào tạo IDEAS, chuỗi 30+ cửa hàng Phúc Lộc Thọ, Nha khoa Flora, Rich Land hay xưởng AI POD INKICA, tôi nhận ra một nút thắt mang tính cấu trúc của thị trường phần mềm Việt Nam: phần mềm đóng gói thì rẻ và nhanh nhưng gãy ngay khi đụng quy trình phê duyệt đặc thù, chia giỏ hàng đa đại lý F1 hay đồng bộ hóa đơn MISA; còn thuê đội ngũ gia công viết may đo theo phương pháp truyền thống thì kéo dài 3–6 tháng và chi phí vọt lên hàng tỷ đồng.",
+        "Tại DOMATION, lời giải cho nghịch lý 'nhanh – chuẩn – may đo riêng' không đến từ việc vứt một câu prompt dài ngoằng cho AI để 'vibecode cho xong', mà đến từ việc công nghiệp hóa quy trình xây dựng phần mềm thành một dây chuyền đa tác nhân (Multi-Agent Factory). Thay vì đặt cược toàn bộ sinh mạng dự án vào một mô hình hoặc một cửa sổ chat duy nhất, chúng tôi phối hợp nhịp nhàng ba CLI mạnh nhất cuối 2026—Claude Code, OpenAI Codex CLI và Google Gemini CLI—trên một nền tảng dùng chung gồm Git Worktree cô lập, cụm 5 MCP Server có kiểm soát schema và thư viện Domain Skill `SKILL.md` đúc kết từ hơn 35 dự án thật.",
+        "Hồ sơ điều hành này bóc trần toàn bộ cách phối hợp kỹ thuật phía sau tốc độ 4,5x của DOMATION: từ cách ép AI phản biện sạch yêu cầu trước khi code bằng `/grill-me`, phân tầng 3 hạng cân model để giữ chi phí API dưới ngưỡng tối ưu, đến cơ chế chéo hóa kiểm định giữa `SubagentStop` của Claude và `@codex review` của OpenAI trước khi một dòng mã ERP 5.0 được phép lên môi trường thật."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-phan-vai-3-cli-va-3-hang-can-model-domation",
+      "eyebrow": "KIẾN TRÚC XƯỞNG SẢN XUẤT • PHÂN VAI CLAUDE CODE + CODEX CLI + GEMINI CLI",
+      "variant": "deep-dive",
+      "heading": "Phân công rạch ròi 3 CLI & 3 Hạng cân Model trên dây chuyền xuất xưởng Enterprise OS",
+      "paragraphs": [
+        "Điểm mấu chốt tạo nên hệ số nhân 4,5x là quy tắc **chuyên môn hóa đúng sở trường từng hệ sinh thái**. Trong pha định hình kiến trúc và điều phối song song, **Claude Code** giữ vai trò Nhạc trưởng (Orchestrator). Chúng tôi chạy `claude-opus-5-5` ($4/$20, Adaptive Thinking) ở chế độ `/plan` kết hợp skill `/grill-me` để tra hỏi ngược lại từng góc khuất nghiệp vụ: ví dụ cơ chế bù ticket lỗi 1:1 cho 3 Đại lý F1 tại EcoLife Signature hay quy tắc che SĐT chuẩn HIPAA trên cổng Affiliate VietQR ACB của Nha khoa Flora. Khi hợp đồng schema PostgreSQL và TypeScript interfaces đã đóng băng, Claude Code tung 4 Subagent chạy song song qua `claude --worktree` (`isolation: worktree`) dùng `claude-sonnet-5-5` ($2/$10) để dựng đồng thời Task Kanban, Chấm công GPS AI, Payroll PDF và CRM Pipeline 8 nấc, còn `claude-haiku-5-5` ($0,10/$0,50 <=100K) đảm nhiệm đánh giá điều kiện hoàn tất `/goal` qua từng vòng lặp.",
+        "Ở tuyến phòng thủ hạ tầng và kiểm toán mã nguồn độc lập, **OpenAI Codex CLI** đảm nhiệm vai trò Kỹ sư Hệ thống & Cổng An ninh (Security & CI Gate). Các tác vụ nhạy cảm như viết script ETL di trú dữ liệu từ 14 file Excel cũ (như ca triển khai tại IDEAS) hoặc rà soát lỗ hổng phân quyền được chạy trong chế độ `workspace-write` (giữ `.git`, `.agents`, `.codex` ở trạng thái chỉ đọc nhờ lớp OS sandbox Linux Landlock/Bubblewrap/seccomp-BPF hoặc Apple Seatbelt). Trong quy trình CI/CD headless, chúng tôi kích hoạt `codex exec` bằng `gpt-5.3-codex` (hoặc `gpt-5.6-terra`) và bật tích hợp `@codex review` tự động đọc mục `## Code Review Rules` trong `AGENTS.md` để soi chéo những lỗ hổng logic mà Claude Code có thể bỏ sót.",
+        "Ở tuyến tiền xử lý tài liệu doanh nghiệp và đa phương thức, **Google Gemini CLI** phát huy thế mạnh vô địch về cửa sổ ngữ cảnh 1M và chi phí xử lý khối lượng lớn. Toàn bộ file PDF chính sách giá bất động sản, 25 ấn phẩm OOH, video giới thiệu sản phẩm hay thư mục quy trình Google Drive/Docs của khách hàng (kết nối qua Google Workspace Extension) được đưa qua `gemini-3.8-flash` ($0,75/$3,75 intro) hoặc `gemini-4-argon` để chuẩn hóa thành dữ liệu cấu trúc JSON và kho kiến thức cho AI Phòng Ban RAG 24/7. Toàn bộ quyền chạy tool của Gemini CLI được khóa cứng bằng 5-tier TOML Policy Engine (`Admin > User > Workspace > Extension > Default`) để đảm bảo tách bạch an toàn dữ liệu giữa các dự án."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-domation-3cli-mcp-skills-orchestration",
+      "heading": "Bản đồ phân công Bộ ba CLI + MCP + Agent Skills xuyên suốt 6 cụm hệ thống tại DOMATION",
+      "caption": "Cách TurnioDEV kết hợp đúng công cụ vào đúng phân hệ để đạt độ chính xác sản xuất trên các dự án thực tế.",
+      "columns": [
+        "Giai đoạn / Phân hệ",
+        "CLI & Model Chủ lực",
+        "MCP & Domain Skill bổ trợ",
+        "Cổng Kiểm định (Verifier Gate)",
+        "Thành quả thực chiến ghi nhận"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "1. Khảo sát & Chốt Spec nghiệp vụ",
+          "values": [
+            "Claude Code (`/plan`, `Opus 5.5`) + Gemini CLI (`3.8 Flash` đọc PDF/Drive)",
+            "Skill `/grill-me` + Google Workspace Extension (`/drive:search`)",
+            "Chốt bảng thực thể & flow IF/ELSE trước khi mở worktree",
+            "Khớp 100% cơ cấu tổ chức & cấp duyệt PO/tạm ứng thực tế"
+          ],
+          "winnerNote": "Cắt 80% làm lại code do hiểu sai đề"
+        },
+        {
+          "criterion": "2. Thiết kế DB Multi-Tenant & Bảo mật",
+          "values": [
+            "Claude Code (`Opus 5.5`) + Codex CLI (`gpt-5.3-codex`, `workspace-write`)",
+            "`supabase` MCP (OAuth 2.1) + Skill `/rls-migration-guard`",
+            "Script `check_rls.mjs` ép 100% bảng bật `FORCE RLS`",
+            "0% lộ dữ liệu chéo vùng tại ImplantSwiss & Rich Land"
+          ]
+        },
+        {
+          "criterion": "3. ERP 5.0 12 Phân hệ & Kế toán MISA",
+          "values": [
+            "Claude Worktree Swarm 4 nhánh (`Sonnet 5.5` + `Haiku 5.5` `/goal`)",
+            "`context7` MCP (Next.js/Drizzle mới) + Skill `/misa-reconcile`",
+            "`SubagentStop` chạy `tsc --noEmit` + unit test đối soát",
+            "Bàn giao ERP 12 phân hệ cho IDEAS (+300% quy mô MBA, -30% CPA)"
+          ],
+          "winnerNote": "Song song 4 module trong 14 ngày"
+        },
+        {
+          "criterion": "4. AutoData 5 cổng ZaloBot & Meta CAPI",
+          "values": [
+            "Codex CLI (`gpt-5.3-codex`) viết Adapter + REST Webhook deterministic",
+            "Bash/CLI `psql | jq` & `curl` kiểm tra chữ ký SHA-256",
+            "Mock load test lọc trùng SĐT 6 tháng & assert HTTP 200",
+            "Tiết kiệm 35% chi phí Ads rác; ROAS đỉnh 8,2x (EcoLife) & 5+ (F&B)"
+          ]
+        },
+        {
+          "criterion": "5. WebGL 3D & INKICA Prepress Agents",
+          "values": [
+            "Claude Code (`Sonnet 5.5`) + Gemini 4 Argon (`background=true` cho spec lớn)",
+            "`context7` (Three.js) + `chrome-devtools` MCP soi FPS/LCP",
+            "Đo dung lượng Draco GLB (<3,5MB/căn) & tọa độ UV",
+            "8 căn 3D EcoLife mượt trên Safari; 208 SKU INKICA 0 px lệch mép"
+          ]
+        },
+        {
+          "criterion": "6. QA E2E, Security & Merge Gate",
+          "values": [
+            "Codex CLI (`codex exec` + `@codex review`) + Claude `/review`",
+            "`playwright-mcp` (Accessibility Tree) + `github-mcp-server`",
+            "`AGENTS.md` `## Code Review Rules` + CI Codex Security Actions",
+            "94,2% PR pass ngay vòng đầu; SLA vận hành cam kết 99,9%"
+          ]
+        }
+      ],
+      "footnote": "Toàn bộ 5 MCP Server kết nối qua cấu hình `ENABLE_TOOL_SEARCH=auto` và `defer_loading: true` để tránh phình schema 50K+ tokens."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-domation-4-5x-velocity-vs-traditional",
+      "heading": "Đối chiếu Giờ công & Tỷ lệ lỗi hậu kiểm: Quy trình Truyền thống vs Dây chuyền 3-CLI DOMATION (ERP 12 phân hệ)",
+      "subtitle": "Thống kê nội bộ từ nhật ký triển khai các dự án Bespoke ERP, AutoData ZaloBot, CRM MISA và WebGL 3D tại DOMATION",
+      "chart": {
+        "chartType": "composed",
+        "title": "Giờ kỹ thuật tiêu tốn theo cụm tính năng (Giờ) & Tỷ lệ Bug lọt sang UAT (%)",
+        "subtitle": "Dây chuyền 3-CLI + Worktree Swarm + Verifier giảm tổng thời gian từ 456 giờ (11,4 tuần-người) xuống 101 giờ (~14 ngày làm việc thực tế)",
+        "xKey": "subsystem",
+        "yUnit": "Giờ / %",
+        "series": [
+          {
+            "key": "traditionalHours",
+            "label": "Quy trình Agency truyền thống (Giờ)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "domationSwarmHours",
+            "label": "DOMATION 3-CLI + Worktree Swarm (Giờ)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "uatDefectRatePct",
+            "label": "Tỷ lệ Defect lọt sang UAT với Verifier (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "subsystem": "Core DB & FORCE RLS", "traditionalHours": 54, "domationSwarmHours": 14, "uatDefectRatePct": 1.2 },
+          { "subsystem": "ERP 12 Phân hệ & Payroll", "traditionalHours": 148, "domationSwarmHours": 32, "uatDefectRatePct": 3.4 },
+          { "subsystem": "AutoData ZaloBot & CAPI", "traditionalHours": 68, "domationSwarmHours": 15, "uatDefectRatePct": 2.1 },
+          { "subsystem": "CRM 8 Nấc & MISA Sync", "traditionalHours": 76, "domationSwarmHours": 16, "uatDefectRatePct": 2.8 },
+          { "subsystem": "WebGL 3D & AI Prepress", "traditionalHours": 64, "domationSwarmHours": 14, "uatDefectRatePct": 3.9 },
+          { "subsystem": "E2E Playwright & Security", "traditionalHours": 46, "domationSwarmHours": 10, "uatDefectRatePct": 1.5 }
+        ],
+        "kpis": [
+          {
+            "label": "Hệ số tăng tốc thực ròng",
+            "value": "4,51x",
+            "delta": "456 giờ truyền thống -> 101 giờ thực chiến",
+            "positive": true
+          },
+          {
+            "label": "Chu kỳ bàn giao bản V1 chạy thật",
+            "value": "14 Ngày",
+            "delta": "Bám 100% sơ đồ phê duyệt riêng",
+            "positive": true
+          },
+          {
+            "label": "Lỗi lọt khâu nghiệm thu UAT",
+            "value": "1,2% – 3,9%",
+            "delta": "Nhờ SubagentStop + @codex review chéo",
+            "positive": true
+          },
+          {
+            "label": "Chi phí API AI trọn dự án ERP",
+            "value": "< 2,5% Giá trị HĐ",
+            "delta": "Nhờ phân tầng Haiku/Flash/Sonnet/Opus",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Project Telemetry (2025–2026): tổng hợp từ nhật ký triển khai thực tế của Founder Huỳnh Trọng Phúc (TurnioDEV) trên cụm IDEAS ERP 5.0, EcoLife Signature, Rich Land và INKICA."
+      },
+      "insightSummary": "Tổng giờ kỹ thuật cho một hệ thống Bespoke Enterprise OS đầy đủ giảm từ 456 giờ xuống còn 101 giờ—tương đương hệ số tăng tốc 4,51x. Điều đáng chú ý nhất đối với khách hàng doanh nghiệp không nằm ở tốc độ gõ code nhanh hơn, mà ở việc tỷ lệ lỗi lọt sang giai đoạn UAT được giữ dưới 4% nhờ ba vòng kiểm định tự động liên hoàn (`SubagentStop` TypeScript + `playwright-mcp` + `@codex review`) và tỷ trọng chi phí token AI giữ gọn dưới 2,5% tổng ngân sách nhờ định tuyến đúng hạng cân model."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-domation-turniodev-4-5x-velocity",
+      "src": "/imgs/boost/charts/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x-report.webp",
+      "alt": "Biểu đồ thực chiến DOMATION TurnioDEV phối hợp Claude Code Codex CLI Gemini CLI MCP và Skills đạt tốc độ gấp 4,5 lần xây dựng Bespoke ERP 5.0 12 phân hệ",
+      "caption": "So sánh giờ công triển khai 6 phân hệ cốt lõi giữa mô hình phát triển phần mềm truyền thống và dây chuyền 3-CLI + Worktree + MCP của DOMATION.",
+      "badge": "EXECUTIVE DOSSIER • 4.5X VELOCITY"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "timeline-14-day-bespoke-erp-sprint",
+      "heading": "Lộ trình 14 ngày từ Khảo sát A–Z đến Go-Live Bespoke ERP 5.0 chuẩn TurnioDEV",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "NGÀY 01–02 • KHẢO SÁT & /GRILL-ME",
+          "title": "Bóc tách quy trình sống & chuyển hóa PDF/Excel sang Domain Spec",
+          "detail": "Gemini CLI (`gemini-3.8-flash`) đọc hàng loạt bảng giá PDF, mẫu phiếu lương và bảng Excel hiện hành; Claude Code chạy `/grill-me` và `/plan` với `claude-opus-5-5` để khóa sạch sơ đồ phân quyền, luồng phê duyệt PO và phễu CRM 8 nấc.",
+          "metricOrTool": "Gemini Flash • Claude /grill-me + /plan"
+        },
+        {
+          "tag": "NGÀY 03–04 • CORE DB & FORCE RLS",
+          "title": "Đóng băng Schema Multi-Tenant PostgreSQL & Adapter Kế toán/Thanh toán",
+          "detail": "Dựng lõi cơ sở dữ liệu với `supabase` MCP và `rls-migration-guard` Skill bắt buộc 100% bảng có `ENABLE` + `FORCE ROW LEVEL SECURITY`. Khóa TypeScript contracts cho các phân hệ dùng chung trước khi phát lệnh chạy song song.",
+          "metricOrTool": "Supabase MCP • SKILL.md RLS Guard"
+        },
+        {
+          "tag": "NGÀY 05–08 • 4-WORKTREE SWARM",
+          "title": "Chạy song song 4 nhánh: 12 Phân hệ ERP, AutoData 5 cổng, CRM MISA & WebGL 3D",
+          "detail": "Phát lệnh 4 `claude --worktree` chạy `claude-sonnet-5-5` dưới sự bảo trợ tài liệu đúng phiên bản của `context7` MCP: nhánh 1 dựng Chấm công GPS AI + Payroll PDF 1 click; nhánh 2 dựng AutoData chia số ZaloBot 5 cổng + lọc trùng 6 tháng; nhánh 3 dựng CRM + MISA; nhánh 4 tối ưu giao diện & sa bàn WebGL 3D Draco GLB (< 3,5 MB/căn).",
+          "metricOrTool": "Claude --worktree • Context7 MCP"
+        },
+        {
+          "tag": "NGÀY 09–11 • CAPI, ZALOBOT & AI RAG",
+          "title": "Đấu nối tín hiệu Meta CAPI SHA-256, VietQR ACB và Trợ lý AI Phòng ban",
+          "detail": "Codex CLI (`gpt-5.3-codex`, sandbox `workspace-write`) hoàn thiện các webhook deterministic cho VietQR ACB (đối soát tức thì như case Flora) và bắn Meta CAPI HTTP 200 (như EcoLife & IDEAS); đồng thời nạp tri thức PDF/bảng giá vào AI RAG trực Zalo OA/Website 24/7.",
+          "metricOrTool": "Codex workspace-write • CAPI SHA-256"
+        },
+        {
+          "tag": "NGÀY 12–13 • VERIFIER & @CODEX REVIEW",
+          "title": "Kiểm thử E2E bằng Playwright Accessibility Tree & Soi hiệu năng Chrome DevTools",
+          "detail": "Từng nhánh qua cổng `SubagentStop` chạy `tsc --noEmit` và `playwright-mcp`; `chrome-devtools` MCP kiểm tra LCP, FPS WebGL trên Safari Mobile; cuối cùng kích hoạt `codex exec` + `@codex review` kiểm tra chéo bảo mật dựa trên `AGENTS.md`.",
+          "metricOrTool": "Playwright + DevTools MCP • @codex review"
+        },
+        {
+          "tag": "NGÀY 14 • GO-LIVE & BÀN GIAO SKILLS",
+          "title": "Đẩy Production SLA 99,9% & Cài bộ `/slash` Skill riêng cho nhân sự khách hàng",
+          "detail": "Triển khai lên Private Server hoặc DB tách biệt, bàn giao tài khoản quản trị và kích hoạt sẵn bộ `SKILL.md` theo từng phòng ban (Sale tra DataBank, Marketing soi Hook Rate, Kế toán đối soát MISA) để vận hành trơn tru ngay ngày đầu tiên.",
+          "metricOrTool": "Private Server SLA 99.9% • SKILL.md"
+        }
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-adopt-domation-factory-stack",
+      "heading": "Hướng dẫn lựa chọn mô hình áp dụng dây chuyền 3-CLI + MCP + Skills theo quy mô tổ chức",
+      "subtitle": "Không cần sao chép máy móc mọi thành phần ngay ngày đầu; hãy bật đúng cấu hình tương xứng với đội ngũ của bạn.",
+      "scenarios": [
+        {
+          "condition": "Solo Tech Lead hoặc Nhóm nhỏ 2–3 kỹ sư dựng sản phẩm MVP / SaaS tốc độ cao",
+          "recommendedChoice": "Claude Code (`Sonnet 5.5` + `--worktree` 2 nhánh) + `context7` + `playwright-mcp` + `AGENTS.md`",
+          "rationale": "Giữ độ phức tạp quản trị ở mức thấp nhất, cắt ảo giác API bằng `context7`, kiểm thử nhanh giao diện qua `playwright-mcp` và tăng tốc ~2,5x–3x ngay lập tức.",
+          "avoidIf": "Bạn chạy quá 4 worktree cùng lúc trên máy RAM 16 GB gây nghẽn Docker/Node build."
+        },
+        {
+          "condition": "Đội Product / Software House 4–10 kỹ sư chuyên làm Bespoke ERP, CRM & MarTech phức tạp",
+          "recommendedChoice": "Full Stack DOMATION: Claude Worktree Swarm (4 nhánh) + Codex CLI CI (`@codex review`) + Gemini CLI (Docs/Multimodal) + Kho `SKILL.md`",
+          "rationale": "Tận dụng tối đa lợi thế kiểm định chéo giữa hai hãng Anthropic và OpenAI, chia sẻ chuẩn SOP phòng ban qua `SKILL.md` và mở rộng lên tốc độ 4,5x ổn định.",
+          "avoidIf": "Chưa thiết lập chuẩn Git branch protection hoặc chưa có script test tự động làm cổng chặn `SubagentStop`."
+        },
+        {
+          "condition": "Doanh nghiệp Ngân hàng / Y tế / Tập đoàn yêu cầu cô lập dữ liệu nghiêm ngặt",
+          "recommendedChoice": "Codex CLI (`read-only` / `workspace-write` Landlock) + Gemini CLI 5-tier Admin Policy + Streamable HTTP MCP OAuth 2.1 (RFC 8707) + Private Server",
+          "rationale": "Ưu tiên hàng rào cấp nhân OS và chính sách Admin khóa quyền từ đầu, chỉ dùng MCP từ xa có RFC 8707 audience binding và chạy dữ liệu nhạy cảm trên Private Server SLA 99,9%.",
+          "avoidIf": "Để nhân viên tự cài các MCP `stdio` bên thứ ba không qua kiểm định hash."
+        },
+        {
+          "condition": "Ban Giám đốc / Chủ doanh nghiệp SME muốn sở hữu ERP 5.0 & AutoData may đo mà không tự nuôi team DevOps",
+          "recommendedChoice": "Đặt hàng DOMATION triển khai trọn gói A–Z (Khảo sát 1-1 cùng Founder Huỳnh Trọng Phúc)",
+          "rationale": "Nhận ngay hệ thống may đo khớp 100% quy trình thực tế (như IDEAS, EcoLife Signature, Phúc Lộc Thọ, INKICA) trong 14–30 ngày kèm bàn giao dữ liệu & bảo mật RLS.",
+          "avoidIf": "Doanh nghiệp chưa sẵn sàng chuẩn hóa ít nhất các bước phê duyệt và bảng dữ liệu đầu vào cốt lõi."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-domation-unified-3cli-blueprint",
+      "heading": "Code Recipe: Bộ cấu hình Lõi `AGENTS.md` + `.mcp.json` (`ENABLE_TOOL_SEARCH`) + Multi-CLI CI Gate của DOMATION",
+      "language": "yaml",
+      "filename": "AGENTS.md + .mcp.json + scripts/domation-multi-cli-gate.sh",
+      "description": "Khung cấu hình xương sống mà DOMATION dùng để đồng bộ cả Claude Code, Codex CLI và Gemini CLI trong một kho mã nguồn duy nhất: (1) `AGENTS.md` làm nguồn chân lý cho Claude fallback, Gemini `@./AGENTS.md` và Codex `## Code Review Rules`, (2) `.mcp.json` kết nối 5 MCP server tối giản bật `defer_loading: true`, và (3) Pipeline bash chạy chéo Verifier trước khi merge.",
+      "code": "# ========================================================================\n# FILE 1: AGENTS.md (Single Source of Truth cho Codex, Claude & Gemini)\n# ========================================================================\n# DOMATION Bespoke ERP 5.0 Engineering Contract\n- Stack: Next.js App Router, TypeScript strict, PostgreSQL FORCE RLS, BullMQ, Tailwind CSS.\n- Khong bao gio dung `any` hoac bo qua loi `tsc --noEmit`.\n- Moi bang chua du lieu khach hang / tenant_id BAT BUOC bat `ENABLE` va `FORCE ROW LEVEL SECURITY`.\n- Moi Webhook Meta CAPI phai bam SHA-256 PII (email, phone) truoc khi gui va log trang thai HTTP 200.\n\n## Code Review Rules\n- Tu choi PR neu co Migration SQL thieu `FORCE ROW LEVEL SECURITY`.\n- Tu choi PR neu endpoint CRM/ERP khong kiem tra `tenant_id` tu session da xac thuc.\n- Tu choi PR neu hardcode secret/token Meta CAPI, Zalo OA hoac MISA trong ma nguon.\n- Canh bao neu thay doi truc tiep `pnpm-lock.yaml` trong nhanh feature worktree.\n\n# (File GEMINI.md o thu muc goc chi can 2 dong ke thua: `@./AGENTS.md`)\n# (Claude Code tu dong doc AGENTS.md neu khong co CLAUDE.md, hoac dung `@./AGENTS.md`)\n\n# ========================================================================\n# FILE 2: .mcp.json (Chay kem bien moi truong ENABLE_TOOL_SEARCH=auto)\n# ========================================================================\n{\n  \"mcpServers\": {\n    \"context7\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.context7.com/mcp\",\n      \"defer_loading\": true\n    },\n    \"github\": {\n      \"type\": \"http\",\n      \"url\": \"https://api.githubcopilot.com/mcp/\",\n      \"defer_loading\": true\n    },\n    \"supabase\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.supabase.com/mcp\",\n      \"defer_loading\": true\n    },\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@playwright/mcp@latest\", \"--headless\"],\n      \"defer_loading\": true\n    },\n    \"chrome-devtools\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"chrome-devtools-mcp@latest\"],\n      \"defer_loading\": true\n    }\n  }\n}\n\n# ========================================================================\n# FILE 3: scripts/domation-multi-cli-gate.sh (Chay cheo Verifier truoc Merge)\n# ========================================================================\n#!/usr/bin/env bash\nset -euo pipefail\n\necho \"[1/3] Kiem tra TypeScript & RLS Migration Guard...\"\npnpm exec tsc --noEmit\nfor f in $(git diff --name-only origin/main...HEAD -- '*.sql'); do\n  node .claude/skills/rls-migration-guard/scripts/check_rls.mjs \"$f\"\ndone\n\necho \"[2/3] Chay Codex CLI Security & Review Gate o che do read-only headless...\"\ncodex exec \\\n  --sandbox read-only \\\n  --output-last-message .tmp/codex-review-report.md \\\n  \"Review staged diff theo ## Code Review Rules trong AGENTS.md. Bao FAIL neu co lo hong RLS, XSS hoac lech CAPI SHA-256.\"\n\necho \"[3/3] Kiem thu E2E tren nhanh worktree bang Playwright...\"\npnpm exec playwright test --reporter=list\necho \"ALL GATES PASSED — SAN SANG MERGE VAO RELEASE BRANCH.\"\n"
+    },
+    {
+      "type": "prose",
+      "id": "ket-thuc-dossier-tu-duy-ky-tri-cua-turniodev",
+      "eyebrow": "ĐÚC KẾT TỪ FOUNDER • TỪ TỐC ĐỘ CODE ĐẾN GIÁ TRỊ DOANH THU THẬT",
+      "variant": "contrarian",
+      "heading": "4.5x không phải để khoe dòng code — mà để doanh nghiệp kịp nắm cơ hội tăng trưởng",
+      "paragraphs": [
+        "Trên cương vị người trực tiếp kiến trúc hệ thống tại DOMATION, tôi luôn nhắc đội ngũ kỹ thuật một điều giản dị: khách hàng của chúng ta—từ chủ đầu tư bất động sản EcoLife Signature cần chia số tức thì cho 3 Đại lý F1, ban giám hiệu Viện IDEAS cần nâng quy mô lớp MBA gấp ba lần, chuỗi 30+ cửa hàng Phúc Lộc Thọ cần khép kín POS với Zalo ZNS và Voucher Hub, cho đến xưởng INKICA cần xử lý 208 SKU 3D chuẩn từng pixel ở 300 DPI—không trả tiền để ngắm chúng ta dùng AI gì. Họ trả tiền cho một hệ điều hành vận hành chạy ổn định 99,9%, không mất Lead, không rò rỉ dữ liệu vùng và đẩy được doanh thu thật lên.",
+        "Việc phối hợp chuẩn xác bộ ba Claude Code, Codex CLI và Gemini CLI cùng lớp giao thức MCP và kho Domain Skill `SKILL.md` chỉ là đòn bẩy kỹ thuật giúp đội ngũ kỹ sư giải phóng sức lực khỏi những công việc lặp lại nhàm chán, rút ngắn thời gian dựng Bespoke Enterprise OS từ hàng quý xuống còn vài tuần mà chất lượng kiểm toán lại cao hơn trước. Nếu bạn là CTO hoặc Tech Lead đang muốn nhân bản mô hình xưởng phát triển phần mềm tốc độ cao này, hoặc là Chủ doanh nghiệp muốn đưa một hệ thống ERP 5.0 may đo vào vận hành ngay trong tháng tới, hãy bắt đầu từ việc chuẩn hóa một tệp `AGENTS.md`, một cổng Verifier không khoan nhượng và ba `SKILL.md` sát sườn nhất với nỗi đau của công ty mình."
+      ]
+    }
+  ]
+}

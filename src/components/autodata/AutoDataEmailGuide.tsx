@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { DomResponsiveSubtabs } from '../dom-meta/DomMetaSelect';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import { apiRequest } from './autodataApi';
 
 interface AutoDataEmailGuideProps {
@@ -181,6 +182,8 @@ function doPost(e) {
           </div>
         ))}
       </div>
+
+      <ZaloSpecialistBanner context="setup" variant="compact" />
 
       {/* Responsive Provider Selector */}
       <DomResponsiveSubtabs

@@ -2,7 +2,6 @@ import React, { Suspense, useEffect, useState } from 'react';
 import {
   Activity,
   ArrowRight,
-  ArrowUp,
   ArrowUpRight,
   Bot,
   Briefcase,
@@ -24,6 +23,7 @@ import {
   GraduationCap,
   HeartPulse,
   Layers,
+  Maximize2,
   PlusCircle,
   RefreshCw,
   Scale,
@@ -37,15 +37,19 @@ import {
   Webhook,
   Workflow,
   X,
-  ZoomIn,
 } from 'lucide-react';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { Navbar } from './Navbar';
+import { BackToTopPill } from './components/BackToTopPill';
 import { ChannelLogoStrip } from './components/ChannelLogoStrip';
-import { ClosedLoopFlywheelSection } from './components/ClosedLoopFlywheelSection';
+import { ClosedLoopSixCardSection } from './components/ClosedLoopSixCardSection';
+import { MobileAppShowcaseSection } from './components/MobileAppShowcaseSection';
+import { MotionVideoShowcase } from './components/MotionVideoShowcase';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DomationProgressLoader } from './components/DomationProgressLoader';
 import { FaqAccordionSection } from './components/FaqAccordionSection';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
+import { SPECIALIST_ZALO_URL, ZaloSpecialistBanner } from './components/common/ZaloSpecialistBanner';
 import ResponsiveSlideDeck from './components/ResponsiveSlideDeck';
 import { handleSpaLinkClick } from './utils/navigation';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
@@ -122,89 +126,51 @@ interface ScreenshotItem {
   badge: string;
   desc: string;
   src: string;
+  category?: 'routing' | 'ads_capi';
 }
 
 const SYSTEM_SCREENSHOTS: ScreenshotItem[] = [
   {
-    title: 'Bảng Điều Khiển Phân Bổ Data Real-Time',
-    badge: 'Router Console',
-    desc: 'Theo dõi trực quan lưu lượng Lead đổ về từ các chiến dịch, tỷ lệ chia vòng và hiệu suất từng Sale / Đại lý F1.',
-    src: '/imgs/autodata/showcase/screen_dashboard.jpg',
+    title: 'Tổng Quan Phân Bổ Data & Lịch Sử Chia Vòng',
+    badge: 'Chia Vòng Real-time',
+    category: 'routing',
+    desc: 'Theo dõi tổng data tiếp nhận, tỷ lệ chia vòng thành công 100%, lọc trùng 6 tháng và lịch sử giao số tức thì tới từng Đại lý F1.',
+    src: '/imgs/data-screens/01-dashboard-routing.jpg',
   },
   {
-    title: 'Quản Lý Data & Preview Bài Quảng Cáo',
-    badge: 'Lead Management',
-    desc: 'Quản lý danh sách khách hàng đa kênh, bảo mật SĐT (PII Masking), xem trước mẫu quảng cáo và dòng thời gian chăm sóc.',
-    src: '/imgs/autodata/showcase/screen_datalist.jpg',
+    title: 'Tỷ Lệ Pipeline Đánh Giá Lead & Biểu Đồ Chốt Đơn',
+    badge: 'Pipeline 9 Tầng',
+    category: 'routing',
+    desc: 'Phân tích trực quan tỷ lệ Thiện chí & Đã hẹn (53%) so với Đặt cọc & Chốt hợp đồng (47%) theo từng Sale, từng Đại lý hoặc toàn sàn.',
+    src: '/imgs/data-screens/02-pipeline-analytics.jpg',
   },
   {
-    title: 'Hiệu Suất Meta Ads & Tỷ Lệ Chuyển Đổi',
-    badge: 'Meta Conversion API',
-    desc: 'Đo lường CPL, CPQL theo từng Ad ID kết hợp dữ liệu Thiện chí, Hẹn gặp, Booking, Đặt cọc từ đội ngũ Sale.',
-    src: '/imgs/autodata/showcase/screen_ads.jpg',
+    title: 'Quản Lý Data & Đối Chiếu Bài Quảng Cáo Theo Đại Lý',
+    badge: 'Quản Lý Data',
+    category: 'routing',
+    desc: 'Danh sách khách hàng đa kênh đính kèm mã bài quảng cáo chạy ra Lead, trạng thái Pipeline và vòng nhận số của từng Đại lý F1.',
+    src: '/imgs/data-screens/03-leads-table-agency.jpg',
   },
   {
-    title: 'Báo Cáo Đối Soát Độ Công Bằng Gini',
-    badge: 'Fairness Audit',
-    desc: 'Kiểm toán toán học chỉ số Gini và độ lệch chuẩn để đảm bảo phân bổ data công bằng tuyệt đối giữa các nhân sự.',
-    src: '/imgs/autodata/showcase/screen_fairshare.jpg',
+    title: 'Đối Chiếu Lead Từ Từng Bài Quảng Cáo × Pipeline CRM',
+    badge: 'Đối Chiếu Ads × CRM',
+    category: 'ads_capi',
+    desc: 'Mở danh sách 20+ khách hàng đổ về từ từng Ad ID ngay trên bảng báo cáo: thấy rõ từng Lead thuộc Đại lý nào, trạng thái Thiện chí / Booking / Cọc.',
+    src: '/imgs/data-screens/04-ad-attribution-pipeline.jpg',
   },
   {
-    title: 'Vòng Phân Bổ Round-Robin & Bù Data',
-    badge: 'Fair-Share Matrix',
-    desc: 'Cấu hình nhiều vòng chia độc lập theo dự án/nguồn, trọng số nhận số và đền bù lượt tự động.',
-    src: '/imgs/autodata/showcase/screen_rounds.jpg',
+    title: 'Nhật Ký Tín Hiệu Meta CAPI Server-Side (SHA-256)',
+    badge: 'Meta CAPI 200 OK',
+    category: 'ads_capi',
+    desc: 'Tự động gửi ngược sự kiện Lead, Schedule, InitiateCheckout, AddPaymentInfo, Purchase về Dataset Pixel Meta giúp AI máy học đúng khách thật.',
+    src: '/imgs/data-screens/05-meta-capi-logs.jpg',
   },
   {
-    title: 'Tích Hợp Google Sheets 2 Chiều & API',
-    badge: 'Omnichannel Sync',
-    desc: 'Mapping cột Google Sheets tự do, kết nối Landing Page API, Telegram Bot, Zalo Bot và đồng bộ trạng thái real-time.',
-    src: '/imgs/autodata/showcase/screen_integrations.jpg',
-  },
-];
-
-const FUSION_GALLERY_SHOTS: Array<ScreenshotItem & { tabLabel: string }> = [
-  {
-    tabLabel: 'Chiến dịch & Khách nét',
-    badge: 'Đối soát trực tiếp trên bảng Ads',
-    title: 'Xem Từng Bài Quảng Cáo Mang Về Bao Nhiêu Khách Chất Lượng & Sale Phụ Trách',
-    desc: 'Ngay bên cạnh ngân sách chi tiêu là số lượng khách thực nhận trong CRM, tỷ lệ khách tiềm năng, chi phí thực tế cho 1 khách nét, doanh thu chốt và đội ngũ Sale đang chăm sóc.',
-    src: '/imgs/meta-screens/fusion-campaign-crm-leads.webp',
-  },
-  {
-    tabLabel: 'Phân bổ theo từng Sale',
-    badge: 'Chi tiết khách theo bài chạy',
-    title: 'Đối Soát Từng Nhân Viên Sale Nhận Khách & Kết Quả Gọi Từ Bài Quảng Cáo',
-    desc: 'Bấm vào bất kỳ chiến dịch hay bài quảng cáo nào để xem danh sách khách hàng thuộc bài đó, thuộc vòng chia nào, kết quả cuộc gọi ra sao và mở nhanh hồ sơ chăm sóc khách hàng.',
-    src: '/imgs/meta-screens/fusion-ad-leads-sale-modal.webp',
-  },
-  {
-    tabLabel: 'Kết nối 1 chạm',
-    badge: 'Hợp nhất trong 1 trung tâm',
-    title: 'Kết Nối 1 Chạm — Tự Nhận Tài Khoản Meta Sẵn Có Trong CRM',
-    desc: 'Hợp nhất trọn vẹn báo cáo quảng cáo và cấu hình chuyển đổi vào một mục duy nhất; hệ thống tự nhận kết nối Meta có sẵn trong CRM mà không bắt bạn nhập lại thông tin.',
-    src: '/imgs/meta-screens/fusion-quick-connect-crm.webp',
-  },
-  {
-    tabLabel: 'Tổng quan ngân sách',
-    badge: 'Theo dõi chi tiêu từng ngày',
-    title: 'Bảng Tổng Quan Ngân Sách, Kết Quả & Mục Tiêu Quảng Cáo Thời Gian Thực',
-    desc: 'Theo dõi tổng chi tiêu, tốc độ tăng giảm so với kỳ trước, biểu đồ chi phí từng ngày và tỷ trọng phân bổ ngân sách trên Facebook, Instagram.',
-    src: '/imgs/meta-screens/meta-dashboard.webp',
-  },
-  {
-    tabLabel: 'Thư viện bài chạy',
-    badge: 'Đánh giá hình ảnh & video',
-    title: 'Thư Viện Trực Quan Mọi Mẫu Quảng Cáo Kèm Tỷ Lệ Giữ Chân Người Xem',
-    desc: 'Nhìn rõ hình ảnh, video của từng bài quảng cáo đang chạy cùng chi phí, số khách mang về và tỷ lệ giữ chân 3 giây đầu để nhân bản nội dung hiệu quả.',
-    src: '/imgs/meta-screens/meta-ads-library.webp',
-  },
-  {
-    tabLabel: 'Khung giờ ra khách',
-    badge: '7 ngày × 24 giờ',
-    title: 'Bản Đồ Nhiệt Khung Giờ Vàng & Tỉnh Thành Phản Hồi Tốt Nhất',
-    desc: 'Chỉ rõ khung giờ nào trong ngày và khu vực địa lý nào mang về nhiều khách hàng nhất để đội Sale trực chiến kịp thời.',
-    src: '/imgs/meta-screens/meta-heatmap-region.webp',
+    title: 'Thư Viện Quảng Cáo & Hook Rate Theo Từng Chiến Dịch',
+    badge: 'Ads Library',
+    category: 'ads_capi',
+    desc: 'Hiển thị trực quan creative hình ảnh/video của toàn bộ mẫu quảng cáo đang chạy kèm chi phí, số Lead thu được và tỷ lệ giữ chân 3 giây.',
+    src: '/imgs/data-screens/06-ads-library-creative.jpg',
   },
 ];
 
@@ -332,7 +298,7 @@ export function DomationDataLanding() {
 
   // Zoomable screenshot lightbox
   const [zoomImage, setZoomImage] = useState<ScreenshotItem | null>(null);
-  const [activeFusionShotIdx, setActiveFusionShotIdx] = useState(0);
+  const [shotCategory, setShotCategory] = useState<'all' | 'routing' | 'ads_capi'>('all');
 
   useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 560);
@@ -590,10 +556,10 @@ export function DomationDataLanding() {
               <span>AUTO CHIA DATA CHO SALE</span>
             </div>
 
-            <h1 className="text-[1.75rem] sm:text-5xl xl:text-[52px] font-black text-slate-900 leading-[1.22] tracking-[-0.02em]">
-              Tự động chia vòng Lead đa kênh
+            <h1 className="text-[1.45rem] sm:text-4xl lg:text-5xl xl:text-[52px] font-black text-slate-900 leading-[1.2] tracking-[-0.02em]">
+              Tự động chia Lead đa kênh
               <span className="block text-gradient-inkica mt-1">
-                cho từng nhân viên Sale.
+                tức thì cho từng nhân viên Sale.
               </span>
             </h1>
 
@@ -679,7 +645,15 @@ export function DomationDataLanding() {
           </div>
         </section>
 
-      <ClosedLoopFlywheelSection variant="data" />
+      <ClosedLoopSixCardSection variant="data" />
+
+      <MobileAppShowcaseSection variant="data" />
+
+      <section id="motion-showcase" className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <MotionVideoShowcase variant="spotlight" videoId="autodata" />
+        </div>
+      </section>
 
       {/* ====================================================================
           REAL PARTNERS STRIP (#partners)
@@ -767,7 +741,7 @@ export function DomationDataLanding() {
                 <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                 <span>PHÙ HỢP MỌI NGÀNH HÀNG</span>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+              <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.24] tracking-tight">
                 Thiết Kế Chuẩn Cho{' '}
                 <span className="text-gradient-inkica">Mọi Doanh Nghiệp Có Sale</span>
               </h2>
@@ -925,9 +899,9 @@ export function DomationDataLanding() {
               <div className="ql-eyebrow mb-2.5 sm:mb-3 mx-auto md:mx-0">
                 <span>CHỐNG NGUỘI LEAD TỨC THÌ</span>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                Phân Bổ Tức Thì Khi Khách Vừa Quan Tâm —{' '}
-                <span className="text-gradient-inkica">Không Để Lead Bị Nguội</span>
+              <h2 className="text-[20px] sm:text-[21px] lg:text-3xl font-bold text-slate-900 leading-[1.24] tracking-tight">
+                Chia Số Tức Thì Khi Hỏi —{' '}
+                <span className="text-gradient-inkica">Không Để Nguội</span>
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
@@ -1054,9 +1028,9 @@ export function DomationDataLanding() {
                 <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
                 <span>AI LỌC LEAD &amp; BÙ 1-ĐỔI-1</span>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                AI Đánh Giá Trước Khi Giao Lead{' '}
-                <span className="text-gradient-inkica">&amp; Bù Data Lỗi 1-Đổi-1</span>
+              <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.24] tracking-tight">
+                AI Đánh Giá Trước Khi Giao{' '}
+                <span className="text-gradient-inkica">&amp; Bù Lỗi 1-Đổi-1</span>
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
@@ -1276,8 +1250,57 @@ export function DomationDataLanding() {
             </div>
           </div>
 
-          {/* 3 Core Customer Values */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+          {/* 3 Core Customer Values — Mobile SlideDeck + Desktop Grid */}
+          <div className="md:hidden">
+            <ResponsiveSlideDeck
+              items={[
+                {
+                  icon: Users,
+                  badge: 'Nội dung → Ra khách',
+                  title: 'Biết Rõ Nội Dung Nào Ra Khách Nét & Sale Nào Nhận',
+                  desc: 'Xem ngay từng bài chạy mang về bao nhiêu khách, bao nhiêu khách chất lượng, giao cho Sale nào và chốt bao nhiêu tiền.',
+                },
+                {
+                  icon: RefreshCw,
+                  badge: 'Kích hoạt 1 chạm',
+                  title: 'Tự Nhận Kết Nối Sẵn Có — Bật Trong 1 Chạm',
+                  desc: 'Tự động nhận tài khoản quảng cáo đã liên kết sẵn trong CRM để mở báo cáo ngay, không cần cài lại.',
+                },
+                {
+                  icon: Activity,
+                  badge: 'Khách → Từ nội dung nào',
+                  title: 'Bấm Từ Tên Khách Xem Ngay Bài Quảng Cáo Gốc',
+                  desc: 'Ngay trên danh sách khách hàng, bấm xem tức thì bài quảng cáo đã tạo ra vị khách đó và chi phí thực tế.',
+                },
+              ]}
+              mobilePerPage={1}
+              mobileColsClass="grid-cols-1"
+              gapClass="gap-3"
+              ariaLabel="Giá trị đối soát Lead × Meta Ads"
+              keyExtractor={(v) => v.badge}
+              renderItem={(val) => {
+                const VIcon = val.icon;
+                return (
+                  <div className="h-full rounded-2xl bg-white border border-slate-200/85 p-5 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="w-9 h-9 rounded-xl bg-[#F4F8FF] border border-blue-100 text-[#1E40FF] flex items-center justify-center shrink-0">
+                          <VIcon className="w-4 h-4" />
+                        </div>
+                        <span className="px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200/80 text-[10.5px] font-semibold text-[#1E40FF] whitespace-nowrap">
+                          {val.badge}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 leading-snug">{val.title}</h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">{val.desc}</p>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-3 gap-4 sm:gap-5">
             {[
               {
                 icon: Users,
@@ -1323,113 +1346,123 @@ export function DomationDataLanding() {
             })}
           </div>
 
-          {/* Interactive Switcher + Featured Screenshot + Thumbnail Strip */}
-          {(() => {
-            const activeShot = FUSION_GALLERY_SHOTS[activeFusionShotIdx] || FUSION_GALLERY_SHOTS[0];
-            return (
-              <div className="rounded-[28px] bg-white border border-slate-200/90 shadow-[0_24px_64px_-24px_rgba(30,64,255,0.14)] p-4 sm:p-6 lg:p-8 space-y-5">
-                {/* Pill Switcher */}
+          {/* Trải Nghiệm Trực Quan Từng Màn Hình — Style Đồng Bộ Báo Cáo */}
+          <div id="screenshots" className="scroll-mt-24 pt-4 space-y-6 sm:space-y-8">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 text-center lg:text-left">
+              <div className="max-w-xl mx-auto lg:mx-0">
+                <div className="ql-eyebrow mb-2.5 mx-auto lg:mx-0">
+                  <Layers className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                  <span>GIAO DIỆN VẬN HÀNH THỰC TẾ</span>
+                </div>
+                <h3 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                  Trải Nghiệm Trực Quan Từng Màn Hình{' '}
+                  <span className="text-gradient-inkica">Chia Vòng, Pipeline &amp; Đối Chiếu CAPI</span>
+                </h3>
+              </div>
+
+              <div className="shrink-0">
                 <DomResponsiveSubtabs
-                  tabs={FUSION_GALLERY_SHOTS.map((shot, idx) => ({
-                    id: String(idx),
-                    label: shot.tabLabel,
-                  }))}
-                  value={String(activeFusionShotIdx)}
-                  onChange={(id) => setActiveFusionShotIdx(Number(id) || 0)}
+                  tabs={[
+                    { id: 'all', label: `Tất cả (${SYSTEM_SCREENSHOTS.length})` },
+                    {
+                      id: 'routing',
+                      label: `Chia Vòng & Pipeline (${SYSTEM_SCREENSHOTS.filter((s) => s.category === 'routing').length})`,
+                    },
+                    {
+                      id: 'ads_capi',
+                      label: `Ads × CRM & CAPI (${SYSTEM_SCREENSHOTS.filter((s) => s.category === 'ads_capi').length})`,
+                    },
+                  ]}
+                  value={shotCategory}
+                  onChange={(id) => setShotCategory(id as 'all' | 'routing' | 'ads_capi')}
                   maxMobile={2}
                 />
+              </div>
+            </div>
 
-                {/* Active Featured Preview */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                  <button
-                    type="button"
-                    onClick={() => setZoomImage(activeShot)}
-                    className="lg:col-span-8 group relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 aspect-[16/10] w-full text-left cursor-zoom-in shadow-sm"
-                  >
-                    <img
-                      src={activeShot.src}
-                      alt={activeShot.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-top group-hover:scale-[1.015] transition-transform duration-500"
+            {(() => {
+              const visibleShots =
+                shotCategory === 'all'
+                  ? SYSTEM_SCREENSHOTS
+                  : SYSTEM_SCREENSHOTS.filter((s) => s.category === shotCategory);
+              return (
+                <>
+                  {/* Mobile SlideDeck (< md) */}
+                  <div className="md:hidden">
+                    <ResponsiveSlideDeck
+                      items={visibleShots}
+                      keyExtractor={(s) => s.title}
+                      mobilePerPage={1}
+                      gapClass="gap-3"
+                      ariaLabel="Giao diện hệ thống Auto Data"
+                      renderItem={(shot) => (
+                        <div
+                          onClick={() => setZoomImage(shot)}
+                          className="group rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_14px_36px_-22px_rgba(15,23,42,0.14)] hover:border-blue-300 overflow-hidden cursor-zoom-in transition-all flex flex-col w-full h-full text-left"
+                        >
+                          <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-100 w-full">
+                            <img
+                              src={shot.src}
+                              alt={shot.title}
+                              loading="lazy"
+                              className="w-full h-full object-cover object-top"
+                            />
+                            <div className="absolute top-2.5 left-2.5">
+                              <span className="px-2.5 py-0.5 rounded-full bg-white/95 border border-blue-100 text-[#1E40FF] text-[10px] font-bold shadow-xs">
+                                {shot.badge}
+                              </span>
+                            </div>
+                            <div className="absolute bottom-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
+                              <Maximize2 className="w-3.5 h-3.5" />
+                            </div>
+                          </div>
+                          <div className="p-4 space-y-1 flex-1">
+                            <h4 className="text-sm font-bold text-slate-900 leading-snug">{shot.title}</h4>
+                            <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">{shot.desc}</p>
+                          </div>
+                        </div>
+                      )}
                     />
-                    <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-sm text-white text-[11px] font-semibold">
-                      {activeShot.badge}
-                    </span>
-                    <span className="absolute bottom-3 right-3 px-3.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-sm text-white text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm">
-                      <ZoomIn className="w-3.5 h-3.5" />
-                      <span>Nhấn để phóng to</span>
-                    </span>
-                  </button>
-
-                  <div className="lg:col-span-4 space-y-4">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 text-[11px] font-semibold text-emerald-700">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Màn hình vận hành thực tế</span>
-                    </span>
-                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
-                      {activeShot.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      {activeShot.desc}
-                    </p>
-                    <div className="pt-2 flex flex-wrap items-center gap-2.5">
-                      <button
-                        type="button"
-                        onClick={() => setZoomImage(activeShot)}
-                        className="ql-btn-outline min-h-[44px] rounded-full px-4 py-2 text-xs font-semibold cursor-pointer"
-                      >
-                        <ZoomIn className="w-3.5 h-3.5 text-[#1E40FF]" />
-                        <span>Phóng to màn hình</span>
-                      </button>
-                      <a
-                        href="/meta-report"
-                        onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
-                        className="min-h-[44px] inline-flex items-center gap-1 text-xs font-semibold text-[#1E40FF] hover:underline px-2 py-2"
-                      >
-                        <span>Tìm hiểu thêm</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
                   </div>
-                </div>
 
-                {/* 6-Card Thumbnail Strip */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2 border-t border-slate-100">
-                  {FUSION_GALLERY_SHOTS.map((shot, idx) => {
-                    const isActive = idx === activeFusionShotIdx;
-                    return (
+                  {/* Desktop & Tablet 3-Col Gallery (>= md) */}
+                  <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                    {visibleShots.map((shot) => (
                       <button
-                        key={shot.src}
+                        key={shot.title}
                         type="button"
-                        onClick={() => setActiveFusionShotIdx(idx)}
-                        className={`rounded-xl overflow-hidden border text-left transition-all cursor-pointer p-1.5 space-y-1.5 ${
-                          isActive
-                            ? 'border-[#1E40FF] bg-[#F4F8FF] shadow-sm'
-                            : 'border-slate-200/80 bg-slate-50/60 hover:border-blue-200'
-                        }`}
+                        onClick={() => setZoomImage(shot)}
+                        className="group rounded-2xl bg-white/95 border border-slate-200/85 shadow-[0_14px_36px_-22px_rgba(15,23,42,0.14)] hover:border-blue-300 overflow-hidden cursor-zoom-in transition-all flex flex-col text-left"
                       >
-                        <div className="aspect-[16/10] rounded-lg overflow-hidden bg-slate-200/60 border border-slate-200/60">
+                        <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-100 w-full">
                           <img
                             src={shot.src}
-                            alt={shot.tabLabel}
+                            alt={shot.title}
                             loading="lazy"
-                            className="w-full h-full object-cover object-top"
+                            className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
                           />
+                          <div className="absolute top-2.5 left-2.5">
+                            <span className="px-2.5 py-0.5 rounded-full bg-white/95 border border-blue-100 text-[#1E40FF] text-[10px] font-bold shadow-xs">
+                              {shot.badge}
+                            </span>
+                          </div>
+                          <div className="absolute bottom-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center text-slate-700 group-hover:text-[#1E40FF] shadow-sm">
+                            <Maximize2 className="w-3.5 h-3.5" />
+                          </div>
                         </div>
-                        <div
-                          className={`text-[11px] font-semibold truncate px-0.5 ${
-                            isActive ? 'text-[#1E40FF]' : 'text-slate-700'
-                          }`}
-                        >
-                          {shot.tabLabel}
+                        <div className="p-4 space-y-1 flex-1">
+                          <h4 className="text-sm font-bold text-slate-900 group-hover:text-[#1E40FF] transition-colors leading-snug">
+                            {shot.title}
+                          </h4>
+                          <p className="text-xs text-slate-600 leading-relaxed">{shot.desc}</p>
                         </div>
                       </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })()}
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+          </div>
         </div>
       </section>
 
@@ -1678,7 +1711,62 @@ export function DomationDataLanding() {
                 </button>
               </div>
 
-              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+              <div className="sm:hidden">
+                <ResponsiveSlideDeck
+                  items={[
+                    {
+                      step: '01 • INGRESS TỨC THÌ',
+                      icon: Webhook,
+                      title: 'Webhook Đa Nguồn Một Cửa',
+                      desc: 'Meta Lead Ads, TikTok Instant Form, Google Ads, LadiPage & Form Web chuẩn hóa +84 tức thì.',
+                    },
+                    {
+                      step: '02 • DEDUP 180 NGÀY',
+                      icon: Layers,
+                      title: 'AI Chấm Điểm & Lọc Trùng 6 Tháng',
+                      desc: 'Chặn số rác Blacklist, khử trùng 180 ngày đa chiến dịch và bù ticket lỗi 1-đổi-1 minh bạch.',
+                    },
+                    {
+                      step: '03 • ZALO & SHEETS',
+                      icon: Bot,
+                      title: 'Báo Zalo & Google Sheets 2 Chiều',
+                      desc: 'Ping ZaloBot/Telegram kèm tóm tắt AI cho Sale và cập nhật ngược trạng thái về Sheet/ERP.',
+                    },
+                    {
+                      step: '04 • META CAPI SHA-256',
+                      icon: Activity,
+                      title: 'Phản Hồi Tín Hiệu Học Máy',
+                      desc: 'Đẩy chuyển đổi 9 nấc (Lead → Purchase & DisqualifiedLead) để Meta Ads ngày càng rẻ.',
+                    },
+                  ]}
+                  mobilePerPage={1}
+                  mobileColsClass="grid-cols-1"
+                  gapClass="gap-3"
+                  ariaLabel="4 Bước liên thông dữ liệu Auto Data"
+                  keyExtractor={(item) => item.step}
+                  renderItem={(item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div className="h-full rounded-2xl bg-slate-50/85 border border-slate-200/80 p-5 flex flex-col justify-between gap-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-[#1E40FF] flex items-center justify-center shadow-2xs shrink-0">
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200/70 whitespace-nowrap">
+                            {item.step}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-slate-900 mb-1">{item.title}</h3>
+                          <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+
+              <div className="hidden sm:grid lg:col-span-7 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 {[
                   {
                     step: '01 • INGRESS TỨC THÌ',
@@ -1859,92 +1947,7 @@ export function DomationDataLanding() {
         </div>
       </section>
 
-      {/* ====================================================================
-          REAL PRODUCT SCREENSHOTS GALLERY (#screenshots)
-         ==================================================================== */}
-      <section id="screenshots" className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200/70">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-12 text-center md:text-left">
-            <div className="max-w-2xl mx-auto md:mx-0">
-              <div className="ql-eyebrow mb-2.5 sm:mb-3 mx-auto md:mx-0">
-                <span>GIAO DIỆN THỰC TẾ</span>
-              </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                Trực Quan Cho{' '}
-                <span className="text-gradient-inkica">Quản Lý &amp; Nhân Viên Sale</span>
-              </h2>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto md:mx-0 leading-relaxed">
-              Nhấn vào từng màn hình để phóng to chi tiết các phân hệ điều hành bên trong hệ thống.
-            </p>
-          </div>
-
-          {/* Mobile SlideDots for 6 Screenshots */}
-          <div className="md:hidden">
-            <ResponsiveSlideDeck
-              items={SYSTEM_SCREENSHOTS}
-              keyExtractor={(s) => s.title}
-              mobilePerPage={1}
-              gapClass="gap-3"
-              ariaLabel="Giao diện hệ thống Auto Data"
-              renderItem={(shot) => (
-                <button
-                  type="button"
-                  onClick={() => setZoomImage(shot)}
-                  className="bg-white border border-slate-200/90 group rounded-2xl overflow-hidden text-left cursor-pointer flex flex-col w-full h-full shadow-2xs"
-                >
-                  <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-100 w-full">
-                    <img
-                      src={shot.src}
-                      alt={shot.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-top"
-                    />
-                    <span className="absolute bottom-2.5 right-2.5 rounded-full bg-slate-900/85 text-white px-2.5 py-1 text-[10.5px] font-semibold inline-flex items-center gap-1 whitespace-nowrap">
-                      <ZoomIn className="w-3 h-3 shrink-0" />
-                      <span>Phóng to</span>
-                    </span>
-                  </div>
-                  <div className="p-4 space-y-1 flex-1">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF]">{shot.badge}</span>
-                    <h3 className="text-sm font-bold text-slate-900 leading-snug">{shot.title}</h3>
-                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{shot.desc}</p>
-                  </div>
-                </button>
-              )}
-            />
-          </div>
-
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SYSTEM_SCREENSHOTS.map((shot) => (
-              <button
-                key={shot.title}
-                type="button"
-                onClick={() => setZoomImage(shot)}
-                className="inkica-glass-card group rounded-[24px] overflow-hidden text-left cursor-pointer flex flex-col"
-              >
-                <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-100">
-                  <img
-                    src={shot.src}
-                    alt={shot.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-300"
-                  />
-                  <span className="absolute bottom-3 right-3 rounded-full bg-slate-900/85 text-white px-3 py-1 text-[11px] font-semibold inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    <ZoomIn className="w-3.5 h-3.5 shrink-0" />
-                    <span>Phóng to</span>
-                  </span>
-                </div>
-                <div className="p-5 sm:p-6 space-y-1.5 flex-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF]">{shot.badge}</span>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">{shot.title}</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">{shot.desc}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Unified Pricing Matrix below */}
 
       {/* ====================================================================
           LIVE DYNAMIC PRICING (#pricing) — Mobile SlideDots + Desktop Hairline Matrix
@@ -1995,52 +1998,111 @@ export function DomationDataLanding() {
             </div>
           </div>
 
-          {/* Unified 3-Column Matrix (Mobile SlideDots + Desktop Swiss Grid) */}
+          {/* Clean 4-Card Balanced Pricing Grid (Mobile SlideDots + Desktop) */}
           {(() => {
-            const renderPlanCard = (plan: (typeof catalog.plans)[number], compactMobile = false) => {
+            const getConciseFeatures = (plan: (typeof catalog.plans)[number]): string[] => {
+              const code = String(plan.code || '').toLowerCase();
+              if (code.includes('standard')) {
+                return [
+                  'Chia vòng Round-Robin / Trọng số tức thì',
+                  'Webhook Meta, TikTok, Web & Google Sheets',
+                  'ZaloBot cá nhân & phản hồi Meta CAPI',
+                  'Tới 25 nhân sự • 5 vòng định tuyến song song',
+                ];
+              }
+              if (code.includes('scale') || code.includes('pro')) {
+                return [
+                  'Toàn bộ gói Standard + Đa phễu Pipeline',
+                  'Routing theo UTM, Chiến dịch & Khung giờ',
+                  'Dual-Send Meta CAPI & Auto-Recall SLA',
+                  'Hoàn 1-đổi-1 Ticket lỗi • 100K Leads/tháng',
+                ];
+              }
+              if (plan.is_enterprise_upgrade || code.includes('enterprise') || code.includes('crm')) {
+                return [
+                  'Giữ nguyên 100% Lead & Timeline hiện có',
+                  'CRM 360°: Kanban 8 nấc, Hợp đồng & CSKH',
+                  'ERP 5.0: 12 phân hệ HRM, Lương & Tài chính',
+                  'Triển khai Private Cloud / Server độc lập',
+                ];
+              }
+              if (code.includes('marketing') || code.includes('automation')) {
+                return [
+                  'Tệp Data & Tệp Logic động 4 tầng lọc',
+                  'Email Editor kéo-thả, Survey & QR Voucher',
+                  'Flow Automation + AWS SES / SMTP / DKIM',
+                  'Gửi chiến dịch Email & Zalo ZNS tự động',
+                ];
+              }
+              return plan.features.slice(0, 4);
+            };
+
+            const getConciseTagline = (plan: (typeof catalog.plans)[number]): string => {
+              const code = String(plan.code || '').toLowerCase();
+              if (code.includes('standard')) return 'Phù hợp đội sale vừa và nhỏ cần chia số nhanh.';
+              if (code.includes('scale') || code.includes('pro')) return 'Mở rộng đa phòng ban, đa chi nhánh & Dual CAPI.';
+              if (plan.is_enterprise_upgrade || code.includes('enterprise') || code.includes('crm')) {
+                return 'Nâng cấp đồng bộ lên Hệ sinh thái CRM & ERP toàn diện.';
+              }
+              if (code.includes('marketing') || code.includes('automation')) {
+                return 'Nuôi dưỡng đa kênh Email, ZNS & Automation Flow.';
+              }
+              return plan.tagline;
+            };
+
+            const renderPlanCard = (plan: (typeof catalog.plans)[number]) => {
               const displayMonthly =
                 pricingCycle === 'annual' ? plan.annual_monthly_equivalent_vnd : plan.monthly_price_vnd;
               const isEnterprise = Boolean(plan.is_enterprise_upgrade);
+              const conciseFeatures = getConciseFeatures(plan);
+              const conciseTagline = getConciseTagline(plan);
 
               return (
                 <div
                   key={plan.code}
-                  className={`${
-                    compactMobile
-                      ? 'rounded-2xl border border-slate-200/85 p-5 shadow-2xs h-full '
-                      : 'p-7 sm:p-9 '
-                  }flex flex-col justify-between ${
+                  className={`h-full rounded-[24px] p-5 sm:p-6 flex flex-col justify-between transition-all ${
                     isEnterprise
-                      ? 'bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white'
-                      : 'bg-white'
+                      ? 'bg-gradient-to-br from-slate-950 via-[#0F172A] to-[#0A2568] text-white border border-blue-900/60 shadow-[0_18px_40px_-20px_rgba(15,23,42,0.45)]'
+                      : 'bg-white border border-slate-200/90 shadow-[0_8px_24px_-16px_rgba(15,23,42,0.1)] hover:border-blue-300'
                   }`}
                 >
                   <div>
-                    <div className="mb-3">
+                    <div className="flex items-center justify-between gap-2 mb-3">
                       {plan.badge && (
-                        <div
-                          className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full whitespace-nowrap ${
+                        <span
+                          className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap ${
                             isEnterprise
                               ? 'bg-cyan-400/20 text-cyan-300'
-                              : 'bg-slate-100 text-[#1E40FF]'
+                              : 'bg-blue-50 text-[#1E40FF]'
                           }`}
                         >
                           {plan.badge}
-                        </div>
+                        </span>
                       )}
+                      <span
+                        className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full whitespace-nowrap ${
+                          isEnterprise
+                            ? 'bg-white/10 text-cyan-200'
+                            : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {isEnterprise
+                          ? 'Không giới hạn'
+                          : `${plan.max_sales ?? (plan.code === 'autodata_standard' ? 20 : 85)} Sale • ${plan.max_managers ?? (plan.code === 'autodata_standard' ? 5 : 15)} QL`}
+                      </span>
                     </div>
 
                     <h3
-                      className={`text-lg sm:text-xl font-bold ${
+                      className={`text-base sm:text-lg font-bold leading-snug min-h-[44px] flex items-center ${
                         isEnterprise ? 'text-white' : 'text-slate-900'
                       }`}
                     >
                       {plan.name}
                     </h3>
 
-                    <div className="mt-2.5 mb-1.5 flex items-baseline gap-1.5">
+                    <div className="mt-2 mb-1 flex items-baseline gap-1.5">
                       <span
-                        className={`text-3xl sm:text-4xl font-bold tracking-tight ${
+                        className={`text-2xl sm:text-[30px] font-bold tracking-tight ${
                           isEnterprise ? 'text-white' : 'text-slate-900'
                         }`}
                       >
@@ -2055,63 +2117,39 @@ export function DomationDataLanding() {
                       </span>
                     </div>
 
-                    {pricingCycle === 'annual' ? (
-                      <div
-                        className={`text-xs font-medium mb-3 ${
-                          isEnterprise ? 'text-cyan-300' : 'text-emerald-700'
-                        }`}
-                      >
-                        {plan.annual_total_vnd.toLocaleString('vi-VN')}₫/năm • Tiết kiệm{' '}
-                        {plan.annual_saved_vnd.toLocaleString('vi-VN')}₫
-                      </div>
-                    ) : (
-                      <div
-                        className={`text-xs mb-3 ${
-                          isEnterprise ? 'text-slate-300' : 'text-slate-500'
-                        }`}
-                      >
-                        Dùng thử {catalog.trial_duration_months} tháng 0đ • Năm -{plan.annual_discount_pct}%
-                      </div>
-                    )}
-
-                    {/* Clean Quota Pills */}
-                    <div className="flex flex-wrap gap-1.5 mb-3.5">
-                      {isEnterprise ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-cyan-200 whitespace-nowrap">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />
-                          Không giới hạn Sale &amp; Quản lý
-                        </span>
-                      ) : (
-                        <>
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 border border-slate-200/80 px-2.5 py-1 text-[11px] font-semibold text-slate-700 whitespace-nowrap">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#1E40FF] shrink-0" />
-                            Tối đa {plan.max_sales ?? (plan.code === 'autodata_standard' ? 20 : 85)} Sale
-                          </span>
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 border border-slate-200/80 px-2.5 py-1 text-[11px] font-semibold text-slate-600 whitespace-nowrap">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                            Tối đa {plan.max_managers ?? (plan.code === 'autodata_standard' ? 5 : 15)} Quản lý
-                          </span>
-                        </>
-                      )}
+                    <div
+                      className={`text-[11px] font-medium mb-3 ${
+                        pricingCycle === 'annual'
+                          ? isEnterprise
+                            ? 'text-cyan-300'
+                            : 'text-emerald-700'
+                          : isEnterprise
+                            ? 'text-slate-300'
+                            : 'text-slate-500'
+                      }`}
+                    >
+                      {pricingCycle === 'annual'
+                        ? `Tiết kiệm ${plan.annual_saved_vnd.toLocaleString('vi-VN')}₫/năm`
+                        : `Dùng thử ${catalog.trial_duration_months} tháng 0đ • Năm -${plan.annual_discount_pct}%`}
                     </div>
 
                     <p
-                      className={`text-xs sm:text-sm leading-relaxed mb-4 sm:mb-5 ${
+                      className={`text-xs leading-relaxed mb-4 min-h-[36px] ${
                         isEnterprise ? 'text-slate-300' : 'text-slate-600'
                       }`}
                     >
-                      {plan.tagline}
+                      {conciseTagline}
                     </p>
 
                     <div
-                      className={`space-y-2.5 pt-4 border-t ${
-                        isEnterprise ? 'border-white/15' : 'border-slate-200/75'
+                      className={`space-y-2 pt-3.5 border-t ${
+                        isEnterprise ? 'border-white/15' : 'border-slate-100'
                       }`}
                     >
-                      {plan.features.map((feat, idx) => (
-                        <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-[13px] leading-snug">
+                      {conciseFeatures.map((feat, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs leading-snug">
                           <CheckCircle2
-                            className={`w-4 h-4 shrink-0 mt-0.5 ${
+                            className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
                               isEnterprise ? 'text-cyan-300' : 'text-emerald-500'
                             }`}
                           />
@@ -2136,20 +2174,20 @@ export function DomationDataLanding() {
                             : 'register'
                       )
                     }
-                    className={`mt-6 sm:mt-8 min-h-[44px] w-full py-3 sm:py-3.5 px-5 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                    className={`mt-5 min-h-[42px] w-full py-2.5 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
                       isEnterprise
-                        ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-lg'
+                        ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-md'
                         : 'ql-btn-outline'
                     }`}
                   >
                     <span>
                       {session
                         ? isEnterprise
-                          ? 'Yêu cầu nâng cấp Suite'
-                          : 'Gia hạn / Chọn gói này'
+                          ? 'Nâng cấp Suite'
+                          : 'Chọn gói này'
                         : `Dùng thử ${catalog.trial_duration_months} tháng 0đ`}
                     </span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                   </button>
                 </div>
               );
@@ -2164,19 +2202,21 @@ export function DomationDataLanding() {
                     mobilePerPage={1}
                     gapClass="gap-3"
                     ariaLabel="Bảng giá gói dịch vụ Auto Data"
-                    renderItem={(plan) => renderPlanCard(plan, true)}
+                    renderItem={(plan) => renderPlanCard(plan)}
                   />
                 </div>
                 <div
-                  className={`hidden lg:grid rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs divide-x divide-slate-200/75 mb-10 ${
+                  className={`hidden lg:grid gap-4 xl:gap-5 mb-10 ${
                     catalog.plans.length >= 4 ? 'lg:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3'
                   }`}
                 >
-                  {catalog.plans.map((plan) => renderPlanCard(plan, false))}
+                  {catalog.plans.map((plan) => renderPlanCard(plan))}
                 </div>
               </>
             );
           })()}
+
+          <ZaloSpecialistBanner context="custom" className="mb-6" />
 
           {/* Wallet Topup Packages Banner — Collapsible Toggle (Hidden by Default) */}
           <div className="rounded-[24px] bg-white/80 backdrop-blur-xl border border-slate-200/80 px-5 py-4 sm:px-7 sm:py-5 shadow-xs">
@@ -2279,14 +2319,25 @@ export function DomationDataLanding() {
                 <span className="text-gradient-inkica">Mở Rộng Toàn Diện</span>
               </h2>
             </div>
-            <button
-              type="button"
-              onClick={() => openFullScreenApp(session ? 'workspace_crm_erp' : 'register')}
-              className="btn-inkica-primary min-h-[44px] w-full sm:w-auto self-center lg:self-end rounded-full px-6 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap shrink-0"
-            >
-              <span>Đăng ký Nâng cấp (Giữ 100% Data)</span>
-              <ArrowRight className="w-4 h-4 shrink-0" />
-            </button>
+            <div className="grid grid-cols-1 sm:flex items-center gap-2.5 shrink-0 self-center lg:self-end w-full sm:w-auto">
+              <a
+                href={SPECIALIST_ZALO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-h-[44px] rounded-full px-5 py-3 text-xs sm:text-sm font-bold bg-[#0068FF] hover:bg-[#0057D9] text-white inline-flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs transition-colors"
+              >
+                <span>Nâng Cấp Qua Zalo</span>
+                <ArrowUpRight className="w-4 h-4 shrink-0" />
+              </a>
+              <button
+                type="button"
+                onClick={() => openFullScreenApp(session ? 'workspace_crm_erp' : 'register')}
+                className="btn-inkica-primary min-h-[44px] rounded-full px-5 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap justify-center"
+              >
+                <span>Đăng ký Nâng cấp</span>
+                <ArrowRight className="w-4 h-4 shrink-0" />
+              </button>
+            </div>
           </div>
 
           {/* Mobile SlideDots for 3 Upgrade Paths */}
@@ -2549,6 +2600,11 @@ export function DomationDataLanding() {
         heading="Câu Hỏi Thường Gặp Về Auto Data & Meta CAPI"
         subtitle="Giải đáp về tốc độ chia số tức thì, cơ chế bù Ticket lỗi 1:1, Van SLA 120s và chi phí vận hành."
       />
+
+      <FounderAuthorityBlock
+        variant="subtle"
+        contextNote="Hệ thống Auto Chia Data ZaloBot & Meta CAPI được kiến trúc & bảo chứng vận hành từ A–Z bởi Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION."
+      />
       </main>
 
       {/* ====================================================================
@@ -2737,18 +2793,8 @@ export function DomationDataLanding() {
         onOpenLegal={(t) => openLegalDoc(t)}
       />
 
-      {/* Bottom-center Back to Top button matching DOMATION Home */}
-      {showBackTop && !setupOpen && (
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label="Lên đầu trang"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 min-h-[44px] px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
-        >
-          <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
-          <span>Đầu trang</span>
-        </button>
-      )}
+      {/* Centered Blue Back to Top Pill */}
+      <BackToTopPill show={showBackTop && !setupOpen} />
 
       {/* FULL-SCREEN UNIFIED WORKSPACE APP OR AUTH MODAL */}
       {setupOpen && session && (

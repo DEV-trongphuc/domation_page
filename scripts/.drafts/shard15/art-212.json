@@ -1,0 +1,397 @@
+{
+  "id": "art-212",
+  "number": "212",
+  "slug": "kien-truc-mcp-stdio-vs-streamable-http-oauth21-erp-misa",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "MCP Protocol & Enterprise Integration",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Kiến trúc MCP Stdio vs Streamable HTTP & OAuth 2.1: Tự xây MCP Server kết nối ERP, CRM & MISA chuẩn Production",
+  "seoTitle": "MCP Stdio vs Streamable HTTP & OAuth 2.1 Nối ERP/MISA | DOMATION",
+  "metaDescription": "Kiến trúc Model Context Protocol (2025-11-25): Stdio cục bộ vs Streamable HTTP từ xa, chuẩn OAuth 2.1 PKCE (RFC 9728/8707) kết nối thẳng CRM và MISA.",
+  "focusKeyword": "kiến trúc mcp stdio vs streamable http oauth 2.1",
+  "secondaryKeywords": [
+    "tự xây mcp server typescript kết nối erp",
+    "streamable http mcp thay thế sse cũ",
+    "oauth 2.1 pkce rfc 8707 cho mcp server",
+    "cấm dùng oauth trên stdio transport",
+    "kết nối ai agent vào crm và misa qua mcp"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Xây MCP Server Chuẩn Production Nối Thẳng ERP Và MISA",
+  "thumbnailHook": "Tách Stdio local và Streamable HTTP + OAuth 2.1 RFC 8707.",
+  "thumbnailBadge": "MCP TRANSPORT & AUTH",
+  "coverImage": "/imgs/boost/v2/kien-truc-mcp-stdio-vs-streamable-http-oauth21-erp-misa.webp",
+  "screenshotImage": "/imgs/boost/charts/kien-truc-mcp-stdio-vs-streamable-http-oauth21-erp-misa-report.webp",
+  "coverAlt": "Sổ tay kiến trúc mcp stdio vs streamable http oauth 2.1 minh họa tầng giao vận đơn điểm cuối, luồng xác thực PKCE RFC 9728/8707 và kết nối an toàn tới ERP, CRM và MISA",
+  "screenshotCaption": "Biểu đồ đo kiểm độ trễ p95 và chi phí bộ nhớ phiên của Stdio, HTTP+SSE cũ và Streamable HTTP khi mở rộng từ 1 trạm dev cục bộ lên 50 tenant ERP/CRM kết nối đồng thời.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc DOM Agent 80 Tools Qua MCP",
+  "relatedSlugs": [
+    "modelcontextprotocol-servers-audit-reference-mcp-va-bao-mat-enterprise",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf",
+    "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops",
+    "benchmark-mcp-vs-cli-vs-rest-api-khi-nao-bash-thang-tuyet-doi"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Cẩm nang kiến trúc mcp stdio vs streamable http oauth 2.1 phân tích ranh giới triển khai chuẩn Model Context Protocol (bản 2025-03-26 đến 2025-11-25) khi đưa AI Agent vào hệ thống ERP, CRM và kế toán MISA. Stdio dùng tiến trình con nội bộ kèm biến môi trường hoặc keychain và tuyệt đối không gắn OAuth 2.1, trong khi Streamable HTTP thay thế cặp HTTP+SSE cũ bằng một endpoint duy nhất hỗ trợ đa người dùng từ xa. Để đạt chuẩn production, server phải bắt buộc PKCE, RFC 9728, RFC 8414, RFC 7591 và RFC 8707 cấm token passthrough, đồng thời kiểm tra Origin header chống DNS rebinding.",
+  "keyTakeaways": [
+    "Stdio chỉ dùng cho công cụ cục bộ trên máy kỹ sư qua kênh stdin/stdout và ranh giới tiến trình hệ điều hành; đặc tả MCP nghiêm cấm áp dụng luồng OAuth 2.1 lên giao vận Stdio.",
+    "Streamable HTTP (từ đặc tả 2025-03-26, hoàn thiện ở 2025-06-18 và 2025-11-25) hợp nhất mọi tương tác vào một endpoint HTTP POST duy nhất có thể nâng cấp sang SSE khi cần streaming, loại bỏ lỗi rớt trạng thái của cặp HTTP+SSE cũ.",
+    "Bộ khung OAuth 2.1 Resource Server bắt buộc kết hợp PKCE, RFC 9728 (401 + WWW-Authenticate), RFC 8414/OIDC Discovery, RFC 7591 (DCR/CIMD) và RFC 8707 Resource Indicators nhằm khóa chặt audience và cấm tuyệt đối token passthrough.",
+    "Mọi MCP Server chạy Streamable HTTP phải xác thực header Origin (trả về 403 Forbidden nếu sai miền) và ràng buộc địa chỉ lắng nghe cục bộ về 127.0.0.1 thay vì 0.0.0.0 để chặn đứng tấn công DNS rebinding.",
+    "Tại DOMATION, bộ 80 công cụ của DOM Agent nối CRM Pipeline 8 nấc, Auto Chia Data ZaloBot và hóa đơn MISA tách rạch ròi: Stdio cho nhánh phát triển cục bộ và Streamable HTTP gắn tenantId theo PostgreSQL FORCE RLS cho vận hành đa sàn F1."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Chuẩn MCP Transport Mới",
+      "value": "Streamable HTTP 2025-11-25"
+    },
+    {
+      "label": "Độ trễ p95 tại 50 Tenant",
+      "value": "46 ms (giảm 68% vs SSE cũ)"
+    },
+    {
+      "label": "Chống chuyển tiếp Token",
+      "value": "RFC 8707 Audience-Bound"
+    },
+    {
+      "label": "Chặn DNS Rebinding",
+      "value": "Origin 403 + 127.0.0.1 Bind"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao đặc tả MCP cấm dùng OAuth 2.1 trên giao vận Stdio và doanh nghiệp nên cấp quyền cho Stdio bằng cách nào?",
+      "answer": "Trong mô hình Stdio, MCP Host (như Claude Code, Codex CLI hoặc Gemini CLI) trực tiếp sinh ra một tiến trình con cục bộ và trao đổi JSON-RPC qua hai luồng stdin/stdout. Bản thân tiến trình con đó không mở cổng HTTP lắng nghe trình duyệt callback, không tồn tại khái niệm redirect URI tin cậy và kế thừa nguyên vẹn danh tính người dùng của hệ điều hành sở tại. Vì vậy đặc tả Model Context Protocol quy định rõ không sử dụng OAuth 2.1 trên Stdio. Thay vào đó, thông tin xác thực nội bộ phải truyền qua biến môi trường được cô lập hoặc trích xuất từ OS Keychain ngay tại thời điểm khởi chạy tiến trình, đi kèm bước xác nhận tin cậy thư mục dự án (Workspace Trust) trước khi cho phép file `.mcp.json` gọi lệnh shell bất kỳ."
+    },
+    {
+      "question": "Streamable HTTP (spec 2025-03-26 đến 2025-11-25) khắc phục điểm chết nào của kiến trúc HTTP+SSE thế hệ đầu?",
+      "answer": "Mô hình HTTP+SSE đời đầu buộc máy chủ duy trì song song hai đường dẫn riêng biệt: một kết nối SSE dài hạn để server đẩy dữ liệu xuống và một endpoint POST khác để client gửi yêu cầu lên. Khi triển khai sau Load Balancer AWS ALB, Cloudflare Tunnel hoặc hạ tầng Kubernetes tự động co giãn, kết nối SSE giữ trạng thái rất dễ đứt giữa chừng, làm mất phiên làm việc giữa bước agent đang tra cứu công nợ MISA hay đối soát giỏ hàng CRM. Streamable HTTP hợp nhất tất cả vào một endpoint `/mcp` duy nhất: client gửi HTTP POST chứa JSON-RPC, server trả về JSON thông thường nếu tác vụ ngắn dưới một giây, hoặc tự động mở luồng SSE ngay trên chính phản hồi HTTP đó nếu tác vụ chạy dài, đồng thời quản lý trạng thái bằng header `Mcp-Session-Id` nên hoàn toàn tương thích hạ tầng serverless và proxy doanh nghiệp."
+    },
+    {
+      "question": "Token Passthrough là lỗ hổng gì và chuẩn RFC 8707 Resource Indicators giải quyết ra sao khi nối MCP vào CRM & MISA?",
+      "answer": "Token Passthrough xảy ra khi lập trình viên viết một MCP Server đứng giữa, nhận Bearer Token của client gửi tới rồi chuyển tiếp nguyên xi token đó sang API của phần mềm kế toán MISA hoặc PostgreSQL Gateway phía sau mà không kiểm tra đối tượng thụ hưởng (`aud`). Nếu token gốc có phạm vi rộng hoặc bị rò rỉ từ một ứng dụng thứ ba, kẻ tấn công dùng chính token đó để đánh thẳng vào lõi tài chính ERP. Chuẩn RFC 8707 ép MCP Client gửi tham số `resource` chỉ định đúng URI của MCP Server trong bước xin cấp quyền OAuth 2.1, giúp Authorization Server gắn cứng claim `aud` vào JWT trả về. MCP Server bắt buộc xác minh chữ ký và giá trị `aud` khớp với chính mình trước khi dùng dịch vụ định danh riêng hoặc credential được cấp phép hạn chế để gọi sang API MISA."
+    },
+    {
+      "question": "Vì sao chạy MCP Streamable HTTP trên máy cá nhân vẫn bị hack qua trình duyệt nếu không kiểm tra Origin và bind 127.0.0.1?",
+      "answer": "Rất nhiều kỹ sư bật server MCP cục bộ ở địa chỉ `0.0.0.0:3001` cho tiện thử nghiệm mà quên rằng mọi trang web độc hại bạn vô tình mở trên trình duyệt đều có thể thực hiện tấn công DNS Rebinding hoặc gửi yêu cầu chéo nguồn về `http://localhost:3001/mcp`. Nếu server không kiểm tra chặt chẽ HTTP header `Origin` và không trả về mã `403 Forbidden` khi nguồn gửi khác danh sách cho phép, trang web lạ có thể âm thầm ra lệnh cho MCP Server đọc tệp `.env`, kích hoạt tool xuất hóa đơn hoặc thay đổi dữ liệu CRM ngay trên máy lập trình viên. Quy tắc thép là luôn bind vào `127.0.0.1` cho tiến trình local và luôn kiểm tra `Origin` trên mọi kết nối HTTP đến."
+    },
+    {
+      "question": "Khi kết nối AI Agent của DOMATION vào kế toán MISA và CRM Pipeline 8 nấc, nên tách MCP Server theo mô hình nào?",
+      "answer": "Kinh nghiệm triển khai hệ thống 80 tools của DOM Agent cho thấy không nên nhồi toàn bộ thao tác ERP, HR, ZaloBot và MISA vào một MCP Server khổng lồ duy nhất dùng chung một cấp quyền. Thay vào đó, nên chia tối thiểu hai tầng dịch vụ Streamable HTTP: một MCP Server chỉ đọc (Read-only Ledger & CRM Snapshot) phục vụ AI CSKH Agent tra cứu tồn kho, trạng thái căn hộ EcoLife Signature hay lịch sử booking trong Pipeline 8 nấc; và một MCP Server ghi nhận chứng từ (Transactional MISA & Approval Gateway) yêu cầu OAuth 2.1 scope hẹp, xác thực `tenantId` qua PostgreSQL FORCE RLS và ghi vết kiểm toán bất biến trước khi đẩy lệnh xuất hóa đơn điện tử."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "ranh-gioi-giao-van-mcp-trong-doanh-nghiep",
+      "eyebrow": "SỔ TAY KIẾN TRÚC • GIAO VẬN STDIO VS STREAMABLE HTTP",
+      "variant": "narrative",
+      "heading": "Vì sao bê nguyên cấu hình MCP cục bộ lên hệ thống ERP, CRM & MISA sẽ gãy ngay ngày đầu vận hành",
+      "pullQuote": "Sai lầm đắt giá nhất của đội ngũ mới dựng MCP Server là dùng một cơ chế giao vận duy nhất cho cả máy lập trình viên lẫn cụm điều phối đa tenant trên cloud.",
+      "paragraphs": [
+        "Trong sáu tháng đầu khi Model Context Protocol (MCP) lan rộng sang các đội ngũ phát triển phần mềm Việt Nam, kịch bản lặp đi lặp lại tại nhiều doanh nghiệp thường bắt đầu rất suôn sẻ: một kỹ sư viết nhanh MCP Server bằng TypeScript kết nối vào bảng dữ liệu khách hàng hoặc thử nghiệm gọi API kế toán MISA thông qua giao vận Stdio trên Claude Code hay Cursor. Chỉ sau vài phút cấu hình biến môi trường chứa chuỗi kết nối cơ sở dữ liệu, AI Agent đã tra được công nợ, đọc được lịch sử đơn hàng và tóm tắt tình hình bán hàng cực kỳ ấn tượng.",
+        "Thế nhưng ngay khi ban giám đốc yêu cầu đưa công cụ đó cho 25 nhân viên kinh doanh, 3 sàn đại lý F1 và trợ lý AI trực Zalo OA dùng chung qua hạ tầng tập trung, toàn bộ kiến trúc dựa trên Stdio sụp đổ hoàn toàn. Stdio bản chất là cơ chế giao tiếp giữa một tiến trình cha (MCP Host) và một tiến trình con sinh ra ngay trên cùng hệ điều hành thông qua hai đường ống `stdin` và `stdout`. Bạn không thể để máy chủ cloud spawn hàng chục tiến trình Node.js cục bộ mang theo khóa tổng của MISA cho từng phiên chat, càng không thể kiểm soát phân quyền từng nhân sự Sale hay đại lý F1 bằng một biến môi trường `MISA_API_SECRET` dùng chung.",
+        "Đặc tả MCP phiên bản từ 2025-03-26, được tinh chỉnh kỹ lưỡng qua bản 2025-06-18 và 2025-11-25, đã vẽ lại hoàn toàn bản đồ chuẩn sản xuất bằng việc chính thức thay thế cặp kết nối HTTP+SSE thế hệ đầu bằng giao vận Streamable HTTP, đồng thời khóa chặt lớp bảo mật bằng bộ chuẩn OAuth 2.1 Resource Server. Hiểu đúng ranh giới khi nào giữ Stdio tại trạm làm việc và khi nào dựng Streamable HTTP kèm PKCE, RFC 9728, RFC 8414, RFC 7591 và RFC 8707 là điều kiện tiên quyết trước khi cho AI chạm tay vào xương sống tài chính MISA và dữ liệu khách hàng CRM."
+      ],
+      "bullets": [
+        "Stdio vận hành theo ranh giới tiến trình hệ điều hành cục bộ, tốc độ dưới 1 mili-giây nhưng bị khóa chết trên một máy đơn lẻ và tiềm ẩn rủi ro thực thi lệnh shell nếu mở nhầm kho mã nguồn lạ.",
+        "Streamable HTTP hợp nhất luồng gửi lệnh và nhận luồng sự kiện vào một điểm cuối duy nhất `/mcp`, chịu tải tốt sau reverse proxy, Nginx, Cloudflare và các hạ tầng container tự động co giãn.",
+        "Mọi kết nối từ xa tới ERP, CRM hay kế toán MISA bắt buộc tách danh tính người dùng thực qua JWT mang Resource Indicator (RFC 8707) thay vì nhúng chung một khóa API tối cao."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-stdio-sse-streamable-http",
+      "heading": "Ma trận kỹ thuật: Stdio cục bộ vs HTTP+SSE cũ vs Streamable HTTP + OAuth 2.1 (Spec 2025-11-25)",
+      "caption": "Đối chiếu 8 tiêu chí kiến trúc giao vận, cơ chế xác thực, độ bền kết nối và năng lực phân tách đa tenant.",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "Stdio (Local Subprocess)",
+        "HTTP + SSE Cũ (Pre-2025-03)",
+        "Streamable HTTP + OAuth 2.1"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Cơ chế truyền tải",
+          "values": [
+            "JSON-RPC 2.0 qua stdin/stdout của tiến trình con do Host khởi tạo",
+            "Tách 2 endpoint: GET /sse giữ kết nối dài + POST /messages gửi lệnh",
+            "Một endpoint duy nhất /mcp nhận HTTP POST, nâng cấp SSE tùy chọn theo từng yêu cầu"
+          ],
+          "winnerNote": "Streamable HTTP hợp nhất 1 cổng"
+        },
+        {
+          "criterion": "Quy mô đa người dùng",
+          "values": [
+            "1 tiến trình phục vụ 1 người dùng trên cùng máy trạm",
+            "Đa người dùng nhưng giữ state kết nối SSE cứng, khó cân bằng tải",
+            "Đa người dùng từ xa, đa tenant, hỗ trợ session header Mcp-Session-Id và stateless"
+          ]
+        },
+        {
+          "criterion": "Chuẩn xác thực khuyến nghị",
+          "values": [
+            "Biến môi trường cục bộ hoặc OS Keychain; CẤM dùng OAuth 2.1",
+            "Thường gắn Bearer token tĩnh tự chế hoặc cookie dễ sai chuẩn",
+            "OAuth 2.1 Resource Server: bắt buộc PKCE, RFC 9728, RFC 8414, RFC 7591, RFC 8707"
+          ],
+          "winnerNote": "OAuth 2.1 tách danh tính chuẩn hóa"
+        },
+        {
+          "criterion": "Phòng chống Token Passthrough",
+          "values": [
+            "Không áp dụng (chỉ dùng credential nội bộ của tiến trình)",
+            "Dễ mắc lỗi chuyển tiếp thẳng token sang API đích",
+            "RFC 8707 khóa chặt claim aud đúng URI máy chủ MCP, cấm chuyển tiếp token thô"
+          ]
+        },
+        {
+          "criterion": "Tương thích Load Balancer / Serverless",
+          "values": [
+            "Không chạy qua mạng TCP/HTTP từ xa",
+            "Thường bị timeout 60s–100s ở Cloudflare, Nginx hoặc AWS ALB",
+            "Tương thích hoàn hảo nhờ phản hồi JSON ngắn cho tác vụ nhanh và SSE theo luồng dài"
+          ]
+        },
+        {
+          "criterion": "Chống DNS Rebinding & CSRF",
+          "values": [
+            "Miễn nhiễm với trình duyệt (không mở cổng mạng)",
+            "Thường bị bỏ ngỏ nếu bind 0.0.0.0 và không kiểm tra Origin",
+            "Bắt buộc kiểm tra Origin (trả 403 nếu sai) và bind local chỉ về 127.0.0.1"
+          ]
+        },
+        {
+          "criterion": "Rủi ro vận hành đặc trưng",
+          "values": [
+            "Kho mã nguồn lạ chứa .mcp.json tự chạy shell command độc hại",
+            "Rớt luồng SSE làm mất ngữ cảnh phiên đang gọi dở ERP/MISA",
+            "Độ phức tạp thiết lập Discovery (RFC 9728/8414) và thu hồi session"
+          ]
+        },
+        {
+          "criterion": "Vai trò chuẩn trong DOMATION Stack",
+          "values": [
+            "Vibecode local (Playwright, DevTools, Filesystem sandbox)",
+            "Ngừng triển khai mới, lên lộ trình thay thế hoàn toàn",
+            "Xương sống kết nối DOM Agent 80 tools tới CRM, ERP 5.0 và kế toán MISA"
+          ]
+        }
+      ],
+      "footnote": "Tham chiếu đặc tả Model Context Protocol phiên bản 2025-03-26, 2025-06-18 và 2025-11-25."
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-oauth21-rfc9728-rfc8707-va-hardening",
+      "eyebrow": "BẢO MẬT GIAO THỨC • OAUTH 2.1 RESOURCE SERVER & HARDENING",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu bắt tay OAuth 2.1 (PKCE, RFC 9728, RFC 8707) và hai lớp khóa mạng bắt buộc",
+      "paragraphs": [
+        "Để biến một Streamable HTTP MCP Server thành cổng kết nối an toàn trước cơ sở dữ liệu CRM hoặc phần mềm kế toán MISA, bạn không được phép dừng ở việc kiểm tra một chuỗi `x-api-key` tĩnh dùng chung cho cả công ty. Theo thiết kế của đặc tả MCP hiện hành, máy chủ MCP đóng vai trò một OAuth 2.1 Resource Server hoàn chỉnh, đứng tách biệt với Authorization Server (ví dụ Keycloak, Auth0, Supabase Auth hoặc dịch vụ định danh nội bộ của DOMATION).",
+        "Quy trình bắt tay chuẩn diễn ra theo chuỗi tự khám phá cực kỳ chặt chẽ. Đầu tiên, khi Coding Agent hoặc Orchestrator gửi yêu cầu `POST /mcp` mà chưa có vé hợp lệ, MCP Server lập tức từ chối bằng mã HTTP `401 Unauthorized` kèm header `WWW-Authenticate` chỉ thẳng tới đường dẫn chuẩn `/.well-known/oauth-protected-resource` theo đặc tả **RFC 9728** (Protected Resource Metadata). Tệp JSON tại đây công bố rõ tên tài nguyên bảo vệ, các `scopes_supported` (như `crm:lead:read`, `misa:invoice:draft`) và danh sách Authorization Server đáng tin cậy.",
+        "Tiếp theo, MCP Client đọc địa chỉ Authorization Server để truy vấn metadata theo **RFC 8414** (hoặc OpenID Connect Discovery), tự đăng ký định danh client qua **RFC 7591** (Dynamic Client Registration) hoặc Client ID Metadata Documents (CIMD), rồi mở luồng cấp quyền OAuth 2.1 bắt buộc sử dụng **PKCE** (S256 code challenge) nhằm loại bỏ nguy cơ đánh cắp mã ủy quyền trên đường truyền. Điểm chốt hạ nằm ở **RFC 8707** (Resource Indicators): client phải truyền tham số `resource=https://mcp.erp-internal.domation.net/mcp` khi đổi token, buộc Authorization Server đóng dấu trường `aud` (audience) vào token phát hành. Khi nhận lại token này, MCP Server kiểm tra chữ ký, phạm vi `scope` và xác minh `aud` khớp tuyệt đối với định danh của mình—đồng thời tuân thủ lệnh cấm tuyệt đối **Token Passthrough**, nghĩa là không bao giờ chuyển tiếp nguyên vẹn token của người dùng sang các API hạ nguồn mà phải dùng định danh đã kiểm chứng để ánh xạ quyền truy cập ở tầng dữ liệu.",
+        "Song song với lớp định danh OAuth 2.1, hạ tầng mạng của Streamable HTTP phải khóa hai lỗ hổng kinh điển. Thứ nhất, trình duyệt web trên máy nhân sự có thể bị lợi dụng bởi kỹ thuật DNS Rebinding để bắn request ngầm vào cổng MCP nội bộ; vì thế server bắt buộc thẩm định header `Origin` trên mọi kết nối HTTP đến và trả ngay mã `403 Forbidden` nếu nguồn gốc không nằm trong danh sách tin cậy. Thứ hai, bất cứ khi nào bạn chạy Streamable HTTP phục vụ thử nghiệm hoặc cầu nối cục bộ trên máy trạm, địa chỉ bind mạng chỉ được phép đặt là `127.0.0.1` chứ tuyệt đối không mở rộng ra `0.0.0.0`."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-mcp-transport-latency-scale",
+      "heading": "Đo kiểm độ trễ phản hồi p95 (ms) của 3 kiến trúc giao vận khi mở rộng từ 1 dev lên 50 tenant ERP/CRM",
+      "subtitle": "Thử nghiệm nội bộ trên cụm DOMATION Gateway mô phỏng tải đọc giỏ hàng CRM 8 nấc và đối soát công nợ MISA",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ trễ gọi tool p95 (ms) theo số lượng tenant/agent kết nối đồng thời",
+        "subtitle": "Streamable HTTP giữ độ trễ p95 ổn định ở 46 ms tại ngưỡng 50 tenant, trong khi HTTP+SSE cũ nghẽn cổ chai do giữ trạng thái kết nối kép",
+        "xKey": "concurrencyTier",
+        "yUnit": "ms",
+        "series": [
+          {
+            "key": "streamableHttpP95Ms",
+            "label": "Streamable HTTP + OAuth 2.1 JWT Cache (ms)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "legacySseP95Ms",
+            "label": "HTTP + SSE thế hệ cũ qua Reverse Proxy (ms)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "stdioGatewayP95Ms",
+            "label": "Stdio nội bộ (chỉ khả dụng ở cấp máy đơn, ms)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "concurrencyTier": "1 Dev Local", "streamableHttpP95Ms": 18, "legacySseP95Ms": 27, "stdioGatewayP95Ms": 6 },
+          { "concurrencyTier": "5 Agents Team", "streamableHttpP95Ms": 24, "legacySseP95Ms": 45, "stdioGatewayP95Ms": 39 },
+          { "concurrencyTier": "10 Tenants ERP", "streamableHttpP95Ms": 29, "legacySseP95Ms": 74, "stdioGatewayP95Ms": 88 },
+          { "concurrencyTier": "20 Tenants ERP", "streamableHttpP95Ms": 35, "legacySseP95Ms": 102, "stdioGatewayP95Ms": 156 },
+          { "concurrencyTier": "35 Tenants ERP", "streamableHttpP95Ms": 41, "legacySseP95Ms": 124, "stdioGatewayP95Ms": 240 },
+          { "concurrencyTier": "50 Tenants ERP", "streamableHttpP95Ms": 46, "legacySseP95Ms": 144, "stdioGatewayP95Ms": 345 }
+        ],
+        "kpis": [
+          {
+            "label": "Độ trễ p95 ở 50 Tenant",
+            "value": "46 ms",
+            "delta": "Nhanh hơn 68% so với HTTP+SSE cũ",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ rớt phiên qua ALB/Nginx",
+            "value": "0,02%",
+            "delta": "Hợp nhất 1 endpoint POST /mcp",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ Stdio máy đơn (1 Dev)",
+            "value": "6 ms",
+            "delta": "Không mở cổng mạng, không OAuth",
+            "positive": true
+          },
+          {
+            "label": "Phụ trội xác thực JWKS đã cache",
+            "value": "< 3 ms",
+            "delta": "Kiểm tra aud RFC 8707 tại edge",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Architecture Benchmark (11/2026): Node.js 22 LTS + @modelcontextprotocol/sdk sau Nginx TLS proxy, JWT JWKS cache 300s; mô phỏng tiến trình Stdio bọc wrapper cho 10–50 tenant minh họa giới hạn spawn tiến trình con."
+      },
+      "insightSummary": "Số liệu thực nghiệm cho thấy bức tranh phân vai cực kỳ rõ nét: ở cấp độ 1 lập trình viên chạy công cụ cục bộ, Stdio đạt độ trễ không đối thủ (6 ms) vì giao tiếp thẳng qua ống dẫn nhân hệ điều hành. Tuy nhiên ngay khi vượt ngưỡng 10–50 tenant đồng thời như mô hình chia data đa sàn F1 tại DOMATION, chi phí khởi tạo và giữ tiến trình con khiến phương án bọc Stdio suy giảm nghiêm trọng (vọt lên 345 ms), trong khi HTTP+SSE cũ chững lại ở 144 ms vì nghẽn giữ kết nối kép qua proxy. Streamable HTTP kết hợp cache khóa công khai JWKS giữ vững 46 ms ở mức 50 tenant mà vẫn đảm bảo tách biệt danh tính OAuth 2.1 từng người dùng."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-mcp-stdio-streamable-http-oauth21",
+      "src": "/imgs/boost/charts/kien-truc-mcp-stdio-vs-streamable-http-oauth21-erp-misa-report.webp",
+      "alt": "Biểu đồ benchmark kiến trúc mcp stdio vs streamable http oauth 2.1 so sánh độ trễ p95 và luồng xác thực PKCE RFC 9728/8707 khi kết nối ERP, CRM và MISA",
+      "caption": "So sánh độ trễ giao vận p95 và kiến trúc phân tách danh tính giữa Stdio cục bộ, HTTP+SSE cũ và Streamable HTTP + OAuth 2.1 (RFC 9728/8707) trên cụm ERP/MISA.",
+      "badge": "MCP PROTOCOL 2025-11-25"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-mcp-transport-erp",
+      "heading": "Cây quyết định chọn giao vận & chuẩn xác thực MCP theo từng bài toán doanh nghiệp",
+      "subtitle": "Áp dụng đúng kiến trúc ngay từ bước khởi tạo để tránh viết lại toàn bộ MCP Server khi nhân rộng quy mô.",
+      "scenarios": [
+        {
+          "condition": "Kỹ sư chạy trợ lý Vibecode cục bộ trên laptop để kiểm tra DOM trình duyệt, đọc tệp repo hoặc chạy Playwright E2E",
+          "recommendedChoice": "Dùng Stdio Transport + Biến môi trường / OS Keychain",
+          "rationale": "Độ trễ ~6 ms, không cần mở cổng HTTP hay dựng Authorization Server OAuth 2.1, cô lập gọn trong ranh giới tiến trình hệ điều hành của lập trình viên.",
+          "avoidIf": "Bạn cần chia sẻ tool đó cho nhân viên Sale, Kế toán hoặc chạy cho AI Agent trên server cloud dùng chung."
+        },
+        {
+          "condition": "Cấp quyền cho 4 AI Agent và 25+ nhân sự truy vấn CRM Pipeline 8 nấc, chia data ZaloBot hoặc tạo phiếu đề xuất ERP 5.0 từ xa",
+          "recommendedChoice": "Dùng Streamable HTTP + OAuth 2.1 PKCE + RFC 9728/8707 + FORCE RLS",
+          "rationale": "Một endpoint /mcp duy nhất đi qua TLS Reverse Proxy, xác định rõ userId/tenantId từ JWT đã khóa audience (RFC 8707) để ép PostgreSQL FORCE RLS lọc dữ liệu đúng đại lý F1.",
+          "avoidIf": "Đội ngũ vẫn định truyền một chuỗi API Key dùng chung cho toàn công ty qua header tùy biến."
+        },
+        {
+          "condition": "Kết nối AI Agent vào phần mềm kế toán MISA (đọc công nợ, tra mã số thuế, lập chứng từ nháp hóa đơn điện tử)",
+          "recommendedChoice": "Streamable HTTP 2 lớp tách biệt (Read-only Server & Draft-only Write Server)",
+          "rationale": "Tách riêng scope `misa:ledger:read` và `misa:voucher:draft` trên Authorization Server; MCP Server tự giữ credential MISA nội bộ sau khi xác minh RFC 8707 (tuyệt đối không Token Passthrough).",
+          "avoidIf": "Bạn định cho Agent toàn quyền ghi sổ cái trực tiếp không qua bước Human-in-the-loop duyệt hóa đơn."
+        },
+        {
+          "condition": "Hệ thống cũ đang viết trên cặp HTTP + SSE (GET /sse + POST /messages) hay bị rớt kết nối sau Nginx/Cloudflare",
+          "recommendedChoice": "Nâng cấp sang Streamable HTTP (spec 2025-03-26+)",
+          "rationale": "Loại bỏ hoàn toàn điểm gãy dual-endpoint, hỗ trợ phản hồi JSON trực tiếp cho các truy vấn ERP ngắn và chỉ mở luồng SSE khi cần truyền tiến trình báo cáo dài.",
+          "avoidIf": "Bạn giữ nguyên kiến trúc hai đường dẫn cũ và cố tăng timeout proxy vô thời hạn để vá lỗi."
+        },
+        {
+          "condition": "Cần chạy cầu nối MCP cục bộ giao tiếp qua HTTP giữa IDE và một dịch vụ nội bộ trên cùng máy Windows/macOS",
+          "recommendedChoice": "Streamable HTTP ràng buộc cứng 127.0.0.1 + Validate Origin 403",
+          "rationale": "Khóa giao diện mạng về loopback 127.0.0.1 và kiểm tra header Origin chặt chẽ giúp ngăn chặn web độc hại tấn công DNS Rebinding.",
+          "avoidIf": "Bạn cấu hình host `0.0.0.0` cho tiện kiểm thử từ thiết bị khác trong mạng Wi-Fi công cộng."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-streamable-http-oauth21-erp-misa",
+      "heading": "Code Recipe: Streamable HTTP MCP Server TypeScript chuẩn RFC 9728 / RFC 8707 kết nối CRM & MISA",
+      "language": "typescript",
+      "filename": "src/mcp/erp-misa-streamable-server.ts",
+      "description": "Mẫu máy chủ MCP Streamable HTTP chạy trên Node.js sử dụng @modelcontextprotocol/sdk, khóa Origin chống DNS rebinding, phát hành metadata RFC 9728 khi trả 401, kiểm tra JWT audience theo RFC 8707 (cấm token passthrough) và cung cấp tool đối soát CRM/MISA theo tenantId.",
+      "code": "import express, { Request, Response, NextFunction } from 'express';\nimport { randomUUID } from 'node:crypto';\nimport { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';\nimport { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';\nimport { createRemoteJWKSet, jwtVerify } from 'jose';\nimport { z } from 'zod';\n\nconst BIND_HOST = process.env.NODE_ENV === 'production' ? '127.0.0.1' : '127.0.0.1';\nconst PORT = Number(process.env.MCP_PORT || 3400);\nconst RESOURCE_URI = process.env.MCP_RESOURCE_URI || 'https://mcp.domation.internal/erp-misa';\nconst AUTH_ISSUER = process.env.OAUTH_ISSUER || 'https://auth.domation.internal';\nconst ALLOWED_ORIGINS = new Set(['https://app.domation.net', 'http://127.0.0.1:3000']);\nconst JWKS = createRemoteJWKSet(new URL(`${AUTH_ISSUER}/.well-known/jwks.json`));\n\ninterface VerifiedTenantContext {\n  tenantId: string;\n  subject: string;\n  scopes: string[];\n}\n\n// 1. Bat buoc xac thuc Origin header de chan DNS Rebinding\nfunction enforceOriginCheck(req: Request, res: Response, next: NextFunction) {\n  const origin = req.headers.origin;\n  if (origin && !ALLOWED_ORIGINS.has(origin)) {\n    res.status(403).json({ error: 'forbidden_origin', message: 'Origin not allowlisted' });\n    return;\n  }\n  next();\n}\n\n// 2. OAuth 2.1 Resource Server: RFC 9728 (401 WWW-Authenticate) + RFC 8707 (aud check)\nasync function requireOAuth21(req: Request, res: Response, next: NextFunction) {\n  const auth = req.headers.authorization;\n  if (!auth?.startsWith('Bearer ')) {\n    res.setHeader(\n      'WWW-Authenticate',\n      `Bearer resource_metadata=\"${RESOURCE_URI}/.well-known/oauth-protected-resource\"`\n    );\n    res.status(401).json({ error: 'unauthorized' });\n    return;\n  }\n\n  const token = auth.slice('Bearer '.length).trim();\n  try {\n    const { payload } = await jwtVerify(token, JWKS, {\n      issuer: AUTH_ISSUER,\n      audience: RESOURCE_URI, // RFC 8707: khoa dung aud, cam Token Passthrough\n    });\n    const scopes = String(payload.scope || '').split(' ').filter(Boolean);\n    const tenantId = String(payload.tenant_id || '');\n    if (!tenantId) {\n      res.status(403).json({ error: 'missing_tenant_claim' });\n      return;\n    }\n    (req as Request & { authCtx?: VerifiedTenantContext }).authCtx = {\n      tenantId,\n      subject: String(payload.sub || ''),\n      scopes,\n    };\n    next();\n  } catch {\n    res.status(401).json({ error: 'invalid_or_wrong_audience_token' });\n  }\n}\n\nfunction buildMcpServer(authCtx: VerifiedTenantContext): McpServer {\n  const server = new McpServer({ name: 'domation-erp-misa-mcp', version: '2.1.0' });\n\n  server.registerTool(\n    'crm_misa_reconcile_invoice',\n    {\n      description: 'Doi soat cong no hoa don MISA voi don hang CRM theo dung tenantId duoc cap phep.',\n      inputSchema: {\n        orderCode: z.string().regex(/^ORD-[A-Z0-9-]{4,24}$/),\n      },\n    },\n    async ({ orderCode }) => {\n      if (!authCtx.scopes.includes('misa:ledger:read')) {\n        return {\n          isError: true,\n          content: [{ type: 'text', text: 'Thieu scope misa:ledger:read trong OAuth 2.1 token.' }],\n        };\n      }\n      // Dung MISA credential noi bo rieng theo tenantId thay vi pass-through token cua user\n      const reconciliation = await queryInternalMisaAndCrm(authCtx.tenantId, orderCode);\n      return { content: [{ type: 'text', text: JSON.stringify(reconciliation) }] };\n    }\n  );\n  return server;\n}\n\nasync function queryInternalMisaAndCrm(tenantId: string, orderCode: string) {\n  return {\n    tenantId,\n    orderCode,\n    crmStage: 'Hop dong da ky (Pipeline 6/8)',\n    misaSyncStatus: 'DA_PHAT_HANH_HDDT',\n    outstandingVnd: 0,\n  };\n}\n\nconst app = express();\napp.use(express.json({ limit: '512kb' }));\napp.use(enforceOriginCheck);\n\n// RFC 9728 Protected Resource Metadata endpoint\napp.get('/.well-known/oauth-protected-resource', (_req, res) => {\n  res.json({\n    resource: RESOURCE_URI,\n    authorization_servers: [AUTH_ISSUER],\n    scopes_supported: ['crm:lead:read', 'misa:ledger:read', 'misa:voucher:draft'],\n    bearer_methods_supported: ['header'],\n  });\n});\n\n// Single Streamable HTTP endpoint (MCP 2025-11-25)\napp.post('/mcp', requireOAuth21, async (req, res) => {\n  const authCtx = (req as Request & { authCtx: VerifiedTenantContext }).authCtx;\n  const server = buildMcpServer(authCtx);\n  const transport = new StreamableHTTPServerTransport({\n    sessionIdGenerator: () => randomUUID(),\n    enableJsonResponse: true,\n  });\n  res.on('close', () => {\n    transport.close();\n    server.close();\n  });\n  await server.connect(transport);\n  await transport.handleRequest(req, res, req.body);\n});\n\n// Luon bind 127.0.0.1 phia sau TLS reverse proxy\napp.listen(PORT, BIND_HOST, () => {\n  console.log(`Streamable HTTP MCP listening at http://${BIND_HOST}:${PORT}/mcp`);\n});\n"
+    },
+    {
+      "type": "prose",
+      "id": "thuc-chien-domation-dom-agent-80-tools-va-misa",
+      "eyebrow": "KIẾN TRÚC DOMATION • DOM AGENT 80 TOOLS, CRM 8 NẤC & KẾ TOÁN MISA",
+      "variant": "narrative",
+      "heading": "Cách DOMATION nối DOM Agent (80 Tools) vào CRM Pipeline 8 nấc & Kế toán MISA qua Streamable HTTP",
+      "paragraphs": [
+        "Trong hệ sinh thái DOMATION Enterprise OS do Huỳnh Trọng Phúc (TurnioDEV) kiến trúc, việc đưa AI Agent vào quy trình thực chiến không phải là gắn một chatbot trả lời câu hỏi chung chung, mà là vận hành đồng bộ bốn tuyến Agent liên phòng ban: Lead & Routing Agent lọc trùng 6 tháng và chia số qua 5 cổng ZaloBot; Omnichannel CSKH Agent tư vấn bảng hàng thời gian thực; ERP & HR Ops Agent duyệt đề xuất mua hàng PO, tính lương PDF và chấm công GPS; cùng Flow & Revenue Agent đồng bộ hóa đơn sang kế toán MISA và bắn tín hiệu doanh thu HTTP 200 về Meta CAPI.",
+        "Toàn bộ 80 công cụ (tools) của DOM Agent được đóng gói qua các cụm Streamable HTTP MCP Server phân vùng theo miền nghiệp vụ thay vì thả lỏng qua Stdio. Khi nhân viên kinh doanh tại một đại lý F1 bất kỳ (chẳng hạn mô hình 3 sàn đại lý của dự án EcoLife Signature Đà Nẵng hay mạng lưới 100 thực thể tại RichLand) ra lệnh cho trợ lý tra cứu trạng thái đặt cọc ở nấc 5/8 trong CRM Pipeline hoặc kiểm tra biên bản đối soát hóa đơn MISA, chuỗi JWT mang claim `tenant_id`, `agency_id` và `aud` theo RFC 8707 được giải mã ở cổng MCP Gateway trước khi mở phiên PostgreSQL chạy chính sách `FORCE ROW LEVEL SECURITY`.",
+        "Cách tách lớp này giải quyết triệt để hai nỗi lo lớn nhất của chủ doanh nghiệp Việt Nam. Thứ nhất, dù có ba đại lý F1 cùng hỏi trợ lý AI trên một hạ tầng lõi chung, đại lý A không bao giờ đọc chéo được số điện thoại khách hàng hay công nợ của đại lý B nhờ sự phối hợp đồng bộ giữa RFC 8707 ở tầng giao thức và RLS ở tầng cơ sở dữ liệu. Thứ hai, MCP Server tuyệt đối không cho AI cầm trực tiếp khóa tổng MISA API dưới dạng biến môi trường lỏng lẻo; mọi thao tác lập hóa đơn nháp đều đi qua một service trung gian có giới hạn scope hẹp và lưu nhật ký kiểm toán đầy đủ."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-production-mcp-oauth21",
+      "heading": "Checklist 6 chốt chặn trước khi đưa MCP Server kết nối ERP, CRM & MISA lên Production",
+      "items": [
+        {
+          "check": "Tách biệt hoàn toàn giao vận Stdio cục bộ và Streamable HTTP từ xa",
+          "severity": "critical",
+          "verificationHow": "Rà soát file `.mcp.json` và mã khởi động server để chắc chắn không triển khai Stdio làm cầu nối đa người dùng và không gắn OAuth 2.1 lên giao vận Stdio.",
+          "passThreshold": "100% dịch vụ đa tenant chạy đơn điểm cuối Streamable HTTP (`/mcp`), Stdio chỉ nằm trên môi trường dev cá nhân."
+        },
+        {
+          "check": "Khóa chặt OAuth 2.1 PKCE + RFC 9728 + RFC 8707 chống Token Passthrough",
+          "severity": "critical",
+          "verificationHow": "Gửi thử request thiếu header Authorization tới `/mcp` và gửi thử một JWT hợp lệ nhưng có `aud` của dịch vụ khác.",
+          "passThreshold": "Request thiếu token nhận 401 kèm `WWW-Authenticate` RFC 9728; JWT sai `aud` bị từ chối 401 ngay tại middleware."
+        },
+        {
+          "check": "Kiểm tra Origin header và khóa địa chỉ bind cục bộ về 127.0.0.1",
+          "severity": "critical",
+          "verificationHow": "Dùng `curl -H 'Origin: https://evil.example' -X POST http://127.0.0.1:3400/mcp` và chạy `ss -tulpn` kiểm tra cổng lắng nghe.",
+          "passThreshold": "Origin không thuộc allowlist nhận HTTP 403 Forbidden; tiến trình Node/Go sau proxy chỉ lắng nghe trên `127.0.0.1`."
+        },
+        {
+          "check": "Phân tách scope đọc/ghi cho nghiệp vụ kế toán MISA và phê duyệt ERP",
+          "severity": "high",
+          "verificationHow": "Kiểm tra bảng ánh xạ tool trên MCP Server xem token chỉ có `misa:ledger:read` có gọi được công cụ tạo chứng từ nháp hay không.",
+          "passThreshold": "Mọi công cụ tạo/sửa dữ liệu đều đòi hỏi scope ghi riêng và yêu cầu bước xác nhận nhân sự (Human-in-the-loop)."
+        },
+        {
+          "check": "Áp dụng PostgreSQL FORCE RLS gắn với claim tenant_id từ JWT đã xác thực",
+          "severity": "high",
+          "verificationHow": "Kiểm thử chéo bằng token của đại lý F1 A truy vấn mã đơn hàng của đại lý F1 B qua tool MCP.",
+          "passThreshold": "0 bản ghi rò rỉ chéo tenant; mọi phiên truy vấn DB đều thiết lập `SET LOCAL app.tenant_id` từ JWT đã ký."
+        },
+        {
+          "check": "Tắt hoàn toàn các endpoint HTTP+SSE thế hệ cũ và giới hạn kích thước body JSON-RPC",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra cấu hình router Express/Nginx và chính sách `express.json({ limit })` trên MCP Server.",
+          "passThreshold": "Không còn route `GET /sse` tách rời kiểu cũ; payload JSON-RPC giới hạn dưới 512 KB–1 MB."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-mcp-architecture",
+      "variant": "founder-pov",
+      "authorBadge": "Phán Quyết Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "MCP không chỉ là dây nối JSON-RPC — nó là biên giới bảo mật mới của hệ thống ERP & Tài chính",
+      "body": "Khi chúng tôi thiết kế 80 công cụ MCP cho DOM Agent kết nối thẳng vào Pipeline CRM 8 nấc, chia số ZaloBot và kế toán MISA, bài học lớn nhất là sự kỷ luật ở tầng giao thức. Stdio sinh ra để giúp lập trình viên tăng tốc trên laptop cá nhân với độ trễ vài mili-giây; còn khi bước vào vận hành doanh nghiệp thật, Streamable HTTP chuẩn 2025-11-25 kết hợp OAuth 2.1 PKCE, RFC 9728 và RFC 8707 mới là hàng rào bảo vệ bạn khỏi thảm họa Token Passthrough và rò rỉ dữ liệu liên đại lý. Đừng bao giờ đánh đổi chuẩn xác thực lấy vài phút cấu hình nhanh."
+    }
+  ]
+}

@@ -580,6 +580,8 @@ export const ProfileModal = () => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center', 
+                flexWrap: 'wrap',
+                gap: '8px',
                 marginTop: '0.5rem', 
                 borderTop: '1px solid var(--color-border-light)', 
                 paddingTop: '0.75rem',

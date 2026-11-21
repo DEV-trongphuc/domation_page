@@ -1,0 +1,331 @@
+{
+  "id": "art-80",
+  "number": "80",
+  "slug": "giao-duc-sau-dai-hoc-hop-nhat-tuyen-sinh-lms-cham-cong-giang-vien",
+  "shardId": "shard01",
+  "pillar": "erp-operations",
+  "pillarLabel": "ERP 5.0 May Đo & Quản Trị",
+  "industry": "Giáo Dục Sau Đại Học & Đào Tạo",
+  "clusterId": "kw-industry-bds-edu",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "executive-dossier",
+  "title": "Hệ điều hành cho Viện Đào tạo & EdTech: Hợp nhất phễu tuyển sinh 90 ngày, LMS và tính thù lao giảng viên",
+  "seoTitle": "ERP Viện Đào Tạo: Tuyển Sinh, LMS & Lương | DOMATION",
+  "metaDescription": "Giải bài toán trùng hồ sơ học viên, 14 file Excel lịch giảng và chi phí CPA cao tại các trường MBA & trung tâm đào tạo bằng ERP 5.0 kết hợp CRM may đo.",
+  "focusKeyword": "erp quản lý viện đào tạo sau đại học",
+  "secondaryKeywords": [
+    "hệ thống tuyển sinh và lms",
+    "tính thù lao giảng viên tự động",
+    "quản lý phễu học viên mba",
+    "chống trùng lead tuyển sinh",
+    "số hóa trung tâm đào tạo"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Hợp Nhất Tuyển Sinh, LMS Và Lương Giảng Viên",
+  "thumbnailHook": "Thay 14 file Excel, nâng gấp 3 quy mô MBA và giảm 30% CPA.",
+  "thumbnailBadge": "EDTECH • ERP 5.0",
+  "coverImage": "/imgs/boost/v2/giao-duc-sau-dai-hoc-hop-nhat-tuyen-sinh-lms-cham-cong-giang-vien.webp",
+  "screenshotImage": "/imgs/boost/charts/giao-duc-sau-dai-hoc-hop-nhat-tuyen-sinh-lms-cham-cong-giang-vien-report.webp",
+  "coverAlt": "Hồ sơ điều hành ERP quản lý viện đào tạo sau đại học hợp nhất phễu tuyển sinh 90 ngày, LMS, chấm công GPS và tính thù lao giảng viên của DOMATION",
+  "screenshotCaption": "Báo cáo điều hành tuyển sinh và tài chính đào tạo sau đại học: so sánh mức giảm CPA từ 18 triệu xuống 12–14 triệu/học viên, tỷ lệ giữ ấm Lead 90 ngày và hiệu quả tăng gấp 3 quy mô khóa MBA Quốc tế.",
+  "relatedPortfolioId": "ideas-business",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem ERP 5.0 Cho Tổ Chức Đào Tạo",
+  "relatedSlugs": [
+    "quan-ly-pheu-tuyen-sinh-mba-nang-quy-mo-60-hoc-vien-giam-30-cpa",
+    "xay-dung-erp-5-thay-the-14-file-excel-cho-vien-dao-tao",
+    "ai-rag-agent-tu-van-tuyen-sinh-24-7-chong-ai-bia-hoc-phi",
+    "khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo điều hành cho các Viện đào tạo sau đại học chỉ ra nguyên nhân khiến chi phí CPA tuyển sinh tăng cao và giáo vụ quá tải: 14 file Excel rời rạc không nối liền phễu cân nhắc 30–90 ngày với LMS và bảng tính thù lao giảng viên. Giải pháp erp quản lý viện đào tạo sau đại học của DOMATION hợp nhất CRM 9 nấc, Flow Amazon SES, Zalo Mini App, AI RAG chống bịa học phí và ERP 5.0 12 phân hệ, giúp nâng gấp 3 quy mô MBA lên 60 học viên/khóa và giảm 30% CPA.",
+  "keyTakeaways": [
+    "Thay thế hoàn toàn 14 file Excel vận hành rời rạc giữa Tuyển sinh, Đào tạo, Học vụ, Nhân sự và Kế toán bằng 12 phân hệ đồng bộ trên DOMATION ERP 5.0.",
+    "Chặn bỏ sót 70% Lead ấm trong chu kỳ cân nhắc 30–90 ngày của chương trình MBA nhờ CRM 9 nấc, Auto Lead Router lọc trùng 180 ngày, Email Amazon SES và Zalo Mini App.",
+    "Triển khai AI RAG 24/7 truy xuất đề cương môn học, lịch khai giảng và chính sách học bổng trực tiếp từ file PDF gốc có kiểm chứng, triệt tiêu rủi ro AI bịa học phí.",
+    "Đối soát giờ giảng thực tế trên LMS với Chấm công GPS AI và Automated Payroll để xuất phiếu lương, thù lao giảng viên thỉnh giảng PDF trong 1 click, liên thông MISA."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Quy mô khóa MBA Quốc tế",
+      "value": "20 -> 60 HV (+300%)"
+    },
+    {
+      "label": "Giảm chi phí CPA tuyển sinh",
+      "value": "-30% (12–14M/HV)"
+    },
+    {
+      "label": "Tổng Lead xử lý sạch trùng",
+      "value": "12.600+ Leads"
+    },
+    {
+      "label": "File Excel rời rạc thay thế",
+      "value": "14 files -> 1 ERP 5.0"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao CRM thông thường lại thất bại với phễu tuyển sinh Thạc sĩ/MBA có chu kỳ cân nhắc 30–90 ngày?",
+      "answer": "CRM đại trà thường tối ưu cho đơn hàng chốt nhanh trong 24–72 giờ. Ứng viên MBA Quốc tế là cấp quản lý cần 1–3 tháng đọc Syllabus, dự tọa đàm và thu xếp tài chính. Nếu tư vấn viên chỉ gọi 2 cuộc đầu rồi bỏ, 70% Lead ấm sẽ nguội mất. CRM 9 nấc của DOMATION kết hợp Visual Flow Amazon SES và Zalo Mini App nuôi dưỡng liên tục 90 ngày, nhắc Sale gọi lại đúng lúc ứng viên mở email học phí."
+    },
+    {
+      "question": "Làm sao ngăn Trợ lý AI tư vấn tuyển sinh tự bịa học phí ưu đãi hoặc nói sai chuẩn đầu vào trường quốc tế?",
+      "answer": "AI Space RAG 24/7 của DOMATION chỉ tổng hợp câu trả lời từ tài liệu PDF, bảng học phí và quy chế tuyển sinh chính thức đã kiểm duyệt với ngưỡng tương đồng cao. Mọi câu hỏi ngoại lệ hoặc thương lượng học bổng cá nhân vượt ngoài tài liệu chuẩn đều bị chặn đoán mò và chuyển Ticket ngay cho Tư vấn viên cấp cao."
+    },
+    {
+      "question": "ERP 5.0 xử lý bài toán tính thù lao giảng viên thỉnh giảng và chấm công giảng dạy như thế nào?",
+      "answer": "ERP 5.0 nối thẳng lịch môn học trên LMS với phân hệ Chấm công GPS AI và Phê duyệt đa cấp: giờ giảng thực tế tự động nhân đơn giá theo học vị cộng phụ cấp hướng dẫn luận văn. Cuối tháng, Automated Payroll tính cả lương cố định nhân viên, thưởng tuyển sinh và thù lao giảng viên rồi xuất PDF 1 click, đồng bộ sang MISA."
+    },
+    {
+      "question": "Khi chạy Ads nhiều khóa học cùng lúc, làm sao tránh tình trạng hai tư vấn viên gọi trùng một ứng viên?",
+      "answer": "Bộ Auto Lead Router chuẩn hóa SĐT/Email và lọc trùng trong cửa sổ 180 ngày trước khi chia vòng. Nếu ứng viên đã nằm trong danh sách chăm sóc của một tư vấn viên còn hạn SLA, hồ sơ mới tự động gộp vào lịch sử cũ và báo ZaloBot nhắc đúng người phụ trách đó, giúp giảm 30% CPA thực tế."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "ho-so-dieu-hanh-vien-dao-tao",
+      "eyebrow": "EXECUTIVE DOSSIER • HỒ SƠ CHUYỂN ĐỔI TOÀN DIỆN",
+      "variant": "contrarian",
+      "heading": "Khi 14 file Excel giết chết 70% Lead ấm MBA và đẩy chi phí CPA lên ngưỡng 18 triệu/học viên",
+      "pullQuote": "Học viên sau đại học không biến mất vì đối thủ rẻ hơn — họ biến mất trong khoảng trống im lặng giữa tuần tư vấn thứ hai và ngày khai giảng 60 ngày sau đó.",
+      "paragraphs": [
+        "Trên bề mặt, doanh thu của một viện đào tạo sau đại học hay chương trình MBA Quốc tế trông rất khả quan nhờ giá trị khóa học lớn. Nhưng khi mở hồ sơ P&L thực tế của một viện quản trị trước lúc tái cấu trúc cùng DOMATION, ba điểm nghẽn chí mạng lập tức lộ ra: chi phí thu hút một học viên nhập học (CPA) vọt lên 18 triệu đồng dù đã thu hơn 12.600 hồ sơ quan tâm, nhưng quy mô lớp chỉ dừng ở 20 học viên mỗi khóa.",
+        "Nguyên nhân nằm ở chu kỳ cân nhắc 30–90 ngày của ứng viên bậc sau đại học. Đội tư vấn dùng file Excel cá nhân thường bỏ qua những người chưa đóng tiền ngay trong tuần đầu, làm rơi 70% Lead ấm trong khi bộ phận Ads lại đốt ngân sách chạy trùng đúng tệp SĐT cũ. Đồng thời, khối giáo vụ và kế toán phải ghép tay 14 file Excel từ lịch giảng thỉnh giảng, điểm danh lớp, công nợ học phí nhiều kỳ đến chấm công và tính thù lao. Chính từ thực chiến giải bài toán tại Viện Quản trị & Đào tạo IDEAS (cùng hệ sinh thái đại học đối tác như Ascencia, College de Paris, ESTIAM Paris, ISTEC Paris, Swiss UMEF), DOMATION chuẩn hóa kiến trúc erp quản lý viện đào tạo sau đại học trên một nền tảng duy nhất."
+      ],
+      "bullets": [
+        "CPA phình lên 18 triệu/học viên do trùng lặp SĐT giữa các chiến dịch và thiếu tín hiệu chuyển đổi ngược về Meta Ads.",
+        "Thiếu kịch bản nuôi dưỡng 30–90 ngày khiến 70% ứng viên tiềm năng nguội lạnh trước kỳ khai giảng.",
+        "14 file Excel rời rạc khiến kỳ đối soát thù lao giảng viên và P&L từng khóa học chậm 7–10 ngày mỗi tháng."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-cpa-va-chuyen-doi-edu",
+      "heading": "Đối chiếu chi phí CPA tuyển sinh và tỷ lệ giữ ấm Lead 90 ngày theo từng giai đoạn chuẩn hóa",
+      "subtitle": "Dữ liệu chuyển đổi tại mô hình Viện đào tạo MBA Quốc tế từ vận hành 14 file Excel đến hợp nhất ERP 5.0 + CRM 9 nấc",
+      "chart": {
+        "chartType": "horizontal-bar",
+        "title": "Chi phí CPA (triệu VNĐ/HV) vs Tỷ lệ giữ ấm & chốt Lead 90 ngày (%)",
+        "subtitle": "Theo dõi xuyên suốt 5 giai đoạn nâng cấp Auto Router, SES/Zalo Mini App, AI RAG & ERP 5.0",
+        "xKey": "label",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "a",
+            "label": "Chi phí CPA (triệu VNĐ/HV)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "b",
+            "label": "Tỷ lệ giữ ấm & chốt 90 ngày (%)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "label": "GĐ 1: 14 File Excel rời", "a": 18.0, "b": 11.5 },
+          { "label": "GĐ 2: Router + Lọc trùng", "a": 15.6, "b": 18.4 },
+          { "label": "GĐ 3: Flow SES + Mini App", "a": 13.8, "b": 27.9 },
+          { "label": "GĐ 4: Meta CAPI + AI RAG", "a": 12.6, "b": 34.2 },
+          { "label": "GĐ 5: Full ERP 5.0 & LMS", "a": 12.1, "b": 38.6 }
+        ],
+        "kpis": [
+          {
+            "label": "Quy mô mỗi khóa MBA",
+            "value": "60 học viên",
+            "delta": "+300% (từ 20 HV)",
+            "positive": true
+          },
+          {
+            "label": "Chi phí CPA trung bình",
+            "value": "12–14 triệu",
+            "delta": "-30% (từ 18M)",
+            "positive": true
+          },
+          {
+            "label": "Tổng lượng Lead hợp nhất",
+            "value": "12.600+",
+            "delta": "Sạch trùng 180 ngày",
+            "positive": true
+          },
+          {
+            "label": "File thủ công thay thế",
+            "value": "14 files",
+            "delta": "100% lên ERP 5.0",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp hồ sơ triển khai thực tế hệ thống ERP 5.0, CRM 9 nấc và Meta Ad Report cho tổ chức đào tạo sau đại học."
+      },
+      "insightSummary": "Giai đoạn 2–3 tạo bước ngoặt rõ rệt khi Auto Lead Router lọc trùng 180 ngày kết hợp Flow Amazon SES và Zalo Mini App nhân 2.4 lần tỷ lệ giữ ấm Lead và hạ CPA xuống dưới 14 triệu. Đồng bộ Meta CAPI và ERP 5.0 ở giai đoạn 4–5 giúp nâng quy mô lớp từ 20 lên 60 học viên/khóa (+300%)."
+    },
+    {
+      "type": "visual-figure",
+      "id": "dashboard-erp-dao-tao-50",
+      "src": "/imgs/boost/charts/giao-duc-sau-dai-hoc-hop-nhat-tuyen-sinh-lms-cham-cong-giang-vien-report.webp",
+      "alt": "Giao diện báo cáo hợp nhất phễu tuyển sinh MBA 9 nấc, hệ thống LMS, chấm công GPS và tính thù lao giảng viên trên DOMATION ERP 5.0",
+      "caption": "Bảng điều hành toàn diện cho Viện Đào tạo & EdTech: theo dõi cùng lúc hiệu suất phễu tuyển sinh 90 ngày, chi phí CPA thực theo từng chiến dịch Meta Ads, tiến độ lớp học LMS và bảng kê thù lao giảng viên.",
+      "badge": "REPORT DASHBOARD"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "dong-chay-90-ngay-tuyen-sinh-lms",
+      "heading": "Luồng dữ liệu khép kín từ lúc ứng viên bấm quảng cáo đến lúc xuất phiếu lương giảng viên",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • DEDUP 180D",
+          "title": "Lọc trùng hồ sơ 6 tháng & Chia vòng ZaloBot",
+          "detail": "Lead từ Website MBA SEO và Meta Ads được chuẩn hóa SĐT/Email, kiểm trùng 180 ngày và chia vòng tự động tới đúng đội tư vấn chương trình.",
+          "metricOrTool": "AutoData Router • Dedup 180 ngày"
+        },
+        {
+          "tag": "BƯỚC 02 • PHỄU 90 NGÀY",
+          "title": "CRM 9 nấc + Flow Amazon SES & Zalo Mini App + AI RAG 24/7",
+          "detail": "Kịch bản IF/ELSE gửi đề cương môn học qua Amazon SES (Inbox > 95%) và Zalo Mini App; AI RAG trực 24/7 trả lời chính xác từ PDF gốc không bịa học phí.",
+          "metricOrTool": "CRM 9 Nấc • AI RAG • Zalo Mini App"
+        },
+        {
+          "tag": "BƯỚC 03 • CAPI & MISA",
+          "title": "Xét tuyển nhập học, thu học phí nhiều kỳ & Meta CAPI 200",
+          "detail": "Đóng học phí đợt đầu tự động đồng bộ chứng từ về MISA và bắn tín hiệu Qualified/Enrolled SHA-256 về Meta CAPI giúp giảm 30% CPA.",
+          "metricOrTool": "MISA Sync • Meta CAPI HTTP 200"
+        },
+        {
+          "tag": "BƯỚC 04 • LMS ĐÀO TẠO",
+          "title": "Khởi tạo tài khoản LMS, lịch học phần & điểm chuyên cần",
+          "detail": "Hồ sơ trúng tuyển chảy thẳng sang phân hệ LMS không cần gõ tay lại danh sách lớp, đồng bộ lịch giảng và học liệu cho học viên.",
+          "metricOrTool": "DOMATION LMS & Tài nguyên"
+        },
+        {
+          "tag": "BƯỚC 05 • PAYROLL 1 CLICK",
+          "title": "Chấm công GPS AI, giờ giảng LMS & Xuất Payroll PDF",
+          "detail": "Tổng hợp công GPS nhân sự, hoa hồng tuyển sinh và thù lao thỉnh giảng từ LMS vào Automated Payroll xuất phiếu lương PDF 1 click.",
+          "metricOrTool": "ERP 5.0 12 Phân Hệ • Payroll PDF"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phap-pheu-90-ngay-va-ai-rag",
+      "eyebrow": "CỘT TRỤ TĂNG TRƯỞNG • CRM 9 NẤC & AI RAG KHÔNG BỊA SỐ",
+      "variant": "deep-dive",
+      "heading": "Chinh phục chu kỳ cân nhắc 90 ngày bằng CRM 9 nấc, Amazon SES và Trợ lý AI RAG kiểm chứng nguồn",
+      "paragraphs": [
+        "Trong dự án triển khai tại Viện Quản trị & Đào tạo IDEAS, DOMATION thiết kế Pipeline tuyển sinh 9 nấc khớp từng bước xét tuyển học thuật: từ Tiếp nhận, Thẩm định bằng cấp, Gửi đề cương, Dự hội thảo, Nộp hồ sơ đến Nhập học trên LMS. Nếu ứng viên dừng lại ở nấc Đề cương quá 7 ngày, Visual Flow tự gửi case study cựu học viên qua Amazon SES (tỷ lệ Inbox > 95%) kèm link Zalo Mini App đặt lịch tư vấn 1-1; mỗi lượt mở email đều cộng điểm Lead Score và báo ZaloBot cho Sale gọi đúng lúc.",
+        "Để trực tư vấn ngoài giờ trên Website và Zalo OA mà không lo AI tự bịa học bổng hay sai điều kiện đầu vào quốc tế, AI Space RAG 24/7 chỉ trích xuất câu trả lời từ tài liệu PDF và biểu phí đã kiểm duyệt. Mọi trường hợp ngoại lệ đều tự động mở Ticket bàn giao chuyên viên, giúp Viện xử lý mượt hơn 12.600 Leads sạch trùng."
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "chi-so-tac-dong-erp-ideas",
+      "heading": "Kết quả kiểm chứng thực tế tại tổ chức đào tạo sau đại học",
+      "stats": [
+        {
+          "value": "+300%",
+          "label": "Tăng quy mô khóa học MBA",
+          "context": "Từ 20 lên 60 học viên/khóa tại IDEAS",
+          "trend": "up"
+        },
+        {
+          "value": "-30%",
+          "label": "Giảm chi phí CPA tuyển sinh",
+          "context": "Từ 18 triệu xuống 12–14 triệu/học viên",
+          "trend": "down"
+        },
+        {
+          "value": "12 phân hệ",
+          "label": "Thay trọn bộ 14 file Excel",
+          "context": "Từ Lead, LMS, KPI đến Payroll PDF",
+          "trend": "up"
+        },
+        {
+          "value": "1 Click",
+          "label": "Xuất lương & thù lao PDF",
+          "context": "Nối GPS AI + giờ giảng thực tế LMS",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "so-sanh-14-excel-vs-erp50",
+      "heading": "Đối chiếu vận hành trước và sau khi bỏ 14 file Excel lên DOMATION ERP 5.0",
+      "caption": "So sánh mô hình chắp vá nhiều bảng tính với Hệ điều hành may đo 12 phân hệ",
+      "columns": [
+        "Miền nghiệp vụ",
+        "14 File Excel + Tool rời rạc",
+        "DOMATION ERP 5.0 + CRM 9 Nấc + LMS"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Phễu tuyển sinh dài 30–90 ngày",
+          "values": [
+            "Sale ghi file cá nhân, nghỉ việc mất dữ liệu; bỏ sót tới 70% Lead ấm.",
+            "CRM 9 nấc lưu vết toàn bộ, Visual Flow SES & Zalo Mini App tự nuôi dưỡng 90 ngày."
+          ],
+          "winnerNote": "Nâng gấp 3 quy mô khóa MBA"
+        },
+        {
+          "criterion": "Chống trùng hồ sơ & CPA Ads",
+          "values": [
+            "Chạy trùng nhiều khóa cùng một người; Ads không phân biệt Lead chất lượng.",
+            "Lọc trùng 180 ngày + DomMeta BI + Meta CAPI SHA-256 HTTP 200."
+          ],
+          "winnerNote": "Giảm 30% CPA (12–14M/HV)"
+        },
+        {
+          "criterion": "Chuyển giao Tuyển sinh -> LMS",
+          "values": [
+            "Chốt học viên xong phải gõ tay lại danh sách sang file Giáo vụ.",
+            "Chuyển nấc Nhập học tự động mở tài khoản LMS, Zalo Mini App và công nợ."
+          ],
+          "winnerNote": "0% nhập liệu lặp giữa phòng ban"
+        },
+        {
+          "criterion": "Chấm công & Thù lao giảng viên",
+          "values": [
+            "Ghép 3–4 bảng công, lịch giảng và hoa hồng cuối tháng mất 5–7 ngày.",
+            "GPS AI + giờ giảng LMS tự đổ Automated Payroll xuất PDF 1 click."
+          ],
+          "winnerNote": "Kỳ tính lương rút từ 1 tuần xuống 15 phút"
+        },
+        {
+          "criterion": "Phê duyệt chi phí & MISA",
+          "values": [
+            "Đề xuất tạm ứng sự kiện, chi giảng viên bằng giấy/email khó kiểm soát ngân sách.",
+            "Luồng duyệt PO/tạm ứng đa cấp trên ERP 5.0 đồng bộ hai chiều về MISA."
+          ],
+          "winnerNote": "Minh bạch P&L từng khóa học"
+        }
+      ],
+      "footnote": "Áp dụng may đo cho Viện đào tạo sau đại học, Trường liên kết quốc tế và Tổ chức EdTech."
+    },
+    {
+      "type": "prose",
+      "id": "erp50-12-phan-he-va-tinh-luong-giang-vien",
+      "eyebrow": "CỘT TRỤ NỘI BỘ • ERP 5.0 & AUTOMATED PAYROLL",
+      "variant": "deep-dive",
+      "heading": "Bức tranh nội bộ sau khi xóa 14 file Excel: Task Kanban, Chấm công GPS AI và 1-Click Payroll PDF",
+      "paragraphs": [
+        "Khi quy mô lớp tăng gấp 3 lần lên 60 học viên/khóa, bộ máy giáo vụ phía sau sẽ sụp đổ nếu vẫn dùng bảng tính rời. DOMATION ERP 5.0 thay trọn 14 file Excel bằng 12 phân hệ khớp đúng sơ đồ phòng ban: điều phối hồ sơ kiểm định và lịch khai giảng bằng Task Kanban gắn KPI/OKR; kiểm soát nhân sự và trợ giảng lớp cuối tuần bằng Chấm công GPS AI Selfie đúng bán kính khuôn viên.",
+        "Phân hệ Phê duyệt đa cấp và Automated Payroll giải phóng hoàn toàn khối HR và Kế toán: đề xuất mua giáo trình, tạm ứng hội thảo và thanh toán thù lao giảng viên chạy theo quy trình duyệt điện tử liên thông MISA. Đến kỳ lương, hệ thống tự ghép ngày công GPS, hoa hồng tuyển sinh từ CRM và số tiết giảng thực tế từ LMS để xuất phiếu lương PDF hàng loạt trong 1 click."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-edtech",
+      "variant": "benchmark",
+      "title": "Chuẩn mực vận hành EdTech & Sau đại học: Không tách rời Tuyển sinh khỏi Đào tạo và Tài chính",
+      "body": "Bài học cốt lõi từ dự án IDEAS nâng quy mô MBA từ 20 lên 60 học viên/khóa (-30% CPA) là đừng mua ba phần mềm tách rời cho Tuyển sinh, LMS và Kế toán nhân sự. Khi CRM 9 nấc, AI RAG chống bịa học phí, LMS học viên, chấm công GPS và Automated Payroll PDF cùng chạy trên ERP 5.0 12 phân hệ, tổ chức đào tạo có thể mở rộng gấp 3 quy mô mà chi phí vận hành gần như đi ngang."
+    }
+  ]
+}

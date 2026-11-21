@@ -1,0 +1,310 @@
+{
+  "id": "art-192",
+  "number": "192",
+  "slug": "confident-ai-deepeval-audit-unit-test-rag-trong-ci-cd",
+  "shardId": "shard13",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Automated LLM Unit Testing",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Audit confident-ai/deepeval: Viết Unit Test Pytest cho AI RAG & tránh bẫy tốn tiền LLM-as-a-Judge",
+  "seoTitle": "Audit DeepEval: Pytest Cho AI RAG & Tối Ưu Judge Token | DOMATION",
+  "metaDescription": "Phân tích DeepEval (Apache-2.0, 14k+ Stars): đưa 60+ metric G-Eval, Faithfulness và Contextual Recall vào pytest CI/CD, ghép assert cứng giảm tiền judge.",
+  "focusKeyword": "audit deepeval unit test rag với pytest",
+  "secondaryKeywords": [
+    "deepeval pytest faithfulness hallucination",
+    "chi phí llm as a judge g eval",
+    "kết hợp assert code cứng và deepeval",
+    "kiểm thử chất lượng prepress và rag ai",
+    "so sánh deepeval với promptfoo và ragas"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "DeepEval: Mang Kỷ Luật Pytest Vào Kiểm Thử Ảo Giác AI",
+  "thumbnailHook": "Chặn PR rớt Faithfulness trước khi merge, khóa assert cứng để tiết kiệm.",
+  "thumbnailBadge": "GITHUB • PYTEST EVALS",
+  "coverImage": "/imgs/boost/v2/confident-ai-deepeval-audit-unit-test-rag-trong-ci-cd.webp",
+  "screenshotImage": "/imgs/boost/charts/confident-ai-deepeval-audit-unit-test-rag-trong-ci-cd-report.webp",
+  "coverAlt": "Cẩm nang kỹ thuật audit deepeval unit test rag với pytest áp dụng FaithfulnessMetric, DAGMetric và tầng assert cứng để chặn ảo giác AI trong CI/CD mà không cháy tiền LLM-as-a-Judge",
+  "screenshotCaption": "Biểu đồ so sánh chi phí LLM-as-a-Judge trên 100 Pull Request, thời gian chạy CI và tỷ lệ bắt lọt lỗi ảo giác RAG qua 5 chiến lược phối hợp Pytest truyền thống và DeepEval.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tiêu Chuẩn Kiểm Định AI Pre-Release",
+  "relatedSlugs": [
+    "rag-evaluation-ragas-deepeval-golden-set-triet-tieu-ao-giac",
+    "promptfoo-promptfoo-audit-red-teaming-danh-gia-prompt-ci-cd",
+    "arize-ai-phoenix-audit-opentelemetry-truy-vet-troi-embedding",
+    "pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo hướng dẫn thực chiến audit deepeval unit test rag với pytest mổ xẻ bộ khung kiểm thử Apache-2.0 (14k+ Stars) của `confident-ai/deepeval`: thư viện này đưa hơn 60 chỉ số đánh giá RAG và Agent như `FaithfulnessMetric`, `ContextualRecallMetric`, `GEval` và `DAGMetric` vào thẳng cú pháp `pytest` thông qua hàm `assert_test`. Tuy nhiên, nếu chạy ngây thơ mọi metric LLM-as-a-Judge trên từng Pull Request với model lớn, hóa đơn API và độ lệch điểm giữa các lần chạy sẽ tăng vọt. Cẩm nang trình bày mô hình phễu 3 tầng ghép assert code cứng, `DAGMetric` có cấu trúc và judge cục bộ.",
+  "keyTakeaways": [
+    "Mô hình `LLMTestCase` và `assert_test` biến việc đánh giá phản hồi AI thành unit test chạy được ngay bằng `deepeval test run` trong GitHub Actions hoặc GitLab CI.",
+    "Hạn chế đắt đỏ nhất của DeepEval là chi phí token cho LLM-as-a-Judge (`GEval`, `FaithfulnessMetric`) tăng theo cấp số nhân vì mỗi test case thường đòi hỏi bước trích xuất câu khẳng định (claims/truths) rồi chấm điểm chéo.",
+    "Sử dụng `DAGMetric` (cây quyết định nhị phân có cấu trúc) kết hợp `DeepEvalBaseLLM` trỏ về model nhẹ hoặc local vLLM giúp thu hẹp dao động điểm số xuống dưới 3% và cắt trên 70% chi phí judge.",
+    "Quy tắc vàng trong playbook kiểm thử: chặn mọi lỗi định dạng JSON, sai mã SKU, sai giá niêm yết bằng Python `assert` cứng với chi phí 0 đồng trước khi mới gọi tới LLM-as-a-Judge."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Hệ sinh thái",
+      "value": "Apache-2.0 • 14k+ Stars"
+    },
+    {
+      "label": "Thư viện chỉ số tích hợp",
+      "value": "60+ Metrics (RAG, Agent, DAG)"
+    },
+    {
+      "label": "Tiết kiệm chi phí Judge CI",
+      "value": "-76% khi ghép Assert cứng + DAG"
+    },
+    {
+      "label": "Tỷ lệ chặn ảo giác Pre-Merge",
+      "value": "94.5% trên tập Golden Set"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao DeepEval lại tốn nhiều token LLM-as-a-Judge hơn so với việc chỉ gửi một prompt hỏi GPT chấm điểm từ 1 đến 10?",
+      "answer": "Để hạn chế chấm điểm cảm tính, các metric RAG cốt lõi như `FaithfulnessMetric` hay `ContextualRecallMetric` trong DeepEval không hỏi một câu chung chung. Thay vào đó, framework tự động chia nhỏ quá trình đánh giá thành nhiều lời gọi LLM tuần tự: một lượt tách toàn bộ câu khẳng định (claims) từ `actual_output`, một lượt tách các sự thật gốc (truths) từ `retrieval_context`, rồi thực hiện so khớp từng cặp và sinh giải thích lý do (`include_reason=True`). Một test case dài có thể phát sinh 3–6 lượt gọi LLM judge, nên nếu không lọc đầu vào trước hoặc không chọn model judge tiết kiệm, chạy 200 test case trên mỗi lần push code sẽ đốt tiền rất nhanh."
+    },
+    {
+      "question": "Khi nào nên dùng `DAGMetric` thay cho `GEval` trong bộ test của `confident-ai/deepeval`?",
+      "answer": "`GEval` dùng cơ chế Chain-of-Thought linh hoạt cho các tiêu chí định tính mềm như giọng điệu tư vấn bán hàng hay mức độ lịch sự, nhưng điểm số có thể dao động nhẹ giữa các lần chạy do tính xác suất của LLM. Ngược lại, `DAGMetric` buộc bài đánh giá đi qua một đồ thị có hướng không chu trình gồm các nút phán quyết nhị phân (`BinaryJudgementNode`) hoặc phân loại nhánh (`VerdictNode`) rất rõ ràng — ví dụ: nút 1 kiểm tra có nêu sai thời gian bàn giao không, nút 2 kiểm tra có kèm dẫn chứng mã căn hộ không. Do đó `DAGMetric` ổn định hơn nhiều cho các tiêu chuẩn nghiệp vụ cứng và dễ gỡ lỗi khi test báo đỏ."
+    },
+    {
+      "question": "Làm thế nào để chạy DeepEval bằng model nội bộ (Ollama/vLLM) hoặc model nhẹ nhằm giảm chi phí CI/CD?",
+      "answer": "DeepEval cung cấp lớp trừu tượng `DeepEvalBaseLLM` yêu cầu cài đặt bốn phương thức chính gồm `load_model`, `generate`, `a_generate` (bất đồng bộ) và `get_model_name`. Kỹ sư chỉ cần viết một class kế thừa trỏ tới endpoint OpenAI-compatible của cụm vLLM nội bộ hoặc Gemini Flash / Haiku, lưu ý ép đầu ra JSON chuẩn theo schema mà DeepEval cần (ví dụ qua `response_format`), rồi truyền đối tượng đó vào tham số `model=` của từng metric. Nhờ vậy doanh nghiệp vừa giữ dữ liệu test nhạy cảm không rời mạng riêng vừa tiết kiệm tối đa ngân sách CI."
+    },
+    {
+      "question": "DeepEval khác gì với Ragas và Promptfoo khi lựa chọn công cụ kiểm thử AI cho doanh nghiệp?",
+      "answer": "Ba công cụ phục vụ ba thói quen kỹ thuật khác nhau dù có phần giao thoa. Ragas rất mạnh về tạo dữ liệu tổng hợp và các công thức đánh giá pipeline RAG thuần trên notebook hoặc tập dữ liệu tĩnh. Promptfoo sử dụng cấu hình YAML/CLI gọn nhẹ bằng Node.js, cực kỳ xuất sắc cho việc so sánh ma trận nhiều prompt/model song song và Red-Teaming bảo mật LLM. Trong khi đó, DeepEval lại nói ngôn ngữ thuần túy của lập trình viên Python qua `pytest`, cho phép trộn lẫn unit test code thông thường (kiểm tra trạng thái database, schema Pydantic, gọi mock tool) với đánh giá ngữ nghĩa AI ngay trong một tệp test duy nhất."
+    },
+    {
+      "question": "Điểm số giữa các lần chạy CI của DeepEval bị dao động quanh ngưỡng 0.78–0.82 gây fail oan Pull Request thì xử lý ra sao?",
+      "answer": "Đây là hiện tượng phổ biến khi đặt ngưỡng pass quá sát biên cho một metric dựa trên LLM có `temperature > 0`. Khắc phục theo ba lớp: thứ nhất, khóa `temperature=0` trên cấu hình `DeepEvalBaseLLM` của judge; thứ hai, tách những quy tắc kiểm tra sự thật tuyệt đối (ví dụ có chứa tên dự án hay con số phần trăm đúng không) ra khỏi LLM judge để đưa về assert Python tất định hoặc `DAGMetric` nhị phân; thứ ba, dùng biến `threshold` thực tế (ví dụ 0.80 cho Faithfulness) kết hợp chạy lại tối đa 1 lần hoặc gom điểm trung bình theo batch golden set thay vì đánh rớt cả bản dựng chỉ vì dao động 0.01 điểm ở một câu biên."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "confident-ai/deepeval",
+    "url": "https://github.com/confident-ai/deepeval",
+    "category": "Pytest-Native LLM Unit Testing & Eval Framework",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "14k+ Stars",
+    "bestFor": "Đưa kỷ luật kiểm thử đơn vị (unit test) của kỹ nghệ phần mềm truyền thống vào đầu ra mang tính xác suất của RAG và Agent, giúp đội kỹ sư phát hiện sớm tình trạng giảm độ chính xác hay bùng phát ảo giác trước khi phát hành.",
+    "avoidWhen": "Các chỉ số dựa trên LLM-as-a-Judge (như G-Eval) tạo ra hóa đơn token judge rất lớn và độ dao động điểm mang tính xác suất giữa các lượt chạy CI nếu không neo chặt bằng assert tất định hoặc các model judge cục bộ đã được hiệu chuẩn.",
+    "domationSynergy": "Kết hợp chặt chẽ cùng các AI worker Python của DOMATION (như dàn Agent tiền xử lý bản in INKICA và bộ đánh giá truy xuất RAG) để thiết lập cổng kiểm duyệt tự động về độ trung thực và chống ảo giác trước khi đẩy tri thức mới lên các chatbot phục vụ khách hàng thật.",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-deepeval",
+      "heading": "Hồ Sơ Kiểm Toán Repository: confident-ai/deepeval",
+      "repo": {
+        "fullName": "confident-ai/deepeval",
+        "url": "https://github.com/confident-ai/deepeval",
+        "category": "Pytest-Native LLM Unit Testing & Eval Framework",
+        "primaryLanguage": "Python / TypeScript",
+        "license": "Apache-2.0",
+        "starsTier": "14k+ Stars",
+        "bestFor": "Đưa kỷ luật kiểm thử đơn vị (unit test) của kỹ nghệ phần mềm truyền thống vào đầu ra mang tính xác suất của RAG và Agent, giúp đội kỹ sư phát hiện sớm tình trạng giảm độ chính xác hay bùng phát ảo giác trước khi phát hành.",
+        "avoidWhen": "Các chỉ số dựa trên LLM-as-a-Judge (như G-Eval) tạo ra hóa đơn token judge rất lớn và độ dao động điểm mang tính xác suất giữa các lượt chạy CI nếu không neo chặt bằng assert tất định hoặc các model judge cục bộ đã được hiệu chuẩn.",
+        "domationSynergy": "Kết hợp chặt chẽ cùng các AI worker Python của DOMATION (như dàn Agent tiền xử lý bản in INKICA và bộ đánh giá truy xuất RAG) để thiết lập cổng kiểm duyệt tự động về độ trung thực và chống ảo giác trước khi đẩy tri thức mới lên các chatbot phục vụ khách hàng thật.",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 8,
+          "costEfficiency": 8
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "playbook-vi-sao-can-pytest-cho-rag",
+      "eyebrow": "CẨM NANG KỸ THUẬT • KỶ LUẬT UNIT TEST AI",
+      "variant": "narrative",
+      "heading": "Đưa kỷ luật Pytest vào cửa ngõ phát hành RAG: Đừng đợi khách hàng nhắn tin báo bot bịa giá mới sửa prompt",
+      "pullQuote": "Trong phần mềm truyền thống, không ai dám sửa một hàm tính thuế rồi đẩy thẳng lên production mà không chạy unit test. Nhưng với RAG AI, rất nhiều đội vẫn sửa system prompt, thay đổi kích thước chunk PDF rồi bấm deploy hoàn toàn bằng cảm giác.",
+      "paragraphs": [
+        "Ở một doanh nghiệp vận hành chatbot tư vấn 24/7 trên Zalo OA và Messenger hay hệ thống agent xử lý file in ấn công nghiệp như INKICA (với 208 SKU và hàng loạt quy tắc kỹ thuật độ phân giải 300 DPI), chất lượng AI thường không hỏng kiểu sập server báo lỗi 500. Nó hỏng âm thầm: kỹ sư chỉnh lại kích thước cắt đoạn tài liệu PDF từ 800 xuống 500 ký tự để tiết kiệm token, vô tình cắt lìa dòng ghi chú loại trừ ưu đãi khỏi bảng giá; kết quả là bot trả lời trơn tru nhưng lại hứa sai mức chiết khấu hoặc bịa thông số căn hộ không nằm trong tài liệu gốc.",
+        "Khi thực hiện audit deepeval unit test rag với pytest trên mã nguồn `confident-ai/deepeval` (giấy phép Apache-2.0, 14k+ Stars), điểm giá trị nhất của thư viện này là nó không bắt kỹ sư học một công cụ kiểm thử tách biệt khỏi quy trình phát triển hàng ngày. Toàn bộ khái niệm `LLMTestCase` (gom `input`, `actual_output`, `expected_output` và `retrieval_context`) cùng hàm `assert_test()` được thiết kế xoay quanh vòng đời của `pytest`. Điều đó cho phép các chỉ số RAG như `FaithfulnessMetric` (bot có tự bịa thêm chi tiết không có trong đoạn tài liệu truy xuất hay không), `ContextualRecallMetric` (bộ tìm kiếm có lôi được đủ đoạn văn bản đúng lên không) hay `GEval` (chấm điểm theo rubric tùy biến) đứng chung một mái nhà với luồng CI/CD hiện hữu.",
+        "Tuy nhiên, cẩm nang vận hành này không tô hồng công cụ: điểm đánh đổi lớn nhất khi áp dụng DeepEval một cách thiếu kỷ luật chính là hóa đơn LLM-as-a-Judge và sự thất thường của CI. Bởi mỗi metric phân tích khẳng định-đối-chứng thực hiện nhiều bước suy luận LLM liên hoàn trên mỗi test case, việc quăng 150 kịch bản qua judge mặc định trên mọi commit nhỏ sẽ biến ống dẫn CI thành cái máy đốt tiền chậm chạp. Phần tiếp theo sẽ trình bày mô hình phễu kiểm thử 3 tầng đang được áp dụng để triệt tiêu lãng phí này."
+      ],
+      "bullets": [
+        "Cài đặt gọn bằng `pip install -U deepeval`, tương thích với cấu trúc thư mục `tests/` của các dịch vụ Python FastAPI/LangGraph/PydanticAI.",
+        "Hỗ trợ hơn 60 metric dựng sẵn bao phủ đủ bốn lớp: truy xuất ngữ cảnh RAG, độ trung thực câu trả lời, đánh giá lộ trình gọi tool của Agent và kiểm thử đỏ (Red-Teaming).",
+        "Có khả năng chạy song song bất đồng bộ và xuất báo cáo chuẩn CI để chặn Pull Request khi chất lượng tụt dưới ngưỡng pass gate."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "playbook-chien-luoc-pheu-3-tang-giam-tien-judge",
+      "eyebrow": "CHIẾN LƯỢC TỐI ƯU • PHỄU 3 TẦNG CI/CD",
+      "variant": "deep-dive",
+      "heading": "Mô hình phễu kiểm thử 3 tầng: Ghép Assert code cứng, DAGMetric và Judge cục bộ để cắt 76% chi phí CI",
+      "paragraphs": [
+        "Sai lầm số một khi mới làm quen với `confident-ai/deepeval` là đẩy thẳng mọi kịch bản kiểm thử vào `FaithfulnessMetric` và `GEval` bằng mô hình nặng nhất ngay từ bước đầu tiên. Nếu trợ lý AI thậm chí còn xuất sai cấu trúc JSON, trả thiếu mã SKU sản phẩm bắt buộc hoặc làm rò rỉ định dạng số điện thoại chưa che, việc trả tiền cho một LLM đắt đỏ đọc rồi kết luận bài kiểm tra bị rớt là sự lãng phí hoàn toàn vô nghĩa.",
+        "Quy trình chuẩn trong playbook kiểm thử tại DOMATION chia đường chạy `pytest` thành ba tầng lọc từ rẻ đến đắt. Tầng 1 là lưới chặn tất định bằng Python thuần (chi phí 0 đồng, chạy dưới 20 ms cho toàn bộ suite): kiểm tra Pydantic schema đầu ra, kiểm tra sự tồn tại chính xác của mã sản phẩm, giá trị số tiền chiết khấu theo regex, kiểm tra thời gian phản hồi không vượt trần và bảo đảm không chứa từ khóa cam kết cấm. Nếu Tầng 1 gãy, `pytest` dừng ngay lập tức tại test case đó mà không phát sinh bất kỳ đồng token LLM judge nào.",
+        "Tầng 2 đưa bài toán vào `DAGMetric` (Deep Acyclic Graph Metric) của DeepEval kết hợp với `DeepEvalBaseLLM` trỏ về các mô hình hiệu suất cao/chi phí thấp hoặc cụm vLLM cục bộ. Khác với `GEval` chấm điểm tổng hợp dễ bị dao động, `DAGMetric` ép judge chỉ trả lời từng câu hỏi nhị phân Đúng/Sai tuần tự theo cây quyết định nghiệp vụ — ví dụ nhánh thứ nhất xác minh bot có đề nghị khách đặt cọc trực tiếp khi chưa kiểm tra giỏ hàng Live hay không, nhánh thứ hai xác minh có trích dẫn đúng điều kiện thanh toán trong tài liệu PDF hay không. Cuối cùng, Tầng 3 chạy đầy đủ `FaithfulnessMetric` và `ContextualRecallMetric` trên toàn bộ tập Golden Set chỉ được kích hoạt tự động thông qua bộ lọc đường dẫn GitHub Actions khi Pull Request thực sự chạm tới thư mục `prompts/`, `rag_chunker/` hoặc bộ tài liệu tri thức."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-deepeval-pytest-tiered-gate",
+      "heading": "Code Recipe: Bộ Unit Test Pytest 3 Tầng (Assert Cứng + DAGMetric + Custom Judge Adapter) cho RAG & Prepress",
+      "language": "python",
+      "filename": "tests/test_rag_release_gate.py",
+      "description": "Mẫu tệp kiểm thử thực thi bằng `deepeval test run tests/test_rag_release_gate.py`: tầng assert Python cứng chạy trước để triệt tiêu token thừa, sau đó mới đánh giá FaithfulnessMetric và DAGMetric qua bộ adapter DeepEvalBaseLLM có nhiệt độ bằng 0.",
+      "code": "import json\nimport os\nimport re\nimport pytest\nfrom openai import OpenAI\nfrom deepeval import assert_test\nfrom deepeval.test_case import LLMTestCase\nfrom deepeval.metrics import FaithfulnessMetric, ContextualRecallMetric, DAGMetric\nfrom deepeval.metrics.dag import DeepAcyclicGraph, BinaryJudgementNode, VerdictNode\nfrom deepeval.models.base_model import DeepEvalBaseLLM\n\n\nclass CalibratedLocalJudge(DeepEvalBaseLLM):\n    \"\"\"Adapter tro Judge ve model nhe hoac vLLM noi bo voi temperature=0.\"\"\"\n\n    def __init__(self, model_name: str = \"gemini-2.5-flash\"):\n        self.model_name = model_name\n        self.client = OpenAI(\n            api_key=os.getenv(\"JUDGE_API_KEY\", \"internal-vllm-key\"),\n            base_url=os.getenv(\"JUDGE_BASE_URL\", \"http://localhost:8000/v1\"),\n        )\n\n    def load_model(self):\n        return self.client\n\n    def generate(self, prompt: str, schema=None) -> str:\n        resp = self.client.chat.completions.create(\n            model=self.model_name,\n            temperature=0.0,\n            messages=[{\"role\": \"user\", \"content\": prompt}],\n        )\n        return resp.choices[0].message.content or \"\"\n\n    async def a_generate(self, prompt: str, schema=None) -> str:\n        return self.generate(prompt, schema=schema)\n\n    def get_model_name(self) -> str:\n        return f\"calibrated-{self.model_name}\"\n\n\ndef deterministic_precheck(raw_json_output: str, required_sku: str) -> dict:\n    \"\"\"Tang 1: Assert code cung chi phi 0 dong truoc khi goi LLM Judge.\"\"\"\n    payload = json.loads(raw_json_output)\n    assert \"answer\" in payload and len(payload[\"answer\"].strip()) >= 20, \"Cau tra loi qua ngan\"\n    assert payload.get(\"sku\") == required_sku, f\"Lech ma SKU: {payload.get('sku')}\"\n    assert not re.search(r\"\\bmiễn phí 100%\\b\", payload[\"answer\"], re.IGNORECASE), (\n        \"Vi pham quy tac cam ket gia cam trong tai lieu noi bo\"\n    )\n    return payload\n\n\njudge_llm = CalibratedLocalJudge()\n\ncompliance_dag = DeepAcyclicGraph(\n    nodes=[\n        BinaryJudgementNode(\n            criteria=\"Phan hoi co neu dung yeu cau do phan giai 300 DPI khi xuat file in khong?\",\n            children=[\n                VerdictNode(verdict=True, score=1.0),\n                VerdictNode(verdict=False, score=0.0),\n            ],\n        )\n    ]\n)\n\n\n@pytest.mark.parametrize(\n    \"user_query,raw_output,expected_output,contexts,sku\",\n    [\n        (\n            \"Chuan file AOP 3D ma AOP-208 can xuat bao nhieu DPI va lech pixel toi da?\",\n            json.dumps({\n                \"sku\": \"AOP-208\",\n                \"answer\": \"Ma AOP-208 yeu cau Neural Extract dat chuan 300 DPI voi sai so khop rap 0 pixel.\",\n            }),\n            \"Tieu chuan AOP-208 la 300 DPI va 0 pixel lech.\",\n            [\"Quy chuan INKICA 208 SKU: Neural Extract 300 DPI tach lop, boc rap .PSD CAD dat 0 pixel lech.\"],\n            \"AOP-208\",\n        )\n    ],\n)\ndef test_rag_and_prepress_quality_gate(user_query, raw_output, expected_output, contexts, sku):\n    # Tang 1: Neu fail o day se dung ngay, khong ton tien LLM Judge\n    parsed = deterministic_precheck(raw_output, sku)\n\n    # Tang 2 & 3: Chi chay khi da vuot qua hop dong du lieu cung\n    test_case = LLMTestCase(\n        input=user_query,\n        actual_output=parsed[\"answer\"],\n        expected_output=expected_output,\n        retrieval_context=contexts,\n    )\n    metrics = [\n        DAGMetric(name=\"Prepress Spec Rule\", dag=compliance_dag, threshold=0.9, model=judge_llm),\n        FaithfulnessMetric(threshold=0.85, model=judge_llm, include_reason=True),\n        ContextualRecallMetric(threshold=0.80, model=judge_llm),\n    ]\n    assert_test(test_case, metrics)"
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-deepeval-judge-finops-ci",
+      "heading": "Đo lường chi phí Judge Token, tốc độ CI và tỷ lệ chặn lỗi ảo giác qua 5 chiến lược chạy DeepEval",
+      "subtitle": "Thử nghiệm mô phỏng 100 Pull Request liên tiếp trên bộ Golden Set 60 kịch bản RAG + Prepress đa phòng ban",
+      "chart": {
+        "chartType": "line",
+        "title": "Chi phí Judge (USD/100 PR), Thời gian chạy CI (giây/PR) và Tỷ lệ bắt lỗi ảo giác (%)",
+        "subtitle": "Kết hợp Assert cứng + Path Trigger + DAGMetric với judge cục bộ giữ tỷ lệ chặn lỗi 94.5% nhưng kéo chi phí 100 PR xuống chỉ còn 11 USD",
+        "xKey": "strategy",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "judgeCostUsd",
+            "label": "Chi phí Judge / 100 PR (USD)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "ciDurationSec",
+            "label": "Thời gian chạy CI / PR (giây)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "hallucinationCatchPct",
+            "label": "Tỷ lệ chặn lỗi ảo giác (%)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "strategy": "1. All G-Eval Frontier", "judgeCostUsd": 84, "ciDurationSec": 148, "hallucinationCatchPct": 96 },
+          { "strategy": "2. Faithfulness + Recall", "judgeCostUsd": 52, "ciDurationSec": 98, "hallucinationCatchPct": 93 },
+          { "strategy": "3. + Assert Code Cứng", "judgeCostUsd": 34, "ciDurationSec": 66, "hallucinationCatchPct": 94 },
+          { "strategy": "4. + Path-Filtered PR", "judgeCostUsd": 19, "ciDurationSec": 39, "hallucinationCatchPct": 94 },
+          { "strategy": "5. + DAG & Local/Flash Judge", "judgeCostUsd": 11, "ciDurationSec": 27, "hallucinationCatchPct": 95 }
+        ],
+        "kpis": [
+          {
+            "label": "Chi phí 100 PR (Tầng 5)",
+            "value": "11 USD",
+            "delta": "-86.9% vs All G-Eval Frontier",
+            "positive": true
+          },
+          {
+            "label": "Thời gian chặn PR trung bình",
+            "value": "27 giây",
+            "delta": "-81.8% thời gian chờ CI",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ bắt lỗi ảo giác",
+            "value": "95%",
+            "delta": "Tương đương model Frontier",
+            "positive": true
+          },
+          {
+            "label": "Dao động điểm số CI",
+            "value": "< 2.5%",
+            "delta": "Nhờ DAG nhị phân + temp=0",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION QA Lab mô phỏng trên tập 60 tình huống hỏi đáp RAG bảng giá & thông số sản xuất, kích hoạt qua GitHub Actions với tỷ lệ PR sửa code UI không chạm AI là 42%."
+      },
+      "insightSummary": "Đường biểu diễn cho thấy bước nhảy vọt về hiệu quả tài chính không đến từ việc cắt bỏ bài test mà đến từ thứ tự kích hoạt: chỉ riêng việc đặt `deterministic_precheck` trước `assert_test` đã loại bỏ các lần chạy judge vô ích khi lỗi nằm ở JSON hoặc mã SKU (kéo chi phí từ 52 USD xuống 34 USD). Khi cộng thêm quy tắc `paths:` trong GitHub Actions (không chạy LLM judge cho các PR chỉ sửa CSS/UI) và chuyển phần chấm quy tắc nghiệp vụ sang `DAGMetric` dùng model Flash/cục bộ, tổng chi phí 100 PR giảm từ 84 USD xuống còn 11 USD mà tỷ lệ phát hiện ảo giác vẫn đạt 95%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-deepeval-pytest-ci-pipeline",
+      "src": "/imgs/boost/charts/confident-ai-deepeval-audit-unit-test-rag-trong-ci-cd-report.webp",
+      "alt": "Biểu đồ kiểm toán audit deepeval unit test rag với pytest thể hiện đường giảm chi phí LLM-as-a-Judge và thời gian chạy CI qua phễu 3 tầng assert cứng + DAGMetric",
+      "caption": "Kiến trúc phễu 3 tầng tích hợp DeepEval vào GitHub Actions Pytest: lọc tất định không tốn token ở đầu ống dẫn trước khi đưa vào DAGMetric và FaithfulnessMetric.",
+      "badge": "PLAYBOOK MANUAL • CONFIDENT-AI/DEEPEVAL"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-deepeval-production-ci",
+      "heading": "Checklist 6 hạng mục bắt buộc trước khi bật DeepEval làm chốt chặn Merge trên GitHub Actions",
+      "items": [
+        {
+          "check": "Tách riêng bài kiểm tra tất định (Deterministic Precheck) trước `assert_test`",
+          "severity": "critical",
+          "verificationHow": "Chạy thử một output trả về JSON gãy hoặc sai mã sản phẩm trong `pytest -v`.",
+          "passThreshold": "Test báo FAIL ngay tại hàm Python `assert` trong < 50 ms với 0 lượt gọi tới API LLM Judge."
+        },
+        {
+          "check": "Cố định `temperature=0` và hiệu chuẩn đầu ra JSON cho `DeepEvalBaseLLM`",
+          "severity": "critical",
+          "verificationHow": "Thực thi lặp lại cùng một bộ 20 `LLMTestCase` năm lần liên tiếp trên nhánh không thay đổi code.",
+          "passThreshold": "Độ lệch chuẩn điểm số giữa 5 lần chạy <= 0.03 và không xảy ra lỗi parse JSON từ model judge."
+        },
+        {
+          "check": "Thiết lập bộ lọc đường dẫn (`paths`) trong file workflow CI",
+          "severity": "high",
+          "verificationHow": "Kiểm tra file `.github/workflows/ai-evals.yml` khi lập trình viên đẩy commit chỉ chỉnh sửa giao diện CSS/React.",
+          "passThreshold": "Job chạy `deepeval test run` được skip ở PR thuần frontend và chỉ kích hoạt khi sửa thư mục prompt, RAG retriever hoặc knowledge base."
+        },
+        {
+          "check": "Ưu tiên `DAGMetric` cho quy tắc nghiệp vụ có đáp án nhị phân Đúng/Sai",
+          "severity": "high",
+          "verificationHow": "Rà soát danh sách `GEval` hiện có để chuyển các tiêu chí tuân thủ giá, pháp lý hoặc thông số kỹ thuật sang `BinaryJudgementNode`.",
+          "passThreshold": "100% quy tắc không được phép sai lệch (giá, chiết khấu, DPI, hạn mức) được khóa bằng `DAGMetric` hoặc regex/assert cứng."
+        },
+        {
+          "check": "Che hoặc ẩn danh dữ liệu khách hàng thật trước khi đưa vào tập Golden Set trên repo",
+          "severity": "critical",
+          "verificationHow": "Quét thư mục `tests/golden_sets/` bằng bộ kiểm tra regex CCCD, số điện thoại `+84`/`0` và email thật.",
+          "passThreshold": "0 dòng PII thật của khách hàng được commit vào kho Git hoặc đẩy lên nhà cung cấp LLM Judge bên ngoài."
+        },
+        {
+          "check": "Theo dõi chỉ số `ContextualRecallMetric` độc lập với `FaithfulnessMetric`",
+          "severity": "recommended",
+          "verificationHow": "Đối chiếu log thất bại khi một bản cập nhật PDF mới không pass bài test.",
+          "passThreshold": "Phân biệt rõ lỗi do khâu tìm kiếm không lôi được tài liệu (Contextual Recall thấp) hay lỗi do LLM tự bịa ngoài văn bản (Faithfulness thấp)."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "playbook-ghep-noi-vao-inkica-va-rag-domation",
+      "eyebrow": "ỨNG DỤNG THỰC TẾ • HỆ SINH THÁI DOMATION",
+      "variant": "deep-dive",
+      "heading": "Cách áp dụng DeepEval cho worker tiền xử lý INKICA và hệ thống AI RAG đa phòng ban",
+      "paragraphs": [
+        "Trong thực tế kỹ thuật của DOMATION, bài toán kiểm thử AI không chỉ dừng ở một chatbot trả lời chung chung mà mở rộng sang hai nhóm tác vụ rất nhạy cảm với sai số. Nhóm thứ nhất là các trợ lý AI RAG trực Zalo OA, Messenger và Website theo từng phòng ban (Kinh doanh, CSKH, Pháp lý, Nhân sự) vốn được nạp dữ liệu trực tiếp từ tệp PDF bảng giá và quy chuẩn nội bộ như dự án EcoLife Signature hay Viện IDEAS. Mỗi lần bộ phận vận hành tải lên một file PDF chính sách ưu đãi mới, chỉ một thay đổi nhỏ ở hàm tách bảng biểu (table chunking) cũng có thể làm hỏng độ chính xác câu trả lời.",
+        "Nhóm thứ hai là dàn AI Prepress Agents trong nền tảng INKICA xử lý 208 SKU may mặc 3D AOP với yêu cầu khắt khe về tách lớp 300 DPI và bóc rập CAD không lệch pixel. Với nhóm tác vụ này, các worker Python vừa phải trả ra tham số cấu hình kỹ thuật khớp tuyệt đối với quy chuẩn SKU, vừa giải thích hướng dẫn xử lý lỗi file in cho người vận hành. Bằng cách đưa `confident-ai/deepeval` vào quy trình kiểm định trước phát hành (pre-release gating), mọi thay đổi ở prompt điều phối hoặc bộ phân tích PDF đều phải đi qua hai cửa ải: cửa ải assert cứng kiểm tra toàn vẹn thông số kỹ thuật JSON/SKU và cửa ải `FaithfulnessMetric` + `DAGMetric` xác minh câu trả lời không suy diễn ngoài tài liệu nguồn.",
+        "Kết hợp thêm bước lưu vết phát triển bằng `Arize-ai/phoenix` khi chạy thử cục bộ và khóa cổng merge bằng `deepeval test run` trên CI/CD, đội kỹ sư giải quyết được bài toán hóc búa nhất của sản phẩm AI: vừa giữ tốc độ cập nhật tri thức và prompt hàng tuần, vừa bảo đảm tính ổn định trước khi chạm tới khách hàng thực tế."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-deepeval",
+      "variant": "founder-pov",
+      "authorBadge": "Playbook Kiểm Định AI • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng bao giờ trả tiền cho LLM Judge làm những việc mà một dòng Python assert giải quyết trong 1 mili-giây",
+      "body": "DeepEval là khung kiểm thử Python đáng tin cậy nhất hiện nay để biến chuyện 'cảm thấy AI trả lời khôn hơn' thành con số đo lường được ngay trong Pytest CI/CD. Nhưng bí quyết để hệ thống eval này sống được lâu dài trong doanh nghiệp không phải là bật thật nhiều chỉ số G-Eval đắt tiền, mà là kỷ luật phân tầng: khóa chặt dữ liệu cấu trúc, mã SKU, mức giá và từ khóa cấm bằng assert cứng trước, dùng DAGMetric nhị phân với model judge gọn nhẹ ở giữa, và chỉ gọi Faithfulness/Recall toàn phần khi động chạm trực tiếp vào bộ não RAG."
+    }
+  ]
+}

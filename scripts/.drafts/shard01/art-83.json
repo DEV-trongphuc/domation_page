@@ -1,0 +1,340 @@
+{
+  "id": "art-83",
+  "number": "83",
+  "slug": "ecommerce-da-kenh-chong-lech-ton-kho-dong-bo-vat-misa",
+  "shardId": "shard01",
+  "pillar": "crm-misa-sales",
+  "pillarLabel": "CRM 360° & Hóa Đơn MISA",
+  "industry": "Thương Mại Điện Tử Đa Kênh",
+  "clusterId": "kw-crm-misa",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "E-commerce đa kênh (Shopee, TikTok, Web): Giải bài toán lệch tồn kho, hoàn hủy & xuất hóa đơn MISA",
+  "seoTitle": "E-Commerce Đa Kênh: Khớp Tồn Kho & Hóa Đơn MISA | DOMATION",
+  "metaDescription": "Khắc phục cảnh kế toán nhập tay hóa đơn VAT khi bán đa sàn Shopee, TikTok Shop và Website. Mapping SKU 1:1, đối soát VietQR và đồng bộ MISA hai chiều.",
+  "focusKeyword": "đồng bộ tồn kho đa kênh và misa",
+  "secondaryKeywords": [
+    "quản lý đơn hàng shopee tiktok web",
+    "xuất hóa đơn điện tử misa ecommerce",
+    "xử lý hoàn hủy đơn đa sàn",
+    "mapping sku marketing và kế toán",
+    "đối soát thanh toán vietqr tự động"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Khớp Tồn Kho Đa Sàn, Tự Động Xuất Hóa Đơn MISA",
+  "thumbnailHook": "Xóa 95% thao tác nhập tay kế toán khi đơn Shopee, TikTok đổ về.",
+  "thumbnailBadge": "E-COMMERCE • MISA SYNC",
+  "coverImage": "/imgs/boost/v2/ecommerce-da-kenh-chong-lech-ton-kho-dong-bo-vat-misa.webp",
+  "coverAlt": "Hệ thống đồng bộ đơn hàng Shopee, TikTok Shop, Website, mapping SKU 1:1 và xuất hóa đơn điện tử MISA hai chiều tại DOMATION",
+  "screenshotImage": "/imgs/boost/charts/ecommerce-da-kenh-chong-lech-ton-kho-dong-bo-vat-misa-report.webp",
+  "screenshotCaption": "Bảng đối soát sai lệch tồn kho đa kênh và tự động hóa chu trình xuất hóa đơn điện tử MISA theo trạng thái đơn hàng thời gian thực.",
+  "relatedModuleUrl": "/crm",
+  "relatedModuleLabel": "Xem Tích Hợp CRM 360° & MISA Hai Chiều",
+  "relatedSlugs": [
+    "dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360",
+    "khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing",
+    "etl-elt-realtime-hop-nhat-pos-crm-erp-zalo-oa",
+    "twentyhq-twenty-audit-crm-ma-nguon-mo-so-sanh-domation-crm"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Trong các chiến dịch Mega-Sale trên Shopee, TikTok Shop và Website, sự cố bán âm kho và sai hóa đơn VAT bùng phát từ ba đứt gãy: thiếu khóa giữ tồn nguyên tử khi đơn nổ đồng loạt, tên Combo tiếp thị khác mã hàng kế toán MISA, và phát hành hóa đơn quá sớm trước cửa sổ hoàn hủy. Kiến trúc đồng bộ hai chiều của DOMATION áp dụng Mapping SKU 1:1, giải rã gói Combo tự động, gạch nợ VietQR qua Webhook và chỉ đẩy chứng từ MISA tại trạng thái thanh toán xác thực.",
+  "keyTakeaways": [
+    "Khóa tồn kho mềm (Soft-Reserve) kèm khóa Idempotency theo từng sàn chặn đứng Oversell trong 15 phút bùng nổ Livestream.",
+    "Bảng ánh xạ Master SKU 1:1 tự tách Combo khuyến mãi thành đúng các mã hàng hóa và thuế suất VAT 8%/10% trong MISA.",
+    "Áp dụng State Machine chặn xuất hóa đơn VAT trước mốc giao thành công để cắt tới 90% hóa đơn điều chỉnh giảm.",
+    "Đối soát đơn Website qua mã VietQR động kèm Webhook ngân hàng giúp gạch nợ tức thì trong <3 giây.",
+    "Đồng bộ hai chiều trả ngược số hóa đơn, mã tra cứu và link tải PDF về thẳng hồ sơ đơn hàng trên CRM 360°."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm thao tác nhập tay MISA",
+      "value": "95%"
+    },
+    {
+      "label": "Sai lệch tồn đa sàn khi Live",
+      "value": "< 0.3%"
+    },
+    {
+      "label": "Khớp VietQR & gạch nợ Website",
+      "value": "< 3 giây"
+    },
+    {
+      "label": "Sai sót MST & điều chỉnh VAT",
+      "value": "Giảm 92%"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Khi Marketing tạo Combo quà tặng mới sát giờ Livestream TikTok thì Mapping SKU sang MISA xử lý thế nào?",
+      "answer": "DOMATION tách lớp hiển thị bán hàng (Channel SKU) khỏi vật tư kế toán (Master SKU). Vận hành khai báo quy tắc giải rã Bundle BOM 1 lần trên CRM — ví dụ 1 Combo = 1 Kem 50ml (VAT 10%) + 1 Túi quà tặng (giá 0đ). Nếu phát sinh SKU lạ chưa ánh xạ, đơn vào hàng đợi an toàn và bắn cảnh báo ZaloBot ngay để không đẩy sai mã vào MISA."
+    },
+    {
+      "question": "Nên xuất hóa đơn điện tử MISA ngay khi khách đặt đơn hay chờ giao xong để tránh hoàn hủy?",
+      "answer": "Với tỷ lệ hoàn hủy COD sàn từ 5%–14%, xuất hóa đơn ngay khi đặt đơn tạo gánh nặng hủy và điều chỉnh hóa đơn hàng loạt. DOMATION cấu hình hai luồng: đơn trả trước VietQR đã đóng gói có thể xuất ngay khi xuất kho; đơn COD sàn chỉ đẩy lệnh phát hành MISA khi nhận Webhook giao thành công hoặc qua cửa sổ trả hàng."
+    },
+    {
+      "question": "Khách hoàn trả một phần đơn hàng thì sổ kho và công nợ MISA cập nhật ra sao?",
+      "answer": "Khi thủ kho quét mã vận đơn xác nhận nhập kho hàng hoàn trên ERP, State Machine tự động tạo phiếu nhập kho hoàn trả và sinh đề nghị lập hóa đơn điều chỉnh giảm đúng các dòng SKU hoàn về MISA, giữ tồn kho và doanh thu ròng khớp tuyệt đối."
+    },
+    {
+      "question": "Khách B2B mua qua Website hoặc Zalo cần xuất VAT công ty thì làm sao tránh gõ sai Mã số thuế?",
+      "answer": "Trên cổng Checkout Website (như mô hình Nava Store) và form đơn CRM, khi nhập Mã số thuế hệ thống gọi API tra cứu dữ liệu thuế để tự điền chính xác Tên pháp nhân và Địa chỉ xuất hóa đơn, triệt tiêu lỗi gõ nhầm của nhân viên Sale."
+    },
+    {
+      "question": "Làm sao hệ thống chịu tải khi Livestream nổ 1.500 đơn trong 30 phút mà không trừ đúp tồn kho?",
+      "answer": "Webhook từ Shopee, TikTok, Website và VietQR đều đi qua lớp tiếp nhận trả HTTP 200 trong <100ms, đẩy vào hàng đợi có Idempotency Key `(kênh_bán, mã_đơn_sàn)`. Khâu trừ tồn dùng giao dịch nguyên tử trên PostgreSQL nên không bao giờ trừ lặp dù sàn gửi lại Webhook."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "giai-phau-su-co-mega-sale-lech-ton-misa",
+      "eyebrow": "Hồ Sơ Pháp Y Vận Hành • Mega-Sale Postmortem",
+      "variant": "incident",
+      "heading": "Giải phẫu 72 giờ hỗn loạn sau đợt Mega-Sale: Oversell 190 đơn, nghẽn hoàn hủy và 412 hóa đơn MISA lệch VAT",
+      "pullQuote": "Cơn ác mộng của doanh nghiệp E-commerce không nằm ở chỗ thiếu đơn hàng, mà ở việc kho vận và kế toán sụp đổ đúng lúc quảng cáo thắng lớn.",
+      "paragraphs": [
+        "Trong một chiến dịch Mega-Live 12.12 kéo dài bốn tiếng trên TikTok Shop song song Flash Sale Shopee và Website, một doanh nghiệp bán lẻ đa kênh tại TP.HCM chứng kiến lượng đơn tăng vọt gấp bảy lần ngày thường lên 4.200 đơn/tuần. Thế nhưng đến 9 giờ sáng hôm sau, thay vì ăn mừng doanh số, phòng vận hành rơi vào khủng hoảng khi hai mã chủ lực cháy hàng sạch trong khi trên sàn vẫn đang mở bán vượt tồn thực tới 190 suất chưa đóng gói.",
+        "Khi DOMATION tiến hành truy vết pháp y toàn bộ chuỗi sự cố 72 giờ đó, ba đứt gãy kỹ thuật hiện ra rõ mồn một. Thứ nhất là cơ chế đồng bộ tồn kho theo chu kỳ polling 15 phút: trong 15 phút cao điểm Livestream, 80 sản phẩm cuối cùng bị nhân bản ảo lên cả Shopee, TikTok và giỏ hàng Web cùng lúc, gây bán âm hàng loạt. Thứ hai là độ vênh giữa SKU tiếp thị và SKU thuế: một bộ sản phẩm trên TikTok mang tên Combo quà tặng, trên Shopee là biến thể giảm giá, trên Web là gói 3 món, khiến thủ kho nhặt tay nhầm hàng tặng và kế toán không đối chiếu được dòng thuế 8% – 10%.",
+        "Thứ ba là thảm họa từ đối soát chuyển khoản thủ công và đẩy hóa đơn MISA quá sớm. Gần 380 đơn Website và Zalo phải chụp biên lai gửi kế toán dò sao kê làm tắc khâu đóng gói. Đáng ngại nhất, để kịp tiến độ khai thuế, kế toán gõ tay xuất hơn 412 hóa đơn điện tử ngay trong hai ngày đầu chiến dịch — trước khi 25% số đơn COD đó quay đầu hoàn hủy trên sàn. Cả phòng kế toán mất hai tuần tiếp theo chỉ để xuất hóa đơn điều chỉnh giảm và rà soát bảng kê chiết khấu sàn.",
+        "Kinh nghiệm triển khai Website thương mại điện tử tốc độ cao kết hợp CAPI (như Nava Store) và đối soát VietQR ACB Webhook tức thì (như Nha khoa Flora) cho thấy giải pháp dứt điểm nằm ở việc đặt một Máy Trạng Thái (State Machine) làm lớp gác cổng giữa Sàn/Web và MISA. Toàn bộ đơn hàng được giải rã Combo thành Master SKU ngay lúc tiếp nhận, khóa tồn nguyên tử, gạch nợ VietQR tự động và chỉ đẩy lệnh phát hành VAT sang MISA tại thời điểm đơn hàng đã an toàn qua mốc hoàn hủy."
+      ],
+      "bullets": [
+        "Master Catalog 1:1: Tách bạch tên Combo Marketing với mã SKU vật tư, đơn vị tính và thuế suất VAT cố định của Kế toán.",
+        "Giải rã Combo tự động (Bundle Explosion): Tự động trừ tồn từng thành phần lõi và tách dòng hàng khuyến mãi hợp lệ.",
+        "Hàng đợi Webhook Idempotency: Khóa tồn tức thì <50ms trên PostgreSQL, triệt tiêu bán âm khi nổ Livestream.",
+        "Gạch nợ VietQR động: Tiền về tài khoản công ty tự đánh dấu Paid trên CRM trong 2 giây không cần chụp biên lai.",
+        "Đồng bộ MISA hai chiều qua State Gate: Tự động trả số hóa đơn và link PDF về hồ sơ đơn hàng CRM cho Sale tra cứu."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-su-co-ton-kho-va-hoa-don-misa",
+      "heading": "Tỷ lệ đơn lỗi tồn kho và sai lệch hóa đơn MISA giảm qua 6 chặng chuẩn hóa hệ thống",
+      "subtitle": "Số đơn phát sinh sự cố tính trên 1.000 đơn đa kênh (Shopee, TikTok, Web) qua từng lớp kiểm soát",
+      "chart": {
+        "chartType": "bar",
+        "title": "Số đơn lỗi tồn kho/hoàn hủy và sai chứng từ MISA trên mỗi 1.000 đơn hàng",
+        "subtitle": "So sánh quy trình nhập tay CSV với từng lớp bảo vệ trong kiến trúc DOMATION CRM & MISA 2 chiều",
+        "xKey": "mocChuanHoa",
+        "yUnit": "Đơn lỗi / 1k",
+        "series": [
+          {
+            "key": "loiTonHoanHuy",
+            "label": "Lỗi âm kho & trễ hoàn hủy (Đơn)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "loiChungTuMisa",
+            "label": "Sai lệch SKU / MST hóa đơn MISA (Đơn)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "tongLoiHeThong",
+            "label": "Tổng lỗi tồn đọng sau xử lý (Đơn)",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          {
+            "mocChuanHoa": "Nhập tay CSV",
+            "loiTonHoanHuy": 48,
+            "loiChungTuMisa": 64,
+            "tongLoiHeThong": 92
+          },
+          {
+            "mocChuanHoa": "Map SKU 1:1",
+            "loiTonHoanHuy": 34,
+            "loiChungTuMisa": 26,
+            "tongLoiHeThong": 49
+          },
+          {
+            "mocChuanHoa": "Soft-Reserve",
+            "loiTonHoanHuy": 11,
+            "loiChungTuMisa": 22,
+            "tongLoiHeThong": 28
+          },
+          {
+            "mocChuanHoa": "VietQR Hook",
+            "loiTonHoanHuy": 8,
+            "loiChungTuMisa": 14,
+            "tongLoiHeThong": 18
+          },
+          {
+            "mocChuanHoa": "MISA State Gate",
+            "loiTonHoanHuy": 4,
+            "loiChungTuMisa": 3,
+            "tongLoiHeThong": 6
+          },
+          {
+            "mocChuanHoa": "Ổn định 60 ngày",
+            "loiTonHoanHuy": 2,
+            "loiChungTuMisa": 1,
+            "tongLoiHeThong": 3
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Lỗi hóa đơn VAT MISA",
+            "value": "1 / 1.000 đơn",
+            "delta": "Giảm 98.4% so với nhập tay",
+            "positive": true
+          },
+          {
+            "label": "Sự cố âm kho giờ Live",
+            "value": "2 / 1.000 đơn",
+            "delta": "Giảm 95.8% nhờ Soft-Reserve",
+            "positive": true
+          },
+          {
+            "label": "Công lao động kế toán",
+            "value": "-95% giờ gõ",
+            "delta": "Tự động đối soát & xuất VAT",
+            "positive": true
+          },
+          {
+            "label": "Trả PDF hóa đơn về CRM",
+            "value": "Tức thì",
+            "delta": "Gửi kèm Email/ZNS cho khách",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô hình đo kiểm tải chuẩn hóa từ kiến trúc đồng bộ E-commerce & MISA hai chiều của DOMATION."
+      },
+      "insightSummary": "Bảng Mapping SKU 1:1 giúp cắt ngay 59% lỗi sai mã chứng từ MISA (từ 64 xuống 26 đơn/1.000 đơn), trong khi lớp Soft-Reserve làm giảm mạnh tình trạng âm kho giờ Live từ 34 xuống 11 đơn. Tuy nhiên, cú hạ màn làm sạch sổ kế toán nằm ở MISA State Gate: khi chặn phát hành hóa đơn đối với các đơn chưa vượt qua cửa sổ hoàn hủy hoặc chưa xác nhận gạch nợ VietQR, lỗi hóa đơn VAT tụt từ 14 xuống chỉ còn 1 đơn trên 1.000 đơn."
+    },
+    {
+      "type": "visual-figure",
+      "id": "minh-hoa-kien-truc-mapping-sku-misa",
+      "src": "/imgs/boost/charts/ecommerce-da-kenh-chong-lech-ton-kho-dong-bo-vat-misa-report.webp",
+      "alt": "Biểu đồ phân tích tỷ lệ giảm sai lệch tồn kho đa kênh và lỗi xuất hóa đơn điện tử MISA hai chiều",
+      "caption": "Hiệu suất lọc lỗi tồn kho đa sàn và tự động hóa đồng bộ chứng từ MISA hai chiều trong quy trình E-commerce 4.200+ đơn/tuần.",
+      "badge": "ĐỐI SOÁT SÀN & MISA 2 CHIỀU"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "chuoi-su-co-va-quy-trinh-chong-lech-misa",
+      "heading": "Chuỗi xử lý 6 bước từ lúc nổ đơn Shopee/TikTok/Web đến khi khóa chứng từ MISA",
+      "variant": "migration-phases",
+      "items": [
+        {
+          "tag": "T0 • MASTER SKU",
+          "title": "Ánh xạ SKU 1:1 và Cấu trúc Giải rã Combo (Bundle BOM)",
+          "detail": "Gắn mỗi mã bán hàng đa sàn với mã SKU kế toán gốc trong MISA, cố định thuế suất VAT (8%/10%) và dòng quà tặng kèm.",
+          "metricOrTool": "Unified SKU Catalog"
+        },
+        {
+          "tag": "T1 • INGESTION",
+          "title": "Tiếp nhận Webhook qua Hàng đợi Idempotency",
+          "detail": "Đơn từ API sàn và Web nhận khóa `(channel, external_order_id)`, trả HTTP 200 trong <100ms để chặn bắn trùng khi nghẽn mạng.",
+          "metricOrTool": "Webhook Queue • <100ms"
+        },
+        {
+          "tag": "T2 • STOCK LOCK",
+          "title": "Khóa tồn kho mềm nguyên tử & đẩy đồng bộ ngược",
+          "detail": "Trừ tồn khả dụng sang trạng thái giữ chỗ bằng PostgreSQL Atomic Transaction và cập nhật tồn mới ngay lên các gian hàng còn lại.",
+          "metricOrTool": "PostgreSQL Atomic Lock"
+        },
+        {
+          "tag": "T3 • VIETQR GATE",
+          "title": "Đối soát chuyển khoản Web/Zalo bằng VietQR Webhook",
+          "detail": "Sinh mã VietQR chứa mã đơn hàng; ngay khi ngân hàng báo có, hệ thống tự gạch nợ Paid và mở lệnh đóng gói.",
+          "metricOrTool": "VietQR Webhook • 2s"
+        },
+        {
+          "tag": "T4 • RETURN GUARD",
+          "title": "Cổng kiểm soát hoàn hủy trước khi đẩy MISA",
+          "detail": "Đơn hủy trước khi giao tự nhả tồn giữ chỗ. Đơn hoàn một phần buộc thủ kho quét mã vận đơn nhập hoàn trước khi lập điều chỉnh giảm.",
+          "metricOrTool": "Order State Machine"
+        },
+        {
+          "tag": "T5 • MISA 2-WAY",
+          "title": "Phát hành hóa đơn MISA & trả link PDF về CRM 360°",
+          "detail": "Đẩy chứng từ chuẩn MST sang MISA ở trạng thái đã quyết toán; nhận ngược số hóa đơn, ký hiệu và file PDF gửi cho khách qua Email/ZNS.",
+          "metricOrTool": "MISA 2-Way API"
+        }
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "ma-tran-giai-phap-dong-bo-da-san-misa",
+      "heading": "Đối chiếu 3 kiến trúc xử lý đơn đa kênh: Thủ công CSV vs Tool quản lý sàn vs DOMATION",
+      "caption": "So sánh độ sạch dữ liệu kho và kế toán trong các đợt Mega-Sale lưu lượng lớn.",
+      "columns": [
+        "Cơ chế vận hành",
+        "CSV Sàn & Gõ Tay MISA",
+        "Tool Quản Lý Sàn Phổ Thông",
+        "DOMATION CRM 360° & MISA"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Mapping Combo & Quà tặng",
+          "values": [
+            "Kho đọc ghi chú nhặt tay, kế toán tự ước lượng giá thuế.",
+            "Hỗ trợ Combo cơ bản, hay gộp chung 1 dòng khi xuất sang thuế.",
+            "Giải rã Bundle BOM 1:1 theo từng SKU thuế và dòng hàng 0đ."
+          ],
+          "winnerNote": "Chuẩn sổ kho & VAT"
+        },
+        {
+          "criterion": "Khóa tồn kho khi Live",
+          "values": [
+            "Cập nhật tay cuối ngày, chắc chắn âm kho khi Flash Sale.",
+            "Polling 5–15 phút, vẫn hở lỗ hổng bán trùng phút cao điểm.",
+            "Atomic Transaction theo sự kiện + Buffer an toàn từng kênh."
+          ],
+          "winnerNote": "Chặn Oversell 99.7%"
+        },
+        {
+          "criterion": "Xử lý hoàn hủy & VAT",
+          "values": [
+            "Lệch hoàn toàn giữa sổ vận đơn sàn và hóa đơn đã xuất.",
+            "Cập nhật kho nhưng không tự sinh điều chỉnh hóa đơn MISA.",
+            "State Machine chặn xuất VAT sớm, tự lập điều chỉnh khi hoàn."
+          ],
+          "winnerNote": "Giảm 92% hủy hóa đơn"
+        },
+        {
+          "criterion": "Gạch nợ VietQR & Tra cứu MST",
+          "values": [
+            "Chụp màn hình gửi chat, hay gõ nhầm MST doanh nghiệp.",
+            "Thiếu Webhook ngân hàng trực tiếp hoặc phải duyệt tay.",
+            "VietQR Webhook 2 giây + tự điền pháp nhân từ MST + trả PDF."
+          ]
+        },
+        {
+          "criterion": "Phản hồi Meta CAPI thực",
+          "values": [
+            "Không bắn ngược đơn thành công thật về quảng cáo.",
+            "Chỉ ghi nhận GMV thô, không trừ đơn hoàn hủy khi đo Ads.",
+            "Bắn giá trị đơn ròng chuẩn SHA-256 về Meta CAPI tối ưu ROAS."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-sku-mapping-idempotent-misa-webhook",
+      "heading": "Code Recipe: Bộ xử lý giải rã Combo SKU, khóa tồn nguyên tử và gác cổng xuất hóa đơn MISA",
+      "language": "typescript",
+      "filename": "misa-sku-sync-handler.ts",
+      "description": "Đoạn mã TypeScript minh họa ba rào chắn kỹ thuật bắt buộc khi nối đơn đa sàn vào MISA: (1) dùng khóa Idempotency `(channel, externalOrderId)` chống nhân bản đơn hàng khi Shopee/TikTok bắn lặp Webhook; (2) giải rã gói Combo thành các Master SKU có thuế suất VAT chuẩn trước khi trừ tồn kho nguyên tử trong PostgreSQL; và (3) giữ đơn tại cổng State Gate cho tới khi xác nhận giao thành công hoặc gạch nợ VietQR xong mới đẩy vào hàng đợi xuất hóa đơn MISA.",
+      "code": "interface ChannelOrderItem {\n  channelSku: string;\n  qty: number;\n  paidLineAmountVnd: number;\n}\n\ninterface MisaInvoiceLine {\n  accountingSku: string;\n  qty: number;\n  unitPriceBeforeVat: number;\n  vatRate: 8 | 10;\n  isPromoZeroPrice: boolean;\n}\n\nexport async function processEcommerceOrderToMisa(\n  db: DbTransactionClient,\n  payload: {\n    channel: 'SHOPEE' | 'TIKTOK' | 'WEB';\n    externalOrderId: string;\n    paymentStatus: 'UNPAID_COD' | 'PAID_VIETQR' | 'SETTLED_PLATFORM';\n    orderState: 'CONFIRMED' | 'CANCELLED' | 'RETURNED_PARTIAL' | 'DELIVERED';\n    buyerTaxCode?: string;\n    items: ChannelOrderItem[];\n  }\n) {\n  const idempotencyKey = `${payload.channel}:${payload.externalOrderId}`;\n  const existing = await db.orders.findByIdempotencyKey(idempotencyKey);\n\n  const misaLines: MisaInvoiceLine[] = [];\n  for (const item of payload.items) {\n    const bomComponents = await db.skuMappings.resolveBundleOrSingle(payload.channel, item.channelSku);\n    if (!bomComponents.length) {\n      await db.alerts.notifyZaloOps(`SKU chưa map MISA: ${payload.channel}/${item.channelSku}`);\n      throw new Error(`UNMAPPED_CHANNEL_SKU:${item.channelSku}`);\n    }\n    for (const comp of bomComponents) {\n      const neededQty = comp.ratio * item.qty;\n      if (!existing && payload.orderState === 'CONFIRMED') {\n        await db.inventory.atomicReserveStock(comp.accountingSku, neededQty, idempotencyKey);\n      }\n      misaLines.push({\n        accountingSku: comp.accountingSku,\n        qty: neededQty,\n        unitPriceBeforeVat: comp.isGift ? 0 : Math.round(comp.allocatedPrice / (1 + comp.vatRate / 100)),\n        vatRate: comp.vatRate,\n        isPromoZeroPrice: comp.isGift,\n      });\n    }\n  }\n\n  const eligibleForVat = payload.orderState === 'DELIVERED' || payload.paymentStatus === 'PAID_VIETQR';\n  if (!eligibleForVat) {\n    return { status: 'HELD_AT_STATE_GATE', idempotencyKey, reservedLines: misaLines.length };\n  }\n\n  return db.misaOutbox.enqueueIdempotent({\n    idempotencyKey,\n    taxCode: payload.buyerTaxCode ?? null,\n    lines: misaLines,\n    callbackHook: '/api/crm/misa-invoice-callback',\n  });\n}"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "nguyen-tac-vang-dong-bo-misa-thuong-mai-dien-tu",
+      "variant": "key-rule",
+      "title": "Quy tắc kiến trúc: Không bao giờ nối thẳng giỏ hàng Marketing vào phần mềm kế toán MISA",
+      "body": "Giỏ hàng Shopee, TikTok hay Website sinh ra để tối ưu cảm xúc mua sắm với tên Combo đổi liên tục mỗi tuần, trong khi MISA đòi hỏi sự bất biến của mã vật tư, định khoản kho và thuế suất VAT. DOMATION CRM 360° đóng vai trò tầng chuyển đổi đứng giữa hai thế giới: hấp thụ biến động đa sàn và VietQR Webhook, bóc tách chuẩn từng Master SKU, chặn đứng đơn hoàn hủy tại State Machine rồi mới bàn giao chứng từ sạch cho MISA. Khi tách đúng tầng kiến trúc này, Marketing thoải mái tung gói khuyến mãi mới mà Kế toán vẫn khóa sổ cuối tháng gọn gàng."
+    }
+  ]
+}

@@ -15,19 +15,26 @@ import {
   Webhook,
 } from 'lucide-react';
 import { DomResponsiveSubtabs } from '../dom-meta/DomMetaSelect';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import { apiRequest, getErrorMessage } from './autodataApi';
 
 interface AutoDataWebhookGuideProps {
   tenantSlug: string;
   accessToken?: string;
   webhookSecret?: string;
+  connectionToken?: string;
+  webhookUrl?: string;
   onClose?: () => void;
 }
+
+const CANONICAL_AUTODATA_ORIGIN = 'https://data.domation.net';
 
 export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
   tenantSlug,
   accessToken,
   webhookSecret = 'whsec_auto_data_super_secret_2026',
+  connectionToken,
+  webhookUrl,
   onClose,
 }) => {
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4>(1);
@@ -55,9 +62,14 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
     lead_id?: string | number;
   } | null>(null);
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://domation.net';
-  const inboundWebhookUrl = `${origin}/api/v1/webhooks`;
-  const personalLinkbotUrl = `${origin}/data/${tenantSlug}/submit?consultant_id=1`;
+  const safeSlugSegment = tenantSlug?.trim() ? encodeURIComponent(tenantSlug.trim()) : '<tenant_slug>';
+  const safeTokenSegment = connectionToken?.trim()
+    ? encodeURIComponent(connectionToken.trim())
+    : '<connection_token>';
+  const inboundWebhookUrl =
+    webhookUrl?.trim() ||
+    `${CANONICAL_AUTODATA_ORIGIN}/api/v1/webhooks/${safeSlugSegment}/${safeTokenSegment}`;
+  const personalLinkbotUrl = `${CANONICAL_AUTODATA_ORIGIN}/${safeSlugSegment}`;
 
   const copyToClipboard = (text: string, key: string) => {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
@@ -193,6 +205,8 @@ export const AutoDataWebhookGuide: React.FC<AutoDataWebhookGuideProps> = ({
           { id: '4', label: '4. Link cá nhân Sale', shortLabel: '4. Link Sale' },
         ]}
       />
+
+      <ZaloSpecialistBanner context="setup" variant="compact" />
 
       {/* Step 1: Webhook URL */}
       {activeStep === 1 && (

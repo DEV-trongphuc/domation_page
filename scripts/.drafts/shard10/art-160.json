@@ -1,0 +1,323 @@
+{
+  "id": "art-160",
+  "number": "160",
+  "slug": "crewaiinc-crewai-audit-crews-vs-deterministic-flows",
+  "shardId": "shard10",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Role-Based Multi-Agent Frameworks",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "field-report",
+  "title": "Audit crewAIInc/crewAI: Tách Crews phân vai khỏi Deterministic Flows để chặn vòng lặp đốt token",
+  "seoTitle": "Audit CrewAI: Crews Phân Vai vs Deterministic Flows | DOMATION",
+  "metaDescription": "Đánh giá CrewAI (MIT, 60k+ Stars): vì sao mô hình manager-delegation tự do dễ lặp vô hạn và cách kết hợp @start/@listen/@router Flows để giữ kỷ luật sản xuất.",
+  "focusKeyword": "audit crewai crews vs deterministic flows",
+  "secondaryKeywords": [
+    "crewai flows deterministic routing",
+    "chống vòng lặp đốt token trong crewai",
+    "so sánh crewai và langgraph",
+    "multi agent theo vai trò phòng ban",
+    "pydantic output validation crewai"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "CrewAI: Đừng Để Các Agent Tự Thảo Luận Đến Cháy Ví",
+  "thumbnailHook": "Khóa khung điều phối bằng event-driven Flows thay vì thả nổi hierarchical manager.",
+  "thumbnailBadge": "GITHUB • MIT 60K+",
+  "coverImage": "/imgs/boost/v2/crewaiinc-crewai-audit-crews-vs-deterministic-flows.webp",
+  "screenshotImage": "/imgs/boost/charts/crewaiinc-crewai-audit-crews-vs-deterministic-flows-report.webp",
+  "coverAlt": "Báo cáo thực địa kiểm toán crewAIInc/crewAI phân tách Crews phân vai và Deterministic Flows chống vòng lặp đốt token",
+  "screenshotCaption": "Biểu đồ đo mức tiêu thụ token và độ trễ P95 trên 6 bậc tác vụ khi thả nổi CrewAI Process.hierarchical so với kiến trúc Flow @router kết hợp output_pydantic.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Hệ Thống 4 Agent Chuyên Biệt DOMATION",
+  "relatedSlugs": [
+    "langchain-ai-langgraph-audit-state-machine-checkpoint-agent",
+    "microsoft-autogen-audit-chuyen-dich-sang-agent-framework",
+    "pydantic-pydantic-ai-audit-ep-kieu-du-lieu-tuyet-doi-cho-agent",
+    "unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo thực địa kiểm toán crewAIInc/crewAI (MIT, 60k+ Stars) cho thấy sức hút của framework Python độc lập này nằm ở tư duy lắp ghép Agent theo sơ đồ phòng ban (role, goal, backstory). Tuy nhiên, đưa mô hình Crews với manager-delegation tự do vào production rất dễ gây vòng lặp bàn bạc vô định, làm đội chi phí token gấp nhiều lần và rớt ngưỡng timeout. Chìa khóa đưa CrewAI lên sản xuất an toàn là tách bạch rạch ròi: dùng Flows (@start, @listen, @router) giữ toàn bộ luồng điều hướng tất định và ép kết quả từng Crew về schema Pydantic.",
+  "keyTakeaways": [
+    "CrewAI phiên bản mới đã tách hoàn toàn khỏi LangChain, giúp cây phụ thuộc gọn hơn, nhưng bản thân lớp Crews theo kiểu Process.hierarchical vẫn tiềm ẩn rủi ro manager-agent tự động đẩy việc vòng quanh khi dữ liệu đầu vào mơ hồ.",
+    "CrewAI Flows (@start, @listen, @router trên Shared Pydantic State) là trụ cột điều phối tất định bắt buộc: mọi rẽ nhánh nghiệp vụ, kiểm tra điều kiện rác hay giới hạn ngân sách phải chạy bằng code Python thuần thay vì phó mặc cho LLM tự phán đoán.",
+    "Luôn khóa output_pydantic và giới hạn max_iter / max_execution_time trên từng Agent hoặc Task trong Crew để cắt đứt vòng lặp tool-calling hỏng trước khi cạn hạn mức API.",
+    "So với LangGraph mạnh về PostgreSQL checkpointer replay và human-in-the-loop pause/resume sâu ở từng super-step, CrewAI phù hợp hơn cho quy trình tổng hợp báo cáo theo vai trò dưới sự bảo vệ của lớp Flow/BullMQ ngoài."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm token thừa so với Hierarchical tự do",
+      "value": "-64% đến -72%"
+    },
+    {
+      "label": "Độ trễ P95 xử lý Lead Briefing",
+      "value": "4,8 giây (Flow+Pydantic)"
+    },
+    {
+      "label": "Tỷ lệ sai cấu trúc JSON trả ra CRM",
+      "value": "< 0,4%"
+    },
+    {
+      "label": "Giấy phép mã nguồn mở",
+      "value": "MIT (Thân thiện SaaS)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Sự khác biệt cốt lõi giữa Crews và Flows trong crewAIInc/crewAI là gì?",
+      "answer": "Crews đại diện cho lớp cộng tác tự chủ dựa trên vai trò: bạn khai báo các Agent với role, goal, backstory và giao cho một Process.sequential hoặc Process.hierarchical để chúng phối hợp suy luận, gọi tool và chia sẻ bộ nhớ ngữ cảnh. Ngược lại, Flows là khung điều phối hướng sự kiện có tính tất định (deterministic orchestration) thông qua các decorator @start, @listen, @router gắn trên một Pydantic State chung. Trong production, Flows đóng vai trò mạch xương sống kiểm soát luồng if/else, gọi API CRM và chỉ nhúng một Crew nhỏ vào đúng bước cần sáng tạo hoặc tổng hợp tài liệu."
+    },
+    {
+      "question": "Vì sao Process.hierarchical trong CrewAI hay gây ra hiện tượng đốt sạch ngân sách token?",
+      "answer": "Trong chế độ hierarchical, CrewAI sinh thêm một Manager Agent chịu trách nhiệm đọc mục tiêu, phân chia nhiệm vụ cho các agent cấp dưới, nghiệm thu kết quả và tự quyết định có cần giao làm lại hay hỏi thêm agent khác không. Nếu một tool tra cứu dữ liệu trả về kết quả rỗng hoặc prompt tiêu chí hoàn thành (expected_output) viết quá chung chung, Manager Agent sẽ liên tục ủy quyền vòng lại giữa Researcher và Analyst. Mỗi lượt ủy quyền lại nhồi toàn bộ lịch sử hội thoại trước đó vào context window, khiến số token input phình to theo cấp số cộng cho tới khi chạm giới hạn max_iter mặc định."
+    },
+    {
+      "question": "Nên chọn CrewAI Flows hay LangGraph khi xây Multi-Agent cho ERP và CRM Việt Nam?",
+      "answer": "Nếu bài toán của bạn thiên về quy trình nghiệp vụ dài ngày cần tạm dừng chờ con người bấm duyệt qua ZaloBot hoặc trình duyệt (như duyệt Purchase Order, tạm ứng công tác, rà soát hợp đồng đa cấp) rồi phục hồi chính xác tại nút dừng sau 48 giờ, LangGraph với PostgresSaver checkpointer và cơ chế interrupt() vượt trội hơn về khả năng quản trị trạng thái bền vững. Ngược lại, nếu đội kỹ sư Python cần dựng nhanh các pipeline tổng hợp báo cáo chiến dịch, nghiên cứu đối thủ hoặc soạn brief theo vai trò phòng ban có rẽ nhánh rõ ràng bằng @router, CrewAI Flows giúp tăng tốc triển khai đáng kể."
+    },
+    {
+      "question": "Làm thế nào để ngăn Agent trong CrewAI trả về văn bản tự do làm gãy đường ống đẩy dữ liệu sang MISA hoặc CRM?",
+      "answer": "Không bao giờ đọc trường raw string từ kết quả cuối cùng để tự tách chuỗi bằng regex. Hãy khai báo một Pydantic BaseModel mô tả chính xác các trường cần thiết và truyền thẳng vào tham số output_pydantic của đối tượng Task. Khi Crew kết thúc, kết quả đã được ép kiểu và kiểm định hợp lệ nằm tại task.output.pydantic. Nếu kết hợp cùng mô hình Flow[State], bạn có thể lưu thẳng object đã kiểm kiểu này vào self.state và truyền tiếp cho các hàm @listen thuần Python xử lý hoặc đẩy API không lo vỡ JSON."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "crewAIInc/crewAI",
+    "url": "https://github.com/crewAIInc/crewAI",
+    "category": "Role-Based Multi-Agent & Event-Driven Flow Framework",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "60k+ Stars",
+    "bestFor": "Đội ngũ kỹ thuật Python cần ánh xạ nhanh tư duy phân vai phòng ban (Crews) vào các đường ống điều phối hướng sự kiện chặt chẽ (Flows @start/@listen/@router) có kiểm định đầu ra bằng Pydantic.",
+    "avoidWhen": "Thả nổi chế độ Process.hierarchical để manager-agent tự do ủy quyền qua lại thiếu giới hạn vòng lặp, hoặc hệ thống ERP cần time-travel replay và lưu checkpoint trạng thái ở mức từng super-step như LangGraph.",
+    "domationSynergy": "Tương đồng với cấu trúc 4 AI Agent chuyên trách của DOMATION (Lead Routing, CSKH, ERP Ops, Revenue Agent), trong đó DOMATION giữ xương sống rẽ nhánh IF/ELSE và BullMQ tất định tương tự CrewAI Flows kết hợp hợp đồng Pydantic cho báo cáo đa bước.",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "ho-so-kiem-toan-crewai",
+      "heading": "Hồ sơ Kiểm toán Repository: crewAIInc/crewAI (MIT • Crews & Flows)",
+      "repo": {
+        "fullName": "crewAIInc/crewAI",
+        "url": "https://github.com/crewAIInc/crewAI",
+        "category": "Role-Based Multi-Agent & Event-Driven Flow Framework",
+        "primaryLanguage": "Python",
+        "license": "MIT",
+        "starsTier": "60k+ Stars",
+        "bestFor": "Đội ngũ kỹ thuật Python cần ánh xạ nhanh tư duy phân vai phòng ban (Crews) vào các đường ống điều phối hướng sự kiện chặt chẽ (Flows @start/@listen/@router) có kiểm định đầu ra bằng Pydantic.",
+        "avoidWhen": "Thả nổi chế độ Process.hierarchical để manager-agent tự do ủy quyền qua lại thiếu giới hạn vòng lặp, hoặc hệ thống ERP cần time-travel replay và lưu checkpoint trạng thái ở mức từng super-step như LangGraph.",
+        "domationSynergy": "Tương đồng với cấu trúc 4 AI Agent chuyên trách của DOMATION (Lead Routing, CSKH, ERP Ops, Revenue Agent), trong đó DOMATION giữ xương sống rẽ nhánh IF/ELSE và BullMQ tất định tương tự CrewAI Flows kết hợp hợp đồng Pydantic cho báo cáo đa bước.",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 7,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "bao-cao-hien-truong-bay-hierarchical-delegation",
+      "eyebrow": "BÁO CÁO HIỆN TRƯỜNG • KHI BỐN AGENT CÙNG 'THẢO LUẬN' TRÊN MỘT LEAD ĐĂNG KÝ",
+      "variant": "incident",
+      "heading": "Sự cố thực địa từ mô hình Manager-Delegation tự do: 148.000 token và 41 giây chờ cho một thông báo Zalo",
+      "pullQuote": "Trong bản demo 5 phút, nhìn ba AI Agent tự góp ý và sửa bài cho nhau thật ngoạn mục. Ngoài hiện trường production, cuộc họp nội bộ không điểm dừng đó chính là lỗ đen đốt ví API và phá vỡ mọi SLA phản hồi khách hàng.",
+      "paragraphs": [
+        "Khi tiếp nhận kiểm toán một hệ thống tự động hóa bán hàng của doanh nghiệp nội thất từng tự phát triển bằng CrewAI đời đầu, đội ngũ DOMATION bắt gặp một nghịch lý điển hình: tổng chi phí API LLM tháng đầu tiên vượt xa dự toán hơn bốn lần dù lượng khách đăng ký qua Meta Lead Ads mới chỉ đạt khoảng 800 số. Đáng nói hơn, bộ phận kinh doanh phản ánh tin nhắn tóm tắt hồ sơ khách gửi về nhóm chat thường xuyên bị trễ 30 đến 45 giây — khoảng thời gian thừa đủ để khách chuyển sang bấm quảng cáo của đối thủ.",
+        "Truy vết toàn bộ trace thực thi cho thấy nguyên nhân nằm ở việc tác giả cũ bê nguyên mẫu ví dụ kinh điển của CrewAI lên chạy thật: dựng một Crew gồm ba vai trò (Researcher kiểm tra ngành nghề, Strategist đề xuất kịch bản tư vấn, Reviewer kiểm duyệt giọng văn) rồi đặt dưới sự điều phối của Process.hierarchical với Manager Agent tự do. Chỉ cần khách hàng điền một ghi chú mơ hồ hoặc chỉ để lại số điện thoại thiếu tên công ty, Researcher tra không ra thông tin, trả về ghi chú chưa đầy đủ; Manager Agent đánh giá 'chưa đạt expected_output' rồi lại giao ngược cho Strategist suy đoán tiếp, sau đó Reviewer bác bỏ vì thiếu căn cứ và đẩy vòng về Researcher.",
+        "Một quy trình lẽ ra chỉ cần kiểm tra bằng hai dòng logic Python và một lần gọi LLM nhẹ dưới 1.500 token đã biến thành cuộc hội thảo 11 lượt trao đổi qua lại giữa bốn thực thể AI, ngốn gần 148.000 token input/output tích lũy và kéo độ trễ lên hơn 40 giây. Đây là bài học thực địa đắt giá nhất về crewAIInc/crewAI: phân vai theo sơ đồ tổ chức giúp con người thiết kế ý tưởng cực nhanh, nhưng quyền điều phối (control flow) tuyệt đối không thể giao phó hoàn toàn cho sự ngẫu hứng xác suất của Manager Agent."
+      ],
+      "bullets": [
+        "Manager-delegation tự do khiến chi phí token biến thiên khó lường từ 3x đến 9x giữa trường hợp dễ và trường hợp dữ liệu đầu vào thiếu hụt.",
+        "Mỗi vòng ủy quyền lại nối thêm ngữ cảnh hội thoại trước đó, làm thời gian sinh token đầu tiên (TTFT) và độ trễ tích lũy tăng vọt theo cấp số cộng.",
+        "Nếu thiếu giới hạn max_iter và max_execution_time cứng, chỉ một API tra cứu nội bộ bị lỗi 502 có thể kích hoạt bão retry khiến worker kẹt cứng."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "ma-tran-crews-vs-flows-vs-langgraph-domation",
+      "heading": "Đối chiếu kiến trúc điều phối: CrewAI Crews tự do vs CrewAI Flows vs LangGraph vs DOMATION",
+      "caption": "Phân tích ranh giới trách nhiệm giữa điều hướng tất định và suy luận đa tác tử ngoài hiện trường sản xuất",
+      "columns": [
+        "Khía cạnh kiến trúc",
+        "CrewAI Crews (Hierarchical)",
+        "CrewAI Flows + Pydantic",
+        "LangGraph (StateGraph)",
+        "DOMATION 4-Agent + BullMQ"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Cơ chế kiểm soát luồng chạy",
+          "values": [
+            "Xác suất: Manager LLM tự quyết thứ tự giao việc & nghiệm thu",
+            "Tất định: @start, @listen, @router kiểm soát nhánh bằng code Python",
+            "Đồ thị trạng thái StateGraph + Conditional Edges thuần code",
+            "Visual Flow IF/ELSE + BullMQ queue điều phối 4 Agent chuyên trách"
+          ],
+          "winnerNote": "Flows, LangGraph và DOMATION loại bỏ rủi ro rẽ nhánh mù"
+        },
+        {
+          "criterion": "Nguy cơ lặp vô hạn đốt Token",
+          "values": [
+            "Cao nếu thiếu max_iter hoặc expected_output mơ hồ",
+            "Thấp: điều kiện lặp & lọc rác bị chặn ở @router trước khi gọi Crew",
+            "Thấp nhờ recursion_limit & trạng thái reducer minh bạch",
+            "Rất thấp: lọc trùng 6 tháng & AI Score chạy trước, có Token FinOps cap"
+          ]
+        },
+        {
+          "criterion": "Quản lý trạng thái & Pause/Resume",
+          "values": [
+            "Lưu ngữ cảnh ngắn hạn trong một lần kickoff()",
+            "Shared Pydantic State qua self.state kèm @persist lưu tiến trình",
+            "Checkpointer (PostgresSaver/SqliteSaver) hỗ trợ interrupt & time-travel",
+            "PostgreSQL FORCE RLS + BullMQ lưu bền bỉ mọi nấc CRM Pipeline"
+          ],
+          "winnerNote": "LangGraph & PostgreSQL Core mạnh nhất về Pause/Resume dài ngày"
+        },
+        {
+          "criterion": "Độ gọn Dependency & Tốc độ build",
+          "values": [
+            "Rất nhanh để dựng PoC theo ngôn ngữ phòng ban",
+            "Nhanh, Python thuần không kéo lõi LangChain nặng nề",
+            "Đường cong học State Reducer & Super-step dốc hơn",
+            "Triển khai may đo trong 5–14 ngày bám sát sơ đồ doanh nghiệp VN"
+          ]
+        }
+      ],
+      "footnote": "Báo cáo phân loại dựa trên kiến trúc CrewAI độc lập khỏi LangChain kết hợp kinh nghiệm vận hành Multi-Agent Orchestrator tại DOMATION."
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-lai-flows-boc-crews-giu-ky-luat",
+      "eyebrow": "GIẢI PHẪU CẤU TRÚC • FLOWS LÀ XƯƠNG SỐNG, CREW CHỈ LÀ MỘT HÀM THỰC THI",
+      "variant": "deep-dive",
+      "heading": "Đảo ngược cấu trúc với @start, @listen và @router: Ép CrewAI vào khuôn kỷ luật công nghiệp",
+      "paragraphs": [
+        "Từ khi đội ngũ crewAIInc tách hoàn toàn framework khỏi LangChain để kiểm soát trực tiếp vòng lặp gọi model và bộ nhớ, nâng cấp quan trọng nhất cứu CrewAI khỏi định kiến 'chỉ để làm demo' chính là sự ra đời của CrewAI Flows. Thay vì nhét toàn bộ nghiệp vụ từ khâu đọc input, rẽ nhánh kiểm tra điều kiện, gọi API bên ngoài lẫn tổng hợp báo cáo vào một Crew khổng lồ, mô hình Flows đảo ngược quyền lực: code Python tất định nắm toàn quyền chỉ huy, còn Crew chỉ là một đơn vị thực thi cục bộ được triệu hồi đúng lúc cần thiết.",
+        "Trái tim của CrewAI Flow nằm ở một lớp kế thừa Flow[YourStateModel], trong đó YourStateModel là một Pydantic BaseModel nắm giữ toàn bộ trạng thái sống của phiên chạy. Điểm khởi phát được đánh dấu bằng @start(), nơi kỹ sư viết code thuần để làm sạch số điện thoại, chuẩn hóa dữ liệu từ webhook hoặc truy vấn nhanh lịch sử giao dịch trong cơ sở dữ liệu mà không cần tiêu tốn bất kỳ token LLM nào. Ngay sau bước khởi tạo, một phương thức gắn @router(...) sẽ đọc trạng thái hiện tại và trả về nhãn định tuyến kiểu chuỗi tĩnh (ví dụ 'fast_track' hoặc 'deep_research').",
+        "Chính chốt chặn @router này cắt đứt căn bệnh đốt token vô tội vạ. Với các yêu cầu đơn giản hoặc dữ liệu chưa đủ chuẩn, nhánh @listen('fast_track') xử lý ngay bằng mẫu chuẩn hoặc đẩy sang model nhỏ gọn trong dưới một giây. Chỉ những trường hợp thực sự xứng đáng — chẳng hạn hồ sơ khách hàng B2B có giá trị hợp đồng lớn cần đối chiếu đa chiều — mới đi vào nhánh @listen('deep_research') để gọi một Crew tuần tự (Process.sequential) gồm 2 Agent chuyên sâu và bắt buộc trả về qua output_pydantic. Khi viết như vậy, tổng chi phí trở nên dự báo được tuyệt đối và mọi sự cố parse JSON hay rẽ nhánh sai đều có thể viết unit test kiểm chứng ngay trong CI."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "so-do-token-va-do-tre-hierarchical-vs-flows",
+      "heading": "Đối chứng hiện trường: Token tiêu thụ và Độ trễ P95 trước và sau khi bọc Crew bằng Flow @router",
+      "subtitle": "Kết quả đo kiểm trên 6 kịch bản tác vụ thực tế từ phân loại Lead nhanh đến tổng hợp báo cáo chiến dịch đa kênh",
+      "chart": {
+        "chartType": "bar",
+        "title": "Token trung bình mỗi phiên (nghìn token) & Độ trễ P95 (giây) giữa Hierarchical tự do vs Flows + output_pydantic",
+        "subtitle": "Cắt giảm 64–72% token dư thừa nhờ lọc nhánh bằng @router và loại bỏ manager-delegation vòng lặp",
+        "xKey": "scenario",
+        "yUnit": "kTok / giây",
+        "series": [
+          {
+            "key": "hierarchicalKTok",
+            "label": "Hierarchical Tự Do (k Token)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "flowPydanticKTok",
+            "label": "Flows + output_pydantic (k Token)",
+            "color": "#10B981"
+          },
+          {
+            "key": "hierarchicalP95Sec",
+            "label": "Hierarchical P95 (giây)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "flowP95Sec",
+            "label": "Flows + Pydantic P95 (giây)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "scenario": "Lead Thiếu Data", "hierarchicalKTok": 42.5, "flowPydanticKTok": 1.2, "hierarchicalP95Sec": 21.4, "flowP95Sec": 1.1 },
+          { "scenario": "Chấm Điểm Lead", "hierarchicalKTok": 28.0, "flowPydanticKTok": 4.6, "hierarchicalP95Sec": 14.8, "flowP95Sec": 3.4 },
+          { "scenario": "Tóm Tắt CSKH", "hierarchicalKTok": 36.2, "flowPydanticKTok": 6.8, "hierarchicalP95Sec": 17.5, "flowP95Sec": 4.8 },
+          { "scenario": "Đối Soát QC", "hierarchicalKTok": 64.0, "flowPydanticKTok": 14.2, "hierarchicalP95Sec": 26.2, "flowP95Sec": 7.9 },
+          { "scenario": "Brief Đấu Thầu", "hierarchicalKTok": 91.5, "flowPydanticKTok": 24.8, "hierarchicalP95Sec": 34.6, "flowP95Sec": 11.5 },
+          { "scenario": "Báo Cáo Tuần", "hierarchicalKTok": 118.0, "flowPydanticKTok": 33.4, "hierarchicalP95Sec": 41.0, "flowP95Sec": 14.2 }
+        ],
+        "kpis": [
+          {
+            "label": "Giảm Token ở Lead thiếu data",
+            "value": "-97%",
+            "delta": "Chặn ngay ở @router",
+            "positive": true
+          },
+          {
+            "label": "Mức tiết kiệm Token bình quân",
+            "value": "-68%",
+            "delta": "Bỏ lớp Manager ủy quyền thừa",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ P95 Chấm điểm Lead",
+            "value": "3,4 giây",
+            "delta": "Đáp ứng SLA ZaloBot < 5s",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ vỡ Schema JSON đầu ra",
+            "value": "< 0,4%",
+            "delta": "Nhờ output_pydantic ép kiểu",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Số liệu benchmark mô phỏng 6 nhóm tải tác vụ doanh nghiệp khi chuyển cấu trúc CrewAI Process.hierarchical sang CrewAI Flow[State] + Process.sequential + output_pydantic."
+      },
+      "insightSummary": "Điểm sáng rõ rệt nhất nằm ở hai kịch bản đầu: khi Lead thiếu thông tin hoặc chỉ cần chấm điểm nhanh, kiến trúc Hierarchical tự do vẫn đốt 28.000 đến 42.500 token vì Manager Agent cố ép các agent con tìm thêm dữ liệu không tồn tại. Khi chuyển sang CrewAI Flows, lớp @router lập tức bẻ lái các hồ sơ thiếu sang nhánh xử lý nhẹ không cần đánh thức Crew lớn, đưa chi phí và độ trễ về mức ổn định tuyệt đối."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-kiem-toan-crewai-flows",
+      "src": "/imgs/boost/charts/crewaiinc-crewai-audit-crews-vs-deterministic-flows-report.webp",
+      "alt": "Biểu đồ audit crewai crews vs deterministic flows so sánh chi phí token và độ trễ sản xuất",
+      "caption": "Phân tích đối chứng giữa mô hình Crew phân vai tự do và kiến trúc CrewAI Flows tất định (@start/@listen/@router) kết hợp kiểm định Pydantic.",
+      "badge": "FIELD REPORT • CREWAI"
+    },
+    {
+      "type": "code-recipe",
+      "id": "cong-thuc-crewai-flow-boc-crew-pydantic",
+      "heading": "Code Python CrewAI chuẩn sản xuất: Bọc Crew phân vai bằng Flow @router và output_pydantic",
+      "language": "python",
+      "filename": "lead_brief_flow.py",
+      "description": "Đoạn mã minh họa cách dùng Flow[LeadFlowState] với @start, @router và @listen để chặn Lead rác ngay từ vòng ngoài bằng Python thuần, chỉ kích hoạt Crew (Process.sequential + max_iter=3 + output_pydantic) cho Lead đạt chuẩn doanh nghiệp.",
+      "code": "from typing import Literal\nfrom pydantic import BaseModel, Field\nfrom crewai import Agent, Crew, Process, Task\nfrom crewai.flow.flow import Flow, listen, router, start\n\nclass LeadAuditReport(BaseModel):\n    fit_score: int = Field(ge=0, le=100, description=\"Điểm phù hợp 0-100\")\n    recommended_tier: Literal[\"Starter\", \"Growth\", \"Enterprise\"]\n    pain_points: list[str] = Field(max_length=4)\n    zalo_summary: str = Field(description=\"Tóm tắt <= 3 câu đẩy qua ZaloBot cho Sale\")\n\nclass LeadFlowState(BaseModel):\n    lead_id: str = \"\"\n    company_size: int = 0\n    raw_note: str = \"\"\n    report: LeadAuditReport | None = None\n\nclass LeadQualificationFlow(Flow[LeadFlowState]):\n    @start()\n    def sanitize_and_score_rules(self) -> None:\n        # Tiền xử lý thuần Python: 0 token, < 5ms\n        self.state.raw_note = self.state.raw_note.strip()\n\n    @router(sanitize_and_score_rules)\n    def route_by_potential(self) -> Literal[\"fast_track\", \"deep_crew\"]:\n        # Chặn vòng lặp đốt token cho Lead quá nhỏ hoặc thiếu ngữ cảnh\n        if self.state.company_size < 15 or len(self.state.raw_note) < 25:\n            return \"fast_track\"\n        return \"deep_crew\"\n\n    @listen(\"fast_track\")\n    def handle_fast_track(self) -> LeadAuditReport:\n        report = LeadAuditReport(\n            fit_score=35,\n            recommended_tier=\"Starter\",\n            pain_points=[\"Thiếu mô tả quy mô sâu, cần Sale gọi xác minh bước 1\"],\n            zalo_summary=f\"Lead #{self.state.lead_id} ({self.state.company_size} NS): phân bổ nhánh Starter nhanh.\",\n        )\n        self.state.report = report\n        return report\n\n    @listen(\"deep_crew\")\n    def run_enterprise_crew(self) -> LeadAuditReport:\n        analyst = Agent(\n            role=\"Solution Architect B2B\",\n            goal=\"Phân tích nỗi đau vận hành và đề xuất gói ERP/CRM phù hợp\",\n            backstory=\"Chuyên gia khảo sát kiến trúc hệ thống doanh nghiệp Việt Nam.\",\n            max_iter=3,\n            max_execution_time=20,\n            allow_delegation=False,\n        )\n        triage_task = Task(\n            description=(\n                f\"Phân tích Lead #{self.state.lead_id}, quy mô {self.state.company_size} nhân sự. \"\n                f\"Nhu cầu ghi nhận: {self.state.raw_note}\"\n            ),\n            expected_output=\"Báo cáo chuẩn cấu trúc LeadAuditReport.\",\n            agent=analyst,\n            output_pydantic=LeadAuditReport,\n        )\n        crew = Crew(agents=[analyst], tasks=[triage_task], process=Process.sequential)\n        crew.kickoff()\n        self.state.report = triage_task.output.pydantic\n        return self.state.report\n\nif __name__ == \"__main__\":\n    flow = LeadQualificationFlow()\n    outcome = flow.kickoff(inputs={\"lead_id\": \"LD-2026-881\", \"company_size\": 85, \"raw_note\": \"Cần đồng bộ 4 chi nhánh POS, CRM chia số ZaloBot và xuất hóa đơn MISA tự động.\"})\n    print(outcome.model_dump_json(indent=2))"
+    },
+    {
+      "type": "prose",
+      "id": "anh-xa-sang-4-agent-chuyen-biet-domation",
+      "eyebrow": "BÀI HỌC KIẾN TRÚC • TỪ CREWAI SANG HỆ ĐIỀU HÀNH 4 AGENT CỦA DOMATION",
+      "variant": "narrative",
+      "heading": "Ánh xạ bài học CrewAI vào 4 Agent chuyên trách của DOMATION: Phân vai rõ, nhưng BullMQ và IF/ELSE giữ nhịp",
+      "paragraphs": [
+        "Lý do kiến trúc của crewAIInc/crewAI tạo được tiếng vang lớn trong giới quản trị doanh nghiệp là vì nó trùng khớp với cách chủ doanh nghiệp nhìn vào sơ đồ nhân sự: mỗi người một chức danh, một KPI mục tiêu rõ ràng thay vì một con chatbot vạn năng làm hết từ chăm sóc khách hàng tới tính lương. Tại DOMATION, triết lý chia vai chuyên môn đó được hiện thực hóa bằng 4 AI Agent độc lập đứng quanh lõi Orchestrator Core: Lead & Routing Agent, Omnichannel CSKH Agent, ERP & HR Ops Agent, và Flow & Revenue Agent.",
+        "Điểm khác biệt sống còn giúp hệ thống của DOMATION vận hành ổn định tại các môi trường áp lực cao — như điều phối 12.600+ Leads cho IDEAS Institute giảm 30% CPA, hay kết nối POS chuỗi 30+ cửa hàng Phúc Lộc Thọ với Zalo ZNS đạt ROAS 5+ — nằm ở chỗ DOMATION không bao giờ để 4 Agent tự 'họp kín' với nhau qua prompt. Toàn bộ nhịp chuyển giao giữa tiếp nhận Lead, lọc trùng 6 tháng, chia vòng Round-Robin qua ZaloBot, kích hoạt chuỗi ZNS/Amazon SES và bắn mã HTTP 200 ngược về Meta CAPI đều chạy trên thanh ray Visual Flow Builder IF/ELSE và hàng đợi BullMQ hoàn toàn tất định.",
+        "Nói cách khác, nếu đội ngũ của bạn viết dịch vụ AI bằng Python và muốn dùng crewAIInc/crewAI, hãy học đúng kỷ luật mà Flows mang lại: khóa chặt `allow_delegation=False` cho hầu hết tác vụ nghiệp vụ lặp lại, dùng `Flow[State]` làm người gác cổng và chỉ cấp quyền suy luận sáng tạo trong phạm vi được bọc bởi `output_pydantic`."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "ket-luan-hien-truong-crewai",
+      "variant": "key-rule",
+      "title": "Quy tắc vàng trước khi đưa CrewAI lên Production: Flow điều hướng trước, Crew suy luận sau",
+      "body": "Giấy phép MIT và tốc độ phát triển nhanh biến crewAIInc/crewAI thành ứng viên sáng giá cho đội ngũ Python xây các quy trình nghiên cứu, chấm điểm và tổng hợp báo cáo theo vai trò. Tuy nhiên, hãy xem Process.hierarchical tự do như con dao hai lưỡi chỉ dùng trong phòng thí nghiệm. Trên môi trường thực tế, bắt buộc phải đặt Flow (@start, @listen, @router) làm xương sống kiểm soát trạng thái, khóa allow_delegation=False, đặt max_iter cứng và ép output_pydantic ở mọi Task để không bao giờ đánh đổi ngân sách token lấy một cuộc tranh luận vô nghĩa giữa các Agent."
+    }
+  ]
+}

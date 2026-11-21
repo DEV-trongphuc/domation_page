@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
@@ -12,6 +14,13 @@ import { AIChatbot } from '../ui/AIChatbot';
 import { LuxuryBackgroundDecor } from '../ui/LuxuryBackgroundDecor';
 import { useAuth } from '../../contexts/AuthContext';
 import { fetchAPI, parseServerDateVN, VN_TIMEZONE } from '../../utils/api';
+import {
+  DOM_META_SELECT_VIEW_EVENT,
+  DOM_META_SIDEBAR_STATE_EVENT,
+  getDomMetaSidebarSubItems,
+  type DomMetaNavView,
+  type DomMetaSidebarStateDetail,
+} from '../../../../dom-meta/domMetaTypes';
 import { 
   Ticket as TicketIcon, 
   Activity, 
@@ -31,21 +40,47 @@ import {
   Mail,
   MessageSquare,
   Search,
-  Check
+  Check,
+  LayoutDashboard,
+  Database,
+  BarChart3,
+  Menu,
+  Plus,
+  Filter,
+  GitBranch,
+  Scale,
+  Webhook,
+  Link2,
+  Users,
+  ShieldCheck,
+  X,
+  List,
+  Images,
+  CreditCard,
+  TrendingUp
 } from 'lucide-react';
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   const { t, language } = useLanguage();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobileMenuSheetOpen, setIsMobileMenuSheetOpen] = useState(false);
   
   // Notification states
-  const { user } = useAuth();
+  const { user, companyName } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [pendingTicketsCount, setPendingTicketsCount] = useState<number>(0);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState<boolean>(false);
   const [heldLeadsCount, setHeldLeadsCount] = useState<number>(0);
   const [isHeldModalOpen, setIsHeldModalOpen] = useState<boolean>(false);
+  const [metaSidebarState, setMetaSidebarState] = useState<DomMetaSidebarStateDetail>({
+    activeView: 'dashboard',
+    googleAdsEnabled: false,
+    isCrmEnabled: true,
+    hasCapi: false,
+    hasAiKey: false,
+  });
 
   // Hover states for notification buttons
   const [isTicketViewHovered, setIsTicketViewHovered] = useState(false);
@@ -220,31 +255,65 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (user?.role === 'admin' || user?.role === 'superadmin') {
-      fetchAPI('get_reports&status=pending&date=all&pageSize=1')
-        .then(res => {
-          if (res.success) {
-            const count = res.total_count ?? 0;
-            if (count > 0) {
+      const fetchCounts = (openModals: boolean) => {
+        fetchAPI('get_reports&status=pending&date=all&pageSize=1')
+          .then(res => {
+            if (res.success) {
+              const count = res.stats?.pending ?? res.total_count ?? 0;
               setPendingTicketsCount(count);
-              setIsTicketModalOpen(true);
+              if (openModals && count > 0) {
+                setIsTicketModalOpen(true);
+              }
             }
-          }
-        })
-        .catch(err => console.error('Error loading ticket notification:', err));
+          })
+          .catch(err => console.error('Error loading ticket notification:', err));
 
-      fetchAPI('get_held_leads&pageSize=1&date=all')
-        .then(res => {
-          if (res.success) {
-            const total = res.total_count ?? 0;
-            if (total > 0) {
+        fetchAPI('get_held_leads&pageSize=1&date=all')
+          .then(res => {
+            if (res.success) {
+              const total = res.total_count ?? 0;
               setHeldLeadsCount(total);
-              setIsHeldModalOpen(true);
+              if (openModals && total > 0) {
+                setIsHeldModalOpen(true);
+              }
             }
-          }
-        })
-        .catch(err => console.error('Error loading held leads notification:', err));
+          })
+          .catch(err => console.error('Error loading held leads notification:', err));
+      };
+
+      fetchCounts(true);
+      const onRefreshCounts = () => fetchCounts(false);
+      window.addEventListener('ticket-resolved', onRefreshCounts);
+      return () => window.removeEventListener('ticket-resolved', onRefreshCounts);
     }
   }, [user]);
+
+  useEffect(() => {
+    const onMetaState = (event: Event) => {
+      const detail = (event as CustomEvent<DomMetaSidebarStateDetail>).detail;
+      if (detail) setMetaSidebarState(detail);
+    };
+    window.addEventListener(DOM_META_SIDEBAR_STATE_EVENT, onMetaState as EventListener);
+    return () => window.removeEventListener(DOM_META_SIDEBAR_STATE_EVENT, onMetaState as EventListener);
+  }, []);
+
+  useEffect(() => {
+    setIsMobileMenuSheetOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMobileMenuSheetOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuSheetOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow || 'unset';
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isMobileMenuSheetOpen]);
 
   const handleViewTickets = () => {
     setIsTicketModalOpen(false);
@@ -287,10 +356,51 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const currentPath = location.pathname;
+  const isSuperAdmin = user?.role === 'superadmin';
+  const isAdmin = user?.role === 'admin' || isSuperAdmin;
+  const isMetaReportRoute = currentPath === '/meta-report' || currentPath === '/ads-performance';
+  const hideAutodataBottomBar = currentPath === '/ads-report';
+
+  const metaSubViewIcons: Record<DomMetaNavView, typeof LayoutDashboard> = {
+    dashboard: LayoutDashboard,
+    ad_detail: List,
+    lead_attribution: Link2,
+    ad_library: Images,
+    account: CreditCard,
+    google_ads: TrendingUp,
+    meta_capi: Webhook,
+    settings: Settings,
+  };
+
+  const menuSheetItems = [
+    { name: 'AI Pre-screener', href: '/gatekeeper', icon: Filter, adminOnly: true, badge: heldLeadsCount },
+    { name: 'Vòng phân bổ', href: '/rounds', icon: GitBranch, adminOnly: true },
+    { name: 'Đối soát công bằng', href: '/fair-share', icon: Scale, adminOnly: true },
+    { name: 'Logic xử lý', href: '/rules', icon: Webhook, adminOnly: true },
+    { name: 'Tích hợp', href: '/integrations', icon: Link2, adminOnly: true },
+    { name: 'Sale & Đại lý', href: '/consultants', icon: Users, adminOnly: true },
+    { name: 'Quản lý Tài khoản', href: '/accounts', icon: ShieldCheck, superAdminOnly: true },
+    { name: 'Cài đặt hệ thống', href: '/settings', icon: Settings, adminOnly: true },
+  ].filter(item => {
+    if (item.superAdminOnly && !isSuperAdmin) return false;
+    if (item.adminOnly && !isAdmin) return false;
+    return true;
+  });
+
+  const isMenuRouteActive = menuSheetItems.some(item => item.href === currentPath);
+
+  const handleMobileNav = (href: string) => {
+    setIsMobileMenuSheetOpen(false);
+    if (currentPath !== href) {
+      navigate(href);
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw', background: 'var(--color-bg)', overflow: 'hidden' }}>
+    <div className="autodata-layout-shell" style={{ display: 'flex', width: '100vw', background: 'var(--color-bg)', overflow: 'hidden' }}>
       <style>{`
-        @media (max-width: 600px) {
+        @media (max-width: 767px) {
           .logs-tab-container {
             gap: 0.75rem !important;
           }
@@ -1258,6 +1368,230 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           )}
         </div>
       </CustomModal>
+
+      {/* Mobile Native Frosted Bottom App Bar (< 1024px) */}
+      {!hideAutodataBottomBar && (
+        <nav
+          aria-label="AutoData mobile bottom navigation"
+          className="autodata-mobile-bottom-bar"
+        >
+          <div className="autodata-mobile-bottom-grid">
+            <button
+              type="button"
+              onClick={() => handleMobileNav('/')}
+              className={`autodata-bottom-tab ${currentPath === '/' ? 'active' : ''}`}
+            >
+              {currentPath === '/' && <span className="autodata-bottom-tab-pill" />}
+              <LayoutDashboard size={19} />
+              <span>{t('Tổng quan')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleMobileNav('/data')}
+              className={`autodata-bottom-tab ${currentPath === '/data' || currentPath === '/calendar' ? 'active' : ''}`}
+            >
+              {(currentPath === '/data' || currentPath === '/calendar') && <span className="autodata-bottom-tab-pill" />}
+              <Database size={19} />
+              <span>{t('Data Lead')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleMobileNav('/meta-report')}
+              className={`autodata-bottom-tab ${isMetaReportRoute ? 'active' : ''}`}
+            >
+              {isMetaReportRoute && <span className="autodata-bottom-tab-pill" />}
+              <BarChart3 size={19} />
+              <span>{t('Báo cáo QC')}</span>
+            </button>
+
+            {isAdmin ? (
+              <button
+                type="button"
+                onClick={() => handleMobileNav('/tickets')}
+                className={`autodata-bottom-tab ${currentPath === '/tickets' ? 'active' : ''}`}
+              >
+                {currentPath === '/tickets' && <span className="autodata-bottom-tab-pill" />}
+                <span className="autodata-bottom-icon-wrap">
+                  <TicketIcon size={19} />
+                  {pendingTicketsCount > 0 && (
+                    <span className="autodata-bottom-badge">
+                      {pendingTicketsCount > 99 ? '99+' : pendingTicketsCount}
+                    </span>
+                  )}
+                </span>
+                <span>{t('Ticket Lỗi')}</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuSheetOpen(false);
+                  setIsActivityFeedOpen(true);
+                }}
+                className={`autodata-bottom-tab ${isActivityFeedOpen ? 'active' : ''}`}
+              >
+                {isActivityFeedOpen && <span className="autodata-bottom-tab-pill" />}
+                <Activity size={19} />
+                <span>{t('Hoạt động')}</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuSheetOpen(true)}
+              className={`autodata-bottom-tab ${isMobileMenuSheetOpen || isMenuRouteActive ? 'active' : ''}`}
+            >
+              {(isMobileMenuSheetOpen || isMenuRouteActive) && <span className="autodata-bottom-tab-pill" />}
+              <span className="autodata-bottom-icon-wrap">
+                <Menu size={19} />
+                {heldLeadsCount > 0 && isAdmin && (
+                  <span className="autodata-bottom-dot" />
+                )}
+              </span>
+              <span>{t('Menu')}</span>
+            </button>
+          </div>
+        </nav>
+      )}
+
+      {/* Mobile Native iOS Menu Bottom Sheet Drawer (< 1024px) */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isMobileMenuSheetOpen && (
+            <div className="autodata-menu-sheet-overlay" role="dialog" aria-modal="true" aria-label={t('Menu')}>
+              <motion.div
+                className="autodata-menu-sheet-backdrop"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setIsMobileMenuSheetOpen(false)}
+              />
+
+              <motion.div
+                className="autodata-menu-sheet-panel"
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', stiffness: 420, damping: 36, mass: 0.9 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="autodata-sheet-grabber-wrap" aria-hidden="true">
+                  <div className="autodata-sheet-grabber" />
+                </div>
+
+                <div className="autodata-menu-sheet-header">
+                  <div>
+                    <div className="autodata-menu-sheet-title">{t('Menu hệ thống')}</div>
+                    {companyName && (
+                      <div className="autodata-menu-sheet-subtitle">{companyName}</div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="autodata-menu-sheet-close"
+                    onClick={() => setIsMobileMenuSheetOpen(false)}
+                    aria-label={t('Đóng')}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="autodata-menu-sheet-body custom-scrollbar">
+                  {user?.role !== 'sale' && (
+                    <button
+                      type="button"
+                      className="autodata-menu-sheet-cta"
+                      onClick={() => {
+                        setIsMobileMenuSheetOpen(false);
+                        window.dispatchEvent(new CustomEvent('open-quick-add-lead'));
+                      }}
+                    >
+                      <Plus size={18} />
+                      <span>{t('Thêm Data Nhanh')}</span>
+                    </button>
+                  )}
+
+                  {isMetaReportRoute && (
+                    <div className="autodata-menu-sheet-section">
+                      <div className="autodata-menu-sheet-section-label">{t('Báo cáo Quảng cáo')}</div>
+                      <div className="autodata-menu-sheet-grid">
+                        {getDomMetaSidebarSubItems(metaSidebarState).map((sub) => {
+                          const SubIcon = metaSubViewIcons[sub.id] || LayoutDashboard;
+                          const isSubActive = metaSidebarState.activeView === sub.id;
+                          return (
+                            <button
+                              key={sub.id}
+                              type="button"
+                              className={`autodata-menu-sheet-card ${isSubActive ? 'active' : ''}`}
+                              onClick={() => {
+                                setMetaSidebarState((prev) => ({ ...prev, activeView: sub.id }));
+                                window.dispatchEvent(new CustomEvent(DOM_META_SELECT_VIEW_EVENT, { detail: { view: sub.id } }));
+                                setIsMobileMenuSheetOpen(false);
+                              }}
+                            >
+                              <span className="autodata-menu-sheet-card-icon">
+                                <SubIcon size={17} />
+                              </span>
+                              <span className="autodata-menu-sheet-card-label">{sub.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="autodata-menu-sheet-section">
+                    <div className="autodata-menu-sheet-section-label">{t('Phân hệ & Cài đặt')}</div>
+                    <div className="autodata-menu-sheet-grid">
+                      {menuSheetItems.map((item) => {
+                        const Icon = item.icon;
+                        const active = currentPath === item.href;
+                        return (
+                          <button
+                            key={item.href}
+                            type="button"
+                            className={`autodata-menu-sheet-card ${active ? 'active' : ''}`}
+                            onClick={() => handleMobileNav(item.href)}
+                          >
+                            <span className="autodata-menu-sheet-card-icon">
+                              <Icon size={17} />
+                            </span>
+                            <span className="autodata-menu-sheet-card-label">{t(item.name)}</span>
+                            {typeof item.badge === 'number' && item.badge > 0 && (
+                              <span className="autodata-menu-sheet-badge">
+                                {item.badge > 99 ? '99+' : item.badge}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+
+                      <button
+                        type="button"
+                        className="autodata-menu-sheet-card"
+                        onClick={() => {
+                          setIsMobileMenuSheetOpen(false);
+                          setIsActivityFeedOpen(true);
+                        }}
+                      >
+                        <span className="autodata-menu-sheet-card-icon">
+                          <Activity size={17} />
+                        </span>
+                        <span className="autodata-menu-sheet-card-label">{t('Bản tin hoạt động')}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
       <AIChatbot />
     </div>
   );

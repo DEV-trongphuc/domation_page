@@ -1,0 +1,268 @@
+{
+  "id": "art-102",
+  "number": "102",
+  "slug": "master-data-management-chong-trung-sdt-mst-ma-khach-hang",
+  "shardId": "shard03",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Doanh Nghiệp Đa Chi Nhánh & Chuỗi",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Master Data Management (MDM) cho SME: Hợp nhất Golden Record chống trùng SĐT, MST & mã SKU",
+  "seoTitle": "Master Data Management: Hợp Nhất SĐT, MST & SKU | DOMATION",
+  "metaDescription": "Thiết kế kiến trúc Golden Record hợp nhất khách hàng và mã hàng giữa CRM, POS, MISA bằng chuẩn hóa định danh, Fuzzy Matching và quy tắc gộp thông minh.",
+  "focusKeyword": "master data management golden record sme",
+  "secondaryKeywords": [
+    "chống trùng mã khách hàng mst",
+    "golden record trong crm erp",
+    "fuzzy matching tên khách hàng tiếng việt",
+    "đồng bộ mã sku marketing và kế toán",
+    "chuẩn hóa dữ liệu gốc mdm"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Golden Record: Chấm Dứt Loạn Mã Khách Và Mã SKU",
+  "thumbnailHook": "Hợp nhất SĐT, MST và SKU giữa Marketing, Sale và Kế toán chuẩn MDM.",
+  "thumbnailBadge": "MDM • GOLDEN RECORD",
+  "coverImage": "/imgs/boost/v2/master-data-management-chong-trung-sdt-mst-ma-khach-hang.webp",
+  "screenshotImage": "/imgs/boost/charts/master-data-management-chong-trung-sdt-mst-ma-khach-hang-report.webp",
+  "relatedModuleUrl": "/crm",
+  "relatedModuleLabel": "Xem Hồ Sơ Khách Hàng 360° Hợp Nhất",
+  "relatedSlugs": [
+    "chi-phi-an-du-lieu-trung-lap-duplicate-data-tax-ads-crm",
+    "loc-trung-lead-da-kenh-6-thang-chuan-hoa-so-dien-thoai-84",
+    "data-clean-room-truoc-khi-dua-ai-vao-doanh-nghiep",
+    "ecommerce-da-kenh-chong-lech-ton-kho-dong-bo-vat-misa"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Kiến trúc Master Data Management Golden Record hợp nhất số điện thoại +84, mã số thuế và mã SKU giữa CRM, POS và MISA",
+  "screenshotCaption": "Bảng điều khiển đối soát tỷ lệ trùng lặp định danh khách hàng, mã số thuế và độ phủ Golden Record liên phòng ban trên kiến trúc MDM.",
+  "tldrSummary": "Doanh nghiệp SME đa chi nhánh thường tích tụ 18%–34% hồ sơ trùng giữa Meta Ads, POS, Zalo OA và MISA do lệch chuẩn SĐT (+84/09/11 số cũ), mã số thuế 10–13 chữ số và mã SKU khuyến mãi. Kiến trúc MDM gọn nhẹ trên PostgreSQL kết hợp chuẩn hóa E.164, `pg_trgm` + RapidFuzz và quy tắc Survivorship tạo ra một Golden Record duy nhất mà vẫn giữ nguyên ID nguồn trong `source_xref` để Unmerge an toàn khi cần.",
+  "keyTakeaways": [
+    "Chuẩn hóa SĐT về E.164 (`+84...`) kèm bảng đổi đầu 11 số cũ (`016x -> 03x`, `012x -> 07x/08x`) và xuất riêng bản băm SHA-256 bỏ dấu `+` (`84...`) cho Meta CAPI.",
+    "Tách MST thành `mst_root` (10 ký tự) để gom tập đoàn mẹ và `mst_full` (13 ký tự `-001`) để xuất hóa đơn GTGT MISA đúng pháp nhân chi nhánh.",
+    "Dùng bảng `mdm_source_xref` nối ID cục bộ từ POS/MISA về `golden_id` thay vì xóa cứng bản ghi cũ, đảm bảo hoàn tác Unmerge 1-click.",
+    "Tách lớp `product_bundle_bom` cho phép Marketing tự đặt mã Combo Shopee/TikTok mà vẫn phân rã chính xác về mã vật tư MISA khi đối soát tồn kho."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Giảm hồ sơ trùng CRM–POS", "value": "-89% sau 14 ngày" },
+    { "label": "Độ chính xác gộp tự động", "value": "99.3% F1-Score" },
+    { "label": "Tiết kiệm Ads chia trùng Lead", "value": "28% – 35% CPA" },
+    { "label": "Sai lệch SKU xuất MISA", "value": "0% trên hóa đơn VAT" }
+  ],
+  "faqs": [
+    {
+      "question": "SME dưới 100 nhân sự có cần mua phần mềm MDM Enterprise như Reltio hay Informatica không?",
+      "answer": "Không. Với dưới 5 triệu hồ sơ khách hàng và 20.000 mã SKU, lõi MDM dựng trực tiếp trên PostgreSQL (`pg_trgm`, `unaccent`, JSONB survivorship) kết hợp worker Python RapidFuzz đáp ứng trọn vẹn tốc độ realtime mà không tốn hàng chục nghìn USD bản quyền mỗi năm."
+    },
+    {
+      "question": "Làm sao tránh gộp nhầm khi nhiều nhân viên công ty dùng chung một số hotline cố định?",
+      "answer": "Hệ thống gắn cờ `is_shared_corporate_line` khi một SĐT đi kèm nhiều tên hoặc MST khác nhau, tự động hạ trọng số SĐT xuống 0.35 và buộc khớp chéo thêm tên chuẩn hóa hoặc email trước khi cho phép hợp nhất."
+    },
+    {
+      "question": "Vì sao không xóa luôn bản ghi trùng trong database thay vì giữ bảng `mdm_source_xref`?",
+      "answer": "Xóa cứng ID cục bộ sẽ làm đứt khóa ngoại đơn hàng POS, webhook đồng bộ và công nợ MISA. Bảng `mdm_source_xref` lưu cặp `(source_system, external_id) -> golden_id` giúp mọi ứng dụng vệ tinh giữ nguyên tham chiếu cũ và cho phép Unmerge nếu phát hiện gộp nhầm."
+    },
+    {
+      "question": "Đồng bộ mã Combo Marketing trên Shopee/TikTok về mã kế toán MISA bằng cách nào?",
+      "answer": "DOMATION tách riêng Seller SKU khỏi mã vật tư qua bảng `product_bundle_bom`. Khi đơn Combo đổ về, pipeline tự phân rã thành từng `misa_item_code`, số lượng xuất kho và tỷ lệ doanh thu trước khi đẩy qua API kế toán MISA."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "hon-loan-dinh-danh-ba-mien-du-lieu",
+      "eyebrow": "Bối Cảnh Hệ Thống Phân Mảnh",
+      "variant": "incident",
+      "heading": "Một khách hàng VIP nhưng mang bốn thân phận rời rạc giữa Marketing, Sale, POS và MISA",
+      "pullQuote": "Khi CRM lưu `0901234567`, Zalo OA giữ `84901234567`, POS thu ngân còn sót `0168...` từ 2018 và MISA chỉ nhận MST `0315987654-001`, mọi báo cáo LTV hay AI chấm điểm đều sai lệch.",
+      "paragraphs": [
+        "Qua quá trình kiểm toán hạ tầng cho hơn 30 chuỗi F&B, Nha khoa, Giáo dục và Bất động sản, DOMATION ghi nhận một nghịch lý lặp đi lặp lại: doanh nghiệp càng đẩy mạnh đa kênh thì bức tranh khách hàng càng vỡ vụn. Meta Lead Ads đẩy số điện thoại dạng `p:+84903112233`, nhân viên Sale nhập tay cuộc gọi thành `Anh Tuấn Q7` không email, quầy POS chi nhánh lưu thẻ thành viên cũ đầu 11 số (`0122...`), còn kế toán MISA tạo mã đối tượng mới gắn MST chi nhánh 13 chữ số.",
+        "Sự đứt gãy này trực tiếp ăn mòn biên lợi nhuận. Auto Chia Data không nhận ra khách cũ nên phát lại cho Sale khác hưởng hoa hồng kép, Meta Ads chi tiền nhắm lại cùng một người đã chốt đơn (tốn 28%–35% ngân sách), và ở tầng sản phẩm, mã Combo `TET-VIP-02` ngoài sàn Shopee không khớp mã vật tư kho trên MISA khiến cuối tháng kế toán mất 3–5 ngày dò tay từng dòng Excel."
+      ],
+      "bullets": [
+        "Biến thể SĐT Việt Nam: lẫn lộn `+84`, `84`, `0084`, `0`, dấu chấm phân cách và dải 11 số cũ trước đợt chuyển đổi 9/2018.",
+        "Tên tiếng Việt lệch bảng mã: dấu Unicode tổ hợp NFD (macOS/iOS) không khớp dựng sẵn NFC (Windows) cùng viết tắt `Cty TNHH TM DV`.",
+        "MST 10 chữ số (công ty mẹ) và 13 chữ số `-001` (chi nhánh) dễ bị cắt ghép nhầm khi xuất hóa đơn VAT.",
+        "Lệch cấu trúc SKU: một mã Combo quảng cáo thường ánh xạ 1-nhiều sang mã vật tư và quà tặng trên kế toán."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "mdm-entity-resolution-benchmark",
+      "heading": "Hiệu quả hợp nhất Golden Record qua 4 tầng lọc định danh trên 120.000 hồ sơ",
+      "subtitle": "Đối chiếu tỷ lệ phát hiện trùng (Recall), độ chính xác gộp (Precision) và khối lượng ca cần người duyệt (Quarantine %)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Recall, Precision (%) & Tỷ lệ đẩy về hàng đợi Quarantine (%)",
+        "xKey": "stage",
+        "yUnit": "%",
+        "kpis": [
+          { "label": "Tỷ lệ trùng phát hiện", "value": "31.4%", "delta": "Trước chuẩn hóa MDM", "positive": false },
+          { "label": "Precision Auto-Merge", "value": "99.3%", "delta": "+14.8% vs Exact Raw", "positive": true },
+          { "label": "Ca đưa về Quarantine", "value": "2.1%", "delta": "-87% duyệt tay", "positive": true },
+          { "label": "Độ trễ Lookup", "value": "18 ms", "delta": "GIN pg_trgm index", "positive": true }
+        ],
+        "series": [
+          { "key": "recall", "label": "Phát hiện trùng (Recall %)", "color": "#1E40FF", "type": "bar" },
+          { "key": "precision", "label": "Chính xác gộp (Precision %)", "color": "#06B6D4", "type": "line" },
+          { "key": "manualReview", "label": "Tỷ lệ Quarantine (%)", "color": "#F59E0B", "type": "line" }
+        ],
+        "data": [
+          { "stage": "Exact Raw", "recall": 41.2, "precision": 99.8, "manualReview": 0.4 },
+          { "stage": "E164 +84", "recall": 74.6, "precision": 99.5, "manualReview": 1.8 },
+          { "stage": "MST + Email", "recall": 84.9, "precision": 99.4, "manualReview": 2.9 },
+          { "stage": "pg_trgm Vi", "recall": 94.3, "precision": 97.1, "manualReview": 6.4 },
+          { "stage": "MDM Hybrid", "recall": 96.8, "precision": 99.3, "manualReview": 2.1 }
+        ],
+        "sourceNote": "Benchmark nội bộ DOMATION trên 120.000 bản ghi CRM, POS và MISA từ 4 chuỗi bán lẻ & giáo dục."
+      },
+      "insightSummary": "Khớp chuỗi thô bỏ lọt tới 58.8% ca trùng. Chỉ riêng chuẩn hóa SĐT +84 và đầu 11 số đã nâng Recall lên 74.6%. Dùng `pg_trgm` thiếu khóa bảo vệ làm Precision tụt xuống 97.1% (gộp nhầm khách trùng tên), trong khi kiến trúc MDM Hybrid dùng Blocking Key + ngưỡng kép đẩy Recall lên 96.8% với Precision 99.3%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "mdm-golden-record-diagram",
+      "src": "/imgs/boost/charts/master-data-management-chong-trung-sdt-mst-ma-khach-hang-report.webp",
+      "alt": "Báo cáo phân tích tỷ lệ trùng lặp định danh khách hàng và kiến trúc hợp nhất Golden Record MDM DOMATION",
+      "caption": "Luồng chuẩn hóa đa nguồn (Meta Lead, Zalo OA, POS, MISA) hội tụ về Golden Record duy nhất có kiểm soát ngưỡng tin cậy.",
+      "badge": "MDM TELEMETRY & GOLDEN RECORD"
+    },
+    {
+      "type": "prose",
+      "id": "co-che-entity-resolution-chuan-viet-nam",
+      "eyebrow": "Thiết Kế Lõi Định Danh",
+      "variant": "deep-dive",
+      "heading": "Entity Resolution 3 tầng cho ngữ liệu Việt Nam: E.164, tách lớp MST và Fuzzy Matching không dấu",
+      "paragraphs": [
+        "Các thuật toán ngữ âm tiếng Anh như Soundex hoàn toàn thất bại với thanh điệu tiếng Việt (`Nguyễn` vs `Nguyên`, `Phượng` vs `Phương`). Hệ thống MDM thực chiến cần kết hợp Khớp tất định (Deterministic) làm xương sống và Khớp mờ (Probabilistic Fuzzy) cho các hồ sơ thiếu khóa định danh.",
+        "Ở tầng Deterministic, mọi số điện thoại đi qua hàm chuẩn hóa: gỡ ký tự lạ, đổi đầu `0084`/`84`, ánh xạ 11 số cũ theo Quyết định 798/QĐ-BTTTT (`016x -> 03x`, `0120/1/2/6/8 -> 07x`, `0123/4/5/7/9 -> 08x`), rồi xuất ra `phone_e164` (`+84901234567`) cho CRM/ZaloBot và chuỗi không dấu `+` (`84901234567`) để băm SHA-256 gửi Meta CAPI. Riêng MST B2B phải giữ cả `mst_full` (13 ký tự cho hóa đơn MISA chi nhánh) lẫn `mst_root` (10 ký tự đầu để gom công nợ toàn tập đoàn).",
+        "Ở tầng Fuzzy, văn bản được ép về Unicode NFC, chạy `unaccent()`, lọc từ nhiễu pháp lý (`cong ty`, `tnhh`, `co phan`, `tm dv`), rồi tính điểm `pg_trgm` và RapidFuzz `token_set_ratio` (xử lý tốt tên bị đảo từ) trong phạm vi Blocking Key nhằm tránh quét O(N²)."
+      ],
+      "bullets": [
+        "Blocking Key: phân cụm ứng viên theo `phone_last_4`, `mst_root` hoặc `(tinh_thanh, ky_tu_dau)` để giữ độ trễ < 25ms.",
+        "Ngưỡng quyết định hai tầng: tổng trọng số >= 0.90 gộp tự động (`AUTO_MERGE`); 0.68–0.89 đẩy vào `QUARANTINE_REVIEW`; < 0.68 tạo mới."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "mdm-entity-resolution-matrix",
+      "heading": "So sánh 4 phương pháp Entity Resolution cho doanh nghiệp SME Việt Nam",
+      "caption": "Đánh giá theo độ trễ chia số realtime, khả năng xử lý tiếng Việt và chi phí vận hành",
+      "columns": [
+        "Tiêu chí kỹ thuật",
+        "Exact Key / Regex",
+        "Postgres pg_trgm + RapidFuzz",
+        "Splink (Fellegi-Sunter)",
+        "LLM Entity Matcher"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Độ trễ chia Lead",
+          "values": ["< 5 ms", "12 – 25 ms (GIN + Blocking)", "150 – 800 ms", "700 – 2.200 ms"],
+          "winnerNote": "Đạt chuẩn SLA ZaloBot < 5s"
+        },
+        {
+          "criterion": "Xử lý tiếng Việt",
+          "values": ["Trượt khi lệch 1 dấu", "Tốt (NFC + unaccent + Token Set)", "Tốt ở batch lớn, khó tuning", "Rất tốt nhưng đắt tiền"],
+          "winnerNote": "Cân bằng chuẩn xác & tốc độ"
+        },
+        {
+          "criterion": "Chi phí / 1M kiểm tra",
+          "values": ["~0 USD", "2 – 5 USD nội bộ", "10 – 25 USD worker", "150 – 450 USD token API"]
+        },
+        {
+          "criterion": "Giải trình & Unmerge",
+          "values": ["Dễ nhưng sót trùng cao", "Minh bạch rule score & xref", "Có log Bayes factor", "Khó kiểm toán ổn định"]
+        }
+      ],
+      "footnote": "Kiến trúc tối ưu dùng `pg_trgm` + RapidFuzz cho 98% luồng realtime và chỉ đẩy 2% ca vùng xám sang hàng đợi duyệt hoặc LLM."
+    },
+    {
+      "type": "code-recipe",
+      "id": "sql-mdm-golden-record-upsert",
+      "heading": "SQL Recipe: Chuẩn hóa SĐT +84, tách MST 10/13 số & Upsert Golden Record trên PostgreSQL",
+      "language": "sql",
+      "filename": "migrations/012_mdm_golden_record_engine.sql",
+      "description": "Triển khai trực tiếp trên PostgreSQL với `unaccent` và `pg_trgm`: quy đổi đầu 11 số cũ về `+84`, tách `mst_root`/`mst_full`, áp dụng Survivorship ưu tiên tên pháp nhân MISA và lưu dấu vết nguồn tại `mdm_source_xref`.",
+      "code": "CREATE EXTENSION IF NOT EXISTS unaccent;\nCREATE EXTENSION IF NOT EXISTS pg_trgm;\n\nCREATE OR REPLACE FUNCTION fn_normalize_vn_phone(raw_phone TEXT)\nRETURNS TEXT LANGUAGE plpgsql IMMUTABLE AS $$\nDECLARE\n  digits TEXT;\n  prefix_map JSONB := '{\n    \"0162\":\"032\",\"0163\":\"033\",\"0164\":\"034\",\"0165\":\"035\",\n    \"0166\":\"036\",\"0167\":\"037\",\"0168\":\"038\",\"0169\":\"039\",\n    \"0120\":\"070\",\"0121\":\"079\",\"0122\":\"077\",\"0126\":\"076\",\"0128\":\"078\",\n    \"0123\":\"083\",\"0124\":\"084\",\"0125\":\"085\",\"0127\":\"081\",\"0129\":\"082\",\n    \"0186\":\"056\",\"0188\":\"058\",\"0199\":\"059\"\n  }'::JSONB;\n  p4 TEXT;\nBEGIN\n  IF raw_phone IS NULL THEN RETURN NULL; END IF;\n  digits := regexp_replace(raw_phone, '[^0-9]', '', 'g');\n  IF digits ~ '^0084' THEN digits := '0' || substring(digits FROM 5);\n  ELSIF digits ~ '^84' AND length(digits) IN (11, 12) THEN digits := '0' || substring(digits FROM 3);\n  ELSIF length(digits) = 9 AND digits ~ '^[35789]' THEN digits := '0' || digits;\n  END IF;\n  IF length(digits) = 11 THEN\n    p4 := substring(digits FROM 1 FOR 4);\n    IF prefix_map ? p4 THEN digits := (prefix_map ->> p4) || substring(digits FROM 5); END IF;\n  END IF;\n  IF digits ~ '^0[35789][0-9]{8}$' THEN RETURN '+84' || substring(digits FROM 2); END IF;\n  RETURN NULL;\nEND;\n$$;\n\nCREATE TABLE IF NOT EXISTS mdm_golden_customers (\n  golden_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  phone_e164 TEXT UNIQUE,\n  mst_full TEXT UNIQUE,\n  mst_root CHAR(10),\n  canonical_name TEXT NOT NULL,\n  name_ascii TEXT GENERATED ALWAYS AS (lower(unaccent(canonical_name))) STORED,\n  email_norm TEXT,\n  is_shared_line BOOLEAN NOT NULL DEFAULT FALSE,\n  survivorship_meta JSONB NOT NULL DEFAULT '{}'::JSONB,\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()\n);\n\nCREATE INDEX IF NOT EXISTS idx_mdm_name_trgm ON mdm_golden_customers USING GIN (name_ascii gin_trgm_ops);\n\nCREATE TABLE IF NOT EXISTS mdm_source_xref (\n  source_system TEXT NOT NULL,\n  external_id TEXT NOT NULL,\n  golden_id UUID NOT NULL REFERENCES mdm_golden_customers(golden_id),\n  match_rule TEXT NOT NULL,\n  confidence NUMERIC(4,3) NOT NULL,\n  raw_payload JSONB NOT NULL,\n  linked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),\n  PRIMARY KEY (source_system, external_id)\n);\n\nINSERT INTO mdm_golden_customers (phone_e164, mst_full, mst_root, canonical_name, email_norm, survivorship_meta)\nVALUES (\n  fn_normalize_vn_phone('84 0168 456 7890'), '0315987654-001', '0315987654',\n  'Công Ty TNHH Giải Pháp Số Minh Khôi - CN Đà Nẵng', lower(trim('ketoan@MinhKhoi.vn')),\n  jsonb_build_object('name_source', 'MISA_AMIS', 'name_priority', 95)\n)\nON CONFLICT (phone_e164) DO UPDATE SET\n  mst_full = COALESCE(EXCLUDED.mst_full, mdm_golden_customers.mst_full),\n  mst_root = COALESCE(EXCLUDED.mst_root, mdm_golden_customers.mst_root),\n  canonical_name = CASE\n    WHEN (EXCLUDED.survivorship_meta->>'name_priority')::INT >\n         COALESCE((mdm_golden_customers.survivorship_meta->>'name_priority')::INT, 0)\n    THEN EXCLUDED.canonical_name ELSE mdm_golden_customers.canonical_name END,\n  updated_at = NOW();"
+    },
+    {
+      "type": "code-recipe",
+      "id": "python-entity-resolution-rapidfuzz",
+      "heading": "Python Recipe: Fuzzy Matching tên doanh nghiệp tiếng Việt & phân rã SKU BOM cho MISA",
+      "language": "python",
+      "filename": "services/mdm_resolver.py",
+      "description": "Chuẩn hóa Unicode NFC, loại từ khóa pháp lý trước khi tính RapidFuzz `token_set_ratio`, áp dụng hình phạt cho số hotline dùng chung (`is_shared_line`) và quy đổi Combo SKU về vật tư MISA.",
+      "code": "import re, unicodedata\nfrom dataclasses import dataclass\nfrom rapidfuzz import fuzz\n\nSTOPWORDS = {\"cong ty\", \"tnhh\", \"co phan\", \"cp\", \"tm\", \"dv\", \"thuong mai\", \"dich vu\"}\n\ndef normalize_vn_company(name: str) -> str:\n    s = unicodedata.normalize(\"NFC\", name or \"\").strip().lower().replace(\"đ\", \"d\")\n    s = \"\".join(c for c in unicodedata.normalize(\"NFD\", s) if unicodedata.category(c) != \"Mn\")\n    s = re.sub(r\"[^a-z0-9\\s]\", \" \", s)\n    for sw in sorted(STOPWORDS, key=len, reverse=True):\n        s = re.sub(rf\"\\b{re.escape(sw)}\\b\", \" \", s)\n    return re.sub(r\"\\s+\", \" \", s).strip()\n\n@dataclass\nclass CandidateScore:\n    golden_id: str; score: float; decision: str; reasons: list[str]\n\ndef score_entity_pair(incoming: dict, existing: dict) -> CandidateScore:\n    score, reasons = 0.0, []\n    if incoming.get(\"mst_full\") and incoming[\"mst_full\"] == existing.get(\"mst_full\"):\n        score += 0.92; reasons.append(\"EXACT_MST_FULL\")\n    if incoming.get(\"phone_e164\") and incoming[\"phone_e164\"] == existing.get(\"phone_e164\"):\n        score += 0.35 if existing.get(\"is_shared_line\") else 0.78\n        reasons.append(\"SHARED_PHONE\" if existing.get(\"is_shared_line\") else \"EXACT_PHONE\")\n    n1, n2 = normalize_vn_company(incoming.get(\"name\", \"\")), normalize_vn_company(existing.get(\"name\", \"\"))\n    if n1 and n2:\n        sim = fuzz.token_set_ratio(n1, n2) / 100.0\n        if sim >= 0.88:\n            score += 0.25 * sim; reasons.append(f\"FUZZY_NAME_{sim:.2f}\")\n    if incoming.get(\"email_norm\") and incoming[\"email_norm\"] == existing.get(\"email_norm\"):\n        score += 0.45; reasons.append(\"EXACT_EMAIL\")\n    final_score = min(1.0, round(score, 3))\n    decision = \"AUTO_MERGE\" if final_score >= 0.90 else (\"QUARANTINE_REVIEW\" if final_score >= 0.68 else \"CREATE_NEW\")\n    return CandidateScore(existing[\"golden_id\"], final_score, decision, reasons)\n\ndef explode_marketing_sku(seller_sku: str, qty: int, bom_map: dict[str, list[dict]]) -> list[dict]:\n    components = bom_map.get(seller_sku)\n    if not components:\n        return [{\"misa_code\": seller_sku, \"qty\": qty, \"revenue_ratio\": 1.0, \"unmapped\": True}]\n    return [{\"misa_code\": c[\"misa_code\"], \"qty\": qty * c[\"units\"], \"revenue_ratio\": c[\"ratio\"], \"unmapped\": False} for c in components]"
+    },
+    {
+      "type": "prose",
+      "id": "tradeoff-false-merge-va-bai-toan-sku",
+      "eyebrow": "Đánh Đổi Kiến Trúc Thực Tế",
+      "variant": "contrarian",
+      "heading": "Rủi ro False Merge vs False Split và cách tách tầng mã SKU giữa Marketing với Kế toán",
+      "paragraphs": [
+        "Trong MDM, lỗi tách nhầm (False Split) chỉ gây tốn thêm một lượt gọi hoặc báo cáo hơi phình, nhưng lỗi gộp nhầm (False Merge — nhập hai khách khác nhau thành một Golden Record) kéo theo thảm họa gửi nhầm hóa đơn VAT, lộ lịch sử bệnh án hoặc áp sai chiết khấu đại lý. Vì thế, thuật toán phải ưu tiên bảo thủ trước số điện thoại công ty dùng chung hay số người thân đặt hộ.",
+        "Survivorship Rule phải thiết lập theo từng cột chứ không lấy cả dòng thắng cả dòng: tên pháp nhân và `mst_full` lấy từ MISA/Hợp đồng làm chuẩn, còn SĐT cá nhân người mua, Zalo ID và hành vi xem bảng giá lấy từ CRM mới nhất. Tương tự, với danh mục hàng hóa, không ép Marketing dùng mã kế toán thô cứng mà dùng bảng `product_bundle_bom` tự động phân rã Seller SKU trước lúc xuất phiếu MISA."
+      ],
+      "bullets": [
+        "Luôn giữ nút Unmerge 1-click dựa trên `raw_payload` gốc lưu trong `mdm_source_xref`.",
+        "Cảnh báo ZaloBot ngay khi có đơn hàng chứa Seller SKU mới chưa khai báo trong `product_bundle_bom`."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "lo-trinh-trien-khai-mdm-5-pha",
+      "heading": "Lộ trình 5 pha dựng Golden Record không làm gián đoạn POS và MISA đang vận hành",
+      "variant": "migration-phases",
+      "items": [
+        {
+          "tag": "PHA 01 • NGÀY 1–3",
+          "title": "Shadow Profiling dữ liệu lịch sử từ CRM, POS và MISA",
+          "detail": "Đổ snapshot sang bảng staging, đo tỷ lệ đầu 11 số cũ, hotline dùng chung và danh sách SKU chưa có ánh xạ kế toán.",
+          "metricOrTool": "PostgreSQL Staging"
+        },
+        {
+          "tag": "PHA 02 • NGÀY 4–7",
+          "title": "Dry-Run Entity Resolution & hiệu chỉnh ngưỡng tin cậy",
+          "detail": "Chạy thử nghiệm trên 5.000 hồ sơ để chốt ngưỡng Auto-Merge (>= 0.90) và Quarantine (0.68–0.89), giữ False Merge < 0.3%.",
+          "metricOrTool": "RapidFuzz Dry-Run"
+        },
+        {
+          "tag": "PHA 03 • NGÀY 8–11",
+          "title": "Nạp `mdm_source_xref` & xử lý hàng đợi Quarantine",
+          "detail": "Gán `golden_id` mà không sửa khóa chính của POS hay MISA; xuất giao diện đối chiếu song song để Admin duyệt nhanh.",
+          "metricOrTool": "Source Xref • Quarantine UI"
+        },
+        {
+          "tag": "PHA 04 • NGÀY 12–16",
+          "title": "Đặt chốt chặn Realtime tại Auto Chia Data & Meta CAPI",
+          "detail": "Gọi API `ResolveOrCreateGolden` trong < 25ms trước khi ZaloBot chia số và bắn SHA-256 `84...` sang Meta CAPI.",
+          "metricOrTool": "DOMATION Auto Data V2"
+        },
+        {
+          "tag": "PHA 05 • NGÀY 17–21",
+          "title": "Đồng bộ ngược SKU BOM & bật đối soát MISA hai chiều",
+          "detail": "Khóa quy đổi Combo Marketing về `misa_item_code` và nghiệm thu báo cáo LTV 360° thống nhất toàn công ty.",
+          "metricOrTool": "MISA 2-Way Sync"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "mdm-turniodev-verdict",
+      "variant": "founder-pov",
+      "title": "Nguyên tắc sống còn khi dựng Golden Record cho SME tăng trưởng",
+      "body": "Đừng biến MDM thành dự án phần mềm nặng nề chỉ đẹp trên slide. Tại DOMATION, Golden Record nằm ngay trên lõi PostgreSQL của CRM 360°: chuẩn hóa SĐT +84 trong 2ms, tách bạch MST 10 và 13 chữ số để kế toán MISA không lệch hóa đơn, bảo toàn ID gốc trong `source_xref` để Unmerge an toàn và khóa chuẩn SKU BOM trước khi số liệu chảy về báo cáo CEO.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • Founder & CEO DOMATION"
+    }
+  ]
+}

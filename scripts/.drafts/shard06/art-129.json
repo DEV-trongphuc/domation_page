@@ -1,0 +1,284 @@
+{
+  "id": "art-129",
+  "number": "129",
+  "slug": "unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api",
+  "shardId": "shard06",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "API Security & FinOps Defense",
+  "clusterId": "kw-ai-security-owasp",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Unbounded Consumption (OWASP LLM10): Kịch bản Token DoS đốt sạch 5.000 USD trong một đêm & cách khóa van",
+  "seoTitle": "OWASP LLM10: Chống Token DoS Đốt Sạch Ngân Sách API | DOMATION",
+  "metaDescription": "Chỉ với script spam prompt 50.000 ký tự vào Chatbot không giới hạn, kẻ xấu dễ đốt hàng nghìn USD API một đêm. Giải pháp Rate Limit và Budget Circuit Breaker.",
+  "focusKeyword": "unbounded consumption token dos chống đốt ngân sách llm",
+  "secondaryKeywords": [
+    "sponge attack đốt token llm",
+    "giới hạn max tokens và rate limit chatbot",
+    "ngắt mạch tự động khi tăng vọt chi phí ai",
+    "chống spam bot cskh đốt api",
+    "bảo vệ ví tiền ai gateway"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Token DoS: Kịch Bản Đốt 5.000 USD Trong Một Đêm",
+  "thumbnailHook": "Chặn spam độ dài input, đặt Sliding-Window Rate Limit và Hard Budget Circuit Breaker.",
+  "thumbnailBadge": "OWASP #10 TOKEN-DOS",
+  "coverImage": "/imgs/boost/v2/unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api.webp",
+  "screenshotImage": "/imgs/boost/charts/unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Cơ Chế Khóa Hạn Mức AI Gateway",
+  "relatedSlugs": [
+    "ai-unit-economics-token-finops-kiem-soat-chi-phi-theo-lead",
+    "semantic-caching-context-compression-giam-60-chi-phi-token",
+    "berriai-litellm-audit-unified-ai-gateway-quan-tri-budget-token",
+    "kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Báo cáo thực địa kịch bản tấn công Unbounded Consumption Token DoS OWASP LLM10 đốt sạch ngân sách API LLM qua đêm và kiến trúc khóa van Budget Circuit Breaker",
+  "screenshotCaption": "Biểu đồ đường lũy kế chi phí API (USD) từ 00:00 đến 08:00 trong kịch bản Sponge Attack & Tool-Loop Flood: hệ thống không khóa van chạm ngưỡng 5.180 USD so với mức trần 48,6 USD khi có Budget Circuit Breaker.",
+  "relatedPortfolioId": "ideas-business",
+  "tldrSummary": "Unbounded Consumption (OWASP LLM10) biến chatbot CSKH hoặc API AI mở công khai thành lỗ hổng Denial-of-Wallet đốt tiền theo giây. Chỉ với script tự động gửi chuỗi văn bản 50.000 ký tự, nhồi lịch sử chat không cắt tỉa và ép mô hình Reasoning chạy mức cao kèm vòng lặp gọi Tool vô hạn, kẻ xấu dễ tiêu thụ hàng trăm triệu token và đốt hơn 5.000 USD trong một đêm trước khi cảnh báo thanh toán kịp gửi về. Báo cáo này bóc tách cơ chế đòn Sponge Attack và trình bày bộ khóa van 5 tầng bằng Redis Sliding-Window và Hard Budget Circuit Breaker.",
+  "keyTakeaways": [
+    "Đặt ngưỡng trần độ dài đầu vào (ví dụ tối đa 2.500 ký tự cho tin nhắn CSKH) và giới hạn chặt `max_output_tokens` + `reasoning.effort` ngay tại AI Gateway trước khi yêu cầu chạm tới LLM.",
+    "Không bao giờ phụ thuộc vào Hard Limit thanh toán theo tháng của nhà cung cấp cloud vì hóa đơn thường cập nhật trễ từ 15 phút đến vài giờ; bắt buộc dựng Budget Circuit Breaker đếm chi phí thời gian thực trên Redis.",
+    "Chống bùng nổ chi phí từ ngữ cảnh dài bằng cửa sổ trượt lịch sử (tối đa 6–8 lượt chat gần nhất hoặc tóm tắt nén ngữ cảnh) và nhận diện ngưỡng phụ phí Long Context (như mốc > 272K token của GPT-5.6 nhân đôi giá input).",
+    "Cài `max_iterations` (thường 4–6 vòng) và `max_total_tokens_per_trace` cho mọi Agent có quyền gọi Tool để triệt tiêu vòng lặp tự suy diễn vô tận.",
+    "Định tuyến các câu hỏi lặp lại phổ thông qua Semantic Cache và tầng model nhẹ (`Flash-Lite` / `Haiku 5.5` / `Luna`) trước khi cho phép đánh thức các model Heavyweight đắt đỏ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Giới hạn thiệt hại đêm bị spam", "value": "48.6 USD (từ 5.180 USD)" },
+    { "label": "Thời gian ngắt mạch Circuit Breaker", "value": "< 150 ms qua Redis" },
+    { "label": "Tỷ lệ tải được đỡ bởi Semantic Cache", "value": "58% câu hỏi lặp" },
+    { "label": "Biên chi phí API / Lead hợp lệ", "value": "Ổn định < 0.018 USD" }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao cấu hình giới hạn ngân sách (Spending Limit) trên trang quản trị OpenAI, Anthropic hay Google Cloud vẫn có thể bị vượt quá trong một đêm?",
+      "answer": "Giới hạn chi tiêu ở tầng Billing của các nhà cung cấp mô hình được thiết kế để tổng hợp hóa đơn chứ không phải bộ ngắt mạch thời gian thực độ trễ thấp. Khi hàng trăm yêu cầu bất đồng bộ (concurrent streaming requests) đổ dồn vào cùng lúc qua một API key chung, hệ thống đo đếm hóa đơn thường có độ trễ đồng bộ từ vài phút đến vài chục phút. Trong khoảng trống đó, hàng nghìn yêu cầu đang chạy vẫn tiếp tục hoàn thành quá trình giải mã output và tính cước bình thường, khiến hóa đơn thực tế vọt lố ngân sách nhiều lần trước khi key bị tạm khóa."
+    },
+    {
+      "question": "Nếu tôi đã đặt Rate Limit theo số request mỗi phút (RPM) như API web truyền thống thì có đủ chống Token DoS không?",
+      "answer": "Hoàn toàn không đủ. Với REST API thông thường, 30 request/phút gần như không tốn tài nguyên đáng kể. Nhưng với LLM, chỉ cần 20 request/phút đều đặn mang theo lịch sử chat dài 120.000 token và kích hoạt `max_output_tokens = 32.000` kèm `reasoning.effort = high` trên một model hạng nặng ($4 input / $20 output mỗi triệu token), mỗi phút bạn mất tới ~15 USD — tương đương 900 USD mỗi giờ mà không hề chạm ngưỡng RPM thông thường. Phòng thủ LLM bắt buộc phải giới hạn đồng thời theo TPM (Tokens Per Minute) và Spend Per Minute theo từng người dùng/session."
+    },
+    {
+      "question": "Sponge Attack (Tấn công bọt biển) nhắm vào bộ tách token LLM hoạt động như thế nào?",
+      "answer": "Sponge Attack lợi dụng các chuỗi ký tự hiếm, khoảng trắng đặc biệt, chữ Unicode pha trộn hoặc đoạn văn bản vô nghĩa khiến thuật toán BPE Tokenizer vỡ vụn mỗi ký tự thành một token riêng biệt thay vì gộp cả từ. Một tin nhắn trông chỉ khoảng 12.000 ký tự nhưng có thể phình thành 10.000–12.000 token đầu vào, đồng thời kích thích mô hình sinh chuỗi suy luận nội bộ (`thinking_tokens`) kéo dài tối đa tới giới hạn output, vừa làm nghẽn GPU/worker vừa nhân chi phí gấp 10–15 lần một hội thoại bình thường."
+    },
+    {
+      "question": "Làm thế nào vừa khóa van chống đốt tiền vừa không chặn nhầm khách hàng thật khi chiến dịch Ads chạy mạnh?",
+      "answer": "Kiến trúc AI Gateway đúng chuẩn không đóng băng toàn hệ thống một cách thô bạo mà áp dụng cơ chế hạ tầng (Graceful Degradation) theo hai tầng. Khi phát hiện lưu lượng tăng đột biến hoặc một nhóm phiên có hành vi bất thường, hệ thống giữ nguyên hạn mức phục vụ cho các phiên đã xác thực SĐT / Zalo OA hợp lệ nhưng siết chặt ngân sách cho khách vãng lai ẩn danh trên Web (chuyển xuống Semantic Cache, tắt Deep Thinking và định tuyến sang model nhẹ như `gemini-3.5-flash-lite` hoặc `claude-haiku-5-5`). Chỉ khi tổng chi phí toàn tenant chạm trần khẩn cấp (Hard Circuit Breaker), Gateway mới chuyển về kịch bản FAQ tĩnh và thông báo CSKH trực tiếp."
+    },
+    {
+      "question": "Tại sao không dùng chính LLM để kiểm tra xem câu hỏi có phải spam hay không trước khi trả lời?",
+      "answer": "Dùng một lời gọi LLM khác để bắt spam chính là tự mở thêm một lỗ hổng đốt tiền ở lớp bảo vệ (Guardrail Cost Amplification). Toàn bộ các chốt chặn Unbounded Consumption phải được thực thi bằng mã xác định (deterministic code) cực nhẹ ở tầng Gateway: kiểm tra kích thước payload byte/UTF-8, đếm độ dài token cục bộ bằng tokenizer nhẹ (`tiktoken` / ước lượng tỷ lệ ký tự), kiểm tra danh sách đen/hạn mức Redis trong dưới 2ms và đối chiếu trạng thái mạch ngắt chi phí trước khi bất kỳ gói tin nào rời khỏi máy chủ."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "thong-ke-thiet-hai-token-dos-2026",
+      "heading": "Bức tranh định lượng của sự cố Unbounded Consumption (OWASP LLM10) trên Chatbot sản xuất",
+      "stats": [
+        {
+          "value": "$5,180",
+          "label": "Chi phí bị đốt trong 8 giờ đêm",
+          "context": "Từ 6.400 request Sponge Attack + Reasoning Loop nhắm vào endpoint không giới hạn",
+          "trend": "down"
+        },
+        {
+          "value": "48x",
+          "label": "Hệ số khuếch đại chi phí Tool Loop",
+          "context": "Khi kẻ xấu ép Agent lặp lại chuỗi RAG + Reasoning High ở mỗi lượt hội thoại",
+          "trend": "down"
+        },
+        {
+          "value": "< 150 ms",
+          "label": "Độ trễ ngắt mạch Redis Circuit Breaker",
+          "context": "Khóa ngay API key nội bộ theo phiên và hạ cấp luồng trước khi vượt trần $50",
+          "trend": "up"
+        },
+        {
+          "value": "58%",
+          "label": "Truy vấn được đỡ bằng Semantic Cache",
+          "context": "Câu hỏi lặp về bảng giá/địa chỉ trả lời trong 35ms với 0 token LLM tiêu thụ",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-kinh-te-hoc-don-token-dos",
+      "eyebrow": "Báo Cáo Thực Địa • Kinh Tế Học Của Đòn Denial-Of-Wallet",
+      "variant": "incident",
+      "heading": "Kịch bản một script 40 dòng biến Chatbot CSKH thành máy đốt 5.000 USD trong một đêm",
+      "pullQuote": "Với Web truyền thống, DDoS chỉ làm chậm máy chủ; với ứng dụng AI tính tiền theo từng token, tin tặc không cần đánh sập server của bạn — chúng chỉ cần giữ cho Chatbot trả lời thật dài và thật chăm chỉ suốt đêm.",
+      "paragraphs": [
+        "Hãy làm một phép tính thực tế dựa trên bảng giá mô hình phổ biến cuối năm 2026. Một doanh nghiệp dựng Chatbot tư vấn trực tuyến trên Website và API trung gian, chọn dùng mô hình lập luận hạng nặng (như `claude-opus-5-5` hay `gpt-5.6-sol` ở mức giá tham chiếu $4/1M input và $20/1M output, hoặc `claude-fable-5-2` ở mức $8/$40) để bot trả lời 'thông minh nhất có thể'. Đội ngũ kỹ thuật quên mất ba cấu hình tối quan trọng: không giới hạn độ dài tin nhắn khách gửi, đẩy toàn bộ lịch sử chat cộng với 15 đoạn RAG mỗi lượt vào prompt mà không nén, và để nguyên mặc định `thinking_level = high` không giới hạn `max_output_tokens`.",
+        "Lúc 00:15 sáng, một kịch bản tự động xoay vòng qua 12 địa chỉ IP dân cư (né được tường lửa Cloudflare chặn theo IP đơn) bắt đầu gửi các tin nhắn dài 50.000 ký tự chứa hỗn hợp mã Unicode nhiễu và câu hỏi yêu cầu AI 'phân tích chi tiết từng điều khoản, viết lại bằng 3 ngôn ngữ và kiểm tra đối chiếu 5 lần với kho tài liệu'. Nếu câu hỏi kéo phình ngữ cảnh qua mốc tính phụ phí (ví dụ vượt ngưỡng 272.000 token đầu vào trên các dòng GPT-5.6 khiến giá input bị nhân đôi), hoặc ép mô hình tự động gọi đi gọi lại các tool tìm kiếm RAG trong một vòng lặp agent không có biến đếm `max_iterations`, một lượt hội thoại duy nhất dễ dàng ngốn 90.000 token input và 22.000 token suy luận + trả lời.",
+        "Ở mức giá $0,80 mỗi lượt như vậy, bot chỉ cần xử lý khoảng 13 yêu cầu mỗi phút — hoàn toàn lọt qua các bộ giới hạn RPM thông thường vốn đặt ở mức 60–120 req/phút. Sau 8 tiếng đồng hồ từ nửa đêm đến 8 giờ sáng (6.400 lượt), tổng hóa đơn API bị đốt sạch vượt mốc 5.180 USD (~130 triệu VNĐ). Điều đau đớn nhất trong các cuộc kiểm tra sau sự cố là người dùng thật suốt đêm đó không hề có thêm một đơn hàng nào, trong khi hệ thống cảnh báo qua email của nhà cung cấp cloud lại trượt qua giờ ngủ của quản trị viên."
+      ],
+      "bullets": [
+        "Lỗ hổng nhồi lịch sử hội thoại (Context Snowball): giữ nguyên 30 lượt chat trước khiến chi phí mỗi tin nhắn tăng theo cấp số cộng bình phương $O(N^2)$.",
+        "Lỗ hổng Reasoning Effort không kiểm soát: các model có `thinking_tokens` tính phí phần suy luận ngầm theo đơn giá Output vốn đắt gấp 5–10 lần Input.",
+        "Lỗ hổng Endpoint Embedding công khai: cho phép khách vãng lai tải file PDF 200 trang lên phân tích miễn phí gây tràn GPU hoặc đốt tiền Embedding/OCR không giới hạn."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "telemetry-dot-tien-8-gio-dem-token-dos",
+      "heading": "Diễn biến chi phí API lũy kế trong 8 giờ tấn công Token DoS (00:00 – 08:00)",
+      "subtitle": "So sánh đường tăng trưởng chi phí tích lũy giữa hệ thống chỉ đặt ngưỡng Billing Cloud thụ động và kiến trúc AI Gateway trang bị Redis Token Bucket + Hard Budget Circuit Breaker.",
+      "chart": {
+        "chartType": "area",
+        "title": "Chi phí API tích lũy theo giờ (USD) — Thả nổi vs Khóa van Circuit Breaker",
+        "xKey": "hour",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "unprotectedSpendUsd",
+            "label": "Không Circuit Breaker (Đốt liên tục tới sáng)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "circuitBreakerSpendUsd",
+            "label": "Có AI Gateway + Redis Budget Circuit Breaker",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "hour": "00:00", "unprotectedSpendUsd": 14, "circuitBreakerSpendUsd": 12 },
+          { "hour": "01:00", "unprotectedSpendUsd": 685, "circuitBreakerSpendUsd": 44 },
+          { "hour": "02:00", "unprotectedSpendUsd": 1360, "circuitBreakerSpendUsd": 46 },
+          { "hour": "03:00", "unprotectedSpendUsd": 2040, "circuitBreakerSpendUsd": 47 },
+          { "hour": "04:00", "unprotectedSpendUsd": 2710, "circuitBreakerSpendUsd": 48 },
+          { "hour": "05:00", "unprotectedSpendUsd": 3390, "circuitBreakerSpendUsd": 48 },
+          { "hour": "06:00", "unprotectedSpendUsd": 4050, "circuitBreakerSpendUsd": 48 },
+          { "hour": "07:00", "unprotectedSpendUsd": 4630, "circuitBreakerSpendUsd": 48.5 },
+          { "hour": "08:00", "unprotectedSpendUsd": 5180, "circuitBreakerSpendUsd": 48.6 }
+        ],
+        "kpis": [
+          {
+            "label": "Đỉnh thiệt hại không khóa van",
+            "value": "$5,180",
+            "delta": "Tốc độ đốt ~$647/giờ liên tục",
+            "positive": false
+          },
+          {
+            "label": "Chi phí tối đa có Circuit Breaker",
+            "value": "$48.6",
+            "delta": "Giảm 99.06% rủi ro cháy ví",
+            "positive": true
+          },
+          {
+            "label": "Thời điểm mạch ngắt kích hoạt",
+            "value": "00:08 sáng",
+            "delta": "Ngay khi chạm trần $45/giờ ẩn danh",
+            "positive": true
+          },
+          {
+            "label": "Phiên hợp lệ Zalo/CRM ảnh hưởng",
+            "value": "0%",
+            "delta": "Tách riêng pool hạn mức xác thực",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô phỏng tải tấn công từ kịch bản Replay Traffic 13 RPM x 90K input + 22K reasoning/output tokens trên hạ tầng đo lường DOMATION AI Gateway."
+      },
+      "insightSummary": "Đường màu đỏ cho thấy tốc độ đốt tiền tuyến tính tàn khốc (~647 USD mỗi giờ) khi kẻ xấu duy trì lưu lượng dưới ngưỡng DDoS mạng thông thường. Ngược lại, với AI Gateway đặt trần ngân sách theo giờ cho lưu lượng ẩn danh trên Redis, mạch ngắt kích hoạt ngay phút thứ 8 tại mốc 44 USD, chuyển toàn bộ phiên nghi vấn sang câu trả lời tĩnh/cache và giữ chi phí cả đêm dừng ở 48,6 USD."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bieu-do-phong-thu-unbounded-consumption",
+      "src": "/imgs/boost/charts/unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api-report.webp",
+      "alt": "Báo cáo phân tích kịch bản Token DoS Unbounded Consumption đốt 5.000 USD qua đêm và cơ chế ngắt mạch Budget Circuit Breaker trên AI Gateway",
+      "caption": "So sánh đường cong tiêu thụ ngân sách API giữa hệ thống chatbot không chặn kích thước/chi phí thời gian thực và kiến trúc AI Gateway khóa van 5 tầng.",
+      "badge": "Field Report • FinOps Circuit Breaker"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-khoa-van-5-tang-ai-gateway",
+      "eyebrow": "Kiến Trúc Phòng Thủ FinOps & Token Governance",
+      "variant": "deep-dive",
+      "heading": "Kiến trúc khóa van 5 tầng: Tách biệt hạn mức khách vãng lai với khách đã xác thực trên AI Gateway",
+      "paragraphs": [
+        "Để triệt tiêu triệt để OWASP LLM10 mà vẫn đảm bảo trải nghiệm mượt mà cho các chiến dịch quảng cáo thu hàng nghìn Lead mỗi ngày như tại Viện IDEAS hay chuỗi F&B Phúc Lộc Thọ, DOMATION không đặt một bộ đếm thô chung cho toàn hệ thống. Thay vào đó, mọi lời gọi LLM phải đi qua một lớp Unified AI Gateway (như `BerriAI/litellm`, `Portkey-AI/gateway` hoặc Edge Gateway tự chủ trên Fastify/Redis) thực thi năm chốt chặn tuần tự từ ngoài vào trong.",
+        "Chốt chặn thứ nhất là Bộ lọc Độ dài & Bất thường Đầu vào (Pre-Flight Payload Gate). Mọi tin nhắn từ Chatbot CSKH bị cắt trần ở mức 2.000–2.500 ký tự UTF-8; các chuỗi lặp ký tự vô nghĩa hoặc mật độ Unicode đặc biệt cao bị loại bỏ ngay ở lớp HTTP trước khi chạm tới tokenizer hay vector DB. Chốt chặn thứ hai là Bộ định tuyến Cấp độ Mô hình & Suy luận (Tiered Effort Router): 85% câu hỏi chào hỏi, hỏi giờ mở cửa, địa chỉ showroom được chuyển thẳng qua Semantic Cache hoặc các model hạng nhẹ (`gemini-3.5-flash-lite` $0.30/$2.50, `claude-haiku-5-5` $0.10/$0.50 hoặc `gpt-5.6-luna` $0.20/$1.20) với `thinking = minimal/low`. Model hạng nặng chỉ được kích hoạt cho tác vụ nội bộ đã xác thực phiên hoặc bước xử lý nghiệp vụ có giá trị cao.",
+        "Chốt chặn thứ ba là Cửa sổ trượt Token & Chi phí Thời gian thực trên Redis (Sliding-Window TPM & Spend Limiter). Hệ thống tính ngay chi phí ước tính trước khi gọi (`pre_charge`) dựa trên số token đầu vào cộng `max_output_tokens`, và hoàn trả phần dư (`reconcile`) ngay khi luồng stream kết thúc. Mỗi phiên ẩn danh chỉ được tiêu tối đa 50.000 token/ngày; nếu cùng một IP hoặc cùng một chữ ký thiết bị tạo ra quá 5 phiên liên tiếp, mức trần tự động ép về 0 để chặn đòn xoay session.",
+        "Chốt chặn thứ tư và thứ năm kiểm soát bên trong lõi Agent và Toàn bộ Tenant: mọi đồ thị Multi-Agent bắt buộc cài `max_iterations = 5`, `tool_timeout_ms = 8000` và không bao giờ nhồi lịch sử vượt quá 6 cặp hỏi-đáp gần nhất; đồng thời một mạch ngắt ngân sách cấp Tenant (Hard Budget Circuit Breaker) theo dõi tổng chi phí theo cửa sổ 15 phút và 24 giờ. Nếu tốc độ đốt tiền vượt 3 lần đường cơ sở bình thường của giờ đó trong tuần, hệ thống tự động hạ cấp các kênh ẩn danh về phản hồi FAQ, giữ nguyên băng thông cho kênh Zalo OA/CRM nội bộ và bắn cảnh báo khẩn cấp qua ZaloBot cho kỹ sư trực."
+      ],
+      "bullets": [
+        "Luôn đặt `max_output_tokens` hợp lý theo từng nghiệp vụ (ví dụ 450–700 token cho CSKH Zalo/Web, thay vì để mặc định 65.536 hoặc 128.000 token).",
+        "Không chuyển tiếp `reasoning.effort = high/xhigh` cho các endpoint public đối diện trực tiếp với Internet.",
+        "Bật Prompt Caching có kiểm soát cho phần System Prompt và tài liệu cố định để giảm 90–95% đơn giá token đọc lặp lại ở những lượt hội thoại hợp lệ."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "recipe-redis-budget-circuit-breaker",
+      "heading": "TypeScript & Redis Recipe: Bộ đếm Sliding-Window Token & Hard Budget Circuit Breaker cho AI Gateway",
+      "language": "TypeScript",
+      "filename": "gateway/tokenBudgetCircuitBreaker.ts",
+      "description": "Middleware tiền kiểm tra giúp khóa van ngay trước khi gọi API LLM: giới hạn độ dài tin nhắn chống Sponge Attack, áp dụng Sliding-Window TPM theo từng phiên/IP, và ngắt mạch tự động khi chi phí 1 giờ của tenant chạm ngưỡng trần.",
+      "code": "import type Redis from 'ioredis';\n\nexport interface BudgetPolicy {\n  maxInputChars: number;\n  maxOutputTokens: number;\n  sessionTpmLimit: number;\n  hourlyTenantBudgetUsd: number;\n  inputUsdPer1MTokens: number;\n  outputUsdPer1MTokens: number;\n} \n\nexport type GateDecision =\n  | { allowed: true; estimatedMaxCostUsd: number; downgradedToLite: boolean }\n  | { allowed: false; reason: 'INPUT_TOO_LONG' | 'SPONGE_ANOMALY' | 'TPM_EXCEEDED' | 'CIRCUIT_OPEN'; fallbackMessage: string };\n\nfunction isLikelySpongePayload(text: string): boolean {\n  // Phát hiện chuỗi ký tự lặp bất thường hoặc mật độ ký tự điều khiển/symbol quá cao (>35%)\n  if (/(.)\\1{25,}/.test(text)) return true;\n  const nonWord = (text.match(/[^\\p{L}\\p{N}\\s.,?!:;\\-()]/gu) || []).length;\n  return text.length > 200 && nonWord / text.length > 0.35;\n}\n\nexport async function checkTokenBudgetGate(\n  redis: Redis,\n  tenantId: string,\n  sessionKey: string,\n  userText: string,\n  historyTokenCount: number,\n  policy: BudgetPolicy\n): Promise<GateDecision> {\n  if (userText.length > policy.maxInputChars) {\n    return {\n      allowed: false,\n      reason: 'INPUT_TOO_LONG',\n      fallbackMessage: `Tin nhắn vượt quá ${policy.maxInputChars} ký tự cho phép. Vui lòng rút gọn nội dung cần hỗ trợ.`,\n    };\n  }\n  if (isLikelySpongePayload(userText)) {\n    return {\n      allowed: false,\n      reason: 'SPONGE_ANOMALY',\n      fallbackMessage: 'Nội dung chứa ký tự bất thường không thể xử lý. Vui lòng nhập văn bản tiếng Việt tiêu chuẩn.',\n    };\n  }\n\n  // 1. Kiểm tra cầu dao ngân sách toàn Tenant theo cửa sổ giờ hiện tại\n  const hourBucket = new Date().toISOString().slice(0, 13); // YYYY-MM-DDTHH\n  const spendKey = `ai:spend:${tenantId}:${hourBucket}`;\n  const circuitKey = `ai:circuit_open:${tenantId}`;\n  const isCircuitOpen = await redis.get(circuitKey);\n  if (isCircuitOpen === 'hard_stop') {\n    return {\n      allowed: false,\n      reason: 'CIRCUIT_OPEN',\n      fallbackMessage: 'Hệ thống AI đang tạm chuyển sang nhân viên tư vấn trực tiếp. Anh/chị vui lòng để lại SĐT để được hỗ trợ ngay.',\n    };\n  }\n\n  // Ước tính token an toàn cho tiếng Việt (~1.3 ký tự/token ở biên xấu nhất)\n  const estInputTokens = Math.ceil(userText.length / 1.3) + historyTokenCount;\n  const estTotalTokens = estInputTokens + policy.maxOutputTokens;\n  const estCostUsd =\n    (estInputTokens / 1_000_000) * policy.inputUsdPer1MTokens +\n    (policy.maxOutputTokens / 1_000_000) * policy.outputUsdPer1MTokens;\n\n  // 2. Giới hạn TPM (Tokens Per Minute) riêng cho từng phiên / IP\n  const minuteBucket = Math.floor(Date.now() / 60_000);\n  const tpmKey = `ai:tpm:${tenantId}:${sessionKey}:${minuteBucket}`;\n  const newTpm = await redis.incrby(tpmKey, estTotalTokens);\n  if (newTpm === estTotalTokens) await redis.expire(tpmKey, 70);\n  if (newTpm > policy.sessionTpmLimit) {\n    return {\n      allowed: false,\n      reason: 'TPM_EXCEEDED',\n      fallbackMessage: 'Bạn đang gửi yêu cầu quá nhanh. Vui lòng chờ 60 giây trước khi tiếp tục đặt câu hỏi.',\n    };\n  }\n\n  // 3. Tích lũy chi phí tạm ứng (Pre-charge) và chốt hạ cấp / ngắt mạch nếu chạm ngưỡng\n  const currentSpend = parseFloat(await redis.incrbyfloat(spendKey, estCostUsd.toFixed(6)));\n  if (currentSpend <= estCostUsd + 0.0001) await redis.expire(spendKey, 3700);\n\n  if (currentSpend >= policy.hourlyTenantBudgetUsd) {\n    await redis.set(circuitKey, 'hard_stop', 'EX', 900); // Khóa mạch 15 phút & phát cảnh báo Ops\n    return {\n      allowed: false,\n      reason: 'CIRCUIT_OPEN',\n      fallbackMessage: 'Trợ lý tự động đang quá tải phiên. Nhân viên phụ trách sẽ liên hệ hỗ trợ anh/chị trong ít phút.',\n    };\n  }\n\n  // Hạ cấp sang model Lite nếu chi phí đã vượt 75% trần giờ\n  const downgradedToLite = currentSpend >= policy.hourlyTenantBudgetUsd * 0.75;\n  return { allowed: true, estimatedMaxCostUsd: estCostUsd, downgradedToLite };\n}"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-khoa-van-token-dos",
+      "heading": "Checklist 6 chốt chặn khóa van Unbounded Consumption trước khi mở Chatbot ra công khai",
+      "items": [
+        {
+          "check": "Áp đặt trần độ dài Input (ký tự + token) và lọc chuỗi Sponge bất thường trước khi gọi API",
+          "severity": "critical",
+          "verificationHow": "Gửi thử payload 50.000 ký tự lặp hoặc hỗn hợp Unicode lạ tới API chat public và quan sát mã phản hồi HTTP + log AI Gateway.",
+          "passThreshold": "Gateway trả về HTTP 400/422 trong < 20ms với 0 token được gửi lên LLM upstream."
+        },
+        {
+          "check": "Giới hạn tường minh `max_output_tokens` và `thinking/reasoning effort` theo từng endpoint",
+          "severity": "critical",
+          "verificationHow": "Rà soát payload thực tế gửi tới Gemini/Claude/OpenAI trong cấu hình LiteLLM/Gateway và kiểm tra log `usage.output_tokens`.",
+          "passThreshold": "Public CSKH endpoint không vượt quá 600–800 output tokens và mức thinking tối đa là `low` hoặc `minimal`."
+        },
+        {
+          "check": "Cắt tỉa cửa sổ lịch sử hội thoại và áp ngưỡng tổng token đầu vào chống phụ phí Long Context",
+          "severity": "high",
+          "verificationHow": "Chạy kịch bản hội thoại 30 lượt liên tiếp và kiểm tra mảng `messages` ở lượt thứ 30.",
+          "passThreshold": "Số lượt giữ nguyên <= 8 lượt (hoặc đã nén tóm tắt), tổng input tokens luôn dưới ngưỡng phụ phí 100K–272K."
+        },
+        {
+          "check": "Giới hạn số vòng lặp tối đa (`max_iterations`) cho mọi Agent có Tool Calling",
+          "severity": "critical",
+          "verificationHow": "Mô phỏng một câu hỏi yêu cầu tìm kiếm vòng tròn không có đáp án cuối cùng và đo số bước Tool Call thực thi.",
+          "passThreshold": "Agent tự dừng an toàn sau tối đa 4–6 vòng lặp, không lặp vô hạn hay retry mù quáng."
+        },
+        {
+          "check": "Trang bị Budget Circuit Breaker thời gian thực theo giờ/ngày tách riêng pool ẩn danh vs xác thực",
+          "severity": "critical",
+          "verificationHow": "Bắn tải giả lập làm chi phí ảo chạm 80% và 100% hạn mức 1 giờ trên Redis trong môi trường Staging.",
+          "passThreshold": "Hệ thống hạ cấp sang model Lite ở mốc 75–80% và kích hoạt Hard Stop + gửi cảnh báo Zalo/Slack ngay tại mốc 100% trong < 200ms."
+        },
+        {
+          "check": "Đặt Semantic Cache trước tầng LLM và bảo vệ endpoint nạp/nhúng file bằng xác thực bắt buộc",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra các route `/api/chat`, `/api/embed`, `/api/parse-pdf` xem có yêu cầu Auth/CAPTCHA/Turnstile với tác vụ nặng và có hit cache với câu hỏi lặp không.",
+          "passThreshold": "100% endpoint parse/embed tài liệu đòi hỏi token hợp lệ; tỷ lệ Cache Hit cho Top 20 FAQ đạt >= 45%."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-token-dos-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Bảo mật AI cũng chính là FinOps: Đừng nối ví tiền doanh nghiệp thẳng ra Internet không có van khóa",
+      "body": "Nhiều doanh nghiệp chi hàng chục triệu làm Chatbot CSKH rất đẹp nhưng lại bỏ trống tầng AI Gateway vì nghĩ 'khách hỏi vài câu đáng bao nhiêu'. Thực tế vận hành chiến dịch cho thấy chỉ cần một đối thủ chạy script spam hoặc một lỗi vòng lặp vô tận trong luồng Webhook Zalo/Web lúc nửa đêm là đủ thổi bay ngân sách AI cả quý. Tại DOMATION, chúng tôi coi Token Budget Circuit Breaker, phân tầng model (Haiku/Flash-Lite xử lý tuyến đầu, Opus/Argon xử lý lõi) và Redis Sliding-Window TPM là điều kiện bắt buộc ngang hàng với SSL trước khi bàn giao bất kỳ trợ lý AI nào ra môi trường công khai."
+    }
+  ]
+}

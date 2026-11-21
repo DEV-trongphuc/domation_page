@@ -318,3 +318,37 @@ export function normalizeNotificationStatus(res: any): NormalizedNotificationSta
   };
 }
 
+/**
+ * Ensures `get_consultant_stats` payloads always carry defined `summary`,
+ * `rounds`, `by_date`, `by_source`, and `tickets` structures so UI modals
+ * never throw on partial or legacy responses.
+ */
+export function normalizeConsultantStatsResponse(json: any) {
+  const raw = json && typeof json === 'object' ? json : {};
+  const rawSummary = raw.summary && typeof raw.summary === 'object' ? raw.summary : {};
+  const rawData = raw.data && typeof raw.data === 'object' ? raw.data : {};
+  const rawTickets = raw.tickets && typeof raw.tickets === 'object' ? raw.tickets : {};
+  return {
+    ...raw,
+    summary: {
+      total: Number(rawSummary.total ?? rawData.total ?? 0),
+      successful: Number(rawSummary.successful ?? rawData.accepted ?? 0),
+      reminder: Number(rawSummary.reminder ?? 0),
+      error: Number(rawSummary.error ?? 0),
+      system_total_successful: Number(rawSummary.system_total_successful ?? 0),
+    },
+    rounds: Array.isArray(raw.rounds) ? raw.rounds : [],
+    by_date: Array.isArray(raw.by_date) ? raw.by_date : (Array.isArray(rawData.chart) ? rawData.chart : []),
+    by_source: Array.isArray(raw.by_source) ? raw.by_source : [],
+    tickets: {
+      total: Number(rawTickets.total ?? 0),
+      approved: Number(rawTickets.approved ?? 0),
+      pending: Number(rawTickets.pending ?? 0),
+      rejected: Number(rawTickets.rejected ?? 0),
+    },
+    active_compensation: Number(raw.active_compensation ?? 0),
+    blacklist_compensation: Number(raw.blacklist_compensation ?? 0),
+  };
+}
+
+

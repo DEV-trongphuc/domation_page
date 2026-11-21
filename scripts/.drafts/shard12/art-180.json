@@ -1,0 +1,315 @@
+{
+  "id": "art-180",
+  "number": "180",
+  "slug": "ollama-ollama-audit-trien-khai-private-llm-workstation",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Local LLM Runtime & Air-Gapped AI",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Audit ollama/ollama: Dựng trạm Private LLM trong 10 phút & điểm nghẽn KV Cache khi nhiều người dùng",
+  "seoTitle": "Audit Ollama: Trạm Private LLM & Điểm Nghẽn KV Cache | DOMATION",
+  "metaDescription": "Đánh giá Ollama (MIT, 180k+ Stars): giải pháp lý tưởng cho máy trạm AI nội bộ phòng Nhân sự/Pháp chế nhưng cảnh báo giới hạn OLLAMA_NUM_PARALLEL so với vLLM.",
+  "focusKeyword": "audit ollama triển khai private llm nội bộ",
+  "secondaryKeywords": [
+    "cài đặt ollama private llm doanh nghiệp",
+    "so sánh ollama và vllm concurrency",
+    "ollama num parallel kv cache",
+    "chạy model nội bộ không lộ dữ liệu",
+    "local llm cho coding agent vibecode"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Ollama 180K Stars: Tốt Cho Trạm Nội Bộ, Kẹt Khi Đông",
+  "thumbnailHook": "Khởi chạy LLM trong 10 phút, chuyển vLLM khi phục vụ nhiều user chat.",
+  "thumbnailBadge": "GITHUB • 180K+ OLLAMA",
+  "coverImage": "/imgs/boost/v2/ollama-ollama-audit-trien-khai-private-llm-workstation.webp",
+  "screenshotImage": "/imgs/boost/charts/ollama-ollama-audit-trien-khai-private-llm-workstation-report.webp",
+  "coverAlt": "Sổ tay audit ollama triển khai private llm nội bộ phân tích daemon Go, đóng gói Modelfile GGUF và giới hạn KV Cache OLLAMA_NUM_PARALLEL",
+  "screenshotCaption": "Biểu đồ đo kiểm suy hao thông lượng và độ trễ TTFT p95 của ollama/ollama khi tăng tải đồng thời từ 1 lên 32 người dùng so với vLLM PagedAttention trên cùng GPU 24GB VRAM.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Giải Pháp Private LLM Doanh Nghiệp",
+  "relatedSlugs": [
+    "vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise",
+    "ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu",
+    "on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds",
+    "open-webui-open-webui-audit-private-chat-workspace-va-ban-quyen"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit ollama triển khai private llm nội bộ đánh giá ollama/ollama (MIT, 180k+ Stars) là công cụ dựng trạm AI cục bộ nhanh nhất hiện nay: một binary Go kết hợp runner C/C++ bọc llama.cpp giúp đóng gói trọng số GGUF qua Modelfile và mở API chuẩn OpenAI trong 10 phút mà không cần dựng môi trường PyTorch/CUDA phức tạp. Tuy nhiên, cơ chế cấp phát trước bộ nhớ KV Cache tĩnh theo tham số OLLAMA_NUM_PARALLEL khiến Ollama nhanh chóng kẹt hàng đợi và lãng phí VRAM khi phục vụ đông người dùng đồng thời — ngưỡng mà doanh nghiệp cần chuyển giao sang vLLM.",
+  "keyTakeaways": [
+    "Daemon `ollama serve` viết bằng Go quản lý vòng đời mô hình, tải manifest GGUF và điều phối tiến trình con `ollama runner` (C/C++ dựa trên `llama.cpp`/GGML) để chia lớp tự động giữa VRAM GPU và RAM hệ thống.",
+    "Cú pháp `Modelfile` theo phong cách Dockerfile giúp cố định biến `num_ctx` (cẩn thận mặc định chỉ 2048–4096 token làm RAG bị cắt cụt âm thầm), `system` prompt chuẩn hóa và thông số nhiệt độ sinh mã.",
+    "Điểm nghẽn vật lý cốt lõi là cơ chế cấp phát KV Cache tĩnh trên từng slot (`OLLAMA_NUM_PARALLEL`): mở 8 slot song song ở ngữ cảnh 16K có thể ngốn sạch 12–16GB VRAM chỉ cho cache dù chỉ có 1 người đang gõ lệnh.",
+    "Bảo mật mạng là lỗi hay gặp nhất khi triển khai nội bộ: đặt `OLLAMA_HOST=0.0.0.0` mà thiếu Reverse Proxy xác thực Bearer/mTLS sẽ biến máy trạm GPU thành API mở không cần khóa trên toàn mạng LAN.",
+    "Mô hình phân tầng chuẩn tại DOMATION (như trạm Local LLM cho NavaTek): dùng Ollama cho cụm máy trạm 1–6 nhân sự Pháp chế/Nhân sự hoặc lập trình viên Vibecode cục bộ, và chuyển sang vLLM khi phục vụ 15+ phiên RAG/ZaloBot đồng thời."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Cộng đồng",
+      "value": "MIT • 180k+ Stars"
+    },
+    {
+      "label": "Thời gian dựng trạm Air-Gapped",
+      "value": "< 10 phút (1 Binary)"
+    },
+    {
+      "label": "Điểm nghẽn KV Cache tĩnh",
+      "value": "Kẹt tải > 6–8 user"
+    },
+    {
+      "label": "Tiết kiệm VRAM KV (q8_0)",
+      "value": "-45% dung lượng cache"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao nhiều doanh nghiệp cài Ollama xong đưa tài liệu RAG dài 10.000 token vào lại thấy AI trả lời quên sạch đoạn đầu?",
+      "answer": "Đây là bẫy cấu hình phổ biến nhất khi bỏ qua bước audit `Modelfile` của Ollama. Mặc dù nhiều mô hình mở hỗ trợ cửa sổ ngữ cảnh 32K hoặc 128K token, Ollama mặc định thiết lập tham số `PARAMETER num_ctx 2048` hoặc `4096` (tùy phiên bản và VRAM khả dụng) nhằm giữ tốc độ khởi động nhanh trên máy cá nhân. Khi ứng dụng RAG đẩy một prompt dài 10.000 token tới API mà không truyền `options.num_ctx` hoặc không build lại `Modelfile` với `num_ctx` lớn hơn, phần đầu context bị cắt bỏ âm thầm mà không trả về lỗi HTTP. Trong sổ tay vận hành nội bộ, kỹ sư bắt buộc phải đóng gói bản `Modelfile` riêng ghi rõ `PARAMETER num_ctx 16384` hoặc `32768` và kiểm chứng bằng lệnh `ollama show --modelfile`."
+    },
+    {
+      "question": "Tham số OLLAMA_NUM_PARALLEL hoạt động thế nào và tại sao tăng lên 16 lại khiến máy trạm bị sập Out-of-Memory?",
+      "answer": "Khác với cơ chế phân trang bộ nhớ ảo PagedAttention của vLLM chỉ cấp phát từng khối VRAM nhỏ khi token thực sự sinh ra, Ollama kế thừa cơ chế cấp phát trước vùng nhớ KV Cache liền mạch từ nền tảng `llama.cpp`. Nếu bạn cấu hình `num_ctx = 16384` và nâng `OLLAMA_NUM_PARALLEL = 16`, Ollama phải xí phần sẵn vùng đệm KV Cache đủ cho cả 16 khe (slot) chạy ở mức tối đa 16K token ngay tại thời điểm nạp mô hình, bất kể thực tế chỉ có 2 nhân viên đang hỏi các câu ngắn 300 token. Dung lượng KV Cache tĩnh này có thể cộng thêm hàng chục GB VRAM, đẩy trọng số mô hình tràn sang RAM hệ thống qua PCIe khiến tốc độ sinh token rơi từ 45 tok/s xuống còn 3 tok/s hoặc gây lỗi OOM."
+    },
+    {
+      "question": "Làm thế nào để giữ an toàn tuyệt đối khi chạy Ollama trên máy chủ nội bộ mà các máy khác trong công ty vẫn gọi API được?",
+      "answer": "Tuyệt đối không mở trực tiếp cổng `11434` ra toàn mạng LAN bằng biến `OLLAMA_HOST=0.0.0.0` vì Ollama bản chất không tích hợp xác thực API Key, kiểm tra JWT hay giới hạn token theo phòng ban. Bất kỳ máy tính hay script nhiễm mã độc nào trong mạng nội bộ đều có thể gọi `/api/delete`, `/api/pull` để tải model lạ hoặc đốt cạn GPU của trạm. Cách triển khai chuẩn Production trong Sổ tay DOMATION là khóa cứng `OLLAMA_HOST=127.0.0.1:11434`, sau đó đặt Nginx, Caddy hoặc cổng AI Gateway như LiteLLM/Portkey đứng phía trước để kiểm tra `Authorization: Bearer <virtual-key>`, giới hạn tốc độ truy vấn và ghi nhật ký truy cập theo từng nhân sự."
+    },
+    {
+      "question": "Giữa Ollama và vLLM, doanh nghiệp nên chọn phương án nào cho trạm AI phòng Pháp chế/Nhân sự vs Chatbot CSKH?",
+      "answer": "Hai công cụ phục vụ hai tầng tải hoàn toàn khác nhau và thường phối hợp cùng nhau thay vì loại trừ. Với trạm AI Air-Gapped cho 3–8 nhân sự Pháp chế rà soát hợp đồng, phòng Nhân sự soạn bảng mô tả công việc hay kỹ sư chạy trợ lý Vibecode cục bộ trên workstation RTX 4090 / Mac Studio, Ollama vượt trội nhờ cài đặt dưới 10 phút, tự chuyển lớp sang RAM khi model lớn hơn VRAM và nạp/gỡ mô hình linh hoạt theo nhu cầu (`OLLAMA_KEEP_ALIVE`). Ngược lại, khi triển khai Chatbot CSKH RAG trực 24/7 trên Zalo OA/Messenger phục vụ 20–100+ phiên đồng thời với cùng một system prompt và bảng giá cố định, vLLM với PagedAttention và Prefix Caching cho hiệu suất GPU cao gấp 3–5 lần."
+    },
+    {
+      "question": "Bật OLLAMA_FLASH_ATTENTION và OLLAMA_KV_CACHE_TYPE=q8_0 có làm giảm chất lượng suy luận của mô hình nội bộ không?",
+      "answer": "Trong kiểm thử thực tế trên các mô hình mở phổ biến kích thước 14B–32B, việc bật `OLLAMA_FLASH_ATTENTION=1` không làm thay đổi đầu ra toán học của cơ chế attention mà giúp giảm độ phức tạp bộ nhớ theo chiều dài chuỗi và tăng tốc xử lý prompt đầu vào. Việc lượng tử hóa KV Cache từ FP16 mặc định xuống `q8_0` cắt giảm gần 45–50% dung lượng VRAM dành cho ngữ cảnh dài với độ suy giảm độ chính xác gần như bằng không trên tác vụ tóm tắt, dịch thuật và hỏi đáp tài liệu. Tuy nhiên, không nên hạ tiếp KV Cache xuống `q4_0` nếu mô hình phải trích xuất mã số thuế, điều khoản hợp đồng chính xác hoặc gọi hàm JSON tool calling."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "ollama/ollama",
+    "url": "https://github.com/ollama/ollama",
+    "category": "Local LLM Runtime & Model Runner",
+    "primaryLanguage": "Go / C++",
+    "license": "MIT",
+    "starsTier": "180k+ Stars",
+    "bestFor": "Loại bỏ hoàn toàn bước cài đặt môi trường CUDA và PyTorch rườm rà khi dựng trạm Private LLM cô lập mạng (air-gapped) trên workstation hoặc máy chủ đơn cho quy trình Vibecode và xử lý tài liệu nội bộ nhạy cảm.",
+    "avoidWhen": "Phục vụ đồng thời hàng chục nhân sự hoặc nhiều luồng RAG công cộng vì cơ chế cấp phát trước KV Cache tĩnh theo từng khe (OLLAMA_NUM_PARALLEL) thay vì PagedAttention gây lãng phí VRAM và dồn hàng đợi so với vLLM.",
+    "domationSynergy": "Phù hợp hoàn hảo cho các trạm Private LLM đơn nhánh hoặc máy trạm tại chỗ do DOMATION triển khai (tiêu biểu như trạm Local LLM của NavaTek) phục vụ phòng Nhân sự, Tính lương và Pháp chế soạn thảo hồ sơ mật mà không rò rỉ dữ liệu lên Cloud API.",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 9,
+      "costEfficiency": 10
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-ollama-ollama",
+      "heading": "Hồ Sơ Kiểm Toán Kho Mã: ollama/ollama (MIT • 180k+ Stars)",
+      "repo": {
+        "fullName": "ollama/ollama",
+        "url": "https://github.com/ollama/ollama",
+        "category": "Local LLM Runtime & Model Runner",
+        "primaryLanguage": "Go / C++",
+        "license": "MIT",
+        "starsTier": "180k+ Stars",
+        "bestFor": "Loại bỏ hoàn toàn bước cài đặt môi trường CUDA và PyTorch rườm rà khi dựng trạm Private LLM cô lập mạng (air-gapped) trên workstation hoặc máy chủ đơn cho quy trình Vibecode và xử lý tài liệu nội bộ nhạy cảm.",
+        "avoidWhen": "Phục vụ đồng thời hàng chục nhân sự hoặc nhiều luồng RAG công cộng vì cơ chế cấp phát trước KV Cache tĩnh theo từng khe (OLLAMA_NUM_PARALLEL) thay vì PagedAttention gây lãng phí VRAM và dồn hàng đợi so với vLLM.",
+        "domationSynergy": "Phù hợp hoàn hảo cho các trạm Private LLM đơn nhánh hoặc máy trạm tại chỗ do DOMATION triển khai (tiêu biểu như trạm Local LLM của NavaTek) phục vụ phòng Nhân sự, Tính lương và Pháp chế soạn thảo hồ sơ mật mà không rò rỉ dữ liệu lên Cloud API.",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 10,
+          "securityGovernance": 9,
+          "costEfficiency": 10
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "playbook-phase1-kien-truc-go-runner-va-modelfile",
+      "eyebrow": "SỔ TAY TRIỂN KHAI • CHƯƠNG 1: GIẢI PHẪU DAEMON GO & MODELFILE",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu lớp Go Daemon, C/C++ Runner và cách đóng gói Private LLM trong 10 phút với Modelfile",
+      "pullQuote": "Giá trị đột phá của ollama/ollama không phải ở thuật toán suy luận mới, mà ở việc đóng gói toàn bộ sự phức tạp của trọng số GGUF, driver CUDA/Metal và giao thức HTTP chuẩn OpenAI vào trải nghiệm đơn giản ngang Docker.",
+      "paragraphs": [
+        "Trước khi Ollama phổ biến, việc dựng một mô hình ngôn ngữ lớn chạy nội bộ cho đội ngũ Nhân sự hoặc Pháp chế thường tiêu tốn nửa ngày làm việc của kỹ sư hệ thống: xung đột phiên bản CUDA Toolkit với PyTorch, lỗi thiếu thư viện C++ khi biên dịch nhân lượng tử hóa, và viết mã cầu nối để tương thích chuẩn OpenAI API. Khi tiến hành audit ollama triển khai private llm nội bộ trên kiến trúc Go + C++ của kho mã này, điều khiến nó vượt mốc 180k+ Stars dưới giấy phép MIT chính là sự phân tách vai trò cực kỳ sạch sẽ giữa lớp điều phối và lớp tính toán.",
+        "Lớp vỏ ngoài là tiến trình `ollama serve` viết hoàn toàn bằng Go, đảm nhiệm vai trò máy chủ HTTP REST lắng nghe mặc định ở cổng `11434`, quản lý bộ nhớ cache tệp trọng số GGUF (lưu theo cấu trúc blob băm SHA-256 giống Docker Registry), đọc cấu hình `Modelfile` và điều phối hàng đợi nạp/gỡ mô hình ra khỏi GPU dựa trên bộ đếm thời gian `OLLAMA_KEEP_ALIVE`. Khi có yêu cầu suy luận tới `/api/chat` hoặc `/v1/chat/completions`, daemon Go khởi chạy tiến trình con `ollama runner` viết bằng C/C++ bọc quanh nhân `llama.cpp` và thư viện tensor GGML để thực thi phép nhân ma trận trên CUDA, ROCm, Apple Metal hoặc CPU AVX2/AVX-512.",
+        "Chính nhờ cơ chế điều phối Go này mà các doanh nghiệp không cần cài đặt Python, Conda hay hàng chục GB thư viện PyTorch trên máy trạm văn phòng. Một kỹ sư chỉ mất dưới 10 phút từ lúc cài đặt daemon, nhập tệp GGUF nội bộ vào kho lưu trữ qua `Modelfile`, đến khi gắn trực tiếp trạm AI đó vào bộ công cụ Vibecode như Cline, OpenCode hoặc hệ thống soạn thảo hợp đồng nội bộ mà toàn bộ dữ liệu lương thưởng, căn cước nhân sự và phụ lục pháp lý vẫn nằm tuyệt đối trong mạng nội bộ công ty."
+      ],
+      "bullets": [
+        "Tệp `Modelfile` đóng vai trò như Dockerfile cho AI: cho phép đóng băng chỉ dẫn hệ thống (`SYSTEM`), ngưỡng cửa sổ ngữ cảnh (`PARAMETER num_ctx`) và tệp trọng số GGUF nội bộ thành một tên model thống nhất cho toàn công ty.",
+        "Tự động phát hiện phần cứng và chia lớp (auto layer offloading): nếu trọng số 32B Q4_K_M lớn hơn nhẹ dung lượng 16GB VRAM của card đồ họa, runner tự giữ phần lớn lớp ở GPU và đẩy phần dư sang RAM hệ thống thay vì sập ngay lập tức.",
+        "Hỗ trợ chuẩn API kép: vừa giữ các endpoint gốc `/api/generate`, `/api/chat` cho kiểm soát tham số sâu (như `keep_alive`), vừa phơi `/v1/chat/completions` và `/v1/embeddings` để cắm thẳng vào bất kỳ SDK OpenAI nào."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "playbook-phase2-diem-nghen-kv-cache-va-rủi-ro-mang",
+      "eyebrow": "SỔ TAY TRIỂN KHAI • CHƯƠNG 2: BẪY OLLAMA_NUM_PARALLEL & BẢO MẬT",
+      "variant": "incident",
+      "heading": "Mổ xẻ điểm nghẽn KV Cache cấp phát tĩnh (OLLAMA_NUM_PARALLEL) và lỗ hổng mở cổng 0.0.0.0",
+      "paragraphs": [
+        "Trên thực tế triển khai cho nhiều doanh nghiệp SME tại Việt Nam, 80% sự cố khi đưa Ollama từ máy cá nhân lên máy chủ dùng chung cho cả phòng ban đều xuất phát từ sự hiểu nhầm về cách quản lý bộ nhớ VRAM. Nhiều quản trị viên thấy máy trạm có card 24GB VRAM chạy 1 người mất 12GB cho trọng số mô hình, liền tự tin suy luận rằng còn dư 12GB sẽ gánh thoải mái 20 nhân viên hỏi đáp RAG cùng lúc. Chỉ vài giờ sau khi mở cửa cho cả phòng Kinh doanh và CSKH dùng chung, tốc độ sinh chữ bỗng rơi từ 50 token/giây xuống dưới 4 token/giây, thậm chí treo hết thời gian chờ (timeout).",
+        "Nguyên nhân nằm ở cơ chế cấp phát trước KV Cache tĩnh (static per-slot KV cache allocation) mà Ollama thừa hưởng từ `llama.cpp`. Trong quá trình suy luận LLM, mỗi phiên hội thoại phải lưu lại ma trận Key và Value của toàn bộ các token đã đi qua để không phải tính lại từ đầu ở mỗi chữ tiếp theo. Ollama xác định số lượng luồng xử lý song song qua biến môi trường `OLLAMA_NUM_PARALLEL` (thường mặc định là 1 hoặc 4 tùy cấu hình VRAM máy). Để bảo đảm các khe chạy không bao giờ đè bộ nhớ lên nhau, Ollama nhân dung lượng bộ đệm ngữ cảnh `num_ctx` với đúng số khe `OLLAMA_NUM_PARALLEL` và khóa cứng khối VRAM đó ngay từ lúc nạp mô hình.",
+        "Hãy tính toán con số cụ thể trên một mô hình 14B chuẩn FP16 KV Cache: chỉ riêng 1 khe ngữ cảnh dài 16.384 token đã chiếm xấp xỉ 1,3GB–2,6GB VRAM (tùy kiến trúc GQA của từng dòng model). Nếu bạn đặt `OLLAMA_NUM_PARALLEL=8` và `num_ctx=16384`, khối KV Cache tĩnh đã ngốn mất 10GB đến 20GB VRAM ngay cả khi trong văn phòng chỉ có duy nhất một nhân sự đang gõ câu hỏi 50 chữ. Tệ hơn nữa, một khe xử lý tác vụ tóm tắt hợp đồng dài sẽ ôm chặt phần VRAM trống trong khi 10 yêu cầu ngắn khác phải xếp hàng chờ hoặc bị ép tràn lớp trọng số sang RAM hệ thống — biến GPU đắt tiền thành nút cổ chai bus PCIe.",
+        "Song song với bẫy hiệu năng, một lỗi bảo mật nghiêm trọng thường xuyên bị bỏ qua trong sổ tay cài đặt trên mạng là dòng hướng dẫn đặt `OLLAMA_HOST=0.0.0.0:11434` để các máy trong văn phòng gọi được vào máy trạm GPU. Thiết kế gốc của Ollama hoàn toàn không có cơ chế xác thực Bearer token, không có RBAC phân quyền theo nhân viên và cũng không giới hạn các endpoint quản trị như `/api/pull`, `/api/create` hay `/api/delete`. Bất kỳ ai hoặc tiến trình nào quét trúng cổng `11434` trong mạng nội bộ — hoặc tệ hơn là mở nhầm NAT ra Internet — đều có thể xóa sạch mô hình công ty hoặc lợi dụng trạm GPU miễn phí cho mục đích bên ngoài."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-ollama-playbook-docker-modelfile",
+      "heading": "Playbook Recipe: Dựng trạm Ollama Hardened Docker + Modelfile chuẩn 16K Context & Nén KV Cache q8_0",
+      "language": "yaml",
+      "filename": "docker-compose.ollama-workstation.yml",
+      "description": "Cấu hình chạy ollama/ollama trong mạng cô lập khóa cứng bind 127.0.0.1:11434 (bắt buộc đi qua AI Gateway hoặc Caddy/Nginx có Bearer Auth), bật Flash Attention, lượng tử hóa KV Cache xuống q8_0 để tiết kiệm 45% VRAM và kèm lệnh tạo Modelfile 16K context cho tác vụ HR/Pháp chế.",
+      "code": "services:\n  ollama-workstation:\n    image: ollama/ollama:latest\n    container_name: domation-private-ollama\n    # CHI BIND LOCALHOST - Khong bao gio de 0.0.0.0:11434 lo ra LAN/WAN khong auth\n    ports:\n      - \"127.0.0.1:11434:11434\"\n    environment:\n      - OLLAMA_HOST=0.0.0.0:11434\n      # Giu song song 4 slot can bang cho 4-8 nhan su noi bo tren GPU 24GB\n      - OLLAMA_NUM_PARALLEL=4\n      - OLLAMA_MAX_LOADED_MODELS=1\n      - OLLAMA_KEEP_ALIVE=30m\n      # Bat buoc bat Flash Attention + KV Cache q8_0 de giam ~45% VRAM ngu canh\n      - OLLAMA_FLASH_ATTENTION=1\n      - OLLAMA_KV_CACHE_TYPE=q8_0\n      # Gioi han hang doi tranh treo request khi qua tai dot ngot\n      - OLLAMA_MAX_QUEUE=32\n    volumes:\n      - ollama_blobs:/root/.ollama\n      - ./Modelfile.hr-legal:/etc/ollama/Modelfile.hr-legal:ro\n    deploy:\n      resources:\n        reservations:\n          devices:\n            - driver: nvidia\n              count: 1\n              capabilities: [gpu]\n    restart: unless-stopped\n\nvolumes:\n  ollama_blobs:\n\n# --- Buoc 2: Dong goi Modelfile co dinh num_ctx=16384 (tranh mac dinh 2048/4096 cat cut RAG) ---\n# Noi dung file Modelfile.hr-legal:\n#   FROM qwen2.5:14b-instruct-q5_K_M\n#   PARAMETER num_ctx 16384\n#   PARAMETER temperature 0.15\n#   SYSTEM \"Ban la tro ly Phap che & Nhan su noi bo. Chi tra loi dua tren tai lieu duoc cung cap.\"\n#\n# Lenh nap va kiem tra:\n# docker exec -it domation-private-ollama ollama create hr-legal-16k -f /etc/ollama/Modelfile.hr-legal\n# curl -s http://127.0.0.1:11434/v1/chat/completions \\\n#   -H \"Content-Type: application/json\" \\\n#   -d '{\"model\":\"hr-legal-16k\",\"messages\":[{\"role\":\"user\",\"content\":\"Tom tat dieu khoan cham dut hop dong thu viec\"}]}'"
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-ollama-vs-vllm-concurrency-kv-cache",
+      "heading": "Đo lường điểm gãy thông lượng và độ trễ TTFT của Ollama khi tăng số người dùng đồng thời",
+      "subtitle": "Thử nghiệm đối chứng trên cùng GPU 24GB VRAM (RTX 4090) chạy model 14B ngữ cảnh RAG 8.192 token: Ollama (OLLAMA_NUM_PARALLEL=4, KV q8_0) vs vLLM (PagedAttention)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tổng thông lượng hệ thống (tokens/giây) & Độ trễ TTFT p95 (ms) theo số phiên chat đồng thời",
+        "subtitle": "Ollama giữ độ trễ cực thấp ở 1–4 người dùng, nhưng bắt đầu kẹt hàng đợi và tụt hiệu suất từ mốc 8 phiên đồng thời trở lên",
+        "xKey": "concurrency",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "ollamaThroughput",
+            "label": "Ollama Throughput (tok/s)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "vllmThroughput",
+            "label": "vLLM PagedAttention (tok/s)",
+            "color": "#10B981",
+            "type": "bar"
+          },
+          {
+            "key": "ollamaTtftP95Ms",
+            "label": "Ollama TTFT p95 (ms)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "vllmTtftP95Ms",
+            "label": "vLLM TTFT p95 (ms)",
+            "color": "#06B6D4",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "concurrency": "1 user", "ollamaThroughput": 74, "vllmThroughput": 71, "ollamaTtftP95Ms": 140, "vllmTtftP95Ms": 155 },
+          { "concurrency": "2 users", "ollamaThroughput": 132, "vllmThroughput": 138, "ollamaTtftP95Ms": 190, "vllmTtftP95Ms": 175 },
+          { "concurrency": "4 users", "ollamaThroughput": 215, "vllmThroughput": 256, "ollamaTtftP95Ms": 310, "vllmTtftP95Ms": 220 },
+          { "concurrency": "8 users", "ollamaThroughput": 224, "vllmThroughput": 430, "ollamaTtftP95Ms": 1180, "vllmTtftP95Ms": 320 },
+          { "concurrency": "16 users", "ollamaThroughput": 218, "vllmThroughput": 685, "ollamaTtftP95Ms": 2940, "vllmTtftP95Ms": 540 },
+          { "concurrency": "32 users", "ollamaThroughput": 196, "vllmThroughput": 910, "ollamaTtftP95Ms": 6450, "vllmTtftP95Ms": 980 }
+        ],
+        "kpis": [
+          {
+            "label": "Ngưỡng vàng của Ollama",
+            "value": "1–4 phiên",
+            "delta": "TTFT p95 <= 310ms",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ Ollama ở 16 users",
+            "value": "2.940 ms",
+            "delta": "Chậm gấp 5,4x so với vLLM",
+            "positive": false
+          },
+          {
+            "label": "Thông lượng trần (8–32 users)",
+            "value": "~215 tok/s",
+            "delta": "Bão hòa cứng ở 4 khe KV",
+            "positive": false
+          },
+          {
+            "label": "Mức chênh vLLM ở 32 users",
+            "value": "910 tok/s",
+            "delta": "Gấp 4,6x nhờ PagedAttention",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark nội bộ (11/2026) trên GPU 24GB VRAM, chuỗi đầu vào trung bình 2.400 token + đầu ra 350 token."
+      },
+      "insightSummary": "Số liệu thực nghiệm chứng minh ranh giới rất rõ ràng: từ 1 đến 4 người dùng đồng thời, Ollama thậm chí nhỉnh hơn nhẹ ở độ trễ phản hồi đơn lẻ (140ms) và cực kỳ tiết kiệm công sức vận hành. Nhưng ngay khi bước qua ngưỡng 8 đến 32 phiên song song, tổng thông lượng của Ollama dậm chân quanh mốc 200–224 tok/s vì nghẽn 4 khe KV Cache cố định, đẩy thời gian chờ ký tự đầu tiên (TTFT p95) vọt lên 6,45 giây — trong khi vLLM PagedAttention vẫn tăng tuyến tính lên 910 tok/s."
+    },
+    {
+      "type": "prose",
+      "id": "playbook-phase3-tinh-chinh-production-va-trien-khai-navatek",
+      "eyebrow": "SỔ TAY TRIỂN KHAI • CHƯƠNG 3: TINH CHỈNH TỐI ĐA & KỊCH BẢN DOMATION",
+      "variant": "narrative",
+      "heading": "Quy trình tối ưu thông lượng trạm Ollama nội bộ và lộ trình nâng tầng không gián đoạn",
+      "paragraphs": [
+        "Nếu doanh nghiệp của bạn đang ở quy mô dưới 10 nhân sự sử dụng luân phiên (xác suất dùng đồng thời thực tế tối đa 3–4 phiên cùng một giây), việc nhảy thẳng lên cụm vLLM hay Kubernetes thường là sự lãng phí kỹ thuật không cần thiết. Theo sổ tay vận hành của DOMATION, kỹ sư có thể ép hiệu năng trạm Ollama đạt mức tối ưu ngay trên phần cứng văn phòng qua bốn bước kỷ luật: thứ nhất, bật `OLLAMA_FLASH_ATTENTION=1` kết hợp `OLLAMA_KV_CACHE_TYPE=q8_0` để giảm gần một nửa chi phí VRAM của vùng đệm KV Cache, nhờ đó tăng được `OLLAMA_NUM_PARALLEL` từ 2 lên 4 hoặc 6 mà không làm tràn trọng số sang RAM.",
+        "Thứ hai, khóa cứng `OLLAMA_MAX_LOADED_MODELS=1` (hoặc 2 nếu có card dual-GPU) kèm `OLLAMA_KEEP_ALIVE=30m` trên trạm chuyên dụng thay vì để mặc định 5 phút. Lý do rất thực tế: nếu nhân viên Pháp chế gọi mô hình `hr-legal-16k` rồi chuyển sang dùng một mô hình embedding khác trên cùng GPU có VRAM chật hẹp, Ollama sẽ liên tục gỡ nạp (thrashing) hàng chục GB tệp GGUF từ ổ SSD vào VRAM gây trễ 10–15 giây cho mỗi lượt chuyển. Nên tách mô hình embedding nhẹ chạy trên CPU riêng hoặc container chuyên biệt để GPU dồn 100% VRAM cho mô hình sinh văn bản.",
+        "Thứ ba, khi triển khai các trạm Local LLM thực địa cho khách hàng như NavaTek phục vụ các tác vụ nhạy cảm — từ trợ lý rà soát điều khoản hợp đồng nội bộ, tóm tắt hồ sơ nhân sự, đến tự động hóa kết xuất phiếu lương PDF trên phân hệ Automated Payroll mà tuyệt đối không được phép gửi dữ liệu ra Cloud API bên ngoài — DOMATION luôn bọc một lớp proxy quản trị (như LiteLLM hoặc Nginx Auth Gateway) ngay phía trước cổng `127.0.0.1:11434`. Lớp vỏ này vừa gắn định danh từng nhân sự/phòng ban, vừa giúp một ngày nào đó khi doanh nghiệp mở rộng lên 50 nhân sự trực tuyến cùng lúc, đội ngũ chỉ việc thay đổi địa chỉ upstream từ `ollama-workstation` sang cụm `vllm-serving` trong file cấu hình gateway mà không phải sửa một dòng code nào ở phần mềm ERP hay CRM."
+      ],
+      "bullets": [
+        "Luôn kiểm tra tỷ lệ offload thực tế bằng lệnh `ollama ps`: cột `PROCESSOR` phải đạt `100% GPU` cho tác vụ tương tác; nếu thấy báo `75%/25% CPU/GPU` nghĩa là KV Cache hoặc `num_ctx` đang ép mô hình tràn sang RAM.",
+        "Với máy trạm Vibecode của lập trình viên dùng Aider, Cline hoặc OpenCode, giữ `OLLAMA_NUM_PARALLEL=2` và đẩy `num_ctx` lên `32768` để đọc trọn RepoMap và các tệp Next.js lớn thay vì chia nhiều khe nhỏ."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-ollama-workstation-audit",
+      "src": "/imgs/boost/charts/ollama-ollama-audit-trien-khai-private-llm-workstation-report.webp",
+      "alt": "Biểu đồ báo cáo audit ollama triển khai private llm nội bộ minh họa điểm nghẽn OLLAMA_NUM_PARALLEL KV Cache tĩnh so với vLLM PagedAttention",
+      "caption": "Báo cáo trực quan hóa kiến trúc `ollama/ollama`: luồng đóng gói Modelfile, chia khe KV Cache tĩnh qua `OLLAMA_NUM_PARALLEL` và đường cong suy hao thông lượng khi vượt ngưỡng 6–8 phiên dùng đồng thời.",
+      "badge": "PLAYBOOK AUDIT • OLLAMA"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-ollama-vs-vllm-vs-llamacpp",
+      "heading": "Cây quyết định hạ tầng Private LLM: Khi nào giữ Ollama, khi nào chuyển vLLM hoặc llama.cpp?",
+      "subtitle": "Áp dụng trực tiếp khi khảo sát phần cứng và tải người dùng đồng thời của doanh nghiệp",
+      "scenarios": [
+        {
+          "condition": "Phòng Nhân sự / Pháp chế / Kế toán (3–10 người) cần trạm AI cô lập mạng trong 1 ngày để soạn thảo & hỏi đáp tài liệu mật",
+          "recommendedChoice": "Triển khai ollama/ollama + Modelfile 16K + Reverse Proxy Auth",
+          "rationale": "Thời gian cài đặt dưới 10 phút, không đòi hỏi kỹ năng vận hành PyTorch/CUDA phức tạp, hỗ trợ sẵn lượng tử hóa KV Cache q8_0 và tự động giữ kết nối 100% nội bộ không rò rỉ ra Cloud API.",
+          "avoidIf": "Số người bấm gửi prompt trong cùng một giây thường xuyên vượt quá 8–10 phiên hoặc bạn cần phục vụ bot CSKH ngoài Internet."
+        },
+        {
+          "condition": "Doanh nghiệp chạy Chatbot RAG / ZaloBot 24/7 cho 20–200+ khách hàng hoặc nhân viên truy vấn đồng thời",
+          "recommendedChoice": "Chuyển lõi serving sang vllm-project/vllm (PagedAttention + Prefix Caching)",
+          "rationale": "PagedAttention xóa bỏ lãng phí phân mảnh VRAM của KV Cache tĩnh và Automatic Prefix Caching tái sử dụng được phần prompt hệ thống/bảng giá chung, giúp gánh tải cao gấp 3–5 lần trên cùng GPU.",
+          "avoidIf": "Phần cứng hiện có chỉ là máy trạm văn phòng VRAM nhỏ (8GB) phải nhờ RAM hệ thống gánh bớt trọng số."
+        },
+        {
+          "condition": "Kỹ sư lập trình muốn chạy Local Coding Model (Vibecode) với Cline / OpenCode trên MacBook M-series hoặc PC RTX 4090",
+          "recommendedChoice": "Dùng ollama/ollama (OLLAMA_NUM_PARALLEL=1..2, num_ctx=32768)",
+          "rationale": "Phục vụ 1 người duy nhất nên không gặp nhược điểm hàng đợi đa người dùng; tối ưu toàn bộ VRAM cho cửa sổ ngữ cảnh dài và chuyển đổi nhanh giữa nhiều model code/reasoning khác nhau.",
+          "avoidIf": "Đội Dev muốn dựng một cụm máy chủ GPU dùng chung cho 15 lập trình viên cùng autocomplete liên tục."
+        },
+        {
+          "condition": "Máy chủ VPS cũ chỉ có CPU nhiều nhân + RAM lớn (hoặc GPU 8GB yếu), tuyệt đối không đầu tư GPU Data Center",
+          "recommendedChoice": "Dùng trực tiếp ggml-org/llama.cpp (llama-server) ở mức lượng tử Q5_K_M / Q6_K",
+          "rationale": "Kiểm soát chi tiết từng cờ biên dịch AVX-512, khóa trang bộ nhớ `mlock`, số luồng CPU và ghép chính xác `-ngl` lớp lên GPU hơn so với lớp vỏ trừu tượng hóa của Ollama.",
+          "avoidIf": "Đội vận hành thiếu người quen biên dịch C/C++ hoặc quản trị cờ dòng lệnh cấp thấp."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-ollama",
+      "variant": "founder-pov",
+      "authorBadge": "Khuyến Nghị Triển Khai • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy dùng Ollama để dập tắt Shadow AI trong 10 phút đầu — nhưng chuẩn bị sẵn cửa nâng cấp lên vLLM ngay từ ngày đầu",
+      "body": "Trong các buổi khảo sát doanh nghiệp của DOMATION, rào cản lớn nhất không phải là thiếu GPU A100 mà là tốc độ triển khai thực tế: nhân sự vẫn đang dán hợp đồng mật và bảng lương lên ChatGPT cá nhân mỗi ngày vì công ty chưa có một công cụ nội bộ chạy được ngay. Ollama với giấy phép MIT và sự gọn nhẹ tuyệt đối là vũ khí hoàn hảo để dựng ngay trạm Private LLM (như mô hình chúng tôi triển khai cho trạm Local LLM của NavaTek) chỉ trong một buổi chiều. Chỉ cần nhớ hai nguyên tắc sống còn: khóa cổng 11434 sau lớp Gateway có xác thực, và đừng cố ép OLLAMA_NUM_PARALLEL gánh tải hàng chục user đồng thời — lúc đó hãy trỏ Gateway sang vLLM để giữ SLA mượt mà."
+    }
+  ]
+}

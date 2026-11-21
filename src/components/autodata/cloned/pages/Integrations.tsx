@@ -29,10 +29,11 @@ const SYSTEM_FIELDS = [
   { value: 'saleperson', label: 'Đại lý phụ trách (Tên/Email Đại lý)' },
 ];
 
-const BASE_WEBHOOK = typeof window !== "undefined" ? `${window.location.origin}/api/v1/webhooks` : "https://domation.net/api/v1/webhooks";
+const BASE_WEBHOOK = 'https://data.domation.net/api/v1/webhooks';
 
 type Connection = {
-  id: number;
+  id: number | string;
+  name?: string;
   sheet_name: string;
   spreadsheet_id?: string;
   webhook_token: string;
@@ -62,8 +63,8 @@ type Connection = {
 };
 
 type Mapping = {
-  id: number;
-  connection_id: number;
+  id: number | string;
+  connection_id: number | string;
   sheet_column: string;
   system_field: string;
   custom_label?: string;
@@ -335,7 +336,7 @@ const IntegrationsInner = () => {
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
-  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [copiedId, setCopiedId] = useState<number | string | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -361,7 +362,7 @@ const IntegrationsInner = () => {
   const [isFetchingSheets, setIsFetchingSheets] = useState(false);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteId, setDeleteId] = useState<number | string | null>(null);
 
   // Pause warning modal
   const [showPauseWarning, setShowPauseWarning] = useState(false);
@@ -370,7 +371,7 @@ const IntegrationsInner = () => {
   const [newMappingCol, setNewMappingCol] = useState('');
   const [newMappingField, setNewMappingField] = useState('phone');
   const [newMappingCustomLabel, setNewMappingCustomLabel] = useState('');
-  const [editingMappingId, setEditingMappingId] = useState<number | null>(null);
+  const [editingMappingId, setEditingMappingId] = useState<number | string | null>(null);
 
   // Landing Page API states
   const [showAddApi, setShowAddApi] = useState(false);
@@ -412,24 +413,40 @@ const IntegrationsInner = () => {
         fetchAPI('get_mappings'),
         fetchAPI('get_settings')
       ]);
-      if (connRes && connRes.success && mapRes && mapRes.success) {
+
+      const settingsData = settingsRes && settingsRes.success ? settingsRes.data : null;
+      const isMasterEnabled = Boolean(
+        settingsData &&
+        (settingsData.master_two_way_sync === '1' ||
+          settingsData.master_two_way_sync === true ||
+          settingsData.master_sync_enabled === true ||
+          settingsData.master_sync_enabled === '1')
+      );
+      if (settingsData) {
+        setMasterEnabled(isMasterEnabled);
+        setMasterUrl(settingsData.master_google_script_url || '');
+        setMasterSheetName(settingsData.master_sheet_name || '');
+      }
+
+      if (connRes && connRes.success) {
+        const rawMappings = mapRes && mapRes.success && Array.isArray(mapRes.data) ? mapRes.data : [];
         const conns = (Array.isArray(connRes.data) ? connRes.data : []).map((c: any) => ({
           ...c,
+          sheet_name: c.sheet_name || c.name || 'Kết nối',
           is_active: Boolean(Number(c.is_active)),
-          sync_interval: Number(c.sync_interval),
+          sync_interval: Number(c.sync_interval || 0),
           connection_type: c.connection_type,
           is_silent: Boolean(Number(c.is_silent)),
           sync_saleperson: Boolean(Number(c.sync_saleperson)),
           notify_admin: Boolean(Number(c.notify_admin !== undefined ? c.notify_admin : (c.connection_type === 'landing_page' ? 1 : 0))),
-          mappings: (Array.isArray(mapRes.data) ? mapRes.data : []).filter((m: any) => String(m?.connection_id) === String(c?.id))
+          mappings: rawMappings
+            .filter((m: any) => String(m?.connection_id) === String(c?.id))
+            .map((m: any, idx: number) => ({
+              ...m,
+              id: m?.id ?? `${c?.id}:${idx}:${m?.sheet_column || ''}:${m?.system_field || ''}`,
+            })),
         }));
         setConnections(conns);
-
-        if (settingsRes && settingsRes.success && settingsRes.data) {
-          setMasterEnabled(settingsRes.data.master_two_way_sync === '1');
-          setMasterUrl(settingsRes.data.master_google_script_url || '');
-          setMasterSheetName(settingsRes.data.master_sheet_name || '');
-        }
 
         if (selected) {
           if (selected.id === -999) {
@@ -438,7 +455,7 @@ const IntegrationsInner = () => {
               sheet_name: t('Đồng bộ 2 chiều Tổng'),
               connection_type: 'master_sync',
               webhook_token: 'SYSTEM_GLOBAL',
-              is_active: (settingsRes && settingsRes.data && settingsRes.data.master_two_way_sync === '1') ? 1 : 0
+              is_active: isMasterEnabled ? 1 : 0
             } as any);
           } else {
             const updatedSelected = conns.find((c: any) => String(c.id) === String(selected.id));
@@ -710,7 +727,7 @@ const IntegrationsInner = () => {
     setNewMappingField('phone');
   };
 
-  const handleDeleteMapping = async (mappingId: number) => {
+  const handleDeleteMapping = async (mappingId: number | string) => {
     if (!selected) return;
     try {
       await fetchAPI(`delete_mapping&id=${mappingId}`);
@@ -779,7 +796,7 @@ const IntegrationsInner = () => {
   }, [connections]);
 
   useEffect(() => {
-    if (selected) {
+    if (selected && selected.id !== -999 && selected.spreadsheet_id) {
       const fetchSelectedColumns = async () => {
         setIsFetchingSelectedCols(true);
         try {
@@ -824,7 +841,8 @@ const IntegrationsInner = () => {
     }
   };
 
-  const webhookUrl = (token: string) => `${BASE_WEBHOOK}?token=${token}`;
+  const webhookUrl = (token: string) =>
+    `${BASE_WEBHOOK}/${encodeURIComponent(tenantSlug || '<tenant_slug>')}/${encodeURIComponent(token)}`;
 
   return (
     <>
@@ -1333,7 +1351,7 @@ const IntegrationsInner = () => {
                 {selected.stats && (
                   <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--color-surface)', padding: '6px 12px', borderRadius: 20, border: '1px solid var(--color-border)', fontSize: '0.8125rem', fontWeight: 600 }}>
-                      <Target size={14} color="var(--color-text-muted)" /> {selected.stats.total} {t('Tổng')}
+                      <Target size={14} color="var(--color-text-muted)" /> {selected.stats?.total ?? 0} {t('Tổng')}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(16, 185, 129, 0.1)', color: '#059669', padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(16, 185, 129, 0.2)', fontSize: '0.8125rem', fontWeight: 600 }}>
                       <CheckCircle2 size={14} /> {selected.stats.assigned} {t('Đã chia')}
@@ -1690,8 +1708,8 @@ fetch("${webhookUrl(selected.webhook_token)}", {
                         </tr>
                       </thead>
                       <tbody>
-                        {(selected.mappings || []).map(m => (
-                          <tr key={m.id}>
+                        {(selected.mappings || []).map((m, idx) => (
+                          <tr key={m.id || `${selected.id}-${m.sheet_column}-${m.system_field}-${idx}`}>
                             <td style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               <span
                                 title={m.sheet_column}
@@ -2548,7 +2566,17 @@ fetch("${webhookUrl(selected.webhook_token)}", {
         ) : botGuideType === 'zalo' ? (
           <AutoDataZaloBotGuide accessToken={token || ''} tenantSlug={tenantSlug} compact />
         ) : botGuideType === 'webhook' ? (
-          <AutoDataWebhookGuide tenantSlug={tenantSlug} accessToken={token || ''} onClose={() => setBotGuideType(null)} />
+          <AutoDataWebhookGuide
+            tenantSlug={tenantSlug}
+            accessToken={token || ''}
+            connectionToken={
+              selected?.webhook_token && selected.webhook_token !== 'SYSTEM_GLOBAL'
+                ? selected.webhook_token
+                : connections.find((c) => c.connection_type === 'landing_page' && c.webhook_token)?.webhook_token ||
+                  connections.find((c) => c.webhook_token && c.webhook_token !== 'SYSTEM_GLOBAL')?.webhook_token
+            }
+            onClose={() => setBotGuideType(null)}
+          />
         ) : (
           <AutoDataEmailGuide tenantSlug={tenantSlug} accessToken={token || ''} onClose={() => setBotGuideType(null)} />
         )}

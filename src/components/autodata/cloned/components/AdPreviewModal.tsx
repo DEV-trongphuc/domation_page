@@ -124,6 +124,11 @@ export const AdPreviewModal: React.FC<AdPreviewModalProps> = ({
               grid-template-columns: 1fr !important;
             }
           }
+          @media (max-width: 767px) {
+            .ad-iframe-wrapper {
+              min-height: 260px !important;
+            }
+          }
           .ad-iframe-wrapper iframe {
             max-width: 100% !important;
             border-radius: 12px;

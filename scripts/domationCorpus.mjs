@@ -187,6 +187,83 @@ export const DOMATION_CORPUS = [
       'Mỗi doanh nghiệp triển khai gói Enterprise tại DOMATION được cung cấp cơ sở dữ liệu tách biệt hoặc Private Server, áp dụng Row-Level Security phân quyền chặt chẽ từng Sale/Sàn F1 không xem chéo số điện thoại đối thủ, tự động mã hóa token Meta CAPI / Zalo OA, backup dữ liệu định kỳ và cam kết SLA vận hành 99.9%. Thời gian setup gói tiêu chuẩn từ 3–7 ngày làm việc.',
   },
   {
+    id: 'founder-huynh-trong-phuc-turniodev-profile',
+    category: 'Founder & CEO • Portfolio TurnioDEV',
+    title: 'Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION, Chuyên Gia AI Automation & Digital Marketing',
+    sectionId: 'founder-turniodev',
+    url: 'https://portfo-turnio.vercel.app/',
+    urlLabel: 'Portfolio TurnioDEV',
+    image: '/assets/brands/founder_turnio.webp',
+    content:
+      'Huỳnh Trọng Phúc (nghệ danh TurnioDEV / Turnio DEV / TURNIO) là Founder & CEO sáng lập Công Ty TNHH DOMATION Việt Nam (https://domation.net/), đồng thời là Chuyên Gia AI Automation, Chuyên Gia Digital Marketing & MarTech và Kiến Trúc Sư Phần Mềm Fullstack từ A–Z. Anh tốt nghiệp QTKD – Marketing tại Đại học Ngân hàng TP.HCM (BUH), sở hữu 8 chứng chỉ chuyên môn xác thực (FreeCodeCamp, F8 Fullstack, TOP CV SEO & JavaScript Top 20%) và kênh chia sẻ kiến thức 10.5K+ followers. Hồ sơ Portfolio cá nhân chính thức của TurnioDEV xem tại https://portfo-turnio.vercel.app/, LinkedIn https://www.linkedin.com/in/turnio-dev/, GitHub https://github.com/DEV-trongphuc và trang dự án doanh nghiệp tại https://domation.net/portfolio.',
+  },
+  {
+    id: 'founder-end-to-end-systems-ai-automation',
+    category: 'Kinh Nghiệm Xây Hệ Thống Từ A–Z & AI Automation',
+    title: 'Kinh Nghiệm Xây Dựng 35+ Hệ Thống Từ A–Z & Chuyên Gia AI Automation (TurnioDEV)',
+    sectionId: 'founder-turniodev',
+    url: '/boost/kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev',
+    urlLabel: 'Đọc Blueprint Xây Hệ Thống A–Z',
+    image: '/imgs/enterprise/sol-multi-agent.webp',
+    content:
+      'Với hơn 4 năm thực chiến trực tiếp tham gia xây dựng hệ thống doanh nghiệp từ A–Z (khảo sát quy trình, thiết kế Database Multi-Tenant PostgreSQL FORCE RLS, lập trình Backend/Frontend, kết nối Webhook/API đến tích hợp AI Automation & Go-live), Huỳnh Trọng Phúc (TurnioDEV) đã kiến trúc và bàn giao 35+ hệ thống thực tế cho 30+ doanh nghiệp: hệ sinh thái DOMATION Enterprise OS (18 modules, ERP 5.0 12 phân hệ, DOM Agent 80 tools), nền tảng AI Prepress & 3D CAD INKICA (208 SKU, 20+ ONNX models 300 DPI), tổng thầu số hóa 7 trụ cột EcoLife Signature (Capital House), ERP & LMS cho Viện IDEAS, Affiliate KOL VietQR ACB cho Nha khoa Flora, trạm Local LLM cho NavaTek và ERP/CRM 100 thực thể cho RichLand.',
+  },
+  {
+    id: 'founder-digital-marketing-roas-book',
+    category: 'Chuyên Gia Digital Marketing & MarTech',
+    title: 'Chuyên Gia Digital Marketing Huỳnh Trọng Phúc — ROAS 4.8x–8.2x & Sách Facebook Ads 154 Trang',
+    sectionId: 'founder-turniodev',
+    url: '/boost/huynh-trong-phuc-turniodev-founder-ceo-domation-chuyen-gia-ai-automation-digital-marketing',
+    urlLabel: 'Hồ Sơ Chuyên Gia Huỳnh Trọng Phúc',
+    image: '/landingpage_avatar/portfolio.webp',
+    content:
+      'Ở mảng Digital Marketing & Performance Growth, Huỳnh Trọng Phúc (TurnioDEV) trực tiếp vận hành ngân sách quảng cáo đỉnh điểm 500 triệu VNĐ/tháng (hơn 1.2 tỷ VNĐ giai đoạn thực chiến chuỗi F&B), xử lý 150,000+ Leads thực tế với ROAS bình quân 4.8x và đạt đỉnh 8.2x tại EcoLife Signature, giúp Viện IDEAS tăng +300% quy mô MBA (-30% CPA) và chuỗi Phúc Lộc Thọ thu 1,600+ Leads nhượng quyền (ROAS 5+). Anh là tác giả cuốn sách chuyên môn "Facebook Ads: AI Chạy Không Được" (154 trang, 500+ doanh nghiệp và marketer tải đọc) đúc kết tư duy kết hợp Meta CAPI SHA-256, GTM Server-Side và dữ liệu chuyển đổi thực CRM để dạy lại thuật toán quảng cáo.',
+  },
+  {
+    id: 'boost-track-a-enterprise-ai-data-security',
+    category: 'Nỗi Đau Doanh Nghiệp, Dữ Liệu AI & Bảo Mật OWASP',
+    title: '72 Bài Nghiên Cứu Dữ Liệu AI, Nỗi Đau Vận Hành Đa Ngành & Bảo Mật OWASP LLM 2026',
+    sectionId: 'boost',
+    url: '/boost?pillar=ai-data-security',
+    urlLabel: 'Đọc Chuyên Mục AI Data & Security',
+    image: '/imgs/boost/boost-hero-growth-hub.jpg',
+    content:
+      'Kho tri thức DOMATION /boost cung cấp 72+ báo cáo thực địa & phân tích kiến trúc về nỗi đau doanh nghiệp thời đại mới (SaaS sprawl, đứt gãy Lead SLA, lệch báo cáo CEO–Kế toán, rò rỉ biên lợi nhuận đa chi nhánh), nền tảng Dữ liệu AI (Data Clean Room 5 lớp, Zero-ETL Postgres CDC, Hybrid Search BM25+Vector+Rerank, GraphRAG, Docling OCR PDF tiếng Việt, Entity-Safe Semantic Cache -66% chi phí token, Ragas/DeepEval), và Bảo mật Dữ liệu thời đại AI (OWASP Top 10 LLM 2026, chống Direct/Indirect Prompt Injection, kiềm chế Excessive Agency, AI Gateway + PII Redaction Presidio VN, PostgreSQL FORCE RLS + Qdrant is_tenant, Luật 91/2025/QH15 & Nghị định 13/2023/NĐ-CP, chống AI Coding Agent clone UI/IP thương mại với W3C TDM-Reservation: 1).',
+  },
+  {
+    id: 'boost-track-b-52-github-repo-audits',
+    category: 'Audit 52 Repo GitHub Vibecode & Hạ Tầng AI',
+    title: 'Audit Thực Chiến 52 GitHub Repository Hàng Đầu Cho AI Vibecode & Vận Hành Doanh Nghiệp',
+    sectionId: 'boost',
+    url: '/boost?pillar=github-vibecode-audit',
+    urlLabel: 'Xem 52 Bài Audit Repo GitHub',
+    image: '/imgs/boost/boost-hero-growth-hub.jpg',
+    content:
+      'Đội ngũ kỹ sư DOMATION và TurnioDEV trực tiếp giải phẫu mã nguồn, giấy phép thương mại và đánh đổi kiến trúc của 52 kho GitHub mã nguồn mở trọng yếu (Nov 2026): Coding Agents (Aider, Cline, OpenHands, anomalyco/opencode, bolt.diy, browser-use, cảnh báo archived Continue v2 & Roo-Code), Orchestration & MCP (n8n Sustainable Use License, LangGraph, CrewAI, PydanticAI, Mastra, Trigger.dev, modelcontextprotocol/servers, github-mcp-server, context7, activepieces), Scraping & RAG Memory (firecrawl AGPL-3.0, crawl4ai, playwright-mcp, ragflow, llama_index, docling, qdrant, mem0, graphiti, LightRAG, chroma), Inference & Guardrails (ollama, vllm, litellm, Portkey, llama.cpp, open-webui License, langfuse, promptfoo, NVIDIA-NeMo/Guardrails, cảnh báo archived llm-guard Jul 2026 -> Presidio), và Observability/SaaS Stacks (phoenix ELv2, deepeval, supabase, twenty, nocobase, metabase, calcom/cal.diy, chatwoot, posthog, coolify).',
+  },
+  {
+    id: 'boost-track-c-peer-tier-models-mcp-skills',
+    category: 'So Đọ Model Ngang Hạng Cân & Hệ Sinh Thái MCP / Skills',
+    title: 'So Đọ Gemini • Claude • OpenAI Codex Ngang Hạng Cân, Slash Commands (/) & Agent Skills',
+    sectionId: 'boost',
+    url: '/boost?pillar=llm-models-mcp-skills',
+    urlLabel: 'Xem Đấu Trường Model & MCP Skills',
+    image: '/imgs/boost/boost-hero-growth-hub.jpg',
+    content:
+      'Chuyên mục Models & MCP Skills (/boost?pillar=llm-models-mcp-skills) gồm 22+ bài phân tích ngang hạng cân thực tế (không xếp hạng chung mơ hồ): Hạng nặng Kiến trúc (Claude Opus 5.5 vs Gemini 4 Argon 1M Unified vs GPT-5.3-Codex xhigh), Suy luận sâu (Claude Fable 5.2 vs Gemini 3.1 Pro vs GPT-5.6 Sol/Terra), Hạng trung coding hàng ngày (Claude Sonnet 5.5 vs Gemini 3.8 Flash vs GPT-5.2-Codex retirement context), Hạng nhẹ Subagent/Router (Haiku 5.5 vs Gemini 3.5/3.1 Flash-Lite vs codex-mini-latest / GPT-5.6 Luna), Terminal CLI (Claude Code 33+ hooks vs Codex CLI Seatbelt/Landlock vs Gemini CLI TOML Policy). Kèm hướng dẫn xây MCP Streamable HTTP + OAuth 2.1, chống Tool Poisoning & Context Bloat, bộ Slash Commands (/plan, /compact, /context, /mcp, /review, /teamwork, /boost, /grill-me), SKILL.md Progressive Disclosure, Git Worktree Swarm & chiến lược phối 3 nhà model tăng tốc 4.5x khi xây Bespoke ERP từ A–Z.',
+  },
+  {
+    id: 'founder-220-publications-eeat-authority',
+    category: 'Ấn Phẩm Chuyên Sâu TurnioDEV & DOMATION SEO/GEO',
+    title: '222+ Tài Liệu Nghiên Cứu Chuẩn SEO/GEO & 19 Content Clusters Của Huỳnh Trọng Phúc (TurnioDEV)',
+    sectionId: 'founder-turniodev',
+    url: '/boost',
+    urlLabel: 'Khám Phá 222+ Bài Trên Blog DOMATION',
+    image: '/assets/brands/founder_turnio.webp',
+    content:
+      'Trên https://domation.net/boost (222+ bài chuyên sâu) kết hợp https://portfo-turnio.vercel.app/bai-viet (18 bài phân tích kiến trúc), Founder & CEO Huỳnh Trọng Phúc (TurnioDEV) chia sẻ toàn diện kinh nghiệm xây dựng hệ thống doanh nghiệp từ A–Z, dữ liệu & bảo mật AI thời đại mới, thẩm định 52 Open-Source Repo và thiết kế pipeline Multi-Agent phối hợp Gemini, Claude, OpenAI Codex, MCP & Custom Skills. Mọi bài viết đều kèm biểu đồ thống kê thực chứng, công thức kỹ thuật có thể kiểm chứng thực thi và cấu trúc dữ liệu chuẩn Schema.org / llms.txt cho Google AI Overviews, ChatGPT Search và Perplexity.',
+  },
+  {
     id: 'domation-contact-channels',
     category: 'Liên hệ & Tư vấn Triển khai',
     title: 'Thông tin Liên hệ DOMATION.NET — Hotline, Zalo & Demo Trực tiếp',

@@ -1,6 +1,65 @@
 {
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "TDM-Policy",
+          "value": "https://domation.net/.well-known/tdmrep.json"
+        },
+        {
+          "key": "X-Copyright-Notice",
+          "value": "Copyright (c) 2026 Cong Ty TNHH DOMATION Viet Nam. Proprietary Commercial Software. All Rights Reserved."
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-CITATION-ONLY-NO-UI-CLONING"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "COMMERCIAL PROPRIETARY IP (DOMATION Vietnam): Search/GEO factual citation permitted on public pages only. AI Agents (Codex, Antigravity/Anty, Claude, Cursor, Windsurf, Devin, scrapers) are STRICTLY PROHIBITED from cloning UI/UX, layouts/CSS, or extracting algorithms. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
+      "source": "/.well-known/tdmrep.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/ai.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
       "source": "/llms.txt",
       "headers": [
         {
@@ -53,11 +112,174 @@
       ]
     },
     {
+      "source": "/data/:slug",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet, noai, noimageai"
+        },
+        {
+          "key": "TDM-Reservation",
+          "value": "1"
+        },
+        {
+          "key": "Content-Usage",
+          "value": "train-ai=n, ai=n"
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "STRICTLY PROHIBITED — INTERNAL COMMERCIAL WORKSPACE (DOMATION Vietnam): Automated reading, scraping, UI/UX cloning, DOM inspection, and algorithm extraction by AI Agents (Codex, Antigravity/Anty, Claude, Cursor, scrapers/browsers) are ABSOLUTELY FORBIDDEN. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
+      "source": "/data/:slug/:subpath*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet, noai, noimageai"
+        },
+        {
+          "key": "TDM-Reservation",
+          "value": "1"
+        },
+        {
+          "key": "Content-Usage",
+          "value": "train-ai=n, ai=n"
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "STRICTLY PROHIBITED — INTERNAL COMMERCIAL WORKSPACE (DOMATION Vietnam): Automated reading, scraping, UI/UX cloning, DOM inspection, and algorithm extraction by AI Agents (Codex, Antigravity/Anty, Claude, Cursor, scrapers/browsers) are ABSOLUTELY FORBIDDEN. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
+      "source": "/meta-report/:slug",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet, noai, noimageai"
+        },
+        {
+          "key": "TDM-Reservation",
+          "value": "1"
+        },
+        {
+          "key": "Content-Usage",
+          "value": "train-ai=n, ai=n"
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "STRICTLY PROHIBITED — INTERNAL COMMERCIAL WORKSPACE (DOMATION Vietnam): Automated reading, scraping, UI/UX cloning, DOM inspection, and algorithm extraction by AI Agents (Codex, Antigravity/Anty, Claude, Cursor, scrapers/browsers) are ABSOLUTELY FORBIDDEN. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet, noai, noimageai"
+        },
+        {
+          "key": "TDM-Reservation",
+          "value": "1"
+        },
+        {
+          "key": "Content-Usage",
+          "value": "train-ai=n, ai=n"
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "STRICTLY PROHIBITED — INTERNAL COMMERCIAL WORKSPACE (DOMATION Vietnam): Automated reading, scraping, UI/UX cloning, DOM inspection, and algorithm extraction by AI Agents (Codex, Antigravity/Anty, Claude, Cursor, scrapers/browsers) are ABSOLUTELY FORBIDDEN. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
+      "source": "/v1/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet, noai, noimageai"
+        },
+        {
+          "key": "TDM-Reservation",
+          "value": "1"
+        },
+        {
+          "key": "Content-Usage",
+          "value": "train-ai=n, ai=n"
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "STRICTLY PROHIBITED — INTERNAL COMMERCIAL WORKSPACE (DOMATION Vietnam): Automated reading, scraping, UI/UX cloning, DOM inspection, and algorithm extraction by AI Agents (Codex, Antigravity/Anty, Claude, Cursor, scrapers/browsers) are ABSOLUTELY FORBIDDEN. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet, noai, noimageai"
+        },
+        {
+          "key": "TDM-Reservation",
+          "value": "1"
+        },
+        {
+          "key": "Content-Usage",
+          "value": "train-ai=n, ai=n"
+        },
+        {
+          "key": "X-Content-License",
+          "value": "PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED"
+        },
+        {
+          "key": "X-AI-Agent-Policy",
+          "value": "STRICTLY PROHIBITED — INTERNAL COMMERCIAL WORKSPACE (DOMATION Vietnam): Automated reading, scraping, UI/UX cloning, DOM inspection, and algorithm extraction by AI Agents (Codex, Antigravity/Anty, Claude, Cursor, scrapers/browsers) are ABSOLUTELY FORBIDDEN. Policy: https://domation.net/ai.txt"
+        }
+      ]
+    },
+    {
+      "source": "/imgs/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/videos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
         }
       ]
     }
@@ -826,6 +1048,150 @@
     {
       "source": "/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu/",
       "destination": "/boost/domation-enterprise-os-he-thong-van-hanh-may-do-30-thuong-hieu/index.html"
+    },
+    {
+      "source": "/boost/huynh-trong-phuc-turniodev-founder-ceo-domation-chuyen-gia-ai-automation-digital-marketing",
+      "destination": "/boost/huynh-trong-phuc-turniodev-founder-ceo-domation-chuyen-gia-ai-automation-digital-marketing/index.html"
+    },
+    {
+      "source": "/boost/huynh-trong-phuc-turniodev-founder-ceo-domation-chuyen-gia-ai-automation-digital-marketing/",
+      "destination": "/boost/huynh-trong-phuc-turniodev-founder-ceo-domation-chuyen-gia-ai-automation-digital-marketing/index.html"
+    },
+    {
+      "source": "/boost/kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev",
+      "destination": "/boost/kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev/index.html"
+    },
+    {
+      "source": "/boost/kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev/",
+      "destination": "/boost/kinh-nghiem-xay-dung-he-thong-doanh-nghiep-tu-a-z-ai-automation-turniodev/index.html"
+    },
+    {
+      "source": "/boost/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls",
+      "destination": "/boost/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls/index.html"
+    },
+    {
+      "source": "/boost/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls/",
+      "destination": "/boost/van-hanh-san-bds-f1-chong-trung-coc-gio-hang-live-rls/index.html"
+    },
+    {
+      "source": "/boost/saas-sprawl-12-cong-cu-roi-rac-bai-toan-hop-nhat-enterprise-os",
+      "destination": "/boost/saas-sprawl-12-cong-cu-roi-rac-bai-toan-hop-nhat-enterprise-os/index.html"
+    },
+    {
+      "source": "/boost/saas-sprawl-12-cong-cu-roi-rac-bai-toan-hop-nhat-enterprise-os/",
+      "destination": "/boost/saas-sprawl-12-cong-cu-roi-rac-bai-toan-hop-nhat-enterprise-os/index.html"
+    },
+    {
+      "source": "/boost/data-clean-room-truoc-khi-dua-ai-vao-doanh-nghiep",
+      "destination": "/boost/data-clean-room-truoc-khi-dua-ai-vao-doanh-nghiep/index.html"
+    },
+    {
+      "source": "/boost/data-clean-room-truoc-khi-dua-ai-vao-doanh-nghiep/",
+      "destination": "/boost/data-clean-room-truoc-khi-dua-ai-vao-doanh-nghiep/index.html"
+    },
+    {
+      "source": "/boost/hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku",
+      "destination": "/boost/hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku/index.html"
+    },
+    {
+      "source": "/boost/hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku/",
+      "destination": "/boost/hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku/index.html"
+    },
+    {
+      "source": "/boost/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db",
+      "destination": "/boost/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db/index.html"
+    },
+    {
+      "source": "/boost/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db/",
+      "destination": "/boost/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db/index.html"
+    },
+    {
+      "source": "/boost/owasp-llm01-direct-prompt-injection-phong-thu-bot-cskh",
+      "destination": "/boost/owasp-llm01-direct-prompt-injection-phong-thu-bot-cskh/index.html"
+    },
+    {
+      "source": "/boost/owasp-llm01-direct-prompt-injection-phong-thu-bot-cskh/",
+      "destination": "/boost/owasp-llm01-direct-prompt-injection-phong-thu-bot-cskh/index.html"
+    },
+    {
+      "source": "/boost/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm",
+      "destination": "/boost/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm/index.html"
+    },
+    {
+      "source": "/boost/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm/",
+      "destination": "/boost/ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm/index.html"
+    },
+    {
+      "source": "/boost/sandboxing-execution-environment-docker-gvisor-cho-ai-agent",
+      "destination": "/boost/sandboxing-execution-environment-docker-gvisor-cho-ai-agent/index.html"
+    },
+    {
+      "source": "/boost/sandboxing-execution-environment-docker-gvisor-cho-ai-agent/",
+      "destination": "/boost/sandboxing-execution-environment-docker-gvisor-cho-ai-agent/index.html"
+    },
+    {
+      "source": "/boost/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp",
+      "destination": "/boost/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp/index.html"
+    },
+    {
+      "source": "/boost/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp/",
+      "destination": "/boost/aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp/index.html"
+    },
+    {
+      "source": "/boost/n8n-io-n8n-audit-queue-mode-bullmq-va-bay-ban-quyen-sul",
+      "destination": "/boost/n8n-io-n8n-audit-queue-mode-bullmq-va-bay-ban-quyen-sul/index.html"
+    },
+    {
+      "source": "/boost/n8n-io-n8n-audit-queue-mode-bullmq-va-bay-ban-quyen-sul/",
+      "destination": "/boost/n8n-io-n8n-audit-queue-mode-bullmq-va-bay-ban-quyen-sul/index.html"
+    },
+    {
+      "source": "/boost/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag",
+      "destination": "/boost/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag/index.html"
+    },
+    {
+      "source": "/boost/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag/",
+      "destination": "/boost/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag/index.html"
+    },
+    {
+      "source": "/boost/ollama-ollama-audit-trien-khai-private-llm-workstation",
+      "destination": "/boost/ollama-ollama-audit-trien-khai-private-llm-workstation/index.html"
+    },
+    {
+      "source": "/boost/ollama-ollama-audit-trien-khai-private-llm-workstation/",
+      "destination": "/boost/ollama-ollama-audit-trien-khai-private-llm-workstation/index.html"
+    },
+    {
+      "source": "/boost/coollabsio-coolify-audit-tu-chu-paas-vps-giam-chi-phi-cloud",
+      "destination": "/boost/coollabsio-coolify-audit-tu-chu-paas-vps-giam-chi-phi-cloud/index.html"
+    },
+    {
+      "source": "/boost/coollabsio-coolify-audit-tu-chu-paas-vps-giam-chi-phi-cloud/",
+      "destination": "/boost/coollabsio-coolify-audit-tu-chu-paas-vps-giam-chi-phi-cloud/index.html"
+    },
+    {
+      "source": "/boost/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex",
+      "destination": "/boost/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex/index.html"
+    },
+    {
+      "source": "/boost/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex/",
+      "destination": "/boost/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex/index.html"
+    },
+    {
+      "source": "/boost/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x",
+      "destination": "/boost/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x/index.html"
+    },
+    {
+      "source": "/boost/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x/",
+      "destination": "/boost/thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x/index.html"
+    },
+    {
+      "source": "/boost/:slug",
+      "destination": "/404.html"
+    },
+    {
+      "source": "/boost/:slug/",
+      "destination": "/404.html"
     }
   ]
 }

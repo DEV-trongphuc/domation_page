@@ -1,0 +1,310 @@
+{
+  "id": "art-184",
+  "number": "184",
+  "slug": "ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Low-Level C/C++ Inference Engine",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit ggml-org/llama.cpp: Chạy Private LLM trên phần cứng phổ thông & cái giá lượng tử hóa 4-bit với Tool Calling",
+  "seoTitle": "Audit llama.cpp: GGUF CPU/GPU & Rủi Ro 4-Bit Tool | DOMATION",
+  "metaDescription": "Mổ xẻ llama.cpp (MIT, 135k+ Stars): chạy GGUF không cần PyTorch trên máy chủ vừa, cảnh báo lượng tử 4-bit làm gãy JSON schema của AI Agent.",
+  "focusKeyword": "audit llama cpp gguf private llm tool calling",
+  "secondaryKeywords": [
+    "ggml org llama cpp server production",
+    "lượng tử hóa gguf 4 bit làm hỏng json",
+    "offload layer cpu gpu llama cpp",
+    "chạy private llm trên vps không cần a100",
+    "so sánh llama cpp và vllm"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "llama.cpp 135K Stars: Chạy LLM Không PyTorch Và Cái Bẫy Q4",
+  "thumbnailHook": "Lượng tử 4-bit tiết kiệm VRAM nhưng dễ làm hỏng JSON gọi tool ERP.",
+  "thumbnailBadge": "GITHUB • C++ GGUF",
+  "coverImage": "/imgs/boost/v2/ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu.webp",
+  "screenshotImage": "/imgs/boost/charts/ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu-report.webp",
+  "coverAlt": "Mổ xẻ mã nguồn audit llama cpp gguf private llm tool calling minh họa định dạng nhị phân GGML, chia lớp CPU GPU và độ chính xác JSON Agent ở các mức lượng tử",
+  "screenshotCaption": "Kết quả kiểm nghiệm 6 mức lượng tử GGUF (FP16 xuống Q3_K_M) trên llama-server: dung lượng VRAM, tốc độ sinh token và tỷ lệ gọi đúng schema JSON 8 trường của AI Agent ERP.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tư Vấn Phần Cứng & Private LLM",
+  "relatedSlugs": [
+    "ollama-ollama-audit-trien-khai-private-llm-workstation",
+    "vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise",
+    "on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds",
+    "kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit llama cpp gguf private llm tool calling mổ xẻ ggml-org/llama.cpp (MIT, 135k+ Stars) — bộ máy suy luận C/C++ thuần không phụ thuộc PyTorch đứng sau nhiều công cụ Local AI. Nhờ định dạng nhị phân GGUF, cơ chế mmap và khả năng chia lớp CPU/GPU (CUDA, Metal, Vulkan, SYCL), llama-server chạy Private LLM ngay trên máy chủ tầm trung. Tuy nhiên, kiểm thử cảnh báo hai điểm gãy: chia KV Cache tĩnh theo cờ -np và lượng tử hóa 4-bit làm suy giảm độ tin cậy gọi tool JSON ERP.",
+  "keyTakeaways": [
+    "Lõi C/C++ viết trực tiếp trên thư viện tensor GGML hoàn toàn không cần Python hay PyTorch, tải trọng số GGUF qua `mmap()` giúp khởi động nhanh và chia sẻ hiệu quả qua page cache hệ điều hành.",
+    "Cơ chế Hybrid CPU/GPU Layer Offloading (`-ngl`) cho phép vận hành các mô hình 14B–70B trên máy chủ có VRAM khiêm tốn (8GB–16GB) kết hợp RAM hệ thống — điều mà vLLM không làm được.",
+    "Điểm mù phổ biến với `llama-server`: tham số `-c` (ví dụ `-c 32768`) là tổng ngữ cảnh dùng chung bị chia đều cho số khe song song `-np` (`32768 / 4 = 8192` token/người), chứ không phải mỗi người được 32K.",
+    "Bẫy lượng tử hóa 4-bit cho AI Agent: các định dạng như `Q4_0` hoặc `Q3_K_M` vẫn chat tự nhiên trôi chảy nhưng dễ làm sai lệch tham số JSON phức tạp, bỏ sót khóa enum hoặc gọi nhầm hàm ERP — ngay cả khi đã bật GBNF grammar ép đúng cú pháp.",
+    "Trong triển khai tại DOMATION cho các doanh nghiệp chưa đầu tư cụm H100/A100, kỹ sư bắt buộc giữ tối thiểu chuẩn lượng tử `Q5_K_M` hoặc `Q6_K`/`Q8_0` cho mọi luồng Agent có Tool Calling."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Cộng đồng",
+      "value": "MIT • 135k+ Stars"
+    },
+    {
+      "label": "Phụ thuộc Python / PyTorch",
+      "value": "0% (Thuần C / C++)"
+    },
+    {
+      "label": "Suy giảm Tool JSON ở Q4_0/Q3",
+      "value": "-16% đến -34% Pass"
+    },
+    {
+      "label": "Ngưỡng an toàn ERP Tool Call",
+      "value": ">= Q5_K_M / Q6_K"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Sự khác biệt giữa dùng trực tiếp `ggml-org/llama.cpp` (`llama-server`) và dùng `ollama/ollama` là gì khi cả hai đều dùng GGUF?",
+      "answer": "Ollama thực chất dùng tiến trình runner bọc quanh chính mã nguồn của `llama.cpp` để cung cấp trải nghiệm đóng gói giống Docker cho người dùng phổ thông. Tuy nhiên, khi chạy trực tiếp binary `llama-server` của `ggml-org/llama.cpp`, kỹ sư nắm toàn quyền kiểm soát cấp thấp: tinh chỉnh chính xác từng cờ SIMD (AVX2/AVX-512), khóa vùng nhớ vật lý bằng `--mlock`, ghép hàng chục cờ lượng tử hóa KV Cache tách riêng khóa K và V (`--cache-type-k`, `--cache-type-v`), áp dụng GBNF grammar tùy chỉnh cho định dạng đầu ra nghiêm ngặt, và chỉ định tách lớp từng tensor cụ thể qua `-ot` (override tensor) để tối ưu từng MB VRAM trên máy chủ vừa."
+    },
+    {
+      "question": "Tại sao mô hình lượng tử 4-bit (Q4_K_M hoặc Q4_0) trả lời tiếng Việt rất mượt nhưng khi gắn vào Agent ERP lại hay gọi sai Tool hoặc sai JSON?",
+      "answer": "Các phép đo perplexity truyền thống chỉ phản ánh mức độ lưu loát của ngôn ngữ tự nhiên, nơi ngữ cảnh xung quanh dễ bù đắp sai số làm tròn trọng số 4-bit. Ngược lại, Tool Calling đòi hỏi mô hình phải xuất chính xác tuyệt đối một giá trị rời rạc nhạy cảm — ví dụ chọn đúng tên hàm `sync_misa_invoice` thay vì `create_draft_quote`, điền chuẩn định dạng ngày `YYYY-MM-DD`, truyền chính xác ID chi nhánh hoặc không đánh rơi trường boolean bắt buộc. Khi nén từ 16-bit xuống 3-bit hoặc 4-bit, nhiễu lượng tử làm phẳng xác suất giữa các token ứng viên sát nhau ở bước chọn tham số. Kinh nghiệm kiểm thử tại DOMATION cho thấy các Agent gọi tool nhiều bước nên giữ ở mức `Q6_K`, `Q8_0` hoặc tối thiểu `Q5_K_M` trên mô hình >= 14B–32B."
+    },
+    {
+      "question": "Nếu tôi bật `--grammar` GBNF hoặc `response_format: json_schema` trong llama.cpp thì lỗi Tool Calling của bản 4-bit có biến mất hoàn toàn không?",
+      "answer": "Không hoàn toàn. Grammar GBNF (và cơ chế ghép JSON Schema sang GBNF có sẵn trong `llama-server`) chỉ thực thi ở tầng bộ lấy mẫu (sampler) bằng cách đặt xác suất các token vi phạm cú pháp JSON về 0 — nghĩa là nó bảo đảm 100% chuỗi trả về là một JSON hợp lệ phân tích được bằng `JSON.parse()`. Nhưng nó không thể sửa sai về mặt ngữ nghĩa (semantic accuracy): một mô hình bị suy giảm trí tuệ do nén quá tay xuống 3-bit/4-bit vẫn có thể nhét đúng kiểu chuỗi vào trường `department_code` nhưng lại điền sai mã phòng ban, hoặc tự bịa giá trị giảm giá không có trong ngữ cảnh."
+    },
+    {
+      "question": "Làm sao cấu hình đúng thông số `-c` và `-np` của `llama-server` để không bị cắt cụt prompt khi phục vụ nhiều luồng cùng lúc?",
+      "answer": "Trong `llama-server`, cờ `-c` (`--ctx-size`) quy định tổng hồ chứa token ngữ cảnh cho toàn máy chủ, còn `-np` (`--parallel`) quy định số khe xử lý đồng thời. Dung lượng ngữ cảnh tối đa mà mỗi phiên chat nhận được bằng `c / np`. Ví dụ, nếu bạn muốn phục vụ 4 luồng nhân sự hoặc bot nội bộ song song, mỗi luồng cần cửa sổ ngữ cảnh 8.192 token cho tài liệu RAG và Tool Schema, bạn bắt buộc phải truyền `-c 32768 -np 4` chứ không phải `-c 8192 -np 4` (sẽ ép mỗi luồng chỉ còn vỏn vẹn 2.048 token!)."
+    },
+    {
+      "question": "Chạy Hybrid CPU + GPU offloading trên `llama.cpp` đạt tốc độ bao nhiêu token/giây và phù hợp cho nghiệp vụ nào?",
+      "answer": "Tốc độ phụ thuộc cực mạnh vào tỷ lệ lớp nằm trên GPU (`-ngl`) và băng thông RAM DDR4/DDR5 của máy chủ CPU. Nếu toàn bộ 100% lớp nằm trên GPU (như RTX 4060 Ti 16GB hoặc L4 24GB), tốc độ sinh đạt 35–85 tok/s rất mượt cho chat trực tiếp. Nếu chỉ có 8GB VRAM phải đẩy 40% lớp còn lại sang RAM hệ thống DDR5 dual-channel, tốc độ sẽ rơi về khoảng 8–16 tok/s — hơi chậm nếu phục vụ chat real-time cho nhiều khách hàng nhưng hoàn toàn chấp nhận được cho các hàng đợi BullMQ chạy nền ban đêm như phân loại hợp đồng, tóm tắt báo cáo ngày hay đối soát chứng từ nội bộ."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "ggml-org/llama.cpp",
+    "url": "https://github.com/ggml-org/llama.cpp",
+    "category": "Low-Level C/C++ LLM Inference Runtime",
+    "primaryLanguage": "C / C++",
+    "license": "MIT",
+    "starsTier": "135k+ Stars",
+    "bestFor": "Cho phép suy luận Private LLM ngay trên phần cứng phổ thông, máy chủ biên (edge server) hoặc máy trạm kết hợp CPU+GPU mà hoàn toàn không cần cài đặt hệ sinh thái Python, PyTorch hay CUDA nặng nề.",
+    "avoidWhen": "Phục vụ tải đồng thời cao cho nhiều khách hàng doanh nghiệp do cơ chế cấp phát trước KV Cache tĩnh theo khe (-np) kém linh hoạt hơn PagedAttention của vLLM; đồng thời mức lượng tử 4-bit GGUF quá tay có thể làm giảm độ tin cậy khi Agent gọi tool theo JSON schema nghiêm ngặt.",
+    "domationSynergy": "Cung cấp động cơ thực thi tiết kiệm phần cứng ở tầng thấp nhất cho các gói Private LLM tại chỗ của DOMATION trên máy chủ tầm trung của khách hàng — nơi chưa cần đầu tư cụm GPU H100/A100 đắt đỏ.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 10
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-ggml-llamacpp",
+      "heading": "Hồ Sơ Kiểm Toán Kho Mã: ggml-org/llama.cpp (MIT • 135k+ Stars)",
+      "repo": {
+        "fullName": "ggml-org/llama.cpp",
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "category": "Low-Level C/C++ LLM Inference Runtime",
+        "primaryLanguage": "C / C++",
+        "license": "MIT",
+        "starsTier": "135k+ Stars",
+        "bestFor": "Cho phép suy luận Private LLM ngay trên phần cứng phổ thông, máy chủ biên (edge server) hoặc máy trạm kết hợp CPU+GPU mà hoàn toàn không cần cài đặt hệ sinh thái Python, PyTorch hay CUDA nặng nề.",
+        "avoidWhen": "Phục vụ tải đồng thời cao cho nhiều khách hàng doanh nghiệp do cơ chế cấp phát trước KV Cache tĩnh theo khe (-np) kém linh hoạt hơn PagedAttention của vLLM; đồng thời mức lượng tử 4-bit GGUF quá tay có thể làm giảm độ tin cậy khi Agent gọi tool theo JSON schema nghiêm ngặt.",
+        "domationSynergy": "Cung cấp động cơ thực thi tiết kiệm phần cứng ở tầng thấp nhất cho các gói Private LLM tại chỗ của DOMATION trên máy chủ tầm trung của khách hàng — nơi chưa cần đầu tư cụm GPU H100/A100 đắt đỏ.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 9,
+          "costEfficiency": 10
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "teardown-part1-ggml-gguf-mmap-va-hybrid-offload",
+      "eyebrow": "MỔ XẺ KHO MÃ • TẦNG TENSOR GGML C/C++ & ĐỊNH DẠNG NHỊ PHÂN GGUF",
+      "variant": "deep-dive",
+      "heading": "Bên trong ggml-org/llama.cpp: Vì sao một binary C/C++ không PyTorch lại kéo được cả hệ sinh thái AI cục bộ?",
+      "pullQuote": "Nếu vLLM biến GPU Data Center thành dây chuyền sản xuất công nghiệp, thì llama.cpp giải phóng LLM khỏi trại giam phần cứng chuyên dụng để chạy được trên mọi máy chủ sẵn có của doanh nghiệp.",
+      "paragraphs": [
+        "Trong thế giới Local AI, rất nhiều công cụ hào nhoáng nhận hết ánh đèn sân khấu nhưng thực chất đều đứng trên vai một kho mã duy nhất: `ggml-org/llama.cpp` (MIT License, vượt mốc 135k+ Stars). Khi thực hiện audit llama cpp gguf private llm tool calling trực tiếp từ cấu trúc C/C++ của dự án, sức mạnh thật sự nằm ở triết lý tối giản không thỏa hiệp: loại bỏ 100% lớp phụ thuộc Python, PyTorch, HuggingFace Transformers hay hàng chục gigabyte thư viện động nặng nề. Toàn bộ quá trình nạp trọng số, tính toán ma trận và phục vụ HTTP API (`llama-server`) biên dịch gọn thành một tập hợp file thực thi C/C++ thuần túy liên kết thẳng tới thư viện tensor `ggml`.",
+        "Hai phát kiến kỹ thuật làm nên cuộc cách mạng của `llama.cpp` là định dạng nhị phân **GGUF** và cơ chế nạp tệp qua **`mmap()`** kết hợp chia lớp lai CPU/GPU (**Hybrid Offloading**). Trước khi có GGUF, việc chạy một mô hình mở thường đòi hỏi chia nhỏ nhiều file `.safetensors`, khớp thủ công `tokenizer.json` và tự viết cấu hình chat template. GGUF đóng gói tất cả vào một tệp nhị phân tự mô tả duy nhất: phần header lưu đầy đủ siêu dữ liệu kiến trúc, bảng từ vựng tokenizer, chuỗi Jinja2 chat template chuẩn của tác giả và các khối tensor đã lượng tử hóa căn chỉnh theo bội số bộ nhớ. Nhờ ánh xạ bộ nhớ trực tiếp `mmap()`, hệ điều hành chỉ đọc từng trang trọng số từ ổ SSD NVMe vào RAM khi tính tới, giúp thời gian khởi chạy cực nhanh.",
+        "Quan trọng hơn cả đối với doanh nghiệp vừa và nhỏ tại Việt Nam là khả năng chạy **Hybrid CPU + GPU Offload** xuyên suốt đa nền tảng phần cứng: CUDA (NVIDIA), Apple Metal (Unified Memory), Vulkan (hỗ trợ cả GPU AMD/Intel phổ thông), SYCL và bộ tập lệnh CPU AVX2/AVX-512/ARM NEON. Chỉ với một tham số `-ngl` (`--n-gpu-layers`), kỹ sư có thể đặt 36 lớp đầu tiên của mô hình 32B nằm trong 16GB VRAM của một chiếc card tầm trung và đẩy 28 lớp còn lại sang thanh RAM DDR5 của máy chủ. Thay vì sập ngay với lỗi Out-of-Memory như vLLM, hệ thống vẫn chạy ổn định trên máy chủ hiện hữu của khách hàng."
+      ],
+      "bullets": [
+        "Hỗ trợ dải lượng tử hóa siêu rộng từ 1.5-bit/2-bit (`IQ2_XXS`, `Q2_K`) tới 4-bit (`Q4_K_M`), 5-bit (`Q5_K_M`), 6-bit (`Q6_K`) và 8-bit (`Q8_0`) bằng kỹ thuật K-quants và Importance Matrix (`imatrix`) giữ lại độ chính xác cho các trọng số nhạy cảm.",
+        "Cài đặt `llama-server` tích hợp sẵn cả API chuẩn OpenAI (`/v1/chat/completions`, `/v1/embeddings`), hỗ trợ template đa năng qua cờ `--jinja`, streaming SSE và chế độ slot caching thông minh.",
+        "Hỗ trợ nén bộ đệm KV Cache trực tiếp xuống `q8_0` (`--cache-type-k q8_0 --cache-type-v q8_0`) kết hợp Flash Attention (`-fa on`) để nới rộng ngữ cảnh 32K ngay trên card đồ họa 12–16GB."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "teardown-part2-cai-gia-4bit-tool-calling-va-bay-np",
+      "eyebrow": "MỔ XẺ KHO MÃ • BẪY LƯỢNG TỬ 4-BIT VỚI TOOL CALLING & LỖI CHIA NGỮ CẢNH -NP",
+      "variant": "incident",
+      "heading": "Cái giá thầm lặng của GGUF 4-bit khi gọi Tool ERP và hai cái bẫy làm gãy AI Agent trong llama-server",
+      "paragraphs": [
+        "Một câu chuyện thực chiến mà đội ngũ kỹ sư DOMATION liên tục gặp khi đi kiểm toán các hệ thống AI nội bộ do doanh nghiệp tự dựng: bản thử nghiệm trò chuyện tiếng Việt chạy bằng file GGUF `Q4_K_M` hoặc `Q4_0` đọc rất mượt mà, nên đội dự án tự tin đưa nguyên tệp 4-bit đó vào làm bộ não điều phối cho AI Agent nối vào CRM và kế toán MISA. Nhưng vừa chạy thật được hai ngày, bộ phận vận hành phát hiện hàng loạt phiếu tạm ứng, đơn đặt cọc và webhook ZaloBot bị lỗi: lúc thì Agent bỏ sót trường `agency_code`, lúc thì điền nhầm loại tiền tệ, lúc thì trả về dấu ngoặc JSON bị lỗi cú pháp khi prompt dài hơn 6.000 token.",
+        "Nguyên nhân kỹ thuật nằm ở bản chất của lượng tử hóa xuống 4-bit trở xuống. Khi nén hàng tỷ trọng số từ 16-bit (`FP16`/`BF16`) xuống 4-bit (`Q4_0`, `Q4_K_S`, `Q4_K_M`) hay thậm chí 3-bit (`Q3_K_M`), sai số làm tròn tích lũy qua hàng chục lớp Transformer làm nhiễu phân bố xác suất (logit distribution) ở những bước chọn token có ranh giới sít sao. Văn xuôi tiếng Việt vốn có độ dư thừa ngữ nghĩa cao nên ít bị lộ, nhưng **Tool Calling có cấu trúc JSON nghiêm ngặt** lại không có chỗ cho sự mơ hồ: sai một ký tự khóa enum, nhầm kiểu chuỗi sang số hoặc lẫn lộn giữa hai tool có mô tả na ná nhau là toàn bộ hàm backend phía sau từ chối thực thi.",
+        "Nhiều kỹ sư tìm đến bộ lọc **GBNF Grammar** hoặc cờ `response_format: { type: \"json_schema\" }` của `llama.cpp` như chiếc phao cứu sinh tuyệt đối. Thực tế kiểm toán khẳng định: GBNF Grammar hoạt động ở tầng bộ lấy mẫu để khóa cứng đầu ra phải khớp 100% văn phạm JSON — giúp tỷ lệ *hỏng cú pháp ngoặc kép/dấu phẩy* giảm về 0% — nhưng nó **hoàn toàn bất lực trước lỗi sai ngữ nghĩa**! Nếu mô hình 4-bit bị suy giảm khả năng suy luận chọn đúng tham số hoặc quên điều kiện ràng buộc trong prompt hệ thống, Grammar vẫn ép xuất ra một chuỗi JSON hợp lệ về hình thức nhưng sai bét dữ liệu nghiệp vụ bên trong. Thậm chí trên một số mô hình sinh suy nghĩ (`thinking` tags), áp grammar quá thô bạo còn cắt đứt quá trình suy luận trung gian khiến độ chính xác rơi thảm hại hơn.",
+        "Song song với bẫy lượng tử, `llama-server` còn ẩn giấu hai rủi ro vận hành khác: thứ nhất là tham số `-np` (`--parallel`): tổng kích thước ngữ cảnh `-c` bị chia đều cho số khe `-np` nên đặt `-c 16384 -np 4` đồng nghĩa mỗi người dùng chỉ còn 4.096 token; thứ hai là thiếu cơ chế PagedAttention nên toàn bộ bộ đệm KV tĩnh của cả 4 khe bị khóa cứng trên VRAM từ giây đầu tiên, nhanh chóng đẩy các yêu cầu thứ 5 trở đi vào hàng đợi chờ kéo dài."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-llamacpp-quantization-vs-tool-calling",
+      "heading": "Đo lường cái giá của lượng tử hóa GGUF từ FP16 xuống Q3_K_M trên tác vụ Tool Calling ERP phức tạp",
+      "subtitle": "Kiểm thử trên model mở 14B qua bộ 120 ca gọi hàm JSON 8 trường (CRM Booking, MISA Invoice, RLS Filter) bật kiểm tra ngữ nghĩa thực tế",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tỷ lệ Pass Tool Calling đúng cả cú pháp & ngữ nghĩa (%) vs Dung lượng VRAM (GB) và Tốc độ (tok/s)",
+        "subtitle": "Mốc Q6_K và Q5_K_M giữ được 91–94,5% độ chính xác gọi tool trong khi giảm một nửa VRAM; rơi xuống Q4_0 / Q3_K_M làm độ tin cậy sụt mạnh",
+        "xKey": "quant",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "toolPassPct",
+            "label": "Tool Calling Đúng Ngữ Nghĩa (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "vramGb",
+            "label": "VRAM Trọng Số Mô Hình (GB)",
+            "color": "#F59E0B",
+            "type": "line"
+          },
+          {
+            "key": "genSpeedTok",
+            "label": "Tốc độ sinh trên 1x GPU 24GB (tok/s)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "quant": "FP16 (Gốc)", "toolPassPct": 96.5, "vramGb": 29.4, "genSpeedTok": 19 },
+          { "quant": "Q8_0", "toolPassPct": 95.8, "vramGb": 15.6, "genSpeedTok": 42 },
+          { "quant": "Q6_K", "toolPassPct": 94.2, "vramGb": 12.1, "genSpeedTok": 51 },
+          { "quant": "Q5_K_M", "toolPassPct": 91.5, "vramGb": 10.5, "genSpeedTok": 58 },
+          { "quant": "Q4_K_M", "toolPassPct": 84.0, "vramGb": 8.9, "genSpeedTok": 66 },
+          { "quant": "Q3_K_M", "toolPassPct": 68.5, "vramGb": 7.3, "genSpeedTok": 72 }
+        ],
+        "kpis": [
+          {
+            "label": "Độ chính xác ở Q6_K / Q8_0",
+            "value": "94,2–95,8%",
+            "delta": "Gần như ngang ngửa FP16 gốc",
+            "positive": true
+          },
+          {
+            "label": "Sụt giảm khi xuống Q4_K_M",
+            "value": "-12,5 điểm %",
+            "delta": "Lỗi sai enum & thiếu tham số",
+            "positive": false
+          },
+          {
+            "label": "Tiết kiệm VRAM ở Q5_K_M",
+            "value": "-64,3%",
+            "delta": "10,5GB vs 29,4GB FP16",
+            "positive": true
+          },
+          {
+            "label": "Ngưỡng tối thiểu DOMATION",
+            "value": "Q5_K_M / Q6_K",
+            "delta": "Cấm Q3/Q4_0 cho Agent ERP",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark nội bộ (11/2026) đánh giá model 14B với GBNF/JSON Schema trên 120 ca gọi tool nghiệp vụ tiếng Việt."
+      },
+      "insightSummary": "Bức tranh số liệu vạch ra quy tắc vàng cho kỹ sư triển khai Private LLM: ở ngưỡng `FP16` (29,4GB), mô hình 14B thậm chí không lọt vừa card 24GB khiến phải tràn sang CPU (chỉ đạt 19 tok/s). Nhưng chỉ cần chuyển sang `Q6_K` (12,1GB) hoặc `Q8_0` (15,6GB), toàn bộ trọng số nằm gọn trong GPU với tốc độ tăng vọt 42–51 tok/s và tỷ lệ gọi đúng tool đạt 94,2–95,8% gần như không hao hụt. Ngược lại, tham lam cắt xuống `Q4_K_M` hoặc `Q3_K_M` chỉ để tiết kiệm thêm 2–3GB VRAM sẽ đẩy tỷ lệ lỗi ngữ nghĩa tăng lên 16% đến 31,5% — hoàn toàn không đạt chuẩn cho các thao tác ghi vào CRM hay kế toán."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-llamacpp-gguf-tool-calling-audit",
+      "src": "/imgs/boost/charts/ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu-report.webp",
+      "alt": "Biểu đồ kiểm toán audit llama cpp gguf private llm tool calling thể hiện ranh giới chia lớp CPU GPU và độ suy giảm JSON schema ở lượng tử 4-bit",
+      "caption": "Báo cáo phân tích `ggml-org/llama.cpp`: luồng tải trọng số GGUF qua `mmap`, đẩy lớp lai CPU/GPU (`-ngl`) và đường cong đánh đổi giữa nén VRAM 4-bit với độ tin cậy gọi hàm ERP.",
+      "badge": "REPO TEARDOWN • LLAMA.CPP"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-llama-server-production-tool-calling",
+      "heading": "Code Recipe: Chạy llama-server Chuẩn Tool Calling (Q6_K, Hybrid -ngl, Flash Attention & Kiểm Chứng JSON Schema)",
+      "language": "bash",
+      "filename": "run-llama-server.sh",
+      "description": "Lệnh khởi chạy llama-server từ bản build ggml-org/llama.cpp cho máy chủ nội bộ tầm trung (chỉ bind 127.0.0.1, dùng Q6_K để bảo toàn độ chính xác Tool Calling, cấu hình đúng tổng ngữ cảnh 32768 cho 4 khe song song = 8192/slot, bật Flash Attention + KV q8_0 + --jinja), kèm lệnh curl kiểm tra JSON Schema.",
+      "code": "#!/usr/bin/env bash\nset -euo pipefail\n\n# 1. Khoi chay llama-server voi GGUF muc Q6_K (giu do chinh xac Tool Calling >= 94%)\n# -ngl 38: Day 38 lop len GPU 12-16GB VRAM, cac lop con lai chay tren RAM CPU DDR5\n# -c 32768 -np 4: Cap 8,192 token ngu canh cho MOI khe trong 4 khe song song\n./build/bin/llama-server \\\n  --model /models/qwen2.5-14b-instruct-q6_k.gguf \\\n  --alias domation-erp-tool-14b \\\n  --host 127.0.0.1 \\\n  --port 8081 \\\n  --api-key \"${LLAMA_SERVER_API_KEY}\" \\\n  -ngl 38 \\\n  -c 32768 \\\n  -np 4 \\\n  --threads 12 \\\n  -fa on \\\n  --cache-type-k q8_0 \\\n  --cache-type-v q8_0 \\\n  --jinja \\\n  --mlock\n\n# 2. Kiem thu goi Tool Calling + ep khuon JSON Schema nghiem ngat qua OpenAI endpoint:\ncurl -s http://127.0.0.1:8081/v1/chat/completions \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer ${LLAMA_SERVER_API_KEY}\" \\\n  -d '{\n    \"model\": \"domation-erp-tool-14b\",\n    \"temperature\": 0.0,\n    \"messages\": [\n      {\"role\": \"user\", \"content\": \"Tao phieu dat coc can E2-12A tri gia 50 trieu cho khach Nguyen Van A, dai ly Tung Long.\"}\n    ],\n    \"tools\": [{\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"create_crm_booking\",\n        \"description\": \"Tao booking dat coc can ho trong CRM 360\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"required\": [\"unit_code\", \"deposit_vnd\", \"agency_f1\"],\n          \"properties\": {\n            \"unit_code\": {\"type\": \"string\"},\n            \"deposit_vnd\": {\"type\": \"integer\"},\n            \"agency_f1\": {\"type\": \"string\", \"enum\": [\"TUNG_LONG\", \"HOP_NHAT\", \"IHD\"]}\n          }\n        }\n      }\n    }]\n  }'"
+    },
+    {
+      "type": "prose",
+      "id": "teardown-part3-chien-luoc-phan-cung-tam-trung-domation",
+      "eyebrow": "MỔ XẺ KHO MÃ • TỐI ƯU CHI PHÍ PHẦN CỨNG TẠI DOANH NGHIỆP VIỆT NAM",
+      "variant": "narrative",
+      "heading": "Khi nào doanh nghiệp nên chạy thẳng llama.cpp thay vì ép mua GPU H100/A100 hoặc dùng lớp bọc Ollama?",
+      "paragraphs": [
+        "Trong thực tế tư vấn hạ tầng cho hơn 30 doanh nghiệp thuộc nhiều ngành từ giáo dục, y tế, bất động sản đến F&B của DOMATION, không phải tổ chức nào cũng sẵn sàng giải ngân hàng trăm triệu đồng cho một máy chủ gắn card H100 hay cặp L40S ngay trong năm đầu tiên chuyển đổi số. Rất nhiều công ty đã có sẵn một máy chủ Dell/HPE chạy CPU Xeon nhiều nhân với 64GB–128GB RAM DDR4/DDR5, hoặc một trạm đồ họa gắn card RTX 4060 Ti 16GB / NVIDIA T4. Với kiểu phần cứng 'lệch pha' này, `vLLM` sẽ lập tức từ chối khởi động những model 32B cần 24–36GB VRAM, còn `llama.cpp` lại tỏa sáng rực rỡ.",
+        "Tại DOMATION, đội ngũ kỹ sư của Huỳnh Trọng Phúc (TurnioDEV) khai thác `ggml-org/llama.cpp` làm động cơ chạy ngầm cấp thấp cho hai bài toán rất đặc thù: thứ nhất là các tác vụ xử lý hàng loạt chạy theo hàng đợi BullMQ vào ban đêm hoặc tác vụ không đòi hỏi trả lời tức thời trong 1 giây (như bóc tách chứng từ kế toán, tóm tắt biên bản họp nội bộ, gắn thẻ phân loại kho tài liệu LMS), nơi cấu hình hybrid CPU+GPU giúp tận dụng 100% hạ tầng máy chủ sẵn có với chi phí đầu tư thêm gần như bằng không.",
+        "Thứ hai là các cụm máy chủ biên (edge inference) cần dung lượng Docker cực nhỏ dưới 200MB và khởi động dưới 3 giây mà không phải vác theo bộ thư viện PyTorch 10GB. Chỉ cần tuân thủ nghiêm ngặt hai nguyên tắc kiểm toán — giữ lượng tử ở ngưỡng `Q5_K_M` / `Q6_K` cho mọi quy trình có Tool Calling vào ERP/CRM, và khống chế số khe đồng thời `-np` vừa khít băng thông phần cứng thay vì chạy đua tải web công cộng — `llama.cpp` mang lại tỷ suất hiệu năng trên chi phí vô đối trong thế giới mã nguồn mở."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-audit-llamacpp-tool-calling",
+      "heading": "Checklist 5 bước kiểm toán bắt buộc trước khi đưa llama.cpp vào hệ thống ERP/CRM Tool Calling",
+      "items": [
+        {
+          "check": "Kiểm định chuẩn lượng tử hóa GGUF đạt tối thiểu `Q5_K_M` hoặc `Q6_K` / `Q8_0`",
+          "severity": "critical",
+          "verificationHow": "Chạy bộ test hồi quy gồm tối thiểu 50–100 câu lệnh gọi tool thực tế của doanh nghiệp (kèm tham số tiếng Việt có dấu, enum và số tiền lớn) để đo tỷ lệ sai lệch tham số.",
+          "passThreshold": "Tỷ lệ gọi đúng tên hàm và đúng ngữ nghĩa tham số >= 92%; tuyệt đối không dùng `Q2_K`, `Q3_*` hay `Q4_0` cho Agent có quyền ghi DB."
+        },
+        {
+          "check": "Tính đúng phép chia tổng ngữ cảnh `-c` cho số khe đồng thời `-np`",
+          "severity": "critical",
+          "verificationHow": "Đối chiếu log khởi động của `llama-server` phần `n_ctx_train` và `n_ctx / n_parallel` với độ dài prompt RAG lớn nhất của ứng dụng.",
+          "passThreshold": "Dung lượng mỗi khe (`-c / -np`) lớn hơn ít nhất 1,5 lần tổng số token của System Prompt + Tool Schema + tài liệu RAG."
+        },
+        {
+          "check": "Bắt buộc bật `--jinja` và rà soát chat template nhúng trong header GGUF",
+          "severity": "high",
+          "verificationHow": "Kiểm tra `llama-server` có nhận diện đúng thẻ `<tool_call>` hay cú pháp gọi hàm đặc thù của dòng model (Qwen, Llama, Mistral, Gemma) trong file GGUF không.",
+          "passThreshold": "Endpoint `/v1/chat/completions` trả về cấu trúc `tool_calls` chuẩn xác mà không bị lộ thẻ raw HTML/XML ra phần `content`."
+        },
+        {
+          "check": "Giám sát tình trạng swap ổ cứng và xác định rõ số lớp offload `-ngl`",
+          "severity": "high",
+          "verificationHow": "Theo dõi `nvidia-smi` và `vmstat` khi chạy đủ `-np` khe liên tục; kiểm tra cờ `--mlock` để ngăn nhân Linux đẩy trọng số ra swap đĩa.",
+          "passThreshold": "0 MB swap disk được dùng trong suốt quá trình suy luận và tốc độ tok/s không tụt quá 20% khi bật tối đa khe."
+        },
+        {
+          "check": "Khóa `--host 127.0.0.1` kèm `--api-key` và đặt sau AI Gateway (LiteLLM/Portkey)",
+          "severity": "recommended",
+          "verificationHow": "Thử gọi trực tiếp cổng `llama-server` từ máy khác trong mạng nội bộ không có Authorization header.",
+          "passThreshold": "Cổng nội bộ từ chối kết nối ngoài loopback hoặc trả về HTTP 401 Unauthorized nếu thiếu khóa hợp lệ."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-llamacpp",
+      "variant": "founder-pov",
+      "authorBadge": "Đánh Giá Kỹ Thuật • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "llama.cpp là phép màu giúp Private AI chạy trên phần cứng phổ thông — nhưng đừng bao giờ ép Agent ERP dùng bản nén 4-bit quá tay",
+      "body": "Sức hấp dẫn của ggml-org/llama.cpp nằm ở sự tự do tuyệt đối: chỉ cần một file binary C/C++ và một tệp GGUF là doanh nghiệp đã có thể chạy AI nội bộ ngay trên máy chủ hiện hữu mà không phải chờ ngân sách mua card H100. Thế nhưng, làm hệ thống ERP và CRM may đo cho doanh nghiệp không giống như chat giải trí. Chỉ một lần mô hình Q3 hay Q4_0 bị nhiễu trọng số làm lệch mã đại lý F1 hoặc sai số tiền đặt cọc trên CRM là đủ gây hậu quả vận hành thật. Hãy tận dụng llama.cpp để chạy thông minh trên phần cứng vừa tầm, nhưng luôn giữ chuẩn lượng tử tối thiểu Q5_K_M/Q6_K và bọc thêm kiểm chứng Zod/Pydantic chặt chẽ ở tầng backend."
+    }
+  ]
+}

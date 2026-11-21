@@ -20,7 +20,7 @@ import { ContactModal } from './ContactModal';
 import { DomationFooter } from './components/DomationFooter';
 import { usePageSeo } from './utils/seo';
 import { getNotFoundSeoConfig } from './data/coreRouteSeo';
-import { BOOST_ARTICLES } from './data/boostArticles';
+import { BOOST_CATALOG } from './data/boostCatalog';
 import { handleSpaLinkClick, navigateTo } from './utils/navigation';
 
 export interface NotFoundPageProps {
@@ -38,9 +38,9 @@ const CORE_DESTINATIONS = [
   },
   {
     href: '/boost',
-    badge: '74+ BÀI CHUYÊN SÂU',
+    badge: `${BOOST_CATALOG.length}+ BÀI CHUYÊN SÂU`,
     title: 'Blog DOMATION & SEO',
-    desc: 'Kiến thức Vibecode, AI 5.0, Logic quản trị, Tối ưu Ads, Landing Page & Chiến dịch.',
+    desc: 'Kiến thức Vibecode, AI 5.0, Logic quản trị, Audit Repo GitHub, Gemini/Claude/Codex & MCP.',
     icon: BookOpen,
     accent: 'text-indigo-700 bg-indigo-50 border-indigo-200',
   },
@@ -131,10 +131,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path = '/404' }) => 
       .filter((token) => token.length >= 2 && !STOP_WORDS.has(token));
 
     if (tokens.length === 0) {
-      return BOOST_ARTICLES.slice(0, 3);
+      return BOOST_CATALOG.slice(0, 3);
     }
 
-    const scored = BOOST_ARTICLES.map((article) => {
+    const scored = BOOST_CATALOG.map((article) => {
       const haystack = [
         article.slug,
         article.title,
@@ -159,7 +159,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path = '/404' }) => 
       .slice(0, 3);
 
     if (scored.every((item) => item.score === 0)) {
-      return BOOST_ARTICLES.slice(0, 3);
+      return BOOST_CATALOG.slice(0, 3);
     }
     return scored.map((item) => item.article);
   }, [normalizedPath]);
@@ -248,7 +248,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path = '/404' }) => 
                   className="px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#1E40FF] text-xs sm:text-sm font-bold inline-flex items-center gap-2 transition-colors"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Khám Phá Blog DOMATION (74+ Bài)</span>
+                  <span>Khám Phá Blog DOMATION ({BOOST_CATALOG.length}+ Bài)</span>
                 </a>
                 <a
                   href="/erp"
@@ -291,7 +291,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path = '/404' }) => 
               onClick={(e) => handleSpaLinkClick(e, '/boost')}
               className="text-xs font-bold text-[#1E40FF] hover:underline inline-flex items-center gap-1"
             >
-              <span>Xem toàn bộ 74 bài viết chuẩn SEO</span>
+              <span>Xem toàn bộ {BOOST_CATALOG.length}+ bài viết chuẩn SEO</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>

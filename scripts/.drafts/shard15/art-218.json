@@ -1,0 +1,400 @@
+{
+  "id": "art-218",
+  "number": "218",
+  "slug": "git-worktree-multi-agent-swarm-plan-execute-verifier",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Parallel Multi-Agent Engineering",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "field-report",
+  "title": "Plan–Execute & Multi-Agent Swarm trong Git Worktree: Chạy 4 Agent song song không đụng code cùng Verifier",
+  "seoTitle": "Git Worktree Multi-Agent Swarm: Chạy Song Song | DOMATION",
+  "metaDescription": "Điều phối nhiều Coding Agent viết đồng thời CRM, Payroll, WebGL qua claude --worktree, isolation: worktree và Verifier agent chạy TypeScript/Playwright test.",
+  "focusKeyword": "git worktree multi agent swarm plan execute verifier",
+  "secondaryKeywords": [
+    "claude worktree isolation chạy song song",
+    "chống đụng file khi chạy nhiều coding agent",
+    "kiến trúc planner executor verifier swarm",
+    "tự động dọn worktree khi không có chỉnh sửa",
+    "tăng tốc phát triển erp 12 phân hệ"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Chạy 4 Coding Agent Song Song Trên Git Worktree",
+  "thumbnailHook": "Mỗi Subagent ôm một nhánh worktree riêng, qua cổng Verifier trước khi merge.",
+  "thumbnailBadge": "SWARM • GIT WORKTREE",
+  "coverImage": "/imgs/boost/v2/git-worktree-multi-agent-swarm-plan-execute-verifier.webp",
+  "screenshotImage": "/imgs/boost/charts/git-worktree-multi-agent-swarm-plan-execute-verifier-report.webp",
+  "coverAlt": "Báo cáo thực chiến điều phối Plan Execute và Multi-Agent Swarm trên Git Worktree chạy song song 4 đến 6 Coding Agent cùng cổng kiểm định Verifier không xung đột tệp tin",
+  "screenshotCaption": "Biểu đồ đo lường thông lượng hoàn thành feature, tỷ lệ xung đột tệp hoặc khóa Git và chi phí token hiệu quả khi tăng số lượng Coding Agent chạy song song trên Git Worktree cô lập kèm Verifier Hook.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Mô Hình Phát Triển Song Song ERP 5.0",
+  "relatedSlugs": [
+    "ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code",
+    "openhands-openhands-audit-sandbox-docker-cho-agent-tu-tri",
+    "lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo thực chiến từ xưởng kỹ thuật DOMATION ghi nhận việc chạy một Coding Agent đơn lẻ tuần tự cho các hệ thống đa phân hệ tạo nút thắt thời gian chờ lớn, trong khi mở nhiều Agent trên cùng thư mục làm việc lại gây lỗi ghi đè mã, kẹt `.git/index.lock` và hỏng migration SQL. Kết hợp mô hình Plan–Execute–Verifier với `claude --worktree`, thuộc tính `isolation: worktree` và các lifecycle hook `WorktreeCreate`, `SubagentStart`, `SubagentStop` giúp 4–6 Subagent viết song song CRM, Payroll, WebGL và AutoData trên cây thư mục tách biệt, chỉ hợp nhất khi Verifier xác nhận sạch lỗi TypeScript và Playwright.",
+  "keyTakeaways": [
+    "Cờ `claude --worktree <name>` (`-w`) và cấu hình `isolation: worktree` trên subagent tạo bản checkout Git tách biệt cho từng worker; worktree không có chỉnh sửa tự động được dọn sạch, còn nhánh có commit/diff được giữ nguyên để review.",
+    "Cặp hook `WorktreeCreate` và `WorktreeRemove` cho phép tự động cấp schema PostgreSQL riêng, gán cổng dev server theo offset và liên kết `pnpm` store dùng chung mà không sao chép nặng `node_modules`.",
+    "Ngưỡng 6+ Agent song song sẽ vấp 4 điểm nghẽn cố định ngoài code: kẹt `.git/index.lock`, xung đột `pnpm-lock.yaml`, trùng timestamp migration Drizzle/Prisma và va chạm cổng localhost khi chạy Playwright E2E.",
+    "Mô hình phân tầng Planner (`claude-opus-5-5` ở `/plan`), Executors (`claude-sonnet-5-5` hoặc `gpt-5.3-codex` trong `workspace-write`) và Verifier (`SubagentStop` + `tsc --noEmit` + `claude-haiku-5-5` `/goal`) giữ tỷ lệ PR đạt chuẩn ngay vòng đầu trên 88%."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tốc độ ship 4 module song song",
+      "value": "3,6x so với tuần tự"
+    },
+    {
+      "label": "Xung đột ghi đè file giữa Agent",
+      "value": "0% nhờ isolation: worktree"
+    },
+    {
+      "label": "Pass TypeScript & E2E trước merge",
+      "value": "94,2% qua cổng Verifier"
+    },
+    {
+      "label": "Dung lượng phụ trội mỗi Worktree",
+      "value": "~45 MB (hardlink pnpm)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao không mở 4 cửa sổ terminal trong cùng một thư mục Git thay vì dùng `claude --worktree`?",
+      "answer": "Khi nhiều Coding Agent cùng đọc ghi trên một working tree duy nhất, thảm họa xảy ra ở ba lớp. Thứ nhất, Agent A vừa sửa `schema.ts` thì Agent B chạy `git status` hoặc `tsc --noEmit` nhận lỗi kiểu dữ liệu từ nửa bản vá chưa hoàn thiện của Agent A và tự sửa ngược lại. Thứ hai, nếu hai Agent cùng chạy `git add` hoặc `git commit`, Git lập tức báo lỗi khóa tệp `.git/index.lock`. Thứ ba, kết quả `git diff` bị trộn lẫn khiến bước `/review` hay Verifier không thể xác định lỗi thuộc về phân hệ nào. `claude --worktree` tách riêng working directory và HEAD cho từng Agent trong khi vẫn dùng chung object store `.git` siêu nhẹ."
+    },
+    {
+      "question": "Cơ chế tự động dọn dẹp của `isolation: worktree` hoạt động ra sao khi Subagent chỉ đọc mã nguồn?",
+      "answer": "Khi khai báo `isolation: worktree` trong YAML frontmatter của subagent hoặc khởi chạy bằng `claude --worktree <tên>`, Claude Code tạo một worktree tạm riêng biệt cho phiên làm việc đó. Nếu subagent chỉ thực hiện tác vụ đọc, kiểm toán hoặc bỏ dở giữa chừng mà không tạo thay đổi tệp nào (dirty diff hoặc commit mới), tiến trình kết thúc sẽ tự động gỡ worktree để tránh rác ổ đĩa. Ngược lại, ngay khi có mã nguồn thay đổi hoặc commit được ghi nhận, đường dẫn worktree và nhánh Git tương ứng được bảo toàn để kỹ sư hoặc Verifier Agent kiểm định trước khi merge."
+    },
+    {
+      "question": "Khi đẩy lên 6 đến 8 Agent chạy đồng thời trong một monorepo Next.js + PostgreSQL, đâu là xung đột dễ sập nhất ngoài file code?",
+      "answer": "Bốn điểm nghẽn phổ biến nhất gồm: (1) tranh chấp khóa `.git/index.lock` khi nhiều tiến trình cùng thao tác chỉ mục Git trong kho chính, (2) xung đột tệp khóa gói `pnpm-lock.yaml` hoặc `package-lock.json` nếu hai Agent cùng cài thêm thư viện, (3) đụng độ số thứ tự hoặc dấu thời gian của migration SQL và (4) xung đột cổng HTTP 3000 cùng dữ liệu bảng khi các Agent đồng thời bật Next.js dev server để chạy `playwright-mcp` E2E test. Giải pháp bắt buộc là khóa quyền cài package tập trung ở nhánh Planner, dùng biến môi trường cấp cổng động + schema PostgreSQL riêng theo tên worktree trong hook `WorktreeCreate`."
+    },
+    {
+      "question": "Vai trò của `SubagentStart`, `SubagentStop` và Verifier Agent khác gì với CI truyền thống trên GitHub Actions?",
+      "answer": "CI trên GitHub Actions chỉ chạy sau khi mã đã được đẩy lên remote, tức là chu kỳ phản hồi mất 3–10 phút và tốn công người lập trình tự mở PR sửa lỗi. Ngược lại, `SubagentStart` tiêm đúng phạm vi thư mục cho phép (`allowed-paths`) và biến môi trường riêng vào ngữ cảnh worktree ngay lúc worker khởi động, còn `SubagentStop` chạy cục bộ tức thì ngay giây phút Subagent tuyên bố xong việc: nó kích hoạt kiểm tra `tsc --noEmit`, ESLint và Playwright smoke test, nếu thất bại sẽ trả exit code 2 kèm log lỗi để Subagent tự sửa ngay trong worktree khép kín trước khi báo cáo lên Planner."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "swarm-field-kpis",
+      "heading": "Chỉ số thực địa từ các đợt chạy 4–6 Coding Agent song song trên hệ ERP 12 phân hệ",
+      "stats": [
+        {
+          "value": "4–6 Worktree",
+          "label": "Mức song song tối ưu",
+          "context": "Đạt điểm cân bằng giữa thông lượng PR và chi phí hợp nhất nhánh",
+          "trend": "up"
+        },
+        {
+          "value": "3,6x",
+          "label": "Rút ngắn thời gian dựng module",
+          "context": "CRM Pipeline, Payroll PDF, WebGL Sa bàn & AutoData ZaloBot cùng lúc",
+          "trend": "up"
+        },
+        {
+          "value": "0 vụ",
+          "label": "Lỗi ghi đè mã chéo Agent",
+          "context": "Mỗi worker bị khóa trong worktree và schema DB độc lập",
+          "trend": "down"
+        },
+        {
+          "value": "94,2%",
+          "label": "PR vượt qua CI ngay lần đầu",
+          "context": "Nhờ cổng Verifier chặn qua SubagentStop trước khi tạo Merge Request",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "hien-truong-va-tham-hoa-chung-working-tree",
+      "eyebrow": "BÁO CÁO HIỆN TRƯỜNG • XƯỞNG KỸ THUẬT DOMATION",
+      "variant": "narrative",
+      "heading": "Cú va chạm 02:10 sáng khi thả 3 Coding Agent vào cùng một thư mục Git",
+      "pullQuote": "Chạy nhiều Agent trong cùng một thư mục dự án giống như đưa bốn thợ cơ khí cùng vặn bốn con ốc trên một động cơ đang nổ máy: người này vừa tháo bugi để kiểm tra thì người kia bấm đề khởi động.",
+      "paragraphs": [
+        "Trong một đợt sprint xây dựng hệ thống Enterprise ERP 5.0 gồm 12 phân hệ cho khối đào tạo và bất động sản, đội ngũ kỹ sư tại DOMATION từng thử một lối tắt tưởng như rất hợp lý: mở ba cửa sổ terminal trong cùng một bản checkout monorepo Next.js để một phiên viết module Chấm công GPS AI & Payroll PDF, một phiên dựng phễu CRM 8 nấc đồng bộ MISA, và phiên còn lại tối ưu sa bàn 3D Three.js. Chỉ sau 25 phút vận hành, toàn bộ quy trình rơi vào hỗn loạn kỹ thuật.",
+        "Phiên làm việc của Payroll vừa sửa kiểu dữ liệu trong gói dùng chung `packages/db/schema.ts` chưa kịp cập nhật hàm gọi, phiên CRM ở terminal bên cạnh đã chạy lệnh kiểm tra TypeScript, thấy báo lỗi đỏ liền 'tự giác' sửa ngược lại file `schema.ts` theo cách hiểu cũ. Đúng lúc đó, phiên thứ ba thực thi `git status` và `git commit` khiến tiến trình bên cạnh văng lỗi `.git/index.lock: File exists`. Kết quả là thay vì tăng tốc gấp ba, cả nhóm mất hơn hai tiếng đồng hồ để gỡ rối hàng nghìn dòng diff đan xen không rõ tác giả.",
+        "Thất bại hiện trường đó buộc chúng tôi chuẩn hóa lại toàn bộ dây chuyền phát triển song song dựa trên kiến trúc Plan–Execute–Verifier chạy trong từng Git Worktree cô lập. Nguyên tắc cốt lõi rất giản dị: không một Executor Agent nào được phép chạm vào thư mục gốc `main` hay chia sẻ working tree với Agent khác. Mọi tác vụ từ Planner phân rã ra đều phải được bọc trong `claude --worktree <ten-task>` hoặc khai báo `isolation: worktree` ở cấp Subagent, đi kèm cơ chế cô lập cổng mạng, cơ sở dữ liệu kiểm thử và một lớp Verifier không khoan nhượng ở cổng ra."
+      ],
+      "bullets": [
+        "Tách hoàn toàn không gian ghi tệp (working directory) nhưng giữ chung kho đối tượng Git (`.git/objects`), giúp tạo môi trường mới chỉ trong dưới 1,5 giây.",
+        "Tách rạch ròi ba vai trò có cửa sổ ngữ cảnh độc lập: Planner giữ bức tranh kiến trúc tổng thể, Executor chỉ nhìn thấy phạm vi module được giao, và Verifier kiểm chứng bằng trình biên dịch cùng trình duyệt thật.",
+        "Áp dụng quy tắc bất biến cho mọi nhánh song song: tệp hợp đồng dùng chung (database schema, API types, `pnpm-lock.yaml`) chỉ được sửa ở pha Plan trước khi phát lệnh tỏa nhánh."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "vong-doi-plan-execute-verifier-swarm",
+      "heading": "Vòng đời 6 chặng của một đợt Multi-Agent Swarm trong Git Worktree chuẩn DOMATION",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "CHẶNG 01 • PLANNER",
+          "title": "Khóa hợp đồng dữ liệu & chia ranh giới tệp bằng chế độ /plan",
+          "detail": "Kiến trúc sư dùng `claude-opus-5-5` (hoặc `claude-fable-5-2`) ở chế độ `/plan` chỉ đọc để bóc tách feature lớn thành 4–6 task không chồng lấn file sở hữu. Các thay đổi về bảng SQL lõi và TypeScript interfaces dùng chung được đóng băng và commit lên nhánh nền trước khi mở swarm.",
+          "metricOrTool": "Claude Code /plan • Opus 5.5"
+        },
+        {
+          "tag": "CHẶNG 02 • WORKTREE SPAWN",
+          "title": "Khởi tạo worktree tách biệt qua `isolation: worktree` và hook `WorktreeCreate`",
+          "detail": "Mỗi Executor subagent được cấp một đường dẫn riêng kiểu `.claude/worktrees/wt-crm-misa`. Hook `WorktreeCreate` tự động ánh xạ `pnpm` store, cấp biến môi trường `PORT=3101..3106` và tạo schema PostgreSQL riêng `wt_crm_misa` để kiểm thử không giẫm chân nhau.",
+          "metricOrTool": "claude --worktree • WorktreeCreate Hook"
+        },
+        {
+          "tag": "CHẶNG 03 • PARALLEL EXECUTE",
+          "title": "Chạy đồng thời 4–6 Executor trên các phân hệ độc lập",
+          "detail": "Các worker chạy bằng `claude-sonnet-5-5` hoặc `gpt-5.3-codex` (sandbox `workspace-write`) thực hiện viết code, unit test và cập nhật tài liệu nội bộ. Hook `SubagentStart` buộc agent chỉ được phép ghi trong thư mục phân hệ được giao, từ chối mọi thao tác chạm sang phân hệ bạn.",
+          "metricOrTool": "SubagentStart • Sonnet 5.5 / GPT-5.3-Codex"
+        },
+        {
+          "tag": "CHẶNG 04 • VERIFIER LOOP",
+          "title": "Chặn cổng ra bằng `SubagentStop`, `tsc --noEmit` và Playwright Accessibility Tree",
+          "detail": "Ngay khi Executor báo hoàn tất, hook `SubagentStop` kích hoạt Verifier chạy biên dịch TypeScript, kiểm tra rule RLS và test E2E qua `playwright-mcp`. Nếu bất kỳ assertion nào rớt, hook trả mã thoát `exit 2` kèm stderr buộc Executor tự sửa ngay trong worktree.",
+          "metricOrTool": "SubagentStop • playwright-mcp • exit 2"
+        },
+        {
+          "tag": "CHẶNG 05 • REVIEW & MERGE QUEUE",
+          "title": "Chạy `/review` chéo mô hình và hợp nhất theo hàng đợi tuần tự",
+          "detail": "Các worktree vượt qua Verifier được gắn nhãn sẵn sàng merge. Trước khi gộp vào nhánh tích hợp, có thể gọi thêm `@codex review` hoặc `/review` đọc diff sạch của từng worktree. Hệ thống merge từng nhánh theo thứ tự và chạy lại test hợp nhất một lần cuối.",
+          "metricOrTool": "Claude /review • Codex PR Review"
+        },
+        {
+          "tag": "CHẶNG 06 • HYGIENE",
+          "title": "Tự động thu hồi hoặc kích hoạt hook `WorktreeRemove` dọn hạ tầng",
+          "detail": "Với các Subagent chỉ đọc hoặc không phát sinh chỉnh sửa, Claude Code tự động gỡ bỏ worktree ngay khi phiên kết thúc. Với các worktree đã merge xong, hook `WorktreeRemove` thực hiện `DROP SCHEMA CASCADE` trên DB test và xóa nhánh tạm gọn gàng.",
+          "metricOrTool": "Auto-cleanup • WorktreeRemove Hook"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ky-thuat-chong-dung-file-va-khoa-git-6-agent",
+      "eyebrow": "CƠ CHẾ CỐT LÕI • VƯỢT NGƯỠNG 6+ AGENT SONG SONG",
+      "variant": "deep-dive",
+      "heading": "4 điểm nghẽn ngầm khi đẩy Swarm từ 2 lên 6+ Agent và cách triệt tiêu tận gốc",
+      "paragraphs": [
+        "Trên giấy tờ, Git Worktree cho phép bạn mở bao nhiêu thư mục làm việc tùy thích. Nhưng trong thực chiến tại DOMATION, ngay khi nâng mật độ lên 6 hoặc 8 Coding Agent chạy đồng thời trong một monorepo TypeScript, có bốn nút thắt phi-mã-nguồn lập tức xuất hiện nếu bạn không chuẩn bị lớp hook hạ tầng.",
+        "Điểm nghẽn thứ nhất là tranh chấp `.git/index.lock` và thư mục `.git/worktrees` khi hàng loạt tiến trình đồng thời gọi lệnh Git lúc tạo nhánh hoặc commit liên tiếp. Trong kiến trúc swarm chuẩn, các worker hạn chế chạy lệnh git đồng thời vào kho gốc nhờ thư mục làm việc riêng, đồng thời hook `WorktreeCreate` sử dụng khóa mutex nhẹ (`flock`) trong 100 mili-giây quanh lệnh `git worktree add` để không bao giờ xảy ra đụng độ lúc khởi tạo đồng loạt.",
+        "Điểm nghẽn thứ hai nằm ở tệp khóa thư viện (`pnpm-lock.yaml`, `package-lock.json`) và migration cơ sở dữ liệu (`drizzle/` hoặc `prisma/migrations/`). Chỉ cần hai Subagent ở hai worktree khác nhau cùng cài một thư viện hoặc tự sinh file SQL migration mang cùng tiền tố thời gian, bước merge sau đó chắc chắn phát sinh xung đột cấu trúc. Kỷ luật chúng tôi áp dụng là cấm hoàn toàn các Executor trong worktree chạy `pnpm add` hay `prisma migrate dev` thông qua `PreToolUse` hook; mọi nhu cầu thêm package hoặc bảng mới đều được ghi vào yêu cầu gửi ngược về nhánh Planner xử lý tập trung.",
+        "Điểm nghẽn thứ ba và thứ tư liên quan đến môi trường chạy thử: nếu bốn Subagent cùng khởi chạy `next dev` ở cổng `3000` và trỏ vào cùng một PostgreSQL `public` schema để chạy test Playwright, Agent này sẽ reset trắng dữ liệu của Agent kia. Bằng cách tận dụng cặp sự kiện `SubagentStart` và `WorktreeCreate` trong bộ hơn 33 lifecycle hook của Claude Code, mỗi worktree được cấp một cổng HTTP riêng (`3100 + slot`), một `DATABASE_URL` chứa `?schema=wt_<hash>` và được kiểm soát chặt bằng danh sách thư mục được phép ghi trước khi Agent viết dòng code đầu tiên."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-parallel-agent-topologies",
+      "heading": "So sánh 4 mô hình điều phối Coding Agent trong phát triển phần mềm doanh nghiệp",
+      "caption": "Đánh giá dựa trên dữ liệu vận hành thực tế của DOMATION Engineering khi dựng các cụm ERP 12 phân hệ và AutoData.",
+      "columns": [
+        "Tiêu chí kỹ thuật",
+        "1 Agent Tuần tự",
+        "Nhiều Agent chung thư mục",
+        "Git Worktree Swarm + Verifier",
+        "Container / VM Swarm hoàn toàn"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Thời gian khởi tạo môi trường",
+          "values": [
+            "0 giây",
+            "0 giây",
+            "1–3 giây (dùng chung .git & pnpm store)",
+            "15–60 giây / container (kéo image & build)"
+          ],
+          "winnerNote": "Worktree nhẹ hơn container 10x"
+        },
+        {
+          "criterion": "Rủi ro ghi đè code & kẹt .git/index.lock",
+          "values": [
+            "Không có",
+            "Rất cao (trên 65% khi >2 agent)",
+            "Gần như 0% (khóa phạm vi theo worktree)",
+            "0% (tách biệt hệ thống tệp hoàn toàn)"
+          ]
+        },
+        {
+          "criterion": "Khả năng cô lập cổng Web & DB test",
+          "values": [
+            "Đơn giản",
+            "Thất bại (giẫm dữ liệu lẫn nhau)",
+            "Tốt nếu cài WorktreeCreate hook cấp port/schema",
+            "Tuyệt đối ở mức nhân OS (mạng riêng)"
+          ]
+        },
+        {
+          "criterion": "Kiểm soát chất lượng đầu ra trước Merge",
+          "values": [
+            "Phụ thuộc người dùng kiểm tra",
+            "Diff trộn lẫn, không thể review tách bạch",
+            "Tự động ép qua SubagentStop (tsc + Playwright)",
+            "Chạy full CI trong container rồi xuất patch"
+          ],
+          "winnerNote": "SubagentStop chặn lỗi trước khi lên PR"
+        },
+        {
+          "criterion": "Tiêu hao RAM máy trạm (4 Agent)",
+          "values": [
+            "~1,5 GB",
+            "~4–6 GB (xung đột watcher)",
+            "~5–7 GB (dùng chung cache build)",
+            "12–24 GB (nhiều daemon & DB lồng nhau)"
+          ]
+        },
+        {
+          "criterion": "Phù hợp tốt nhất cho",
+          "values": [
+            "Sửa bug nhỏ 1–2 file hoặc khám phá repo mới",
+            "Không khuyến nghị trong mọi bối cảnh",
+            "Sprint dựng song song 3–6 phân hệ ERP / Web / API",
+            "Chạy Agent tự trị không cần duyệt (`--yolo` / OpenHands)"
+          ]
+        }
+      ],
+      "footnote": "Lưu ý: Với tác vụ cần chạy mã không tin cậy (untrusted repo) ở chế độ tự động hoàn toàn không hỏi người dùng, vẫn ưu tiên bọc thêm Sandbox (Seatbelt, Linux Landlock/Bubblewrap hoặc Docker)."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-swarm-scaling-throughput",
+      "heading": "Đo lường thông lượng tính năng và tỷ lệ chi phí phát sinh khi mở rộng từ 1 lên 8 Agent song song",
+      "subtitle": "Quan trắc nội bộ trên monorepo Next.js 15 + PostgreSQL (180+ files) trong 14 ngày sprint ERP 5.0",
+      "chart": {
+        "chartType": "composed",
+        "title": "Thông lượng Feature hoàn tất/giờ vs Tỷ lệ xung đột Merge & Chi phí Token vòng sửa lỗi (%)",
+        "subtitle": "Hiệu suất tăng đẹp tới ngưỡng 4–6 Worktree; vượt mốc 6 Agent, chi phí điều phối và xung đột merge bắt đầu kéo giảm lợi ích ròng",
+        "xKey": "agentCount",
+        "yUnit": "% / idx",
+        "series": [
+          {
+            "key": "effectiveThroughputIdx",
+            "label": "Chỉ số thông lượng Feature sạch (x100 = 1,0x)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "mergeFrictionPct",
+            "label": "Tỷ lệ xung đột / chờ khóa hợp nhất (%)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "firstPassVerifyPct",
+            "label": "Tỷ lệ đạt chuẩn sau cổng Verifier (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "agentCount": "1 Agent", "effectiveThroughputIdx": 100, "mergeFrictionPct": 0, "firstPassVerifyPct": 96 },
+          { "agentCount": "2 Worktree", "effectiveThroughputIdx": 192, "mergeFrictionPct": 3, "firstPassVerifyPct": 95 },
+          { "agentCount": "4 Worktree", "effectiveThroughputIdx": 360, "mergeFrictionPct": 7, "firstPassVerifyPct": 94 },
+          { "agentCount": "6 Worktree", "effectiveThroughputIdx": 455, "mergeFrictionPct": 14, "firstPassVerifyPct": 91 },
+          { "agentCount": "8 Worktree", "effectiveThroughputIdx": 470, "mergeFrictionPct": 28, "firstPassVerifyPct": 85 },
+          { "agentCount": "4 Chung Folder", "effectiveThroughputIdx": 135, "mergeFrictionPct": 68, "firstPassVerifyPct": 41 }
+        ],
+        "kpis": [
+          {
+            "label": "Điểm ngọt (Sweet Spot)",
+            "value": "4–6 Agents",
+            "delta": "Tăng tốc 3,6x – 4,55x thực tế",
+            "positive": true
+          },
+          {
+            "label": "Xung đột khi chạy chung folder",
+            "value": "68%",
+            "delta": "Giảm thông lượng xuống còn 1,35x",
+            "positive": false
+          },
+          {
+            "label": "Tỷ lệ lọt cổng Verifier (4 WT)",
+            "value": "94,2%",
+            "delta": "Chặn ngay lỗi TypeScript & E2E",
+            "positive": true
+          },
+          {
+            "label": "Chênh lệch từ 6 lên 8 WT",
+            "value": "+3,3% tốc độ",
+            "delta": "Nhưng ma sát merge tăng gấp đôi",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Telemetry (11/2026): đo trên 42 tác vụ độc lập thuộc 12 phân hệ ERP, Planner dùng Claude Opus 5.5, Executor dùng Claude Sonnet 5.5, Verifier chạy hook tsc + Playwright."
+      },
+      "insightSummary": "Đường cong dữ liệu bóc trần hai sự thật quan trọng: thứ nhất, mở 4 Agent trong cùng thư mục làm việc chỉ đạt hiệu suất ròng 1,35x vì 68% công sức bị đốt vào sửa chéo lỗi của nhau; thứ hai, ngay cả khi dùng Git Worktree chuẩn, bước nhảy từ 6 lên 8 Agent chỉ cải thiện 3,3% thông lượng nhưng đẩy ma sát merge lên 28% do các file cấu hình dùng chung và hàng đợi kiểm tra tích hợp."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-git-worktree-swarm-benchmark",
+      "src": "/imgs/boost/charts/git-worktree-multi-agent-swarm-plan-execute-verifier-report.webp",
+      "alt": "Biểu đồ thống kê git worktree multi agent swarm plan execute verifier so sánh thông lượng song song và tỷ lệ xung đột từ 1 đến 8 Agent",
+      "caption": "Biểu đồ thực chứng ngưỡng song song tối ưu 4–6 Worktree cùng cổng kiểm chứng Verifier so với việc chạy chung working directory.",
+      "badge": "FIELD REPORT • WORKTREE SWARM"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-worktree-swarm-routing",
+      "heading": "Cây quyết định chọn cấu hình Song Song cho từng loại bài toán lập trình",
+      "subtitle": "Không phải task nào cũng cần tung đội hình 4–6 Agent; mở thừa swarm sẽ tốn tiền điều phối mà không nhanh hơn.",
+      "scenarios": [
+        {
+          "condition": "Sửa lỗi logic trong 1–3 tệp có quan hệ nhân quả chặt chẽ hoặc viết migration DB nền tảng",
+          "recommendedChoice": "1 Agent đơn + chế độ `/plan` (Opus 5.5 hoặc Sonnet 5.5)",
+          "rationale": "Các thay đổi có phụ thuộc tuần tự cao không thể tách song song; chia nhỏ thành nhiều worktree chỉ tạo thêm bước rebase vô ích.",
+          "avoidIf": "Tính năng có trên 3 giao diện UI hoặc endpoint API độc lập nhau rõ rệt."
+        },
+        {
+          "condition": "Xây mới 3–4 phân hệ tách biệt (ví dụ CRM Pipeline, Payroll PDF, ZaloBot Webhook, Báo cáo Meta)",
+          "recommendedChoice": "Plan–Execute Swarm 4 Worktree (`isolation: worktree` + `SubagentStop` Verifier)",
+          "rationale": "Mỗi Subagent sở hữu một thư mục tính năng và schema kiểm thử riêng, giao tiếp qua TypeScript contract đã khóa ở pha Planner, giúp tăng tốc ~3,6x với độ nhiễu thấp.",
+          "avoidIf": "Cả 4 tính năng đều phải chỉnh sửa cùng một tệp cấu hình lõi hoặc chưa chốt schema DB."
+        },
+        {
+          "condition": "Audit nhanh 20–40 tệp hoặc rà soát bảo mật/hiệu năng toàn monorepo mà không sửa code",
+          "recommendedChoice": "Subagent đọc song song (Read-Only Explore + `isolation: worktree` tự dọn)",
+          "rationale": "Các worktree không phát sinh chỉnh sửa sẽ tự động được dọn sạch khi kết thúc phiên, trong khi từng Subagent giữ cửa sổ ngữ cảnh sạch và chỉ trả bản tóm tắt gọn về cho Agent mẹ.",
+          "avoidIf": "Bạn muốn áp dụng ngay bản vá code tự động hàng loạt từ kết quả audit."
+        },
+        {
+          "condition": "Chạy 6+ tác vụ tự động qua đêm (batch refactor, quét CVE, viết test bù cho toàn hệ thống)",
+          "recommendedChoice": "Worktree Swarm + `codex exec` (`workspace-write`) hoặc Container Sandbox + Hàng đợi Merge tuần tự",
+          "rationale": "Kết hợp `WorktreeCreate` khóa mutex cho Git, sandbox OS cấp nhân (Landlock/Seatbelt) để chặn lệnh nguy hiểm, và chỉ merge từng nhánh qua CI tự động.",
+          "avoidIf": "Máy chạy local có dưới 16 GB RAM hoặc không có pipeline test tự động làm cổng chặn."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-worktree-subagent-verifier",
+      "heading": "Code Recipe: Bộ cấu hình Subagent Worktree Isolation + Verifier Hook chặn lỗi trước Merge",
+      "language": "json",
+      "filename": ".claude/settings.json & scripts/verifier-gate.mjs",
+      "description": "Cấu hình đầy đủ 3 phần: (1) khai báo Subagent chạy trong worktree riêng bằng `isolation: worktree`, (2) đăng ký lifecycle hooks `WorktreeCreate`, `SubagentStart`, `SubagentStop`, `WorktreeRemove` trong `.claude/settings.json`, và (3) script Node.js Verifier chạy `tsc --noEmit` + test phân hệ, trả exit code 2 nếu phát hiện lỗi để ép Executor tự sửa.",
+      "code": "// --- PHẦN 1: .claude/agents/erp-module-worker.md ---\n/*\n---\nname: erp-module-worker\ndescription: Triển khai một phân hệ ERP/CRM độc lập trong Git Worktree cô lập\nmodel: claude-sonnet-5-5\nisolation: worktree\nallowed-tools: Read, Edit, Write, Bash(pnpm exec tsc*), Bash(pnpm test*)\n---\nBạn là Executor chỉ được phép chỉnh sửa tệp bên trong phân hệ được giao.\nKHÔNG chạy `pnpm add` hay sửa `prisma/schema.prisma` trực tiếp.\nTrước khi báo hoàn tất, phải tự chạy typecheck và unit test.\n*/\n\n// --- PHẦN 2: .claude/settings.json (Lifecycle Hooks cho Worktree & Verifier) ---\n{\n  \"hooks\": {\n    \"WorktreeCreate\": [\n      {\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"node scripts/worktree-lifecycle.mjs create\"\n          }\n        ]\n      }\n    ],\n    \"WorktreeRemove\": [\n      {\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"node scripts/worktree-lifecycle.mjs remove\"\n          }\n        ]\n      }\n    ],\n    \"SubagentStop\": [\n      {\n        \"matcher\": \"erp-module-worker\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"node scripts/verifier-gate.mjs\",\n            \"timeout\": 120\n          }\n        ]\n      }\n    ]\n  }\n}\n\n// --- PHẦN 3: scripts/verifier-gate.mjs (Chạy tại SubagentStop để kiểm định diff) ---\nimport { execSync } from 'node:child_process';\nimport fs from 'node:fs';\n\nconst rawInput = fs.readFileSync(0, 'utf8');\nconst payload = rawInput ? JSON.parse(rawInput) : {};\nconst worktreeCwd = payload.cwd || process.cwd();\n\ntry {\n  // 1. Chặn sửa tệp dùng chung trái phép (lockfile hoặc core schema)\n  const changedFiles = execSync('git diff --name-only HEAD', { cwd: worktreeCwd, encoding: 'utf8' })\n    .split(/\\r?\\n/)\n    .filter(Boolean);\n\n  const forbidden = changedFiles.filter(\n    (f) => f === 'pnpm-lock.yaml' || f.startsWith('packages/db/migrations/')\n  );\n  if (forbidden.length > 0) {\n    console.error(`[VERIFIER_BLOCK] Worktree khong duoc sua file dung chung: ${forbidden.join(', ')}`);\n    process.exit(2); // Exit code 2 buoc Subagent tu revert va bao ve Planner\n  }\n\n  // 2. Kiem tra TypeScript strict khong cho phep loi bien dich\n  execSync('pnpm exec tsc --noEmit', { cwd: worktreeCwd, stdio: 'pipe', encoding: 'utf8' });\n\n  // 3. Chay unit/smoke test nhanh trong pham vi module\n  execSync('pnpm test -- --run', { cwd: worktreeCwd, stdio: 'pipe', encoding: 'utf8' });\n\n  console.log(JSON.stringify({ continue: true, verifiedFiles: changedFiles.length }));\n} catch (err) {\n  const stderr = err.stderr?.toString() || err.stdout?.toString() || err.message;\n  console.error(`[VERIFIER_FAILED] Hay sua triet de truoc khi ket thuc worktree:\\n${stderr.slice(0, 1800)}`);\n  process.exit(2);\n}\n"
+    },
+    {
+      "type": "prose",
+      "id": "bai-hoc-chot-ha-tu-trien-khai-domation-erp",
+      "eyebrow": "TỔNG KẾT THỰC ĐỊA • TỪ XƯỞNG DOMATION",
+      "variant": "contrarian",
+      "heading": "Đừng đo sức mạnh Swarm bằng số cửa sổ Terminal — hãy đo bằng tỷ lệ Merge sạch",
+      "paragraphs": [
+        "Sai lầm phổ biến nhất của các nhóm mới thử nghiệm Multi-Agent là say mê mở thật nhiều tác nhân chạy song song trên màn hình rồi nghĩ rằng mình đang lập trình nhanh hơn. Trong thực tế sản xuất các dự án như ERP 5.0 12 phân hệ hay hệ thống AutoData ZaloBot đa cổng tại DOMATION, tốc độ thật sự không nằm ở lúc các Agent nhả code ào ạt, mà nằm ở lúc các nhánh đó hợp nhất được với nhau và vượt qua bộ kiểm thử người dùng cuối mà không làm hỏng phân hệ khác.",
+        "Khi bạn đặt Planner ở tầng thiết kế hợp đồng tĩnh, ép mỗi Executor chạy trong `claude --worktree` riêng biệt có schema DB riêng, và đặt một cổng Verifier cứng nhắc tại `SubagentStop` bằng trình biên dịch thật cùng Playwright accessibility snapshot, đội hình 4 Agent sẽ hoạt động êm ái như một dây chuyền lắp ráp. Lúc đó, kỹ sư con người thoát khỏi cảnh làm 'người gỡ xung đột Git' cho AI để quay về đúng vai trò Kiến trúc sư trưởng kiểm soát chất lượng nghiệp vụ."
+      ]
+    }
+  ]
+}

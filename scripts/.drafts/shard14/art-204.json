@@ -1,0 +1,361 @@
+{
+  "id": "art-204",
+  "number": "204",
+  "slug": "lightweight-router-arena-claude-haiku-5-5-vs-gemini-3-5-flash-lite-vs-codex-mini",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Lightweight Subagent & Model Routing",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Hạng Nhẹ Subagent & Router: Claude Haiku 5.5 vs Gemini 3.5/3.1 Flash-Lite vs codex-mini-latest & GPT-5.6 Luna",
+  "seoTitle": "Haiku 5.5 vs Gemini 3.5 Flash-Lite vs codex-mini | DOMATION",
+  "metaDescription": "So sánh hạng nhẹ cho phân loại Lead, đọc PDF và Subagent: Haiku 5.5 ($0.10/$0.50), Gemini 3.5/3.1 Flash-Lite, codex-mini-latest và GPT-5.6 Luna.",
+  "focusKeyword": "claude haiku 5.5 vs gemini 3.5 flash lite vs codex mini",
+  "secondaryKeywords": [
+    "gemini 3.1 flash lite task router",
+    "claude haiku 5.5 giá dưới 100k token",
+    "gpt 5.6 luna vs codex mini latest",
+    "model nhẹ phân loại lead và chấm điểm",
+    "giảm 80% chi phí subagent bằng model nhẹ"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "Haiku 5.5 vs Flash-Lite vs codex-mini & Luna",
+  "thumbnailHook": "Phân luồng subagent dưới $0.30/1M token nhưng vẫn giữ nguyên cửa sổ 1M context.",
+  "thumbnailBadge": "ARENA • LIGHTWEIGHT",
+  "coverImage": "/imgs/boost/v2/lightweight-router-arena-claude-haiku-5-5-vs-gemini-3-5-flash-lite-vs-codex-mini.webp",
+  "screenshotImage": "/imgs/boost/charts/lightweight-router-arena-claude-haiku-5-5-vs-gemini-3-5-flash-lite-vs-codex-mini-report.webp",
+  "coverAlt": "Bản vẽ kiến trúc so sánh claude haiku 5.5 vs gemini 3.5 flash lite vs codex mini và gpt-5.6 luna cho tầng subagent, phân loại lead và đọc PDF",
+  "screenshotCaption": "Biểu đồ chi phí cho 10.000 lượt tác vụ Subagent/Router theo 5 bậc ngữ cảnh (2K đến 300K token): làm rõ ranh giới bậc giá 100K của Haiku 5.5, chi phí phẳng 1M của Flash-Lite / Luna và mức giá lỗi thời của codex-mini-latest.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem AI Pre-Scorer & Subagent Siêu Nhanh",
+  "relatedSlugs": [
+    "multi-tier-hybrid-routing-finops-planner-executor-router",
+    "midweight-coding-arena-claude-sonnet-5-5-vs-gemini-3-8-flash-vs-gpt-5-2-codex",
+    "ai-unit-economics-token-finops-kiem-soat-chi-phi-theo-lead",
+    "ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản thiết kế kiến trúc claude haiku 5.5 vs gemini 3.5 flash lite vs codex mini định chuẩn tầng Subagent & Router chịu 80% số lượt gọi API hàng ngày. Claude Haiku 5.5 ($0.10/$0.50, Cache Read $0.01) là nhà vô địch tuyệt đối khi prompt <= 100K token, nhưng vượt 100K đơn giá vọt 5x lên $0.50/$2.50. Gemini 3.1 Flash-Lite ($0.25/$1.50) chuyên trị routing siêu nhanh, còn 3.5 Flash-Lite ($0.30/$2.50) giữ nguyên giá phẳng tới 1M token và hỗ trợ PDF/Video/Computer Use. Đặc biệt, tuyệt đối thay thế codex-mini-latest ($1.50/$6.00 quá đắt) và GPT-5.1-Codex-Mini (đã deprecated) bằng GPT-5.6 Luna ($0.20/$1.20).",
+  "keyTakeaways": [
+    "Đừng bao giờ tin mù quáng bảng giá quảng cáo của Claude Haiku 5.5: mức $0.10 in / $0.50 out / $0.01 cache read chỉ áp dụng cho prompt <= 100.000 token; chạm 100.001 token, toàn bộ giá nhảy gấp 5 lần lên $0.50/$2.50/$0.05.",
+    "Google tách đôi rất thông minh: Gemini 3.1 Flash-Lite ($0.25/$1.50, không hỗ trợ Computer Use & Live API) làm Task Router cho Gemini CLI ở tốc độ tia chớp; Gemini 3.5 Flash-Lite ($0.30/$2.50) hỗ trợ Computer Use và giữ mức giá phẳng suốt cửa sổ 1M cho bài toán đọc video/audio/PDF lớn.",
+    "Cảnh báo bẫy giá từ OpenAI: codex-mini-latest (xuất thân o4-mini từ 05/2025) có giá $1.50/$6.00 (đắt gấp 6–15 lần các đối thủ 2026!), còn GPT-5.1-Codex-Mini đã bị deprecated từ 04/2026 — ứng viên hạng nhẹ thực thụ của OpenAI cuối 2026 là GPT-5.6 Luna ($0.20 in / $1.20 out / $0.02 cache read).",
+    "Cả Haiku 5.5 và bộ đôi Flash-Lite đều hỗ trợ cửa sổ 1M context và suy luận tùy chỉnh (Flash-Lite có mức minimal cho độ trễ dưới 400ms), biến chúng thành 'bộ lọc tiền trạm' lý tưởng trước khi kích hoạt model hạng trung hoặc hạng nặng.",
+    "Tại DOMATION, tầng hạng nhẹ xử lý toàn bộ khâu lọc Lead rác đa kênh (150,000+ Leads), trích xuất hóa đơn/CCCD PDF, kiểm tra điều kiện /goal và gán nhánh ZaloBot trước khi chuyển ca khó lên Sonnet 5.5 hoặc Gemini 3.8 Flash."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Haiku 5.5 <= 100K Token",
+      "value": "$0.10 in / $0.50 out"
+    },
+    {
+      "label": "Bẫy giá Haiku > 100K",
+      "value": "Nhảy 5x → $0.50 / $2.50"
+    },
+    {
+      "label": "Gemini 3.1 Flash-Lite Router",
+      "value": "$0.25 in / $1.50 out"
+    },
+    {
+      "label": "OpenAI Thế hệ mới (Luna)",
+      "value": "$0.20 in / $1.20 out"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao Claude Haiku 5.5 được mệnh danh là vua phân loại Lead nhưng lại có thể khiến hóa đơn đội gấp 5 lần nếu ghép với MCP?",
+      "answer": "Claude Haiku 5.5 (ra mắt 07/10/2026) sở hữu bảng giá bậc thang tại đúng mốc 100.000 token. Với prompt <= 100K, giá chỉ là $0.10/1M input và $0.50/1M output (Cache Read $0.01). Nhưng nếu bạn nạp sẵn quá nhiều schema JSON từ 5–6 MCP server (dễ ngốn 50K–80K token) rồi đính kèm một lịch sử chat dài hoặc file tài liệu 40K token đẩy tổng đầu vào vượt 100K, Haiku 5.5 lập tức chuyển sang biểu giá trên 100K: $0.50/1M input và $2.50/1M output — đắt ngang hoặc hơn cả Gemini 3.5 Flash-Lite. Hãy giữ prompt dưới 95K hoặc bật ENABLE_TOOL_SEARCH=true để không trượt ngưỡng."
+    },
+    {
+      "question": "Giữa Gemini 3.1 Flash-Lite và Gemini 3.5 Flash-Lite, bản nào dùng cho Task Router còn bản nào dùng cho Subagent đọc tài liệu?",
+      "answer": "Dù cùng nằm ở phân khúc Flash-Lite với 1M input / 64K output và hỗ trợ thinking_level='minimal', hai model có vai trò kiến trúc riêng biệt. Gemini 3.1 Flash-Lite (Stable 05/2026, lưu ý bản -preview đã tắt từ 25/05/2026) có giá $0.25/$1.50 ($0.50 với audio input) và không hỗ trợ Computer Use; nó được chính Gemini CLI dùng làm bộ phân loại độ phức tạp (task router) với chi phí đầu ra rẻ hơn 40%. Còn Gemini 3.5 Flash-Lite (Stable 07/2026, $0.30/$2.50) mặc định mức thinking 'minimal' nhưng lại được trang bị đầy đủ Computer Use và tối ưu cho subagent điều phối thao tác trình duyệt, bóc tách hợp đồng PDF nhiều trang và xử lý luồng đa phương thức."
+    },
+    {
+      "question": "Có nên tiếp tục dùng codex-mini-latest hay GPT-5.1-Codex-Mini cho các tác vụ CLI hạng nhẹ vào cuối năm 2026 không?",
+      "answer": "Không nên. codex-mini-latest (phát hành từ 16/05/2025, dựa trên nhánh o4-mini cũ) chỉ có cửa sổ 200K và đang bị tính giá tới $1.50/1M input và $6.00/1M output — tức là đắt gấp 7,5 đến 15 lần so với các model hạng nhẹ thế hệ 2026 và thậm chí đắt gấp đôi Gemini 3.8 Flash hạng trung ($0.75/$3.75)! Trong khi đó, GPT-5.1-Codex-Mini ($0.25/$2.00) đã bị deprecated trên GitHub Copilot và các bộ công cụ mới từ khoảng tháng 04/2026. Để chạy subagent hoặc router siêu rẻ trong hệ sinh thái OpenAI cuối 2026, lựa chọn đúng đắn là GPT-5.6 Luna ($0.20 in / $1.20 out / $0.02 cache read, cửa sổ ~1.05M, lưu ý trần 272K)."
+    },
+    {
+      "question": "Mặc định thinking_level='minimal' trên Gemini 3.5 Flash-Lite có đủ thông minh để trích xuất JSON có cấu trúc (Structured Outputs) từ tin nhắn khách hàng không?",
+      "answer": "Đối với các tác vụ trích xuất trường dữ liệu từ tin nhắn Zalo/Messenger, phân loại ý định Lead (Qualified / Spam / Hỏi giá), hoặc chấm điểm Lead Score theo rubric định sẵn, mức 'minimal' kết hợp tính năng Structured Outputs (response_schema JSON) đạt độ chính xác > 97% với độ trễ đầu ra chỉ vài trăm mili-giây. Chỉ khi nào tài liệu PDF đầu vào bị scan nghiêng, có nhiều bảng biểu lồng nhau hoặc quy tắc nghiệp vụ có nhiều điều kiện ngoại lệ IF/ELSE lồng ghép, bạn mới cần nhích tham số lên thinking_level='low' hoặc 'medium'."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "blueprint-tang-dieu-phoi-hang-nhe",
+      "eyebrow": "BẢN VẼ KIẾN TRÚC • TẦNG PHÂN LUỒNG & SUBAGENT",
+      "variant": "deep-dive",
+      "heading": "Bản vẽ tầng điều phối: Tại sao 80% số lượt gọi API không bao giờ nên chạm tới model hạng trung",
+      "pullQuote": "Trong hệ thống Multi-Agent doanh nghiệp, tầng Lightweight không phải là 'model hạng hai' — nó là bức tường chắn tài chính quyết định hệ thống có chạy lãi ở quy mô 100.000 Lead/tháng hay không.",
+      "paragraphs": [
+        "Khi một hệ thống như DOMATION Enterprise OS tiếp nhận đồng thời hàng nghìn tin nhắn Zalo OA, bình luận Facebook, biểu mẫu Meta Lead Ads, tài liệu PDF bảng giá nội bộ và các sự kiện kiểm tra trạng thái hoàn thành (/goal) của agent lập trình, việc tống mọi request lên Sonnet 5.5, Opus 5.5 hay Gemini 4 Argon là con đường nhanh nhất dẫn tới thảm họa Unit Economics. Qua kinh nghiệm xây dựng 35+ hệ thống thực chiến — tiêu biểu là xử lý hơn 150.000+ Leads cho các chiến dịch bất động sản, giáo dục IDEAS và chuỗi F&B Phúc Lộc Thọ — chúng tôi nhận thấy 78% đến 85% số lượt gọi LLM thực chất chỉ thuộc 4 nhóm việc nhẹ: phân loại ý định & lọc rác, định tuyến nhánh (router), bóc tách dữ liệu có cấu trúc từ PDF/ảnh/text, và đánh giá điều kiện dừng của subagent.",
+        "Trên bàn cân hạng nhẹ cuối năm 2026 giữa claude haiku 5.5 vs gemini 3.5 flash lite vs codex mini, thị trường đã chứng kiến cuộc thanh lọc giá cực kỳ khốc liệt. Một model hạng nhẹ tiêu chuẩn hiện nay bắt buộc phải đáp ứng ba điều kiện: đơn giá đầu vào quanh $0.10–$0.30/1M token, hỗ trợ cửa sổ ngữ cảnh tới 1M token để đọc thẳng hồ sơ dài khi cần, và có khả năng điều tiết suy nghĩ xuống mức tối thiểu để giữ độ trễ dưới 1 giây. Bất kỳ model nào còn neo giá ở mức $1.50/$6.00 như thế hệ 2025 sẽ lập tức bị loại khỏi bản vẽ kiến trúc hiện đại."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-lightweight-subagent-router-2026",
+      "heading": "Bảng giải phẫu kỹ thuật hạng nhẹ: Haiku 5.5 vs Gemini 3.5/3.1 Flash-Lite vs codex-mini & GPT-5.6 Luna",
+      "caption": "So sánh trực diện thông số API tháng 11/2026 nhằm phân vai chuẩn xác cho Lead Pre-Scorer, Document Parser và Subagent Router",
+      "columns": [
+        "Thông số phân vai",
+        "Claude Haiku 5.5 (Anthropic)",
+        "Gemini 3.5 / 3.1 Flash-Lite (Google)",
+        "codex-mini-latest vs GPT-5.6 Luna (OpenAI)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Model ID & Vòng đời 11/2026",
+          "values": [
+            "claude-haiku-5-5 (07/10/2026, Cutoff 06/2026)",
+            "gemini-3.5-flash-lite (07/2026) & gemini-3.1-flash-lite (05/2026; bản preview đã tắt 25/05)",
+            "codex-mini-latest (05/2025 cũ) | GPT-5.1-Codex-Mini (Deprecated 04/2026) → Thay bằng gpt-5.6-luna (07/2026)"
+          ],
+          "winnerNote": "Tránh codex-mini cũ & 3.1-flash-lite-preview đã đóng"
+        },
+        {
+          "criterion": "Ngữ cảnh Input / Output tối đa",
+          "values": [
+            "1.000.000 in / 128.000 out",
+            "1.048.576 in / 65.536 out (Text, Image, Video, Audio, PDF)",
+            "codex-mini: 200K / 100K | GPT-5.6 Luna: ~1.05M in / 128K out"
+          ],
+          "winnerNote": "Flash-Lite đọc trực tiếp Video/Audio/PDF gốc trong 1M"
+        },
+        {
+          "criterion": "Đơn giá Chuẩn (/1M USD)",
+          "values": [
+            "<=100K: $0.10 in / $0.50 out! Vượt >100K nhảy 5x lên $0.50 in / $2.50 out",
+            "3.1 Lite: $0.25 in ($0.50 audio) / $1.50 out; 3.5 Lite: $0.30 in / $2.50 out (giá phẳng tới 1M)",
+            "codex-mini: $1.50 in / $6.00 out (quá đắt); GPT-5.6 Luna: $0.20 in / $1.20 out (>272K x2/1.5x)"
+          ],
+          "winnerNote": "Haiku 5.5 rẻ nhất <100K; Luna & 3.1 Lite rẻ nhất ở 100K–272K"
+        },
+        {
+          "criterion": "Cache Read & Batch FinOps",
+          "values": [
+            "Cache Read: $0.01 (<=100K) / $0.05 (>100K); Batch -50%",
+            "3.1 Lite Cache: $0.025 (Batch $0.125/$0.75); 3.5 Lite Cache: $0.03 (Batch $0.15/$1.25)",
+            "Luna Cache Read: $0.02 (-90%), Write $0.25; codex-mini Cache: $0.375"
+          ],
+          "winnerNote": "Haiku 5.5 $0.01/1M cache read không có đối thủ <100K"
+        },
+        {
+          "criterion": "Thinking & Chức năng Agent",
+          "values": [
+            "Adaptive Thinking (low, medium mặc định, high); đánh giá mặc định cho /goal của Claude Code",
+            "Hỗ trợ tới minimal! 3.1 Lite chuyên Task Router (không Computer Use); 3.5 Lite hỗ trợ Computer Use",
+            "Luna: effort từ none..xhigh/max; codex-mini: legacy CLI reasoning"
+          ],
+          "winnerNote": "3.5 Flash-Lite là model hạng nhẹ hiếm hoi có Computer Use"
+        }
+      ],
+      "footnote": "Gemini 3.1 Flash-Lite được sử dụng làm bộ phân loại độ phức tạp mặc định bên trong Gemini CLI; Claude Haiku 5.5 là evaluator mặc định cho lệnh /goal của Claude Code."
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-giai-phau-100k-cliff-va-subagent",
+      "eyebrow": "GIẢI PHẪU CHI PHÍ • BẪY 100K HAIKU & SỰ THAY THẾ CODEX-MINI",
+      "variant": "incident",
+      "heading": "Giải phẫu ngưỡng chi phí 100K của Haiku 5.5 và lý do phải gạch tên codex-mini-latest khỏi kiến trúc",
+      "paragraphs": [
+        "Trên giấy tờ, con số $0.10 đầu vào và $0.50 đầu ra của Claude Haiku 5.5 khiến gần như mọi kỹ sư FinOps đều muốn đẩy toàn bộ tác vụ đọc tài liệu và subagent vào đây. Nhưng trong thực tế triển khai Multi-Agent, có một vách đá giá ẩn nằm ở chính xác token thứ 100.001. Ngay khi tổng độ dài đầu vào vượt mốc 100K token, biểu giá Haiku 5.5 lập tức nhân 5 lần ở mọi hạng mục: input từ $0.10 nhảy lên $0.50, output từ $0.50 lên $2.50, cache write 5 phút từ $0.125 lên $0.625, và cache read từ $0.01 lên $0.05. Nói cách khác, cùng một tác vụ phân tích 150K token tài liệu PDF hoặc log phiên làm việc, dùng Haiku 5.5 bỗng đắt gấp đôi so với dùng Gemini 3.1 Flash-Lite ($0.25/$1.50) hoặc GPT-5.6 Luna ($0.20/$1.20)!",
+        "Ở phía OpenAI, sai lầm lớn nhất khi đọc các bài hướng dẫn cũ năm 2025 là vẫn cấu hình chuỗi model = 'codex-mini-latest'. Ra mắt từ giữa tháng 05/2025 dựa trên họ o4-mini đời trước, codex-mini-latest không chỉ bị bó hẹp ở cửa sổ 200K token mà mức giá $1.50 input / $6.00 output hiện nay thực sự là một hóa thạch tài chính — đắt gấp 7,5 lần về giá input và gấp 5 lần về giá output so với GPT-5.6 Luna ($0.20/$1.20) ra mắt tháng 07/2026! Tương tự, mẫu GPT-5.1-Codex-Mini ($0.25/$2.00) cũng đã bị khai tử khỏi GitHub Copilot và các bộ công cụ mới từ tháng 04/2026. Vì vậy, trong mọi bản thiết kế hiện đại, GPT-5.6 Luna mới là đối trọng thực sự của OpenAI để đứng chung mâm với Haiku 5.5 và Flash-Lite."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-lightweight-10k-subagent-tasks",
+      "heading": "Tổng chi phí xử lý 10.000 lượt tác vụ Subagent & Router (USD) qua 5 bậc dung lượng ngữ cảnh",
+      "subtitle": "Giả lập tải thực tế tại DOMATION: 50% tỷ lệ Cache Hit + trung bình 450 token output mỗi lượt (tính theo USD cho cả 10.000 lượt chạy)",
+      "chart": {
+        "chartType": "bar",
+        "title": "Hóa đơn cho 10.000 lượt chạy (USD) từ Lead Routing 2K đến Đọc hồ sơ 220K token",
+        "subtitle": "Thấy rõ sự đảo chiều vị thế ngay sau mốc 100K của Haiku 5.5 và mức giá quá cao của codex-mini-latest",
+        "xKey": "bucket",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "haiku55",
+            "label": "Claude Haiku 5.5 (Bậc 100K: 5x)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "flashLite31",
+            "label": "Gemini 3.1 Flash-Lite",
+            "color": "#10B981"
+          },
+          {
+            "key": "flashLite35",
+            "label": "Gemini 3.5 Flash-Lite",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "gpt56Luna",
+            "label": "GPT-5.6 Luna (<=272K)",
+            "color": "#8B5CF6"
+          },
+          {
+            "key": "codexMiniLegacy",
+            "label": "codex-mini-latest (Cũ)",
+            "color": "#EF4444"
+          }
+        ],
+        "data": [
+          {
+            "bucket": "2K Lead Score",
+            "haiku55": 3.35,
+            "flashLite31": 9.5,
+            "flashLite35": 14.55,
+            "gpt56Luna": 7.6,
+            "codexMiniLegacy": 45.75
+          },
+          {
+            "bucket": "15K Zalo Chat",
+            "haiku55": 10.5,
+            "flashLite31": 27.38,
+            "flashLite35": 36.0,
+            "gpt56Luna": 21.9,
+            "codexMiniLegacy": 167.63
+          },
+          {
+            "bucket": "60K PDF Bảng giá",
+            "haiku55": 35.25,
+            "flashLite31": 89.25,
+            "flashLite35": 110.25,
+            "gpt56Luna": 71.4,
+            "codexMiniLegacy": 589.5
+          },
+          {
+            "bucket": "140K Scan Repo (>100K)",
+            "haiku55": 396.25,
+            "flashLite31": 199.25,
+            "flashLite35": 242.25,
+            "gpt56Luna": 159.4,
+            "codexMiniLegacy": 1339.5
+          },
+          {
+            "bucket": "220K Hồ sơ (>100K)",
+            "haiku55": 616.25,
+            "flashLite31": 309.25,
+            "flashLite35": 374.25,
+            "gpt56Luna": 247.4,
+            "codexMiniLegacy": 2089.5
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Haiku 5.5 ở 2K Lead Score",
+            "value": "$3.35 / 10K Lead",
+            "delta": "Rẻ hơn codex-mini 13,6 lần",
+            "positive": true
+          },
+          {
+            "label": "Bước nhảy Haiku > 100K",
+            "value": "$35.25 → $396.25",
+            "delta": "Tốn gấp 2,5x so với GPT-5.6 Luna",
+            "positive": false
+          },
+          {
+            "label": "Điểm mạnh 3.1 Flash-Lite",
+            "value": "$0.25 / $1.50 phẳng",
+            "delta": "Không vách đá 100K, 1M context",
+            "positive": true
+          },
+          {
+            "label": "Chi phí codex-mini-latest",
+            "value": "Đắt nhất cả 5 mốc",
+            "delta": "Phải thay ngay bằng 5.6 Luna",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Tính toán DOMATION FinOps (11/2026) dựa trên bảng giá chuẩn API chính thức; codex-mini-latest vượt 200K không khả dụng (số liệu 220K giả lập quy đổi hoặc chia batch)."
+      },
+      "insightSummary": "Con số biết nói từ 5 bậc dung lượng phơi bày một quy tắc vàng cho kiến trúc định tuyến: với mọi tác vụ ngắn và trung bình dưới 100K token (chấm điểm Lead, đọc bảng giá PDF 50 trang, phân nhánh ZaloBot, đánh giá /goal), Claude Haiku 5.5 vô đối về độ rẻ ($3.35 cho 10.000 lượt Lead!). Nhưng ngay khi ngữ cảnh đẩy lên 140K–220K (hoặc gắn thêm video/audio), sự lựa chọn thông minh lập tức xoay trục sang GPT-5.6 Luna ($159.4) hoặc Gemini 3.1 / 3.5 Flash-Lite để tránh bước nhảy 5x giá của Haiku."
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-trien-khai-he-lead-va-ocr-domation",
+      "eyebrow": "TRIỂN KHAI THỰC CHIẾN • LEAD PRE-SCORER & DOCUMENT SUBAGENT",
+      "variant": "narrative",
+      "heading": "Cách DOMATION phối bộ 3 hạng nhẹ cho Auto Data Lead Scorer, đọc PDF/Video và đánh giá /goal",
+      "paragraphs": [
+        "Trên hệ điều hành DOMATION Enterprise OS và luồng Phân bổ Data V2 (nhận Lead tức thì từ Meta Instant Form, TikTok, Landing Page 3D, QR Offline rồi lọc trùng 6 tháng và chia vòng Round-Robin qua ZaloBot về máy từng Sale/Đại lý F1), độ trễ của bước tiền xử lý không được phép vượt quá 1,5 giây. Nếu chậm 10 giây, khách hàng bất động sản hoặc học viên MBA đã thoát trang hoặc quên mất mình vừa để lại thông tin. Tại đây, Claude Haiku 5.5 được khóa cứng với ngữ cảnh < 12K token (chỉ chứa rubric chấm điểm và 20 câu mẫu) để đánh nhãn tức thì Lead thật, Lead spam hay câu hỏi CSKH với chi phí chỉ ~$0.0003 mỗi Lead — chưa tới 8 đồng Việt Nam!",
+        "Trong khi đó, ở các tác vụ tiền xử lý tài liệu nặng cho hệ sinh thái ERP 5.0 và AI RAG theo phòng ban — ví dụ trích xuất hàng trăm tệp hợp đồng PDF nhiều trang, đọc tệp ghi âm cuộc gọi tư vấn Sale để chấm điểm QA, hoặc kiểm tra tự động giao diện Web qua Computer Use — bộ đôi Gemini 3.5 Flash-Lite và 3.1 Flash-Lite lại tỏa sáng. Vì Google tính giá phẳng xuyên suốt 1.048.576 token mà không dựng hàng rào tăng 5x ở mốc 100K như Haiku 5.5, chúng tôi có thể đẩy trọn bộ hồ sơ pháp lý 180K token hoặc một đoạn video màn hình lỗi UI thẳng vào Gemini 3.5 Flash-Lite ở thinking_level='minimal' hoặc 'low' (hoặc chạy Batch ban đêm với giá $0.15/$1.25) mà vẫn kiểm soát chặt biên lợi nhuận.",
+        "Ngoài ra, nếu đội kỹ thuật đang chạy quy trình tự động hóa vòng lặp trên Claude Code hoặc cần xử lý văn bản thuần từ 100K đến 270K token trong hệ sinh thái OpenAI, việc nâng cấp từ codex-mini-latest sang GPT-5.6 Luna ($0.20/$1.20) hoặc giữ Claude Haiku 5.5 dưới trần 95K cho lệnh đánh giá /goal giúp cắt giảm hơn 80% chi phí subagent so với năm 2025."
+      ],
+      "bullets": [
+        "Luôn đặt hàm đếm token pre-flight: nếu prompt <= 95K token và chỉ là text/image, định tuyến sang Claude Haiku 5.5 ($0.10/$0.50); nếu 100K–265K token, rẽ sang GPT-5.6 Luna ($0.20/$1.20) hoặc Gemini 3.1 Flash-Lite ($0.25/$1.50).",
+        "Nếu payload chứa Video, Audio, PDF dài > 100K token hoặc cần thao tác Computer Use chi phí thấp, chỉ định thẳng Gemini 3.5 Flash-Lite.",
+        "Dùng Batch API (-50% chi phí) cho cả Haiku 5.5 ($0.05/$0.25 <=100K) và Gemini 3.1 Flash-Lite ($0.125/$0.75) khi chạy các job gán nhãn dữ liệu lịch sử CRM qua đêm."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-lightweight-arena-report",
+      "src": "/imgs/boost/charts/lightweight-router-arena-claude-haiku-5-5-vs-gemini-3-5-flash-lite-vs-codex-mini-report.webp",
+      "alt": "Sơ đồ kiến trúc so sánh claude haiku 5.5 vs gemini 3.5 flash lite vs codex mini và gpt-5.6 luna trong định tuyến subagent",
+      "caption": "Kiến trúc Subagent & Router đa nhà cung cấp của DOMATION: bẻ luồng thông minh tại các ngưỡng 100K (Haiku) và 272K (GPT-5.6 Luna) kết hợp năng lực đọc Video/Audio/PDF của Flash-Lite.",
+      "badge": "ARCHITECTURE • LIGHTWEIGHT ROUTER"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-lightweight-routing",
+      "heading": "Ma trận rẽ nhánh định tuyến Subagent & Pre-Scorer dưới $0.30/1M token",
+      "subtitle": "Quy tắc chọn model tự động dựa theo kích thước token, định dạng tệp và yêu cầu độ trễ",
+      "scenarios": [
+        {
+          "condition": "Phân loại Lead Zalo/Meta Form, lọc spam, gán tag CRM hoặc đánh giá điều kiện /goal với prompt <= 95K token",
+          "recommendedChoice": "Claude Haiku 5.5 (Cache Read $0.01/1M)",
+          "rationale": "Giá $0.10/$0.50 rẻ vô đối trong phân khúc dưới 100K, hỗ trợ Adaptive Thinking và tốc độ phản hồi sub-second.",
+          "avoidIf": "Lịch sử chat hoặc đống schema MCP kéo tổng đầu vào vượt 100.000 token làm đơn giá vọt 5x."
+        },
+        {
+          "condition": "Task Router siêu tốc phân loại độ phức tạp câu hỏi (chuyển Flash hay Pro/Argon) hoặc trích xuất JSON lô lớn 100K–900K token",
+          "recommendedChoice": "Gemini 3.1 Flash-Lite (thinking_level='minimal')",
+          "rationale": "Giá phẳng $0.25/$1.50 trên toàn dải 1M context (không có vách đá 100K hay 272K), là router chuẩn của Gemini CLI.",
+          "avoidIf": "Bài toán cần Computer Use (hãy dùng 3.5 Flash-Lite) hoặc WebSocket Voice thời gian thực (dùng 3.8 Live)."
+        },
+        {
+          "condition": "Subagent đọc hiểu Video/Audio/PDF đa phương thức dài > 100K hoặc chạy kiểm tra giao diện Computer Use chi phí thấp",
+          "recommendedChoice": "Gemini 3.5 Flash-Lite (thinking_level='minimal' hoặc 'low')",
+          "rationale": "Cửa sổ 1M token đa phương thức đầy đủ kèm Computer Use và mức giá $0.30/$2.50 không tăng bậc.",
+          "avoidIf": "Chỉ xử lý phân loại text đơn giản (3.1 Flash-Lite tiết kiệm 40% tiền output hơn)."
+        },
+        {
+          "condition": "Xử lý văn bản/mã nguồn 100K–265K token trong hệ sinh thái OpenAI (thay thế codex-mini-latest & 5.1-Codex-Mini)",
+          "recommendedChoice": "GPT-5.6 Luna ($0.20 in / $1.20 out / $0.02 cache)",
+          "rationale": "Rẻ hơn codex-mini-latest ($1.50/$6.00) tới 5–7 lần trong khi mở rộng ngữ cảnh từ 200K lên ~1.05M và hỗ trợ đầy đủ nỗ lực suy luận.",
+          "avoidIf": "Đầu vào vượt 272K token gây kích hoạt phụ phí nhân đôi của gia đình GPT-5.6."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-lightweight-lead-router-and-preflight",
+      "heading": "Code Recipe: Bộ định tuyến Hạng nhẹ đa mô hình (Gemini 3.1 Flash-Lite Structured Output + Chốt chặn 100K Haiku 5.5)",
+      "language": "python",
+      "filename": "domation_lightweight_router.py",
+      "description": "Hàm định tuyến thực tế trong module AI Pre-Scorer của DOMATION: tự động đo token đầu vào để tránh bẫy nhảy giá 5x của Haiku 5.5 tại mốc 100K và gọi Gemini 3.1 Flash-Lite ở thinking_level='minimal' kèm Pydantic Structured Output để phân loại Lead < 500ms.",
+      "code": "import os\nfrom pydantic import BaseModel\nfrom google import genai\nfrom google.genai import types\n\nclient = genai.Client(api_key=os.environ[\"GEMINI_API_KEY\"])\n\nclass LeadRouteDecision(BaseModel):\n    intent: str          # \"hot_booking\" | \"price_inquiry\" | \"spam\" | \"support_rag\"\n    urgency_score: int   # 1..100\n    target_tier: str     # \"lite_auto_reply\" | \"midweight_flash38\" | \"human_zalo_f1\"\n    reasoning_brief: str\n\ndef pick_lightweight_provider(estimated_tokens: int, has_video_or_cua: bool) -> str:\n    \"\"\"Chon model hang nhe toi uu FinOps dua tren nguong 100K (Haiku) va 272K (Luna).\"\"\"\n    if has_video_or_cua:\n        return \"gemini-3.5-flash-lite\"  # Ho tro video/PDF + Computer Use gia phang 1M\n    if estimated_tokens <= 95000:\n        return \"claude-haiku-5-5\"       # $0.10/$0.50 re vo doi duoi nguong 100K\n    if estimated_tokens <= 265000:\n        return \"gpt-5.6-luna\"           # $0.20/$1.20 tranh muc phat 5x cua Haiku >100K\n    return \"gemini-3.1-flash-lite\"      # Gia phang $0.25/$1.50 xuyen suot 265K..1M\n\ndef classify_lead_fast(lead_payload: str) -> LeadRouteDecision:\n    # Goi Gemini 3.1 Flash-Lite o muc thinking_level='minimal' cho do tre < 500ms\n    response = client.models.generate_content(\n        model=\"gemini-3.1-flash-lite\",\n        contents=f\"Phan loai & cham diem Lead tu kenh Zalo/Meta Form:\\n{lead_payload}\",\n        config=types.GenerateContentConfig(\n            thinking_config=types.ThinkingConfig(thinking_level=\"minimal\"),\n            response_mime_type=\"application/json\",\n            response_schema=LeadRouteDecision,\n            max_output_tokens=512,\n        ),\n    )\n    return LeadRouteDecision.model_validate_json(response.text)\n"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-lightweight-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Định Chuẩn FinOps • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đẩy 80% lưu lượng qua Haiku 5.5 (<95K) và Flash-Lite/Luna (>95K), rồi vĩnh biệt codex-mini-latest ngay lập tức",
+      "body": "Một hệ thống AI doanh nghiệp bền vững không thể thắng bằng việc chạy model đắt tiền nhất ở mọi bước. Khi xây dựng các phân hệ Lead Pre-Scorer, OCR hợp đồng và điều phối Subagent cho 30+ thương hiệu tại DOMATION, nguyên tắc sống còn của chúng tôi là giữ tầng Lightweight ở mức dưới $0.30/1M token nhưng vẫn bảo toàn chất lượng đầu ra bằng Structured Outputs. Dùng Claude Haiku 5.5 cho mọi prompt dưới 95K token, chuyển sang GPT-5.6 Luna hoặc Gemini 3.1/3.5 Flash-Lite ngay khi vượt mốc 100K hoặc đụng PDF/Video dài, và loại bỏ triệt để codex-mini-latest ($1.50/$6.00) khỏi toàn bộ file cấu hình — chỉ riêng bước này đã giúp doanh nghiệp tiết kiệm ngay 70%–85% ngân sách Subagent hàng tháng."
+    }
+  ]
+}

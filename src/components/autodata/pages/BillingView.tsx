@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { apiRequest, formatVnd, getErrorMessage } from '../autodataApi';
 import { DEFAULT_CLIENT_CATALOG, type ClientBillingCatalog, type ClientSubscriptionSnapshot } from '../autodataTypes';
+import { SPECIALIST_ZALO_URL, ZaloSpecialistBanner } from '../../common/ZaloSpecialistBanner';
 
 interface BillingTransactionRow {
   id: string;
@@ -776,18 +777,30 @@ export const BillingView: React.FC<BillingViewProps> = ({
               Quota: {Number(activeLeadQuota).toLocaleString('vi-VN')} lead/tháng
             </p>
           </div>
-          <button
-            type="button"
-            disabled={busyKey === 'upgrade_crm'}
-            onClick={() => void handleUpgradeCrm()}
-            className="mt-4 min-h-[44px] w-full rounded-xl bg-[#0284C7]/10 hover:bg-[#0284C7]/20 text-[#0284C7] px-3 py-2 text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer"
-          >
-            <Sparkles className="h-3.5 w-3.5 shrink-0" />
-            <span>Nâng cấp CRM 360° / ERP 5.0</span>
-            <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
-          </button>
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              type="button"
+              disabled={busyKey === 'upgrade_crm'}
+              onClick={() => void handleUpgradeCrm()}
+              className="min-h-[44px] w-full rounded-xl bg-[#0284C7]/10 hover:bg-[#0284C7]/20 text-[#0284C7] px-3 py-2 text-xs font-bold inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+            >
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
+              <span>Nâng cấp CRM / ERP</span>
+            </button>
+            <a
+              href={SPECIALIST_ZALO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="min-h-[44px] w-full rounded-xl bg-[#0068FF] hover:bg-[#0057D9] text-white px-3 py-2 text-xs font-bold inline-flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs"
+            >
+              <span>Setup / Nâng Cấp Zalo</span>
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
+            </a>
+          </div>
         </div>
       </div>
+
+      <ZaloSpecialistBanner context="upgrade" />
 
       {/* Package Catalog Cards */}
       <div data-tour="billing-catalog" className="space-y-4">
@@ -925,6 +938,8 @@ export const BillingView: React.FC<BillingViewProps> = ({
             );
           })}
         </div>
+
+        <ZaloSpecialistBanner context="custom" />
       </div>
 
       {/* Quick Topup + Custom Topup + VietQR Section */}

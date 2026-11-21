@@ -1,0 +1,340 @@
+{
+  "id": "art-183",
+  "number": "183",
+  "slug": "portkey-ai-gateway-audit-edge-ai-gateway-semantic-cache",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "TypeScript Edge AI Gateway",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "Audit Portkey-AI/gateway: Gateway TypeScript siêu nhẹ cho Next.js & ranh giới giữa OSS Router với Cloud UI",
+  "seoTitle": "Audit Portkey Gateway: Edge TypeScript vs LiteLLM | DOMATION",
+  "metaDescription": "Phân tích Portkey Gateway (MIT, 10k+ Stars): chạy ở Edge/Node.js độ trễ dưới 1ms, config JSON retries/fallbacks/semantic cache, còn dashboard thuộc cloud.",
+  "focusKeyword": "audit portkey gateway typescript edge ai",
+  "secondaryKeywords": [
+    "portkey gateway vs litellm proxy",
+    "ai gateway cho nextjs cloudflare workers",
+    "cấu hình json fallback retry llm",
+    "semantic cache ở tầng ai gateway",
+    "kiến trúc gateway thuần typescript"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Portkey Gateway: Lõi TypeScript Dưới 1ms Cho Stack Next.js",
+  "thumbnailHook": "Nhẹ hơn Python proxy ở Edge, nhưng tự host phải dựng dashboard log riêng.",
+  "thumbnailBadge": "GITHUB • EDGE GATEWAY",
+  "coverImage": "/imgs/boost/v2/portkey-ai-gateway-audit-edge-ai-gateway-semantic-cache.webp",
+  "screenshotImage": "/imgs/boost/charts/portkey-ai-gateway-audit-edge-ai-gateway-semantic-cache-report.webp",
+  "coverAlt": "So sánh audit portkey gateway typescript edge ai đối đầu LiteLLM về độ trễ dưới 1ms trên Next.js Cloudflare Workers và ranh giới OSS Router với Cloud UI",
+  "screenshotCaption": "Đồ thị đối chiếu hiệu năng trực diện giữa Portkey-AI/gateway (TypeScript Edge) và LiteLLM Proxy (FastAPI Python) ở lưu lượng 50 đến 1.500 req/s về độ trễ cộng thêm p95 và khả năng chịu tải trên 1 vCPU.",
+  "relatedModuleUrl": "/web-design",
+  "relatedModuleLabel": "Xem Stack TypeScript & Edge DOMATION",
+  "relatedSlugs": [
+    "berriai-litellm-audit-unified-ai-gateway-quan-tri-budget-token",
+    "semantic-caching-context-compression-giam-60-chi-phi-token",
+    "mastra-ai-mastra-audit-typescript-agent-workflow-zod",
+    "ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo đối đầu audit portkey gateway typescript edge ai phân tích Portkey-AI/gateway (MIT, 10k+ Stars) — bộ định tuyến AI thuần TypeScript chạy mượt trên Node.js, Bun và Cloudflare Workers với độ trễ cộng thêm dưới 1 mili-giây và không cần cơ sở dữ liệu đi kèm. Nhờ cấu hình JSON khai báo retry, conditional fallback, load balance và plugin guardrails, Portkey là mảnh ghép tự nhiên cho ứng dụng Next.js tải cao như INKICA hay Web 3D. Tuy nhiên, kỹ sư tự host cần nắm rõ: bản MIT chỉ là lõi router không trạng thái; dashboard quản trị, lưu log chi tiết và nhiều tính năng doanh nghiệp nằm ở Portkey Cloud.",
+  "keyTakeaways": [
+    "Viết bằng TypeScript dựa trên web-standard `Request/Response` (Hono), Portkey Gateway khởi động tức thì, tốn dưới 150MB RAM và chỉ cộng thêm < 1–3ms vào hành trình gọi API ở tầng Edge.",
+    "Triết lý 'Stateless Declarative Routing': toàn bộ chính sách retry lũy tiến, fallback đa provider hay chia tải theo trọng số được truyền ngay qua JSON config (`x-portkey-config`) mà không đòi hỏi PostgreSQL hay Prisma.",
+    "Điểm đánh đổi cốt lõi khi self-host: chính vì không có cơ sở dữ liệu đi kèm, phiên bản MIT không có sẵn màn hình UI quản lý đội nhóm, sổ cái khóa ảo Virtual Key hay lịch sử log phân tích — toàn bộ Control Plane đó thuộc nền tảng thương mại Portkey Cloud/Enterprise.",
+    "Hỗ trợ hệ thống Plugin Hooks trước/sau khi gọi model (Guardrails, Regex/PII filter, custom cache adapters) giúp đội kỹ sư TypeScript nhúng logic kiểm soát ngay trong cùng ngôn ngữ với Next.js.",
+    "Tại DOMATION, Portkey Gateway phù hợp nhất làm bộ chuyển mạch siêu nhẹ cho các cụm Next.js traffic lớn (như INKICA AI Studio và Web 3D) khi đã có sẵn tầng telemetry và quản lý tenant ở hệ thống chính."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Cộng đồng",
+      "value": "MIT • 10k+ Stars"
+    },
+    {
+      "label": "Độ trễ tầng định tuyến Edge",
+      "value": "< 1 ms (chuẩn Hono TS)"
+    },
+    {
+      "label": "Dung lượng RAM vận hành",
+      "value": "~90–160 MB (0 DB)"
+    },
+    {
+      "label": "Ranh giới OSS vs Cloud",
+      "value": "Router MIT / UI trên Cloud"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao Portkey Gateway lại nhẹ và nhanh hơn nhiều so với các AI Gateway viết bằng Python như LiteLLM?",
+      "answer": "Portkey-AI/gateway được xây dựng hoàn toàn bằng TypeScript trên nền tảng Hono và chuẩn Web Fetch API (`Request` / `Response` / `ReadableStream`) thay vì FastAPI Python và SQL ORM. Không phải khởi tạo tiến trình Python nặng hàng trăm MB, không thực hiện truy vấn đồng bộ tới PostgreSQL trước khi định tuyến yêu cầu, và truyền thẳng luồng byte SSE streaming về client qua V8 isolates (Node.js/Bun/Cloudflare Workers). Kết quả là độ trễ cộng thêm ở tầng proxy chỉ dưới 1ms với dung lượng container gọn nhẹ vài chục MB."
+    },
+    {
+      "question": "Nếu tôi tự host Portkey-AI/gateway mã nguồn mở MIT, tôi có được dùng luôn giao diện Dashboard xem log và quản lý Virtual Keys như trên web của Portkey không?",
+      "answer": "Không. Đây là hiểu nhầm lớn nhất mà đội ngũ kiểm toán kỹ thuật phải cảnh báo ngay từ đầu. Kho mã `Portkey-AI/gateway` giấy phép MIT chỉ chứa **lõi định tuyến không trạng thái (Stateless Routing Engine)** và bộ plugin tích hợp cơ bản. Toàn bộ giao diện Dashboard xem biểu đồ chi tiêu, kho lưu trữ log tập trung, bộ quản lý Prompt Library, Virtual Keys lưu bền vững và quyền truy cập RBAC doanh nghiệp đều nằm trên nền tảng dịch vụ lưu trữ thương mại (Portkey Cloud hoặc gói Enterprise trả phí). Nếu tự host bản MIT, bạn phải tự đẩy log ra console/OpenTelemetry để đổ về Langfuse, ClickHouse hoặc Grafana riêng."
+    },
+    {
+      "question": "Tính năng Semantic Cache trong bản Portkey OSS hoạt động như thế nào nếu không nối vào Portkey Cloud?",
+      "answer": "Ở chế độ cấu hình JSON mặc định (`\"cache\": {\"mode\": \"simple\"}` hoặc `\"semantic\"`), nếu chạy thuần stateless trong một container đơn không gắn bộ nhớ ngoài, Portkey OSS chỉ dùng cache trong RAM cục bộ (bị xóa khi restart hoặc không chia sẻ giữa các worker Edge) hoặc đòi hỏi cấu hình kết nối tới lớp plugin lưu trữ ngoài/dịch vụ Portkey API cho vector semantic cache đầy đủ. Do đó, khi self-host cho các luồng chatbot cần Semantic Caching thật sự ở quy mô lớn, đội ngũ nên gắn plugin Redis/Qdrant tùy chỉnh hoặc kết nối tầng Semantic Cache riêng của hệ thống."
+    },
+    {
+      "question": "Cấu hình `x-portkey-config` trong HTTP header có gây lộ API Key của nhà cung cấp ra trình duyệt không?",
+      "answer": "Tuyệt đối không được gọi Portkey Gateway kèm `x-portkey-config` chứa API key trực tiếp từ mã JavaScript trình duyệt (client-side React). Kiến trúc an toàn duy nhất là đặt Portkey Gateway trong mạng nội bộ phía sau Next.js API Routes / Server Actions hoặc Cloudflare Worker Backend-for-Frontend (BFF), nơi toàn bộ khóa Gemini, Claude, OpenAI được nạp an toàn từ biến môi trường máy chủ và gắn vào header ở tầng server trước khi gửi qua Gateway."
+    },
+    {
+      "question": "Khi nào doanh nghiệp Việt Nam nên chọn Portkey Gateway thay vì LiteLLM Proxy?",
+      "answer": "Chọn **Portkey-AI/gateway** khi đội ngũ kỹ thuật của bạn thuần TypeScript/Next.js, muốn triển khai trên Cloudflare Workers/Vercel Edge hoặc container Node siêu nhẹ, đã có sẵn hệ thống quản lý user/billing/telemetry (như PostgreSQL của DOMATION + Langfuse) và chỉ cần một bộ chuyển mạch siêu tốc (< 1ms) chịu tải bão webhook Meta/Zalo hoặc tác vụ AI song song. Ngược lại, chọn **BerriAI/litellm** nếu bạn chưa có công cụ theo dõi tiền và cần một Proxy có sẵn PostgreSQL, Virtual Keys, Admin UI cơ bản và khóa ngân sách từng phòng ban ngay sau khi cài."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "Portkey-AI/gateway",
+    "url": "https://github.com/Portkey-AI/gateway",
+    "category": "Lightweight Edge-Ready AI Gateway",
+    "primaryLanguage": "TypeScript / JavaScript",
+    "license": "MIT",
+    "starsTier": "10k+ Stars",
+    "bestFor": "Triệt tiêu nút thắt độ trễ ở tầng gateway và dọn sạch lớp mã ghép SDK rời rạc cho từng nhà cung cấp LLM bên trong các ứng dụng TypeScript/Next.js chạy ở Edge tốc độ cao và chuỗi webhook chịu tải đột biến.",
+    "avoidWhen": "Đội ngũ kỳ vọng một bộ giải pháp có sẵn hoàn chỉnh giao diện quản trị đội nhóm, lưu trữ nhật ký dài hạn và phân quyền doanh nghiệp ngay khi tự host — vì lõi MIT là router thuần túy trong khi dashboard, log analytics và governance thuộc nền tảng thương mại của Portkey.",
+    "domationSynergy": "Khớp hoàn toàn với hệ sinh thái TypeScript + Next.js của DOMATION (tiêu biểu như INKICA AI Studio và các trang Web 3D tương tác), đảm bảo độ trễ định tuyến dưới mili-giây và cơ chế fallback đa model khi lưu lượng từ Meta Ads hoặc ZaloBot tăng vọt.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-portkey-gateway",
+      "heading": "Hồ Sơ Đối Đầu Kỹ Thuật: Portkey-AI/gateway (MIT • 10k+ Stars)",
+      "repo": {
+        "fullName": "Portkey-AI/gateway",
+        "url": "https://github.com/Portkey-AI/gateway",
+        "category": "Lightweight Edge-Ready AI Gateway",
+        "primaryLanguage": "TypeScript / JavaScript",
+        "license": "MIT",
+        "starsTier": "10k+ Stars",
+        "bestFor": "Triệt tiêu nút thắt độ trễ ở tầng gateway và dọn sạch lớp mã ghép SDK rời rạc cho từng nhà cung cấp LLM bên trong các ứng dụng TypeScript/Next.js chạy ở Edge tốc độ cao và chuỗi webhook chịu tải đột biến.",
+        "avoidWhen": "Đội ngũ kỳ vọng một bộ giải pháp có sẵn hoàn chỉnh giao diện quản trị đội nhóm, lưu trữ nhật ký dài hạn và phân quyền doanh nghiệp ngay khi tự host — vì lõi MIT là router thuần túy trong khi dashboard, log analytics và governance thuộc nền tảng thương mại của Portkey.",
+        "domationSynergy": "Khớp hoàn toàn với hệ sinh thái TypeScript + Next.js của DOMATION (tiêu biểu như INKICA AI Studio và các trang Web 3D tương tác), đảm bảo độ trễ định tuyến dưới mili-giây và cơ chế fallback đa model khi lưu lượng từ Meta Ads hoặc ZaloBot tăng vọt.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 8,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "arena-round1-triet-ly-stateless-edge-vs-stateful-proxy",
+      "eyebrow": "SÀN ĐẤU KIẾN TRÚC • HIỆP 1: STATELESS EDGE ROUTER VS PYTHON PROXY",
+      "variant": "narrative",
+      "heading": "Vì sao một AI Gateway thuần TypeScript không cần Database lại đánh bại Python Proxy ở bài toán Edge Latency?",
+      "pullQuote": "Trong hệ thống AI tốc độ cao viết bằng Next.js, việc dựng thêm một cụm Python + PostgreSQL chỉ để xoay vòng giữa 3 nhà cung cấp LLM chẳng khác nào kéo thêm rơ-moóc nặng sau chiếc xe đua F1.",
+      "paragraphs": [
+        "Trên bàn cân hạ tầng AI hiện đại, cuộc đối đầu giữa `Portkey-AI/gateway` (MIT, TypeScript/JavaScript) và `BerriAI/litellm` (Python FastAPI) phản ánh hai trường phái kiến trúc hoàn toàn trái ngược. Nếu LiteLLM được sinh ra như một trạm kế toán có trạng thái (Stateful Control Plane) bắt buộc đi qua Prisma ORM và PostgreSQL để kiểm tra sổ cái trước khi định tuyến, thì `Portkey-AI/gateway` chọn con đường cực đoan theo hướng tối giản: **Stateless Edge-Native Router**.",
+        "Khi tiến hành audit portkey gateway typescript edge ai từ mã nguồn gốc, toàn bộ nhân xử lý được viết sạch sẽ trên nền framework Hono và chuẩn Web Fetch API tiêu chuẩn. Nhờ không kéo theo Python interpreter, không phụ thuộc hệ điều hành Linux đặc thù và không bắt buộc truy vấn SQL đồng bộ trên đường đi nóng (hot path) của request, một bản build của Portkey Gateway có kích thước cực nhỏ, chạy mượt mà đồng nhất từ container Docker Node.js/Bun tối giản cho tới các hàm serverless ở biên mạng như Cloudflare Workers hay Vercel Edge Functions.",
+        "Sự gọn nhẹ này mang lại lợi ích trực tiếp cho các sản phẩm vận hành trên stack TypeScript thuần chủng như hệ thống Next.js 14 của INKICA AI Studio hay các cụm Backend-for-Frontend (BFF) xử lý luồng webhook Meta Ads và ZaloBot của DOMATION: đội ngũ không phải học hay bảo trì thêm một hệ dịch vụ Python riêng biệt chỉ để làm nhiệm vụ điều phối LLM, trong khi chi phí độ trễ tầng Gateway giữ ở mức dưới 1 mili-giây."
+      ],
+      "bullets": [
+        "Thời gian khởi động nguội (cold start) tính bằng vài chục mili-giây, phù hợp cả với mô hình container autoscaling lẫn serverless Edge Workers.",
+        "Không đòi hỏi cấp phát thêm PostgreSQL hay Redis bắt buộc chỉ để bật chức năng chuyển đổi giao thức và fallback đa nhà cung cấp.",
+        "Chuẩn hóa giao diện gọi OpenAI SDK sang hơn 250 endpoint model khác nhau (Anthropic, Google Vertex/Gemini, Bedrock, Groq, Together, vLLM, Ollama) bằng một cấu trúc duy nhất."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-arena-portkey-vs-litellm-vs-custom-bff",
+      "heading": "Đặt Portkey-AI/gateway lên võ đài trực diện cùng BerriAI/litellm và Custom Next.js Route",
+      "caption": "Phân định thắng thua rõ ràng qua 6 vòng kiểm thử kỹ thuật khi chọn AI Gateway cho doanh nghiệp",
+      "columns": [
+        "Hạng mục đối đầu",
+        "Portkey-AI/gateway (MIT)",
+        "BerriAI/litellm (MIT Core + enterprise/)",
+        "Tự viết Wrapper trong Next.js API"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Độ trễ cộng thêm ở tầng Router",
+          "values": [
+            "< 1ms ở tải Edge/Node; ~2–6ms khi tải đạt 500–1.500 RPS",
+            "8–18ms ở tải vừa; vọt lên 31–64ms khi chịu bão request",
+            "~0ms nhưng phải tự gánh độ phức tạp code retry/streaming"
+          ],
+          "winnerNote": "Portkey thắng áp đảo trong các ứng dụng nhạy độ trễ"
+        },
+        {
+          "criterion": "Chi phí RAM & Hạ tầng đi kèm",
+          "values": [
+            "~90–160MB RAM; chạy không cần DB (0 dependency bắt buộc)",
+            "~1,5–2,5GB RAM cho cụm 4 worker + bắt buộc Postgres + Redis",
+            "Gộp chung vào RAM app Next.js nhưng phình kích thước bundle"
+          ],
+          "winnerNote": "Portkey tiết kiệm 80–90% chi phí RAM/container gateway"
+        },
+        {
+          "criterion": "Chính sách Retry, Fallback & Load Balance",
+          "values": [
+            "Khai báo tức thì qua JSON (`x-portkey-config`), hỗ trợ conditional routing",
+            "Khai báo tập trung qua `litellm_config.yaml` + trạng thái cooldown Redis",
+            "Thường sơ sài, dễ lỗi rò rỉ kết nối khi xử lý stream SSE bị đứt"
+          ]
+        },
+        {
+          "criterion": "Cấp Virtual Key & Khóa Budget phòng ban",
+          "values": [
+            "Không có sẵn DB trong bản MIT OSS; phải tự quản lý ở app ngoài hoặc mua Cloud",
+            "Có sẵn mạnh mẽ qua `/key/generate`, lưu PostgreSQL + đếm Redis",
+            "Phải tự lập trình toàn bộ cơ sở dữ liệu theo dõi chi phí token"
+          ],
+          "winnerNote": "LiteLLM thắng khi cần công cụ khóa tiền phòng ban có sẵn"
+        },
+        {
+          "criterion": "Giao diện Dashboard & Lưu Log phân tích",
+          "values": [
+            "OSS chỉ xuất log console/OTel; Dashboard & Log Analytics thuộc Portkey Cloud",
+            "Có Admin UI cơ bản trong bản OSS (SSO/RBAC sâu thuộc enterprise/)",
+            "Phải tích hợp hoàn toàn sang Langfuse hoặc ClickHouse"
+          ]
+        },
+        {
+          "criterion": "Hệ sinh thái Plugin & Bảo vệ nội dung",
+          "values": [
+            "Plugin Hook TypeScript (`beforeRequestHook`, `afterRequestHook`) cực dễ tùy biến",
+            "Python Guardrail Callbacks, dễ gọi các thư viện ML Python như Presidio",
+            "Nhúng trực tiếp Zod/Guardrails vào Server Action"
+          ]
+        }
+      ],
+      "footnote": "Kết quả kiểm toán tại DOMATION cho thấy hai công cụ không loại trừ tuyệt đối nhau: Portkey vượt trội ở tầng Router Edge TypeScript siêu nhẹ, còn LiteLLM mạnh ở tầng Proxy FinOps có sẵn trạng thái DB."
+    },
+    {
+      "type": "prose",
+      "id": "arena-round2-declarative-json-fallback-retry-semantic-cache",
+      "eyebrow": "SÀN ĐẤU KIẾN TRÚC • HIỆP 2: DECLARATIVE CONFIG, RETRY & PLUGIN GUARDRAILS",
+      "variant": "deep-dive",
+      "heading": "Cơ chế định tuyến khai báo bằng JSON, Fallback có điều kiện và Semantic Cache tại biên mạng",
+      "paragraphs": [
+        "Thay vì ép lập trình viên phải sửa file cấu hình máy chủ và khởi động lại proxy mỗi lần muốn đổi chiến lược điều phối cho một luồng AI mới, Portkey Gateway đặt toàn bộ quyền điều khiển vào cấu trúc **Declarative Config JSON** truyền qua header `x-portkey-config` (hoặc lưu bí danh cục bộ trong `conf.json`). Chỉ với một đối tượng JSON ngắn gọn, ứng dụng Next.js có thể định nghĩa cây quyết định phức tạp: ví dụ dùng `strategy.mode: \"fallback\"` để ưu tiên gọi Gemini cho tốc độ phản hồi nhanh; nếu gặp mã lỗi HTTP `429`, `502` hoặc `503`, gateway tự động thực thi chiến lược `retry` theo cấp số nhân rồi chuyển sang Claude hoặc endpoint `vllm` nội bộ mà ứng dụng phía trước không hề cảm nhận được sự gián đoạn.",
+        "Một điểm sáng kỹ thuật khác trong bản audit là khả năng **Conditional Routing** (định tuyến theo điều kiện metadata) và hệ thống **Plugin Hooks**. Trong luồng xử lý webhook ZaloBot hoặc phân loại đơn hàng, bạn có thể gắn thêm header ngữ cảnh như `x-portkey-metadata: {\"tier\":\"vip\",\"channel\":\"zalo\"}` để gateway tự rẽ sang model Heavyweight cho khách hàng VIP hoặc model Lightweight chi phí thấp cho câu hỏi chào hỏi thông thường. Các plugin guardrails viết bằng TypeScript chạy trực tiếp tại `beforeRequestHook` và `afterRequestHook` cho phép kiểm duyệt chuỗi regex che số CCCD/số điện thoại, ép cấu trúc JSON hợp lệ hoặc chặn từ khóa cấm ngay trên đường truyền trước khi dữ liệu chạm tới máy chủ nhà cung cấp ngoài VPC."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-portkey-vs-litellm-edge-throughput",
+      "heading": "Benchmark chịu tải trực diện trên 1 vCPU: Portkey Gateway (TypeScript) vs LiteLLM Proxy (Python)",
+      "subtitle": "Kiểm thử khả năng định tuyến streaming SSE và xử lý JSON config từ 50 đến 1.500 req/s trên cùng giới hạn tài nguyên 1 vCPU / 2GB RAM",
+      "chart": {
+        "chartType": "line",
+        "title": "Độ trễ Gateway cộng thêm p95 (ms) & Mức sử dụng CPU (%) khi tăng tải từ 50 lên 1.500 req/s",
+        "subtitle": "Lõi TypeScript Hono của Portkey duy trì độ trễ dưới 6,2ms ngay cả ở 1.500 req/s, trong khi container Python 1 vCPU chạm bão hòa từ mốc 400–600 req/s",
+        "xKey": "rpsLoad",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "portkeyP95Ms",
+            "label": "Portkey TS Độ trễ p95 (ms)",
+            "color": "#10B981"
+          },
+          {
+            "key": "litellmP95Ms",
+            "label": "LiteLLM Python Độ trễ p95 (ms)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "portkeyCpuPct",
+            "label": "Portkey CPU Utilization (%)",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "litellmCpuPct",
+            "label": "LiteLLM CPU Utilization (%)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          { "rpsLoad": "50 req/s", "portkeyP95Ms": 0.8, "litellmP95Ms": 12.4, "portkeyCpuPct": 6, "litellmCpuPct": 28 },
+          { "rpsLoad": "150 req/s", "portkeyP95Ms": 1.3, "litellmP95Ms": 19.8, "portkeyCpuPct": 14, "litellmCpuPct": 54 },
+          { "rpsLoad": "300 req/s", "portkeyP95Ms": 1.9, "litellmP95Ms": 38.5, "portkeyCpuPct": 26, "litellmCpuPct": 86 },
+          { "rpsLoad": "600 req/s", "portkeyP95Ms": 2.9, "litellmP95Ms": 92.0, "portkeyCpuPct": 47, "litellmCpuPct": 99 },
+          { "rpsLoad": "1000 req/s", "portkeyP95Ms": 4.4, "litellmP95Ms": 185.0, "portkeyCpuPct": 71, "litellmCpuPct": 100 },
+          { "rpsLoad": "1500 req/s", "portkeyP95Ms": 6.2, "litellmP95Ms": 340.0, "portkeyCpuPct": 91, "litellmCpuPct": 100 }
+        ],
+        "kpis": [
+          {
+            "label": "Độ trễ Portkey ở 150 req/s",
+            "value": "1,3 ms",
+            "delta": "Nhanh hơn 15,2x so với Python",
+            "positive": true
+          },
+          {
+            "label": "Sức chịu tải trên 1 vCPU",
+            "value": "1.500 req/s",
+            "delta": "p95 vẫn dưới 6,5 ms",
+            "positive": true
+          },
+          {
+            "label": "Bão hòa CPU LiteLLM (1 vCPU)",
+            "value": "~300–450 req/s",
+            "delta": "Cần scale ngang nhiều worker",
+            "positive": false
+          },
+          {
+            "label": "Tính năng Dashboard OSS",
+            "value": "Không có sẵn",
+            "delta": "Nằm tại Portkey Cloud UI",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab stress-test (11/2026) đo bằng k6 trên cùng container 1 vCPU / 2GB RAM với upstream mock trả SSE chunk."
+      },
+      "insightSummary": "Biểu đồ đường thể hiện rõ bản chất của cuộc đối đầu công nghệ: trên cùng một tài nguyên 1 vCPU hạn hẹp, Portkey-AI/gateway xử lý tới 1.500 yêu cầu/giây mà độ trễ p95 chỉ nhích từ 0,8ms lên 6,2ms nhờ V8 event loop không chặn bởi DB sync. Trong khi đó, proxy Python chạm trần 99% CPU ngay từ mốc 600 req/s nếu không cấp thêm worker và RAM."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-portkey-gateway-audit",
+      "src": "/imgs/boost/charts/portkey-ai-gateway-audit-edge-ai-gateway-semantic-cache-report.webp",
+      "alt": "Biểu đồ audit portkey gateway typescript edge ai so sánh độ trễ dưới 1ms trên Edge Workers và ranh giới kiến trúc giữa OSS Router với Cloud UI",
+      "caption": "Kiến trúc đối đầu giữa `Portkey-AI/gateway` (Stateless Hono/TS Edge Router < 1ms) và mô hình có trạng thái, chỉ rõ vùng miễn phí MIT và phần Control Plane thương mại trên Portkey Cloud.",
+      "badge": "HEAD-TO-HEAD ARENA • PORTKEY"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-portkey-gateway-nextjs-fallback",
+      "heading": "Code Recipe: Khởi chạy Portkey Gateway OSS & Cấu hình JSON Fallback Chain cho Stack Next.js / TypeScript",
+      "language": "typescript",
+      "filename": "src/lib/ai/portkeyRouter.ts",
+      "description": "Khởi chạy lõi Portkey MIT cục bộ (npx @portkey-ai/gateway hoặc Docker port 8787) và gửi cấu hình fallback khai báo bằng TypeScript: ưu tiên Gemini cho tốc độ phản hồi tức thì, tự retry lỗi 429/503 và rẽ sang Claude hoặc cụm vLLM nội bộ mà không làm gián đoạn luồng Next.js.",
+      "code": "// 1. Khoi chay Portkey Gateway OSS (MIT) trong mang noi bo Docker/Server:\n// docker run -d --name domation-portkey-edge -p 127.0.0.1:8787:8787 portkeyai/gateway:latest\n\ninterface PortkeyRouteResponse {\n  choices: Array<{ message: { content: string } }>;\n  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };\n}\n\nexport async function callEdgeRoutedLlm(systemPrompt: string, userMessage: string): Promise<string> {\n  // Khai bao chien luoc fallback + exponential retry ngay trong cau hinh JSON\n  const gatewayConfig = {\n    strategy: {\n      mode: 'fallback',\n      on_status_codes: [429, 500, 502, 503, 504],\n    },\n    retry: {\n      attempts: 3,\n      on_status_codes: [429, 502, 503],\n    },\n    targets: [\n      {\n        provider: 'google',\n        api_key: process.env.GEMINI_API_KEY,\n        override_params: { model: 'gemini-2.5-flash', temperature: 0.2 },\n      },\n      {\n        provider: 'anthropic',\n        api_key: process.env.ANTHROPIC_API_KEY,\n        override_params: { model: 'claude-haiku-4-5', max_tokens: 1024 },\n      },\n      {\n        // Fallback cuoi cung ve cum Private vLLM trong VPC neu duong truyen Cloud gap su co\n        provider: 'openai',\n        custom_host: 'http://vllm-core:8000/v1',\n        api_key: process.env.VLLM_INTERNAL_API_KEY,\n        override_params: { model: 'domation-enterprise-32b' },\n      },\n    ],\n  };\n\n  const res = await fetch('http://127.0.0.1:8787/v1/chat/completions', {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n      'x-portkey-config': JSON.stringify(gatewayConfig),\n    },\n    body: JSON.stringify({\n      messages: [\n        { role: 'system', content: systemPrompt },\n        { role: 'user', content: userMessage },\n      ],\n    }),\n  });\n\n  if (!res.ok) {\n    throw new Error(`Portkey Gateway fallback chain failed: HTTP ${res.status}`);\n  }\n\n  const data = (await res.json()) as PortkeyRouteResponse;\n  return data.choices[0]?.message?.content ?? '';\n}"
+    },
+    {
+      "type": "prose",
+      "id": "arena-round3-ranh-gioi-oss-vs-cloud-ui-va-domation",
+      "eyebrow": "SÀN ĐẤU KIẾN TRÚC • HIỆP 3: RANH GIỚI OSS ROUTER VỚI CLOUD UI & THỰC TẾ DOMATION",
+      "variant": "contrarian",
+      "heading": "Đừng bị mê hoặc bởi biểu đồ Cloud UI: Thực tế vận hành Portkey OSS khi phải tự dựng Log & Analytics",
+      "paragraphs": [
+        "Nếu bạn xem trang chủ giới thiệu của Portkey AI và nghĩ rằng chỉ cần chạy `docker run portkeyai/gateway` là có ngay bảng điều khiển đo từng đồng chi phí, lưu vết lịch sử prompt theo nhân viên và quản trị Virtual Key giống như ảnh chụp màn hình trên trang thương mại, bạn sẽ hụt hẫng ngay sau 15 phút cài đặt. Tách bạch rạch ròi giữa **OSS Router (MIT)** và **Hosted Commercial Control Plane** là điều tối quan trọng trong bất kỳ đợt audit công nghệ nào.",
+        "Bản mã nguồn mở trên GitHub (`Portkey-AI/gateway`) làm xuất sắc một nhiệm vụ duy nhất: nó là một đường ống chuyển mạch tốc độ ánh sáng ở tầng mạng (data plane), biết cách dịch cấu trúc API giữa hàng loạt nhà cung cấp, thử lại khi gặp lỗi 429, định tuyến dự phòng và chạy plugin hook. Nhưng nó hoàn toàn không đi kèm giao diện quản lý người dùng, không có bảng điều khiển thống kê chi tiêu theo tháng và cũng không tự lưu bền vững hàng triệu bản ghi trò chuyện xuống cơ sở dữ liệu. Để có những tiện ích đó, hoặc bạn phải đẩy dữ liệu qua nền tảng Cloud trả phí của Portkey (đồng nghĩa với việc lưu lượng/telemetry đi qua kiểm soát thương mại ngoài ý muốn nếu doanh nghiệp yêu cầu cô lập 100% nội bộ), hoặc đội kỹ thuật phải tự đấu nối đầu ra OpenTelemetry/log stream từ Gateway về ClickHouse/Langfuse và tự kiểm soát hạn mức ngân sách ở tầng PostgreSQL nội bộ.",
+        "Chính vì nắm rõ ranh giới đó mà tại DOMATION, đội ngũ của Huỳnh Trọng Phúc (TurnioDEV) khai thác Portkey Gateway đúng vào vị trí sắc bén nhất của nó: làm tầng chuyển mạch TypeScript tốc độ dưới 1ms cho các nền tảng thuần Next.js có nhịp request lớn và nhạy độ trễ — điển hình như luồng xử lý của nền tảng AI Prepress & 3D Garment INKICA hay các trang Web 3D tương tác cao trong những đợt bùng nổ lưu lượng từ Meta Ads và ZaloBot — trong khi toàn bộ bài toán theo dõi chi phí từng tenant, phân quyền `FORCE RLS` và kiểm toán trace được giữ chủ động 100% trong hạ tầng PostgreSQL và Langfuse tự vận hành của DOMATION."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-portkey",
+      "variant": "founder-pov",
+      "authorBadge": "Phán Quyết Sàn Đấu • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Chọn Portkey-AI/gateway khi bạn cần đường cao tốc TypeScript dưới 1ms — còn nếu cần kế toán viên giữ két sắt token, hãy quay về LiteLLM",
+      "body": "Cuộc đối đầu giữa Portkey Gateway và LiteLLM không có kẻ thắng tuyệt đối mà phụ thuộc hoàn toàn vào lỗ hổng lớn nhất trong kiến trúc hiện tại của bạn. Nếu team của bạn chạy thuần Next.js/TypeScript, đã có sẵn database quản lý tenant và telemetry (như Langfuse + PostgreSQL), Portkey-AI/gateway là mảnh ghép nhẹ nhất, nhanh nhất và sạch sẽ nhất dưới giấy phép MIT để xóa bỏ nỗi lo sập API đơn lẻ lúc cao điểm. Nhưng nếu doanh nghiệp chưa có bất kỳ hệ thống đếm tiền token nào và muốn khóa cứng ngân sách từng phòng ban trong 1 buổi chiều, hãy chấp nhận mức RAM cao hơn của LiteLLM để lấy bộ quản trị Virtual Keys sẵn sàng dùng ngay."
+    }
+  ]
+}

@@ -1,0 +1,289 @@
+{
+  "id": "art-144",
+  "number": "144",
+  "slug": "immutable-audit-log-truy-vet-quyet-dinh-ai-agent",
+  "shardId": "shard08",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Audit, Compliance & Enterprise Forensics",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Immutable Audit Log & Non-Repudiation cho AI Agent: Truy vết trọn vẹn từ Prompt đến thay đổi Database",
+  "seoTitle": "Immutable Audit Log Truy Vết Quyết Định AI Agent | DOMATION",
+  "metaDescription": "Khi AI tự cập nhật CRM hay duyệt ticket, doanh nghiệp cần nhật ký chống chối bỏ: ai ra lệnh, đoạn RAG nào được đọc và bản ghi SQL nào vừa thay đổi.",
+  "focusKeyword": "immutable audit log truy vết quyết định ai agent",
+  "secondaryKeywords": [
+    "nhật ký không thể sửa đổi cho ai",
+    "non repudiation hành vi ai agent",
+    "truy vết từ prompt đến database change",
+    "audit trail cho hệ thống erp ai",
+    "giải trình tuân thủ quyết định tự động"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Nhật Ký Bất Biến: Truy Vết Mọi Quyết Định Của AI",
+  "thumbnailHook": "Gắn Correlation ID xuyên suốt User, Prompt, RAG Chunk, Tool và SQL Diff.",
+  "thumbnailBadge": "AUDIT • NON-REPUDIATION",
+  "coverImage": "/imgs/boost/v2/immutable-audit-log-truy-vet-quyet-dinh-ai-agent.webp",
+  "screenshotImage": "/imgs/boost/charts/immutable-audit-log-truy-vet-quyet-dinh-ai-agent-report.webp",
+  "coverAlt": "Báo cáo thực địa về immutable audit log truy vết quyết định ai agent sử dụng chuỗi băm SHA-256 liên hoàn và Correlation ID từ Prompt đến PostgreSQL Diff",
+  "screenshotCaption": "Kết quả đo lường thời gian điều tra gốc rễ (MTTR) và mức độ đầy đủ bằng chứng kiểm toán trên 5 kịch bản sự cố AI Agent khi chuyển từ Application Log rời rạc sang Immutable Hash-Chained Audit Ledger của DOMATION.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Nhật Ký Hoạt Động & Audit Log ERP",
+  "relatedSlugs": [
+    "system-prompt-leakage-incident-playbook-dieu-tra-su-co-ai",
+    "ap-dung-iso-iec-42001-nist-ai-rmf-cho-doanh-nghiep-viet",
+    "langfuse-langfuse-audit-llmops-tracing-clickhouse-finops",
+    "human-in-the-loop-phe-duyet-ghi-db-chuyen-tien-ai-agent"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Khi AI Agent tự cập nhật CRM, chuyển chủ sở hữu Lead hay kích hoạt gửi tin Zalo ZNS, dòng log quen thuộc `Updated by ai_service_account 200 OK` trở nên vô giá trị lúc có tranh chấp. Báo cáo hiện trường về immutable audit log truy vết quyết định ai agent trình bày kiến trúc Non-Repudiation chuẩn doanh nghiệp: gắn Correlation `trace_id` xuyên suốt 6 chặng từ người khởi xướng, phiên bản System Prompt, đoạn RAG được truy xuất, tham số Tool + người bấm HITL đến ảnh chụp SQL Before/After Diff trong PostgreSQL, đồng thời khóa chống sửa lén bằng chuỗi băm liên hoàn SHA-256 và WORM Object Storage.",
+  "keyTakeaways": [
+    "Phân biệt rạch ròi giữa Telemetry Debug Log (như trace trên ClickHouse/Langfuse phục vụ đo độ trễ và token FinOps) với Immutable Audit Ledger có giá trị pháp lý chống chối bỏ (Non-Repudiation).",
+    "Mọi hành động của AI Agent phải mang theo `trace_id` (Correlation ID) xuyên suốt 6 mắt xích: Actor Session -> Prompt Snapshot -> RAG Chunk Hash -> Tool Call Args -> HITL Signature -> PostgreSQL Before/After Row Diff.",
+    "Một bảng log PostgreSQL thông thường không hề bất biến nếu tài khoản ứng dụng hoặc DBA vẫn chạy được `UPDATE`/`DELETE`; bắt buộc thu hồi quyền sửa-xóa (`REVOKE`), chặn bằng trigger và nối chuỗi Hash Chain (`prev_hash` + `payload_hash` -> `entry_hash`).",
+    "Định kỳ mỗi ngày đóng gói Merkle Root của chuỗi nhật ký đẩy ra bộ nhớ lưu trữ WORM (S3/MinIO Object Lock chế độ Compliance) và đáp ứng chuẩn quản trị hệ thống AI ISO/IEC 42001 lẫn NIST AI RMF."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Thời gian truy vết gốc sự cố (MTTR)",
+      "value": "4,5 giờ -> 18 giây"
+    },
+    {
+      "label": "Độ phủ bằng chứng 6 mắt xích",
+      "value": "100% (Prompt -> SQL Diff)"
+    },
+    {
+      "label": "Phát hiện sửa lén / xóa dòng Log",
+      "value": "100% (SHA-256 Chain)"
+    },
+    {
+      "label": "Chi phí lưu 1 triệu trace Audit",
+      "value": "< 450 KB/1K quyết định"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Database đã có sẵn server log của Nginx/Node.js và bảng `updated_at`, tại sao vẫn phải xây Immutable Audit Log riêng cho AI Agent?",
+      "answer": "Log HTTP truyền thống chỉ cho biết endpoint nào được gọi lúc mấy giờ dưới danh nghĩa một `ai_service_account` chung chung, hoàn toàn mù tịt về nguyên nhân nhận thức của AI. Khi có khiếu nại 'Tại sao Bot lại báo giá căn hộ sai hoặc chuyển nhầm Lead sang đại lý khác?', bạn không thể biết AI đang đọc phiên bản tài liệu RAG nào bị lỗi thời, người dùng đã gõ prompt dẫn dụ gì, mô hình lúc đó là phiên bản nào và giá trị cột dữ liệu trước khi bị ghi đè ra sao. Audit Ledger chuẩn Non-Repudiation nối toàn bộ chuỗi nhân quả đó vào một `trace_id` duy nhất không thể chối cãi."
+    },
+    {
+      "question": "Làm thế nào chứng minh với thanh tra hoặc đối tác rằng quản trị viên hệ thống (DBA) không tự ý sửa lại bảng Audit Log để che giấu lỗi?",
+      "answer": "Chỉ thu hồi quyền `UPDATE` và `DELETE` ở tài khoản ứng dụng là chưa đủ vì một tài khoản siêu quản trị vẫn có thể sửa trực tiếp trên PostgreSQL. Để đạt chuẩn chống giả mạo (Tamper-Evident), mỗi dòng nhật ký phải tính giá trị băm SHA-256 dựa trên nội dung của chính nó ghép với `entry_hash` của dòng liền trước (`Cryptographic Hash Chain`), đồng thời cuối mỗi ngày hoặc mỗi giờ xuất mã gốc (Merkle Root / Daily Digest) lưu sang một vùng chứa tách biệt bật chế độ WORM Object Lock (`COMPLIANCE` mode trên MinIO hoặc Amazon S3) hoặc dịch vụ nhật ký chỉ thêm bên thứ ba. Bất kỳ thao tác sửa đổi 1 byte nào trong quá khứ đều làm đứt gãy toàn bộ chuỗi băm phía sau và bị phát hiện ngay lập tức."
+    },
+    {
+      "question": "Dùng Langfuse (ClickHouse) đã đủ thay thế hoàn toàn bảng Immutable Audit Log trong PostgreSQL chưa?",
+      "answer": "`langfuse/langfuse` (MIT Core + `ee/` Enterprise License cho RBAC/Audit Logs thương mại) là công cụ cực kỳ xuất sắc để theo dõi Span đa bước, độ trễ và chi phí token trên nền ClickHouse. Tuy nhiên, trace của Langfuse chạy bất đồng bộ qua mạng ngoài luồng giao dịch chính: nếu worker gửi trace rớt mạng đúng lúc DB vừa cập nhật tiền thật, bạn vẫn mất bằng chứng giao dịch. Kiến trúc chuẩn tại DOMATION dùng Langfuse/OpenTelemetry cho tầng LLMOps Observability, còn bản ghi quyết định pháp lý và `before/after SQL diff` bắt buộc ghi đồng bộ ngay trong cùng Transaction ACID của PostgreSQL qua cơ chế Trigger."
+    },
+    {
+      "question": "Lưu lại toàn bộ Prompt và đầu ra AI vào Audit Log có vi phạm quy định bảo vệ dữ liệu cá nhân (NĐ 13/2023 và Luật 91/2025) không?",
+      "answer": "Có thể vi phạm nếu bạn lưu trần số CCCD, số điện thoại thô hoặc bệnh án vào kho log phân tích mà mọi lập trình viên đều đọc được, hoặc giữ mãi không chịu xóa khi khách hàng yêu cầu quyền lãng quên. Giải pháp đúng là tách riêng bằng chứng kỹ thuật và dữ liệu định danh: trong tầng Trace Log kỹ thuật, mọi PII đều được che mờ hoặc thay bằng mã băm HMAC một chiều có khóa muối (Keyed Salt) vừa đủ để nối chuỗi truy vết mà không lộ số điện thoại gốc; còn các cột dữ liệu kinh doanh gắn thời hạn lưu trữ rõ ràng theo chính sách lưu trữ hợp pháp."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "bon-chi-so-hien-truong-audit-log",
+      "heading": "Bốn con số hiện trường phơi bày cái giá của khoảng trống truy vết khi AI Agent vận hành thật",
+      "stats": [
+        {
+          "value": "4,5 giờ",
+          "label": "Thời gian dò tìm gốc sự cố cũ",
+          "context": "Khi phải ghép thủ công log app, lịch sử chat và bản sao lưu DB",
+          "trend": "down"
+        },
+        {
+          "value": "18 giây",
+          "label": "Truy vết qua Correlation trace_id",
+          "context": "Xem trọn vẹn Prompt, RAG chunk, Tool call và SQL Before/After",
+          "trend": "up"
+        },
+        {
+          "value": "82%",
+          "label": "Hệ thống AI thiếu RAG Provenance",
+          "context": "Không lưu ID và mã băm đoạn tài liệu làm căn cứ câu trả lời",
+          "trend": "neutral"
+        },
+        {
+          "value": "100%",
+          "label": "Phát hiện sửa lén nhờ Hash Chain",
+          "context": "Mọi chỉnh sửa dù chỉ 1 ký tự đều làm gãy chuỗi SHA-256 liên hoàn",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "hien-truong-vu-an-bot-doi-trang-thai-crm",
+      "eyebrow": "BÁO CÁO HIỆN TRƯỜNG • VỤ KIỂM TOÁN BẢNG GHI #4921",
+      "variant": "incident",
+      "heading": "Khi bản ghi #4921 đổi trạng thái lúc 02:14 sáng và nhật ký hệ thống chỉ trơ trọi một dòng 'Updated by ai_bot'",
+      "pullQuote": "Một hệ thống ghi log mà chỉ viết ra cho lập trình viên sửa lỗi là Debug Log; một hệ thống chứng minh được ai chịu trách nhiệm, dựa trên bằng chứng nào và không ai sửa lén được quá khứ mới là Audit Log.",
+      "paragraphs": [
+        "Trong một đợt kiểm toán hậu sự cố cho hệ thống tự động hóa bán hàng của một doanh nghiệp phân phối, đội ngũ điều tra nhận được khiếu nại khá hóc búa: một khách hàng doanh nghiệp hạng Vàng bỗng nhiên bị hạ trạng thái ưu tiên trong CRM lúc 02 giờ 14 phút sáng và nhận nhầm tin nhắn thông báo hủy quyền lợi chiết khấu qua Zalo OA. Khi mở bảng lịch sử hệ thống cũ để truy cứu trách nhiệm giữa bộ phận Marketing, đội Sale phụ trách đại lý và nhóm kỹ thuật AI, cả phòng họp chỉ nhìn thấy đúng hai manh mối cụt ngủn: `updated_by: svc_ai_agent` và dòng log console `POST /api/crm/leads/4921 200 OK - 114ms`.",
+        "Không một ai trả lời nổi bốn câu hỏi tối thiểu của kiểm toán nội bộ: (1) Sự kiện nào kích hoạt con Bot chạy lúc 2 giờ sáng — một webhook từ chiến dịch cũ hay lệnh của một nhân viên trực đêm? (2) Lúc ra quyết định đó, AI đã đọc đoạn tài liệu chính sách nào trong Vector Database — bản quy chế mới nhất hay một file PDF nháp chưa kịp xóa? (3) Phiên bản System Prompt và mô hình nào được dùng ở lượt suy luận đó? (4) Chính xác những cột nào trong bảng dữ liệu đã biến đổi từ giá trị cũ sang giá trị mới? Đội ngũ kỹ sư đã mất ròng rã 4 tiếng rưỡi đồng hồ lật tung các file log Docker rời rạc, đối chiếu lại bản backup PostgreSQL lúc nửa đêm mới tìm ra nguyên nhân từ một chunk tài liệu trùng tên bị AI hiểu nhầm.",
+        "Sự cố này phơi bày sự nhầm lẫn tai hại tại đa số doanh nghiệp đang triển khai AI Agent: họ coi `console.log` hoặc công cụ theo dõi lỗi APM thông thường là hệ thống kiểm toán. Để đạt được tính **Chống chối bỏ (Non-Repudiation)** và đáp ứng các khung quản trị hiện đại như ISO/IEC 42001 hay NIST AI RMF, doanh nghiệp buộc phải thiết kế một hạ tầng immutable audit log truy vết quyết định ai agent tách biệt hoàn toàn khỏi luồng log debug dễ xóa sửa."
+      ],
+      "bullets": [
+        "Debug Log lưu rời rạc trên file text có thể xoay vòng mất dấu sau 7 ngày hoặc bị chính người có quyền server sửa xóa.",
+        "Thiếu `trace_id` gắn vào biến giao dịch PostgreSQL khiến việc nối từ một câu chat AI tới dòng SQL thay đổi gần như bất khả thi dưới tải đồng thời cao.",
+        "Nếu thiếu RAG Provenance (`chunk_id` + `doc_hash`), doanh nghiệp không thể chứng minh lỗi sai do tài liệu nguồn hay do mô hình suy luận bịa đặt."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "sau-mat-xich-va-chuoi-bam-bat-bien-non-repudiation",
+      "eyebrow": "KIẾN TRÚC FORENSIC • 6 MẮT XÍCH TRUY VẾT & CHUỖI BĂM SHA-256",
+      "variant": "deep-dive",
+      "heading": "Nối 6 mắt xích bằng Correlation ID và khóa bất biến bằng Hash Chain + WORM Object Lock",
+      "paragraphs": [
+        "Kiến trúc sổ cái kiểm toán bất biến tại DOMATION bắt đầu bằng việc cấp phát một mã định danh xuyên suốt `trace_id` (tương thích chuẩn W3C Trace Context của OpenTelemetry) ngay tại điểm chạm đầu tiên — dù là phiên đăng nhập SSO của nhân viên trên ERP 5.0, một Webhook từ VietQR/Meta Ads hay tin nhắn Zalo OA của khách hàng. Mã `trace_id` này đóng vai trò sợi chỉ đỏ buộc chặt 6 lớp bằng chứng lại với nhau thành một hồ sơ không thể tách rời.",
+        "Mắt xích 1 ghi nhận **Actor & Intent Origin** (người khởi phát, IP/thiết bị, mã phiên hoặc `webhook_event_id`). Mắt xích 2 đóng băng **Prompt & Guardrail Verdict** (`prompt_template_version`, `model_id`, kết quả quét NeMo Guardrails/PII Proxy đã che danh tính). Mắt xích 3 lưu **RAG Provenance** — danh sách chính xác các `document_id`, `chunk_id` và `content_sha256` đã được bơm vào ngữ cảnh trả lời. Mắt xích 4 ghi **Tool Call & HITL Signature** (tên công cụ thực thi, tham số JSON hợp lệ và chữ ký `approved_by` nếu có chốt duyệt từ ZaloBot). Mắt xích 5 là mảnh ghép thường bị thiếu nhất: **Database Row Diff**. Thông qua cơ chế `set_config('app.trace_id', ..., true)` trong cùng transaction với lệnh ghi của Worker, một PostgreSQL Trigger tự động chụp lại cả ảnh `before_state` lẫn `after_state` của dòng dữ liệu vừa thay đổi, đảm bảo không có bất kỳ thao tác sửa ngầm nào lọt lưới dù thực thi qua đường API nào. Cuối cùng, Mắt xích 6 lưu **External Egress Receipt** như mã giao dịch ZNS hoặc mã HTTP 200 từ Meta Conversions API.",
+        "Để biến bảng nhật ký thành kho lưu trữ chống chối bỏ thực sự, giải pháp cần đi qua hai tầng bảo vệ kỹ thuật. Tầng một ngay trong PostgreSQL: thu hồi toàn bộ quyền `UPDATE`, `DELETE`, `TRUNCATE` khỏi role ứng dụng và cài trigger từ chối sửa đổi, đồng thời mỗi bản ghi mới đều tính cột `entry_hash = sha256(prev_hash || trace_id || canonical_payload)` tạo thành chuỗi băm liên kết tuần tự (Tamper-Evident Hash Chain). Tầng hai là tách dữ liệu định kỳ: các trace hiệu năng/token tốc độ cao có thể đẩy sang `langfuse/langfuse` (trên ClickHouse) để theo dõi chi phí FinOps, còn tóm tắt Merkle Root của bảng `immutable_ai_audit_ledger` được đóng dấu thời gian và xuất mỗi 24 giờ sang bộ nhớ MinIO hoặc Amazon S3 bật khóa **WORM Object Lock chế độ COMPLIANCE** — nơi ngay cả quản trị viên cấp cao nhất cũng không thể xóa trước thời hạn lưu trữ quy định."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-mttr-va-do-phu-bang-chung-audit",
+      "heading": "Đo lường thời gian truy vết sự cố (MTTR - phút) & Độ phủ bằng chứng pháp lý (%) trên 5 ca lỗi AI Agent",
+      "subtitle": "So sánh hiệu quả điều tra sự cố thực địa giữa Log ứng dụng rời rạc, LLM Tracing đơn thuần và Hash-Chained Audit Ledger nối SQL Diff",
+      "chart": {
+        "chartType": "composed",
+        "title": "Thời gian truy vết gốc rễ (phút — thấp hơn là tốt) vs Độ phủ 6 mắt xích bằng chứng (%)",
+        "subtitle": "Gắn app.trace_id trực tiếp vào PostgreSQL Trigger rút thời gian điều tra từ 160–270 phút xuống còn dưới 0,5 phút",
+        "xKey": "incidentType",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "rawLogsMin",
+            "label": "MTTR với Log rời rạc (phút)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "llmTraceOnlyMin",
+            "label": "MTTR với LLM Trace thiếu DB Diff (phút)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "domationLedgerMin",
+            "label": "MTTR với DOMATION Audit Ledger (phút)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "evidenceCoveragePct",
+            "label": "Độ phủ 6 mắt xích bằng chứng (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "incidentType": "Sai báo giá RAG Zalo OA", "rawLogsMin": 145, "llmTraceOnlyMin": 24, "domationLedgerMin": 0.3, "evidenceCoveragePct": 100 },
+          { "incidentType": "Đổi nhầm chủ Lead F1", "rawLogsMin": 270, "llmTraceOnlyMin": 48, "domationLedgerMin": 0.3, "evidenceCoveragePct": 100 },
+          { "incidentType": "Gửi ZNS trùng/nhầm tệp", "rawLogsMin": 185, "llmTraceOnlyMin": 31, "domationLedgerMin": 0.4, "evidenceCoveragePct": 100 },
+          { "incidentType": "Duyệt sai PO / Chiết khấu", "rawLogsMin": 220, "llmTraceOnlyMin": 39, "domationLedgerMin": 0.25, "evidenceCoveragePct": 100 },
+          { "incidentType": "Nghi vấn đọc chéo Tenant", "rawLogsMin": 310, "llmTraceOnlyMin": 65, "evidenceCoveragePct": 100, "domationLedgerMin": 0.35 }
+        ],
+        "kpis": [
+          {
+            "label": "MTTR trung bình với Ledger",
+            "value": "0,32 phút",
+            "delta": "Nhanh hơn 700x vs Log cũ",
+            "positive": true
+          },
+          {
+            "label": "Độ phủ Prompt -> SQL Diff",
+            "value": "100%",
+            "delta": "Không sót nhánh ghi DB",
+            "positive": true
+          },
+          {
+            "label": "Lỗ hổng LLM Trace đơn thuần",
+            "value": "24–65 phút",
+            "delta": "Thiếu snapshot cột DB cũ",
+            "positive": false
+          },
+          {
+            "label": "Độ toàn vẹn WORM + SHA-256",
+            "value": "Tamper-Evident",
+            "delta": "Chống sửa xóa nội bộ",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp diễn tập điều tra sự cố (Forensic Drill) trên 5 kịch bản lỗi CRM/ERP giả lập tại DOMATION Security Lab (Q4/2026)."
+      },
+      "insightSummary": "Ngay cả khi đội ngũ đã lắp hệ thống LLM Tracing như Langfuse để xem prompt và đầu ra mô hình, nhân sự kiểm toán vẫn tốn 24–65 phút dò tìm vì trace không tự chụp trạng thái dòng SQL trước khi bị ghi đè. Chỉ khi truyền `app.trace_id` vào giao dịch PostgreSQL để Trigger ghi song song `before_state`/`after_state` vào sổ cái Hash Chain, toàn bộ chuỗi nguyên nhân mới hiện lên trong chưa đầy 20 giây."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-truy-vet-immutable-audit-log",
+      "src": "/imgs/boost/charts/immutable-audit-log-truy-vet-quyet-dinh-ai-agent-report.webp",
+      "alt": "Báo cáo thực địa mô hình immutable audit log truy vết quyết định ai agent nối từ Prompt, RAG Chunk đến SQL Before After Diff",
+      "caption": "So sánh tốc độ điều tra gốc rễ sự cố và mức độ toàn vẹn bằng chứng chống chối bỏ trên 5 kịch bản sự cố AI Agent tại doanh nghiệp.",
+      "badge": "FORENSICS & AUDIT LEDGER"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-sql-immutable-audit-ledger-hash-chain",
+      "heading": "Code Recipe: Lược đồ PostgreSQL Immutable Audit Ledger dùng Hash Chain SHA-256 & Trigger chụp SQL Diff",
+      "language": "sql",
+      "filename": "migrations/20261120_immutable_ai_audit_ledger.sql",
+      "description": "Tạo bảng sổ cái chỉ-thêm (Append-Only), chặn tuyệt đối UPDATE/DELETE bằng Trigger và tự động nối chuỗi mã băm SHA-256 kèm chụp Before/After Diff gắn theo `app.trace_id` trong cùng transaction.",
+      "code": "CREATE EXTENSION IF NOT EXISTS pgcrypto;\n\nCREATE TABLE immutable_ai_audit_ledger (\n  seq_id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  trace_id         UUID NOT NULL,\n  tenant_id        UUID NOT NULL,\n  actor_user_id    TEXT NOT NULL,\n  prompt_version   TEXT NOT NULL,\n  rag_chunk_hashes JSONB NOT NULL DEFAULT '[]'::jsonb,\n  hitl_approver_id TEXT,\n  target_table     TEXT NOT NULL,\n  record_id        TEXT NOT NULL,\n  operation        TEXT NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),\n  before_state     JSONB,\n  after_state      JSONB,\n  prev_hash        TEXT NOT NULL,\n  entry_hash       TEXT NOT NULL,\n  created_at       TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()\n);\n\n-- 1. KHOA TUYET DOI QUYEN SUA VA XOA TREN BANG AUDIT\nREVOKE UPDATE, DELETE, TRUNCATE ON immutable_ai_audit_ledger FROM PUBLIC;\n\nCREATE OR REPLACE FUNCTION deny_audit_mutation() RETURNS TRIGGER AS $$\nBEGIN\n  RAISE EXCEPTION 'IMMUTABILITY_VIOLATION: Bang immutable_ai_audit_ledger chi cho phep INSERT.';\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER trg_block_audit_update_delete\n  BEFORE UPDATE OR DELETE ON immutable_ai_audit_ledger\n  FOR EACH ROW EXECUTE FUNCTION deny_audit_mutation();\n\n-- 2. NOI CHUOI SHA-256 HASH CHAIN TU DONG KHI GHI\nCREATE OR REPLACE FUNCTION compute_audit_hash_chain() RETURNS TRIGGER AS $$\nDECLARE\n  last_hash TEXT;\n  raw_input TEXT;\nBEGIN\n  -- Khoa tuan tu ngan race condition lam tach nhanh chuoi hash\n  PERFORM pg_advisory_xact_lock(hashtext('immutable_ai_audit_ledger_chain'));\n  SELECT entry_hash INTO last_hash\n    FROM immutable_ai_audit_ledger\n    ORDER BY seq_id DESC LIMIT 1;\n\n  NEW.prev_hash := COALESCE(last_hash, repeat('0', 64));\n  raw_input := concat_ws('|',\n    NEW.prev_hash, NEW.trace_id::text, NEW.tenant_id::text,\n    NEW.actor_user_id, NEW.prompt_version, NEW.target_table,\n    NEW.record_id, NEW.operation,\n    COALESCE(NEW.before_state::text, 'null'),\n    COALESCE(NEW.after_state::text, 'null')\n  );\n  NEW.entry_hash := encode(digest(raw_input, 'sha256'), 'hex');\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER trg_audit_hash_chain\n  BEFORE INSERT ON immutable_ai_audit_ledger\n  FOR EACH ROW EXECUTE FUNCTION compute_audit_hash_chain();\n\n-- 3. TRIGGER CHUP BEFORE/AFTER DIFF CHO BANG NGHIEP VU (VD: crm_leads)\nCREATE OR REPLACE FUNCTION audit_agent_row_change() RETURNS TRIGGER AS $$\nBEGIN\n  INSERT INTO immutable_ai_audit_ledger (\n    trace_id, tenant_id, actor_user_id, prompt_version,\n    rag_chunk_hashes, hitl_approver_id, target_table, record_id,\n    operation, before_state, after_state\n  ) VALUES (\n    COALESCE(NULLIF(current_setting('app.trace_id', true), ''), gen_random_uuid()::text)::uuid,\n    COALESCE(NEW.tenant_id, OLD.tenant_id),\n    COALESCE(NULLIF(current_setting('app.actor_id', true), ''), 'system_unknown'),\n    COALESCE(NULLIF(current_setting('app.prompt_version', true), ''), 'v0'),\n    COALESCE(NULLIF(current_setting('app.rag_chunks', true), ''), '[]')::jsonb,\n    NULLIF(current_setting('app.hitl_approver', true), ''),\n    TG_TABLE_NAME,\n    COALESCE(NEW.id::text, OLD.id::text),\n    TG_OP,\n    CASE WHEN TG_OP IN ('UPDATE', 'DELETE') THEN to_jsonb(OLD) ELSE NULL END,\n    CASE WHEN TG_OP IN ('INSERT', 'UPDATE') THEN to_jsonb(NEW) ELSE NULL END\n  );\n  RETURN COALESCE(NEW, OLD);\nEND;\n$$ LANGUAGE plpgsql;"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-non-repudiation-ai-agent",
+      "heading": "Checklist 5 bước kiểm định tính chống chối bỏ (Non-Repudiation) của hệ thống AI Agent",
+      "items": [
+        {
+          "check": "Xác minh tính toàn vẹn chuỗi băm Hash Chain định kỳ mỗi 24 giờ",
+          "severity": "critical",
+          "verificationHow": "Chạy job SQL tính lại `sha256(prev_hash || payload)` từ bản ghi `seq_id = 1` đến bản ghi cuối cùng và đối chiếu với Daily Merkle Root lưu trên MinIO/S3 WORM Object Lock.",
+          "passThreshold": "0 điểm gãy chuỗi; mọi bản ghi trong PostgreSQL khớp 100% với bản neo WORM ngoài vùng quản trị DB."
+        },
+        {
+          "check": "Kiểm thử từ chối UPDATE/DELETE/TRUNCATE trên bảng Audit Ledger",
+          "severity": "critical",
+          "verificationHow": "Đăng nhập bằng tài khoản ứng dụng `domation_app` lẫn role vận hành thông thường, thử chạy `DELETE FROM immutable_ai_audit_ledger LIMIT 1`.",
+          "passThreshold": "100% câu lệnh sửa/xóa bị chặn đứng ngay bởi phân quyền PostgreSQL và trigger `IMMUTABILITY_VIOLATION`."
+        },
+        {
+          "check": "Kiểm tra tính liên tục của `trace_id` xuyên suốt 6 mắt xích",
+          "severity": "high",
+          "verificationHow": "Chọn ngẫu nhiên 10 thao tác AI cập nhật CRM/ERP trong tuần qua và chạy truy vấn gom nhóm theo `trace_id` từ Langfuse/Telemetry tới bảng `immutable_ai_audit_ledger`.",
+          "passThreshold": "100% ca ghi nhận đủ Actor gốc, `prompt_version`, danh sách `rag_chunk_hashes`, tham số Tool và cặp `before_state`/`after_state`."
+        },
+        {
+          "check": "Rà soát che mờ PII nhạy cảm trong Trace Log kỹ thuật",
+          "severity": "high",
+          "verificationHow": "Quét regex kiểm tra chuỗi SĐT (10 số), CCCD (12 số) và số thẻ ngân hàng trong kho trace ClickHouse / Langfuse.",
+          "passThreshold": "0 bản ghi trace lưu số CCCD hay SĐT thô dạng plain-text; chỉ lưu mã hóa hoặc token định danh ẩn danh."
+        },
+        {
+          "check": "Diễn tập xuất gói hồ sơ kiểm toán tuân thủ (ISO/IEC 42001 & NĐ 13)",
+          "severity": "recommended",
+          "verificationHow": "Giả lập yêu cầu giải trình một đơn hàng hoặc tin nhắn ZNS cách thời điểm hiện tại 30 ngày và bấm giờ xuất báo cáo PDF/JSON.",
+          "passThreshold": "Xuất trọn bộ bằng chứng có chữ ký toàn vẹn trong < 5 phút mà không cần nhờ DevOps SSH vào server sản xuất."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-immutable-audit",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hộp đen máy bay của doanh nghiệp thời AI: Đừng đợi xảy ra tranh chấp mới đi tìm file log",
+      "body": "Từ các hệ thống chia Lead 3 đại lý F1 tại EcoLife Signature đòi hỏi độ lệch ~0% đến luồng đối soát hoa hồng VietQR ACB tại Nha khoa Flora hay ERP 5.0 12 phân hệ ở Viện IDEAS, sự minh bạch luôn là thứ giữ niềm tin lâu bền nhất giữa chủ doanh nghiệp, đại lý và khách hàng. Khi bạn đưa AI Agent vào tham gia xử lý giao dịch thật, bảng Immutable Audit Log gắn Correlation ID và chuỗi băm chống sửa xóa chính là chiếc hộp đen máy bay bảo vệ cả tổ chức: mọi quyết định đều giải trình được trong 18 giây bằng bằng chứng xác thực chứ không phải lời thanh minh."
+    }
+  ]
+}

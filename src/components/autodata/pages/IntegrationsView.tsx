@@ -4,6 +4,7 @@ import { DomResponsiveSubtabs } from '../../dom-meta/DomMetaSelect';
 import { apiRequest, getErrorMessage } from '../autodataApi';
 import { AutoDataTelegramBotGuide } from '../AutoDataTelegramBotGuide';
 import { AutoDataZaloBotGuide } from '../AutoDataZaloBotGuide';
+import { ZaloSpecialistBanner } from '../../common/ZaloSpecialistBanner';
 import {
   buildGoogleAppsScriptSnippet,
   type TelegramIntegrationState,
@@ -201,11 +202,12 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
     }
   };
 
+  const CANONICAL_AUTODATA_ORIGIN = 'https://data.domation.net';
   const webhooks = overview?.webhooks || [];
   const firstInbound = webhooks.find((w) => w.webhook_type === 'inbound');
   const inboundUrl = firstInbound
-    ? `${window.location.origin}/api/v1/webhooks/${tenantSlug}/${firstInbound.token}`
-    : `${window.location.origin}/api/v1/webhooks/${tenantSlug}/<token>`;
+    ? `${CANONICAL_AUTODATA_ORIGIN}/api/v1/webhooks/${encodeURIComponent(tenantSlug)}/${encodeURIComponent(firstInbound.token || '')}`
+    : `${CANONICAL_AUTODATA_ORIGIN}/api/v1/webhooks/${encodeURIComponent(tenantSlug)}/<connection_token>`;
   const appsScriptCode = buildGoogleAppsScriptSnippet(inboundUrl, adminEmail);
 
   const tgEntry = overview?.integrations?.telegram_bot || overview?.integrations?.telegram;
@@ -217,7 +219,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
         server_silent_enforced: true,
         chat_id: String(tgEntry.config_preview?.chat_id || ''),
         bot_token_masked: String(tgEntry.config_preview?.bot_token || ''),
-        webhook_url: `${window.location.origin}/api/v1/integrations/telegram/webhook`,
+        webhook_url: `${CANONICAL_AUTODATA_ORIGIN}/api/v1/integrations/telegram/webhook`,
         updated_at: tgEntry.updated_at || new Date().toISOString(),
       }
     : null;
@@ -273,6 +275,10 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
         />
       </div>
 
+      {(subTab === 'webhooks' || subTab === 'capi' || subTab === 'smtp' || subTab === 'appscript') && (
+        <ZaloSpecialistBanner context="setup" variant="compact" />
+      )}
+
       {subTab === 'webhooks' && (
         <div className="space-y-4">
           <form onSubmit={handleCreateWebhook} className="inkica-glass-card flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white p-4">
@@ -323,7 +329,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ token, tenan
                   </div>
                   <p className="mt-1 truncate font-mono text-[11px] text-slate-500">
                     {w.webhook_type === 'inbound'
-                      ? `${window.location.origin}/api/v1/webhooks/${tenantSlug}/${w.token}`
+                      ? `${CANONICAL_AUTODATA_ORIGIN}/api/v1/webhooks/${encodeURIComponent(tenantSlug)}/${encodeURIComponent(w.token || '')}`
                       : w.url}
                   </p>
                 </div>

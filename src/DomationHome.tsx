@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Activity,
   ArrowRight,
-  ArrowUp,
   BarChart3,
   Bot,
   Box,
@@ -42,7 +41,13 @@ import { WebEstimatorModal } from './components/WebEstimatorModal';
 import { PartnersTrustSection } from './components/PartnersTrustSection';
 import { SectionQuickDock } from './components/SectionQuickDock';
 import { DomationFooter } from './components/DomationFooter';
-import { ClosedLoopFlywheelSection } from './components/ClosedLoopFlywheelSection';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
+import { SPECIALIST_ZALO_URL } from './components/common/ZaloSpecialistBanner';
+import { BackToTopPill } from './components/BackToTopPill';
+import { ClosedLoopSixCardSection } from './components/ClosedLoopSixCardSection';
+import { MobileAppShowcaseSection } from './components/MobileAppShowcaseSection';
+import { MotionVideoShowcase } from './components/MotionVideoShowcase';
+import { ResponsiveSlideDeck } from './components/ResponsiveSlideDeck';
 import {
   CASE_STUDY_SPOTLIGHTS,
   DECOR_PNGS,
@@ -57,6 +62,7 @@ import { usePageSeo } from './utils/seo';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
 
 const DEDICATED_APP_LINKS = [
+  { label: 'DOM AI Assistant (Free)', href: '/dom-ai' },
   { label: 'ERP 5.0', href: '/erp' },
   { label: 'CRM Auto Data', href: '/data' },
   { label: 'Meta & Google Ads Report', href: '/meta-report' },
@@ -512,10 +518,10 @@ export const DomationHome: React.FC = () => {
                   </span>
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl xl:text-[44px] font-bold text-slate-900 tracking-[-0.015em] space-y-2">
-                  <span className="block leading-[1.3]">Hệ Điều Hành Doanh Nghiệp</span>
-                  <span className="block leading-[1.3] text-gradient-inkica">
-                    Từ Hút Khách Đến Vận Hành
+                <h1 className="text-[22px] sm:text-4xl xl:text-[44px] font-bold text-slate-900 tracking-[-0.02em] space-y-1 sm:space-y-1.5">
+                  <span className="block leading-[1.22]">Hệ Điều Hành Doanh Nghiệp</span>
+                  <span className="block leading-[1.22] text-gradient-inkica">
+                    Hút Khách Đến Vận Hành
                   </span>
                 </h1>
 
@@ -626,7 +632,46 @@ export const DomationHome: React.FC = () => {
               </p>
             </div>
 
-            <div className="rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 overflow-hidden">
+            <div className="md:hidden">
+              <ResponsiveSlideDeck
+                items={ENTERPRISE_STORY_CHAPTERS}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                gapClass="gap-3"
+                ariaLabel="Triết lý thiết kế may đo DOMATION"
+                keyExtractor={(chapter) => chapter.step}
+                renderItem={(chapter) => (
+                  <div className="h-full rounded-[24px] bg-white/95 border border-slate-200/85 shadow-xs p-6 flex flex-col justify-between gap-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-semibold text-[#1E40FF] bg-slate-100 px-2.5 py-0.5 rounded-full">
+                            {chapter.step}
+                          </span>
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#0369A1]">
+                            {chapter.tag}
+                          </span>
+                        </div>
+                        <img
+                          src={chapter.decorImg}
+                          alt=""
+                          aria-hidden="true"
+                          loading="lazy"
+                          decoding="async"
+                          className="w-11 h-11 object-contain shrink-0"
+                        />
+                      </div>
+                      <h3 className="text-base font-semibold text-slate-900 leading-snug pt-0.5">
+                        {chapter.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">{chapter.desc}</p>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="hidden md:grid rounded-[28px] bg-white/85 backdrop-blur-xl border border-slate-200/80 shadow-sm md:grid-cols-3 divide-x divide-slate-200/75 overflow-hidden">
               {ENTERPRISE_STORY_CHAPTERS.map((chapter) => (
                 <div
                   key={chapter.step}
@@ -647,6 +692,7 @@ export const DomationHome: React.FC = () => {
                         alt=""
                         aria-hidden="true"
                         loading="lazy"
+                        decoding="async"
                         className="w-12 h-12 object-contain shrink-0 drop-shadow-[0_10px_16px_rgba(30,64,255,0.12)]"
                       />
                     </div>
@@ -683,6 +729,15 @@ export const DomationHome: React.FC = () => {
         </section>
 
         {/* ================================================================ */}
+        {/* 2B. MOTION PRODUCT SHOWCASE HUB — ECOSYSTEM & 7 APPS (60 FPS)    */}
+        {/* ================================================================ */}
+        <section id="motion-showcase" className="relative py-8 sm:py-12 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto">
+            <MotionVideoShowcase variant="hub" videoId="ecosystem" />
+          </div>
+        </section>
+
+        {/* ================================================================ */}
         {/* 3. CONNECTED 4-IN-1 ECOSYSTEM ARCHITECTURE + WEB / 3D STRIP     */}
         {/* ================================================================ */}
         <section id="ecosystem-architecture" className="relative py-10 sm:py-14 px-4 sm:px-6">
@@ -712,8 +767,8 @@ export const DomationHome: React.FC = () => {
                   className="hidden lg:block absolute top-1/2 left-[6%] right-[6%] h-px -translate-y-1/2 bg-slate-200/90 pointer-events-none"
                 />
 
-                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-5 items-stretch">
-                  {[
+                {(() => {
+                  const ecosystemCards = [
                     {
                       step: '01',
                       title: 'Realtime - Report',
@@ -746,68 +801,154 @@ export const DomationHome: React.FC = () => {
                       image: '/imgs/ecosystem/enterprise-erp.jpg',
                       imageAlt: 'Enterprise ERP: Hợp nhất Tài chính, Nhân sự, Kho & Phê duyệt',
                     },
-                  ].map((card, idx, arr) => {
-                    const hasNext = idx < arr.length - 1;
-                    return (
-                      <div key={card.step} className="relative flex flex-col">
-                        <a
-                          href={card.href}
-                          onClick={(e) => handleSpaLinkClick(e, card.href)}
-                          className="group flex-1 flex flex-col rounded-2xl bg-white border border-slate-200/75 hover:border-slate-300 hover:shadow-[0_18px_40px_-16px_rgba(15,23,42,0.12)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
-                        >
-                          <div className="aspect-[16/9] w-full overflow-hidden bg-[#F5F9FF] border-b border-slate-100">
-                            <img
-                              src={card.image}
-                              alt={card.imageAlt}
-                              loading="lazy"
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                            />
-                          </div>
-
-                          <div className="p-4 sm:p-5 lg:p-4 xl:p-5 flex-1 flex flex-col">
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-baseline gap-1.5 min-w-0">
-                                <span className="font-mono text-[11px] font-medium text-slate-400 shrink-0">
-                                  {card.step}
-                                </span>
-                                <h3 className="text-[14.5px] lg:text-[14px] xl:text-[15px] font-semibold text-slate-900 tracking-tight leading-snug">
-                                  {card.title}
-                                </h3>
+                  ];
+                  return (
+                    <>
+                      <div className="sm:hidden relative z-10">
+                        <ResponsiveSlideDeck
+                          items={ecosystemCards}
+                          mobilePerPage={1}
+                          mobileColsClass="grid-cols-1"
+                          gapClass="gap-3"
+                          ariaLabel="4 Cấp độ nâng cấp hệ sinh thái DOMATION"
+                          keyExtractor={(card) => card.step}
+                          renderItem={(card) => (
+                            <a
+                              href={card.href}
+                              onClick={(e) => handleSpaLinkClick(e, card.href)}
+                              className="group h-full flex flex-col rounded-2xl bg-white border border-slate-200/80 shadow-xs overflow-hidden"
+                            >
+                              <div className="aspect-[16/9] w-full overflow-hidden bg-[#F5F9FF] border-b border-slate-100">
+                                <img
+                                  src={card.image}
+                                  alt={card.imageAlt}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
-                              <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-slate-900" />
-                            </div>
-
-                            <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
-                              {card.desc}
-                            </p>
-                          </div>
-                        </a>
-
-                        {/* Minimalist Bridge Node centered in the gap-5 gutter on Desktop */}
-                        {hasNext && (
-                          <div
-                            aria-hidden="true"
-                            className="hidden lg:flex items-center justify-center absolute left-[calc(100%+10px)] top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[26px] h-[26px] rounded-full bg-white border border-slate-200/90 text-slate-600 shadow-xs pointer-events-none"
-                            title="Kết nối dữ liệu liền mạch"
-                          >
-                            <Link2 className="w-3.5 h-3.5" />
-                          </div>
-                        )}
-
-                        {/* Quiet centered connector icon between stacked cards on Mobile */}
-                        {hasNext && (
-                          <div
-                            aria-hidden="true"
-                            className="sm:hidden flex items-center justify-center py-2.5"
-                          >
-                            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white border border-slate-200/90 text-slate-500 shadow-xs">
-                              <Link2 className="w-3 h-3" />
-                            </span>
-                          </div>
-                        )}
+                              <div className="p-4 flex-1 flex flex-col">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-baseline gap-1.5 min-w-0">
+                                    <span className="font-mono text-[11px] font-medium text-slate-400 shrink-0">
+                                      {card.step}
+                                    </span>
+                                    <h3 className="text-sm font-semibold text-slate-900 tracking-tight truncate">
+                                      {card.title}
+                                    </h3>
+                                  </div>
+                                  <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                </div>
+                                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
+                                  {card.desc}
+                                </p>
+                              </div>
+                            </a>
+                          )}
+                        />
                       </div>
-                    );
-                  })}
+
+                      <div className="hidden sm:grid relative z-10 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
+                        {ecosystemCards.map((card, idx, arr) => {
+                          const hasNext = idx < arr.length - 1;
+                          return (
+                            <div key={card.step} className="relative flex flex-col">
+                              <a
+                                href={card.href}
+                                onClick={(e) => handleSpaLinkClick(e, card.href)}
+                                className="group flex-1 flex flex-col rounded-2xl bg-white border border-slate-200/75 hover:border-slate-300 hover:shadow-[0_18px_40px_-16px_rgba(15,23,42,0.12)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+                              >
+                                <div className="aspect-[16/9] w-full overflow-hidden bg-[#F5F9FF] border-b border-slate-100">
+                                  <img
+                                    src={card.image}
+                                    alt={card.imageAlt}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                                  />
+                                </div>
+
+                                <div className="p-4 sm:p-5 lg:p-4 xl:p-5 flex-1 flex flex-col">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-baseline gap-1.5 min-w-0">
+                                      <span className="font-mono text-[11px] font-medium text-slate-400 shrink-0">
+                                        {card.step}
+                                      </span>
+                                      <h3 className="text-[14.5px] lg:text-[14px] xl:text-[15px] font-semibold text-slate-900 tracking-tight leading-snug">
+                                        {card.title}
+                                      </h3>
+                                    </div>
+                                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-slate-900" />
+                                  </div>
+
+                                  <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
+                                    {card.desc}
+                                  </p>
+                                </div>
+                              </a>
+
+                              {/* Minimalist Bridge Node centered in the gap-5 gutter on Desktop */}
+                              {hasNext && (
+                                <div
+                                  aria-hidden="true"
+                                  className="hidden lg:flex items-center justify-center absolute left-[calc(100%+10px)] top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[26px] h-[26px] rounded-full bg-white border border-slate-200/90 text-slate-600 shadow-xs pointer-events-none"
+                                  title="Kết nối dữ liệu liền mạch"
+                                >
+                                  <Link2 className="w-3.5 h-3.5" />
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* Flagship Free BYOK Standalone Product Highlight: DOM AI Assistant */}
+              <div className="mt-5 rounded-2xl bg-gradient-to-r from-[#EEF4FF] via-white to-[#ECFDF5] border border-blue-200/80 p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-2xs">
+                <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#1E3A8A] via-[#1E40FF] to-[#06B6D4] text-white flex items-center justify-center shadow-md shrink-0">
+                    <Bot className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-wider">
+                        MIỄN PHÍ 100% • BYOK API KEY
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#1E40FF]">
+                        SẢN PHẨM ĐỘC LẬP MỚI
+                      </span>
+                    </div>
+                    <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                      DOM AI Assistant — Trợ Lý AI RAG &amp; Kho Tài Liệu Riêng (0₫/tháng trọn đời)
+                    </h3>
+                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                      Cắm trực tiếp Gemini API Key riêng của doanh nghiệp: 3-Pane AI Studio, 3 chế độ Auth (Bypass / Login / Whitelist), Dashboard thống kê &amp; 1-click Q&amp;A Training.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <a
+                    href="/dom-ai"
+                    onClick={(e) => handleSpaLinkClick(e, '/dom-ai')}
+                    className="btn-inkica-primary min-h-[44px] px-4 py-2.5 text-xs font-bold whitespace-nowrap"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-200" />
+                    <span>Khám Phá DOM AI (Free)</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                  <a
+                    href="https://erp.domation.net/dom-ai-studio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ql-btn-outline min-h-[44px] px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap"
+                  >
+                    <span>Tạo Portal Ngay</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-[#1E40FF]" />
+                  </a>
                 </div>
               </div>
 
@@ -952,7 +1093,6 @@ export const DomationHome: React.FC = () => {
                       alt={currentAutoData.title}
                       fit="contain"
                       aspectClass="aspect-[16/10]"
-                      eager
                       hoverZoom
                     />
                   </div>
@@ -975,27 +1115,29 @@ export const DomationHome: React.FC = () => {
                     <BarChart3 className="w-3.5 h-3.5 text-[#1E40FF]" />
                     <span>02 • META &amp; GOOGLE ADS REPORT × CRM</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
-                    Biết Rõ Nội Dung Nào Ra Khách —{' '}
-                    <span className="text-gradient-inkica">Biết Rõ Khách Nào Từ Nội Dung Nào</span>
+                  <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                    Đo Nội Dung Ra Khách —{' '}
+                    <span className="text-gradient-inkica">Soi Rõ Từng Chiến Dịch</span>
                   </h2>
                 </div>
-                <div className="flex flex-wrap items-center gap-2.5">
+                <div className="grid grid-cols-2 sm:inline-flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
                   <a
                     href="/meta-report"
                     onClick={(e) => handleSpaLinkClick(e, '/meta-report')}
-                    className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold"
+                    className="btn-inkica-primary min-h-[44px] justify-center px-3 sm:px-4 py-2 text-[11.5px] sm:text-sm font-semibold whitespace-nowrap"
                   >
-                    <span>Dùng Thử Free 1 Tháng</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span className="sm:hidden">Dùng Thử Free</span>
+                    <span className="hidden sm:inline">Dùng Thử Free 1 Tháng</span>
+                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                   </a>
                   <button
                     type="button"
                     onClick={() => openInspection('meta-report')}
-                    className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                    className="ql-btn-outline min-h-[44px] justify-center px-3 sm:px-4 py-2 text-[11.5px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                   >
-                    <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
-                    <span>12 Màn Hình + Video</span>
+                    <MonitorSmartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1E40FF] shrink-0" />
+                    <span className="sm:hidden">12 Màn Hình</span>
+                    <span className="hidden sm:inline">12 Màn Hình + Video</span>
                   </button>
                 </div>
               </div>
@@ -1039,7 +1181,6 @@ export const DomationHome: React.FC = () => {
                       alt="Bảng Chiến Dịch Hợp Nhất Lead CRM và Sale Phụ Trách"
                       fit="contain"
                       aspectClass="aspect-[16/10]"
-                      eager
                       hoverZoom
                     />
                     <span className="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-900/75 text-[11px] font-medium text-white inline-flex items-center gap-1">
@@ -1125,7 +1266,6 @@ export const DomationHome: React.FC = () => {
                       alt={currentAdsShot.title}
                       fit="contain"
                       aspectClass="aspect-[16/10]"
-                      eager
                       hoverZoom
                     />
                     <span className="absolute bottom-2.5 right-2.5 z-20 px-2.5 py-1 rounded-lg bg-slate-900/75 text-[11px] font-medium text-white inline-flex items-center gap-1">
@@ -1152,7 +1292,9 @@ export const DomationHome: React.FC = () => {
         {/* 5B. CLOSED-LOOP INTELLIGENCE CIRCLE (META ADS <-> CRM <-> CAPI)  */}
         {/* Placed right below Biết Rõ Nội Dung Nào Ra Khách Section         */}
         {/* ================================================================ */}
-        <ClosedLoopFlywheelSection variant="home" />
+        <ClosedLoopSixCardSection variant="home" />
+
+        <MobileAppShowcaseSection variant="home" />
 
         {/* ================================================================ */}
         {/* 6. AUTOMATION NURTURING & BEHAVIOR TRACKING — COMPACT 4 STEPS    */}
@@ -1165,22 +1307,55 @@ export const DomationHome: React.FC = () => {
                   <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
                   <span>03 • AUTOMATION &amp; TRACKING HÀNH VI</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Nuôi Dưỡng Tự Động 24/7 —{' '}
-                  <span className="text-gradient-inkica">Đo Click, Lượt Mở &amp; Thời Gian Xem Web</span>
+                <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                  Nuôi Dưỡng Tự Động —{' '}
+                  <span className="text-gradient-inkica">Đo Click &amp; Thời Gian Xem Web</span>
                 </h2>
               </div>
               <a
                 href="/automation"
                 onClick={(e) => handleSpaLinkClick(e, '/automation')}
-                className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold w-fit shrink-0"
+                className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold w-fit shrink-0 whitespace-nowrap"
               >
                 <span>Khám Phá Automation</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </a>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+            <div className="sm:hidden mb-5">
+              <ResponsiveSlideDeck
+                items={AUTOMATION_PILLARS}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                gapClass="gap-3"
+                ariaLabel="4 Trụ cột Automation Tracking"
+                keyExtractor={(step) => step.step}
+                renderItem={(step) => {
+                  const StepIcon = step.icon;
+                  return (
+                    <div className="h-full rounded-2xl bg-white/95 border border-slate-200/85 p-5 shadow-xs flex flex-col justify-between gap-3">
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#1E40FF] flex items-center justify-center border border-blue-100">
+                            <StepIcon className="w-4 h-4" />
+                          </div>
+                          <span className="text-[11px] font-mono font-semibold text-slate-400">
+                            {step.step}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-semibold text-slate-900">{step.title}</h3>
+                        <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
+                      </div>
+                      <div className="pt-2.5 border-t border-slate-100 text-[11px] font-semibold text-[#1E40FF]">
+                        {step.metric}
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
               {AUTOMATION_PILLARS.map((step) => {
                 const StepIcon = step.icon;
                 return (
@@ -1299,26 +1474,27 @@ export const DomationHome: React.FC = () => {
                   <Building2 className="w-3.5 h-3.5 text-[#1E40FF]" />
                   <span>04 • DOMATION ERP 5.0 &amp; AI NỘI BỘ</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
-                  Bán Hàng, Phê Duyệt &amp; Chấm Công —{' '}
-                  <span className="text-gradient-inkica">Gọn Trong Một Hệ Điều Hành</span>
+                <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
+                  Bán Hàng, Duyệt &amp; Chấm Công{' '}
+                  <span className="text-gradient-inkica">Gọn Trong 1 OS</span>
                 </h2>
               </div>
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="grid grid-cols-2 sm:inline-flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
                 <a
                   href="/erp"
                   onClick={(e) => handleSpaLinkClick(e, '/erp')}
-                  className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold"
+                  className="btn-inkica-primary min-h-[44px] justify-center px-3 sm:px-4 py-2 text-[11.5px] sm:text-sm font-semibold whitespace-nowrap"
                 >
-                  <span>Khám Phá ERP 5.0</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span className="sm:hidden">Mở ERP 5.0</span>
+                  <span className="hidden sm:inline">Khám Phá ERP 5.0</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 </a>
                 <button
                   type="button"
                   onClick={() => openInspection('erp')}
-                  className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="ql-btn-outline min-h-[44px] justify-center px-3 sm:px-4 py-2 text-[11.5px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                 >
-                  <span>Xem 18 Màn Hình</span>
+                  <span>18 Màn Hình</span>
                 </button>
               </div>
             </div>
@@ -1366,7 +1542,6 @@ export const DomationHome: React.FC = () => {
                       alt={currentErpTrack.mainScreen.title}
                       fit="contain"
                       aspectClass="aspect-[16/10]"
-                      eager
                       hoverZoom
                     />
                     <span className="absolute bottom-3 right-3 z-20 px-2.5 py-1 rounded-lg bg-slate-900/75 text-white text-[11px] font-medium inline-flex items-center gap-1">
@@ -1414,7 +1589,6 @@ export const DomationHome: React.FC = () => {
                           alt={sub.title}
                           fit="contain"
                           aspectClass="aspect-[16/10]"
-                          eager
                           hoverZoom
                         />
                         <div className="px-2.5 py-1.5 bg-white text-[11px] font-semibold text-slate-700 truncate border-t border-slate-100">
@@ -1448,7 +1622,35 @@ export const DomationHome: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="sm:hidden">
+                  <ResponsiveSlideDeck
+                    items={ERP_EMBEDDED_AGENTS}
+                    mobilePerPage={1}
+                    mobileColsClass="grid-cols-1"
+                    gapClass="gap-3"
+                    ariaLabel="4 AI Agent nội bộ ERP"
+                    keyExtractor={(agent) => agent.name}
+                    renderItem={(agent) => {
+                      const AgentIcon = agent.icon;
+                      return (
+                        <div className="h-full rounded-xl bg-slate-50/90 border border-slate-200/80 p-4 space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 text-[#1E40FF] flex items-center justify-center">
+                              <AgentIcon className="w-4 h-4" />
+                            </div>
+                            <span className="text-[10px] font-semibold uppercase text-slate-500 bg-white px-2.5 py-0.5 rounded-full border border-slate-200/80">
+                              {agent.tag}
+                            </span>
+                          </div>
+                          <div className="text-sm font-semibold text-slate-900">{agent.name}</div>
+                          <p className="text-xs text-slate-600 leading-relaxed">{agent.desc}</p>
+                        </div>
+                      );
+                    }}
+                  />
+                </div>
+
+                <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {ERP_EMBEDDED_AGENTS.map((agent) => {
                     const AgentIcon = agent.icon;
                     return (
@@ -1483,36 +1685,84 @@ export const DomationHome: React.FC = () => {
                   <Globe className="w-3.5 h-3.5 text-[#1E40FF]" />
                   <span>05 • ĐIỂM CHẠM CUỐI THẾ HỆ MỚI</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+                <h2 className="text-[20px] sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-[1.22] tracking-tight">
                   Website &amp; Landing Page —{' '}
-                  <span className="text-gradient-inkica">Chốt Niềm Tin, Đẩy Về CRM</span>
+                  <span className="text-gradient-inkica">Chốt Niềm Tin, Đẩy CRM</span>
                 </h2>
               </div>
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="grid grid-cols-2 sm:inline-flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
                 <button
                   type="button"
                   aria-expanded={showMoreTouchpoints}
                   onClick={() => setShowMoreTouchpoints((prev) => !prev)}
-                  className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="btn-inkica-primary min-h-[44px] justify-center px-3 sm:px-4 py-2 text-[11.5px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                 >
-                  <span>{showMoreTouchpoints ? 'Thu gọn chi tiết' : 'Xem chi tiết'}</span>
+                  <span>{showMoreTouchpoints ? 'Thu gọn' : 'Xem chi tiết'}</span>
                   {showMoreTouchpoints ? (
-                    <ChevronUp className="w-4 h-4" />
+                    <ChevronUp className="w-4 h-4 shrink-0" />
                   ) : (
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-4 h-4 shrink-0" />
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEstimatorOpen(true)}
-                  className="ql-btn-outline min-h-[44px] px-4 py-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                  className="ql-btn-outline min-h-[44px] justify-center px-3 sm:px-4 py-2 text-[11.5px] sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
                 >
-                  <span>Báo giá</span>
+                  <span>Báo giá Web</span>
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="lg:hidden">
+              <ResponsiveSlideDeck
+                items={TOUCHPOINT_SHOWCASES}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={2}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-4"
+                ariaLabel="Mẫu Website & Landing Page thực tế"
+                keyExtractor={(site) => site.id}
+                renderItem={(site) => (
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      setZoomedShot({
+                        src: site.src,
+                        title: `${site.title} (${site.url})`,
+                        badge: site.tag,
+                        desc: site.desc,
+                      })
+                    }
+                    className="group h-full rounded-2xl bg-white/95 border border-slate-200/85 overflow-hidden shadow-xs flex flex-col cursor-zoom-in"
+                  >
+                    <div className="relative overflow-hidden border-b border-slate-100">
+                      <img
+                        src={site.src}
+                        alt={site.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full aspect-[16/10] object-cover object-top"
+                      />
+                      <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/95 text-[10px] font-semibold text-[#1E40FF] shadow-sm">
+                        {site.tag}
+                      </span>
+                    </div>
+                    <div className="p-4 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-sm font-bold text-slate-900 truncate">{site.title}</h3>
+                        <span className="text-[11px] font-mono text-slate-400 truncate shrink-0">{site.url}</span>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-1.5 leading-relaxed line-clamp-2">{site.desc}</p>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="hidden lg:grid lg:grid-cols-3 gap-5">
               {TOUCHPOINT_SHOWCASES.map((site) => (
                 <div
                   key={site.id}
@@ -1877,7 +2127,83 @@ export const DomationHome: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-200/75 overflow-hidden">
+            <div className="lg:hidden mb-8">
+              <ResponsiveSlideDeck
+                items={CASE_STUDY_SPOTLIGHTS}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={2}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-4"
+                ariaLabel="Kiến trúc may đo tại doanh nghiệp đối tác"
+                keyExtractor={(cs) => cs.id}
+                renderItem={(cs) => {
+                  const isInkica = cs.id === 'inkica';
+                  return (
+                    <div className="h-full rounded-2xl bg-white/95 border border-slate-200/85 p-5 shadow-xs flex flex-col justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="h-10 px-2.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-1.5 shrink-0">
+                            <img
+                              src={cs.logo}
+                              alt={cs.company}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-5 max-w-[90px] object-contain"
+                            />
+                            {isInkica && (
+                              <span className="text-xs font-bold tracking-tight text-slate-900">
+                                inkica<span className="text-[#1E40FF]">.</span>
+                              </span>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-sm font-semibold text-slate-900 truncate">
+                              {cs.company}
+                            </h3>
+                            <div className="text-[11px] font-medium text-slate-500 truncate">
+                              {cs.sector}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                          {cs.summary}
+                        </p>
+                      </div>
+                      <div className="pt-3 border-t border-slate-200/70 space-y-2.5">
+                        <div className="flex flex-wrap items-center gap-1.5 text-[10.5px] font-semibold">
+                          <span className="px-2 py-0.5 rounded-md bg-slate-100 text-[#1E40FF]">{cs.result}</span>
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700">{cs.cost}</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {CASE_ARTICLE_MAP[cs.id] && (
+                            <a
+                              href={CASE_ARTICLE_MAP[cs.id]}
+                              onClick={(e) => handleSpaLinkClick(e, CASE_ARTICLE_MAP[cs.id])}
+                              className="ql-btn-outline min-h-[38px] px-2.5 py-1.5 rounded-lg text-[11px] font-semibold justify-center whitespace-nowrap"
+                            >
+                              <span>Chi tiết</span>
+                              <ArrowRight className="w-3 h-3 shrink-0" />
+                            </a>
+                          )}
+                          {cs.inspectionTab && (
+                            <button
+                              type="button"
+                              onClick={() => openInspection(cs.inspectionTab!)}
+                              className="btn-inkica-primary min-h-[38px] px-2.5 py-1.5 rounded-lg text-[11px] font-semibold justify-center whitespace-nowrap cursor-pointer"
+                            >
+                              <span>Xem App</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="hidden lg:grid rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-xs lg:grid-cols-2 divide-x divide-slate-200/75 overflow-hidden">
               {CASE_STUDY_SPOTLIGHTS.map((cs, idx) => {
                 const isInkica = cs.id === 'inkica';
                 return (
@@ -2026,8 +2352,105 @@ export const DomationHome: React.FC = () => {
               </div>
             </div>
 
-            {/* Clean 4-Column Canonical SaaS Matrix */}
-            <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/75 mb-10">
+            {/* Mobile & Tablet (< xl): Interactive Pricing SlideDeck with SlideDots */}
+            <div className="xl:hidden mb-8">
+              <ResponsiveSlideDeck
+                items={DOMATION_SAAS_PLANS}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={2}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-4"
+                ariaLabel="Bảng giá các cấp độ DOMATION"
+                keyExtractor={(plan) => plan.name}
+                renderItem={(plan) => {
+                  const isCustom = plan.monthly === 'May Đo';
+                  return (
+                    <div
+                      className={`h-full rounded-[22px] border border-slate-200/85 bg-white p-5 sm:p-6 flex flex-col justify-between shadow-xs ${
+                        plan.popular
+                          ? 'bg-gradient-to-br from-[#EEF4FF] via-white to-[#ECFEFF] ring-2 ring-inset ring-[#1E40FF]/40'
+                          : ''
+                      }`}
+                    >
+                      <div>
+                        <div
+                          className={`inline-block text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-3 ${
+                            plan.popular
+                              ? 'bg-gradient-to-r from-[#1E40FF] to-[#06B6D4] text-white'
+                              : 'bg-slate-100 text-[#1E40FF]'
+                          }`}
+                        >
+                          {plan.badge}
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-900">{plan.name}</h3>
+                        <div className="mt-2 mb-2 flex items-baseline gap-1.5">
+                          <span className="text-2xl font-bold tracking-tight text-slate-900">
+                            {billingYearly ? plan.yearly : plan.monthly}
+                          </span>
+                          {!isCustom && (
+                            <span className="text-xs font-medium text-slate-500">
+                              {billingYearly ? '/ năm' : '/ tháng'}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs leading-relaxed mb-4 text-slate-600">{plan.desc}</p>
+                        <div className="space-y-2 pt-3 border-t border-slate-200/75">
+                          {plan.features.map((feat) => (
+                            <div key={feat} className="flex items-start gap-2 text-xs">
+                              <CheckCircle2
+                                className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
+                                  plan.popular ? 'text-[#1E40FF]' : 'text-emerald-500'
+                                }`}
+                              />
+                              <span className="text-slate-700">{feat}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {isCustom ? (
+                        <a
+                          href={SPECIALIST_ZALO_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-5 min-h-[44px] w-full py-3 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition-all bg-[#0068FF] hover:bg-[#0057D9] text-white shadow-md whitespace-nowrap"
+                        >
+                          <span>Chuyên Viên Tạo (Zalo)</span>
+                          <ArrowRight className="w-4 h-4 shrink-0" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            openContact(
+                              'Hệ thống Auto Chia Data ZaloBot & Flow Automation',
+                              `Quan tâm gói DOMATION ${plan.name} (${
+                                billingYearly ? plan.yearly : plan.monthly
+                              })`
+                            )
+                          }
+                          className={`mt-5 min-h-[44px] w-full py-3 px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                            plan.popular
+                              ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white shadow-md'
+                              : 'ql-btn-outline'
+                          }`}
+                        >
+                          <span>
+                            {plan.popular
+                              ? 'Chọn Gói Hệ Sinh Thái'
+                              : `Chọn Gói ${plan.name.replace('Auto Data ', '')}`}
+                          </span>
+                          <ArrowRight className="w-4 h-4 shrink-0" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            {/* Clean 4-Column Canonical SaaS Matrix (Desktop >= xl) */}
+            <div className="hidden xl:grid rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/85 backdrop-blur-xl shadow-xs xl:grid-cols-4 divide-x divide-slate-200/75 mb-10">
               {DOMATION_SAAS_PLANS.map((plan, idx) => {
                 const isCustom = plan.monthly === 'May Đo';
                 return (
@@ -2087,29 +2510,41 @@ export const DomationHome: React.FC = () => {
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        openContact(
-                          isCustom
-                            ? 'Thiết Kế Riêng Bespoke Enterprise (ERP • CRM • AI Agent)'
-                            : 'Hệ thống Auto Chia Data ZaloBot & Flow Automation',
-                          `Quan tâm gói DOMATION ${plan.name} (${
-                            billingYearly ? plan.yearly : plan.monthly
-                          })`
-                        )
-                      }
-                      className={`mt-8 min-h-[44px] w-full py-3.5 px-5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                        plan.popular
-                          ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-lg'
-                          : 'ql-btn-outline'
-                      }`}
-                    >
-                      <span>
-                        {isCustom ? 'Đặt Lịch Khảo Sát & Thiết Kế Riêng' : `Chọn Gói ${plan.name}`}
-                      </span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
+                    {isCustom ? (
+                      <a
+                        href={SPECIALIST_ZALO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-8 min-h-[44px] w-full py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all bg-[#0068FF] hover:bg-[#0057D9] text-white shadow-sm whitespace-nowrap"
+                      >
+                        <span>Chuyên Viên Tạo (Zalo)</span>
+                        <ArrowRight className="w-4 h-4 shrink-0" />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openContact(
+                            'Hệ thống Auto Chia Data ZaloBot & Flow Automation',
+                            `Quan tâm gói DOMATION ${plan.name} (${
+                              billingYearly ? plan.yearly : plan.monthly
+                            })`
+                          )
+                        }
+                        className={`mt-8 min-h-[44px] w-full py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                          plan.popular
+                            ? 'bg-gradient-to-r from-[#1E40FF] via-[#2563EB] to-[#06B6D4] text-white hover:brightness-110 shadow-lg'
+                            : 'ql-btn-outline'
+                        }`}
+                      >
+                        <span>
+                          {plan.popular
+                            ? 'Chọn Gói Hệ Sinh Thái'
+                            : `Chọn Gói ${plan.name.replace('Auto Data ', '')}`}
+                        </span>
+                        <ArrowRight className="w-4 h-4 shrink-0" />
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -2170,6 +2605,12 @@ export const DomationHome: React.FC = () => {
           heading="Câu Hỏi Thường Gặp Về Hệ Sinh Thái DOMATION"
           subtitle="Thông tin trực diện về giải pháp may đo Enterprise OS, chi phí SaaS và dịch vụ thiết kế Website chuẩn SEO/GEO."
         />
+
+        <FounderAuthorityBlock
+          variant="subtle"
+          onOpenContact={() => openContact()}
+          contextNote="Trực tiếp đồng hành kiến trúc & bàn giao hệ thống A–Z cùng Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION."
+        />
       </main>
 
       {/* ================================================================ */}
@@ -2177,17 +2618,7 @@ export const DomationHome: React.FC = () => {
       {/* ================================================================ */}
       <DomationFooter onOpenContact={() => openContact()} />
 
-      {showBackTop && (
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label="Lên đầu trang"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 min-h-[44px] px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-semibold text-slate-800 hover:text-[#1E40FF] flex items-center gap-1.5 transition-all cursor-pointer"
-        >
-          <ArrowUp className="w-3.5 h-3.5 text-[#1E40FF]" />
-          <span>Đầu trang</span>
-        </button>
-      )}
+      <BackToTopPill show={showBackTop} />
 
       <ProductInspectionModal
         isOpen={inspectionOpen}

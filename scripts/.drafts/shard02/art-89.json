@@ -1,0 +1,342 @@
+{
+  "id": "art-89",
+  "number": "89",
+  "slug": "dut-gay-sale-sla-5-phut-dau-van-thu-hoi-lead-tu-dong",
+  "shardId": "shard02",
+  "pillar": "auto-data-capi",
+  "pillarLabel": "Auto Chia Data & Meta CAPI",
+  "industry": "Đội Ngũ Kinh Doanh & Telesales",
+  "clusterId": "kw-autodata-capi",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Đứt gãy Sale SLA 5 phút đầu: Đường cong mất nhiệt Lead & cơ chế Van thu hồi 120 giây tự động",
+  "seoTitle": "Đứt Gãy Sale SLA 5 Phút Đầu & Van Thu Hồi Lead 120s | DOMATION",
+  "metaDescription": "Chậm gọi lại quá 5 phút làm tỷ lệ kết nối Lead giảm 80%. Thiết kế SLA phản hồi tức thì qua ZaloBot và tự động thu hồi Lead nếu Sale không tiếp nhận.",
+  "focusKeyword": "sale sla 5 phút đầu thu hồi lead",
+  "secondaryKeywords": [
+    "tốc độ phản hồi lead khách hàng",
+    "tự động thu hồi lead sale không gọi",
+    "tỷ lệ nghe máy telesales",
+    "chia số zalo bot tức thì",
+    "van sla 120 giây domation"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "5 Phút Vàng Quyết Định 80% Tỷ Lệ Bắt Máy Lead",
+  "thumbnailHook": "Từ 45 phút chờ Sheet xuống 3.2 giây ZaloBot, khóa tình trạng ôm số.",
+  "thumbnailBadge": "SALE SLA AUTO-ROUTER",
+  "coverImage": "/imgs/boost/v2/dut-gay-sale-sla-5-phut-dau-van-thu-hoi-lead-tu-dong.webp",
+  "coverAlt": "Báo cáo thực địa đường cong suy giảm SLA 5 phút đầu và cơ chế Van thu hồi Lead 120 giây qua ZaloBot",
+  "screenshotImage": "/imgs/boost/charts/dut-gay-sale-sla-5-phut-dau-van-thu-hoi-lead-tu-dong-report.webp",
+  "screenshotCaption": "Đường cong mất nhiệt Lead theo phút phản hồi và biểu đồ hiệu quả chia số tức thì 3.2 giây kết hợp Van thu hồi 120 giây.",
+  "relatedModuleUrl": "/data",
+  "relatedModuleLabel": "Xem Cơ Chế Chia Data & Van SLA 120s",
+  "relatedSlugs": [
+    "auto-chia-data-zalobot-5-giay-chong-rot-lead-bds",
+    "crm-pipeline-kanban-8-nac-rao-can-ttl1-chong-sot-lead",
+    "bao-cao-chia-data-sla-cuoi-ngay-tu-dong-zalo-bot",
+    "calcom-cal-diy-audit-fork-mit-2026-so-sanh-round-robin-crm"
+  ],
+  "relatedPortfolioId": "richland-proptech",
+  "readingMinutes": 11,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo thực địa trên 150.000+ Lead quảng cáo tại Việt Nam chứng minh nguyên nhân chính của tình trạng 'khách không nghe máy' không nằm ở quảng cáo mà ở độ trễ phản hồi trung bình 42 phút trên Google Sheets. Sau mốc 5 phút vàng, tỷ lệ kết nối giảm gần 80%. Kiến trúc chia số ZaloBot 3.2 giây kết hợp Van thu hồi 120 giây tự động khóa quyền xem số khi Sale ôm số và xoay vòng sang nhân sự sẵn sàng giúp tỷ lệ bắt máy tăng vọt lên 76%–81%.",
+  "keyTakeaways": [
+    "Ngưỡng 5 phút đầu quyết định cục diện: gọi dưới 60 giây đạt 78.4% bắt máy, rớt còn 56.2% ở phút 3–5 và rơi xuống 14.2% nếu chậm quá 30 phút.",
+    "Chia số thủ công qua Google Sheets hoặc Round-Robin mù (chia cả cho Sale đang họp hay nghỉ ca) sinh ra hội chứng ôm số chờ cuối ngày.",
+    "Van thu hồi 120 giây đẩy Lead qua ZaloBot trong 3.2 giây; quá 2 phút không bấm [Tiếp Nhận], quyền xem SĐT tự động thu hồi và chuyển sang Sale kế tiếp hoặc Pool Claim.",
+    "Hệ thống bù Ticket 1:1 kết nối chặt với TTL1 và Meta CAPI giúp tách bạch rõ lỗi chất lượng nguồn Ads với lỗi vi phạm SLA nội bộ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tốc độ chia số ZaloBot",
+      "value": "3.2 giây tức thì"
+    },
+    {
+      "label": "Tỷ lệ bắt máy nhóm < 2 phút",
+      "value": "76.8% – 81.2%"
+    },
+    {
+      "label": "Ngưỡng Van thu hồi tự động",
+      "value": "120 giây không ôm số"
+    },
+    {
+      "label": "Giảm Lead rớt do chậm gọi",
+      "value": "-82% thất thoát SLA"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "bao-cao-thuc-dia-150k-lead-viet-nam",
+      "eyebrow": "Báo Cáo Thực Địa • Telemetry 150,000+ Leads",
+      "heading": "Ảo giác 'Lead rác' và sự thật tàn nhẫn của 42 phút chết trên Google Sheets",
+      "variant": "narrative",
+      "pullQuote": "Khách hàng để lại số điện thoại lúc 20:42 tối với hưng phấn cao nhất. Đến 10:15 sáng hôm sau mới gọi, bạn không còn tư vấn cho người mua nóng—bạn đang làm phiền một người đã quên mình từng bấm form.",
+      "paragraphs": [
+        "Trong hàng trăm cuộc họp giữa Marketing và Kinh doanh tại Việt Nam, mâu thuẫn kinh điển luôn xoay quanh câu kết luận của Sales Manager: 'Ads mang về toàn số ảo, gọi 10 số thì 6 người không bắt máy và 3 người bảo nhầm'. Để kiểm chứng, đội ngũ DOMATION đã bóc tách nhật ký thời gian thực (timestamp telemetry) trên 150.000+ Lead thực chiến qua các dự án của Founder Huỳnh Trọng Phúc.",
+        "Số liệu thực địa phơi bày sự thật gây sốc: hơn 64% Lead bị gắn mác 'thuê bao không nghe máy' thực chất có thời gian chờ từ lúc Submit Form tới cuộc gọi đầu tiên (Time-To-First-Call) lên tới 38–140 phút. Tại Việt Nam, người dùng thường điền form giờ nghỉ trưa 11:30–13:30 hoặc buổi tối 19:30–22:30 và để lại thông tin cho 2–3 đơn vị cùng lúc. Chậm quá 5 phút đồng nghĩa đối thủ đã gọi chốt lịch trước hoặc khách đã quay lại guồng việc và từ chối nghe số lạ.",
+        "Độ trễ 42 phút chết đến từ ba đứt gãy hệ thống: xuất CSV thủ công hoặc chờ Google Sheets cuối buổi; thuật toán Round-Robin mù chia đều bất chấp Sale đang gặp khách hoặc nghỉ phép; và hội chứng 'Ôm số' (Lead Hoarding) khi nhân viên giữ sẵn 15 Lead mới trong CRM nhưng cất qua một bên để xử lý việc cũ, làm nhiệt lượng khách hàng nguội về 0.",
+        "Tệ hơn, nếu không tách bạch 'Lỗi nguồn quảng cáo' với 'Lỗi chậm SLA', Media Buyer sẽ nhìn tỷ lệ không nghe máy rồi tắt nhầm những chiến dịch vốn có nhu cầu thật rất tốt, phá hỏng đà tối ưu của tài khoản Ads.",
+        "Kiến trúc Auto Data V2 của DOMATION khắc phục triệt để bằng luồng Zero-Delay: ngay khi khách gửi form từ Meta, TikTok, Landing Page 3D hoặc QR, Webhook chuẩn hóa SĐT +84, lọc trùng 6 tháng và bắn thẳng vào ZaloBot cá nhân của Sale trong 3.2 giây kèm hai nút [Tiếp Nhận Ngay] và [Báo Sai Số].",
+        "Trái tim điều phối nằm ở Van thu hồi 120 giây (BullMQ delayed timer): quá 120 giây mà Sale chưa bấm tiếp nhận (hoặc quá ngưỡng TTL1 chưa gọi), Van lập tức khóa quyền xem SĐT, ghi dấu missed-SLA và chuyển tiếp cho Sale đang Online hoặc mở ra bể Tranh Nhận (Pool Claim) như mô hình Rich Land PropTech."
+      ],
+      "bullets": [
+        "Vùng vàng là dưới 120 giây (bắt máy 72%–78%); vượt ngưỡng 5 phút, chi phí cho mỗi lịch hẹn tăng 2.8–3.5 lần.",
+        "Shift-Aware Routing tự động bỏ qua nhân sự chưa check-in GPS hoặc đã chạm ngưỡng mở tối đa (WIP Limit).",
+        "Minh bạch Đại lý F1: mô hình 3 sàn F1 tại EcoLife Signature giữ độ lệch chia ~0% và cấp Ticket bù 1:1 cho số lỗi có bằng chứng."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-duong-cong-mat-nhiet-lead-sla-5-phut",
+      "heading": "Đường cong mất nhiệt Lead theo độ trễ phản hồi: Tỷ lệ bắt máy & Tỷ lệ Qualified",
+      "subtitle": "Dữ liệu đo đạc thực địa từ lúc khách Submit Form đến cuộc gọi đầu tiên",
+      "chart": {
+        "chartType": "composed",
+        "title": "Suy giảm xác suất kết nối và chất lượng chốt theo thời gian phản hồi",
+        "subtitle": "Đơn vị: % Tỷ lệ thành công trên tổng Lead phát sinh",
+        "xKey": "delayWindow",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "connectRate",
+            "label": "Tỷ lệ khách bắt máy (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "qualifiedRate",
+            "label": "Tỷ lệ đạt Qualified / Hẹn (%)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "hoardRisk",
+            "label": "Tỷ lệ Lead nguội / Rớt (%)",
+            "color": "#EF4444",
+            "type": "area"
+          }
+        ],
+        "data": [
+          {
+            "delayWindow": "< 1 phút",
+            "connectRate": 78.4,
+            "qualifiedRate": 46.2,
+            "hoardRisk": 11.5
+          },
+          {
+            "delayWindow": "1–3 phút",
+            "connectRate": 69.5,
+            "qualifiedRate": 39.8,
+            "hoardRisk": 18.2
+          },
+          {
+            "delayWindow": "3–5 phút",
+            "connectRate": 56.2,
+            "qualifiedRate": 30.4,
+            "hoardRisk": 29.0
+          },
+          {
+            "delayWindow": "5–15 phút",
+            "connectRate": 29.8,
+            "qualifiedRate": 16.5,
+            "hoardRisk": 54.4
+          },
+          {
+            "delayWindow": "15–30 phút",
+            "connectRate": 19.4,
+            "qualifiedRate": 10.1,
+            "hoardRisk": 68.7
+          },
+          {
+            "delayWindow": "30–60 phút",
+            "connectRate": 14.2,
+            "qualifiedRate": 6.8,
+            "hoardRisk": 77.3
+          },
+          {
+            "delayWindow": "> 60 phút",
+            "connectRate": 8.6,
+            "qualifiedRate": 3.4,
+            "hoardRisk": 86.9
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Phản hồi qua ZaloBot",
+            "value": "3.2 giây",
+            "delta": "Từ 42 phút chờ Sheet",
+            "positive": true
+          },
+          {
+            "label": "Suy giảm sau mốc 5 phút",
+            "value": "-79.8%",
+            "delta": "Rớt từ 78.4% -> ~15%",
+            "positive": false
+          },
+          {
+            "label": "Tỷ lệ thu hồi bởi Van 120s",
+            "value": "18.6%",
+            "delta": "Số Sale bận được cứu kịp",
+            "positive": true
+          },
+          {
+            "label": "Chênh lệch chia 3 sàn F1",
+            "value": "~0.0%",
+            "delta": "Có bù Ticket lỗi 1:1",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Nguồn: Telemetry thực chiến 150,000+ Leads qua hệ thống Auto Data V2 DOMATION (BĐS, MBA, Y tế, B2B)."
+      },
+      "insightSummary": "Điểm gãy dốc đứng xuất hiện ngay sau phút thứ 5: tỷ lệ bắt máy rớt từ 56.2%–78.4% xuống 29.8% ở khung 5–15 phút và chạm 8.6% sau 1 giờ. Van thu hồi 120 giây giữ Lead trong vùng 0–3 phút vàng và cứu kịp 18.6% số vốn bị Sale bận bỏ lỡ."
+    },
+    {
+      "type": "visual-figure",
+      "id": "hinh-anh-van-thu-hoi-sla-120s",
+      "src": "/imgs/boost/charts/dut-gay-sale-sla-5-phut-dau-van-thu-hoi-lead-tu-dong-report.webp",
+      "alt": "Biểu đồ đường cong mất nhiệt Lead 5 phút đầu và cơ chế Van thu hồi 120 giây ZaloBot",
+      "caption": "Minh họa đường cong suy giảm tỷ lệ bắt máy theo thời gian phản hồi và kiến trúc Van thu hồi 120 giây chống ôm số trên DOMATION Data Router.",
+      "badge": "Báo Cáo SLA & Auto-Router"
+    },
+    {
+      "type": "stat-grid",
+      "id": "so-lieu-kiem-soat-van-sla",
+      "heading": "Bốn chỉ số đo nhịp tim của cỗ máy Auto-Router & Van SLA",
+      "stats": [
+        {
+          "value": "3.2s",
+          "label": "Độ trễ từ Form tới ZaloBot Sale",
+          "context": "Chuẩn hóa +84, lọc trùng 6 tháng và ghi Postgres",
+          "trend": "up"
+        },
+        {
+          "value": "120s",
+          "label": "Bộ đếm ngược Van thu hồi chống ôm số",
+          "context": "Quá 2 phút chưa bấm Nhận -> tự thu hồi và xoay tua",
+          "trend": "up"
+        },
+        {
+          "value": "5 Cổng",
+          "label": "Chia đồng thời đa Sàn / Đại lý F1",
+          "context": "Round-Robin trọng số + Bù Ticket minh bạch 1:1",
+          "trend": "up"
+        },
+        {
+          "value": "22h00",
+          "label": "Báo cáo SLA cuối ngày qua ZaloBot",
+          "context": "Thống kê người gọi nhanh, ca lỡ Van và từng chiến dịch",
+          "trend": "neutral"
+        }
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "chu-trinh-6-nhip-van-120-giay",
+      "heading": "Giải phẫu từng tích tắc trong vòng đời 120 giây của Van thu hồi Lead",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "T = 0.0s – 0.8s",
+          "title": "Ingest đa kênh & Quét trùng lặp 6 tháng",
+          "detail": "Webhook nhận Lead từ Meta, TikTok, Web 3D hoặc QR, chuẩn hóa +84 và kiểm tra lịch sử 180 ngày để gộp khách quay lại về đúng Sale cũ.",
+          "metricOrTool": "PostgreSQL Dedup • Webhook"
+        },
+        {
+          "tag": "T = 0.9s – 2.2s",
+          "title": "Kiểm tra ca trực & WIP Limit",
+          "detail": "Loại trừ nhân viên đang nghỉ, chưa check-in GPS hoặc đang giữ quá ngưỡng 3 số chưa cập nhật trạng thái (TTL1) trước khi chọn lượt.",
+          "metricOrTool": "Shift-Aware Router • WIP Guard"
+        },
+        {
+          "tag": "T = 2.3s – 3.2s",
+          "title": "Đẩy thẻ Lead bảo mật qua ZaloBot (che 4 số cuối)",
+          "detail": "ZaloBot đổ chuông ưu tiên tới máy Sale kèm thông tin nhu cầu; 4 số cuối chỉ mở khóa hoàn toàn ngay khoảnh khắc bấm [Tiếp Nhận Ngay].",
+          "metricOrTool": "ZaloBot • Phone Masking"
+        },
+        {
+          "tag": "T = 3.3s – 120.0s",
+          "title": "Đếm ngược Van SLA trên hàng đợi BullMQ",
+          "detail": "Ngay khi bấm Nhận, hệ thống mở SĐT, ghi Audit Log và chuyển sang đếm ngưỡng thực hiện cuộc gọi đầu tiên (< 5 phút).",
+          "metricOrTool": "BullMQ Timer • SLA Audit"
+        },
+        {
+          "tag": "T > 120.0s (Nếu lỡ)",
+          "title": "Kích hoạt Van Thu Hồi & Re-route tức thì",
+          "detail": "Hết 120s chưa tiếp nhận, quyền xem SĐT tự động khóa và đẩy ngay sang Sale dự phòng hoặc bể Tranh Nhận (Pool Claim).",
+          "metricOrTool": "Auto-Reclaim • Pool Claim"
+        },
+        {
+          "tag": "Hậu kiểm",
+          "title": "Bù Ticket 1:1 & Bắn ngược Meta CAPI HTTP 200",
+          "detail": "Nếu số thuê bao lỗi được duyệt [Bù Ticket], hệ thống cộng lại +1 lượt chia và bắn tín hiệu `Notlead`/`Qualified` về Meta CAPI.",
+          "metricOrTool": "1:1 Compensation • CAPI"
+        }
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "ma-tran-chon-che-do-chia-data-theo-doi-sale",
+      "heading": "Chọn chế độ định tuyến nào cho từng quy mô đội ngũ kinh doanh?",
+      "subtitle": "Tùy biến linh hoạt theo cơ cấu tổ chức bán hàng thay vì ép một công thức cố định",
+      "scenarios": [
+        {
+          "condition": "Đội Telesales nội bộ đông (15–80+ người), Lead Ads đổ liên tục giờ cao điểm",
+          "recommendedChoice": "Pool Claim (Tranh nhận) + Van TTL1 5 phút",
+          "rationale": "Bắn thông báo vào Pool nhóm đang Online; người bấm nhận đầu tiên sở hữu số và buộc cập nhật log gọi trong 5 phút, tạo văn hóa phản xạ cực nhanh như Rich Land PropTech.",
+          "avoidIf": "Chưa giới hạn quota nhận tối đa theo ngày khiến người cũ giành hết số của người mới."
+        },
+        {
+          "condition": "Phân phối cho nhiều Sàn Đại lý F1 hoặc Chi nhánh độc lập (3–5+ cổng)",
+          "recommendedChoice": "Weighted Round-Robin + Van 120s + Bù Ticket 1:1",
+          "rationale": "Giữ độ lệch ~0% theo tỷ lệ cam kết như EcoLife Signature Capital House; sàn nào chậm sau 120s tự chuyển lượt kèm đối soát bù số lỗi minh bạch.",
+          "avoidIf": "Chưa thống nhất tiêu chí bằng chứng số lỗi giữa Chủ đầu tư và các Sàn F1."
+        },
+        {
+          "condition": "Đội tư vấn chuyên gia B2B / Bác sĩ thường bận lịch khám hoặc họp 1–2 giờ",
+          "recommendedChoice": "Round-Robin kết hợp AI Chatbot & ZNS giữ nhiệt trước",
+          "rationale": "Trong lúc chuyên gia bận, AI Agent tự nhắn Zalo OA gửi tài liệu và cho khách chọn khung giờ gọi lại thay vì để cuộc gọi trôi lạnh.",
+          "avoidIf": "Ngành bán lẻ chớp nhoáng nơi khách cần chốt ngay trong 3 phút đầu."
+        },
+        {
+          "condition": "Lead đổ về ban đêm (22:00 – 07:30 sáng) ngoài ca trực Telesales",
+          "recommendedChoice": "Night-Shift AI Agent 24/7 + Hàng đợi Sáng 08:05",
+          "rationale": "Trợ lý AI RAG trả lời câu hỏi tức thì xuyên đêm trên Messenger/Zalo và xếp lịch chia đồng loạt vào đúng giờ check-in GPS buổi sáng thay vì phạt Van lúc nửa đêm.",
+          "avoidIf": "Doanh nghiệp có bố trí ca trực đêm 24/7 nhưng lại cấu hình treo Van tới sáng."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-sla-5-phut-va-van-120s",
+      "variant": "benchmark",
+      "title": "Đừng tăng ngân sách Ads khi thời gian gọi lại trung bình vẫn đang trên 10 phút",
+      "body": "Từ EcoLife Signature, Rich Land đến Viện IDEAS, quy luật nhất quán nhất mà DOMATION đo được là rút ngắn chạm Lead đầu tiên từ 40 phút xuống dưới 120 giây giúp tăng 35%–60% cuộc hẹn chất lượng trên cùng mức ngân sách Ads. Thay vì ép đội Media bóp CPL rẻ hơn—điều chỉ kéo thêm Lead rác—hãy lắp đường ống ZaloBot 3.2 giây, Van thu hồi 120 giây và báo cáo SLA lúc 22:00 mỗi tối. Khi từng số điện thoại gắn trách nhiệm thời gian thực, cả Marketing lẫn Sale sẽ cùng chuyển hóa ngân sách thành doanh thu thật.",
+      "authorBadge": "Benchmark Thực Địa • DOMATION Auto-Data Lab"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao đặt ngưỡng Van thu hồi là 120 giây mà không phải 5 phút hay 15 phút?",
+      "answer": "120 giây là ngưỡng xác nhận Sale có sẵn sàng nhận số ngay hay không. Nếu để 5–10 phút mới thu hồi và chuyển người thứ hai, khách hàng đã trôi qua phút thứ 8–12 và rớt khỏi 5 phút vàng làm tỷ lệ bắt máy tụt 80%. Van 120s đảm bảo kể cả xoay tua 2 vòng, Lead vẫn được gọi trong vòng 3–4 phút."
+    },
+    {
+      "question": "Nếu Sale đang gọi khách cũ 10 phút thì có bị Van 120 giây phạt oan không?",
+      "answer": "Hệ thống cho phép bật trạng thái 'Đang bận / Đang họp' hoặc tự nhận diện qua WIP Limit để tạm hoãn chia số mới. Nếu lỡ nhịp bất khả kháng sau 120s, Lead xoay sang đồng nghiệp rảnh nhằm bảo vệ khách hàng, còn báo cáo cuối ngày phân tách rõ tỷ lệ bận hợp lý và tỷ lệ bỏ lơ."
+    },
+    {
+      "question": "Chia số qua ZaloBot có bảo mật và chống nhân viên tuồn data ra ngoài không?",
+      "answer": "Có. Thẻ ZaloBot che 4 số cuối tới khi Sale bấm Tiếp nhận có ghi Audit Log, đồng thời toàn bộ CRM áp dụng PostgreSQL Row-Level Security (RLS) cô lập dữ liệu từng cá nhân hoặc từng sàn F1, không thể xem chéo hay xuất file Excel hàng loạt."
+    },
+    {
+      "question": "Khi Van thu hồi chuyển Lead từ Sale A sang Sale B, tracking Meta CAPI có bị mất không?",
+      "answer": "Không. Thực thể Lead mang một `lead_uuid` cố định trên PostgreSQL kèm `fbc`, `fbp`, `lead_id` và `utm_*`. Khi quyền chăm sóc đổi sang Sale B và được đánh dấu Qualified, hệ thống vẫn bắn CAPI HTTP 200 chính xác về đúng chiến dịch gốc."
+    }
+  ]
+}

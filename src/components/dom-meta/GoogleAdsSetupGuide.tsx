@@ -26,6 +26,7 @@ import {
   type DomMetaGoogleAdsSetupMode,
 } from './domMetaTypes';
 import type { DomGoogleAdsMccRequestResult } from './domMetaApi';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 
 interface GoogleAdsSetupGuideProps {
   value: DomMetaGoogleAdsConfig;
@@ -429,6 +430,7 @@ export const GoogleAdsSetupGuide: React.FC<GoogleAdsSetupGuideProps> = ({
 
       {value.enabled && (
         <div className="space-y-4">
+          <ZaloSpecialistBanner context="setup" variant="compact" />
           {/* 2-Mode Setup Switcher */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <button

@@ -1,0 +1,388 @@
+{
+  "id": "art-203",
+  "number": "203",
+  "slug": "midweight-coding-arena-claude-sonnet-5-5-vs-gemini-3-8-flash-vs-gpt-5-2-codex",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Midweight Daily Coding Workhorse",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Hạng Trung Coding Hàng Ngày: Claude Sonnet 5.5 vs Gemini 3.8 Flash vs GPT-5.2-Codex (Di sản & Chuyển dịch)",
+  "seoTitle": "Sonnet 5.5 vs Gemini 3.8 Flash vs GPT-5.2-Codex | DOMATION",
+  "metaDescription": "So sánh bộ ba hạng trung gánh 75% code hàng ngày: Sonnet 5.5 ($2/$10), Gemini 3.8 Flash ($0.75/$3.75 intro) và lộ trình thay GPT-5.2-Codex bằng 5.6 Terra.",
+  "focusKeyword": "claude sonnet 5.5 vs gemini 3.8 flash vs gpt-5.2-codex",
+  "secondaryKeywords": [
+    "gemini 3.8 flash giá và thinking level",
+    "claude sonnet 5.5 coding hàng ngày",
+    "gpt 5.2 codex deprecated chuyển sang terra",
+    "chọn model midweight cho vibecode sprint",
+    "tỷ lệ hiệu năng trên chi phí coding llm"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "Sonnet 5.5 vs Gemini 3.8 Flash vs GPT-5.2-Codex Hạng Trung",
+  "thumbnailHook": "75% tác vụ feature sprint ở hạng cân này: ai vua P/P?",
+  "thumbnailBadge": "ARENA • MIDWEIGHT",
+  "coverImage": "/imgs/boost/v2/midweight-coding-arena-claude-sonnet-5-5-vs-gemini-3-8-flash-vs-gpt-5-2-codex.webp",
+  "screenshotImage": "/imgs/boost/charts/midweight-coding-arena-claude-sonnet-5-5-vs-gemini-3-8-flash-vs-gpt-5-2-codex-report.webp",
+  "coverAlt": "Báo cáo thực địa so sánh claude sonnet 5.5 vs gemini 3.8 flash vs gpt-5.2-codex hạng trung cho 75 phần trăm tác vụ coding sprint hàng ngày",
+  "screenshotCaption": "Biểu đồ đo chi phí trên 100 tính năng sprint thực tế và điểm hiệu năng/chi phí (P/P) của Claude Sonnet 5.5, Gemini 3.8 Flash (giá intro 2026 và giá chuẩn 01/2027), GPT-5.2-Codex di sản và hậu duệ GPT-5.6 Terra.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Stack Coding Hàng Ngày Của DOMATION",
+  "relatedSlugs": [
+    "lightweight-router-arena-claude-haiku-5-5-vs-gemini-3-5-flash-lite-vs-codex-mini",
+    "multi-tier-hybrid-routing-finops-planner-executor-router",
+    "ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli",
+    "ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo thực địa claude sonnet 5.5 vs gemini 3.8 flash vs gpt-5.2-codex giải mã tầng hạng trung gánh 75% công việc lập trình hàng ngày. Gemini 3.8 Flash là nhà vô địch hiệu năng/chi phí cuối 2026 với giá ưu đãi $0.75/$3.75 đến hết 31/12/2026 (tăng lên $1.50/$7.50 từ 01/01/2027), giữ 1M ngữ cảnh và làm mặc định cho Antigravity Agent. Claude Sonnet 5.5 ($2/$10, Cache Read $0.10, 128K output) dẫn đầu về độ mượt giao diện React/TypeScript và tuân thủ chỉ dẫn nhiều bước. Trong khi đó, GPT-5.2-Codex ($1.75/$14, 400K) đã bị khai tử/thay thế và bắt buộc phải chuyển dịch sang GPT-5.6 Terra ($2/$12) hoặc GPT-5.3-Codex.",
+  "keyTakeaways": [
+    "Tầng Midweight quyết định 75% hóa đơn AI của đội dev: chọn sai giữa hạng trung ($0.75–$2 in) và hạng nặng ($4–$8 in) sẽ thổi phồng chi phí sprint hàng tháng thêm 3x–5x mà tốc độ ra tính năng không đổi.",
+    "Gemini 3.8 Flash (Stable 09/2026) là vua P/P hiện tại với mức intro $0.75 in / $3.75 out / $0.075 cache read đến 31/12/2026; chú ý bẫy kỹ thuật: truyền thinking_level='minimal' lên Gemini 3.8 Flash sẽ trả về lỗi API (chỉ hỗ trợ low, medium, high).",
+    "Claude Sonnet 5.5 (ra mắt 28/09/2026) giảm giá Cache Read một nửa xuống chỉ còn $0.10/1M (từ giá chuẩn $2/$10), sở hữu 1M input + 128K output và độ ổn định vượt trội khi dựng UI Tailwind/Three.js hay tách module ERP.",
+    "Cảnh báo di sản (Legacy Deprecation): GPT-5.2-Codex (12/2025, 400K window, $1.75/$14) đã chính thức vào diện Deprecated/Retired trong năm 2026 — các pipeline đang hardcode modelId='gpt-5.2-codex' cần chuyển ngay sang GPT-5.6 Terra ($2/$12, ~1.05M) hoặc GPT-5.3-Codex.",
+    "Tại DOMATION, TurnioDEV áp dụng chia tải đôi: Gemini 3.8 Flash gánh vòng lặp gọi công cụ tự động, viết test và agent nền; Claude Sonnet 5.5 đảm nhiệm các PR tính năng giao diện, CRM Pipeline và logic nghiệp vụ nhạy cảm."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tỷ trọng tải hạng trung",
+      "value": "75% Feature Sprint"
+    },
+    {
+      "label": "Gemini 3.8 Flash Intro (2026)",
+      "value": "$0.75 in / $3.75 out"
+    },
+    {
+      "label": "Claude Sonnet 5.5 Cache Read",
+      "value": "$0.10 / 1M (-95%)"
+    },
+    {
+      "label": "Lộ trình thay GPT-5.2-Codex",
+      "value": "Migrate → GPT-5.6 Terra"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao gọi GPT-5.2-Codex trên SDK hoặc Codex CLI gần đây hay gặp cảnh báo deprecation và nên thay bằng model nào của OpenAI?",
+      "answer": "GPT-5.2-Codex ra mắt ngày 18/12/2025 với cửa sổ 400K (272K effective input / 128K output) và giá $1.75/$14 là cột mốc hạng trung rất phổ biến đầu năm 2026. Tuy nhiên, tính đến tháng 11/2026, OpenAI đã đưa GPT-5.2-Codex vào trạng thái Deprecated / Retired để dọn đường cho hai thế hệ mới: GPT-5.6 Terra ($2.00 input / $12.00 output, ~1.05M context, cache read $0.20) thay thế hoàn hảo ở vai trò coding & enterprise reasoning hạng trung cân bằng, hoặc nâng lên GPT-5.3-Codex ($1.75/$14) cho những tác vụ terminal cần mức reasoning.effort='xhigh'."
+    },
+    {
+      "question": "Gemini 3.8 Flash rẻ hơn Sonnet 5.5 gần 3 lần ở giá intro 2026, vậy từ 01/01/2027 khi hết intro thì có còn đáng chọn không?",
+      "answer": "Từ ngày 01/01/2027, giá chuẩn của Gemini 3.8 Flash sẽ điều chỉnh từ $0.75/$3.75 lên $1.50 input / $7.50 output / $0.15 cached input (Batch/Flex giảm 50% còn $0.75/$3.75). Ở mức giá chuẩn mới, Gemini 3.8 Flash vẫn rẻ hơn 25% so với Claude Sonnet 5.5 ($2.00/$10.00) và vẫn giữ lợi thế miễn phí tầng Free Tier, hỗ trợ Computer Use + Video/Audio/PDF gốc và tốc độ sinh token rất nhanh cho vòng lặp agent. Trong khi đó, Sonnet 5.5 vẫn nhỉnh hơn ở trần output 128K (gấp đôi 64K của Flash) và Cache Read chỉ $0.10/1M."
+    },
+    {
+      "question": "Lỗi API 'unsupported thinking_level: minimal' trên Gemini 3.8 Flash xảy ra khi nào và sửa thế nào?",
+      "answer": "Nhiều lập trình viên dùng chung một cấu hình với dòng Gemini 3.5 Flash-Lite hoặc 3.1 Flash-Lite vốn hỗ trợ thinking_level='minimal'. Nhưng trên Gemini 3.8 Flash, Google chỉ hỗ trợ 3 mức là 'low', 'medium' (mặc định) và 'high' — bất kỳ request nào truyền 'minimal' đều nhận lỗi API trực tiếp. Khi chuyển tác vụ coding nhẹ sang Gemini 3.8 Flash để cần tốc độ nhanh, hãy cấu hình tối thiểu là thinking_level='low' thay vì 'minimal'."
+    },
+    {
+      "question": "Giữa Claude Sonnet 5.5 và GPT-5.6 Terra có cùng mức giá đầu vào $2.00/1M, nên chọn model nào cho team React/Next.js + PostgreSQL?",
+      "answer": "Trong kiểm thử thực địa của DOMATION trên các codebase Next.js, Tailwind CSS, Three.js và PostgreSQL RLS, Claude Sonnet 5.5 ($2/$10, Cache Read $0.10) có xu hướng viết code giao diện sạch, ít bị lỗi CSS tràn khung và tuân thủ nghiêm ngặt file CLAUDE.md hoặc .claude/rules/*.md với chi phí đầu ra thấp hơn 17% ($10 so với $12) và không có vách đá phụ phí >272K. Ngược lại, GPT-5.6 Terra thích hợp hơn khi team của bạn dùng hệ sinh thái Codex CLI / GitHub @codex review hoặc cần các mức effort chi tiết (none..xhigh/max) trong phạm vi <= 272K token."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "stat-grid-midweight-sprint-field",
+      "heading": "Bức tranh thực địa tầng Midweight Coding qua 12 sprint sản phẩm tại DOMATION",
+      "stats": [
+        {
+          "value": "75%",
+          "label": "Tỷ trọng task Feature hàng ngày",
+          "context": "CRUD, API route, UI component, unit test và sửa lỗi vừa",
+          "trend": "up"
+        },
+        {
+          "value": "$0.75/$3.75",
+          "label": "Giá Intro Gemini 3.8 Flash",
+          "context": "Hết hạn 31/12/2026 → chuẩn $1.50/$7.50 từ 01/01/2027",
+          "trend": "up"
+        },
+        {
+          "value": "128K Out",
+          "label": "Trần xuất mã Sonnet 5.5 & Terra",
+          "context": "Gấp đôi mức giới hạn 64K output của Gemini 3.8 Flash",
+          "trend": "neutral"
+        },
+        {
+          "value": "Deprecated",
+          "label": "Trạng thái GPT-5.2-Codex",
+          "context": "Buộc chuyển sang GPT-5.6 Terra hoặc GPT-5.3-Codex",
+          "trend": "down"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "field-report-nhat-ky-sprint-midweight",
+      "eyebrow": "BÁO CÁO THỰC ĐỊA • SPRINT LOG 75% TẢI CÔNG VIỆC",
+      "variant": "narrative",
+      "heading": "Nhật ký thực địa từ 300+ Pull Request: Tại sao tầng hạng trung quyết định sống còn tốc độ Vibecode",
+      "pullQuote": "Nếu tầng Heavyweight là vị kiến trúc sư cầm bút chì vẽ mặt bằng tổng thể, thì tầng Midweight chính là đội thợ cả thi công 75% bức tường và đường điện mỗi ngày — chậm một nhịp hoặc đắt hơn gấp đôi ở đây là cả sprint lập tức hụt hơi.",
+      "paragraphs": [
+        "Khi bàn giao hơn 35 hệ thống từ A–Z tại DOMATION — từ bộ 12 phân hệ ERP 5.0 cho Viện Đào tạo IDEAS, luồng chấm công GPS AI + phiếu lương PDF tự động, cho tới cổng thanh toán đặt cọc và giao diện 3D WebGL của EcoLife Signature — đội ngũ TurnioDEV theo dõi sát tỷ lệ sử dụng từng model trên mỗi Pull Request hoàn chỉnh. Một con số lặp lại ổn định đáng kinh ngạc qua nhiều quý: đúng 75% khối lượng code thực tế thuộc về các tác vụ hạng trung (Midweight Daily Coding), nơi không cần tới chi phí $8–$40/1M của Fable hay Opus nhưng model hạng nhẹ $0.10–$0.30 lại dễ sót biên logic và sinh lỗi vặt.",
+        "Trên chiến trường hạng trung cuối năm 2026, cục diện chia làm ba thái cực rõ rệt giữa claude sonnet 5.5 vs gemini 3.8 flash vs gpt-5.2-codex. Một bên là Gemini 3.8 Flash mới ra mắt bản ổn định tháng 09/2026 đang khuynh đảo thị trường nhờ mức giá giới thiệu $0.75/$3.75 kéo dài tới hết 31/12/2026 và trở thành model mặc định cho Antigravity Agent cùng SDK. Một bên là Claude Sonnet 5.5 (28/09/2026) nổi tiếng với bàn tay mượt mà trên TypeScript, Tailwind CSS và khả năng đọc tới 1M ngữ cảnh kèm giá Cache Read giảm sâu chỉ còn $0.10/1M. Thái cực còn lại là GPT-5.2-Codex — 'công thần' 400K token cuối năm 2025 nhưng hiện đã chính thức bước vào giai đoạn chuyển giao di sản (Deprecated/Retired) để nhường chỗ cho GPT-5.6 Terra và 5.3-Codex."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-midweight-coding-2026",
+      "heading": "Ma trận đối chiếu hạng trung: Sonnet 5.5 vs Gemini 3.8 Flash vs GPT-5.2-Codex & Hậu duệ GPT-5.6 Terra",
+      "caption": "Ghi chú phân định rạch ròi giữa model di sản GPT-5.2-Codex và model thay thế hiện hành GPT-5.6 Terra theo chuẩn OpenAI cuối 2026",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "Claude Sonnet 5.5",
+        "Gemini 3.8 Flash",
+        "GPT-5.2-Codex (Di sản) → 5.6 Terra"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Trạng thái & Ngày phát hành",
+          "values": [
+            "Active Stable (28/09/2026)",
+            "Stable (09/2026), mặc định cho Antigravity Agent",
+            "5.2-Codex (12/2025): Deprecated/Retired → Thay bằng GPT-5.6 Terra (07/2026)"
+          ],
+          "winnerNote": "Tuyệt đối không khởi tạo dự án mới trên 5.2-Codex"
+        },
+        {
+          "criterion": "Ngữ cảnh Input / Output tối đa",
+          "values": [
+            "1.000.000 in / 128.000 out",
+            "1.048.576 in / 65.536 out",
+            "5.2-Codex: 400K (272K in / 128K out) | Terra: ~1.05M in / 128K out"
+          ],
+          "winnerNote": "Sonnet 5.5 & Terra cho phép output 128K"
+        },
+        {
+          "criterion": "Đơn giá API (/1M USD)",
+          "values": [
+            "$2.00 in / $10.00 out / $0.10 cache read",
+            "Intro đến 31/12/2026: $0.75 in / $3.75 out ($0.075 cache). Từ 01/01/2027: $1.50 / $7.50",
+            "5.2-Codex cũ: $1.75/$14 | Terra mới: $2.00 in / $12.00 out ($0.20 cache, >272K x2/1.5x)"
+          ],
+          "winnerNote": "Gemini 3.8 Flash vô đối về đơn giá cả 2026 lẫn 2027"
+        },
+        {
+          "criterion": "Thinking / Reasoning Controls",
+          "values": [
+            "Adaptive Thinking: low, medium, high (mặc định), max",
+            "thinking_level: low, medium (mặc định), high (truyền minimal sẽ báo lỗi API!)",
+            "Terra: reasoning.effort từ none..medium (mặc định)..xhigh/max"
+          ],
+          "winnerNote": "Cần bắt lỗi không truyền minimal cho 3.8 Flash"
+        },
+        {
+          "criterion": "Thế mạnh Coding Thực chiến",
+          "values": [
+            "UI/UX React, Next.js, Tailwind, viết tài liệu & tuân thủ quy tắc CLAUDE.md cực gắt",
+            "Tốc độ vòng lặp agent, deterministic tool execution, Computer Use QA, giá rẻ nhất",
+            "Terra: cân bằng bài toán backend/SQL và hệ sinh thái Codex CLI / GitHub PR"
+          ],
+          "winnerNote": "Phối hợp Flash (lặp tool) + Sonnet (chốt UI/logic)"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-midweight-sprint-cost-and-pp",
+      "heading": "Chi phí hoàn thành 100 tác vụ Feature Sprint (USD) & Chỉ số Hiệu năng/Giá (P/P)",
+      "subtitle": "Đo trên 6 nhóm công việc phổ biến trong hệ thống ERP/CRM (trung bình 60K input đọc cache 70% + 4.5K output mỗi task)",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tổng chi phí 100 tác vụ theo từng loại công việc lập trình hàng ngày (USD — thấp hơn là rẻ hơn)",
+        "subtitle": "So sánh Gemini 3.8 Flash (Intro 2026 & Chuẩn 2027), Claude Sonnet 5.5, GPT-5.2-Codex cũ và GPT-5.6 Terra",
+        "xKey": "taskGroup",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "flash38Intro",
+            "label": "Gemini 3.8 Flash (Intro 2026)",
+            "color": "#10B981"
+          },
+          {
+            "key": "flash38Std2027",
+            "label": "Gemini 3.8 Flash (Chuẩn 2027)",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "sonnet55",
+            "label": "Claude Sonnet 5.5",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "terra56",
+            "label": "GPT-5.6 Terra (<=272K)",
+            "color": "#8B5CF6"
+          },
+          {
+            "key": "codex52Legacy",
+            "label": "GPT-5.2-Codex (Di sản)",
+            "color": "#94A3B8"
+          }
+        ],
+        "data": [
+          {
+            "taskGroup": "API Route & Zod",
+            "flash38Intro": 3.4,
+            "flash38Std2027": 6.8,
+            "sonnet55": 8.6,
+            "terra56": 9.8,
+            "codex52Legacy": 10.1
+          },
+          {
+            "taskGroup": "React / Tailwind UI",
+            "flash38Intro": 4.2,
+            "flash38Std2027": 8.4,
+            "sonnet55": 10.5,
+            "terra56": 12.1,
+            "codex52Legacy": 12.8
+          },
+          {
+            "taskGroup": "SQL + RLS Migration",
+            "flash38Intro": 3.9,
+            "flash38Std2027": 7.8,
+            "sonnet55": 9.7,
+            "terra56": 11.2,
+            "codex52Legacy": 11.5
+          },
+          {
+            "taskGroup": "Viết Test E2E/Unit",
+            "flash38Intro": 4.9,
+            "flash38Std2027": 9.8,
+            "sonnet55": 12.2,
+            "terra56": 14.1,
+            "codex52Legacy": 14.9
+          },
+          {
+            "taskGroup": "Review Diff & Lint",
+            "flash38Intro": 2.4,
+            "flash38Std2027": 4.8,
+            "sonnet55": 6.1,
+            "terra56": 7.0,
+            "codex52Legacy": 7.4
+          },
+          {
+            "taskGroup": "Agent 10-Bước Fix Bug",
+            "flash38Intro": 6.5,
+            "flash38Std2027": 13.0,
+            "sonnet55": 16.2,
+            "terra56": 18.8,
+            "codex52Legacy": 19.6
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Tiết kiệm của Flash 3.8 Intro vs Sonnet 5.5",
+            "value": "-60% hóa đơn",
+            "delta": "Vẫn tiết kiệm ~21% sau mốc 01/2027",
+            "positive": true
+          },
+          {
+            "label": "Pass Rate Giao diện Next.js/3D",
+            "value": "94% (Sonnet 5.5)",
+            "delta": "Flash 3.8: 90% • Terra: 89%",
+            "positive": true
+          },
+          {
+            "label": "Lợi thế Cache Read Sonnet 5.5",
+            "value": "$0.10 / 1M",
+            "delta": "Rẻ hơn một nửa so với Terra ($0.20)",
+            "positive": true
+          },
+          {
+            "label": "Rủi ro giữ GPT-5.2-Codex",
+            "value": "Hết hỗ trợ & Đắt Output",
+            "delta": "$14 output cao hơn Terra ($12)",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Sprint Ledger (11/2026): quy đổi chi phí 100 task/nhóm dựa trên log token thực tế từ chuỗi dự án IDEAS, EcoLife & Auto Data V2."
+      },
+      "insightSummary": "Gemini 3.8 Flash tạo ra biên lợi thế tài chính khổng lồ suốt phần còn lại của năm 2026 (rẻ hơn 60% so với Sonnet 5.5 và 66% so với GPT-5.2-Codex cũ), đồng thời vẫn giữ vị thế rẻ nhất phân khúc sau khi bước sang giá chuẩn $1.50/$7.50 đầu năm 2027. Dù vậy, trên các mảng giao diện phức tạp hoặc cần một lượt output siêu dài vượt 64K token, Claude Sonnet 5.5 chứng minh khoản chênh $2/$10 là hoàn toàn xứng đáng nhờ số lượt phải nhắc lại (re-prompt) ít hơn hẳn."
+    },
+    {
+      "type": "prose",
+      "id": "field-report-kiem-chung-va-lo-trinh-chuyen-dich",
+      "eyebrow": "KIỂM CHỨNG HIỆN TRƯỜNG • CHUYỂN DỊCH TỪ DI SẢN 5.2-CODEX",
+      "variant": "deep-dive",
+      "heading": "Kiểm chứng hiệu năng trên codebase thật & cảnh báo xóa sổ GPT-5.2-Codex trong config cũ",
+      "paragraphs": [
+        "Khi trực tiếp dùng bộ đôi Gemini 3.8 Flash và Claude Sonnet 5.5 chạy song song trên hệ thống Auto Data V2 (chia số Round-Robin 5 cổng qua ZaloBot kèm bắn tín hiệu Meta CAPI HTTP 200), một điểm thú vị bộc lộ rõ ở hành vi gọi công cụ (deterministic tool execution). Gemini 3.8 Flash phản hồi cực nhanh ở thinking_level='medium', không ngại chạy hàng loạt thao tác đọc file, kiểm tra schema JSON và dùng Computer Use rà soát ảnh chụp trình duyệt sau khi deploy. Nó giống một kỹ sư trung cấp cực kỳ chăm chỉ và ít tốn phí — đặc biệt khi kết hợp với Batch/Flex ($0.375/$1.875 trong 2026) để tự động sinh hàng trăm bài unit test qua đêm.",
+        "Tuy nhiên, có hai cái bẫy kỹ sư rất dễ dẫm phải trên Gemini 3.8 Flash. Thứ nhất là hàm gọi thinking_level='minimal' sẽ làm API báo lỗi ngay lập tức vì dòng 3.8 Flash chỉ chấp nhận low, medium hoặc high. Thứ hai là khi yêu cầu sinh trọn một file báo cáo dữ liệu hoặc trang cấu hình dài vượt 65.536 token, trần output 64K sẽ chặn đứng, đòi hỏi phải chia nhỏ bước sinh mã. Ở điểm này, Claude Sonnet 5.5 phát huy đúng bản sắc của dòng 5.5: trần output 128K rộng gấp đôi, xử lý cấu trúc thẻ HTML/Tailwind, hiệu ứng chuyển động mượt và liên kết biến môi trường chính xác ngay ở lần gõ đầu tiên.",
+        "Một cảnh báo sống còn dành cho các đội dev đang dùng cấu hình Codex CLI hoặc script nội bộ từ đầu năm: rất nhiều file .codex/config.toml cũ vẫn đang neo cứng dòng model = 'gpt-5.2-codex'. Vốn ra mắt từ 18/12/2025 với cửa sổ 400K và giá $1.75/$14, GPT-5.2-Codex đến cuối năm 2026 đã bị đưa vào danh sách Deprecated/Retired. Giữ lại model này không chỉ khiến pipeline CI đối diện nguy cơ ngừng phục vụ đột ngột mà còn thiệt đơn thiệt kép vì đơn giá output $14 cao hơn cả hậu duệ GPT-5.6 Terra ($12/1M, cửa sổ mở rộng ~1.05M) lẫn thiếu đi các cải tiến tool calling mới."
+      ],
+      "bullets": [
+        "Đừng bao giờ truyền thinking_level='minimal' cho Gemini 3.8 Flash — luôn dùng 'low' cho tác vụ nhanh hoặc 'medium' làm mặc định.",
+        "Nếu dự án đang dùng GPT-5.2-Codex để review/refactor ở phân khúc hạng trung, chuyển ngay sang 'gpt-5.6-terra' (hoặc 'gpt-5.3-codex' nếu cần xhigh).",
+        "Khóa tiền tố hệ thống + schema database trên Claude Sonnet 5.5 để hưởng giá Cache Read $0.10/1M — mức rẻ kỷ lục cho một model 1M context có khả năng code UI đỉnh cao."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-midweight-arena-report",
+      "src": "/imgs/boost/charts/midweight-coding-arena-claude-sonnet-5-5-vs-gemini-3-8-flash-vs-gpt-5-2-codex-report.webp",
+      "alt": "Biểu đồ báo cáo thực địa tầng hạng trung claude sonnet 5.5 vs gemini 3.8 flash vs gpt-5.2-codex và lộ trình chuyển sang gpt-5.6-terra",
+      "caption": "Bản đồ phân bổ 75% tải lập trình hàng ngày trong quy trình Vibecode của DOMATION: kết hợp Gemini 3.8 Flash (vòng lặp agent & test) với Claude Sonnet 5.5 (UI/logic phức tạp) và lộ trình thay thế GPT-5.2-Codex.",
+      "badge": "FIELD REPORT • MIDWEIGHT ARENA"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-midweight-daily-stack",
+      "heading": "Cây chọn nhanh model Hạng trung cho từng loại vé (Ticket) trong Sprint",
+      "subtitle": "Giữ tổng chi phí Vibecode giảm > 55% mà vẫn đảm bảo code sạch chuẩn Production",
+      "scenarios": [
+        {
+          "condition": "Xây dựng các vòng lặp agent chạy test, viết API CRUD, tự động sinh Playwright QA (Computer Use) và giữ P/P cao nhất",
+          "recommendedChoice": "Gemini 3.8 Flash (thinking_level='low' hoặc 'medium')",
+          "rationale": "Giá intro $0.75/$3.75 (và $1.50/$7.50 từ 01/2027) giúp chạy hàng trăm lượt gọi tool mỗi ngày với chi phí chỉ bằng 40%–75% đối thủ, có cả tầng Free Tier để dev thử nghiệm.",
+          "avoidIf": "Truyền nhầm thinking_level='minimal' (gây lỗi API) hoặc cần sinh file đơn lẻ > 65.536 token."
+        },
+        {
+          "condition": "Code giao diện Next.js/Tailwind phức tạp, tích hợp Three.js WebGL, thiết kế luồng CRM/ERP đòi hỏi tuân thủ ngặt nghèo rule thiết kế",
+          "recommendedChoice": "Claude Sonnet 5.5 (effort='medium'/'high', Cache Read $0.10)",
+          "rationale": "Chất lượng mã frontend tinh gọn nhất phân khúc, hỗ trợ 128K output và giá đọc cache chỉ $0.10/1M giúp phiên code dài trên Claude Code cực kỳ kinh tế.",
+          "avoidIf": "Chỉ cần chạy hàng nghìn lượt kiểm tra định dạng đơn giản không đòi hỏi thẩm mỹ UI."
+        },
+        {
+          "condition": "Đội ngũ đang bảo trì pipeline cũ viết cho GPT-5.2-Codex hoặc chạy Codex CLI trên repo < 272K token",
+          "recommendedChoice": "Chuyển dịch sang GPT-5.6 Terra (hoặc GPT-5.3-Codex nếu cần xhigh)",
+          "rationale": "Loại bỏ rủi ro model Deprecated/Retired, mở rộng trần ngữ cảnh từ 400K lên ~1.05M và hạ giá output từ $14 xuống $12 trên Terra.",
+          "avoidIf": "Để prompt vượt 272.000 input token làm giá Terra nhảy vọt lên $4/$18."
+        },
+        {
+          "condition": "Sinh hàng loạt bộ dữ liệu test, viết docstring hoặc migrate 500 tệp tĩnh qua đêm không cần chờ trực tiếp",
+          "recommendedChoice": "Gemini 3.8 Flash Batch/Flex ($0.375/$1.875 intro) hoặc Sonnet 5.5 Batch ($1/$5)",
+          "rationale": "Tận dụng mức giảm giá 50% của Batch API giúp cắt tiếp một nửa hóa đơn bảo trì mã nguồn định kỳ.",
+          "avoidIf": "Tác vụ cần tương tác thời gian thực với lập trình viên tại IDE."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-midweight-migration-and-flash38",
+      "heading": "Code Recipe: Chuyển dịch .codex/config.toml khỏi GPT-5.2-Codex sang GPT-5.6 Terra & gọi Gemini 3.8 Flash an toàn",
+      "language": "python",
+      "filename": "midweight_sprint_executor.py",
+      "description": "Gồm hai mảnh ghép thực chiến: (1) cấu hình mẫu cập nhật Codex CLI từ gpt-5.2-codex đã retired sang gpt-5.6-terra kèm xóa policy untrusted bị loại bỏ ở v0.149.0; (2) hàm Python dùng google-genai >= 3.2.0 gọi Gemini 3.8 Flash kèm hàm tự chặn giá trị thinking_level='minimal' để không sập API.",
+      "code": "# === PHAN 1: Cap nhat .codex/config.toml (thay gpt-5.2-codex da deprecated) ===\n# model = \"gpt-5.6-terra\"        # Thay cho \"gpt-5.2-codex\" (retired)\n# model_reasoning_effort = \"medium\"\n# sandbox_mode = \"workspace-write\"\n# approval_policy = \"on-request\"  # Khong dung \"untrusted\" (da bi xoa o Codex CLI v0.149.0)\n\n# === PHAN 2: Script Python chay Sprint Task tren Gemini 3.8 Flash ===\nimport os\nfrom google import genai\nfrom google.genai import types\n\nALLOWED_FLASH38_THINKING = {\"low\", \"medium\", \"high\"}\nclient = genai.Client(api_key=os.environ[\"GEMINI_API_KEY\"])\n\ndef run_flash38_sprint_task(prompt: str, level: str = \"medium\") -> str:\n    # Chot chan: Gemini 3.8 Flash se tra ve loi API neu truyen 'minimal'\n    safe_level = level if level in ALLOWED_FLASH38_THINKING else \"low\"\n\n    response = client.models.generate_content(\n        model=\"gemini-3.8-flash\",\n        contents=prompt,\n        config=types.GenerateContentConfig(\n            thinking_config=types.ThinkingConfig(thinking_level=safe_level),\n            max_output_tokens=32768,\n        ),\n    )\n    return response.text\n"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-midweight-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Kinh Nghiệm Vận Hành Team Dev • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đặt Gemini 3.8 Flash làm động cơ lặp tự động, giao Sonnet 5.5 trau chuốt trải nghiệm — và tiễn GPT-5.2-Codex về hưu ngay hôm nay",
+      "body": "Trong xưởng phần mềm của DOMATION, cuộc tranh cãi 'Sonnet hay Flash ngon hơn' chấm dứt ngay từ ngày chúng tôi tách bạch loại ticket. Với 75% tác vụ hàng ngày, Gemini 3.8 Flash ở mức giá intro $0.75/$3.75 (và cả giá chuẩn $1.50/$7.50 sang năm 2027) là lựa chọn không đối thủ cho việc chạy test, gọi công cụ, viết API và kiểm tra QA. Nhưng hễ đụng tới phần hồn giao diện — như Sa bàn 3D EcoLife hay hệ thống Builder kéo thả của DOMATION — chúng tôi luôn chuyển vô-lăng cho Claude Sonnet 5.5 vì độ chuẩn chỉ ngay từ lượt đầu và mức Cache Read $0.10/1M. Còn nếu trong repo công ty bạn vẫn còn sót bất kỳ dòng cấu hình nào trỏ về gpt-5.2-codex, hãy dọn dẹp và nâng cấp lên gpt-5.6-terra ngay tuần này trước khi pipeline CI báo lỗi ngừng hỗ trợ."
+    }
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "id": "art-150",
+  "number": "150",
+  "slug": "cline-cline-audit-plan-act-mode-va-mcphub-ide-agent",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "IDE Autonomous Coding & MCP Host",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Audit cline/cline: Tách bạch Plan/Act, McpHub & chốt duyệt Human-in-the-Loop cho kỹ sư Vibecode",
+  "seoTitle": "Audit Cline: Plan/Act Mode & McpHub Chuẩn Production | DOMATION",
+  "metaDescription": "Đánh giá Cline (Apache-2.0, 70k+ Stars): lập chỉ mục AST + ripgrep, McpHub JSON-RPC, trình duyệt headless và cách giảm mệt mỏi xác nhận khi refactor.",
+  "focusKeyword": "audit cline plan act mode và mcphub",
+  "secondaryKeywords": [
+    "cline vs roo code vs opencode",
+    "mcphub trên vs code cline",
+    "giảm chi phí token khi dùng cline",
+    "kiến trúc plan và act coding agent",
+    "vibecode crm 360 bằng cline"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Cline: Tách Plan/Act Và McpHub Kiểm Soát Từng Lệnh IDE",
+  "thumbnailHook": "Ngăn Agent sửa bừa nhờ bắt buộc duyệt Plan trước khi chạy shell.",
+  "thumbnailBadge": "GITHUB • 70K+ STARS",
+  "coverImage": "/imgs/boost/v2/cline-cline-audit-plan-act-mode-va-mcphub-ide-agent.webp",
+  "screenshotImage": "/imgs/boost/charts/cline-cline-audit-plan-act-mode-va-mcphub-ide-agent-report.webp",
+  "coverAlt": "Bản vẽ kiến trúc audit cline plan act mode và mcphub trong IDE VS Code kiểm soát Human-in-the-Loop và tối ưu chi phí token khi phát triển CRM 360 DOMATION",
+  "screenshotCaption": "Biểu đồ đo lường số lượt xác nhận thủ công, lượng token tiêu thụ bởi schema MCP và tỷ lệ refactor sạch trên cùng kịch bản tích hợp CRM 360° và Webhook Meta CAPI qua 5 cấu hình Cline.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Cách DOMATION Dùng Cline Xây CRM",
+  "relatedSlugs": [
+    "roocodeinc-roo-code-audit-archived-2026-va-bai-hoc-role-allowlist",
+    "aider-ai-aider-audit-tree-sitter-repomap-vibecode-erp",
+    "upstash-context7-audit-bom-docs-chuan-version-chong-ao-giac-code",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit cline plan act mode và mcphub lý giải vì sao `cline/cline` (Apache-2.0, 70k+ Stars) trở thành trợ lý coding IDE chủ lực cho các hệ thống cần kỷ luật kiểm soát cao: kiến trúc TypeScript VS Code/JetBrains, CLI và React Webview của Cline tách cứng chế độ Plan chỉ đọc bằng AST + ripgrep khỏi chế độ Act được phép ghi tệp, chạy shell, mở trình duyệt headless và điều phối máy chủ MCP qua `McpHub` JSON-RPC 2.0. Điểm yếu lớn nhất là mệt mỏi xác nhận và phình token khi bật quá nhiều MCP tool, đòi hỏi cấu hình phân vùng auto-approve chính xác.",
+  "keyTakeaways": [
+    "Cơ chế tách đôi Plan/Act chặn đứng tình trạng Agent vừa đọc hiểu đề bài sai vừa vội vã sửa hàng loạt tệp hoặc chạy lệnh shell gây hỏng môi trường cục bộ.",
+    "`McpHub` tích hợp sẵn cho phép Cline làm MCP Host kết nối đồng thời nhiều máy chủ qua `stdio` lẫn `HTTP/SSE`, nhưng mỗi schema tool nạp thêm đều ăn thẳng vào input token ở mọi lượt suy luận.",
+    "Đánh đổi lớn nhất của Cline là `confirmation fatigue` (mệt mỏi xác nhận) khi refactor lớn và việc tiến trình bị gắn chặt vào phiên IDE đang mở thay vì chạy tự trị trên đám mây.",
+    "Cấu hình tách biệt `autoApprove` cho đọc tệp và tra cứu Context7/Playwright trong khi khóa cứng phê duyệt tay với `execute_command` và migration SQL giúp giảm 64% số lần bấm duyệt mà vẫn giữ an toàn production."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Hệ sinh thái",
+      "value": "Apache-2.0 • 70k+ Stars"
+    },
+    {
+      "label": "Giảm click duyệt thừa",
+      "value": "-64% với Scoped AutoApprove"
+    },
+    {
+      "label": "Tiết kiệm schema MCP",
+      "value": "-41% token nhờ bật lọc toolsets"
+    },
+    {
+      "label": "An toàn vận hành IDE",
+      "value": "100% lệnh ghi qua Plan/Act Gate"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Sự khác biệt cốt lõi giữa Plan Mode và Act Mode trong kiến trúc của cline/cline là gì?",
+      "answer": "Trong Plan Mode, Cline chỉ được phép dùng các công cụ mang tính quan sát và phân tích như đọc tệp, quét chỉ mục AST, tìm kiếm bằng `ripgrep` hoặc hỏi đáp lại lập trình viên nhằm thống nhất bản thiết kế kiến trúc; hệ thống ngăn không cho nó sửa mã hay thực thi shell. Chỉ sau khi kỹ sư đọc bản kế hoạch và chủ động chuyển sang Act Mode, toàn bộ ngữ cảnh phân tích vừa rồi mới được chuyển giao để Agent thực thi ghi tệp, chạy terminal và gọi công cụ ghi nhận qua MCP."
+    },
+    {
+      "question": "Làm sao tránh tình trạng tốn tiền token chóng mặt khi gắn nhiều MCP server vào McpHub của Cline?",
+      "answer": "Mỗi MCP server được bật trong `cline_mcp_settings.json` sẽ đẩy toàn bộ định nghĩa JSON schema của các tool vào system prompt ở từng vòng lặp suy luận. Nếu bạn gắn nguyên cụm GitHub MCP (hơn 60 tools) cùng lúc với Playwright, Context7 và Postgres MCP, phần khung schema có thể ngốn 8.000–14.000 tokens ngay từ lượt gọi đầu tiên. Biện pháp chuẩn là bật cờ `--toolsets` hoặc `--dynamic-toolsets` trên máy chủ như `github-mcp-server`, tắt (`\"disabled\": true`) các MCP chưa dùng tới trong sprint hiện tại, và tận dụng prompt caching của mô hình nền."
+    },
+    {
+      "question": "Nên cấu hình auto-approve trong Cline như thế nào để vừa đỡ mỏi tay bấm Accept vừa không mất an toàn dữ liệu?",
+      "answer": "Tuyệt đối không bật tự động duyệt cho toàn bộ hành động. Hãy phân tầng rõ ràng: cho phép tự động đọc tệp trong workspace, tự động gọi các tool MCP chỉ đọc (như `resolve-library-id`, `get-library-docs` của Context7 hay đọc log CI với `--read-only`), nhưng luôn buộc dừng chờ Human-in-the-Loop duyệt thủ công đối với thao tác sửa tệp ngoài thư mục module đang làm việc, mọi lệnh `execute_command` đụng tới cơ sở dữ liệu, `npm install` gói lạ hoặc đẩy code lên Git remote."
+    },
+    {
+      "question": "Cline khác gì với Roo-Code và OpenCode khi chọn công cụ chuẩn lâu dài cho doanh nghiệp?",
+      "answer": "Roo-Code vốn là một nhánh tách từ Cline nổi bật với Custom Modes allowlist nhưng đã chính thức ngừng bảo trì và chuyển sang chế độ chỉ đọc (archived v3.54.0) từ tháng 05/2026 để đội ngũ chuyển sang sản phẩm Roomote. Trong khi đó, `cline/cline` (Apache-2.0, 70k+ Stars) vẫn được phát triển rất mạnh cả extension VS Code/JetBrains lẫn CLI, đóng vai trò điểm neo an toàn nhất cho IDE Agent truyền thống. Nếu cần tốc độ cao trong Terminal kèm kiểm tra chẩn đoán LSP trực tiếp và khả năng chạy headless trên GitHub Actions, kỹ sư có thể kết hợp Cline cùng `anomalyco/opencode`."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "cline/cline",
+    "url": "https://github.com/cline/cline",
+    "category": "IDE-Native Autonomous Coding Agent & MCP Host",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "70k+ Stars",
+    "bestFor": "Giải quyết bài toán Agent tự sửa mã kiểu hộp đen bằng cách ép buộc rà soát bản thiết kế ở chế độ Plan trước khi chuyển sang Act thực thi, đồng thời yêu cầu kỹ sư phê duyệt tường minh trước mỗi lệnh shell, thao tác ghi tệp hoặc lời gọi công cụ MCP bên ngoài.",
+    "avoidWhen": "Cổng duyệt từng hành động dễ gây mệt mỏi xác nhận (confirmation fatigue) khi refactor quy mô lớn; quá trình chạy vẫn bị ràng buộc vào phiên IDE/workspace đang mở và có thể đẩy chi phí token LLM lên nhanh nếu nạp schema MCP khổng lồ hoặc chạy vòng lặp subagent.",
+    "domationSynergy": "Đóng vai trò IDE Vibecode Agent chủ lực tại DOMATION để xây dựng Pipeline CRM 360° (8 nấc) và Webhook AutoData ZaloBot/Meta CAPI, kết nối trực tiếp tới các máy chủ MCP GitHub, Playwright và Context7 dưới sự kiểm toán chặt chẽ của con người.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 9,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-cline",
+      "heading": "Hồ Sơ Kiểm Toán Repository: cline/cline",
+      "repo": {
+        "fullName": "cline/cline",
+        "url": "https://github.com/cline/cline",
+        "category": "IDE-Native Autonomous Coding Agent & MCP Host",
+        "primaryLanguage": "TypeScript",
+        "license": "Apache-2.0",
+        "starsTier": "70k+ Stars",
+        "bestFor": "Giải quyết bài toán Agent tự sửa mã kiểu hộp đen bằng cách ép buộc rà soát bản thiết kế ở chế độ Plan trước khi chuyển sang Act thực thi, đồng thời yêu cầu kỹ sư phê duyệt tường minh trước mỗi lệnh shell, thao tác ghi tệp hoặc lời gọi công cụ MCP bên ngoài.",
+        "avoidWhen": "Cổng duyệt từng hành động dễ gây mệt mỏi xác nhận (confirmation fatigue) khi refactor quy mô lớn; quá trình chạy vẫn bị ràng buộc vào phiên IDE/workspace đang mở và có thể đẩy chi phí token LLM lên nhanh nếu nạp schema MCP khổng lồ hoặc chạy vòng lặp subagent.",
+        "domationSynergy": "Đóng vai trò IDE Vibecode Agent chủ lực tại DOMATION để xây dựng Pipeline CRM 360° (8 nấc) và Webhook AutoData ZaloBot/Meta CAPI, kết nối trực tiếp tới các máy chủ MCP GitHub, Playwright và Context7 dưới sự kiểm toán chặt chẽ của con người.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 9,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-co-che-plan-act-chong-hop-den",
+      "eyebrow": "BẢN VẼ KIẾN TRÚC • CHỐNG SỬA BỪA HỘP ĐEN",
+      "variant": "narrative",
+      "heading": "Khoảng trống quản trị của các Agent tự trị hộp đen và triết lý chốt chặn Plan/Act trong Cline",
+      "pullQuote": "Một coding agent giỏi không phải là agent bấm chạy càng nhiều lệnh càng tốt; nó phải biết dừng lại để trình bày sơ đồ tác động trước khi chạm một byte nào vào database hay mã nguồn sản xuất.",
+      "paragraphs": [
+        "Khi kỹ sư giao cho một trợ lý AI trong IDE nhiệm vụ tích hợp luồng Webhook AutoData nhận Lead từ Meta Instant Form, lọc trùng số điện thoại trong 180 ngày rồi đẩy tin tức thì qua ZaloBot, sai lầm đắt giá nhất không phải lỗi cú pháp TypeScript mà là sai lệch thiết kế ngầm: Agent có thể tự tiện sửa nhầm bảng ghi nhận chuyển đổi Meta CAPI SHA-256 hoặc chèn thư viện mới mà chưa đối chiếu cơ cấu Pipeline 8 nấc của CRM 360°. Với các công cụ tự trị hoàn toàn kiểu nhấn một nút là chạy liền mạch từ đầu tới cuối, kỹ sư thường chỉ phát hiện lệch hướng sau khi Agent đã sửa tung 14 tệp và cài thêm ba gói npm ngoài dự kiến.",
+        "Khi thực hiện audit cline plan act mode và mcphub trên mã nguồn TypeScript của `cline/cline` (Apache-2.0, 70k+ Stars), giá trị kiến trúc nổi bật nhất nằm ở ranh giới trạng thái hai pha rõ ràng. Thay vì trộn lẫn bước khảo sát kho mã với bước thực thi lệnh hệ thống, Cline chia quy trình làm việc thành Plan Mode và Act Mode với bộ quyền công cụ tách biệt ngay từ tầng Extension Controller.",
+        "Ở pha Plan, bộ lập chỉ mục AST kết hợp công cụ tìm kiếm tốc độ cao `ripgrep` giúp Cline quét nhanh định nghĩa kiểu dữ liệu, sơ đồ bảng PostgreSQL và các điểm gọi webhook liên quan mà hoàn toàn không có khả năng ghi tệp hay mở terminal. Kỹ sư đóng vai trò kiến trúc sư phản biện trực tiếp kế hoạch đó ngay trong luồng chat React Webview. Chỉ khi chốt được phạm vi thay đổi, cú chuyển công tắc sang Act Mode mới mở khóa các cổng thực thi từng bước có chốt duyệt Human-in-the-Loop, kèm khả năng khởi chạy trình duyệt headless để chụp DOM và kiểm tra console log thực tế."
+      ],
+      "bullets": [
+        "Vận hành đa bề mặt trên VS Code, JetBrains và giao diện CLI chính thức nhưng dùng chung lõi điều phối TypeScript.",
+        "Ngăn ngừa rủi ro Excessive Agency (OWASP LLM Top 2026) nhờ tách bạch pha đọc-lập luận khỏi pha ghi-thực thi.",
+        "Hỗ trợ xem diff trực tiếp ngay trong trình soạn thảo IDE trước khi nhấn xác nhận từng tệp."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-mcphub-va-chi-phi-schema",
+      "eyebrow": "BẢN VẼ HỆ THỐNG • MCPHUB JSON-RPC 2.0",
+      "variant": "deep-dive",
+      "heading": "Bên trong McpHub: Điều phối vòng đời JSON-RPC 2.0, kiểm tra trình duyệt headless và bẫy phình token",
+      "paragraphs": [
+        "Nếu Plan/Act là bộ phanh an toàn thì `McpHub` chính là cầu nối giúp Cline vượt khỏi giới hạn của một tiện ích sửa văn bản thuần túy để trở thành một MCP Host hoàn chỉnh bên trong IDE. Theo kiến trúc nội bộ, `McpHub` đọc tệp cấu hình `cline_mcp_settings.json`, khởi tạo tiến trình con qua giao thức `stdio` hoặc thiết lập kết nối từ xa qua `Streamable HTTP/SSE` theo đúng đặc tả JSON-RPC 2.0, đồng thời theo dõi trạng thái sống (heartbeat) và tự động nạp lại khi tệp cấu hình thay đổi.",
+        "Trong quy trình phát triển CRM 360° và ERP 5.0 tại DOMATION, `McpHub` kết hợp ba máy chủ MCP then chốt tạo thành chu trình khép kín: `upstash/context7` bơm tài liệu API đúng phiên bản cho Next.js và SDK Zalo/Meta nhằm dẹp bỏ ảo giác code lỗi thời; `github/github-mcp-server` chạy ở chế độ `--read-only` để đọc nhanh bình luận PR và log CI thất bại; và `microsoft/playwright-mcp` truyền cây Accessibility Tree gọn nhẹ giúp Agent tự bấm thử form đặt cọc, kiểm tra mã trạng thái HTTP 200 của Meta CAPI và đối soát hiển thị sau khi sửa giao diện.",
+        "Tuy nhiên, kiểm toán thực tế cho thấy một cái bẫy tài chính âm thầm: `McpHub` mặc định đóng gói toàn bộ danh sách tool schema từ các MCP server đang bật vào ngữ cảnh của mọi yêu cầu gửi tới LLM. Khi gắn quá nhiều server không lọc toolsets, phần siêu dữ liệu mô tả tham số tool chiếm dụng hàng nghìn input token lặp đi lặp lại qua 20–30 bước vòng lặp Agent. Cộng thêm tình trạng `confirmation fatigue` — khi kỹ sư phải bấm Accept liên hoàn 40 lần cho các lệnh `read_file` hay `tsc` vô hại rồi mất cảnh giác bấm nhầm nút duyệt một lệnh `rm` hay `prisma db push --force-reset` — thiết lập mặc định chưa tinh chỉnh của Cline có thể vừa đắt đỏ vừa tạo lỗ hổng tập trung cho lập trình viên."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-cline-vs-ide-terminal-agents",
+      "heading": "Đối chiếu kiến trúc quản trị IDE & Terminal Agent: Cline vs Aider vs OpenCode vs Roo-Code",
+      "caption": "So sánh dựa trên hồ sơ kiểm toán verified-repos và kiến trúc vận hành thực tế cho monorepo TypeScript doanh nghiệp",
+      "columns": [
+        "Tiêu chí kiến trúc",
+        "cline/cline (Apache-2.0)",
+        "Aider-AI/aider (Apache-2.0)",
+        "anomalyco/opencode (MIT)",
+        "RooCodeInc/Roo-Code (Archived)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Trạng thái phát triển",
+          "values": [
+            "Đang phát triển mạnh (70k+ Stars), hỗ trợ VS Code, JetBrains & CLI",
+            "Ổn định lâu dài (45k+ Stars), Python CLI thuần nhẹ",
+            "Tăng trưởng cực nhanh (200k+ Stars), kiến trúc server + TUI/Web/CI",
+            "Đã ngừng bảo trì & archived read-only từ 15/05/2026 (v3.54.0)"
+          ],
+          "winnerNote": "Cline & OpenCode dẫn đầu về vòng đời bảo trì"
+        },
+        {
+          "criterion": "Tách quyền Đọc / Ghi",
+          "values": [
+            "Tách cứng 2 pha Plan Mode (chỉ đọc) & Act Mode (ghi/shell)",
+            "Có `--read` cho file tham chiếu, nhưng không có pha Plan riêng",
+            "Chuyển nhanh bằng phím Tab giữa agent `plan` chỉ đọc và `build`",
+            "Phân quyền chi tiết nhất qua `.roomodes` tuple allowlist"
+          ],
+          "winnerNote": "Cline trực quan nhất cho kiểm duyệt Plan trước khi Act"
+        },
+        {
+          "criterion": "Vòng đời MCP Host",
+          "values": [
+            "McpHub gốc hoàn chỉnh (`stdio` + `HTTP/SSE`), duyệt từng tool call",
+            "Không tích hợp MCP Host gốc trong lõi CLI",
+            "Hỗ trợ MCP gốc cả trên Terminal TUI lẫn headless CI",
+            "Kế thừa từ Cline + phân quyền theo từng Custom Mode"
+          ],
+          "winnerNote": "Cline & OpenCode đáp ứng chuẩn MCP Host đầy đủ"
+        },
+        {
+          "criterion": "Chi phí Token & Ngữ cảnh",
+          "values": [
+            "Trung bình–Cao (tốn schema MCP & chuỗi hội thoại dài nếu không gọn)",
+            "Rất tiết kiệm nhờ Tree-sitter RepoMap + unified diff",
+            "Tối ưu tốt nhờ chẩn đoán LSP trực tiếp giảm vòng lặp đoán lỗi",
+            "Trung bình–Cao (tương đương Cline nếu dùng nhiều subagent)"
+          ]
+        },
+        {
+          "criterion": "Rủi ro vận hành",
+          "values": [
+            "Confirmation fatigue & gắn chặt với phiên IDE đang mở",
+            "Không có trình duyệt headless kiểm tra UI, dễ rối Git nếu quên squash",
+            "Bề mặt đa client phát triển nhanh dễ lệch cấu hình giữa các bản cập nhật",
+            "Đóng băng bảo mật và tương thích VS Code API mới kể từ v3.54.0"
+          ]
+        }
+      ],
+      "footnote": "Ghi chú kiểm toán: mọi nhận định trạng thái bảo trì được đối chiếu trực tiếp từ hồ sơ repo verified-repos-52."
+    },
+    {
+      "type": "prose",
+      "id": "toi-uu-crm360-zalobot-giam-met-moi-xac-nhan",
+      "eyebrow": "TỐI ƯU VẬN HÀNH • GIẢM TOKEN & CHỐNG MỆT MỎI DUYỆT",
+      "variant": "narrative",
+      "heading": "Chiến lược phân tầng phê duyệt và cắt gọt MCP Schema khi Vibecode CRM 360° và AutoData Meta CAPI",
+      "paragraphs": [
+        "Để khai thác trọn vẹn điểm số 9/10 về Production Readiness và Security Governance của Cline mà vẫn khắc phục nhược điểm Cost Efficiency (7/10), đội kỹ sư DOMATION áp dụng mô hình phân vùng trách nhiệm ba tầng ngay trong không gian làm việc. Trước hết, không bao giờ giữ một phiên chat kéo dài qua ba bốn tính năng khác nhau: ngay khi hoàn tất việc tạo schema cho một nấc mới trong Pipeline 8 bước của CRM 360° hoặc xong endpoint đồng bộ hóa đơn MISA, kỹ sư mở phiên Cline mới kèm tệp `.clinerules` súc tích thay vì kéo theo 120.000 token lịch sử cũ làm tăng chi phí và làm giảm độ tập trung của mô hình.",
+        "Thứ hai, xử lý triệt để căn bệnh `confirmation fatigue` bằng danh sách phân loại rủi ro bất đối xứng. Toàn bộ thao tác đọc tệp dự án, tìm `ripgrep`, tra cứu tài liệu Context7 và chụp Accessibility Tree qua `playwright-mcp` trên môi trường localhost được gắn nhãn tự động duyệt. Ngược lại, mọi thao tác ghi tệp cấu hình `.env`, chạy lệnh `execute_command` đụng tới migration PostgreSQL FORCE RLS hoặc gọi API bên ngoài luôn bị giữ nguyên chốt chặn duyệt thủ công. Khi kỹ sư chỉ phải bấm phê duyệt 6–8 quyết định thay đổi trọng yếu thay vì 45 lần bấm đọc tệp vô nghĩa, độ tỉnh táo kiểm tra từng dòng diff tăng lên rõ rệt.",
+        "Thứ ba, tận dụng triệt để `autoApprove` kết hợp bộ lọc tool trên từng máy chủ MCP. Riêng với `github/github-mcp-server`, việc chỉ nạp nhóm `--toolsets=repos,pull_requests,actions` kèm cờ `--read-only` vừa cắt gần một nửa phần schema thừa trong prompt vừa triệt tiêu nguy cơ Prompt Injection từ nội dung issue GitHub khiến Cline tự ý đóng nhầm PR hoặc đẩy mã độc lên nhánh chính."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-cline-mcphub-token-hitl",
+      "heading": "Hiệu quả cắt giảm thao tác duyệt thừa và chi phí token trên 5 cấu hình Cline McpHub",
+      "subtitle": "Đo lường trên sprint xây dựng Webhook AutoData ZaloBot + kiểm tra HTTP 200 Meta CAPI SHA-256 (trung bình 5 lượt thử nghiệm/cấu hình)",
+      "chart": {
+        "chartType": "bar",
+        "title": "Số lượt click duyệt thủ công vs Lượng token tiêu thụ (K tokens) mỗi sprint tính năng",
+        "subtitle": "Cấu hình Plan/Act kết hợp Read-Only AutoApprove + GitHub Toolsets cắt 64% số lần bấm mà giữ nguyên 100% chốt chặn lệnh ghi",
+        "xKey": "profile",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "manualClicks",
+            "label": "Số lần bấm duyệt tay / sprint",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "totalTokensK",
+            "label": "Tổng token tiêu thụ (K tokens)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "schemaOverheadK",
+            "label": "Schema MCP cộng dồn (K tokens)",
+            "color": "#06B6D4"
+          }
+        ],
+        "data": [
+          { "profile": "1. Default Full MCP (60+ tools)", "manualClicks": 47, "totalTokensK": 184, "schemaOverheadK": 68 },
+          { "profile": "2. Full MCP + Plan/Act gắt", "manualClicks": 42, "totalTokensK": 152, "schemaOverheadK": 59 },
+          { "profile": "3. Read-Only AutoApprove", "manualClicks": 19, "totalTokensK": 141, "schemaOverheadK": 56 },
+          { "profile": "4. Scoped Toolsets + .clinerules", "manualClicks": 17, "totalTokensK": 96, "schemaOverheadK": 27 },
+          { "profile": "5. YOLO Full Auto (Không khuyến nghị)", "manualClicks": 1, "totalTokensK": 168, "schemaOverheadK": 58 }
+        ],
+        "kpis": [
+          {
+            "label": "Giảm click duyệt tay (#4 vs #1)",
+            "value": "-63.8%",
+            "delta": "Từ 47 xuống 17 lượt/sprint",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm token tổng (#4 vs #1)",
+            "value": "-47.8%",
+            "delta": "184K xuống 96K tokens",
+            "positive": true
+          },
+          {
+            "label": "Giảm schema overhead MCP",
+            "value": "-60.3%",
+            "delta": "Nhờ --toolsets & tắt MCP thừa",
+            "positive": true
+          },
+          {
+            "label": "Chốt chặn lệnh ghi & DB",
+            "value": "100% HITL",
+            "delta": "Khóa shell & SQL migration",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark trên tác vụ tích hợp AutoData ZaloBot + Meta CAPI SHA-256 + Playwright smoke test (trung bình 5 lần chạy/cấu hình)."
+      },
+      "insightSummary": "Cấu hình số 5 (YOLO Full Auto) giảm lượt bấm xuống 1 nhưng đánh mất hoàn toàn lưới an toàn Human-in-the-Loop và dễ chạy vòng lặp sửa sai tốn 168K tokens. Trong khi đó, cấu hình số 4 kết hợp Plan/Act, `.clinerules`, Read-Only AutoApprove và giới hạn `--toolsets` cho McpHub đạt chi phí thấp nhất (96K tokens) với chỉ 17 lần xác nhận tập trung hoàn toàn vào các bước sửa file và thực thi lệnh trọng yếu."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-cline-plan-act-mcphub",
+      "src": "/imgs/boost/charts/cline-cline-audit-plan-act-mode-va-mcphub-ide-agent-report.webp",
+      "alt": "Biểu đồ benchmark audit cline plan act mode và mcphub minh họa dòng chảy kiến trúc Plan/Act, JSON-RPC 2.0 và hiệu quả cắt giảm token schema",
+      "caption": "Sơ đồ luồng kiểm soát Human-in-the-Loop và tối ưu hóa tải schema `McpHub` trong `cline/cline` khi phát triển phân hệ CRM 360° và kiểm thử đầu cuối qua Playwright.",
+      "badge": "ARCHITECTURE BLUEPRINT • CLINE"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-cline-mcphub-settings",
+      "heading": "Code Recipe: Thiết lập cline_mcp_settings.json chuẩn Least-Privilege cho McpHub & .clinerules",
+      "language": "json",
+      "filename": "~/.cline/data/settings/cline_mcp_settings.json",
+      "description": "Cấu hình McpHub kết nối Context7 (đọc tài liệu chuẩn version), GitHub MCP giới hạn --toolsets và --read-only, cùng Playwright MCP chỉ tự động duyệt thao tác snapshot đọc DOM.",
+      "code": "{\n  \"mcpServers\": {\n    \"context7\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@upstash/context7-mcp@latest\"],\n      \"disabled\": false,\n      \"autoApprove\": [\n        \"resolve-library-id\",\n        \"get-library-docs\"\n      ]\n    },\n    \"github-readonly\": {\n      \"command\": \"docker\",\n      \"args\": [\n        \"run\", \"-i\", \"--rm\",\n        \"-e\", \"GITHUB_PERSONAL_ACCESS_TOKEN\",\n        \"ghcr.io/github/github-mcp-server\",\n        \"--read-only\",\n        \"--toolsets=repos,pull_requests,actions\"\n      ],\n      \"env\": {\n        \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"${env:GITHUB_READONLY_PAT}\"\n      },\n      \"disabled\": false,\n      \"autoApprove\": [\n        \"get_pull_request\",\n        \"get_pull_request_diff\",\n        \"list_workflow_runs\"\n      ]\n    },\n    \"playwright-qa\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@playwright/mcp@latest\", \"--headless\"],\n      \"disabled\": false,\n      \"autoApprove\": [\n        \"browser_navigate\",\n        \"browser_snapshot\"\n      ]\n    },\n    \"legacy-heavy-db\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@modelcontextprotocol/server-postgres\"],\n      \"disabled\": true,\n      \"autoApprove\": []\n    }\n  }\n}"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-cline",
+      "variant": "founder-pov",
+      "authorBadge": "Bản Thiết Kế Đề Xuất • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Dùng Cline như kỹ sư trưởng giám sát thực tập sinh xuất sắc: giao Plan rõ ràng, khóa chặt MCP ghi, tuyệt đối không thả rông Auto-Run",
+      "body": "Trong các sprint Vibecode CRM 360° 8 nấc, AutoData ZaloBot hay đối soát hóa đơn MISA tại DOMATION, `cline/cline` là điểm tựa vững chắc nhất trên IDE nhờ kỷ luật tách bạch Plan/Act và McpHub minh bạch. Chỉ cần bạn tuân thủ hai thói quen: luôn bắt đầu bài toán mới bằng Plan Mode để thống nhất schema trước khi bấm chuyển Act, và cắt bớt các tool MCP không dùng tới trong sprint khỏi `cline_mcp_settings.json`, bạn sẽ giữ được cả tốc độ phát triển vượt trội lẫn quyền kiểm soát tuyệt đối trên từng dòng code đi vào production."
+    }
+  ]
+}

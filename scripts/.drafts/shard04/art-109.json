@@ -1,0 +1,301 @@
+{
+  "id": "art-109",
+  "number": "109",
+  "slug": "chien-luoc-chunking-bang-gia-ma-tran-sku-chiet-khau-rag",
+  "shardId": "shard04",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "AI Engineering & Sales Enablement",
+  "clusterId": "kw-ai-agent-rag",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Chiến lược Chunking cho bảng giá, ma trận SKU & chính sách chiết khấu phân tầng: Chấm dứt AI báo nhầm giá",
+  "seoTitle": "Chunking Bảng Giá & Ma Trận SKU Chống AI Báo Sai Giá | DOMATION",
+  "metaDescription": "Cắt đoạn 500 token mù quáng sẽ tách rời tên sản phẩm khỏi cột giá và điều kiện áp dụng. Kỹ thuật Table-Aware Markdown Chunking và Parent-Child Retrieval.",
+  "focusKeyword": "chiến lược chunking bảng giá sku rag",
+  "secondaryKeywords": [
+    "parent child retrieval rag",
+    "chunking bảng biểu không mất ngữ cảnh",
+    "metadata filtering bảng giá rag",
+    "chống ai báo nhầm chiết khấu",
+    "tối ưu kích thước chunk tiếng việt"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Đừng Cắt Nát Bảng Giá Thành Những Mảnh 500 Token",
+  "thumbnailHook": "Áp dụng Table-Aware Chunking & Parent-Child giúp AI đọc đúng từng dòng chiết khấu.",
+  "thumbnailBadge": "RAG • CHUNKING SOP",
+  "coverImage": "/imgs/boost/v2/chien-luoc-chunking-bang-gia-ma-tran-sku-chiet-khau-rag.webp",
+  "screenshotImage": "/imgs/boost/charts/chien-luoc-chunking-bang-gia-ma-tran-sku-chiet-khau-rag-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Demo RAG Đọc Bảng Giá DOMATION",
+  "relatedSlugs": [
+    "ocr-layout-parsing-hop-dong-pdf-bang-bieu-tieng-viet-rag",
+    "hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku",
+    "context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia",
+    "run-llama-llama-index-audit-workflow-nodeparser-enterprise"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Chiến lược Table-Aware Chunking và Parent-Child Retrieval cho bảng giá, ma trận SKU và chính sách chiết khấu phân tầng không sai lệch",
+  "screenshotCaption": "Biểu đồ đo lường độ chính xác báo giá, tỷ lệ truy hồi ghi chú loại trừ (Footnote) và lỗi áp nhầm hạng chiết khấu qua 6 chiến lược Chunking.",
+  "relatedPortfolioId": "inkica-ai",
+  "tldrSummary": "Cắt văn bản theo độ dài cố định 500 token là nguyên nhân hàng đầu khiến AI tư vấn bán hàng báo sai đơn giá và nhầm điều kiện chiết khấu. Khi bị cắt ngang, dòng sản phẩm mất tiêu đề cột ('Chưa VAT' vs 'Đã VAT') và tách rời khỏi ghi chú loại trừ ở cuối trang. Playbook này hệ thống hóa Table-Aware Chunking lặp tiêu đề, tuyến tính hóa dòng kèm ngữ cảnh, mô hình Parent-Child Retrieval và tách giá sống sang SQL Tool để đưa độ chính xác báo giá lên 96,8%.",
+  "keyTakeaways": [
+    "Không dùng Fixed-Size cắt ngang phần thân bảng biểu: bảng dưới 900 token phải giữ nguyên làm một chunk nguyên tử.",
+    "Với ma trận 50–300+ SKU, tách theo nhóm 5–8 dòng kèm bơm lại tiêu đề cột, tên phân khu và ghi chú loại trừ vào từng chunk.",
+    "Parent-Child Retrieval đánh chỉ mục dòng SKU gọn (80–150 token) để khớp siêu nét, rồi trả về khối Mẹ đầy đủ điều kiện chiết khấu.",
+    "Tiền lọc Metadata (`doc_status = 'active'`, `customer_segment`) giúp chặn AI trộn giá đại lý F1 vào câu trả lời cho khách lẻ.",
+    "Giá niêm yết thay đổi theo ngày, tồn kho căn hộ hay hạn mức voucher sống phải rẽ sang SQL/ERP Tool thay vì nạp vào Vector DB."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Độ chính xác đơn giá & SKU", "value": "96.8% (+38.3 điểm %)" },
+    { "label": "Truy hồi đúng ghi chú loại trừ", "value": "94.5% Footnote Recall" },
+    { "label": "Lỗi áp nhầm hạng chiết khấu", "value": "1.9% (giảm từ 27.4%)" },
+    { "label": "Tỷ lệ sai lệch báo giá thực tế", "value": "0% cho số liệu Live SQL" }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao không đặt `chunk_size = 2000` hay `4000` tokens luôn cho đỡ bị cắt nát bảng giá?",
+      "answer": "Tăng kích thước chunk lên quá lớn gây ra hai tác dụng phụ nghiêm trọng. Thứ nhất, độ phân giải vector (Embedding Dilution) bị loãng mạnh: một chunk 3.000 token chứa 80 mã SKU khác nhau sẽ có vector trung bình mờ nhạt, khiến câu hỏi về đúng một mã `SKU-AOP-104` rất dễ bị tụt hạng khỏi Top-5. Thứ hai, bạn lãng phí hàng nghìn token ngữ cảnh và kích hoạt hiệu ứng 'Lost in the Middle' khiến LLM đọc sót một dòng điều kiện nhỏ nằm kẹt giữa bảng dài. Parent-Child Retrieval giải quyết trọn vẹn mâu thuẫn này: tìm bằng mảnh nhỏ 150 token và đọc ngữ cảnh bằng khối lớn 1.200 token."
+    },
+    {
+      "question": "Làm sao giữ được dòng chú thích '(*) Không áp dụng đồng thời với ưu đãi thanh toán sớm' khi bảng giá dài tới 4 trang?",
+      "answer": "Trong bước tiền xử lý Chunking, kỹ sư phải quét khối văn bản nằm ngay dưới mỗi bảng (các dòng bắt đầu bằng `*`, `Lưu ý:`, `Ghi chú:`, `Điều kiện áp dụng:`) và trích xuất nó thành một trường `table_footnotes`. Khi chia bảng thành nhiều nhóm dòng (row-group chunks), bộ chunker tự động đính kèm cả khối `table_footnotes` lẫn `section_breadcrumb` vào từng chunk con, hoặc lưu toàn bộ bảng + footnote làm Parent Document để chắc chắn 100% không bao giờ bị mất câu loại trừ."
+    },
+    {
+      "question": "Khi bảng ma trận chiết khấu có tới 2 chiều điều kiện (ví dụ: Hàng ngang là Hạng Đại Lý, Cột dọc là Ngưỡng Doanh Số), dạng văn bản nào giúp LLM ít suy luận sai nhất?",
+      "answer": "LLM thường đọc nhầm giao điểm hàng-cột trên các bảng Markdown quá rộng (trên 6 cột) vì mất căn lề thị giác trong chuỗi token tuyến tính. Với bảng ma trận 2 chiều phân tầng chiết khấu, kỹ thuật **Row Linearization (Tuyến tính hóa theo mệnh đề có ngữ cảnh)** đạt độ chính xác cao nhất: biến mỗi ô giao điểm thành một câu tự nhiên rõ ràng, ví dụ `[Hạng Đại Lý: Vàng | Mức đơn hàng: 200–500 triệu | Tỷ lệ chiết khấu: 12% | Ghi chú: Tính trên giá chưa VAT]`. Cách viết này dễ đọc cho cả Embedding, BM25 lẫn LLM."
+    },
+    {
+      "question": "Semantic Chunking (tách đoạn dựa trên điểm gãy Cosine giữa các câu liên tiếp) có xử lý tốt bảng giá và chính sách chiết khấu không?",
+      "answer": "Không tốt bằng Layout-Aware & Table-Aware Chunking. Semantic Chunking đo độ tương đồng ngữ nghĩa giữa câu `i` và câu `i+1`; trong một bảng giá, tất cả các dòng đều có cấu trúc từ vựng giống hệt nhau ('Mã hàng... Diện tích... Đơn giá...'), nên Semantic Chunking thường gộp dồn cả bảng khổng lồ vào một cục hoặc cắt ngẫu nhiên ngay tại dòng có tên sản phẩm hơi lạ. Đối với bảng biểu và SOP phân cấp, cắt theo cấu trúc cây AST Markdown/HTML kết hợp Parent-Child luôn ổn định và dự đoán được hơn hẳn."
+    },
+    {
+      "question": "Nếu bảng giá công ty thay đổi mỗi tuần thì dùng chiến lược Chunking nào để không phải Index lại toàn bộ kho tài liệu?",
+      "answer": "Thứ nhất, tách riêng nhóm dữ liệu thay đổi liên tục (đơn giá hiện hành, số lượng tồn kho, trạng thái căn đã cọc) ra khỏi Vector DB và đặt trong PostgreSQL để AI gọi Tool lấy số thực. Thứ hai, với tài liệu chính sách bán hàng dạng PDF/Markdown còn lại, gắn `doc_id` và `content_hash` ở cấp từng bảng hoặc từng phân mục (Parent Section). Khi cập nhật, pipeline chỉ vô hiệu hóa (`doc_status = 'deprecated'`) các chunk thuộc `doc_id` cũ và re-embed đúng những bảng mới thay đổi thay vì đánh chỉ mục lại toàn công ty."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "tham-hoa-cat-500-token-mu-quang",
+      "eyebrow": "Bài Học Xương Máu Về Chiến Lược Chunking",
+      "variant": "narrative",
+      "heading": "Khi một vết cắt 500 token vô tình 'ly dị' sản phẩm khỏi cột giá và điều kiện loại trừ",
+      "pullQuote": "Cấu hình mặc định `chunk_size=500, overlap=50` được viết ra cho bài báo văn xuôi — áp nó lên bảng giá phân tầng và ma trận SKU là cách nhanh nhất khiến AI báo sai giá đầy tự tin.",
+      "paragraphs": [
+        "Hãy hình dung một file bảng giá và chính sách chiết khấu B2B chuẩn mực dài 6 trang: trang đầu ghi rõ 'Áp dụng cho Đại lý Cấp 1 — Đơn giá đã bao gồm VAT 8%', tiếp theo là bảng 65 mã SKU trải dài qua 3 trang, và ở đáy trang thứ 4 mới xuất hiện dòng chữ nghiêng nhỏ xíu: '(*) Các mã nhóm Eco-Lite không được hưởng thêm chiết khấu 5% khi thanh toán trước hạn'. Đây là bố cục cực kỳ quen thuộc ở bất kỳ doanh nghiệp bất động sản, phân phối vật tư, giáo dục hay sản xuất may mặc nào.",
+        "Nếu đội ngũ kỹ sư nạp tài liệu này qua bộ chia đoạn cơ bản cắt cứng mỗi 500 token, thảm họa ngữ nghĩa xảy ra ngay lập tức ở ba lớp. Ở vết cắt thứ nhất, dòng tiêu đề bảng (`| Mã SKU | Đơn giá Đại lý | Đơn giá Bán lẻ | Chiết khấu thanh toán sớm |`) nằm gọn trong Chunk #1; sang Chunk #2 và #3, AI chỉ nhìn thấy hàng loạt dòng dữ liệu trần trụi kiểu `| INK-208 | 145.000 | 189.000 | 5% |` mà không còn biết cột nào là giá sỉ, cột nào là giá lẻ. Ở vết cắt thứ hai, ghi chú loại trừ `(*)` ở đáy trang 4 rơi tọt sang Chunk #5 — tách rời hoàn toàn khỏi danh sách mã nằm trong Chunk #2. Khi khách hỏi mức giá ưu đãi cho mã `INK-208`, bộ tìm kiếm kéo về Chunk #2 nhưng bỏ sót Chunk #1 và Chunk #5, khiến AI mạnh dạn lấy nhầm cột giá Đại lý cộng thêm 5% chiết khấu cấm áp dụng.",
+        "Cuốn sổ tay SOP này trình bày bộ 4 kỹ thuật Table-Aware Chunking & Parent-Child Retrieval đang vận hành thực tế tại DOMATION, giúp chấm dứt triệt để tình trạng cắt nát cấu trúc bảng giá và thiết lập ranh giới an toàn tuyệt đối cho các ma trận chiết khấu phân tầng."
+      ],
+      "bullets": [
+        "Hiểu đúng bản chất: Chunking không phải là bài toán chia đều kích thước văn bản, mà là bài toán đóng gói đơn vị thông tin tự đủ nghĩa (Self-Contained Context Unit).",
+        "Mỗi chunk bảng giá rời ra khỏi văn bản gốc vẫn phải trả lời được 4 câu hỏi: Sản phẩm nào? Giá cho đối tượng nào? Có gồm VAT chưa? Kèm điều kiện loại trừ gì?"
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "bon-ngo-nhan-ve-chunking-bang-gia",
+      "heading": "Bốn ngộ nhận phổ biến khi thiết kế Chunking cho kho tài liệu thương mại",
+      "pairs": [
+        {
+          "myth": "Thêm `chunk_overlap = 100 tokens` là đủ nối lại ngữ cảnh giữa hai đoạn bị cắt ngang trong bảng giá.",
+          "reality": "Nếu bảng giá dài 35 dòng (~1.800 token), overlap 100 token chỉ nối lại được 2 dòng sát mép cắt, chứ hoàn toàn không kéo được dòng tiêu đề cột (`| Mã | Giá | VAT |`) ở tận đầu bảng xuống cho Chunk #3 và Chunk #4 ở cuối bảng.",
+          "proofMetric": "39% lỗi nhầm cột giá ở bảng dài >15 dòng xảy ra dù đã bật overlap 100 token"
+        },
+        {
+          "myth": "Cứ dùng Semantic Chunking (tính khoảng cách Embedding giữa các câu) thì AI sẽ tự biết đâu là chỗ cần cắt.",
+          "reality": "Semantic Chunking chỉ hiệu quả khi chủ đề văn xuôi chuyển hẳn ý (ví dụ từ 'Quy trình bảo hành' sang 'Chính sách hoàn tiền'). Trong bảng giá, mọi dòng đều có ngữ nghĩa giống nhau, còn tiêu đề phân khu ngắn 4 chữ lại có vector khác biệt hoàn toàn với bảng bên dưới — khiến Semantic Chunker hay cắt đứt ngay giữa tiêu đề và bảng.",
+          "proofMetric": "Table-Aware AST Splitter đạt độ nguyên vẹn cấu trúc bảng cao hơn +31% so với Semantic Chunker"
+        },
+        {
+          "myth": "Càng chia chunk nhỏ (150 token) thì độ chính xác báo giá càng cao.",
+          "reality": "Chunk nhỏ chỉ giúp TÌM ĐÚNG (High Retrieval Precision) chứ không giúp TRẢ LỜI ĐÚNG nếu bạn ném thẳng chunk 150 token thiếu điều kiện ngoại lệ vào LLM. Phải tách rạch ròi hai kích thước: Index bằng Child Chunk nhỏ (hoặc từng dòng tuyến tính), nhưng đưa cho LLM đọc cả Parent Section đầy đủ ngữ cảnh.",
+          "proofMetric": "Parent-Child giữ Retrieval Precision 95% đồng thời nâng Footnote Recall từ 44% lên 94,5%"
+        },
+        {
+          "myth": "Đưa toàn bộ file Excel bảng giá và tồn kho hàng ngày vào Vector DB rồi chunk thật kỹ là AI thay thế được truy vấn hệ thống.",
+          "reality": "Dữ liệu số biến động liên tục theo đơn hàng hoặc chiến dịch (tồn kho căn hộ còn trống, hạn mức voucher, chiết khấu flash sale theo giờ) không nên sống trong Vector DB. Hãy để AI dùng Tool Calling truy vấn thẳng PostgreSQL/ERP cho giá sống, còn RAG chỉ giữ quy chế và mô tả sản phẩm.",
+          "proofMetric": "Tách Live SQL Tool giảm 100% sự cố AI báo bán căn hộ đã đặt cọc 5 phút trước"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "hieu-qua-6-chien-luoc-chunking-bang-gia",
+      "heading": "Đo lường 6 chiến lược Chunking trên bộ kiểm thử 450 câu hỏi Bảng giá, SKU & Chiết khấu phân tầng",
+      "subtitle": "So sánh độ chính xác báo đúng đơn giá, tỷ lệ kéo theo đầy đủ ghi chú loại trừ (Footnote Recall) và tỷ lệ lỗi áp nhầm hạng khách hàng.",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ chính xác báo giá, Footnote Recall & Tỷ lệ lỗi sai hạng chiết khấu (%)",
+        "xKey": "strategy",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "priceAccuracy",
+            "label": "Báo đúng đơn giá & SKU (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "footnoteRecall",
+            "label": "Kéo đủ điều kiện loại trừ (%)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "wrongTierError",
+            "label": "Lỗi nhầm hạng / VAT / Giá cũ (%)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "strategy": "Fixed 500",
+            "priceAccuracy": 58.5,
+            "footnoteRecall": 34.0,
+            "wrongTierError": 27.4
+          },
+          {
+            "strategy": "Recursive 800",
+            "priceAccuracy": 64.2,
+            "footnoteRecall": 42.5,
+            "wrongTierError": 22.8
+          },
+          {
+            "strategy": "MD Header Split",
+            "priceAccuracy": 76.4,
+            "footnoteRecall": 58.0,
+            "wrongTierError": 15.6
+          },
+          {
+            "strategy": "Atomic Table",
+            "priceAccuracy": 84.8,
+            "footnoteRecall": 79.2,
+            "wrongTierError": 9.4
+          },
+          {
+            "strategy": "Row-Group + Header",
+            "priceAccuracy": 92.1,
+            "footnoteRecall": 88.6,
+            "wrongTierError": 4.8
+          },
+          {
+            "strategy": "Parent-Child + SQL",
+            "priceAccuracy": 96.8,
+            "footnoteRecall": 94.5,
+            "wrongTierError": 1.9
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Chính xác giá (Parent-Child)",
+            "value": "96.8%",
+            "delta": "+38.3 điểm % vs Fixed 500",
+            "positive": true
+          },
+          {
+            "label": "Footnote Recall cuối",
+            "value": "94.5%",
+            "delta": "Gấp 2.78x cách cắt truyền thống",
+            "positive": true
+          },
+          {
+            "label": "Lỗi nhầm hạng / VAT",
+            "value": "1.9%",
+            "delta": "Giảm từ 27.4% xuống còn 1.9%",
+            "positive": true
+          },
+          {
+            "label": "Sai lệch số liệu Live ERP",
+            "value": "0.0%",
+            "delta": "Nhờ rẽ nhánh SQL Tool trực tiếp",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Thử nghiệm nội bộ DOMATION trên tập dữ liệu 208 SKU sản xuất, 3 bảng phân hạng chiết khấu đại lý B2B và lịch thanh toán bất động sản."
+      },
+      "insightSummary": "Cắt cố định 500 token đạt chưa tới 59% độ chính xác báo giá và bỏ rơi tới 66% ghi chú ngoại lệ dưới chân bảng. Ngay khi chuyển sang giữ nguyên khối bảng (Atomic Table) và tách nhóm dòng có lặp tiêu đề (Row-Group + Header Injection), độ chính xác vọt lên 92,1%. Đỉnh cao 96,8% cùng tỷ lệ lỗi nhầm hạng chỉ còn 1,9% đạt được khi phối hợp Parent-Child Retrieval (tìm bằng dòng con, đọc bằng khối mẹ đầy đủ điều kiện) và định tuyến các con số biến động theo thời gian thực sang SQL Tool."
+    },
+    {
+      "type": "visual-figure",
+      "id": "so-do-chien-luoc-chunking-bang-gia-parent-child",
+      "src": "/imgs/boost/charts/chien-luoc-chunking-bang-gia-ma-tran-sku-chiet-khau-rag-report.webp",
+      "alt": "Báo cáo so sánh hiệu quả của Fixed Chunking, Table-Aware Row Injection và Parent-Child Retrieval đối với bảng giá và chính sách chiết khấu",
+      "caption": "Minh họa tác động của từng kỹ thuật Chunking lên độ chính xác báo giá, truy hồi điều kiện loại trừ và giảm lỗi áp nhầm hạng chiết khấu.",
+      "badge": "Playbook SOP • Table-Aware Chunking"
+    },
+    {
+      "type": "prose",
+      "id": "playbook-4-ky-thuat-chunking-bang-gia",
+      "eyebrow": "Quy Trình Chuẩn Hóa Bảng Giá Cho RAG",
+      "variant": "deep-dive",
+      "heading": "Playbook 4 bước đóng gói bảng giá, ma trận SKU và chính sách phân tầng thành Chunk 'bất khả xâm phạm'",
+      "paragraphs": [
+        "**Bước 1: Bảo toàn nguyên tử cho bảng nhỏ và Phân rã có bơm ngữ cảnh cho bảng lớn.** Khi bộ parser (như Docling) xuất ra tài liệu Markdown có cấu trúc, bộ chunker phải dựng cây cú pháp (Markdown AST) thay vì đếm ký tự thô. Nếu một bảng giá hoặc bảng bậc chiết khấu dài dưới 900 token, khóa chặt toàn bộ bảng cùng dòng tiêu đề `H2/H3` ngay phía trên và đoạn ghi chú chân bảng ngay phía dưới thành một Chunk nguyên tử duy nhất. Chỉ khi bảng vượt ngưỡng (ví dụ bảng 208 SKU may mặc hoặc rổ hàng 300 căn hộ), hệ thống mới chia nhỏ bảng thành các cụm 5–8 dòng, nhưng **bắt buộc chèn lại hàng tiêu đề bảng (`| SKU | ... |`), dòng phân cách, đường dẫn phân mục cha (`Breadcrumb`) và danh sách ghi chú loại trừ (`Footnotes`) vào mọi cụm con**.",
+        "**Bước 2: Tuyến tính hóa dòng ma trận (Row Linearization) để đánh chỉ mục kép.** Bảng Markdown thuần rất gọn với mắt người nhưng đôi khi gây rối cho Embedding khi một dòng có 7–8 cột số liền nhau không có tên thuộc tính đi kèm. Trong kiến trúc Parent-Child của DOMATION, mỗi dòng SKU quan trọng được sinh thêm một bản mô tả tuyến tính ngắn gọn làm **Child Chunk**: ví dụ `'Sản phẩm: Áo Hoodie AOP Heavyweight | Mã SKU: INK-HD-208 | Phân khúc: Đại lý Cấp 1 | Giá sỉ (chưa VAT): 185.000đ | SL tối thiểu: 50 cái | Ngoại lệ: Không cộng dồn voucher tháng 11'`. Child Chunk này dài vỏn vẹn 55–80 token nên khi khách hỏi bất kỳ biến thể nào, câu hỏi khớp gần như tuyệt đối ở cả BM25 lẫn Vector.",
+        "**Bước 3: Mở rộng Parent-Child Retrieval (Small-to-Big) trước khi gọi LLM.** Dù bộ tìm kiếm chấm điểm trên các Child Chunk siêu nét để tránh loãng vector, ta tuyệt đối không đưa một mình Child Chunk cụt lủn đó cho LLM trả lời các câu hỏi chính sách phức tạp. Mỗi Child Chunk lưu khóa ngoại `parent_section_id` trỏ tới **Parent Section** (dài 800–1.400 token, chứa toàn bộ bảng bậc chiết khấu lân cận, điều kiện thanh toán, chính sách đổi trả và các ngoại lệ đi kèm). Khi có nhiều Child Chunk cùng trỏ về một Parent, backend gộp trùng (deduplicate) theo `parent_section_id` rồi mới nạp Parent Section vào prompt của LLM.",
+        "**Bước 4: Tiền lọc Metadata đa chiều và Tách biên Live SQL.** Mọi chunk bảng giá bắt buộc mang đủ bộ metadata cứng: `doc_status` (`active`), `effective_from`, `effective_to`, `customer_segment` (`retail`, `f1_agency`, `vip_b2b`), và `tax_included` (`true`/`false`). Nhờ lọc trước ở PostgreSQL/Qdrant theo ngữ cảnh người đang chat (ví dụ khách lẻ trên Zalo OA chỉ được thấy chunk có `customer_segment IN ('retail', 'all')`), AI không bao giờ lỡ miệng báo giá vốn đại lý cho khách mua lẻ. Đồng thời, những thuộc tính thay đổi từng giờ như 'Căn hộ X còn trống không?' hay 'Tổng tồn kho SKU Y tại kho HCM?' được định tuyến qua công cụ SQL trực tiếp thay vì đọc từ snapshot văn bản."
+      ],
+      "bullets": [
+        "Luôn chuẩn hóa đơn vị tiền tệ nhất quán trong metadata và văn bản tuyến tính (tránh dòng trên ghi 'triệu/m²', dòng dưới ghi 'VNĐ/căn').",
+        "Đặt giới hạn mở rộng Parent tối đa 3–4 section duy nhất mỗi lượt hỏi để không làm phình chi phí token đầu vào."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "python-table-aware-parent-child-chunker",
+      "heading": "Python Recipe: Bộ Table-Aware Chunker giữ nguyên tiêu đề cột, bơm Footnote và sinh liên kết Parent-Child",
+      "language": "python",
+      "filename": "chunking/table_parent_child_chunker.py",
+      "description": "Tách bảng Markdown lớn thành các nhóm dòng (row-groups) có chèn lại Header + Breadcrumb + Footnote, đồng thời tạo các Child Chunk tuyến tính hóa gắn `parent_id` trỏ về toàn bộ khối Parent Section để truy xuất Small-to-Big không mất điều kiện ngoại lệ.",
+      "code": "import hashlib\nimport re\nfrom dataclasses import dataclass, field\n\n@dataclass\nclass ParentSection:\n    parent_id: str\n    breadcrumb: str\n    content_md: str\n    metadata: dict\n\n@dataclass\nclass ChildChunk:\n    chunk_id: str\n    parent_id: str\n    search_text: str\n    metadata: dict = field(default_factory=dict)\n\ndef parse_markdown_table(table_md: str) -> tuple[list[str], list[list[str]]]:\n    lines = [ln.strip() for ln in table_md.strip().splitlines() if ln.strip().startswith(\"|\")]\n    if len(lines) < 3:\n        return [], []\n    headers = [c.strip() for c in lines[0].strip(\"|\").split(\"|\")]\n    rows = []\n    for ln in lines[2:]:  # Bỏ qua dòng phân cách |---|---|\n        cells = [c.strip() for c in ln.strip(\"|\").split(\"|\")]\n        if len(cells) == len(headers):\n            rows.append(cells)\n    return headers, rows\n\ndef chunk_pricing_table_parent_child(\n    breadcrumb: str,\n    table_md: str,\n    footnotes: list[str],\n    metadata: dict,\n    rows_per_group: int = 6,\n) -> tuple[list[ParentSection], list[ChildChunk]]:\n    headers, rows = parse_markdown_table(table_md)\n    if not headers or not rows:\n        return [], []\n\n    footnote_block = \"\\n\".join(f\"- {fn}\" for fn in footnotes) if footnotes else \"Không có ngoại lệ bổ sung.\"\n    parents: list[ParentSection] = []\n    children: list[ChildChunk] = []\n    header_md = \"| \" + \" | \".join(headers) + \" |\\n| \" + \" | \".join([\"---\"] * len(headers)) + \" |\"\n\n    for start in range(0, len(rows), rows_per_group):\n        group_rows = rows[start : start + rows_per_group]\n        body_md = \"\\n\".join(\"| \" + \" | \".join(r) + \" |\" for r in group_rows)\n        parent_text = (\n            f\"[Ngữ cảnh: {breadcrumb} | Hiệu lực: {metadata.get('effective_from', 'N/A')} | \"\n            f\"Đối tượng: {metadata.get('customer_segment', 'all')}]\\n\\n\"\n            f\"{header_md}\\n{body_md}\\n\\n\"\n            f\"**Điều kiện & Ngoại lệ áp dụng:**\\n{footnote_block}\"\n        )\n        pid = hashlib.sha256(f\"{breadcrumb}:{start}:{parent_text}\".encode()).hexdigest()[:16]\n        parents.append(ParentSection(parent_id=pid, breadcrumb=breadcrumb, content_md=parent_text, metadata=metadata))\n\n        # Sinh Child Chunk tuyến tính hóa từng dòng để tối ưu Vector + BM25 Recall\n        for r_idx, row in enumerate(group_rows):\n            kv_pairs = \" | \".join(f\"{h}: {v}\" for h, v in zip(headers, row))\n            child_text = (\n                f\"{breadcrumb} — {kv_pairs} | Điều kiện: {'; '.join(footnotes[:2]) if footnotes else 'Theo chuẩn'}\"\n            )\n            cid = f\"{pid}_r{start + r_idx}\"\n            children.append(ChildChunk(chunk_id=cid, parent_id=pid, search_text=child_text, metadata={**metadata, \"parent_id\": pid}))\n\n    return parents, children"
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-chien-luoc-chunking-du-lieu",
+      "heading": "Chọn chiến lược Chunking nào cho từng loại bảng giá & tài liệu kinh doanh?",
+      "subtitle": "Hướng dẫn quyết định nhanh theo kích thước bảng, cấu trúc ma trận và tần suất biến động số liệu",
+      "scenarios": [
+        {
+          "condition": "Bảng biểu giá dịch vụ, bảng học phí hoặc bảng bậc hoa hồng nhỏ gọn (dưới 25 dòng / dưới 900 token)",
+          "recommendedChoice": "Atomic Full-Table Chunk + Metadata Filter",
+          "rationale": "Giữ nguyên 100% bảng cùng tiêu đề và ghi chú chân trang trong một khối duy nhất để LLM đối chiếu thẳng tất cả các hạng mức mà không bị cắt ngang.",
+          "avoidIf": "Bảng chứa quá 40 mã SKU khiến một khối đơn vượt 1.500 token và làm loãng độ nét khi tìm mã lẻ."
+        },
+        {
+          "condition": "Danh mục 50–500+ SKU có nhiều thuộc tính (chất liệu, kích thước, giá bán sỉ/lẻ theo bậc SL) hoặc ma trận chiết khấu 2 chiều",
+          "recommendedChoice": "Row-Linearized Child + Header-Injected Parent Retrieval",
+          "rationale": "Child Chunk tuyến tính hóa từng dòng giúp BM25 và Vector bắt trúng đích mã SKU cụ thể, sau đó trả Parent Group kèm tiêu đề cột và Footnote để LLM kết luận chuẩn xác.",
+          "avoidIf": "Đơn giá hoặc số lượng hàng trong kho đổi liên tục theo từng giờ giao dịch."
+        },
+        {
+          "condition": "Văn bản điều khoản hợp đồng dài nhiều tầng mục (1.1, 1.1.a, Ngoại lệ ở mục 4.2) với ít bảng biểu nhưng nhiều tham chiếu điều khoản",
+          "recommendedChoice": "Hierarchical Heading AST + Parent-Child Section",
+          "rationale": "Cắt theo ranh giới tiêu đề chương/mục (`H1 -> H2 -> H3`) và luôn gán đường dẫn breadcrumb cha vào từng đoạn con để AI không nhầm 'Quyền của Bên A' thành 'Nghĩa vụ của Bên B'.",
+          "avoidIf": "Tài liệu chỉ là slide ảnh chụp không có cấu trúc phân mục — phải chạy Layout Parsing trước."
+        },
+        {
+          "condition": "Bảng hàng giỏ căn hộ Live (đã cọc/còn trống), bảng giá Flash Sale theo ngày hoặc tồn kho POS đa chi nhánh",
+          "recommendedChoice": "Bypass Vector DB -> PostgreSQL SQL / ERP Tool Calling",
+          "rationale": "Tuyệt đối không chunk dữ liệu giao dịch thời gian thực vào kho Vector; trang bị hàm Tool có tham số để Agent đọc trạng thái chính xác từng mili-giây trực tiếp từ database.",
+          "avoidIf": "Doanh nghiệp chưa số hóa bảng hàng lên cơ sở dữ liệu mà vẫn chỉ phát hành PDF tĩnh hàng quý."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-chunking-sop-turniodev",
+      "variant": "key-rule",
+      "title": "Quy tắc bất biến trong sổ tay Chunking: Một đoạn văn bản rời ra vẫn phải tự giải thích được chính nó",
+      "body": "Trước khi đưa bất kỳ bộ chunk bảng giá nào lên hệ thống Chatbot CSKH Zalo OA hay Trợ lý Sale nội bộ, kỹ sư DOMATION luôn tự kiểm tra một câu hỏi đơn giản: nếu bốc ngẫu nhiên 1 chunk bất kỳ trong Vector DB gửi cho một nhân viên mới đọc mà không cho xem toàn bộ file PDF gốc, nhân viên đó có chắc chắn biết mức giá này áp dụng cho mã SKU nào, đối tượng khách nào, đã gồm VAT chưa và có điều kiện loại trừ gì không? Nếu câu trả lời là 'Không chắc', bộ chunker đó chưa đạt chuẩn sản xuất."
+    }
+  ]
+}

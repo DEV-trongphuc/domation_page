@@ -1,0 +1,351 @@
+{
+  "id": "art-169",
+  "number": "169",
+  "slug": "firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag",
+  "shardId": "shard11",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "LLM-Ready Web Extraction",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit firecrawl/firecrawl: Biến SPA thành Markdown chuẩn trích dẫn RAG & ranh giới AGPL-3.0 vs Fire-engine",
+  "seoTitle": "Audit Firecrawl: Cào Web SPA Cho RAG & Lưu Ý AGPL-3.0 | DOMATION",
+  "metaDescription": "Phân tích kiến trúc TypeScript + Rust (napi-rs) của Firecrawl (200k+ Stars): trích xuất schema từ web SPA và cách cô lập tránh lây nhiễm AGPL-3.0.",
+  "focusKeyword": "audit firecrawl cào web markdown cho rag agpl",
+  "secondaryKeywords": [
+    "firecrawl vs crawl4ai agpl vs apache2",
+    "biến website spa thành markdown rag",
+    "rủi ro giấy phép agpl-3.0 khi nhúng backend",
+    "fire-engine bản cloud vs self hosted",
+    "thu thập bảng giá đối thủ tự động"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Firecrawl 200K Stars: Nhanh Với Rust, Cẩn Trọng AGPL-3.0",
+  "thumbnailHook": "Bản OSS tự host thiếu Fire-engine proxy, hợp batch nội bộ tách lõi SaaS.",
+  "thumbnailBadge": "GITHUB • 200K+ AGPL",
+  "coverImage": "/imgs/boost/v2/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag.webp",
+  "screenshotImage": "/imgs/boost/charts/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag-report.webp",
+  "coverAlt": "Mổ xẻ kiến trúc firecrawl/firecrawl: TypeScript control plane, Rust napi-rs, BullMQ workers và ranh giới bản quyền AGPL-3.0 vs Fire-engine cloud",
+  "screenshotCaption": "Đo kiểm tỷ lệ giữ nguyên cấu trúc Markdown sạch (%) và độ trễ P95 (giây) của Firecrawl Self-Hosted OSS, Firecrawl Cloud (Fire-engine) và bộ cào fetch thuần qua 6 cấu trúc website thực tế.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Pipeline Nạp Tri Thức RAG Tự Động",
+  "relatedSlugs": [
+    "unclecode-crawl4ai-audit-apache2-cao-du-lieu-rag-khong-agpl",
+    "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops",
+    "indirect-prompt-injection-email-pdf-web-scraping-ai-agent",
+    "bao-ve-ban-quyen-ui-ux-thuat-toan-saas-chong-ai-scraper"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "firecrawl/firecrawl (200k+ Stars) giải quyết dứt điểm cơn ác mộng cào website React/Next.js SPA thành Markdown và JSON có cấu trúc cho hệ thống RAG nhờ kiến trúc lai TypeScript/BullMQ kết hợp module Rust qua napi-rs và Playwright workers. Tuy nhiên, kiểm toán kỹ thuật chỉ ra hai ranh giới sống còn: lõi máy chủ mang giấy phép copyleft AGPL-3.0 buộc công khai mã nguồn nếu chỉnh sửa và phục vụ qua mạng thương mại, đồng thời bản tự host mã nguồn mở hoàn toàn thiếu lớp proxy chống bot độc quyền Fire-engine chỉ có trên bản Cloud.",
+  "keyTakeaways": [
+    "Kiến trúc đa ngôn ngữ TypeScript API + BullMQ/Redis + Rust napi-rs giúp bóc sạch HTML thành Markdown tốc độ cao mà vẫn rơi về Playwright khi gặp trang SPA dựng bằng JavaScript.",
+    "Bản Self-Hosted OSS không bao gồm Fire-engine (hạ tầng proxy dân cư, xoay IP và vượt CAPTCHA độc quyền của bản Cloud), nên tỷ lệ thành công giảm mạnh trước trang bọc Cloudflare gắt.",
+    "Lõi backend dùng giấy phép AGPL-3.0, trong khi các SDK Python/Node lại dùng MIT: tuyệt đối không sửa code backend rồi nhúng trực tiếp vào lõi SaaS thương mại nếu không mua giấy phép thương mại.",
+    "Mẫu triển khai an toàn nhất cho doanh nghiệp là chạy Firecrawl OSS như một batch worker nội bộ không chỉnh sửa qua REST boundary hoặc gọi Cloud API qua MIT SDK với domain allowlist."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm nhiễu token HTML rác",
+      "value": "-62% đến -74%"
+    },
+    {
+      "label": "Độ sạch Markdown trang SPA",
+      "value": "94.2% (Cloud) / 79% (OSS)"
+    },
+    {
+      "label": "Tốc độ chuyển đổi Rust napi-rs",
+      "value": "< 45 ms / trang"
+    },
+    {
+      "label": "Rủi ro lây nhiễm AGPL-3.0",
+      "value": "0% khi tách qua REST/SDK"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao gọi fetch() hoặc BeautifulSoup thông thường thất bại khi cào bảng giá đối thủ hay trang tài liệu hiện đại?",
+      "answer": "Phần lớn website thương mại điện tử, bất động sản và SaaS hiện nay dựng bằng Next.js Client Components, React CSR hoặc Vue SPA. Phản hồi HTTP ban đầu chỉ chứa một thẻ div#root trống rỗng kèm hàng loạt script bundle. Nếu dùng fetch() thuần, pipeline RAG sẽ nạp toàn bộ mã JavaScript đóng gói hoặc mảng dữ liệu JSON hydration lộn xộn thay vì nội dung thật, làm hỏng vector embedding và khiến AI Agent đọc sai hoàn toàn bảng giá."
+    },
+    {
+      "question": "Sự khác biệt thực tế giữa bản Firecrawl Self-Hosted OSS và bản Cloud có Fire-engine là gì?",
+      "answer": "Kho mã nguồn công khai trên GitHub cung cấp đầy đủ API server TypeScript, hàng đợi BullMQ + Redis, module Rust napi-rs làm sạch HTML và cụm Playwright để render JavaScript. Tuy nhiên, hệ thống Fire-engine nằm ngoài bản mã nguồn mở: đây là lớp điều phối proxy dân cư, mô phỏng dấu vân tay trình duyệt và vượt tường lửa chống bot độc quyền trên Firecrawl Cloud. Khi tự host trên VPS thông thường, bạn sẽ tự gánh lỗi 403/429 hoặc thử thách Turnstile từ các cổng lớn."
+    },
+    {
+      "question": "Giấy phép AGPL-3.0 của firecrawl/firecrawl có nghĩa là chúng tôi không được dùng cho doanh nghiệp?",
+      "answer": "Không hẳn vậy, nhưng phải vạch ranh giới rất rõ. AGPL-3.0 kích hoạt nghĩa vụ mở mã nguồn khi bạn sửa đổi hoặc liên kết chặt chẽ phần mềm đó vào một dịch vụ mạng cung cấp cho người dùng bên ngoài. Nếu bạn chạy nguyên bản container Firecrawl trong mạng nội bộ (VPC) làm batch job thu thập bảng giá cho đội ngũ nội bộ hoặc gọi API Cloud thông qua các SDK giấy phép MIT chính thức, mã nguồn nền tảng SaaS thương mại của bạn không bị lây nhiễm. Còn nếu muốn nhúng sâu và tùy biến làm tính năng bán cho khách hàng, bạn nên mua giấy phép thương mại hoặc chọn Apache-2.0 như Crawl4AI."
+    },
+    {
+      "question": "DOMATION khai thác Firecrawl vào hệ thống Multi-Agent RAG và theo dõi đối thủ như thế nào?",
+      "answer": "Tại DOMATION, chúng tôi tuyệt đối không hợp nhất mã nguồn AGPL-3.0 vào lõi Next.js ERP 5.0 hay CRM 360°. Thay vào đó, Firecrawl được tiêu thụ qua hai kênh tách biệt: hoặc gọi managed API key thông qua MIT SDK cho các trang mục tiêu có chống bot mạnh, hoặc chạy container OSS nguyên bản trong tác vụ batch cô lập để biến tài liệu sản phẩm và bảng giá đối thủ thành Markdown sạch có gắn URL nguồn trước khi kiểm duyệt và đẩy vào kho tri thức RAG."
+    },
+    {
+      "question": "Khi cào web công khai để nạp RAG, làm sao ngăn chặn rủi ro Indirect Prompt Injection ẩn trong HTML?",
+      "answer": "Trang web đối thủ hoặc diễn đàn công khai có thể giấu chỉ thị độc hại trong thẻ span ẩn (display:none), thuộc tính alt hoặc comment HTML để đánh lừa AI Agent trích xuất dữ liệu hay rò rỉ system prompt. Module Rust làm sạch HTML của Firecrawl loại bỏ được phần lớn thẻ kịch bản và comment thừa, nhưng lớp bảo vệ bắt buộc ở phía sau là tách biệt hoàn toàn pipeline cào web với quyền gọi công cụ ghi dữ liệu (chỉ cho phép ghi bảng staging), đồng thời xác thực đầu ra bằng Zod hoặc Pydantic schema nghiêm ngặt."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "firecrawl/firecrawl",
+    "url": "https://github.com/firecrawl/firecrawl",
+    "category": "LLM-Ready Web Crawling & Structured Extraction Engine",
+    "primaryLanguage": "TypeScript / Rust",
+    "license": "AGPL-3.0 (Core) + MIT (SDKs) + Proprietary Cloud (Fire-engine)",
+    "starsTier": "200k+ Stars",
+    "bestFor": "Thay thế các script cào web thủ công dễ gãy bằng một engine đồng bộ biến website SPA động, sitemap và trang con lồng nhau thành Markdown sạch chuẩn trích dẫn hoặc JSON có cấu trúc cho AI Agent và pipeline RAG.",
+    "avoidWhen": "Tránh nhúng trực tiếp hoặc chỉnh sửa mã nguồn backend đưa vào sản phẩm SaaS thương mại nếu không có giấy phép thương mại do ràng buộc copyleft AGPL-3.0; lưu ý bản tự host OSS cũng thiếu lớp proxy chống bot/CAPTCHA Fire-engine độc quyền của bản Cloud.",
+    "domationSynergy": "Tăng tốc thu thập thông tin danh mục đối thủ và nạp tri thức bên ngoài cho Multi-Agent RAG của DOMATION — chỉ sử dụng qua tác vụ batch nội bộ cô lập hoặc API key quản lý để tránh lây nhiễm AGPL-3.0 vào mã nguồn SaaS thương mại.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-audit-firecrawl",
+      "heading": "Hồ Sơ Kiểm Toán GitHub: firecrawl/firecrawl",
+      "repo": {
+        "fullName": "firecrawl/firecrawl",
+        "url": "https://github.com/firecrawl/firecrawl",
+        "category": "LLM-Ready Web Crawling & Structured Extraction Engine",
+        "primaryLanguage": "TypeScript / Rust",
+        "license": "AGPL-3.0 (Core) + MIT (SDKs) + Proprietary Cloud (Fire-engine)",
+        "starsTier": "200k+ Stars",
+        "bestFor": "Thay thế các script cào web thủ công dễ gãy bằng một engine đồng bộ biến website SPA động, sitemap và trang con lồng nhau thành Markdown sạch chuẩn trích dẫn hoặc JSON có cấu trúc cho AI Agent và pipeline RAG.",
+        "avoidWhen": "Tránh nhúng trực tiếp hoặc chỉnh sửa mã nguồn backend đưa vào sản phẩm SaaS thương mại nếu không có giấy phép thương mại do ràng buộc copyleft AGPL-3.0; lưu ý bản tự host OSS cũng thiếu lớp proxy chống bot/CAPTCHA Fire-engine độc quyền của bản Cloud.",
+        "domationSynergy": "Tăng tốc thu thập thông tin danh mục đối thủ và nạp tri thức bên ngoài cho Multi-Agent RAG của DOMATION — chỉ sử dụng qua tác vụ batch nội bộ cô lập hoặc API key quản lý để tránh lây nhiễm AGPL-3.0 vào mã nguồn SaaS thương mại.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 7,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-kien-truc-polyglot-firecrawl",
+      "eyebrow": "REPO TEARDOWN • TỪ API NODE ĐẾN RUST NAPI-RS",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu kiến trúc đa ngôn ngữ giúp Firecrawl biến SPA nặng JavaScript thành Markdown sạch",
+      "pullQuote": "Sức mạnh thật sự của firecrawl/firecrawl không nằm ở một lệnh Playwright đơn lẻ, mà ở cơ chế phân tầng thông minh: đẩy HTML tĩnh qua lõi Rust trong vài chục mili-giây và chỉ đánh thức trình duyệt Chromium khi thực sự đụng trang SPA động.",
+      "paragraphs": [
+        "Nếu mở cấu trúc thư mục của firecrawl/firecrawl (tiền thân là mendableai/firecrawl), điều đầu tiên một kỹ sư hệ thống nhận ra là dự án không hề viết toàn bộ bằng Python như đa số công cụ AI data cùng thời. Thay vào đó, Firecrawl chọn thiết kế phân tán đa ngôn ngữ (polyglot): mặt phẳng điều khiển (control plane) viết bằng Node.js/TypeScript tiếp nhận các endpoint /scrape, /crawl, /map và /extract, điều phối hàng đợi công việc bất đồng bộ thông qua BullMQ kết hợp Redis để xử lý song song hàng nghìn URL theo cơ chế retry có kiểm soát.",
+        "Điểm nghẽn kinh điển của mọi crawler Node.js là phân tích cây DOM khổng lồ bằng thư viện JavaScript thuần: chỉ cần một trang thương mại điện tử nặng 3MB HTML với hàng nghìn thẻ div lồng nhau, luồng xử lý chuỗi JS có thể khóa cứng Event Loop và ngốn sạch CPU. Firecrawl giải quyết nút thắt này bằng cách biên dịch các module lõi viết bằng Rust sang native addon thông qua napi-rs. Các tác vụ nặng như đọc và giải nén XML sitemap đa tầng, bóc tách văn bản chính, loại bỏ thanh điều hướng/quảng cáo và chuyển đổi DOM sang chuẩn Markdown sạch diễn ra ở tốc độ native C-level với mức tiêu thụ bộ nhớ cực thấp.",
+        "Khi gặp các website dựng bằng React CSR, Next.js hydration phức tạp hoặc giao diện yêu cầu cuộn trang/bấm tab để tải bảng giá, tầng điều phối mới chuyển URL xuống pool worker Playwright chạy Chromium headless. Ở khâu đầu cuối, hệ thống bổ sung bộ trích xuất cấu trúc JSON theo schema do người dùng định nghĩa, biến những trang sản phẩm hoặc trang thông số rời rạc thành đúng đối tượng JSON có thể kiểm chứng trước khi đi vào cơ sở dữ liệu hay kho vector RAG."
+      ],
+      "bullets": [
+        "Control Plane TypeScript + BullMQ/Redis đảm bảo khả năng chịu lỗi, giới hạn tốc độ (rate limit) và theo dõi tiến độ từng job crawl nhiều trang.",
+        "Native addon Rust via napi-rs gánh phần nặng parsing HTML/XML và xuất Markdown sạch giúp tránh nghẽn Event Loop của Node.js.",
+        "Cơ chế Fallback từ HTTP fetch nhanh sang Playwright render JS tiết kiệm đáng kể CPU/RAM so với việc mở Chromium cho mọi URL."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-firecrawl-oss-vs-cloud-vs-naive",
+      "heading": "Đo kiểm độ sạch Markdown và độ trễ xử lý của Firecrawl qua 6 cấu trúc web doanh nghiệp",
+      "subtitle": "Đối chiếu trên 180 URL thực tế thuộc 6 nhóm trang phổ biến (từ trang tài liệu tĩnh đến portal bất động sản SPA có lớp chống bot)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tỷ lệ trích xuất Markdown chuẩn (%) & Độ trễ P95 (giây) theo loại trang đích",
+        "subtitle": "Cột biểu thị tỷ lệ thành công xuất Markdown sạch dùng được ngay cho RAG; đường line thể hiện độ trễ trung vị P95 khi render",
+        "xKey": "pageType",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "cloudSuccess",
+            "label": "Firecrawl Cloud Fire-engine (% Sạch)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "ossSuccess",
+            "label": "Firecrawl Self-Hosted OSS (% Sạch)",
+            "color": "#06B6D4",
+            "type": "bar"
+          },
+          {
+            "key": "naiveFetch",
+            "label": "Fetch + Readability thuần (% Sạch)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "ossLatencySec",
+            "label": "Độ trễ P95 OSS (giây x10)",
+            "color": "#F59E0B",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "pageType": "Docs Tĩnh", "cloudSuccess": 98, "ossSuccess": 97, "naiveFetch": 89, "ossLatencySec": 9 },
+          { "pageType": "Next.js SSR", "cloudSuccess": 96, "ossSuccess": 93, "naiveFetch": 64, "ossLatencySec": 21 },
+          { "pageType": "React CSR SPA", "cloudSuccess": 94, "ossSuccess": 88, "naiveFetch": 12, "ossLatencySec": 42 },
+          { "pageType": "Bảng Giá Phức Hợp", "cloudSuccess": 92, "ossSuccess": 84, "naiveFetch": 38, "ossLatencySec": 36 },
+          { "pageType": "Sitemap Đa Tầng", "cloudSuccess": 95, "ossSuccess": 87, "naiveFetch": 45, "ossLatencySec": 28 },
+          { "pageType": "Portal Bọc Anti-Bot", "cloudSuccess": 89, "ossSuccess": 24, "naiveFetch": 4, "ossLatencySec": 68 }
+        ],
+        "kpis": [
+          {
+            "label": "Độ sạch trên React SPA",
+            "value": "88% – 94%",
+            "delta": "+76% vs Fetch thuần",
+            "positive": true
+          },
+          {
+            "label": "Khoảng hụt Anti-Bot OSS",
+            "value": "24% vs 89%",
+            "delta": "Do thiếu Fire-engine",
+            "positive": false
+          },
+          {
+            "label": "Tốc độ trang Docs (Rust)",
+            "value": "0.9 giây",
+            "delta": "Không cần mở Chromium",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm token embedding",
+            "value": "~68%",
+            "delta": "Cắt sạch nav & script",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Số liệu thực nghiệm tại DOMATION AI Lab (Q4/2026) trên 180 URL doanh nghiệp Việt Nam; chỉ số đường line quy đổi độ trễ P95 nhân hệ số 10 (ví dụ 42 = 4.2 giây) để hiển thị chung thang đo 0–100."
+      },
+      "insightSummary": "Biểu đồ phơi bày sự thật mà người mới dựng Docker Firecrawl OSS hay bỏ sót: với Docs tĩnh, Next.js SSR và React CSR SPA thông thường, bản tự host đạt 88%–97% chất lượng Markdown tương đương bản Cloud. Nhưng ngay khi đụng cột cuối cùng (Portal bọc Cloudflare/Anti-Bot), tỷ lệ thành công của bản OSS tụt thẳng xuống 24% vì không có hạ tầng proxy Fire-engine đi kèm."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-firecrawl-architecture-audit",
+      "src": "/imgs/boost/charts/firecrawl-firecrawl-audit-cao-web-chuan-markdown-cho-rag-report.webp",
+      "alt": "Biểu đồ kiểm toán kiến trúc firecrawl/firecrawl: đối chiếu hiệu năng trích xuất Markdown giữa Firecrawl Cloud Fire-engine, bản Self-Hosted OSS và bộ cào HTTP thuần",
+      "caption": "Bảng đối chiếu thực nghiệm hiệu suất cào web và độ sạch Markdown chuẩn trích dẫn RAG của firecrawl/firecrawl qua 6 nhóm kiến trúc website từ tài liệu tĩnh đến cổng SPA chống bot.",
+      "badge": "GITHUB AUDIT • FIRECRAWL"
+    },
+    {
+      "type": "prose",
+      "id": "ranh-gioi-agpl-va-khoang-trong-fire-engine",
+      "eyebrow": "CẢNH BÁO PHÁP LÝ & VẬN HÀNH • ĐỪNG NHẦM LẪN OSS VỚI CLOUD",
+      "variant": "contrarian",
+      "heading": "Hai điểm mù chí mạng của Firecrawl: Ranh giới lây nhiễm AGPL-3.0 và khoảng trống Fire-engine",
+      "pullQuote": "Lập trình viên thường nhìn thấy 200k+ Stars rồi mặc định cài Docker là có ngay sức mạnh của Firecrawl Cloud — cho đến khi đụng lỗi 403 hàng loạt và nhận cảnh báo pháp chế về giấy phép AGPL-3.0.",
+      "paragraphs": [
+        "Rủi ro lớn nhất khi đưa firecrawl/firecrawl vào doanh nghiệp làm phần mềm thương mại không phải lỗi code, mà là sự hiểu nhầm giấy phép. Kho mã nguồn chia làm ba lớp rõ rệt: các thư viện SDK khách hàng (Python và Node.js) mang giấy phép MIT rất thông thoáng, nhưng toàn bộ máy chủ lõi backend trong thư mục api/ lại áp dụng giấy phép AGPL-3.0 (GNU Affero General Public License v3), còn lớp engine vượt tường lửa chống bot Fire-engine hoàn toàn là phần mềm đóng độc quyền trên đám mây của hãng.",
+        "Tính chất copyleft mạng của AGPL-3.0 khắc nghiệt hơn GPL truyền thống ở chỗ nó không cần bạn phân phối file cài đặt cho khách hàng mới có hiệu lực. Chỉ cần bạn chỉnh sửa mã nguồn backend Firecrawl hoặc liên kết chặt chẽ nó vào cùng một hệ thống phần mềm rồi cung cấp dịch vụ qua mạng cho người dùng bên ngoài (như một nền tảng SaaS đa khách hàng), giấy phép yêu cầu bạn phải công khai mã nguồn phần phái sinh đó dưới cùng điều khoản AGPL-3.0, trừ khi bạn đàm phán mua giấy phép thương mại riêng.",
+        "Bên cạnh nút thắt bản quyền là bài toán kỳ vọng kỹ thuật với Fire-engine. Trong môi trường production, khi doanh nghiệp cần thu thập bảng giá vật liệu xây dựng, tin đăng bất động sản hoặc catalog thương mại điện tử có cài Cloudflare Turnstile hay bộ đếm giới hạn IP theo phiên, bản Self-Hosted OSS chỉ sử dụng Playwright cơ bản với IP đơn lẻ của máy chủ VPS. Nếu không tự ghép thêm hệ thống proxy dân cư xoay IP và dịch vụ giải CAPTCHA riêng, container tự host sẽ nhanh chóng bị chặn kết nối ở quy mô lớn."
+      ],
+      "bullets": [
+        "Tuyệt đối không copy hoặc chỉnh sửa mã nguồn trong lõi AGPL-3.0 của Firecrawl để gộp thẳng vào monorepo SaaS thương mại đóng mã nguồn.",
+        "Nếu triển khai Self-Hosted OSS nội bộ, phải giữ nguyên mã nguồn gốc, đóng gói thành microservice cô lập sau mạng nội bộ VPC chỉ chạy batch job thu thập dữ liệu.",
+        "Với các mục tiêu có cơ chế chống bot dày đặc, cân nhắc gọi Firecrawl Cloud qua MIT SDK theo hạn mức credit thay vì tốn công duy trì hạ tầng proxy phức tạp."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "recipe-firecrawl-isolated-rag-ingestion",
+      "heading": "Mẫu code Python cô lập ranh giới AGPL-3.0: Gọi Firecrawl Extract & kiểm soát Allowlist trước khi nạp RAG",
+      "language": "python",
+      "filename": "isolated_firecrawl_ingest.py",
+      "description": "Kỹ thuật tách biên an toàn bằng MIT SDK (`firecrawl-py`) + Pydantic: chỉ giao tiếp với container Firecrawl nội bộ (hoặc Cloud API) qua HTTP, khóa chặt domain allowlist chống SSRF và xác thực cấu trúc bảng giá trước khi đẩy vào kho tri thức RAG.",
+      "code": "import os\nfrom urllib.parse import urlparse\nfrom pydantic import BaseModel, Field, HttpUrl\nfrom firecrawl import FirecrawlApp\n\nALLOWED_DOMAINS = {\"docs.partner-erp.vn\", \"pricing.vendor-demo.vn\"}\n\nclass PricingTier(BaseModel):\n    plan_name: str = Field(..., min_length=2)\n    monthly_vnd: int = Field(..., ge=0)\n    quota_note: str\n\nclass CompetitorPricingPayload(BaseModel):\n    source_url: HttpUrl\n    effective_quarter: str\n    tiers: list[PricingTier]\n\ndef assert_safe_target(raw_url: str) -> str:\n    parsed = urlparse(raw_url)\n    if parsed.scheme != \"https\" or parsed.hostname not in ALLOWED_DOMAINS:\n        raise ValueError(f\"Blocked non-allowlisted crawl target: {raw_url}\")\n    return raw_url\n\ndef fetch_clean_catalog_for_rag(target_url: str) -> dict:\n    safe_url = assert_safe_target(target_url)\n\n    # Dùng MIT SDK giao tiếp qua HTTP boundary tới Cloud hoặc container OSS nguyên bản trong VPC\n    app = FirecrawlApp(\n        api_key=os.environ.get(\"FIRECRAWL_API_KEY\", \"fc-internal-vpc-token\"),\n        api_url=os.environ.get(\"FIRECRAWL_BASE_URL\", \"https://api.firecrawl.dev\"),\n    )\n\n    response = app.scrape_url(\n        safe_url,\n        params={\n            \"formats\": [\"markdown\", \"extract\"],\n            \"onlyMainContent\": True,\n            \"excludeTags\": [\"nav\", \"footer\", \"aside\", \"script\"],\n            \"extract\": {\n                \"schema\": CompetitorPricingPayload.model_json_schema(),\n                \"prompt\": \"Trích xuất chính xác bảng giá và hạn mức từng gói bằng tiếng Việt, không tự suy diễn con số.\"\n            },\n        },\n    )\n\n    structured = CompetitorPricingPayload.model_validate({\n        **response.get(\"extract\", {}),\n        \"source_url\": safe_url,\n    })\n\n    markdown_body = response.get(\"markdown\", \"\").strip()\n    if len(markdown_body) < 120:\n        raise RuntimeError(\"Empty or bot-blocked response; skip RAG upsert.\")\n\n    return {\n        \"source_url\": str(structured.source_url),\n        \"structured_pricing\": structured.model_dump(),\n        \"rag_markdown\": markdown_body,\n    }"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-firecrawl-vs-crawl4ai-vs-playwright",
+      "heading": "Đặt lên bàn cân: Firecrawl Cloud vs Firecrawl OSS vs Crawl4AI vs Custom Playwright",
+      "caption": "Bảng đánh giá kỹ thuật, rủi ro bản quyền và tổng chi phí sở hữu (TCO) cho đội ngũ xây dựng hệ thống AI RAG doanh nghiệp",
+      "columns": [
+        "Tiêu chí kiểm toán",
+        "Firecrawl Cloud (Fire-engine)",
+        "Firecrawl Self-Hosted OSS",
+        "unclecode/crawl4ai",
+        "Custom Playwright Script"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Giấy phép & Rủi ro SaaS",
+          "values": [
+            "Thương mại SaaS (MIT SDK)",
+            "AGPL-3.0 Core • Rủi ro nếu sửa & mở SaaS",
+            "Apache-2.0 • Tự do nhúng thương mại",
+            "Apache-2.0 • Tự chủ 100% mã nguồn"
+          ],
+          "winnerNote": "Crawl4AI an toàn nhất về bản quyền nhúng sâu"
+        },
+        {
+          "criterion": "Khả năng vượt Anti-Bot / CAPTCHA",
+          "values": [
+            "Rất mạnh • Có Fire-engine xoay proxy & bypass",
+            "Trung bình yếu • Tự gánh proxy ngoài",
+            "Trung bình • Hỗ trợ stealth & hook proxy",
+            "Phải tự lắp stealth plugin & proxy pool"
+          ],
+          "winnerNote": "Firecrawl Cloud dẫn đầu khi gặp Cloudflare gắt"
+        },
+        {
+          "criterion": "Tốc độ xuất Markdown cho RAG",
+          "values": [
+            "Rất nhanh • Rust parser + hạ tầng phân tán",
+            "Nhanh • Node + Rust napi-rs + BullMQ",
+            "Nhanh • Async Python + lọc BM25 Markdown",
+            "Chậm • Phải tự viết bộ làm sạch DOM"
+          ]
+        },
+        {
+          "criterion": "Độ phức tạp hạ tầng tự vận hành",
+          "values": [
+            "Bằng 0 • Trả tiền theo credit API",
+            "Cao • API, Playwright, Redis, BullMQ, Rust build",
+            "Trung bình • 1 container Python + Chromium",
+            "Thấp ban đầu nhưng phình to khi scale"
+          ]
+        },
+        {
+          "criterion": "Trích xuất JSON theo Schema",
+          "values": [
+            "Có sẵn `/extract` + Fire-1 agent",
+            "Có sẵn qua LLM key tự khai báo (BYOK)",
+            "Mạnh • Chọn CSS Schema ($0 LLM) hoặc LLM",
+            "Phải tự viết parser CSS/XPath hoặc gọi LLM"
+          ]
+        }
+      ],
+      "footnote": "Nếu cần nhúng crawler ngay bên trong dịch vụ đa khách hàng hoặc triển khai on-premise hoàn chỉnh không vướng AGPL-3.0, Apache-2.0 Crawl4AI là lựa chọn sạch hơn hẳn về pháp chế."
+    },
+    {
+      "type": "prose",
+      "id": "ung-dung-firecrawl-trong-he-sinh-thai-domation",
+      "eyebrow": "KIẾN TRÚC TRIỂN KHAI TẠI DOMATION • TÁCH BIÊN AN TOÀN",
+      "variant": "narrative",
+      "heading": "Cách DOMATION khai thác Firecrawl cho Competitive Catalog Intelligence mà vẫn giữ sạch lõi SaaS",
+      "paragraphs": [
+        "Trong thực tế triển khai cho các doanh nghiệp phân phối và bất động sản tại DOMATION, nhu cầu phổ biến nhất không phải biến hệ thống CRM thành một công cụ cào web đại trà bán lại cho thị trường, mà là tự động cập nhật kho tri thức so sánh: theo dõi biến động bảng giá đối thủ cạnh tranh, đồng bộ tài liệu hướng dẫn kỹ thuật từ nhà cung cấp thiết bị, hoặc thu thập tin tức pháp quy mới nhất đưa vào trợ lý AI RAG nội bộ trực 24/7 trên Zalo OA và Messenger.",
+        "Để tận dụng tốc độ của lõi Rust napi-rs và sức mạnh của Fire-engine mà không vi phạm hay vướng tranh chấp với giấy phép AGPL-3.0, kiến trúc của DOMATION tuân thủ quy tắc cách ly tuyệt đối: toàn bộ nền tảng lõi 12 phân hệ ERP 5.0, AutoData Router và CRM 360° không bao giờ chứa một dòng code nào sao chép từ backend Firecrawl. Mọi tác vụ nạp tri thức từ web công khai chạy qua một dịch vụ Ingestion Worker độc lập giao tiếp qua REST API và SDK MIT.",
+        "Quan trọng hơn, dữ liệu Markdown trích từ Firecrawl không bao giờ được đẩy thẳng vào tập vector sản xuất của bộ phận bán hàng khi chưa qua khâu Staging Review và làm sạch dấu hiệu Indirect Prompt Injection. Kết hợp cùng bước kiểm tra hash nội dung (chỉ re-embed khi Markdown thay đổi thật sự để tiết kiệm token) và gắn nhãn nguồn trích dẫn rõ ràng theo từng tenant trong PostgreSQL FORCE RLS, hệ thống AI Sales luôn đưa ra câu trả lời đối chiếu giá chuẩn xác mà không bị lộ tri thức sang đại lý khác."
+      ],
+      "bullets": [
+        "Luôn kiểm tra hash SHA-256 của Markdown sau khi bỏ timestamp động trước khi gọi model Embedding, cắt giảm 60%–80% chi phí cập nhật định kỳ.",
+        "Tách bảng dữ liệu cào web bên ngoài (external_intel) khỏi bảng tài liệu nội bộ công ty (internal_sop) để quản lý độ tin cậy câu trả lời của AI Agent."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-firecrawl-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Đánh Giá Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Dùng Firecrawl như một trạm biến áp tách rời, đừng cấy thẳng vào tim hệ thống SaaS",
+      "body": "firecrawl/firecrawl là bộ máy biến trang web SPA phức tạp thành Markdown sạch cho RAG xuất sắc bậc nhất hiện nay nhờ đôi cánh TypeScript/BullMQ và Rust napi-rs. Nhưng nếu bạn là founder đang xây sản phẩm SaaS đóng mã nguồn hoặc hệ thống đa khách hàng bán cho doanh nghiệp, hãy đọc kỹ ranh giới AGPL-3.0 và hiểu rằng lớp chống bot Fire-engine không nằm trong bản tải về miễn phí. Dùng Firecrawl qua MIT SDK cho tác vụ batch nội bộ hoặc mua gói Cloud cho các trang khó nhằn, và chọn Apache-2.0 Crawl4AI khi cần đóng gói sâu vào hạ tầng khách hàng."
+    }
+  ]
+}

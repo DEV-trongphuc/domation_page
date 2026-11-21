@@ -182,6 +182,69 @@ export const PlatformBrandLogo: React.FC<{
   );
 };
 
+/** Official-style crisp vector logo for Zalo OA & ZNS */
+export const ZaloBrandLogo: React.FC<{
+  size?: 'xs' | 'sm' | 'md';
+  className?: string;
+  style?: React.CSSProperties;
+}> = ({ size = 'sm', className = '', style }) => {
+  const dim =
+    size === 'xs' ? 'w-4 h-4' : size === 'md' ? 'w-6 h-6' : 'w-5 h-5';
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={`${dim} shrink-0 ${className}`}
+      style={style}
+      aria-hidden="true"
+    >
+      <rect x="1.5" y="1.5" width="21" height="21" rx="6.2" fill="#0068FF" />
+      <path
+        d="M12 4.3c-4.42 0-8 3.06-8 6.84 0 2.04 1.03 3.87 2.68 5.12-.12.88-.47 1.73-.99 2.46-.11.15.03.35.21.3 1.24-.34 2.38-.88 3.31-1.56.88.24 1.82.37 2.79.37 4.42 0 8-3.06 8-6.83C20 7.36 16.42 4.3 12 4.3Z"
+        fill="#FFFFFF"
+      />
+      <path
+        d="M6.45 8.85h2.65L6.45 13.1h2.7"
+        fill="none"
+        stroke="#0068FF"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="11.05"
+        cy="11.95"
+        r="1.15"
+        fill="none"
+        stroke="#0068FF"
+        strokeWidth="1.12"
+      />
+      <path
+        d="M12.2 10.8v2.3"
+        fill="none"
+        stroke="#0068FF"
+        strokeWidth="1.12"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13.75 8.75v4.35"
+        fill="none"
+        stroke="#0068FF"
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+      <circle
+        cx="16.1"
+        cy="11.95"
+        r="1.15"
+        fill="none"
+        stroke="#0068FF"
+        strokeWidth="1.12"
+      />
+    </svg>
+  );
+};
+
 /** Crisp brand/platform logos for Devices (Apple iPhone/iPad, Android Smartphone/Tablet, Desktop, Mobile Web) */
 export const DeviceBrandLogo: React.FC<{
   device: string;
@@ -2479,7 +2542,7 @@ export const RegionSpentBarChart: React.FC<{
         </div>
       )}
 
-      <div className="space-y-2.5 flex-1 min-h-0 max-h-[260px] lg:max-h-none overflow-y-auto pr-1">
+      <div className="dom-meta-table-scroll space-y-2.5 flex-1 min-h-0 max-h-[245px] overflow-y-auto pr-1">
         {filtered.map((r, idx) => {
           const val = getGeoVal(r);
           const pct = Math.max(5, Math.round((val / maxVal) * 100));

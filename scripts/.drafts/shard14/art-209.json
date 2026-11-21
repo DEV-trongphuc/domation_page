@@ -1,0 +1,389 @@
+{
+  "id": "art-209",
+  "number": "209",
+  "slug": "ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Google Gemini 2026 Role Map",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "executive-dossier",
+  "title": "Bản đồ phân vai Google Gemini 2026: 4 Argon, 3.1 Pro, 3.8 Flash, Flash-Lite, 3.8 Live, Omni 1.2 & Gemini CLI",
+  "seoTitle": "Bản Đồ Google Gemini 2026 & Interactions API | DOMATION",
+  "metaDescription": "Phân vai chuẩn kỹ sư hệ sinh thái Google Gemini cuối 2026: SDK google-genai >=3.2.0, Interactions API v1 (bỏ temperature), background=true và Gemini CLI.",
+  "focusKeyword": "bản đồ hệ sinh thái google gemini 2026 interactions api",
+  "secondaryKeywords": [
+    "google genai sdk 3.2 interactions api",
+    "phân vai gemini 4 argon 3.8 flash 3.1 pro",
+    "gemini 3.8 live và omni 1.2 flash",
+    "lỗi http 400 long decode gemini 4 argon",
+    "gemini cli và google workspace extension"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Bản Đồ Phân Vai Google Gemini 2026 Cho Kỹ Sư",
+  "thumbnailHook": "Từ Interactions API v1 đến bảng chọn nhanh Argon, Pro, Flash, Live và Omni.",
+  "thumbnailBadge": "ECOSYSTEM • GEMINI 2026",
+  "coverImage": "/imgs/boost/v2/ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli.webp",
+  "screenshotImage": "/imgs/boost/charts/ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli-report.webp",
+  "coverAlt": "Hồ sơ kỹ thuật bản đồ hệ sinh thái google gemini 2026 interactions api phân vai 4 Argon, 3.1 Pro, 3.8 Flash, Flash-Lite, 3.8 Live, Omni 1.2, 3-Pro-Image và Gemini CLI",
+  "screenshotCaption": "Đối chiếu đơn giá đầu vào/đầu ra, giá đọc cache và chi phí vận hành quy đổi giữa 6 mô hình cốt lõi trong hệ sinh thái Google Gemini cuối năm 2026.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Ứng Dụng Gemini SDK Trong DOMATION",
+  "relatedSlugs": [
+    "ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code",
+    "ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp",
+    "kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh",
+    "multimodal-live-vision-ui-qa-gemini-3-8-live-omni-vs-claude-openai"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Hồ sơ điều hành bản đồ hệ sinh thái google gemini 2026 interactions api hệ thống hóa toàn bộ 7 dòng mô hình chủ lực và Gemini CLI theo chuẩn SDK mới `google-genai >= 3.2.0` và `@google/genai >= 3.2.0`. Trọng tâm vận hành chuyển sang `Interactions API v1` (loại bỏ `temperature`/`top_p`/`top_k`, điều phối bằng `thinking_level`, giữ mạch hội thoại qua `previous_interaction_id` 55 ngày). Dossier làm rõ luật tránh lỗi HTTP 400 khi xuất hơn 64K token trên `gemini-4-argon`, ranh giới chọn `3.1 Pro -customtools`, `3.8 Flash`, `3.5/3.1 Flash-Lite`, `3.8 Live`, `Omni 1.2 Flash`, `gemini-3-pro-image` và cơ chế Policy TOML 5 tầng của Gemini CLI.",
+  "keyTakeaways": [
+    "Bắt buộc nâng cấp lên `google-genai >= 3.2.0` (Python) hoặc `@google/genai >= 3.2.0` (JS/TS) và chuyển sang `client.interactions.create` trên `v1` GA; hai nhánh `Antigravity` Managed Agent và `Decisions API` yêu cầu cấu hình `v1beta`.",
+    "`Interactions API` bỏ qua/khai tử `temperature`, `top_p`, `top_k`: kiểm soát chất lượng suy luận bằng `thinking_level`, đồng thời lưu ý `minimal` sẽ lỗi API trên `gemini-4-argon` và `gemini-3.8-flash`.",
+    "`Gemini 4 Argon` dùng chung một cửa sổ 1M token cho input + thinking + output và chỉ hỗ trợ Implicit Caching (>=4.096 token, giảm 95%); muốn giải mã Long Decode vượt 65.536 token phải bật `background=True`, nếu để đồng bộ sẽ trả HTTP 400.",
+    "Cặp đôi hạng trung & nhẹ phân vai rạch ròi: `gemini-3.8-flash` ($0.75/$3.75 intro tới 31/12/2026) gánh coding/agent doanh nghiệp, `3.5 Flash-Lite` ($0.30/$2.50) mạnh về subagent đa phương thức + Computer Use, còn `3.1 Flash-Lite` ($0.25/$1.50) chuyên phân loại & định tuyến tốc độ cao.",
+    "Nhóm đa phương thức & terminal khép kín vòng sản xuất: `gemini-3.8-live` cho thoại WebSocket, `gemini-omni-1.2-flash` cho video MP4 kèm tiếng (~$0,07/s), `gemini-3-pro-image` (Nano Banana Pro) cho đồ họa thương hiệu và `Gemini CLI` (Apache 2.0) tích hợp 5 tầng TOML Policy + Google Workspace Extension."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Chuẩn SDK & Giao diện API",
+      "value": "google-genai >= 3.2 (v1)"
+    },
+    {
+      "label": "Long Decode 4 Argon",
+      "value": "Tới 1M out (background=true)"
+    },
+    {
+      "label": "Implicit Cache 4 Argon",
+      "value": "-95% chi phí (>=4.096 tok)"
+    },
+    {
+      "label": "Giá Intro 3.8 Flash (hết 2026)",
+      "value": "$0,75 in / $3,75 out"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao gọi gemini-4-argon với max_output_tokens = 100000 lại bị lỗi HTTP 400 dù tài liệu ghi hỗ trợ tới 1 triệu token?",
+      "answer": "Đây là quy tắc vận hành quan trọng nhất của `gemini-4-argon` mà nhiều đội dev gặp phải khi nâng cấp từ các bản cũ. Argon có cửa sổ hợp nhất 1.048.576 token dùng chung cho cả input, thinking và output, nhưng giới hạn đầu ra đồng bộ mặc định (synchronous `background=false`) được khóa cứng ở `65.536` token. Nếu bạn truyền `max_output_tokens > 65536` mà quên bật cờ `background=True` (bắt buộc kèm `store=True`), máy chủ sẽ từ chối ngay bằng lỗi **HTTP 400**. Khi bật `background=True`, Argon cho phép sinh chuỗi Long Decode lên tới `1.048.576 - input_tokens` và ứng dụng sẽ lấy kết quả qua cơ chế polling `client.interactions.get(id)`."
+    },
+    {
+      "question": "Tôi muốn đặt temperature = 0 trên Interactions API để kết quả tool calling của Gemini ổn định 100% thì làm sao?",
+      "answer": "Trong chuẩn `Interactions API v1`, các tham số lấy mẫu truyền thống gồm `temperature`, `top_p` và `top_k` đã chính thức bị loại bỏ/bỏ qua (deprecated/ignored). Thay vì cố ép temperature, Google chuyển sang điều chỉnh mức độ lập luận qua `thinking_level` kết hợp khai báo `structured_outputs` (JSON Schema) chặt chẽ cho tool và đầu ra. Tuy nhiên, hãy cẩn thận ma trận tương thích: `gemini-3.5-flash-lite` và `gemini-3.1-flash-lite` hỗ trợ đủ `minimal | low | medium | high`, trong khi `gemini-4-argon` và `gemini-3.8-flash` chỉ nhận `low | medium | high` — truyền `minimal` lên 3.8 Flash hoặc Argon sẽ bị trả lỗi API."
+    },
+    {
+      "question": "Sự khác biệt thực tế giữa gemini-4-argon và gemini-3.1-pro-preview-customtools là gì?",
+      "answer": "`gemini-4-argon` (Stable tháng 10/2026) là mô hình flagship toàn năng thế hệ 4 với kiến trúc cửa sổ 1M hợp nhất, hỗ trợ Long Decode >64K, Agentic Video Understanding GA, Antigravity Managed Agent và dùng cơ chế Implicit Caching tự động giảm 95% (không hỗ trợ `caches.create` tường minh). Trong khi đó, `gemini-3.1-pro-preview` (và endpoint chuyên biệt `gemini-3.1-pro-preview-customtools`) tách riêng 1M input + 64K output, đặt mặc định `thinking_level='high'`, hỗ trợ Explicit Caching lẫn lưu trữ cache theo giờ ($4.50/1M/h) và được tinh chỉnh riêng cho các luồng agent phải gọi xen kẽ liên tục giữa Bash terminal và hệ thống custom tools phức tạp."
+    },
+    {
+      "question": "Giữa gemini-3.5-flash-lite và gemini-3.1-flash-lite nên chọn bản nào cho hệ thống doanh nghiệp?",
+      "answer": "Hai phiên bản Flash-Lite này có vai trò rất rạch ròi: `gemini-3.1-flash-lite` (bản ổn định tháng 5/2026 thay thế bản preview đã đóng ngày 25/05/2026) có đơn giá text/ảnh/video rẻ hơn ($0.25 in / $1.50 out) và tốc độ phản hồi siêu nhanh, đang được chính `Gemini CLI` sử dụng làm Task Router phân loại độ phức tạp lệnh, nhưng **không hỗ trợ** `computer_use` và `live_api`. Ngược lại, `gemini-3.5-flash-lite` (tháng 7/2026, $0.30 in / $2.50 out) mặc định `minimal` thinking, sở hữu năng lực **Computer Use** và điều phối subagent đọc PDF/video/audio 1M context tốt hơn."
+    },
+    {
+      "question": "Gemini CLI quản trị quyền chạy lệnh và đồng bộ file chỉ dẫn với Codex CLI hay Claude Code bằng cách nào?",
+      "answer": "`Gemini CLI` (`google-gemini/gemini-cli`, mã nguồn mở Apache 2.0) giải quyết bài toán đa công cụ trên cùng một kho mã nhờ mảng cấu hình fallback cho tệp ngữ cảnh trong `.gemini/settings.json` — ví dụ đặt `[\"AGENTS.md\", \"GEMINI.md\"]` hoặc dùng cú pháp `@./AGENTS.md` để đọc chung một bộ quy tắc gốc. Để ngăn agent tự ý chạy lệnh phá hoại, Gemini CLI áp dụng **TOML Policy Engine 5 tầng ưu tiên** (`Default 1 < Extension 2 < Workspace 3 < User 4 < Admin 5`) kiểm soát từng `toolName` và `commandPrefix` với quyết định `allow | deny | ask_user`, kết hợp khóa tin cậy thư mục `security.folderTrust.enabled` trước khi nạp file `.env` hay cấu hình repo trong CI."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "dossier-part1-interactions-api-sdk-3-2",
+      "eyebrow": "HỒ SƠ ĐIỀU HÀNH • PHẦN 1: CUỘC DỊCH CHUYỂN INTERACTIONS API V1 & SDK >= 3.2.0",
+      "variant": "deep-dive",
+      "heading": "Chuyển đổi từ SDK cũ sang `google-genai >= 3.2.0` và quy tắc sống còn của `Interactions API`",
+      "pullQuote": "Nếu mã nguồn doanh nghiệp của bạn vẫn đang gọi `google-generativeai` với tham số `temperature=0` và cơ chế ghép mảng `history[]` thủ công, toàn bộ hệ thống đó đang chạy trên kiến trúc đã bị khai tử của hệ sinh thái Gemini.",
+      "paragraphs": [
+        "Bước sang quý IV năm 2026, Google đã hoàn tất cuộc tái cấu trúc toàn diện giao thức lập trình AI qua bản đồ hệ sinh thái google gemini 2026 interactions api. Hai gói thư viện cũ `google-generativeai` (Python) và `@google/generative-ai` (JavaScript/TypeScript) chính thức rơi vào trạng thái ngừng bảo trì (deprecated). Chuẩn sản xuất bắt buộc hiện nay là SDK thế hệ mới `google-genai >= 3.2.0` và `@google/genai >= 3.2.0`, chạy mặc định trên giao diện **Interactions API v1 GA** (`client.interactions.create`), còn những bề mặt đang mở rộng như **Managed Agents** (`antigravity-preview-09-2026`) và **Decisions API** (`gemini-decision-1` trả xác suất hiệu chuẩn với 0 output token) yêu cầu khai báo phiên bản `v1beta`.",
+        "Thay đổi tư duy lớn nhất của `Interactions API` nằm ở trạng thái lưu vết và cách kiểm soát ngẫu nhiên. Mặc định mọi lệnh gọi đều có `store=True`, cho phép máy chủ Google giữ lại trạng thái hội thoại tới **55 ngày** cho gói trả phí (và 1 ngày cho gói miễn phí) để lượt sau chỉ cần truyền `previous_interaction_id` thay vì gửi lại toàn bộ lịch sử nặng nề; nếu ứng dụng yêu cầu bảo mật không lưu vết bằng cách đặt `store=False`, hệ thống sẽ khóa luôn cả `previous_interaction_id` lẫn chế độ chạy nền `background=True`. Quan trọng không kém, các tham số `tools`, `system_instruction` và `generation_config` mang phạm vi theo từng interaction nên phải truyền lại ở mỗi lượt, đồng thời ba tham số `temperature`, `top_p`, `top_k` bị vô hiệu hóa hoàn toàn và nhường chỗ cho cơ chế điều chỉnh độ sâu suy luận `thinking_level`."
+      ],
+      "bullets": [
+        "Kiểm tra ngay `package.json` và `requirements.txt`: nâng cấp `@google/genai` / `google-genai` lên >= 3.2.0 để hỗ trợ đồng bộ Interactions API v1, Long Decode và Decisions API v1beta.",
+        "Không để lộ logic phụ thuộc `temperature=0`: hãy chuyển sang ép đầu ra bằng `structured_outputs` JSON Schema và chỉnh `thinking_level` phù hợp từng model.",
+        "Tận dụng `gemini-decision-1` trên `v1beta` cho bài toán chấm điểm/chọn nhãn 1–1.000 câu hỏi trên cùng một tài liệu đầu vào với 0 output token."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-google-gemini-2026-role-map",
+      "heading": "Ma trận phân vai 7 dòng mô hình Google Gemini cuối năm 2026",
+      "caption": "Tổng hợp thông số Context, Thinking Level, đơn giá USD/1M token và cơ chế Caching xác thực đến 20/11/2026",
+      "columns": [
+        "Model & Mã định danh (ID)",
+        "Cửa sổ Context / Max Output",
+        "Thinking Level & Giới hạn",
+        "Giá USD / 1M Token & Caching",
+        "Vai trò tối ưu trong DOMATION"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Gemini 4 Argon (`gemini-4-argon`)",
+          "values": [
+            "1M (1.048.576) hợp nhất In+Think+Out; 64K sync, tới 1M Long Decode",
+            "low / medium (mặc định) / high; CẤM `minimal`; >64K out phải bật `background=true`",
+            "$2 in / $10 out intro tới 30/11/2026 ($4/$20 từ 01/12/2026); Implicit Cache 95% (>=4.096 tok)",
+            "Planner kiến trúc ERP, đọc Video Agentic GA, Computer Use & Antigravity Managed Agent"
+          ],
+          "winnerNote": "Chú ý mốc tăng giá chuẩn ngày 01/12/2026 và lỗi HTTP 400 nếu quên `background=true`"
+        },
+        {
+          "criterion": "Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `-customtools`)",
+          "values": [
+            "Tách riêng 1M Input + 64K Output",
+            "low / medium / high (mặc định `high`)",
+            "<=200K: $2/$12 ($0.20 cache); >200K: $4/$18 ($0.40 cache); lưu cache $4.50/h; Batch -50%",
+            "Suy luận dài nhiều bước & điều phối xen kẽ Bash + Custom Tools phức tạp"
+          ],
+          "winnerNote": "Biến thể `-customtools` trị dứt điểm lỗi agent ngại gọi tool riêng lẻ"
+        },
+        {
+          "criterion": "Gemini 3.8 Flash (`gemini-3.8-flash`)",
+          "values": [
+            "1M Input / 64K Output (Có Free Tier)",
+            "low / medium (mặc định) / high; truyền `minimal` bị trả LỖI API",
+            "$0.75 in / $3.75 out ($0.075 cache) tới 31/12/2026 ($1.50/$7.50 từ 01/01/2027); Batch -50%",
+            "Ngựa thồ (Workhorse) coding hàng ngày, AI RAG phòng ban & Antigravity mặc định"
+          ],
+          "winnerNote": "Tỷ lệ hiệu năng/chi phí số 1 phân khúc Midweight cuối 2026"
+        },
+        {
+          "criterion": "Gemini 3.5 & 3.1 Flash-Lite (`3.5` / `3.1-flash-lite`)",
+          "values": [
+            "1M Input / 64K Output (Có Free Tier)",
+            "Hỗ trợ đầy đủ `minimal` / `low` / `medium` / `high` (3.5 mặc định `minimal`)",
+            "3.5: $0.30/$2.50 ($0.03 cache); 3.1: $0.25/$1.50 (audio in $0.50, $0.025 cache)",
+            "3.5 cho Subagent đa phương thức + Computer Use; 3.1 cho phân loại & Gemini CLI Router"
+          ],
+          "winnerNote": "3.1 Flash-Lite không có Computer Use & Live API; bản preview 3.1 đã tắt 25/05/2026"
+        },
+        {
+          "criterion": "Gemini 3.8 Live (`gemini-3.8-live` & `-extended-thinking`)",
+          "values": [
+            "131.072 (128K) Input / 65.536 Output",
+            "3.8 Live cố định `MINIMAL`; bản Extended Thinking hỗ trợ low/medium/high",
+            "Audio in $3/1M (~$0.005/phút), out $12/1M (~$0.018/phút); Text $0.75/$4.50; Img/Vid $1/1M",
+            "Tổng đài thoại song công PCM 16kHz/24kHz, dịch trực tiếp & transcribe live"
+          ],
+          "winnerNote": "Thay thế hoàn toàn `gemini-3.1-flash-live-preview` cũ"
+        },
+        {
+          "criterion": "Gemini Omni 1.2 Flash (`gemini-omni-1.2-flash`)",
+          "values": [
+            "Đọc tối đa 6 ảnh ref, video sửa/extend <=15s; xuất MP4 3s–15s (extend 30s)",
+            "Điều khiển qua duration, aspect_ratio (16:9, 9:16), resolution (360p..4k) 24fps",
+            "Giảm ~30% so với 1.1 Flash ($17.50/1M vid out) -> còn ~$0,07/giây ở 720p",
+            "Sản xuất Video Ads Reels/TikTok đồng bộ âm thanh gốc hoặc tái tạo audio mới"
+          ],
+          "winnerNote": "Bị chặn upload video nguồn để sửa/extend tại EEA, Thụy Sĩ, UK"
+        },
+        {
+          "criterion": "Gemini 3 Pro Image (`gemini-3-pro-image`)",
+          "values": [
+            "65K Input / 32K Output chuyên biệt hình ảnh độ phân giải cao",
+            "Tích hợp cùng hệ Nano Banana 2.1 (14 ref imgs) & 3.1 Flash-Lite Image",
+            "Tính phí theo ảnh/token đầu ra trong Interactions API",
+            "Dựng visual chiến dịch OOH, concept giao diện Web 3D & chỉnh sửa ảnh sản phẩm"
+          ]
+        }
+      ],
+      "footnote": "Nguồn dữ liệu: verified-models-mcp-2026.json và tài liệu Google Gemini API cập nhật đến 20/11/2026."
+    },
+    {
+      "type": "prose",
+      "id": "dossier-part2-giai-phau-argon-pro-flash-image",
+      "eyebrow": "HỒ SƠ ĐIỀU HÀNH • PHẦN 2: GIẢI PHẪU SÂU TỪNG TẦNG MODEL & CÁC BẪY GIÁ 2026–2027",
+      "variant": "deep-dive",
+      "heading": "Từ cửa sổ 1M hợp nhất của Gemini 4 Argon đến vách chuyển giá tháng 12/2026 và tháng 1/2027",
+      "paragraphs": [
+        "Trong phân tầng mô hình nền tảng, điểm làm các kỹ sư ngạc nhiên nhất ở `gemini-4-argon` là kiến trúc **Unified 1M Window** (cửa sổ 1.048.576 token dùng chung giữa input, thinking và output) thay vì tách riêng ngân sách input và output như thế hệ 3.1 Pro. Thiết kế này cho phép Argon xuất ra những bản đặc tả kỹ thuật, tập dữ liệu chuyển đổi hoặc mã nguồn nguyên khối dài hàng trăm nghìn token thông qua chế độ `background=True` — miễn là tổng cộng ba phần không vượt quá 1 triệu token. Đi kèm với đó là cơ chế **Implicit Caching** tự động giảm tới 95% đơn giá đọc ($0,10/1M ở mức giá mở màn, tăng lên $0,20/1M từ ngày 01/12/2026) cho phần tiền tố trùng khớp tối thiểu 4.096 token; ngược lại, Argon không hỗ trợ API `caches.create` tường minh.",
+        "Ở phân khúc giữa, `gemini-3.8-flash` (phát hành ổn định tháng 9/2026) là động cơ chiến lược giúp DOMATION hạ giá thành vận hành các hệ thống AI RAG phòng ban và vòng lặp Vibecode hàng ngày. Với mức giá mở màn kéo dài đến hết ngày 31/12/2026 chỉ **$0,75 input / $3,75 output** ($0,075 cache read, lưu cache chỉ $0,50/1M/giờ và Batch/Flex còn $0,375/$1,875), 3.8 Flash rẻ gấp 2,6 lần so với Claude Sonnet 5.5 và rẻ gấp 5 lần so với giá sau ưu đãi của Argon, đồng thời vẫn gánh tốt kỹ thuật phần mềm đường dài, gọi hàm xác định (deterministic tool execution) và Computer Use. Tuy nhiên, kiến trúc sư tài chính cần ghi chú ngay mốc **01/12/2026** (Argon tăng gấp đôi lên $4/$20) và **01/01/2027** (3.8 Flash tăng gấp đôi lên $1,50/$7,50) để dự toán ngân sách năm 2027 chính xác.",
+        "Hoàn thiện bộ đồ nghề sáng tạo đa phương tiện của hệ sinh thái Google là bộ ba chuyên biệt: `gemini-3.8-live` cho luồng thoại PCM 16kHz/24kHz qua WebSocket, `gemini-omni-1.2-flash` cho dây chuyền video MP4 24fps (tới 4K, ~$0,07/s ở 720p), và `gemini-3-pro-image` (Nano Banana Pro, 65K/32K token) chuyên dựng hình ảnh quảng cáo, phối cảnh OOH và chỉnh sửa tài sản thương hiệu độ sắc nét cao bên cạnh `gemini-nano-banana-2.1` (hỗ trợ ghép tối đa 14 ảnh tham chiếu) và `gemini-3.1-flash-lite-image` cho nhu cầu sinh ảnh tốc độ siêu nhanh."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-gemini-2026-pricing-and-efficiency",
+      "heading": "Phổ đơn giá chuẩn (USD / 1M Token) & Giá đọc Cache của 6 mô hình Google Gemini 2026",
+      "subtitle": "Đối chiếu đơn giá niêm yết (USD / 1M tokens) giữa Input chuẩn, Output (gồm Thinking) và Cached Input trên cùng hệ quy chiếu",
+      "chart": {
+        "chartType": "bar",
+        "title": "Đơn giá Input, Output (bao gồm Thinking) & Cached Input (USD / 1M token)",
+        "subtitle": "Chú ý bước nhảy chi phí từ Flash-Lite ($0.25/$1.50) -> 3.8 Flash ($0.75/$3.75 intro) -> 3.1 Pro ($2/$12) -> 4 Argon ($4/$20 chuẩn)",
+        "xKey": "model",
+        "yUnit": "USD/1M",
+        "series": [
+          {
+            "key": "inputUsd",
+            "label": "Input Chuẩn ($/1M)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "outputUsd",
+            "label": "Output + Thinking ($/1M)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "cachedUsd",
+            "label": "Cached Input ($/1M)",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          { "model": "3.1 Flash-Lite", "inputUsd": 0.25, "outputUsd": 1.50, "cachedUsd": 0.025 },
+          { "model": "3.5 Flash-Lite", "inputUsd": 0.30, "outputUsd": 2.50, "cachedUsd": 0.03 },
+          { "model": "3.8 Flash (Intro 2026)", "inputUsd": 0.75, "outputUsd": 3.75, "cachedUsd": 0.075 },
+          { "model": "3.8 Flash (Std 2027)", "inputUsd": 1.50, "outputUsd": 7.50, "cachedUsd": 0.15 },
+          { "model": "3.1 Pro (<=200K)", "inputUsd": 2.00, "outputUsd": 12.00, "cachedUsd": 0.20 },
+          { "model": "4 Argon (Intro -> Std)", "inputUsd": 4.00, "outputUsd": 20.00, "cachedUsd": 0.20 }
+        ],
+        "kpis": [
+          {
+            "label": "Rẻ nhất cho Router/Classify",
+            "value": "$0,25 / $1,50",
+            "delta": "Gemini 3.1 Flash-Lite ($0.025 cache)",
+            "positive": true
+          },
+          {
+            "label": "Workhorse Coding (hết 2026)",
+            "value": "$0,75 / $3,75",
+            "delta": "Gemini 3.8 Flash (Batch -$0.375/$1.875)",
+            "positive": true
+          },
+          {
+            "label": "Chiết khấu Implicit Cache Argon",
+            "value": "95% giảm giá",
+            "delta": "$0.10 intro / $0.20 chuẩn từ 12/2026",
+            "positive": true
+          },
+          {
+            "label": "Mức tăng giá 3.8 Flash 2027",
+            "value": "+100% (1/1/2027)",
+            "delta": "Từ $0.75/$3.75 lên $1.50/$7.50",
+            "positive": false
+          }
+        ],
+        "sourceNote": "Số liệu trích từ verified-models-mcp-2026.json (11/2026). Giá 4 Argon hiển thị theo bảng giá chuẩn có hiệu lực từ 01/12/2026 (giá intro hết 30/11/2026 bằng một nửa: $2/$10/$0.10)."
+      },
+      "insightSummary": "Phổ giá của hệ sinh thái Google Gemini 2026 tạo thành bậc thang phân tầng rất mượt: cứ lên một hạng cân từ `3.1 Flash-Lite` sang `3.8 Flash` rồi `3.1 Pro` và `4 Argon`, chi phí đầu ra tăng từ 2,5x đến 3x. Nhìn vào cột xanh lá (Cached Input), ngay cả trên mô hình flagship `Gemini 4 Argon`, giá đọc cache tự động chỉ còn $0,10–$0,20/1M token — rẻ gấp 20 lần giá input thô — chứng minh tầm quan trọng sống còn của việc gom toàn bộ tài liệu ERP và schema vào tiền tố >=4.096 token bất biến."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-gemini-2026-ecosystem-map",
+      "src": "/imgs/boost/charts/ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli-report.webp",
+      "alt": "Biểu đồ bản đồ hệ sinh thái google gemini 2026 interactions api phân tầng Argon, 3.1 Pro, 3.8 Flash, Flash-Lite, 3.8 Live, Omni 1.2 và Gemini CLI",
+      "caption": "Bản đồ phân vai toàn hệ sinh thái Google Gemini cuối 2026: phân tách luồng API `Interactions v1`, dải giá mô hình từ Flash-Lite tới 4 Argon, bộ đôi Live/Omni và kiến trúc Gemini CLI.",
+      "badge": "ECOSYSTEM • GEMINI 2026"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-gemini-2026-selection",
+      "heading": "Cây quyết định chọn đúng mô hình Google Gemini 2026 theo từng bài toán",
+      "subtitle": "Tránh dùng sai model gây lỗi HTTP 400 hoặc đội chi phí API ngoài dự toán",
+      "scenarios": [
+        {
+          "condition": "Thiết kế kiến trúc monorepo lớn, phân tích video nghiệp vụ GA, hoặc cần sinh bản đặc tả / chuyển đổi mã dài > 65.536 token",
+          "recommendedChoice": "Chọn Gemini 4 Argon (bật `background=True` nếu output > 64K)",
+          "rationale": "Cửa sổ 1M hợp nhất + Long Decode lên tới (1M - input) + Implicit Cache 95% tự động từ 4.096 token mà không cần tự quản lý vòng đời cache.",
+          "avoidIf": "Bạn cần câu trả lời đồng bộ dưới 1 giây hoặc muốn truyền `thinking_level='minimal'`."
+        },
+        {
+          "condition": "Agent chạy chuỗi lệnh Bash phức tạp xen kẽ hàng loạt công cụ custom nội bộ và cần Explicit Cache lưu trữ dài hơi",
+          "recommendedChoice": "Chọn Gemini 3.1 Pro Preview (`-customtools` endpoint)",
+          "rationale": "Mặc định suy luận `high`, biến thể `-customtools` được tối ưu riêng cho gọi hỗn hợp shell + custom functions và hỗ trợ tạo explicit cache.",
+          "avoidIf": "Ngữ cảnh thường xuyên vượt 200K token vì bảng giá `3.1 Pro` nhảy từ $2/$12 lên $4/$18 ở ngưỡng >200K."
+        },
+        {
+          "condition": "Xây Chatbot AI RAG, đồng bộ ERP/CRM, viết code tính năng mỗi ngày hoặc chạy Antigravity Agent cân bằng tốc độ/giá",
+          "recommendedChoice": "Chọn Gemini 3.8 Flash (thinking `low` hoặc `medium`)",
+          "rationale": "Đơn giá intro $0.75/$3.75 ($0.075 cache), có Free Tier, hỗ trợ Batch -50%, deterministic tool calling và Computer Use.",
+          "avoidIf": "Code vô tình gửi `thinking_level='minimal'` — sẽ văng lỗi API ngay lập tức; hãy hạ xuống `low` hoặc chuyển `3.5 Flash-Lite`."
+        },
+        {
+          "condition": "Phân loại Lead hàng loạt, định tuyến tin nhắn, trích xuất hàng nghìn PDF/audio/video giá siêu rẻ",
+          "recommendedChoice": "Chọn Gemini 3.1 Flash-Lite (Router) hoặc 3.5 Flash-Lite (Multimodal + Computer Use)",
+          "rationale": "Chỉ $0.25–$0.30 input / $1.50–$2.50 output, hỗ trợ đầy đủ `thinking_level='minimal'` để đạt độ trễ thấp nhất.",
+          "avoidIf": "Cần stream thoại hai chiều realtime (phải dùng `gemini-3.8-live`)."
+        },
+        {
+          "condition": "Truyền thông đa phương tiện: tổng đài giọng nói realtime, Video Ads 720p–4K kèm tiếng, hoặc ảnh OOH/UI thương hiệu",
+          "recommendedChoice": "Phối bộ ba Gemini 3.8 Live + Omni 1.2 Flash + Gemini 3 Pro Image",
+          "rationale": "3.8 Live lo PCM 16/24kHz WebSocket, Omni 1.2 Flash dựng clip 3–30s (~$0.07/s), còn 3 Pro Image xuất ảnh chất lượng cao.",
+          "avoidIf": "Chỉnh sửa video tại vùng EEA/UK/Thụy Sĩ (bị hạn chế upload video nguồn trên Omni 1.2)."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-gemini-interactions-and-cli-policy",
+      "heading": "Dossier Recipe: Python `google-genai >= 3.2.0` (Interactions v1 + Long Decode Argon) & Policy TOML cho Gemini CLI",
+      "language": "python",
+      "filename": "gemini_2026_interactions_and_cli.py",
+      "description": "Minh họa chuẩn Interactions API v1 (stateful previous_interaction_id, bỏ temperature), gọi gemini-4-argon với background=True khi output > 64K tránh HTTP 400, cùng mẫu cấu hình TOML Policy Engine cho Gemini CLI.",
+      "code": "import time\nfrom google import genai\n\n# Bat buoc google-genai >= 3.2.0 (v1 GA cho Interactions; v1beta cho Agents/Decisions)\nclient = genai.Client()\n\n# 1) Stateful conversation voi Gemini 3.8 Flash (KHONG truyen temperature, KHONG dung minimal)\nturn1 = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=\"Phan tich kien truc bang phan quyen RLS cho module Cong no MISA.\",\n    system_instruction=\"Ban la Solution Architect cua DOMATION.\",\n    generation_config={\"thinking_level\": \"medium\", \"max_output_tokens\": 8192}\n)\nturn2 = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=\"Viet file migration PostgreSQL kem policy FORCE ROW LEVEL SECURITY.\",\n    previous_interaction_id=turn1.id,\n    system_instruction=\"Ban la Solution Architect cua DOMATION.\",\n    generation_config={\"thinking_level\": \"high\"}\n)\n\n# 2) Long Decode > 65.536 token tren Gemini 4 Argon (bat buoc background=True + store=True)\nlong_job = client.interactions.create(\n    model=\"gemini-4-argon\",\n    input=\"Sinh tron bo tai lieu dac ta OpenAPI va test suite cho 12 phan he ERP 5.0.\",\n    background=True,\n    store=True,\n    generation_config={\"thinking_level\": \"high\", \"max_output_tokens\": 180000}\n)\nwhile True:\n    status_obj = client.interactions.get(long_job.id)\n    if status_obj.status == \"completed\":\n        print(status_obj.output_text)\n        break\n    if status_obj.status in (\"failed\", \"cancelled\"):\n        raise RuntimeError(f\"Argon background failed: {status_obj.status}\")\n    time.sleep(5)\n\n# --- Mau .gemini/policies/domation-erp.toml (Uu tien Workspace Tier 3 < User 4 < Admin 5) ---\n# [[rule]]\n# toolName = \"run_shell_command\"\n# commandPrefix = \"psql\"\n# decision = \"ask_user\"\n# priority = 300\n#\n# [[rule]]\n# toolName = \"run_shell_command\"\n# commandPrefix = \"rm -rf\"\n# decision = \"deny\"\n# priority = 500\n"
+    },
+    {
+      "type": "prose",
+      "id": "dossier-part3-gemini-cli-toml-policy-va-workspace",
+      "eyebrow": "HỒ SƠ ĐIỀU HÀNH • PHẦN 3: GEMINI CLI, TOML POLICY ENGINE & GOOGLE WORKSPACE EXTENSION",
+      "variant": "narrative",
+      "heading": "Gemini CLI (Apache 2.0): Từ bộ định tuyến Flash-Lite nội bộ đến bảo mật 5 tầng TOML & Google Workspace",
+      "paragraphs": [
+        "Mảnh ghép kết nối toàn bộ các mô hình Gemini vào quy trình làm việc hàng ngày của kỹ sư và vận hành doanh nghiệp là `google-gemini/gemini-cli` (mã nguồn mở Apache 2.0). Không chỉ dừng ở một công cụ chat terminal, Gemini CLI thiết kế kiến trúc mở rộng hướng doanh nghiệp rất chặt chẽ: hệ thống ghi nhớ `GEMINI.md` nạp phân tầng từ phạm vi toàn cục (`~/.gemini/GEMINI.md`) xuống thư mục gốc dự án và các thư mục con, hỗ trợ nhúng `@./path`, bộ lệnh quản lý nóng `/init`, `/memory show|add|reload`, và đặc biệt cho phép cấu hình mảng fallback `[\"AGENTS.md\", \"GEMINI.md\"]` trong `.gemini/settings.json` để dùng chung một nguồn quy tắc duy nhất với OpenAI Codex và Claude Code.",
+        "Điểm sáng quản trị lớn nhất của Gemini CLI nằm ở **5-Tier TOML Policy Engine** và **Workspace Trust**. Mọi công cụ từ shell command đến MCP tool đều được kiểm duyệt qua các khối `[[rule]]` đặt tại `~/.gemini/policies/*.toml` hoặc trong gói mở rộng, phân chia thành 5 bậc quyền lực bất khả xâm phạm: Default (1) < Extension (2) < Workspace (3) < User (4) < Admin (5) — nghĩa là chính sách của Admin hệ thống luôn đè tuyệt đối cấu hình nằm trong repo lạ vừa clone về, phối hợp cùng cờ `security.folderTrust.enabled` để chặn thực thi tự động file `.env` hay `.gemini/settings.json` không đáng tin cậy trong môi trường CI/CD. Đồng thời, đội ngũ DOMATION thường xuyên tận dụng cơ chế `.toml` Custom Commands (hỗ trợ `{{args}}` và `!{...}` shell execution) cùng gói mở rộng chính thức **Google Workspace Extension** (`gemini extensions install`) để AI đọc-tìm trực tiếp Google Drive (`/drive:search`), Gmail, Docs, Calendar (`/calendar:get-schedule`) ngay trong terminal bên cạnh các MCP Server chuẩn, được bảo vệ trong sandbox Seatbelt, Docker, Podman, gVisor hoặc LXC."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-audit-gemini-2026-migration",
+      "heading": "Checklist kiểm toán nâng cấp hệ thống Google Gemini lên chuẩn Production cuối 2026",
+      "items": [
+        {
+          "check": "Loại bỏ hoàn toàn SDK `google-generativeai` / `@google/generative-ai` và cập nhật >= 3.2.0",
+          "severity": "critical",
+          "verificationHow": "Quét `requirements.txt`, `package.json` và kiểm tra toàn bộ lời gọi đã chuyển sang `client.interactions.create` trên `v1` GA (hoặc `v1beta` cho Agents/Decisions).",
+          "passThreshold": "0 dòng import SDK cũ còn tồn tại trong mã nguồn Production."
+        },
+        {
+          "check": "Xóa bỏ phụ thuộc logic vào `temperature`, `top_p`, `top_k` và tham số `minimal` sai model",
+          "severity": "critical",
+          "verificationHow": "Rà soát `generation_config` đảm bảo không truyền `thinking_level='minimal'` cho `gemini-4-argon` hay `gemini-3.8-flash`.",
+          "passThreshold": "100% endpoint dùng `thinking_level` hợp lệ + `structured_outputs` JSON Schema."
+        },
+        {
+          "check": "Bảo vệ Long Decode > 65.536 token trên Gemini 4 Argon bằng `background=True`",
+          "severity": "high",
+          "verificationHow": "Kiểm tra hàm gọi `gemini-4-argon` có validator tự bật `background=True` và `store=True` hễ `max_output_tokens > 65536`.",
+          "passThreshold": "Không phát sinh lỗi HTTP 400 do vượt trần đồng bộ 64K."
+        },
+        {
+          "check": "Tối ưu tiền tố bất biến >= 4.096 token cho Implicit Caching của 4 Argon",
+          "severity": "high",
+          "verificationHow": "Đẩy biến động (timestamp, user_id) xuống cuối payload để phần đầu System Prompt + Schema khớp nguyên vẹn.",
+          "passThreshold": "Tỷ lệ cache hit trên logs billing đạt >= 75% cho tác vụ lặp lại."
+        },
+        {
+          "check": "Kích hoạt `security.folderTrust.enabled` và khóa Admin TOML Policy cho Gemini CLI",
+          "severity": "recommended",
+          "verificationHow": "Chạy `/policies list` và kiểm tra file chính sách Admin/Workspace chặn lệnh phá hoại hoặc rò rỉ `.env`.",
+          "passThreshold": "100% máy trạm dev và runner CI có policy bảo vệ shell & MCP tool."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-gemini-2026",
+      "variant": "founder-pov",
+      "authorBadge": "Tổng Kết Điều Hành • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hệ sinh thái Google Gemini 2026 là bệ phóng chi phí thấp nhất cho kho tri thức 1M token và đa phương thức thời gian thực",
+      "body": "Khi phân vai đúng từng mắt xích — dùng `3.1/3.5 Flash-Lite` làm phễu lọc và subagent siêu rẻ, `3.8 Flash` làm lực lượng thực thi 80% tác vụ RAG và coding mỗi ngày, đẩy `3.1 Pro -customtools` hoặc `4 Argon` giải quyết bài toán kiến trúc & Long Decode >64K, đồng thời gắn `3.8 Live` và `Omni 1.2 Flash` cho tổng đài thoại và video marketing — Google mang lại biên độ tối ưu chi phí tốt nhất trên thị trường hiện nay. Điểm mấu chốt để không sập bẫy khi triển khai tại DOMATION là nâng chuẩn lên SDK 3.2+ sớm, thiết kế tiền tố tĩnh cho Implicit Cache 95% và chuẩn hóa ngay chính sách TOML trên Gemini CLI."
+    }
+  ]
+}

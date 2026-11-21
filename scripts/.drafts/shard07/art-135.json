@@ -1,0 +1,298 @@
+{
+  "id": "art-135",
+  "number": "135",
+  "slug": "tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai",
+  "shardId": "shard07",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Pháp Lý & Tuân Thủ Doanh Nghiệp VN",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "executive-dossier",
+  "title": "Nghị định 13/2023/NĐ-CP & Pháp lý AI tại Việt Nam: Thiết kế CRM, Zalo ZNS & RAG đúng luật bảo vệ dữ liệu",
+  "seoTitle": "Nghị Định 13/2023/NĐ-CP Cho CRM, Meta CAPI & AI | DOMATION",
+  "metaDescription": "Chuyển đổi yêu cầu Nghị định 13/2023 về dữ liệu cá nhân cơ bản/nhạy cảm, Consent rõ ràng và luồng chuyển dữ liệu xuyên biên giới sang thiết kế CRM & AI.",
+  "focusKeyword": "nghị định 13/2023/nđ-cp bảo vệ dữ liệu cá nhân ai",
+  "secondaryKeywords": [
+    "tuân thủ nghị định 13 khi dùng ai",
+    "dữ liệu nhạy cảm bệnh án crm",
+    "chuyển dữ liệu ra nước ngoài cloud llm",
+    "quản lý consent khách hàng zalo web",
+    "đánh giá tác động xử lý dữ liệu dpia"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Thiết Kế CRM Và AI Agent Đúng Chuẩn Nghị Định 13/2023",
+  "thumbnailHook": "Biến điều khoản Consent, DPIA và dữ liệu nhạy cảm thành bảng DB chuẩn.",
+  "thumbnailBadge": "COMPLIANCE • NĐ 13/2023",
+  "coverImage": "/imgs/boost/v2/tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai.webp",
+  "screenshotImage": "/imgs/boost/charts/tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai-report.webp",
+  "coverAlt": "Hồ sơ chuyển đổi yêu cầu nghị định 13/2023/nđ-cp bảo vệ dữ liệu cá nhân ai sang thiết kế bảng CRM, Zalo ZNS và Vector RAG",
+  "screenshotCaption": "Bảng đánh giá mức độ rủi ro tuân thủ pháp lý bảo vệ dữ liệu cá nhân tại 5 điểm chạm MarTech và AI của doanh nghiệp Việt Nam trước và sau khi áp dụng kiến trúc Consent Ledger và PII Redaction.",
+  "relatedModuleUrl": "/crm",
+  "relatedModuleLabel": "Xem CRM Lưu Vết Consent & Bảo Mật Dữ Liệu",
+  "relatedSlugs": [
+    "data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam",
+    "ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm",
+    "data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory",
+    "chuoi-nha-khoa-phong-kham-giam-no-show-bao-mat-benh-an"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Tuân thủ nghị định 13/2023/nđ-cp bảo vệ dữ liệu cá nhân ai cùng Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15 (hiệu lực từ 01/01/2026) không thể chỉ dừng ở một file Chính sách bảo mật PDF treo cuối website. Hồ sơ điều hành này chuyển hóa trực tiếp Điều 2 (tách dữ liệu cơ bản và nhạy cảm), Điều 11 (Consent chủ động, không tick sẵn) và Điều 24–25 (hồ sơ DPIA 60 ngày và chuyển dữ liệu xuyên biên giới) thành bảng Consent Ledger, luồng ZNS/Meta CAPI SHA-256 và đường ống xóa dữ liệu trong Vector RAG.",
+  "keyTakeaways": [
+    "Từ nền tảng Nghị định 13/2023/NĐ-CP đến Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 (có hiệu lực 01/01/2026), vi phạm chuyển dữ liệu xuyên biên giới có thể bị phạt tới 5% tổng doanh thu năm trước, đòi hỏi kiểm soát nghiêm ngặt việc đẩy dữ liệu thô qua Cloud LLM nước ngoài.",
+    "Tách rạch ròi bảng lưu Dữ liệu cơ bản (Họ tên, SĐT, Email theo Khoản 3 Điều 2) khỏi kho mã hóa Dữ liệu nhạy cảm (Bệnh án, chỉ số sức khỏe, tài chính ngân hàng, định vị GPS theo Khoản 4 Điều 2).",
+    "Thay thế một cột boolean `is_subscribed` cũ kỹ bằng bảng `consent_ledger` bất biến, ghi rõ mục đích cụ thể (ZNS chăm sóc, Meta CAPI đối soát, AI phân tích hội thoại), phiên bản chính sách và thời điểm xác nhận chủ động.",
+    "Thiết kế cơ chế 'Quyền được lãng quên' thực thi đồng thời trên PostgreSQL, bộ nhớ đệm lịch sử chat và Vector DB RAG trong thời hạn đáp ứng pháp định."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Thời hạn nộp hồ sơ DPIA (A05)",
+      "value": "60 ngày từ xử lý"
+    },
+    {
+      "label": "Chế tài tối đa xuyên biên giới",
+      "value": "5% doanh thu (Luật 2026)"
+    },
+    {
+      "label": "Ngưỡng xóa xuyên suốt CRM + RAG",
+      "value": "< 72 giờ tự động"
+    },
+    {
+      "label": "Dấu vết Consent kiểm chứng được",
+      "value": "100% Ledger bất biến"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Gửi tin nhắn chăm sóc Zalo ZNS hoặc bắn tín hiệu Meta CAPI SHA-256 có vi phạm quy định bảo vệ dữ liệu cá nhân không?",
+      "answer": "Không vi phạm nếu doanh nghiệp thiết kế đúng hai điều kiện kỹ thuật và pháp lý: thứ nhất, tại điểm thu thập Lead (Landing Page, Zalo Mini App, hóa đơn tại quầy), khách hàng đã được thông báo minh bạch và tự tay tích chọn đồng ý cho từng mục đích riêng biệt (chăm sóc đơn hàng, nhận ưu đãi, đo lường hiệu suất quảng cáo); thứ hai, bảng `consent_ledger` kiểm tra trạng thái đồng ý còn hiệu lực trước khi đẩy webhook sang ZNS hoặc băm SHA-256 gửi Meta CAPI. Nếu khách hàng rút lại sự đồng ý, hệ thống phải ngừng bắn tin ZNS và đưa mã băm vào danh sách loại trừ (Suppression) ngay lập tức."
+    },
+    {
+      "question": "Gọi API ChatGPT, Claude hoặc Gemini để tóm tắt lịch sử khách hàng CRM có bị coi là chuyển dữ liệu cá nhân ra nước ngoài theo Điều 25 không?",
+      "answer": "Có, nếu payload gửi ra máy chủ đặt ở nước ngoài vẫn chứa thông tin có thể nhận diện đích danh một cá nhân (SĐT, họ tên kèm ngữ cảnh địa chỉ, CCCD, email, hồ sơ bệnh án). Khi đó doanh nghiệp bắt buộc phải lập Hồ sơ đánh giá tác động chuyển dữ liệu cá nhân ra nước ngoài (gửi Bộ Công an - Cục A05 trong 60 ngày), ký thỏa thuận ràng buộc trách nhiệm với bên nhận và xin sự đồng ý rõ ràng của khách hàng. Hoặc doanh nghiệp áp dụng giải pháp kỹ thuật khử nhận dạng triệt để qua AI Gateway + PII Redaction tại VPC Việt Nam trước khi gọi Cloud LLM, hoặc xử lý dữ liệu thô hoàn toàn trên mô hình Local LLM đặt trong nước."
+    },
+    {
+      "question": "Tại sao Luật Bảo vệ dữ liệu cá nhân hiệu lực từ 01/01/2026 lại khiến các phòng khám nha khoa, BĐS và chuỗi bán lẻ phải rà soát gấp lại CRM?",
+      "answer": "Bởi Luật số 91/2025/QH15 nâng khung pháp lý từ cấp Nghị định 13/2023 lên cấp Luật với chế tài tài chính cực nặng: vi phạm chuyển dữ liệu xuyên biên giới có thể bị phạt đến 5% tổng doanh thu năm tài chính liền kề, hành vi mua bán dữ liệu phạt đến 10 lần khoản thu bất chính. Phòng khám nha khoa lưu giữ hồ sơ sức khỏe và ảnh X-quang (dữ liệu nhạy cảm), sàn BĐS chia sẻ tệp khách VIP giữa nhiều đại lý và chuỗi bán lẻ chạy ZNS/Meta Ads đại trà đều nằm ở vùng rủi ro cao nếu vẫn dùng bảng Excel chia sẻ tự do hoặc form thu thập không lưu vết Consent."
+    },
+    {
+      "question": "Khi khách hàng yêu cầu xóa dữ liệu cá nhân, hệ thống AI RAG đang lưu lịch sử hội thoại và Vector Embedding phải xử lý ra sao?",
+      "answer": "Nhiều doanh nghiệp chỉ xóa dòng khách hàng trong bảng CRM mà quên mất thông tin của họ đã bị tách thành các đoạn vector trong Qdrant/Pinecone hoặc nằm trong bộ nhớ hội thoại dài hạn của AI Agent (như Mem0 hoặc Redis chat history). Chuẩn kiến trúc của DOMATION gắn bắt buộc `subject_id` (mã định danh chủ thể) làm trường khóa ngoại logic trên mọi vector chunk, mọi bản ghi bộ nhớ agent và nhật ký webhook. Khi tiếp nhận yêu cầu xóa hợp lệ trên cổng bảo mật, một workflow Saga tự động xóa vĩnh viễn hoặc ẩn danh không thể đảo ngược ở cả PostgreSQL, Vector DB và hàng đợi ZNS/Email."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "tu-van-ban-phap-ly-den-luoc-do-co-so-du-lieu",
+      "eyebrow": "HỒ SƠ PHÁP LÝ ĐIỀU HÀNH • CHUYỂN LUẬT THÀNH LƯỢC ĐỒ HỆ THỐNG",
+      "variant": "narrative",
+      "heading": "Khoảng cách chết người giữa tờ Chính sách bảo mật đẹp đẽ và cấu trúc bảng dữ liệu thực tế trong CRM",
+      "pullQuote": "Cục A05 không kiểm tra câu chữ hoa mỹ trên trang Privacy Policy của bạn; họ kiểm tra xem bạn có chứng minh được khách hàng đã tích chọn đồng ý vào giây nào, dữ liệu bệnh án có tách khỏi bảng Marketing hay không, và dữ liệu có đang chảy sang máy chủ AI nước ngoài trái phép hay không.",
+      "paragraphs": [
+        "Kể từ khi Nghị định 13/2023/NĐ-CP chính thức có hiệu lực vào giữa năm 2023 và đặc biệt khi bước sang năm 2026 với cột mốc Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15 có hiệu lực từ ngày 01/01/2026, bài toán bảo mật dữ liệu tại doanh nghiệp Việt Nam đã chuyển hoàn toàn từ 'khuyến khích đạo đức' sang 'nghĩa vụ tuân thủ sống còn'. Mức chế tài nâng lên cấp Luật — với khung phạt tới 5% tổng doanh thu đối với vi phạm chuyển dữ liệu xuyên biên giới và tới 10 lần khoản thu bất chính đối với hành vi mua bán dữ liệu — khiến mọi mô hình tăng trưởng kiểu gom danh sách số điện thoại đại trà rồi ném thẳng vào AI Chatbot hay bắn tin nhắn hàng loạt trở thành rủi ro tài chính trực tiếp của ban giám đốc.",
+        "Thế nhưng khi rà soát thực tế các hệ thống MarTech và CRM đang chạy trên thị trường, đội ngũ DOMATION thường bắt gặp một nghịch lý: doanh nghiệp đã thuê đơn vị pháp lý soạn rất kỹ bộ Điều khoản bảo mật và mẫu hồ sơ DPIA trên giấy, nhưng đội kỹ thuật lại không hề thay đổi kiến trúc phần mềm phía dưới. Form đăng ký trên Landing Page vẫn tự động tích sẵn ô đồng ý (trái với nguyên tắc của Điều 11 về việc sự im lặng không phải là đồng ý), bảng bệnh án nha khoa nằm chung một truy vấn API với bảng nhân viên Telesales, và trợ lý AI CSKH vẫn gửi nguyên đoạn hội thoại chứa họ tên, số CCCD, địa chỉ nhà của khách hàng sang API mô hình ngôn ngữ đặt ở Mỹ mà không qua bước khử nhận dạng hay lập hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài.",
+        "Hồ sơ này được biên soạn theo góc nhìn kỹ sư hệ thống để giúp Giám đốc công nghệ, Pháp chế và Quản trị dữ liệu tại Việt Nam dịch chính xác từng yêu cầu trọng yếu của nghị định 13/2023/nđ-cp bảo vệ dữ liệu cá nhân ai thành thiết kế bảng PostgreSQL, luồng Zalo ZNS, Meta CAPI SHA-256 và quy trình xóa dữ liệu trong hệ thống AI RAG."
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "cac-moc-phap-ly-va-ky-thuat-cot-loi",
+      "heading": "Bốn thông số pháp lý trọng yếu cần mã hóa thẳng vào kiến trúc hạ tầng CRM & AI",
+      "stats": [
+        {
+          "value": "60 ngày",
+          "label": "Thời hạn nộp hồ sơ DPIA lên Cục A05",
+          "context": "Điều 24 & Điều 25 kể từ ngày bắt đầu xử lý hoặc chuyển ra nước ngoài",
+          "trend": "neutral"
+        },
+        {
+          "value": "2 nhóm",
+          "label": "Phân tầng bảng Dữ liệu Cơ bản vs Nhạy cảm",
+          "context": "Khoản 3 & Khoản 4 Điều 2: tách biệt SĐT/Tên khỏi Bệnh án/Tài chính",
+          "trend": "up"
+        },
+        {
+          "value": "0% ngầm định",
+          "label": "Cơ chế thu thập Consent hợp lệ",
+          "context": "Điều 11: không tích sẵn ô, không coi sự im lặng là đồng ý",
+          "trend": "down"
+        },
+        {
+          "value": "Tới 5%",
+          "label": "Trần phạt doanh thu (Luật BVDLCN 2026)",
+          "context": "Áp dụng cho hành vi vi phạm quy định chuyển dữ liệu xuyên biên giới",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ban-do-hoa-3-luong-du-lieu-crm-zns-capi-rag",
+      "eyebrow": "KIẾN TRÚC TUÂN THỦ • CONSENT LEDGER, ZNS, META CAPI & VECTOR RAG",
+      "variant": "deep-dive",
+      "heading": "Chuyển hóa 4 trụ cột pháp lý thành bảng cơ sở dữ liệu và quy trình tự động hóa",
+      "paragraphs": [
+        "Thiết kế đầu tiên cần xây dựng là Sổ cái sự đồng ý bất biến (`consent_ledger`). Tuyệt đối không lưu mỗi một cột cờ `marketing_opt_in = true` trong bảng `customers`, vì khi bị thanh tra bạn không thể chứng minh khách hàng đồng ý vào thời điểm nào, đọc phiên bản điều khoản nào, và đồng ý cho mục đích gì. Bảng `consent_ledger` chỉ cho phép thêm dòng mới (append-only) gồm các trường: `subject_id`, `purpose_code` (ví dụ tách riêng `order_fulfillment`, `zns_care`, `ads_capi_measurement`, `ai_assistant_analysis`), `policy_version`, `capture_channel` (`web_form`, `zalo_miniapp`, `qr_offline`), `evidence_hash` và `revoked_at`. Khi khách hàng chỉ đồng ý tư vấn đơn hàng nhưng không đồng ý nhận tin khuyến mãi, luồng Visual Flow Builder tự động bỏ qua nhánh gửi ZNS quảng cáo.",
+        "Thứ hai là nguyên tắc cô lập Dữ liệu cá nhân cơ bản (Khoản 3 Điều 2) và Dữ liệu cá nhân nhạy cảm (Khoản 4 Điều 2). Trong các triển khai thực tế của DOMATION cho lĩnh vực nha khoa và thẩm mỹ như Nha Khoa Flora hay ImplantSwiss, hồ sơ bệnh án, ảnh chụp phim, tiền sử dị ứng và thông tin thanh toán ngân hàng được đặt ở phân vùng mã hóa riêng biệt với khóa truy cập chặt chẽ và hiển thị che mờ số điện thoại (Phone Masking Audit) trên toàn bộ màn hình báo cáo tổng hợp. Bộ phận Marketing chỉ nhìn thấy tập dữ liệu phục vụ đo lường phễu đã được băm một chiều SHA-256 khi đồng bộ sang Meta Conversions API (CAPI), tuyệt đối không tiếp xúc chi tiết bệnh án.",
+        "Thứ ba là điểm nóng chuyển dữ liệu xuyên biên giới và AI RAG (Điều 25 và các quy định khử nhận dạng trong Luật BVDLCN 2025/2026). Mỗi khi AI Chatbot đọc hồ sơ khách hàng rồi gửi lên mô hình đám mây đặt tại Singapore hoặc Hoa Kỳ, hệ thống phải lựa chọn một trong hai con đường minh bạch: hoặc thực thi khử nhận dạng nghiêm ngặt qua AI Gateway + PII Redaction ngay trong VPC Việt Nam (hoán đổi toàn bộ họ tên, CCCD, SĐT, MST, địa chỉ cụ thể trước khi rời nước) hoặc vận hành Private LLM đặt trên máy chủ nội địa Việt Nam kết hợp lập đầy đủ Hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài khi sử dụng hạ tầng Cloud quốc tế. Đồng thời, toàn bộ Vector DB lưu lịch sử chăm sóc khách hàng phải gắn nhãn `subject_id` và `retention_expires_at` để thực thi quyền xóa và quyền rút lại sự đồng ý trên mọi lớp lưu trữ chỉ trong một lệnh gọi API."
+      ],
+      "bullets": [
+        "Không gộp chung điều khoản bắt buộc thực hiện hợp đồng với điều khoản tiếp thị quảng cáo hoặc dùng dữ liệu huấn luyện AI trong cùng một ô tích chọn.",
+        "Gắn trường `retention_expires_at` cho từng nhóm dữ liệu Lead quá hạn (ví dụ Lead lạnh sau 24 tháng không phát sinh giao dịch tự động ẩn danh hóa hoặc xóa lịch sử chi tiết).",
+        "Lưu vết lịch sử giải mã dữ liệu nhạy cảm (`pii_access_audit_log`) ghi nhận rõ ai đã xem SĐT gốc hoặc bệnh án vào giờ nào để phát hiện rò rỉ nội bộ."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-rui-ro-tuan-thu-theo-phan-he",
+      "heading": "Đánh giá điểm rủi ro pháp lý bảo vệ dữ liệu trên 5 điểm chạm MarTech & AI trước và sau chuẩn hóa",
+      "subtitle": "Thang điểm rủi ro tổng hợp (0–100, càng cao càng nguy hiểm) đo dựa trên thiếu hụt Consent, rò rỉ PII xuyên biên giới và khả năng xóa dữ liệu",
+      "chart": {
+        "chartType": "bar",
+        "title": "Điểm rủi ro vi phạm quy định BVDLCN (Thang 100) trước vs sau thiết kế chuẩn DOMATION",
+        "subtitle": "AI Chatbot RAG và Tracking Form không Consent rõ ràng là hai nguồn rủi ro cao nhất tại doanh nghiệp SME",
+        "xKey": "touchpoint",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "beforeRisk",
+            "label": "Quy trình cũ (Chưa chuẩn hóa)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "afterRisk",
+            "label": "Kiến trúc DOMATION Consent + PII Guard",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          { "touchpoint": "Lead Form & Cookie", "beforeRisk": 84, "afterRisk": 12 },
+          { "touchpoint": "Meta CAPI & Ads", "beforeRisk": 76, "afterRisk": 15 },
+          { "touchpoint": "Zalo OA & ZNS Flow", "beforeRisk": 72, "afterRisk": 14 },
+          { "touchpoint": "CRM & Bệnh án/HR", "beforeRisk": 88, "afterRisk": 16 },
+          { "touchpoint": "AI RAG & Cloud LLM", "beforeRisk": 94, "afterRisk": 11 }
+        ],
+        "kpis": [
+          {
+            "label": "Điểm nóng rủi ro cao nhất",
+            "value": "94/100 (AI RAG)",
+            "delta": "Đẩy thô qua Cloud ngoài",
+            "positive": false
+          },
+          {
+            "label": "Mức giảm rủi ro bình quân",
+            "value": "-83,5%",
+            "delta": "82,8 -> 13,6 điểm",
+            "positive": true
+          },
+          {
+            "label": "Truy xuất bằng chứng Consent",
+            "value": "< 2 giây",
+            "delta": "Theo subject_id & version",
+            "positive": true
+          },
+          {
+            "label": "Sẵn sàng hồ sơ DPIA A05",
+            "value": "100% map bảng",
+            "delta": "Tự động xuất báo cáo",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô hình đánh giá rủi ro nội bộ DOMATION đối chiếu các yêu cầu kỹ thuật của Nghị định 13/2023/NĐ-CP và Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15."
+      },
+      "insightSummary": "Hai điểm chạm có mức độ rủi ro vượt ngưỡng 85/100 tại doanh nghiệp Việt là truyền dữ liệu khách hàng thô qua AI Chatbot dùng Cloud LLM nước ngoài (94/100) và gom chung dữ liệu nhạy cảm bệnh án/tài chính với bảng CRM bán hàng (88/100). Chuẩn hóa Consent Ledger, tách bảng dữ liệu nhạy cảm và đặt PII Gateway đưa mức rủi ro về vùng kiểm soát an toàn 11–16/100."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-tuan-thu-nghi-dinh-13-ai-crm",
+      "src": "/imgs/boost/charts/tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai-report.webp",
+      "alt": "Biểu đồ kiểm toán tuân thủ nghị định 13/2023/nđ-cp bảo vệ dữ liệu cá nhân ai cho CRM, Zalo ZNS và Vector RAG",
+      "caption": "Bảng điều phối tuân thủ bảo vệ dữ liệu cá nhân: theo dõi tỷ lệ khách hàng có Consent hợp lệ theo từng mục đích, nhật ký xóa đồng bộ PostgreSQL-Qdrant và trạng thái khử nhận dạng trước khi gọi Cloud LLM.",
+      "badge": "PDPL & NĐ 13 COMPLIANCE"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-thiet-ke-crm-ai-dung-luat-bvdlcn",
+      "heading": "Checklist rà soát kỹ thuật bắt buộc cho CRM, Zalo ZNS, Meta CAPI và AI RAG tại Việt Nam",
+      "items": [
+        {
+          "check": "Loại bỏ hoàn toàn checkbox tích sẵn (Pre-checked) trên mọi biểu mẫu Web, Zalo Mini App và Lead Form",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra DOM giao diện mọi Landing Page và biểu mẫu khảo sát ở trạng thái tải trang ban đầu.",
+          "passThreshold": "100% ô đồng ý xử lý dữ liệu và nhận tin tiếp thị mặc định chưa chọn; có tách biệt mục đích rõ ràng."
+        },
+        {
+          "check": "Vận hành bảng consent_ledger lưu bằng chứng bất biến",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra lược đồ PostgreSQL và thử thao tác cấp rồi rút lại consent cho một khách hàng test.",
+          "passThreshold": "Ghi đầy đủ subject_id, purpose_code, policy_version, timestamp và kênh xác nhận; không ghi đè mất lịch sử cũ."
+        },
+        {
+          "check": "Phân tách vật lý hoặc mã hóa lớp riêng cho Dữ liệu cá nhân nhạy cảm (Khoản 4 Điều 2)",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra quyền truy cập của tài khoản Marketing/Sale với các bảng chứa bệnh án, tài chính hoặc định vị GPS.",
+          "passThreshold": "Role Sales/Marketing không đọc được cột nhạy cảm; áp dụng FORCE RLS và che mờ SĐT trên báo cáo tổng hợp."
+        },
+        {
+          "check": "Kiểm tra đường ống xóa & rút đồng ý lan truyền sang ZNS, Meta CAPI và Vector DB RAG",
+          "severity": "high",
+          "verificationHow": "Kích hoạt yêu cầu 'Rút lại sự đồng ý / Xóa dữ liệu' cho 1 hồ sơ mẫu rồi truy vấn lại PostgreSQL, Qdrant và hàng đợi ZNS.",
+          "passThreshold": "Trong < 72 giờ (hoặc tức thì qua webhook), 0 tin ZNS được phép gửi, 0 vector chunk còn chứa PII và Meta nhận tín hiệu loại trừ."
+        },
+        {
+          "check": "Kiểm tra DPIA (Điều 24) và dữ liệu rời lãnh thổ Việt Nam (Điều 25)",
+          "severity": "high",
+          "verificationHow": "Rà soát danh sách toàn bộ API bên thứ ba (LLM, Email SES, Analytics, CDN) nhận payload từ CRM.",
+          "passThreshold": "Có bản đồ luồng dữ liệu cập nhật, hồ sơ DPIA sẵn sàng trong hạn 60 ngày và lớp PII Redaction/ZDR trước mọi Cloud LLM."
+        }
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "lo-trinh-chuan-hoa-phap-ly-du-lieu-4-giai-doan",
+      "heading": "Lộ trình 8 tuần nâng cấp hệ thống CRM & AI đạt chuẩn Nghị định 13/2023 và Luật BVDLCN 2026",
+      "variant": "migration-phases",
+      "items": [
+        {
+          "tag": "TUẦN 01–02 • KIỂM KÊ",
+          "title": "Lập bản đồ dòng chảy dữ liệu (Data Mapping) & phân loại Cơ bản/Nhạy cảm",
+          "detail": "Quét toàn bộ form thu Lead, bảng Excel trôi nổi, file PDF nạp cho AI Chatbot và danh sách webhook gửi ra ngoài để gắn nhãn chính xác theo Khoản 3 & Khoản 4 Điều 2.",
+          "metricOrTool": "Data Inventory Matrix"
+        },
+        {
+          "tag": "TUẦN 03–04 • LƯỢC ĐỒ DB",
+          "title": "Triển khai Consent Ledger, tách bảng nhạy cảm và bật Phone Masking",
+          "detail": "Cập nhật giao diện form không tích sẵn, nối bảng consent_ledger vào lõi CRM 360° và ERP 5.0; cô lập quyền đọc dữ liệu nhạy cảm bằng PostgreSQL FORCE RLS.",
+          "metricOrTool": "Consent Ledger + FORCE RLS"
+        },
+        {
+          "tag": "TUẦN 05–06 • GATEWAY & RAG",
+          "title": "Lắp lớp PII Redaction trước Cloud LLM và đồng bộ xóa Vector DB",
+          "detail": "Đưa mọi luồng AI Chatbot qua cổng che CCCD/SĐT/MST hoặc điều hướng tác vụ nhạy cảm sang VPC nội địa; gắn subject_id cho mọi vector chunk để hỗ trợ xóa triệt để.",
+          "metricOrTool": "PII Proxy + Saga Deletion"
+        },
+        {
+          "tag": "TUẦN 07–08 • HỒ SƠ DPIA",
+          "title": "Hoàn thiện hồ sơ DPIA Cục A05 & diễn tập xử lý yêu cầu rút quyền 72h",
+          "detail": "Kết xuất báo cáo kỹ thuật làm phụ lục chứng minh biện pháp bảo vệ trong hồ sơ DPIA nộp trong hạn 60 ngày; chạy kiểm thử diễn tập đáp ứng yêu cầu xóa của chủ thể dữ liệu.",
+          "metricOrTool": "DPIA Dossier • Drill < 72h"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-phap-ly-du-lieu",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng để tuân thủ pháp luật chỉ là một xấp giấy trong ngăn kéo — hãy biến nó thành một phần của kiến trúc phần mềm",
+      "body": "Khi tư vấn thiết kế hệ thống may đo cho các đơn vị y tế như Nha Khoa Flora, ImplantSwiss hay các tổ chức giáo dục tuyển sinh hàng chục nghìn hồ sơ như IDEAS, tôi luôn nhấn mạnh với ban giám đốc rằng sự cố dữ liệu không chừa doanh nghiệp nào dù là SME hay tập đoàn. Khi bạn xây sẵn bảng Consent Ledger, che mờ SĐT trên màn hình tổng hợp, băm SHA-256 trước khi bắn Meta CAPI và chặn PII thô ngay tại AI Gateway trước lúc gọi Cloud LLM, doanh nghiệp vừa bảo vệ được khách hàng, vừa ngủ ngon trước mọi cuộc kiểm tra tuân thủ mà vẫn giữ nguyên tốc độ tăng trưởng."
+    }
+  ]
+}

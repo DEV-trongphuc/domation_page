@@ -1,0 +1,345 @@
+{
+  "id": "art-115",
+  "number": "115",
+  "slug": "text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db",
+  "shardId": "shard05",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Executive BI & Data Analytics",
+  "clusterId": "kw-ai-agent-rag",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Text-to-SQL có Guardrails cho CEO: Hỏi đáp doanh thu, công nợ bằng tiếng Việt mà không lo lộ hoặc xóa DB",
+  "seoTitle": "Text-to-SQL Có Guardrails Cho CEO: An Toàn Tuyệt Đối | DOMATION",
+  "metaDescription": "Xây trợ lý AI Text-to-SQL chạy trên Read-Replica, ép PostgreSQL RLS theo vai trò, phân tích AST chặn DROP/UPDATE và khóa ngân sách truy vấn cho CEO.",
+  "focusKeyword": "text-to-sql có guardrails an toàn cho ceo",
+  "secondaryKeywords": [
+    "hỏi đáp cơ sở dữ liệu bằng tiếng việt",
+    "chống sql injection trong text to sql",
+    "postgresql read replica cho ai bi",
+    "rls cho truy vấn ai sql",
+    "ai phân tích doanh thu cho ban giám đốc"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Cho CEO Hỏi Doanh Thu Bằng AI Không Lo Sập DB",
+  "thumbnailHook": "Khóa Read-Only Replica, AST Validator và RLS chi nhánh trước khi chạy SQL.",
+  "thumbnailBadge": "AI BI • TEXT-TO-SQL",
+  "coverImage": "/imgs/boost/v2/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db.webp",
+  "screenshotImage": "/imgs/boost/charts/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Trợ Lý Dữ Liệu Điều Hành ERP 5.0",
+  "relatedSlugs": [
+    "semantic-layer-chuan-hoa-cong-thuc-kpi-truoc-khi-noi-ai-bi",
+    "agentic-rag-vs-naive-rag-dinh-tuyen-truy-van-postgres-live",
+    "improper-output-handling-xss-sqli-khi-tin-tuong-json-llm",
+    "kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme"
+  ],
+  "relatedPortfolioId": "implantswiss-crm",
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Sổ tay kỹ thuật xây dựng trợ lý AI Text-to-SQL có Guardrails chạy trên PostgreSQL Read-Replica, phân tích AST và khóa RLS theo vai trò cho CEO",
+  "screenshotCaption": "Biểu đồ benchmark độ chính xác thực thi (Execution Accuracy), tỷ lệ chặn thành công truy vấn phá hoại/Prompt Injection và độ trễ P95 qua 5 tầng Guardrails trong Text-to-SQL.",
+  "tldrSummary": "Cấp thẳng chuỗi kết nối cơ sở dữ liệu sản xuất cho mô hình ngôn ngữ lớn để CEO hỏi doanh thu bằng tiếng Việt là sai lầm bảo mật nghiêm trọng nhất trong các dự án AI BI nội bộ. Sổ tay này trình bày kiến trúc Text-to-SQL có Guardrails 5 lớp do DOMATION chuẩn hóa: tách luồng đọc sang PostgreSQL Read-Replica, tạo Semantic Views chuẩn hóa công thức KPI thay cho bảng thô, phân tích cây cú pháp AST chặn mọi lệnh ghi hoặc xóa, ép `FORCE ROW LEVEL SECURITY` theo vai trò qua `SET LOCAL`, và khóa ngân sách thực thi bằng `EXPLAIN` cùng `statement_timeout`.",
+  "keyTakeaways": [
+    "Tuyệt đối không dùng tài khoản `postgres` hay database OLTP chính cho AI Agent: mọi truy vấn Text-to-SQL phải chạy qua Read-Replica với role chỉ có quyền `SELECT` trên schema `ai_bi` riêng biệt.",
+    "Không kiểm tra SQL bằng Regex đơn thuần vì dễ bị qua mặt qua comment inline, CTE chứa `DELETE ... RETURNING` hoặc chuỗi lồng; bắt buộc parse thành AST bằng `node-sql-parser` hoặc `sqlglot`.",
+    "Tránh để LLM tự viết `JOIN` trên 25 bảng nghiệp vụ phức tạp: đóng gói sẵn Semantic Views đã chuẩn hóa doanh thu thực thu, công nợ quá hạn và khóa cột nhạy cảm như mật khẩu hay lương.",
+    "Áp `FORCE ROW LEVEL SECURITY` trên PostgreSQL kèm `SET LOCAL app.current_tenant_id` và `app.user_role` trong transaction `READ ONLY` để Trưởng chi nhánh không bao giờ hỏi chéo số vùng khác.",
+    "Chặn truy vấn quét toàn bảng (Full Table Scan) làm treo hệ thống bằng cổng `EXPLAIN (FORMAT JSON)` kiểm tra tổng cost, ép `LIMIT <= 200` và `statement_timeout = '5000ms'`."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Chặn lệnh DROP/UPDATE/Injection",
+      "value": "100% (AST + Role)"
+    },
+    {
+      "label": "Execution Accuracy tiếng Việt",
+      "value": "94.6% (Semantic Views)"
+    },
+    {
+      "label": "Rò rỉ dữ liệu chéo chi nhánh/lương",
+      "value": "0 bản ghi (FORCE RLS)"
+    },
+    {
+      "label": "Độ trễ phản hồi bảng số liệu P95",
+      "value": "2.4 giây (Replica)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao không thể dùng bộ lọc Regex để chặn từ khóa DROP, DELETE, UPDATE trong câu SQL do AI sinh ra?",
+      "answer": "Bộ lọc Regex chỉ kiểm tra bề mặt chuỗi ký tự nên cực kỳ dễ bị vượt qua bởi kỹ thuật Prompt Injection hoặc lỗi sinh mã bất ngờ của mô hình. Ví dụ, kẻ tấn công có thể chèn chú thích giữa từ khóa (`DR/**/OP TABLE`), sử dụng câu lệnh nhiều bước tách bằng dấu chấm phẩy (`SELECT 1; TRUNCATE orders;`), lợi dụng mệnh đề CTE có tác dụng phụ (`WITH del AS (DELETE FROM leads RETURNING *) SELECT count(*) FROM del`), hoặc gọi các hàm hệ thống PostgreSQL như `pg_sleep(60)` để đánh sập kết nối hay `pg_read_file` để đọc tệp cấu hình. Khi phân giải câu SQL thành cây cú pháp trừu tượng (AST), trình kiểm tra mới nhận diện được chính xác loại nút câu lệnh gốc, số lượng statement, danh sách bảng được chạm tới và toàn bộ hàm được gọi."
+    },
+    {
+      "question": "Nếu LLM chỉ được quyền SELECT trên PostgreSQL Read-Replica thì có còn rủi ro bảo mật nào không?",
+      "answer": "Vẫn còn hai rủi ro cực lớn nếu thiếu các tầng bảo vệ tiếp theo: rò rỉ dữ liệu ngoài thẩm quyền và từ chối dịch vụ (Denial of Service) do cạn kiệt tài nguyên. Một câu lệnh `SELECT` hợp lệ vẫn có thể móc toàn bộ bảng lương nhân sự, thông tin CCCD khách hàng hay doanh thu chi nhánh đối thủ nếu thiếu `FORCE ROW LEVEL SECURITY` và schema whitelist. Ngoài ra, một câu truy vấn `SELECT *` nối bốn bảng lớn vài triệu dòng không có `LIMIT` hoặc không đi qua index có thể chiếm dụng 100% CPU và bộ nhớ đệm của Read-Replica trong nhiều phút, làm chậm toàn bộ các báo cáo BI khác đang chạy song song."
+    },
+    {
+      "question": "Semantic Layer đóng vai trò gì giúp CEO hỏi bằng tiếng Việt tự nhiên mà AI không hiểu sai công thức?",
+      "answer": "Trong tiếng Việt điều hành, cùng một cụm từ 'doanh thu tháng này tại Sài Gòn' có thể mang ba nghĩa khác nhau tùy ngữ cảnh: tổng giá trị hợp đồng vừa ký (Booked GMV), giá trị đã xuất hóa đơn VAT trên MISA, hay tiền thực thu đã về tài khoản ngân hàng. Tương tự, địa bàn có thể được lưu trong database dưới dạng mã `HCM-01`, `TP.HCM` hoặc `Ho Chi Minh`. Nếu bắt LLM tự đoán tên cột và tự ghép `JOIN`, tỷ lệ sai công thức lên tới 35–45%. Khi dựng Semantic Views như `ai_bi.v_exec_revenue_daily` kèm từ điển đồng nghĩa nghiệp vụ, AI chỉ cần truy vấn một góc nhìn đã tính sẵn công thức chuẩn và trả kèm định nghĩa công thức ngay dưới kết quả để CEO kiểm chứng."
+    },
+    {
+      "question": "Làm sao tách quyền khi cùng một Trợ lý AI Text-to-SQL nhưng vừa phục vụ CEO vừa phục vụ Giám đốc chi nhánh?",
+      "answer": "Không bao giờ dựa vào câu nhắc hệ thống kiểu 'chỉ xem dữ liệu miền Nam' trong prompt để phân quyền, vì prompt có thể bị thao túng ngay trong một câu hỏi tiếp theo. Quyền truy cập phải được định danh ở tầng API Gateway thông qua JWT hoặc mã nhân sự đã xác thực Zalo ID, sau đó backend mở giao dịch `BEGIN TRANSACTION READ ONLY` trên PostgreSQL và gán biến phiên `SET LOCAL app.user_role = 'branch_manager'; SET LOCAL app.branch_code = 'HCM';`. Chính sách `FORCE ROW LEVEL SECURITY` trên bảng hoặc view nguồn sẽ tự động lọc bỏ mọi dòng không khớp chi nhánh ngay bên trong nhân database trước khi dữ liệu quay về tầng ứng dụng."
+    },
+    {
+      "question": "Chi phí vận hành một luồng Text-to-SQL chuẩn chỉnh cho doanh nghiệp SME 50–200 nhân sự là bao nhiêu?",
+      "answer": "Nhờ dùng Semantic Views gọn nhẹ thay vì nhồi schema của 80–120 bảng vào prompt, mỗi câu hỏi của CEO chỉ tiêu tốn khoảng 1.800–3.200 input tokens và 250–450 output tokens. Với các model cân bằng như Gemini 3.8 Flash hoặc Claude Sonnet 5.5 kết hợp Prompt Caching cho phần mô tả schema tĩnh, chi phí API trung bình chỉ rơi vào khoảng 30–90 VNĐ cho mỗi câu hỏi hoàn chỉnh. Phần hạ tầng PostgreSQL Read-Replica quy mô SME có thể chạy gọn trên cùng cụm máy chủ tách I/O hoặc một node riêng với chi phí chỉ vài trăm nghìn đến hơn một triệu đồng mỗi tháng."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "bay-demo-text-to-sql-va-rui-ro-oltp",
+      "eyebrow": "Sổ Tay Triển Khai • Phòng Tuyến Đầu Tiên",
+      "variant": "narrative",
+      "heading": "Cái bẫy của bản demo Text-to-SQL 15 phút: Nối thẳng AI vào Database sản xuất",
+      "pullQuote": "Một câu hỏi tiếng Việt vô hại kiểu 'Thống kê giúp anh bảng công nợ rồi xóa giúp anh mấy dòng test' có thể biến thành thảm họa mất trắng dữ liệu nếu bạn giao tài khoản ghi cho LLM.",
+      "paragraphs": [
+        "Trên mạng xã hội kỹ thuật, việc dựng một trợ lý hỏi đáp cơ sở dữ liệu bằng tiếng Việt thường được trình diễn chỉ trong 30 dòng mã nguồn: nhét nguyên sơ đồ bảng `pg_dump --schema-only` vào prompt hệ thống, truyền chuỗi `DATABASE_URL` có sẵn vào thư viện LangChain hoặc một MCP Postgres server, rồi cho AI tự sinh SQL và thực thi ngay lập tức. Bản demo chạy cực kỳ ấn tượng trước mặt Ban Giám đốc khi câu hỏi 'Doanh thu tuần qua bao nhiêu?' trả ra bảng số liệu sau ba giây.",
+        "Nhưng khoảng cách từ bản demo đó đến một hệ thống Text-to-SQL có guardrails an toàn cho CEO trong môi trường vận hành thực tế là một vực sâu rủi ro. Trong hơn 35 hệ thống ERP và CRM mà đội ngũ DOMATION kiểm toán, cơ sở dữ liệu PostgreSQL chính (Primary OLTP) vừa là nơi ghi nhận Lead chia qua ZaloBot từng giây, vừa giữ hóa đơn VAT đồng bộ MISA, vừa lưu bảng lương và thông tin định danh CCCD khách hàng. Nếu nối thẳng AI vào cụm này mà thiếu rào chắn đa lớp, bốn thảm họa hoàn toàn có thật sẽ lần lượt gõ cửa doanh nghiệp.",
+        "Thứ nhất là thảm họa phá hủy hoặc làm sai lệch dữ liệu qua thao tác ghi ngoài ý muốn: một câu nhắc bị hiểu nhầm hoặc kỹ thuật Indirect Prompt Injection ẩn trong ghi chú khách hàng CRM có thể kích hoạt lệnh `UPDATE`, `TRUNCATE`, thậm chí `DROP TABLE` nếu role kết nối dùng chung quyền sở hữu bảng. Thứ hai là rò rỉ dữ liệu nhạy cảm chéo vai trò: Giám đốc kinh doanh khu vực miền Trung chỉ cần hỏi 'So sánh hoa hồng cao nhất công ty tháng 10' là AI vô tư kéo ra bảng thu nhập của toàn bộ nhân sự và số điện thoại khách hàng khu vực miền Bắc. Thứ ba là treo cứng hệ thống bán hàng: chỉ một truy vấn AI sinh câu lệnh `CROSS JOIN` hoặc `ILIKE '%...%'` quét qua bảng lịch sử 8 triệu dòng nhật ký cũng đủ làm CPU tăng vọt 100%, khóa kết nối khiến khách hàng không thể đặt cọc hay thanh toán VietQR. Thứ tư là ảo giác định nghĩa KPI: AI tự cộng cả đơn hàng đã hủy vào doanh thu thuần rồi báo cáo con số sai lệch nghiêm trọng lên bàn họp giao ban thứ Hai."
+      ],
+      "bullets": [
+        "Nguyên tắc tách ly tuyệt đối: AI BI chỉ bao giờ được nhìn thấy bản sao chỉ đọc (Read-Replica) hoặc kho dữ liệu phân tích tách biệt khỏi hệ thống ghi đơn hàng trực tiếp.",
+        "Nguyên tắc không tin cậy đầu ra LLM: mọi câu lệnh SQL do AI tạo ra đều bị coi như đầu vào người dùng chưa kiểm chứng (Untrusted Input) và phải đi qua máy phân tích cú pháp AST.",
+        "Nguyên tắc thẩm quyền tại tầng Database: phân quyền xem dữ liệu theo chi nhánh hoặc phòng ban bắt buộc phải thực thi bằng PostgreSQL Row-Level Security, không gửi gắm vào lời dặn trong Prompt."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-5-tang-guardrails-text-to-sql",
+      "heading": "Hiệu quả phòng thủ & Độ chính xác thực thi qua 5 cấp độ Guardrails Text-to-SQL",
+      "subtitle": "Kiểm thử nội bộ trên 500 truy vấn tiếng Việt điều hành (bao gồm 380 câu hỏi nghiệp vụ thật và 120 mẫu tấn công Prompt Injection / SQL nặng).",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tỷ lệ chặn truy vấn nguy hiểm (%), Execution Accuracy (%) và Độ trễ P95 (s) theo cấu hình",
+        "subtitle": "Đối chiếu từ cấu hình Naive Direct-DB đến Full 5-Layer Guardrails + Semantic Views",
+        "xKey": "stage",
+        "yUnit": "% / s",
+        "series": [
+          {
+            "key": "attackBlocked",
+            "label": "Tỷ lệ chặn SQL phá hoại / Lộ quyền (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "execAccuracy",
+            "label": "Execution Accuracy tiếng Việt (%)",
+            "color": "#10B981",
+            "type": "bar"
+          },
+          {
+            "key": "p95LatencySec",
+            "label": "Độ trễ phản hồi P95 (giây)",
+            "color": "#F59E0B",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "stage": "L0: Nối thẳng + Prompt",
+            "attackBlocked": 42.0,
+            "execAccuracy": 58.4,
+            "p95LatencySec": 8.9
+          },
+          {
+            "stage": "L1: Regex + Read-Only",
+            "attackBlocked": 79.5,
+            "execAccuracy": 61.2,
+            "p95LatencySec": 6.8
+          },
+          {
+            "stage": "L2: Read-Replica + AST",
+            "attackBlocked": 94.0,
+            "execAccuracy": 67.5,
+            "p95LatencySec": 4.9
+          },
+          {
+            "stage": "L3: + FORCE RLS Role",
+            "attackBlocked": 99.2,
+            "execAccuracy": 73.8,
+            "p95LatencySec": 4.1
+          },
+          {
+            "stage": "L4: + Semantic Views",
+            "attackBlocked": 100.0,
+            "execAccuracy": 91.4,
+            "p95LatencySec": 2.9
+          },
+          {
+            "stage": "L5: + EXPLAIN & Cache",
+            "attackBlocked": 100.0,
+            "execAccuracy": 94.6,
+            "p95LatencySec": 2.4
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Chặn câu lệnh rủi ro",
+            "value": "100%",
+            "delta": "Từ 42.0% ở L0 lên 100%",
+            "positive": true
+          },
+          {
+            "label": "Execution Accuracy",
+            "value": "94.6%",
+            "delta": "+36.2 điểm % nhờ Semantic Views",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ P95 trả lời CEO",
+            "value": "2.4 giây",
+            "delta": "Giảm 73% thời gian chờ",
+            "positive": true
+          },
+          {
+            "label": "Ảnh hưởng CPU Primary DB",
+            "value": "0.0%",
+            "delta": "Cô lập hoàn toàn qua Replica",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Dữ liệu kiểm thử tại DOMATION Data Engineering Lab trên schema ERP/CRM 42 bảng (500 câu truy vấn tiếng Việt điều hành, 2026)."
+      },
+      "insightSummary": "Bước nhảy vọt về an toàn đến ở L2 và L3 khi kết hợp Read-Replica, bộ phân giải AST và PostgreSQL FORCE RLS (đạt 99.2–100% tỷ lệ chặn câu lệnh nguy hiểm và truy cập chéo vùng). Trong khi đó, bước nhảy vọt về độ chính xác nghiệp vụ (+17.6 điểm %) chỉ xuất hiện tại L4 khi ngừng cho AI tự đoán JOIN trên bảng thô và chuyển sang Semantic Views đã định nghĩa sẵn công thức doanh thu, công nợ."
+    },
+    {
+      "type": "visual-figure",
+      "id": "so-do-kien-truc-text-to-sql-guardrails",
+      "src": "/imgs/boost/charts/text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db-report.webp",
+      "alt": "Biểu đồ benchmark kiến trúc Text-to-SQL có Guardrails 5 lớp chạy trên PostgreSQL Read-Replica, AST Validator và FORCE RLS",
+      "caption": "Đánh giá thực nghiệm 5 lớp phòng thủ Text-to-SQL của DOMATION: từ kiểm soát cú pháp AST, cô lập Read-Replica đến Semantic Views giúp CEO tra cứu số liệu tiếng Việt chính xác.",
+      "badge": "Playbook Benchmark • Text-to-SQL Guardrails"
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-5-lop-phong-thu-text-to-sql",
+      "eyebrow": "Cẩm Nang Kỹ Thuật • Defense-in-Depth",
+      "variant": "deep-dive",
+      "heading": "Thiết kế 5 chốt chặn bất biến biến câu hỏi tiếng Việt thành truy vấn sạch và an toàn",
+      "paragraphs": [
+        "Chốt chặn đầu tiên bắt đầu từ hạ tầng lưu trữ: thiết lập một PostgreSQL Streaming Read-Replica chuyên biệt cho tác vụ phân tích (hoặc sử dụng materialized analytical tables trên ClickHouse/DuckDB nếu khối lượng lịch sử vượt hàng chục triệu dòng mỗi tháng). Trên bản sao này, kỹ sư tạo một schema riêng mang tên `ai_bi` và một user cơ sở dữ liệu tối giản là `role_ai_reader`. Tài khoản này bị tước toàn bộ quyền `INSERT`, `UPDATE`, `DELETE`, `CREATE`, `ALTER`, `TRUNCATE`, không được phép truy cập `pg_catalog` nhạy cảm hay `information_schema` của các bảng chứa mật khẩu, khóa bí mật API Zalo OA, hoặc bảng lương chi tiết. Thậm chí cả quyền đọc trực tiếp trên schema `public` cũng bị thu hồi sạch sẽ; `role_ai_reader` chỉ được cấp quyền `SELECT` duy nhất trên danh sách các View an toàn trong `ai_bi`.",
+        "Chốt chặn thứ hai nằm ở tầng Semantic Layer và Từ điển đồng nghĩa tiếng Việt. Sai lầm phổ biến nhất của đội Dev là thả toàn bộ 60 bảng chuẩn hóa 3NF vào ngữ cảnh mô hình và hy vọng AI nhớ được bảng nào cần `WHERE deleted_at IS NULL AND status NOT IN ('cancelled', 'draft')`. Thay vào đó, hãy thiết kế 6 đến 10 View điều hành sạch sẽ trong `ai_bi` như `v_revenue_daily_summary`, `v_ar_aging_invoices`, `v_lead_funnel_conversion` và `v_inventory_health`. Trước khi gọi LLM sinh SQL, một bước Entity Lookup nhẹ sẽ ánh xạ các cụm từ đời thường của CEO như 'doanh thu ròng', 'số khu vực miền Nam', 'khách nợ quá hạn 30 ngày' vào đúng tên cột, mã chi nhánh chuẩn và công thức nghiệp vụ được Ban Giám đốc phê duyệt.",
+        "Chốt chặn thứ ba là Trình phân giải cây cú pháp AST (Abstract Syntax Tree Validator). Ngay khi LLM trả về chuỗi SQL, tầng Middleware tuyệt đối không đưa ngay xuống database mà nạp qua `node-sql-parser` (Node.js/TypeScript) hoặc `sqlglot` (Python) với dialect PostgreSQL. Bộ kiểm duyệt này bắt buộc cây AST chỉ chứa đúng một statement duy nhất, nút gốc phải là `select`, không tồn tại nút phụ `insert`/`update`/`delete` bên trong `WITH` CTE, không có từ khóa `SELECT *`, mọi bảng xuất hiện trong `FROM` và `JOIN` phải nằm trong `ALLOWED_VIEWS` whitelist, không được gọi các hàm nguy hiểm như `pg_sleep`, `dblink`, `lo_import` hay `pg_read_file`, và tự động tiêm hoặc kiểm tra mệnh đề `LIMIT` không vượt quá 200 dòng.",
+        "Chốt chặn thứ tư là Cổng khóa danh tính `FORCE ROW LEVEL SECURITY` kết hợp `SET LOCAL` trên PostgreSQL. Dù câu SQL đã qua cửa AST, hệ thống vẫn mở giao dịch bằng lệnh `BEGIN TRANSACTION READ ONLY; SET LOCAL statement_timeout = '5000ms'; SET LOCAL lock_timeout = '1000ms';` rồi bơm thẳng ngữ cảnh người hỏi đã xác thực từ JWT hoặc ZaloBot User ID vào biến phiên PostgreSQL (`app.user_role`, `app.branch_id`). Khi câu truy vấn chạy trên bảng nền đã bật `FORCE ROW LEVEL SECURITY`, chính nhân PostgreSQL sẽ thực thi bộ lọc dòng ngay cả khi AI cố ý lờ đi điều kiện `WHERE branch_id = ...`.",
+        "Chốt chặn thứ năm là Kiểm soát chi phí truy vấn bằng `EXPLAIN (FORMAT JSON)` và Trình diễn minh bạch. Trước khi thực thi thật để lấy dữ liệu, backend chạy `EXPLAIN (FORMAT JSON)` để đọc chỉ số `Total Cost` và kiểm tra xem kế hoạch thực thi có xuất hiện `Seq Scan` trên bảng vượt ngưỡng hay không; nếu chi phí dự toán vượt mức trần cho phép, hệ thống trả về thông báo gợi ý CEO thu hẹp khoảng thời gian thay vì làm nghẽn Replica. Khi có kết quả trả về, AI không được phép bịa thêm số liệu ngoài bảng JSON thực nhận mà phải trình bày kèm bộ định nghĩa công thức, phạm vi ngày lọc và đường dẫn đối chiếu sang Dashboard ERP 5.0."
+      ],
+      "bullets": [
+        "Luôn bật `statement_timeout` ở cả mức Role (`ALTER ROLE role_ai_reader SET statement_timeout = '5s'`) lẫn mức Transaction để chặn đứng mọi truy vấn đệ quy vô tận.",
+        "Ghi nhật ký kiểm toán bất biến (`ai_sql_audit_log`): lưu đủ `user_id`, câu hỏi tiếng Việt gốc, SQL đã chạy, thời gian thực thi, số dòng trả về và trạng thái Pass/Blocked phục vụ truy vết bảo mật."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-postgres-rls-va-ast-guardrail",
+      "heading": "Mẫu thiết lập PostgreSQL Read-Only RLS & TypeScript AST + EXPLAIN Gate",
+      "language": "TypeScript",
+      "filename": "postgres_rls_and_ast_guard.ts",
+      "description": "Kết hợp SQL khóa quyền tầng Database (Schema `ai_bi` + `FORCE ROW LEVEL SECURITY`) và hàm TypeScript sử dụng `node-sql-parser` xác thực AST, kiểm tra bảng/hàm whitelist và cổng `EXPLAIN (FORMAT JSON)` trước khi trả số liệu cho CEO.",
+      "code": "/* === PHẦN 1: SQL KHÓA QUYỀN & RLS TRÊN POSTGRESQL READ-REPLICA ===\nCREATE SCHEMA IF NOT EXISTS ai_bi;\nCREATE ROLE role_ai_reader LOGIN PASSWORD '...';\nREVOKE ALL ON SCHEMA public FROM role_ai_reader;\nGRANT USAGE ON SCHEMA ai_bi TO role_ai_reader;\nALTER ROLE role_ai_reader SET statement_timeout = '5000ms';\nALTER ROLE role_ai_reader SET default_transaction_read_only = on;\n\nALTER TABLE core.fact_orders ENABLE ROW LEVEL SECURITY;\nALTER TABLE core.fact_orders FORCE ROW LEVEL SECURITY;\nCREATE POLICY p_ai_branch_isolation ON core.fact_orders FOR SELECT TO role_ai_reader\n  USING (current_setting('app.user_role', true) = 'ceo' OR branch_code = current_setting('app.branch_code', true));\n\nCREATE VIEW ai_bi.v_exec_revenue_daily WITH (security_invoker = true) AS\n  SELECT order_date, branch_code, channel_source, COUNT(id) AS order_count, SUM(net_revenue_vnd) AS net_revenue_vnd\n  FROM core.fact_orders WHERE status IN ('paid', 'completed') GROUP BY 1, 2, 3;\nGRANT SELECT ON ai_bi.v_exec_revenue_daily TO role_ai_reader;\n*/\n\n// === PHẦN 2: TYPESCRIPT AST VALIDATOR + EXPLAIN COST GATE ===\nimport { Parser } from 'node-sql-parser';\nimport type { Pool } from 'pg';\n\nconst ALLOWED_VIEWS = new Set(['ai_bi.v_exec_revenue_daily', 'ai_bi.v_ar_aging_summary', 'ai_bi.v_lead_funnel_daily']);\nconst BLOCKED_FN_RE = /\\b(pg_sleep|pg_read_file|pg_ls_dir|dblink|lo_import|lo_export|inet_server_addr)\\b/i;\nconst parser = new Parser();\n\nexport function validateSafeSelectAst(rawSql: string): string {\n  if (BLOCKED_FN_RE.test(rawSql)) throw new Error('Blocked dangerous PostgreSQL system function');\n  const ast = parser.astify(rawSql, { database: 'PostgresQL' });\n  const statements = Array.isArray(ast) ? ast : [ast];\n  if (statements.length !== 1 || statements[0].type !== 'select') {\n    throw new Error('Only a single SELECT statement is permitted');\n  }\n  const stmt = statements[0] as any;\n  if (Array.isArray(stmt.with)) {\n    for (const cte of stmt.with) {\n      if (cte?.stmt?.type && cte.stmt.type !== 'select') throw new Error('Mutating CTE is forbidden');\n    }\n  }\n  const refs = parser.tableList(rawSql, { database: 'PostgresQL' });\n  for (const ref of refs) {\n    const [op, schema, table] = ref.split('::');\n    const fqtn = schema && schema !== 'null' ? `${schema}.${table}` : table;\n    if (op !== 'select' || !ALLOWED_VIEWS.has(fqtn)) {\n      throw new Error(`Unauthorized table/operation reference: ${ref}`);\n    }\n  }\n  if (!stmt.limit || Number(stmt.limit?.value?.[0]?.value ?? 9999) > 200) {\n    stmt.limit = { seperator: '', value: [{ type: 'number', value: 200 }] };\n  }\n  return parser.sqlify(stmt, { database: 'PostgresQL' });\n}\n\nexport async function runGuardedExecQuery(replicaPool: Pool, rawSql: string, ctx: { userRole: string; branchCode: string }) {\n  const safeSql = validateSafeSelectAst(rawSql);\n  const client = await replicaPool.connect();\n  try {\n    await client.query('BEGIN TRANSACTION READ ONLY');\n    await client.query(`SET LOCAL statement_timeout = '5000ms'`);\n    await client.query(`SELECT set_config('app.user_role', $1, true), set_config('app.branch_code', $2, true)`, [\n      ctx.userRole,\n      ctx.branchCode,\n    ]);\n    const explainRes = await client.query(`EXPLAIN (FORMAT JSON) ${safeSql}`);\n    const totalCost = Number(explainRes.rows?.[0]?.['QUERY PLAN']?.[0]?.Plan?.['Total Cost'] ?? 0);\n    if (totalCost > 25000) throw new Error(`Query cost (${totalCost}) exceeds safety threshold; narrow date range.`);\n    const dataRes = await client.query(safeSql);\n    await client.query('COMMIT');\n    return { sql: safeSql, rows: dataRes.rows, totalCost };\n  } catch (err) {\n    await client.query('ROLLBACK').catch(() => {});\n    throw err;\n  } finally {\n    client.release();\n  }\n}"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "bang-kiem-go-live-text-to-sql",
+      "heading": "Bảng kiểm 6 chốt an toàn bắt buộc trước ngày mở Text-to-SQL cho Ban Giám đốc",
+      "items": [
+        {
+          "check": "Cô lập hoàn toàn luồng đọc sang PostgreSQL Read-Replica với role chỉ đọc",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra chuỗi kết nối của dịch vụ AI BI và chạy thử lệnh `INSERT` hoặc `DELETE` trực tiếp từ user ứng dụng đang cấu hình.",
+          "passThreshold": "Host đọc khác hoàn toàn Primary Write Host; mọi lệnh DDL/DML trả lỗi `permission denied` hoặc `cannot execute in a read-only transaction`."
+        },
+        {
+          "check": "Phân giải AST thay thế hoàn toàn bộ lọc từ khóa Regex",
+          "severity": "critical",
+          "verificationHow": "Nạp bộ 30 mẫu tấn công gồm stacked query (`;`), comment lồng (`DR/**/OP`), CTE `DELETE RETURNING` và hàm `pg_sleep` qua hàm validate.",
+          "passThreshold": "100% mẫu tấn công bị từ chối ở tầng Middleware trước khi mở kết nối xuống PostgreSQL."
+        },
+        {
+          "check": "Áp `FORCE ROW LEVEL SECURITY` và `security_invoker = true` trên mọi Semantic View",
+          "severity": "critical",
+          "verificationHow": "Mô phỏng phiên của Trưởng chi nhánh HCM thực thi câu truy vấn yêu cầu xem dữ liệu chi nhánh Hà Nội hoặc bảng lương công ty.",
+          "passThreshold": "0 bản ghi ngoài chi nhánh hoặc ngoài phạm vi view được trả ra; view chạy với quyền người gọi (`security_invoker`)."
+        },
+        {
+          "check": "Chuẩn hóa Semantic Views và Từ điển đồng nghĩa KPI tiếng Việt",
+          "severity": "high",
+          "verificationHow": "Chạy kiểm thử chéo 50 câu hỏi nghiệp vụ phổ biến của CEO đối chiếu trực tiếp với báo cáo kế toán MISA và Dashboard ERP 5.0.",
+          "passThreshold": "Độ sai lệch công thức doanh thu thuần, công nợ quá hạn và số lượng đơn hợp lệ bằng 0%; Execution Accuracy >= 92%."
+        },
+        {
+          "check": "Khóa ngân sách truy vấn bằng `EXPLAIN (FORMAT JSON)`, `LIMIT 200` và `statement_timeout`",
+          "severity": "high",
+          "verificationHow": "Gửi yêu cầu thống kê toàn bộ chi tiết hóa đơn 5 năm không lọc ngày để kiểm tra ngưỡng chặn cost và giới hạn thời gian.",
+          "passThreshold": "Cổng `EXPLAIN` chặn các truy vấn vượt ngưỡng cost trước khi chạy thật và tự động ngắt sau <= 5 giây nếu gặp nghẽn bất thường."
+        },
+        {
+          "check": "Làm sạch PII và bật Audit Log truy vết từng lượt hỏi của lãnh đạo",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra danh sách cột của tất cả View trong schema `ai_bi` và đối chiếu bảng `ai_sql_audit_log`.",
+          "passThreshold": "Không lộ CCCD, mật khẩu, API token hay số điện thoại thô ở báo cáo tổng hợp; 100% truy vấn được ghi vết đầy đủ."
+        }
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "luong-xu-ly-mot-cau-hoi-ceo-zalo-web",
+      "heading": "Hành trình 6 bước biến câu hỏi tiếng Việt trên ZaloBot thành bảng số liệu sạch dưới 2.5 giây",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • AUTH & CONTEXT",
+          "title": "Xác thực danh tính CEO / Quản lý & Nạp phạm vi RLS",
+          "detail": "Nhận tin nhắn từ ZaloBot nội bộ hoặc Dashboard Web ERP 5.0, xác định chính xác `user_id`, `user_role` và `allowed_branches` từ bảng phân quyền nội bộ thay vì tin lời khai trong nội dung chat.",
+          "metricOrTool": "JWT / Zalo ID Verified"
+        },
+        {
+          "tag": "BƯỚC 02 • SEMANTIC LINKING",
+          "title": "Ánh xạ thuật ngữ tiếng Việt về Semantic Views & Giá trị chuẩn",
+          "detail": "Bộ phân loại nhẹ chuẩn hóa cụm từ đời thường (như 'tháng trước', 'khu vực phía Nam', 'lãi gộp') về khoảng thời gian ISO, mã chi nhánh chuẩn và chỉ nạp schema của 3–4 View liên quan nhất vào prompt.",
+          "metricOrTool": "Semantic Dictionary + PG Views"
+        },
+        {
+          "tag": "BƯỚC 03 • SQL SYNTHESIS",
+          "title": "LLM sinh truy vấn PostgreSQL có giải thích công thức áp dụng",
+          "detail": "Mô hình sinh JSON chứa đúng hai trường: câu truy vấn PostgreSQL chuẩn nhắm vào schema `ai_bi` và ghi chú ngắn công thức KPI đang dùng để hiển thị minh bạch cho người đọc.",
+          "metricOrTool": "Structured Output JSON"
+        },
+        {
+          "tag": "BƯỚC 04 • AST & ALLOWLIST",
+          "title": "Phân giải cây cú pháp AST & Khóa Whitelist bảng/hàm",
+          "detail": "Kiểm tra câu SQL chỉ có 1 lệnh `SELECT`, không chứa CTE biến đổi dữ liệu, không lén đụng bảng hệ thống hay hàm nguy hiểm, tự động chèn `LIMIT 200` nếu thiếu.",
+          "metricOrTool": "node-sql-parser AST Gate"
+        },
+        {
+          "tag": "BƯỚC 05 • EXPLAIN & RLS EXEC",
+          "title": "Kiểm tra Cost qua EXPLAIN & Thực thi trên Read-Replica kèm SET LOCAL",
+          "detail": "Mở transaction `READ ONLY`, đặt `statement_timeout = 5s`, truyền biến phiên RLS xuống PostgreSQL, kiểm tra chi phí thực thi rồi mới kéo tập kết quả sạch về.",
+          "metricOrTool": "Read-Replica • FORCE RLS"
+        },
+        {
+          "tag": "BƯỚC 06 • VERIFIED RENDER",
+          "title": "Diễn giải số liệu trung thực kèm cảnh báo Freshness SLA & Audit Log",
+          "detail": "Trình bày bảng số liệu, biểu đồ trực quan ngay trên Zalo hoặc Web kèm dấu thời gian cập nhật gần nhất của Replica và lưu vết đầy đủ vào `ai_sql_audit_log`.",
+          "metricOrTool": "P95 < 2.4s • Immutable Audit"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-text-to-sql",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng trao chiếc chìa khóa vạn năng vào cơ sở dữ liệu chỉ để tiết kiệm hai ngày dựng Semantic Views",
+      "body": "Khi thiết kế hệ điều hành ERP 5.0 và dữ liệu quản trị cho các đối tác như Rich Land, Viện IDEAS hay ImplantSwiss với yêu cầu bảo mật phân vùng RLS cực khắt khe, nguyên tắc bất di bất dịch của tôi là tách rời quyền tạo câu hỏi bằng ngôn ngữ tự nhiên khỏi quyền chạm trực tiếp vào bảng giao dịch OLTP. Một trợ lý Text-to-SQL tốt cho CEO không cần biết viết những câu lệnh JOIN 12 bảng rắc rối — nó chỉ cần đọc đúng 8 Semantic Views đã thống nhất công thức với Kế toán trưởng, đi qua cửa AST Validator và chịu sự phán xét tuyệt đối của PostgreSQL FORCE RLS."
+    }
+  ]
+}

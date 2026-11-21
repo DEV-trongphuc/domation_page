@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
 import { Navbar } from './Navbar';
+import { BackToTopPill } from './components/BackToTopPill';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
 import { DECOR_PNGS } from './data/enterpriseData';
@@ -192,7 +193,7 @@ export const IdeasLanding: React.FC = () => {
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.12 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-5 leading-[1.12]"
+            className="text-[24px] sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-5 leading-[1.15]"
           >
             Hệ Thống Công Cụ{' '}
             <span className="text-gradient-inkica">Marketing Tools</span>
@@ -213,7 +214,7 @@ export const IdeasLanding: React.FC = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.28 }}
-            className="flex flex-wrap items-center justify-center gap-3 mt-9 w-full max-w-4xl mx-auto"
+            className="grid grid-cols-2 lg:flex lg:items-center lg:justify-center gap-2.5 sm:gap-3 mt-8 w-full max-w-md lg:max-w-4xl mx-auto"
           >
             {tools.map((tool, idx) => (
               <a
@@ -221,10 +222,12 @@ export const IdeasLanding: React.FC = () => {
                 href={tool.mainUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="ql-btn-outline flex items-center gap-2.5 px-4 md:px-5 py-3 rounded-full text-xs md:text-sm font-bold"
+                className={`ql-btn-outline flex items-center justify-center gap-2 px-3.5 md:px-5 py-3 min-h-[44px] rounded-full text-xs md:text-sm font-bold whitespace-nowrap ${
+                  idx === tools.length - 1 && tools.length % 2 === 1 ? 'col-span-2 lg:col-span-1' : ''
+                }`}
               >
-                <tool.icon className="w-4 h-4 text-[#1E40FF]" />
-                {tool.title === 'Auto Lead Router' ? 'Auto Chia Data' : tool.title}
+                <tool.icon className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                <span>{tool.title === 'Auto Lead Router' ? 'Auto Chia Data' : tool.title}</span>
               </a>
             ))}
           </motion.div>
@@ -253,7 +256,7 @@ export const IdeasLanding: React.FC = () => {
             </div>
             <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
             <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/90 shadow-sm">
-              <img src={ideasLogoUrl} alt="IDEAS" className="h-6 object-contain rounded" />
+              <img src={ideasLogoUrl} alt="IDEAS" loading="lazy" decoding="async" className="h-6 object-contain rounded" />
               <span className="text-sm font-black text-slate-900">IDEAS</span>
             </div>
           </div>
@@ -283,15 +286,8 @@ export const IdeasLanding: React.FC = () => {
         </p>
       </footer>
 
-      {/* Centered Sticky Back to Top */}
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Lên đầu trang"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
-      >
-        ↑ Đầu trang
-      </button>
+      {/* Centered Blue Back to Top Pill */}
+      <BackToTopPill />
 
       {/* Support Contact Modal */}
       <ContactModal isOpen={showContactModal} onClose={() => setShowContactModal(false)} />

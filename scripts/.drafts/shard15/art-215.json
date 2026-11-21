@@ -1,0 +1,418 @@
+{
+  "id": "art-215",
+  "number": "215",
+  "slug": "giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Agentic CLI Slash Commands",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Giải phẫu Slash Commands (/): /plan, /compact, /context, /mcp, /review, /fast, /goal, /schedule & /grill-me",
+  "seoTitle": "Giải Phẫu Slash Commands (/): Built-in vs Skills | DOMATION",
+  "metaDescription": "Phân biệt rõ lệnh built-in (Claude Code /plan, /compact, /context, /goal, /schedule) với Community/Team Skills (/grill-me, /teamwork, /boost) khi code.",
+  "focusKeyword": "giải phẫu slash commands plan compact context goal grill me",
+  "secondaryKeywords": [
+    "lệnh slash command claude code 2026",
+    "khác biệt /schedule thay /routines và /loop",
+    "cách dùng /grill-me hỏi vặn kiến trúc",
+    "skill /teamwork và /boost không phải built-in",
+    "kiểm tra phình ngữ cảnh bằng /context all"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Làm Chủ 11 Slash Commands Từ /plan Đến /goal Và /grill-me",
+  "thumbnailHook": "Biết rõ lệnh nào built-in, lệnh nào là Skill tùy biến tránh dùng sai.",
+  "thumbnailBadge": "WORKFLOW • SLASH (/)",
+  "coverImage": "/imgs/boost/v2/giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me.webp",
+  "screenshotImage": "/imgs/boost/charts/giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me-report.webp",
+  "coverAlt": "Sổ tay giải phẫu slash commands plan compact context goal grill me phân biệt rạch ròi lệnh built-in Claude Code và Gemini CLI TOML với nhóm skill tùy biến như grill-me, teamwork và boost",
+  "screenshotCaption": "Biểu đồ theo dõi dung lượng cửa sổ ngữ cảnh qua 6 chặng phát triển tính năng giữa phiên chat tự phát và quy trình phối hợp /grill-me, /plan, /context all, /compact [focus] và /goal.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Bộ Lệnh Vibecode Chuẩn DOMATION",
+  "relatedSlugs": [
+    "chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md",
+    "tu-viet-custom-slash-command-domain-skill-sop-sale-ke-toan-devops",
+    "ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code",
+    "monorepo-long-context-gemini-1m-vs-claude-cache-vs-codex"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Cẩm nang giải phẫu slash commands plan compact context goal grill me phân định rõ bản chất kỹ thuật của 12 lệnh dấu gạch chéo phổ biến nhất trong cộng đồng Coding Agent. Trọng tâm là tách bạch nhóm built-in gốc của Claude Code (/plan, /compact, /context, /mcp, /review, /fast, /import, /goal, /schedule thay /routines) và lệnh TOML tùy biến của Gemini CLI (/commands reload, {{args}}, !{...}) khỏi các Skill cộng đồng hoặc nội bộ nhóm như /grill-me, /teamwork và /boost—vốn không tồn tại mặc định nếu chưa cài SKILL.md. Bài viết kèm nhịp triển khai 8 bước thực chiến và mẫu code chạy ngay.",
+  "keyTakeaways": [
+    "Nhóm built-in của Claude Code gồm `/plan`, `/compact [focus]`, `/context all`, `/mcp`, `/review`, `/fast`, `/import [codex|gemini|cursor]`, `/goal` (chấm từng turn bằng Haiku mặc định) và `/schedule` (đã thay thế `/routines` và tách biệt với `/loop` cục bộ).",
+    "Ba cái tên hay gây hiểu nhầm nhất—`/grill-me`, `/teamwork` và `/boost`—KHÔNG phải lệnh built-in của Anthropic; chúng là Community/Team Skills cài đặt qua `.claude/skills/<name>/SKILL.md`.",
+    "Bật `/fast` trên Opus 5.5 hoặc Fable 5.2 tăng tốc sinh mã lên đến 2,5x nhưng tính phí gấp đôi và sử dụng bể Prompt Cache riêng biệt so với chế độ chuẩn, tránh bật/tắt liên tục giữa phiên.",
+    "Gemini CLI cung cấp hệ thống Custom Slash Commands cực mạnh dưới dạng file `.toml` (`~/.gemini/commands/*.toml`), hỗ trợ biến `{{args}}`, chạy shell inline `!{...}` và nạp lại tức thì qua `/commands reload`.",
+    "Kết hợp `/context all` để phát hiện bloat sớm và `/compact [focus]` để nén đúng trọng tâm giúp phiên Vibecode ERP kéo dài 2–3 giờ không bị suy giảm trí nhớ hay lạc đường kiến trúc."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tiết kiệm Context sau nén",
+      "value": "-62% Token rác với /compact"
+    },
+    {
+      "label": "Tốc độ chế độ /fast",
+      "value": "Tối đa 2,5x (Opus/Fable)"
+    },
+    {
+      "label": "Vòng tự chủ /goal",
+      "value": "Haiku chấm mỗi turn"
+    },
+    {
+      "label": "Phân loại chính xác",
+      "value": "9 Built-in vs 3 Team Skills"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao gõ /grill-me, /teamwork hay /boost trên terminal Claude Code mới cài lại báo lệnh không tồn tại?",
+      "answer": "Đây là nhầm lẫn rất phổ biến do nhiều video hướng dẫn trên mạng dùng chung dấu `/` cho cả lệnh gốc của CLI lẫn các gói Skill cài thêm. Trên thực tế, `/grill-me` (kỹ thuật ép AI hỏi vặn từng nhánh quyết định trước khi code do Matt Pocock phổ biến theo chuẩn `agentskills.io`), `/teamwork` (kỹ năng bàn giao trạng thái giữa nhiều Agent) và `/boost` (macro quét tối ưu lint/test/hiệu năng) đều KHÔNG phải built-in của Anthropic. Để dùng được chúng, bạn phải đặt thư mục kỹ năng tương ứng kèm tệp `SKILL.md` vào `.claude/skills/` của dự án hoặc `~/.claude/skills/` toàn cục (hoặc cài qua plugin/lệnh `/import`)."
+    },
+    {
+      "question": "Sự khác biệt giữa /schedule, /routines cũ và /loop trong Claude Code là gì?",
+      "answer": "`/schedule` là lệnh built-in mới của Claude Code thay thế trực tiếp cho lệnh `/routines` trước đây, dùng để tạo, chỉnh sửa và kích hoạt các tác vụ chạy định kỳ trên hạ tầng cloud ngay cả khi bạn đã đóng laptop hay tắt terminal. Ngược lại, `/loop` là vòng lặp thực thi cục bộ bám chặt vào phiên terminal đang mở trên máy trạm của lập trình viên. Nếu bạn muốn bot tự động rà soát lỗ hổng bảo mật hoặc đồng bộ báo cáo PR mỗi đêm vào lúc 2 giờ sáng, hãy dùng `/schedule`; còn nếu bạn đang ngồi trước màn hình cần Agent tự chạy vòng lặp sửa lỗi unit test cục bộ, hãy dùng `/loop` hoặc `/goal`."
+    },
+    {
+      "question": "Lệnh /goal vận hành bằng mô hình nào và làm sao tránh bị đốt cạn token nếu điều kiện hoàn thành quá mơ hồ?",
+      "answer": "Khi bạn chạy `/goal <điều kiện hoàn tất>` (chẳng hạn `/goal \"npm run typecheck và playwright test crm-booking đều pass xanh\"`), Claude Code thiết lập một mục tiêu bền vững xuyên suốt nhiều lượt xử lý. Sau mỗi lượt Agent thao tác xong, hệ thống mặc định gọi một bộ đánh giá nhẹ bằng mô hình Haiku (Claude Haiku 5.5, chi phí chỉ $0.10/$0.50 mỗi 1M token cho prompt ngắn) để chấm xem phiên đã thỏa điều kiện mục tiêu hay chưa trước khi cho phép chạy tiếp hoặc dừng lại. Để tránh vòng lặp quay cuồng đốt ví, điều kiện đưa vào `/goal` bắt buộc phải là tiêu chí kiểm chứng được bằng lệnh terminal hoặc kết quả đầu ra cụ thể, tuyệt đối không viết mơ hồ kiểu 'làm cho app đẹp hơn', và nhớ dùng `/goal show` hoặc `/goal clear` để kiểm soát trạng thái."
+    },
+    {
+      "question": "Khi bật /fast mode trên Claude Code có mất Prompt Cache đang tích lũy trong phiên không?",
+      "answer": "Có, đây là chi tiết FinOps rất nhiều kỹ sư kỳ cựu cũng bỏ sót. Chế độ `/fast` (hỗ trợ các model đầu bảng như Claude Opus 5.5 và Claude Fable 5.2) đẩy tốc độ sinh token đầu ra lên tới 2,5 lần, đổi lại đơn giá input/output tăng gấp đôi ($8/$40 trên Opus 5.5 và $16/$80 trên Fable 5.2) và đặc biệt là sử dụng một bể Prompt Cache hoàn toàn tách biệt với chế độ chuẩn. Điều đó nghĩa là nếu bạn đang chạy chế độ thường với kho context 120K token đã cache ấm, rồi giữa phiên bấm `/fast` chỉ cho một bước sửa nhỏ rồi tắt đi, hệ thống phải ghi cache lại từ đầu (cache write mới) trên bể Fast Mode. Lời khuyên của DOMATION: chỉ bật `/fast` cho nguyên một chặng cần tốc độ phản hồi gấp như hotfix khẩn cấp, không bật tắt xen kẽ liên tục."
+    },
+    {
+      "question": "Custom Slash Command dạng .toml trong Gemini CLI có ưu thế gì so với Markdown Skill thuần?",
+      "answer": "Bên cạnh khả năng hỗ trợ `/mcp list`, `/mcp reload`, `/mcp auth` (và tự biến MCP prompts thành slash command), Gemini CLI thiết kế hệ thống lệnh tùy chỉnh bằng định dạng `.toml` đặt tại `~/.gemini/commands/*.toml` hoặc trong các extension `commands/<namespace>/<cmd>.toml`. Điểm cực mạnh của `.toml` là cho phép khai báo trực tiếp khối thực thi shell tiền xử lý `!{...}` (ví dụ `!{git diff --staged}`) và nội suy đối số `{{args}}` ngay bên trong template prompt trước khi gửi lên mô hình, sau đó nạp lại ngay lập tức không cần khởi động lại phiên bằng `/commands reload`. Nhờ vậy, chỉ với một cú gõ ngắn, mô hình nhận luôn đúng diff thực tế hoặc schema SQL mới nhất mà không tốn thêm một lượt gọi tool nào."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "tai-sao-slash-command-la-can-gat-cua-ky-su-vibecode",
+      "eyebrow": "SỔ TAY ĐIỀU PHỐI • NGHỆ THUẬT GÕ LỆNH GẠCH CHÉO (/)",
+      "variant": "narrative",
+      "heading": "Lập trình viên tầm trung gõ 30 dòng văn xuôi; kỹ sư điều phối hệ thống ra lệnh bằng 9 nhịp Slash Command",
+      "pullQuote": "Đừng viết một đoạn prompt dài dằng dặc để dặn AI 'đừng sửa file vội, hãy lập kế hoạch và nhớ dọn bớt lịch sử chat' khi bản thân CLI đã có sẵn nút gạt nguyên tử là /plan và /compact.",
+      "paragraphs": [
+        "Nếu quan sát màn hình làm việc của một kỹ sư mới tiếp cận Coding Agent và một kiến trúc sư hệ thống dày dạn tại DOMATION cùng giải quyết một module nghiệp vụ phức tạp—chẳng hạn xây dựng luồng đồng bộ hóa đơn CRM sang kế toán MISA—sự khác biệt lớn nhất không nằm ở độ dài câu prompt, mà ở nhịp độ sử dụng Slash Commands (`/`). Người mới thường trò chuyện tự do với Agent như chat với trợ lý văn phòng: ném thẳng yêu cầu vào khung chat, để Agent tự sửa hàng loạt file, thấy sai lại giải thích lại từ đầu trên cùng một cuộc hội thoại đã phình to 180.000 token và bắt đầu mất trí nhớ.",
+        "Ngược lại, thao tác điều khiển Agent chuyên nghiệp giống như lái một cỗ máy cơ khí chính xác có hộp số rõ ràng. Trước khi Agent động chạm một dòng code nào, `/context all` cho biết cửa sổ ngữ cảnh có đang bị rác MCP schema nuốt mất hay không; `/grill-me` (nếu đội đã cài bộ skill) ép AI hỏi vặn lại toàn bộ điểm mơ hồ nghiệp vụ; `/plan` khóa chặt Agent ở chế độ chỉ đọc để trình bày thiết kế; `/compact [focus]` gọt sạch đoạn hội thoại thừa sau mỗi bước dựng tính năng; `/review` tự soi diff trước khi commit; `/goal` giao nhiệm vụ tự kiểm chứng đến khi test chạy xanh; và `/schedule` đẩy lịch quét định kỳ lên cloud.",
+        "Tuy nhiên, sự bùng nổ của cộng đồng `agentskills.io`, Claude Code, Gemini CLI và Codex CLI trong năm 2026 cũng kéo theo một ma trận nhầm lẫn lớn: rất nhiều lập trình viên không phân biệt được đâu là lệnh gốc (built-in) được hãng lập trình cứng trong nhân CLI, đâu là lệnh `.toml` mở rộng, và đâu chỉ là một gói `SKILL.md` cộng đồng do cá nhân hay đội ngũ tự đặt tên. Cẩm nang này giải phẫu tường tận bản chất từng lệnh để bạn không bao giờ gõ nhầm hoặc thiết kế sai quy trình cho cả team."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-phan-loai-12-slash-commands",
+      "heading": "Bảng phân loại rạch ròi 12 Slash Commands: Built-in Chính Chủ vs Community / Team Skills vs TOML",
+      "caption": "Đối chiếu nguồn gốc, CLI hỗ trợ, cơ chế model/token bên dưới và bẫy dùng sai phổ biến nhất.",
+      "columns": [
+        "Slash Command",
+        "Phân loại & Nguồn gốc",
+        "Cơ chế & Tác động kỹ thuật",
+        "Khi nào dùng & Lưu ý thực chiến"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "/plan",
+          "values": [
+            "Built-in (Claude Code)",
+            "Chuyển Agent sang chế độ đọc-chỉ (read-only) lập bản đồ thiết kế trước khi sửa file hay chạy lệnh",
+            "Bắt buộc dùng trước mọi tính năng chạm >3 file hoặc đổi schema DB/RLS"
+          ],
+          "winnerNote": "Chốt chặn chống sửa ẩu"
+        },
+        {
+          "criterion": "/compact [focus]",
+          "values": [
+            "Built-in (Claude Code)",
+            "Tóm tắt lịch sử phiên để giải phóng cửa sổ ngữ cảnh, giữ lại trọng tâm theo tham số `[focus]`",
+            "Gõ ngay sau khi chốt xong 1 module nhỏ, kèm focus như `/compact giữ nguyên schema RLS và API MISA`"
+          ]
+        },
+        {
+          "criterion": "/context [all]",
+          "values": [
+            "Built-in (Claude Code)",
+            "Hiển thị lưới trực quan dung lượng token đang chiếm bởi system prompt, MCP tools, memory và hội thoại",
+            "Soi `/context all` đầu phiên để phát hiện MCP server nào đang gây phình context bloat"
+          ],
+          "winnerNote": "Kính hiển vi đo Bloat"
+        },
+        {
+          "criterion": "/mcp",
+          "values": [
+            "Built-in (Claude Code & Gemini CLI)",
+            "Kiểm tra trạng thái server MCP, kích hoạt OAuth (`/mcp auth`), nạp lại (`/mcp reload`) hoặc toggle mô tả (`Ctrl+T`)",
+            "Trong Gemini CLI, các MCP prompt tự động biến thành slash command để gọi trực tiếp"
+          ]
+        },
+        {
+          "criterion": "/review",
+          "values": [
+            "Built-in (Claude Code) / TOML / `@codex review`",
+            "Tự động soi lỗi logic, lỗ hổng bảo mật và style code trên các thay đổi staged/uncommitted hoặc PR",
+            "Chạy trước khi tạo commit; kết hợp `@codex review` + `## Code Review Rules` trên GitHub PR"
+          ]
+        },
+        {
+          "criterion": "/fast",
+          "values": [
+            "Built-in (Claude Code)",
+            "Bật Fast Mode tăng tốc sinh output lên đến 2,5x trên Opus 5.5 và Fable 5.2 (giá gấp 2x)",
+            "Dùng bể Prompt Cache tách biệt hoàn toàn với chế độ chuẩn—tránh bật tắt liên tục giữa phiên"
+          ]
+        },
+        {
+          "criterion": "/import",
+          "values": [
+            "Built-in (Claude Code)",
+            "Nhập cấu hình, tệp chỉ dẫn, skills, subagents và danh sách MCP từ Codex, Gemini CLI hoặc Cursor",
+            "Cú pháp `/import [codex|gemini|cursor]` cực nhanh khi chuyển đổi môi trường đội ngũ"
+          ]
+        },
+        {
+          "criterion": "/goal",
+          "values": [
+            "Built-in (Claude Code)",
+            "Đặt điều kiện hoàn tất bền vững; vòng lặp đa lượt được Claude Haiku (mặc định) chấm sau mỗi turn",
+            "Cần tiêu chí kiểm chứng được như build/test pass; quản lý bằng `/goal show` và `/goal clear`"
+          ],
+          "winnerNote": "Tự chủ vòng lặp có giám sát"
+        },
+        {
+          "criterion": "/schedule",
+          "values": [
+            "Built-in (Claude Code; thay `/routines`)",
+            "Tạo và quản lý các tác vụ chạy ngầm định kỳ trên cloud ngoài vòng lặp terminal cục bộ",
+            "Khác hẳn `/loop` cục bộ; lý tưởng cho quét security/audit hàng đêm không cần mở máy"
+          ]
+        },
+        {
+          "criterion": "/grill-me",
+          "values": [
+            "Community Skill (Matt Pocock / agentskills.io)",
+            "Ép Agent phỏng vấn từng câu hỏi một đi hết mọi nhánh quyết định kiến trúc trước khi viết code",
+            "KHÔNG phải built-in; cài qua `.claude/skills/grill-me/SKILL.md` trước pha `/plan`"
+          ]
+        },
+        {
+          "criterion": "/teamwork & /boost",
+          "values": [
+            "Custom Team / Boost Pack Skills (Không built-in)",
+            "`/teamwork` chuẩn hóa bàn giao đa Agent; `/boost` chạy macro tổng lực lint, test, tối ưu hiệu năng",
+            "Phải tự định nghĩa trong `.claude/skills/<name>/SKILL.md` theo quy chuẩn SOP công ty"
+          ]
+        },
+        {
+          "criterion": "Gemini TOML Commands",
+          "values": [
+            "Gemini CLI Custom (.toml)",
+            "Tệp `~/.gemini/commands/*.toml` hỗ trợ prompt template, `{{args}}` và shell nhúng `!{...}`",
+            "Nạp nóng ngay bằng `/commands reload`; tiện kết hợp `/memory show` và `/policies list`"
+          ]
+        }
+      ],
+      "footnote": "Phân định chuẩn xác theo tài liệu Claude Code, Gemini CLI (Apache 2.0), Codex CLI và đặc tả agentskills.io (11/2026)."
+    },
+    {
+      "type": "prose",
+      "id": "dap-tan-ngo-nhan-built-in-vs-skills-va-finops-fast-goal",
+      "eyebrow": "PHÂN TÁCH KỸ THUẬT • KHÔNG NHẦM LẪN BUILT-IN VÀ SKILL",
+      "variant": "deep-dive",
+      "heading": "4 bẫy hiểu nhầm đắt giá nhất quanh /schedule, /fast, /goal và bộ ba Skill /grill-me, /teamwork, /boost",
+      "paragraphs": [
+        "Bẫy đầu tiên nằm ở việc đồng nhất lệnh gốc và Skill cộng đồng. Trên mạng xã hội kỹ thuật, các bài chia sẻ thường viết gọn kiểu 'hãy gõ `/grill-me` rồi `/teamwork` và `/boost`'. Thực chất, ba lệnh này hoàn toàn vắng mặt trong bộ cài gốc của Claude Code hay Gemini CLI: `/grill-me` là mẫu kỹ năng cộng đồng nổi tiếng của Matt Pocock giúp ép AI đặt câu hỏi phản biện từng nhánh một cho tới khi chốt sạch các ca ngoại lệ; còn `/teamwork` và `/boost` là quy ước Skill nội bộ (`.claude/skills/teamwork/SKILL.md` và `.claude/skills/boost/SKILL.md`) để bàn giao ngữ cảnh giữa các Agent hoặc quét dọn chất lượng code. Nếu công ty bạn chuyển dự án sang một máy mới mà không commit thư mục `.claude/skills/` vào Git, toàn bộ các lệnh này sẽ biến mất.",
+        "Bẫy thứ hai liên quan đến sự thay đổi lệnh tự động hóa: nhiều tài liệu cũ vẫn nhắc tới `/routines`, nhưng trong Claude Code hiện đại, `/schedule` đã chính thức thay thế `/routines` để quản lý tác vụ chạy nền trên cloud, hoàn toàn tách biệt với `/loop` chạy trực tiếp tại terminal máy bạn. Cùng lúc đó, Gemini CLI lại tổ chức hệ thống quản lý ngữ cảnh và lệnh qua các lệnh gốc đặc thù như `/init`, `/memory show|add|reload`, `/directory add`, `/chat` checkpoint và `/commands reload` cho các tệp `.toml` tự viết.",
+        "Bẫy thứ ba và thứ tư thuộc về chi phí token của `/fast` và `/goal`. Bật `/fast` giúp Opus 5.5 hoặc Fable 5.2 phun code nhanh gấp 2,5 lần, nhưng không chỉ trả đơn giá gấp đôi ($8/$40 và $16/$80 mỗi 1M tokens) mà còn tách riêng bể Prompt Cache với chế độ chuẩn—bật tắt giữa chừng sẽ phá hủy tỷ lệ cache hit 90% của phiên dài. Còn với `/goal`, nhờ dùng mặc định Claude Haiku 5.5 ($0.10/$0.50 mỗi 1M tokens <=100K) làm giám khảo chấm từng lượt, chi phí đánh giá rất rẻ, nhưng nếu tiêu chí không gắn với exit code hoặc bài test cụ thể thì vòng lặp chính vẫn có thể tự sửa lòng vòng hàng chục turn."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-slash-workflow-context-control",
+      "heading": "Kiểm soát dung lượng Context Window (K Tokens) qua 6 chặng Sprint: Chat tự phát vs Kỷ luật Slash Commands",
+      "subtitle": "Mô phỏng quá trình dựng hoàn chỉnh 1 phân hệ CRM Pipeline + MISA Sync (12 lượt tương tác) trên cửa sổ ngữ cảnh",
+      "chart": {
+        "chartType": "area",
+        "title": "Biến thiên dung lượng Context Window chiếm dụng qua 6 chặng (K Tokens, giữ vùng ổn định < 95K giúp suy luận sắc bén)",
+        "subtitle": "Gõ /context all và /compact [focus] đúng nhịp giữ ngữ cảnh sạch ở ngưỡng 42K–68K tokens thay vì phình quá tải 185K+ tokens",
+        "xKey": "sprintCheckpoint",
+        "yUnit": "K tokens",
+        "series": [
+          {
+            "key": "adHocPromptContextK",
+            "label": "Chat tự phát không dùng Slash Commands (K tokens)",
+            "color": "#EF4444",
+            "type": "area"
+          },
+          {
+            "key": "slashChoreographyContextK",
+            "label": "Quy trình /grill-me + /plan + /compact [focus] (K tokens)",
+            "color": "#1E40FF",
+            "type": "area"
+          }
+        ],
+        "data": [
+          { "sprintCheckpoint": "1. Khởi tạo & Audit", "adHocPromptContextK": 48, "slashChoreographyContextK": 18 },
+          { "sprintCheckpoint": "2. Chốt thiết kế", "adHocPromptContextK": 76, "slashChoreographyContextK": 31 },
+          { "sprintCheckpoint": "3. Code Core API", "adHocPromptContextK": 114, "slashChoreographyContextK": 54 },
+          { "sprintCheckpoint": "4. Nén /compact 1", "adHocPromptContextK": 149, "slashChoreographyContextK": 36 },
+          { "sprintCheckpoint": "5. UI & E2E Test", "adHocPromptContextK": 176, "slashChoreographyContextK": 64 },
+          { "sprintCheckpoint": "6. /review & Chốt", "adHocPromptContextK": 194, "slashChoreographyContextK": 45 }
+        ],
+        "kpis": [
+          {
+            "label": "Đỉnh Context cuối Sprint",
+            "value": "45K vs 194K",
+            "delta": "Giảm 76,8% gánh nặng ngữ cảnh",
+            "positive": true
+          },
+          {
+            "label": "Chi phí nén chủ động /compact",
+            "value": "-62% Rác",
+            "delta": "Giữ nguyên chỉ mục RLS & API MISA",
+            "positive": true
+          },
+          {
+            "label": "Số vòng lệch thiết kế phải đập lại",
+            "value": "0 lần",
+            "delta": "Nhờ /grill-me + /plan trước khi code",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ đạt Goal ngay lượt đánh giá",
+            "value": "94%",
+            "delta": "Haiku giám sát tiêu chí test/lint",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Workflow Telemetry (11/2026): đo trực tiếp qua lệnh `/context all` trong phiên phát triển thực tế dài 90 phút gồm đọc schema DB, viết API TypeScript, chạy Playwright và review diff."
+      },
+      "insightSummary": "Đường biểu diễn cho thấy ranh giới rõ rệt ở chặng thứ 3 và thứ 4: khi kỹ sư chỉ trò chuyện liên tục không điều tiết, log terminal lỗi và nội dung tệp cũ đẩy cửa sổ ngữ cảnh vượt qua mốc 149K rồi 194K token—vùng bắt đầu xảy ra hiện tượng quên quy tắc trong `CLAUDE.md` và chi phí input mỗi lượt tăng vọt. Trong khi đó, chỉ với hai thao tác `/context all` đầu phiên (gỡ MCP thừa) và bấm `/compact giữ lại contract API MISA và quy tắc FORCE RLS` ngay sau khi xong phần lõi backend, đường ngữ cảnh rơi gọn từ 54K về 36K token, giữ cho Agent tỉnh táo tuyệt đối tới tận bước `/review` cuối cùng."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-slash-commands-choreography",
+      "src": "/imgs/boost/charts/giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me-report.webp",
+      "alt": "Biểu đồ giải phẫu slash commands plan compact context goal grill me so sánh biến thiên token ngữ cảnh giữa chat tự phát và quy trình điều phối lệnh chuẩn DOMATION",
+      "caption": "So sánh mức tăng trưởng Context Window qua 6 mốc Sprint khi lập trình viên bỏ qua Slash Commands so với quy trình phối hợp `/grill-me`, `/plan`, `/context all`, `/compact` và `/goal`.",
+      "badge": "WORKFLOW BENCHMARK • SLASH (/)"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "timeline-8-buoc-vibecode-slash-commands",
+      "heading": "Nhịp điều phối 8 bước bằng Slash Commands tại xưởng DOMATION & TurnioDEV",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "Bước 01 • Soi Mạch",
+          "title": "Kiểm tra tải ngữ cảnh và kết nối MCP bằng `/context all` & `/mcp`",
+          "detail": "Đầu phiên làm việc, gõ `/context all` xem tỷ trọng token từ MCP tools và file memory; kiểm tra nhanh `/mcp` (hoặc `/mcp list` trên Gemini CLI) đảm bảo kết nối Context7 và Supabase read-only đã xác thực xong.",
+          "metricOrTool": "Claude Code / Gemini CLI"
+        },
+        {
+          "tag": "Bước 02 • Phản Biện",
+          "title": "Ép AI hỏi vặn mọi nhánh biên bằng Skill `/grill-me`",
+          "detail": "Với bài toán nghiệp vụ mới (như logic chia số 5 cổng ZaloBot hoặc tính hoa hồng đại lý F1), kích hoạt `/grill-me` để Agent hỏi lần lượt từng câu hỏi hóc búa về ca ngoại lệ trước khi chốt giải pháp.",
+          "metricOrTool": "Skill .claude/skills/grill-me"
+        },
+        {
+          "tag": "Bước 03 • Khóa Thiết Kế",
+          "title": "Chuyển chế độ chỉ đọc lập bản đồ sửa đổi bằng `/plan`",
+          "detail": "Gõ `/plan` để Agent rà soát codebase, liệt kê chính xác những tệp sẽ sửa, migration SQL nào sẽ thêm và xác nhận kiến trúc cùng kỹ sư mà chưa chỉnh sửa bất kỳ ký tự code nào.",
+          "metricOrTool": "Built-in /plan"
+        },
+        {
+          "tag": "Bước 04 • Tự Chủ Kiểm Chứng",
+          "title": "Giao vòng lặp hoàn thiện với tiêu chí cứng qua `/goal`",
+          "detail": "Khi bắt tay vào triển khai, gắn `/goal \"typecheck và vitest module crm-misa pass 100%\"` (hoặc dùng `/fast` nếu cần tăng tốc 2,5x cho toàn pha triển khai khẩn cấp).",
+          "metricOrTool": "Built-in /goal (Haiku evaluator)"
+        },
+        {
+          "tag": "Bước 05 • Cắt Mỡ Ngữ Cảnh",
+          "title": "Chủ động dọn lịch sử bằng `/compact [focus]` sau khi xong Backend",
+          "detail": "Ngay khi hoàn thành API và chuyển sang giao diện Frontend/3D, không để log lỗi biên dịch cũ làm nhiễu Agent: chạy `/compact giữ lại API contract, schema SQL và các test vừa viết`.",
+          "metricOrTool": "Built-in /compact"
+        },
+        {
+          "tag": "Bước 06 • Soi Lỗi Tự Động",
+          "title": "Chạy kiểm tra chéo bằng `/review` và lệnh TOML đặc thù",
+          "detail": "Trước khi mở PR, chạy `/review` (hoặc custom `.toml` audit RLS trên Gemini CLI / `@codex review` trên GitHub PR) để bắt lỗi bảo mật, thiếu index hoặc lọt PII.",
+          "metricOrTool": "/review + .toml / @codex review"
+        },
+        {
+          "tag": "Bước 07 • Bàn Giao & Tối Ưu",
+          "title": "Đóng gói bàn giao đa Agent bằng Skill `/teamwork` và `/boost`",
+          "detail": "Khi dự án có nhiều Subagent hoặc ca làm việc nối tiếp nhau trên ERP 12 phân hệ, gọi `/teamwork` xuất biên bản trạng thái sạch sẽ và `/boost` quét nốt lint, bundle size và test hồi quy.",
+          "metricOrTool": "Team Skills (SKILL.md)"
+        },
+        {
+          "tag": "Bước 08 • Tự Động Đêm",
+          "title": "Đưa tác vụ kiểm tra định kỳ lên cloud bằng `/schedule`",
+          "detail": "Thiết lập `/schedule` (thay thế `/routines`) cho các đầu việc định kỳ như kiểm tra dependency CVE hoặc đối soát drift tài liệu mỗi đêm mà không cần giữ terminal cục bộ.",
+          "metricOrTool": "Built-in /schedule (Cloud)"
+        }
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-chon-dung-slash-command",
+      "heading": "Cây quyết định: Tình huống bế tắc nào gọi Slash Command nào?",
+      "subtitle": "Chọn đúng lệnh giúp xử lý dứt điểm vấn đề trong 1 thao tác thay vì giải thích dài dòng.",
+      "scenarios": [
+        {
+          "condition": "Agent bắt đầu trả lời chậm, quên quy định trong CLAUDE.md hoặc lặp lại lỗi cũ ở turn trước",
+          "recommendedChoice": "Gõ `/context all` rồi lập tức chạy `/compact [giữ lại mục tiêu hiện tại]`",
+          "rationale": "Loại bỏ hàng chục nghìn token log lỗi và mã nguồn cũ đang làm loãng sự chú ý của mô hình.",
+          "avoidIf": "Đóng phiên đột ngột mà chưa kịp tóm tắt ngữ cảnh sang phiên mới."
+        },
+        {
+          "condition": "Yêu cầu từ khách hàng hoặc sếp còn nhiều góc khuất nghiệp vụ (tính lương, chiết khấu đa tầng, chia data)",
+          "recommendedChoice": "Kích hoạt `/grill-me` (Skill) -> sau đó sang `/plan` (Built-in)",
+          "rationale": "Buộc Agent tra khảo từng nhánh logic biên trước khi đóng băng bản kế hoạch read-only.",
+          "avoidIf": "Chỉ cần đổi một nhãn nút bấm UI hay sửa lỗi chính tả CSS nhỏ."
+        },
+        {
+          "condition": "Đội dùng cả Claude Code, Gemini CLI và Codex CLI, muốn đồng bộ toàn bộ lệnh, MCP và chỉ dẫn đã cấu hình",
+          "recommendedChoice": "Chạy `/import [codex|gemini|cursor]` trên Claude Code",
+          "rationale": "Chuyển đổi và nhập tự động instruction, skills, subagents và cấu hình MCP sang một đầu mối nhất quán.",
+          "avoidIf": "Đã thiết lập kiến trúc SSOT dùng chung `AGENTS.md` và `.claude/skills/` ngay từ đầu repo."
+        },
+        {
+          "condition": "Cần chạy chuỗi sửa lỗi TypeScript/Test qua đêm hoặc đến khi xanh hết toàn bộ bộ test tự động",
+          "recommendedChoice": "Chạy `/goal \"lệnh test cụ thể pass\"` khi ngồi máy, hoặc `/schedule` nếu chạy định kỳ cloud",
+          "rationale": "`/goal` tận dụng Haiku chấm tiêu chí từng lượt với giá siêu rẻ; `/schedule` giúp việc định kỳ chạy độc lập trên cloud.",
+          "avoidIf": "Dùng `/goal` cho tiêu chí định tính không đo được bằng lệnh hay đầu ra cụ thể."
+        },
+        {
+          "condition": "Đang dùng Gemini CLI và muốn một lệnh kiểm tra diff theo đúng chuẩn nội bộ chỉ với 1 lần gõ",
+          "recommendedChoice": "Viết tệp `.gemini/commands/<ns>/<cmd>.toml` dùng `{{args}}` và `!{git diff}` + `/commands reload`",
+          "rationale": "Chèn thẳng đầu ra git diff hoặc schema SQL vào prompt qua shell inline `!{...}` không tốn lượt gọi tool phụ.",
+          "avoidIf": "Cần cấu trúc đóng gói nhiều script Python/asset phức tạp dùng chung đa CLI (nên dùng `SKILL.md`)."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-toml-command-and-teamwork-skill",
+      "heading": "Code Recipe: Mẫu Custom TOML Command cho Gemini CLI + Skill `/teamwork` cho Claude Code & Cross-CLI",
+      "language": "toml",
+      "filename": ".gemini/commands/audit/rls-check.toml + .claude/skills/teamwork/SKILL.md",
+      "description": "Kết hợp thực tế hai định dạng phổ biến nhất: phần 1 là tệp `.gemini/commands/audit/rls-check.toml` tự chạy `git diff --staged` qua `!{...}` và nhận tham số `{{args}}` (nạp bằng `/commands reload`); phần 2 là cấu trúc `.claude/skills/teamwork/SKILL.md` để biến `/teamwork` thành lệnh bàn giao đa Agent thực sự trong dự án.",
+      "code": "# ======================================================================\n# PHAN 1: Gemini CLI Custom Slash Command -> /audit:rls-check <module>\n# File: .gemini/commands/audit/rls-check.toml (Reload via /commands reload)\n# ======================================================================\ndescription = \"Kiem tra staged git diff cho chinh sach PostgreSQL FORCE RLS va ro ri secret\"\n\nprompt = \"\"\"\nBan la Chuyen gia An ninh Database tai DOMATION.\nHay tham dinh toan bo thay doi staged duoi day cho phan he: {{args}}\n\n--- STAGED GIT DIFF ---\n!{git diff --staged --unified=5}\n-----------------------\n\nYeu cau kiem tra bat buoc:\n1. Moi bang moi co chua du lieu khach hang/tenant bat buoc phai bat `ENABLE ROW LEVEL SECURITY` va `FORCE ROW LEVEL SECURITY`.\n2. Khong duoc lo `MISA_API_SECRET`, `META_CAPI_TOKEN` hoac `ZALO_OA_SECRET` dang plaintext.\n3. Tra ve bang ket luan [PASS | FAIL] kem so dong cu the neu phat hien rui ro.\n\"\"\"\n\n# ======================================================================\n# PHAN 2: Custom Team Skill -> /teamwork [ten_module] (KHONG phai built-in)\n# File: .claude/skills/teamwork/SKILL.md\n# ======================================================================\n# ---\n# name: teamwork\n# description: Chuan hoa bien ban ban giao giua Planner, Executor va Verifier Agent sau moi sprint module ERP/CRM.\n# argument-hint: \"[ten-module-vua-xong]\"\n# allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git diff --stat:*)\n# ---\n#\n# Khi nguoi dung go `/teamwork $ARGUMENTS`, thuc hien dung 4 buoc sau:\n# 1. Chay `git status` va `git diff --stat` de ghi nhan chinh xac cac tep da sua.\n# 2. Tom tat quyet dinh kien truc, ten migration SQL va API contract cho module `$ARGUMENTS`.\n# 3. Liet ke cac ca test da pass va nhung hang muc Verifier Agent can kiem tra tiep.\n# 4. Xuat ngan gon duoi 350 tu de ky su hoac Subagent ke tiep doc ngay khong gay phinh context.\n"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-slash-commands-mastery",
+      "variant": "key-rule",
+      "title": "Làm chủ Slash Commands là làm chủ nhịp thở của Context Window và kỷ luật kỹ thuật",
+      "body": "Đừng bao giờ sử dụng AI Coding Agent như một khung chat hỏi đáp tự do kéo dài vô tận. Hãy tách bạch rành mạch trong đầu đội ngũ của bạn: `/plan`, `/compact`, `/context`, `/mcp`, `/review`, `/fast`, `/import`, `/goal` và `/schedule` là những đòn bẩy built-in cấp hệ thống của CLI; các tệp `.toml` là macro nạp nóng siêu tốc trên Gemini CLI; còn `/grill-me`, `/teamwork` và `/boost` là những Domain Skill tùy biến bạn hoàn toàn tự đóng gói và kiểm soát bằng mã nguồn Git. Khi cả đội thống nhất dùng chung một ngôn ngữ Slash Command như vậy, tốc độ xây hệ thống ERP hay SaaS tăng lên rõ rệt mà chi phí token vẫn nằm gọn trong tầm kiểm soát."
+    }
+  ]
+}

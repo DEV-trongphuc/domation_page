@@ -1,12 +1,19 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface ResponsiveSlideDeckProps<T> {
   items: readonly T[];
   renderItem: (item: T, index: number) => React.ReactNode;
-  keyExtractor: (item: T, index: number) => string;
+  keyExtractor?: (item: T, index: number) => string;
   mobilePerPage?: number;
   mobileColsClass?: string;
+  /** Convenience aliases supported for per-page / grid cols / label */
+  perPage?: number;
+  colsClass?: string;
+  label?: string;
+  accent?: 'blue' | 'cyan' | 'emerald';
+  tabletPerPage?: number;
+  tabletColsClass?: string;
   gapClass?: string;
   ariaLabel?: string;
   className?: string;
@@ -14,34 +21,57 @@ export interface ResponsiveSlideDeckProps<T> {
 
 /**
  * Mobile/Tablet touch-swipeable carousel with SlideDots & Prev/Next controls.
- * Designed for compact mobile presentation (< lg) alongside desktop multi-column grids.
+ * Supports distinct Mobile (<768px) and Tablet (768px-1023px) items-per-page.
  */
 export function ResponsiveSlideDeck<T>({
   items,
   renderItem,
   keyExtractor,
-  mobilePerPage = 1,
-  mobileColsClass = 'grid-cols-1',
+  mobilePerPage,
+  mobileColsClass,
+  perPage,
+  colsClass,
+  label,
+  tabletPerPage,
+  tabletColsClass = 'grid-cols-2',
   gapClass = 'gap-3',
-  ariaLabel = 'Trình chiếu nội dung',
+  ariaLabel,
   className = '',
 }: ResponsiveSlideDeckProps<T>) {
   const [page, setPage] = useState(0);
+  const [isTablet, setIsTablet] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 640 : false
+  );
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !tabletPerPage) return;
+    const mq = window.matchMedia('(min-width: 640px)');
+    const sync = () => setIsTablet(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, [tabletPerPage]);
+
+  const resolvedMobilePerPage = mobilePerPage ?? perPage ?? 1;
+  const resolvedMobileCols = mobileColsClass ?? colsClass ?? 'grid-cols-1';
+  const resolvedAriaLabel = ariaLabel ?? label ?? 'Trình chiếu nội dung';
+
+  const effectivePerPage = Math.max(1, isTablet && tabletPerPage ? tabletPerPage : resolvedMobilePerPage);
+  const effectiveColsClass = isTablet && tabletPerPage ? tabletColsClass : resolvedMobileCols;
+
   const pages = useMemo(() => {
-    const safePerPage = Math.max(1, mobilePerPage);
     const out: Array<Array<{ item: T; globalIndex: number }>> = [];
-    for (let i = 0; i < items.length; i += safePerPage) {
+    for (let i = 0; i < items.length; i += effectivePerPage) {
       out.push(
-        items.slice(i, i + safePerPage).map((item, offset) => ({
+        items.slice(i, i + effectivePerPage).map((item, offset) => ({
           item,
           globalIndex: i + offset,
         }))
       );
     }
     return out;
-  }, [items, mobilePerPage]);
+  }, [items, effectivePerPage]);
 
   const totalPages = Math.max(1, pages.length);
   const activePage = Math.min(page, totalPages - 1);
@@ -83,7 +113,7 @@ export function ResponsiveSlideDeck<T>({
     <div
       role="region"
       aria-roledescription="carousel"
-      aria-label={ariaLabel}
+      aria-label={resolvedAriaLabel}
       className={`w-full ${className}`}
     >
       <div
@@ -97,9 +127,9 @@ export function ResponsiveSlideDeck<T>({
         >
           {pages.map((group, pIdx) => (
             <div key={pIdx} className="w-full shrink-0 px-0.5">
-              <div className={`grid ${mobileColsClass} ${gapClass} h-full`}>
+              <div className={`grid ${effectiveColsClass} ${gapClass} h-full`}>
                 {group.map(({ item, globalIndex }) => (
-                  <React.Fragment key={keyExtractor(item, globalIndex)}>
+                  <React.Fragment key={keyExtractor ? keyExtractor(item, globalIndex) : String(globalIndex)}>
                     {renderItem(item, globalIndex)}
                   </React.Fragment>
                 ))}

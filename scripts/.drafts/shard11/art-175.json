@@ -1,0 +1,384 @@
+{
+  "id": "art-175",
+  "number": "175",
+  "slug": "qdrant-qdrant-audit-vector-search-hybrid-filtering-enterprise",
+  "shardId": "shard11",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "High-Throughput Vector Database",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "Report",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit qdrant/qdrant: Lõi Rust HNSW lọc payload theo Tenant & bài toán so găng cùng pgvector RLS",
+  "seoTitle": "Audit Qdrant: Rust Vector DB vs pgvector RLS | DOMATION",
+  "metaDescription": "Đánh giá Qdrant (Apache-2.0, 35k+ Stars): filterable HNSW không rớt recall khi lọc tenant_id, lượng tử hóa RAM và bài toán chọn Qdrant thay vì pgvector.",
+  "focusKeyword": "audit qdrant rust vector db vs pgvector",
+  "secondaryKeywords": [
+    "qdrant filterable hnsw tenant isolation",
+    "so sánh qdrant và postgresql pgvector",
+    "quantization tiết kiệm ram vector db",
+    "dense plus sparse hybrid search qdrant",
+    "bảo mật đa chi nhánh trong vector db"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Qdrant: Tốc Độ Rust Và Bộ Lọc Tenant Không Rớt Recall",
+  "thumbnailHook": "Nén bộ nhớ bằng quantization 4x và cô lập payload cạnh PostgreSQL RLS.",
+  "thumbnailBadge": "GITHUB • RUST VECTOR",
+  "coverImage": "/imgs/boost/v2/qdrant-qdrant-audit-vector-search-hybrid-filtering-enterprise.webp",
+  "screenshotImage": "/imgs/boost/charts/qdrant-qdrant-audit-vector-search-hybrid-filtering-enterprise-report.webp",
+  "coverAlt": "Báo cáo audit qdrant rust vector db vs pgvector phân tích lõi Rust HNSW filterable theo tenant_id, lượng tử hóa bộ nhớ và so sánh kiến trúc với PostgreSQL FORCE RLS",
+  "screenshotCaption": "Kết quả đo kiểm độ hồi tưởng Recall@10, độ trễ truy vấn p99 (ms) và mức chiếm dụng RAM (GB) khi lọc ngặt theo tenant_id ở quy mô 2 triệu vector giữa pgvector, Qdrant tiêu chuẩn và Qdrant bật is_tenant=True kết hợp Quantization.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Hạ Tầng RAG Đa Phòng Ban DOMATION",
+  "relatedSlugs": [
+    "chroma-core-chroma-audit-vector-db-nhung-cho-poc-vs-prod",
+    "multi-tenant-rls-postgresql-vector-db-co-lap-du-lieu-dai-ly",
+    "vector-embedding-weaknesses-hidden-context-exposure-rag",
+    "hybrid-search-bm25-vector-reranker-tieng-viet-khop-ma-sku"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit qdrant rust vector db vs pgvector mổ xẻ kiến trúc qdrant/qdrant (Rust, Apache-2.0, 35k+ Stars) dưới góc độ vận hành RAG đa chi nhánh. Giá trị cốt lõi của Qdrant nằm ở Filterable HNSW kết hợp payload index is_tenant=True (m=0, payload_m=16), giúp cô lập đồ thị theo từng đại lý mà không rớt Recall, đồng thời nén RAM 4x–32x qua Scalar và Binary Quantization. Dù thiếu phép JOIN ACID gốc như PostgreSQL pgvector FORCE RLS, Qdrant là động cơ chuyên dụng tối ưu khi kho tri thức vượt hàng triệu vector và cần hybrid dense+sparse tốc độ cao.",
+  "keyTakeaways": [
+    "Lõi viết bằng Rust tăng tốc SIMD giúp Qdrant duy trì độ trễ p99 ổn định dưới 15–22 ms ngay cả khi bật bộ lọc payload chặt theo `tenant_id`, phòng ban hoặc cấp quyền tài liệu.",
+    "Cấu hình `m=0` kết hợp `payload_m=16` và `create_payload_index(..., is_tenant=True)` cho phép tách đồ thị HNSW riêng cho từng tenant bên trong một collection duy nhất, triệt tiêu hiện tượng rớt Recall khi lọc chọn lọc cao (high selectivity).",
+    "Cơ chế Quantization đa tầng (Scalar Int8 giảm 4x RAM, Binary 1-bit giảm tới 32x RAM kết hợp oversampling và rescore vector gốc trên đĩa) cắt giảm mạnh chi phí máy chủ khi mở rộng tri thức doanh nghiệp.",
+    "Query API hỗ trợ `Prefetch` song song cho Dense vector và Sparse vector (BM25/SPLADE) rồi hợp nhất bằng Reciprocal Rank Fusion (`Fusion.RRF`), xử lý chuẩn xác cả ngữ nghĩa lẫn mã SKU hay điều khoản hợp đồng tiếng Việt.",
+    "Ranh giới lựa chọn: Qdrant không có phép JOIN ACID với bảng giao dịch CRM/ERP, nên DOMATION dùng PostgreSQL FORCE RLS làm chốt chặn quyền tuyệt đối cho dữ liệu giao dịch và chọn Qdrant khi khối lượng RAG vượt ngưỡng scale của pgvector."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Ngôn ngữ lõi",
+      "value": "Apache-2.0 • Rust SIMD"
+    },
+    {
+      "label": "Tiết kiệm RAM Quantization",
+      "value": "4x (Int8) – 32x (Binary)"
+    },
+    {
+      "label": "Recall@10 lọc 1% Tenant",
+      "value": "97,2% với is_tenant=True"
+    },
+    {
+      "label": "Độ trễ p99 Hybrid RRF",
+      "value": "14–19 ms (2M vectors)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Vì sao đồ thị HNSW thông thường bị rớt Recall nghiêm trọng khi thêm bộ lọc WHERE tenant_id = 'dai_ly_a' và Qdrant giải quyết thế nào?",
+      "answer": "Trong một đồ thị HNSW dùng chung toàn bộ collection, các cạnh liên kết được nối dựa trên khoảng cách vector chứ không dựa trên nhãn tenant. Khi một đại lý chỉ chiếm 1% tổng số vector và bạn dùng cơ chế lọc hậu kỳ (post-filtering) hoặc lọc thô trong lúc duyệt đồ thị, thuật toán đi qua các nút thuộc đại lý khác bị loại bỏ, làm đứt mạch đường đi tới các láng giềng gần nhất và khiến Recall tụt xuống 45–65%. Qdrant xử lý vấn đề này bằng hai lớp: một là cấu trúc Filterable HNSW mở rộng thêm các liên kết nhận biết payload bên trong đồ thị; hai là ở mô hình nhiều tenant, kỹ sư có thể đặt `m=0` tắt đồ thị toàn cục và bật `payload_m=16` kèm chỉ mục `is_tenant=True` để Qdrant dựng đồ thị HNSW cục bộ cho từng tenant và gom dữ liệu cùng tenant gần nhau trên phân đoạn lưu trữ."
+    },
+    {
+      "question": "Khi nào doanh nghiệp nên dùng PostgreSQL pgvector (kèm FORCE RLS) và khi nào buộc phải tách riêng Qdrant?",
+      "answer": "Nếu hệ thống RAG của doanh nghiệp có quy mô dưới 500.000 đến 1,5 triệu đoạn văn bản, cần kết nối JOIN trực tiếp với bảng giá, giỏ hàng bất động sản, trạng thái hợp đồng hoặc hóa đơn MISA trong cùng một giao dịch ACID, và yêu cầu bảo mật chặt chẽ ở tầng cơ sở dữ liệu bằng `FORCE ROW LEVEL SECURITY` (RLS), PostgreSQL pgvector là lựa chọn gọn và an toàn nhất vì chỉ phải vận hành một cụm database duy nhất. Ngược lại, bạn nên tách sang Qdrant khi kho tri thức phình lên nhiều triệu đến hàng chục triệu vector, cần nén RAM bằng Scalar/Binary Quantization để tránh phình chi phí VPS, cần tìm kiếm hybrid dense+sparse tốc độ dưới 20 ms ở QPS cao hoặc cần phân mảnh Raft đa nút độc lập với cụm OLTP chính."
+    },
+    {
+      "question": "Bật Binary Quantization giảm RAM tới 32x có làm AI trả lời sai lệch tài liệu tiếng Việt không?",
+      "answer": "Nếu bạn chỉ dùng vector 1-bit để tìm kiếm và trả kết quả trực tiếp thì độ chính xác sẽ giảm rõ rệt với các embedding có số chiều thấp hoặc phân bố chuẩn chưa tối ưu. Tuy nhiên, kiến trúc chuẩn của Qdrant không bao giờ dùng quantization đơn độc: bạn giữ vector lượng tử hóa trong RAM (`always_ram=True`) để sàng lọc nhanh top 50–100 ứng viên thông qua tham số `oversampling` (ví dụ `2.0` đến `3.0`), sau đó bật `rescore=True` để Qdrant đọc lại vector float32 gốc từ ổ đĩa NVMe/memmap và tính điểm lại chính xác cho top 10 kết quả cuối cùng. Với embedding kích thước 1024–1536 chiều, chiến lược hai pha này giữ lại 95–98% độ chính xác gốc trong khi giảm hàng chục GB RAM."
+    },
+    {
+      "question": "Cơ chế `is_tenant=True` trong Qdrant có đảm bảo bảo mật đa đại lý ngang hàng với PostgreSQL FORCE RLS không?",
+      "answer": "Cần phân biệt rạch ròi giữa tối ưu bố cục lưu trữ và kiểm soát truy cập bắt buộc ở tầng DB. Tham số `is_tenant=True` trong `create_payload_index` là một gợi ý tối ưu vật lý (storage layout hint) giúp Qdrant nhóm các điểm dữ liệu cùng `tenant_id` lại để tăng tốc đọc đĩa và duyệt HNSW, nhưng bản thân Qdrant không có cơ chế `SET LOCAL app.current_tenant_id` với chính sách cưỡng chế từng dòng như PostgreSQL FORCE RLS; việc truyền đúng bộ lọc `Filter(must=[FieldCondition(key='tenant_id', ...)])` vẫn phụ thuộc vào tầng API/Middleware của ứng dụng. Do đó trong hệ sinh thái DOMATION, chúng tôi luôn xác thực JWT/session qua lớp cổng backend bắt buộc chèn filter tenant cứng và tuyệt đối không lưu dữ liệu giao dịch nhạy cảm như số điện thoại khách hàng hay bảng công nợ trong payload vector."
+    },
+    {
+      "question": "Làm sao kết hợp Dense Vector và Sparse Vector trong Qdrant để bắt trúng mã căn hộ, mã SKU hoặc số công văn tiếng Việt?",
+      "answer": "Các mô hình dense embedding thường nắm bắt tốt ý nghĩa tổng quát nhưng hay bỏ sót các mã định danh chính xác như `EL-A12-08`, `QĐ-142/2026` hoặc tên thuốc chuyên ngành. Với Qdrant Query API từ bản v1.10+, một `PointStruct` có thể lưu đồng thời hai named vectors: một nhánh dense (ví dụ 1024–1536 chiều) và một nhánh sparse sinh từ BM25/SPLADE/BGE-M3. Khi truy vấn, bạn gửi hai nhánh `Prefetch` chạy song song trong cùng một request kèm `tenant_filter`, rồi dùng `FusionQuery(fusion=Fusion.RRF)` để hợp nhất thứ hạng mà không cần tự chuẩn hóa thang điểm cosine và BM25."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "qdrant/qdrant",
+    "url": "https://github.com/qdrant/qdrant",
+    "category": "Vector Search Engine & Hybrid Retrieval DB",
+    "primaryLanguage": "Rust",
+    "license": "Apache-2.0",
+    "starsTier": "35k+ Stars",
+    "bestFor": "Loại bỏ tình trạng tăng vọt độ trễ đuôi (tail latency), phình bộ nhớ RAM và tụt giảm độ chính xác Recall khi phải lọc các tập dữ liệu hàng triệu vector theo tenant_id, phòng ban hoặc nhãn phân quyền trong hệ thống RAG sản xuất.",
+    "avoidWhen": "Đường cong vận hành ở tầng hệ thống cao hơn khi phải tinh chỉnh shard đồng thuận Raft, tối ưu quá trình gộp segment (compaction) và cân chỉnh tỷ lệ Recall-vs-RAM của quantization; đồng thời thiếu phép JOIN quan hệ chuẩn ACID nếu không đi kèm một cơ sở dữ liệu OLTP bên ngoài.",
+    "domationSynergy": "Làm chuẩn đối sánh và động cơ vector tốc độ cao cho kho tri thức Multi-Agent RAG tách biệt theo phòng ban tại DOMATION (bảng giá PDF, quy trình SOP, tài liệu pháp lý/nhân sự), kết hợp bộ lọc payload tenant nghiêm ngặt song hành cùng PostgreSQL FORCE RLS để ngăn tuyệt đối rò rỉ dữ liệu giữa các đại lý F1.",
+    "scores": {
+      "productionReadiness": 10,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-qdrant",
+      "heading": "Hồ Sơ Kiểm Toán Repository: qdrant/qdrant (Rust Vector Search Engine)",
+      "repo": {
+        "fullName": "qdrant/qdrant",
+        "url": "https://github.com/qdrant/qdrant",
+        "category": "Vector Search Engine & Hybrid Retrieval DB",
+        "primaryLanguage": "Rust",
+        "license": "Apache-2.0",
+        "starsTier": "35k+ Stars",
+        "bestFor": "Loại bỏ tình trạng tăng vọt độ trễ đuôi (tail latency), phình bộ nhớ RAM và tụt giảm độ chính xác Recall khi phải lọc các tập dữ liệu hàng triệu vector theo tenant_id, phòng ban hoặc nhãn phân quyền trong hệ thống RAG sản xuất.",
+        "avoidWhen": "Đường cong vận hành ở tầng hệ thống cao hơn khi phải tinh chỉnh shard đồng thuận Raft, tối ưu quá trình gộp segment (compaction) và cân chỉnh tỷ lệ Recall-vs-RAM của quantization; đồng thời thiếu phép JOIN quan hệ chuẩn ACID nếu không đi kèm một cơ sở dữ liệu OLTP bên ngoài.",
+        "domationSynergy": "Làm chuẩn đối sánh và động cơ vector tốc độ cao cho kho tri thức Multi-Agent RAG tách biệt theo phòng ban tại DOMATION (bảng giá PDF, quy trình SOP, tài liệu pháp lý/nhân sự), kết hợp bộ lọc payload tenant nghiêm ngặt song hành cùng PostgreSQL FORCE RLS để ngăn tuyệt đối rò rỉ dữ liệu giữa các đại lý F1.",
+        "scores": {
+          "productionReadiness": 10,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 9,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "stat-grid",
+      "id": "qdrant-rust-telemetry-metrics",
+      "heading": "Thông số kiến trúc nổi bật qua bài kiểm toán lõi qdrant/qdrant",
+      "stats": [
+        {
+          "value": "4x – 32x",
+          "label": "Nén dung lượng RAM index",
+          "context": "Scalar Int8 (4x) và Binary 1-bit (32x) kèm rescore vector gốc từ đĩa",
+          "trend": "up"
+        },
+        {
+          "value": "97,2%",
+          "label": "Recall@10 khi lọc 1% Tenant",
+          "context": "Đo với HNSW payload_m=16 & is_tenant=True, tránh sập đồ thị HNSW",
+          "trend": "up"
+        },
+        {
+          "value": "14–19 ms",
+          "label": "Độ trễ p99 Hybrid RRF",
+          "context": "Chạy song song Dense + Sparse Prefetch trên Rust SIMD 2M vectors",
+          "trend": "down"
+        },
+        {
+          "value": "Apache-2.0",
+          "label": "Tự do nhúng SaaS & VPC",
+          "context": "Không dính bản quyền copyleft AGPL hay giới hạn số người dùng",
+          "trend": "neutral"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "teardown-hnsw-sup-do-khi-loc-tenant",
+      "eyebrow": "MỔ XẺ KIẾN TRÚC • NGHỊCH LÝ LỌC DỮ LIỆU TRONG ĐỒ THỊ VECTOR",
+      "variant": "narrative",
+      "heading": "Vì sao đồ thị HNSW chuẩn bị 'mù đường' khi doanh nghiệp lọc dữ liệu theo đại lý F1 và phòng ban?",
+      "pullQuote": "Trong hệ thống RAG doanh nghiệp, một câu truy vấn không bao giờ chỉ hỏi vector nào gần nhất — nó luôn hỏi vector nào gần nhất MÀ nhân viên của Đại lý F1 này được phép đọc.",
+      "paragraphs": [
+        "Phần lớn các bài demo RAG trên mạng đều chạy trên một collection phẳng duy nhất không có phân quyền: toàn bộ PDF được băm nhỏ, nhúng thành vector rồi đẩy vào một chỉ mục HNSW chung. Nhưng ngay khi bước vào hệ thống thực tế như hạ tầng đa đại lý của DOMATION — nơi Đại lý F1 Địa Ốc Tùng Long, BĐS Hợp Nhất hay các phòng ban Kinh doanh, Pháp lý, Nhân sự phải tra cứu bảng chính sách riêng mà tuyệt đối không được chạm chéo tài liệu của nhau — mọi truy vấn đều buộc phải gắn điều kiện lọc chặt kiểu `tenant_id = 'org_04'` và `department = 'legal'`.",
+        "Ở ngưỡng chọn lọc khắt khe như vậy (ví dụ một đại lý chỉ sở hữu 0,8% đến 3% tổng số vector trong toàn hệ thống), hai cơ chế tìm kiếm truyền thống đều gặp sự cố nghiêm trọng. Nếu cơ sở dữ liệu dùng lọc hậu kỳ (post-filtering — tìm top 20 vector gần nhất rồi mới gạt bỏ các điểm không khớp `tenant_id`), hệ quả là toàn bộ 20 ứng viên có thể đều thuộc về các đại lý lớn hơn, trả về danh sách rỗng dù đại lý nhỏ vẫn có tài liệu hợp lệ. Ngược lại, nếu chuyển sang lọc tiền kỳ (pre-filtering — gạt bỏ các điểm sai tenant ngay khi đang nhảy bước trên đồ thị HNSW), các 'cầu nối' dẫn tới cụm vector đúng bị cắt đứt, khiến thuật toán kẹt ở cực trị địa phương và làm tỷ lệ hồi tưởng Recall tụt dốc không phanh.",
+        "Khi tiến hành audit qdrant rust vector db vs pgvector trên kho mã nguồn `qdrant/qdrant` (viết hoàn toàn bằng Rust, giấy phép Apache-2.0, vượt mốc 35k+ Stars), chúng tôi nhận thấy đội ngũ Qdrant đã dồn toàn lực giải quyết đúng nút thắt này ở cấp độ cấu trúc dữ liệu chứ không vá víu ở tầng ứng dụng. Bằng cách kết hợp SIMD phần cứng trong lõi Rust, thuật toán Filterable HNSW có bộ lập lịch điều phối thông minh giữa đồ thị HNSW và quét chỉ mục đảo (payload index), cùng tính năng `is_tenant=True` xuất hiện từ bản v1.11+, Qdrant xử lý bài toán cô lập đa tenant mượt mà hơn hẳn thế hệ vector DB thuần Python hay C++ rời rạc."
+      ],
+      "bullets": [
+        "Không có Garbage Collector như Java/Go hay GIL như Python: lõi Rust quản lý bộ nhớ memmap trực tiếp qua page cache của hệ điều hành, loại bỏ hoàn toàn các cú khựng đuôi p99 GC pause.",
+        "Hỗ trợ Qdrant Edge và chế độ lưu trữ mmap linh hoạt, cho phép giữ đồ thị quan hệ hoặc vector lượng tử hóa trên RAM trong khi vector gốc nằm an toàn trên SSD NVMe.",
+        "Giấy phép Apache-2.0 thuần khiết cho phép doanh nghiệp tự host trong VPC riêng hoặc đóng gói cùng hạ tầng thương mại mà không vướng bẫy copyleft."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-is-tenant-quantization-va-hybrid-rrf",
+      "eyebrow": "GIẢI PHẪU LÕI RUST • FILTERABLE HNSW, QUANTIZATION & RRF",
+      "variant": "deep-dive",
+      "heading": "Ba trụ cột kỹ thuật bên trong Qdrant: `is_tenant=True`, Quantization 32x và nhánh kép Dense + Sparse",
+      "paragraphs": [
+        "Cơ chế đầu tiên đáng mổ xẻ là mô hình đa người thuê bên trong một collection duy nhất (single-collection multitenancy). Việc tạo hàng nghìn collection tách biệt cho hàng nghìn doanh nghiệp nhỏ sẽ làm bùng nổ số lượng tệp segment, mở quá nhiều file descriptor và ngốn sạch RAM quản lý của tiến trình. Qdrant cho phép giữ tất cả trong một collection, nhưng khi khai báo `hnsw_config=HnswConfigDiff(m=0, payload_m=16)` và gắn `KeywordIndexParams(type='keyword', is_tenant=True)` cho trường `tenant_id`, hệ thống sẽ tắt đồ thị HNSW toàn cục (`m=0`) và chỉ xây dựng các đồ thị HNSW tách biệt theo từng giá trị `tenant_id` (`payload_m=16`). Đồng thời, cờ `is_tenant=True` điều khiển engine lưu trữ sắp xếp vật lý các vector cùng một tenant vào gần nhau trên phân đoạn đĩa, triệt tiêu thao tác đọc ngẫu nhiên (random I/O) khi phục vụ đồng thời nhiều đại lý.",
+        "Trụ cột thứ hai quyết định hóa đơn hạ tầng là Quantization. Một triệu vector float32 kích thước 1536 chiều ngốn xấp xỉ `1.000.000 × 1536 × 4 bytes ≈ 6,14 GB` chỉ riêng dữ liệu thô, chưa tính phần đồ thị HNSW và metadata đẩy tổng RAM cần thiết lên gần 9–10 GB. Qdrant hỗ trợ ba chế độ nén trực tiếp trong lõi Rust: Scalar Quantization ép mỗi chiều float32 về 8-bit integer (tiết kiệm 4x RAM, độ tụt Recall gần như bằng 0); Product Quantization (tiết kiệm tới 16x–64x cho dữ liệu cực lớn); và Binary Quantization nén mỗi chiều xuống đúng 1 bit dấu dương/âm (tiết kiệm 32x RAM, tính khoảng cách Hamming bằng lệnh bit CPU `POPCNT` nhanh gấp hàng chục lần phép nhân dấu phẩy động). Khi bật `always_ram=True` cho lớp Binary và kết hợp `oversampling=2.5` + `rescore=True`, Qdrant lướt qua RAM với tốc độ tia chớp rồi chỉ đọc lại vài chục vector float32 gốc từ SSD để xếp hạng chuẩn xác.",
+        "Trụ cột thứ ba giải quyết điểm yếu chí tử của tìm kiếm ngữ nghĩa thuần túy trong nghiệp vụ Việt Nam: khớp chính xác mã căn hộ, mã vật tư SKU hay số văn bản pháp quy. Thay vì phải dựng thêm một cụm Elasticsearch song song để chạy BM25 rồi viết code Python ngồi căn chỉnh trọng số hợp nhất, Qdrant tích hợp sẵn Named Vectors cho phép mỗi điểm lưu cả Dense embedding (ngữ nghĩa) lẫn Sparse embedding (từ khóa thưa kiểu BM25/SPLADE/BGE-M3). Với Query API mới gồm `Prefetch` và `FusionQuery(fusion=Fusion.RRF)`, hai nhánh truy vấn chạy song song dưới cùng một `tenant_filter` và tự động trộn xếp hạng theo Reciprocal Rank Fusion ngay bên trong Rust engine."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-qdrant-vs-pgvector-filtering",
+      "heading": "Đo lường Recall@10 và Độ trễ p99 khi siết bộ lọc Tenant trên tập 2 triệu Vector (1536 chiều)",
+      "subtitle": "Bài kiểm thử tái hiện kịch bản RAG đa đại lý có tỷ lệ chọn lọc từ 100% (không lọc) thu hẹp dần xuống 0,5% tổng dữ liệu",
+      "chart": {
+        "chartType": "composed",
+        "title": "Recall@10 (%) và Độ trễ p99 (ms) theo cấu hình chỉ mục khi độ phủ Tenant thu hẹp",
+        "subtitle": "Chú thích: pgvector HNSW tiêu chuẩn dùng lọc điều kiện WHERE; Qdrant Tenant dùng m=0, payload_m=16, is_tenant=True + Scalar Int8",
+        "xKey": "scenario",
+        "yUnit": "% / ms",
+        "series": [
+          {
+            "key": "qdrantRecallPct",
+            "label": "Qdrant Tenant+Int8 Recall@10 (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "pgvectorRecallPct",
+            "label": "pgvector HNSW cơ bản Recall@10 (%)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "qdrantP99Ms",
+            "label": "Qdrant Tenant Độ trễ p99 (ms)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "pgvectorP99Ms",
+            "label": "pgvector Độ trễ p99 (ms)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "scenario": "Toàn bộ (100%)", "qdrantRecallPct": 98.4, "pgvectorRecallPct": 97.6, "qdrantP99Ms": 11, "pgvectorP99Ms": 28 },
+          { "scenario": "Chi nhánh (25%)", "qdrantRecallPct": 98.1, "pgvectorRecallPct": 92.4, "qdrantP99Ms": 13, "pgvectorP99Ms": 39 },
+          { "scenario": "Phòng ban (10%)", "qdrantRecallPct": 97.8, "pgvectorRecallPct": 84.5, "qdrantP99Ms": 14, "pgvectorP99Ms": 54 },
+          { "scenario": "Đại lý F1 (3%)", "qdrantRecallPct": 97.4, "pgvectorRecallPct": 71.2, "qdrantP99Ms": 16, "pgvectorP99Ms": 79 },
+          { "scenario": "Nhóm nhỏ (1%)", "qdrantRecallPct": 97.2, "pgvectorRecallPct": 58.6, "qdrantP99Ms": 18, "pgvectorP99Ms": 96 },
+          { "scenario": "Tài khoản (0.5%)", "qdrantRecallPct": 96.9, "pgvectorRecallPct": 49.0, "qdrantP99Ms": 19, "pgvectorP99Ms": 114 }
+        ],
+        "kpis": [
+          {
+            "label": "Recall ở ngưỡng lọc 1%",
+            "value": "97,2%",
+            "delta": "+38,6 điểm % vs HNSW không tách tenant",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ p99 Qdrant (0.5% lọc)",
+            "value": "19 ms",
+            "delta": "Nhanh hơn 6x so với quét fallback",
+            "positive": true
+          },
+          {
+            "label": "RAM cho 2M vector (Int8)",
+            "value": "3,4 GB",
+            "delta": "Giảm từ ~13,2 GB float32 gốc",
+            "positive": true
+          },
+          {
+            "label": "Giới hạn kiến trúc Qdrant",
+            "value": "0 phép JOIN SQL",
+            "delta": "Cần giữ giao dịch ở Postgres",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark trên nút đơn 8 vCPU / 16GB RAM / NVMe SSD (2M vector 1536d, chạy 64 luồng đồng thời; pgvector bật iterative_scan=off để minh họa rủi ro lọc HNSW mặc định trước khi tinh chỉnh)."
+      },
+      "insightSummary": "Biểu đồ phơi bày đúng điểm gãy của kiến trúc vector một lớp: khi không lọc hoặc chỉ lọc 25% dữ liệu, cả Qdrant và pgvector HNSW tiêu chuẩn đều đạt Recall trên 92%. Nhưng ngay khi đi vào kịch bản nhiều đại lý F1 hoặc phân quyền 0,5%–1%, HNSW mặc định thiếu đồ thị phân vùng sụt Recall xuống 49–58% (hoặc buộc phải quét tuần tự đẩy p99 lên 96–114 ms). Nhờ `is_tenant=True` + `payload_m=16`, Qdrant duy trì Recall 96,9–97,2% với p99 chỉ 18–19 ms."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-qdrant-audit-report",
+      "src": "/imgs/boost/charts/qdrant-qdrant-audit-vector-search-hybrid-filtering-enterprise-report.webp",
+      "alt": "Biểu đồ kiểm toán audit qdrant rust vector db vs pgvector thể hiện tỷ lệ Recall@10, độ trễ p99 và mức tiết kiệm RAM theo cơ chế quantization và is_tenant=True",
+      "caption": "Tổng hợp kết quả đo kiểm trên 2 triệu vector đa tenant: sự khác biệt giữa đồ thị HNSW dùng chung và đồ thị phân tách theo payload `is_tenant=True` kết hợp nén Scalar/Binary Quantization trong lõi Rust của Qdrant.",
+      "badge": "QDRANT RUST AUDIT • 2M VECTORS"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-qdrant-multitenant-hybrid",
+      "heading": "Code Recipe: Khởi tạo Collection Qdrant đa Tenant (`is_tenant=True`), nén Binary Quantization và Hybrid RRF",
+      "language": "python",
+      "filename": "qdrant_multitenant_hybrid.py",
+      "description": "Đoạn mã Python sử dụng `qdrant-client` chuẩn hóa mô hình 1 collection dùng chung nhưng tách đồ thị HNSW theo từng đại lý F1 (`m=0`, `payload_m=16`, `is_tenant=True`), nén RAM bằng Binary Quantization kết hợp rescore và truy vấn song song Dense + Sparse qua `Prefetch` + `Fusion.RRF`.",
+      "code": "from qdrant_client import QdrantClient, models\n\nclient = QdrantClient(url=\"http://localhost:6333\", timeout=10.0)\nCOLLECTION = \"domation_enterprise_knowledge\"\n\nif not client.collection_exists(COLLECTION):\n    client.create_collection(\n        collection_name=COLLECTION,\n        # Khai bao Named Vectors cho tim kiem kep Dense + Sparse (BM25/BGE-M3)\n        vectors_config={\n            \"dense\": models.VectorParams(\n                size=1536,\n                distance=models.Distance.COSINE,\n                on_disk=True,  # Giu vector float32 goc tren NVMe SSD\n            )\n        },\n        sparse_vectors_config={\n            \"sparse\": models.SparseVectorParams(\n                modifier=models.Modifier.IDF\n            )\n        },\n        # Tat do thi HNSW toan cuc (m=0), chi dung HNSW theo tung tenant (payload_m=16)\n        hnsw_config=models.HnswConfigDiff(\n            m=0,\n            payload_m=16,\n            ef_construct=128,\n        ),\n        # Nen RAM 32x bang Binary Quantization, giu ban nen tren RAM de sang loc nhanh\n        quantization_config=models.BinaryQuantization(\n            binary=models.BinaryQuantizationConfig(always_ram=True)\n        ),\n    )\n\n    # Danh dau is_tenant=True de Qdrant toi uu bo cuc luu tru va sub-index theo dai ly\n    client.create_payload_index(\n        collection_name=COLLECTION,\n        field_name=\"tenant_id\",\n        field_schema=models.KeywordIndexParams(\n            type=models.KeywordIndexType.KEYWORD,\n            is_tenant=True,\n        ),\n    )\n    client.create_payload_index(\n        collection_name=COLLECTION,\n        field_name=\"department\",\n        field_schema=models.PayloadSchemaType.KEYWORD,\n    )\n\ndef search_tenant_hybrid(\n    tenant_id: str,\n    department: str,\n    dense_vec: list[float],\n    sparse_indices: list[int],\n    sparse_values: list[float],\n    limit: int = 8,\n):\n    # Bo loc bat buoc tiem tu JWT/Session da xac thuc o API Gateway\n    tenant_filter = models.Filter(\n        must=[\n            models.FieldCondition(key=\"tenant_id\", match=models.MatchValue(value=tenant_id)),\n            models.FieldCondition(key=\"department\", match=models.MatchValue(value=department)),\n        ]\n    )\n\n    res = client.query_points(\n        collection_name=COLLECTION,\n        prefetch=[\n            models.Prefetch(\n                query=dense_vec,\n                using=\"dense\",\n                filter=tenant_filter,\n                limit=40,\n                params=models.SearchParams(\n                    quantization=models.QuantizationSearchParams(\n                        rescore=True,\n                        oversampling=2.5,\n                    )\n                ),\n            ),\n            models.Prefetch(\n                query=models.SparseVector(indices=sparse_indices, values=sparse_values),\n                using=\"sparse\",\n                filter=tenant_filter,\n                limit=40,\n            ),\n        ],\n        query=models.FusionQuery(fusion=models.Fusion.RRF),\n        limit=limit,\n        with_payload=True,\n    )\n    return res.points"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-qdrant-vs-pgvector-vs-chroma",
+      "heading": "So găng kiến trúc: Qdrant vs PostgreSQL pgvector (FORCE RLS) vs Chroma v1.0 & Elasticsearch",
+      "caption": "Đặt bốn phương án lưu trữ vector lên bàn cân theo yêu cầu vận hành doanh nghiệp Việt Nam đa chi nhánh",
+      "columns": [
+        "Tiêu chí kỹ thuật",
+        "qdrant/qdrant (Rust)",
+        "PostgreSQL + pgvector + FORCE RLS",
+        "Chroma v1.0+ (Rust Core)",
+        "Elasticsearch / OpenSearch"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Lọc đa Tenant & giữ Recall cao",
+          "values": [
+            "Filterable HNSW + `is_tenant=True` + `payload_m=16`, giữ Recall ~97% ở mức 0,5% lọc",
+            "Cần bật `hnsw.iterative_scan` (pgvector 0.8+) hoặc partition theo `tenant_id`; dễ tốn IO nếu bảng quá lớn",
+            "Lọc metadata `where` ổn ở quy mô vừa, chưa tối ưu đồ thị phân vùng theo tenant ở ngưỡng hàng chục triệu điểm",
+            "Tách shard/routing theo tenant tốt, nhưng cấu trúc HNSW Lucene tốn RAM Java Heap hơn lõi Rust"
+          ],
+          "winnerNote": "Qdrant dẫn đầu về hiệu năng lọc HNSW đa tenant ở quy mô lớn"
+        },
+        {
+          "criterion": "Cưỡng chế bảo mật tầng DB (RLS)",
+          "values": [
+            "Phụ thuộc API Middleware chèn `Filter`; không có cơ chế chính sách cấp dòng nội tại như SQL RLS",
+            "Cưỡng chế cứng bằng `FORCE ROW LEVEL SECURITY` qua `SET LOCAL app.current_tenant_id` ngay trong nhân Postgres",
+            "Chưa có chính sách RLS nội tại ngang mức cơ sở dữ liệu quan hệ",
+            "Có Document-Level Security (DLS) ở bản thương mại hoặc plugin bảo mật đi kèm"
+          ],
+          "winnerNote": "PostgreSQL FORCE RLS thắng tuyệt đối về chốt chặn bảo mật"
+        },
+        {
+          "criterion": "Tiết kiệm RAM & Quantization",
+          "values": [
+            "Đầy đủ Scalar (Int8), Binary (1-bit), Product Quantization + `on_disk` mmap và rescore gốc",
+            "Hỗ trợ kiểu `halfvec` (2x) và `bit` quantization nhưng quản trị memory page phụ thuộc `shared_buffers`",
+            "Tối ưu lưu trữ Rust core ở v1.0+ nhưng thiếu tùy biến sâu 3 tầng quantization như Qdrant",
+            "Hỗ trợ int8/int4/BBQ trong Lucene mới, nhưng bản thân JVM tiêu thụ nền bộ nhớ cao"
+          ],
+          "winnerNote": "Qdrant tối ưu chi phí RAM/triệu vector xuất sắc nhất"
+        },
+        {
+          "criterion": "Phép JOIN ACID với ERP / CRM",
+          "values": [
+            "Không có — phải đồng bộ chéo trạng thái từ PostgreSQL hoặc truyền danh sách ID qua lại",
+            "JOIN nguyên bản trong 1 câu SQL giữa bảng `leads`, `unit_inventory`, `misa_invoices` và vector chunk",
+            "Không có phép JOIN quan hệ ACID",
+            "Không hỗ trợ JOIN quan hệ giao dịch thực thụ"
+          ],
+          "winnerNote": "pgvector thắng tuyệt đối khi cần JOIN dữ liệu giao dịch sống"
+        },
+        {
+          "criterion": "Hybrid Search (Ngữ nghĩa + Mã SKU)",
+          "values": [
+            "Native Named Dense + Sparse Vectors với `Prefetch` & `Fusion.RRF` trong 1 query",
+            "Kết hợp `tsvector`/BM25 extension + `pgvector` qua CTE SQL RRF",
+            "Hỗ trợ sparse/dense hybrid ở các bản mới nhưng hệ sinh thái phân tích từ tiếng Việt còn mỏng",
+            "Rất mạnh BM25 truyền thống kết hợp kNN vector trong cùng index Lucene"
+          ]
+        },
+        {
+          "criterion": "Vị trí chuẩn trong kiến trúc DOMATION",
+          "values": [
+            "Động cơ chuyên dụng khi kho RAG đa phòng ban vượt mốc 1,5M+ chunks hoặc cần tốc độ truy vấn QPS cao",
+            "Lõi mặc định cho hệ thống ERP 5.0, CRM 360° & RAG vừa-lớn có yêu cầu chống xem chéo số điện thoại giữa 3 Đại lý F1",
+            "Môi trường chạy PoC 3–7 ngày để chốt luồng AI trước khi đưa lên hạ tầng sản xuất",
+            "Dùng khi doanh nghiệp đã có sẵn cụm log/search Elastic quy mô lớn"
+          ]
+        }
+      ],
+      "footnote": "Ghi chú thực chiến: Tại DOMATION, tiêu chuẩn đánh giá không phải 'công nghệ nào nhiều sao GitHub hơn' mà là giảm thiểu số hệ thống phải đồng bộ và tránh đứt gãy ranh giới quyền dữ liệu."
+    },
+    {
+      "type": "prose",
+      "id": "danh-doi-van-hanh-va-kien-truc-song-hanh-postgres-rls",
+      "eyebrow": "ĐÁNH ĐỔI VẬN HÀNH • TÁCH KÊNH OLTP VÀ RAG",
+      "variant": "deep-dive",
+      "heading": "Đừng thần thánh hóa Qdrant: Gánh nặng vận hành Raft, đồng bộ xóa dữ liệu và mô hình cặp bài trùng với PostgreSQL FORCE RLS",
+      "paragraphs": [
+        "Nếu chỉ nhìn vào các bài benchmark tốc độ tìm kiếm, kỹ sư rất dễ mắc sai lầm đưa Qdrant vào thay thế mọi lớp dữ liệu của ứng dụng. Cuộc kiểm toán thực tế cho thấy `qdrant/qdrant` mang lại cái giá vận hành không hề nhẹ ở tầng hệ thống (systems engineering). Khi mở rộng sang cụm phân tán nhiều nút (distributed deployment), đội DevOps phải nắm vững cách phân chia shard theo tenant (`shard_key`), theo dõi trạng thái đồng thuận Raft để tránh chia tách mạng (split-brain), kiểm soát ngưỡng `indexing_threshold_kb` và theo dõi tiến trình gộp segment (`optimizer`) để không làm nghẽn I/O đĩa SSD vào giờ cao điểm tư vấn khách hàng.",
+        "Rủi ro lớn thứ hai thường bị bỏ quên khi tách rời Vector DB khỏi cơ sở dữ liệu giao dịch nằm ở tính nhất quán dữ liệu và quyền xóa (consistency & deletion drift). Giả sử bộ phận Pháp lý thu hồi một phụ lục bảng giá đã lỗi thời trong hệ thống ERP, hoặc một khách hàng yêu cầu xóa dữ liệu cá nhân: bản ghi trong PostgreSQL đã biến mất trong 1 giao dịch ACID, nhưng nếu worker đồng bộ sang Qdrant bị lỗi mạng hoặc mất gói tin queue, chatbot vẫn tiếp tục trích xuất vector cũ trong Qdrant để trả lời khách hàng. Việc thiếu một giao dịch ACID xuyên suốt hai hệ thống đòi hỏi kỹ sư phải dựng hàng đợi idempotent (như BullMQ kết hợp bảng Outbox trong Postgres) để đảm bảo xóa hoặc cập nhật vector không bị sót.",
+        "Chính vì hiểu rõ cả sức mạnh Rust lẫn giới hạn phi quan hệ này, kiến trúc của DOMATION phân định ranh giới rất dứt khoát giữa hai thế giới. Toàn bộ dữ liệu cốt lõi có tính nhạy cảm cao và biến động từng giây — số điện thoại khách hàng lọc trùng 6 tháng, luồng chia số ZaloBot Round-Robin 5 cổng cho các Đại lý F1, bảng hàng căn hộ Real-time, 8 nấc CRM Pipeline và chứng từ đồng bộ MISA — luôn nằm trong PostgreSQL áp dụng `FORCE ROW LEVEL SECURITY`. Với các dự án dưới 1,5 triệu đoạn tri thức, `pgvector` đi cùng RLS giúp đơn giản hóa tối đa kiến trúc mà vẫn an toàn tuyệt đối. Chỉ khi doanh nghiệp bước vào quy mô tập đoàn với hàng triệu trang tài liệu kỹ thuật, sổ tay đào tạo đa phòng ban hoặc yêu cầu truy xuất hybrid dense+sparse tốc độ dưới 20 ms với mật độ QPS cao, Qdrant mới được đưa vào làm cụm tìm kiếm tăng tốc chuyên biệt, đứng sau API Gateway xác thực tenant từ Postgres và tuyệt đối không chứa PII nhạy cảm trong payload."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-qdrant",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy bắt đầu gọn nhẹ bằng PostgreSQL pgvector FORCE RLS — và chỉ gọi Qdrant khi bài toán Recall đa tenant hoặc hóa đơn RAM buộc bạn tách cụm",
+      "body": "qdrant/qdrant là một kiệt tác kỹ thuật viết bằng Rust: cơ chế `is_tenant=True` cùng `payload_m=16`, Binary Quantization và Hybrid Prefetch RRF giải quyết xuất sắc những gì các vector DB đời đầu làm hỏng. Nhưng trong các hệ thống may đo tại DOMATION, nguyên tắc vàng của tôi luôn là tối giản điểm gãy hạ tầng. Nếu kho tài liệu PDF, SOP và chính sách bán hàng của bạn vẫn nằm gọn trong tầm phục vụ của PostgreSQL pgvector FORCE RLS — nơi một câu truy vấn SQL vừa lọc quyền từng Đại lý F1 vừa JOIN thẳng trạng thái giỏ hàng thật — đừng vội ôm thêm một cụm phân tán mới. Còn một khi dữ liệu RAG phình tới hàng triệu vector khiến RAM phình to và p99 chậm lại, Qdrant chính là vũ khí nâng cấp chuẩn mực nhất dưới giấy phép Apache-2.0."
+    }
+  ]
+}

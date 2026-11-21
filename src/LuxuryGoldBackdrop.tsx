@@ -17,12 +17,12 @@ export const LuxuryGoldBackdrop: React.FC = () => {
         />
       </picture>
 
-      {/* Luminous Daylight Veil & INKICA Radial Blooms */}
+      {/* Luminous Daylight Veil & INKICA Radial Blooms (heavy blurs desktop-only for 60fps mobile scroll) */}
       <div className="absolute inset-0 bg-white/45" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_80%_at_50%_30%,rgba(255,255,255,0.18)_18%,rgba(248,250,252,0.52)_68%,rgba(248,249,250,0.92)_100%)]" />
-      <div className="absolute top-[-10%] left-[4%] h-[460px] w-[460px] rounded-full bg-sky-300/20 blur-[110px]" />
-      <div className="absolute top-[28%] right-[2%] h-[400px] w-[400px] rounded-full bg-cyan-200/25 blur-[110px]" />
-      <div className="absolute bottom-[-8%] left-[30%] h-[340px] w-[460px] rounded-full bg-blue-200/25 blur-[110px]" />
+      <div className="hidden lg:block absolute inset-0 bg-[radial-gradient(ellipse_100%_80%_at_50%_30%,rgba(255,255,255,0.18)_18%,rgba(248,250,252,0.52)_68%,rgba(248,249,250,0.92)_100%)]" />
+      <div className="hidden lg:block absolute top-[-10%] left-[4%] h-[460px] w-[460px] rounded-full bg-sky-300/20 blur-[110px]" />
+      <div className="hidden lg:block absolute top-[28%] right-[2%] h-[400px] w-[400px] rounded-full bg-cyan-200/25 blur-[110px]" />
+      <div className="hidden lg:block absolute bottom-[-8%] left-[30%] h-[340px] w-[460px] rounded-full bg-blue-200/25 blur-[110px]" />
     </div>
   );
 };

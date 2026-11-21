@@ -1,0 +1,298 @@
+{
+  "id": "art-81",
+  "number": "81",
+  "slug": "san-xuat-gia-cong-oem-pod-quan-ly-bom-lenh-xuong-prepress",
+  "shardId": "shard01",
+  "pillar": "erp-operations",
+  "pillarLabel": "ERP 5.0 May Đo & Quản Trị",
+  "industry": "Sản Xuất, Gia Công OEM & In Ấn POD",
+  "clusterId": "kw-erp-custom",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Nỗi đau xưởng sản xuất OEM & In ấn POD: Kiểm soát BOM vật tư, lệnh sản xuất và QA không sai lệch",
+  "seoTitle": "ERP Sản Xuất OEM & POD: Quản Lý BOM, Lệnh Xưởng & QA | DOMATION",
+  "metaDescription": "Khắc phục trễ tiến độ giao hàng và sai hỏng file in tại xưởng OEM/POD bằng kiến trúc ERP may đo gắn mã QR từng lô, kiểm soát BOM và Multi-Agent Prepress.",
+  "focusKeyword": "erp quản lý sản xuất oem và pod",
+  "secondaryKeywords": [
+    "kiểm soát bom vật tư sản xuất",
+    "lệnh sản xuất xưởng qr code",
+    "ai prepress kiểm tra file in",
+    "giảm tỷ lệ hàng lỗi xưởng gia công",
+    "phần mềm quản lý xưởng may đo"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Số Hóa Lệnh Xưởng OEM Và Kiểm Soát BOM 0 Lỗi",
+  "thumbnailHook": "Rút thời gian làm file từ 60 phút xuống 40 giây, khóa BOM.",
+  "thumbnailBadge": "SẢN XUẤT OEM POD",
+  "coverImage": "/imgs/boost/v2/san-xuat-gia-cong-oem-pod-quan-ly-bom-lenh-xuong-prepress.webp",
+  "screenshotImage": "/imgs/boost/charts/san-xuat-gia-cong-oem-pod-quan-ly-bom-lenh-xuong-prepress-report.webp",
+  "coverAlt": "Cẩm nang triển khai ERP quản lý sản xuất OEM và POD: kiểm soát BOM vật tư, lệnh sản xuất mã QR và Multi-Agent AI Prepress của DOMATION và INKICA",
+  "screenshotCaption": "Biểu đồ theo dõi hiệu suất xưởng sản xuất may mặc OEM/POD: rút thời gian xử lý file Prepress từ 55 phút xuống dưới 1 phút mỗi SKU và kéo tỷ lệ in lỗi/sai rập về tiệm cận 0%.",
+  "relatedPortfolioId": "inkica-ai",
+  "relatedModuleUrl": "/portfolio",
+  "relatedModuleLabel": "Xem Case Study INKICA & Xưởng Sản Xuất",
+  "relatedSlugs": [
+    "trien-khai-multi-agent-ai-prepress-208-sku-3d-cad-inkica",
+    "kiem-soat-chi-phi-van-hanh-purchase-order-chong-vuot-ngan-sach",
+    "ai-du-bao-dong-tien-ton-kho-ket-hop-misa-pos-crm",
+    "bay-mo-rong-tuyen-tinh-tuyen-them-admin-thay-vi-tu-dong-hoa"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Cẩm nang vận hành xưởng may mặc OEM và in ấn theo yêu cầu (POD) giải quyết ba nguyên nhân gây trễ hợp đồng: thiếu hụt BOM vật tư, kẹt lệnh sản xuất không rõ chuyền và sai lệch file Prepress. Kiến trúc erp quản lý sản xuất oem và pod của DOMATION kết hợp khóa định mức BOM nguyên tử, quét mã QR từng công đoạn đến cổng QA, quy trình Purchase Order liên thông MISA và Multi-Agent AI Prepress chuẩn INKICA 300 DPI, rút thời gian ra rập từ 60 phút xuống 40 giây.",
+  "keyTakeaways": [
+    "Khóa tồn kho BOM nguyên tử (vải cuộn, mực chuyển nhiệt, giấy ép, phụ liệu) ngay khi duyệt Lệnh sản xuất, ngăn cảnh nhận 1.000 đơn mới phát hiện thiếu vật tư.",
+    "Dán mã QR độc nhất lên từng lô cắt và phiếu công đoạn (Cắt -> In 300 DPI -> Ép nhiệt -> May -> QA) để giám sát WIP realtime và chặn xuất hàng khi chưa qua QA.",
+    "Áp dụng kiến trúc 6 AI Prepress Agents chuẩn INKICA (SAM 3 + ViTMatte 300 DPI, rập .PSD Cubic Bezier UV trên 208 SKU AOP 3D) đạt 0 px lệch đường may và rút làm file từ 45–60 phút xuống 40 giây.",
+    "Đóng vòng tài chính xưởng bằng Purchase Order duyệt đa cấp trên ERP 5.0, chấm công sản lượng/GPS và đồng bộ phiếu kho sang MISA."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Thời gian làm file Prepress / SKU",
+      "value": "45–60p -> ~40 giây"
+    },
+    {
+      "label": "Độ chính xác rập UV AOP 3D",
+      "value": "0 px lệch đường may"
+    },
+    {
+      "label": "Chuẩn hóa SKU & Canonical Models",
+      "value": "208 SKU • 88 Models"
+    },
+    {
+      "label": "Tỷ lệ sai BOM & thất lạc chuyền",
+      "value": "< 0.4% (QR WIP)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao xưởng OEM/POD dùng phần mềm bán hàng thông thường quản lý kho lại hay bị âm vải hoặc trễ đơn?",
+      "answer": "Phần mềm bán hàng chỉ trừ tồn thành phẩm 1:1. Trong xưởng OEM/POD, một đơn 500 áo Hoodie size M–XXL có công thức BOM đa cấp khác hẳn nhau theo size (từ mét vải chính, bo gân, ml mực chuyển nhiệt đến tỷ lệ hao hụt cắt 4%). Nếu không khóa tồn kho vật tư dự kiến (BOM Reservation) ngay khi duyệt Lệnh sản xuất mà chờ kế toán nhập tay cuối tuần, chuyền may sẽ bị đứng máy giữa chừng vì thiếu phụ liệu."
+    },
+    {
+      "question": "Quét mã QR tại từng công đoạn trong xưởng may và in ấn có làm công nhân chậm tiến độ không?",
+      "answer": "Không, vì mã QR được in sẵn trên nhãn mảnh vải hoặc phiếu chuyền từ lúc ra rập. Tổ trưởng chỉ cần dùng súng quét không dây hoặc tablet đầu bàn bắn 1 giây khi nhận/giao rổ hàng. Dữ liệu quét QR còn tự động tính sản lượng vào bảng lương công nhân cuối tháng nên đội ngũ xưởng chủ động quét rất kỷ luật."
+    },
+    {
+      "question": "Công nghệ AI Prepress trong case INKICA giải quyết khâu nào trong chuỗi sản xuất POD/AOP?",
+      "answer": "Khâu chỉnh tay file thiết kế thường mất 45–60 phút/SKU dễ sai lề đường may. Kiến trúc INKICA dùng Next.js 14, Three.js và BullMQ GPU Worker Pool điều phối 6 AI Prepress Agents chạy 20+ ONNX Models (SAM 3 + ViTMatte tách nền 300 DPI, lưới tọa độ Cubic Bezier UV trên 208 SKU và 88 Canonical Models), tự động bóc rập .PSD đạt 0 px lệch đường may trong khoảng 40 giây."
+    },
+    {
+      "question": "Làm sao xưởng chặn tuyệt đối hàng lỗi lọt ra khâu đóng gói xuất khẩu cho khách B2B?",
+      "answer": "Hệ thống dùng máy trạng thái cưỡng bức (State Machine) trong PostgreSQL: chỉ in được tem vận đơn khi toàn bộ mã QR của kiện hàng đạt trạng thái QA_PASSED. Nếu phát hiện lỗi in hay đường may ở bàn QA, quét mã đánh dấu REWORK_REQUIRED để tự sinh lệnh in bù đúng mảnh lỗi thay vì làm lại cả đơn."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "kich-ban-tre-han-1200-don-aop",
+      "eyebrow": "PLAYBOOK MANUAL • KỊCH BẢN MẤT KIỂM SOÁT XƯỞNG",
+      "variant": "incident",
+      "heading": "Lô 1.200 áo AOP trễ hạn xuất cảng 4 ngày: Thủ phạm sau tờ lệnh in giấy và 3mm lệch rập",
+      "pullQuote": "Một lỗi lệch lề rập 3 milimet ở phòng Prepress không chỉ làm hỏng một mảnh vải — nó nhân bản thành 300 chiếc áo sai đường may và thổi bay toàn bộ lợi nhuận của cả hợp đồng gia công.",
+      "paragraphs": [
+        "Thứ Ba tuần cao điểm, chuyền may số 4 tại một xưởng gia công in ấn POD quy mô 120 thợ phải dừng khẩn cấp lô 1.200 áo hoodie in phủ toàn thân (AOP). Nguyên nhân bắt nguồn từ phòng thiết kế Prepress khi kéo tay sai 3mm vùng chừa đường may trên file .PSD nặng gần 2GB, khiến họa tiết ghép giữa thân và tay áo bị lệch khớp. Lúc phòng QA yêu cầu cắt bù 180 mảnh mới, kho mới phát hiện cuộn vải nỉ mã màu đó đã bị xuất nhầm cho đơn khác từ hai ngày trước.",
+        "Trưởng xưởng mất nửa ngày lục xấp phiếu giấy dính mực để tìm đơn đang kẹt ở chuyền nào, phòng thu mua nhập gấp vải bù đắt hơn 18%, còn đối tác B2B phạt trễ hợp đồng 4 ngày. Khi kiểm toán quy trình toàn xưởng, 75% thời gian chết đến từ ba khoảng mù dữ liệu: làm file Prepress thủ công mất 45–60 phút/SKU, không khóa tồn kho BOM theo lệnh xưởng, và thiếu mã QR định danh bán thành phẩm. Playbook này đúc kết kiến trúc chuẩn hóa từ DOMATION ERP 5.0 12 phân hệ kết nối trực tiếp với hệ thống AI Prepress 3D của INKICA (ai.inkica.com)."
+      ],
+      "bullets": [
+        "Thời gian dàn file Prepress thủ công 45–60 phút/SKU biến phòng kỹ thuật thành điểm nghẽn mỗi khi nhận đơn đa mẫu mã.",
+        "Không khóa BOM nguyên tử theo Lệnh sản xuất gây hiện tượng tồn ảo: sổ còn hàng nhưng thực tế đã bị giữ cho đơn khác.",
+        "Phiếu giấy rời rạc khiến quản đốc mù thông tin WIP ùn ứ tại từng chuyền cho đến sát giờ giao hàng."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "chuoi-chuan-hoa-5-cong-doan-xuong",
+      "heading": "Quy trình 5 trạm kiểm soát từ File Prepress 300 DPI đến Cổng Đóng Gói QA",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "TRẠM 01 • PREPRESS AI",
+          "title": "Bóc rập 0 px lệch & Xuất file 300 DPI bằng Multi-Agent",
+          "detail": "SAM 3 + ViTMatte tách nền 300 DPI, trải họa tiết theo lưới Cubic Bezier UV trên 208 SKU AOP 3D và kiểm tra bleed đường may tự động.",
+          "metricOrTool": "INKICA 6 AI Agents • ~40s/SKU"
+        },
+        {
+          "tag": "TRẠM 02 • BOM RESERVATION",
+          "title": "Duyệt Lệnh sản xuất & Khóa nguyên tử tồn kho BOM",
+          "detail": "ERP 5.0 tính định mức vải, mực, giấy ép theo từng size kèm tỷ lệ hao hụt kỹ thuật và lập tức khóa giữ (Reserve) vật tư trong kho tổng.",
+          "metricOrTool": "ERP 5.0 BOM Engine • PO Alert"
+        },
+        {
+          "tag": "TRẠM 03 • QR WIP TRACKING",
+          "title": "Gắn mã QR lô cắt & Quét nhận bàn giao chuyền in/ép",
+          "detail": "Mỗi bó rập hoặc áo POD gắn tem QR định danh; quét 1 giây tại các bàn Cắt, In, Ép nhiệt, May để cập nhật WIP và sản lượng tổ.",
+          "metricOrTool": "QR Work Order • Realtime WIP"
+        },
+        {
+          "tag": "TRẠM 04 • STRICT QA GATE",
+          "title": "Cổng QA bắt buộc & Nhánh Rework in bù đúng mảnh lỗi",
+          "detail": "QA kiểm màu và khớp rập trước khi bấm QA_PASSED; nếu đánh REWORK, hệ thống tách lệnh bù duy nhất mảnh hỏng thay vì làm lại cả đơn.",
+          "metricOrTool": "State Machine • 0 Lọt lỗi"
+        },
+        {
+          "tag": "TRẠM 05 • ĐÓNG GÓI & MISA",
+          "title": "In tem vận đơn, tính giá thành thực tế & đồng bộ MISA",
+          "detail": "Chỉ mở khóa in tem giao nhận khi 100% QR đạt QA_PASSED, đồng thời kết chuyển giá vốn vật tư + nhân công sản lượng về kế toán MISA.",
+          "metricOrTool": "Shipping Gate ↔ MISA"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-hieu-suat-prepress-va-qa",
+      "heading": "Đường cong rút ngắn thời gian Prepress và tỷ lệ hàng lỗi QA qua 6 chặng số hóa xưởng",
+      "subtitle": "Theo dõi tốc độ chuẩn bị file sản xuất (phút/SKU) và tỷ lệ Rework lỗi sản xuất (%) trên dây chuyền OEM/POD",
+      "chart": {
+        "chartType": "line",
+        "title": "Thời gian làm file Prepress (phút/SKU) vs Tỷ lệ lỗi QA phải Rework (%)",
+        "subtitle": "Đo kiểm trên 208 SKU may mặc AOP & gia công OEM từ quy trình .PSD tay đến Full 6 AI Agents + ERP QR",
+        "xKey": "label",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "a",
+            "label": "Thời gian Prepress (phút/SKU)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "b",
+            "label": "Tỷ lệ sản phẩm Rework (%)",
+            "color": "#EF4444"
+          }
+        ],
+        "data": [
+          { "label": "Thủ công (.PSD tay)", "a": 55.0, "b": 7.8 },
+          { "label": "Chuẩn rập ERP", "a": 32.0, "b": 4.9 },
+          { "label": "QR + Khóa BOM", "a": 18.5, "b": 2.6 },
+          { "label": "SAM 3 300DPI", "a": 4.2, "b": 1.4 },
+          { "label": "Cubic Bezier UV", "a": 1.1, "b": 0.5 },
+          { "label": "Full 6 AI Agents", "a": 0.7, "b": 0.3 }
+        ],
+        "kpis": [
+          {
+            "label": "Tốc độ Prepress / SKU",
+            "value": "~40 giây",
+            "delta": "-98.7% (từ 55p)",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ Rework lỗi xưởng",
+            "value": "0.3%",
+            "delta": "-7.5 điểm %",
+            "positive": true
+          },
+          {
+            "label": "Lệch đường may AOP",
+            "value": "0 px",
+            "delta": "Cubic Bezier UV",
+            "positive": true
+          },
+          {
+            "label": "SKU chuẩn hóa đồng bộ",
+            "value": "208 SKU",
+            "delta": "88 Canonical Models",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp benchmark triển khai kiến trúc INKICA Multi-Agent Prepress (Next.js 14, BullMQ GPU Pool, 20+ ONNX Models) kết hợp ERP quản lý xưởng QR."
+      },
+      "insightSummary": "Chuẩn hóa rập và khóa BOM ở hai chặng đầu cắt tỷ lệ Rework từ 7,8% xuống 2,6%. Khi đấu nối 6 AI Prepress Agents dùng SAM 3, ViTMatte 300 DPI và lưới Cubic Bezier UV, thời gian xử lý mỗi SKU rơi từ gần 1 tiếng xuống khoảng 40 giây với độ lệch đường may bằng 0."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-xuong-oem-pod-inkica",
+      "src": "/imgs/boost/charts/san-xuat-gia-cong-oem-pod-quan-ly-bom-lenh-xuong-prepress-report.webp",
+      "alt": "Bảng điều hành ERP quản lý sản xuất OEM và POD: kiểm soát BOM vật tư, tiến độ lệnh xưởng mã QR và kiểm định AI Prepress 300 DPI",
+      "caption": "Trung tâm giám sát sản xuất OEM & POD hợp nhất: theo dõi dự trữ BOM vật tư theo lệnh xưởng đang chạy, biểu đồ WIP tắc nghẽn theo chuyền cắt-in-may-QA và trạng thái xuất rập 300 DPI 0 px lệch.",
+      "badge": "REPORT DASHBOARD"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-bom-va-ai-prepress-inkica",
+      "eyebrow": "BÀI HỌC KỸ THUẬT • BOM ĐA CẤP & 6 AI PREPRESS AGENTS",
+      "variant": "deep-dive",
+      "heading": "Kết nối kho vật tư với phòng Prepress: Khóa BOM nguyên tử và bóc rập 208 SKU chuẩn 0 px",
+      "paragraphs": [
+        "Ở đầu vào kỹ thuật số, kinh nghiệm xây dựng nền tảng INKICA AI POD Studio (ai.inkica.com) trên Next.js 14, Three.js và BullMQ GPU Worker Pool cho thấy hoàn toàn có thể tự động hóa khâu làm file tốn 45–60 phút/SKU. Khi tải thiết kế lên, Omni Orchestrator điều phối 6 AI Prepress Agents chạy 20+ ONNX Models (SAM 3 + ViTMatte tách nền 300 DPI) rồi ánh xạ trực tiếp lên 208 SKU và 88 Canonical Models bằng toán học lưới Cubic Bezier UV, đảm bảo 0 px lệch đường may.",
+        "Ngay khi file rập hoàn tất và gắn vào Lệnh sản xuất trên DOMATION ERP 5.0, động cơ BOM theo từng size (S–5XL) tính chính xác lượng vải chính, mực in, giấy chuyển nhiệt, phụ liệu cùng hao hụt biên độ cắt để thực hiện Atomic Reservation. Nếu đơn gấp 2.000 chiếc vượt tồn khả dụng (Available = OnHand - Reserved), hệ thống cảnh báo ngay cuộn vải sắp chạm ngưỡng Reorder Point để kích hoạt Purchase Order kịp thời."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-trien-khai-xuong-oem-pod",
+      "heading": "Checklist 6 chốt chặn vận hành cho xưởng sản xuất OEM & POD",
+      "items": [
+        {
+          "check": "Thiết lập BOM chi tiết theo Size & Hệ số hao hụt kỹ thuật (Allowance %)",
+          "severity": "critical",
+          "verificationHow": "Đối chiếu dự toán BOM cho 100 áo mẫu với cân/mét thực đo sau cắt và in.",
+          "passThreshold": "Sai lệch giữa BOM hệ thống và tiêu hao thực tế trong biên độ ±1.5%."
+        },
+        {
+          "check": "Chặn nhận lệnh vượt tồn khả dụng bằng ràng buộc DB (Zero Negative Stock)",
+          "severity": "critical",
+          "verificationHow": "Thử duyệt hai lệnh lớn song song cùng tiêu thụ cuộn vải cuối cùng qua API.",
+          "passThreshold": "CHECK (on_hand_qty >= reserved_qty) chặn lệnh thứ hai và báo thiếu đúng mã vật tư."
+        },
+        {
+          "check": "Kiểm tra tự động chuẩn 300 DPI và Bleed đường may trước khi xuất file in",
+          "severity": "critical",
+          "verificationHow": "Nạp thử ảnh 72 DPI hoặc thiếu lề chừa đường may vào pipeline Prepress.",
+          "passThreshold": "AI Agent chặn đẩy xuống máy in hoặc cảnh báo đỏ ngay trước khi tạo phiếu in."
+        },
+        {
+          "check": "State Machine bắt buộc QA_PASSED trước khi in Tem Vận Đơn",
+          "severity": "high",
+          "verificationHow": "Gọi API in tem đóng gói cho đơn đang ở trạng thái SEWING hoặc REWORK_REQUIRED.",
+          "passThreshold": "Trả lỗi 422 và khóa nút in cho tới khi bàn QA quét xác nhận đạt."
+        },
+        {
+          "check": "Chống quét trùng mã QR khi công nhân lỡ bấm đúp súng bắn mã",
+          "severity": "high",
+          "verificationHow": "Quét cùng một mã QR bàn giao tại trạm Ép nhiệt 3 lần trong 5 giây.",
+          "passThreshold": "Chỉ ghi nhận 1 lần hoàn tất công đoạn và 1 lần tính sản lượng tổ."
+        },
+        {
+          "check": "Đồng bộ Purchase Order và giá thành sản xuất sang kế toán MISA",
+          "severity": "recommended",
+          "verificationHow": "Chạy hết chu trình Mua vải (PO) -> Xuất BOM -> Nhập thành phẩm và đối chiếu MISA.",
+          "passThreshold": "100% phiếu nhập xuất vật tư và giá trị tồn kho khớp sổ cái MISA."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "sql-atomic-bom-va-qr-state-machine",
+      "heading": "Hàm PostgreSQL khóa tồn kho BOM nguyên tử & chuyển trạm QR chống quét trùng",
+      "language": "sql",
+      "filename": "erp_work_order_bom_qr.sql",
+      "description": "Đoạn SQL triển khai trong lõi DOMATION ERP 5.0: vừa đặt giữ vật tư BOM chống âm kho khi duyệt lệnh sản xuất, vừa cưỡng bức chuyển công đoạn mã QR idempotent và khóa cổng QA trước khi giao hàng.",
+      "code": "-- 1. Chống âm kho nguyên vật liệu ở cấp bảng dữ liệu\nALTER TABLE raw_materials\n  ADD CONSTRAINT chk_non_negative_available\n  CHECK (on_hand_qty >= reserved_qty AND reserved_qty >= 0);\n\n-- 2. Khóa BOM nguyên tử khi phát hành Lệnh sản xuất (Work Order)\nCREATE OR REPLACE FUNCTION reserve_bom_for_work_order(p_wo_id UUID)\nRETURNS VOID AS $$\nDECLARE\n  v_req RECORD;\nBEGIN\n  FOR v_req IN\n    SELECT b.material_id,\n           SUM(b.qty_per_unit * (1 + b.scrap_rate) * woi.quantity) AS total_needed\n    FROM work_order_items woi\n    JOIN bom_recipes b ON b.sku_id = woi.sku_id AND b.size_code = woi.size_code\n    WHERE woi.work_order_id = p_wo_id\n    GROUP BY b.material_id\n    ORDER BY b.material_id -- Tránh deadlock khi nhiều lệnh chạy song song\n  LOOP\n    UPDATE raw_materials\n    SET reserved_qty = reserved_qty + v_req.total_needed,\n        updated_at = NOW()\n    WHERE id = v_req.material_id\n      AND (on_hand_qty - reserved_qty) >= v_req.total_needed;\n\n    IF NOT FOUND THEN\n      RAISE EXCEPTION 'INSUFFICIENT_MATERIAL_STOCK: %', v_req.material_id;\n    END IF;\n  END LOOP;\n\n  UPDATE work_orders SET status = 'BOM_RESERVED' WHERE id = p_wo_id AND status = 'DRAFT';\nEND;\n$$ LANGUAGE plpgsql;\n\n-- 3. Chuyển công đoạn bằng mã QR idempotent & Cổng QA bắt buộc\nCREATE OR REPLACE FUNCTION advance_qr_stage(\n  p_qr_code TEXT,\n  p_expected_from TEXT,\n  p_next_stage TEXT,\n  p_operator_id UUID,\n  p_scan_idempotency_key TEXT\n) RETURNS TEXT AS $$\nDECLARE\n  v_current TEXT;\nBEGIN\n  INSERT INTO qr_scan_events(idempotency_key, qr_code, stage, operator_id)\n  VALUES (p_scan_idempotency_key, p_qr_code, p_next_stage, p_operator_id)\n  ON CONFLICT (idempotency_key) DO NOTHING;\n\n  IF NOT FOUND THEN\n    RETURN 'DUPLICATE_SCAN_IGNORED';\n  END IF;\n\n  SELECT current_stage INTO v_current FROM unit_qr_items WHERE qr_code = p_qr_code FOR UPDATE;\n\n  IF v_current <> p_expected_from THEN\n    RAISE EXCEPTION 'INVALID_STAGE_TRANSITION: current=% expected=%', v_current, p_expected_from;\n  END IF;\n\n  IF p_next_stage = 'READY_TO_SHIP' AND v_current <> 'QA_PASSED' THEN\n    RAISE EXCEPTION 'QA_GATE_BLOCKED: Cannot ship before QA_PASSED';\n  END IF;\n\n  UPDATE unit_qr_items SET current_stage = p_next_stage, updated_at = NOW() WHERE qr_code = p_qr_code;\n  RETURN 'TRANSITION_OK';\nEND;\n$$ LANGUAGE plpgsql;"
+    },
+    {
+      "type": "prose",
+      "id": "purchase-order-va-dong-bo-tai-chinh-misa",
+      "eyebrow": "QUẢN TRỊ MUA HÀNG & LÃI LỖ • PO ĐA CẤP ĐẾN MISA",
+      "variant": "deep-dive",
+      "heading": "Từ Purchase Order nhập vải đến báo cáo lãi lỗ từng đơn gia công trên kế toán MISA",
+      "paragraphs": [
+        "Mảnh ghép khép kín dòng tiền của xưởng OEM/POD là quy trình mua hàng Purchase Order (PO) gắn chặt với Lệnh sản xuất trên DOMATION ERP 5.0. Mọi yêu cầu nhập thêm vải hoặc mực phát sinh do lỗi sản xuất đều phải qua luồng duyệt đa cấp và đối chiếu trần ngân sách đơn hàng, ngăn tình trạng mua gấp giá cao ăn mòn hết biên lợi nhuận hợp đồng.",
+        "Nhờ kết hợp dữ liệu chấm công GPS AI tại xưởng, sản lượng quét mã QR theo từng tổ và tiêu hao BOM thực tế (gồm cả lệnh bù Rework tại bàn QA), hệ thống tự tính giá vốn đơn vị thực tế cho từng lô hàng và đồng bộ phiếu nhập xuất kho cùng hóa đơn hai chiều sang MISA để ban giám đốc nắm chính xác lãi ròng từng mã hàng."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-oem-pod",
+      "variant": "key-rule",
+      "title": "Quy tắc vàng số hóa xưởng: Khóa từ File Prepress và BOM trước khi mua thêm máy in mới",
+      "body": "Nhiều chủ xưởng OEM/POD khi bị trễ đơn thường chọn phương án tốn kém nhất là mua thêm máy in hoặc tuyển thêm thợ, nhưng tỷ lệ lỗi vẫn không giảm vì tắc nghẽn nằm ở quy trình dữ liệu. Hãy tự động hóa Prepress 300 DPI chuẩn rập UV như INKICA (208 SKU, 0 px lệch), khóa chặt BOM nguyên tử ngay lúc duyệt lệnh và gắn mã QR buộc qua cổng QA trên DOMATION ERP 5.0 để giải phóng ngay 25–35% công suất xưởng hiện có."
+    }
+  ]
+}

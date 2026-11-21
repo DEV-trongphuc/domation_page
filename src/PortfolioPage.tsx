@@ -15,7 +15,10 @@ import { Navbar } from './Navbar';
 import { ContactModal } from './ContactModal';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationFooter } from './components/DomationFooter';
+import { BackToTopPill } from './components/BackToTopPill';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
 import { DomResponsiveSubtabs } from './components/dom-meta/DomMetaSelect';
+import { ResponsiveSlideDeck } from './components/ResponsiveSlideDeck';
 import {
   type InspectionTabId,
   ProductInspectionModal,
@@ -78,30 +81,31 @@ export const PortfolioPage: React.FC = () => {
                   <Briefcase className="w-3.5 h-3.5 text-[#1E40FF]" />
                   <span>PORTFOLIO TRIỂN KHAI THỰC TẾ • 30+ DOANH NGHIỆP ĐỐI TÁC</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-slate-900 leading-[1.2] tracking-tight">
-                  Portfolio Kiến Trúc May Đo &amp;{' '}
-                  <span className="text-gradient-inkica">Case Study Đa Ngành</span>
+                <h1 className="text-[22px] sm:text-4xl lg:text-[42px] font-extrabold text-slate-900 leading-[1.2] tracking-tight">
+                  Portfolio Kiến Trúc &amp;{' '}
+                  <span className="text-gradient-inkica">Case Study</span>
                 </h1>
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
                   Mỗi dự án trong Portfolio của DOMATION đi kèm đầy đủ: Bài toán ban đầu, Khó khăn thực tế khi triển khai, Kiến trúc kỹ thuật xử lý, Số liệu đo lường thật và bài phân tích chuyên sâu trên <strong className="text-slate-900">Blog DOMATION</strong>.
                 </p>
 
-                <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-3 pt-2">
+                <div className="grid grid-cols-2 sm:inline-flex items-center gap-2.5 pt-2 w-full sm:w-auto">
                   <a
                     href="/boost"
                     onClick={(e) => handleSpaLinkClick(e, '/boost')}
-                    className="btn-inkica-primary min-h-[44px] px-5 py-3 text-xs sm:text-sm"
+                    className="btn-inkica-primary min-h-[44px] justify-center px-3 sm:px-5 py-3 text-xs sm:text-sm whitespace-nowrap"
                   >
-                    <BookOpen className="w-4 h-4" />
-                    <span>Đọc Blog DOMATION</span>
+                    <BookOpen className="w-4 h-4 shrink-0" />
+                    <span>Đọc Blog SEO</span>
                   </a>
                   <button
                     type="button"
                     onClick={() => openInspection('web-3d')}
-                    className="ql-btn-outline min-h-[44px] px-5 py-3 text-xs sm:text-sm cursor-pointer"
+                    className="ql-btn-outline min-h-[44px] justify-center px-3 sm:px-5 py-3 text-xs sm:text-sm cursor-pointer whitespace-nowrap"
                   >
-                    <MonitorSmartphone className="w-4 h-4 text-[#1E40FF]" />
-                    <span>Mở Thư Viện Màn Hình Thực Tế</span>
+                    <MonitorSmartphone className="w-4 h-4 text-[#1E40FF] shrink-0" />
+                    <span className="sm:hidden">Mở Màn Hình</span>
+                    <span className="hidden sm:inline">Mở Thư Viện Màn Hình</span>
                   </button>
                 </div>
               </div>
@@ -131,6 +135,15 @@ export const PortfolioPage: React.FC = () => {
             </div>
           </section>
 
+          {/* Founder & Chief Systems Architect Profile — Huỳnh Trọng Phúc (TurnioDEV) */}
+          <FounderAuthorityBlock
+            variant="full"
+            onOpenContact={() => {
+              setContactNote('Đặt lịch trao đổi 1-1 với Founder & CEO Huỳnh Trọng Phúc (TurnioDEV) về kiến trúc hệ thống từ A–Z');
+              setContactOpen(true);
+            }}
+          />
+
           {/* Category Filter Pills (Mobile <=2 buttons/row + >=44px touch targets) */}
           <section className="space-y-6">
             <DomResponsiveSubtabs
@@ -148,7 +161,121 @@ export const PortfolioPage: React.FC = () => {
             />
 
             {/* Projects Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="lg:hidden">
+              <ResponsiveSlideDeck
+                items={filteredProjects}
+                perPage={1}
+                tabletPerPage={2}
+                colsClass="grid-cols-1 gap-4"
+                tabletColsClass="sm:grid-cols-2 gap-4"
+                label="Dự án triển khai"
+                accent="blue"
+                renderItem={(project) => (
+                  <article
+                    key={project.id}
+                    className="rounded-[24px] bg-white/95 border border-slate-200/85 shadow-sm overflow-hidden flex flex-col justify-between h-full"
+                  >
+                    <div>
+                      <div className="relative aspect-[16/9] bg-slate-100 border-b border-slate-200/75 overflow-hidden">
+                        <img
+                          src={project.previewImage}
+                          alt={project.name}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover object-top"
+                        />
+                        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                          <span className="px-2.5 py-1 rounded-full bg-white/95 border border-slate-200 text-[11px] font-bold text-[#1E40FF] shadow-xs">
+                            {project.category}
+                          </span>
+                          <span className="px-2 py-1 rounded-full bg-slate-900/85 text-white text-[11px] font-mono">
+                            {project.year}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 sm:p-5 space-y-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-xl bg-white border border-slate-200/85 p-1.5 flex items-center justify-center shrink-0">
+                            <img
+                              src={project.logo}
+                              alt={project.client}
+                              loading="lazy"
+                              decoding="async"
+                              className="max-w-full max-h-full object-contain"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 truncate">
+                              {project.client} • {project.industry}
+                            </div>
+                            <h2 className="text-[15px] sm:text-base font-bold text-slate-900 leading-snug line-clamp-2">
+                              {project.name}
+                            </h2>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.metrics.slice(0, 3).map((m) => (
+                            <span
+                              key={m}
+                              className="px-2 py-0.5 rounded-lg bg-blue-50 border border-blue-200/70 text-[#1E40FF] text-[11px] font-bold"
+                            >
+                              {m}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="space-y-2 text-xs text-slate-600 leading-relaxed">
+                          <div className="rounded-xl bg-slate-50 border border-slate-200/75 p-2.5">
+                            <div className="flex items-center gap-1.5 font-bold text-slate-800 mb-0.5">
+                              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                              <span>Bài Toán:</span>
+                            </div>
+                            <p className="line-clamp-2">{project.problem}</p>
+                          </div>
+                          <div className="rounded-xl bg-emerald-50/50 border border-emerald-200/60 p-2.5">
+                            <div className="flex items-center gap-1.5 font-bold text-emerald-900 mb-0.5">
+                              <Layers className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                              <span>Giải Pháp DOMATION:</span>
+                            </div>
+                            <p className="text-slate-700 line-clamp-2">{project.architecture}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-200/75 grid grid-cols-2 gap-2">
+                      <a
+                        href={`/boost/${project.relatedArticleSlug}`}
+                        onClick={(e) =>
+                          handleSpaLinkClick(e, `/boost/${project.relatedArticleSlug}`)
+                        }
+                        className={`btn-inkica-primary min-h-[42px] px-3 py-2 text-xs whitespace-nowrap ${
+                          project.inspectionTab ? '' : 'col-span-2'
+                        }`}
+                      >
+                        <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                        <span>Đọc Phân Tích</span>
+                      </a>
+
+                      {project.inspectionTab && (
+                        <button
+                          type="button"
+                          onClick={() => openInspection(project.inspectionTab!)}
+                          className="ql-btn-outline min-h-[42px] px-3 py-2 text-xs whitespace-nowrap cursor-pointer"
+                        >
+                          <MonitorSmartphone className="w-3.5 h-3.5 text-[#1E40FF] shrink-0" />
+                          <span>Xem UI App</span>
+                        </button>
+                      )}
+                    </div>
+                  </article>
+                )}
+              />
+            </div>
+
+            <div className="hidden lg:grid lg:grid-cols-2 gap-6">
               {filteredProjects.map((project) => (
                 <article
                   key={project.id}
@@ -161,6 +288,7 @@ export const PortfolioPage: React.FC = () => {
                         src={project.previewImage}
                         alt={project.name}
                         loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
                       />
                       <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
@@ -181,6 +309,7 @@ export const PortfolioPage: React.FC = () => {
                             src={project.logo}
                             alt={project.client}
                             loading="lazy"
+                            decoding="async"
                             className="max-w-full max-h-full object-contain"
                           />
                         </div>
@@ -188,7 +317,7 @@ export const PortfolioPage: React.FC = () => {
                           <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 truncate">
                             {project.client} • {project.industry}
                           </div>
-                          <h2 className="text-lg font-bold text-slate-900 leading-snug">
+                          <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug line-clamp-2">
                             {project.name}
                           </h2>
                         </div>
@@ -250,7 +379,7 @@ export const PortfolioPage: React.FC = () => {
                       onClick={(e) =>
                         handleSpaLinkClick(e, `/boost/${project.relatedArticleSlug}`)
                       }
-                      className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs"
+                      className="btn-inkica-primary min-h-[44px] px-4 py-2 text-xs whitespace-nowrap"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
                       <span>Đọc Bài Phân Tích Triển Khai</span>
@@ -261,7 +390,7 @@ export const PortfolioPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openInspection(project.inspectionTab!)}
-                        className="ql-btn-outline min-h-[44px] px-3 py-2 text-xs cursor-pointer"
+                        className="ql-btn-outline min-h-[44px] px-3 py-2 text-xs whitespace-nowrap cursor-pointer"
                       >
                         <MonitorSmartphone className="w-3.5 h-3.5 text-[#1E40FF]" />
                         <span>Xem UI</span>
@@ -281,8 +410,8 @@ export const PortfolioPage: React.FC = () => {
                   <Award className="w-4 h-4" />
                   <span>HỆ SINH THÁI 38+ THƯƠNG HIỆU ĐÃ TRIỂN KHAI</span>
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Mạng Lưới Doanh Nghiệp Đồng Hành Cùng DOMATION
+                <h2 className="text-[20px] sm:text-2xl font-bold text-slate-900 leading-[1.22]">
+                  Mạng Lưới Doanh Nghiệp Đồng Hành
                 </h2>
               </div>
               <button
@@ -291,14 +420,48 @@ export const PortfolioPage: React.FC = () => {
                   setContactNote('Muốn xem demo kiến trúc tương tự trong Portfolio DOMATION');
                   setContactOpen(true);
                 }}
-                className="btn-inkica-primary min-h-[44px] px-4 py-2.5 text-xs w-fit cursor-pointer"
+                className="btn-inkica-primary min-h-[44px] px-4 py-2.5 text-xs w-fit whitespace-nowrap cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Đặt Lịch Tư Vấn Theo Ngành</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div className="lg:hidden">
+              <ResponsiveSlideDeck
+                items={ECOSYSTEM_PARTNERS}
+                perPage={4}
+                tabletPerPage={6}
+                colsClass="grid-cols-2 gap-3"
+                tabletColsClass="sm:grid-cols-3 gap-3"
+                label="Đối tác hệ sinh thái"
+                accent="blue"
+                renderItem={(brand) => (
+                  <div
+                    key={brand.name}
+                    className="rounded-2xl bg-slate-50/80 border border-slate-200/80 p-3.5 flex flex-col items-center text-center gap-2"
+                  >
+                    <div className="h-10 flex items-center justify-center">
+                      <img
+                        src={brand.image}
+                        alt={brand.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-h-9 max-w-[100px] object-contain"
+                      />
+                    </div>
+                    <div className="text-xs font-bold text-slate-800 truncate w-full">
+                      {brand.name}
+                    </div>
+                    <div className="text-[10px] text-slate-500 truncate w-full">
+                      {brand.industry}
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="hidden lg:grid lg:grid-cols-6 gap-3">
               {ECOSYSTEM_PARTNERS.map((brand) => (
                 <div
                   key={brand.name}
@@ -309,6 +472,7 @@ export const PortfolioPage: React.FC = () => {
                       src={brand.image}
                       alt={brand.name}
                       loading="lazy"
+                      decoding="async"
                       className="max-h-9 max-w-[100px] object-contain"
                     />
                   </div>
@@ -331,6 +495,8 @@ export const PortfolioPage: React.FC = () => {
           setContactOpen(true);
         }}
       />
+
+      <BackToTopPill />
 
       <ProductInspectionModal
         isOpen={inspectionOpen}

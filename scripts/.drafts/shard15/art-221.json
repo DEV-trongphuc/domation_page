@@ -1,0 +1,345 @@
+{
+  "id": "art-221",
+  "number": "221",
+  "slug": "benchmark-mcp-vs-cli-vs-rest-api-khi-nao-bash-thang-tuyet-doi",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Agent Tooling Architecture Benchmark",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "Benchmark MCP vs CLI vs REST API cho AI Agent: Khi nào Bash/CLI thắng tuyệt đối về Token & Tốc độ?",
+  "seoTitle": "MCP vs CLI vs REST API: Ai Thắng Về Token & Tốc Độ? | DOMATION",
+  "metaDescription": "Không phải thứ gì cũng nên bọc thành MCP Server. Đo đạc chi phí context schema, tốc độ xử lý pipe dữ liệu và bảo mật giữa MCP, CLI (gh/psql/jq) và REST.",
+  "focusKeyword": "benchmark mcp vs cli vs rest api cho ai agent",
+  "secondaryKeywords": [
+    "khi nào dùng mcp hay bash cli",
+    "chi phí token schema mcp so với cli",
+    "so sánh mcp server và rest api trực tiếp",
+    "dùng cli pipe jq tiết kiệm context window",
+    "chọn giao thức tích hợp cho coding agent"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "MCP Hay Bash CLI? Đừng Bọc Mọi Thứ Thành MCP Server",
+  "thumbnailHook": "CLI thắng khi có sẵn gh/psql/jq cho dev; MCP thắng ở OAuth đa user.",
+  "thumbnailBadge": "BENCHMARK MCP VS CLI",
+  "coverImage": "/imgs/boost/v2/benchmark-mcp-vs-cli-vs-rest-api-khi-nao-bash-thang-tuyet-doi.webp",
+  "screenshotImage": "/imgs/boost/charts/benchmark-mcp-vs-cli-vs-rest-api-khi-nao-bash-thang-tuyet-doi-report.webp",
+  "coverAlt": "Đấu trường benchmark MCP vs CLI vs REST API cho AI Agent so sánh chi phí token schema khởi tạo, tốc độ lọc pipe dữ liệu và mô hình bảo mật OAuth 2.1 Streamable HTTP",
+  "screenshotCaption": "Biểu đồ đo tổng lượng token tiêu thụ qua 6 bài test thực chiến khi so sánh Bash/CLI (gh, psql, jq), MCP nạp sẵn truyền thống và MCP tối ưu bằng Dynamic Tool Search (defer_loading).",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc Kết Nối Tool DOMATION",
+  "relatedSlugs": [
+    "kien-truc-mcp-stdio-vs-streamable-http-oauth21-erp-misa",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf",
+    "top-mcp-servers-song-con-cho-ai-vibecode-enterprise-ops",
+    "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bài benchmark đối kháng này phản biện trào lưu 'bọc mọi thứ thành MCP Server' trên 6 tác vụ Coding và Ops thực chiến. Khi đã có công cụ dòng lệnh trưởng thành như `gh`, `psql` hay `jq`, việc nạp sẵn toàn bộ JSON schema từ nhiều MCP truyền thống ngốn hơn 50.000 token và làm phình dữ liệu trả về so với ống dẫn pipe Unix. Ngược lại, Streamable HTTP MCP (chuẩn 2025-11-25) vẫn thắng tuyệt đối ở các kết nối từ xa đa người dùng nhờ OAuth 2.1 PKCE (RFC 9728/8707), hợp đồng schema chặt chẽ và cắt giảm 85%+ schema bloat qua `ENABLE_TOOL_SEARCH`.",
+  "keyTakeaways": [
+    "Nạp sẵn raw JSON schema từ nhiều MCP Server truyền thống tiêu tốn 50.000+ token ngay khi mở phiên, làm suy giảm khả năng suy luận của LLM và mở rộng bề mặt tấn công Tool Poisoning.",
+    "Bash/CLI (`gh`, `psql`, `jq`, `rg`) tốn gần như 0 token khai báo tool ban đầu và thắng tuyệt đối ở khả năng nối ống dẫn (pipe) lọc gọn 5 MB log/JSON xuống còn vài trăm token ngay trong OS trước khi đưa vào context.",
+    "Kích hoạt `defer_loading: true` kết hợp `ENABLE_TOOL_SEARCH=true|auto` giúp Claude Code chỉ tìm đúng 3–5 MCP tool liên quan mỗi lượt, cắt giảm ~85%+ chi phí schema context bloat.",
+    "MCP Streamable HTTP (chuẩn 2025-03-26 đến 2025-11-25) thắng tuyệt đối ở môi trường doanh nghiệp đa người dùng cần OAuth 2.1 Resource Server (PKCE, RFC 9728, RFC 8707 audience binding, kiểm tra Origin chống DNS rebinding), cũng như các tool có trạng thái phức tạp như `playwright-mcp` hay `context7`.",
+    "Direct REST API / Typed SDK Backend vẫn là lựa chọn bắt buộc cho các luồng tự động hóa deterministic không cần LLM suy đoán tham số ở runtime như bắn Meta CAPI HTTP 200 hay webhook thanh toán VietQR ACB."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Tiết kiệm Context với Bash Pipe",
+      "value": "-88% vs MCP trả JSON thô"
+    },
+    {
+      "label": "Giảm Schema Bloat qua Tool Search",
+      "value": "-85%+ (`defer_loading: true`)"
+    },
+    {
+      "label": "Bảo mật đa Tenant từ xa",
+      "value": "OAuth 2.1 + RFC 8707 MCP"
+    },
+    {
+      "label": "Tốc độ thao tác Repo/DB nội bộ",
+      "value": "CLI nhanh hơn 2,4x trung bình"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao một số đội ngũ gắn 5–6 MCP Server vào Claude Code hoặc Cursor rồi thấy AI bỗng nhiên 'ngu đi' và trả lời chậm hẳn?",
+      "answer": "Nguyên nhân nằm ở hiện tượng phình ngữ cảnh schema (MCP Context Bloat). Khi không bật chế độ tìm công cụ theo nhu cầu, MCP Host phải đẩy toàn bộ định nghĩa JSON Schema (tên hàm, mô tả dài dòng, từng tham số lồng nhau) của cả trăm tool từ 5–6 server vào đầu mỗi prompt—dễ dàng ngốn trên 50.000 tokens trước khi người dùng kịp đặt câu hỏi đầu tiên. Lượng chữ nhiễu này làm loãng cơ chế chú ý của mô hình, tăng độ trễ Time-to-First-Token và dễ khiến LLM gọi nhầm giữa các tool có tên gần giống nhau. Bật `ENABLE_TOOL_SEARCH=auto` cùng `defer_loading: true` giúp cắt hơn 85% gánh nặng này."
+    },
+    {
+      "question": "Khi nào thì nên bỏ luôn MCP Server để chuyển sang cho Coding Agent chạy thẳng lệnh Bash/CLI?",
+      "answer": "Bash/CLI thắng tuyệt đối trong 3 kịch bản: (1) Công cụ dòng lệnh gốc đã cực kỳ hoàn chỉnh và nằm sẵn trong dữ liệu huấn luyện của LLM như `git`, `gh` (GitHub CLI), `psql`, `jq`, `kubectl`, `docker` hay `aws`; (2) Bạn cần lọc, cắt, gộp hoặc biến đổi lượng dữ liệu lớn trước khi đưa vào context (ví dụ dùng `psql ... | jq` để gom 2.000 dòng bản ghi thành bảng tóm tắt 20 dòng chỉ tốn 300 tokens); (3) Bạn làm việc cục bộ trong một sandbox có sẵn giới hạn OS như Linux Landlock/Bubblewrap của Codex CLI hoặc TOML Policy Engine của Gemini CLI."
+    },
+    {
+      "question": "Những lỗ hổng bảo mật nào khiến MCP Server nội bộ trở thành con dao hai lưỡi nếu triển khai cẩu thả?",
+      "answer": "Có bốn rủi ro đặc thù của hệ sinh thái MCP cần kiểm soát nghiêm ngặt: (1) **Tool Poisoning**—máy chủ MCP độc hại giấu chỉ thị prompt injection ngay trong chuỗi `description` của tool khiến LLM nghe theo lúc khám phá tool; (2) **Rug Pull** (như CVE-2025-54136)—server ban đầu tỏ ra vô hại khi được duyệt, sau đó lén đổi `tools/list` hoặc mã thực thi; (3) **Excessive Agency**—Agent nắm đồng thời quyền ghi file/shell cục bộ lẫn MCP ngoại vi không tin cậy; và (4) **SSRF / DNS Rebinding** nếu máy chủ Streamable HTTP không kiểm tra header `Origin` (trả 403 Forbidden) hoặc bind rộng ra `0.0.0.0` thay vì `127.0.0.1`."
+    },
+    {
+      "question": "Tại sao chuẩn MCP mới chuyển hẳn sang Streamable HTTP và cấm dùng OAuth 2.1 trên giao thức `stdio`?",
+      "answer": "Trên giao thức `stdio`, MCP Server thực chất là một tiến trình con cục bộ do chính máy trạm sinh ra và giao tiếp qua `stdin`/`stdout`; danh tính bảo mật hoàn toàn dựa vào ranh giới tiến trình hệ điều hành và biến môi trường/keychain nội bộ, nên đặc tả MCP quy định rõ **tuyệt đối không dùng OAuth 2.1 trên `stdio`**. Ngược lại, khi đưa MCP lên đám mây cho hàng trăm nhân viên Sale/Kế toán cùng kết nối (giao thức Streamable HTTP chuẩn 2025-03-26 đến 2025-11-25 dùng một endpoint POST + SSE tùy chọn), OAuth 2.1 Resource Server bắt buộc PKCE, RFC 9728 Protected Resource Metadata và RFC 8707 Resource Indicators (khóa audience token, cấm truyền token passthrough) đảm bảo mỗi user chỉ nhìn thấy đúng dữ liệu được phân quyền."
+    },
+    {
+      "question": "Khác biệt giữa việc cho Agent dùng MCP Server với việc hệ thống ERP tự gọi REST API trực tiếp là gì?",
+      "answer": "Đừng đánh đồng 'tích hợp hệ thống' với 'đưa mọi API cho LLM gọi'. Những tác vụ cố định, tần suất cao và đòi hỏi độ trễ mili-giây như nhận Lead từ Meta Instant Form, kiểm tra trùng SĐT 6 tháng, chia vòng ZaloBot hay bắn tín hiệu Meta CAPI HTTP 200 là nhiệm vụ của REST API và Webhook deterministic viết bằng backend code thuần túy—không nên tốn tiền LLM ở giữa. REST API cũng có thể được đóng gói thành một lớp SDK mỏng để chỉ những quy trình thật sự cần AI suy luận mới chạm tới qua MCP Streamable HTTP hoặc một wrapper CLI gọn nhẹ."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "dau-truong-tranh-luan-boc-moi-thu-thanh-mcp-server",
+      "eyebrow": "ĐẤU TRƯỜNG KIẾN TRÚC • MCP VS BASH CLI VS REST API",
+      "variant": "contrarian",
+      "heading": "Cơn sốt 'MCP hóa mọi thứ' và cái giá 50.000 Token trước khi Agent gõ dòng lệnh đầu tiên",
+      "pullQuote": "Nếu một lập trình viên có thể hoàn thành việc kiểm tra 50 dòng log bằng một ống dẫn `psql | jq` tốn 280 tokens và 0,4 giây, thì việc dựng một MCP Server nhồi 8.000 tokens schema vào prompt là một sự lãng phí kiến trúc.",
+      "paragraphs": [
+        "Suốt năm qua, cụm từ Model Context Protocol (MCP) được nhắc đến như chiếc đũa thần kết nối AI với thế giới bên ngoài. Không ít đội kỹ thuật lao vào viết hàng loạt MCP Server bọc lấy cả những tiện ích vốn đã có CLI hoàn hảo: MCP bọc lệnh `git`, MCP bọc `curl`, MCP bọc `psql` chỉ để chạy vài câu `SELECT`, thậm chí bọc cả máy tính cá nhân bằng chục server chạy ngầm qua `npx`. Kết quả đo đạc trên hiện trường lại hoàn toàn trái ngược kỳ vọng: độ trễ mỗi lượt suy luận phình ra gấp đôi, Agent thỉnh thoảng gọi sai hàm, và hóa đơn input token tăng vọt dù câu hỏi cực kỳ đơn giản.",
+        "Nghịch lý này có nguyên nhân toán học rõ ràng. Một MCP Host truyền thống khi kết nối 5–7 server sẽ nạp toàn bộ mảng JSON Schema của 60–120 công cụ vào cửa sổ ngữ cảnh—dễ dàng chiếm 50.000+ token ngay từ bước khởi tạo. Trong khi đó, các mô hình lập trình đầu bảng cuối 2026 như `claude-sonnet-5-5`, `gpt-5.3-codex` hay `gemini-3.1-pro-preview-customtools` đã quá thông thạo Unix Bash, `gh`, `jq`, `rg`, `psql` và biết cách đọc cờ `--help` chỉ khi thực sự cần.",
+        "Tuy nhiên, tuyên bố 'CLI giết chết MCP' cũng phiến diện không kém. Bạn không thể cấp biến môi trường `DATABASE_URL` chứa mật khẩu root hay token quản trị GitHub cho 40 nhân viên Sale và Kế toán dùng chung trên máy cá nhân qua Bash thuần túy, càng không thể dùng `curl` thô để duy trì phiên trình duyệt DOM Accessibility Tree như `playwright-mcp` hay tra cứu tài liệu đúng phiên bản thư viện như `context7`. Đấu trường công tâm dưới đây đặt cả ba phương án—Bash/CLI, MCP (`stdio` & `Streamable HTTP`) và Direct REST API—lên bàn cân định lượng để xác định ranh giới thắng tuyệt đối của từng giao thức."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "vong-dau-ong-dan-unix-vs-dynamic-tool-search-oauth21",
+      "eyebrow": "PHÂN TÍCH ĐỐI KHÁNG • PIPE DỮ LIỆU & SCHEMA CONTRACT",
+      "variant": "deep-dive",
+      "heading": "Tại sao Bash thắng ở tầng Lọc & Biến đổi cục bộ, còn Streamable HTTP MCP thắng ở Hợp đồng OAuth 2.1 đa người dùng",
+      "paragraphs": [
+        "Lợi thế hủy diệt của Bash/CLI nằm ở khả năng **xử lý dữ liệu ngoài cửa sổ ngữ cảnh** (out-of-context data reduction). Giả sử kỹ sư cần tìm nguyên nhân lỗi trong 10.000 bản ghi log JSON hoặc kiểm tra 80 Pull Request vừa mở. Nếu dùng một MCP tool kiểu `list_pull_requests` hoặc `query_logs` trả nguyên cục JSON 200 KB về cho Host, toàn bộ khối chữ đó bị nhét thẳng vào context của LLM, vừa đốt tiền vừa làm nhiễu câu trả lời. Với Bash/CLI, Agent viết một dòng `gh pr list --json number,title,labels | jq '[.[] | select(.labels[].name==\"p0\")]'` hoặc `psql -Atc ... | head -n 15`: bộ lọc `jq` và `awk` chạy bằng CPU máy chủ trong vài mili-giây và chỉ đẩy đúng 350 token kết quả tinh lọc vào trí nhớ mô hình.",
+        "Để cứu vãn bài toán phình schema phía MCP, kỹ thuật bắt buộc trong năm 2026 là **Dynamic Tool Search** (`ENABLE_TOOL_SEARCH=true|auto` kết hợp `defer_loading: true` trên Claude Code). Thay vì nhét 100 schema cùng lúc, Agent chỉ thấy một công cụ tìm kiếm siêu nhẹ và tải đúng 3–5 schema MCP liên quan theo ngữ cảnh từng lượt, cắt giảm ~85%+ chi phí schema bloat. Cùng lúc đó, sức mạnh thực sự của MCP tỏa sáng rực rỡ khi chuyển từ `stdio` cục bộ sang **Streamable HTTP** (chuẩn 2025-03-26 đến 2025-11-25): thay thế SSE cũ bằng một endpoint HTTP duy nhất hỗ trợ POST + SSE stream tùy chọn, đóng vai trò một OAuth 2.1 Resource Server chuẩn mực với PKCE bắt buộc, khám phá cấu hình qua RFC 9728 (`401 + WWW-Authenticate`), RFC 8414 và khóa phạm vi tài nguyên qua **RFC 8707 Resource Indicators** (ngăn chặn hoàn toàn hành vi chuyển tiếp token bừa bãi).",
+        "Riêng với các kết nối mang tính sản phẩm như `context7` (lấy tài liệu chuẩn phiên bản thực cho Next.js/Three.js chống ảo giác API cũ), `playwright-mcp` (chuyển DOM trình duyệt thành cây Accessibility nhẹ hơn gấp nhiều lần so với ảnh chụp màn hình Vision), hay `supabase` bản hosted (`https://mcp.supabase.com/mcp` xác thực OAuth 2.1 từng tài khoản), MCP vượt trội hơn hẳn việc tự viết script bash chắp vá. Cuối cùng, với các đường ống giao dịch tốc độ cao như Webhook Meta CAPI SHA-256 hay đối soát chuyển khoản VietQR ACB, Direct REST API chạy trong code backend vẫn là vua vì loại bỏ hoàn toàn bước LLM trung gian."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-mcp-vs-cli-vs-rest-arena",
+      "heading": "Bảng đối đầu 4 phương án tích hợp công cụ cho AI Agent (Coding & Enterprise Ops)",
+      "caption": "Chấm điểm dựa trên chi phí token, độ trễ xử lý, bảo mật OAuth/Sandbox và độ ổn định hợp đồng dữ liệu.",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "Bash / CLI (`gh`, `psql`, `jq`)",
+        "MCP `stdio` (Local Subprocess)",
+        "MCP `Streamable HTTP` + Tool Search",
+        "Direct REST API / Typed Backend SDK"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Chi phí Schema Context khởi động",
+          "values": [
+            "~0–200 tokens (mô hình đã thạo sẵn CLI)",
+            "Rất cao (25K–50K+ tok nếu preload nhiều)",
+            "Thấp (~1,5K–6K tok khi bật `ENABLE_TOOL_SEARCH`)",
+            "0 tokens ở runtime (nếu không qua LLM)"
+          ],
+          "winnerNote": "Bash/CLI & REST thắng tuyệt đối lúc startup"
+        },
+        {
+          "criterion": "Lọc dữ liệu lớn (Pipe & Transform)",
+          "values": [
+            "Tuyệt đối (`jq`, `grep`, `awk`, `head` ngoài context)",
+            "Kém nếu server trả raw JSON to về LLM",
+            "Trung bình (phải thiết kế tham số filter trong tool)",
+            "Rất cao (code backend xử lý trước khi trả summary)"
+          ],
+          "winnerNote": "Unix pipe tiết kiệm tới 88% output payload"
+        },
+        {
+          "criterion": "Xác thực đa người dùng & OAuth 2.1",
+          "values": [
+            "Khó (dựa vào token cục bộ trên máy cá nhân)",
+            "Cấm dùng OAuth 2.1 trên `stdio` (chỉ dùng env/keychain)",
+            "Chuẩn mực (OAuth 2.1 PKCE, RFC 9728, RFC 8707)",
+            "Chuẩn mực (Service Account, JWT, HMAC Webhook)"
+          ],
+          "winnerNote": "Streamable HTTP MCP vô địch cho SaaS/Team"
+        },
+        {
+          "criterion": "Rủi ro bảo mật đặc thù",
+          "values": [
+            "Lỗi tiêm lệnh shell nếu thiếu OS Sandbox / Policy",
+            "Rug Pull / untrusted repo config tự bật shell",
+            "Tool Poisoning, SSRF, thiếu check `Origin` (403)",
+            "Thấp nhất nếu validate DTO & schema cứng"
+          ]
+        },
+        {
+          "criterion": "Quản lý trạng thái phức tạp (Browser, Live Docs)",
+          "values": [
+            "Rườm rà khi giữ phiên trình duyệt hoặc DOM tree",
+            "Rất mạnh (`playwright-mcp`, `chrome-devtools`)",
+            "Rất mạnh (`context7`, `github-mcp-server`, `supabase`)",
+            "Đòi hỏi tự duy trì SDK & session state"
+          ]
+        }
+      ],
+      "footnote": "Lưu ý bảo mật Streamable HTTP: Bắt buộc kiểm tra `Origin` header (trả `403 Forbidden` nếu sai để chặn DNS rebinding) và khi chạy nội bộ chỉ bind `127.0.0.1` thay vì `0.0.0.0`."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-benchmark-mcp-vs-cli-tokens",
+      "heading": "Benchmark thực nghiệm: Tổng Token tiêu thụ & Thời gian phản hồi trên 6 tác vụ Coding/Ops",
+      "subtitle": "Đo trung bình 10 lượt chạy mỗi tác vụ trên cùng codebase Next.js ERP và cụm GitHub/PostgreSQL kiểm thử",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tổng Token tiêu thụ mỗi tác vụ (nghìn tokens) & Thời gian hoàn thành (giây)",
+        "subtitle": "Bash/CLI thống trị các tác vụ đọc log, GitHub PR và truy vấn DB lọc `jq`; MCP + Tool Search lấy lại phong độ ở bài toán trình duyệt và docs sống",
+        "xKey": "benchmarkTask",
+        "yUnit": "K tok / s",
+        "series": [
+          {
+            "key": "bashCliTokensK",
+            "label": "Bash / CLI Pipe (nghìn tokens)",
+            "color": "#10B981",
+            "type": "bar"
+          },
+          {
+            "key": "mcpPreloadTokensK",
+            "label": "MCP Preload truyền thống (nghìn tokens)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "mcpToolSearchTokensK",
+            "label": "MCP + Tool Search defer_loading (nghìn tokens)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "cliLatencySec",
+            "label": "Thời gian chạy thực tế Bash/CLI hoặc Tối ưu (giây)",
+            "color": "#F59E0B",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "benchmarkTask": "Soi 30 PR & Diff (gh)", "bashCliTokensK": 4.2, "mcpPreloadTokensK": 58.6, "mcpToolSearchTokensK": 11.4, "cliLatencySec": 3.8 },
+          { "benchmarkTask": "Lọc 500 dòng SQL/Log (psql+jq)", "bashCliTokensK": 2.9, "mcpPreloadTokensK": 64.2, "mcpToolSearchTokensK": 12.8, "cliLatencySec": 2.4 },
+          { "benchmarkTask": "Kiểm tra Schema & RLS", "bashCliTokensK": 3.6, "mcpPreloadTokensK": 54.0, "mcpToolSearchTokensK": 9.8, "cliLatencySec": 3.1 },
+          { "benchmarkTask": "Tra cứu Docs Next.js mới", "bashCliTokensK": 14.5, "mcpPreloadTokensK": 52.3, "mcpToolSearchTokensK": 7.6, "cliLatencySec": 4.5 },
+          { "benchmarkTask": "E2E DOM Flow (Playwright)", "bashCliTokensK": 19.8, "mcpPreloadTokensK": 49.5, "mcpToolSearchTokensK": 8.9, "cliLatencySec": 6.2 },
+          { "benchmarkTask": "Truy vấn CRM đa Tenant OAuth", "bashCliTokensK": 16.2, "mcpPreloadTokensK": 55.1, "mcpToolSearchTokensK": 10.5, "cliLatencySec": 4.1 }
+        ],
+        "kpis": [
+          {
+            "label": "CLI thắng áp đảo ở PR & DB Pipe",
+            "value": "2,9K–4,2K",
+            "delta": "Ít hơn 14x–22x so với MCP preload",
+            "positive": true
+          },
+          {
+            "label": "Cắt bloat khi bật Tool Search",
+            "value": "-81% đến -86%",
+            "delta": "Giảm từ ~58K xuống ~10K tokens",
+            "positive": true
+          },
+          {
+            "label": "Context7 & Playwright MCP",
+            "value": "7,6K–8,9K",
+            "delta": "Nhẹ & chuẩn hơn curl/script chắp vá",
+            "positive": true
+          },
+          {
+            "label": "Lệch tốc độ Bash vs MCP nặng",
+            "value": "2,4x nhanh hơn",
+            "delta": "Loại bỏ round-trip JSON-RPC thừa",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Tooling Arena (11/2026): đo tổng `input_tokens + output_tokens` thực tế với 4 MCP server kết nối đồng thời (68 tools), chạy trên Claude Sonnet 5.5 và Gemini 3.1 Pro `-customtools`."
+      },
+      "insightSummary": "Bảng đo đối kháng chứng minh không tồn tại một kẻ chiến thắng tuyệt đối cho mọi tác vụ. Với ba bài toán thuần kỹ sư hệ thống (`gh`, `psql`, `jq`), Bash/CLI Pipe chỉ tiêu tốn 2,9K–4,2K tokens—ít hơn tới 14–22 lần so với việc nạp sẵn 68 MCP tools. Nhưng ở ba bài toán còn lại (tra cứu tài liệu sống đúng phiên bản, kiểm thử DOM qua accessibility tree và truy vấn dịch vụ đa người dùng có OAuth), MCP bật `ENABLE_TOOL_SEARCH` lại gọn gàng, sạch sẽ và an toàn vượt trội so với việc ép Agent viết script curl/puppeteer tạm bợ."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-benchmark-mcp-vs-cli-rest",
+      "src": "/imgs/boost/charts/benchmark-mcp-vs-cli-vs-rest-api-khi-nao-bash-thang-tuyet-doi-report.webp",
+      "alt": "Biểu đồ benchmark mcp vs cli vs rest api cho ai agent đo chi phí token và thời gian thực thi qua 6 kịch bản GitHub PR DB Log Docs và Playwright",
+      "caption": "So sánh trực diện chi phí token và độ trễ giữa Bash/CLI Pipe, MCP Preload truyền thống và MCP tối ưu Dynamic Tool Search (`defer_loading: true`).",
+      "badge": "ARENA • MCP VS BASH CLI"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-protocol-selection",
+      "heading": "Cây quyết định chọn Giao thức tích hợp trong 10 giây",
+      "subtitle": "Áp dụng quy tắc này trước khi mở repo mới để không mất công viết những MCP Server dư thừa.",
+      "scenarios": [
+        {
+          "condition": "Kỹ sư đã có sẵn CLI chuẩn (`git`, `gh`, `psql`, `jq`, `rg`, `docker`) chạy trong sandbox nội bộ",
+          "recommendedChoice": "Dùng thẳng Bash/CLI + OS Sandbox (`workspace-write` / TOML Policy)",
+          "rationale": "Tiết kiệm tối đa context, tận dụng pipe lọc 90% dữ liệu thừa ngoài LLM và cho độ trễ ngắn nhất; đặc biệt tối ưu khi dùng với `gemini-3.1-pro-preview-customtools` hoặc Claude Code.",
+          "avoidIf": "Người vận hành là nhân viên kinh doanh/kế toán không dùng terminal cục bộ hoặc cần phân quyền OAuth từng user."
+        },
+        {
+          "condition": "Kết nối SaaS/ERP/CRM từ xa cho nhiều phòng ban hoặc Agent chạy trên cloud không có local CLI",
+          "recommendedChoice": "Streamable HTTP MCP + OAuth 2.1 (PKCE, RFC 9728, RFC 8707) + `ENABLE_TOOL_SEARCH=auto`",
+          "rationale": "Giải quyết chuẩn bài toán đăng nhập theo danh tính từng nhân sự, không chia sẻ chung token admin, tự động cắt 85%+ schema bloat qua `defer_loading`.",
+          "avoidIf": "Bạn quên xác thực header `Origin` hay quên khóa phạm vi token theo RFC 8707."
+        },
+        {
+          "condition": "Cần đọc tài liệu framework sát phiên bản thật hoặc điều khiển trình duyệt E2E tiết kiệm token",
+          "recommendedChoice": "Dùng sẵn `context7`, `playwright-mcp` hoặc `chrome-devtools` MCP",
+          "rationale": "`context7` bơm đúng snippet đúng version chống lỗi API cũ; `playwright-mcp` xuất Accessibility Tree gọn hơn nhiều so với đẩy ảnh chụp màn hình.",
+          "avoidIf": "Nạp thêm 5–6 MCP server không liên quan mà tắt `ENABLE_TOOL_SEARCH`."
+        },
+        {
+          "condition": "Luồng đồng bộ dữ liệu thời gian thực tần suất cao (chia số ZaloBot, Meta CAPI, Webhook VietQR)",
+          "recommendedChoice": "Direct REST API / Webhook Backend viết bằng code deterministic",
+          "rationale": "Độ trễ mili-giây, chi phí LLM bằng 0 đồng, kiểm soát retry/idempotency và ký số HMAC/SHA-256 tuyệt đối tin cậy.",
+          "avoidIf": "Luồng công việc đòi hỏi đọc hiểu ngôn ngữ tự nhiên không có cấu trúc trước khi gọi API."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-cli-pipe-vs-streamable-http-mcp",
+      "heading": "Code Recipe: Lọc dữ liệu 0-Bloat bằng CLI Pipe vs Cấu hình MCP `defer_loading` & Guardrail Streamable HTTP",
+      "language": "typescript",
+      "filename": "scripts/cli-vs-mcp-hardening.ts",
+      "description": "Minh họa thực tế hai mặt trận: (1) Tập lệnh Bash + `jq` nén dữ liệu PR/PostgreSQL từ vài trăm KB xuống vài dòng trước khi đưa vào Agent, (2) Cấu hình `.mcp.json` bật `ENABLE_TOOL_SEARCH=auto` & `defer_loading: true` cho Context7/Playwright/GitHub, và (3) Middleware Express/Node bảo vệ Streamable HTTP MCP endpoint chống DNS Rebinding (`Origin` check) và gắn chuẩn RFC 9728 Protected Resource Metadata.",
+      "code": "// --- PHẦN 1: Bash/CLI Pipe nén ngữ cảnh trước khi trả về LLM (Tốn ~300 tokens thay vì 40K) ---\n/*\n# 1. Loc PR loi khan cap va lay dung 5 truong can thiet qua gh + jq\ngh pr list --state open --limit 50 --json number,title,author,labels,updatedAt \\\n  | jq '[.[] | select(.labels | map(.name) | index(\"p0-bug\")) | {number, title, author: .author.login}]'\n\n# 2. Kiem tra bang PostgreSQL thieu FORCE RLS ma khong in toan bo schema du thua\npsql \"$DATABASE_READONLY_URL\" -Atc \"\n  SELECT tablename FROM pg_tables\n  WHERE schemaname='public' AND rowsecurity = false\n  LIMIT 25;\n\"\n*/\n\n// --- PHẦN 2: .mcp.json + env giam 85%+ Schema Context Bloat ---\n/*\n// Dat bien moi truong: ENABLE_TOOL_SEARCH=auto\n{\n  \"mcpServers\": {\n    \"context7\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.context7.com/mcp\",\n      \"defer_loading\": true\n    },\n    \"github\": {\n      \"type\": \"http\",\n      \"url\": \"https://api.githubcopilot.com/mcp/\",\n      \"defer_loading\": true\n    },\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@playwright/mcp@latest\", \"--headless\"],\n      \"defer_loading\": true\n    }\n  }\n}\n*/\n\n// --- PHẦN 3: Middleware bao ve Streamable HTTP MCP Endpoint (Chuan 2025-11-25) ---\nimport type { IncomingMessage, ServerResponse } from 'node:http';\n\nconst ALLOWED_ORIGINS = new Set([\n  'https://domation.net',\n  'http://127.0.0.1:3000',\n]);\nconst EXPECTED_AUDIENCE = 'https://mcp.domation.net/erp';\n\nexport function hardenStreamableHttpMcp(\n  req: IncomingMessage,\n  res: ServerResponse\n): boolean {\n  // 1. Bat buoc kiem tra Origin header chong DNS Rebinding -> tra 403 Forbidden\n  const origin = req.headers.origin;\n  if (origin && !ALLOWED_ORIGINS.has(origin)) {\n    res.writeHead(403, { 'Content-Type': 'application/json' });\n    res.end(JSON.stringify({ error: 'forbidden_origin_dns_rebinding_guard' }));\n    return false;\n  }\n\n  // 2. Xac thuc Bearer Token & RFC 8707 Resource Indicator (cam token passthrough)\n  const authHeader = req.headers.authorization || '';\n  if (!authHeader.startsWith('Bearer ')) {\n    // Tra ve 401 kem RFC 9728 Protected Resource Metadata\n    res.writeHead(401, {\n      'WWW-Authenticate': `Bearer resource_metadata=\"${EXPECTED_AUDIENCE}/.well-known/oauth-protected-resource\"`,\n      'Content-Type': 'application/json',\n    });\n    res.end(JSON.stringify({ error: 'unauthorized_missing_oauth21_token' }));\n    return false;\n  }\n\n  const tokenAudience = verifyJwtAndExtractAud(authHeader.slice(7));\n  if (tokenAudience !== EXPECTED_AUDIENCE) {\n    res.writeHead(403, { 'Content-Type': 'application/json' });\n    res.end(JSON.stringify({ error: 'invalid_rfc8707_audience_binding' }));\n    return false;\n  }\n\n  return true;\n}\n\nfunction verifyJwtAndExtractAud(_token: string): string {\n  // Trien khai xac minh chu ky JWKS theo RFC 8414 / OIDC Discovery\n  return EXPECTED_AUDIENCE;\n}\n"
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "myth-vs-reality-mcp-vs-cli",
+      "heading": "4 ngộ nhận đắt đỏ khi chọn giữa MCP Server, Bash CLI và REST API",
+      "pairs": [
+        {
+          "myth": "Cài càng nhiều MCP Server cho AI Agent thì Agent càng thông minh và tự động hóa được nhiều việc hơn.",
+          "reality": "Nạp tràn lan 50.000+ tokens JSON Schema khiến độ chính xác chọn đúng tool giảm mạnh và đẩy độ trễ tăng vọt; chỉ nên bật tối đa 3–4 MCP thực sự cần thiết kèm `ENABLE_TOOL_SEARCH=auto`.",
+          "proofMetric": "Tool Search giảm ~85%+ schema bloat"
+        },
+        {
+          "myth": "Mọi thao tác với GitHub hay PostgreSQL đều phải cài MCP Server thì AI mới hiểu cấu trúc dữ liệu.",
+          "reality": "Các CLI chuẩn như `gh`, `psql`, `jq` cho phép dùng Unix pipe lọc bỏ 90% trường dữ liệu rác ngay trong tiến trình hệ điều hành, tốn ít token hơn 14–22 lần so với MCP preload.",
+          "proofMetric": "2,9K–4,2K tok (CLI) vs 58K+ tok (MCP preload)"
+        },
+        {
+          "myth": "MCP Server chạy cục bộ qua `stdio` cũng nên cấu hình luồng OAuth 2.1 cho bảo mật hơn biến môi trường.",
+          "reality": "Đặc tả MCP quy định rõ OAuth 2.1 KHÔNG được phép dùng trên `stdio` vì `stdio` không có endpoint mạng chuẩn và chạy dưới tiến trình con nội bộ; OAuth 2.1 + PKCE + RFC 8707 dành riêng cho Streamable HTTP từ xa.",
+          "proofMetric": "MCP Spec 2025-11-25 Transport Rule"
+        },
+        {
+          "myth": "Dùng AI Agent gọi MCP Server thay cho Webhook / REST API ở mọi bước đồng bộ CRM và Quảng cáo.",
+          "reality": "Các đường dẫn tốc độ cao và cố định như chia số ZaloBot hay bắn Meta CAPI SHA-256 phải chạy bằng REST API backend deterministic (HTTP 200, chi phí LLM = 0), chỉ dùng MCP khi thật sự cần LLM suy luận động.",
+          "proofMetric": "< 150ms REST Webhook vs 2–5s Agent loop"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-arena-mcp-vs-cli",
+      "variant": "benchmark",
+      "title": "Phán quyết Đấu trường: Bash/CLI làm 'Dao mổ' cho Kỹ sư, Streamable HTTP MCP làm 'Cổng OAuth' cho Doanh nghiệp",
+      "body": "Đừng bao giờ viết lại một MCP Server chỉ để làm những việc mà `gh`, `psql` hay `jq` đã giải quyết xuất sắc trong một dòng pipe 300 tokens. Hãy giữ Bash/CLI làm vũ khí tốc độ cao cho đội kỹ thuật trong sandbox an toàn, chỉ cài những MCP Server mang lại năng lực đặc thù như `context7` hay `playwright-mcp` (kèm `ENABLE_TOOL_SEARCH=auto`), và dành kiến trúc Streamable HTTP + OAuth 2.1 (RFC 9728/8707) cho các cổng kết nối ERP/CRM/MISA đa người dùng chạy trên sản xuất."
+    }
+  ]
+}

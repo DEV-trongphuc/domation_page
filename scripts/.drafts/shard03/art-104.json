@@ -1,0 +1,257 @@
+{
+  "id": "art-104",
+  "number": "104",
+  "slug": "kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme",
+  "shardId": "shard03",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Data Infrastructure SME",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "Lakehouse gọn nhẹ cho SME Việt Nam: PostgreSQL + ClickHouse + DuckDB thay thế Big Data cồng kềnh",
+  "seoTitle": "Lakehouse SME: Postgres, ClickHouse & DuckDB | DOMATION",
+  "metaDescription": "Không cần đốt nghìn USD/tháng vào Spark hay Snowflake. Thiết kế hạ tầng phân tích BI & AI dưới 150$/tháng với PostgreSQL Read-Replica, ClickHouse, DuckDB.",
+  "focusKeyword": "lakehouse gọn nhẹ postgresql clickhouse duckdb",
+  "secondaryKeywords": [
+    "clickhouse cho sme phân tích dữ liệu",
+    "duckdb analytics trên parquet",
+    "tách oltp và olap doanh nghiệp",
+    "tiết kiệm chi phí data warehouse",
+    "hạ tầng bi cho ai doanh nghiệp"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Lakehouse Dưới 150$/Tháng: Đừng Đốt Tiền Vào Big Data",
+  "thumbnailHook": "Kết hợp PostgreSQL + ClickHouse + DuckDB xử lý 50 triệu dòng dưới 300ms.",
+  "thumbnailBadge": "INFRA • LEAN LAKEHOUSE",
+  "coverImage": "/imgs/boost/v2/kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme.webp",
+  "screenshotImage": "/imgs/boost/charts/kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme-report.webp",
+  "relatedModuleUrl": "/meta-report",
+  "relatedModuleLabel": "Xem Hạ Tầng Phân Tích Realtime DOMATION",
+  "relatedSlugs": [
+    "zero-etl-postgresql-logical-replication-cdc-cho-ai-realtime",
+    "langfuse-langfuse-audit-llmops-tracing-clickhouse-finops",
+    "metabase-metabase-audit-bi-analytics-vs-meta-crm-realtime",
+    "text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "So sánh kiến trúc Lakehouse gọn nhẹ PostgreSQL, ClickHouse, DuckDB với hệ thống Big Data cho doanh nghiệp SME Việt Nam",
+  "screenshotCaption": "Bảng so sánh độ trễ truy vấn P95 và tổng chi phí hạ tầng hàng tháng ở quy mô 50 triệu dòng giữa Postgres thuần, Lean Lakehouse và Cloud Data Warehouse.",
+  "tldrSummary": "Dữ liệu 3 năm của SME Việt Nam (5–80 triệu dòng POS, Meta Ads, Trace AI) sau nén cột chỉ nặng vài chục GB — hoàn toàn thuộc vùng 'Medium Data' chứ chưa phải Big Data. Kiến trúc Lean Lakehouse dưới 150 USD/tháng phân vai rõ ràng: Operational PostgreSQL + `pgvector` giữ giao dịch ACID, bảo mật RLS và RAG thời gian thực; ClickHouse `ReplacingMergeTree` gánh dashboard BI đa người dùng dưới 200ms; còn DuckDB đọc trực tiếp kho lạnh Parquet trên S3/R2 không tốn phí compute nhàn rỗi.",
+  "keyTakeaways": [
+    "Không đốt 1.500–4.000 USD/tháng vào Spark hay Snowflake khi dữ liệu nén dưới 500 GB; một VPS NVMe 32GB RAM chạy Postgres + ClickHouse + DuckDB xử lý 50 triệu dòng dưới 300ms.",
+    "Giữ lớp Operational Postgres Vector (`pgvector` HNSW + FORCE RLS) cho giao dịch nóng & AI RAG theo chi nhánh, tách riêng báo cáo phân tích sang OLAP để không bao giờ làm nghẽn thu ngân POS.",
+    "Tránh bẫy `ReplacingMergeTree` trên ClickHouse: vì merge diễn ra nền bất đồng bộ, mọi truy vấn tài chính cần số chính xác phải dùng `argMax(..., updated_at)` hoặc `FINAL`.",
+    "Dùng DuckDB nhúng kết hợp Apache Parquet trên Cloudflare R2 (zero egress fee) để lưu lịch sử dài hạn và JOIN trực tiếp bảng Postgres Read-Replica."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Chi phí hạ tầng 50M dòng", "value": "~135 USD/tháng" },
+    { "label": "Độ trễ Dashboard P95", "value": "190 ms (vs 14.2s PG)" },
+    { "label": "Tiết kiệm vs Cloud DWH", "value": "-88% chi phí năm" },
+    { "label": "Tỷ lệ nén Parquet/CH", "value": "6.8x – 9.2x" }
+  ],
+  "faqs": [
+    {
+      "question": "Vì sao không chạy mọi thứ trên PostgreSQL Read-Replica + `pgvector` cho đơn giản?",
+      "answer": "PostgreSQL xuất sắc ở CRUD nghiệp vụ và truy vấn vector top-K có lọc RLS, nhưng vì lưu trữ theo dòng (row-oriented), nó tốn IOPS cực lớn khi quét 40 triệu dòng lịch sử POS/Ads để tính cohort 12 tháng. Chuyển tầng tổng hợp cột sang ClickHouse/DuckDB giúp tăng tốc gấp 30–60 lần trên cùng phần cứng."
+    },
+    {
+      "question": "Khi nào giữ AI Vector trên Operational Postgres `pgvector`, khi nào mới tách sang Vector DB hoặc Lakehouse?",
+      "answer": "Với dưới 3–5 triệu chunks cần lọc quyền xem chi nhánh tức thì (`FORCE ROW LEVEL SECURITY`) và kiểm tra tồn kho thực thời gian thực (như giỏ hàng BĐS, giá SKU), `pgvector` HNSW trên Operational Postgres tối ưu nhất vì kế thừa giao dịch ACID. Chỉ tách sang Qdrant khi vượt ngưỡng RAM index HNSW (> 10–15 triệu vector)."
+    },
+    {
+      "question": "ClickHouse và DuckDB có bị giẫm chân nhau không? Team nhỏ nên chọn cả hai hay bớt một?",
+      "answer": "Dưới 15 triệu dòng và ít người mở dashboard cùng lúc, bạn chỉ cần Postgres + DuckDB nhúng trong worker Python. Khi có hàng chục nhân sự, Agency và CEO mở báo cáo Meta Ad Report / Metabase đồng thời yêu cầu phản hồi < 200ms, bổ sung 1 node ClickHouse sẽ giải quyết triệt để độ đồng thời cao."
+    },
+    {
+      "question": "Độ trễ đồng bộ từ Postgres sang ClickHouse là bao lâu và có lệch số kế toán không?",
+      "answer": "Qua PostgreSQL WAL CDC hoặc Outbox worker, dữ liệu sang ClickHouse chỉ trễ 1–5 giây. Tuy nhiên, mọi thao tác chốt công nợ MISA hay khóa cọc BĐS vẫn đọc thẳng từ Operational Postgres, còn ClickHouse chỉ phục vụ BI phân tích và theo dõi xu hướng."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "bay-big-data-va-cuoc-chien-oltp-olap",
+      "eyebrow": "Phản Biện Kiến Trúc Big Data",
+      "variant": "contrarian",
+      "heading": "Ảo tưởng 'Big Data' ở SME: Đốt 2.500$/tháng thuê Snowflake hay làm treo thu ngân vì dồn BI lên Postgres?",
+      "pullQuote": "50 triệu dòng sự kiện Ads, đơn hàng POS và log AI sau nén cột Parquet chỉ nặng vỏn vẹn 6–9 GB. Dựng cụm Spark hay Snowflake cho dữ liệu nằm gọn trong thanh RAM một VPS 135$/tháng là lãng phí thuần túy.",
+      "paragraphs": [
+        "Nhiều doanh nghiệp Việt bước vào bài toán phân tích dữ liệu thường rơi vào một trong hai thái cực sai lầm. Thái cực thứ nhất là nghe tư vấn dựng nguyên hệ thống Fivetran + Snowflake + Spark + Pinecone riêng biệt, đốt 1.500–4.000 USD mỗi tháng cho lượng dữ liệu thực tế chỉ vài chục triệu bản ghi. Thái cực thứ hai là nhồi cả POS, CRM, `pgvector` lẫn báo cáo Metabase 12 tháng vào một PostgreSQL duy nhất, khiến sáng thứ Hai đầu tháng CPU chạm 100% và quầy thu ngân không bấm thanh toán nổi.",
+        "Lối thoát chuẩn xác là phân vai rành mạch giữa **Operational Postgres Vector** (giao dịch ACID, Row-Level Security, RAG dữ liệu sống) và **Lean Lakehouse** (ClickHouse cho dashboard đa người dùng < 200ms kết hợp DuckDB + Apache Parquet trên Cloudflare R2/MinIO cho kho lạnh dài hạn)."
+      ],
+      "bullets": [
+        "Quy mô thực SME 3 năm: ~30M dòng Ads theo giờ + ~12M dòng đơn POS + ~8M LLM traces -> vừa khít một máy chủ NVMe đơn thay vì cụm phân tán.",
+        "Tách Vector DB quá sớm sang dịch vụ ngoài buộc đội kỹ thuật phải tự đồng bộ lại toàn bộ phân quyền chi nhánh và trạng thái hết hàng.",
+        "Lưu 100 GB cold Parquet trên Cloudflare R2 tốn ~1.5 USD/tháng với 0₫ phí đọc băng thông (egress)."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "bang-doi-chieu-4-kien-truc-lakehouse-vs-postgres",
+      "heading": "Đấu trường 4 kiến trúc dữ liệu BI & AI tại ngưỡng 50 triệu bản ghi",
+      "caption": "So sánh chi phí, tốc độ truy vấn phân tích P95, bảo mật RAG thời gian thực và độ phức tạp vận hành",
+      "columns": [
+        "Tiêu chí đánh giá",
+        "Postgres + pgvector đơn lẻ",
+        "Lean Lakehouse (PG + ClickHouse + DuckDB)",
+        "Cloud DWH (Snowflake + Fivetran)",
+        "Self-Hosted Spark + Iceberg"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Chi phí hạ tầng / tháng",
+          "values": ["90 – 220 USD", "110 – 150 USD (VPS NVMe + R2)", "1.400 – 3.800 USD", "650 – 1.800 USD (4–6 nodes)"],
+          "winnerNote": "Giảm 88% chi phí vs Cloud DWH"
+        },
+        {
+          "criterion": "P95 Cohort BI 12 tháng",
+          "values": ["6.500 – 18.000 ms", "140 – 290 ms", "450 – 1.400 ms", "800 – 3.500 ms"],
+          "winnerNote": "Phản hồi tức thì cho Dashboard"
+        },
+        {
+          "criterion": "RAG + FORCE RLS realtime",
+          "values": ["Xuất sắc (ACID + pgvector)", "Xuất sắc (giữ Operational PG)", "Lệch pha đồng bộ quyền", "Phức tạp (cần OPA riêng)"]
+        },
+        {
+          "criterion": "Công sức vận hành (1–3 Dev)",
+          "values": ["Dễ nhưng dễ treo khi BI nặng", "Gọn: Docker 1-node + DuckDB lib", "Dễ infra, khó kiểm soát bill", "Nặng về tuning JVM/Cluster"]
+        }
+      ],
+      "footnote": "Chi phí Cloud DWH ước tính theo mức đồng bộ CDC 15 phút và Warehouse Small/Medium chạy 8–10 giờ/ngày."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "benchmark-latency-va-chi-phi-50m-rows",
+      "heading": "Benchmark P95 Query Latency (ms) trên 5 kịch bản truy vấn 50 triệu dòng",
+      "subtitle": "Kiểm thử cold-cache trên máy chủ 8 vCPU, 32GB RAM, NVMe SSD (~135$/tháng) đối chiếu PostgreSQL Read-Replica, Lean Lakehouse và Cloud DWH",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ trễ P95 (ms) giữa Postgres thuần, ClickHouse/DuckDB và Cloud DWH",
+        "xKey": "workload",
+        "yUnit": "ms",
+        "kpis": [
+          { "label": "Rollup Ads 12 tháng", "value": "165 ms", "delta": "Nhanh hơn 52x vs Postgres", "positive": true },
+          { "label": "Chi phí Stack DOMATION", "value": "135$/tháng", "delta": "Dưới trần 150$/tháng", "positive": true },
+          { "label": "RAG Hybrid + RLS (PG)", "value": "34 ms", "delta": "Operational Postgres", "positive": true },
+          { "label": "Join Parquet + PG Live", "value": "420 ms", "delta": "DuckDB postgres_scanner", "positive": true }
+        ],
+        "series": [
+          { "key": "postgresMs", "label": "PostgreSQL Replica Thuần (ms)", "color": "#EF4444", "type": "bar" },
+          { "key": "lakehouseMs", "label": "ClickHouse / DuckDB (ms)", "color": "#1E40FF", "type": "bar" },
+          { "key": "cloudDwhMs", "label": "Cloud DWH Warehouse-S (ms)", "color": "#06B6D4", "type": "line" }
+        ],
+        "data": [
+          { "workload": "Ads Cohort 12T", "postgresMs": 8640, "lakehouseMs": 165, "cloudDwhMs": 720 },
+          { "workload": "POS SKU Rollup", "postgresMs": 6120, "lakehouseMs": 142, "cloudDwhMs": 640 },
+          { "workload": "LLM FinOps Agg", "postgresMs": 11400, "lakehouseMs": 195, "cloudDwhMs": 890 },
+          { "workload": "Parquet + PG Join", "postgresMs": 14250, "lakehouseMs": 420, "cloudDwhMs": 1180 },
+          { "workload": "CRM Funnel 8-Step", "postgresMs": 4890, "lakehouseMs": 118, "cloudDwhMs": 580 }
+        ],
+        "sourceNote": "Benchmark nội bộ DOMATION trên tập dữ liệu 50M dòng (30M ad_hourly_events, 12M pos_order_items, 8M llm_traces)."
+      },
+      "insightSummary": "Lưu trữ dạng cột tạo ra cách biệt tới 52–58 lần ở tác vụ tổng hợp lịch sử: truy vấn LLM FinOps và ROAS Cohort 12 tháng mất 11.4 giây trên PostgreSQL Read-Replica chỉ còn 195ms trên ClickHouse, đồng thời loại bỏ độ trễ đánh thức warehouse qua mạng của Cloud DWH."
+    },
+    {
+      "type": "visual-figure",
+      "id": "lean-lakehouse-architecture-visual",
+      "src": "/imgs/boost/charts/kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme-report.webp",
+      "alt": "Biểu đồ hiệu năng và kiến trúc Lakehouse gọn nhẹ PostgreSQL, ClickHouse, DuckDB dưới 150 USD mỗi tháng",
+      "caption": "Phân vai kiến trúc dữ liệu DOMATION: Operational PostgreSQL + pgvector đảm nhiệm ACID & RLS, còn ClickHouse và DuckDB gánh tầng OLAP và kho lạnh Parquet.",
+      "badge": "LEAN LAKEHOUSE BENCHMARK"
+    },
+    {
+      "type": "prose",
+      "id": "ranh-gioi-operational-postgres-vector-vs-lakehouse",
+      "eyebrow": "Biên Giới Vận Hành & Đánh Đổi",
+      "variant": "deep-dive",
+      "heading": "Operational Postgres Vector vs Analytical Lakehouse: Đừng đặt nhầm dữ liệu vào sai động cơ",
+      "paragraphs": [
+        "**Operational PostgreSQL + `pgvector` (Lớp Sự Thật Sống & AI RAG):** Giữ toàn bộ giao dịch CRUD, khóa cọc giỏ hàng, `FORCE ROW LEVEL SECURITY` và dưới 5 triệu vector chunks. Điểm ăn tiền là AI Chatbot luôn lọc ngữ nghĩa song song với điều kiện nghiệp vụ sống (`WHERE tenant_id = $1 AND stock_qty > 0`) trong một giao dịch ACID duy nhất, không bao giờ tư vấn nhầm căn hộ vừa bán xong cách đó 2 giây.",
+        "**ClickHouse Single-Node & DuckDB Parquet (Lớp OLAP & Kho Lạnh):** ClickHouse nhận toàn bộ dòng sự kiện append-only (Meta Ads theo giờ, hành vi pixel, hóa đơn POS, trace token LLM) để tải dashboard đa người dùng dưới 200ms. Trong khi đó, DuckDB đóng vai trò động cơ phân tích nhúng đọc file Apache Parquet nén ZSTD trên R2/MinIO cho báo cáo ad-hoc nhiều năm mà không cần bật server compute đắt tiền 24/7."
+      ],
+      "bullets": [
+        "Cẩn trọng với ClickHouse `ReplacingMergeTree`: cơ chế merge khử trùng chạy bất đồng bộ nên câu lệnh `SUM()` trực tiếp dễ bị nhân đôi đơn vừa cập nhật — luôn bọc bằng `argMax(col, updated_at) GROUP BY order_id` hoặc `FINAL`.",
+        "DuckDB không thiết kế cho hàng trăm concurrent writes/giây; tuyệt đối chỉ dùng để đọc phân tích, nối Replica và xuất Parquet.",
+        "Chỉ tách `pgvector` sang Qdrant khi tập vector vượt ngưỡng RAM chỉ mục HNSW (> 10–15 triệu chunks)."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "sql-clickhouse-replacingmergetree-duckdb-parquet",
+      "heading": "SQL Recipe: Khử trùng ClickHouse ReplacingMergeTree & DuckDB JOIN trực tiếp PostgreSQL",
+      "language": "sql",
+      "filename": "analytics/clickhouse_and_duckdb_recipes.sql",
+      "description": "Phần đầu khai báo `ReplacingMergeTree` kèm query chuẩn `argMax` tránh nhân đôi doanh thu trước khi ClickHouse merge nền; phần sau dùng DuckDB gắn Read-Replica PostgreSQL để nối thẳng dữ liệu khách hàng VIP với kho lạnh Parquet trên S3/R2.",
+      "code": "-- PHẦN 1: CLICKHOUSE REPLACINGMERGETREE & TRUY VẤN KHỬ TRÙNG AN TOÀN\nCREATE TABLE IF NOT EXISTS analytics.fact_orders_ch (\n    tenant_id UInt32, order_id String, order_date Date,\n    channel LowCardinality(String), net_revenue Float64,\n    status LowCardinality(String), updated_at DateTime64(3, 'UTC')\n)\nENGINE = ReplacingMergeTree(updated_at)\nPARTITION BY toYYYYMM(order_date)\nORDER BY (tenant_id, order_date, order_id);\n\nWITH latest_orders AS (\n    SELECT tenant_id, order_id,\n           argMax(channel, updated_at) AS channel,\n           argMax(net_revenue, updated_at) AS net_revenue,\n           argMax(status, updated_at) AS status\n    FROM analytics.fact_orders_ch\n    WHERE tenant_id = 104 AND order_date >= today() - 90\n    GROUP BY tenant_id, order_id\n)\nSELECT channel, countIf(status = 'PAID') AS paid_orders,\n       round(sumIf(net_revenue, status = 'PAID'), 0) AS total_paid_vnd\nFROM latest_orders GROUP BY channel ORDER BY total_paid_vnd DESC;\n\n-- PHẦN 2: DUCKDB ĐỌC COLD PARQUET R2 NỐI LIVE POSTGRES READ-REPLICA\nINSTALL httpfs; INSTALL postgres; LOAD httpfs; LOAD postgres;\nATTACH 'dbname=domation_prod user=bi_ro host=10.0.1.12 port=5432' AS pg_live (TYPE POSTGRES, READ_ONLY);\n\nSELECT g.mst_root, g.canonical_name,\n       SUM(h.ad_spend_vnd) AS spend_24m, SUM(h.paid_revenue_vnd) AS rev_24m\nFROM read_parquet('s3://domation-lakehouse/attribution/year=2025/*/*.parquet') h\nJOIN pg_live.public.mdm_golden_customers g ON h.golden_customer_id = g.golden_id\nWHERE h.tenant_id = 104\nGROUP BY 1, 2 HAVING SUM(h.paid_revenue_vnd) > 500000000\nORDER BY rev_24m DESC LIMIT 50;"
+    },
+    {
+      "type": "code-recipe",
+      "id": "python-query-router-operational-vs-lakehouse",
+      "heading": "Python Recipe: Định tuyến truy vấn AI giữa Operational Postgres Vector và DuckDB Lakehouse",
+      "language": "python",
+      "filename": "services/ai_data_router.py",
+      "description": "Query Router phân luồng thông minh: câu hỏi tồn kho & RAG bảo mật chạy thẳng vào Operational PostgreSQL (`pgvector` + `SET LOCAL` cho RLS), còn câu hỏi thống kê cohort nhiều tháng đẩy sang DuckDB cô lập RAM.",
+      "code": "from typing import Literal\nimport duckdb, psycopg\n\nRouteTarget = Literal[\"OPERATIONAL_PG_VECTOR\", \"ANALYTICAL_LAKEHOUSE\"]\n\ndef classify_workload(query_intent: str) -> RouteTarget:\n    olap_keys = (\"cohort\", \"roas\", \"tổng doanh thu\", \"xu hướng\", \"12 tháng\", \"chi phí token\")\n    return \"ANALYTICAL_LAKEHOUSE\" if any(k in query_intent.lower() for k in olap_keys) else \"OPERATIONAL_PG_VECTOR\"\n\ndef execute_agent_lookup(tenant_id: int, query_intent: str, emb: list[float] | None, pg_dsn: str) -> list[dict]:\n    if classify_workload(query_intent) == \"OPERATIONAL_PG_VECTOR\":\n        with psycopg.connect(pg_dsn) as conn, conn.cursor() as cur:\n            cur.execute(\"SET LOCAL app.current_tenant_id = %s\", (str(tenant_id),))\n            cur.execute(\"SET LOCAL hnsw.ef_search = 64\")\n            cur.execute(\"\"\"\n                SELECT doc_id, sku_code, content_chunk, stock_available,\n                       1 - (embedding <=> %s::vector) AS cosine_sim\n                FROM rag_knowledge_chunks WHERE stock_available > 0\n                ORDER BY embedding <=> %s::vector LIMIT 5\n            \"\"\", (emb, emb))\n            cols = [d.name for d in cur.description]\n            return [dict(zip(cols, r)) for r in cur.fetchall()]\n\n    con = duckdb.connect(\":memory:\", config={\"memory_limit\": \"2GB\", \"threads\": 4})\n    path = f\"s3://domation-lakehouse/meta_crm_daily/tenant_id={tenant_id}/**/*.parquet\"\n    df = con.execute(\"\"\"\n        SELECT campaign_name, ROUND(SUM(ad_spend_vnd), 0) AS spend_vnd,\n               ROUND(SUM(crm_paid_revenue_vnd), 0) AS revenue_vnd,\n               ROUND(SUM(crm_paid_revenue_vnd) / NULLIF(SUM(ad_spend_vnd), 0), 2) AS real_roas\n        FROM read_parquet(?) WHERE metric_date >= CURRENT_DATE - INTERVAL '180 days'\n        GROUP BY 1 HAVING SUM(ad_spend_vnd) > 5000000 ORDER BY real_roas DESC LIMIT 15\n    \"\"\", [path]).fetchdf()\n    return df.to_dict(orient=\"records\")"
+    },
+    {
+      "type": "decision-tree",
+      "id": "chon-kien-truc-du-lieu-cho-sme",
+      "heading": "Ma trận chọn kiến trúc theo quy mô dòng dữ liệu & nhu cầu AI",
+      "subtitle": "Lộ trình mở rộng tự nhiên không phải đập đi xây lại",
+      "scenarios": [
+        {
+          "condition": "< 5 triệu dòng, < 500k vector chunks, dưới 20 người xem báo cáo",
+          "recommendedChoice": "PostgreSQL Primary + Read-Replica + `pgvector` HNSW",
+          "rationale": "Trỏ Metabase sang Read-Replica để bảo vệ OLTP, giữ nguyên ACID và FORCE RLS với chi phí tối thiểu.",
+          "avoidIf": "Chưa cần tách ClickHouse nếu dữ liệu nằm gọn trong bộ nhớ đệm Postgres."
+        },
+        {
+          "condition": "5 – 80 triệu dòng Ads/POS/Webhook, cần dashboard tải < 300ms cho nhiều chi nhánh",
+          "recommendedChoice": "Operational Postgres (`pgvector`) + ClickHouse Single-Node + R2 Parquet",
+          "rationale": "ClickHouse gánh toàn bộ Meta Ad Report và BI thời gian thực dưới 150$/tháng, giữ Postgres nhẹ cho CRM/ERP.",
+          "avoidIf": "Không đẩy bảng cần `UPDATE` liên tục như khóa căn BĐS sang làm bảng chính trên ClickHouse."
+        },
+        {
+          "condition": "Phân tích Ad-hoc nhiều năm hoặc Feature Engineering định kỳ chi phí bằng 0 lúc rảnh",
+          "recommendedChoice": "PostgreSQL + DuckDB đọc trực tiếp Apache Parquet trên R2/MinIO",
+          "rationale": "Worker Python chỉ cấp 2GB RAM cho DuckDB khi chạy báo cáo rồi giải phóng ngay, không nuôi warehouse 24/7.",
+          "avoidIf": "Không dùng DuckDB làm database phục vụ ghi đồng thời từ Web API."
+        },
+        {
+          "condition": "Kho RAG vượt 15 triệu vector chunks, độ trễ lọc payload < 20ms",
+          "recommendedChoice": "Tách riêng Vector DB (Qdrant) + Postgres lưu metadata nguồn",
+          "rationale": "Tận dụng disk-backed HNSW và quantization khi chỉ mục vượt RAM máy chủ Postgres.",
+          "avoidIf": "Không tách sớm khi dưới 2 triệu chunks và ràng buộc RLS phức tạp."
+        }
+      ]
+    },
+    {
+      "type": "stat-grid",
+      "id": "chi-so-cum-lakehouse-domation",
+      "heading": "Thông số thực địa cụm Lean Lakehouse 135$/tháng tại DOMATION",
+      "stats": [
+        { "value": "135$/tháng", "label": "Tổng chi phí hạ tầng", "context": "1 VPS NVMe 32GB + Cloudflare R2", "trend": "down" },
+        { "value": "165 ms", "label": "P95 Dashboard Meta + CRM", "context": "Quét 50M dòng trên ClickHouse", "trend": "up" },
+        { "value": "8.4x", "label": "Tỷ lệ nén cột ZSTD", "context": "42 GB bảng thô -> 5.0 GB Parquet", "trend": "up" },
+        { "value": "0 giây", "label": "Thời gian treo thu ngân", "context": "Cách ly hoàn toàn OLTP khỏi OLAP", "trend": "neutral" }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "lean-lakehouse-benchmark-verdict",
+      "variant": "benchmark",
+      "title": "Làm chủ Medium Data trước khi đốt tiền vào Big Data",
+      "body": "Trên các hệ thống vận hành của DOMATION từ Meta Ad Realtime Report đến chuỗi 30+ điểm bán, nút thắt hiệu năng không đến từ việc thiếu Snowflake hay Spark mà do không tách lớp OLTP (`pgvector` + RLS) khỏi OLAP (ClickHouse + DuckDB Parquet). Giữ hạ tầng gọn nhẹ dưới 150$/tháng giúp doanh nghiệp làm chủ tốc độ ra quyết định mà không gánh hóa đơn cloud phình to.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • DOMATION Infrastructure Audit"
+    }
+  ]
+}

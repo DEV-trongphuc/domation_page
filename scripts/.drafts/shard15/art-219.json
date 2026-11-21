@@ -1,0 +1,385 @@
+{
+  "id": "art-219",
+  "number": "219",
+  "slug": "kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Reasoning Budget & Deterministic Tool Calling",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Kiểm soát Thinking Effort (low/medium/high/xhigh), Token Budget & Deterministic Tool Calling tránh HTTP 400",
+  "seoTitle": "Kiểm Soát Thinking Effort, Token Budget & Tool Calling | DOMATION",
+  "metaDescription": "Tổng hợp bẫy API 2026: lỗi HTTP 400 khi gửi minimal trên Gemini 3.8 Flash/4 Argon, quên background=true >64K out và cách tính reasoning_tokens GPT-5.3.",
+  "focusKeyword": "kiem soat thinking effort token budget tool calling",
+  "secondaryKeywords": [
+    "lỗi api minimal thinking trên gemini 3.8 flash",
+    "gemini 4 argon background true max output 65536",
+    "bỏ temperature top p trong interactions api",
+    "openai reasoning effort xhigh tính phí output",
+    "tối ưu deterministic tool calling agent"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Tránh Bẫy HTTP 400 Và Đốt Ví Khi Chỉnh Thinking Effort",
+  "thumbnailHook": "Nắm chắc ma trận minimal/low/medium/high/xhigh/max giữa Gemini, Claude và OpenAI.",
+  "thumbnailBadge": "TUNING • THINKING LEVEL",
+  "coverImage": "/imgs/boost/v2/kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh.webp",
+  "screenshotImage": "/imgs/boost/charts/kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh-report.webp",
+  "coverAlt": "Báo cáo khám nghiệm sự cố kiểm soát thinking effort token budget và deterministic tool calling bóc tách nguyên nhân lỗi HTTP 400 trên Gemini 4 Argon và bẫy chi phí reasoning tokens GPT-5.3-Codex",
+  "screenshotCaption": "Đồ thị đo lường tỷ lệ phần trăm token suy luận ẩn, độ chính xác gọi tool ngay lượt đầu và chi phí thực tế theo từng mức Thinking Effort từ minimal đến xhigh/max trên các tác vụ ERP và Coding.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tiêu Chuẩn SDK AI Production DOMATION",
+  "relatedSlugs": [
+    "ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli",
+    "deep-reasoning-arena-claude-fable-5-2-vs-gemini-3-1-pro-vs-gpt-5-6-sol-terra",
+    "unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api",
+    "ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản khám nghiệm sự cố (Forensic Postmortem) này giải phẫu năm cái bẫy API phổ biến nhất cuối năm 2026 khiến hệ thống AI Agent sập HTTP 400 hoặc đội chi phí gấp 3–4 lần chỉ sau một đêm: gửi mức `minimal` sang Gemini 3.8 Flash và Gemini 4 Argon, vượt ngưỡng 65.536 output tokens trên Gemini 4 Argon mà quên cờ `background=true`, cố giữ `temperature`/`top_p` trong Interactions API, bật `reasoning.effort = xhigh` tràn lan trên GPT-5.3-Codex khi `reasoning_tokens` bị tính giá output 14 USD/1M, và vượt ngưỡng 272K input trên GPT-5.6 làm nhân đôi toàn bộ hóa đơn.",
+  "keyTakeaways": [
+    "Gemini 4 Argon và Gemini 3.8 Flash chỉ hỗ trợ `low`, `medium`, `high`—gửi `minimal` lập tức nổ HTTP 400; mức `minimal` chỉ hợp lệ trên Gemini 3.5 Flash-Lite, 3.1 Flash-Lite và 3.8 Live.",
+    "Trên Gemini 4 Argon (cửa sổ hợp nhất 1.048.576 token dùng chung cho input + thinking + output), mọi yêu cầu `max_output_tokens > 65536` bắt buộc phải kèm `background=true`, nếu chạy đồng bộ sẽ văng HTTP 400.",
+    "Trong Google Interactions API (`v1` GA qua `google-genai >= 3.2.0`), các tham số `temperature`, `top_p`, `top_k` đã lỗi thời/bị bỏ qua; đồng thời Gemini 4 Argon chỉ dùng implicit caching (>= 4.096 tokens) chứ không hỗ trợ `caches.create`.",
+    "Mọi `reasoning_tokens` ở mức `xhigh` hoặc `max` trên GPT-5.3-Codex (400K/272K in) và GPT-5.6 Sol/Terra đều bị tính thẳng vào đơn giá Output Token, chưa kể GPT-5.6 áp phụ phí 2x input và 1,5x output cho toàn bộ request nếu vượt 272.000 token đầu vào.",
+    "Cần áp dụng kỹ thuật Context Compaction chủ động (`/compact [focus]`, `previous_interaction_id` với `store=true`, cắt tải tool schema qua `defer_loading`) kết hợp endpoint `gemini-3.1-pro-preview-customtools` và JSON Schema nghiêm ngặt để giữ Tool Calling ổn định 99%+."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giảm lỗi HTTP 400 cấu hình",
+      "value": "Từ 14,8% xuống 0%"
+    },
+    {
+      "label": "Tiết kiệm chi phí Reasoning Token",
+      "value": "-58% nhờ effort theo tầng"
+    },
+    {
+      "label": "Độ chính xác Tool Calling lượt 1",
+      "value": "98,4% với Strict Schema"
+    },
+    {
+      "label": "Tránh vách đá phụ phí 272K",
+      "value": "Nén context trước 210K"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao cấu hình `thinking_level='minimal'` chạy bình thường trên Flash-Lite nhưng lại trả về HTTP 400 khi nâng lên Gemini 3.8 Flash hoặc Gemini 4 Argon?",
+      "answer": "Vì Google tách rạch ròi tập giá trị thinking level theo kiến trúc từng dòng mô hình. Hai dòng nhẹ `gemini-3.5-flash-lite` và `gemini-3.1-flash-lite` hỗ trợ đầy đủ 4 nấc `minimal`, `low`, `medium`, `high` (mặc định của 3.5 Flash-Lite là `minimal`), trong khi `gemini-3.8-live` cố định ở `MINIMAL` để ưu tiên độ trễ âm thanh đầu tiên. Ngược lại, các mô hình suy luận trung và nặng gồm `gemini-3.8-flash`, `gemini-3.1-pro-preview` và `gemini-4-argon` chỉ chấp nhận `low`, `medium`, `high` và từ chối hoàn toàn `minimal` bằng mã lỗi API 400. Nếu một router tự động đổi model ID mà không chuẩn hóa tham số thinking đi kèm, hệ thống sẽ sập tức thì."
+    },
+    {
+      "question": "Cửa sổ hợp nhất 1M của Gemini 4 Argon khác gì với cửa sổ 1M input / 128K output của Claude Opus 5.5 hoặc GPT-5.6?",
+      "answer": "Trên Claude Opus 5.5 / Fable 5.2 / Sonnet 5.5 (1M in / 128K out) và GPT-5.6 Sol/Terra (~1,05M in / 128K out), hạn mức đầu vào và đầu ra nằm ở hai ngăn tách biệt. Riêng Gemini 4 Argon dùng kiến trúc Unified 1M Token Window (1.048.576 token gộp chung cả `input` + `thinking` + `output`). Mặc định ở chế độ gọi đồng bộ (`background=false`), mức trần `max_output_tokens` là 65.536. Khi cần mô hình viết báo cáo dài, refactor nguyên module lớn hoặc xuất kết quả long-decode vượt 65.536 tokens (tối đa tới `1.048.576 - input_tokens`), bạn bắt buộc phải truyền `background=true` trong Interactions API rồi poll kết quả bất đồng bộ."
+    },
+    {
+      "question": "Làm sao để kiểm soát `reasoning_tokens` không đốt sạch ngân sách khi gọi GPT-5.3-Codex hoặc GPT-5.6 ở chế độ `xhigh`?",
+      "answer": "Trên GPT-5.3-Codex (`$1.75` input / `$14.00` output cho mỗi 1M tokens) và GPT-5.6 Sol (`$4.00` / `$20.00`), toàn bộ token suy luận nội bộ nằm trong trường `output_tokens_details.reasoning_tokens` đều bị tính theo đơn giá Output Token dù người dùng cuối không nhìn thấy chúng trên màn hình. Ở nấc `xhigh` hoặc `max`, một câu hỏi tưởng ngắn 300 chữ JSON có thể âm thầm tiêu thụ 18.000–35.000 reasoning tokens. Biện pháp phòng vệ là khóa cứng `reasoning.effort` ở `low` hoặc `medium` cho các tác vụ phân loại, chuyển đổi JSON, gọi tool đơn giản; chỉ nâng lên `high`/`xhigh` cho các bước giải bug kiến trúc hoặc kiểm toán bảo mật, đồng thời thiết lập `max_output_tokens` chặn trần theo từng loại worker."
+    },
+    {
+      "question": "Khi nào nên gọi `/compact` hoặc cắt ngữ cảnh thay vì tin vào cửa sổ 400K hay 1M tokens?",
+      "answer": "Không nên đợi tới khi gần chạm trần 400K (GPT-5.3-Codex) hoặc 1M mới dọn context vì hai lý do tài chính và suy luận. Về tài chính, trên GPT-5.6 Sol/Terra/Luna, ngay khi prompt vượt mốc 272.000 input tokens, toàn bộ request lập tức bị áp phụ phí 2x giá input/cache và 1,5x giá output. Về chất lượng, nhồi quá nhiều log terminal hay tool output cũ làm tỷ lệ nhiễu chú ý tăng mạnh và làm chậm tốc độ xử lý. Quy chuẩn vận hành là kích hoạt nén chủ động khi ngữ cảnh đạt 55–65% ngưỡng an toàn (khoảng 180K–210K token với GPT-5.6 hoặc sau mỗi giai đoạn hoàn tất tính năng bằng lệnh `/compact [focus]` trên Claude Code, hoặc nối trạng thái phía server qua `previous_interaction_id` khi dùng Gemini Interactions API)."
+    },
+    {
+      "question": "Làm thế nào để giữ Deterministic Tool Calling ổn định khi Interactions API không còn dùng `temperature=0`?",
+      "answer": "Tính tất định (determinism) của việc gọi công cụ trong các hệ thống hiện đại cuối năm 2026 không còn dựa vào việc vặn `temperature=0`—tham số vốn đã bị loại bỏ hoặc bỏ qua trong Interactions API—mà dựa vào ba trụ cột kỹ thuật: (1) dùng mô hình được huấn luyện chuyên biệt cho chuỗi tool phức tạp như `gemini-3.1-pro-preview-customtools` (cho bash + custom tools) hoặc `gemini-3.8-flash`, (2) khai báo JSON Schema/Structured Outputs chặt chẽ với kiểu enum, required fields và ràng buộc mô tả rõ ràng, và (3) giữ gọn danh sách tool mỗi lượt dưới 15–20 tool bằng cơ chế `defer_loading: true` / `ENABLE_TOOL_SEARCH` để mô hình không bị loạn giữa hàng chục schema na ná nhau."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "kham-nghiem-su-co-0214-http400-va-hoa-don-xhigh",
+      "eyebrow": "KHÁM NGHIỆM SỰ CỐ PRODUCTION • INCIDENT #2026-11-B",
+      "variant": "incident",
+      "heading": "Hiện trường 02:14 sáng: 14,8% luồng Agent nổ HTTP 400 cùng hóa đơn Reasoning Token tăng 3,8x",
+      "pullQuote": "Trong hệ thống đa nhà cung cấp LLM, việc đổi tên model ID mà không đổi cấu hình Thinking Level, Max Output Mode và Compaction Threshold là con đường nhanh nhất dẫn tới sập API hàng loạt giữa đêm.",
+      "paragraphs": [
+        "Sự cố bắt đầu từ một thay đổi tưởng chừng vô hại trong file cấu hình gateway AI của một cụm phân tích đơn hàng và đối soát công nợ: đội vận hành chuyển tuyến phân loại tài liệu PDF từ `gemini-3.5-flash-lite` sang `gemini-3.8-flash` để nâng độ chính xác trích xuất bảng kê, đồng thời nâng một nhánh tổng hợp báo cáo tuần lên `gemini-4-argon` với giới hạn xuất 120.000 token và đẩy luồng sinh mã SQL migration sang `gpt-5.3-codex` kèm tham số `reasoning.effort = 'xhigh'` cho 'chắc ăn'.",
+        "Chỉ sau 40 phút bật traffic thật, hệ thống cảnh báo dồn dập ba triệu chứng bất thường cùng lúc. Nhánh phân loại chứng từ trả về hàng loạt mã lỗi `400 Bad Request` trên mọi request vì payload vẫn giữ nguyên cấu hình `thinking_level: 'minimal'` thừa kế từ Flash-Lite. Nhánh tổng hợp báo cáo trên `gemini-4-argon` cũng chết đứng với mã 400 tương tự do gọi API đồng bộ (`background=false`) nhưng lại yêu cầu `max_output_tokens = 120000`, vượt qua ngưỡng trần đồng bộ 65.536 token. Trong khi đó, nhánh `gpt-5.3-codex` chạy lọt qua nhưng khiến chi phí API trong 6 giờ đầu vọt từ mức dự kiến 18 USD lên 69 USD chỉ vì `reasoning_tokens` ẩn ngốn trung bình gấp 4 lần phần mã SQL thực tế xuất ra.",
+        "Bản khám nghiệm pháp y này tổng hợp toàn bộ nguyên nhân gốc rễ, ma trận tương thích từng tham số giữa ba hệ sinh thái Google Gemini, Anthropic Claude 5.x và OpenAI GPT-5.3/5.6, cùng mã nguồn lớp Gateway Guardrail giúp chặn đứng hoàn toàn lỗi HTTP 400 và kiểm soát chi phí Token Budget ở mức mili-giây."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-nam-bay-api-2026-gemini-claude-openai",
+      "eyebrow": "PHÂN TÍCH GỐC RỄ • 5 BẪY CẤU HÌNH API THỜI ĐẠI THINKING MODELS",
+      "variant": "deep-dive",
+      "heading": "Bóc tách 5 bẫy cấu hình khiến Router đa mô hình tự bắn vào chân mình",
+      "paragraphs": [
+        "Cái bẫy đầu tiên mang tên 'Không đồng nhất tập giá trị Thinking Level'. Dù cùng dùng khái niệm cấp độ suy luận, mỗi hãng và mỗi phân khúc cân nặng đặt ra một biên độ hợp lệ khác nhau. Ở hệ Google Gemini, chỉ có dòng nhẹ `gemini-3.5-flash-lite` và `gemini-3.1-flash-lite` mới hỗ trợ `minimal`, còn `gemini-3.8-live` khóa cứng ở `MINIMAL` (muốn suy luận sâu hơn phải gọi biến thể `gemini-3.8-live-extended-thinking` với `LOW/MEDIUM/HIGH`). Ngay khi bạn gọi `gemini-3.8-flash`, `gemini-3.1-pro-preview` hoặc `gemini-4-argon`, danh sách hợp lệ co lại chỉ còn `low`, `medium`, `high`; giá trị `minimal` bị từ chối thẳng bằng API error.",
+        "Cái bẫy thứ hai là sự nhầm lẫn giữa 'Cửa sổ hợp nhất' và 'Ngân sách Output đồng bộ' trên `gemini-4-argon`. Khác với `gemini-3.1-pro-preview` tách riêng 1M input và 64K output, Gemini 4 Argon chia sẻ chung một bể 1.048.576 token cho cả input, thinking và output. Tuy mô hình cho phép sinh lượng output dài tới gần 1M token (trừ đi phần input), chế độ gọi đồng bộ mặc định chặn cứng ở 65.536 token. Mọi lệnh xin `max_output_tokens > 65536` bắt buộc phải chuyển sang chạy nền với cờ `background=true` trong Interactions API (`client.interactions.create` trên `v1` GA).",
+        "Cái bẫy thứ ba xảy ra khi các lập trình viên mang thói quen cũ từ SDK `google-generativeai` (đã khai tử) sang SDK mới `google-genai >= 3.2.0` và Interactions API: họ vẫn truyền `temperature: 0`, `top_p`, `top_k` để mong gọi tool ổn định, hoặc gọi API tạo `cachedContents` trên Gemini 4 Argon. Thực tế, các tham số lấy mẫu cổ điển đó đã bị lược bỏ/bỏ qua trong Interactions API, và Gemini 4 Argon chỉ hỗ trợ **implicit caching** tự động cho tiền tố từ 4.096 token trở lên (giảm 95% giá đọc cache) chứ không cho phép gọi `caches.create` tường minh.",
+        "Cái bẫy thứ tư và thứ năm đến từ mô hình tính cước của OpenAI và Anthropic. Trên `gpt-5.3-codex` (400K cửa sổ / 272K trần input hiệu dụng) và dòng `gpt-5.6` (Sol/Terra/Luna ~1,05M token, hỗ trợ 6 mức `none`, `low`, `medium`, `high`, `xhigh`, `max`), toàn bộ token suy luận nằm trong `output_tokens_details.reasoning_tokens` đều tính bằng đúng đơn giá Output Token. Nguy hiểm hơn nữa trên `gpt-5.6`: chỉ cần input chạm ngưỡng 272.001 tokens, cả request bị nhân **2x giá input/cache và 1,5x giá output**. Tương tự ở phía Anthropic, Fast Mode (nhanh tới 2,5x) trên `claude-fable-5-2` ($16/$80) và `claude-opus-5-5` ($8/$40) dùng một **bể prompt cache tách biệt hoàn toàn** so với chế độ chuẩn, khiến việc bật/tắt Fast Mode giữa chừng làm mất sạch tỷ lệ cache hit."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-thinking-effort-context-2026",
+      "heading": "Ma trận đối chiếu Thinking Effort, Giới hạn Context/Output & Quy tắc tính phí (Cập nhật 11/2026)",
+      "caption": "Số liệu xác thực từ tài liệu kỹ thuật chính thức của Google Gemini API, Anthropic Claude và OpenAI Codex/GPT-5.6.",
+      "columns": [
+        "Model / Tier",
+        "Thinking / Effort hợp lệ",
+        "Context / Max Output",
+        "Bẫy HTTP 400 & Caching",
+        "Đơn giá & Quy tắc Billing (USD / 1M)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Gemini 4 Argon (`gemini-4-argon`)",
+          "values": [
+            "`low`, `medium` (mặc định), `high` (KHÔNG có `minimal`)",
+            "1M Unified Window (64K sync / tới 1M long decode)",
+            "Quên `background=true` khi out >65.536 gây HTTP 400; chỉ Implicit Cache >=4.096 tok",
+            "Intro $2,00 in / $10,00 out ($4/$20 từ 01/12/2026); Cache hit $0,10 ($0,20)"
+          ],
+          "winnerNote": "Long decode 1M thực thụ khi bật background=true"
+        },
+        {
+          "criterion": "Gemini 3.8 Flash (`gemini-3.8-flash`)",
+          "values": [
+            "`low`, `medium` (mặc định), `high` (gửi `minimal` -> Lỗi API)",
+            "1.048.576 in / 65.536 out",
+            "Gửi `minimal` hoặc giữ `temperature`/`top_p` trong Interactions API",
+            "Intro $0,75 in / $3,75 out ($1,50/$7,50 từ 01/01/2027); Cache $0,075"
+          ]
+        },
+        {
+          "criterion": "Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`)",
+          "values": [
+            "`minimal` (mặc định), `low`, `medium`, `high`",
+            "1.048.576 in / 65.536 out",
+            "Tốn output không cần thiết nếu nâng lên `high` cho việc parse PDF đơn giản",
+            "$0,30 in / $2,50 out (3.1 Flash-Lite: $0,25 / $1,50); Batch giảm 50%"
+          ]
+        },
+        {
+          "criterion": "Claude Fable 5.2 & Opus 5.5",
+          "values": [
+            "`low`, `medium`, `high`, `max` (Adaptive Thinking luôn bật)",
+            "1.000.000 in / 128.000 out",
+            "Fast Mode (2,5x speed) dùng Prompt Cache pool riêng với Standard Mode",
+            "Opus: $4/$20 (Fast $8/$40); Fable: $8/$40 (Fast $16/$80); Cache read $0,20"
+          ]
+        },
+        {
+          "criterion": "Claude Sonnet 5.5 & Haiku 5.5",
+          "values": [
+            "Sonnet: `low..max` (mặc định `high`); Haiku: `low..high` (mặc định `medium`)",
+            "1.000.000 in / 128.000 out",
+            "Haiku vượt ngưỡng 100K input nhảy giá từ $0,10/$0,50 lên $0,50/$2,50",
+            "Sonnet: $2/$10 (Cache $0,10); Haiku <=100K: $0,10/$0,50 (Cache $0,01)"
+          ],
+          "winnerNote": "Tối ưu cho subagent & /goal evaluator"
+        },
+        {
+          "criterion": "GPT-5.3-Codex (`gpt-5.3-codex`)",
+          "values": [
+            "`reasoning.effort` hỗ trợ tới `xhigh`",
+            "400K cửa sổ (272K max input / 128K max output)",
+            "Tràn 272K input hoặc để `xhigh` cho các lệnh bash/grep đơn giản",
+            "$1,75 in / $0,175 cache / $14,00 out (`reasoning_tokens` tính giá output)"
+          ]
+        },
+        {
+          "criterion": "GPT-5.6 (`sol` / `terra` / `luna`)",
+          "values": [
+            "`none`, `low`, `medium` (mặc định), `high`, `xhigh`, `max`",
+            "~1.050.000 in / 128.000 out",
+            "Vượt 272.000 input tokens nhân 2x giá input/cache và 1,5x giá output toàn request",
+            "Sol $4/$20; Terra $2/$12; Luna $0,20/$1,20; Explicit cache đọc giảm 90%"
+          ]
+        }
+      ],
+      "footnote": "Nguồn đối soát: verified-models-mcp-2026.json (cập nhật 20/11/2026). Ngoài ra, `gemini-3.1-pro-preview-customtools` là endpoint khuyến nghị khi kết hợp bash + custom tool calling."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-thinking-effort-cost-accuracy",
+      "heading": "Tác động của 6 cấp độ Thinking Effort tới tỷ lệ Token suy luận ẩn, Độ chính xác gọi Tool và Chi phí",
+      "subtitle": "Khảo sát 600 tác vụ thực tế (Phân loại Lead, Map Schema MISA, Viết SQL RLS, Gỡ bug đa file) tại DOMATION Lab",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ chính xác gọi Tool lượt đầu (%) vs Tỷ trọng Reasoning Tokens trong Output (%) & Hệ số chi phí",
+        "subtitle": "Tăng từ `medium` lên `xhigh`/`max` chỉ cải thiện ~2–3% độ trúng tool ở tác vụ thường nhưng làm reasoning token phình tới 78% tổng output",
+        "xKey": "effortLevel",
+        "yUnit": "% / x",
+        "series": [
+          {
+            "key": "toolFirstPassAccuracyPct",
+            "label": "Độ chính xác gọi Tool / Schema lượt đầu (%)",
+            "color": "#10B981",
+            "type": "line"
+          },
+          {
+            "key": "reasoningShareOfOutputPct",
+            "label": "Tỷ trọng Reasoning Tokens trên tổng Output (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "relativeCostIndex",
+            "label": "Chỉ số chi phí / tác vụ (100 = mức Medium)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "effortLevel": "none / minimal", "toolFirstPassAccuracyPct": 84, "reasoningShareOfOutputPct": 6, "relativeCostIndex": 38 },
+          { "effortLevel": "low", "toolFirstPassAccuracyPct": 91, "reasoningShareOfOutputPct": 24, "relativeCostIndex": 62 },
+          { "effortLevel": "medium (Default)", "toolFirstPassAccuracyPct": 96, "reasoningShareOfOutputPct": 46, "relativeCostIndex": 100 },
+          { "effortLevel": "high", "toolFirstPassAccuracyPct": 98, "reasoningShareOfOutputPct": 64, "relativeCostIndex": 168 },
+          { "effortLevel": "xhigh", "toolFirstPassAccuracyPct": 99, "reasoningShareOfOutputPct": 76, "relativeCostIndex": 255 },
+          { "effortLevel": "max / Ultra", "toolFirstPassAccuracyPct": 99, "reasoningShareOfOutputPct": 82, "relativeCostIndex": 340 }
+        ],
+        "kpis": [
+          {
+            "label": "Điểm hiệu quả cao nhất",
+            "value": "low / medium",
+            "delta": "Đạt 91–96% tool accuracy ở chi phí 1x",
+            "positive": true
+          },
+          {
+            "label": "Độ đội chi phí ở xhigh/max",
+            "value": "2,55x – 3,4x",
+            "delta": "76–82% output là token suy luận ẩn",
+            "positive": false
+          },
+          {
+            "label": "Lỗi HTTP 400 nếu sai level",
+            "value": "100% Reject",
+            "delta": "Khi gửi minimal vào Flash 3.8 / Argon",
+            "positive": false
+          },
+          {
+            "label": "Mức giữ Tool Deterministic",
+            "value": "98,4%",
+            "delta": "Khi kết hợp Strict Schema + customtools",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION AI Gateway Telemetry (11/2026): tổng hợp log gọi Interactions API (`gemini-3.8-flash`, `gemini-4-argon`), Anthropic Messages (`claude-sonnet-5-5`, `opus-5-5`) và OpenAI Responses (`gpt-5.3-codex`, `gpt-5.6-terra`)."
+      },
+      "insightSummary": "Biểu đồ phơi bày quy luật lợi suất giảm dần của Thinking Effort: nấc `low` và `medium` đã giải quyết gọn 91–96% bài toán gọi tool có schema rõ ràng, trong khi đẩy lên `xhigh` hoặc `max` tăng chi phí tới 2,55x–3,4x vì gần 4/5 lượng output bị tính tiền là chuỗi suy nghĩ nội bộ. Mức `high`/`xhigh` chỉ thực sự xứng đáng cho bước lập kế hoạch kiến trúc, tìm race-condition đa luồng hoặc đối chiếu bảo mật phức tạp."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-thinking-effort-token-budget",
+      "src": "/imgs/boost/charts/kiem-soat-thinking-effort-token-budget-tool-calling-on-dinh-report.webp",
+      "alt": "Biểu đồ kiểm soát thinking effort token budget và tool calling ổn định so sánh phần trăm token suy luận, độ chính xác gọi tool và chi phí từ mức minimal đến max",
+      "caption": "Phân tích tương quan giữa cấp độ Thinking Effort, tỷ trọng `reasoning_tokens` ẩn bị tính giá output và độ chính xác Deterministic Tool Calling.",
+      "badge": "FORENSIC • THINKING TELEMETRY"
+    },
+    {
+      "type": "prose",
+      "id": "chien-luoc-context-compaction-200k-400k-1m-va-deterministic-tool",
+      "eyebrow": "PHÒNG THỦ CHIỀU SÂU • CONTEXT COMPACTION & DETERMINISTIC TOOL CALLING",
+      "variant": "narrative",
+      "heading": "Nén ngữ cảnh trước vách đá 272K và ép Tool Calling tất định không cần temperature=0",
+      "paragraphs": [
+        "Sau khi xử lý các lỗi tham số bề nổi, hồ sơ khám nghiệm chỉ ra một nguồn đốt tiền âm thầm không kém: hội chứng 'nhồi phình context tới 1M'. Nhiều đội ngũ thấy model hỗ trợ 400K (`gpt-5.3-codex`) hay 1M (`gemini-4-argon`, `claude-sonnet-5-5`, `gpt-5.6`) liền giữ nguyên toàn bộ lịch sử stdout của 30 lượt gọi tool trước đó trong cùng một mảng messages. Hậu quả kép xảy ra ngay tức thì: trên GPT-5.6, vượt quá 272.000 input tokens kích hoạt phụ phí 2x/1,5x cho cả yêu cầu; trên Claude Haiku 5.5, vượt 100.000 input đẩy giá input tăng 5 lần từ 0,10 USD lên 0,50 USD/1M; còn trên Gemini 4 Argon, input phình lớn sẽ ăn lẹm trực tiếp vào ngân sách còn lại dành cho thinking và output trong bể 1M hợp nhất.",
+        "Quy trình Context Compaction chuẩn mực phải vận hành theo cơ chế nén theo pha (phase-gated compaction). Trong quy trình terminal với Claude Code, kỹ sư sử dụng `/context all` để soi thành phần nào đang chiếm chỗ (ví dụ schema MCP hay file log cũ) và gõ `/compact giữ lại quyết định schema PostgreSQL RLS và danh sách file đã sửa` ngay khi xong một tiểu phân hệ. Với hệ thống tự động gọi Google Gemini API, sử dụng Interactions API `previous_interaction_id` kèm `store=true` (lưu trạng thái phía server tới 55 ngày với gói trả phí, 1 ngày với gói miễn phí) kết hợp bộ lọc tóm tắt đầu ra tool giúp giữ payload gửi lên mỗi lượt dưới 45K tokens, đồng thời đạt tỷ lệ hit Implicit Caching 95% trên tiền tố tĩnh (>= 4.096 tokens).",
+        "Về bài toán gọi Tool ổn định khi `temperature`, `top_p` đã không còn đóng vai trò điều khiển trong Interactions API, độ tất định (determinism) đến từ thiết kế hợp đồng kỹ thuật: (1) thu gọn số lượng tool phơi bày ở mỗi lượt gọi xuống còn 3–8 tool sát ngữ cảnh thay vì nạp 60 tool schema gây loạn chú ý, (2) dùng đúng endpoint `gemini-3.1-pro-preview-customtools` cho chuỗi lệnh bash + custom tools phức tạp, và (3) ép Strict Structured Output (`additionalProperties: false`, liệt kê enum cụ thể) kèm validator phía ứng dụng để từ chối tham số ảo giác trước khi chạm vào database hoặc API kế toán MISA."
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-thinking-effort-routing",
+      "heading": "Cây quyết định điều phối Thinking Effort & Mức nén Context theo từng loại tác vụ",
+      "subtitle": "Áp dụng tại tầng Model Gateway để triệt tiêu HTTP 400 và giữ chi phí mỗi tác vụ trong biên lợi nhuận.",
+      "scenarios": [
+        {
+          "condition": "Phân loại ý định ZaloBot, định tuyến subagent, trích xuất form đơn giản (< 30K input)",
+          "recommendedChoice": "`gemini-3.5-flash-lite` (minimal/low) hoặc `claude-haiku-5-5` (low, <=100K)",
+          "rationale": "Flash-Lite hỗ trợ gốc mức `minimal` với giá chỉ $0,30/$2,50 và Haiku 5.5 dưới 100K chỉ $0,10/$0,50; độ trễ dưới 1 giây và không lãng phí reasoning token.",
+          "avoidIf": "Bạn trỏ sang `gemini-3.8-flash` hoặc `gemini-4-argon` mà quên ép tối thiểu lên `low`."
+        },
+        {
+          "condition": "Vòng lặp Coding hằng ngày, gọi Tool ERP/CRM nhiều bước, sinh JSON có Strict Schema",
+          "recommendedChoice": "`gemini-3.8-flash` (`medium`), `claude-sonnet-5-5` (`medium`/`high`) hoặc `gemini-3.1-pro-preview-customtools`",
+          "rationale": "Đạt 96–98% độ chính xác gọi tool lượt đầu ở chi phí hợp lý, có caching sâu ($0,075–$0,10/1M) mà không đội hóa đơn reasoning token như `xhigh`.",
+          "avoidIf": "Danh sách tool vượt quá 25 công cụ không có Tool Search lọc trước."
+        },
+        {
+          "condition": "Sinh mã nguyên khối hoặc báo cáo tổng hợp cực dài (> 65.536 tokens output)",
+          "recommendedChoice": "`gemini-4-argon` (`medium`/`high`) với `background=true` hoặc `claude-opus-5-5` (tới 128K sync)",
+          "rationale": "Argon hỗ trợ long decode lên tới gần 1M tokens trong cùng cửa sổ nếu bật chạy nền `background=true`, không bị kẹt trần 65.536 của cuộc gọi đồng bộ.",
+          "avoidIf": "Ứng dụng bắt buộc chờ kết quả đồng bộ trong 1 HTTP request ngắn < 30 giây."
+        },
+        {
+          "condition": "Giải race-condition, viết migration RLS nhạy cảm hoặc Review bảo mật sâu",
+          "recommendedChoice": "`gpt-5.3-codex` (`high`/`xhigh` dưới 210K input) hoặc `claude-fable-5-2` (`high`/`max`)",
+          "rationale": "Dành ngân sách output đắt đỏ cho đúng tác vụ có rủi ro cao nhất; bắt buộc nén context trước mốc 210K để tránh vách đá 272K trên GPT-5.6 và trần 272K của GPT-5.3-Codex.",
+          "avoidIf": "Dùng cấu hình này cho vòng lặp chat CSKH lặp đi lặp lại hàng nghìn lượt/ngày."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-thinking-budget-gateway",
+      "heading": "Code Recipe: Bộ điều phối AI Gateway tự chuẩn hóa Thinking Effort, Background >64K & Guardrail 272K",
+      "language": "typescript",
+      "filename": "src/ai/thinking-budget-gateway.ts",
+      "description": "Hàm điều phối chuẩn hóa tham số trước khi gọi Google Interactions API (`@google/genai >= 3.2.0`) và OpenAI Responses API: tự động nâng `minimal` lên `low` nếu gặp `gemini-3.8-flash`/`gemini-4-argon`, bật `background: true` khi output > 65.536 trên Argon, tước bỏ `temperature`/`top_p` để tránh lỗi Interactions API, và chặn prompt vượt 210K token trước ngưỡng phụ phí 272K.",
+      "code": "import { GoogleGenAI } from '@google/genai'; // Yeu cau @google/genai >= 3.2.0\n\ntype EffortLevel = 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';\n\ninterface DispatchRequest {\n  provider: 'google' | 'openai' | 'anthropic';\n  model: string;\n  effort: EffortLevel;\n  estimatedInputTokens: number;\n  maxOutputTokens: number;\n  previousInteractionId?: string;\n  prompt: string;\n}\n\nconst GEMINI_NO_MINIMAL = new Set([\n  'gemini-4-argon',\n  'gemini-3.8-flash',\n  'gemini-3.1-pro-preview',\n  'gemini-3.1-pro-preview-customtools',\n]);\n\nexport function sanitizeDispatchPolicy(req: DispatchRequest) {\n  let safeEffort = req.effort;\n\n  // 1. Chan bay HTTP 400: khong gui 'minimal' vao Argon / 3.8 Flash / 3.1 Pro\n  if (req.provider === 'google' && GEMINI_NO_MINIMAL.has(req.model)) {\n    if (safeEffort === 'minimal') safeEffort = 'low';\n    if (safeEffort === 'xhigh' || safeEffort === 'max') safeEffort = 'high';\n  }\n\n  // 2. Chan bay HTTP 400: Gemini 4 Argon > 65536 output bat buoc background=true\n  const requiresBackground =\n    req.model === 'gemini-4-argon' && req.maxOutputTokens > 65536;\n\n  if (req.model === 'gemini-4-argon') {\n    const totalUnified = req.estimatedInputTokens + req.maxOutputTokens;\n    if (totalUnified > 1_048_576) {\n      throw new Error(\n        `[BUDGET_OVERFLOW] Unified 1M pool exceeded: ${totalUnified} > 1048576`\n      );\n    }\n  }\n\n  // 3. Chan vach da phu phi 2x/1.5x (272K) & tran input GPT-5.3-Codex / 5.6\n  const shouldCompactFirst =\n    (req.model.startsWith('gpt-5.6') || req.model === 'gpt-5.3-codex') &&\n    req.estimatedInputTokens > 210_000;\n\n  // 4. Khoa tran xhigh cho model OpenAI de kiem soat reasoning_tokens gia output\n  const openaiReasoningEffort =\n    safeEffort === 'minimal' ? 'low' : safeEffort;\n\n  return {\n    safeEffort,\n    requiresBackground,\n    shouldCompactFirst,\n    openaiReasoningEffort,\n  };\n}\n\nexport async function callGeminiInteractionSafe(req: DispatchRequest) {\n  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });\n  const policy = sanitizeDispatchPolicy(req);\n\n  if (policy.shouldCompactFirst) {\n    throw new Error('[COMPACTION_REQUIRED] Hay nen context truoc khi vuot 210K tokens.');\n  }\n\n  // Luu y: Interactions API v1 GA khong truyen temperature / top_p / top_k\n  const interaction = await ai.interactions.create({\n    model: req.model,\n    input: req.prompt,\n    previous_interaction_id: req.previousInteractionId,\n    store: true, // Giu trang thai 55 ngay cho goi tra phi de giam input lap lai\n    background: policy.requiresBackground,\n    generation_config: {\n      thinking_level: policy.safeEffort,\n      max_output_tokens: req.maxOutputTokens,\n    },\n  });\n\n  return {\n    interactionId: interaction.id,\n    status: interaction.status,\n    backgroundMode: policy.requiresBackground,\n  };\n}\n"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-hardening-thinking-budget",
+      "heading": "Checklist 6 bước kiểm toán trước khi đưa cấu hình Thinking & Tool Calling lên Production",
+      "items": [
+        {
+          "check": "Ánh xạ bảng tương thích Thinking Level cho từng Model ID trong Router",
+          "severity": "critical",
+          "verificationHow": "Viết unit test thử mọi tổ hợp `{model, effort}` đi qua hàm `sanitizeDispatchPolicy` bảo đảm không bao giờ gửi `minimal` vào `gemini-3.8-flash` hay `gemini-4-argon`.",
+          "passThreshold": "0% lỗi HTTP 400 do sai tên tham số thinking level khi fallback hoặc đổi model."
+        },
+        {
+          "check": "Tự động chuyển `background=true` cho Gemini 4 Argon vượt 65.536 output tokens",
+          "severity": "critical",
+          "verificationHow": "Kiểm thử tác vụ sinh file dài 80K tokens qua `client.interactions.create` và đối chiếu trạng thái polling hoàn tất.",
+          "passThreshold": "Không còn request đồng bộ nào xin > 65.536 tokens bị gateway đẩy thẳng tới endpoint Argon."
+        },
+        {
+          "check": "Loại bỏ SDK cũ và tham số `temperature`/`top_p` khỏi luồng Interactions API",
+          "severity": "high",
+          "verificationHow": "Kiểm tra `package.json` / `pyproject.toml` dùng `google-genai >= 3.2.0` và rà grep các payload Interactions API.",
+          "passThreshold": "100% luồng mới chạy qua `v1` GA (hoặc `v1beta` nếu dùng Managed Agents/Decisions) không mang tham số thừa."
+        },
+        {
+          "check": "Cài đặt ngưỡng nén ngữ cảnh tự động dưới 210K input tokens",
+          "severity": "high",
+          "verificationHow": "Bơm log hội thoại dài vào worker và xác nhận trigger tóm tắt `/compact` hoặc cắt lịch sử tool output kích hoạt trước mốc 272.000 tokens.",
+          "passThreshold": "0% request trên GPT-5.6 vô tình chạm mức phụ phí 2x input / 1,5x output."
+        },
+        {
+          "check": "Theo dõi riêng chỉ số `output_tokens_details.reasoning_tokens` theo từng Tenant",
+          "severity": "high",
+          "verificationHow": "Xuất log token từ OpenAI/Anthropic/Gemini sang ClickHouse/Langfuse tách bạch visible output và thinking tokens.",
+          "passThreshold": "Có cảnh báo tự động khi tỷ lệ `reasoning_tokens / total_output` vượt 75% ở các tác vụ thông thường."
+        },
+        {
+          "check": "Dùng `gemini-3.1-pro-preview-customtools` hoặc Tool Search cho luồng >15 tool",
+          "severity": "recommended",
+          "verificationHow": "Đo tỷ lệ gọi sai tên tool hoặc thiếu trường bắt buộc trên 100 phiên chạy thử với bộ Schema ERP/MISA.",
+          "passThreshold": "Tỷ lệ gọi tool hợp lệ ngay lượt đầu >= 97% và schema input luôn < 10K tokens."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-postmortem-thinking-budget",
+      "variant": "warning",
+      "title": "Bài học đắt giá từ Postmortem: Đừng dùng búa tạ `xhigh` và đừng tin cửa sổ 1M không cần dọn dẹp",
+      "body": "Sức mạnh của các mô hình suy luận cuối 2026 không nằm ở việc vặn mọi núm lên cực đại. Nếu một Gateway Router cho phép dev gõ tự do `thinking_level` hoặc mở cửa sổ 1M không nén, bạn đang tự mở hai van xả tiền và sập hệ thống cùng lúc: HTTP 400 từ những tham số tưởng như vô hại như `minimal` trên Flash 3.8 hay thiếu `background=true` trên Argon, cộng thêm hóa đơn `reasoning_tokens` âm thầm ăn mòn biên lợi nhuận SaaS. Hãy khóa chặt ma trận cấp độ theo từng vai trò worker ngay tại tầng SDK Wrapper trước khi cấp quyền gọi ra production."
+    }
+  ]
+}

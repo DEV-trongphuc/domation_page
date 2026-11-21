@@ -1,0 +1,356 @@
+{
+  "id": "art-140",
+  "number": "140",
+  "slug": "data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory",
+  "shardId": "shard07",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Privacy Compliance & Agent Memory",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Data Retention & Quyền xóa dữ liệu (Right to Erasure) trong kho RAG, Agent Memory và Trace Logs",
+  "seoTitle": "Data Retention & Quyền Xóa Dữ Liệu AI RAG & Memory | DOMATION",
+  "metaDescription": "Xóa khách hàng trong PostgreSQL chưa đủ nếu dữ liệu còn nằm trong Vector DB, Mem0 Memory và trace log. Thiết kế cơ chế xóa dây chuyền chuẩn xác.",
+  "focusKeyword": "quyền xóa dữ liệu và data retention trong ai rag",
+  "secondaryKeywords": [
+    "xóa dữ liệu khách hàng trong vector db",
+    "right to erasure agent memory",
+    "chính sách lưu trữ log trace ai",
+    "cascading delete postgres qdrant mem0",
+    "tuân thủ quyền rút lại đồng ý dữ liệu"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Xóa Khách Ở CRM Nhưng AI Vẫn Nhớ? Bài Toán Erasure",
+  "thumbnailHook": "Đồng bộ xóa dây chuyền qua PostgreSQL, Qdrant, Mem0 và Semantic Cache.",
+  "thumbnailBadge": "PRIVACY • DATA RETENTION",
+  "coverImage": "/imgs/boost/v2/data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory.webp",
+  "screenshotImage": "/imgs/boost/charts/data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Quản Trị Tri Thức & Memory AI",
+  "relatedSlugs": [
+    "tuan-thu-nghi-dinh-13-2023-bao-ve-du-lieu-ca-nhan-ai",
+    "context-freshness-vo-hieu-hoa-vector-cu-khi-doi-bang-gia",
+    "mem0ai-mem0-audit-persistent-memory-layer-cho-agent-cskh",
+    "multi-tenant-rls-postgresql-vector-db-co-lap-du-lieu-dai-ly"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Kiến trúc Data Retention và Quyền xóa dữ liệu Right to Erasure xóa dây chuyền đồng bộ trên PostgreSQL, Vector DB Qdrant, Mem0 Memory, Semantic Cache và Trace Logs",
+  "screenshotCaption": "Biểu đồ đối chiếu tỷ lệ 'Ghost Data' còn sót lại trên 5 tầng lưu trữ AI (PostgreSQL, Vector DB, Agent Memory, Semantic Cache, Trace Logs) giữa xóa thủ công và Cascading Erasure Saga.",
+  "relatedPortfolioId": "ideas-business",
+  "tldrSummary": "Theo Điều 16 Nghị định 13/2023/NĐ-CP và Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 hiệu lực từ 01/01/2026, khi khách hàng rút lại đồng ý hoặc nhân sự nghỉ việc yêu cầu xóa dữ liệu, chỉ chạy `DELETE` trên bảng CRM PostgreSQL là chưa đủ. Dữ liệu vẫn sót dưới dạng 'Ghost Data' trong Vector DB (Qdrant/pgvector), bộ nhớ Mem0, Semantic Cache và Trace Logs. Thiết kế Cascading Erasure Saga, Metadata Lineage `subject_id`, Crypto-Shredding và Tombstone Replay giúp xóa sạch trong dưới 4 giờ mà vẫn bảo toàn sổ sách hóa đơn MISA.",
+  "keyTakeaways": [
+    "Một hồ sơ khách hàng trong hệ thống AI hiện đại phân mảnh qua ít nhất 5 lớp: PostgreSQL CRM, Vector DB (Qdrant/pgvector), Agent Memory (Mem0/Graphiti), Redis Semantic Cache và LLM Trace Logs.",
+    "Bắt buộc gắn cặp metadata `tenant_id` và `subject_id` ngay tại thời điểm nạp dữ liệu (Ingestion Lineage) vào mọi Vector chunk và nút Memory để xóa chọn lọc theo Filter mà không phải đánh lại chỉ mục toàn bộ kho.",
+    "Giải quyết xung đột giữa Quyền xóa dữ liệu với nghĩa vụ lưu chứng từ thuế/hóa đơn MISA 10 năm bằng kỹ thuật tách bảng Vault mã hóa khóa riêng (Crypto-Shredding) và ẩn danh hóa danh tính cá nhân.",
+    "Không giữ thô Prompt/Response chứa PII trong Trace Log quá thời hạn ngắn; chạy pipeline Scrubbing PII trước khi đưa log sang kho đánh giá Eval dài hạn.",
+    "Duy trì sổ cái `erasure_tombstones` chứa mã băm định danh bất biến để tự động tái áp dụng lệnh xóa nếu hệ thống buộc phải phục hồi (Restore) từ bản sao lưu Backup cũ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Ghost Data còn sót sau Erasure",
+      "value": "0% trên cả 5 tầng AI"
+    },
+    {
+      "label": "Thời gian hoàn tất xóa dây chuyền",
+      "value": "< 4 giờ (SLA < 72h)"
+    },
+    {
+      "label": "Tính toàn vẹn sổ sách MISA VAT",
+      "value": "100% bảo toàn hợp lệ"
+    },
+    {
+      "label": "Rủi ro tái sinh khi Restore Backup",
+      "value": "0% nhờ Tombstone Replay"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao khách hàng đã bị xóa khỏi CRM mà AI Chatbot trên Zalo OA vẫn nhắc lại tên và thói quen cũ?",
+      "answer": "Vì AI Agent đọc thêm bộ nhớ dài hạn (Mem0/Graphiti), các đoạn hội thoại nhúng trong Vector DB (Qdrant/pgvector) và câu trả lời đệm trên Redis Semantic Cache. Nếu thao tác xóa không chạy dây chuyền qua cả 4 kho này, 'Ghost Data' vẫn kích hoạt và làm lộ thông tin cá nhân."
+    },
+    {
+      "question": "Khách từng mua hàng và xuất hóa đơn VAT trên MISA nay đòi xóa dữ liệu theo NĐ 13/2023 và Luật 91/2025 thì xử lý ra sao?",
+      "answer": "Luật cho phép giữ tối thiểu chứng từ tài chính theo Luật Kế toán và Luật Thuế. Doanh nghiệp phải tách bạch: xóa/hủy khóa giải mã (Crypto-Shredding) toàn bộ lịch sử chat AI, Mem0 memory, vector và tắt Automation Marketing, đồng thời chuyển hồ sơ hóa đơn sang trạng thái `LEGAL_HOLD_MINIMIZED` chỉ kế toán mới xem được."
+    },
+    {
+      "question": "Làm sao xóa dữ liệu trong các bản Backup PostgreSQL cũ mà không phải giải nén sửa hàng chục snapshot?",
+      "answer": "Kết hợp Crypto-Shredding (mã hóa PII bằng khóa `subject_dek` riêng cho từng khách hàng; khi xóa chỉ cần hủy khóa đó khiến dữ liệu trong backup thành chuỗi vô nghĩa) và bảng `erasure_tombstones` để tự động xóa tái lập tức các chủ thể đã hủy nếu buộc phải restore snapshot cũ."
+    },
+    {
+      "question": "Nên giữ Langfuse hoặc OpenTelemetry Trace Log chứa nội dung chat thô trong bao lâu?",
+      "answer": "Chỉ giữ Trace thô phục vụ debug nóng tối đa 7–14 ngày trên server nội địa Việt Nam. Sau 14 ngày, pipeline tự động ẩn danh SĐT, CCCD, họ tên trước khi lưu vào kho đánh giá Eval (TTL 90–180 ngày)."
+    },
+    {
+      "question": "Cách tạo bằng chứng đã hoàn tất xóa dữ liệu để xuất trình cho khách hoặc cơ quan thanh tra A05?",
+      "answer": "Sinh bản ghi Proof-of-Erasure Ledger chỉ lưu `request_id`, dấu thời gian, mã băm một chiều `SHA-256(subject_id + salt)` và mã xác nhận ACK của cả 5 phân hệ (PostgreSQL, Qdrant, Mem0, Redis Cache, Trace Logs) mà không giữ lại thông tin cá nhân gốc."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "hoi-chung-ghost-data-khi-xoa-khach-hang-tren-ai",
+      "eyebrow": "Bản Thiết Kế Kiến Trúc Erasure & Retention",
+      "variant": "incident",
+      "heading": "Khi lệnh DELETE FROM customers biến dữ liệu khách hàng thành 'bóng ma' sống dai dẳng trong trí nhớ AI",
+      "pullQuote": "Xóa hồ sơ trên màn hình CRM tốn một cú click, nhưng xóa sạch ký ức của AI về một con người qua Vector DB, Mem0, Cache và Trace Log là bài toán kiến trúc hệ phân tán thực thụ.",
+      "paragraphs": [
+        "Từ ngày 01/01/2026, Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15 chính thức đi vào cuộc sống bên cạnh nền tảng Nghị định 13/2023/NĐ-CP, đặt ra những yêu cầu cụ thể và nghiêm ngặt hơn bao giờ hết về **Quyền xóa dữ liệu (Right to Erasure)**, quyền rút lại sự đồng ý và nghĩa vụ bắt buộc xóa dữ liệu người lao động sau khi chấm dứt hợp đồng lao động. Một khách hàng hoàn toàn có quyền gửi yêu cầu qua Zalo OA hoặc Email đề nghị doanh nghiệp xóa bỏ thông tin cá nhân và dừng mọi hoạt động phân tích tự động.",
+        "Trên các phần mềm quản trị truyền thống thời trước AI, kỹ sư chỉ việc kiểm tra vài khóa ngoại rồi chạy thao tác xóa hoặc ẩn danh một dòng trong bảng `customers` của PostgreSQL là xong việc. Nhưng trong một hệ điều hành doanh nghiệp hiện đại tích hợp Multi-Agent AI, một thực thể khách hàng không nằm yên ở một nơi mà bị nhân bản âm thầm qua năm tầng lưu trữ tách biệt: bảng giao dịch CRM 360°, các đoạn văn bản nhúng trong kho Vector DB (`Qdrant` hoặc `pgvector`), các mẩu ký ức tóm tắt dài hạn trong `Mem0` hoặc đồ thị `Graphiti`, kho bộ nhớ đệm ngữ nghĩa `Redis Semantic Cache` giúp giảm chi phí token, và hàng triệu dòng `Trace Log` lưu trữ nguyên văn hội thoại trên Langfuse hay OpenTelemetry để đội kỹ sư đánh giá chất lượng mô hình.",
+        "Hậu quả trớ trêu mà DOMATION từng chứng kiến khi kiểm toán các hệ thống Chatbot CSKH triển khai vội vàng là hiện tượng **Ghost Data**: dù nhân viên CSKH đã báo 'Đã xóa hồ sơ của anh khỏi hệ thống', chỉ hai tuần sau khi khách hàng nhắn lại một câu hỏi chung trên Fanpage, bộ nhớ Agent vẫn lôi ra câu tóm tắt cũ kiểu 'Chào anh Minh ở Quận 7, lần trước anh đang quan tâm gói niềng răng chỉnh nha...' hoặc trả lời trúng phóc lịch sử khiếu nại cũ lấy từ Semantic Cache. Không có kiến trúc **Cascading Erasure & Retention Lifecycle**, mọi cam kết tuân thủ quyền riêng tư trên giấy đều sụp đổ ngay trước màn hình chat thật."
+      ],
+      "bullets": [
+        "Bề mặt sót dữ liệu phổ biến nhất: Vector DB không gắn `subject_id` trong payload (72%), Mem0 Memory tách rời khóa CRM (64%) và Trace Log giữ nguyên văn chat 180 ngày (88%).",
+        "Xung đột pháp lý thường trực: vừa phải xóa thông tin cá nhân không còn căn cứ xử lý, vừa phải bảo toàn hóa đơn VAT MISA theo Luật Kế toán."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "kien-truc-cascading-erasure-saga-6-chang",
+      "heading": "Chuỗi Cascading Erasure Saga 6 chặng: Xóa sạch dây chuyền qua 5 kho AI trong < 4 giờ",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "CHẶNG 01 • TIẾP NHẬN & TOMBSTONE",
+          "title": "Xác thực chủ thể & Khóa cứng Tombstone trước khi xóa",
+          "detail": "Xác minh chủ thể qua OTP Zalo/Email, ghi bản ghi trạng thái `ERASURE_IN_PROGRESS` vào bảng `erasure_tombstones` bằng mã băm `subject_hash` một chiều và lập tức ngắt đồng bộ Meta CAPI / Zalo ZNS.",
+          "metricOrTool": "PostgreSQL Tombstone Ledger"
+        },
+        {
+          "tag": "CHẶNG 02 • PHÂN TÁCH NGHĨA VỤ THUẾ",
+          "title": "Kiểm tra Legal Hold kế toán MISA & Hủy khóa Vault PII",
+          "detail": "Nếu khách chưa phát sinh hóa đơn VAT, cho phép xóa toàn phần; nếu có hóa đơn MISA trong hạn lưu 10 năm, tách phần chứng từ kế toán sang `LEGAL_HOLD_MINIMIZED` và hủy khóa giải mã `subject_dek` (Crypto-Shredding) ở kho hồ sơ mở rộng.",
+          "metricOrTool": "AES Vault Crypto-Shredding"
+        },
+        {
+          "tag": "CHẶNG 03 • VECTOR & RAG CLEANUP",
+          "title": "Xóa điểm Vector theo `subject_id` & `document_id` trên Qdrant/pgvector",
+          "detail": "Thực thi API `delete_by_filter(must=[tenant_id, subject_id])` trên Qdrant hoặc xóa tầng `pgvector` kèm kiểm tra đếm lại số vector còn tồn (`count == 0`) trước khi xác nhận ACK.",
+          "metricOrTool": "Qdrant Payload Index • pgvector"
+        },
+        {
+          "tag": "CHẶNG 04 • AGENT MEMORY & GRAPH",
+          "title": "Thanh lọc Mem0 Persistent Memory & Cạnh đồ thị Graphiti",
+          "detail": "Gọi API xóa toàn bộ memory gắn với `user_id` trên Mem0 và thu hồi toàn bộ nút/cạnh chứa định danh chủ thể trên Knowledge Graph mà không làm đứt tri thức sản phẩm chung.",
+          "metricOrTool": "Mem0 Delete API • Graphiti"
+        },
+        {
+          "tag": "CHẶNG 05 • CACHE & TRACE SCRUBBING",
+          "title": "Vô hiệu hóa Redis Semantic Cache & Redact PII trong Trace Log",
+          "detail": "Quét tập khóa đảo ngược `cache_keys_by_subject:{id}` để xóa tức thì các câu trả lời đã đệm trên Redis; đẩy tác vụ bất đồng bộ làm sạch dữ liệu cá nhân trong Langfuse Traces & Outbox queue.",
+          "metricOrTool": "Redis Inverted Tags • Trace Scrubber"
+        },
+        {
+          "tag": "CHẶNG 06 • CHỨNG THỰC & BACKUP GUARD",
+          "title": "Xuất Proof-of-Erasure & Khóa tái sinh khi Restore Backup",
+          "detail": "Tổng hợp đủ 5 mã ACK từ các kho lưu trữ để chốt trạng thái `COMPLETED` (< 4 giờ), gửi thông báo xác nhận cho khách và lưu `subject_hash` cho quy trình Tombstone Replay hậu khôi phục bản sao lưu.",
+          "metricOrTool": "Proof-of-Erasure • Replay Hook"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "do-thi-ty-le-ghost-data-va-thoi-gian-erasure",
+      "heading": "Tỷ lệ 'Ghost Data' còn sót lại trên 5 tầng lưu trữ AI: Xóa thủ công CRM vs Cascading Erasure Saga",
+      "subtitle": "Kết quả kiểm toán mô phỏng trên hệ thống 50.000 hồ sơ khách hàng, 420.000 vector chunk và 1,8 triệu dòng Trace Log hội thoại.",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tỷ lệ dữ liệu cá nhân còn sót lại (%) sau khi thực hiện yêu cầu xóa dữ liệu",
+        "xKey": "layer",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "manualDeletePct",
+            "label": "Xóa thủ công chỉ trên CRM SQL (%)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "semiScriptPct",
+            "label": "Script bán tự động thiếu Cache/Log (%)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "cascadingSagaPct",
+            "label": "Cascading Erasure Saga + Crypto-Shredding (%)",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          {
+            "layer": "PostgreSQL CRM",
+            "manualDeletePct": 4.5,
+            "semiScriptPct": 1.2,
+            "cascadingSagaPct": 0.0
+          },
+          {
+            "layer": "Vector DB (Qdrant)",
+            "manualDeletePct": 96.0,
+            "semiScriptPct": 14.8,
+            "cascadingSagaPct": 0.0
+          },
+          {
+            "layer": "Agent Memory (Mem0)",
+            "manualDeletePct": 100.0,
+            "semiScriptPct": 22.5,
+            "cascadingSagaPct": 0.0
+          },
+          {
+            "layer": "Redis Semantic Cache",
+            "manualDeletePct": 100.0,
+            "semiScriptPct": 68.0,
+            "cascadingSagaPct": 0.0
+          },
+          {
+            "layer": "Trace Logs (Langfuse)",
+            "manualDeletePct": 100.0,
+            "semiScriptPct": 84.5,
+            "cascadingSagaPct": 0.0
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Ghost Data còn sót (Saga)",
+            "value": "0.0%",
+            "delta": "Xác nhận ACK cả 5 tầng lưu trữ",
+            "positive": true
+          },
+          {
+            "label": "Thời gian hoàn tất xóa (P95)",
+            "value": "3.4 giờ",
+            "delta": "Vượt xa chuẩn SLA 72 giờ",
+            "positive": true
+          },
+          {
+            "label": "Tài liệu chung bị ảnh hưởng",
+            "value": "0 file",
+            "delta": "Lọc chính xác theo subject_id",
+            "positive": true
+          },
+          {
+            "label": "Sai lệch chứng từ MISA VAT",
+            "value": "0%",
+            "delta": "Tách bạch Legal Hold Split",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo lường trên môi trường kiểm thử tuân thủ dữ liệu (PostgreSQL + Qdrant + Mem0 + Redis + Langfuse) tại DOMATION Privacy Lab (Q4/2026)."
+      },
+      "insightSummary": "Đồ thị phơi bày khoảng trống khổng lồ của quy trình xóa truyền thống: ngay cả khi kỹ sư đã xóa sạch bảng PostgreSQL CRM, gần 100% dữ liệu vẫn tồn tại nguyên vẹn trong Vector DB (96%), Mem0 Agent Memory (100%), Redis Semantic Cache (100%) và Langfuse Trace Logs (100%). Ngay cả các đội viết thêm script xóa Vector vẫn thường bỏ sót tới 68% trong Semantic Cache và 84.5% trong Trace Log. Chỉ mô hình Cascading Erasure Saga đồng bộ kèm Crypto-Shredding mới đưa toàn bộ 5 cột về mức 0.0%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "so-do-xoa-du-lieu-day-chuyen-rag-memory",
+      "src": "/imgs/boost/charts/data-retention-quyen-xoa-du-lieu-trong-he-thong-rag-memory-report.webp",
+      "alt": "Báo cáo phân tích tỷ lệ Ghost Data còn sót trong Vector DB, Mem0 Agent Memory, Semantic Cache và Trace Logs khi thiếu Cascading Erasure",
+      "caption": "So sánh tỷ lệ tồn dư dữ liệu cá nhân qua 5 lớp kiến trúc AI và hiệu quả xóa triệt để của Cascading Erasure Saga.",
+      "badge": "Privacy Architecture • Right to Erasure"
+    },
+    {
+      "type": "prose",
+      "id": "ba-bai-toan-hoc-bua-metadata-lineage-crypto-shredding-va-retention-ttl",
+      "eyebrow": "Giải Phẫu Kỹ Thuật Cốt Lõi",
+      "variant": "deep-dive",
+      "heading": "Ba nút thắt sống còn: Metadata Lineage theo `subject_id`, Crypto-Shredding bảo vệ hóa đơn MISA và TTL Trace Logs",
+      "paragraphs": [
+        "Nút thắt kỹ thuật đầu tiên là **Metadata Lineage ngay từ lúc nạp dữ liệu (Ingestion)**. Rất nhiều hệ thống RAG hiện nay chỉ cắt nhỏ file hội thoại hoặc hồ sơ khách hàng rồi ném vào Qdrant hay `pgvector` kèm tên tệp thô mà không gắn bất kỳ khóa định danh chủ thể dữ liệu nào. Đến khi có yêu cầu xóa dữ liệu của một cá nhân, đội ngũ kỹ thuật bất lực vì không thể biết trong 500.000 vector có bao nhiêu mảnh thuộc về khách hàng đó trừ phi chạy giải mã hoặc nhúng lại toàn bộ kho dữ liệu. Kiến trúc chuẩn bắt buộc mọi vector chunk, mọi bản ghi Mem0 và mọi khóa Semantic Cache liên quan tới cá nhân phải gắn cứng cấu trúc `{ tenant_id, subject_id, data_class, retention_expires_at }`, đồng thời đánh chỉ mục Payload Index ngay trên `subject_id` để thao tác xóa diễn ra trong vài chục mili-giây.",
+        "Nút thắt thứ hai là **xung đột giữa Quyền xóa dữ liệu và Nghĩa vụ lưu trữ chứng từ kế toán MISA**. Một khách hàng từng mua liệu trình nha khoa hoặc đóng học phí MBA rồi yêu cầu xóa dữ liệu cá nhân: doanh nghiệp không thể xóa bỏ bút toán doanh thu hay số hóa đơn điện tử trên MISA vì vi phạm quy định lưu trữ 10 năm của Luật Kế toán và Thanh tra thuế. Giải pháp kiến trúc sạch nhất là mô hình **Split Vault & Crypto-Shredding**: toàn bộ dữ liệu giao tiếp AI, sở thích, ghi chú chăm sóc, tệp đính kèm tư vấn được mã hóa bằng một khóa riêng của từng chủ thể (`subject_dek`) lưu trong bảng Vault tách biệt; khi khách yêu cầu xóa, hệ thống xóa sạch dữ liệu mở rộng và hủy `subject_dek` khiến mọi bản ghi lịch sử chat lẫn backup trở nên vô nghĩa về mặt đọc hiểu, trong khi phần chứng từ hóa đơn kế toán cốt lõi chuyển sang trạng thái cô lập `LEGAL_HOLD_MINIMIZED` không còn liên kết với hệ thống AI Chatbot hay Marketing Automation.",
+        "Nút thắt thứ ba nằm ở **Data Retention phân tầng cho Trace Log và Backup Tombstone Replay**. Nhật ký Trace trên Langfuse hoặc kho S3 phục vụ kỹ sư debug không được phép trở thành kho chứa dữ liệu cá nhân vô thời hạn. Chính sách Retention chuẩn tại DOMATION đặt ngưỡng 14 ngày cho Trace thô phục vụ xử lý sự cố tức thời; quá 14 ngày, worker tự động chạy PII Redaction thay tên, SĐT, email, CCCD bằng mã ẩn danh rồi mới lưu vào kho Benchmark/Eval 180 ngày (và xóa hẳn sau 180 ngày). Cuối cùng, bảng `erasure_tombstones` giữ dấu vết một chiều `SHA-256(subject_id + system_salt)` tách biệt khỏi bản sao lưu DB hàng đêm: nếu có sự cố buộc phải khôi phục dữ liệu từ bản Backup cách đó 5 ngày, quy trình Post-Restore Hook tự động quét Tombstone và xóa tái lập tức những chủ thể đã từng yêu cầu xóa."
+      ],
+      "bullets": [
+        "Phân biệt 3 lớp Retention Class ngay trong schema: `EPHEMERAL_CHAT` (xóa/ẩn danh sau 30–90 ngày), `CONSENTED_CRM_MEMORY` (lưu đến khi rút đồng ý hoặc hết 24 tháng không tương tác) và `LEGAL_STATUTORY_HOLD` (chứng từ kế toán MISA / hồ sơ y khoa bắt buộc theo luật chuyên ngành).",
+        "Không dùng chung tài liệu tri thức công cộng (bảng giá, chính sách bảo hành) với vector chứa hồ sơ riêng tư của khách hàng trong cùng một bộ sưu tập thiếu phân quyền.",
+        "Định kỳ hàng tháng chạy Audit Bot thử gọi câu hỏi kiểm tra vào AI Agent bằng tên/SĐT của các bản ghi test đã kích hoạt Erasure để xác nhận 0% bị rò rỉ lại từ Cache hay Memory."
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "ma-tran-quyet-dinh-retention-va-xoa-du-lieu",
+      "heading": "Ma trận quyết định xử lý yêu cầu Xóa & Thời hạn lưu trữ theo từng bối cảnh pháp lý tại Việt Nam",
+      "subtitle": "Hướng dẫn kiến trúc sư và DPO chọn đúng luồng thực thi giữa xóa triệt để, ẩn danh hóa và Legal Hold",
+      "scenarios": [
+        {
+          "condition": "Khách hàng tiềm năng (Lead) chưa mua hàng nhắn Zalo OA/Email yêu cầu xóa toàn bộ dữ liệu & ngừng nhắn tin",
+          "recommendedChoice": "Hard Cascading Erasure 100% (5 tầng AI + Suppression Hash)",
+          "rationale": "Không có nghĩa vụ lưu trữ kế toán ràng buộc. Chạy xóa sạch toàn bộ hồ sơ CRM, Qdrant vector, Mem0 memory, Semantic Cache và Trace Log; chỉ giữ lại một chuỗi băm SHA-256 SĐT trong bảng Suppression List để Auto Chia Data không vô tình gọi điện lại nếu nguồn khác đẩy trùng số.",
+          "avoidIf": "Tuyệt đối không giữ nguyên bản số điện thoại hoặc tên khách hàng trong bảng Suppression List thô."
+        },
+        {
+          "condition": "Khách hàng đã mua hàng và xuất hóa đơn VAT trên MISA yêu cầu xóa dữ liệu cá nhân",
+          "recommendedChoice": "Crypto-Shredding tầng AI/Marketing + Legal Hold Minimized cho Hóa đơn MISA",
+          "rationale": "Xóa toàn bộ lịch sử chat Zalo OA, ký ức Mem0, vector tư vấn, Semantic Cache và tắt toàn bộ luồng ZNS/Meta CAPI; phần chứng từ hóa đơn bắt buộc lưu theo Luật Kế toán được tách khỏi hồ sơ tương tác AI và khóa quyền truy cập chỉ dành cho kế toán trưởng.",
+          "avoidIf": "Không được xóa ngang chứng từ hóa đơn tài chính đang còn hiệu lực lưu trữ bắt buộc theo luật Thuế."
+        },
+        {
+          "condition": "Nhân sự nghỉ việc chấm dứt hợp đồng lao động (theo quy định mới Luật 91/2025/QH15)",
+          "recommendedChoice": "Xóa dữ liệu cá nhân ngoài phạm vi lưu trữ bắt buộc + Thu hồi AI Workspace Memory",
+          "rationale": "Đóng tài khoản ERP/CRM, xóa dữ liệu chấm công GPS chi tiết, ảnh khuôn mặt eKYC và các ngữ cảnh cá nhân hóa trên trợ lý AI nội bộ theo đúng thời hạn pháp luật, chỉ giữ hồ sơ lao động/BHXH tối thiểu theo quy định Bộ luật Lao động và Thuế TNCN.",
+          "avoidIf": "Tránh để các AI Agent nội bộ tiếp tục học hoặc gợi ý lại các đoạn trao đổi riêng tư gắn danh tính cựu nhân viên."
+        },
+        {
+          "condition": "Phòng khám Nha khoa / Y tế nhận yêu cầu xóa dữ liệu quảng cáo từ bệnh nhân đã khám bệnh",
+          "recommendedChoice": "Tách rời Hồ sơ Bệnh án (Luật Khám chữa bệnh) khỏi AI Marketing & Chatbot CSKH",
+          "rationale": "Bệnh án điện tử chịu sự điều chỉnh thời hạn lưu trữ bắt buộc của ngành Y tế; hệ thống lập tức ngắt kết nối hồ sơ đó khỏi các công cụ AI gợi ý tái khám, ZNS quảng cáo và Semantic Cache hội thoại mà không phá hủy bệnh án gốc.",
+          "avoidIf": "Không trộn dữ liệu chẩn đoán bệnh án vào cùng kho Vector RAG dùng chung cho AI Chatbot bán hàng trên Website."
+        }
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-right-to-erasure-rag",
+      "heading": "Checklist 6 tiêu chuẩn kiểm toán Data Retention & Right to Erasure cho hệ thống RAG và Agent Memory",
+      "items": [
+        {
+          "check": "Gắn `tenant_id`, `subject_id` và `retention_class` cho 100% điểm Vector & Memory lúc nạp",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra ngẫu nhiên 100 payload trong Qdrant/pgvector và bản ghi Mem0 thuộc nhóm dữ liệu khách hàng.",
+          "passThreshold": "100% vector chứa thông tin cá nhân đều có trường `subject_id` được đánh Payload Index"
+        },
+        {
+          "check": "Cơ chế Cascading Erasure Saga có xác nhận ACK đủ 5 kho lưu trữ",
+          "severity": "critical",
+          "verificationHow": "Tạo một hồ sơ giả lập có dữ liệu trên đủ 5 kho rồi kích hoạt quy trình xóa, truy vấn lại cả 5 kho sau 4 giờ.",
+          "passThreshold": "0 bản ghi, 0 vector, 0 memory và 0 cache entry còn trả về dữ liệu của chủ thể thử nghiệm"
+        },
+        {
+          "check": "Tách bảng Crypto-Shredding và Legal Hold cho chứng từ kế toán MISA",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra luồng xóa đối với khách hàng đã phát sinh hóa đơn VAT trên môi trường staging.",
+          "passThreshold": "Lịch sử AI và Marketing bị xóa/hủy khóa DEK hoàn toàn, sổ cái hóa đơn MISA không lỗi toàn vẹn"
+        },
+        {
+          "check": "Chính sách Retention TTL và Pipeline ẩn danh PII cho Langfuse / Trace Logs",
+          "severity": "high",
+          "verificationHow": "Kiểm tra tuổi tối đa của các Trace Log chứa SĐT/CCCD chưa redact trong hệ thống giám sát LLM.",
+          "passThreshold": "0 Trace Log chứa PII thô tồn tại quá 14 ngày; toàn bộ log Eval đã được scrubbed"
+        },
+        {
+          "check": "Cơ chế Tombstone Replay ngăn dữ liệu tái sinh khi khôi phục Backup",
+          "severity": "high",
+          "verificationHow": "Diễn tập restore một bản backup PostgreSQL từ 3 ngày trước và chạy Post-Restore Hook kiểm chứng.",
+          "passThreshold": "100% chủ thể nằm trong bảng `erasure_tombstones` tự động bị xóa lại trước khi mở traffic"
+        },
+        {
+          "check": "Lưu vết Proof-of-Erasure Ledger không chứa lại PII gốc",
+          "severity": "recommended",
+          "verificationHow": "Mở xem biên bản chứng thực xóa của hệ thống để đối chiếu chuẩn phục vụ thanh tra.",
+          "passThreshold": "Biên bản chỉ lưu `subject_hash`, mốc thời gian và danh sách ACK 5 phân hệ, không lưu lại SĐT hay tên"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-data-retention-erasure-domation",
+      "variant": "key-rule",
+      "title": "Bài học thiết kế từ DOMATION: Không thể vá Right to Erasure sau khi đã nhúng bừa bãi nửa triệu Vector không gắn Lineage",
+      "body": "Nhiều doanh nghiệp chỉ bắt đầu nghĩ đến chính sách Data Retention và Quyền xóa dữ liệu khi nhận được đơn khiếu nại đầu tiên của khách hàng hoặc văn bản yêu cầu rà soát tuân thủ theo Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15. Lúc đó, việc lật lại hàng trăm nghìn đoạn chat nhúng trong Vector DB và bộ nhớ Mem0 không gắn `subject_id` là một cơn ác mộng tốn kém. Tại DOMATION, Metadata Lineage theo chủ thể, ranh giới PostgreSQL FORCE RLS và đường ống Cascading Erasure Saga được thiết kế ngay từ ngày đầu khởi tạo phân hệ AI RAG & Memory để doanh nghiệp tự tin vận hành dài hạn đúng luật.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • DOMATION Privacy & AI Architecture"
+    }
+  ]
+}

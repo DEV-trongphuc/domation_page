@@ -1,0 +1,496 @@
+[
+  {
+    "shardId": "shard11",
+    "fullName": "qdrant/qdrant",
+    "url": "https://github.com/qdrant/qdrant",
+    "category": "Vector Search Engine & Hybrid Retrieval DB",
+    "primaryLanguage": "Rust",
+    "license": "Apache-2.0",
+    "starsTier": "35k+ Stars",
+    "coreArchitecture": "Rust-native high-throughput vector database implementing an optimized HNSW index with SIMD acceleration, payload-filtered indexing during graph traversal, dense+sparse hybrid retrieval, scalar/binary/product quantization, Raft-based distributed sharding, and embedded Qdrant Edge runtime support.",
+    "enterprisePainSolved": "Eliminates high tail-latency, memory bloat, and recall degradation when filtering multi-million vector collections by tenant ID, department, or permission tags during production RAG queries.",
+    "honestTradeoff": "Steeper systems-level operational curve for tuning Raft consensus shards, segment compaction, and quantization recall-vs-RAM ratios; lacks native ACID relational joins without pairing an external OLTP database.",
+    "domationSynergy": "Powers or benchmarks against DOMATION's department-isolated Multi-Agent RAG knowledge bases (PDF price sheets, SOPs, legal/HR docs), using strict payload tenant filtering alongside PostgreSQL FORCE RLS to prevent cross-agency F1 data leakage.",
+    "suggestedScores": {
+      "productionReadiness": 10,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "mem0ai/mem0",
+    "url": "https://github.com/mem0ai/mem0",
+    "category": "Agentic Persistent Memory Layer",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "60k+ Stars",
+    "coreArchitecture": "Framework-agnostic memory orchestration layer sitting atop vector, keyword (BM25), and optional graph backends; OSS v3 streamlines ingestion via ADD-only extraction pipelines and lightweight entity linking to maintain evolving user, session, and agent facts across turns.",
+    "enterprisePainSolved": "Solves stateless LLM amnesia across multi-week customer conversations without forcing full chat transcripts into expensive, context-bloating prompt windows.",
+    "honestTradeoff": "Acts as a probabilistic relevance layer rather than an authoritative source of truth—LLM-based fact extraction adds token/latency overhead per interaction and risks memory drift, making it unsuitable for transactional ERP, pricing, or payroll records.",
+    "domationSynergy": "Complements DOMATION's Omnichannel CSKH Agent (Zalo OA, Messenger, Website 24/7) by retaining buyer preferences across visits while keeping authoritative 8-stage CRM Pipeline quotes, unit inventory, and MISA invoices strictly inside PostgreSQL RLS tables.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "getzep/graphiti",
+    "url": "https://github.com/getzep/graphiti",
+    "category": "Temporal Knowledge Graph Engine for Agents",
+    "primaryLanguage": "Python",
+    "license": "Apache-2.0",
+    "starsTier": "30k+ Stars",
+    "coreArchitecture": "Real-time bi-temporal knowledge graph engine tracking both event validity intervals (t_valid/t_invalid) and ingestion timestamps; supports incremental episode ingestion, Pydantic-defined custom entity ontologies, and hybrid semantic + BM25 + graph traversal retrieval over Neo4j, FalkorDB, or Kuzu.",
+    "enterprisePainSolved": "Prevents AI agents from hallucinating outdated policies, expired promotions, or superseded customer statuses by modeling time-bounded facts and edge invalidation natively.",
+    "honestTradeoff": "Incurs substantial LLM token cost and ingestion latency during continuous entity/edge extraction and contradiction resolution, plus the operational overhead of running a dedicated graph database cluster.",
+    "domationSynergy": "Strong architectural benchmark for DOMATION's Lead & Revenue Agents when tracking time-sensitive B2B/real-estate policy changes (e.g., EcoLife Signature booking windows, Voucher Hub expiration, and multi-tier ERP approval history).",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 8,
+      "costEfficiency": 6
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "HKUDS/LightRAG",
+    "url": "https://github.com/HKUDS/LightRAG",
+    "category": "Graph-Enhanced Dual-Level RAG Engine",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "40k+ Stars",
+    "coreArchitecture": "Lightweight graph-augmented RAG pipeline extracting entities and relations into an incremental knowledge graph paired with vector/KV stores; executes dual-level retrieval combining low-level specific entity matching and high-level thematic context without heavy full-corpus community re-clustering.",
+    "enterprisePainSolved": "Fixes fragmented chunk retrieval on complex multi-hop SOPs and dense enterprise manuals while cutting incremental graph-indexing costs compared to traditional GraphRAG architectures.",
+    "honestTradeoff": "Initial bulk ingestion remains sensitive to LLM extraction rate limits and prompt drift; lacks native multi-tenant row-level isolation, RBAC enforcement, and production HA clustering out of the box.",
+    "domationSynergy": "Useful R&D benchmark for DOMATION's LMS & multi-department RAG assistant (IDEAS Institute syllabi, legal/HR policy manuals) where cross-document synthesis is needed, provided tenant isolation is wrapped in DOMATION's PostgreSQL FORCE RLS boundary.",
+    "suggestedScores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 6,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard11",
+    "fullName": "chroma-core/chroma",
+    "url": "https://github.com/chroma-core/chroma",
+    "category": "AI-Native Embedded & Client-Server Vector DB",
+    "primaryLanguage": "Rust / Python",
+    "license": "Apache-2.0",
+    "starsTier": "25k+ Stars",
+    "coreArchitecture": "AI-native embedding database rebuilt around a Rust core indexing engine (v1.0+) with ergonomic Python and JavaScript/TypeScript SDKs, supporting in-process ephemeral mode, client-server HTTP/gRPC persistence, metadata filtering, and sparse/dense hybrid search.",
+    "enterprisePainSolved": "Eliminates database provisioning friction during rapid Vibecode prototyping and local RAG pipeline validation by letting developers embed vector search in a few lines of code.",
+    "honestTradeoff": "Less battle-tested than Qdrant or PostgreSQL+pgvector for massive multi-tenant production clusters, fine-grained memory/quantization tuning, and unified relational-plus-vector transactional backups.",
+    "domationSynergy": "Ideal for fast local Vibecode PoCs and isolated single-tenant document indexing inside DOMATION's 3-7 day pilot sprints, before graduating high-concurrency multi-agency workloads to PostgreSQL pgvector FORCE RLS or Qdrant.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 7,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "ollama/ollama",
+    "url": "https://github.com/ollama/ollama",
+    "category": "Local LLM Runtime & Model Runner",
+    "primaryLanguage": "Go / C++",
+    "license": "MIT",
+    "starsTier": "180k+ Stars",
+    "coreArchitecture": "Go-based daemon and CLI (`ollama serve`) exposing OpenAI-compatible HTTP endpoints, Docker-style `Modelfile` weight packaging, and C/C++ inference runners wrapping `llama.cpp` / GGML for GGUF quantized execution with automatic CPU/GPU layer splitting.",
+    "enterprisePainSolved": "Removes complex CUDA/PyTorch environment setup when spinning up air-gapped Private LLMs on workstation or single-node enterprise servers for internal Vibecode and data-sensitive workflows.",
+    "honestTradeoff": "Inherits static per-slot KV cache pre-allocation (`OLLAMA_NUM_PARALLEL`) rather than PagedAttention, leading to VRAM underutilization or request queuing under high multi-user concurrency compared to vLLM.",
+    "domationSynergy": "Matches DOMATION's Private LLM workstation/single-tenant deployments (such as NavaTek Local LLM stations) for confidential internal HR/Payroll and legal document drafting with zero third-party cloud API leakage.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 9,
+      "costEfficiency": 10
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "vllm-project/vllm",
+    "url": "https://github.com/vllm-project/vllm",
+    "category": "High-Throughput Production LLM Serving Engine",
+    "primaryLanguage": "Python / CUDA / C++",
+    "license": "Apache-2.0",
+    "starsTier": "95k+ Stars",
+    "coreArchitecture": "Data-center GPU inference engine (V1 architecture) built around PagedAttention virtual-memory KV cache pagination, continuous iteration-level batching, prefix caching, speculative decoding, tensor/pipeline parallelism, and an OpenAI-compatible serving layer.",
+    "enterprisePainSolved": "Solves severe GPU VRAM fragmentation (20-60% traditional waste) and throughput collapse when serving dozens of concurrent enterprise users and long-context RAG prompts on private GPUs.",
+    "honestTradeoff": "Demands data-center GPUs with strict VRAM capacity planning (lacks graceful spill-to-system-RAM fallback for oversized models) and carries a heavy CUDA/PyTorch container footprint.",
+    "domationSynergy": "Recommended inference backbone for DOMATION Enterprise Private Server tiers handling simultaneous 24/7 ZaloBot/CSKH RAG chats, Lead Scoring, and multi-department ERP copilots at predictable unit token cost.",
+    "suggestedScores": {
+      "productionReadiness": 10,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "BerriAI/litellm",
+    "url": "https://github.com/BerriAI/litellm",
+    "category": "Unified AI Gateway & Multi-Provider Proxy",
+    "primaryLanguage": "Python / Rust",
+    "license": "MIT (Core) / Commercial Enterprise (enterprise/)",
+    "starsTier": "60k+ Stars",
+    "coreArchitecture": "OpenAI-schema normalization SDK and FastAPI proxy server (with Rust acceleration modules and TypeScript UI) routing 100+ cloud and self-hosted LLM providers with Redis-backed rate limits, virtual API keys, per-tenant budget caps, fallbacks, and guardrail hooks.",
+    "enterprisePainSolved": "Prevents vendor lock-in and runaway token bills across multi-department AI agents by centralizing API keys, fallback chains, and spend telemetry behind one unified endpoint.",
+    "honestTradeoff": "Python proxy adds higher RAM overhead and tail latency at extreme concurrency than edge/TypeScript proxies; enterprise governance features under `enterprise/` (SSO, custom RBAC, audit trails) require a paid `LITELLM_LICENSE` key.",
+    "domationSynergy": "Serves as a model-routing abstraction layer behind DOMATION's Orchestrator Core, seamlessly switching between Frontier cloud models (Gemini/Claude/OpenAI) and local vLLM/Ollama endpoints with per-client cost quotas.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "Portkey-AI/gateway",
+    "url": "https://github.com/Portkey-AI/gateway",
+    "category": "Lightweight Edge-Ready AI Gateway",
+    "primaryLanguage": "TypeScript / JavaScript",
+    "license": "MIT",
+    "starsTier": "10k+ Stars",
+    "coreArchitecture": "Minimal-footprint TypeScript/Node.js and Cloudflare Worker-compatible AI gateway designed for sub-millisecond routing overhead, unifying multi-provider APIs with declarative JSON config for retries, conditional fallbacks, semantic caching, and plugin-based guardrails.",
+    "enterprisePainSolved": "Eliminates gateway latency bottlenecks and brittle per-provider SDK glue in high-speed TypeScript/Next.js edge applications and multi-model webhook pipelines.",
+    "honestTradeoff": "While the MIT routing core is open-source, team management dashboards, persistent log analytics, and advanced enterprise governance controls live primarily in Portkey's commercial hosted/enterprise control plane.",
+    "domationSynergy": "Aligns cleanly with DOMATION's TypeScript/Next.js stack (such as INKICA and Web 3D storefronts) for ultra-low-latency multi-LLM routing and fallback resilience during peak Meta Ads / ZaloBot traffic spikes.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "ggml-org/llama.cpp",
+    "url": "https://github.com/ggml-org/llama.cpp",
+    "category": "Low-Level C/C++ LLM Inference Runtime",
+    "primaryLanguage": "C / C++",
+    "license": "MIT",
+    "starsTier": "135k+ Stars",
+    "coreArchitecture": "Dependency-free C/C++ inference engine built directly on the GGML tensor library and GGUF binary format, supporting 1.5-bit to 8-bit quantization, hybrid CPU/GPU layer offloading across CUDA, Apple Metal, Vulkan, SYCL, and an embedded `llama-server` HTTP API.",
+    "enterprisePainSolved": "Enables Private LLM inference on commodity hardware, edge servers, or mixed CPU+GPU nodes without heavy Python/PyTorch/CUDA runtime dependencies.",
+    "honestTradeoff": "Static KV cache slot pre-allocation (`-np`) constrains concurrent multi-tenant throughput compared to vLLM PagedAttention, and aggressive 4-bit GGUF quantization can degrade strict JSON schema tool-calling reliability.",
+    "domationSynergy": "Provides the lowest-level hardware-efficient execution engine for DOMATION's on-premise Private LLM deployments on mid-tier client servers where dedicated H100/A100 GPU clusters are not cost-justified.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 10
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "open-webui/open-webui",
+    "url": "https://github.com/open-webui/open-webui",
+    "category": "Self-Hosted AI Chat Workspace & RAG UI",
+    "primaryLanguage": "Python / TypeScript / Svelte",
+    "license": "Open WebUI License (Branding & >50-User Enterprise Clause)",
+    "starsTier": "150k+ Stars",
+    "coreArchitecture": "SvelteKit frontend paired with a Python/FastAPI backend unifying Ollama and OpenAI-compatible backends, built-in document ingestion and vector RAG, role-based access control, web search integration, and extensible Python Pipelines servers.",
+    "enterprisePainSolved": "Delivers an instant ChatGPT-like internal workspace for employees over private models, preventing staff from pasting confidential company data into consumer SaaS chatbots.",
+    "honestTradeoff": "Critical license trap for B2B vendors: deployments exceeding 50 rolling-30-day users must preserve Open WebUI branding or purchase a commercial Enterprise License for white-labeling; built-in RAG lacks relational ERP/CRM transactional awareness.",
+    "domationSynergy": "Strong benchmark for internal Private LLM chat UX, though DOMATION cannot white-label it for >50-seat client deployments without licensing; instead, DOMATION embeds bespoke RAG agents directly inside ERP 5.0, CRM 360°, and Zalo OA workflows.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 7,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "langfuse/langfuse",
+    "url": "https://github.com/langfuse/langfuse",
+    "category": "LLMOps Observability, Tracing & Prompt Management",
+    "primaryLanguage": "TypeScript / Python",
+    "license": "MIT (Core) / Langfuse Enterprise License (ee/)",
+    "starsTier": "35k+ Stars",
+    "coreArchitecture": "Distributed LLM engineering platform pairing a Next.js web/API app and async worker fleet with PostgreSQL (state/metadata), Redis/BullMQ (queues), S3-compatible object storage, and ClickHouse (high-throughput columnar trace analytics), instrumented via OpenTelemetry and native SDKs.",
+    "enterprisePainSolved": "Eliminates black-box debugging in multi-step AI agent workflows by tracing nested tool calls, token latency, prompt versions, and per-user LLM unit economics in production.",
+    "honestTradeoff": "Heavy self-hosted infrastructure footprint (ClickHouse + PostgreSQL + Redis + Blob + Worker containers) adds DevOps burden, and enterprise security controls in `ee/` (SSO/SCIM, granular RBAC, audit logs, retention policies) require a commercial license key.",
+    "domationSynergy": "Directly monitors DOMATION's 4-agent Orchestrator Core (Lead/Routing, CSKH, ERP Ops, Revenue Agents) and INKICA's 6+ AI Prepress Agents, verifying SLA latency, token margins per SaaS tier (Starter/Growth/Enterprise), and RAG retrieval quality.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "promptfoo/promptfoo",
+    "url": "https://github.com/promptfoo/promptfoo",
+    "category": "Declarative LLM Evaluation & Security Red-Teaming",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "25k+ Stars",
+    "coreArchitecture": "YAML-driven CLI and TypeScript library combining an extensible provider target matrix (30+ LLM/HTTP targets), deterministic and LLM-rubric assertion evaluators, and automated adversarial red-teaming probes (prompt injection, jailbreaks, PII/OWASP LLM Top 10 checks) runnable locally or in CI/CD.",
+    "enterprisePainSolved": "Stops prompt regressions and prompt-injection vulnerabilities from reaching production by automating repeatable adversarial and quality test matrices across model upgrades.",
+    "honestTradeoff": "Designed as a pre-release CLI/CI testing harness rather than a live runtime observability collector or proxy; its March 2026 acquisition by OpenAI also warrants watching long-term OSS vs. cloud feature parity.",
+    "domationSynergy": "Integrates natively into DOMATION's TypeScript CI/CD pipeline to regression-test ZaloBot/CSKH RAG prompts, price-quote accuracy, and anti-jailbreak resilience before deploying new tenant agent configurations.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 9,
+      "costEfficiency": 10
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "NVIDIA-NeMo/Guardrails",
+    "url": "https://github.com/NVIDIA-NeMo/Guardrails",
+    "category": "Programmable Conversational Guardrails Toolkit",
+    "primaryLanguage": "Python / Colang",
+    "license": "Apache-2.0",
+    "starsTier": "7k+ Stars",
+    "coreArchitecture": "Programmable LLM guardrail middleware (migrated from `NVIDIA/NeMo-Guardrails`) built around the Colang DSL and event-driven state machine, intercepting pipelines across 5 boundaries—Input, Dialog, Retrieval, Execution, and Output rails—with canonical intent vector matching and self-check evaluators.",
+    "enterprisePainSolved": "Enforces strict conversational topic boundaries, prevents off-script pricing/legal commitments, and validates tool-call arguments before agents execute enterprise actions.",
+    "honestTradeoff": "Sequential multi-LLM rail pipelines (canonicalization + dialog state + generation + output self-check) frequently introduce 2x-3x latency and token cost overhead unless offloaded to specialized small local guardrail models.",
+    "domationSynergy": "Provides an architectural blueprint for DOMATION's Execution and Dialog rails—constraining customer-facing Zalo OA / Messenger RAG bots from inventing unauthorized EcoLife/IDEAS discount terms or triggering unverified MISA/CRM mutations.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 6,
+      "securityGovernance": 9,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "protectai/llm-guard",
+    "url": "https://github.com/protectai/llm-guard",
+    "category": "LLM Prompt/Response Security Scanner (Archived)",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "3k+ Stars (Archived)",
+    "coreArchitecture": "Python input/output scanner pipeline bundling ONNX/DeBERTa transformer classifiers (prompt injection, toxicity, secret detection, ban-topics) and regex/NER PII anonymizers deployable as an in-process SDK or standalone FastAPI microservice.",
+    "enterprisePainSolved": "Historically provided turnkey prompt-injection scanning, secrets leakage blocking, and toxicity filtering ahead of LLM provider API calls.",
+    "honestTradeoff": "Officially archived and read-only as of July 9, 2026 (following Protect AI's acquisition by Palo Alto Networks)—receives zero CVE patches, dependency updates, or new threat signatures, creating unacceptable supply-chain risk for un-forked production apps.",
+    "domationSynergy": "Serves as a cautionary legacy benchmark for DOMATION's security architecture: instead of adopting an archived scanner monolith, DOMATION relies on actively maintained `data-privacy-stack/presidio` for PII redaction plus LiteLLM/Gateway hooks and CI red-teaming via Promptfoo.",
+    "suggestedScores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 6,
+      "costEfficiency": 7
+    }
+  },
+  {
+    "shardId": "shard12",
+    "fullName": "data-privacy-stack/presidio",
+    "url": "https://github.com/data-privacy-stack/presidio",
+    "category": "PII Detection, Redaction & Anonymization Engine",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "12k+ Stars",
+    "coreArchitecture": "Vendor-neutral, community-governed PII privacy framework (transitioned from `microsoft/presidio`) divided into an Analyzer Engine (spaCy/transformer NER, regex, checksum validation, context-word scoring) and an Anonymizer Engine (masking, hashing, encryption, synthetic replacement) packaged as Python SDKs or containerized REST services.",
+    "enterprisePainSolved": "Prevents customer phone numbers, national IDs, tax codes, and financial records from leaking into external LLM APIs, vector embeddings, or telemetry logs.",
+    "honestTradeoff": "Default English/global spaCy recognizers miss Vietnamese-specific formats (CCCD, MST, local bank/phone/address patterns) unless extended with custom recognizers, and heavy transformer NER models raise CPU inference latency.",
+    "domationSynergy": "Directly augments DOMATION's AutoData & Meta CAPI SHA-256 pipeline and Multi-Agent RAG ingestion—redacting or hashing sensitive customer phone/CCCD/payroll PII before payloads hit external LLMs or analytics logs.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 10,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "Arize-ai/phoenix",
+    "url": "https://github.com/Arize-ai/phoenix",
+    "category": "OpenTelemetry AI Observability & Eval Suite",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "ELv2",
+    "starsTier": "12k+ Stars",
+    "coreArchitecture": "OpenTelemetry and OpenInference-native tracing collector, dataset versioning store, React prompt playground, and LLM-as-a-judge evaluation suite backed by SQLite for local development or PostgreSQL for single-container production deployments.",
+    "enterprisePainSolved": "Gives AI engineers fast local-to-staging trace inspection, RAG embedding drift visualization, and prompt experimentation without deploying a heavy multi-database cluster.",
+    "honestTradeoff": "Elastic License 2.0 (ELv2) prohibits offering Phoenix as a managed/hosted SaaS service to third parties, and high-volume multi-terabyte enterprise telemetry funnels teams toward Arize's proprietary `Arize AX` platform.",
+    "domationSynergy": "Useful internal engineering R&D workbench for DOMATION engineers debugging OpenInference RAG spans and prompt iterations locally, though ELv2 prohibits embedding Phoenix as a customer-facing SaaS module inside DOMATION Cloud.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "confident-ai/deepeval",
+    "url": "https://github.com/confident-ai/deepeval",
+    "category": "Pytest-Native LLM Unit Testing & Eval Framework",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "Apache-2.0",
+    "starsTier": "14k+ Stars",
+    "coreArchitecture": "Code-first unit testing SDK structured around `pytest` workflows, offering 60+ composable metrics (G-Eval, RAG faithfulness, contextual precision/recall, hallucination, deterministic DAG judges, and agentic red-teaming) for automated CI/CD release gating.",
+    "enterprisePainSolved": "Brings software-engineering unit-test rigor to non-deterministic RAG and agent outputs so teams catch accuracy or hallucination regressions before shipping.",
+    "honestTradeoff": "LLM-as-a-judge metrics (such as G-Eval) incur heavy judge-token bills and non-deterministic score variance across CI runs unless anchored with deterministic assertions or calibrated local judge models.",
+    "domationSynergy": "Pairs with DOMATION's Python AI workers (such as INKICA's prepress agents and RAG retrieval evaluators) to enforce automated faithfulness and hallucination pass gates before pushing knowledge-base updates to live client bots.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "supabase/supabase",
+    "url": "https://github.com/supabase/supabase",
+    "category": "Composable Postgres BaaS Platform",
+    "primaryLanguage": "TypeScript / PLpgSQL / Go / Elixir",
+    "license": "Apache-2.0",
+    "starsTier": "110k+ Stars",
+    "coreArchitecture": "Integrated Postgres development platform combining PostgreSQL (`pgvector`, native Row Level Security), PostgREST auto-APIs, GoTrue Auth, Elixir Realtime WebSockets/CDC, Supavisor connection pooling, Kong gateway, S3 Storage, and Deno Edge Functions.",
+    "enterprisePainSolved": "Accelerates full-stack Vibecode delivery by eliminating boilerplate auth, REST APIs, real-time subscriptions, and multi-tenant data isolation via native database-enforced RLS.",
+    "honestTradeoff": "Self-hosting the 10+ container stack carries significant operational memory and upgrade overhead; Edge Functions hit timeout limits on long durable workflows, and over-reliance on direct PostgREST/SQL coupling complicates complex ERP domain boundaries.",
+    "domationSynergy": "Architectural reference and core data-security counterpart to DOMATION's Multi-Tenant PostgreSQL FORCE RLS design—ensuring F1 real-estate agencies and franchise branches never view cross-tenant phone numbers, leads, or live inventory.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 10,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "twentyhq/twenty",
+    "url": "https://github.com/twentyhq/twenty",
+    "category": "Open-Source Extensible CRM Platform",
+    "primaryLanguage": "TypeScript",
+    "license": "AGPL-3.0 (Core) / MIT (Packages & Apps)",
+    "starsTier": "58k+ Stars",
+    "coreArchitecture": "TypeScript/NestJS + React monorepo CRM backed by per-workspace metadata-driven PostgreSQL schemas for custom objects and fields, Redis/BullMQ async workers, GraphQL/REST APIs, and modular workflow automation triggers.",
+    "enterprisePainSolved": "Replaces rigid, expensive per-seat SaaS CRMs (Salesforce/HubSpot) with a sleek, data-sovereign, self-hostable object model where teams own their customer graph.",
+    "honestTradeoff": "AGPL-3.0 copyleft on the core codebase requires releasing source modifications if delivered as a modified multi-tenant SaaS; additionally lacks native Vietnamese Zalo OA/ZNS, Meta CAPI SHA-256 feedback, and MISA e-invoice connectors.",
+    "domationSynergy": "Primary open-source CRM UX benchmark for DOMATION's CRM 360° 8-stage Pipeline—demonstrating where generic horizontal CRMs stop short of DOMATION's native 6-month phone deduplication, ZaloBot Round-Robin routing, and direct MISA accounting sync.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "nocobase/nocobase",
+    "url": "https://github.com/nocobase/nocobase",
+    "category": "Microkernel Data-Model Low-Code Platform",
+    "primaryLanguage": "TypeScript",
+    "license": "Apache-2.0 (Core) / Commercial (Enterprise Plugins)",
+    "starsTier": "25k+ Stars",
+    "coreArchitecture": "Data-model-driven TypeScript platform (Koa + React + Sequelize over PostgreSQL/MySQL) built on a microkernel plugin architecture that cleanly separates underlying data collections, UI block renderers, ACL permissions, and workflow automation engines.",
+    "enterprisePainSolved": "Eliminates repetitive CRUD admin panel coding for internal back-office apps while keeping full ownership of relational database schemas rather than locking data into proprietary SaaS tables.",
+    "honestTradeoff": "Writing bespoke vertical business logic forces developers into custom plugin lifecycles that accumulate upgrade debt across major NocoBase releases, and advanced security/multi-data-source plugins require commercial licenses.",
+    "domationSynergy": "Direct architectural benchmark for DOMATION's ERP 5.0 12-module bespoke engineering philosophy—proving why fast custom Vibecode + clean TypeScript/Postgres code outperforms generic low-code plugin wrappers on complex GPS payroll, PO approvals, and 3D WebGL workflows.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "metabase/metabase",
+    "url": "https://github.com/metabase/metabase",
+    "category": "Self-Service BI & Embedded Analytics",
+    "primaryLanguage": "Clojure / TypeScript / JavaScript",
+    "license": "AGPL-3.0 (OSS) / Metabase Enterprise License (ee/)",
+    "starsTier": "50k+ Stars",
+    "coreArchitecture": "JVM/Clojure backend powered by the MBQL (Metabase Query Language) query-processor middleware and React/TypeScript frontend, connecting to PostgreSQL/MySQL/H2 metadata stores and querying downstream analytical warehouses or SQL replicas.",
+    "enterprisePainSolved": "Democratizes SQL and visual BI dashboarding for non-technical managers, replacing manual Excel exports with live executive KPI and revenue reports.",
+    "honestTradeoff": "AGPL-3.0 copyleft and commercial `ee/` gating restrict white-label embedded analytics, SAML/SSO, and row-level data sandboxing; running heavy unindexed BI queries against live OLTP Postgres databases risks connection-pool exhaustion.",
+    "domationSynergy": "Benchmarks against DOMATION's Meta Ad Report (/meta-report) and ERP SLA Dashboard: while Metabase handles general SQL BI over read-replicas, DOMATION natively correlates Facebook Graph API Hook/Hold rates with live CRM bookings and real ROAS.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "calcom/cal.diy",
+    "url": "https://github.com/calcom/cal.diy",
+    "category": "Open-Source Self-Hosted Scheduling Engine",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT (cal.diy OSS; cal.com Core Proprietary since Apr 2026)",
+    "starsTier": "50k+ Stars",
+    "coreArchitecture": "Next.js, tRPC, Prisma, and PostgreSQL scheduling engine (spun off as 100% MIT-licensed `calcom/cal.diy` in April 2026 when `calcom/cal.com` moved its commercial codebase closed-source), offering event types, recurring bookings, REST API v2, webhooks, and CalDAV/Google/Outlook calendar sync.",
+    "enterprisePainSolved": "Provides lightweight, MIT-licensed self-hosted appointment scheduling for solo consultants and webhook-driven booking integrations without SaaS per-seat fees.",
+    "honestTradeoff": "Major capability cliff following the April 2026 fork—Teams, Organizations, Routing Forms, multi-rep round-robin balancing, Workflows, SAML/SSO, and Insights were stripped from `cal.diy` into Cal.com's closed-source enterprise repository.",
+    "domationSynergy": "Validates why DOMATION builds native Round-Robin 5-port ZaloBot lead routing and booked-status Meta CAPI HTTP 200 triggers directly inside its CRM 360° core rather than depending on upstream open-core scheduling tools vulnerable to feature stripping.",
+    "suggestedScores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "chatwoot/chatwoot",
+    "url": "https://github.com/chatwoot/chatwoot",
+    "category": "Omnichannel Customer Support & Shared Inbox",
+    "primaryLanguage": "Ruby / Vue.js / JavaScript",
+    "license": "MIT (Community) / Chatwoot Enterprise License (enterprise/)",
+    "starsTier": "40k+ Stars",
+    "coreArchitecture": "Ruby on Rails monolithic MVC backend with Vue.js frontend, PostgreSQL persistence, Redis + Sidekiq background queues, ActionCable WebSockets, and Captain AI agent/webhook extensions unifying email, live web chat, WhatsApp, Messenger, and Instagram.",
+    "enterprisePainSolved": "Centralizes fragmented customer support channels into one self-hosted shared inbox with conversation assignment, macros, and data residency control.",
+    "honestTradeoff": "Multi-container stateful Rails/Sidekiq/ActionCable stack demands disciplined Redis/worker scaling under webhook bursts, lacks native Vietnamese Zalo OA/ZNS first-class channels without custom adapters, and gates SAML/SLA/audit features in `enterprise/`.",
+    "domationSynergy": "Strong omnichannel inbox benchmark for DOMATION's Omnichannel CSKH Agent and Zalo OA / ZNS / Messenger Hub—highlighting DOMATION's edge in instant 6-month deduplication, ZaloBot ticket compensation, and 24/7 PDF-trained RAG replies.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 9
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "posthog/posthog",
+    "url": "https://github.com/posthog/posthog",
+    "category": "Product Analytics, Session Replay & Feature Flags",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "MIT (Core) / PostHog Enterprise License (ee/)",
+    "starsTier": "40k+ Stars",
+    "coreArchitecture": "Vertical-slice Django/Python + React/TypeScript monorepo pairing high-volume event ingestion pipelines with ClickHouse columnar OLAP storage, PostgreSQL operational metadata, Redis/Kafka streaming, feature flags, A/B testing, and DOM session replays.",
+    "enterprisePainSolved": "Consolidates fragmented product analytics, heatmaps/replays, and feature-flag release rollouts into one unified telemetry platform tied directly to user conversion funnels.",
+    "honestTradeoff": "Self-hosting demands heavy ClickHouse, Kafka, PostgreSQL, and Redis storage/RAM provisioning; enterprise RBAC/SSO/multi-project governance in `ee/` requires commercial licensing, and session replays need strict PII masking.",
+    "domationSynergy": "Complements DOMATION's Growth tier Website Heatmap, CRO Landing Page tracking, and Meta CAPI Server-Side event pipelines—enabling full funnel attribution from 3D WebGL engagement to qualified CRM bookings.",
+    "suggestedScores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  {
+    "shardId": "shard13",
+    "fullName": "coollabsio/coolify",
+    "url": "https://github.com/coollabsio/coolify",
+    "category": "Self-Hosted PaaS & Container Control Plane",
+    "primaryLanguage": "PHP",
+    "license": "Apache-2.0",
+    "starsTier": "64k+ Stars",
+    "coreArchitecture": "Laravel, Livewire, and Alpine.js (TALL stack) self-hosted PaaS control plane managing Docker/Compose deployments, Nixpacks/Dockerfile builds, automated Traefik reverse proxy + TLS provisioning, PostgreSQL/Redis control state, and SSH multi-VPS orchestration.",
+    "enterprisePainSolved": "Slashes cloud PaaS bills (Vercel/Heroku/Render) by turning sovereign VPS fleets into Git-push deployment environments with one-click managed databases and zero vendor lock-in.",
+    "honestTradeoff": "Broad SSH and Docker-socket control-plane privileges expand host blast radius if credentials or web panels are misconfigured, and it lacks Kubernetes-grade multi-region auto-failover or strict SOC2 enterprise RBAC isolation.",
+    "domationSynergy": "Highly cost-effective private-server deployment control plane for DOMATION client dedicated stacks (isolated PostgreSQL RLS, Next.js storefronts, n8n/BullMQ workers, and private vLLM containers) while keeping 99.9% SLA infrastructure sovereign.",
+    "suggestedScores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 7,
+      "costEfficiency": 10
+    }
+  }
+]

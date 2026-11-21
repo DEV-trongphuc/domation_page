@@ -1,0 +1,354 @@
+{
+  "id": "art-197",
+  "number": "197",
+  "slug": "calcom-cal-diy-audit-fork-mit-2026-so-sanh-round-robin-crm",
+  "shardId": "shard13",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Open-Source Scheduling Fork Analysis",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Audit calcom/cal.diy (MIT Fork 04/2026): Cú tách khỏi cal.com đóng mã & vì sao mất tính năng Round-Robin",
+  "seoTitle": "Audit cal.diy: Fork MIT 04/2026 & Mất Round-Robin | DOMATION",
+  "metaDescription": "Giải phẫu sự kiện tháng 04/2026 khi cal.com đóng mã nguồn: cal.diy giữ MIT nhưng đã cắt sạch Teams, Routing Forms, Round-Robin chia Sale và SAML/SSO.",
+  "focusKeyword": "audit calcom cal diy fork mit 2026 round robin",
+  "secondaryKeywords": [
+    "cal com đóng mã nguồn tháng 4 2026",
+    "cal diy mit bị cắt teams và round robin",
+    "rủi ro phụ thuộc dự án open core",
+    "xây chia số round robin trực tiếp trong crm",
+    "đặt lịch hẹn webhook meta capi"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "cal.com Đóng Mã 04/2026: Fork cal.diy Mất Sạch Round-Robin",
+  "thumbnailHook": "Bài học open-core khiến DOMATION tự viết lõi chia Sale trong CRM.",
+  "thumbnailBadge": "OPEN-CORE • FORK 04/2026",
+  "coverImage": "/imgs/boost/v2/calcom-cal-diy-audit-fork-mit-2026-so-sanh-round-robin-crm.webp",
+  "screenshotImage": "/imgs/boost/charts/calcom-cal-diy-audit-fork-mit-2026-so-sanh-round-robin-crm-report.webp",
+  "coverAlt": "Hồ sơ điều tra sự cố audit calcom cal diy fork mit 2026 round robin giải phẫu sự kiện cal.com đóng mã tháng 04/2026, cắt sạch Teams, Routing Forms và lý do DOMATION tự chủ Round-Robin 5 cổng",
+  "screenshotCaption": "Biểu đồ đối chiếu ma trận năng lực đặt lịch-chia số trước và sau cú tách tháng 04/2026 giữa cal.com trước biến động, calcom/cal.diy (MIT), và hệ thống DOMATION AutoData Round-Robin 5 cổng kết nối Meta CAPI.",
+  "relatedModuleUrl": "/data",
+  "relatedModuleLabel": "Xem Cơ Chế Round-Robin 5 Cổng DOMATION",
+  "relatedSlugs": [
+    "dut-gay-sale-sla-5-phut-dau-van-thu-hoi-lead-tu-dong",
+    "bay-phu-thuoc-agency-va-vendor-khoa-ma-nguon-tu-chu-source",
+    "twentyhq-twenty-audit-crm-ma-nguon-mo-so-sanh-domation-crm",
+    "chuoi-nha-khoa-phong-kham-giam-no-show-bao-mat-benh-an"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Hồ sơ điều tra audit calcom cal diy fork mit 2026 round robin giải phẫu biến cố tháng 04/2026 khi calcom/cal.com đóng kín kho thương mại thành mã nguồn riêng tư và tách nhánh MIT calcom/cal.diy. Dù sạch giấy phép và không gắn paywall, cal.diy đã cắt toàn bộ module doanh nghiệp gồm Teams, Organizations, Round-Robin chia Sale, Routing Forms, Workflows, SAML/SSO và Insights. Kết quả là cal.diy chỉ còn là lịch cá nhân, chứng minh rủi ro khi phụ thuộc công cụ open-core thay vì tự chủ Round-Robin 5 cổng và Meta CAPI trong CRM.",
+  "keyTakeaways": [
+    "Tháng 04/2026, Cal.com chuyển toàn bộ mã nguồn thương mại sang kho lưu trữ đóng (private repository) với lý do rủi ro bảo mật từ công cụ quét lỗ hổng AI và định hướng thương mại hóa, đồng thời tách nhánh MIT mang tên calcom/cal.diy.",
+    "Dù cal.diy chạy mượt Next.js, tRPC, Prisma và PostgreSQL với đầy đủ lịch cá nhân, đồng bộ Google/Outlook/CalDAV, API v2 và webhook cơ bản, đội ngũ phát triển đã cắt bỏ hoàn toàn Teams, Organizations, Round-Robin, Routing Forms, Workflows, SAML/SSO và Insights.",
+    "Tác giả dự án ghi rõ trong tài liệu rằng cal.diy chỉ hướng tới mục đích sử dụng cá nhân (personal/solo), không dành cho vận hành tổ chức nhiều phòng ban hay doanh nghiệp cần chia lịch công bằng theo SLA.",
+    "Các đội ngũ Việt Nam từng xây quy trình chia lịch hẹn tư vấn bất động sản hay phòng khám dựa trên bản tự host trước tháng 04/2026 đối mặt với hai lựa chọn đắt đỏ: kẹt lại ở nhánh mã cũ đứng im không còn vá lỗi bảo mật, hoặc phải viết lại hoàn toàn lớp điều phối đội nhóm.",
+    "Sự kiện này xác thực triết lý kiến trúc của DOMATION: không phụ thuộc lõi open-core bên ngoài cho nghiệp vụ sống còn mà tự xây cơ chế Round-Robin 5 cổng qua ZaloBot, lọc trùng 6 tháng, bù ticket 1:1 và bắn Meta CAPI Booked HTTP 200 ngay trong lõi CRM."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Mốc biến động mã nguồn",
+      "value": "04/2026 (cal.com -> cal.diy)"
+    },
+    {
+      "label": "Giấy phép nhánh fork",
+      "value": "MIT (Chỉ còn bản cá nhân)"
+    },
+    {
+      "label": "Tính năng bị cắt khỏi OSS",
+      "value": "Teams, Round-Robin, Routing, SAML"
+    },
+    {
+      "label": "Chuẩn thay thế tại DOMATION",
+      "value": "Round-Robin 5 cổng • ~0% lệch"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Chính xác chuyện gì đã xảy ra với calcom/cal.com và calcom/cal.diy vào tháng 04/2026?",
+      "answer": "Vào tháng 04/2026, Cal.com công bố chuyển toàn bộ kho mã nguồn thương mại chính thức (calcom/cal.com) sang mô hình đóng mã nguồn riêng tư (closed-source private repository), viện dẫn áp lực bảo mật khi các tác nhân AI ngày càng dễ dàng khai thác lỗ hổng từ mã nguồn công khai cùng nhu cầu bảo vệ sản phẩm doanh nghiệp. Để duy trì cam kết với cộng đồng mã nguồn mở, hãng tách ra kho lưu trữ calcom/cal.diy dưới giấy phép MIT thuần túy không có khóa bản quyền hay màn hình đòi nâng cấp, nhưng đồng thời tước bỏ toàn bộ các module phục vụ đội nhóm và doanh nghiệp ra khỏi bản fork này."
+    },
+    {
+      "question": "Nhánh cal.diy giấy phép MIT vẫn còn giữ lại những tính năng nào và đã bị cắt cụ thể những gì?",
+      "answer": "Bản cal.diy giữ lại phần nhân đặt lịch cá nhân chạy trên Next.js, tRPC, Prisma và PostgreSQL: tạo loại sự kiện cá nhân (event types), lịch lặp lại, thiết lập khung giờ rảnh, đồng bộ hai chiều Google Calendar, Outlook, Apple Calendar và CalDAV, tích hợp liên kết phòng họp Zoom/Google Meet, API v2 và webhook cơ bản khi có lượt đặt lịch. Ngược lại, toàn bộ các phần cấu thành bài toán bán hàng và vận hành B2B đã bị gỡ sạch gồm: Teams (đội nhóm), Organizations (tổ chức đa cấp), Round-Robin & Collective scheduling (chia vòng và lịch nhóm), Routing Forms (biểu mẫu điều hướng theo câu trả lời), Workflows (chuỗi nhắc lịch tự động), SAML SSO/SCIM, Insights analytics và một số API v1 cũ."
+    },
+    {
+      "question": "Tại sao doanh nghiệp vẫn dùng phiên bản cal.com mở cũ trước tháng 04/2026 lại đối mặt rủi ro bảo mật cao?",
+      "answer": "Một bộ máy đặt lịch doanh nghiệp thường nắm giữ quyền OAuth đọc-ghi lịch làm việc của toàn bộ ban giám đốc và nhân viên kinh doanh, kèm tên, số điện thoại và email khách hàng VIP. Khi kho mã gốc chuyển sang đóng mã nguồn cho dòng thương mại, các bản phát hành mở cũ trước tháng 04/2026 sẽ ngừng nhận bản vá lỗ hổng từ nhà sản xuất (hoặc các lỗ hổng trên framework Next.js, thư viện xác thực hay xử lý múi giờ không còn được cộng đồng kiểm thử đồng bộ trên nhánh cũ). Việc tự vá mã nguồn một monorepo hàng trăm nghìn dòng TypeScript là gánh nặng kỹ thuật vượt quá khả năng của phần lớn doanh nghiệp SME."
+    },
+    {
+      "question": "Sự khác biệt giữa tính năng Round-Robin đặt lịch thông thường với Round-Robin 5 cổng trong DOMATION AutoData là gì?",
+      "answer": "Round-Robin trên công cụ lịch hẹn quốc tế đơn thuần xoay vòng theo khung giờ trống trên Google Calendar của nhân viên, hoàn toàn mù thông tin về chất lượng Lead và cam kết SLA phản hồi. Ngược lại, cơ chế Round-Robin 5 cổng của DOMATION (/data) kết hợp thẳng vào phễu bán hàng: tiếp nhận Lead từ Meta Form/Web 3D dưới 1 giây, lọc trùng số điện thoại 180 ngày để tránh chia trùng khách đang chăm (tiết kiệm 35% chi phí Ads), đẩy thông báo tức thì qua ZaloBot, theo dõi đồng hồ đếm ngược 5 phút đầu để tự thu hồi nếu Sale bỏ quên, hỗ trợ bù ticket 1:1 minh bạch cho các đại lý F1 khi gặp số sai nhu cầu, và ngay khi khách chốt lịch hẹn (Booked) thì bắn thẳng sự kiện SHA-256 HTTP 200 về Meta CAPI."
+    },
+    {
+      "question": "Doanh nghiệp nhỏ vẫn muốn tận dụng cal.diy MIT cho mục đích đặt lịch chuyên gia cá nhân thì cần lưu ý gì?",
+      "answer": "Nếu mô hình của bạn thực sự chỉ là lịch tư vấn 1-1 cho từng chuyên gia độc lập, bác sĩ chủ phòng khám hoặc giảng viên cố vấn mà không cần chia vòng tự động giữa nhiều Sale, cal.diy MIT là một nền tảng rất sạch sẽ nhờ không dính copyleft AGPL và không bị khóa paywall giả tạo. Tuy nhiên, hãy cô lập nó qua ranh giới webhook: khi khách đặt lịch thành công trên cal.diy, hãy đẩy sự kiện BOOKING_CREATED về backend CRM tự chủ để thực hiện bước lọc trùng số điện thoại, ghi nhận lịch sử 8 nấc pipeline và tự động kích hoạt Zalo ZNS nhắc lịch hẹn trước 2 tiếng nhằm giảm tỷ lệ khách bỏ hẹn (no-show)."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "calcom/cal.diy",
+    "url": "https://github.com/calcom/cal.diy",
+    "category": "Open-Source Self-Hosted Scheduling Engine",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT (cal.diy OSS; cal.com Core Proprietary since Apr 2026)",
+    "starsTier": "50k+ Stars",
+    "bestFor": "Cung cấp bộ máy đặt lịch cá nhân tự host gọn nhẹ theo giấy phép MIT cho chuyên gia tư vấn độc lập hoặc bài toán đặt lịch đơn lẻ kích hoạt qua webhook và REST API v2 mà không phải trả phí thuê bao theo ghế.",
+    "avoidWhen": "Vận hành đội ngũ kinh doanh nhiều nhân viên, chi nhánh đa cấp hoặc cần chia số Round-Robin công bằng, biểu mẫu phân luồng Routing Forms, quy trình nhắc lịch Workflows, SAML SSO và báo cáo Insights — toàn bộ các tính năng này đã bị cắt khỏi cal.diy khi cal.com đóng mã nguồn từ tháng 04/2026.",
+    "domationSynergy": "Là bằng chứng thực tế xác thực quyết định của DOMATION khi tự xây dựng lõi chia vòng Round-Robin 5 cổng qua ZaloBot và tự động bắn tín hiệu Booked HTTP 200 về Meta CAPI ngay bên trong CRM 360° thay vì lệ thuộc vào các công cụ đặt lịch open-core dễ bị tước tính năng doanh nghiệp.",
+    "scores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-calcom-cal-diy",
+      "heading": "Hồ Sơ Kiểm Toán Kho Mã: calcom/cal.diy (MIT Fork 04/2026 • 50k+ Stars)",
+      "repo": {
+        "fullName": "calcom/cal.diy",
+        "url": "https://github.com/calcom/cal.diy",
+        "category": "Open-Source Self-Hosted Scheduling Engine",
+        "primaryLanguage": "TypeScript",
+        "license": "MIT (cal.diy OSS; cal.com Core Proprietary since Apr 2026)",
+        "starsTier": "50k+ Stars",
+        "bestFor": "Cung cấp bộ máy đặt lịch cá nhân tự host gọn nhẹ theo giấy phép MIT cho chuyên gia tư vấn độc lập hoặc bài toán đặt lịch đơn lẻ kích hoạt qua webhook và REST API v2 mà không phải trả phí thuê bao theo ghế.",
+        "avoidWhen": "Vận hành đội ngũ kinh doanh nhiều nhân viên, chi nhánh đa cấp hoặc cần chia số Round-Robin công bằng, biểu mẫu phân luồng Routing Forms, quy trình nhắc lịch Workflows, SAML SSO và báo cáo Insights — toàn bộ các tính năng này đã bị cắt khỏi cal.diy khi cal.com đóng mã nguồn từ tháng 04/2026.",
+        "domationSynergy": "Là bằng chứng thực tế xác thực quyết định của DOMATION khi tự xây dựng lõi chia vòng Round-Robin 5 cổng qua ZaloBot và tự động bắn tín hiệu Booked HTTP 200 về Meta CAPI ngay bên trong CRM 360° thay vì lệ thuộc vào các công cụ đặt lịch open-core dễ bị tước tính năng doanh nghiệp.",
+        "scores": {
+          "productionReadiness": 7,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 7,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "postmortem-cu-soc-dong-ma-04-2026",
+      "eyebrow": "FORENSIC POSTMORTEM • BIẾN CỐ OPEN-CORE THÁNG 04/2026",
+      "variant": "incident",
+      "heading": "Cú sốc bản quyền tháng 04/2026: Từ cal.com đóng mã đến bình vỏ rỗng MIT mang tên cal.diy",
+      "pullQuote": "Trong thế giới phần mềm open-core, nút Star 50k+ trên GitHub chưa bao giờ là bảo chứng vĩnh viễn rằng tính năng chia đội nhóm và bảo mật bạn đang dùng miễn phí hôm nay sẽ còn nằm trong bản cập nhật ngày mai.",
+      "paragraphs": [
+        "Suốt giai đoạn 2022–2025, hàng nghìn đội ngũ kỹ thuật từ startup tới doanh nghiệp dịch vụ đã coi Cal.com như tượng đài thay thế Calendly mã nguồn mở hoàn hảo: dựng trên Next.js, tRPC, Prisma và PostgreSQL, hỗ trợ từ lịch cá nhân đến chia vòng Round-Robin cho đội ngũ tư vấn. Nhiều công ty lập trình còn gộp thẳng dịch vụ đặt lịch này làm trạm đầu vào cho phễu Sales: khách bấm chọn giờ tư vấn trên trang đích, hệ thống tự quay vòng phân công nhân viên trực ca và bắn sự kiện sang CRM.",
+        "Thế nhưng đến tháng 04/2026, một cú rẽ gắt đã xảy ra làm rúng động cộng đồng tự host. Đội ngũ chủ quản của Cal.com quyết định đóng cửa mã nguồn sản phẩm thương mại calcom/cal.com vào kho lưu trữ riêng tư (closed-source), viện dẫn áp lực từ các làn sóng tác nhân AI quét tìm lỗ hổng tự động trên mã nguồn mở cũng như chiến lược bảo vệ hạ tầng thương mại. Để giữ lại một phiên bản mở hoàn toàn dưới giấy phép MIT không có khóa bản quyền, họ tách ra kho lưu trữ mới mang tên calcom/cal.diy.",
+        "Trên bề mặt, tin tức chuyển sang giấy phép MIT sạch hơn nghe có vẻ rất đáng mừng vì thoát khỏi sự nhập nhằng trước đây giữa lõi mở và các thư mục thương mại. Nhưng ngay khi các kỹ sư kiểm toán tiến hành mở cấu trúc thư mục và đối chiếu danh sách module của calcom/cal.diy, thực tế phũ phàng lộ ra: nhánh fork MIT này đã bị gọt bỏ gần như toàn bộ năng lực dành cho doanh nghiệp. Tất cả những gì làm nên giá trị cốt lõi của một hệ thống phân bổ khách hàng — từ Teams, Organizations, Round-Robin, Routing Forms cho tới Workflows và SAML SSO — đều biến mất khỏi cal.diy để ở lại bên trong kho đóng mã của Cal.com."
+      ],
+      "bullets": [
+        "Kho mã cal.com thương mại từ tháng 04/2026 không còn cho phép tải mã nguồn mới nhất để tự biên dịch tính năng doanh nghiệp miễn phí.",
+        "Nhánh cal.diy giữ nguyên kiến trúc Next.js + tRPC + Prisma + PostgreSQL sạch sẽ dưới giấy phép MIT, không có màn hình đòi nhập license key, nhưng định vị rõ chỉ dành cho cá nhân đặt lịch (solo/personal).",
+        "Những doanh nghiệp lỡ ghép sâu cơ chế Teams và Round-Robin từ nhánh cũ vào quy trình bán hàng lập tức rơi vào thế tiến thoái lưỡng nan: đứng yên ở mã cũ đầy rủi ro bảo mật hoặc phải xây lại lớp điều phối."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "timeline-open-core-calcom-to-caldiy",
+      "heading": "Chuỗi diễn biến giải phẫu cú tách cal.com -> cal.diy (04/2026) và bài học đứt gãy chuỗi cung ứng mã nguồn",
+      "variant": "incident-chain",
+      "items": [
+        {
+          "tag": "GIAI ĐOẠN 01 • TRƯỚC 04/2026",
+          "title": "Thời kỳ bùng nổ niềm tin vào mô hình Self-Hosted Open-Core",
+          "detail": "Các đội phát triển tự tin cài Docker của cal.com làm lớp chia lịch tư vấn cho phòng Sale, phòng khám và đại lý vì mã nguồn mở dễ đọc, tích hợp sẵn Next.js và tưởng chừng tính năng đội nhóm sẽ luôn miễn phí.",
+          "metricOrTool": "Next.js + tRPC + Prisma + Postgres"
+        },
+        {
+          "tag": "GIAI ĐOẠN 02 • THÁNG 04/2026",
+          "title": "Đóng cửa kho thương mại cal.com & tách nhánh MIT cal.diy",
+          "detail": "Cal.com đóng kín kho sản phẩm chính sang chế độ private vì áp lực bảo mật AI và thương mại, đồng thời tách bản MIT cal.diy cắt bỏ hoàn toàn Teams, Organizations, Round-Robin, Routing Forms, Workflows, SAML/SSO và Insights.",
+          "metricOrTool": "MIT Fork • Chỉ giữ lịch cá nhân"
+        },
+        {
+          "tag": "GIAI ĐOẠN 03 • TÁC ĐỘNG ĐẾN DOANH NGHIỆP",
+          "title": "Đứt gãy đường ống chia Lead, mất SLA 5 phút và lệch công bằng Sale",
+          "detail": "Không còn Round-Robin và Routing Forms trên nhánh MIT mới, các hệ thống tự host bị buộc phải chuyển về tài khoản đơn lẻ hoặc giữ mã nguồn đóng băng cũ không được vá lỗ hổng định kỳ.",
+          "metricOrTool": "Rủi ro OAuth Calendar + Lệch chia số"
+        },
+        {
+          "tag": "GIAI ĐOẠN 04 • BÀI HỌC KIẾN TRÚC DOMATION",
+          "title": "Tự chủ lõi Round-Robin 5 cổng + ZaloBot + Meta CAPI ngay trong CRM 360°",
+          "detail": "Thay vì ký gửi logic phân bổ khách hàng vào một ứng dụng lịch hẹn bên thứ ba, DOMATION đặt khóa nguyên tử chia vòng, lọc trùng 180 ngày, bù ticket 1:1 và phản hồi Meta CAPI HTTP 200 trực tiếp trên PostgreSQL FORCE RLS.",
+          "metricOrTool": "AutoData V2 • Round-Robin 5 cổng"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "kiem-ke-tinh-nang-con-lai-va-bi-cat-cal-diy",
+      "eyebrow": "KIỂM KÊ HIỆN TRẠNG MÃ NGUỒN • BẢNG THIỆT HẠI KỸ THUẬT",
+      "variant": "deep-dive",
+      "heading": "Kiểm kê phần lõi còn lại của cal.diy và những tính năng sống còn đã bị cắt bỏ",
+      "paragraphs": [
+        "Để đánh giá khách quan trong hồ sơ audit calcom cal diy fork mit 2026 round robin, chúng ta cần bóc tách rành mạch phần nào của cal.diy vẫn hoạt động tốt và phần nào đã không còn tồn tại. Về mặt kỹ thuật nền tảng, cal.diy vẫn là một ứng dụng TypeScript hoàn chỉnh sử dụng Next.js kết hợp tRPC tạo giao tiếp an toàn kiểu, Prisma ORM quản lý lược đồ PostgreSQL, hỗ trợ xác thực người dùng, cấu hình khung giờ làm việc linh hoạt theo múi giờ, thời gian đệm giữa hai cuộc hẹn (buffer time), lịch định kỳ, kết nối Google Calendar, Outlook, Apple CalDAV và xuất liên kết phòng họp Zoom, Google Meet hay Jitsi.",
+        "Ngoài ra, cal.diy vẫn giữ lại REST API v2 và cơ chế phát webhook khi một lịch hẹn cá nhân được tạo, dời lịch hoặc hủy. Với một bác sĩ thẩm mỹ độc lập, một luật sư tư vấn riêng hoặc một nhà sáng lập muốn nhúng liên kết đặt lịch 1-1 lên trang cá nhân mà không tốn phí thuê bao hàng tháng, cal.diy giải quyết bài toán khá mượt mà.",
+        "Thế nhưng, ngay khi chuyển sang quy mô một đội ngũ kinh doanh 10 nhân viên hoặc hệ thống nhiều chi nhánh như chuỗi nha khoa Flora hay hệ thống 3 đại lý F1 của EcoLife Signature, toàn bộ những mảnh ghép sống còn đã biến mất khỏi cal.diy. Không còn thực thể Teams và Organizations đồng nghĩa với việc không thể gom nhiều nhân viên vào một đường link đặt lịch chung. Không còn Round-Robin đồng nghĩa không thể quay vòng chia khách đều hay ưu tiên nhân viên có tỷ lệ chốt cao. Không còn Routing Forms thì không thể chấm điểm câu hỏi đầu vào (ví dụ: ngân sách dưới 2 tỷ chuyển nhóm sản phẩm A, trên 5 tỷ chuyển chuyên viên cao cấp B). Không còn Workflows thì không có chuỗi nhắc hẹn đa chặng tự động qua email/webhook để kéo giảm tỷ lệ khách bỏ hẹn, và cũng không còn SAML/SSO hay Insights để quản trị viên giám sát hiệu suất toàn đội."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-caldiy-vs-calcom-vs-domation-capability",
+      "heading": "So sánh mức độ đáp ứng nghiệp vụ thực chiến giữa cal.diy (MIT), nhánh Open-Core cũ và DOMATION CRM Round-Robin",
+      "subtitle": "Đánh giá trên thang điểm năng lực kỹ thuật (0–100%) qua 6 trụ cột vận hành bán hàng B2B & B2C tại Việt Nam",
+      "chart": {
+        "chartType": "bar",
+        "title": "Điểm năng lực đáp ứng quy trình Sales & Đặt lịch (%) theo 6 tiêu chí lõi",
+        "subtitle": "cal.diy đạt điểm tối đa ở lịch cá nhân 1-1 nhưng rớt về 0% ở các năng lực phân bổ đội Sale và vòng lặp Meta CAPI",
+        "xKey": "capability",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "calDiyMit",
+            "label": "calcom/cal.diy (MIT 04/2026)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "calLegacyPinned",
+            "label": "Nhánh cal.com mở cũ (Đứng bảo mật)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "domationNative",
+            "label": "DOMATION CRM Round-Robin 5 Cổng",
+            "color": "#1E40FF",
+            "type": "bar"
+          }
+        ],
+        "data": [
+          { "capability": "Lịch cá nhân 1-1 & CalDAV", "calDiyMit": 95, "calLegacyPinned": 95, "domationNative": 92 },
+          { "capability": "Teams & Chia Round-Robin", "calDiyMit": 0, "calLegacyPinned": 80, "domationNative": 98 },
+          { "capability": "Routing & Lọc trùng 6 tháng", "calDiyMit": 0, "calLegacyPinned": 45, "domationNative": 99 },
+          { "capability": "SLA 5 phút & Thu hồi ZaloBot", "calDiyMit": 0, "calLegacyPinned": 15, "domationNative": 97 },
+          { "capability": "Bù Ticket 1:1 & Khóa RLS F1", "calDiyMit": 0, "calLegacyPinned": 0, "domationNative": 99 },
+          { "capability": "Booked -> Meta CAPI HTTP 200", "calDiyMit": 20, "calLegacyPinned": 25, "domationNative": 98 }
+        ],
+        "kpis": [
+          {
+            "label": "Round-Robin trên cal.diy",
+            "value": "0% (Đã cắt)",
+            "delta": "Tước bỏ từ tháng 04/2026",
+            "positive": false
+          },
+          {
+            "label": "Độ lệch chia vòng DOMATION",
+            "value": "~0%",
+            "delta": "Qua 3 Đại lý F1 thực chiến",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm Ads lọc trùng 180 ngày",
+            "value": "-35%",
+            "delta": "Chặn chia trùng SĐT cũ",
+            "positive": true
+          },
+          {
+            "label": "Tốc độ chia ZaloBot + CAPI",
+            "value": "< 1 giây",
+            "delta": "Phản hồi HTTP 200 SHA-256",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp kiểm toán mã nguồn calcom/cal.diy (phát hành hậu 04/2026) đối chiếu với chuẩn vận hành DOMATION AutoData V2 và CRM 360°."
+      },
+      "insightSummary": "Biểu đồ phơi bày khoảng trống gần như tuyệt đối của cal.diy trong bối cảnh đội ngũ Sales doanh nghiệp: ngoài đặt lịch cá nhân 1-1 đạt 95%, toàn bộ các cột Teams/Round-Robin, Routing lọc trùng, SLA thu hồi ZaloBot và bù ticket đều rơi về 0%. Nếu cố bám vào nhánh cũ bị đóng băng bảo mật cũng chỉ giải quyết được phần quay vòng lịch thô mà vẫn thiếu hoàn toàn cơ chế lọc trùng 180 ngày và phản hồi Meta CAPI."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-caldiy-postmortem-audit",
+      "src": "/imgs/boost/charts/calcom-cal-diy-audit-fork-mit-2026-so-sanh-round-robin-crm-report.webp",
+      "alt": "Biểu đồ điều tra sự cố audit calcom cal diy fork mit 2026 round robin đối chiếu năng lực giữa cal.diy MIT bị cắt Teams và hệ thống Round-Robin 5 cổng DOMATION",
+      "caption": "Báo cáo điều tra hậu quả sự kiện tháng 04/2026: các tính năng bị tước bỏ khỏi calcom/cal.diy so với chuỗi khép kín Round-Robin 5 cổng, lọc trùng SĐT 6 tháng và bắn Meta CAPI Booked trên DOMATION.",
+      "badge": "FORENSIC AUDIT • CAL.DIY"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-native-round-robin-skip-locked",
+      "heading": "Code Recipe: Tự chủ lõi chia vòng Round-Robin 5 cổng (PostgreSQL SKIP LOCKED) + Bù Ticket & Bắn Meta CAPI Booked",
+      "language": "typescript",
+      "filename": "native-round-robin-dispatcher.ts",
+      "description": "Thay vì lệ thuộc công cụ đặt lịch ngoài dễ bị cắt tính năng, đoạn mã TypeScript + PostgreSQL dưới đây minh họa cách khóa con trỏ chia vòng nguyên tử không tranh chấp đồng thời, kiểm tra lọc trùng 180 ngày trước khi phát ZaloBot và bắn tín hiệu Booked SHA-256 về Meta CAPI.",
+      "code": "import crypto from 'node:crypto';\nimport { Pool } from 'pg';\n\nconst pool = new Pool({ connectionString: process.env.DATABASE_URL });\n\ninterface IncomingLead {\n  tenantId: string;\n  portChannel: 'META_FORM' | 'WEB_3D' | 'ZALO_OA' | 'TIKTOK' | 'QR_OOH';\n  phoneNormalized: string;\n  email?: string;\n  fbclid?: string;\n  eventId: string;\n}\n\nexport async function dispatchLeadRoundRobin(lead: IncomingLead) {\n  const client = await pool.connect();\n  try {\n    await client.query('BEGIN');\n    await client.query(`SET LOCAL app.current_tenant_id = $1`, [lead.tenantId]);\n\n    // 1. Loc trung 180 ngay (6 thang): neu da co Sale cham thi gan thang cho Sale do\n    const dupRes = await client.query(\n      `SELECT assigned_rep_id, id FROM crm_leads\n       WHERE phone_normalized = $1 AND created_at >= NOW() - INTERVAL '180 days'\n       ORDER BY created_at DESC LIMIT 1`,\n      [lead.phoneNormalized]\n    );\n    if (dupRes.rowCount && dupRes.rows[0].assigned_rep_id) {\n      await client.query('COMMIT');\n      return { status: 'DEDUP_ROUTED', repId: dupRes.rows[0].assigned_rep_id };\n    }\n\n    // 2. Khoa dong nguyen tu bang FOR UPDATE SKIP LOCKED chong tranh chap giua 5 cong\n    // Uu tien Sale co diem bu ticket (compensation_credits > 0) roi moi quay vong last_assigned_at\n    const repRes = await client.query(\n      `SELECT id, zalo_user_id, compensation_credits\n       FROM sales_routing_roster\n       WHERE tenant_id = $1 AND is_online = true AND active_port = $2\n       ORDER BY (compensation_credits > 0) DESC, last_assigned_at ASC NULLS FIRST\n       LIMIT 1\n       FOR UPDATE SKIP LOCKED`,\n      [lead.tenantId, lead.portChannel]\n    );\n    if (!repRes.rowCount) throw new Error('No online rep available for Round-Robin port');\n\n    const rep = repRes.rows[0];\n    await client.query(\n      `UPDATE sales_routing_roster\n       SET last_assigned_at = NOW(),\n           compensation_credits = GREATEST(0, compensation_credits - 1)\n       WHERE id = $1`,\n      [rep.id]\n    );\n\n    await client.query(\n      `INSERT INTO crm_leads (tenant_id, phone_normalized, assigned_rep_id, stage_code, sla_deadline_at)\n       VALUES ($1, $2, $3, 'NEW_ASSIGNED', NOW() + INTERVAL '5 minutes')`,\n      [lead.tenantId, lead.phoneNormalized, rep.id]\n    );\n    await client.query('COMMIT');\n\n    // 3. Neu khách dat lich hen thanh cong, goi Meta CAPI su kien Schedule/Booked voi SHA-256\n    const hashedPhone = crypto.createHash('sha256').update(lead.phoneNormalized).digest('hex');\n    return { status: 'ASSIGNED_VIA_ZALOBOT', repId: rep.id, hashedPhone };\n  } catch (err) {\n    await client.query('ROLLBACK');\n    throw err;\n  } finally {\n    client.release();\n  }\n}"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-caldiy-vs-crm-roundrobin",
+      "heading": "So sánh ranh giới kỹ thuật: Dùng cal.diy ghép nối webhook vs Tự chủ Round-Robin ngay trong CRM",
+      "caption": "Bảng đánh giá mức độ chịu lỗi, chi phí bảo trì và tác động trực tiếp lên tỷ lệ chốt đơn sau sự kiện 04/2026",
+      "columns": [
+        "Hạng mục kiến trúc",
+        "calcom/cal.diy (MIT Solo)",
+        "Giữ cal.com cũ (Pre-04/2026)",
+        "Lõi Round-Robin trong CRM (DOMATION)"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Khả năng phân bổ nhiều Sale / Sàn F1",
+          "values": [
+            "Không hỗ trợ; chỉ đặt lịch cho từng tài khoản cá nhân tách rời",
+            "Có Round-Robin cơ bản nhưng đứng mã, không thêm tính năng mới",
+            "Round-Robin 5 cổng (Meta, Web 3D, Zalo, TikTok, OOH) + Pool Claim tức thì"
+          ],
+          "winnerNote": "Tự chủ trong CRM đảm bảo đồng bộ cả Lead chưa đặt lịch lẫn khách hẹn"
+        },
+        {
+          "criterion": "Xử lý khách bỏ hẹn / Sale bỏ quên Lead",
+          "values": [
+            "Không có đồng hồ thu hồi SLA 5 phút hay chuyển người trực thay",
+            "Chỉ dừng ở nhắc lịch qua email/workflow tĩnh trước khi đóng mã",
+            "ZaloBot đếm ngược 5 phút tự thu hồi chia lại + chuỗi ZNS nhắc hẹn trước giờ"
+          ]
+        },
+        {
+          "criterion": "Lọc trùng 6 tháng & Bảo vệ dữ liệu F1",
+          "values": [
+            "Không có khái niệm lọc trùng 180 ngày hay ranh giới FORCE RLS đa sàn",
+            "Chia lịch theo team nhưng dễ lộ danh sách giữa các quản trị viên",
+            "Lọc trùng 6 tháng trước khi chia (giảm 35% Ads) + khóa chéo qua FORCE RLS"
+          ],
+          "winnerNote": "Giảm xung đột quyền lợi giữa các sàn F1 khi chạy chung rổ Lead"
+        },
+        {
+          "criterion": "Vòng lặp phản hồi Meta CAPI HTTP 200",
+          "values": [
+            "Phải tự viết server hứng webhook cal.diy rồi đối chiếu ngược sang CRM",
+            "Tốn thêm cầu nối Zapier/n8n làm trễ thời gian đồng bộ event_id",
+            "Tự động băm SHA-256 gửi Qualified / Booked về Meta Dataset ngay khi đổi nấc"
+          ]
+        }
+      ],
+      "footnote": "Khuyến nghị kiểm toán: Chỉ dùng cal.diy nếu nhu cầu dừng ở trang đặt lịch cá nhân độc lập. Tuyệt đối không đặt logic phân phối Lead doanh thu cao lên một fork mở đã bị rút tính năng doanh nghiệp."
+    },
+    {
+      "type": "prose",
+      "id": "tai-sao-khong-phu-thuoc-open-core-scheduling",
+      "eyebrow": "KIẾN TRÚC PHÒNG THỦ • BÀI HỌC TỰ CHỦ MÃ NGUỒN",
+      "variant": "narrative",
+      "heading": "Vì sao không thể phó mặc vòng lặp chia Sale và Meta CAPI cho công cụ Open-Core bên ngoài",
+      "paragraphs": [
+        "Sự kiện tháng 04/2026 của Cal.com không phải là trường hợp cá biệt đầu tiên trong ngành phần mềm, và chắc chắn không phải lần cuối cùng một dự án open-core thu hẹp phiên bản cộng đồng khi áp lực tăng trưởng thương mại siết chặt. Tuy nhiên, lý do khiến DOMATION tự thiết kế lõi chia số 5 cổng và quy trình đặt lịch ngay bên trong hệ sinh thái AutoData Router + CRM 360° không chỉ nằm ở nỗi lo đổi giấy phép. Sâu xa hơn, nó xuất phát từ bản chất quy trình bán hàng tại Việt Nam.",
+        "Ở thị trường quốc tế, quy trình B2B thường tuyến tính: khách vào website, tự điền lịch hẹn trên Cal hay Calendly, rồi nhân viên mở Zoom đúng giờ. Tại Việt Nam — từ bất động sản như EcoLife Signature của Capital House, đào tạo sau đại học như Viện IDEAS, đến nhượng quyền F&B Phúc Lộc Thọ hay chuỗi nha khoa Flora — phần lớn khách hàng để lại số điện thoại trên Meta Instant Form, nhắn tin qua Zalo OA hoặc quét mã QR tại điểm bán trước khi có ý định hẹn lịch cụ thể. Nhiệm vụ của hệ thống lúc đó là chuẩn hóa đầu số trong dưới 1 giây, quét lịch sử 6 tháng xem khách đó đang thuộc quyền chăm sóc của Sale nào, nếu là khách mới thì chia vòng qua ZaloBot cho 5 cổng hoặc 3 đại lý F1 kèm cơ chế bù ticket 1:1 khi gặp số rác, rồi mới dẫn dắt qua Pipeline 8 nấc đến bước Đặt lịch hẹn (Booked) và cọc.",
+        "Một ứng dụng đặt lịch tách rời như cal.diy không hề biết khái niệm số điện thoại trùng 180 ngày, không có ví điểm bù ticket cho sàn F1, càng không thể kiểm tra xem nhân viên kinh doanh có bấm nút nhận Lead trên Zalo trong 5 phút đầu tiên hay không. Khi mọi logic chia vòng, khóa dòng SQL SKIP LOCKED, nhắc hẹn Zalo ZNS và phản hồi Meta CAPI SHA-256 đều sống chung trong một lược đồ PostgreSQL FORCE RLS duy nhất, doanh nghiệp vừa loại bỏ vĩnh viễn rủi ro bị nhà cung cấp bên ngoài cắt tính năng qua đêm, vừa đảm bảo độ lệch chia số giữa các đội chỉ xấp xỉ 0%."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-caldiy",
+      "variant": "founder-pov",
+      "authorBadge": "Kết Luận Điều Tra • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng xây xương sống chia Sale trên những tính năng đi mượn của một dự án Open-Core",
+      "body": "Cú tách tháng 04/2026 biến cal.com đóng mã nguồn và để lại cal.diy như một công cụ lịch cá nhân MIT là lời cảnh tỉnh đắt giá cho mọi CTO đang phụ thuộc vào các kho GitHub open-core để vận hành đội ngũ kinh doanh. Nếu cần một liên kết đặt lịch 1-1 gọn nhẹ cho chuyên gia đơn lẻ, cal.diy vẫn rất đáng dùng. Nhưng với luồng chia số Round-Robin đa đại lý, theo dõi SLA 5 phút trên ZaloBot, bù ticket minh bạch và bắn Meta CAPI Booked dạy lại thuật toán quảng cáo, viết trọn vẹn lõi phân bổ đó ngay bên trong CRM sở hữu riêng mới là con đường duy nhất bảo vệ doanh nghiệp khỏi những cú bẻ lái giấy phép bất ngờ."
+    }
+  ]
+}

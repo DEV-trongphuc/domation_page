@@ -1,0 +1,347 @@
+{
+  "id": "art-121",
+  "number": "121",
+  "slug": "semantic-layer-chuan-hoa-cong-thuc-kpi-truoc-khi-noi-ai-bi",
+  "shardId": "shard05",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "BI Governance & Analytics Engineering",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Semantic Layer: Vì sao nối thẳng LLM vào Database luôn cho ra 2 con số doanh thu & ROAS khác nhau?",
+  "seoTitle": "Semantic Layer: Khóa Chuẩn Công Thức KPI Cho AI BI | DOMATION",
+  "metaDescription": "Nếu không định nghĩa tập trung công thức Doanh thu thuần, Qualified Lead và ROAS ở lớp Semantic Layer, mỗi câu prompt sẽ sinh ra một phép JOIN SQL khác nhau.",
+  "focusKeyword": "semantic layer chuẩn hóa công thức kpi cho ai",
+  "secondaryKeywords": [
+    "lớp ngữ nghĩa dữ liệu semantic layer",
+    "chuẩn hóa phép tính roas và ltv",
+    "tránh ai viết sai join sql",
+    "headless bi cho doanh nghiệp",
+    "single source of metrics ai"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Đừng Nối AI Vào SQL Thô Thiếu Semantic Layer",
+  "thumbnailHook": "Khóa 18 định nghĩa KPI cốt lõi để mọi phòng chung một số.",
+  "thumbnailBadge": "BI • SEMANTIC LAYER",
+  "coverImage": "/imgs/boost/v2/semantic-layer-chuan-hoa-cong-thuc-kpi-truoc-khi-noi-ai-bi.webp",
+  "screenshotImage": "/imgs/boost/charts/semantic-layer-chuan-hoa-cong-thuc-kpi-truoc-khi-noi-ai-bi-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Kiến Trúc Dữ Liệu Một Cửa ERP 5.0",
+  "relatedSlugs": [
+    "text-to-sql-co-guardrails-cho-ceo-khong-lo-drop-db",
+    "khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing",
+    "metabase-metabase-audit-bi-analytics-vs-meta-crm-realtime",
+    "kien-truc-lakehouse-nhe-postgresql-clickhouse-duckdb-sme"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Kiến trúc Semantic Layer khóa chuẩn công thức Doanh thu thuần, ROAS và Qualified Lead trước khi kết nối AI BI và Text-to-SQL vào cơ sở dữ liệu",
+  "screenshotCaption": "Biểu đồ đối chiếu độ chính xác thực thi trên 6 nhóm chỉ số điều hành cốt lõi giữa nối thẳng LLM vào SQL thô, nhét quy tắc vào Prompt và khóa chuẩn qua Semantic Layer.",
+  "relatedPortfolioId": "ideas-business",
+  "tldrSummary": "Gắn thẳng LLM hoặc MCP Server vào cơ sở dữ liệu PostgreSQL để hỏi đáp số liệu tiếng Việt thường vấp thất bại lớn: cùng một câu hỏi về Doanh thu thuần hay ROAS, chỉ cần đổi cách diễn đạt là AI sinh hai câu SQL khác nhau, cho ra hai con số lệch hàng trăm triệu đồng. Vấn đề không nằm ở trí thông minh mô hình, mà ở việc thiếu lớp Semantic Layer khóa tập trung công thức nghiệp vụ, bộ lọc đơn hủy/VAT và đường dẫn JOIN chống nhân đôi dữ liệu cho cả AI lẫn BI.",
+  "keyTakeaways": [
+    "Không cho phép LLM tự do suy đoán phép JOIN giữa các bảng giao dịch, thanh toán và chi phí quảng cáo vì bẫy Fan-out 1-nhiều sẽ âm thầm nhân đôi doanh thu.",
+    "Chấm dứt tình trạng nhồi 40 dòng định nghĩa KPI vào System Prompt; hãy khóa công thức Doanh thu thuần, ROAS thực và Qualified Lead trong file YAML phiên bản hóa (Git).",
+    "Đổi kiến trúc từ Text-to-SQL tự do sang Text-to-Semantic-API: AI chỉ chọn tên chỉ số (metrics), chiều phân tích (dimensions) và khoảng thời gian, còn Semantic Engine tự biên dịch SQL chuẩn xác.",
+    "Một Headless Semantic Layer chuẩn phục vụ chung số liệu duy nhất cho cả Trợ lý AI Chat, Metabase BI, báo cáo ZaloBot buổi sáng và đồng bộ đối soát MISA."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Sai lệch số KPI giữa AI Chat và MISA/ERP",
+      "value": "0.0%"
+    },
+    {
+      "label": "Độ chính xác truy vấn KPI của AI BI",
+      "value": "96.4%"
+    },
+    {
+      "label": "Số định nghĩa KPI chuẩn hóa tập trung",
+      "value": "18 chỉ số lõi"
+    },
+    {
+      "label": "Giảm tiêu hao token Schema Context",
+      "value": "-64% / câu hỏi"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Semantic Layer khác gì với việc tạo sẵn các Database View trong PostgreSQL rồi cho AI đọc từ View?",
+      "answer": "Database View xử lý được một góc nhìn cố định, nhưng rất cứng nhắc khi cắt lát động theo nhiều chiều hoặc tính các tỷ số ghép như ROAS hay CPA. Cộng trung bình các tỷ số tính sẵn trong View sẽ sai toán học hoàn toàn. Semantic Layer biên dịch động câu SQL tối ưu từ measures và dimensions được yêu cầu, tính phép chia ở bước ngoài cùng và tự động áp Row-Level Security theo vai trò người hỏi."
+    },
+    {
+      "question": "Tại sao không viết hết định nghĩa Doanh thu thuần, Công nợ và ROAS vào System Prompt cho LLM tự nhớ?",
+      "answer": "System Prompt là văn bản phi xác định, dễ trôi chú ý khi chat dài và khi danh sách bảng vượt 25 bảng. Tệ hơn, logic nằm trong prompt không thể dùng chung cho Metabase, Looker Studio hay báo cáo ZaloBot buổi sáng, khiến khi đổi chính sách hoàn hủy hay VAT bạn phải sửa thủ công nhiều nơi và chắc chắn lệch số."
+    },
+    {
+      "question": "SME dùng PostgreSQL vài triệu dòng có cần mua bộ Semantic Layer đắt đỏ như dbt Enterprise không?",
+      "answer": "Không. Doanh nghiệp SME chỉ cần Semantic Catalog gọn nhẹ định nghĩa 15–25 chỉ số cốt lõi trong file YAML (dùng Cube, dbt MetricFlow mã nguồn mở hoặc Metric Resolver TypeScript/Python khoảng 400 dòng chạy thẳng trên PostgreSQL/DuckDB), hoàn toàn tự chủ trong mạng nội bộ không tốn phí SaaS."
+    },
+    {
+      "question": "Lỗi Fan-out Join mà LLM hay mắc phải khi viết SQL trực tiếp là gì và gây sai số ra sao?",
+      "answer": "Fan-out xảy ra khi LLM nối bảng orders (1 đơn 10 triệu) với bảng order_payments (thanh toán 3 đợt) hoặc ad_touchpoints rồi chạy SUM(orders.total_amount). Dòng đơn hàng bị nhân bản thành 3 khiến doanh thu phình gấp 3 lần mà SQL không báo lỗi. Semantic Layer chặn lỗi này bằng cách tổng hợp từng bảng theo đúng cấp độ hạt trước khi nối."
+    },
+    {
+      "question": "Khi nào thì CEO vẫn cần mở quyền hỏi đáp linh hoạt ngoài danh sách 18 KPI đã khóa?",
+      "answer": "Semantic Layer chỉ khóa công thức tính toán cốt lõi chứ vẫn cho phép cắt tự do qua hàng chục chiều chi nhánh, Sale, chiến dịch Ads và khung giờ. Với câu hỏi thám hiểm mới chưa có trong danh mục, AI nên chạy trên Read-Replica kèm nhãn 'Truy vấn thử nghiệm' tách biệt với số liệu kiểm toán."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "myth-vs-reality",
+      "id": "bon-ngo-nhan-khi-noi-thang-llm-vao-sql",
+      "heading": "Bốn ảo tưởng đắt giá khi nối thẳng LLM vào Database mà bỏ qua Semantic Layer",
+      "pairs": [
+        {
+          "myth": "Chỉ cần đưa cấu trúc CREATE TABLE 40 bảng PostgreSQL vào ngữ cảnh, LLM đời mới sẽ tự hiểu đúng nghiệp vụ và viết câu SQL chuẩn xác.",
+          "reality": "DDL chỉ cho AI biết tên cột và kiểu dữ liệu, hoàn toàn không nói rõ đơn hàng trạng thái 'draft' hoặc 'cancelled' phải bị loại trừ, giá bán đã gồm VAT 8–10% hay chưa, và tính doanh thu theo ngày tạo đơn hay ngày tiền về tài khoản.",
+          "proofMetric": "42% câu lệnh Text-to-SQL thô sai bộ lọc nghiệp vụ hoặc VAT"
+        },
+        {
+          "myth": "Chỉ cần dặn kỹ trong System Prompt 50 dòng về cách tính Doanh thu thuần và ROAS là AI không bao giờ trả lời sai.",
+          "reality": "Prompt dài hàng nghìn token làm tăng chi phí mỗi lượt hỏi, nhanh chóng trôi khỏi sự chú ý của mô hình khi hội thoại bước sang câu hỏi thứ 4, và quan trọng nhất là báo cáo Metabase hay Excel của Kế toán không hề đọc được System Prompt đó.",
+          "proofMetric": "Độ nhất quán giữa các câu hỏi đồng nghĩa chỉ đạt 74% khi chỉ dựa vào Prompt"
+        },
+        {
+          "myth": "Doanh nghiệp SME dữ liệu ít thì chưa cần Semantic Layer; công cụ đó chỉ dành cho tập đoàn hàng tỷ dòng.",
+          "reality": "Doanh nghiệp quy mô càng gọn càng dễ gặp cảnh Marketing tính ROAS theo doanh số ghi nhận trên CRM, Sale tính theo tiền giữ chỗ, còn Kế toán chốt theo hóa đơn MISA. Thiếu lớp ngữ nghĩa chung khiến AI tiếp tay hợp thức hóa sự vênh số ngay trong cuộc họp giao ban.",
+          "proofMetric": "100% doanh nghiệp 3 phòng ban lệch số đều dùng bảng SQL gốc thiếu lớp Metric chung"
+        },
+        {
+          "myth": "Cho LLM tự do viết các phép JOIN đa bảng giúp ban giám đốc hỏi được mọi câu hỏi phức tạp nhất.",
+          "reality": "Tự do sinh JOIN đa bảng là nguyên nhân hàng đầu gây bẫy Fan-out: nối 1 đơn hàng với bảng nhiều lần thanh toán hoặc nhiều lần đổi trạng thái CRM làm con số tổng doanh thu nhảy vọt gấp 2–3 lần thực tế mà không báo lỗi cú pháp.",
+          "proofMetric": "Semantic Layer triệt tiêu 100% lỗi nhân đôi doanh thu do Fan-out Join"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "cuoc-hop-giao-ban-hai-con-so-doanh-thu",
+      "eyebrow": "Phản Biện Kiến Trúc AI BI • Chống Một Hệ Thống Hai Sự Thật",
+      "variant": "contrarian",
+      "heading": "Một câu hỏi tiếng Việt, hai cách gõ khác nhau, và mức ROAS chênh nhau gần một nửa",
+      "pullQuote": "Khi bạn nối thẳng LLM vào cơ sở dữ liệu thô, bạn không trao cho CEO một trợ lý phân tích — bạn đang thuê một thực tập sinh thông minh đoán mò quy tắc kế toán của công ty vào mỗi buổi sáng.",
+      "paragraphs": [
+        "Phong trào dựng Chatbot hỏi đáp cơ sở dữ liệu (Text-to-SQL) qua MCP đang bùng nổ: chỉ cần nối PostgreSQL vào một LLM mạnh là kỹ sư có thể demo cảnh CEO gõ tiếng Việt và nhận ngay bảng doanh thu. Thế nhưng ngay tuần đầu họp giao ban thật, vở kịch đó thường sụp đổ theo đúng một kịch bản gây mất niềm tin.",
+        "Chín giờ sáng thứ Hai, Giám đốc điều hành hỏi AI: 'Doanh thu và ROAS tháng 10 của chiến dịch Thu Đông là bao nhiêu?'. AI viết câu SQL cộng `total_amount` từ bảng `crm_deals`, lấy chi phí từ `meta_ads_insights`, rồi trả lời tự tin: Doanh thu 4.2 tỷ, ROAS 5.1x. Mười phút sau, Trưởng Tài chính gõ khéo hơn: 'Tổng tiền thực thu chưa VAT trừ đơn hủy tháng 10 và tỷ suất trên chi phí quảng cáo?'. Lần này LLM đổi sang nối `misa_invoices` với `order_payments`, bỏ sót đơn đã chuyển khoản chưa xuất VAT, và báo kết quả mới: Thực thu 2.85 tỷ, ROAS chỉ còn 3.46x.",
+        "Cả hai câu SQL đều hợp lệ cú pháp nhưng lệch nhau 1.35 tỷ đồng ngay trước mắt ban giám đốc, trong khi bảng Metabase lại hiển thị số thứ ba là 3.12 tỷ vì lọc theo `created_at` thay vì `paid_at`. Thay vì tăng tốc quyết định, AI BI thiếu kỷ luật khiến lãnh đạo quay lại đòi kế toán xuất Excel gửi tay.",
+        "Nguyên nhân cốt lõi là coi SQL thô làm giao diện giữa AI và nghiệp vụ. LLM rất giỏi dịch ngôn ngữ tự nhiên sang tham số có cấu trúc, nhưng rất tệ trong việc giữ đồng bộ các quy ước tài chính tế nhị. Thứ nằm giữa LLM và PostgreSQL tuyệt đối phải là một Semantic Layer bất biến."
+      ],
+      "bullets": [
+        "Cùng khái niệm 'Doanh thu' luôn có 4 biến thể: Pipeline dự kiến, Tiền cọc, Tiền thực thu và Doanh thu xuất hóa đơn VAT.",
+        "Nếu mỗi câu prompt cho AI tự chọn bảng và tự viết WHERE, độ tin cậy BI sẽ mất sạch sau hai lần vênh số.",
+        "Semantic Layer tách việc hiểu tiếng Việt (trách nhiệm LLM) khỏi việc tính phép toán tài chính chuẩn mực (trách nhiệm mã kiểm toán)."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "danh-gia-chinh-xac-kpi-giua-3-kien-truc-ai-bi",
+      "heading": "Đo lường tỷ lệ khớp số kiểm toán trên 180 câu hỏi tiếng Việt qua 6 nhóm KPI cốt lõi",
+      "subtitle": "So sánh kết quả trả lời của AI BI trước chuẩn số liệu kiểm toán MISA/CRM (sai số cho phép < 0.1%) giữa nối SQL thô, nhồi Prompt và khóa qua Semantic Layer.",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tỷ lệ câu hỏi trả về đúng tuyệt đối số liệu kiểm toán (%)",
+        "xKey": "kpiGroup",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "rawSqlLlm",
+            "label": "Nối thẳng LLM -> SQL thô",
+            "color": "#EF4444"
+          },
+          {
+            "key": "promptOnlySql",
+            "label": "Prompt Rule + Few-Shot SQL",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "semanticLayerApi",
+            "label": "Semantic Layer + Metric Tool",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "kpiGroup": "Doanh thu thuần",
+            "rawSqlLlm": 54.0,
+            "promptOnlySql": 76.5,
+            "semanticLayerApi": 97.5
+          },
+          {
+            "kpiGroup": "ROAS Thực (Ads/CRM)",
+            "rawSqlLlm": 46.5,
+            "promptOnlySql": 71.0,
+            "semanticLayerApi": 96.0
+          },
+          {
+            "kpiGroup": "Qualified Lead %",
+            "rawSqlLlm": 62.0,
+            "promptOnlySql": 82.0,
+            "semanticLayerApi": 98.0
+          },
+          {
+            "kpiGroup": "CPA Đơn/Học viên",
+            "rawSqlLlm": 58.5,
+            "promptOnlySql": 78.5,
+            "semanticLayerApi": 96.5
+          },
+          {
+            "kpiGroup": "Công nợ quá hạn",
+            "rawSqlLlm": 49.0,
+            "promptOnlySql": 73.5,
+            "semanticLayerApi": 95.5
+          },
+          {
+            "kpiGroup": "Giá trị vòng đời LTV",
+            "rawSqlLlm": 43.0,
+            "promptOnlySql": 69.0,
+            "semanticLayerApi": 95.0
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Độ khớp trung bình Semantic Layer",
+            "value": "96.4%",
+            "delta": "+44.2 điểm % vs SQL thô",
+            "positive": true
+          },
+          {
+            "label": "Lỗi Fan-out Join nhân đôi số",
+            "value": "0 vụ",
+            "delta": "Đã khóa grain tại YAML",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm token schema/lượt",
+            "value": "-64%",
+            "delta": "Không nhồi 40 DDL vào Prompt",
+            "positive": true
+          },
+          {
+            "label": "Lệch số giữa Chat AI & Metabase",
+            "value": "0.0%",
+            "delta": "Dùng chung 1 Engine biên dịch",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đánh giá nội bộ tại Lab dữ liệu DOMATION trên tập 180 biến thể câu hỏi tiếng Việt (30 câu/nhóm KPI) đối chiếu sổ cái chuẩn hóa ERP 5.0 & MISA (Q4/2026)."
+      },
+      "insightSummary": "Mô hình nối thẳng LLM vào SQL thô chỉ đạt mức chính xác quanh 43%–62% ở các chỉ số có mẫu số ghép như ROAS thực hay LTV vì rất dễ trượt bẫy Fan-out Join và sai điều kiện loại bỏ đơn hoàn hủy. Việc đưa toàn bộ định nghĩa vào lớp Semantic Layer đẩy tỷ lệ khớp chuẩn kiểm toán vượt 96%, đồng thời kéo sai lệch giữa AI Chat với hệ thống BI đồ họa về đúng 0%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "do-thi-kien-truc-semantic-layer-ai-bi",
+      "src": "/imgs/boost/charts/semantic-layer-chuan-hoa-cong-thuc-kpi-truoc-khi-noi-ai-bi-report.webp",
+      "alt": "Biểu đồ so sánh độ chính xác Semantic Layer khi chuẩn hóa công thức Doanh thu thuần, ROAS và Qualified Lead trước khi kết nối AI BI",
+      "caption": "Khoảng cách độ tin cậy số liệu khi khóa 18 công thức KPI doanh nghiệp trong Semantic Layer so với để LLM tự viết câu lệnh SQL đa bảng.",
+      "badge": "Architecture Benchmark • Semantic Layer"
+    },
+    {
+      "type": "prose",
+      "id": "co-che-headless-semantic-layer-18-kpi-loi",
+      "eyebrow": "Thiết Kế Lớp Ngữ Nghĩa Dữ Liệu Một Cửa",
+      "variant": "deep-dive",
+      "heading": "Từ Text-to-SQL sang Text-to-Metric: Khóa 18 chỉ số lõi trong một nguồn chân lý duy nhất",
+      "paragraphs": [
+        "Thay đổi kiến trúc quan trọng nhất khi làm AI BI chuẩn xác là hạ bệ SQL thô khỏi vai trò giao diện giao tiếp với mô hình ngôn ngữ. Trong mô hình Headless Semantic Layer của ERP 5.0 và DomMeta BI, Trợ lý AI không được phép tự viết mệnh đề `JOIN` lên các bảng gốc mà chỉ gọi công cụ `query_semantic_metrics` với tham số `metrics`, `dimensions` và `date_range`.",
+        "Toàn bộ quy ước kế toán và vận hành được khóa vào một danh mục YAML quản lý trên Git. Thực tế tại Viện IDEAS hay chuỗi bán lẻ cho thấy 18 chỉ số sống còn như Doanh thu thuần chưa VAT (`net_revenue_ex_vat`), Tiền thực thu (`collected_cash_vnd`), Tỷ lệ Qualified Lead, ROAS thực và Công nợ quá hạn 30 ngày cần ấn định cứng cột thời gian chuẩn (`paid_at` khác `created_at`), điều kiện loại đơn test và phép chia an toàn `NULLIF(..., 0)`.",
+        "Khi người dùng hỏi 'So sánh ROAS thực và CPA theo từng chiến dịch tháng 10 giữa 3 chi nhánh', động cơ Semantic Layer chống Fan-out Join bằng hai bước: tạo hai bảng tạm CTE tổng hợp độc lập ở đúng cấp độ hạt `(date_day, campaign_id, branch_id)` — một bên cộng chi phí Ads, một bên cộng tiền thực thu hợp lệ — rồi mới ghép ngoài và chia tỷ số ở lớp cuối.",
+        "Nhờ đưa cả Metabase Dashboard, báo cáo ZaloBot buổi sáng và AI Chat đi qua cùng API Semantic Layer, Marketing, Kinh doanh và Kế toán MISA cuối cùng dùng chung một sự thật số liệu; khi sửa công thức trong Git và chạy CI chỉ mất 5 phút để đồng bộ toàn công ty."
+      ],
+      "bullets": [
+        "Gắn từ đồng nghĩa tiếng Việt (synonyms) vào từng metric YAML như 'tiền về', 'thực thu' để LLM ánh xạ chuẩn ý định.",
+        "Cưỡng bức Row-Level Security (RLS) ngay trong trình biên dịch SQL theo phiên đăng nhập thay vì tin cậy kiểm tra ngoài Prompt.",
+        "Định nghĩa rõ danh sách `valid_dimensions` để từ chối minh bạch nếu câu hỏi ghép chiều phân tích sai ngữ nghĩa kế toán."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "dinh-nghia-yaml-semantic-layer-va-metric-tool",
+      "heading": "Khai báo YAML khóa công thức KPI và lớp bọc TypeScript MCP Tool chặn SQL tự do",
+      "language": "YAML",
+      "filename": "domation_semantic_metrics.yaml & metric_resolver.ts",
+      "description": "Định nghĩa chuẩn hóa Doanh thu thuần (chống đơn hủy & tách VAT), Qualified Lead và ROAS thực bằng hai CTE chống Fan-out Join, đi kèm hàm TypeScript ép AI truy vấn qua danh mục metric thay vì sinh SQL thô.",
+      "code": "# 1) Semantic Metrics Registry (domation_semantic_metrics.yaml)\nversion: \"1.4\"\nmodels:\n  - name: finance_crm_orders\n    sql_table: erp_core.orders_clean\n    time_dimension: paid_at\n    always_filter: \"status NOT IN ('draft', 'cancelled', 'internal_test')\"\n    measures:\n      net_revenue_ex_vat:\n        label: \"Doanh thu thuần chưa VAT\"\n        synonyms: [\"doanh thu thuần\", \"net revenue\", \"doanh số thực chưa thuế\"]\n        expr: \"SUM(gross_amount_vnd / (1 + COALESCE(vat_rate, 0.08)) - refund_amount_vnd)\"\n        format: \"currency_vnd\"\n      qualified_orders_count:\n        label: \"Số đơn đặt cọc / chốt hợp lệ\"\n        expr: \"COUNT(DISTINCT order_id) FILTER (WHERE deposit_paid_vnd > 0)\"\n    dimensions: [\"branch_code\", \"sale_team\", \"campaign_id\", \"source_channel\"]\n\n  - name: meta_ads_daily\n    sql_table: marketing.meta_ad_spend_daily\n    time_dimension: spend_date\n    measures:\n      ad_spend_vnd:\n        label: \"Chi phí Meta Ads (VNĐ)\"\n        expr: \"SUM(spend_vnd)\"\n\ncomposite_metrics:\n  true_cash_roas:\n    label: \"ROAS Thực (Doanh thu thuần / Chi phí Ads)\"\n    synonyms: [\"roas thực\", \"hiệu suất doanh thu quảng cáo\"]\n    # Ép tính bằng CTE theo grain chung tránh lỗi nhân đôi dòng (Fan-out Join)\n    join_grain: [\"date_month\", \"campaign_id\"]\n    numerator: \"finance_crm_orders.net_revenue_ex_vat\"\n    denominator: \"meta_ads_daily.ad_spend_vnd\"\n    formula: \"COALESCE(num, 0) / NULLIF(den, 0)\"\n\n// 2) TypeScript Metric Resolver Tool (chặn LLM tự viết JOIN SQL tùy tiện)\nimport { z } from 'zod';\n\nconst MetricQuerySchema = z.object({\n  metrics: z.array(z.enum(['net_revenue_ex_vat', 'qualified_orders_count', 'ad_spend_vnd', 'true_cash_roas'])).min(1),\n  dimensions: z.array(z.enum(['date_month', 'branch_code', 'campaign_id', 'source_channel'])).max(3),\n  dateFrom: z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/),\n  dateTo: z.string().regex(/^\\d{4}-\\d{2}-\\d{2}$/),\n});\n\nexport async function executeSemanticQuery(rawArgs: unknown, ctx: { tenantId: string; allowedBranch?: string }) {\n  const req = MetricQuerySchema.parse(rawArgs);\n  // Biên dịch SQL tất định từ YAML Catalog + ép RLS theo tenantId & allowedBranch trên Read-Replica\n  const compiledSql = compileCteSafeSql(req, ctx);\n  return readReplicaPool.query(compiledSql.text, compiledSql.params);\n}"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "so-sanh-ba-kien-truc-truy-van-ai-bi",
+      "heading": "Đặt lên bàn cân ba phương án cho AI đọc dữ liệu kinh doanh của doanh nghiệp",
+      "caption": "Đánh giá thực chiến theo tiêu chí độ tin cậy tài chính, khả năng chia sẻ đa hệ thống và chi phí bảo trì lâu dài.",
+      "columns": [
+        "Tiêu chí kiến trúc",
+        "Nối thẳng LLM -> SQL thô",
+        "Prompt Rule + Few-Shot SQL",
+        "Headless Semantic Layer"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Nhất quán khi đổi cách hỏi",
+          "values": [
+            "Thấp (43%–62%); tự đổi bảng ngẫu nhiên",
+            "Trung bình (69%–82%); dễ trôi khi chat dài",
+            "Rất cao (>96%); công thức khóa theo YAML"
+          ],
+          "winnerNote": "Chấm dứt 1 câu hỏi ra 2 con số"
+        },
+        {
+          "criterion": "An toàn lỗi Fan-out Join",
+          "values": [
+            "Kém; hay nhân đôi tiền khi nối 1-nhiều",
+            "Kém khi ghép 3–4 bảng phát sinh mới",
+            "Tuyệt đối; tách CTE đúng grain từng bảng"
+          ],
+          "winnerNote": "Bảo vệ tỷ số ROAS, CPA, LTV"
+        },
+        {
+          "criterion": "Đồng bộ Metabase / ZaloBot / MISA",
+          "values": [
+            "Không; mỗi nơi giữ một SQL riêng",
+            "Không; luật nằm chết trong Prompt",
+            "100%; Chat AI và BI gọi chung 1 nguồn"
+          ]
+        },
+        {
+          "criterion": "Bảo mật phân quyền chi nhánh (RLS)",
+          "values": [
+            "Rủi ro; dễ bị prompt lách quên WHERE",
+            "Phụ thuộc AST parser rà lại SQL",
+            "Ép cứng từ trình biên dịch theo Session"
+          ]
+        },
+        {
+          "criterion": "Tiêu hao Token & Độ trễ",
+          "values": [
+            "Tốn nặng vì nhồi DDL 30–50 bảng",
+            "Tốn thêm do kẹp 10–15 ví dụ SQL",
+            "Nhẹ (-64%); chỉ gửi danh mục Metric"
+          ]
+        },
+        {
+          "criterion": "Bảo trì khi đổi công thức KPI",
+          "values": [
+            "Không kiểm soát nổi SQL AI đã sinh",
+            "Sửa Prompt và test lại toàn bộ ví dụ",
+            "Sửa 1 dòng YAML + chạy test CI 10s"
+          ]
+        }
+      ],
+      "footnote": "Lưu ý: Với nhu cầu hỏi dữ liệu khám phá chưa nằm trong bộ KPI chuẩn, nên chạy trên môi trường sandbox gắn nhãn 'Bản nháp tham khảo' tách biệt với chỉ số Semantic đã kiểm toán."
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-semantic-layer-domation",
+      "variant": "key-rule",
+      "authorBadge": "Nguyên Tắc Kiến Trúc DOMATION • Single Source of Metrics",
+      "title": "Khóa công thức trong YAML và mã nguồn — đừng bao giờ phó thác báo cáo tài chính cho trí nhớ xác suất của Prompt",
+      "body": "Kinh nghiệm xây dựng hệ thống ERP 5.0 và DomMeta BI cho các đơn vị như Viện Quản trị IDEAS hay mạng lưới bán lẻ nhiều chi nhánh chỉ ra một sự thật rõ ràng: công nghệ Text-to-SQL chỉ thực sự có giá trị khi đứng trên vai một Semantic Layer vững chắc. Nếu Phòng Marketing, Kế toán MISA và Trợ lý AI của CEO vẫn còn có thể cãi nhau vì hai con số doanh thu khác nhau vào sáng thứ Hai, doanh nghiệp không hề thiếu một mô hình LLM thông minh hơn — thứ họ đang thiếu là một tầng định nghĩa chỉ số thống nhất."
+    }
+  ]
+}

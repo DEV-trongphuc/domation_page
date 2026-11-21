@@ -1,0 +1,352 @@
+{
+  "id": "art-155",
+  "number": "155",
+  "slug": "stackblitz-labs-bolt-diy-audit-webcontainers-ui-prototype",
+  "shardId": "shard09",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "In-Browser AI App Prototyping",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit stackblitz-labs/bolt.diy: Sức mạnh WebContainers dựng UI tức thì & giới hạn khi đụng PostgreSQL RLS",
+  "seoTitle": "Audit bolt.diy: WebContainers vs Production ERP | DOMATION",
+  "metaDescription": "Phân tích bolt.diy (MIT, 20k+ Stars): chạy Node.js trên WebAssembly trong trình duyệt để demo giao diện 3D, nhưng không chạy được PostgreSQL RLS thật.",
+  "focusKeyword": "audit bolt diy webcontainers prototype vs production",
+  "secondaryKeywords": [
+    "stackblitz bolt diy byok ollama",
+    "giới hạn webcontainers không chạy postgresql",
+    "dựng prototype ui web 3d nhanh",
+    "chuyển code bolt diy sang nextjs production",
+    "vercel ai sdk 20+ providers"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Bolt.diy: Nhanh Cho Demo UI, Nhưng Đừng Nhầm Là ERP Lõi",
+  "thumbnailHook": "WebContainers chạy Node trong tab, cần xuất sang Next.js + Postgres RLS.",
+  "thumbnailBadge": "GITHUB • WEBCONTAINERS",
+  "coverImage": "/imgs/boost/v2/stackblitz-labs-bolt-diy-audit-webcontainers-ui-prototype.webp",
+  "screenshotImage": "/imgs/boost/charts/stackblitz-labs-bolt-diy-audit-webcontainers-ui-prototype-report.webp",
+  "coverAlt": "Mổ xẻ kiến trúc stackblitz-labs bolt.diy audit webcontainers prototype vs production khi chạy Node.js trong trình duyệt và ranh giới với PostgreSQL FORCE RLS",
+  "screenshotCaption": "Đo kiểm tốc độ khởi chạy preview trên StackBlitz WebContainers của bolt.diy so với giới hạn RAM trình duyệt và sự bất khả thi khi chạy cơ sở dữ liệu PostgreSQL RLS hay Docker native.",
+  "relatedModuleUrl": "/web-design",
+  "relatedModuleLabel": "Xem Dịch Vụ Web 3D & Landing Page Thực Chiến",
+  "relatedSlugs": [
+    "supabase-supabase-audit-postgres-rls-tang-toc-vibecode-erp",
+    "vibecode-vs-low-code-no-code-he-thong-loi-doanh-nghiep",
+    "sa-ban-3d-webgl-boc-mai-can-ho-toi-uu-fps-mobile-tracking-crm",
+    "nocobase-nocobase-audit-microkernel-low-code-vs-vibecode-erp"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Mổ xẻ stackblitz-labs/bolt.diy (MIT, 20k+ Stars) cho thấy đây là công cụ tạo mẫu giao diện (UI prototyping) trong trình duyệt cực kỳ xuất sắc nhờ kết hợp Remix/Vite, Vercel AI SDK hỗ trợ 20+ nhà cung cấp LLM (kèm Ollama nội bộ) và StackBlitz WebContainers biên dịch Node.js sang WebAssembly. Tuy nhiên, kiến trúc WebContainers tạo ra bức tường cứng: không chạy được binary Linux gốc, Dockerfile, thư viện C-extension Python hay PostgreSQL FORCE RLS thật. Đội ngũ DOMATION dùng bolt.diy cho bản nháp Web 3D WebGL rồi xuất sang kho Next.js + Postgres chuẩn production.",
+  "keyTakeaways": [
+    "StackBlitz WebContainers biến tab trình duyệt (qua header COOP/COEP) thành một môi trường Node.js chạy trên WebAssembly có sẵn hệ thống file ảo, npm install và dev server tức thì.",
+    "Nhờ Vercel AI SDK, bolt.diy giải quyết triệt để bài toán tự do BYOK (Bring Your Own Key) trên 20+ hãng model đám mây lẫn mô hình chạy nội bộ qua Ollama.",
+    "Bức tường vật lý không thể vượt qua: WebContainers không thể khởi chạy Docker daemon, PostgreSQL engine hỗ trợ FORCE RLS, hay các worker AI Python cần C-extension.",
+    "Các dự án có lượng gói npm lớn hoặc nhiều asset 3D nhanh chóng chạm trần bộ nhớ tab trình duyệt và giới hạn hệ thống file WebAssembly.",
+    "Quy trình chuẩn của DOMATION: dựng demo bán hàng & Sa bàn 3D WebGL Three.js thần tốc trên bolt.diy để chốt UI với khách hàng, sau đó tách component sang kho Next.js + PostgreSQL FORCE RLS + BullMQ thực thụ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Khởi tạo preview UI đầu tiên",
+      "value": "4–9 giây trong tab"
+    },
+    {
+      "label": "Số nhà cung cấp LLM qua AI SDK",
+      "value": "20+ Cloud & Ollama"
+    },
+    {
+      "label": "Hỗ trợ PostgreSQL FORCE RLS",
+      "value": "0% trên WebContainers"
+    },
+    {
+      "label": "Ngưỡng trần RAM tab ổn định",
+      "value": "~1,8–2,5 GB WASM heap"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Vì sao bolt.diy cài đặt gói npm và chạy dev server được ngay trong trình duyệt mà không cần thuê VM đám mây?",
+      "answer": "Nhờ công nghệ WebContainers của StackBlitz. Toàn bộ runtime Node.js, trình quản lý gói và hệ thống tệp ảo (in-memory virtual filesystem) được biên dịch sang WebAssembly (WASM) để chạy trực tiếp bên trong worker thread của trình duyệt thông qua cơ chế SharedArrayBuffer (yêu cầu trang host bật cặp HTTP header COOP và COEP). Một Service Worker đóng vai trò máy chủ proxy cục bộ để định tuyến luồng HTTP preview ngay trong tab mà không tốn độ trễ cấp phát container trên cloud."
+    },
+    {
+      "question": "Tại sao không thể chạy hệ thống ERP có PostgreSQL FORCE RLS hoặc BullMQ Redis bên trong bolt.diy?",
+      "answer": "WebContainers chỉ mô phỏng tầng Node.js user-space và các lệnh POSIX cơ bản trên WebAssembly, hoàn toàn không có nhân Linux (Linux kernel), không hỗ trợ TCP raw socket server chuẩn như hệ điều hành thật và không chạy được binary ELF gốc như `postgres` hay `redis-server`. Dù có một số bản Postgres biên dịch sang WASM thử nghiệm cho dữ liệu nhẹ trong trình duyệt, chúng không phải môi trường đa tiến trình an toàn để vận hành cơ sở dữ liệu sản xuất, càng không thể kết hợp với Redis queue hay xác thực token liên máy chủ chuẩn enterprise."
+    },
+    {
+      "question": "Lợi thế lớn nhất của bolt.diy so với các nền tảng AI app builder đóng phí theo credit hàng tháng là gì?",
+      "answer": "Giấy phép MIT và lớp định tuyến Vercel AI SDK cho phép bạn tự host hoàn toàn công cụ dựng ứng dụng trên hạ tầng riêng và cắm API key trực tiếp (BYOK) tới hơn 20 nhà cung cấp như Gemini, Anthropic, OpenAI hoặc trỏ thẳng về cụm Ollama/vLLM trong mạng nội bộ công ty. Doanh nghiệp không phải trả biên lợi nhuận trung gian cho mỗi lượt sinh UI và tránh được việc giao mã nguồn giao diện độc quyền lên đám mây đóng gói của bên thứ ba."
+    },
+    {
+      "question": "Khi dùng bolt.diy để dựng prototype Sa bàn 3D WebGL hoặc giao diện bán hàng, cần lưu ý gì trước khi đưa sang production?",
+      "answer": "Hãy coi code sinh ra từ bolt.diy là tầng trình diễn (Presentation / UI Prototype) chứ không phải kiến trúc backend hoàn chỉnh. Trước khi triển khai thật tại DOMATION, kỹ sư sẽ tách các React component và scene Three.js ra khỏi dự án mẫu, loại bỏ dữ liệu mock tĩnh, chuyển toàn bộ logic đọc/ghi bảng hàng sang Next.js Server Actions hoặc API route có kiểm tra phiên JWT, và kết nối với PostgreSQL bật FORCE ROW LEVEL SECURITY cùng Meta CAPI/ZaloBot webhook ở máy chủ thực."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "stackblitz-labs/bolt.diy",
+    "url": "https://github.com/stackblitz-labs/bolt.diy",
+    "category": "In-Browser Full-Stack AI App Builder",
+    "primaryLanguage": "TypeScript",
+    "license": "MIT",
+    "starsTier": "20k+ Stars",
+    "bestFor": "Dựng nhanh prototype giao diện tương tác, landing page, biểu mẫu bán hàng và bản thử nghiệm 3D WebGL ngay trong trình duyệt mà không tốn thời gian cấp phát Docker/VM, đồng thời toàn quyền chọn model BYOK hoặc Ollama nội bộ qua Vercel AI SDK.",
+    "avoidWhen": "Xây dựng hệ thống lõi doanh nghiệp cần thực thi binary Linux gốc, Dockerfile, thư viện Python C-extension, hàng đợi Redis/BullMQ hoặc cơ sở dữ liệu PostgreSQL bật FORCE RLS thật; hoặc làm việc trên monorepo quá lớn dễ chạm trần RAM trình duyệt.",
+    "domationSynergy": "Môi trường sandbox dựng UI siêu tốc cho mảng Thiết kế Web chuyển đổi & Sa bàn 3D WebGL (Three.js) tại DOMATION nhằm trình diễn trực quan với khách hàng trước khi xuất các React component đã chốt vào kho Next.js + PostgreSQL FORCE RLS chuẩn production.",
+    "scores": {
+      "productionReadiness": 7,
+      "vibecodeSpeed": 9,
+      "securityGovernance": 7,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-bolt-diy",
+      "heading": "Hồ sơ Mổ xẻ Kho mã: stackblitz-labs/bolt.diy (MIT In-Browser AI Builder)",
+      "repo": {
+        "fullName": "stackblitz-labs/bolt.diy",
+        "url": "https://github.com/stackblitz-labs/bolt.diy",
+        "category": "In-Browser Full-Stack AI App Builder",
+        "primaryLanguage": "TypeScript",
+        "license": "MIT",
+        "starsTier": "20k+ Stars",
+        "bestFor": "Dựng nhanh prototype giao diện tương tác, landing page, biểu mẫu bán hàng và bản thử nghiệm 3D WebGL ngay trong trình duyệt mà không tốn thời gian cấp phát Docker/VM, đồng thời toàn quyền chọn model BYOK hoặc Ollama nội bộ qua Vercel AI SDK.",
+        "avoidWhen": "Xây dựng hệ thống lõi doanh nghiệp cần thực thi binary Linux gốc, Dockerfile, thư viện Python C-extension, hàng đợi Redis/BullMQ hoặc cơ sở dữ liệu PostgreSQL bật FORCE RLS thật; hoặc làm việc trên monorepo quá lớn dễ chạm trần RAM trình duyệt.",
+        "domationSynergy": "Môi trường sandbox dựng UI siêu tốc cho mảng Thiết kế Web chuyển đổi & Sa bàn 3D WebGL (Three.js) tại DOMATION nhằm trình diễn trực quan với khách hàng trước khi xuất các React component đã chốt vào kho Next.js + PostgreSQL FORCE RLS chuẩn production.",
+        "scores": {
+          "productionReadiness": 7,
+          "vibecodeSpeed": 9,
+          "securityGovernance": 7,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-kien-truc-webcontainers-va-vercel-ai-sdk",
+      "eyebrow": "MỔ XẺ KHO MÃ • BÊN TRONG MỘT TAB TRÌNH DUYỆT",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu Remix/Vite Workspace, WebContainers WASM và luồng Streaming File Diffs của bolt.diy",
+      "pullQuote": "Sức hấp dẫn ma thuật của bolt.diy nằm ở chỗ nó biến trình duyệt Chrome từ một trình xem HTML thụ động thành một trạm phát triển Node.js tự túc không cần máy chủ build phía sau.",
+      "paragraphs": [
+        "Nếu mở tung kiến trúc bên trong kho mã stackblitz-labs/bolt.diy, bạn sẽ thấy sự kết hợp rất khéo léo giữa bốn mảnh ghép: lớp vỏ ứng dụng viết bằng Remix và Vite, bộ định tuyến mô hình dùng Vercel AI SDK, trình phân tích luồng lệnh (streaming artifact parser) và trái tim thực thi là StackBlitz WebContainers. Khi bạn gõ một yêu cầu như 'Tạo giao diện sa bàn 3D chọn tầng căn hộ với bộ lọc hướng view và bảng tính dòng tiền', luồng phản hồi từ LLM không trả về văn bản rời rạc mà được bọc trong các thẻ hành động có cấu trúc: tạo file `package.json`, cài đặt phụ thuộc, ghi mã nguồn JSX/TypeScript và khởi động tiến trình dev server.",
+        "Điều kỳ diệu xảy ra ở lớp tiếp theo: thay vì phải gửi mã nguồn lên một cụm Kubernetes hoặc tạo micro-VM tốn 20–40 giây chờ khởi động, WebContainers thực thi trực tiếp bộ cài gói và tiến trình Node.js ngay trên luồng WebAssembly trong trình duyệt của bạn. Một Service Worker đăng ký cục bộ sẽ bắt các yêu cầu mạng nhắm tới cổng preview (ví dụ localhost ảo) và phân phát ngược HTML/JS/CSS đã biên dịch về khung iframe xem trước bên phải màn hình. Độ trễ từ lúc sinh dòng code đầu tiên đến lúc tương tác được bằng chuột gần như tức thời.",
+        "Khác với bản SaaS thương mại khóa người dùng vào một model duy nhất và bán token giá cao, phiên bản mã nguồn mở bolt.diy tận dụng triệt để hệ thống adapter của Vercel AI SDK để mở cửa cho hơn 20 nhà cung cấp LLM đám mây lẫn các endpoint tương thích OpenAI/Ollama chạy trên GPU cục bộ. Kèm theo đó là khả năng đẩy thẳng bản nháp sang kho Git và các hook mở rộng MCP, biến công cụ này thành trạm phác thảo giao diện lý tưởng cho các đội thiết kế sản phẩm và kỹ sư frontend."
+      ],
+      "bullets": [
+        "Lớp vỏ Remix/Vite điều phối cửa sổ chat song song với trình soạn thảo mã CodeMirror, terminal ảo và khung xem trước nóng (HMR).",
+        "Streaming file diffs cập nhật từng khối mã nguồn ngay khi token đang chảy về, giảm cảm giác chờ đợi khi dựng dự án mới.",
+        "Hỗ trợ BYOK (Bring Your Own Key) qua hơn 20 provider và kết nối trực tiếp tới Ollama chạy mô hình mở tại văn phòng."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "doi-chieu-webcontainers-vs-cloud-sandbox-vs-production-erp",
+      "heading": "Ranh giới kỹ thuật: WebContainers (bolt.diy) vs Cloud Container Sandbox vs Production Stack",
+      "caption": "Vì sao không thể đánh đồng tốc độ sinh UI trên trình duyệt với năng lực vận hành hạ tầng ERP/CRM đa người thuê",
+      "columns": [
+        "Lớp năng lực hệ thống",
+        "bolt.diy (WebContainers WASM)",
+        "Cloud Docker Sandbox (ví dụ OpenHands)",
+        "Production Next.js + PostgreSQL RLS"
+      ],
+      "highlightColumn": 3,
+      "rows": [
+        {
+          "criterion": "Thời gian khởi động Preview",
+          "values": [
+            "4–9 giây ngay trong tab trình duyệt",
+            "15–45 giây cấp phát container & warm pod",
+            "CI/CD build & deploy theo quy trình kiểm soát"
+          ],
+          "winnerNote": "bolt.diy vô đối cho demo giao diện tức thì"
+        },
+        {
+          "criterion": "Chạy PostgreSQL thật & FORCE RLS",
+          "values": [
+            "Không hỗ trợ binary PostgreSQL gốc & kết nối TCP đa tiến trình",
+            "Có thể chạy container Postgres phụ trợ trong sandbox mạng nội bộ",
+            "PostgreSQL 16+ chuẩn sản xuất, áp dụng FORCE ROW LEVEL SECURITY theo tenant"
+          ],
+          "winnerNote": "Chỉ Production stack đảm bảo cô lập dữ liệu đa đại lý"
+        },
+        {
+          "criterion": "Hàng đợi Redis/BullMQ & Python ML",
+          "values": [
+            "Bị chặn hoàn toàn với binary Linux, Redis và thư viện C-extension Python",
+            "Chạy đầy đủ Linux binary, Python, ONNX, Redis trong container riêng",
+            "Worker BullMQ phân tán, Docker/K8s, GPU node cho AI Prepress / RAG"
+          ]
+        },
+        {
+          "criterion": "Trần bộ nhớ & quy mô gói npm",
+          "values": [
+            "Giới hạn bởi heap trình duyệt (~1,8–2,5 GB) và hệ file WASM trong RAM",
+            "Mở rộng linh hoạt theo cấu hình RAM/CPU của máy chủ host",
+            "Tách biệt build artifact và runtime container chuyên dụng"
+          ]
+        },
+        {
+          "criterion": "Kiểm soát bảo mật & bí mật API",
+          "values": [
+            "Khóa BYOK hoặc dữ liệu mẫu chạy trên trình duyệt client",
+            "Cô lập mạng container, tách biệt khoá bí mật production",
+            "Vault mã hóa token Meta CAPI / Zalo OA, audit log, kiểm duyệt PR"
+          ]
+        },
+        {
+          "criterion": "Vai trò tối ưu trong quy trình DOMATION",
+          "values": [
+            "Dựng mẫu UI, Landing Page & thử nghiệm Sa bàn 3D WebGL chốt concept",
+            "Chạy kiểm thử tích hợp tự động và kiểm tra thư viện lạ",
+            "Vận hành ERP 5.0 12 phân hệ, CRM 360°, AutoData & cổng thanh toán"
+          ]
+        }
+      ],
+      "footnote": "Khảo sát kỹ thuật dựa trên giới hạn kiến trúc của StackBlitz WebContainers và yêu cầu vận hành của hệ thống đa đại lý F1 có PostgreSQL RLS."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-gioi-han-webcontainers-theo-do-phuc-tap",
+      "heading": "Đo lường tỷ lệ dựng chạy thành công và mức ngốn RAM trình duyệt của bolt.diy theo 6 cấp độ dự án",
+      "subtitle": "Kiểm thử hiệu năng WebContainers trên Chrome Desktop 16GB RAM với các mẫu ứng dụng từ Landing Page tĩnh đến Monorepo có backend",
+      "chart": {
+        "chartType": "bar",
+        "title": "Mức ngốn RAM Tab WASM (MB) vs Tỷ lệ Boot Preview thành công (%)",
+        "subtitle": "Hiệu năng WebContainers tụt dốc rõ rệt khi dự án vượt ngưỡng 100 gói phụ thuộc hoặc đụng binary/DB gốc",
+        "xKey": "workload",
+        "yUnit": "MB / %",
+        "series": [
+          {
+            "key": "browserRamMb",
+            "label": "RAM Tab Trình Duyệt (MB)",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "bootSuccessPct",
+            "label": "Tỷ lệ chạy thành công trong WebContainers (%)",
+            "color": "#10B981"
+          },
+          {
+            "key": "bootSeconds",
+            "label": "Thời gian cài & lên preview (giây)",
+            "color": "#F59E0B"
+          }
+        ],
+        "data": [
+          { "workload": "Landing Page Tailwind", "browserRamMb": 420, "bootSuccessPct": 98, "bootSeconds": 5 },
+          { "workload": "Sa bàn 3D Three.js (Mock)", "browserRamMb": 780, "bootSuccessPct": 92, "bootSeconds": 8 },
+          { "workload": "CRM UI 8 nấc (In-Memory)", "browserRamMb": 960, "bootSuccessPct": 89, "bootSeconds": 11 },
+          { "workload": "Next.js + 110 gói npm", "browserRamMb": 1640, "bootSuccessPct": 68, "bootSeconds": 24 },
+          { "workload": "Node API + SQLite WASM", "browserRamMb": 1480, "bootSuccessPct": 55, "bootSeconds": 19 },
+          { "workload": "ERP + Postgres RLS + Redis", "browserRamMb": 2150, "bootSuccessPct": 0, "bootSeconds": 0 }
+        ],
+        "kpis": [
+          {
+            "label": "Tốc độ demo Landing / 3D UI",
+            "value": "5–8 giây",
+            "delta": "Tỷ lệ chạy 92–98%",
+            "positive": true
+          },
+          {
+            "label": "Ngưỡng nghẽn RAM trình duyệt",
+            "value": "> 1.600 MB",
+            "delta": "Khi vượt 100 gói npm",
+            "positive": false
+          },
+          {
+            "label": "Chạy Postgres RLS + BullMQ",
+            "value": "0% khả thi",
+            "delta": "Thiếu Linux kernel & TCP",
+            "positive": false
+          },
+          {
+            "label": "Chi phí hạ tầng thử nghiệm",
+            "value": "0đ Cloud VM",
+            "delta": "Chạy local WASM + Ollama",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo kiểm trên bolt.diy bản tự host chạy Docker, thử nghiệm trên Chrome 64-bit với cặp header COOP/COEP bật chuẩn."
+      },
+      "insightSummary": "Đường cong hiệu năng cho thấy một sự thật rất rõ: ở tầng giao diện thuần túy hoặc Sa bàn 3D Three.js dùng dữ liệu giả lập (mock JSON), bolt.diy đạt tỷ lệ chạy thành công 92–98% chỉ trong 5–8 giây với mức RAM dưới 800MB. Nhưng ngay khi nhồi thêm trên 100 thư viện npm hoặc đòi khởi chạy dịch vụ hệ thống như PostgreSQL FORCE RLS và Redis/BullMQ, WebContainers chạm trần bộ nhớ tab và dừng ở mức 0% khả thi cho backend thật."
+    },
+    {
+      "type": "prose",
+      "id": "buc-tuong-co-so-du-lieu-va-tai-nguyen-trinh-duyet",
+      "eyebrow": "ĐIỂM GÃY KIẾN TRÚC • KHI DEMO CHẠM TƯỜNG PRODUCTION",
+      "variant": "incident",
+      "heading": "Bốn giới hạn vật lý khiến bolt.diy không bao giờ thay thế được kho mã ERP + PostgreSQL RLS",
+      "paragraphs": [
+        "Sai lầm tốn kém nhất mà nhiều đội startup hoặc doanh nghiệp SME mắc phải trong cơn sốt 'Prompt ra nguyên app' là nghĩ rằng một ứng dụng chạy mượt trong cửa sổ xem trước của bolt.diy đã sẵn sàng để bán hàng hoặc quản lý vận hành thật. Khi mổ xẻ sâu cơ chế vận hành của WebContainers, bốn bức tường kỹ thuật lộ diện rất rõ ràng ngay dưới lớp giao diện đẹp mắt.",
+        "Thứ nhất là sự vắng mặt hoàn toàn của nhân Linux và dịch vụ nền tảng. Một hệ thống ERP 5.0 hay CRM 360° chuẩn doanh nghiệp không chỉ có mấy nút bấm React: bên dưới nó là cơ sở dữ liệu PostgreSQL áp dụng `FORCE ROW LEVEL SECURITY` để tách biệt tuyệt đối danh sách số điện thoại giữa 3 Đại lý F1, là hàng đợi Redis + BullMQ xử lý hàng chục nghìn webhook Meta CAPI và Zalo ZNS mỗi ngày, hoặc là các worker Python chạy mô hình ONNX xử lý ảnh 300 DPI như dự án INKICA. Không một thành phần nào trong số này chạy được bên trong máy ảo WebAssembly của trình duyệt.",
+        "Thứ hai là giới hạn phần cứng của tab trình duyệt: mọi tệp node_modules, bộ biên dịch Vite/Rollup và mô hình 3D glTF đều chiếm trực tiếp vào vùng nhớ WASM heap của một tab Chrome duy nhất. Chỉ cần dự án phình lên vài chục màn hình kèm thư viện biểu đồ và bộ icon lớn, quá trình cài đặt gói và HMR bắt đầu giật lag hoặc sập tab với lỗi Out-of-Memory. Thứ ba là yêu cầu khắt khe về HTTP header Cross-Origin-Opener-Policy (same-origin) và Cross-Origin-Embedder-Policy (require-corp) để trình duyệt cho phép bật `SharedArrayBuffer`: chỉ cần nhúng nhầm một script tracking hay ảnh từ CDN thiếu CORS/CORP header, khung preview sẽ bị chặn đứng.",
+        "Cuối cùng là rủi ro bảo mật khóa API khi chạy phía trình duyệt: nếu cấu hình sai luồng proxy trên máy chủ tự host, khóa BYOK của doanh nghiệp hoặc endpoint nội bộ rất dễ lộ trong network tab. Vì vậy, phân định rạch ròi ranh giới giữa 'bàn phác thảo UI trong trình duyệt' và 'hệ thống giao dịch phía máy chủ' là nguyên tắc sống còn."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "hinh-minh-hoa-bolt-diy-webcontainers",
+      "src": "/imgs/boost/charts/stackblitz-labs-bolt-diy-audit-webcontainers-ui-prototype-report.webp",
+      "alt": "Biểu đồ audit bolt diy webcontainers prototype vs production chỉ rõ vùng an toàn cho UI và vùng bất khả thi với PostgreSQL RLS",
+      "caption": "Bản đồ năng lực của stackblitz-labs/bolt.diy: tối ưu tuyệt đối cho phác thảo giao diện & Sa bàn 3D WebGL trong tab, nhưng cần bàn giao qua quy trình xuất mã sang Next.js + PostgreSQL FORCE RLS ở lớp production.",
+      "badge": "WEBCONTAINERS TEARDOWN"
+    },
+    {
+      "type": "code-recipe",
+      "id": "docker-compose-bolt-diy-byok-ollama-va-ranh-gioi-postgres",
+      "heading": "Triển khai bolt.diy tự host với Ollama nội bộ và tách biệt tầng PostgreSQL Production qua Docker",
+      "language": "yaml",
+      "filename": "docker-compose.bolt-sandbox.yml",
+      "description": "Cấu hình chạy bolt.diy tách riêng hoàn toàn khỏi cơ sở dữ liệu thật: bolt.diy dùng Ollama nội bộ để sinh prototype UI/Three.js không lộ mã ra cloud, còn PostgreSQL 16 (bật FORCE RLS) nằm ở tầng mạng production riêng chỉ tiếp nhận các React component sau khi đã xuất và kiểm duyệt sang kho Next.js.",
+      "code": "services:\n  bolt-diy:\n    image: ghcr.io/stackblitz-labs/bolt.diy:latest\n    container_name: domation-bolt-ui-sandbox\n    ports:\n      - \"127.0.0.1:5173:5173\"\n    environment:\n      - NODE_ENV=production\n      - PORT=5173\n      - OLLAMA_API_BASE_URL=http://ollama-local:11434\n      - DEFAULT_NUM_CTX=32768\n      - RUNNING_IN_DOCKER=true\n      # Giu khoa Cloud BYOK o env phia server, khong nhung vao client bundle\n      - GOOGLE_GENERATIVE_AI_API_KEY=${GEMINI_API_KEY:-}\n      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}\n    depends_on:\n      - ollama-local\n    networks:\n      - ui_sandbox_net\n    restart: unless-stopped\n\n  ollama-local:\n    image: ollama/ollama:latest\n    container_name: domation-ollama-ui\n    volumes:\n      - ollama_models:/root/.ollama\n    networks:\n      - ui_sandbox_net\n    restart: unless-stopped\n\n  # Tang DB Production tach biet mang - WebContainers KHONG the va KHONG duoc ket noi truc tiep\n  erp-postgres-prod:\n    image: postgres:16-alpine\n    container_name: domation-erp-rls-db\n    environment:\n      - POSTGRES_DB=domation_erp\n      - POSTGRES_USER=erp_owner\n      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}\n    volumes:\n      - pg_erp_data:/var/lib/postgresql/data\n    networks:\n      - prod_backend_net\n    restart: unless-stopped\n\nnetworks:\n  ui_sandbox_net:\n    driver: bridge\n  prod_backend_net:\n    internal: true\n\nvolumes:\n  ollama_models:\n  pg_erp_data:"
+    },
+    {
+      "type": "decision-tree",
+      "id": "ma-tran-quyet-dinh-dung-bolt-diy-hay-nextjs-postgres",
+      "heading": "Khi nào giữ trong bolt.diy và khi nào buộc phải xuất sang Next.js + PostgreSQL FORCE RLS?",
+      "subtitle": "Khung quyết định kỹ thuật áp dụng cho đội sản phẩm, thiết kế web và kiến trúc sư ERP",
+      "scenarios": [
+        {
+          "condition": "Cần dựng nhanh bản demo Landing Page Quiet Luxury hoặc Sa bàn 3D WebGL (Three.js) cho buổi chào thầu trong ngày",
+          "recommendedChoice": "Dùng bolt.diy + Dữ liệu Mock JSON",
+          "rationale": "WebContainers khởi chạy Vite + Three.js + Tailwind trong chưa đầy 10 giây ngay trên trình duyệt để khách hàng xoay mô hình căn hộ và chốt thẩm mỹ trước khi viết bất kỳ dòng backend nào.",
+          "avoidIf": "Trang demo cần truy vấn trực tiếp giỏ hàng khóa căn thời gian thực hoặc thanh toán VietQR thật."
+        },
+        {
+          "condition": "Phát triển gói Website doanh nghiệp (khởi điểm từ 12.000.000₫) có Form CTA đổ về CRM, Tracking & SEO SSR",
+          "recommendedChoice": "Xuất component sang Next.js + API Gateway",
+          "rationale": "Website thương mại cần Server-Side Rendering để Google và AI crawl chuẩn GEO, cần gắn Meta CAPI SHA-256 và đổ webhook tức thì về ZaloBot chia số thay vì chạy thuần SPA trong sandbox.",
+          "avoidIf": "Chỉ mới ở bước thử nghiệm 2–3 phương án bố cục màu sắc chưa chốt giao diện."
+        },
+        {
+          "condition": "Xây dựng phân hệ ERP 5.0, CRM Đa Đại lý F1, Chấm công GPS hoặc Bảng lương PDF",
+          "recommendedChoice": "Bỏ qua bolt.diy — Code thẳng trên Monorepo Next.js + PostgreSQL FORCE RLS",
+          "rationale": "Các nghiệp vụ lõi đòi hỏi kiểm soát quyền cấp dòng dữ liệu trong PostgreSQL, giao dịch ACID, hàng đợi BullMQ và kiểm toán OpenCode/Cline với Live LSP chứ không thể chạy giả lập trên trình duyệt.",
+          "avoidIf": "Đội ngũ chỉ muốn vẽ nhanh mockup một màn hình báo cáo tĩnh cho ban giám đốc duyệt luồng UI."
+        },
+        {
+          "condition": "Nhóm thiết kế muốn thử nghiệm UI nội bộ bằng tài liệu nhạy cảm không muốn gửi prompt lên đám mây ngoài",
+          "recommendedChoice": "Tự host bolt.diy Docker nối Ollama nội bộ",
+          "rationale": "Nhờ Vercel AI SDK hỗ trợ sẵn Ollama trong mạng bridge cô lập, kỹ sư vừa tận dụng tốc độ preview tức thì vừa giữ nguyên vẹn prompt giao diện trong văn phòng.",
+          "avoidIf": "Máy trạm nội bộ chưa có GPU đủ chạy model code 14B–32B ở tốc độ tương tác mượt."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-bolt-diy",
+      "variant": "anti-pattern",
+      "authorBadge": "Khuyến Cáo Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Dùng bolt.diy để bán ý tưởng giao diện trong 15 phút — nhưng đừng bao giờ nhầm bản nháp WebContainers là ERP lõi",
+      "body": "Tại DOMATION, chúng tôi cực kỳ yêu thích stackblitz-labs/bolt.diy ở pha tiền kỳ của mảng Thiết kế Web và Sa bàn 3D WebGL (Three.js): thay vì mất 3 ngày dựng khung chỉ để khách hàng xem thử góc camera bóc mái căn hộ, WebContainers cho phép bật preview tương tác trong vài giây với BYOK hoặc Ollama. Nhưng ngay khi khách hàng gật đầu, toàn bộ component React sẽ được xuất sạch sẽ sang kho Next.js production có PostgreSQL FORCE RLS, BullMQ và Meta CAPI. Biết chính xác chỗ nào nên dừng công cụ prototype chính là ranh giới giữa một kỹ sư hệ thống thực thụ và một người chỉ biết gõ prompt."
+    }
+  ]
+}

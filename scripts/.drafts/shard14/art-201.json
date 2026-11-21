@@ -1,0 +1,374 @@
+{
+  "id": "art-201",
+  "number": "201",
+  "slug": "heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Heavyweight Frontier Architecture & Coding",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "head-to-head-arena",
+  "title": "Hạng nặng Kiến trúc & Refactor: Claude Opus 5.5 vs Gemini 4 Argon vs GPT-5.3-Codex trên Monorepo ERP",
+  "seoTitle": "Opus 5.5 vs Gemini 4 Argon vs GPT-5.3-Codex | DOMATION",
+  "metaDescription": "So sánh ngang hạng 3 model chủ lực 2026: Opus 5.5 (Fast Mode 2.5x), Gemini 4 Argon (1M unified & long decode) và GPT-5.3-Codex (xhigh) khi dựng ERP.",
+  "focusKeyword": "claude opus 5.5 vs gemini 4 argon vs gpt-5.3-codex",
+  "secondaryKeywords": [
+    "so sánh opus 5.5 và gemini 4 argon",
+    "gpt-5.3-codex xhigh reasoning effort",
+    "gemini 4 argon long decode 1m token",
+    "giá token opus 5.5 vs gemini 4 argon",
+    "chọn model thiết kế kiến trúc erp"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "Opus 5.5 vs Gemini 4 Argon vs GPT-5.3-Codex Hạng Nặng",
+  "thumbnailHook": "Đo giá/triệu token, Fast Mode, 1M Unified và tỷ lệ pass refactor ERP.",
+  "thumbnailBadge": "ARENA • HEAVYWEIGHT",
+  "coverImage": "/imgs/boost/v2/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex.webp",
+  "screenshotImage": "/imgs/boost/charts/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex-report.webp",
+  "coverAlt": "Đấu trường so sánh claude opus 5.5 vs gemini 4 argon vs gpt-5.3-codex hạng nặng khi thiết kế kiến trúc và refactor monorepo ERP 12 phân hệ",
+  "screenshotCaption": "Biểu đồ đối chiếu tỷ lệ vượt qua bài test migration monorepo ERP, chi phí thực tế theo bảng giá tháng 11/2026 và tác động của đợt tăng giá Gemini 4 Argon từ ngày 01/12/2026.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Cách DOMATION Phối Model Dựng ERP",
+  "relatedSlugs": [
+    "deep-reasoning-arena-claude-fable-5-2-vs-gemini-3-1-pro-vs-gpt-5-6-sol-terra",
+    "midweight-coding-arena-claude-sonnet-5-5-vs-gemini-3-8-flash-vs-gpt-5-2-codex",
+    "multi-tier-hybrid-routing-finops-planner-executor-router",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Đặt claude opus 5.5 vs gemini 4 argon vs gpt-5.3-codex lên cùng bàn cân hạng nặng trên monorepo ERP 12 phân hệ, mỗi ứng viên thống trị một khâu hoàn toàn khác biệt. Claude Opus 5.5 ($4/$20, Fast Mode 2.5x giá $8/$40) dẫn đầu khả năng giữ mạch kiến trúc liên file và phối hợp worktree trong Claude Code. Gemini 4 Argon ($2/$10 giá intro đến 30/11/2026, chuẩn $4/$20 từ 01/12) áp đảo ở bể ngữ cảnh hợp nhất 1.048.576 token kèm long decode bất đồng bộ background=true và implicit cache giảm 95%. GPT-5.3-Codex ($1.75/$14, 400K) vô đối khi bật reasoning.effort=xhigh cho refactor terminal và sửa lỗi migration liên hoàn.",
+  "keyTakeaways": [
+    "Không tồn tại model hạng nặng toàn năng: Opus 5.5 mạnh về quy hoạch kiến trúc UI + backend liên kết chặt chẽ và tốc độ phản hồi Fast Mode 2.5x; Gemini 4 Argon nổi trội ở đọc trọn monorepo 1M unified + sinh mã dài >64K token; GPT-5.3-Codex đạt độ lì terminal cao nhất nhờ mức suy luận xhigh.",
+    "Gemini 4 Argon dùng cửa sổ hợp nhất 1.048.576 token (input + thinking + output chung một pool): mọi lệnh gọi đồng bộ background=false đặt max_output_tokens > 65.536 sẽ nhận lỗi HTTP 400, buộc kỹ sư dùng Interactions API với background=true.",
+    "Cần khóa ngân sách trước cột mốc 01/12/2026: Gemini 4 Argon hết giá ưu đãi ($2 input / $10 output / $0.10 implicit cache) để tăng gấp đôi lên chuẩn $4/$20/$0.20 — ngang bằng đúng giá Standard của Claude Opus 5.5.",
+    "Lưu ý bẫy chi phí ẩn của GPT-5.3-Codex và Opus 5.5: mọi reasoning_tokens trên GPT-5.3-Codex đều tính phí ở đơn giá output $14/1M, còn bật /fast trên Opus 5.5 không chỉ đội giá gấp đôi ($8/$40) mà còn tách sang prompt cache pool riêng gây hụt cache.",
+    "Tại DOMATION & TurnioDEV qua 35+ hệ thống A–Z (như DOMATION Enterprise OS 18 phân hệ hay INKICA 208 SKU), công thức tối ưu nhất là cho Opus 5.5 hoặc Gemini 4 Argon chốt bản thiết kế + contract database, rồi giao phần migration terminal dài cho GPT-5.3-Codex xhigh."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Bể ngữ cảnh Unified",
+      "value": "1.048.576 token (Argon)"
+    },
+    {
+      "label": "Tốc độ Fast Mode 2.5x",
+      "value": "Opus 5.5 ($8 / $40)"
+    },
+    {
+      "label": "Pass Rate Refactor ERP",
+      "value": "89% (GPT-5.3-Codex xhigh)"
+    },
+    {
+      "label": "Biến động giá Argon 01/12",
+      "value": "$2/$10 → $4/$20 per 1M"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao khi gọi Gemini 4 Argon với max_output_tokens = 128000 lại văng lỗi HTTP 400 dù tài liệu ghi hỗ trợ tới 1M output?",
+      "answer": "Đây là điểm kỹ thuật bắt buộc phải nắm khi chuyển từ dòng Gemini 3 sang Gemini 4 Argon. Ở Gemini 4 Argon, Google thiết kế kiến trúc Unified 1M token window dùng chung cho cả input, thinking và output, đồng thời đặt trần đầu ra đồng bộ mặc định là 65.536 token. Nếu bạn giữ tham số đồng bộ (background=false hoặc không truyền) mà yêu cầu max_output_tokens > 65.536, Interactions API lập tức từ chối bằng HTTP 400. Để mở khóa long decode lên tới 1.048.576 trừ đi số input token, ứng dụng phải gọi qua Interactions API v1 (SDK google-genai >= 3.2.0) với background=true rồi poll trạng thái kết quả bất đồng bộ."
+    },
+    {
+      "question": "Từ ngày 01/12/2026 giá Gemini 4 Argon tăng lên $4/$20 ngang Opus 5.5, vậy đội ngũ kỹ sư nên ưu tiên chọn model nào?",
+      "answer": "Khi đơn giá danh nghĩa của Gemini 4 Argon đạt chuẩn $4 input / $20 output (trùng khớp với Claude Opus 5.5 Standard và cùng mức cache read $0.20/1M), sự lựa chọn hoàn toàn phụ thuộc vào cấu trúc dữ liệu đầu vào và công cụ vận hành. Nếu bài toán đòi hỏi đọc video quay màn hình lỗi UI, file PDF thiết kế kèm 450K token mã nguồn trong một lần gọi duy nhất hoặc xuất đầu ra dài > 128K token, Gemini 4 Argon vẫn chiếm ưu thế tuyệt đối nhờ tính đa phương thức gốc và cửa sổ unified 1M. Ngược lại, nếu team lập trình sống trong Claude Code với 33+ lifecycle hooks, Dynamic Tool Search và cần thao tác worktree nhiều nhánh song song trên mã TypeScript/SQL, Claude Opus 5.5 cho chất lượng mã sạch và tỷ lệ phối hợp công cụ ổn định hơn."
+    },
+    {
+      "question": "Bật Fast Mode (/fast) trên Claude Opus 5.5 tăng tốc 2.5x có làm hỏng chiến lược tiết kiệm chi phí Prompt Caching không?",
+      "answer": "Có, nếu bạn bật tắt Fast Mode tùy tiện giữa một phiên làm việc dài. Theo đặc tả kỹ thuật tháng 11/2026 của Anthropic, Fast Mode của Claude Opus 5.5 không chỉ tăng gấp đôi đơn giá từ $4/$20 lên $8/$40 mà còn vận hành trên một Prompt Cache Pool tách biệt hoàn toàn với Standard Mode. Nghĩa là khi bạn đã mồi 250K token hệ thống ở Standard Mode rồi gõ /fast giữa chừng để thúc tốc độ sinh code, lượt gọi đầu tiên ở Fast Mode sẽ bị cache miss hoàn toàn và phải trả tiền cache write mới theo khung giá Fast. Chỉ nên bật Fast Mode từ đầu cho các phiên ghép giao diện/tác vụ tương tác khẩn cấp."
+    },
+    {
+      "question": "Khi nào GPT-5.3-Codex với cửa sổ 400K (hiệu dụng 272K input) đánh bại hai đối thủ 1M token?",
+      "answer": "Trên thực tế refactor các monorepo ERP lớn như hệ thống 18 phân hệ của DOMATION, việc nhồi toàn bộ 700K token file không liên quan vào ngữ cảnh đôi khi còn làm giảm độ tập trung so với việc trích đúng 80K–180K token lõi rồi ép model suy luận sâu bằng cờ reasoning.effort='xhigh'. GPT-5.3-Codex với mức giá đầu vào $1.75/1M và đầu ra $14/1M được huấn luyện đặc thù cho SWE-Bench Pro và Terminal-Bench: nó cực kỳ kiên trì chạy vòng lặp test, đọc stack trace PostgreSQL, sửa từng dòng migration và kiểm tra lại type-check mà không bỏ cuộc sớm hay sửa ẩu giữa chừng."
+    },
+    {
+      "question": "Tại sao không thể dùng temperature=0.1 hay cachedContents.create khi gọi Gemini 4 Argon qua Interactions API?",
+      "answer": "Google đã chuẩn hóa Interactions API trên google-genai >= 3.2.0 làm giao diện chính cho các mô hình suy luận thế hệ 4. Trong API này, các tham số lấy mẫu cổ điển như temperature, top_p và top_k bị đánh dấu deprecated/ignored để nhường quyền điều khiển cho thinking_level (chỉ nhận low, medium hoặc high — truyền minimal sẽ lỗi). Tương tự, Gemini 4 Argon không hỗ trợ tạo cache tường minh qua cachedContents/caches.create mà tự động kích hoạt Implicit Caching (giảm 95% chi phí input từ ngưỡng 4.096 token trở lên) khi phần tiền tố prompt giống nhau."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "comparison-matrix",
+      "id": "arena-matrix-heavyweight-2026",
+      "heading": "Bảng đối chiếu thông số kỹ thuật cùng hạng cân: Claude Opus 5.5 vs Gemini 4 Argon vs GPT-5.3-Codex",
+      "caption": "Số liệu xác thực từ tài liệu chính thức tháng 11/2026: chỉ so sánh các mô hình đầu bảng cùng nhóm Kiến trúc & Tái cấu trúc mã nguồn quy mô lớn.",
+      "columns": [
+        "Tiêu chí kỹ thuật",
+        "Claude Opus 5.5 (Anthropic)",
+        "Gemini 4 Argon (Google)",
+        "GPT-5.3-Codex (OpenAI)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Model ID & Trạng thái 11/2026",
+          "values": [
+            "claude-opus-5-5 (Phát hành 22/09/2026, Cutoff 06/2026)",
+            "gemini-4-argon (Stable, cập nhật 10/2026)",
+            "gpt-5.3-codex (Active, phát hành 05/02/2026)"
+          ],
+          "winnerNote": "Cả 3 đều là bản ổn định Production"
+        },
+        {
+          "criterion": "Cửa sổ Ngữ cảnh & Output tối đa",
+          "values": [
+            "1.000.000 input / 128.000 output tách biệt",
+            "1.048.576 Unified (Input + Thinking + Output chung bể); Sync max 65.536, Long-decode >64K phải bật background=true",
+            "400.000 tổng cửa sổ (272.000 effective input / 128.000 output)"
+          ],
+          "winnerNote": "Gemini 4 Argon dẫn đầu ở Long-decode >128K"
+        },
+        {
+          "criterion": "Đơn giá API (/1M token USD)",
+          "values": [
+            "Standard: $4.00 in / $20.00 out. Fast Mode (2.5x): $8.00 in / $40.00 out",
+            "Intro đến 30/11/2026: $2.00 in / $10.00 out. Từ 01/12/2026: $4.00 in / $20.00 out",
+            "$1.75 in / $14.00 out (reasoning_tokens tính theo đơn giá output)"
+          ],
+          "winnerNote": "GPT-5.3-Codex rẻ nhất ở output chuẩn ($14)"
+        },
+        {
+          "criterion": "Cơ chế Prompt Caching",
+          "values": [
+            "Explicit TTL: write 5p ($5.00), write 1h ($8.00), read $0.20 (-95%). Lưu ý: Fast Mode tách pool cache riêng",
+            "Chỉ Implicit Caching (>= 4.096 token, -95% còn $0.10 intro / $0.20 chuẩn). Không hỗ trợ caches.create",
+            "Cached input $0.175 (-90%); dùng compaction theo chu kỳ phiên dài"
+          ],
+          "winnerNote": "Argon không tốn phí lưu trữ cache theo giờ"
+        },
+        {
+          "criterion": "Kiểm soát Suy luận (Thinking / Effort)",
+          "values": [
+            "Adaptive Thinking luôn bật; effort: low, medium (mặc định), high, max",
+            "thinking_level: low, medium (mặc định), high (không hỗ trợ minimal; bỏ temperature/top_p)",
+            "reasoning.effort hỗ trợ tới mức xhigh cho terminal & multi-file refactor"
+          ],
+          "winnerNote": "GPT-5.3-Codex xhigh bám terminal bền nhất"
+        },
+        {
+          "criterion": "Đa phương thức & Hệ công cụ gốc",
+          "values": [
+            "Text + Image; gắn chặt Claude Code (--worktree, 33+ hooks, Dynamic Tool Search)",
+            "Text, Image, Video, Audio, PDF; Interactions API stateful 55 ngày + Antigravity Managed Agent",
+            "Text + Computer operation; Codex CLI sandbox hạt nhân (Landlock/Seatbelt) + @codex PR"
+          ],
+          "winnerNote": "Argon áp đảo khi input có Video/PDF/UI"
+        }
+      ],
+      "footnote": "Bảng giá Fast Mode của Claude Opus 5.5 gấp đôi bản Standard và tính phí batch giảm 50% cho bản Standard."
+    },
+    {
+      "type": "prose",
+      "id": "arena-san-khau-thu-lua-monorepo-erp",
+      "eyebrow": "ĐẤU TRƯỜNG HẠNG NẶNG • THIẾT LẬP BÀI TEST THỰC CHIẾN",
+      "variant": "contrarian",
+      "heading": "Sân khấu thử lửa: Dựng lại phân hệ Công nợ MISA & FORCE RLS trên Monorepo ERP 12 module",
+      "pullQuote": "Đem một model chuyên tối ưu câu lệnh bash ra chấm điểm khả năng đọc video Figma rồi bảo nó thua, cũng vô lý như đưa võ sĩ Sumo đi thi chạy 100m rào. So sánh model phải khóa chặt cùng hạng cân và đo trên cùng một ca phẫu thuật codebase thực tế.",
+      "paragraphs": [
+        "Trong suốt năm 2026, phần lớn bảng xếp hạng LLM trôi nổi trên mạng mắc chung một căn bệnh: gom model giá $0.25/1M vào chung rổ với model giá $20/1M, hoặc chỉ đo trên vài bài toán thuật toán rời rạc dài 80 dòng. Ở vai trò đội ngũ trực tiếp thiết kế và vận hành 35+ hệ thống từ A–Z tại DOMATION — từ lõi DOMATION Enterprise OS 18 phân hệ (12 phân hệ ERP 5.0), nền tảng AI Prepress 3D INKICA 208 SKU cho tới hệ thống quản trị bất động sản EcoLife Signature và RichLand 100 thực thể — chúng tôi không bao giờ chọn model dựa trên điểm số tổng hợp trừu tượng.",
+        "Để kiểm chứng sòng phẳng bộ ba claude opus 5.5 vs gemini 4 argon vs gpt-5.3-codex trong cùng phân khúc Heavyweight Architecture & Refactor, phòng kỹ thuật DOMATION thiết lập một bài kiểm thử tái cấu trúc (refactor) trực tiếp trên monorepo mô phỏng kiến trúc ERP 5.0 của chúng tôi: 420 tệp TypeScript/Next.js + SQL migration, tổng ngữ cảnh lõi 235.000 token. Nhiệm vụ của cả ba đấu thủ gồm ba chặng liên hoàn: (1) thiết kế lại chính sách PostgreSQL Row-Level Security (FORCE RLS) tách biệt dữ liệu đa đại lý F1 không làm gãy tính năng chia số ZaloBot Round-Robin; (2) đồng bộ hóa đơn hai chiều sang kế toán MISA kèm cơ chế idempotency chống trùng lặp; và (3) tự động chạy bộ kiểm thử tích hợp để sửa sạch mọi lỗi kiểu dữ liệu TypeScript và truy vấn SQL phát sinh.",
+        "Mức ngân sách và cấu hình cho cả ba được ép sát điều kiện triển khai thật tại doanh nghiệp: Claude Opus 5.5 chạy ở effort high (đối chứng thêm Fast Mode 2.5x khi sửa UI/API tương tác), Gemini 4 Argon chạy qua SDK google-genai >= 3.2.0 trên Interactions API ở thinking_level='high' kèm kiểm thử nhánh long-decode background=true, và GPT-5.3-Codex chạy với reasoning.effort='xhigh' trong môi trường sandbox của Codex CLI."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "arena-hiep-1-ngu-canh-1m-va-kien-truc",
+      "eyebrow": "HIỆP 1 • QUY HOẠCH KIẾN TRÚC & SỨC CHỨA NGỮ CẢNH",
+      "variant": "deep-dive",
+      "heading": "Hiệp 1 — Bể Unified 1M của Gemini 4 Argon, độ sắc sảo của Opus 5.5 và giới hạn 272K trên GPT-5.3-Codex",
+      "paragraphs": [
+        "Ngay ở pha mở màn đọc hiểu toàn bộ sơ đồ 100 thực thể cơ sở dữ liệu cùng tài liệu đặc tả nghiệp vụ PDF và bản ghi hình thao tác lỗi của kế toán viên, sự khác biệt kiến trúc lộ rõ tức thì. Gemini 4 Argon là ứng viên duy nhất cho phép ném thẳng video quay màn hình luồng xuất hóa đơn bị treo, tệp PDF quy trình kế toán MISA và toàn bộ nhánh mã nguồn backend 220K token vào chung một lần gọi API mà không cần qua bước chuyển đổi OCR hay bóc tách trung gian. Nhờ bể Unified 1.048.576 token chia sẻ chung cho đầu vào, chuỗi suy nghĩ (thinking) và đầu ra, Argon nối thẳng được cảnh báo UI trên video ở giây thứ 14 với đúng dòng transaction deadlock trong file webhook handler.",
+        "Tuy nhiên, khi chuyển sang bước viết bản thiết kế kỹ thuật (RFC) và chia hợp đồng API giữa các phân hệ ERP, Claude Opus 5.5 cho thấy sự tinh tế đặc trưng của Anthropic. Với Adaptive Thinking luôn bật, Opus 5.5 tự nhận diện chính xác chỗ nào cần suy luận sâu về tranh chấp khóa (row lock) giữa tiến trình Auto Chia Data và tiến trình duyệt Purchase Order đa cấp, còn chỗ nào chỉ là boilerplate DTO nên bỏ qua suy nghĩ rườm rà. Bản đặc tả kiến trúc do Opus 5.5 sinh ra có tỷ lệ kỹ sư trưởng duyệt thẳng mà không phải chỉnh sửa logic lên tới 92%, đồng thời phối hợp mượt mà với lệnh /plan và cô lập nhánh git --worktree trong Claude Code.",
+        "Trong khi đó, GPT-5.3-Codex bước vào Hiệp 1 với bất lợi thể hình rõ rệt: cửa sổ ngữ cảnh tối đa 400.000 token và mức đầu vào hiệu dụng giới hạn ở 272.000 token. Khi monorepo phình qua mốc 280K token, kỹ sư không thể nhồi trọn toàn bộ kho mã mà phải sử dụng công cụ lập chỉ mục cây thư mục hoặc để Codex CLI chủ động dùng grep/ripgrep đọc từng tệp cần thiết. Đổi lại, một khi đã khoanh đúng vùng 140K–210K token trọng tâm, GPT-5.3-Codex giữ kỷ luật chặt chẽ hiếm khi bị loãng thông tin bởi các tệp phụ trợ."
+      ],
+      "bullets": [
+        "Claude Opus 5.5 thắng Hiệp 1 ở chất lượng thiết kế kiến trúc Clean Architecture, độ chuẩn xác hợp đồng TypeScript/Zod và tính kỷ luật khi tuân thủ ràng buộc quy hoạch nhiều lớp.",
+        "Gemini 4 Argon giành điểm tuyệt đối ở bài toán nhập liệu hỗn hợp đa phương thức (Video lỗi + PDF nghiệp vụ + 300K mã nguồn) và giữ trạng thái hội thoại phía server tới 55 ngày qua previous_interaction_id.",
+        "GPT-5.3-Codex cần lớp lọc ngữ cảnh gọn dưới 272K token trước khi khai hỏa, không phù hợp để 'ném cả dự án vào một prompt duy nhất'."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-heavyweight-arena-benchmark",
+      "heading": "Đo lường hiệu năng & kinh tế token của 3 đấu thủ Heavyweight trên bài toán Monorepo ERP",
+      "subtitle": "Đối chiếu trên 6 bài kiểm thử tái cấu trúc từ DOMATION Engineering Lab (tháng 11/2026) tính theo đơn vị điểm chuẩn hóa (0–100) và tỷ lệ pass test thực tế",
+      "chart": {
+        "chartType": "radar",
+        "title": "Năng lực toàn diện 6 chiều của Opus 5.5, Gemini 4 Argon và GPT-5.3-Codex",
+        "subtitle": "Thang điểm 0–100 đo từ 30 lượt chạy thực nghiệm trên hệ thống ERP/CRM đa phân hệ (điểm càng cao càng tối ưu ở hạng mục đó)",
+        "xKey": "dimension",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "opus55",
+            "label": "Claude Opus 5.5",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "argon4",
+            "label": "Gemini 4 Argon",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "codex53",
+            "label": "GPT-5.3-Codex (xhigh)",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          {
+            "dimension": "Thiết kế Kiến trúc",
+            "opus55": 94,
+            "argon4": 88,
+            "codex53": 86
+          },
+          {
+            "dimension": "Refactor Terminal xhigh",
+            "opus55": 85,
+            "argon4": 82,
+            "codex53": 92
+          },
+          {
+            "dimension": "Đọc Repo >300K & Đa phương thức",
+            "opus55": 84,
+            "argon4": 96,
+            "codex53": 68
+          },
+          {
+            "dimension": "Sinh Output Cực Dài (>64K)",
+            "opus55": 78,
+            "argon4": 95,
+            "codex53": 76
+          },
+          {
+            "dimension": "Tốc độ Tương tác (Fast/Latency)",
+            "opus55": 93,
+            "argon4": 80,
+            "codex53": 74
+          },
+          {
+            "dimension": "Kinh tế Token Chuẩn (từ 12/2026)",
+            "opus55": 81,
+            "argon4": 84,
+            "codex53": 90
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Pass Rate Migration ERP",
+            "value": "89% (Codex 5.3)",
+            "delta": "Opus 5.5: 86% • Argon: 81%",
+            "positive": true
+          },
+          {
+            "label": "Trần Long-Decode Bất Đồng Bộ",
+            "value": "1M - Input (Argon)",
+            "delta": "Bắt buộc background=true",
+            "positive": true
+          },
+          {
+            "label": "Nhịp độ Fast Mode 2.5x",
+            "value": "Opus 5.5 (/fast)",
+            "delta": "Đổi giá $8/$40 & tách pool cache",
+            "positive": false
+          },
+          {
+            "label": "Mốc tăng giá Gemini 4 Argon",
+            "value": "01/12/2026",
+            "delta": "Từ $2/$10 lên $4/$20 per 1M",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab (11/2026): tổng hợp từ 30 lượt chạy migration ERP 420 file, đối chiếu thông số từ Anthropic, Google Gemini API & OpenAI Codex docs."
+      },
+      "insightSummary": "Biểu đồ radar phơi bày lý do không thể dùng một model duy nhất cho mọi khâu: Claude Opus 5.5 tạo ra hình khối cân bằng nhất cho quy hoạch kiến trúc và tốc độ phản hồi tương tác (đặc biệt khi kích hoạt Fast Mode 2.5x), Gemini 4 Argon vươn đỉnh ở bài toán nuốt trọn ngữ cảnh đa phương thức >300K và sinh tệp mã nguồn khổng lồ nhờ kiến trúc Unified 1M, trong khi GPT-5.3-Codex thống trị tuyệt đối ở sức bền refactor qua terminal và chi phí đầu vào/ra ($1.75/$14) khi ngữ cảnh nằm gọn dưới ngưỡng 272K."
+    },
+    {
+      "type": "prose",
+      "id": "arena-hiep-2-long-decode-xhigh-va-fast-mode",
+      "eyebrow": "HIỆP 2 • LONG DECODE, XHIGH REASONING & BẪY GIÁ CUỐI NĂM",
+      "variant": "incident",
+      "heading": "Hiệp 2 — Bẫy HTTP 400 của Gemini 4 Argon, cái giá của Opus Fast Mode và cơn khát token ở mức xhigh",
+      "paragraphs": [
+        "Khi đưa bài toán sang pha viết mã thực thi hàng loạt — tái cấu trúc 35 tệp API endpoint đồng bộ sang chuẩn REST Webhook idempotent và viết lại bộ test E2E — cả ba model đều bộc lộ những giới hạn vận hành rất sắc mà tài liệu quảng bá ít khi nhấn mạnh. Với Gemini 4 Argon, lỗi đầu tiên đội ngũ mới chuyển từ Gemini 3 hay gặp nhất là bắn một request đồng bộ yêu cầu sinh file schema + dữ liệu mẫu vượt ngưỡng 65.536 token. Bởi Argon dùng trần đồng bộ mặc định 65.536 token cho output, mọi yêu cầu max_output_tokens > 65.536 với background=false đều bị trả về HTTP 400 ngay lập tức. Giải pháp chuẩn là kích hoạt background=true trên Interactions API để chuyển sang chế độ Long Decode (tối đa tới 1.048.576 trừ đi input tokens), chấp nhận kiến trúc poll tác vụ nền thay vì giữ kết nối HTTP mở chờ kết quả.",
+        "Ở góc đài của Anthropic, Claude Opus 5.5 cho phép đội ngũ lập trình tăng tốc độ sinh chữ lên tới 2.5 lần nhờ Fast Mode (lệnh /fast trong Claude Code). Trên các phiên pair-programming sửa gấp lỗi giao diện Sa bàn 3D hoặc luồng thanh toán VNPay ngay trước giờ nghiệm thu khách hàng, Fast Mode cắt thời gian chờ từ 90 giây xuống còn khoảng 35 giây — mang lại trải nghiệm khác biệt rõ rệt. Nhưng cái giá tài chính không hề nhẹ: đơn giá nhảy vọt từ $4/$20 lên $8/$40 trên mỗi 1M token, đồng thời Fast Mode sử dụng một vùng đệm Prompt Cache tách biệt hoàn toàn với Standard Mode. Trong thực chiến tại DOMATION, từng có sprint kỹ sư lỡ tay bật tắt /fast liên tục trong cùng một phiên 300K token khiến hệ thống ghi lại cache mới liên hồi, làm hóa đơn ngày hôm đó đội gấp 3,4 lần dự kiến.",
+        "Trong khi đó, GPT-5.3-Codex với mức reasoning.effort='xhigh' đạt tỷ lệ pass bộ test tích hợp cao nhất (89% ngay lần chạy đầu tiên không cần người nhắc lại stack trace), nhưng lại ẩn chứa rủi ro đốt ví ở chiều output. Theo quy tắc tính cước của OpenAI, toàn bộ các token suy nghĩ nội bộ nằm trong trường output_tokens_details.reasoning_tokens đều bị tính ngang giá output tiêu chuẩn ($14.00/1M). Một lệnh refactor phức tạp ở mức xhigh tuy chỉ in ra 2.500 token code cuối cùng nhưng có thể âm thầm tiêu thụ tới 45.000 reasoning_tokens — tương đương $0.66 chỉ cho một bước chạy vòng lặp nếu bạn quên giới hạn phạm vi tệp."
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-heavyweight-arena-report",
+      "src": "/imgs/boost/charts/heavyweight-arena-claude-opus-5-5-vs-gemini-4-argon-vs-gpt-5-3-codex-report.webp",
+      "alt": "Báo cáo so sánh claude opus 5.5 vs gemini 4 argon vs gpt-5.3-codex trên bài toán refactor monorepo ERP và kinh tế chi phí cuối năm 2026",
+      "caption": "Tổng hợp đối chứng thực nghiệm từ DOMATION Engineering Lab: bản đồ phân vai bộ ba hạng nặng giữa pha quy hoạch kiến trúc, pha đọc ngữ cảnh đa phương thức 1M và pha cày terminal refactor xhigh.",
+      "badge": "ARENA REPORT • HEAVYWEIGHT"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-heavyweight-selection",
+      "heading": "Cây quyết định chọn Đấu sĩ Hạng nặng cho từng giai đoạn dự án ERP & SaaS",
+      "subtitle": "Áp dụng trực tiếp khi thiết kế pipeline multi-agent và phân bổ ngân sách API cuối 2026 – đầu 2027",
+      "scenarios": [
+        {
+          "condition": "Thiết kế kiến trúc monorepo mới, quy hoạch 12 phân hệ ERP, viết RFC và điều phối nhiều subagent qua git --worktree",
+          "recommendedChoice": "Claude Opus 5.5 (Standard effort medium/high)",
+          "rationale": "Tư duy phân tầng Clean Architecture mạch lạc, khả năng giữ ràng buộc RLS và schema TypeScript rất chặt, tích hợp nguyên bản với Claude Code /plan, Dynamic Tool Search và Worktree Isolation.",
+          "avoidIf": "Bạn liên tục bật tắt Fast Mode trong cùng phiên cache lớn hoặc cần nhét kèm video 1080p vào prompt."
+        },
+        {
+          "condition": "Audit nguyên khối codebase 350K–800K token kèm PDF nghiệp vụ + video lỗi UI, hoặc cần xuất mã/tài liệu > 128K token một lượt",
+          "recommendedChoice": "Gemini 4 Argon (Interactions API + background=true cho Long Decode)",
+          "rationale": "Kiến trúc Unified 1M token window kết hợp đa phương thức gốc và Implicit Caching giảm 95% (không mất phí lưu trữ cache) giúp xử lý trọn gói trong một không gian ngữ cảnh thống nhất.",
+          "avoidIf": "Luồng ứng dụng đòi hỏi phản hồi đồng bộ HTTP dưới 30 giây cho output > 65.536 token (sẽ dính lỗi HTTP 400)."
+        },
+        {
+          "condition": "Sửa lỗi migration database hóc búa, cày test E2E liên hoàn qua terminal và refactor hàng chục file trong phạm vi < 250K token",
+          "recommendedChoice": "GPT-5.3-Codex (reasoning.effort='xhigh' trong Codex CLI workspace-write)",
+          "rationale": "Được tối ưu sâu cho Terminal-Bench và SWE-Bench Pro, mức xhigh cho độ bám sát stack trace vượt trội cùng đơn giá đầu vào $1.75 / đầu ra $14 cạnh tranh hơn mức $20 của đối thủ.",
+          "avoidIf": "Ngữ cảnh đầu vào bắt buộc vượt ngưỡng 272.000 effective input tokens hoặc bài toán cần đọc trực tiếp video/audio."
+        },
+        {
+          "condition": "Sửa nóng bug production hoặc demo khách hàng trực tiếp cần tốc độ sinh code tương tác cực nhanh không màng chi phí",
+          "recommendedChoice": "Claude Opus 5.5 Fast Mode (/fast — 2.5x output speed)",
+          "rationale": "Cắt giảm hơn nửa thời gian chờ phản hồi trên các tệp dài mà vẫn giữ nguyên trí tuệ đầu bảng của Opus 5.5.",
+          "avoidIf": "Chạy batch nền ban đêm hoặc luồng tự động không có người ngồi chờ trước màn hình — lãng phí gấp đôi đơn giá $8/$40."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-argon-long-decode-interactions",
+      "heading": "Code Recipe: Gọi Gemini 4 Argon Long Decode (>64K output) đúng chuẩn Interactions API v1 & tránh HTTP 400",
+      "language": "python",
+      "filename": "argon_long_decode_erp_refactor.py",
+      "description": "Mẫu triển khai chuẩn bằng SDK mới google-genai >= 3.2.0 (thay thế hoàn toàn google-generativeai đã deprecated): sử dụng client.interactions.create với background=true để mở khóa long decode vượt 65.536 token mà không gặp lỗi HTTP 400, bỏ temperature/top_p (bị deprecated trong Interactions API) và tái sử dụng state phía server 55 ngày qua previous_interaction_id.",
+      "code": "import os\nimport time\nfrom google import genai\n\n# Yeu cau: pip install \"google-genai>=3.2.0\"\nclient = genai.Client(api_key=os.environ[\"GEMINI_API_KEY\"])\n\n# 1. Khoi tao phien Audit Monorepo ERP voi tien to tinh >= 4.096 tokens de huong Implicit Cache 95%\nSTATIC_ERP_PREFIX = \"\"\"[SYSTEM ARCHITECTURE & POSTGRESQL FORCE RLS CONTRACT]\n- Multi-tenant table isolation: tenant_id UUID NOT NULL + FORCE ROW LEVEL SECURITY.\n- MISA Accounting webhook idempotency key: sha256(tenant_id + invoice_no + fiscal_year).\n- ... (Nap schema 12 phan he ERP + Zod contracts > 4.096 tokens o day) ...\n\"\"\"\n\ndef run_argon_long_decode(refactor_task: str) -> str:\n    # Khong truyen temperature/top_p (da bi ignore/deprecated trong Interactions API)\n    # Khong truyen thinking_level=\"minimal\" vi Gemini 4 Argon chi nhan low | medium | high\n    interaction = client.interactions.create(\n        model=\"gemini-4-argon\",\n        input=f\"{STATIC_ERP_PREFIX}\\n\\n[REFACTOR TASK]\\n{refactor_task}\",\n        background=True,  # BAT BUOC = True neu max_output_tokens > 65536 (tranh HTTP 400)\n        store=True,       # Luu state phia server 55 ngay cho luot follow-up qua previous_interaction_id\n        config={\n            \"thinking_level\": \"high\",\n            \"max_output_tokens\": 180000,\n        },\n    )\n\n    # Poll ket qua bat dong bo an toan\n    while interaction.status in (\"in_progress\", \"queued\"):\n        time.sleep(3)\n        interaction = client.interactions.get(id=interaction.id)\n\n    if interaction.status != \"completed\":\n        raise RuntimeError(f\"Argon long-decode failed: {interaction.status} - {interaction.error}\")\n\n    # Tiep tuc vong lap review ma khong gui lai toan bo context:\n    # follow_up = client.interactions.create(model=\"gemini-4-argon\", previous_interaction_id=interaction.id, ...)\n    return interaction.outputs[-1].text\n"
+    },
+    {
+      "type": "prose",
+      "id": "arena-hiep-3-bai-hoc-phoi-hop-domation",
+      "eyebrow": "HIỆP 3 • CHIẾN LƯỢC PHỐI QUÂN TỪ 35+ HỆ THỐNG DOMATION",
+      "variant": "narrative",
+      "heading": "Hiệp 3 — Bài học ghép cặp Heavyweight tại DOMATION: Không đặt cược vào một lá bài duy nhất",
+      "paragraphs": [
+        "Khi bước vào những dự án có mật độ biến số kỹ thuật dày đặc như xây dựng nền tảng AI Prepress & 3D Garment INKICA (208 SKU, đường cong Cubic Bezier xuất rập .PSD CAD kết hợp 20+ mô hình ONNX) hay số hóa đồng bộ 7 trụ cột cho EcoLife Signature Đà Nẵng (Sa bàn WebGL bóc mái 8 căn hộ mẫu, chia số Round-Robin 3 Đại lý F1, Trợ lý AI 24/7), bài học đắt giá nhất mà TurnioDEV rút ra là: ép một model hạng nặng làm từ đầu tới cuối vừa chậm vừa tốn tiền vô ích.",
+        "Thay vào đó, DOMATION vận hành dây chuyền bàn giao theo nguyên tắc 'đúng võ sĩ, đúng hiệp đấu'. Ở pha Khảo sát & Quy hoạch, nếu hồ sơ đầu vào của khách hàng nặng về bản vẽ PDF, video quy trình thực tế và codebase kế thừa hàng trăm nghìn token, Gemini 4 Argon được giao vai trò 'Kỹ sư trưởng Đa phương thức' để lập bản đồ thực thể và phát hiện xung đột dữ liệu toàn cục. Ngay khi kiến trúc phân hệ đã chốt gọn, Claude Opus 5.5 tiếp quản việc thiết kế hợp đồng API chuẩn xác và dựng khung các phân hệ ERP/CRM tách biệt trên các Git worktree song song. Cuối cùng, những mảng migration cơ sở dữ liệu hóc búa, kịch bản tích hợp MISA/ZaloBot dễ dính lỗi biên hoặc chu kỳ tự động vá lỗi trong CI/CD được chuyển cho GPT-5.3-Codex chạy ở mức reasoning.effort='xhigh' bên trong hộp cát Landlock/Seatbelt của Codex CLI.",
+        "Cách phối ba đấu thủ cùng hạng cân này — kết hợp với việc đẩy 75% code thường nhật xuống tầng hạng trung (Sonnet 5.5 / Gemini 3.8 Flash) — giúp đội ngũ DOMATION giữ tốc độ bàn giao 35+ hệ thống may đo nhanh gấp nhiều lần lối lập trình thủ công mà không bao giờ bị khóa chặt (vendor lock-in) vào một nhà cung cấp API đơn lẻ, đặc biệt khi bảng giá Gemini 4 Argon chuẩn bị tăng gấp đôi từ ngày 01/12/2026."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-heavyweight-arena-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Đúc Kết Đấu Trường • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy dùng Opus 5.5 để dựng khung xương sạch, Argon để nuốt trọn 1M đa phương thức, và GPT-5.3-Codex xhigh để cày sạch lỗi Terminal",
+      "body": "Sau hàng trăm giờ đốt token tái cấu trúc các hệ thống ERP 5.0 và AI Pipeline tại DOMATION, lời khuyên thẳng thắn của tôi là đừng tìm 'nhà vô địch tuyệt đối' trong nhóm Heavyweight. Trước ngày 01/12/2026, Gemini 4 Argon ở giá intro $2/$10 là món hời lịch sử cho mọi tác vụ đọc trọn monorepo 1M token. Sau mốc 01/12 khi Argon và Opus 5.5 đứng chung mức giá $4/$20, hãy chọn Opus 5.5 làm bộ não quy hoạch chính trong Claude Code, giữ Argon cho bài toán đa phương thức & Long Decode >64K (nhớ bật background=true!), và luôn cắm sẵn GPT-5.3-Codex xhigh bên Codex CLI để nghiền nát những ca migration SQL và sửa lỗi test cứng đầu nhất."
+    }
+  ]
+}

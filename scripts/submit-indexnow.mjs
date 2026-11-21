@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BOOST_ALL_ARTICLES } from '../src/data/boostArticlesAllServer.ts';
+import {
+  getDripScheduleSummary,
+  getPublishedBatchForDate,
+  getVietnamTodayIso,
+} from '../src/data/publishSchedule.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +20,7 @@ const SITEMAP_PATH = path.join(ROOT, 'public', 'sitemap.xml');
 const KEY_FILE_PATH = path.join(ROOT, 'public', `${INDEXNOW_KEY}.txt`);
 
 const isDryRun = process.argv.includes('--dry-run');
+const submitAllPublished = process.argv.includes('--all-published');
 
 if (!fs.existsSync(KEY_FILE_PATH)) {
   throw new Error(`Missing IndexNow verification key file at: ${KEY_FILE_PATH}`);
@@ -22,12 +29,30 @@ if (!fs.existsSync(SITEMAP_PATH)) {
   throw new Error(`Missing sitemap.xml at: ${SITEMAP_PATH}. Run "npm run seo:generate" first.`);
 }
 
-const sitemapContent = fs.readFileSync(SITEMAP_PATH, 'utf8');
-const locMatches = [...sitemapContent.matchAll(/<loc>([^<]+)<\/loc>/g)];
-const urlList = Array.from(new Set(locMatches.map((m) => m[1].trim()).filter(Boolean)));
+const today = getVietnamTodayIso();
+const summary = getDripScheduleSummary(BOOST_ALL_ARTICLES, today);
+const todayBatch = getPublishedBatchForDate(BOOST_ALL_ARTICLES, today);
+
+let urlList = [];
+if (submitAllPublished) {
+  const sitemapContent = fs.readFileSync(SITEMAP_PATH, 'utf8');
+  const locMatches = [...sitemapContent.matchAll(/<loc>([^<]+)<\/loc>/g)];
+  urlList = Array.from(new Set(locMatches.map((m) => m[1].trim()).filter(Boolean)));
+} else {
+  if (todayBatch.length === 0) {
+    console.log(
+      `[IndexNow Drip] No new scheduled batch for ${today} (published: ${summary.publishedCount}/${summary.totalCount}, scheduled: ${summary.scheduledCount}). Skipping submission cleanly.`
+    );
+    process.exit(0);
+  }
+  urlList = [
+    `${SITE_URL}/boost`,
+    ...todayBatch.map((art) => `${SITE_URL}/boost/${art.slug}`),
+  ];
+}
 
 if (urlList.length === 0) {
-  throw new Error('No <loc> URLs extracted from public/sitemap.xml.');
+  throw new Error('No URLs resolved for IndexNow submission.');
 }
 
 const payload = {
@@ -37,10 +62,12 @@ const payload = {
   urlList,
 };
 
-console.log(`Prepared IndexNow payload for ${urlList.length} URLs (keyLocation: ${KEY_LOCATION}).`);
+console.log(
+  `[IndexNow Drip] Prepared ${urlList.length} URLs for ${today} (${submitAllPublished ? 'all published sitemap URLs' : 'today daily batch of 15 max'}, keyLocation: ${KEY_LOCATION}).`
+);
 
 if (isDryRun) {
-  console.log('[DRY RUN] First 12 URLs queued:', urlList.slice(0, 12));
+  console.log('[DRY RUN] Queued URLs:', urlList);
   process.exit(0);
 }
 

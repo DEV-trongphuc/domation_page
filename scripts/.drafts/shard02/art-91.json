@@ -1,0 +1,370 @@
+{
+  "id": "art-91",
+  "number": "91",
+  "slug": "khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing",
+  "shardId": "shard02",
+  "pillar": "erp-operations",
+  "pillarLabel": "ERP 5.0 May Đo & Quản Trị",
+  "industry": "Ban Điều Hành, Kế Toán & Marketing",
+  "clusterId": "kw-ops-logic",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "executive-dossier",
+  "title": "Khủng hoảng 3 bản báo cáo lệch nhau giữa CEO, Kế toán & Marketing: Xây dựng Single Source of Truth",
+  "seoTitle": "Xóa Lệch Báo Cáo CEO–Kế Toán–Marketing | DOMATION",
+  "metaDescription": "Vì sao họp tuần nào Marketing báo thắng, Sale báo thiếu số còn Kế toán báo lỗ? Kiến trúc Single Source of Truth hợp nhất toàn bộ số liệu trên Postgres.",
+  "focusKeyword": "báo cáo lệch nhau ceo kế toán marketing",
+  "secondaryKeywords": [
+    "single source of truth doanh nghiệp",
+    "đối soát doanh thu crm và kế toán",
+    "chuẩn hóa định nghĩa kpi nội bộ",
+    "dữ liệu một cửa erp 5.0",
+    "hệ thống bi điều hành cho ceo"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Chấm Dứt 3 Bản Báo Cáo Lệch Nhau Sáng Thứ Hai",
+  "thumbnailHook": "Hợp nhất định nghĩa Lead, Đơn chốt và Thực thu trên một trục PostgreSQL.",
+  "thumbnailBadge": "QUẢN TRỊ ONE-TRUTH",
+  "coverImage": "/imgs/boost/v2/khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing.webp",
+  "coverAlt": "Hồ sơ điều hành khắc phục khủng hoảng 3 bản báo cáo lệch nhau giữa CEO, Kế toán và Marketing bằng Single Source of Truth",
+  "screenshotImage": "/imgs/boost/charts/khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing-report.webp",
+  "screenshotCaption": "Bảng đối chiếu độ lệch số liệu giữa Marketing Ads Report, Sale CRM Excel và Kế toán MISA trước và sau khi chuẩn hóa Single Source of Truth trên PostgreSQL.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Hệ Điều Hành Dữ Liệu Một Cửa",
+  "relatedSlugs": [
+    "toi-uu-he-thong-van-hanh-thoi-dai-moi-du-lieu-mot-cua",
+    "dong-bo-hoa-don-dien-tu-misa-hai-chieu-tu-crm-360",
+    "semantic-layer-chuan-hoa-cong-thuc-kpi-truoc-khi-noi-ai-bi",
+    "metabase-metabase-audit-bi-analytics-vs-meta-crm-realtime"
+  ],
+  "relatedPortfolioId": "navastore-ecommerce",
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Buổi họp giao ban sáng thứ Hai tại nhiều SME thường tắc nghẽn vì ba bản báo cáo trái ngược: Marketing báo thắng (ROAS 6.2x), Sale báo thiếu Lead chất lượng, còn Kế toán báo lỗ dòng tiền. Nguyên nhân gốc rễ nằm ở Semantic Drift (mỗi phòng định nghĩa KPI một kiểu), lệch kỳ Cohort chi phí–thực thu, đứt khóa ngoại giữa CRM với MISA và sai số ghép Excel. Kiến trúc Single Source of Truth (SSOT) trên PostgreSQL kết hợp Semantic Layer và đồng bộ MISA hai chiều xóa sạch độ lệch 28%–42%.",
+  "keyTakeaways": [
+    "Lệch báo cáo xảy ra vì mỗi bộ phận đo trên một đơn vị khác nhau: Marketing đếm Form thô, Sale đếm Hợp đồng ký nháp, Kế toán đếm Hóa đơn MISA và Tiền thực vào Bank.",
+    "Time-Lag Skew làm méo P&L tháng: chi tiền Ads cuối tháng T nhưng khách nộp tiền và xuất hóa đơn ở tháng T+1 khiến ROAS tháng lịch bị sai lệch nặng.",
+    "Mua thêm tool BI kéo 3 file Excel vào cùng một Dashboard không giải quyết được vấn đề nếu thiếu khóa ngoại `canonical_order_id` và tầng Semantic Layer thống nhất.",
+    "Trên trục SSOT của DOMATION ERP 5.0, mỗi giao dịch liên thông từ `lead_uuid` -> `deal_id` -> Webhook VietQR -> chứng từ MISA hai chiều theo thời gian thực."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Sai lệch số liệu liên phòng",
+      "value": "Từ 34% -> ~0%"
+    },
+    {
+      "label": "Thời gian chuẩn bị họp tuần",
+      "value": "Từ 6 giờ -> 0 phút"
+    },
+    {
+      "label": "Đồng bộ CRM <-> MISA",
+      "value": "Hai chiều Real-time"
+    },
+    {
+      "label": "Khớp giao dịch VietQR Bank",
+      "value": "100% Auto-Reconcile"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "thuc-trang-khung-hoang-3-ban-bao-cao",
+      "heading": "Chi phí vô hình của 'ba sự thật song song' trong ban điều hành",
+      "stats": [
+        {
+          "value": "28%–42%",
+          "label": "Biên độ lệch giữa Ads, CRM và MISA",
+          "context": "Trên cùng một tháng tại SME chưa có SSOT",
+          "trend": "down"
+        },
+        {
+          "value": "6.5 Giờ",
+          "label": "Thời gian tranh cãi & đối soát tay mỗi tuần",
+          "context": "Giữa Marketing, Sale và Kế toán trưởng",
+          "trend": "down"
+        },
+        {
+          "value": "100%",
+          "label": "Số thực thu gắn Webhook Bank & MISA",
+          "context": "Xóa độ trễ cập nhật file Excel cuối tháng",
+          "trend": "up"
+        },
+        {
+          "value": "1 Trục",
+          "label": "PostgreSQL + Semantic Layer làm chân lý",
+          "context": "Mọi bộ phận truy vấn chung một công thức KPI",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-nguyen-nhan-3-bao-cao-lech-nhau",
+      "eyebrow": "Executive Dossier • Data Governance & ERP 5.0",
+      "heading": "Khi không ai nói dối nhưng cả phòng họp vẫn cãi nhau nảy lửa vào sáng thứ Hai",
+      "variant": "deep-dive",
+      "pullQuote": "Một doanh nghiệp có ba bản báo cáo doanh thu khác nhau thì thực chất đang không có bản báo cáo nào đáng tin để phân bổ vốn.",
+      "paragraphs": [
+        "9 giờ sáng thứ Hai, Trưởng Marketing chiếu slide tổng kết tháng qua thu 1.240 Leads, chi 280 triệu Ads và ROAS nền tảng đạt 6.2x. Giám đốc Kinh doanh phản pháo đội Sale chỉ nhận được 785 số hợp lệ sau lọc trùng và doanh số ký nháp là 3.6 tỷ. Cuối cùng Kế toán trưởng mở MISA báo doanh thu xuất hóa đơn hợp lệ chỉ đạt 2.45 tỷ, tiền thực vào tài khoản là 2.18 tỷ, và sau khi tính đủ thuế nhà thầu, giá vốn cùng quỹ thưởng Sale thì tháng vừa rồi công ty âm dòng tiền 140 triệu.",
+        "Điểm trớ trêu là không trưởng phòng nào cố tình làm giả số liệu—họ chỉ rút số từ công cụ tác nghiệp của riêng mình mà thiếu kiến trúc Single Source of Truth (SSOT) và tầng Semantic Layer. Bốn vết nứt sau tạo ra sai lệch 28%–42% trong ban điều hành.",
+        "Thứ nhất là Semantic Drift (lệch định nghĩa KPI): Marketing coi mọi lượt gửi form là `Lead`, Sale chỉ tính SĐT duy nhất nghe máy, còn Kế toán chỉ ghi nhận doanh thu khi đã xuất hóa đơn MISA. Gọi chung ba thứ đó là 'Kết quả' chắc chắn dẫn tới xung đột.",
+        "Thứ hai là Time-Lag & Cohort Skew (lệch kỳ): ngân sách Ads chi cuối tháng 10 tạo ra Lead, nhưng 70% đơn đặt cọc và xuất hóa đơn MISA lại phát sinh giữa tháng 11. Cắt lát báo cáo thô theo tháng dương lịch làm CEO tưởng tháng 10 lỗ nặng và đòi cắt Ads ngay trước mùa gặt.",
+        "Thứ ba và thứ tư là Đứt gãy khóa ngoại và Copy-Paste Excel: tên khách trên Facebook, ghi chú trên CRM, nội dung chuyển khoản ngân hàng và mã khách `KH0942` trên MISA không có chung `canonical_order_id`. Mỗi lần xuất CSV từ Ads sang Sheets rồi gõ lại vào MISA đều cộng thêm 2%–4% sai số thủ công.",
+        "Mua thêm phần mềm BI để kéo 3 file Excel rời vào cùng màn hình chỉ làm biểu đồ đẹp hơn chứ không sửa được số liệu lệch. Giải pháp tận gốc là hợp nhất trên một trục PostgreSQL: liên kết `lead_uuid` -> `deal_id` -> Webhook VietQR ngân hàng -> hóa đơn điện tử MISA hai chiều dưới một bộ công thức Semantic Layer duy nhất."
+      ],
+      "bullets": [
+        "Tách bạch 3 cột trên Dashboard CEO: Gross Pipeline (Giá trị ký), Recognized Revenue (Hóa đơn MISA) và Net Cash Collected (Thực thu trừ hoàn hủy).",
+        "Full-Loaded Marketing Cost: Tự động cộng Spend từ Graph API cùng VAT/thuế nhà thầu 5%–10% và phí sáng tạo để Kế toán và CMO nhìn cùng một mẫu số.",
+        "Song hành Cohort View & Calendar View: Vừa kiểm soát dòng tiền tháng, vừa đo chuẩn ROAS của từng chiến dịch theo ngày sinh Lead."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-do-lech-3-bao-cao-truoc-va-sau-ssot",
+      "heading": "Đối chiếu mức độ vênh số liệu giữa 3 phòng ban vs Chuẩn Single Source of Truth (Kỳ 1 tháng)",
+      "subtitle": "So sánh số liệu báo cáo độc lập từ Ads Manager, CRM/Excel và MISA trên cùng một tập giao dịch tháng 10",
+      "chart": {
+        "chartType": "bar",
+        "title": "Biên độ sai lệch 5 chỉ số trọng yếu giữa các phòng ban trước SSOT",
+        "subtitle": "Quy chuẩn đơn vị chỉ số hóa (Số lượng / Tỷ VNĐ x10 / %)",
+        "xKey": "metric",
+        "yUnit": "Điểm quy đổi",
+        "series": [
+          {
+            "key": "mktReport",
+            "label": "Báo cáo Marketing (Ads Mgr)",
+            "color": "#06B6D4"
+          },
+          {
+            "key": "saleReport",
+            "label": "Báo cáo Sale (CRM/Excel)",
+            "color": "#F59E0B"
+          },
+          {
+            "key": "accReport",
+            "label": "Báo cáo Kế toán (MISA)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "ssotTruth",
+            "label": "Chuẩn SSOT PostgreSQL",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "metric": "Lead Hợp Lệ (x10)",
+            "mktReport": 124,
+            "saleReport": 79,
+            "accReport": 52,
+            "ssotTruth": 76
+          },
+          {
+            "metric": "Đơn Chốt Kỳ",
+            "mktReport": 118,
+            "saleReport": 94,
+            "accReport": 68,
+            "ssotTruth": 68
+          },
+          {
+            "metric": "Doanh Thu (x100M)",
+            "mktReport": 44,
+            "saleReport": 36,
+            "accReport": 24,
+            "ssotTruth": 24
+          },
+          {
+            "metric": "Chi Phí Ads (x10M)",
+            "mktReport": 28,
+            "saleReport": 28,
+            "accReport": 34,
+            "ssotTruth": 34
+          },
+          {
+            "metric": "ROAS Thực (x10%)",
+            "mktReport": 62,
+            "saleReport": 51,
+            "accReport": 32,
+            "ssotTruth": 35
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Lệch đếm Lead (MKT vs SSOT)",
+            "value": "+63.1%",
+            "delta": "Do tính cả số trùng & rác",
+            "positive": false
+          },
+          {
+            "label": "Lệch Doanh thu (Sale vs MISA)",
+            "value": "+50.0%",
+            "delta": "Tính cả đơn chưa thu tiền",
+            "positive": false
+          },
+          {
+            "label": "Lệch Chi phí Ads (MKT vs Bank)",
+            "value": "-17.6%",
+            "delta": "Thiếu thuế VAT/nhà thầu",
+            "positive": false
+          },
+          {
+            "label": "Sai lệch sau chuẩn hóa SSOT",
+            "value": "0.0%",
+            "delta": "Dùng 1 truy vấn Postgres chung",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Nguồn: Audit chênh lệch báo cáo điển hình trước triển khai Single Source of Truth tại DOMATION ERP 5.0 (2025–2026)."
+      },
+      "insightSummary": "Biểu đồ phơi bày gốc rễ tranh cãi: Marketing đếm 1.240 Lead nhưng SSOT lọc trùng chỉ còn 760 Lead duy nhất; Sale báo 3.6 tỷ hợp đồng ký nhưng thực xuất MISA mới đạt 2.4 tỷ; trong khi Marketing báo 280 triệu Ads chưa cộng thuế nhưng sao kê ngân hàng trừ 340 triệu. Trên trục SSOT, mọi con số quy về một mặt phẳng thống nhất."
+    },
+    {
+      "type": "visual-figure",
+      "id": "hinh-anh-single-source-of-truth-postgres",
+      "src": "/imgs/boost/charts/khung-hoang-3-ban-bao-cao-lech-nhau-ceo-ke-toan-marketing-report.webp",
+      "alt": "Kiến trúc Single Source of Truth trên PostgreSQL xóa lệch báo cáo giữa CEO, Kế toán MISA và Marketing",
+      "caption": "Sơ đồ hợp nhất Semantic Layer và đồng bộ MISA hai chiều trên nền tảng DOMATION ERP 5.0 giúp xóa bỏ hoàn toàn sai lệch số liệu giữa 3 phòng ban.",
+      "badge": "Kiến Trúc Single Source of Truth"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "semantic-layer-chuan-hoa-dinh-nghia-kpi",
+      "heading": "Bảng chuẩn hóa Semantic Layer: Chấm dứt tranh cãi ngôn ngữ KPI giữa 3 phòng ban",
+      "caption": "Mỗi chỉ số chỉ có một công thức toán học và một bảng dữ liệu gốc trên PostgreSQL",
+      "columns": [
+        "Thực thể / Chỉ số KPI",
+        "Cách hiểu cũ Marketing",
+        "Cách hiểu cũ Sale",
+        "Cách hiểu cũ Kế toán",
+        "Chuẩn SSOT PostgreSQL"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Lead Hợp Lệ (Dedup Lead)",
+          "values": [
+            "Tổng lượt Submit Form Ads",
+            "SĐT Sale bấm nhận trong ngày",
+            "Không theo dõi khái niệm Lead",
+            "Bản ghi `lead_uuid` +84 duy nhất không trùng 180 ngày"
+          ],
+          "winnerNote": "Chặn đếm kép đa kênh & spam"
+        },
+        {
+          "criterion": "Doanh Số Ký vs Thực Thu",
+          "values": [
+            "Ước tính từ Pixel trên Web",
+            "Tổng hợp đồng/phiếu cọc ký",
+            "Tiền đã về tài khoản (Cash-in)",
+            "Tách 2 cột: `Booked_Value` (CRM) & `Paid_Cash` (Bank/MISA)"
+          ],
+          "winnerNote": "Không lẫn tiền hứa hẹn với tiền mặt"
+        },
+        {
+          "criterion": "Chi Phí Ads Thực (Full-Loaded)",
+          "values": [
+            "Spend trên Meta/TikTok/Google",
+            "Không nắm chi phí Ads",
+            "Tiền trích thẻ + 5–10% thuế",
+            "`Graph_Spend * (1 + Tax_Rate) + Creative_Fee` tự động"
+          ],
+          "winnerNote": "Phản ánh đúng P&L thực tế"
+        },
+        {
+          "criterion": "Hoàn Hủy & Đối Soát Chứng Từ",
+          "values": [
+            "Không trừ đơn hủy khỏi số cũ",
+            "Ghi chú tay hoặc tô đỏ Excel",
+            "Xuất phiếu điều chỉnh trên MISA",
+            "Sync MISA 2 chiều: hủy hóa đơn tự trừ doanh số & thưởng"
+          ]
+        },
+        {
+          "criterion": "ROAS / MER Điều Hành",
+          "values": [
+            "ROAS 7-day click từng sàn cộng lại",
+            "Tỷ lệ chốt trên số khách nhận",
+            "Doanh thu tháng chia chi phí tháng",
+            "Song hành `Blended_MER` (dòng tiền) & `Cohort_ROAS`"
+          ],
+          "winnerNote": "Đo chuẩn cả dòng tiền tháng và Ads dài ngày"
+        }
+      ],
+      "footnote": "Ghi chú: Tầng Semantic Layer là lớp dịch chung trước khi xuất dữ liệu ra Dashboard CEO, Metabase hoặc Trợ lý AI BI."
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-dat-chuan-single-source-of-truth",
+      "heading": "Checklist 6 điều kiện bắt buộc để doanh nghiệp đạt chuẩn Single Source of Truth",
+      "items": [
+        {
+          "check": "Tồn tại khóa ngoại liên thông `lead_uuid` -> `deal_id` -> `misa_invoice_id`",
+          "severity": "critical",
+          "verificationHow": "Chọn ngẫu nhiên 10 hóa đơn trên MISA và truy ngược trong 10 giây xem khách đó đến từ Adset nào và Sale nào chốt.",
+          "passThreshold": "10/10 hóa đơn truy xuất tức thì trên một màn hình."
+        },
+        {
+          "check": "Tự động đối soát tiền vào ngân hàng qua VietQR Webhook",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra nội dung chuyển khoản có gắn mã định danh đơn hàng để tự động mở trạng thái Paid trong CRM hay vẫn dò sao kê tay.",
+          "passThreshold": "> 95% giao dịch khớp trạng thái Paid tự động < 30 giây."
+        },
+        {
+          "check": "Loại bỏ hoàn toàn file Excel/Sheets trung gian tổng hợp báo cáo tuần",
+          "severity": "high",
+          "verificationHow": "Kiểm tra xem tối Chủ nhật các phòng có còn phải export CSV ghép VLOOKUP chuẩn bị họp tuần không.",
+          "passThreshold": "0 file ghép tay; CEO xem Dashboard Live mọi lúc."
+        },
+        {
+          "check": "Đồng bộ hóa đơn điện tử và hoàn hủy hai chiều giữa CRM 360° và MISA",
+          "severity": "high",
+          "verificationHow": "Phát sinh thử một đơn hủy hoặc thu công nợ đợt 2 trên MISA và kiểm tra CRM/hoa hồng có tự cập nhật ngược không.",
+          "passThreshold": "Đồng bộ hai chiều tự động 100% trong ngày."
+        },
+        {
+          "check": "Ban hành Từ điển Semantic Layer KPI có chữ ký CEO, Kế toán & CMO",
+          "severity": "high",
+          "verificationHow": "Kiểm tra độc lập 3 trưởng phòng định nghĩa về Lead hợp lệ, Thực thu và ROAS mục tiêu.",
+          "passThreshold": "100% dùng chung một bảng công thức SQL/Semantic Layer."
+        },
+        {
+          "check": "Lưu Audit Log bất biến cho mọi thay đổi giá trị đơn hàng & doanh thu",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra lịch sử hệ thống khi một nhân sự chỉnh sửa giá trị hợp đồng hoặc nguồn Lead.",
+          "passThreshold": "100% thay đổi tài chính ghi đủ user ID và timestamp."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-single-source-of-truth",
+      "variant": "founder-pov",
+      "title": "Xóa bỏ 3 bản báo cáo lệch nhau bằng cách biến Dữ liệu thành Luật chơi duy nhất",
+      "body": "Nhiều CEO muốn nối ngay AI Chatbot vào dữ liệu công ty để hỏi doanh thu mỗi sáng. Nhưng lời khuyên của tôi tại DOMATION luôn là: đừng nối AI vào ba bảng dữ liệu đang vênh nhau 35%, vì AI chỉ giúp bạn ra quyết định sai nhanh hơn. Tại Nava Store và Viện IDEAS, bước đầu tiên chúng tôi luôn xây trục Single Source of Truth trên PostgreSQL nối thông từ cú click Ads tới CRM 360°, tự động đối soát VietQR Webhook và đồng bộ hai chiều với MISA. Khi Marketing, Sale và Kế toán nhìn chung một sự thật duy nhất trên ERP 5.0, cuộc họp sáng thứ Hai chấm dứt tranh cãi và chuyển hẳn sang quyết định tăng trưởng.",
+      "authorBadge": "Góc Nhìn Founder & CEO • Huỳnh Trọng Phúc (TurnioDEV)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Xây dựng Single Source of Truth có phải bỏ phần mềm kế toán MISA đang dùng không?",
+      "answer": "Không cần bỏ MISA. MISA đảm nhiệm chuẩn hạch toán thuế và hóa đơn điện tử; DOMATION ERP 5.0 đặt PostgreSQL làm kho vận hành trung tâm và tích hợp API hai chiều với MISA để đẩy lệnh xuất hóa đơn và kéo thực thu về chung một trục báo cáo."
+    },
+    {
+      "question": "Vì sao mua thêm PowerBI hay Looker Studio kéo 3 bảng Excel vào vẫn bị lệch số liệu?",
+      "answer": "BI chỉ là lớp vẽ biểu đồ, không tự sửa đứt gãy khóa ngoại hay sự lệch định nghĩa KPI ở tầng gốc. Cần chuẩn hóa Data Schema trên PostgreSQL và Semantic Layer trước khi hiển thị lên BI hoặc AI."
+    },
+    {
+      "question": "Xử lý thế nào khi tháng chi tiền Ads (tháng T) khác tháng tiền thực về ngân hàng (tháng T+1)?",
+      "answer": "Dashboard DOMATION hiển thị song song Calendar Cash-Flow View (dòng tiền thực thu/chi trong tháng cho CFO) và Cohort Attribution View (gắn doanh thu thực về đúng tháng chạy Ads tạo ra Lead cho CMO)."
+    },
+    {
+      "question": "Triển khai hệ thống dữ liệu một cửa nối Ads – CRM – MISA mất bao lâu và có bảo mật chi nhánh không?",
+      "answer": "Nhờ 18 phân hệ dựng sẵn của DOMATION, quá trình chuẩn hóa Semantic Layer và đồng bộ hai chiều thường hoàn tất trong 2–4 tuần, đồng thời áp dụng PostgreSQL Row-Level Security (RLS) cô lập quyền xem giữa các chi nhánh hoặc đại lý."
+    }
+  ]
+}

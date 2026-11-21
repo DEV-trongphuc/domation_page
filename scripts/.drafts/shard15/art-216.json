@@ -1,0 +1,369 @@
+{
+  "id": "art-216",
+  "number": "216",
+  "slug": "chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md",
+  "shardId": "shard15",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Agent Skills & Instruction Standards",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Chuẩn hóa Agent Skills (SKILL.md 3 tầng) & ma trận CLAUDE.md vs AGENTS.md vs GEMINI.md trên cùng một Repo",
+  "seoTitle": "SKILL.md & CLAUDE.md vs AGENTS.md vs GEMINI.md | DOMATION",
+  "metaDescription": "Thiết kế bộ nhớ dự án không xung đột cho Claude Code, Codex CLI và Gemini CLI: chuẩn agentskills.io 3 tầng tiết kiệm token và quy tắc kế thừa AGENTS.md.",
+  "focusKeyword": "chuan hoa skill md va claude md vs agents md vs gemini md",
+  "secondaryKeywords": [
+    "agentskills.io skill md 3 tầng progressive disclosure",
+    "claude md ghi đè agents md nếu đặt cùng root",
+    "cấu hình gemini md đọc fallback agents md",
+    "code review rules trong agents md cho codex",
+    "chia nhỏ rules theo glob paths claude"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Một Nguồn Sự Thật Cho CLAUDE.md, AGENTS.md Và GEMINI.md",
+  "thumbnailHook": "Nạp metadata ~100 token khởi động, bung chi tiết khi kích hoạt.",
+  "thumbnailBadge": "SPEC SKILL.MD AGENTS.MD",
+  "coverImage": "/imgs/boost/v2/chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md.webp",
+  "screenshotImage": "/imgs/boost/charts/chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md-report.webp",
+  "coverAlt": "Bản thiết kế chuan hoa skill md va claude md vs agents md vs gemini md minh họa cơ chế Progressive Disclosure 3 tầng chuẩn agentskills.io và phân tầng bộ nhớ dự án không xung đột",
+  "screenshotCaption": "Biểu đồ benchmark dung lượng Token khởi động phiên khi mở rộng từ 5 lên 65 kỹ năng nghiệp vụ giữa mô hình nhồi vào file gốc, tách glob rules và chuẩn SKILL.md 3 tầng.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Chuẩn Quản Trị Repo Đa Agent",
+  "relatedSlugs": [
+    "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli",
+    "tu-viet-custom-slash-command-domain-skill-sop-sale-ke-toan-devops",
+    "giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản thiết kế kiến trúc chuan hoa skill md va claude md vs agents md vs gemini md giải quyết tận gốc hiện tượng xung đột chỉ dẫn khi một kho mã nguồn vận hành đồng thời Claude Code, Codex CLI và Gemini CLI. Trọng tâm gồm hai trụ cột: đóng gói quy trình chuyên sâu theo chuẩn mở agentskills.io SKILL.md 3 tầng Progressive Disclosure (chỉ tốn ~100 token metadata khi khởi động) và thiết lập AGENTS.md làm nguồn sự thật duy nhất (SSOT), tránh bẫy Claude Code v2.1.277 bỏ qua AGENTS.md nếu cùng tồn tại CLAUDE.md ở thư mục gốc bằng cú pháp @./AGENTS.md và fallback array của Gemini CLI.",
+  "keyTakeaways": [
+    "Chuẩn mở `SKILL.md` (`agentskills.io`, hỗ trợ bởi Claude Code, Codex, Cursor, GitHub Copilot, Antigravity) dùng Progressive Disclosure 3 tầng: Metadata Tier (~100 token khởi động), Instruction Tier (<5.000 token khi kích hoạt) và Resource Tier (`scripts/`, `references/`, `assets/` chi phí khởi động bằng 0).",
+    "Cảnh báo xung đột chết người: kể từ Claude Code v2.1.277, hệ thống tự đọc `AGENTS.md` khi thiếu `CLAUDE.md`, nhưng nếu đặt CẢ HAI ở root, `CLAUDE.md` sẽ ghi đè và `AGENTS.md` bị bỏ qua hoàn toàn.",
+    "Giải pháp Nguồn Sự Thật Duy Nhất (SSOT): lưu toàn bộ quy ước kiến trúc cốt lõi và mục `## Code Review Rules` (cho `@codex review` trên GitHub PR) vào `AGENTS.md`, rồi nạp qua `@./AGENTS.md` trong `CLAUDE.md` và mảng `[\"AGENTS.md\", \"GEMINI.md\"]` trong `.gemini/settings.json`.",
+    "Quy tắc nặng theo từng phân hệ nên chuyển vào `.claude/rules/*.md` gắn YAML frontmatter `paths` glob (ví dụ chỉ nạp luật RLS khi chạm `supabase/migrations/**`) thay vì dồn hết vào tệp gốc.",
+    "Áp dụng kiến trúc này trên monorepo 12 phân hệ ERP 5.0 và 208 SKU INKICA giúp DOMATION giảm tới 86% token bộ nhớ nạp thừa đầu phiên và triệt tiêu tình trạng Agent này phá luật của Agent kia."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Metadata khởi động/Skill",
+      "value": "~100 Token (Tier 1)"
+    },
+    {
+      "label": "Giảm Bloat với 50 Skills",
+      "value": "-91% vs dồn CLAUDE.md"
+    },
+    {
+      "label": "Đồng bộ 3 Agent CLIs",
+      "value": "1 Nguồn AGENTS.md SSOT"
+    },
+    {
+      "label": "Tài nguyên Tier 3 scripts/",
+      "value": "0 Token lúc khởi động"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao đặt song song CLAUDE.md và AGENTS.md ở thư mục gốc lại gây ra hiện tượng Claude Code 'làm ngơ' trước quy tắc của team?",
+      "answer": "Đây là một trong những điểm gãy âm thầm phổ biến nhất khi đội ngũ phối hợp nhiều CLI. Bắt đầu từ phiên bản v2.1.277, Claude Code bổ sung khả năng đọc mặc định `AGENTS.md` nếu dự án không có `CLAUDE.md`. Tuy nhiên, quy tắc ưu tiên của Claude Code quy định: hễ cả `CLAUDE.md` lẫn `AGENTS.md` cùng nằm ở thư mục gốc, Claude Code sẽ chọn `CLAUDE.md` và BỎ QUA hoàn toàn `AGENTS.md`. Do đó nếu kỹ sư viết luật chung vào `AGENTS.md` cho Codex/Cursor rồi tạo thêm một tệp `CLAUDE.md` chỉ ghi vài dòng riêng cho Claude mà quên chèn dòng `@./AGENTS.md`, Claude Code sẽ không bao giờ nhìn thấy các quy chuẩn trong `AGENTS.md`."
+    },
+    {
+      "question": "Cấu trúc 3 tầng Progressive Disclosure của SKILL.md (agentskills.io) hoạt động chi tiết ra sao để tiết kiệm token?",
+      "answer": "Đặc tả mở `agentskills.io` (hiện được Claude Code, Codex, Cursor, GitHub Copilot và Antigravity cùng hỗ trợ) chia vòng đời nạp kỹ năng thành 3 tầng ngân sách rất chặt chẽ. Tầng 1 (Metadata Tier) chỉ nạp phần YAML frontmatter gồm `name`, `description` và `compatibility` vào lúc khởi động phiên—tiêu tốn xấp xỉ 100 token mỗi skill để Agent đối chiếu ý định người dùng. Tầng 2 (Instruction Tier) chỉ được bung vào ngữ cảnh khi kỹ năng thực sự được kích hoạt, chứa phần thân Markdown hướng dẫn quy trình (khuyến nghị dưới 5.000 token). Tầng 3 (Resource Tier) gồm các thư mục con `scripts/`, `references/` và `assets/` có chi phí khởi động bằng 0 tuyệt đối—chúng chỉ được đọc hoặc thực thi ngay khoảnh khắc bước xử lý đòi hỏi tới."
+    },
+    {
+      "question": "Những quy tắc nào nên nằm trong AGENTS.md / CLAUDE.md, và những gì buộc phải chuyển sang SKILL.md hoặc .claude/rules/*.md?",
+      "answer": "Nguyên tắc phân lớp kiến trúc của DOMATION là chỉ giữ những luật bất biến toàn repo (lệnh build/test chuẩn, quy ước đặt tên biến môi trường, nguyên tắc bảo mật không lộ PII, mục `## Code Review Rules` cho Codex GitHub PR) trong `AGENTS.md` dưới ngưỡng 200 dòng. Các quy định chỉ áp dụng cho một phần thư mục—như luật viết migration SQL PostgreSQL FORCE RLS hay chuẩn shader Three.js—nên tách sang `.claude/rules/*.md` kèm khai báo YAML `paths: [\"supabase/migrations/**\"]` để chỉ tự nạp khi Agent chạm đúng đường dẫn đó. Còn toàn bộ SOP nhiều bước, kịch bản đối soát MISA/Meta CAPI, hoặc công cụ kèm script Python/Node phải đóng gói thành `SKILL.md`."
+    },
+    {
+      "question": "Làm thế nào để Gemini CLI đọc chung tệp AGENTS.md của team mà không phải sao chép thủ công sang GEMINI.md?",
+      "answer": "Gemini CLI hỗ trợ hai cơ chế đồng bộ rất sạch ngay trong kho mã nguồn. Cách thứ nhất là cấu hình mảng fallback tên tệp ngữ cảnh trong `.gemini/settings.json` (ví dụ `\"context\": { \"fileName\": [\"AGENTS.md\", \"GEMINI.md\"] }`) để Gemini CLI tự động tìm và nối tầng từ `AGENTS.md` toàn cục, workspace root cho tới thư mục con, kết hợp ghi chú bổ sung riêng của Gemini nếu có `GEMINI.md`. Cách thứ hai là giữ tệp `GEMINI.md` siêu mỏng ở root chỉ gồm vài dòng chuyên biệt cho công cụ Gemini/Workspace Extension kèm dòng `@./AGENTS.md` để import trực tiếp, sau đó kiểm tra kết quả ghép thực tế bằng lệnh `/memory show`."
+    },
+    {
+      "question": "Tham số frontmatter `allowed-tools` và `isolation: worktree` trong SKILL.md mang lại lợi ích gì cho doanh nghiệp?",
+      "answer": "Trong cấu trúc `.claude/skills/<skill-name>/SKILL.md` (vốn đã hợp nhất luôn thư mục `.claude/commands/` cũ), phần YAML frontmatter không chỉ phục vụ mô tả mà còn đóng vai trò kiểm soát thực thi. Thuộc tính `allowed-tools` giới hạn chính xác những công cụ nào Skill đó được phép gọi (chẳng hạn một skill đối soát báo cáo chỉ được `Read, Grep, Bash(psql:*)` mà không có quyền `Edit` hay `Write`), thu hẹp triệt để rủi ro Excessive Agency. Thuộc tính `isolation: worktree` ép kỹ năng hoặc Subagent chạy trong một nhánh Git worktree tách biệt hoàn toàn, giúp nhiều Agent sửa song song các phân hệ ERP mà không đụng file lẫn nhau."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "loan-tri-da-nhan-cach-khi-dung-3-cli-tren-1-repo",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • BỘ NHỚ DỰ ÁN ĐA AGENT",
+      "variant": "narrative",
+      "heading": "Khi một Monorepo ERP có 3 file luật khác nhau và Agent bắt đầu 'nói trống đánh xuôi, kèn thổi ngược'",
+      "pullQuote": "Sao chép cùng một quy chuẩn sang ba tệp CLAUDE.md, AGENTS.md và GEMINI.md là công thức nhanh nhất dẫn đến lệch chuẩn chỉ sau hai tuần.",
+      "paragraphs": [
+        "Tại nhiều đội ngũ kỹ thuật năm 2026, không còn cảnh cả công ty chỉ đóng khung trong một công cụ AI duy nhất. Một ngày làm việc thực tế tại DOMATION hay các team fullstack hiện đại thường phối hợp linh hoạt cả ba đầu máy: kỹ sư dùng Claude Code để thiết kế kiến trúc qua `/plan` và điều phối Subagent trên worktree; dùng OpenAI Codex CLI và tích hợp `chatgpt-codex-connector` (`@codex review`) để quét Pull Request tự động trên GitHub; và dùng Gemini CLI với hệ thống TOML Policy Engine cùng Google Workspace Extension để xử lý khối ngữ cảnh tài liệu lớn.",
+        "Vấn đề lập tức nảy sinh ngay trên kho mã nguồn chung. Ban đầu, người dùng Claude tạo `CLAUDE.md` ở gốc dự án; người dùng Codex thêm `AGENTS.md`; còn thành viên dùng Gemini sinh ra `GEMINI.md` bằng lệnh `/init`. Chỉ sau ba tuần phát triển nóng, quy định mới về cách viết `FORCE ROW LEVEL SECURITY` hay lệnh cấm dùng SDK `@google/generative-ai` cũ chỉ được cập nhật vào `CLAUDE.md` mà quên cập nhật sang `AGENTS.md`. Kết quả là chiều hôm đó, Codex chạy trên CI lại review PR theo quy tắc cũ, còn kỹ sư chạy Gemini CLI thì sinh ra đoạn code sai chuẩn mà không hề hay biết.",
+        "Tệ hơn nữa, thói quen nhét tất cả quy trình phòng ban—từ cách đối soát công nợ MISA, chuẩn Meta CAPI SHA-256 cho tới cách test Playwright—vào thẳng tệp chỉ dẫn gốc biến bộ nhớ dự án thành một bức tường chữ dài 18.000 token luôn bị nạp cưỡng bức ở mọi câu hỏi. Để chấm dứt cả hai căn bệnh 'lệch chuẩn đa CLI' và 'phình bộ nhớ tĩnh', kiến trúc sư phải thiết lập mô hình Nguồn Sự Thật Duy Nhất (SSOT) kết hợp chuẩn mở `SKILL.md` 3 tầng Progressive Disclosure."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-phau-skill-md-3-tang-progressive-disclosure",
+      "eyebrow": "CHUẨN MỞ AGENTSKILLS.IO • KIẾN TRÚC 3 TẦNG TOKEN",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu SKILL.md 3 tầng Progressive Disclosure: Tải ~100 token khởi động, giấu 0 token cho scripts/ và references/",
+      "paragraphs": [
+        "Đặc tả mở `agentskills.io` (được chuẩn hóa và áp dụng đồng bộ trên Claude Code, Codex, Cursor, GitHub Copilot và Antigravity) giải quyết bài toán quy mô lớn bằng nguyên lý tiết lộ lũy tiến 3 tầng (Progressive Disclosure). Thay vì đổ bộ toàn bộ sách hướng dẫn nghiệp vụ vào system prompt, mỗi kỹ năng được đóng gói gọn trong một thư mục độc lập (chẳng hạn `.claude/skills/erp-misa-reconcile/`), chứa tệp bắt buộc `SKILL.md` cùng ba thư mục tùy chọn là `scripts/`, `references/` và `assets/`.",
+        "Ở Tầng 1 (Metadata Tier), khi phiên Agent vừa khởi động, hệ thống chỉ đọc phần YAML frontmatter ở đầu mỗi `SKILL.md` gồm `name`, `description` và `compatibility`. Ngân sách tiêu thụ chỉ rơi vào khoảng **~100 token cho mỗi kỹ năng**, đủ để mô hình nhận diện ý định khớp với yêu cầu người dùng. Ngay cả khi công ty xây dựng thư viện gồm 50 kỹ năng cho đầy đủ phòng Sale, Kế toán, Marketing và DevOps, chi phí khởi đầu toàn bộ thư viện vẫn chỉ quanh mốc ~5.000 token—tức tương đương chưa đầy một trang tài liệu.",
+        "Ở Tầng 2 (Instruction Tier), chỉ khi người dùng gọi đích danh kỹ năng (như `/erp-misa-reconcile`) hoặc Agent nhận diện yêu cầu khớp mô tả ở Tầng 1, toàn bộ phần thân Markdown quy trình của `SKILL.md` (khuyến nghị giữ gọn dưới **5.000 token**) mới được nạp vào ngữ cảnh để Agent làm theo từng bước. Cuối cùng, ở Tầng 3 (Resource Tier), mọi mã script Python/Bash trong `scripts/`, tài liệu tham chiếu dày hàng chục nghìn từ trong `references/` hay template biểu mẫu trong `assets/` có chi phí khởi động bằng **0 tuyệt đối**—chúng chỉ được đọc hoặc gọi thực thi ở đúng bước cần thiết."
+      ],
+      "bullets": [
+        "Claude Code đã hợp nhất thư mục `.claude/commands/` cũ vào cấu trúc chuẩn `.claude/skills/<skill-name>/SKILL.md` và `~/.claude/skills/`.",
+        "Frontmatter nâng cao trong `SKILL.md` gồm `argument-hint` (gợi ý tham số gõ lệnh), `allowed-tools` (khóa quyền công cụ) và `isolation: worktree` (cô lập nhánh Git).",
+        "Không viết tài liệu dài 15.000 từ thẳng vào `SKILL.md`; hãy giữ phần thân hướng dẫn quy trình súc tích dưới 5.000 token và đẩy bảng mã chi tiết sang `references/`."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-claude-md-vs-agents-md-vs-gemini-md",
+      "heading": "Ma trận đối chiếu tầng chỉ dẫn: CLAUDE.md vs AGENTS.md vs GEMINI.md trên cùng một Repo",
+      "caption": "So sánh thứ tự ưu tiên nạp, cơ chế ghi đè, khả năng phân mảnh theo đường dẫn và tính năng PR/Runtime riêng của từng CLI.",
+      "columns": [
+        "Tiêu chí kiến trúc",
+        "CLAUDE.md (Claude Code)",
+        "AGENTS.md (OpenAI Codex & Open Std)",
+        "GEMINI.md (Gemini CLI)"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Phạm vi công cụ hỗ trợ",
+          "values": [
+            "Độc quyền Claude Code (Terminal, IDE, Desktop, Cloud)",
+            "Chuẩn mở đa nền tảng: Codex CLI, Cursor, Copilot, fallback của Claude & Gemini",
+            "Độc quyền Gemini CLI (google-gemini/gemini-cli, Apache 2.0)"
+          ],
+          "winnerNote": "AGENTS.md làm gốc SSOT chung"
+        },
+        {
+          "criterion": "Thứ tự phân tầng (Precedence)",
+          "values": [
+            "Nối tầng 5 lớp: /etc/claude-code -> ~/.claude -> Project root/.claude -> Subdirs -> CLAUDE.local.md",
+            "Đọc phân cấp từ root repo xuống các thư mục con gần file đang xử lý nhất",
+            "Nối tầng: ~/.gemini/GEMINI.md -> Workspace root -> Nested subdirs"
+          ]
+        },
+        {
+          "criterion": "Bẫy xung đột khi đặt chung Root",
+          "values": [
+            "Từ v2.1.277 đọc AGENTS.md nếu thiếu CLAUDE.md; nếu CÓ CẢ HAI ở root thì CLAUDE.md ghi đè, AGENTS.md BỊ BỎ QUA",
+            "Không tự động đọc CLAUDE.md hoặc GEMINI.md nếu không cấu hình symlink/import",
+            "Mặc định tìm GEMINI.md; phải khai báo fallback array [\"AGENTS.md\", \"GEMINI.md\"] trong settings.json"
+          ],
+          "winnerNote": "Cẩn trọng bẫy ghi đè ở root!"
+        },
+        {
+          "criterion": "Cơ chế Import & Nạp có điều kiện",
+          "values": [
+            "Hỗ trợ `@./path` inline import (độ sâu tối đa ~5) + `.claude/rules/*.md` với YAML frontmatter `paths` glob",
+            "Thiết kế phẳng tối giản theo thư mục; dựa vào SKILL.md cho quy trình chuyên sâu",
+            "Hỗ trợ `@./path` inline import; ghép nối nhiều tệp cấu hình qua settings.json"
+          ],
+          "winnerNote": "Claude mạnh nhất về paths glob"
+        },
+        {
+          "criterion": "Tích hợp PR & Quản trị Runtime",
+          "values": [
+            "Đọc lúc khởi động và kiểm tra phân bổ qua `/context all`; cập nhật động qua memory/hooks",
+            "GitHub `chatgpt-codex-connector` đọc riêng mục `## Code Review Rules` khi chạy `@codex review` hoặc auto-PR",
+            "Kiểm tra & sửa sống qua `/init`, `/memory show`, `/memory add`, `/memory reload` + 5-tier TOML Policy"
+          ]
+        },
+        {
+          "criterion": "Chiến lược SSOT khuyến nghị",
+          "values": [
+            "Giữ mỏng tối đa: chỉ dòng `@./AGENTS.md` + quy tắc riêng của Claude Code và `.claude/rules/*.md`",
+            "Chứa 100% quy ước chung dự án (Tech stack, DB RLS, lệnh test, `## Code Review Rules`)",
+            "Dùng fallback `[\"AGENTS.md\", \"GEMINI.md\"]` hoặc `@./AGENTS.md` + lưu ý Workspace Extension"
+          ]
+        }
+      ],
+      "footnote": "Kiểm chứng trực tiếp theo đặc tả Claude Code (v2.1.277+), Codex CLI và Gemini CLI (11/2026)."
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-progressive-disclosure-token-burn",
+      "heading": "Đo lường Token khởi động phiên theo quy mô thư viện kỹ năng (5 đến 65 Skills): Dồn Root vs Glob Rules vs SKILL.md 3 tầng",
+      "subtitle": "Thử nghiệm giả lập kho kỹ năng chuẩn doanh nghiệp (trung bình ~1.450 token hướng dẫn/skill nếu mở bung hoàn toàn)",
+      "chart": {
+        "chartType": "line",
+        "title": "Dung lượng Token nạp cưỡng bức ngay lúc khởi động phiên (Tokens, thấp hơn là nhẹ và thông minh hơn)",
+        "subtitle": "Chuẩn SKILL.md 3 tầng giữ chi phí khởi động ở mức ~100 token/skill (tổng 6.500 token cho 65 skills) thay vì 94.250 token nếu dồn vào tệp gốc",
+        "xKey": "skillCount",
+        "yUnit": "tokens",
+        "series": [
+          {
+            "key": "monolithicRootDumpTok",
+            "label": "Dồn hết vào CLAUDE.md / AGENTS.md gốc (tokens)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "pathScopedRulesTok",
+            "label": "Tách vào .claude/rules/*.md (nạp 1/3 theo glob, tokens)",
+            "color": "#F59E0B",
+            "type": "line"
+          },
+          {
+            "key": "skillMd3TierTok",
+            "label": "SKILL.md 3 tầng Progressive Disclosure (~100 tok/skill, tokens)",
+            "color": "#1E40FF",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "skillCount": "5 Skills", "monolithicRootDumpTok": 7250, "pathScopedRulesTok": 2800, "skillMd3TierTok": 520 },
+          { "skillCount": "10 Skills", "monolithicRootDumpTok": 14500, "pathScopedRulesTok": 5100, "skillMd3TierTok": 1030 },
+          { "skillCount": "20 Skills", "monolithicRootDumpTok": 29000, "pathScopedRulesTok": 9800, "skillMd3TierTok": 2050 },
+          { "skillCount": "35 Skills", "monolithicRootDumpTok": 50750, "pathScopedRulesTok": 16900, "skillMd3TierTok": 3550 },
+          { "skillCount": "50 Skills", "monolithicRootDumpTok": 72500, "pathScopedRulesTok": 24200, "skillMd3TierTok": 5080 },
+          { "skillCount": "65 Skills", "monolithicRootDumpTok": 94250, "pathScopedRulesTok": 31400, "skillMd3TierTok": 6590 }
+        ],
+        "kpis": [
+          {
+            "label": "Tiết kiệm ở 50 Skills",
+            "value": "-93,0%",
+            "delta": "5.080 tok vs 72.500 tok dồn root",
+            "positive": true
+          },
+          {
+            "label": "Ngân sách Tier 1 mỗi Skill",
+            "value": "~100 tok",
+            "delta": "Chỉ nạp name + description + compatibility",
+            "positive": true
+          },
+          {
+            "label": "Giới hạn khuyến nghị Tier 2",
+            "value": "< 5.000 tok",
+            "delta": "Chỉ bung khi khớp tác vụ thực tế",
+            "positive": true
+          },
+          {
+            "label": "Chi phí khởi động scripts/assets",
+            "value": "0 token",
+            "delta": "Tier 3 tải lười theo nhu cầu",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Architecture Benchmark (11/2026): mô phỏng 65 SOP kỹ năng vận hành đa phòng ban (ERP/MISA/Meta CAPI/3D Prepress) đo bằng tokenizer chuẩn Claude/OpenAI."
+      },
+      "insightSummary": "Đường đồ thị tuyến tính phơi bày lý do mọi tệp `CLAUDE.md` hay `AGENTS.md` không kiểm soát đều tự sụp đổ khi doanh nghiệp mở rộng quy mô: chỉ cần 35 quy trình kỹ năng được viết trực tiếp vào tệp gốc, Agent đã mất trắng 50.750 token ngay khoảnh khắc khởi động trước khi đọc tới dòng code đầu tiên. Phương án tách sang `.claude/rules/*.md` cắt được hai phần ba gánh nặng bằng lọc đường dẫn glob, nhưng chuẩn `SKILL.md` 3 tầng mới thực sự giải phóng cửa sổ ngữ cảnh—giữ 50 kỹ năng ở mức 5.080 token đầu phiên và giấu toàn bộ script thực thi ở Tier 3 với chi phí 0 token."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-skill-md-hierarchy-ssot",
+      "src": "/imgs/boost/charts/chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md-report.webp",
+      "alt": "Biểu đồ benchmark chuan hoa skill md va claude md vs agents md vs gemini md minh họa chênh lệch token khởi động giữa dồn file gốc, glob rules và kiến trúc 3 tầng Progressive Disclosure",
+      "caption": "So sánh chi phí token khởi động phiên từ 5 đến 65 kỹ năng khi nhồi thẳng vào tệp gốc so với tách `.claude/rules/*.md` và chuẩn `SKILL.md` 3 tầng `agentskills.io`.",
+      "badge": "BLUEPRINT • SKILL.MD 3-TIER"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-repo-memory-governance",
+      "heading": "Cây quyết định đặt quy tắc vào đúng tầng: AGENTS.md, CLAUDE.md, .claude/rules, GEMINI.md hay SKILL.md?",
+      "subtitle": "Tránh trùng lặp nội dung và tránh lỗi ghi đè ngầm giữa các Agent CLI trên cùng kho mã.",
+      "scenarios": [
+        {
+          "condition": "Quy chuẩn chung của toàn dự án (stack kỹ thuật, lệnh test, quy tắc đặt tên API, luật review Pull Request cho Codex)",
+          "recommendedChoice": "Đặt làm nguồn gốc duy nhất trong `/AGENTS.md` (kèm mục `## Code Review Rules`)",
+          "rationale": "Cả Codex CLI, GitHub `@codex review`, Cursor và Copilot đọc tự nhiên; Claude Code và Gemini CLI kéo vào bằng `@./AGENTS.md` hoặc fallback array.",
+          "avoidIf": "Viết riêng rẽ 3 bản sao khác nhau ở `CLAUDE.md` và `GEMINI.md` dẫn tới trôi lệch."
+        },
+        {
+          "condition": "Team dùng song song Claude Code và Codex CLI nhưng vẫn cần khai báo các chỉ thị đặc thù riêng cho Claude Code",
+          "recommendedChoice": "Giữ `CLAUDE.md` ở root thật ngắn với dòng đầu tiên là `@./AGENTS.md`",
+          "rationale": "Khắc phục triệt để bẫy Claude Code v2.1.277 bỏ qua `AGENTS.md` khi tồn tại `CLAUDE.md` ở cùng thư mục gốc.",
+          "avoidIf": "Tạo `CLAUDE.md` ở root mà quên không import `@./AGENTS.md`."
+        },
+        {
+          "condition": "Quy tắc kỹ thuật dài và chỉ áp dụng cho một vùng thư mục cụ thể (ví dụ migration SQL PostgreSQL RLS hoặc shader 3D WebGL)",
+          "recommendedChoice": "Tách sang `.claude/rules/<ten>.md` với YAML frontmatter `paths:` glob",
+          "rationale": "Không làm bẩn cửa sổ ngữ cảnh khi lập trình viên đang sửa UI hoặc trang marketing không liên quan tới SQL.",
+          "avoidIf": "Nhồi hàng trăm dòng quy ước viết SQL vào tệp `CLAUDE.md` gốc."
+        },
+        {
+          "condition": "Quy trình nhiều bước lặp đi lặp lại kèm script kiểm tra, mẫu báo cáo hoặc tài liệu tham khảo lớn (SOP đối soát MISA, audit Ads)",
+          "recommendedChoice": "Đóng gói thành `.claude/skills/<skill>/SKILL.md` (3 tầng `agentskills.io`) + `scripts/`",
+          "rationale": "Chỉ tiêu tốn ~100 token ở bước khởi động, tái sử dụng chéo giữa Claude Code, Codex, Cursor và kiểm soát quyền qua `allowed-tools`.",
+          "avoidIf": "Dán toàn bộ văn bản SOP và đoạn script mẫu trực tiếp vào file bộ nhớ gốc."
+        },
+        {
+          "condition": "Cấu hình Gemini CLI đọc chuẩn chung của team mà vẫn giữ tùy chỉnh riêng cho Gemini/Workspace Extensions",
+          "recommendedChoice": "Khai báo `context.fileName: [\"AGENTS.md\", \"GEMINI.md\"]` trong `.gemini/settings.json`",
+          "rationale": "Gemini CLI tự động nối tầng cả hai tệp từ user/root xuống subdir và có thể kiểm tra trực tiếp bằng lệnh `/memory show`.",
+          "avoidIf": "Chạy `/init` tạo `GEMINI.md` trùng lặp hết nội dung đã có sẵn trong `AGENTS.md`."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-ssot-multi-cli-and-skill-md",
+      "heading": "Code Recipe: Bộ khung SSOT đồng bộ AGENTS.md / CLAUDE.md / GEMINI.md & mẫu SKILL.md 3 tầng chuẩn DOMATION",
+      "language": "markdown",
+      "filename": "AGENTS.md + CLAUDE.md + .gemini/settings.json + .claude/skills/erp-misa-reconcile/SKILL.md",
+      "description": "Bộ cấu hình chuẩn sản xuất cho một monorepo đa CLI: 1) `AGENTS.md` làm nguồn sự thật duy nhất (có `## Code Review Rules` cho `@codex review`), 2) `CLAUDE.md` nạp `@./AGENTS.md` tránh bị ghi đè mất luật, 3) `.claude/rules/postgres-rls.md` gắn `paths:` glob, 4) `.gemini/settings.json` bật fallback array và 5) `SKILL.md` 3 tầng khóa `allowed-tools`.",
+      "code": "<!-- 1. File: /AGENTS.md (Single Source of Truth cho ca repo) -->\n# DOMATION Monorepo Engineering Standards\n- Stack: Next.js 14+, TypeScript strict, PostgreSQL FORCE RLS, Three.js, MISA & Meta CAPI.\n- Luon chay `npm run typecheck` va `npm test` truoc khi ket thuc task.\n- Cam tuyet doi hardcode API key trong code hoac `.mcp.json`; dung `${ENV_VAR}`.\n\n## Code Review Rules\n- Tu choi PR neu migration SQL thieu `ENABLE ROW LEVEL SECURITY` va `FORCE ROW LEVEL SECURITY`.\n- Canh bao neu thay SDK cu `@google/generative-ai`; bat buoc dung `@google/genai >= 3.2.0`.\n- Moi endpoint ghi hoa don MISA hoac Meta CAPI bat buoc phai co Idempotency Key va Audit Log.\n\n<!-- 2. File: /CLAUDE.md (Tranh bay v2.1.277 bo qua AGENTS.md khi cung o root) -->\n@./AGENTS.md\n\n## Claude Code Specific Directives\n- Uu tien dung `/plan` truoc khi sua nhieu hon 3 tep hoac thay doi DB schema.\n- Khi task doc lap tren ERP module, chay trong subagent `isolation: worktree`.\n\n<!-- 3. File: /.claude/rules/postgres-rls.md (Chi nap khi cham toi SQL migrations) -->\n---\npaths:\n  - \"supabase/migrations/**/*.sql\"\n  - \"src/db/schema/**/*.ts\"\n---\n# PostgreSQL Multi-Tenant FORCE RLS Rules\n- Moi bang tenant bat buoc loc theo `current_setting('app.tenant_id', true)::uuid`.\n- Khong dung role `postgres` hay `service_role` bo qua RLS trong luong API cua dai ly F1.\n\n<!-- 4. File: /.gemini/settings.json (Cho Gemini CLI doc AGENTS.md + GEMINI.md) -->\n{\n  \"context\": {\n    \"fileName\": [\"AGENTS.md\", \"GEMINI.md\"]\n  },\n  \"security\": {\n    \"folderTrust\": { \"enabled\": true }\n  }\n}\n\n<!-- 5. File: /.claude/skills/erp-misa-reconcile/SKILL.md (Chuan 3 tang agentskills.io) -->\n---\nname: erp-misa-reconcile\ndescription: Doi soat hoa don dien tu MISA voi CRM Pipeline 8 nac va xuat bao cao chenh lech theo tenantId.\ncompatibility: Claude Code, Codex CLI, Cursor, Antigravity\nargument-hint: \"[tenant-id] [thang-yyyy-mm]\"\nallowed-tools: Read, Grep, Bash(node scripts/verify-misa.mjs:*)\n---\n# Quy trinh doi soat MISA & CRM (Tier 2 < 5,000 tokens)\n1. Doc quy tac anh xa tai khoan ke toan trong `references/misa-mapping-2026.md` (chi doc khi can).\n2. Chay `node scripts/verify-misa.mjs --tenant=$1 --month=$2` (Tier 3 script, 0 startup token).\n3. Doi chieu cac don dang o buoc 6/8 Hop dong va 7/8 Xuat hoa don tren CRM.\n4. Tra ve bang tom tat chenh lech cong no khong chua PII tho.\n"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-repo-instruction-sync",
+      "heading": "Checklist 6 bước kiểm toán bộ nhớ đa Agent trước khi mở rộng đội ngũ phát triển",
+      "items": [
+        {
+          "check": "Kiểm tra bẫy `CLAUDE.md` che mất `AGENTS.md` ở thư mục gốc",
+          "severity": "critical",
+          "verificationHow": "Mở `/CLAUDE.md` và xác nhận dòng `@./AGENTS.md` có mặt nếu tồn tại cả hai tệp ở root (hoặc bỏ `CLAUDE.md` ở root để Claude Code v2.1.277 tự đọc `AGENTS.md`).",
+          "passThreshold": "100% quy tắc trong `AGENTS.md` xuất hiện khi chạy `/context` trên Claude Code."
+        },
+        {
+          "check": "Kiểm tra cấu hình Gemini CLI đọc nối tầng `AGENTS.md`",
+          "severity": "high",
+          "verificationHow": "Mở Gemini CLI tại root repo và chạy lệnh `/memory show` để xem toàn bộ ngữ cảnh đang nạp.",
+          "passThreshold": "Đầu ra `/memory show` hiển thị đầy đủ nội dung của `AGENTS.md` thông qua `context.fileName` hoặc `@./AGENTS.md`."
+        },
+        {
+          "check": "Kiểm tra mục `## Code Review Rules` trong `AGENTS.md` cho Codex PR",
+          "severity": "high",
+          "verificationHow": "Rà lại các đầu mục H2 trong `AGENTS.md` gốc xem có khối `## Code Review Rules` rõ ràng, súc tích không.",
+          "passThreshold": "`chatgpt-codex-connector` bám đúng checklist bảo mật/RLS khi gõ `@codex review`."
+        },
+        {
+          "check": "Đo độ gọn của các tệp instruction gốc bằng `/context all`",
+          "severity": "high",
+          "verificationHow": "Chạy `/context all` lúc mới mở phiên chưa chat gì để kiểm tra phần `Memory files`.",
+          "passThreshold": "Tổng dung lượng `AGENTS.md` + `CLAUDE.md` luôn giữ dưới 2.500–3.500 token."
+        },
+        {
+          "check": "Xác minh mỗi `SKILL.md` tuân thủ ngân sách 3 tầng Progressive Disclosure",
+          "severity": "recommended",
+          "verificationHow": "Đo dung lượng YAML frontmatter (< 150 tokens), phần thân Markdown (< 5.000 tokens) và tách script/docs lớn sang `scripts/` và `references/`.",
+          "passThreshold": "100% kỹ năng mới dùng YAML frontmatter chuẩn `agentskills.io` và khóa `allowed-tools` khi chạy shell."
+        },
+        {
+          "check": "Đưa `CLAUDE.local.md` vào `.gitignore` toàn dự án",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra tệp `.gitignore` để đảm bảo ghi chú cá nhân của từng lập trình viên không bị đẩy lên nhánh chung.",
+          "passThreshold": "`CLAUDE.local.md` được ignore 100%, không gây xung đột merge."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-repo-memory-blueprint",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Muốn tăng tốc 4,5 lần với 3 Coding CLI khác nhau, hãy quản trị AGENTS.md và SKILL.md chặt như quản trị Schema Database",
+      "body": "Trên các hệ thống phức tạp của DOMATION như ERP 5.0 12 phân hệ hay INKICA 208 SKU may mặc 3D, mã nguồn không chỉ do con người đọc mà còn là môi trường vận hành cho Claude Code, Codex CLI và Gemini CLI phối hợp mỗi ngày. Một bản thiết kế bộ nhớ repo sạch—lấy `AGENTS.md` làm nguồn sự thật duy nhất, vá đúng bẫy ghi đè `CLAUDE.md` bằng `@./AGENTS.md`, dùng `.claude/rules/` theo glob và đóng gói mọi quy trình nghiệp vụ vào `SKILL.md` 3 tầng—chính là hạ tầng vô hình giúp mọi Agent cùng nhìn về một hướng với chi phí token tối giản nhất."
+    }
+  ]
+}

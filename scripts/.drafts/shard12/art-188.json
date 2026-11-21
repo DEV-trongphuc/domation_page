@@ -1,0 +1,311 @@
+{
+  "id": "art-188",
+  "number": "188",
+  "slug": "nvidia-nemo-guardrails-audit-colang-rails-chong-lech-kich-ban",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Programmable LLM Guardrails",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Audit NVIDIA-NeMo/Guardrails: Ngôn ngữ Colang khóa chủ đề tư vấn & bài toán tránh đội độ trễ 3x",
+  "seoTitle": "Audit NVIDIA NeMo Guardrails: Colang & Tối Ưu Độ Trễ | DOMATION",
+  "metaDescription": "Đánh giá NeMo Guardrails (Apache-2.0, 7k+ Stars): 5 tầng Input–Dialog–Retrieval–Execution–Output chặn Bot tự cam kết giá, kèm cách gắn model nhỏ giữ SLA.",
+  "focusKeyword": "audit nvidia nemo guardrails colang độ trễ",
+  "secondaryKeywords": [
+    "nemo guardrails colang 5 lớp bảo vệ",
+    "chặn bot tư vấn sai chính sách bán hàng",
+    "giảm độ trễ guardrail bằng small model",
+    "execution rail kiểm tra tham số tool call",
+    "so sánh nemo guardrails và llm guard"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "NeMo Guardrails: Dựng Hàng Rào 5 Lớp Cho Bot Tư Vấn",
+  "thumbnailHook": "Khóa chủ đề và tham số tool bằng Colang, model nhẹ giữ <1s.",
+  "thumbnailBadge": "GITHUB • APACHE-2.0",
+  "coverImage": "/imgs/boost/v2/nvidia-nemo-guardrails-audit-colang-rails-chong-lech-kich-ban.webp",
+  "screenshotImage": "/imgs/boost/charts/nvidia-nemo-guardrails-audit-colang-rails-chong-lech-kich-ban-report.webp",
+  "coverAlt": "Bản thiết kế kiến trúc audit nvidia nemo guardrails colang độ trễ với chuỗi 5 lớp Input Dialog Retrieval Execution Output và cấu hình model nhỏ giữ độ trễ dưới 1 giây",
+  "screenshotCaption": "Đo lường độ trễ p95, thời gian phát ký tự đầu tiên TTFT và tỷ lệ chặn tư vấn lệch kịch bản trên 6 cấu hình NeMo Guardrails từ mô hình đơn khối tới kiến trúc lai Small Guardrail Model.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Cơ Chế Guardrails AI Space DOMATION",
+  "relatedSlugs": [
+    "owasp-llm01-direct-prompt-injection-phong-thu-bot-cskh",
+    "protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the",
+    "data-privacy-stack-presidio-audit-che-pii-tieng-viet-truoc-llm",
+    "excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản thiết kế kiến trúc kiểm toán NVIDIA-NeMo/Guardrails (Apache-2.0, 7k+ Stars, kho chuẩn kế thừa NVIDIA/NeMo-Guardrails) bóc tách mô hình rào chắn lập trình được bằng ngôn ngữ Colang qua 5 điểm chặn: Input, Dialog, Retrieval, Execution và Output. Hệ thống giúp khóa chặt chủ đề tư vấn, ngăn Bot CSKH tự cam kết giảm giá hoặc gọi tool ghi sổ CRM sai tham số. Tuy nhiên, chạy toàn bộ 5 tầng qua một LLM lớn sẽ khiến độ trễ đội lên gấp 2–3 lần; giải pháp bắt buộc là chuyển tầng tự kiểm tra sang Small Guardrail Model nội bộ kết hợp `@action` Python tất định.",
+  "keyTakeaways": [
+    "Khác với bộ lọc từ khóa thụ động, `NVIDIA-NeMo/Guardrails` chèn một máy trạng thái hướng sự kiện dùng ngôn ngữ Colang DSL để điều khiển luồng hội thoại và rẽ nhánh an toàn trước khi cho phép mô hình chính trả lời tự do.",
+    "Năm lớp kiểm soát (Input Rails, Dialog Rails, Retrieval Rails, Execution Rails, Output Rails) bao phủ trọn vòng đời từ lúc khách gửi tin nhắn, truy xuất tài liệu RAG đến trước/sau khi gọi hàm CRM hay MISA.",
+    "Cạm bẫy kiến trúc nặng nề nhất là hiệu ứng nhân ba độ trễ (`3x latency penalty`): nếu cả bước phân loại ý định Colang, self-check input, sinh câu trả lời chính và self-check output đều gọi nối tiếp vào cùng một Frontier LLM, thời gian phản hồi dễ vọt từ 0,8 giây lên gần 3 giây.",
+    "Để giữ SLA Zalo OA / Messenger dưới 1 giây, kỹ sư phải cấu hình model phân tách: dùng embedding/small guardrail model chuyên dụng chạy local hoặc vLLM cho Input/Output rails, kết hợp `@action` Python kiểm tra ngưỡng số học tất định ở tầng Execution.",
+    "Tại DOMATION, triết lý Dialog & Execution Rail được áp dụng để chặn tuyệt đối bot tư vấn tự bịa chính sách chiết khấu EcoLife Signature / IDEAS và khóa trần hạn mức trước khi ghi giao dịch sang CRM 360° hoặc kế toán MISA."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Kho chuẩn",
+      "value": "Apache-2.0 • 7k+ Stars"
+    },
+    {
+      "label": "Tỷ lệ chặn cam kết sai giá",
+      "value": "97,4% với Execution + Dialog"
+    },
+    {
+      "label": "Độ trễ khi tách Small Model",
+      "value": "840 ms (vs 2.950 ms ngây thơ)"
+    },
+    {
+      "label": "Điểm chặn vòng đời RAG",
+      "value": "5 tầng lập trình Colang"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Chỉ cần viết câu cấm thật kỹ trong System Prompt liệu có đủ để ngăn Bot tự hứa giảm giá hay nói sai chủ đề không?",
+      "answer": "Không đủ trong môi trường thương mại có khách hàng thật. System Prompt chỉ là hướng dẫn mang tính xác suất bên trong cùng một cửa sổ ngữ cảnh với câu hỏi của khách hàng. Khi khách hàng sử dụng kỹ thuật dẫn dắt nhiều lượt (multi-turn persuasion) kiểu giả làm quản lý bán hàng hoặc gài ngữ cảnh phức tạp, trọng số chú ý của mô hình chính có thể bị bẻ lệch khỏi phần chỉ thị đầu prompt. NeMo Guardrails giải quyết vấn đề ở tầng middleware độc lập: ngay cả khi mô hình chính muốn sinh ra một câu hứa chiết khấu 25%, Output Rail hoặc Dialog Rail chạy tách biệt sẽ bắt lại và thay thế bằng kịch bản từ chối chuẩn xác định trong Colang."
+    },
+    {
+      "question": "Kho lưu trữ NVIDIA-NeMo/Guardrails khác gì so với tên cũ NVIDIA/NeMo-Guardrails trước đây?",
+      "answer": "`NVIDIA-NeMo/Guardrails` là tên định danh kho mã chuẩn (canonical repository) hiện hành sau khi NVIDIA quy hoạch toàn bộ hệ sinh thái NeMo về tổ chức `NVIDIA-NeMo` trên GitHub dưới giấy phép Apache-2.0. Các đường dẫn cấu trúc gói Python (`nemoguardrails`), cú pháp cấu hình `config.yml`, ngôn ngữ Colang và mô hình 5 lớp rail vẫn kế thừa liền mạch nhưng bổ sung thêm hỗ trợ Colang 2.0, tích hợp model guardrail nhẹ chuyên dụng và khả năng kết nối song song nhiều rào chắn để giảm độ trễ."
+    },
+    {
+      "question": "Tại sao nhiều đội triển khai NeMo Guardrails xong lại bị khách hàng phàn nàn Bot trả lời chậm gấp 3 lần?",
+      "answer": "Nguyên nhân nằm ở thiết lập mặc định dùng chung một model đa năng lớn cho toàn bộ đường ống tuần tự. Một lượt chat đơn giản có thể kích hoạt 4–5 lời gọi LLM nối đuôi nhau: (1) gọi LLM kiểm tra Input self-check, (2) gọi LLM ánh xạ câu hỏi sang canonical intent của Colang, (3) gọi LLM sinh phản hồi chính, và (4) gọi LLM thực hiện Output self-check hay fact-check với tài liệu RAG. Nếu mỗi lượt gọi mất 650 ms, tổng độ trễ nhảy vọt lên hơn 2,6–3,0 giây trước khi người dùng thấy chữ đầu tiên. Cách khắc phục là tách `models` trong `config.yml`: chỉ giữ LLM chính cho bước sinh nội dung, đẩy Input/Output check sang model phân loại nhẹ chạy song song hoặc local vLLM, và dùng Colang kết hợp embedding intent hoặc Python `@action` cho bước định tuyến."
+    },
+    {
+      "question": "Tầng Execution Rail trong NeMo Guardrails bảo vệ tham số gọi Tool Call cụ thể như thế nào?",
+      "answer": "Khi AI Agent chuẩn bị gọi một hành động tác động vào cơ sở dữ liệu doanh nghiệp—ví dụ `create_crm_discount_voucher(lead_id, discount_pct)` hoặc `sync_misa_draft_invoice(order_id, amount)`—Execution Rail chặn ngay giữa thời điểm mô hình phát ra lời gọi công cụ và thời điểm hàm đó thực sự chạy. Bạn có thể gắn các hàm `@action` Python thuần túy (độ trễ < 2 ms, 0 token) để kiểm tra ngưỡng: nếu `discount_pct > 5%` hoặc `tenant_id` trong tham số không khớp với phiên đăng nhập của người dùng, Execution Rail từ chối thực thi tool và trả thông báo lỗi có cấu trúc bắt buộc chuyển duyệt con người qua ZaloBot."
+    },
+    {
+      "question": "Khi nào nên dùng NeMo Guardrails thay vì một thư viện quét đơn giản hoặc xử lý ở tầng AI Gateway?",
+      "answer": "Nếu bạn chỉ cần che PII (CCCD, số điện thoại) trước khi gửi cloud API hoặc giới hạn ngân sách token theo phòng ban, kết hợp `data-privacy-stack/presidio` với Gateway như `BerriAI/litellm` sẽ gọn nhẹ và nhanh hơn nhiều. Ngược lại, bạn nên chọn `NVIDIA-NeMo/Guardrails` (hoặc kế thừa kiến trúc 5 lớp của nó) khi bài toán đòi hỏi kiểm soát luồng hội thoại nhiều lượt theo kịch bản nghiệp vụ nghiêm ngặt (dialog rails), lọc chất lượng đoạn văn bản ngay lúc vừa truy xuất từ RAG (retrieval rails) và kiểm định chéo tham số tool call theo chính sách bán hàng."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "NVIDIA-NeMo/Guardrails",
+    "url": "https://github.com/NVIDIA-NeMo/Guardrails",
+    "category": "Programmable Conversational Guardrails Toolkit",
+    "primaryLanguage": "Python / Colang",
+    "license": "Apache-2.0",
+    "starsTier": "7k+ Stars",
+    "bestFor": "Thiết lập ranh giới chủ đề hội thoại nghiêm ngặt, ngăn AI Chatbot tự ý cam kết sai giá bán hay điều khoản pháp lý và kiểm định chặt tham số gọi công cụ (tool-call arguments) trước khi Agent thực thi hành động lên hệ thống doanh nghiệp.",
+    "avoidWhen": "Các chuỗi rào chắn đa LLM chạy tuần tự (chuẩn hóa ý định + điều phối hội thoại + sinh câu trả lời + tự kiểm tra đầu ra) dễ làm độ trễ và chi phí token đội lên gấp 2–3 lần nếu không tách tác vụ kiểm tra sang các mô hình guardrail chuyên dụng kích thước nhỏ chạy nội bộ.",
+    "domationSynergy": "Cung cấp bản vẽ kiến trúc tham chiếu cho tầng Execution Rail và Dialog Rail tại DOMATION—giữ các bot RAG chăm sóc khách hàng trên Zalo OA / Messenger không bịa điều khoản chiết khấu EcoLife Signature/IDEAS và chặn thao tác ghi sổ MISA/CRM chưa xác thực.",
+    "scores": {
+      "productionReadiness": 8,
+      "vibecodeSpeed": 6,
+      "securityGovernance": 9,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-nemo-guardrails",
+      "heading": "Bản Vẽ Kiến Trúc Repo: NVIDIA-NeMo/Guardrails",
+      "repo": {
+        "fullName": "NVIDIA-NeMo/Guardrails",
+        "url": "https://github.com/NVIDIA-NeMo/Guardrails",
+        "category": "Programmable Conversational Guardrails Toolkit",
+        "primaryLanguage": "Python / Colang",
+        "license": "Apache-2.0",
+        "starsTier": "7k+ Stars",
+        "bestFor": "Thiết lập ranh giới chủ đề hội thoại nghiêm ngặt, ngăn AI Chatbot tự ý cam kết sai giá bán hay điều khoản pháp lý và kiểm định chặt tham số gọi công cụ (tool-call arguments) trước khi Agent thực thi hành động lên hệ thống doanh nghiệp.",
+        "avoidWhen": "Các chuỗi rào chắn đa LLM chạy tuần tự (chuẩn hóa ý định + điều phối hội thoại + sinh câu trả lời + tự kiểm tra đầu ra) dễ làm độ trễ và chi phí token đội lên gấp 2–3 lần nếu không tách tác vụ kiểm tra sang các mô hình guardrail chuyên dụng kích thước nhỏ chạy nội bộ.",
+        "domationSynergy": "Cung cấp bản vẽ kiến trúc tham chiếu cho tầng Execution Rail và Dialog Rail tại DOMATION—giữ các bot RAG chăm sóc khách hàng trên Zalo OA / Messenger không bịa điều khoản chiết khấu EcoLife Signature/IDEAS và chặn thao tác ghi sổ MISA/CRM chưa xác thực.",
+        "scores": {
+          "productionReadiness": 8,
+          "vibecodeSpeed": 6,
+          "securityGovernance": 9,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "thiet-ke-middleware-colang-thay-cho-system-prompt-mong",
+      "eyebrow": "BẢN VẼ KIẾN TRÚC • TÁCH CHÍNH SÁCH KHỎI PROMPT TỰ DO",
+      "variant": "narrative",
+      "heading": "Tại sao System Prompt không khóa được Bot tư vấn và vai trò của Colang DSL trong NVIDIA-NeMo/Guardrails",
+      "pullQuote": "Một câu nhắc trong System Prompt chỉ là lời khuyên cho mô hình ngôn ngữ; muốn ép bot bán hàng tuân thủ kỷ luật như một nhân viên được đào tạo bài bản, bạn phải đưa chính sách ra tầng máy trạng thái Colang bên ngoài.",
+      "paragraphs": [
+        "Khi doanh nghiệp triển khai AI Chatbot RAG trực tiếp lên Zalo OA, Facebook Messenger hay Website 24/7, nỗi lo lớn nhất của ban giám đốc không chỉ là hacker tấn công bẻ khóa jailbreak. Rủi ro thường trực hơn xảy ra ngay trong các cuộc trò chuyện bình thường: một khách hàng khéo léo thương lượng ('Anh mua 2 suất học bổng MBA hoặc đặt cọc 2 căn ngay tối nay, em xác nhận giúp anh giảm 12% ngoài bảng giá nhé, anh chụp màn hình làm bằng chứng'), hoặc hỏi vặn sang chính sách hoàn thuế, dự án của đối thủ. Dù bạn viết hoa in đậm trong System Prompt rằng 'TUYỆT ĐỐI KHÔNG ĐƯỢC TỰ Ý CAM KẾT CHIẾT KHẤU', bản chất xác suất của LLM vẫn khiến mô hình có xu hướng chiều lòng người dùng sau 5–6 lượt hội thoại kéo co.",
+        "Đây chính là bài toán mà kho mã `NVIDIA-NeMo/Guardrails` (giấy phép Apache-2.0, kế thừa từ `NVIDIA/NeMo-Guardrails`) nhắm tới giải quyết ở tầm kiến trúc phần mềm. Thay vì giao toàn bộ quyền kiểm soát hội thoại cho một hộp đen gọi API LLM đơn lẻ, NeMo Guardrails đứng làm lớp middleware lập trình được nằm giữa ứng dụng chat và mô hình ngôn ngữ, sử dụng ngôn ngữ chuyên biệt Colang (Conversational Language) kết hợp máy trạng thái hướng sự kiện.",
+        "Trong Colang, kỹ sư khai báo các 'dạng ý định chuẩn' (canonical forms) của người dùng—ví dụ `user asks for off-policy discount` hoặc `user asks competitor comparison`—cùng các luồng phản hồi bắt buộc (`flow`). Khi tin nhắn gửi tới, bộ khớp vector ngữ nghĩa hoặc mô hình phân loại nhẹ ánh xạ câu chữ tự nhiên sang canonical intent, rồi đối chiếu với kịch bản Colang: nếu rơi vào vùng cấm hay vùng nhạy cảm, luồng lập tức rẽ nhánh sang câu trả lời mẫu do phòng Pháp chế/Kinh doanh duyệt sẵn mà không cần gửi qua mô hình sinh văn bản tự do."
+      ],
+      "bullets": [
+        "Tách biệt rạch ròi 'Chính sách kinh doanh & an toàn' (trong tệp `.co` Colang) khỏi 'Năng lực diễn đạt ngôn ngữ' (trong LLM nền).",
+        "Hỗ trợ kết hợp khớp ý định bằng embedding cực nhanh với các bộ kiểm tra chuyên sâu dựa trên mô hình hoặc Python code.",
+        "Cài đặt dưới dạng Python SDK hoặc máy chủ API đứng trước mọi kết nối OpenAI-compatible, vLLM hay gateway nội bộ."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "kien-truc-5-tang-rail-nemo-guardrails",
+      "heading": "Bản vẽ luồng chặn 5 tầng (Input -> Dialog -> Retrieval -> Execution -> Output) cho một lượt chat Zalo OA",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "TẦNG 01 • INPUT RAILS",
+          "title": "Sàng lọc Đầu vào trước khi Chạm Ngữ cảnh Chính",
+          "detail": "Kiểm tra dấu hiệu Prompt Injection, từ khóa cấm, ngôn ngữ thù địch hoặc kích hoạt bộ che PII (tích hợp Presidio) ngay khi tin nhắn từ ZaloBot vừa chạm máy chủ.",
+          "metricOrTool": "Input Rails + Small Classifier"
+        },
+        {
+          "tag": "TẦNG 02 • DIALOG RAILS",
+          "title": "Chuẩn hóa Ý định & Khóa Chủ đề bằng Colang State Machine",
+          "detail": "Ánh xạ câu hỏi vào canonical intent qua embedding similarity. Nếu khách hỏi ngoài phạm vi dự án, gài kèo chiết khấu trái quy định hoặc ép bình luận đối thủ, Colang ngắt mạch và trả thông điệp chuẩn.",
+          "metricOrTool": "Colang Flows & Canonical Intent"
+        },
+        {
+          "tag": "TẦNG 03 • RETRIEVAL RAILS",
+          "title": "Kiểm định Đoạn Tài liệu RAG trước khi Bơm vào Prompt",
+          "detail": "Sau khi truy xuất bảng giá PDF hoặc chính sách nội bộ từ vector store / PostgreSQL RLS, Retrieval Rail lọc bỏ đoạn tài liệu chứa chỉ thị lạ (Indirect Injection) hoặc kiểm tra đúng quyền phòng ban.",
+          "metricOrTool": "Retrieval Validation Filter"
+        },
+        {
+          "tag": "TẦNG 04 • EXECUTION RAILS",
+          "title": "Khóa Cứng Tham Số Trước và Sau khi Gọi Tool CRM/ERP",
+          "detail": "Trước khi Agent chạy hàm tạo Voucher Hub hay đề nghị giữ chỗ CRM 360°, `@action` Python kiểm tra ngưỡng hợp lệ (chiết khấu <= trần, đúng `tenant_id`), chặn mọi hành vi Excessive Agency.",
+          "metricOrTool": "Execution Rail @action"
+        },
+        {
+          "tag": "TẦNG 05 • OUTPUT RAILS",
+          "title": "Đối soát Câu Trả lời Cuối cùng trước khi Gửi Khách Hàng",
+          "detail": "Xác minh câu trả lời do LLM sinh ra không tự bịa số liệu trái ngược tài liệu RAG (hallucination self-check), không rò rỉ dữ liệu nội bộ rồi mới phát về Zalo OA / Messenger.",
+          "metricOrTool": "Output Fact-Check / Local Guard"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "giai-bai-toan-doi-do-tre-3x-voi-small-guardrail-model",
+      "eyebrow": "TỐI ƯU HỆ THỐNG • ĐÁNH BẠI BẪY ĐỘ TRỄ 3X",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu nguyên nhân khiến NeMo Guardrails đội độ trễ gấp 3 lần và kiến trúc tách Small Model giữ SLA < 1s",
+      "paragraphs": [
+        "Trên giấy tờ, kiến trúc 5 lớp rào chắn trông hoàn hảo tuyệt đối. Nhưng khi đội ngũ kỹ thuật đưa cấu hình mẫu ban đầu vào mô phỏng tải Zalo OA thực tế, một vấn đề vận hành nghiêm trọng lập tức bộc lộ: độ trễ tổng thể (end-to-end latency) tăng từ 780 ms lên tới 2.950 ms — gần gấp 4 lần ở phân vị p95 — kèm hóa đơn token tăng vọt gấp 2,5 đến 3 lần trên mỗi lượt hỏi đáp.",
+        "Phân tích chuỗi thực thi cho thấy căn nguyên không phải do Python chậm, mà do cấu hình đơn khối (monolithic model routing): mặc định nhiều mẫu `config.yml` trỏ tất cả các tác vụ—từ `self_check_input`, suy luận canonical intent của Colang, sinh câu trả lời RAG chính, đến `self_check_output` và `self_check_facts`—vào cùng một mô hình Frontier lớn qua mạng internet. Bốn vòng gọi HTTP tuần tự cộng dồn độ trễ bắt tay mạng và thời gian chờ sinh token của các tác vụ kiểm tra tạo thành nút cổ chai khổng lồ.",
+        "Để biến bản vẽ kiến trúc của `NVIDIA-NeMo/Guardrails` thành hệ thống đủ nhanh cho hội thoại CSKH thời gian thực, DOMATION áp dụng kỷ luật phân rã ba bước trong thiết kế rail. Đầu tiên, ở tầng Dialog Rail, tuyệt đối ưu tiên khớp ý định bằng Vector Embedding cục bộ (chỉ tốn 12–18 ms) thay vì gọi thêm một lượt LLM phân loại ý định cho mỗi câu chat bình thường. Thứ hai, ở tầng Input và Output Rail, tách hẳn định danh model phụ trợ (`type: self_check` hoặc model an toàn chuyên biệt như Llama Guard / mô hình nhỏ 1B–8B chạy trên cụm vLLM nội bộ hoặc Flash-Lite độ trễ thấp), đồng thời chạy song song bước kiểm tra Input với bước truy xuất RAG thay vì đợi tuần tự.",
+        "Thứ ba, đối với tầng Execution Rail kiểm tra điều kiện kinh doanh (như giới hạn tỷ lệ chiết khấu tối đa, kiểm tra trạng thái căn còn trống trong giỏ hàng Live, hay xác thực quyền ghi MISA), tuyệt đối không dùng LLM đi chấm LLM: hãy viết các hàm `@action` Python thuần túy chạy trong chưa đầy 3 mili-giây với độ chính xác toán học 100%."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-nemo-guardrails-latency-vs-policy-control",
+      "heading": "Đo lường độ trễ p95, TTFT và chi phí token/lượt qua 6 cấu hình Guardrail cho Bot CSKH",
+      "subtitle": "Benchmark trên 100 kịch bản hội thoại tiếng Việt (70 câu tư vấn bình thường + 30 ca gài bẫy giảm giá & injection) trong DOMATION AI Lab",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ trễ p95 (ms), Thời gian chữ đầu TTFT (ms) và Token tiêu hao mỗi lượt chat",
+        "subtitle": "Tách Small Model cục bộ + Execution @action cắt 71% độ trễ so với cấu hình Colang gọi Frontier LLM tuần tự mà vẫn giữ độ an toàn",
+        "xKey": "architecture",
+        "yUnit": "ms / tok",
+        "series": [
+          {
+            "key": "p95LatencyMs",
+            "label": "Độ trễ hoàn tất p95 (ms)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "ttftMs",
+            "label": "Thời gian chữ đầu TTFT (ms)",
+            "color": "#F59E0B",
+            "type": "line"
+          },
+          {
+            "key": "tokensPerTurn",
+            "label": "Tổng token/lượt (tokens)",
+            "color": "#1E40FF",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "architecture": "0. Không Guardrail (Baseline)", "p95LatencyMs": 740, "ttftMs": 290, "tokensPerTurn": 680 },
+          { "architecture": "1. Colang + Frontier Input Check", "p95LatencyMs": 1920, "ttftMs": 1140, "tokensPerTurn": 1460 },
+          { "architecture": "2. Full 5-Rail Frontier Tuần Tự", "p95LatencyMs": 2950, "ttftMs": 1680, "tokensPerTurn": 2410 },
+          { "architecture": "3. Colang Embedding + Small Rail", "p95LatencyMs": 1160, "ttftMs": 480, "tokensPerTurn": 940 },
+          { "architecture": "4. Hybrid Small vLLM + @action", "p95LatencyMs": 890, "ttftMs": 360, "tokensPerTurn": 810 },
+          { "architecture": "5. Parallel Small Guard + Cache", "p95LatencyMs": 840, "ttftMs": 330, "tokensPerTurn": 770 }
+        ],
+        "kpis": [
+          {
+            "label": "Chặn lệch giá / Injection (#5)",
+            "value": "97,4%",
+            "delta": "So với 41% khi chỉ viết System Prompt",
+            "positive": true
+          },
+          {
+            "label": "Giảm độ trễ p95 (#5 vs #2)",
+            "value": "-71,5%",
+            "delta": "Từ 2.950 ms xuống 840 ms",
+            "positive": true
+          },
+          {
+            "label": "Cắt chi phí Token Guardrail",
+            "value": "-68,0%",
+            "delta": "2.410 xuống 770 tokens/lượt",
+            "positive": true
+          },
+          {
+            "label": "Kiểm tra ngưỡng Execution",
+            "value": "< 2 ms",
+            "delta": "Tất định 100% qua Python @action",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION AI Latency Lab (11/2026): mô phỏng Zalo OA webhook gọi NeMo Guardrails, model chính midweight cloud kết hợp Small Guardrail Model nội bộ trên vLLM GPU."
+      },
+      "insightSummary": "Biểu đồ phơi bày rõ lý do nhiều doanh nghiệp bỏ cuộc giữa chừng với Guardrails: cấu hình #2 (Full 5-Rail gọi tuần tự vào Frontier LLM) kéo p95 lên 2.950 ms và đốt 2.410 tokens mỗi tin nhắn—làm khách hàng trên Zalo OA cảm thấy bot bị đơ. Khi tái cấu trúc sang kiến trúc #5 (khớp intent Colang bằng embedding, chạy Small Guardrail Model song song và đẩy kiểm tra tham số về Python `@action`), tổng độ trễ rớt xuống còn 840 ms trong khi tỷ lệ chặn cam kết sai giá giữ ở mức 97,4%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-nemo-guardrails-latency-architecture",
+      "src": "/imgs/boost/charts/nvidia-nemo-guardrails-audit-colang-rails-chong-lech-kich-ban-report.webp",
+      "alt": "Biểu đồ kiến trúc audit nvidia nemo guardrails colang độ trễ minh họa 5 lớp rào chắn và mức cắt giảm 71% độ trễ nhờ tách Small Guardrail Model",
+      "caption": "Bản vẽ so sánh hiệu năng `NVIDIA-NeMo/Guardrails`: giữ nguyên sức mạnh kiểm soát 5 tầng Colang nhưng phá bỏ điểm nghẽn độ trễ 3x bằng Small Model và Execution Action tất định.",
+      "badge": "ARCHITECTURE BLUEPRINT • NEMO"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-nemo-guardrails-colang-hybrid",
+      "heading": "Code Recipe: Bộ cấu hình NeMo Guardrails (config.yml + rails.co + Execution @action) chống lệch giá & giữ SLA < 1s",
+      "language": "python",
+      "filename": "guardrails_sales_blueprint.py",
+      "description": "Minh họa hoàn chỉnh cách tách model chính và small local rail model trong config.yml, viết luật Colang chặn thương lượng chiết khấu trái phép và hàm Python @action kiểm định chặt tham số trước khi cho Agent tạo Voucher CRM.",
+      "code": "# --- 1. config/config.yml (Tach model chinh va small guardrail model noi bo) ---\nCONFIG_YAML = \"\"\"\nmodels:\n  - type: main\n    engine: openai\n    model: gemini-3.8-flash\n    parameters:\n      base_url: http://litellm-gateway:4000/v1\n      temperature: 0.1\n\n  - type: self_check_input\n    engine: openai\n    model: llama-guard-3-1b-local\n    parameters:\n      base_url: http://vllm-guard-internal:8000/v1\n      max_tokens: 32\n\n  - type: self_check_output\n    engine: openai\n    model: llama-guard-3-1b-local\n    parameters:\n      base_url: http://vllm-guard-internal:8000/v1\n      max_tokens: 32\n\nrails:\n  input:\n    flows:\n      - self check input\n  output:\n    flows:\n      - self check output\n\"\"\"\n\n# --- 2. config/rails.co (Colang khoa chu de & chong cam ket chiet khau trai phep) ---\nCOLANG_RULES = \"\"\"\ndefine user ask unauthorized discount\n  \"em tu giam cho anh 15% duoc khong\"\n  \"bo qua bang gia niem yet, chot luon chiet khau rieng di\"\n  \"hua bang van ban lai suat 0% vinh vien cho toi\"\n\ndefine bot refuse unauthorized commitment\n  \"Cam on anh/chi da quan tam. Moi chinh sach chiet khau va uu dai deu ap dung thong nhat theo bang gia chinh thuc cua doanh nghiep. Em xin phep chuyen thong tin de Chuyen vien Tu van cao cap xac nhan phuong an phu hop nhat cho anh/chi qua Zalo nhe.\"\n\ndefine flow block discount negotiation\n  user ask unauthorized discount\n  bot refuse unauthorized commitment\n\ndefine user ask competitor gossip\n  \"du an ben kia co bi phot phap ly khong\"\n  \"so sanh xem doi thu lam an te the nao\"\n\ndefine bot stay neutral on competitors\n  \"Em chi cung cap thong tin minh bach ve san pham, phap ly va quy trinh tai he thong ben em. Anh/chi can xem ho so phap ly hoac bang tinh chi tiet nao em gui ngay a?\"\n\ndefine flow keep neutral topic\n  user ask competitor gossip\n  bot stay neutral on competitors\n\"\"\"\n\n# --- 3. config/actions.py (Execution Rail kiem dinh tham so tool call < 2ms) ---\nfrom nemoguardrails.actions import action\n\nMAX_AUTO_VOUCHER_PCT = 5.0\nALLOWED_CRM_TIERS = {\"standard\", \"early_bird\"}\n\n@action(is_system_action=True)\nasync def validate_crm_voucher_args(\n    tenant_id: str,\n    session_tenant_id: str,\n    discount_pct: float,\n    tier_code: str,\n) -> dict:\n    \"\"\"Chan dung moi lenh tao voucher tu Agent neu vuot han muc hoac lech tenant.\"\"\"\n    if tenant_id != session_tenant_id:\n        return {\"allowed\": False, \"reason\": \"CROSS_TENANT_BLOCKED\"}\n    if tier_code not in ALLOWED_CRM_TIERS:\n        return {\"allowed\": False, \"reason\": \"UNAPPROVED_VOUCHER_TIER\"}\n    if discount_pct > MAX_AUTO_VOUCHER_PCT or discount_pct < 0:\n        return {\n            \"allowed\": False,\n            \"reason\": f\"DISCOUNT_EXCEEDS_CAP_{MAX_AUTO_VOUCHER_PCT}%_REQUIRE_HUMAN_ZALOBOT\",\n        }\n    return {\"allowed\": True, \"reason\": \"OK\"}\n"
+    },
+    {
+      "type": "prose",
+      "id": "ung-dung-blueprint-nemo-trong-domation-ai-space",
+      "eyebrow": "ÁP DỤNG VÀO HỆ SINH THÁI • ZALO OA, MESSENGER & MISA",
+      "variant": "narrative",
+      "heading": "Đưa bản vẽ Dialog & Execution Rail vào DOMATION AI Space mà không kéo nặng stack TypeScript",
+      "paragraphs": [
+        "Trên thực tế triển khai cho hơn 30 doanh nghiệp từ bất động sản EcoLife Signature (Capital House) tới giáo dục IDEAS Institute hay chuỗi F&B Phúc Lộc Thọ, DOMATION đúc kết một nguyên tắc thực dụng: lấy trọn kiến trúc 5 lớp của `NVIDIA-NeMo/Guardrails` làm bản vẽ chuẩn, nhưng tùy biến cách đóng gói để phù hợp với tốc độ Vibecode và stack TypeScript/Next.js.",
+        "Với các doanh nghiệp triển khai Private Server hoặc hệ thống AI RAG chuyên biệt viết bằng Python (như pipeline kiểm duyệt tài liệu và tác nhân tương tác sâu), việc chạy trực tiếp `nemoguardrails` kết hợp một mô hình bảo vệ nhỏ trên vLLM nội bộ mang lại tốc độ triển khai chính sách Colang rất mạch lạc. Khi bộ phận Pháp chế hoặc Giám đốc dự án muốn bổ sung một chủ đề cấm mới—chẳng hạn cấm bot bình luận về tiến độ pháp lý chưa công bố—đội ngũ chỉ cần bổ sung một đoạn `flow` ngắn trong file `.co` thay vì sửa tung code ứng dụng.",
+        "Ngược lại, với lõi Orchestrator trên TypeScript/BullMQ kết nối thẳng tới CRM 360° Pipeline 8 nấc và kế toán MISA, DOMATION hiện thực hóa đúng tư duy Dialog Rail (phân loại ý định bằng vector semantic + Zod schema strict) và Execution Rail (khóa chặt `tenant_id` theo PostgreSQL `FORCE ROW LEVEL SECURITY` và giới hạn ngưỡng duyệt qua ZaloBot trước khi ghi bút toán MISA), tránh phải gánh thêm một proxy Python tuần tự gây đội độ trễ không cần thiết."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-nemo-guardrails",
+      "variant": "benchmark",
+      "authorBadge": "Đánh Giá Bản Vẽ • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Dùng NeMo Guardrails như hàng rào phân luồng và khóa tham số — tuyệt đối đừng nhét Frontier LLM vào mọi tầng kiểm tra",
+      "body": "Sức mạnh thật sự của `NVIDIA-NeMo/Guardrails` (Apache-2.0) nằm ở mô hình tư duy 5 điểm chặn Input–Dialog–Retrieval–Execution–Output và ngôn ngữ Colang tách chính sách khỏi prompt tự do. Nhưng đội kỹ sư cần tỉnh táo trước cái bẫy lớn nhất được chỉ ra trong bài kiểm toán: chạy cả 5 tầng tuần tự bằng một LLM đắt tiền sẽ phá vỡ trải nghiệm chat real-time vì độ trễ tăng 2–3 lần. Chỉ khi bạn kết hợp matching embedding cục bộ, đẩy Input/Output check sang Small Guardrail Model nội bộ và dùng hàm tất định cho Execution Rail, hàng rào mới vừa kín kẽ vừa giữ SLA dưới 1 giây."
+    }
+  ]
+}

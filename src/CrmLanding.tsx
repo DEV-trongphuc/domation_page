@@ -14,9 +14,15 @@ import {
   Users2,
 } from 'lucide-react';
 import { ContactModal } from './ContactModal';
+import { SPECIALIST_ZALO_URL } from './components/common/ZaloSpecialistBanner';
 import { Navbar } from './Navbar';
+import { BackToTopPill } from './components/BackToTopPill';
 import { LuxuryGoldBackdrop } from './LuxuryGoldBackdrop';
 import { DomationLogoMark } from './components/DomationLogoMark';
+import { FounderAuthorityBlock } from './components/FounderAuthorityBlock';
+import { MobileAppShowcaseSection } from './components/MobileAppShowcaseSection';
+import { MotionVideoShowcase } from './components/MotionVideoShowcase';
+import { ResponsiveSlideDeck } from './components/ResponsiveSlideDeck';
 import { DECOR_PNGS, DOMATION_SAAS_PLANS } from './data/enterpriseData';
 import { getCrmSeoConfig } from './data/coreRouteSeo';
 import { usePageSeo } from './utils/seo';
@@ -224,7 +230,7 @@ export const CrmLanding: React.FC = () => {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-6 leading-[1.12]"
+              className="text-[1.45rem] sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 mb-5 sm:mb-6 leading-[1.15]"
             >
               DOMATION CRM 360°{' '}
               <span className="text-gradient-inkica">&amp; Auto Data 5.0</span>
@@ -244,22 +250,22 @@ export const CrmLanding: React.FC = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap mb-14"
+              className="grid grid-cols-2 sm:inline-flex items-center justify-center gap-2.5 sm:gap-4 mb-10 sm:mb-14 max-w-md sm:max-w-none mx-auto"
             >
               <a
                 href="https://crm-domation.vercel.app/"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-inkica-primary min-h-[44px] w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm md:text-base font-bold"
+                className="btn-inkica-primary min-h-[44px] w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-8 py-3 sm:py-4 rounded-full text-xs sm:text-sm md:text-base font-bold whitespace-nowrap"
               >
-                Trải nghiệm ngay <ArrowRight className="w-4 h-4" />
+                Trải nghiệm ngay <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
               </a>
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
-                className="ql-btn-outline min-h-[44px] w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm md:text-base font-bold cursor-pointer"
+                className="ql-btn-outline min-h-[44px] w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-8 py-3 sm:py-4 rounded-full text-xs sm:text-sm md:text-base font-bold whitespace-nowrap cursor-pointer"
               >
-                Xem báo giá chi tiết
+                Xem báo giá
               </button>
             </motion.div>
 
@@ -275,25 +281,56 @@ export const CrmLanding: React.FC = () => {
                 <img
                   src="/crm_imgs/CRMS (1).jpg"
                   alt="CRM Hero Dashboard"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="w-full h-auto group-hover:scale-[1.02] transition-transform duration-700"
                 />
               </div>
             </motion.div>
           </div>
 
+          <div id="motion-showcase" className="mb-16 md:mb-20">
+            <MotionVideoShowcase variant="spotlight" videoId="crm" />
+          </div>
+
+          <MobileAppShowcaseSection variant="crm" />
+
           {/* Features Grid */}
-          <div className="mb-20 md:mb-24">
-            <FadeIn className="text-center mb-12">
-              <div className="ql-eyebrow mb-4">Module Linh Hoạt</div>
-              <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">
+          <div className="mb-16 md:mb-24">
+            <FadeIn className="text-center mb-8 sm:mb-12">
+              <div className="ql-eyebrow mb-3">Module Linh Hoạt</div>
+              <h2 className="text-[20px] sm:text-3xl lg:text-4xl font-black text-slate-900 mb-3 leading-[1.22]">
                 Giải Pháp Quản Trị <span className="text-gradient-inkica">Đa Điểm Chạm</span>
               </h2>
-              <p className="text-slate-600 max-w-2xl mx-auto">
+              <p className="text-xs sm:text-base text-slate-600 max-w-2xl mx-auto">
                 Tất cả những gì bạn cần để số hóa quy trình kinh doanh, không còn phải dùng rải rác nhiều phần mềm.
               </p>
             </FadeIn>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="md:hidden">
+              <ResponsiveSlideDeck
+                items={features}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                gapClass="gap-3.5"
+                ariaLabel="6 tính năng quản trị CRM đa điểm chạm"
+                keyExtractor={(f) => f.title}
+                renderItem={(feat) => (
+                  <div className="h-full rounded-2xl bg-white/95 border border-slate-200/85 p-5 shadow-xs flex flex-col">
+                    <div
+                      className={`w-11 h-11 rounded-2xl mb-4 flex items-center justify-center bg-gradient-to-br ${feat.accent} text-white shadow-sm`}
+                    >
+                      <feat.icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-base font-bold text-slate-900 mb-2">{feat.title}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed flex-1">{feat.desc}</p>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((feat, idx) => (
                 <FadeIn key={idx} delay={idx * 0.08} className="h-full">
                   <div className="inkica-glass-card p-6 lg:p-7 flex flex-col h-full group hover:border-blue-300 transition-all">
@@ -319,6 +356,8 @@ export const CrmLanding: React.FC = () => {
                 src={DECOR_PNGS.funnel}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
                 className="hidden md:block pointer-events-none select-none absolute -top-6 -right-6 w-24 h-24 object-contain opacity-85 animate-float-decor z-20"
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center relative z-10">
@@ -326,7 +365,7 @@ export const CrmLanding: React.FC = () => {
                   <div className="ql-eyebrow mb-5">
                     <Target className="w-3.5 h-3.5" /> Quản Lý Doanh Số Tối Đa
                   </div>
-                  <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-5 leading-tight">
+                  <h2 className="text-[20px] sm:text-3xl md:text-4xl font-black text-slate-900 mb-4 sm:mb-5 leading-[1.22]">
                     Tăng Tỷ Lệ Chốt Sale Với Kanban Pipeline
                   </h2>
                   <p className="text-slate-600 text-sm md:text-base mb-7 leading-relaxed">
@@ -356,6 +395,8 @@ export const CrmLanding: React.FC = () => {
                     <img
                       src="/crm_imgs/CRMS (2).jpg"
                       alt="Kanban Pipeline"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-slate-900/40 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -376,6 +417,8 @@ export const CrmLanding: React.FC = () => {
                 src={DECOR_PNGS.shield}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
                 className="hidden md:block pointer-events-none select-none absolute -bottom-6 -left-6 w-24 h-24 object-contain opacity-85 animate-float-gentle z-20"
               />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center relative z-10">
@@ -387,6 +430,8 @@ export const CrmLanding: React.FC = () => {
                     <img
                       src="/crm_imgs/CRM (11).jpg"
                       alt="Inventory Management"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-slate-900/40 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -400,8 +445,8 @@ export const CrmLanding: React.FC = () => {
                   <div className="ql-eyebrow mb-5">
                     <Building2 className="w-3.5 h-3.5" /> Giỏ Hàng BĐS &amp; Kế Toán MISA
                   </div>
-                  <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-5 leading-tight">
-                    Giỏ Hàng Real-Time &amp; Đồng Bộ MISA Hai Chiều
+                  <h2 className="text-[20px] sm:text-3xl md:text-4xl font-black text-slate-900 mb-4 sm:mb-5 leading-[1.22]">
+                    Giỏ Hàng Real-Time &amp; Đồng Bộ MISA
                   </h2>
                   <p className="text-slate-600 text-sm md:text-base mb-7 leading-relaxed">
                     Khóa căn giữ chỗ theo thời gian thực giữa các sàn F1 để triệt tiêu trùng cọc, tự sinh Phiếu Hợp Tác
@@ -429,15 +474,44 @@ export const CrmLanding: React.FC = () => {
           {/* Gallery Section */}
           <div className="mb-20">
             <FadeIn className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">
-                Mọi Chức Năng Hội Tụ <span className="text-gradient-inkica">Trên Một Màn Hình</span>
+              <h2 className="text-[20px] sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 leading-[1.22]">
+                Mọi Chức Năng Hội Tụ <span className="text-gradient-inkica">Trên 1 Màn Hình</span>
               </h2>
               <p className="text-slate-600 max-w-2xl mx-auto">
                 Click để xem chi tiết từng module được thiết kế với chuẩn UI/UX tối ưu cho khối lượng dữ liệu lớn.
               </p>
             </FadeIn>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+            <div className="lg:hidden">
+              <ResponsiveSlideDeck
+                items={gallery}
+                perPage={4}
+                tabletPerPage={6}
+                colsClass="grid-cols-2 gap-3"
+                tabletColsClass="sm:grid-cols-3 gap-4"
+                label="Bộ sưu tập CRM"
+                accent="blue"
+                renderItem={(img, idx) => (
+                  <div
+                    key={idx}
+                    className="group relative rounded-2xl overflow-hidden border border-slate-200/90 aspect-video bg-white p-1 cursor-zoom-in shadow-sm"
+                    onClick={() => setPreviewImage(img)}
+                  >
+                    <div className="relative w-full h-full rounded-xl overflow-hidden bg-slate-100">
+                      <img
+                        src={img}
+                        alt={`CRM Screenshot ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="hidden lg:grid lg:grid-cols-4 gap-5">
               {gallery.map((img, idx) => (
                 <FadeIn key={idx} delay={idx * 0.04}>
                   <div
@@ -455,6 +529,7 @@ export const CrmLanding: React.FC = () => {
                         alt={`CRM Screenshot ${idx + 1}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -466,8 +541,8 @@ export const CrmLanding: React.FC = () => {
           {/* Pricing Section — Canonical DOMATION Suite */}
           <div className="max-w-7xl mx-auto mb-16" id="pricing">
             <FadeIn className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">
-                Bảng Giá Đồng Bộ <span className="text-gradient-inkica">DOMATION CRM 360° &amp; Auto Data</span>
+              <h2 className="text-[20px] sm:text-3xl lg:text-4xl font-black text-slate-900 mb-3 leading-[1.22]">
+                Bảng Giá <span className="text-gradient-inkica">CRM 360° &amp; Auto Data</span>
               </h2>
               <p className="text-slate-600 max-w-2xl mx-auto">
                 Dùng thử miễn phí 30 ngày (0₫) • Giá theo gói doanh nghiệp minh bạch, nâng cấp liền mạch giữ nguyên 100% dữ liệu.
@@ -500,7 +575,93 @@ export const CrmLanding: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/90 backdrop-blur-xl shadow-xs grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/75">
+            <div className="xl:hidden">
+              <ResponsiveSlideDeck
+                items={DOMATION_SAAS_PLANS}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={2}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-4"
+                ariaLabel="Bảng giá CRM 360"
+                keyExtractor={(plan) => plan.name}
+                renderItem={(plan) => {
+                  const isCustom = plan.monthly === 'May Đo';
+                  return (
+                    <div
+                      className={`h-full rounded-2xl border border-slate-200/85 bg-white p-5 sm:p-6 flex flex-col justify-between shadow-xs ${
+                        plan.popular
+                          ? 'bg-gradient-to-br from-[#0F172A] via-[#1E3A8A] to-[#0284C7] text-white'
+                          : ''
+                      }`}
+                    >
+                      <div>
+                        <span
+                          className={`inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 ${
+                            plan.popular ? 'bg-cyan-400/20 text-cyan-200' : 'bg-slate-100 text-[#1E40FF]'
+                          }`}
+                        >
+                          {plan.badge}
+                        </span>
+                        <h3 className={`text-lg font-bold mb-1.5 ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
+                          {plan.name}
+                        </h3>
+                        <div className="mb-2.5 flex items-baseline gap-1.5">
+                          <span className={`text-2xl font-black ${plan.popular ? 'text-white' : 'text-slate-900'}`}>
+                            {isYearly ? plan.yearly : plan.monthly}
+                          </span>
+                          {!isCustom && (
+                            <span className={`text-xs ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
+                              {isYearly ? '/năm' : '/tháng'}
+                            </span>
+                          )}
+                        </div>
+                        <p className={`text-xs mb-4 ${plan.popular ? 'text-blue-100' : 'text-slate-600'}`}>
+                          {plan.desc}
+                        </p>
+                        <ul className="space-y-2.5 mb-6">
+                          {plan.features.map((item) => (
+                            <li
+                              key={item}
+                              className={`flex items-start gap-2 text-xs ${
+                                plan.popular ? 'text-blue-50' : 'text-slate-700'
+                              }`}
+                            >
+                              <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${plan.popular ? 'text-cyan-300' : 'text-[#1E40FF]'}`} />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      {isCustom ? (
+                        <a
+                          href={SPECIALIST_ZALO_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="min-h-[44px] w-full py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 whitespace-nowrap bg-[#0068FF] hover:bg-[#0057D9] text-white shadow-sm transition-colors"
+                        >
+                          <span>Chat Zalo Setup Custom →</span>
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setShowModal(true)}
+                          className={`min-h-[44px] w-full py-3 rounded-xl font-bold text-xs cursor-pointer transition-colors whitespace-nowrap ${
+                            plan.popular
+                              ? 'bg-white text-[#1E40FF] hover:bg-blue-50 shadow-md'
+                              : 'ql-btn-outline'
+                          }`}
+                        >
+                          {`Chọn Gói ${plan.name}`}
+                        </button>
+                      )}
+                    </div>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="hidden xl:grid rounded-[28px] overflow-hidden border border-slate-200/85 bg-white/90 backdrop-blur-xl shadow-xs xl:grid-cols-4 divide-x divide-slate-200/75">
               {DOMATION_SAAS_PLANS.map((plan, idx) => {
                 const isCustom = plan.monthly === 'May Đo';
                 return (
@@ -552,23 +713,40 @@ export const CrmLanding: React.FC = () => {
                         ))}
                       </ul>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowModal(true)}
-                      className={`min-h-[44px] w-full py-3 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-colors ${
-                        plan.popular
-                          ? 'bg-white text-[#1E40FF] hover:bg-blue-50 shadow-lg'
-                          : 'ql-btn-outline'
-                      }`}
-                    >
-                      {isCustom ? 'Tư Vấn May Đo' : `Chọn Gói ${plan.name}`}
-                    </button>
+                    {isCustom ? (
+                      <a
+                        href={SPECIALIST_ZALO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="min-h-[44px] w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 whitespace-nowrap bg-[#0068FF] hover:bg-[#0057D9] text-white shadow-sm transition-colors"
+                      >
+                        <span>Chuyên Viên Tạo (Zalo)</span>
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setShowModal(true)}
+                        className={`min-h-[44px] w-full py-3 rounded-xl font-bold text-xs sm:text-sm cursor-pointer transition-colors ${
+                          plan.popular
+                            ? 'bg-white text-[#1E40FF] hover:bg-blue-50 shadow-lg'
+                            : 'ql-btn-outline'
+                        }`}
+                      >
+                        {`Chọn Gói ${plan.name}`}
+                      </button>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
         </div>
+
+        <FounderAuthorityBlock
+          variant="subtle"
+          onOpenContact={() => setShowModal(true)}
+          contextNote="DOMATION CRM 360° & Pipeline 9 nấc MISA được kiến trúc từ A–Z bởi Huỳnh Trọng Phúc (TurnioDEV) — Founder & CEO DOMATION."
+        />
       </main>
 
       {/* Footer */}
@@ -593,15 +771,8 @@ export const CrmLanding: React.FC = () => {
         </p>
       </footer>
 
-      {/* Centered Sticky Back to Top */}
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Lên đầu trang"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 min-h-[44px] px-4 py-2 rounded-full bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_8px_24px_rgba(15,23,42,0.1)] text-xs font-bold text-slate-700 hover:text-[#1E40FF] transition-all cursor-pointer"
-      >
-        ↑ Đầu trang
-      </button>
+      {/* Centered Blue Back to Top Pill */}
+      <BackToTopPill />
 
       {/* Request Modal */}
       <AnimatePresence>
@@ -755,7 +926,7 @@ export const CrmLanding: React.FC = () => {
               >
                 <X className="w-6 h-6" />
               </button>
-              <img src={previewImage} alt="Preview" className="w-full h-full max-h-[85vh] object-contain rounded-xl" />
+              <img src={previewImage} alt="Preview" loading="lazy" decoding="async" className="w-full h-full max-h-[85vh] object-contain rounded-xl" />
             </motion.div>
           </div>
         )}

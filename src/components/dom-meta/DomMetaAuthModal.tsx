@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { DomationLogoMark } from '../DomationLogoMark';
+import { ZaloSpecialistBanner } from '../common/ZaloSpecialistBanner';
 import {
   AutodataApiError,
   apiRequest,
@@ -1203,6 +1204,8 @@ const DomMetaAuthModalBody: React.FC<Omit<DomMetaAuthModalProps, 'isOpen'>> = ({
                   );
                 })}
               </div>
+
+              <ZaloSpecialistBanner context="setup" variant="compact" />
 
               {/* STEP 1 */}
               {step === 1 && (

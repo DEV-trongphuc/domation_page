@@ -1,0 +1,319 @@
+{
+  "id": "art-185",
+  "number": "185",
+  "slug": "open-webui-open-webui-audit-private-chat-workspace-va-ban-quyen",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Self-Hosted Enterprise AI Chat UI",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Commercial",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Audit open-webui/open-webui: Trải nghiệm chat AI nội bộ 150k Stars & cái bẫy giấy phép vượt 50 nhân sự",
+  "seoTitle": "Audit Open WebUI: Chat Nội Bộ & Luật >50 Users | DOMATION",
+  "metaDescription": "Cảnh báo pháp lý khi dùng Open WebUI (150k+ Stars): vượt 50 user/30 ngày phải giữ branding hoặc mua Enterprise License, không được tự white-label.",
+  "focusKeyword": "audit open webui giấy phép 50 người dùng",
+  "secondaryKeywords": [
+    "open webui license điều khoản 50 users",
+    "dựng chatgpt nội bộ chống shadow ai",
+    "open webui kết nối ollama vllm",
+    "rủi ro white label open webui bán lại",
+    "nhúng ai space vào erp crm thay webui"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "Open WebUI 150K Stars: Soi Kỹ Luật Vượt 50 Users",
+  "thumbnailHook": "Tuyệt làm phòng chat nội bộ dập Shadow AI, không hợp white-label bán lại.",
+  "thumbnailBadge": "GITHUB • 150K+ LICENSE",
+  "coverImage": "/imgs/boost/v2/open-webui-open-webui-audit-private-chat-workspace-va-ban-quyen.webp",
+  "screenshotImage": "/imgs/boost/charts/open-webui-open-webui-audit-private-chat-workspace-va-ban-quyen-report.webp",
+  "coverAlt": "Phân tích phản biện audit open webui giấy phép 50 người dùng cảnh báo điều khoản Open WebUI License rolling 30 ngày, cấm white-label và giới hạn tích hợp ERP",
+  "screenshotCaption": "Biểu đồ so sánh rủi ro Shadow AI, mức phơi nhiễm pháp lý giấy phép theo quy mô nhân sự từ 15 đến 500 user trong 30 ngày trượt và độ phủ tự động hóa giao dịch ERP/CRM.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem AI Space Tích Hợp Sâu Trong ERP",
+  "relatedSlugs": [
+    "hiem-hoa-shadow-ai-68-doanh-nghiep-ro-ri-du-lieu-noi-bo",
+    "langgenius-dify-audit-visual-llmops-va-han-che-ban-quyen-saas",
+    "ollama-ollama-audit-trien-khai-private-llm-workstation",
+    "xay-dung-chinh-sach-su-dung-ai-noi-bo-va-dao-tao-nhan-su"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bài luận phản biện audit open webui giấy phép 50 người dùng bóc tách sự thật đằng sau 150k+ Stars của open-webui/open-webui: dù giao diện SvelteKit + FastAPI giúp thay thế ChatGPT cá nhân để dập Shadow AI nội bộ, nó không dùng giấy phép MIT tự do xóa nhãn. Điều khoản Open WebUI License quy định hệ thống vượt quá 50 người dùng trong chu kỳ 30 ngày trượt bắt buộc giữ thương hiệu Open WebUI hoặc mua Enterprise License để white-label. Ngoài ra, phòng chat rời không thể thay AI Agent gắn vào luồng giao dịch ERP/CRM.",
+  "keyTakeaways": [
+    "Đọc kỹ tệp `LICENSE` của `open-webui/open-webui`: dự án dùng giấy phép tùy biến (Open WebUI License — BSD-3-Clause kèm điều khoản thương hiệu và ngưỡng doanh nghiệp) thay vì MIT/Apache-2.0 thuần túy.",
+    "Cảnh báo bẫy ngưỡng >50 rolling-30-day users: khi vượt mốc 50 người dùng trong cửa sổ 30 ngày bất kỳ, tổ chức không được phép xóa bỏ hoặc thay thế logo, nhãn hiệu Open WebUI (white-label) nếu chưa mua Commercial Enterprise License.",
+    "Hành vi phổ biến ở nhiều agency — tải Open WebUI về sửa CSS, gắn logo riêng rồi đóng gói bán lại thành 'Trợ lý AI Độc Quyền' cho các tập đoàn hàng trăm nhân sự — là hành vi vi phạm bản quyền trực tiếp.",
+    "Về mặt kỹ thuật vận hành: dù có RAG vector tích hợp và Python Pipelines mạnh mẽ, Open WebUI vẫn là một cửa sổ chat tách rời khỏi dữ liệu giao dịch ACID (bảng hàng Live, lọc trùng SĐT 6 tháng, hạch toán MISA, chia số ZaloBot).",
+    "Tại DOMATION, thay vì bán lại vỏ chat rời rạc dễ vướng rủi ro giấy phép, đội ngũ kiến trúc AI Agent và RAG nhúng thẳng vào từng màn hình nghiệp vụ của ERP 5.0, CRM 360° và Zalo OA."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Cộng đồng",
+      "value": "Open WebUI License • 150k+"
+    },
+    {
+      "label": "Ngưỡng kích hoạt điều khoản",
+      "value": "> 50 Users / 30 ngày trượt"
+    },
+    {
+      "label": "Quyền tự xóa Branding >50 seat",
+      "value": "Cấm (Cần Enterprise Key)"
+    },
+    {
+      "label": "Nhận thức giao dịch ERP/CRM",
+      "value": "Thấp (Chat UI tách rời)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Điều khoản >50 người dùng trong Open WebUI License chính xác quy định những gì?",
+      "answer": "Giấy phép `Open WebUI License` đặt ra giới hạn quan trọng dựa trên con số 50 người dùng hoạt động trong bất kỳ khoảng thời gian 30 ngày liên tiếp nào (50 rolling-30-day users). Nếu hệ thống của bạn có từ 50 người dùng trở xuống, hoặc nếu bạn giữ nguyên vẹn toàn bộ nhận diện thương hiệu, logo và thông báo bản quyền của Open WebUI trên giao diện người dùng (không xóa bỏ hay đổi tên thành sản phẩm riêng), bạn được sử dụng phần mềm miễn phí cho mục đích nội bộ. Ngược lại, ngay khi triển khai vượt 50 người dùng trong 30 ngày mà muốn ẩn thương hiệu Open WebUI, thay đổi logo/tên gọi thành phần mềm riêng (white-label), chỉnh sửa các thông tin ghi công hay thương mại hóa dịch vụ quản trị dưới nhãn hiệu riêng, doanh nghiệp bắt buộc phải mua Commercial Enterprise License."
+    },
+    {
+      "question": "Nếu một công ty Việt Nam có 200 nhân viên tự cài Open WebUI nội bộ để thay thế ChatGPT nhưng giữ nguyên logo Open WebUI thì có hợp pháp không?",
+      "answer": "Có. Theo tinh thần của điều khoản Branding & Enterprise Clause trong Open WebUI License, việc doanh nghiệp lớn tự vận hành cho 200 hay 500 nhân sự nội bộ hoàn toàn hợp lệ miễn là bạn **bảo toàn đầy đủ thương hiệu, biểu tượng và ghi nhận nguồn Open WebUI** theo đúng quy định của giấy phép, không xóa tên dự án gốc để biến nó thành phần mềm nội bộ mang tên công ty mình. Điều cấm tuyệt đối là tự ý xóa branding Open WebUI (white-labeling) ở quy mô vượt 50 rolling-30-day users hoặc bán lại bản đã xóa nhãn như sản phẩm tự viết."
+    },
+    {
+      "question": "Công cụ Python Pipelines trong Open WebUI có vai trò gì khi triển khai nội bộ?",
+      "answer": "Pipelines là một máy chủ Python chạy song song (tách khỏi container chính) đóng vai trò bộ chuyển đổi và màng lọc mở rộng cho Open WebUI. Thông qua Pipelines, kỹ sư có thể chèn các hàm `filter` (như gọi Presidio che mờ CCCD/số điện thoại trước khi tin nhắn rời công ty), `pipe` (tích hợp các workflow phức tạp từ LangGraph hoặc gọi REST API tra cứu đơn hàng nội bộ) và `manifold` (định tuyến tới nhiều mô hình tùy biến hoặc ghi vết telemetry sang Langfuse). Tuy nhiên, duy trì thêm Pipelines server đòi hỏi kỹ sư Python kiểm soát kỹ vòng đời bộ nhớ và ngoại lệ."
+    },
+    {
+      "question": "Vì sao nói Open WebUI dù tiện lợi vẫn không thể thay thế AI tích hợp sâu vào hệ thống ERP 5.0 và CRM 360°?",
+      "answer": "Open WebUI được thiết kế giống ChatGPT: nơi con người chủ động mở tab trình duyệt, gõ câu hỏi hoặc đính kèm file PDF bằng ký hiệu `#` để trò chuyện. Nó giải quyết rất tốt nhu cầu soạn email, dịch tài liệu hoặc hỏi đáp quy chế chung (dập Shadow AI). Nhưng trong vận hành doanh nghiệp thực tế, nhân viên Sales không muốn mở một cửa sổ chat rời rạc để hỏi rồi lại copy-paste câu trả lời qua CRM. Họ cần AI nằm ngay trong luồng nghiệp vụ: Lead từ Meta vừa đổ về trong <1 giây tự lọc trùng 6 tháng, chấm điểm, đẩy thông báo về ZaloBot cho đúng đại lý F1, tự tạo nháp báo giá khớp tồn kho căn hộ Live trong PostgreSQL FORCE RLS và bắn tín hiệu HTTP 200 về Meta CAPI — những tác vụ hướng sự kiện (event-driven) và giao dịch ACID mà một giao diện chat UI thuần túy không thể đảm đương."
+    },
+    {
+      "question": "Nếu doanh nghiệp cần một giao diện Chat AI mang 100% thương hiệu riêng (White-Label) cho trên 100 nhân sự hoặc khách hàng mà không vướng Open WebUI License thì làm thế nào?",
+      "answer": "Bạn có hai hướng đi minh bạch: một là liên hệ mua trực tiếp gói Enterprise License từ đội ngũ Open WebUI để được cấp quyền white-label hợp pháp cùng hỗ trợ thương mại; hai là xây dựng giao diện AI Space riêng bằng Next.js / Vercel AI SDK (hoặc React frontend thuần MIT) kết nối thẳng tới cổng AI Gateway (LiteLLM/Portkey) và cơ sở dữ liệu PostgreSQL RLS của chính công ty — cách mà DOMATION áp dụng để nhúng trợ lý RAG ngay bên trong cổng ERP/CRM cho khách hàng ở mọi quy mô người dùng mà không phụ thuộc bản quyền UI của bên thứ ba."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "open-webui/open-webui",
+    "url": "https://github.com/open-webui/open-webui",
+    "category": "Self-Hosted AI Chat Workspace & RAG UI",
+    "primaryLanguage": "Python / TypeScript / Svelte",
+    "license": "Open WebUI License (Branding & >50-User Enterprise Clause)",
+    "starsTier": "150k+ Stars",
+    "bestFor": "Cung cấp tức thì một không gian làm việc giống hệt ChatGPT chạy trên các mô hình riêng (Ollama, vLLM, LiteLLM) giúp nhân viên sử dụng hàng ngày, ngăn chặn tình trạng nhân sự dán dữ liệu mật của công ty lên các chatbot công cộng.",
+    "avoidWhen": "Cạm bẫy pháp lý chí tử với nhà cung cấp B2B: mọi bản triển khai vượt quá 50 người dùng trong chu kỳ 30 ngày trượt bắt buộc phải giữ nguyên thương hiệu Open WebUI hoặc mua giấy phép Enterprise License nếu muốn white-label; ngoài ra hệ thống RAG tích hợp sẵn thiếu nhận thức dữ liệu giao dịch ERP/CRM.",
+    "domationSynergy": "Là thước đo chuẩn mực về trải nghiệm người dùng cho không gian chat Private LLM nội bộ, nhưng DOMATION không đóng gói white-label Open WebUI cho các dự án trên 50 nhân sự mà chưa có bản quyền; thay vào đó DOMATION nhúng trực tiếp các AI Agent RAG chuyên biệt vào bên trong luồng vận hành ERP 5.0, CRM 360° và Zalo OA.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 10,
+      "securityGovernance": 7,
+      "costEfficiency": 8
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-open-webui",
+      "heading": "Hồ Sơ Kiểm Toán Pháp Lý & Kiến Trúc: open-webui/open-webui (150k+ Stars)",
+      "repo": {
+        "fullName": "open-webui/open-webui",
+        "url": "https://github.com/open-webui/open-webui",
+        "category": "Self-Hosted AI Chat Workspace & RAG UI",
+        "primaryLanguage": "Python / TypeScript / Svelte",
+        "license": "Open WebUI License (Branding & >50-User Enterprise Clause)",
+        "starsTier": "150k+ Stars",
+        "bestFor": "Cung cấp tức thì một không gian làm việc giống hệt ChatGPT chạy trên các mô hình riêng (Ollama, vLLM, LiteLLM) giúp nhân viên sử dụng hàng ngày, ngăn chặn tình trạng nhân sự dán dữ liệu mật của công ty lên các chatbot công cộng.",
+        "avoidWhen": "Cạm bẫy pháp lý chí tử với nhà cung cấp B2B: mọi bản triển khai vượt quá 50 người dùng trong chu kỳ 30 ngày trượt bắt buộc phải giữ nguyên thương hiệu Open WebUI hoặc mua giấy phép Enterprise License nếu muốn white-label; ngoài ra hệ thống RAG tích hợp sẵn thiếu nhận thức dữ liệu giao dịch ERP/CRM.",
+        "domationSynergy": "Là thước đo chuẩn mực về trải nghiệm người dùng cho không gian chat Private LLM nội bộ, nhưng DOMATION không đóng gói white-label Open WebUI cho các dự án trên 50 nhân sự mà chưa có bản quyền; thay vào đó DOMATION nhúng trực tiếp các AI Agent RAG chuyên biệt vào bên trong luồng vận hành ERP 5.0, CRM 360° và Zalo OA.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 10,
+          "securityGovernance": 7,
+          "costEfficiency": 8
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "contrarian-part1-ao-tuong-150k-stars-va-bay-giay-phep-50-users",
+      "eyebrow": "TIỂU LUẬN PHẢN BIỆN • BÓC TRẦN ĐIỀU KHOẢN >50 ROLLING-30-DAY USERS",
+      "variant": "contrarian",
+      "heading": "Cú lừa nhận thức từ con số 150k+ Stars: Vì sao xóa logo Open WebUI đem bán cho doanh nghiệp là quả bom hẹn giờ pháp lý",
+      "pullQuote": "Trong thị trường làm phần mềm AI hiện nay, có một chiêu thức cực kỳ phổ biến nhưng vô cùng nguy hiểm: kéo Open WebUI về, sửa vài dòng CSS đổi logo thành 'Enterprise AI Độc Quyền', rồi bán cho khách hàng 200 nhân sự với giá hàng trăm triệu mà không hề đọc một chữ trong tệp LICENSE.",
+      "paragraphs": [
+        "Trên thị trường phần mềm doanh nghiệp Việt Nam, không ít đơn vị dịch vụ IT khi thấy phong trào chuyển đổi số AI bùng nổ đã tìm ra một con đường tắt trông có vẻ hoàn hảo: cài đặt `open-webui/open-webui` (150k+ Stars) nối vào Ollama hoặc OpenAI API, chỉnh sửa giao diện SvelteKit để xóa dòng chữ Open WebUI, gắn logo của khách hàng hoặc logo của chính mình lên góc trái rồi chào bán như một nền tảng ChatGPT nội bộ do đội ngũ tự nghiên cứu phát triển. Nhìn bề ngoài, giao diện đó bóng bẩy, hỗ trợ tải tệp PDF, gõ `#` gọi kho tri thức, phân quyền người dùng và lịch sử hội thoại không thua kém sản phẩm triệu đô.",
+        "Thế nhưng khi đội ngũ DOMATION tiến hành audit open webui giấy phép 50 người dùng với tư cách kiến trúc sư kiểm toán phần mềm doanh nghiệp, chúng tôi buộc phải lên tiếng phản biện mạnh mẽ thói quen cẩu thả này. Dù lịch sử sơ khai từng gắn với mã nguồn mở thoải mái hơn, phiên bản hiện đại của `open-webui/open-webui` không phát hành dưới giấy phép MIT hay Apache-2.0 cho phép tùy ý white-label. Kho mã vận hành dưới **Open WebUI License** (nền tảng BSD-3-Clause được bổ sung các điều khoản thương hiệu và ngưỡng doanh nghiệp rất chặt chẽ).",
+        "Điểm nổ nằm ở ranh giới **50 người dùng trong chu kỳ 30 ngày trượt (50 rolling-30-day users)**: khi một hệ thống triển khai phục vụ vượt quá 50 người dùng hoạt động trong bất kỳ khoảng 30 ngày liên tiếp nào, tổ chức triển khai bị **cấm tuyệt đối** việc xóa bỏ, che giấu hay thay thế nhận diện thương hiệu của Open WebUI (white-labeling) nếu không mua Commercial Enterprise License. Nếu bạn là nhà thầu B2B nhận tiền dựng 'Trợ lý AI mang thương hiệu riêng của Tập đoàn' cho 150 hoặc 300 nhân viên bằng cách gọt bỏ thương hiệu Open WebUI khỏi mã nguồn SvelteKit, cả bạn lẫn khách hàng sử dụng hệ thống đó đều đang đối mặt với rủi ro vi phạm bản quyền hợp đồng nghiêm trọng ngay trong ngày nghiệm thu."
+      ],
+      "bullets": [
+        "Ngưỡng 50 người dùng tính theo cửa sổ trượt 30 ngày (rolling 30 days), không phân biệt tài khoản đăng nhập cùng lúc hay luân phiên trong tháng.",
+        "Giữ nguyên logo, tên gọi và liên kết ghi nhận Open WebUI giúp doanh nghiệp nội bộ dùng miễn phí ngay cả khi vượt 50 người dùng — nhưng xóa nhãn hoặc đổi sang thương hiệu độc quyền thì bắt buộc phải có Enterprise License.",
+        "Việc cố tình sửa build frontend nhằm né kiểm tra license là hành vi thiếu đạo đức nghề nghiệp và tạo nợ pháp lý khổng lồ cho hệ thống lõi của doanh nghiệp."
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "myth-vs-reality-open-webui",
+      "heading": "Bốn ngộ nhận phổ biến về Open WebUI và thực tế kiểm toán tại DOMATION",
+      "pairs": [
+        {
+          "myth": "Kho mã Open WebUI đạt 150k+ Stars trên GitHub nên mặc định là mã nguồn mở MIT, doanh nghiệp hay agency cứ việc clone về đổi logo bán SaaS thoải mái.",
+          "reality": "Sai hoàn toàn. Kho mã áp dụng Open WebUI License (BSD-3-Clause kèm Branding & Enterprise Clause): vượt quá 50 rolling-30-day users là mất quyền tùy tiện white-label hoặc thương mại hóa ẩn thương hiệu gốc nếu chưa mua giấy phép Enterprise.",
+          "proofMetric": "Ngưỡng giới hạn cứng: <= 50 users / 30 ngày cho quyền chỉnh branding tùy biến"
+        },
+        {
+          "myth": "Chỉ cần cài Open WebUI là giải quyết xong toàn bộ bài toán AI Automation và RAG cho doanh nghiệp, không cần xây dựng gì thêm.",
+          "reality": "Open WebUI chỉ giải quyết bài toán 'phòng chat nội bộ chống Shadow AI' (nhân viên tự vào gõ hỏi). Nó không tự nhận webhook Meta Lead trong <1 giây, không lọc trùng SĐT 6 tháng, không chia số ZaloBot Round-Robin và không cập nhật trạng thái đơn hàng hay xuất phiếu lương ERP.",
+          "proofMetric": "0% độ phủ tự động hóa quy trình sự kiện CRM/MISA/ZaloBot nguyên bản"
+        },
+        {
+          "myth": "Tính năng tải PDF và gõ # trong Open WebUI đủ sức trả lời chính xác bảng giá, tồn kho căn hộ và chính sách hoa hồng thời gian thực.",
+          "reality": "RAG nhúng sẵn trong Open WebUI cắt nhỏ văn bản vào vector store cục bộ (Chroma/Qdrant/pgvector) dựa trên độ tương đồng ngữ nghĩa. Nó không có nhận thức về trạng thái giao dịch SQL có khóa dòng PostgreSQL FORCE RLS: một căn hộ vừa đặt cọc 5 phút trước trên CRM không thể được phản ánh chuẩn xác qua file PDF tĩnh.",
+          "proofMetric": "Độ trễ đồng bộ tồn kho Live = thủ công (trừ khi viết Pipeline SQL riêng)"
+        },
+        {
+          "myth": "Mở Open WebUI cho cả phòng ban dùng chung một endpoint backend rồi cứ cắm thẳng API Key OpenAI/Gemini vào là xong.",
+          "reality": "Nếu cắm trực tiếp key hãng vào Open WebUI cho 100 người mà không đặt qua AI Gateway như LiteLLM hoặc không cấu hình giới hạn trên từng vai trò, chỉ một nhân viên tải lên file tài liệu 150 trang rồi hỏi lặp lại có thể đốt hàng triệu đồng tiền API trong một buổi chiều mà khó truy vết chi tiết theo nhóm chiến dịch.",
+          "proofMetric": "Cần ghép sau LiteLLM/vLLM + Pipelines để khóa budget & lọc PII"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "contrarian-part2-kien-truc-svelte-pipelines-va-ho-ngan-erp",
+      "eyebrow": "TIỂU LUẬN PHẢN BIỆN • KIẾN TRÚC SVELTEKIT + PIPELINES & ĐỊNH VỊ ĐÚNG VAI TRÒ",
+      "variant": "deep-dive",
+      "heading": "Đừng bắt con cá leo cây: Hiểu đúng sức mạnh SvelteKit + FastAPI Pipelines và giới hạn trước luồng giao dịch ERP/CRM",
+      "paragraphs": [
+        "Phản biện rủi ro giấy phép và những lời thổi phồng của thị trường không có nghĩa là phủ nhận giá trị kỹ thuật xuất sắc của `open-webui/open-webui`. Nếu đánh giá khách quan dưới góc độ sản phẩm chống **Shadow AI** (tình trạng nhân viên tự ý dùng ChatGPT/Claude cá nhân và dán hợp đồng, bảng lương, danh sách khách hàng ra ngoài kiểm soát của công ty), Open WebUI hiện là giao diện Chat Workspace tự host hoàn thiện nhất thế giới mã nguồn mở. Kiến trúc kết hợp giữa frontend **SvelteKit** siêu mượt (hỗ trợ đầy đủ Markdown, LaTeX, hiển thị Artifacts, chuyển đổi qua lại nhiều model Ollama và vLLM trong một khung chat) cùng backend **Python FastAPI** và kho lưu trữ SQLite/PostgreSQL giúp một kỹ sư DevOps dựng xong phòng làm việc AI riêng cho công ty chỉ trong 15 phút.",
+        "Điểm sáng kỹ thuật đáng tiền nhất bên trong Open WebUI chính là hệ sinh thái **Pipelines** — một tiến trình máy chủ mở rộng chạy tách biệt cho phép lập trình viên Python can thiệp vào vòng đời tin nhắn qua các bộ lọc (`Filter`), bộ chuyển đổi (`Pipe`) hoặc cụm đa mô hình (`Manifold`). Nhờ Pipelines, doanh nghiệp có thể gắn thêm lớp che mờ thông tin nhạy cảm (`Presidio` lọc số CCCD, mã số thuế, số tài khoản ngân hàng) trước khi chuyển prompt tới model Cloud, hoặc chặn các từ khóa vi phạm chính sách bảo mật nội bộ.",
+        "Tuy nhiên, đặt Open WebUI cạnh các hệ thống điều hành doanh nghiệp chuyên sâu như bộ đôi **ERP 5.0 (12 phân hệ)** và **CRM 360° Pipeline 8 nấc** tại DOMATION thì hố ngăn cách về bản chất lộ ra rất rõ. Một cửa sổ chat đa năng luôn bị động: nó đợi con người gõ chữ, trả lời văn bản dài, rồi con người lại phải tự đọc, tự chép số liệu sang phần mềm kế toán MISA hay màn hình quản lý giỏ hàng Live. Ngược lại, doanh nghiệp thời đại 5.0 cần AI sống ẩn mình ngay bên trong luồng dữ liệu sự kiện: khi khách hàng bấm đặt chỗ trên Sa bàn 3D EcoLife Signature hoặc nhắn tin qua Zalo OA lúc 2 giờ sáng, hệ thống RAG theo từng phòng ban phải đối chiếu trực tiếp bảng hàng có phân quyền `PostgreSQL FORCE RLS` của từng Đại lý F1, tự động chấm điểm Lead Score và chốt lịch hẹn lên CRM mà không cần bất kỳ nhân viên nào mở tab Open WebUI để hỏi hộ."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-open-webui-scale-compliance-vs-erp",
+      "heading": "Ma trận quy mô 30 ngày trượt: Dập Shadow AI vs Phơi nhiễm giấy phép White-Label & Độ phủ ERP",
+      "subtitle": "Phân tích đối chiếu 3 mô hình triển khai qua 6 ngưỡng nhân sự (15 đến 500 người dùng hoạt động trong cửa sổ 30 ngày)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Điểm tự động hóa nghiệp vụ ERP/CRM (%) & Chỉ số rủi ro pháp lý nếu tự xóa branding Open WebUI",
+        "subtitle": "Vượt mốc 50 người dùng/30 ngày, rủi ro pháp lý khi white-label Open WebUI tăng vọt, trong khi độ phủ tác vụ ERP vẫn giậm chân nếu thiếu tích hợp sâu",
+        "xKey": "userScale",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "erpAutomationPct",
+            "label": "Độ phủ tự động hóa ERP/CRM - DOMATION AI (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "webuiChatAutomationPct",
+            "label": "Độ phủ tác vụ - Open WebUI Chat thuần (%)",
+            "color": "#06B6D4",
+            "type": "bar"
+          },
+          {
+            "key": "whiteLabelRiskScore",
+            "label": "Rủi ro pháp lý nếu tự White-Label Open WebUI",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "userScale": "15 users", "erpAutomationPct": 88, "webuiChatAutomationPct": 32, "whiteLabelRiskScore": 5 },
+          { "userScale": "45 users", "erpAutomationPct": 90, "webuiChatAutomationPct": 34, "whiteLabelRiskScore": 12 },
+          { "userScale": "60 users (>50)", "erpAutomationPct": 92, "webuiChatAutomationPct": 35, "whiteLabelRiskScore": 78 },
+          { "userScale": "150 users", "erpAutomationPct": 94, "webuiChatAutomationPct": 34, "whiteLabelRiskScore": 92 },
+          { "userScale": "300 users", "erpAutomationPct": 95, "webuiChatAutomationPct": 33, "whiteLabelRiskScore": 98 },
+          { "userScale": "500 users", "erpAutomationPct": 96, "webuiChatAutomationPct": 32, "whiteLabelRiskScore": 100 }
+        ],
+        "kpis": [
+          {
+            "label": "Vùng an toàn Branding tùy biến",
+            "value": "<= 50 users",
+            "delta": "Tính trên chu kỳ 30 ngày trượt",
+            "positive": true
+          },
+          {
+            "label": "Rủi ro White-Label ở >= 60 users",
+            "value": "78–100%",
+            "delta": "Vi phạm License nếu xóa nhãn",
+            "positive": false
+          },
+          {
+            "label": "Tác vụ chat văn phòng (<= 50)",
+            "value": "Dập Shadow AI",
+            "delta": "Triển khai mượt trong 15 phút",
+            "positive": true
+          },
+          {
+            "label": "Độ phủ ERP/CRM nhúng sâu",
+            "value": "88–96%",
+            "delta": "Gắn thẳng SQL RLS & ZaloBot",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp kiểm toán kiến trúc & rà soát điều khoản Open WebUI License tại DOMATION Engineering Lab (11/2026)."
+      },
+      "insightSummary": "Biểu đồ lật tẩy hai sự thật chiến lược: thứ nhất, chỉ riêng việc dựng Open WebUI chỉ giải quyết được khoảng 32–35% nhu cầu tự động hóa (chủ yếu ở khâu hỏi đáp văn phòng chống Shadow AI) vì nó đứng tách rời khỏi dữ liệu sống của CRM, MISA và ZaloBot; thứ hai, mốc 50 người dùng/30 ngày là đường gãy pháp lý sắc như dao cạo cho mọi ý định xóa thương hiệu Open WebUI mà không mua Enterprise License."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-open-webui-license-and-erp-gap",
+      "src": "/imgs/boost/charts/open-webui-open-webui-audit-private-chat-workspace-va-ban-quyen-report.webp",
+      "alt": "Biểu đồ phản biện audit open webui giấy phép 50 người dùng minh họa ngưỡng rolling-30-day users và khoảng trống giữa phòng chat rời với AI Space nhúng ERP",
+      "caption": "Minh họa ranh giới pháp lý Open WebUI License ở ngưỡng >50 rolling-30-day users (cấm tự white-label) và mô hình kiến trúc AI Space nhúng thẳng vào ERP 5.0 / CRM 360° thay cho vỏ chat tách rời.",
+      "badge": "CONTRARIAN AUDIT • OPEN WEBUI"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-open-webui-compliant-internal-docker",
+      "heading": "Code Recipe: Triển khai Open WebUI Nội Bộ Tuân Thủ Giấy Phép (Khóa Đăng Ký Công Khai + Nối AI Gateway + Pipelines)",
+      "language": "yaml",
+      "filename": "docker-compose.open-webui-internal.yml",
+      "description": "Cấu hình chạy Open WebUI hợp chuẩn cho doanh nghiệp dập Shadow AI: giữ nguyên thương hiệu Open WebUI gốc (tuân thủ điều khoản khi vượt 50 rolling-30-day users), tắt ENABLE_SIGNUP công khai, bắt buộc đi qua LiteLLM Gateway để khóa ngân sách và gắn máy chủ Pipelines kiểm duyệt dữ liệu.",
+      "code": "services:\n  open-webui:\n    image: ghcr.io/open-webui/open-webui:main\n    container_name: domation-internal-ai-chat\n    ports:\n      # Chi bind localhost de di qua Reverse Proxy noi bo (VPN / SSO)\n      - \"127.0.0.1:3080:8080\"\n    environment:\n      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}\n      # Tat tu do dang ky tai khoan tranh lo truy cap va vuot ngoai kiem soat so luong user\n      - ENABLE_SIGNUP=false\n      - DEFAULT_USER_ROLE=user\n      # Giu nguyen nhan dien thuong hieu Open WebUI khi >50 rolling-30-day users (KHONG white-label)\n      - ENABLE_OLLAMA_API=false\n      - OPENAI_API_BASE_URL=http://litellm-gateway:4000/v1\n      - OPENAI_API_KEY=${LITELLM_VIRTUAL_KEY_CHAT}\n      # Ket noi Pipeline server de chay PII redaction (vi du Presidio) truoc khi goi LLM\n      - ENABLE_FORWARD_USER_INFO_HEADERS=true\n      - DATABASE_URL=postgresql://owui:${PG_PASS}@owui-postgres:5432/openwebui\n    volumes:\n      - open_webui_data:/app/backend/data\n    depends_on:\n      - owui-postgres\n      - open-webui-pipelines\n    networks:\n      - internal_ai_net\n    restart: unless-stopped\n\n  open-webui-pipelines:\n    image: ghcr.io/open-webui/pipelines:main\n    container_name: domation-owui-pipelines\n    environment:\n      - PIPELINES_API_KEY=${PIPELINES_API_KEY}\n    volumes:\n      - ./pipelines:/app/pipelines\n    networks:\n      - internal_ai_net\n    restart: unless-stopped\n\n  owui-postgres:\n    image: postgres:16-alpine\n    container_name: domation-owui-db\n    environment:\n      - POSTGRES_DB=openwebui\n      - POSTGRES_USER=owui\n      - POSTGRES_PASSWORD=${PG_PASS}\n    volumes:\n      - owui_pg_data:/var/lib/postgresql/data\n    networks:\n      - internal_ai_net\n    restart: unless-stopped\n\nnetworks:\n  internal_ai_net:\n    driver: bridge\n\nvolumes:\n  open_webui_data:\n  owui_pg_data:"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-open-webui-vs-bespoke-erp-ai",
+      "heading": "Ma trận quyết định: Khi nào dùng Open WebUI, khi nào mua Enterprise License hoặc tự xây AI Space trong ERP?",
+      "subtitle": "Giúp Giám đốc Công nghệ và Pháp chế tránh sai lầm hợp đồng và đầu tư đúng chỗ",
+      "scenarios": [
+        {
+          "condition": "Doanh nghiệp 15–45 nhân sự muốn chặn tình trạng dán hợp đồng/bảng lương lên ChatGPT công cộng trong tuần này",
+          "recommendedChoice": "Triển khai Open WebUI + Ollama/LiteLLM trong mạng VPN nội bộ",
+          "rationale": "Nằm gọn dưới trần 50 rolling-30-day users, chi phí phần mềm 0 đồng, trải nghiệm quen thuộc như ChatGPT giúp nhân viên chuyển sang dùng ngay lập tức mà không cần đào tạo phức tạp.",
+          "avoidIf": "Bạn muốn AI tự động đọc Lead mới từ Meta Ads và cập nhật trạng thái sang CRM/MISA."
+        },
+        {
+          "condition": "Tập đoàn 150–500 nhân sự cần phòng chat AI nội bộ cho mục đích soạn thảo/hỏi đáp văn phòng với chi phí bản quyền thấp",
+          "recommendedChoice": "Dùng Open WebUI + vLLM/LiteLLM nhưng GIỮ NGUYÊN 100% thương hiệu Open WebUI",
+          "rationale": "Hoàn toàn tuân thủ Open WebUI License bằng cách bảo toàn nguyên vẹn logo và ghi nhận bản quyền gốc của dự án, kết hợp SSO nội bộ qua Reverse Proxy và khóa ngân sách tại tầng LiteLLM.",
+          "avoidIf": "Ban lãnh đạo yêu cầu tuyệt đối phải thay logo thành tên phần mềm nội bộ riêng (lúc này bắt buộc phải mua Commercial Enterprise License)."
+        },
+        {
+          "condition": "Agency hoặc Công ty Phần mềm B2B muốn đóng gói thành sản phẩm SaaS AI mang thương hiệu riêng để bán cho nhiều khách hàng (>50 users)",
+          "recommendedChoice": "Mua Open WebUI Enterprise License HOẶC tự code giao diện Next.js AI UI thuần MIT",
+          "rationale": "Tuyệt đối không tự ý xóa branding của Open WebUI để bán lại vì vi phạm thẳng điều khoản thương mại >50 người dùng/30 ngày. Tự xây UI trên Next.js + Vercel AI SDK + LiteLLM/Portkey mang lại quyền sở hữu IP sạch 100%.",
+          "avoidIf": "Đội ngũ thiếu năng lực frontend React/Next.js và vẫn cố tình sửa trực tiếp source SvelteKit để qua mặt kiểm tra."
+        },
+        {
+          "condition": "Doanh nghiệp Bất động sản, Giáo dục, F&B cần AI trả lời trực tiếp dựa trên tồn kho căn hộ Live, lọc trùng SĐT 6 tháng, Zalo OA & CRM 8 nấc",
+          "recommendedChoice": "Xây dựng AI Space & 4 Agent nhúng thẳng vào lõi ERP 5.0 / CRM 360° (kiến trúc DOMATION)",
+          "rationale": "Không ép nhân viên sang một tab chat riêng biệt; AI Agent đọc trực tiếp dữ liệu phân tách theo PostgreSQL FORCE RLS, phản hồi Zalo OA/Messenger 24/7 và đẩy booking vào pipeline thực.",
+          "avoidIf": "Doanh nghiệp chưa số hóa dữ liệu CRM/ERP và chỉ mới cần công cụ hỏi đáp trên vài chục file Word/PDF tĩnh."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-open-webui",
+      "variant": "founder-pov",
+      "authorBadge": "Quan Điểm Phản Biện • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Dùng Open WebUI để dập Shadow AI thì tuyệt vời — nhưng muốn xây hệ điều hành AI mang thương hiệu và dòng chảy ERP riêng, đừng bao giờ đi đường tắt vi phạm bản quyền",
+      "body": "Với 150k+ Stars, open-webui/open-webui xứng đáng được tôn trọng cả về chất lượng kỹ thuật lẫn công sức tác giả. Tại DOMATION, chúng tôi coi Open WebUI là chuẩn tham chiếu trải nghiệm tuyệt hảo cho một Chat Workspace nội bộ; nhưng chúng tôi kiên quyết từ chối lối làm ăn ăn xổi là clone repo về xóa logo rồi bán lại cho khách hàng trên 50 nhân sự mà không mua Enterprise License. Hơn thế nữa, giá trị thực sự của chuyển đổi số không nằm ở việc dựng thêm một ô chat giống ChatGPT: trong các dự án như EcoLife Signature, IDEAS hay hệ sinh thái ERP 5.0 12 phân hệ, DOMATION xây dựng hoàn toàn chủ động 4 AI Agent RAG tích hợp thẳng vào CRM 360°, PostgreSQL FORCE RLS và ZaloBot — vừa sạch sẽ 100% về bản quyền IP cho khách hàng, vừa biến AI thành nhân sự vận hành thực thụ ngay trong từng giao dịch."
+    }
+  ]
+}

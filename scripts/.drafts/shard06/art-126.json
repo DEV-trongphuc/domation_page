@@ -1,0 +1,333 @@
+{
+  "id": "art-126",
+  "number": "126",
+  "slug": "excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db",
+  "shardId": "shard06",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Agentic Systems & IAM Security",
+  "clusterId": "kw-ai-security-owasp",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Excessive Agency leo Top #3 OWASP LLM: Thảm họa khi trao quyền ghi DB, xóa đơn & gửi mail hàng loạt cho Agent",
+  "seoTitle": "Excessive Agency Top #3 OWASP: Giới Hạn Quyền AI Agent | DOMATION",
+  "metaDescription": "Khi AI tự gọi Tool và MCP, Excessive Agency thành rủi ro top #3 OWASP 2026. Phân tách quyền Read vs Write, Scoped Token và chốt duyệt Human-in-the-Loop.",
+  "focusKeyword": "excessive agency owasp llm giới hạn quyền ai agent",
+  "secondaryKeywords": [
+    "rủi ro trao quá nhiều quyền cho ai agent",
+    "ngăn ai agent tự ý xóa database",
+    "phân tách tool đọc và ghi cho agent",
+    "owasp top 10 llm 2026 excessive agency",
+    "human in the loop cho tác vụ nhạy cảm"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Đừng Trao Chìa Khóa Tổng Database Cho AI Agent Tự Trị",
+  "thumbnailHook": "Chia tool theo Least Privilege và ép duyệt 2 bước ghi DB.",
+  "thumbnailBadge": "OWASP #03 EXCESSIVE-AGENCY",
+  "coverImage": "/imgs/boost/v2/excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db.webp",
+  "screenshotImage": "/imgs/boost/charts/excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db-report.webp",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Kiến Trúc Phân Quyền Agent & HITL",
+  "relatedSlugs": [
+    "principle-of-least-privilege-tach-vai-tro-ai-agent-doc-va-ghi",
+    "human-in-the-loop-phe-duyet-ghi-db-chuyen-tien-ai-agent",
+    "protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the",
+    "bao-mat-mcp-server-chong-tool-poisoning-rug-pull-ssrf"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Minh họa rủi ro Excessive Agency leo Top #3 OWASP LLM 2026 khi trao quá nhiều quyền xóa database và gửi email hàng loạt cho AI Agent",
+  "screenshotCaption": "Biểu đồ đối chiếu Chỉ số bán kính thiệt hại (Blast Radius) và Tỷ lệ tự động hóa an toàn qua 5 mô hình phân quyền AI Agent từ cấp quyền Admin tự trị đến tách Tool Read/Write + Scoped Token + Human-in-the-Loop.",
+  "tldrSummary": "Excessive Agency nhảy vọt từ vị trí số 6 (LLM06:2025) lên Top #3 (LLM03:2026) trong OWASP Top 10 for LLM Applications 2026 khi ngày càng nhiều doanh nghiệp nối thẳng AI Agent vào Database, API xóa đơn và hệ thống gửi Email qua MCP. Chỉ cần một cú ảo giác tham số hoặc email nhiễm Indirect Injection, Agent có thể xóa sạch dữ liệu trong vài giây. Kiến trúc excessive agency owasp llm giới hạn quyền ai agent đòi hỏi tách cứng Tool Read vs Write, cấp Scoped Token theo người dùng và khóa chốt duyệt Human-in-the-Loop.",
+  "keyTakeaways": [
+    "Excessive Agency leo từ LLM06:2025 lên Top #3 (LLM03:2026) song hành cùng bộ tiêu chuẩn OWASP Top 10 for Agentic Applications 2026 (nhóm rủi ro ASI Tool Misuse) khi kết nối MCP bùng nổ.",
+    "Tuyệt đối không kết nối Agent vào Database bằng tài khoản siêu quản trị dùng chung hay cấp các Tool đa năng kiểu run_sql, delete_records hoặc send_bulk_email.",
+    "Thực thi Principle of Least Privilege (PoLP): tách vật lý Read Tools (dùng role PostgreSQL READ ONLY + FORCE RLS) khỏi các Write Tools hẹp trạng thái nháp có kiểm tra Schema.",
+    "Áp dụng Scoped Ephemeral Token (ủy quyền On-Behalf-Of theo đúng JWT của nhân sự đang thao tác) thay vì token hệ thống vĩnh viễn.",
+    "Mọi tác vụ đột biến tài chính, hủy đơn hàng, xuất hóa đơn MISA hoặc phát tin Amazon SES/Zalo ZNS cho trên 10 khách hàng bắt buộc phải dừng tại chốt kiểm duyệt Human-in-the-Loop có chữ ký băm SHA-256."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Xếp hạng OWASP LLM 2026",
+      "value": "Top #3 (từ #6 2025)"
+    },
+    {
+      "label": "Sự cố ghi/xóa DB ngoài ý muốn",
+      "value": "0 ca (Read/Write Split)"
+    },
+    {
+      "label": "Tác vụ tài chính qua HITL Gate",
+      "value": "100% Duyệt 2 bước"
+    },
+    {
+      "label": "Thời gian phê duyệt ZaloBot",
+      "value": "< 45 giây / Ticket"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Vì sao Excessive Agency lại nhảy vọt lên Top #3 trong bảng xếp hạng OWASP LLM 2026?",
+      "answer": "Năm 2024–2025 phần lớn doanh nghiệp mới dừng ở Chatbot hỏi đáp RAG chỉ có quyền đọc. Sang năm 2026, sự phổ cập của Function Calling và hàng nghìn MCP Server kết nối thẳng AI vào CRM, PostgreSQL, GitHub, Slack và cổng gửi Email biến AI từ người tư vấn thành thực thể có tay chân hành động trực tiếp. Khi một mô hình vẫn còn khả năng hiểu nhầm hoặc bị Prompt Injection lại nắm quyền thực thi rộng (Excessive Functionality, Excessive Permissions, Excessive Autonomy), thiệt hại chuyển từ 'nói sai' sang 'xóa nhầm dữ liệu thật và chuyển tiền sai'."
+    },
+    {
+      "question": "Nếu tôi viết trong Prompt là 'Trước khi xóa đơn hoặc gửi mail hàng loạt, hãy hỏi xác nhận người dùng bằng câu Có/Không' thì có đủ an toàn không?",
+      "answer": "Không an toàn chút nào. Việc hỏi xác nhận bằng ngôn ngữ tự nhiên trong khung chat chỉ mang tính hình thức: thứ nhất, người dùng thường lười đọc kỹ danh sách 300 ID nằm gọn sau đoạn tóm tắt ngắn nên gõ 'OK'; thứ hai, một đòn Indirect Prompt Injection nằm trong email hoặc ghi chú CRM có thể tự đóng giả phản hồi xác nhận hoặc ép Agent gọi thẳng Tool mà bỏ qua bước hỏi. Cơ chế xác nhận bắt buộc phải nằm ở lớp Backend State Machine bên ngoài LLM, nơi hàm ghi bị khóa cứng cho tới khi nhận được token bấm duyệt từ giao diện người quản lý."
+    },
+    {
+      "question": "Phân tách Read vs Write Tools theo Principle of Least Privilege cụ thể là làm thế nào?",
+      "answer": "Thay vì đưa cho Agent một kết nối PostgreSQL có quyền SELECT/INSERT/UPDATE/DELETE chung, hãy tách thành hai cụm công cụ vật lý: nhóm Read Tools kết nối qua một User Database chỉ có quyền `SELECT` (cưỡng bức `SET TRANSACTION READ ONLY` và `FORCE RLS`), giúp Agent tra cứu tồn kho, báo giá hay tiến độ đơn hàng thoải mái mà không thể làm hỏng dữ liệu. Nhóm Write Tools bị cắt nhỏ thành từng hành động nghiệp vụ hẹp như `create_draft_quotation` hay `propose_refund_ticket`, chỉ được ghi vào bảng nháp với trạng thái `pending_approval` chứ không bao giờ tự chốt giao dịch thật."
+    },
+    {
+      "question": "Nếu chặn quyền tự ghi và gửi hàng loạt bằng Human-in-the-Loop thì hệ thống AI Automation có bị chậm đi không?",
+      "answer": "Ngược lại, hệ thống vừa giữ được 90% tốc độ tự động hóa ở các tác vụ chuẩn bị (đọc hồ sơ, tổng hợp số liệu, soạn sẵn đơn nháp hoặc danh sách gửi ZNS, kiểm tra đối chiếu công nợ MISA) vừa loại bỏ hoàn toàn thảm họa mất trắng dữ liệu. Tại DOMATION, thẻ phê duyệt HITL chứa bản xem trước (Dry-Run Diff) và mã băm nội dung được đẩy thẳng qua ZaloBot hoặc màn hình ERP trong 1 giây; quản lý chỉ mất chưa đầy 45 giây để bấm Duyệt 1 chạm thay vì mất cả tuần đi khôi phục backup database."
+    },
+    {
+      "question": "Có thể dùng các công cụ quét prompt như protectai/llm-guard để thay thế cho việc giới hạn quyền IAM của Agent không?",
+      "answer": "Tuyệt đối không. Thứ nhất, protectai/llm-guard đã chính thức bị đóng băng lưu trữ (archived) từ tháng 7/2026, không còn vá lỗ hổng bảo mật mới. Thứ hai, về nguyên lý an toàn thông tin, bộ lọc đầu vào chỉ là lớp phòng vệ phụ (defense-in-depth); ngay cả khi dùng NeMo Guardrails hay Promptfoo đạt tỷ lệ chặn 99%, vẫn có 1% sai số xác suất. Chỉ có hàng rào IAM (Scoped Token, Read-Only Role, Deterministic Policy Engine và HITL Gate) mới bảo đảm 100% rằng kể cả khi LLM bị đánh lừa hoàn toàn, kẻ tấn công cũng không thể xóa database hay gửi email bậy."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "myth-vs-reality",
+      "id": "ngo-nhan-ve-ai-agent-tu-tri",
+      "heading": "Bốn ảo tưởng chết người của phong trào 'Trao toàn quyền cho Nhân viên AI tự trị'",
+      "pairs": [
+        {
+          "myth": "Gắn cho AI Agent càng nhiều MCP Tool (SQL Admin, CRM Write, Bulk Email, Delete Order) thì nhân viên AI càng đa năng và tiết kiệm nhân sự.",
+          "reality": "Mỗi công cụ ghi hoặc xóa không bị giới hạn làm phình to bề mặt tấn công theo cấp số nhân. Một sai số nhỏ trong tham số WHERE hoặc một email nhiễm Indirect Injection đủ để kích hoạt chuỗi xóa hàng loạt mà không kịp phanh.",
+          "proofMetric": "Excessive Agency nhảy từ #6 (2025) lên Top #3 OWASP LLM 2026"
+        },
+        {
+          "myth": "Chỉ cần dặn Agent trong System Prompt rằng 'Phải hỏi lại sếp trước khi xóa dữ liệu hay gửi email hàng loạt' là an toàn.",
+          "reality": "Lời dặn bằng chữ nằm chung vùng ngữ cảnh với dữ liệu ngoài; khi gặp chuỗi ngữ cảnh phức tạp hoặc bị bẻ lái, Agent sẵn sàng bỏ qua bước hỏi xác nhận và gọi thẳng hàm hủy diệt nếu Tool không bị khóa ở tầng Code.",
+          "proofMetric": "0% đảm bảo an toàn thực sự nếu thiếu Deterministic Backend Gate"
+        },
+        {
+          "myth": "Cấp cho Agent một Service Account Admin dùng chung để mọi nhân viên hỏi và nhờ AI thao tác cho nhanh, đỡ phải cấu hình phân quyền phức tạp.",
+          "reality": "Sử dụng chung tài khoản siêu quyền khiến nhân viên thực tập dễ dàng mượn tay AI đọc, sửa hoặc hủy hồ sơ thuộc thẩm quyền Giám đốc, đồng thời làm mờ hoàn toàn dấu vết Audit Log xem ai thực sự ra lệnh.",
+          "proofMetric": "Vi phạm nguyên tắc PoLP & thất bại 100% kỳ kiểm toán truy vết IAM"
+        },
+        {
+          "myth": "Bật sẵn bộ quét đầu vào kiểu LLM Guard trước Model là đủ yên tâm mở quyền ghi trực tiếp vào ERP và kế toán.",
+          "reality": "Không một bộ quét xác suất nào chặn được 100% trường hợp hiểu nhầm ngữ cảnh hoặc ảo giác tham số ID; chưa kể protectai/llm-guard đã ngừng bảo trì (archived) từ 07/2026. Lớp IAM và chốt duyệt HITL mới là hàng rào cứng cuối cùng.",
+          "proofMetric": "HITL + Read/Write Split giảm bán kính thiệt hại từ 94/100 xuống 6/100"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "vi-sao-excessive-agency-leo-top-3-owasp-2026",
+      "eyebrow": "TIỂU LUẬN PHẢN BIỆN • BẪY TỰ TRỊ QUÁ MỨC",
+      "variant": "contrarian",
+      "heading": "Khi cơn sốt 'AI Agent tự làm tất cả' biến một cú ảo giác thành thảm họa xóa dữ liệu và đốt uy tín doanh nghiệp",
+      "pullQuote": "Giao tài khoản Root Database và nút gửi Email 5.000 khách VIP cho một mô hình xác suất chẳng khác nào thuê nhân viên thử việc mới ngày đầu rồi giao luôn con dấu đỏ và chữ ký số của Tổng Giám Đốc.",
+      "paragraphs": [
+        "Nếu năm 2024 là năm của những bản demo Chatbot trả lời câu hỏi khá ngây ngô, thì giai đoạn 2025–2026 chứng kiến một làn sóng vội vã mới trong giới công nghệ doanh nghiệp: nối thẳng AI Agent vào mọi công cụ vận hành qua Function Calling và hàng loạt MCP Server tự chế. Chỉ sau vài buổi hướng dẫn lập trình nhanh, nhiều đội kỹ thuật hồ hởi khoe con Agent có thể tự động đọc phàn nàn khách hàng, tự tra PostgreSQL, tự bấm nút hoàn tiền, tự xóa đơn hàng lỗi và tự gửi thư xin lỗi hàng loạt qua API Email Marketing.",
+        "Hậu quả đến nhanh đến mức chính cộng đồng bảo mật toàn cầu phải rung chuông báo động. Trong bản cập nhật OWASP Top 10 for LLM Applications 2026, rủi ro Excessive Agency đã nhảy vọt từ vị trí số 6 (LLM06:2025) lên chễm chệ ở vị trí Top #3 (LLM03:2026), song hành với việc OWASP phát hành thêm bộ tiêu chuẩn chuyên biệt OWASP Top 10 for Agentic Applications 2026 (mã ASI) nhắm thẳng vào lỗi lạm dụng công cụ và mất kiểm soát tự trị. Lý do rất giản dị: trước đây khi LLM chỉ sinh văn bản, thiệt hại lớn nhất là nó nói nhảm; nhưng khi LLM nắm trong tay hàm `execute_sql`, `delete_crm_deal` hay `send_ses_campaign`, một cú ảo giác ID hoặc một dòng chữ ẩn trong Email đến có thể xóa bay dữ liệu sản xuất hoặc phát tán nội dung nháp thô tục tới hàng nghìn khách hàng VIP chỉ trong chưa đầy mười giây.",
+        "Trên thực tế kiểm toán hạ tầng doanh nghiệp, thảm họa Excessive Agency hầu như luôn bắt nguồn từ ba căn bệnh chung: cấp thừa chức năng (gắn cả các tool xóa/sửa không thực sự cần cho tác vụ CSKH), cấp thừa đặc quyền (dùng một chuỗi kết nối cơ sở dữ liệu toàn quyền cho mọi vai trò nhân sự) và thả rông quyền tự quyết (không có bước dừng chờ con người xác nhận trước những hành động không thể hoàn tác). Giải pháp excessive agency owasp llm giới hạn quyền ai agent vì thế không phải là cấm dùng AI Agent, mà là trả AI về đúng sở trường: suy luận, phân tích và soạn thảo phương án; còn quyền bấm nút thay đổi sự thật phải thuộc về mã nguồn xác định và người chịu trách nhiệm pháp lý."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-polp-scoped-token-va-hitl",
+      "eyebrow": "KIẾN TRÚC KHỐNG CHẾ QUYỀN LỰC • POLP & HITL",
+      "variant": "deep-dive",
+      "heading": "Bộ ba khóa cứng: Tách Read vs Write Tools, Scoped OBO Token và Chốt duyệt Human-in-the-Loop",
+      "paragraphs": [
+        "Để triển khai Agentic AI ở quy mô sản xuất mà ban giám đốc vẫn ngủ ngon giấc mỗi đêm, kiến trúc của DOMATION buộc mọi công cụ mà AI chạm tới phải tuân theo ba hàng rào nguyên tắc bất biến. Nguyên tắc đầu tiên là tách biệt vật lý hoàn toàn giữa Read Tools và Write Tools theo tinh thần Principle of Least Privilege (PoLP). Toàn bộ các hàm tra cứu tồn kho, kiểm tra lịch sử chăm sóc CRM hay đọc công nợ chỉ được phép chạy qua kết nối PostgreSQL Read-Only Replica gắn cờ `SET TRANSACTION READ ONLY` và cưỡng bức `FORCE ROW LEVEL SECURITY`. Nhờ vậy, kể cả khi Prompt Injection bẻ gãy hoàn toàn logic của LLM và ép nó sinh câu lệnh `DROP TABLE` hay `UPDATE prices`, chính bộ máy cơ sở dữ liệu sẽ ném lỗi từ chối ngay ở cấp giao thức.",
+        "Nguyên tắc thứ hai là tuyệt đối không dùng tài khoản quản trị chung cho Agent, mà buộc sử dụng Scoped Ephemeral Token ủy quyền theo danh tính thực (On-Behalf-Of). Khi một Trưởng nhóm kinh doanh hay nhân viên kế toán gọi trợ lý AI trong ERP 5.0, Agent chỉ nhận một JWT ngắn hạn mang đúng `user_id`, `role` và `agency_id` của chính nhân sự đó với thời hạn sống vài phút. Một nhân viên bán hàng không bao giờ có thể mượn tay trợ lý AI để tra cứu báo cáo dòng tiền MISA hay duyệt tạm ứng vượt cấp của chính mình.",
+        "Nguyên tắc thứ ba là đặt chốt kiểm soát Human-in-the-Loop (HITL) làm hàng rào cuối cùng cho mọi tác vụ gây hệ quả tài chính hoặc truyền thông diện rộng. Hãy nhìn cách DOMATION thiết kế DOM Agent (với 80+ tools tích hợp) hay hệ thống 6+ AI Prepress Agents tại INKICA AI Studio: thay vì để Agent tự ý sửa thẳng hóa đơn MISA, xóa dữ liệu hợp đồng hoặc nhấn nút gửi Email Amazon SES/Zalo ZNS cho cả tệp 2.000 khách hàng, Write Tool của Agent chỉ được phép tạo một bản ghi nháp kèm bản mô phỏng thay đổi (Dry-Run Diff: trước và sau khi thực thi) và mã băm SHA-256 của toàn bộ tham số. Hệ thống đẩy một thẻ phê duyệt tương tác tới ZaloBot hoặc bảng điều hành ERP của quản lý có thẩm quyền; chỉ khi người duyệt bấm xác nhận (kèm kiểm tra mã băm khớp nguyên vẹn để tránh thay đổi tham số giữa chừng), Worker nền (như BullMQ hoặc Flow Engine) mới tiến hành ghi giao dịch duy nhất một lần theo khóa Idempotency."
+      ],
+      "bullets": [
+        "Thay mọi Tool tổng quát (`run_sql`, `call_any_api`) bằng các Micro-Tools hẹp mục đích có Pydantic/Zod validation chặt chẽ trên từng trường dữ liệu.",
+        "Tách trạng thái `PROPOSED` (AI đề xuất nháp) khỏi trạng thái `COMMITTED` (Con người phê duyệt thực thi) trong mọi bảng nghiệp vụ nhạy cảm.",
+        "Gắn giới hạn tốc độ (Rate Limit) và giới hạn số lượng bản ghi bị ảnh hưởng mỗi lượt (ví dụ max 1 giao dịch/lượt, cấm batch delete vô hạn)."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-ban-kinh-thiet-hai-vs-tu-dong-hoa",
+      "heading": "Đánh đổi giữa Bán kính thiệt hại (Blast Radius) và Tỷ lệ tự động hóa an toàn theo 5 cấp phân quyền Agent",
+      "subtitle": "Mô phỏng kiểm toán rủi ro trên 500 tác vụ nghiệp vụ ERP/CRM (Tra cứu, Tạo báo giá, Sửa đơn, Hủy dữ liệu, Gửi ZNS/Email hàng loạt)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Điểm rủi ro thiệt hại tiềm ẩn (0–100) vs Tỷ lệ hoàn thành quy trình an toàn (%)",
+        "subtitle": "So sánh từ mô hình mở quyền Root Admin tự trị đến mô hình PoLP Read/Write Split + Scoped JWT + HITL",
+        "xKey": "tier",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "blastRadius",
+            "label": "Điểm Bán kính thiệt hại (thấp=tốt)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "safeAutomation",
+            "label": "Tỷ lệ tự động hóa đạt chuẩn (%)",
+            "color": "#1E40FF",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "tier": "1. Root Tool Tự Trị",
+            "blastRadius": 94,
+            "safeAutomation": 38
+          },
+          {
+            "tier": "2. Prompt Dặn Hỏi Lại",
+            "blastRadius": 76,
+            "safeAutomation": 52
+          },
+          {
+            "tier": "3. Scanner Input Chặn Lọc",
+            "blastRadius": 54,
+            "safeAutomation": 69
+          },
+          {
+            "tier": "4. Read/Write + Scoped JWT",
+            "blastRadius": 19,
+            "safeAutomation": 88
+          },
+          {
+            "tier": "5. PoLP + Dry-Run + HITL",
+            "blastRadius": 6,
+            "safeAutomation": 95
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Rủi ro khi mở Root Tool",
+            "value": "94 / 100",
+            "delta": "Báo động đỏ OWASP #03",
+            "positive": false
+          },
+          {
+            "label": "Giảm Blast Radius ở Mức 5",
+            "value": "-93.6%",
+            "delta": "Xuống còn 6 / 100",
+            "positive": true
+          },
+          {
+            "label": "Hiệu quả tự động hóa thật",
+            "value": "95%",
+            "delta": "AI soạn sẵn, người chốt 1 chạm",
+            "positive": true
+          },
+          {
+            "label": "Lỗi xóa nhầm Production",
+            "value": "0 ca",
+            "delta": "Khóa Read-Only + HITL",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp mô phỏng kiểm thử kiểm soát truy cập Agentic IAM trên luồng ERP 5.0 và CRM 360° tại DOMATION Architecture Lab."
+      },
+      "insightSummary": "Bỏ qua hàng rào phân quyền để chạy 'tự trị hoàn toàn' thực chất khiến tỷ lệ tự động hóa đạt chuẩn an toàn rơi xuống chỉ 38% vì đội vận hành phải liên tục dọn dẹp lỗi sai và khóa tắt hệ thống. Ngược lại, khi tách Read/Write, cấp Scoped JWT và kẹp chốt duyệt HITL kèm Dry-Run Diff, bán kính thiệt hại giảm sâu 93.6% mà tỷ lệ tự động hóa hữu ích vẫn vọt lên 95%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-phan-quyen-excessive-agency",
+      "src": "/imgs/boost/charts/excessive-agency-owasp-top-3-2026-khi-ai-agent-co-quyen-xoa-db-report.webp",
+      "alt": "Báo cáo phân tích rủi ro Excessive Agency Top #3 OWASP LLM 2026 và mô hình giới hạn quyền AI Agent với PoLP và Human-in-the-Loop",
+      "caption": "So sánh bán kính thiệt hại dữ liệu và hiệu suất tự động hóa thực tế giữa 5 cấp độ trao quyền cho AI Agent khi kết nối Database, CRM và hệ thống gửi Email hàng loạt.",
+      "badge": "Báo Cáo Kiến Trúc • OWASP LLM03:2026"
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-cap-quyen-ai-agent",
+      "heading": "Ma trận quyết định mức độ tự trị cho từng nhóm công cụ của AI Agent",
+      "subtitle": "Áp dụng ngay khi thiết kế MCP Server, n8n Tool Calling hoặc DOMATION Multi-Agent Orchestrator",
+      "scenarios": [
+        {
+          "condition": "Tác vụ chỉ đọc: tra cứu tồn kho, kiểm tra lịch sử Lead CRM, tóm tắt KPI hoặc hỏi đáp tài liệu RAG",
+          "recommendedChoice": "Tự động hoàn toàn qua Read-Only Role",
+          "rationale": "Kết nối qua PostgreSQL Read Replica với `SET TRANSACTION READ ONLY` và `FORCE RLS` theo JWT người dùng. Không làm thay đổi trạng thái hệ thống nên có thể phản hồi tức thì dưới 1 giây.",
+          "avoidIf": "Tuyệt đối tránh dùng chung chuỗi kết nối có quyền WRITE hoặc bỏ qua bước gắn RLS theo người dùng."
+        },
+        {
+          "condition": "Tác vụ ghi nội bộ có thể hoàn tác: ghi chú lịch sử cuộc gọi, tạo báo giá nháp, đề xuất phiếu tạm ứng",
+          "recommendedChoice": "Scoped Write Tool giới hạn trạng thái DRAFT",
+          "rationale": "Cho phép Agent ghi bản ghi nháp gắn `created_by_agent=true`, giới hạn tần suất (Rate Limit) và bắt buộc có Idempotency Key để tránh tạo trùng nhiều dòng khi LLM tự thử lại.",
+          "avoidIf": "Tránh cho phép sửa đè bản ghi đã chốt sổ kế toán hoặc tự chuyển thẳng trạng thái sang Đã duyệt."
+        },
+        {
+          "condition": "Tác vụ tài chính hoặc phá hủy: hủy đơn hàng, hoàn tiền, xuất hóa đơn MISA, xóa dữ liệu hoặc đổi công nợ",
+          "recommendedChoice": "Bắt buộc chốt duyệt 2 bước Human-in-the-Loop (HITL)",
+          "rationale": "Agent chỉ dừng ở bước tạo Proposal kèm bản so sánh trước/sau và mã băm SHA-256. Người quản lý duyệt bằng 1 chạm trên ZaloBot hoặc Dashboard ERP trước khi Worker chạy giao dịch.",
+          "avoidIf": "Không bao giờ tin vào lời nhắc 'hỏi lại trong khung chat' làm cơ chế xác thực thay cho Backend State Machine."
+        },
+        {
+          "condition": "Tác vụ phát tán diện rộng hoặc hạ tầng: gửi Email/Zalo ZNS cho > 10 người, sửa quyền IAM, chạy lệnh Shell/DDL",
+          "recommendedChoice": "Cấm Agent thực thi trực tiếp — chỉ được tạo Preview",
+          "rationale": "Thiệt hại uy tín thương hiệu hoặc sập hệ thống không thể hoàn tác. Agent chỉ đóng vai biên tập nội dung, lọc danh sách tệp nhắm chọn và xuất bản xem trước để Admin tự bấm phát hành.",
+          "avoidIf": "Tránh nối thẳng MCP có quyền thực thi Shell, sửa schema DB hoặc API broadcast không giới hạn số lượng nhận."
+        }
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "vong-doi-thuc-thi-hitl-5-buoc",
+      "heading": "Chu trình 5 bước khóa an toàn cho mọi tác vụ ghi dữ liệu qua chốt duyệt Human-in-the-Loop",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • ĐỀ XUẤT NHÁP",
+          "title": "Agent phân tích ngữ cảnh và tạo Intent Proposal chuẩn Schema",
+          "detail": "LLM chỉ gọi hàm `propose_action` với các tham số bị ràng buộc chặt bởi Zod/Pydantic, tuyệt đối không chạm thẳng tới bảng giao dịch chính.",
+          "metricOrTool": "Zod Schema • No Direct DB Write"
+        },
+        {
+          "tag": "BƯỚC 02 • KIỂM ĐỊNH CHÍNH SÁCH",
+          "title": "Policy Engine đối chiếu Scoped JWT, hạn mức ngân sách và Dry-Run Diff",
+          "detail": "Mã nguồn Backend kiểm tra quyền thực tế của người ra lệnh, tính toán chính xác những dòng dữ liệu nào sẽ bị thay đổi và chặn ngay nếu vượt ngưỡng số lượng tối đa.",
+          "metricOrTool": "OBO Scoped Token • Dry-Run Diff"
+        },
+        {
+          "tag": "BƯỚC 03 • NIÊM PHONG SHA-256",
+          "title": "Đóng băng Payload trong hàng đợi Pending với mã băm toàn vẹn & TTL",
+          "detail": "Toàn bộ tham số giao dịch được lưu vào bảng `pending_approvals` kèm mã băm SHA-256 và thời hạn hết hiệu lực 15 phút để chống sửa đổi giữa chừng.",
+          "metricOrTool": "SHA-256 Digest • TTL 15 Phút"
+        },
+        {
+          "tag": "BƯỚC 04 • DUYỆT QUA ZALOBOT",
+          "title": "Đẩy thẻ tóm tắt trước/sau về ZaloBot hoặc màn hình ERP cho Quản lý",
+          "detail": "Người có thẩm quyền nhìn thấy rõ lý do AI đề xuất, số tiền hoặc số khách hàng bị tác động và bấm Xác nhận hoặc Từ chối ngay trên điện thoại.",
+          "metricOrTool": "ZaloBot / ERP Approval Card"
+        },
+        {
+          "tag": "BƯỚC 05 • THỰC THI ĐƠN LẺ",
+          "title": "Khớp chữ ký duyệt, kiểm tra Idempotency Key và ghi sổ cái bất biến",
+          "detail": "Worker nền đối chiếu lại SHA-256 của bản ghi gốc rồi mới thực thi giao dịch đúng 1 lần duy nhất, ghi đầy đủ Audit Log người yêu cầu, AI Agent và người phê duyệt.",
+          "metricOrTool": "Idempotency • Immutable Audit Log"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "lo-trinh-nang-cap-agent-doanh-nghiep",
+      "eyebrow": "LỘ TRÌNH CHUYỂN ĐỔI • TỪ MCP TỰ DO SANG KIẾN TRÚC KỶ LUẬT",
+      "variant": "narrative",
+      "heading": "Cách rà soát lại toàn bộ Tool của n8n, LangGraph hay MCP trong 48 giờ mà không làm chậm tốc độ bán hàng",
+      "paragraphs": [
+        "Nhiều chủ doanh nghiệp lo ngại rằng siết lại quyền lực của AI Agent sẽ khiến quy trình quay về cảnh chậm chạp thủ công. Thực tế triển khai tại các hệ thống đa phòng ban của DOMATION chứng minh điều ngược lại: 80% đến 85% khối lượng thao tác hàng ngày của đội ngũ kinh doanh và vận hành thực chất là tác vụ đọc, tổng hợp và chuẩn bị hồ sơ nháp — những công việc có thể chạy tự động 100% mà không tạo ra rủi ro phá hủy dữ liệu. Chỉ 15% điểm chạm cuối cùng liên quan đến xuất hóa đơn MISA, điều chỉnh công nợ, hủy hợp đồng hoặc bắn chiến dịch tin nhắn diện rộng mới cần khóa chốt duyệt con người.",
+        "Ngay trong tuần này, đội kỹ thuật có thể thực hiện cuộc kiểm tra nhanh trong 48 giờ đối với mọi workflow n8n, LangGraph hoặc MCP Server đang chạy: liệt kê toàn bộ danh sách công cụ AI đang được cấp, thu hồi ngay mọi chuỗi kết nối cơ sở dữ liệu có quyền DELETE/ALTER/DROP, tách biệt tài khoản Read-Only cho các tác nhân tra cứu và chuyển các hàm ghi nhạy cảm về trạng thái tạo Proposal chờ duyệt qua ZaloBot. Chỉ với ba thay đổi kiến trúc này, doanh nghiệp đã hóa giải hoàn toàn nguy cơ đứng đầu bảng rủi ro Agentic của OWASP 2026."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-excessive-agency",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy giao cho AI cái đầu phân tích sắc bén và cây bút chì soạn nháp — nhưng chiếc chìa khóa két sắt Database phải nằm trên tay bạn",
+      "body": "Khi xây dựng hơn 80 công cụ cho DOM Agent hay chuỗi 6+ AI Prepress Agents tại INKICA, bài học xương máu giúp hệ thống chạy ổn định tuyệt đối là không bao giờ trao quyền commit giao dịch tài chính hay xóa dữ liệu hàng loạt cho mô hình ngôn ngữ. Tách bạch rạch ròi Read Tools khỏi Write Tools, ràng buộc theo Scoped Token của đúng nhân sự thao tác và bắt buộc chốt duyệt 1 chạm qua ZaloBot/ERP giúp doanh nghiệp vừa hưởng trọn tốc độ của AI, vừa không bao giờ phải thức trắng đêm khôi phục Database."
+    }
+  ]
+}

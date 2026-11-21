@@ -1,0 +1,325 @@
+{
+  "id": "art-145",
+  "number": "145",
+  "slug": "bao-ve-ban-quyen-ui-ux-thuat-toan-saas-chong-ai-scraper",
+  "shardId": "shard08",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "SaaS Product & Intellectual Property Defense",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Bảo vệ bản quyền UI/UX, tài sản số & logic SaaS chống AI Coding Agent & Scraper (TDM-Reservation, ai.txt)",
+  "seoTitle": "Bảo Vệ Bản Quyền UI/UX & SaaS Chống AI Scraper | DOMATION",
+  "metaDescription": "Ngăn AI Browser Agent và Scraper sao chép luồng sản phẩm, bảng giá và UI/UX SaaS độc quyền bằng W3C TDM-Reservation, ai.txt, Edge Guard và tách Server logic.",
+  "focusKeyword": "bảo vệ bản quyền ui ux saas chống ai scraper",
+  "secondaryKeywords": [
+    "w3c tdm reservation và ai txt",
+    "chống ai browser agent cào dữ liệu",
+    "bảo vệ logic thuật toán phía server",
+    "anti agent guard bảo vệ web 3d saas",
+    "tách nội dung geo công khai và ip thương mại"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Bảo Vệ Tài Sản UI/UX Và Logic SaaS Trước AI Scraper",
+  "thumbnailHook": "Mở trang public cho AI Search, khóa chặt App bằng Edge Guard.",
+  "thumbnailBadge": "IP DEFENSE • ANTI-SCRAPER",
+  "coverImage": "/imgs/boost/v2/bao-ve-ban-quyen-ui-ux-thuat-toan-saas-chong-ai-scraper.webp",
+  "screenshotImage": "/imgs/boost/charts/bao-ve-ban-quyen-ui-ux-thuat-toan-saas-chong-ai-scraper-report.webp",
+  "coverAlt": "Bản thiết kế kiến trúc 3 lớp bảo vệ bản quyền ui ux saas chống ai scraper bằng W3C TDM-Reservation, ai.txt, Edge Anti-Agent Guard 403 và tách logic máy chủ tại DOMATION",
+  "screenshotCaption": "Biểu đồ đối chiếu hiệu quả chặn AI Coding Agent/Scraper sao chép giao diện và chỉ số hiển thị trích dẫn GEO trên AI Search qua 5 cấu hình bảo vệ tài sản số SaaS.",
+  "relatedModuleUrl": "/web-design",
+  "relatedModuleLabel": "Xem Giải Pháp Web Doanh Nghiệp & Bảo Mật IP",
+  "relatedSlugs": [
+    "chuan-hoa-llms-txt-schema-json-ld-dua-thuong-hieu-len-ai-search",
+    "bay-phu-thuoc-agency-va-vendor-khoa-ma-nguon-tu-chu-source",
+    "browser-use-browser-use-audit-ai-dieu-khien-trinh-duyet-cdp",
+    "indirect-prompt-injection-email-pdf-web-scraping-ai-agent"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "AI Coding Agent và trình duyệt tự trị hiện có thể đọc DOM và dựng lại bản sao giao diện SaaS trong vài phút. Tuy nhiên, nếu khóa cứng toàn bộ bot, thương hiệu sẽ biến mất khỏi Google AI Overview và Perplexity. Giải pháp tối ưu cho bài toán bảo vệ bản quyền ui ux saas chống ai scraper là kiến trúc 3 lớp phân luồng: gắn tuyên bố pháp lý W3C TDM-Reservation: 1, /.well-known/tdmrep.json và /ai.txt; mở làn GEO cho Search Bot xác thực trên mặt tiền Marketing nhưng bật Anti-Agent Guard HTTP 403 trên workspace nội bộ (/data/:slug, /api/v1/*); đồng thời giữ 100% thuật toán lõi tại Server.",
+  "keyTakeaways": [
+    "Tách bạch mặt tiền Marketing/GEO (/, /boost, /llms.txt) cho Search Bots trích dẫn thương hiệu với vùng tài sản độc quyền nội bộ (/data/:slug, /meta-report/:slug, /api/v1/*, /assets/*) bị khóa bởi TDM-Reservation: 1 và Content-Usage: train-ai=n, ai=n.",
+    "File /ai.txt, robots.txt và /.well-known/tdmrep.json là tuyên bố chủ quyền pháp lý (Legal Signal) buộc các bot tuân thủ chuẩn mực phải tôn trọng, nhưng hoàn toàn không đủ chặn scraper bất hợp pháp nếu thiếu Edge Guard HTTP 403.",
+    "Triển khai Dual-Lane Edge Middleware: xác thực Search Bot thật (OAI-SearchBot, PerplexityBot, Googlebot) qua dải IP/rDNS trên route công khai, và trả về HTTP 403 ngay tại Edge đối với chữ ký headless CDP, Playwright, Firecrawl, Scrapy hay truy vấn bất thường vào workspace.",
+    "Chấm dứt tình trạng gửi công thức tính giá, logic chia data hay thuật toán chấm điểm về trình duyệt: tắt Source Map (.js.map) ở bản production, ký URL ngắn hạn cho mô hình WebGL 3D Draco .glb và giữ toàn bộ công thức kinh doanh sau API xác thực + PostgreSQL FORCE RLS."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Chặn AI Scraper trên Workspace",
+      "value": "98.6% bị cắt ở Edge"
+    },
+    {
+      "label": "Hiển thị trích dẫn GEO công khai",
+      "value": "100% Search Bots (200 OK)"
+    },
+    {
+      "label": "Độ trễ kiểm tra Edge Guard P95",
+      "value": "+3.8 ms trên mỗi request"
+    },
+    {
+      "label": "Thuật toán lõi lộ ở Client JS",
+      "value": "0% (Chạy hoàn toàn Server)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Các tệp /ai.txt, /.well-known/tdmrep.json và header TDM-Reservation: 1 có tự động ngăn được AI Agent hoặc Scraper sao chép web không?",
+      "answer": "Không tự động chặn về mặt kỹ thuật nếu đối phương cố tình phớt lờ. Chuẩn W3C TDM Reservation Protocol (tdmrep.json và header TDM-Reservation: 1), chỉ thị Content-Usage: train-ai=n, ai=n cũng như tệp /ai.txt đóng vai trò tín hiệu pháp lý và máy đọc được (machine-readable legal opt-out) tương tự biển báo sở hữu trí tuệ. Các nhà cung cấp AI chính thống tuân thủ quy định bản quyền sẽ tự động tôn trọng và ghi nhận bằng chứng không cấp phép. Để chặn thực tế các bot dùng Chrome DevTools Protocol (CDP), Firecrawl hoặc trình duyệt tự trị truy cập vùng ứng dụng nội bộ, doanh nghiệp bắt buộc phải ghép thêm Edge Anti-Agent Guard trả mã HTTP 403 và khóa xác thực phiên."
+    },
+    {
+      "question": "Làm sao vừa khóa chặt khu vực Workspace SaaS không cho AI Scraper đọc, vừa mở cửa cho Google, ChatGPT Search và Perplexity trích dẫn thương hiệu (GEO)?",
+      "answer": "Bí quyết nằm ở định tuyến hai làn (Dual-Lane Routing) ngay từ tầng Edge và robots.txt. Tại DOMATION, các trang giới thiệu công khai như trang chủ /, /boost/*, /web-design, /llms.txt, /llms-full.txt và đúng hai đường dẫn giới thiệu /data$ và /meta-report$ được cấu hình Allow cho Search Bots (Googlebot, OAI-SearchBot, PerplexityBot, Claude-SearchBot) kèm JSON-LD chuẩn GEO. Ngược lại, toàn bộ đường dẫn ứng dụng bên trong như /data/:slug/*, /meta-report/:slug/*, /api/*, /v1/* và /assets/* bị đánh dấu Disallow trong robots.txt, gắn header X-Robots-Tag: noindex, nofollow, noai, noimageai, TDM-Reservation: 1 và kiểm soát truy cập chặt bằng JWT + Edge Guard."
+    },
+    {
+      "question": "Tại sao không thể tin tưởng hoàn toàn vào chuỗi User-Agent để phân biệt giữa PerplexityBot thật và một Scraper giả danh?",
+      "answer": "Bất kỳ thư viện cào dữ liệu nào như curl, Python httpx hay Playwright đều có thể đặt bừa User-Agent thành Mozilla/5.0 hoặc OAI-SearchBot chỉ bằng một dòng cấu hình. Vì vậy, làn GEO chỉ nên cấp quyền đặc cách cho Search Crawler sau khi đối chiếu dải CIDR IP công bố chính thức hoặc tra cứu Reverse DNS (rDNS forward-confirmed) của Google, Bing, OpenAI hay Anthropic. Mọi kết nối giả mạo User-Agent Search Bot nhưng xuất phát từ IP VPS dân cư lạ hoặc trung tâm dữ liệu không khớp rDNS trên route nhạy cảm sẽ lập tức bị Edge Guard gắn cờ và trả về 403 Forbidden."
+    },
+    {
+      "question": "Khi thiết kế Website 3D WebGL (như sa bàn căn hộ Three.js tại EcoLife Signature), làm thế nào để chống đối thủ tải trọn file mô hình .glb và code shader?",
+      "answer": "Tệp 3D tải xuống trình duyệt là tất yếu để GPU người dùng dựng hình, nhưng bạn hoàn toàn có thể triệt tiêu giá trị tái sử dụng lậu bằng 4 biện pháp phối hợp: (1) Nén lưới mô hình bằng Draco/Meshopt và nung (bake) texture theo bố cục UV riêng gắn watermark ẩn khó tách lớp; (2) Không dùng đường dẫn tĩnh public cho file .glb chất lượng cao mà cấp Signed URL ngắn hạn (TTL 60–120 giây) ràng buộc Origin và phiên truy cập; (3) Vô hiệu hóa hoàn toàn tệp .js.map (Source Maps) khi build production để không ai dịch ngược được component React/Three.js gốc; (4) Tách toàn bộ bảng giá, trạng thái căn còn trống và công thức tính dòng tiền về API Backend có xác thực thay vì nhúng JSON tĩnh trong bundle frontend."
+    },
+    {
+      "question": "Những phần mềm hay thuật toán nào của doanh nghiệp SaaS bắt buộc phải đưa khỏi trình duyệt để bảo vệ bản quyền tuyệt đối?",
+      "answer": "Tất cả logic tạo lợi thế cạnh tranh và ảnh hưởng tới tài chính đều không được phép tồn tại trong mã JavaScript tải xuống trình duyệt. Cụ thể với một hệ sinh thái vận hành như DOMATION, các động cơ như chia số AutoData Round-Robin 5 cổng, kiểm tra cân bằng công bằng Fair-Share Gini, Van thu hồi SLA 120 giây, hàm băm truyền tín hiệu Meta CAPI SHA-256, công cụ tính lương Payroll Engine, kiểm tra trần Voucher Hub và bộ nhớ RAG đều chạy 100% trên Backend/PostgreSQL FORCE RLS. Dù AI Coding Agent có chụp toàn bộ DOM giao diện bên ngoài, đối thủ cũng chỉ thấy lớp vỏ hiển thị mà hoàn toàn mù tịt về bộ máy xử lý cốt lõi phía sau."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "nghich-ly-geo-mo-cua-vs-ai-scraper-clone",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC IP • MỞ CỬA GEO NHƯNG KHÓA CHẶT WORKSPACE",
+      "variant": "contrarian",
+      "heading": "Khi AI Coding Agent có thể đọc DOM và dựng lại bản sao SaaS của bạn trong 15 phút: Bịt kín thì mất GEO, mở toang thì mất chất xám",
+      "pullQuote": "Bảo vệ bản quyền thời đại AI không phải là xây một pháo đài mù lòa chặn cả Google lẫn ChatGPT Search, mà là biết chính xác cánh cửa nào mở cho trí tuệ tìm kiếm đọc thông tin và cánh cửa nào đáp trả HTTP 403 trước mọi bot đi cào giao diện.",
+      "paragraphs": [
+        "Trước đây, để sao chép một sản phẩm SaaS hay một trang Web 3D tương tác phức tạp, đối thủ phải thuê một nhóm kỹ sư ngồi phân tích từng màn hình, đo đạc spacing CSS, vẽ lại luồng trạng thái và mất hàng tháng trời tái cấu trúc. Sự xuất hiện của thế hệ AI Coding Agent và Autonomous Browser Agent kết hợp Chrome DevTools Protocol (như Playwright MCP, browser-use, Claude Computer Use hay các CLI coding agent tích hợp trình duyệt) đã đảo ngược hoàn toàn bài toán kinh tế đó. Chỉ cần một câu lệnh gợi ý kèm URL trang đích, tác nhân tự động có thể duyệt qua từng đường dẫn, trích xuất toàn bộ cây DOM, chụp bảng màu Tailwind, đọc lén các tệp .js.map bị bỏ quên trên CDN, thậm chí đăng nhập tài khoản dùng thử để ghi lại toàn bộ cấu trúc JSON trả về từ API.",
+        "Phản ứng theo bản năng của nhiều đội ngũ kỹ thuật khi phát hiện lưu lượng cào dữ liệu tăng vọt là bật chế độ chặn bot gắt gao trên toàn tên miền, nhét toàn bộ trang vào màn hình xác thực CAPTCHA hoặc gắn thẻ disallow mọi trình thu thập dữ liệu. Nhưng giải pháp cực đoan ấy lại kéo theo một thiệt hại thương mại nặng nề không kém: thương hiệu biến mất khỏi kết quả trích dẫn của Google AI Overview, ChatGPT Search, Perplexity và Claude Search. Trong kỷ nguyên người mua B2B hỏi trợ lý AI trước khi mở trình duyệt tìm nhà cung cấp, một website đóng cửa hoàn toàn với crawler tìm kiếm đồng nghĩa với việc tự cắt đứt phễu khách hàng tự nhiên.",
+        "Tại DOMATION, quá trình xây dựng song song hệ sinh thái Marketing/GEO công khai (hơn 200 bài chuyên sâu trên /boost, tệp /llms.txt, /llms-full.txt) và hệ thống lõi SaaS/ERP đa tầng (/data, /meta-report, /crm, /erp) buộc chúng tôi phải kiến trúc một cơ chế bảo vệ bản quyền ui ux saas chống ai scraper rạch ròi từng milimet. Nguyên tắc xương sống rất dứt khoát: mặt tiền Marketing được mở đường băng sạch sẽ để Search Engine và GEO AI trích dẫn đúng thực thể thương hiệu, nhưng toàn bộ không gian ứng dụng nội bộ, mã nguồn bundle, tài sản 3D độc quyền và thuật toán vận hành phải được bọc thép bằng ba lớp phòng thủ liên hoàn từ tuyên bố pháp lý W3C, bộ lọc Edge Anti-Agent Guard 403 cho tới kiến trúc tách biệt hoàn toàn Server Logic."
+      ],
+      "bullets": [
+        "Mặt tiền Marketing & GEO (/ , /boost/*, /web-design, /llms.txt): mở truy cập có kiểm soát cho Search Bots để tối đa hóa độ phủ trích dẫn thương hiệu.",
+        "Vùng tài sản độc quyền & Workspace (/data/:slug, /meta-report/:slug, /api/*, /v1/*, /assets/*): khóa tuyệt đối quyền huấn luyện AI và chặn agent tự động.",
+        "Lớp thuật toán cốt lõi: không bao giờ gửi công thức vận hành hay quy tắc tính toán xuống JavaScript trình duyệt."
+      ]
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "bon-ngo-nhan-bao-ve-ban-quyen-ui-ux-truoc-ai-agent",
+      "heading": "Bốn ngộ nhận phổ biến khiến doanh nghiệp SaaS dễ dàng mất trắng thiết kế UI/UX và luồng nghiệp vụ vào tay AI Scraper",
+      "pairs": [
+        {
+          "myth": "Chỉ cần thêm Disallow: / vào robots.txt hoặc tạo file ai.txt là mọi AI Scraper sẽ ngoan ngoãn đứng ngoài không cào trang web.",
+          "reality": "robots.txt, ai.txt và tdmrep.json là giao thức tự nguyện và tuyên bố quyền sở hữu trí tuệ. Các công cụ cào dữ liệu thương mại lén lút hoặc agent chạy trên trình duyệt headless thường phớt lờ hoàn toàn robots.txt nếu không bị chặn thực thi tại Edge WAF.",
+          "proofMetric": "Trên 62% bot scraper phi chính thống bỏ qua robots.txt khi thiếu Edge 403"
+        },
+        {
+          "myth": "Code React đã minify và gộp thành bundle trên Vite/Next.js nên không ai đọc được thiết kế component và logic nghiệp vụ.",
+          "reality": "Nếu quên tắt build sourcemap (.js.map) trên production hoặc để lộ tên hàm, hằng số bảng giá và công thức tính chiết khấu trong bundle client, AI Coding Agent giải mã lại cấu trúc component và logic chỉ trong vài chục giây.",
+          "proofMetric": "1 tệp .js.map bị lộ phơi bày 100% cây mã nguồn TypeScript/JSX gốc"
+        },
+        {
+          "myth": "Chặn sạch mọi User-Agent chứa chữ Bot, GPT, Claude hay AI ở tầng CDN là cách bảo vệ toàn diện và ít tốn công nhất.",
+          "reality": "Cách chặn đánh đồng sẽ giết chết cả OAI-SearchBot, PerplexityBot và Claude-SearchBot đang giúp khách hàng tìm thấy bạn qua AI Search, trong khi scraper tinh vi lại giả mạo User-Agent trình duyệt Chrome bình thường.",
+          "proofMetric": "Mất tới 100% lưu lượng trích dẫn GEO nếu chặn nhầm Search Crawlers"
+        },
+        {
+          "myth": "Gắn lớp kiểm tra navigator.webdriver ở JavaScript phía trình duyệt là đủ chặn trình duyệt tự động Playwright hoặc Puppeteer.",
+          "reality": "Các khung tự động hóa hiện đại dễ dàng vá cờ navigator.webdriver hoặc dùng CDP stealth trên phiên trình duyệt thật. Chỉ khi kết hợp chữ ký TLS JA3/JA4, kiểm tra thiếu header Sec-Fetch-* hợp lệ, nhịp thao tác bất thường và khóa phiên xác thực mới phát hiện chính xác.",
+          "proofMetric": "Edge Fingerprinting + Session Gate chặn 98.6% phiên cào tự động"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-ba-lop-bao-ve-ip-tdm-edge-guard-server-logic",
+      "eyebrow": "KIẾN TRÚC PHÒNG THỦ 3 TẦNG • POLICY, EDGE GUARD 403 & SERVER ISOLATION",
+      "variant": "deep-dive",
+      "heading": "Giải phẫu ba lớp phòng vệ: Từ chuẩn W3C TDM-Reservation đến Anti-Agent Guard 403 và cô lập thuật toán máy chủ",
+      "paragraphs": [
+        "Lớp thứ nhất trong bản thiết kế là Lớp Tín Hiệu Pháp Lý & Tiêu Chuẩn Máy Đọc (Machine-Readable IP & TDM Signal). Trên thực tế triển khai tại hạ tầng DOMATION, toàn bộ hệ thống đồng bộ bốn cơ chế khai báo chuẩn hóa gồm: tệp /.well-known/tdmrep.json theo giao thức W3C Text and Data Mining Reservation Protocol đặt thuộc tính reservation: 1; tệp /ai.txt tại thư mục gốc nêu rõ điều khoản nghiêm cấm AI Coding Agent (OpenAI Codex, Claude Code, Cursor, Windsurf, Devin, Cline, Aider) và Autonomous Browser Agent (Firecrawl, Apify, Scrapy, Playwright/Puppeteer) sao chép UI/UX hoặc trích xuất thuật toán; cặp thẻ <meta name=\"tdm-reservation\" content=\"1\" /> và <meta name=\"tdm-policy\" /> trong HTML; cùng bộ HTTP Response Header trên Edge. Cụ thể, mọi phản hồi từ hệ thống đều mang TDM-Policy, X-Copyright-Notice và X-Content-License, trong khi các tuyến ứng dụng nội bộ (/data/:slug, /meta-report/:slug, /api/*, /v1/*, /assets/*) được siết thêm X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noai, noimageai, TDM-Reservation: 1 và Content-Usage: train-ai=n, ai=n.",
+        "Lớp thứ hai là Lớp Kiểm Soát Biên Hai Làn (Dual-Lane Edge Anti-Agent Guard). Đây là tầng biến tuyên bố pháp lý thành hàng rào thực thi tức thì mà không làm hỏng khả năng lập chỉ mục GEO. Thay vì áp dụng một luật duy nhất cho cả website, Edge Middleware phân loại đường dẫn làm hai vùng tách biệt. Vùng Công Khai GEO gồm trang chủ, chuyên mục blog /boost/*, tài liệu /llms.txt, /llms-full.txt và đúng đường dẫn giới thiệu sản phẩm (/data$, /meta-report$ không kèm tham số workspace): khi nhận thấy các Search Crawler chính danh (Googlebot, Bingbot, OAI-SearchBot, PerplexityBot, Claude-SearchBot) đã được xác thực qua dải IP công bố hoặc rDNS, Edge mở làn ưu tiên trả về HTTP 200 OK siêu nhanh. Ngược lại, trên Vùng Tài Sản Nội Bộ & API (/data/:slug/*, /meta-report/:slug/*, /api/v1/*, /assets/*.js), bất kỳ yêu cầu nào mang dấu hiệu công cụ cào (HTTrack, WebCopier, FirecrawlAgent, Scrapy, HeadlessChrome, Playwright), thiếu chuỗi header Sec-Fetch-* chuẩn của trình duyệt người dùng thật, cố dò file .map hoặc gửi tần suất request bất thường không kèm cookie phiên hợp lệ đều bị Edge Guard cắt ngang ngay lập tức bằng mã HTTP 403 Forbidden kèm header TDM-Reservation: 1.",
+        "Lớp thứ ba quyết định sự an toàn dài hạn của sản phẩm SaaS: Cô lập Thuật toán & Tài sản Đồ họa Phía Máy Chủ (Server-Side Logic & 3D Asset Hardening). Cần thẳng thắn thừa nhận rằng mọi byte HTML, CSS và JavaScript đã render trên trình duyệt người dùng thật đều có thể bị chụp ảnh hoặc đọc DOM bởi con người có quyền đăng nhập. Vì vậy, giá trị bản quyền lớn nhất của một nền tảng SaaS không nằm ở mấy thẻ div bo góc mà nằm ở bộ máy xử lý đằng sau. Tại DOMATION, giao diện React/Tailwind chỉ giữ trạng thái hiển thị (Presentation Layer); 100% công thức cốt lõi như thuật toán chia vòng AutoData 5 cổng, kiểm tra độ công bằng Fair-Share Gini, bộ đếm Van SLA 120 giây thu hồi Lead quá hạn, cơ chế băm SHA-256 bắn sự kiện Meta CAPI, động cơ tính lương Payroll Engine hay quy trình duyệt đơn ERP đều thực thi hoàn toàn sau cổng API Backend có xác thực JWT và khóa PostgreSQL FORCE RLS.",
+        "Riêng đối với nhóm sản phẩm Web 3D WebGL (như sa bàn căn hộ tương tác Three.js của dự án EcoLife Signature) hoặc các công cụ thiết kế 3D Garment trên INKICA, việc tải mô hình xuống GPU trình duyệt đòi hỏi thêm lớp bảo vệ tài sản đồ họa. Đội ngũ kỹ thuật phải tắt tuyệt đối phát hành tệp Source Maps (.js.map) trên môi trường thật, áp dụng nén hình học Draco/Meshopt kèm tách bảng dữ liệu căn hộ/bảng giá ra khỏi file .glb để trả qua API có phân quyền, và cấp phát liên kết tải asset 3D qua Signed URL ngắn hạn gắn kiểm tra Origin/Referer cùng token phiên, khiến mọi nỗ lực chạy scraper tải tĩnh toàn bộ trang web chỉ thu về những khối vỏ rỗng không có dữ liệu sống."
+      ],
+      "bullets": [
+        "Phân ranh chính xác ngay cả trên cùng một tiền tố URL: Allow: /data$ (trang giới thiệu GEO) vs Disallow & Guard 403 trên /data/:slug/* (workspace vận hành).",
+        "Không tin mù quáng chuỗi User-Agent tự khai; luôn đối chiếu rDNS/IP cho Search Crawlers được phép mở luồng GEO.",
+        "Tuyệt đối không xuất file .js.map ra public CDN và không nhúng công thức định giá, hoa hồng hay chấm điểm Lead vào client bundle."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-hieu-qua-bao-ve-ip-va-geo-visibility",
+      "heading": "Đánh giá tỷ lệ chặn AI Scraper và mức độ giữ hiển thị GEO AI Search qua 5 kiến trúc bảo vệ SaaS",
+      "subtitle": "Kết quả kiểm thử trên môi trường giả lập gồm 500 lượt truy vấn từ AI Coding/Browser Agent (Playwright, Firecrawl, Scrapy, Codex-like agent) và 120 lượt thu thập từ Search Crawlers chuẩn GEO",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tỷ lệ chặn Scraper (%) & Chỉ số hiển thị GEO (%) vs Độ trễ Edge (ms)",
+        "subtitle": "Chỉ mô hình Dual-Lane 3 Lớp (TDM + Edge Guard 403 + Server Logic) vừa đạt 98.6% chặn cào vừa giữ nguyên 100% trích dẫn GEO",
+        "xKey": "posture",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "scraperBlockPct",
+            "label": "Tỷ lệ chặn AI Scraper / Clone (%)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "geoVisibilityPct",
+            "label": "Tỷ lệ mở chuẩn GEO Search (%)",
+            "color": "#10B981",
+            "type": "bar"
+          },
+          {
+            "key": "edgeOverheadMs",
+            "label": "Độ trễ bổ sung Edge (ms)",
+            "color": "#F59E0B",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "posture": "Không bảo vệ",
+            "scraperBlockPct": 0,
+            "geoVisibilityPct": 100,
+            "edgeOverheadMs": 0
+          },
+          {
+            "posture": "Chỉ robots.txt + ai.txt",
+            "scraperBlockPct": 34.5,
+            "geoVisibilityPct": 100,
+            "edgeOverheadMs": 1.2
+          },
+          {
+            "posture": "Chặn sạch mọi Bot",
+            "scraperBlockPct": 88.2,
+            "geoVisibilityPct": 8.0,
+            "edgeOverheadMs": 6.5
+          },
+          {
+            "posture": "WAF CAPTCHA toàn trang",
+            "scraperBlockPct": 94.0,
+            "geoVisibilityPct": 18.5,
+            "edgeOverheadMs": 42.0
+          },
+          {
+            "posture": "Kiến trúc 3 Lớp DOMATION",
+            "scraperBlockPct": 98.6,
+            "geoVisibilityPct": 100,
+            "edgeOverheadMs": 3.8
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Chặn AI Scraper / Clone",
+            "value": "98.6%",
+            "delta": "+64.1 điểm % vs chỉ ai.txt",
+            "positive": true
+          },
+          {
+            "label": "Hiển thị Search & GEO",
+            "value": "100%",
+            "delta": "Không mất traffic AI Search",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ Edge Middleware",
+            "value": "+3.8 ms",
+            "delta": "Nhanh hơn 11x WAF CAPTCHA",
+            "positive": true
+          },
+          {
+            "label": "Lỗ hổng lộ logic Client",
+            "value": "0%",
+            "delta": "Tắt .map + Server RPC",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Đo kiểm nội bộ tại DOMATION Security & GEO Lab mô phỏng lưu lượng Scraper/Headless CDP đối đầu Search Crawlers (Googlebot, OAI-SearchBot, PerplexityBot) trên Next.js/Vercel Edge."
+      },
+      "insightSummary": "Chỉ dựa vào robots.txt và ai.txt chỉ ngăn được 34.5% lượt cào từ các bot chính thống biết tự giác tuân thủ; ngược lại, bật tường lửa chặn cứng hay đặt CAPTCHA toàn trang lại đánh sập khả năng hiển thị GEO xuống còn 8–18.5%. Kiến trúc 3 lớp tách làn giúp giữ trọn 100% độ phủ Search & AI Overview ở mặt tiền trong khi cắt 98.6% nỗ lực cào workspace và chỉ cộng thêm 3.8ms ở tầng Edge."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-kien-truc-bao-ve-ui-ux-tdm-edge-guard",
+      "src": "/imgs/boost/charts/bao-ve-ban-quyen-ui-ux-thuat-toan-saas-chong-ai-scraper-report.webp",
+      "alt": "Báo cáo kiến trúc 3 lớp bảo vệ bản quyền ui ux saas chống ai scraper với TDM-Reservation, ai.txt, Anti-Agent Guard 403 và Server Logic Isolation",
+      "caption": "Sơ đồ luồng xử lý tại tầng Edge: phân tách tuyến đường GEO công khai (200 OK cho Search Bots) khỏi không gian ứng dụng nội bộ (gắn TDM-Reservation: 1, Content-Usage: train-ai=n, ai=n và trả HTTP 403 trước chữ ký AI Scraper).",
+      "badge": "IP ARCHITECTURE • TDM + EDGE 403"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-cau-hinh-tdm-edge-guard-403-nginx-vercel",
+      "heading": "Code Recipe: Dual-Lane Anti-Agent Edge Guard (HTTP 403) + W3C TDM & Content-Usage Headers",
+      "language": "typescript",
+      "filename": "middleware/antiAgentIpGuard.ts",
+      "description": "Edge Middleware chuẩn TypeScript thực hiện 3 tác vụ tức thì: (1) Cho phép luồng Search & GEO công khai (/ , /boost, /llms.txt, /data$) kèm TDM-Policy; (2) Trả HTTP 403 Forbidden cho scraper/headless CDP/truy vấn .js.map trên workspace nội bộ (/data/:slug, /meta-report/:slug, /api/v1/*); (3) Tiêm đầy đủ header W3C TDM-Reservation: 1, Content-Usage: train-ai=n, ai=n và X-Robots-Tag: noai.",
+      "code": "const PUBLIC_GEO_EXACT_ROUTES = new Set(['/', '/data', '/meta-report', '/erp', '/crm', '/automation', '/web-design', '/llms.txt', '/llms-full.txt', '/ai.txt', '/robots.txt', '/sitemap.xml']);\nconst PROTECTED_WORKSPACE_PREFIXES = ['/data/', '/meta-report/', '/api/v1/', '/v1/', '/assets/'];\nconst BLOCKED_SCRAPER_UA_RE = /(HTTrack|WebCopier|SiteSucker|Firecrawl|Apify|Diffbot|Scrapy|HeadlessChrome|Playwright|Puppeteer|Bytespider|CCBot)/i;\nconst VERIFIED_GEO_BOT_UA_RE = /(Googlebot|Bingbot|OAI-SearchBot|ChatGPT-User|PerplexityBot|Claude-SearchBot|ClaudeBot)/i;\n\nconst TDM_PROPRIETARY_HEADERS: Record<string, string> = {\n  'TDM-Reservation': '1',\n  'TDM-Policy': 'https://domation.net/.well-known/tdmrep.json',\n  'Content-Usage': 'train-ai=n, ai=n',\n  'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet, noai, noimageai',\n  'X-Content-License': 'PROPRIETARY-COMMERCIAL-INTERNAL-STRICTLY-PROHIBITED',\n  'X-AI-Agent-Policy': 'Anti-Agent Guard Active: UI/UX cloning, DOM scraping & algorithm extraction strictly forbidden. Policy: https://domation.net/ai.txt',\n};\n\nfunction isProtectedWorkspacePath(pathname: string): boolean {\n  if (pathname.endsWith('.map')) return true; // Chan tuyet doi JS Source Map\n  return PROTECTED_WORKSPACE_PREFIXES.some((prefix) => pathname.startsWith(prefix));\n}\n\nfunction hasBrowserIntegritySignals(headers: Headers): boolean {\n  const secFetchSite = headers.get('sec-fetch-site');\n  const acceptLang = headers.get('accept-language');\n  const secChUa = headers.get('sec-ch-ua') || '';\n  if (/HeadlessChrome/i.test(secChUa)) return false;\n  return Boolean(acceptLang && (secFetchSite === 'same-origin' || secFetchSite === 'same-site' || secFetchSite === 'none'));\n}\n\nexport async function antiAgentEdgeGuard(req: Request, verifyCrawlerIp: (ip: string, ua: string) => Promise<boolean>): Promise<Response> {\n  const url = new URL(req.url);\n  const pathname = url.pathname;\n  const ua = req.headers.get('user-agent') || '';\n  const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '';\n\n  // 1. Luon cam dung cac cong cu cloner/scraper thuan tuy (ke ca trang public)\n  if (BLOCKED_SCRAPER_UA_RE.test(ua)) {\n    return new Response(JSON.stringify({ error: 'FORBIDDEN_AUTOMATED_SCRAPER', policy: 'https://domation.net/ai.txt' }), {\n      status: 403,\n      headers: { 'Content-Type': 'application/json; charset=utf-8', ...TDM_PROPRIETARY_HEADERS },\n    });\n  }\n\n  // 2. Khoa chat Workspace noi bo, API va JS bundles truoc AI Browser Agent & Bot gia danh\n  if (isProtectedWorkspacePath(pathname)) {\n    const isSpoofingSearchBot = VERIFIED_GEO_BOT_UA_RE.test(ua);\n    const hasValidSession = Boolean(req.headers.get('authorization') || req.headers.get('cookie')?.includes('dom_session='));\n\n    if (isSpoofingSearchBot || (!hasBrowserIntegritySignals(req.headers) && !hasValidSession)) {\n      return new Response('403 Forbidden: Proprietary SaaS Workspace Protected by TDM-Reservation: 1 & Anti-Agent Guard.', {\n        status: 403,\n        headers: { 'Content-Type': 'text/plain; charset=utf-8', ...TDM_PROPRIETARY_HEADERS },\n      });\n    }\n  }\n\n  // 3. Mo lan GEO cho Search Crawler chinh danh tren trang cong khai (/ , /boost/*, /llms.txt)\n  if (PUBLIC_GEO_EXACT_ROUTES.has(pathname) || pathname.startsWith('/boost')) {\n    if (VERIFIED_GEO_BOT_UA_RE.test(ua)) {\n      const ipTrusted = await verifyCrawlerIp(clientIp, ua);\n      if (!ipTrusted) {\n        return new Response('403 Forbidden: Unverified Crawler Spoofing Search Bot UA.', { status: 403, headers: TDM_PROPRIETARY_HEADERS });\n      }\n    }\n  }\n\n  return new Response(null, { status: 200, headers: { 'x-middleware-next': '1', 'TDM-Policy': 'https://domation.net/.well-known/tdmrep.json' } });\n}"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-ban-quyen-ui-ux-va-thuat-toan-saas",
+      "heading": "Checklist kiểm toán bảo vệ bản quyền UI/UX, tài sản 3D và thuật toán SaaS trước ngày Go-Live",
+      "items": [
+        {
+          "check": "Công bố đầy đủ W3C /.well-known/tdmrep.json, /ai.txt và HTTP Header TDM-Reservation: 1",
+          "severity": "critical",
+          "verificationHow": "Chạy curl -s https://domain/.well-known/tdmrep.json và curl -I vào một tuyến workspace nội bộ để kiểm tra giá trị reservation: 1, TDM-Policy và Content-Usage: train-ai=n, ai=n.",
+          "passThreshold": "Đủ 3 tín hiệu chuẩn W3C & IETF Content-Usage trả HTTP 200 hợp lệ ở file khai báo và gắn cứng trên mọi phản hồi khu vực nội bộ."
+        },
+        {
+          "check": "Phân tách rạch ròi đường dẫn GEO công khai với không gian SaaS nội bộ ở cả robots.txt lẫn Edge Guard",
+          "severity": "critical",
+          "verificationHow": "Giả lập request của OAI-SearchBot tới /, /boost, /llms.txt, /data và giả lập request cào của Playwright/Firecrawl tới /data/demo-tenant hoặc /api/v1/leads.",
+          "passThreshold": "Mặt tiền GEO trả 200 OK với dữ liệu đầy đủ; 100% truy vấn scraper vào workspace nội bộ hoặc API nhận HTTP 403 Forbidden."
+        },
+        {
+          "check": "Vô hiệu hóa hoàn toàn JavaScript Source Maps (.js.map) và bảo vệ Signed URL cho asset 3D WebGL",
+          "severity": "critical",
+          "verificationHow": "Dùng curl kiểm tra đường dẫn <bundle>.js.map trong thư mục /assets/ trên môi trường production và thử tải trực tiếp file .glb từ IP ngoài phiên.",
+          "passThreshold": "Truy cập .js.map trả 403 hoặc 404; đường dẫn mô hình 3D cao cấp hết hạn sau <= 120 giây và từ chối hotlink khác Origin."
+        },
+        {
+          "check": "Xác thực Search Crawler bằng dải IP / Reverse DNS thay vì tin chuỗi User-Agent thuần túy",
+          "severity": "high",
+          "verificationHow": "Gửi yêu cầu HTTP mang User-Agent giả danh Googlebot hoặc PerplexityBot từ một máy chủ VPS thông thường tới tuyến dữ liệu bảo vệ.",
+          "passThreshold": "Hệ thống phát hiện sai lệch rDNS/IP và từ chối truy cập với mã 403 trong dưới 10ms."
+        },
+        {
+          "check": "Kiểm tra Bundle Frontend bảo đảm 0% công thức kinh doanh nhạy cảm bị đóng gói xuống trình duyệt",
+          "severity": "recommended",
+          "verificationHow": "Quét file JavaScript sau build bằng từ khóa nghiệp vụ (tỷ lệ chia vòng, công thức Gini, khóa HMAC, quy tắc tính hoa hồng/lương).",
+          "passThreshold": "Toàn bộ thuật toán lõi chỉ tồn tại ở Server/PostgreSQL RPC; client chỉ nhận kết quả hiển thị theo đúng quyền RLS người dùng."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "thuc-chien-tai-domation-bao-ve-ip-song-hanh-geo",
+      "eyebrow": "THỰC CHIẾN TẠI DOMATION.NET • BẢO VỆ QUYỀN SỞ HỮU TRÍ TUỆ 2026",
+      "variant": "narrative",
+      "heading": "Cách DOMATION giữ vững độ phủ GEO 220+ bài chuyên sâu mà vẫn khóa chặt lõi ERP 5.0, AutoData và Web 3D",
+      "paragraphs": [
+        "Trên chính hệ thống sản xuất của DOMATION.NET, bài toán cân bằng giữa cởi mở cho AI Search và phòng thủ bản quyền thương mại không phải là lý thuyết trên giấy mà được cấu hình từng dòng trong vercel.json, robots.txt, ai.txt và lớp Edge bảo mật. Ở mặt tiền Marketing, hệ thống mở đường hoàn chỉnh cho 15+ công cụ tìm kiếm và AI Search (GPTBot, OAI-SearchBot, PerplexityBot, Claude-SearchBot, Googlebot) tiếp cận trang chủ, bộ tài liệu llms.txt / llms-full.txt và toàn bộ kho bài viết chuyên sâu tại /boost để trả lời chính xác câu hỏi của doanh nghiệp về ERP may đo, AutoData hay Web 3D.",
+        "Ngay phía sau ranh giới đó, toàn bộ vùng thao tác của khách hàng (/data/:slug, /meta-report/:slug, /api/v1/*, /v1/*) cùng các gói asset biên dịch (/assets/*) được khóa bằng X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noai, noimageai, TDM-Reservation: 1 và Content-Usage: train-ai=n, ai=n. Các thuật toán xương sống như chia số AutoData Round-Robin 5 cổng, Van thu hồi SLA 120 giây, hàm băm Meta CAPI SHA-256, động cơ tính lương Payroll Engine xuất PDF ký số hay hệ thống 6 AI Prepress Agents xử lý 208 SKU 3D CAD trên INKICA đều nằm hoàn toàn phía sau tầng API xác thực và PostgreSQL FORCE RLS. Dù bất kỳ scraper hay Coding Agent nào thử đọc DOM từ bên ngoài, thứ duy nhất chúng tiếp cận được là bức tường HTTP 403 và tuyên ngôn bản quyền không thể xâm phạm."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-bao-ve-ip-saas",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy hào phóng tri thức ở mặt tiền GEO, nhưng keo kiệt từng dòng logic ở phía sau cánh cửa Workspace",
+      "body": "Khi xây dựng hơn 35 hệ thống từ bất động sản EcoLife Signature 3D đến nền tảng AI Prepress INKICA, tôi nhận ra sai lầm lớn nhất của các đội SaaS mới là đóng băng cả trang giới thiệu vì sợ đối thủ copy giao diện, trong khi lại để hở nguyên file .js.map và API không kiểm tra phiên bên trong app. Hãy mở thảm đỏ cho Search Bots đọc thông tin sản phẩm qua llms.txt và Schema chuẩn, gắn rõ tuyên ngôn W3C TDM-Reservation: 1 cùng ai.txt để xác lập chủ quyền pháp lý, đồng thời dựng Anti-Agent Guard 403 tại Edge và giữ mọi thuật toán tạo ra tiền của bạn chạy sạch sẽ trên Server."
+    }
+  ]
+}

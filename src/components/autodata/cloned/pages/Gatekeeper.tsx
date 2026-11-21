@@ -6,7 +6,7 @@ import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChar
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { withRouterFreezer } from '../components/RouterFreezer';
-import { fetchAPI, normalizeNotificationStatus, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
+import { fetchAPI, normalizeNotificationStatus, normalizeConsultantStatsResponse, getWeekRangeVN, formatDateTimeVN, parseServerDateVN, VN_TIMEZONE } from '../utils/api';
 import { DomUnifiedDatePicker } from '../../../common/DomUnifiedDatePicker';
 import { useUnifiedDateFilter } from '../../../common/unifiedDateFilter';
 import toast from 'react-hot-toast';
@@ -1087,8 +1087,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
         query += `&start_date=${start}&end_date=${end}`;
       }
       const json = await fetchAPI(query);
-      if (json.success) {
-        setStatsConsultantData(json);
+      if (json && json.success) {
+        setStatsConsultantData(normalizeConsultantStatsResponse(json));
       } else {
         toast.error(json.message || t('Lỗi khi tải báo cáo thống kê'));
       }
@@ -6410,7 +6410,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                        {t('Tổng data hệ thống tiếp nhận cho Đại lý này:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsConsultantData.summary.total}</strong> lead
+                        {t('Tổng data hệ thống tiếp nhận cho Đại lý này:')} <strong style={{ fontSize: '1.05rem', color: 'var(--color-text)' }}>{statsConsultantData.summary?.total ?? 0}</strong> lead
                       </span>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>
                         * {t('Các nhóm độc lập hoàn toàn, không cộng dồn/chồng chéo')}
@@ -6419,34 +6419,34 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
 
                     {/* Stacked Percentage Bar */}
                     <div style={{ display: 'flex', height: 10, borderRadius: 5, overflow: 'hidden', background: 'var(--color-border-light)', position: 'relative' }}>
-                      {statsConsultantData.summary.successful > 0 && (
+                      {(statsConsultantData.summary?.successful ?? 0) > 0 && (
                         <div
                           style={{
-                            width: `${(statsConsultantData.summary.successful / Math.max(1, statsConsultantData.summary.total)) * 100}%`,
+                            width: `${((statsConsultantData.summary?.successful ?? 0) / Math.max(1, statsConsultantData.summary?.total ?? 0)) * 100}%`,
                             background: 'linear-gradient(90deg, #3B82F6, #1E40FF)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Thành công')}: ${statsConsultantData.summary.successful}`}
+                          title={`${t('Thành công')}: ${statsConsultantData.summary?.successful ?? 0}`}
                         />
                       )}
-                      {(statsConsultantData.summary.reminder || 0) > 0 && (
+                      {(statsConsultantData.summary?.reminder || 0) > 0 && (
                         <div
                           style={{
-                            width: `${((statsConsultantData.summary.reminder || 0) / Math.max(1, statsConsultantData.summary.total)) * 100}%`,
+                            width: `${((statsConsultantData.summary?.reminder || 0) / Math.max(1, statsConsultantData.summary?.total ?? 0)) * 100}%`,
                             background: 'linear-gradient(90deg, #fcd34d, #f59e0b)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Nhắc lại')}: ${statsConsultantData.summary.reminder}`}
+                          title={`${t('Nhắc lại')}: ${statsConsultantData.summary?.reminder || 0}`}
                         />
                       )}
-                      {(statsConsultantData.summary.error || 0) > 0 && (
+                      {(statsConsultantData.summary?.error || 0) > 0 && (
                         <div
                           style={{
-                            width: `${((statsConsultantData.summary.error || 0) / Math.max(1, statsConsultantData.summary.total)) * 100}%`,
+                            width: `${((statsConsultantData.summary?.error || 0) / Math.max(1, statsConsultantData.summary?.total ?? 0)) * 100}%`,
                             background: 'linear-gradient(90deg, #fca5a5, #ef4444)',
                             transition: 'width 0.3s ease'
                           }}
-                          title={`${t('Lỗi')}: ${statsConsultantData.summary.error}`}
+                          title={`${t('Lỗi')}: ${statsConsultantData.summary?.error || 0}`}
                         />
                       )}
                     </div>
@@ -6456,19 +6456,19 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                         <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-primary)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Thành công (Bàn giao thực tế)')}: <strong style={{ color: 'var(--color-primary)' }}>{statsConsultantData.summary.successful}</strong> ({statsConsultantData.summary.total > 0 ? Math.round((statsConsultantData.summary.successful / statsConsultantData.summary.total) * 100) : 0}%)
+                          {t('Thành công (Bàn giao thực tế)')}: <strong style={{ color: 'var(--color-primary)' }}>{statsConsultantData.summary?.successful ?? 0}</strong> ({(statsConsultantData.summary?.total ?? 0) > 0 ? Math.round(((statsConsultantData.summary?.successful ?? 0) / (statsConsultantData.summary?.total ?? 1)) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                         <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-warning)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Nhắc lại (Khách cũ gọi lại)')}: <strong style={{ color: 'var(--color-warning)' }}>{statsConsultantData.summary.reminder || 0}</strong> ({statsConsultantData.summary.total > 0 ? Math.round(((statsConsultantData.summary.reminder || 0) / statsConsultantData.summary.total) * 100) : 0}%)
+                          {t('Nhắc lại (Khách cũ gọi lại)')}: <strong style={{ color: 'var(--color-warning)' }}>{statsConsultantData.summary?.reminder || 0}</strong> ({(statsConsultantData.summary?.total ?? 0) > 0 ? Math.round(((statsConsultantData.summary?.reminder || 0) / (statsConsultantData.summary?.total ?? 1)) * 100) : 0}%)
                         </span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                         <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--color-danger)' }} />
                         <span style={{ color: 'var(--color-text-muted)' }}>
-                          {t('Lỗi / Trùng (Đã lọc bỏ)')}: <strong style={{ color: 'var(--color-danger)' }}>{statsConsultantData.summary.error || 0}</strong> ({statsConsultantData.summary.total > 0 ? Math.round(((statsConsultantData.summary.error || 0) / statsConsultantData.summary.total) * 100) : 0}%)
+                          {t('Lỗi / Trùng (Đã lọc bỏ)')}: <strong style={{ color: 'var(--color-danger)' }}>{statsConsultantData.summary?.error || 0}</strong> ({(statsConsultantData.summary?.total ?? 0) > 0 ? Math.round(((statsConsultantData.summary?.error || 0) / (statsConsultantData.summary?.total ?? 1)) * 100) : 0}%)
                         </span>
                       </div>
                     </div>
@@ -6483,7 +6483,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsConsultantData.summary.successful}
+                          {statsConsultantData.summary?.successful ?? 0}
                         </div>
                         <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Data gán mới thành công')}</div>
                         <div style={{ fontSize: '0.625rem', color: 'var(--color-primary)', fontWeight: 600, marginTop: 2 }}>{t('(Không bao gồm Nhắc lại & Lỗi)')}</div>
@@ -6497,7 +6497,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsConsultantData.summary.reminder || 0}
+                          {statsConsultantData.summary?.reminder || 0}
                         </div>
                         <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Yêu cầu gọi lại')}</div>
                         <div style={{ fontSize: '0.625rem', color: 'var(--color-warning)', fontWeight: 600, marginTop: 2 }}>{t('(Tính riêng biệt, không cộng dồn)')}</div>
@@ -6511,7 +6511,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsConsultantData.summary.error || 0}
+                          {statsConsultantData.summary?.error || 0}
                         </div>
                         <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Trùng lặp / Lỗi chia')}</div>
                         <div style={{ fontSize: '0.625rem', color: 'var(--color-danger)', fontWeight: 600, marginTop: 2 }}>{t('(Đã loại bỏ khỏi Thành công)')}</div>
@@ -6525,8 +6525,8 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <div className="stat-value" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-text)' }}>
-                          {statsConsultantData.summary.system_total_successful > 0
-                            ? Math.round((statsConsultantData.summary.successful / statsConsultantData.summary.system_total_successful) * 100)
+                          {(statsConsultantData.summary?.system_total_successful ?? 0) > 0
+                            ? Math.round(((statsConsultantData.summary?.successful ?? 0) / (statsConsultantData.summary?.system_total_successful ?? 1)) * 100)
                             : 0}%
                         </div>
                         <div style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>{t('Thành công / Tổng của tất cả Đại lý')}</div>
@@ -6570,13 +6570,14 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     <div className="card" style={{ padding: '1rem 1.25rem', background: 'var(--color-surface)', border: '1px solid var(--color-border-light)' }}>
                       <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-text)' }}>{t('Tỷ lệ Trạng thái Data')}</h4>
                       {(() => {
+                        const totalCount = statsConsultantData.summary?.total ?? 0;
                         const statusChartData = [
-                          { name: t('Thành công'), value: statsConsultantData.summary.successful, color: '#1E40FF' },
-                          { name: t('Nhắc lại'), value: statsConsultantData.summary.reminder, color: '#f59e0b' },
-                          { name: t('Lỗi'), value: statsConsultantData.summary.error, color: '#ef4444' }
+                          { name: t('Thành công'), value: statsConsultantData.summary?.successful ?? 0, color: '#1E40FF' },
+                          { name: t('Nhắc lại'), value: statsConsultantData.summary?.reminder ?? 0, color: '#f59e0b' },
+                          { name: t('Lỗi'), value: statsConsultantData.summary?.error ?? 0, color: '#ef4444' }
                         ].filter(item => item.value > 0);
 
-                        return statsConsultantData.summary.total > 0 && statusChartData.length > 0 ? (
+                        return totalCount > 0 && statusChartData.length > 0 ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', justifyContent: 'center' }}>
                             <div style={{ width: 140, height: 140, flexShrink: 0 }}>
                               <ResponsiveContainer width="100%" height="100%">
@@ -6603,7 +6604,7 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.color }} />
                                   <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-                                    {item.name}: <strong style={{ fontSize: '0.8125rem' }}>{item.value}</strong> ({Math.round(item.value / statsConsultantData.summary.total * 100)}%)
+                                    {item.name}: <strong style={{ fontSize: '0.8125rem' }}>{item.value}</strong> ({Math.round(item.value / totalCount * 100)}%)
                                   </span>
                                 </div>
                               ))}
@@ -6620,10 +6621,10 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                     {/* Rounds breakdown chart */}
                     <div className="card" style={{ padding: '1rem 1.25rem', background: 'var(--color-surface)', border: '1px solid var(--color-border-light)' }}>
                       <h4 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--color-text)' }}>{t('Phân bổ theo Vòng (Round)')}</h4>
-                      {statsConsultantData.rounds.length > 0 ? (
+                      {(statsConsultantData?.rounds || []).length > 0 ? (
                         <div style={{ height: 160, width: '100%' }}>
                           <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={statsConsultantData.rounds} layout="vertical" margin={{ left: -10, right: 10, top: 0, bottom: 0 }}>
+                            <BarChart data={statsConsultantData?.rounds || []} layout="vertical" margin={{ left: -10, right: 10, top: 0, bottom: 0 }}>
                               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--color-border-light)" />
                               <XAxis type="number" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                               <YAxis dataKey="round_name" type="category" width={90} tick={{ fontSize: 9, fontWeight: 600 }} axisLine={false} tickLine={false} />
@@ -6650,8 +6651,9 @@ const GatekeeperInner = ({ isActive, searchParams, setSearchParams }: { isActive
                       {statsConsultantData.by_source && statsConsultantData.by_source.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 110, overflowY: 'auto', paddingRight: 4 }}>
                           {statsConsultantData.by_source.map((src: any, idx: number) => {
-                            const sourcePercent = statsConsultantData.summary.successful > 0
-                              ? Math.round((src.count / statsConsultantData.summary.successful) * 100)
+                            const succCount = statsConsultantData.summary?.successful ?? 0;
+                            const sourcePercent = succCount > 0
+                              ? Math.round((src.count / succCount) * 100)
                               : 0;
                             return (
                               <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

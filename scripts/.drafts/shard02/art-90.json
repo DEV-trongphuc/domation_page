@@ -1,0 +1,320 @@
+{
+  "id": "art-90",
+  "number": "90",
+  "slug": "mu-attribution-meta-tiktok-google-crm-giai-phap-capi",
+  "shardId": "shard02",
+  "pillar": "ads-cro-seo",
+  "pillarLabel": "Tối Ưu Quảng Cáo & Landing Page",
+  "industry": "Performance Marketing & E-Commerce",
+  "clusterId": "kw-ads-landing-cro",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Mù Attribution giữa Meta, TikTok, Google Ads và CRM: Vì sao CPL rẻ đang giết chết biên lợi nhuận?",
+  "seoTitle": "Mù Attribution Ads–CRM: Cách Đóng Vòng Lặp CAPI | DOMATION",
+  "metaDescription": "Khắc phục tình trạng Ads báo CPL rẻ nhưng CRM không ra đơn. Thiết kế Server-Side Attribution và bắn ngược sự kiện Qualified qua Meta CAPI SHA-256.",
+  "focusKeyword": "mù attribution quảng cáo và crm",
+  "secondaryKeywords": [
+    "attribution đa kênh meta tiktok google",
+    "cpl rẻ nhưng không ra đơn",
+    "server side tracking đối chiếu crm",
+    "đo roas thực theo cohort",
+    "conversion leads capi sha-256"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Xóa Mù Attribution Giữa Meta, TikTok Và CRM Thực",
+  "thumbnailHook": "Nối doanh thu CRM về từng Adset để cắt 35% ngân sách rác.",
+  "thumbnailBadge": "ATTRIBUTION • CAPI BI",
+  "coverImage": "/imgs/boost/v2/mu-attribution-meta-tiktok-google-crm-giai-phap-capi.webp",
+  "coverAlt": "Bản vẽ kiến trúc xóa mù Attribution giữa Meta Ads, TikTok, Google Ads và CRM bằng Server-Side CAPI SHA-256",
+  "screenshotImage": "/imgs/boost/charts/mu-attribution-meta-tiktok-google-crm-giai-phap-capi-report.webp",
+  "screenshotCaption": "Đối chiếu nghịch lý CPL thô vs CPQL thực tế trên CRM và kiến trúc đóng vòng lặp tín hiệu Meta Conversions API (HTTP 200).",
+  "relatedModuleUrl": "/meta-report",
+  "relatedModuleLabel": "Xem Hệ Thống Đối Chiếu Ads & CRM",
+  "relatedSlugs": [
+    "ket-noi-meta-capi-sha256-ban-su-kien-qualified-giam-35-lead-rac",
+    "bay-chi-so-cpl-ao-meta-ads-doi-chieu-graph-api-doanh-thu-crm",
+    "chuan-hoa-first-party-data-hau-cookieless-cho-ai-va-ads",
+    "posthog-posthog-audit-product-analytics-server-side-tracking"
+  ],
+  "relatedPortfolioId": "ecolife-signature",
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Tối ưu quảng cáo theo giá mỗi Lead thô (CPL) khi đứt kết nối với CRM là con đường nhanh nhất phá hủy biên lợi nhuận: thuật toán Meta và TikTok tự động dồn tiền vào nhóm người bấm form miễn phí nhưng không đủ sức mua, khiến CPL giảm đẹp còn CPQL và CAC tăng gấp 2–3 lần. Bản vẽ kiến trúc DOMATION dùng First-Party Server-Side Ledger trên PostgreSQL lưu bền Click ID (`fbclid`/`fbc`/`fbp`/`ttclid`/`gclid`), deduplicate `event_id`, đối chiếu Graph API theo Cohort và bắn ngược `Qualified`/`Purchase` chuẩn SHA-256 về Meta CAPI đạt HTTP 200.",
+  "keyTakeaways": [
+    "Nghịch lý CPL rẻ: Adset CPL 28.000₫–36.000₫ thường chỉ đạt 6%–8% Qualified (CPQL ~450.000₫), đắt gần gấp đôi Adset CPL 108.000₫ đạt 46% Qualified (CPQL ~235.000₫).",
+    "Pixel trình duyệt mất 35%–48% chuyển đổi vì iOS Safari ITP xóa cookie sau 7 ngày, WebView Facebook/Zalo cô lập storage và hành trình đa chạm 14–45 ngày.",
+    "Cộng tổng ROAS từ Meta, TikTok và Google Ads Manager luôn bị thổi phồng 1.8x–2.3x do cả ba nền tảng cùng nhận công trên một đơn hàng.",
+    "Đóng vòng lặp Meta CAPI SHA-256 từ CRM kèm `fbc`, `fbp`, `lead_id` và `currency: VND` giúp dạy lại máy học tìm khách giàu sức mua và cắt 35% ngân sách rác."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Ngân sách Lead rác được cắt",
+      "value": "-35% Ads Waste"
+    },
+    {
+      "label": "Tỷ lệ khớp sự kiện CAPI",
+      "value": "HTTP 200 (EMQ > 8.5)"
+    },
+    {
+      "label": "Giảm CPA thực tế (Case IDEAS)",
+      "value": "-30% (18M -> 12–14M)"
+    },
+    {
+      "label": "ROAS đỉnh thực chiến",
+      "value": "4.8x – 8.2x Verified"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "ban-ve-server-side-attribution-va-capi",
+      "eyebrow": "Architecture Blueprint • Attribution & Meta CAPI",
+      "heading": "Vì sao tối ưu CPL thô khiến máy học quảng cáo dẫn bạn vào ngõ cụt tài chính?",
+      "variant": "deep-dive",
+      "pullQuote": "Khi trả thưởng cho thuật toán Meta hay TikTok theo số lượng Form gửi đi thay vì số khách có tiền, máy học sẽ tối ưu xuất sắc việc tìm những người rảnh rỗi nhất trên Internet.",
+      "paragraphs": [
+        "Trong cuốn sách 'Facebook Ads: AI Chạy Không Được', Huỳnh Trọng Phúc (TurnioDEV) chỉ ra sai lầm phổ biến nhất của Performance Marketing: đồng nhất mục tiêu phân phối của AI quảng cáo với mục tiêu doanh thu. Khi chỉ gắn Pixel bắn sự kiện `Lead` lúc bấm Submit Form, bạn đang ra lệnh cho Meta và TikTok tìm bất kỳ ai điền số điện thoại rẻ nhất—tạo ra dòng chảy người săn đồ miễn phí, học sinh tò mò hoặc bot spam. CPL trên báo cáo rực rỡ ở mức 28.000₫–36.000₫, nhưng Sale gọi 100 người chỉ lọc được 6–8 khách đạt chuẩn, đẩy CPQL thực lên 450.000₫+.",
+        "Độ mù Attribution càng nặng khi chạy song song Meta, TikTok và Google trên Pixel trình duyệt. Thứ nhất, iOS Safari ITP giới hạn tuổi thọ cookie JavaScript còn 7 ngày (hoặc 24 giờ khi có query tracking). Thứ hai, hơn 70% traffic quảng cáo Việt Nam mở link trong Facebook/Zalo In-App Browser có vùng nhớ tách biệt khỏi trình duyệt mặc định. Thứ ba, hiện tượng chồng lấn công trạng (Overlap Attribution) xảy ra khi một khách xem TikTok, thấy nhắc lại trên Facebook rồi tìm Google để mua—cả ba sàn đều nhận 100% doanh thu khiến ROAS cộng gộp ảo cao gấp đôi thực tế.",
+        "Kiến trúc xóa mù của DOMATION đặt First-Party Server-Side Ledger trên PostgreSQL làm trung tâm. Ngay tích tắc khách vào Landing Page hoặc gửi Lead Form, Edge Middleware bắt trọn `fbclid` (chuẩn hóa `_fbc`), `_fbp`, `ttclid`, `gclid`, `utm_*`, `adset_id`, `lead_id` và ghi vào bảng `lead_touchpoints` gắn với `lead_uuid` cùng `event_id` dùng khử trùng Pixel–Server.",
+        "Ở tầng phân tích, hệ thống kéo chi phí từng Adset hàng giờ qua Facebook Graph API, TikTok API và Google Ads API rồi khớp ngược với trạng thái CRM Pipeline 8 nấc và hóa đơn MISA theo Cohort ngày tạo Lead. Nhờ vậy, Meta Ad Realtime Report hiển thị đồng thời CPL thô, CPQL thực, Hook Rate 3 giây video và Cohort ROAS 30 ngày cho từng mẫu quảng cáo.",
+        "Cuối cùng, khi Sale chuyển trạng thái `Qualified`, đặt hẹn `Schedule` hoặc thu tiền `Purchase`, Worker BullMQ băm SHA-256 dữ liệu định danh (email lowercase, SĐT chuẩn E.164 `84...`) và bắn POST lên Meta Conversions API kèm `fbc`, `fbp`, `lead_id` và giá trị VNĐ. Nhận phản hồi `HTTP 200` (`events_received: 1`) chính thức khép vòng lặp dạy thuật toán tránh xa tệp Lead rác."
+      ],
+      "bullets": [
+        "Multi-Touch Ledger PostgreSQL: Lưu trọn chuỗi First-Touch, Assist-Touch và Last-Touch thay vì để từng nền tảng tự chấm công.",
+        "Event Deduplication (`event_id` + `external_id`): Đảm bảo Browser Pixel và Server CAPI không đếm trùng 1 chuyển đổi thành 2.",
+        "Conversion Leads Optimization: Gửi kèm `lead_id` 15–16 số của Meta Instant Form để mở khóa tối ưu chất lượng Lead sâu."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-nghich-ly-cpl-re-vs-cpql-thuc",
+      "heading": "Nghịch lý Attribution: So sánh CPL thô trên Ads Manager vs CPQL & CAC thực trên CRM",
+      "subtitle": "Đối chiếu 6 nhóm chiến dịch (Meta, TikTok, Google) trên DOMATION Meta Ad Realtime Report",
+      "chart": {
+        "chartType": "composed",
+        "title": "CPL thô (Ads) vs CPQL thực (CRM) & Tỷ lệ Qualified (%)",
+        "subtitle": "Đơn vị: Nghìn VNĐ (CPL/CPQL) & % Tỷ lệ Qualified hợp lệ",
+        "xKey": "channel",
+        "yUnit": "Nghìn VNĐ / %",
+        "series": [
+          {
+            "key": "rawCplK",
+            "label": "CPL Thô Ads Manager (Nghìn ₫)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "realCpqlK",
+            "label": "CPQL Thực CRM (Nghìn ₫)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "qualRatePct",
+            "label": "Tỷ lệ Qualified CRM (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "channel": "TikTok Broad",
+            "rawCplK": 28,
+            "realCpqlK": 467,
+            "qualRatePct": 6.0
+          },
+          {
+            "channel": "Meta Form Thô",
+            "rawCplK": 36,
+            "realCpqlK": 450,
+            "qualRatePct": 8.0
+          },
+          {
+            "channel": "Google PMax",
+            "rawCplK": 68,
+            "realCpqlK": 358,
+            "qualRatePct": 19.0
+          },
+          {
+            "channel": "TikTok Search",
+            "rawCplK": 74,
+            "realCpqlK": 264,
+            "qualRatePct": 28.0
+          },
+          {
+            "channel": "Meta CAPI Qual",
+            "rawCplK": 108,
+            "realCpqlK": 235,
+            "qualRatePct": 46.0
+          },
+          {
+            "channel": "Google Search",
+            "rawCplK": 135,
+            "realCpqlK": 250,
+            "qualRatePct": 54.0
+          }
+        ],
+        "kpis": [
+          {
+            "label": "CPQL nhóm CPL rẻ nhất",
+            "value": "467.000₫",
+            "delta": "Dù CPL thô 28k (6% Qual)",
+            "positive": false
+          },
+          {
+            "label": "CPQL Meta CAPI Qual",
+            "value": "235.000₫",
+            "delta": "-49.6% CPQL so với Form thô",
+            "positive": true
+          },
+          {
+            "label": "Tỷ lệ Qualified sau CAPI",
+            "value": "46.0%",
+            "delta": "+38 điểm % chất lượng Lead",
+            "positive": true
+          },
+          {
+            "label": "ROAS Cohort 30 ngày",
+            "value": "5.4x",
+            "delta": "Đối chiếu thực thu CRM/MISA",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Nguồn: Đối chiếu Facebook Graph API, TikTok API và CRM 360° qua Meta Ad Realtime Report DOMATION (2025–2026)."
+      },
+      "insightSummary": "Hai nhóm có CPL thô rẻ nhất (TikTok Broad 28k, Meta Form Thô 36k) lại đắt nhất về chi phí khách đạt chuẩn (450k–467k/CPQL). Chuyển sang tối ưu Meta CAPI Qualified làm CPL danh nghĩa lên 108k nhưng hạ CPQL thực xuống còn 235k nhờ tỷ lệ Qualified đạt 46%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "hinh-anh-kien-truc-attribution-capi",
+      "src": "/imgs/boost/charts/mu-attribution-meta-tiktok-google-crm-giai-phap-capi-report.webp",
+      "alt": "Kiến trúc xóa mù Attribution giữa Meta, TikTok, Google Ads và CRM bằng Server-Side CAPI SHA-256",
+      "caption": "Sơ đồ luồng dữ liệu Server-Side Attribution đối chiếu đa kênh quảng cáo với CRM 360° và bắn tín hiệu Qualified qua Meta CAPI HTTP 200.",
+      "badge": "Kiến Trúc Closed-Loop CAPI"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "so-sanh-4-mo-hinh-tracking-attribution",
+      "heading": "So sánh 4 kiến trúc Tracking & Attribution trong thực tế triển khai",
+      "caption": "Đánh giá khả năng vượt ITP Safari, nối doanh thu CRM/MISA và huấn luyện thuật toán",
+      "columns": [
+        "Hạng mục kỹ thuật",
+        "Client Pixel + UTM Thô",
+        "GA4 Mặc Định",
+        "GTM Server Độc Lập",
+        "DOMATION CAPI + CRM"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Vượt ITP Safari & AdBlocker",
+          "values": [
+            "Kém — mất 35%–48% trên iOS & WebView",
+            "Trung bình — giới hạn session & consent",
+            "Tốt cho Web nhưng đứt đoạn sau form",
+            "Rất cao — Lưu `fbc`/`fbp`/`ttclid`/`gclid` trên Postgres"
+          ],
+          "winnerNote": "Không mất dấu dù chốt đơn sau 30–60 ngày"
+        },
+        {
+          "criterion": "Đối soát thực thu & hoàn hủy CRM/MISA",
+          "values": [
+            "Không có — chỉ đếm lúc bấm Gửi Form",
+            "Hạn chế — phải import CSV thủ công",
+            "Chỉ biết sự kiện Web, mù trạng thái chốt",
+            "100% Real-time — Khớp khóa ngoại Paid/MISA & trừ hủy"
+          ],
+          "winnerNote": "Phân biệt rạch ròi CPL ảo vs ROAS Cohort thật"
+        },
+        {
+          "criterion": "Huấn luyện lại AI Meta/TikTok",
+          "values": [
+            "Gửi cả spam và số thuê bao sai",
+            "Không phản hồi trực tiếp Meta Lead Ads",
+            "Chỉ gửi tín hiệu bề mặt trên Web",
+            "Bắn CAPI SHA-256 `Qualified`/`Booked`/`Paid` (HTTP 200)"
+          ],
+          "winnerNote": "Cắt 35% ngân sách Lead rác sau 14 ngày"
+        },
+        {
+          "criterion": "Khử trùng đa kênh & Creative Hook Rate",
+          "values": [
+            "Thổi phồng ROAS 1.8x–2.3x giữa các sàn",
+            "Thiên vị Google Search ở bước cuối",
+            "Chỉ khử trùng theo Event ID trình duyệt",
+            "Khử trùng kép + SĐT 6 tháng + Hook/Hold Rate Graph API"
+          ]
+        }
+      ],
+      "footnote": "Ghi chú: Event Match Quality (EMQ) trên Meta Events Manager khi gửi đủ `ph` (SHA-256), `em` (SHA-256), `fbc`, `fbp` và `client_ip_address` thường đạt 8.2–9.3/10."
+    },
+    {
+      "type": "code-recipe",
+      "id": "recipe-meta-capi-sha256-crm",
+      "heading": "Mẫu xử lý Server-Side Chuẩn hóa E.164, Băm SHA-256 & Bắn Meta CAPI từ CRM",
+      "language": "typescript",
+      "filename": "services/metaCapiFeedback.ts",
+      "description": "Đoạn mã Node.js/TypeScript chuẩn hóa SĐT Việt Nam (`84...`), băm SHA-256, đính kèm `fbc`/`fbp`/`lead_id` và `event_id` deduplication để gửi Meta Graph API CAPI v21+ đạt HTTP 200.",
+      "code": "import crypto from 'node:crypto';\n\nexport interface CrmQualifiedPayload {\n  leadUuid: string;\n  eventId: string;\n  stage: 'QualifiedLead' | 'Schedule' | 'Purchase';\n  phoneRaw: string;\n  emailRaw?: string;\n  fbc?: string;\n  fbp?: string;\n  metaLeadId?: string;\n  clientIp?: string;\n  userAgent?: string;\n  valueVnd?: number;\n  eventTimeUnix: number;\n}\n\nconst sha256 = (val: string): string =>\n  crypto.createHash('sha256').update(val.trim().toLowerCase()).digest('hex');\n\nconst normalizeVnPhoneForMeta = (raw: string): string => {\n  const digits = raw.replace(/\\D/g, '');\n  if (digits.startsWith('0')) return `84${digits.slice(1)}`;\n  return digits.startsWith('84') ? digits : `84${digits}`;\n};\n\nexport async function sendCrmSignalToMetaCapi(\n  pixelId: string,\n  accessToken: string,\n  lead: CrmQualifiedPayload\n) {\n  const userData: Record<string, unknown> = {\n    ph: [sha256(normalizeVnPhoneForMeta(lead.phoneRaw))],\n    external_id: [sha256(lead.leadUuid)],\n  };\n  if (lead.emailRaw) userData.em = [sha256(lead.emailRaw)];\n  if (lead.fbc) userData.fbc = lead.fbc;\n  if (lead.fbp) userData.fbp = lead.fbp;\n  if (lead.metaLeadId) userData.lead_id = Number(lead.metaLeadId);\n  if (lead.clientIp) userData.client_ip_address = lead.clientIp;\n  if (lead.userAgent) userData.client_user_agent = lead.userAgent;\n\n  const body = {\n    data: [{\n      event_name: lead.stage,\n      event_time: lead.eventTimeUnix,\n      event_id: lead.eventId,\n      action_source: lead.metaLeadId ? 'system_generated' : 'website',\n      user_data: userData,\n      custom_data: {\n        currency: 'VND',\n        value: lead.valueVnd ?? 0,\n        event_source: 'crm',\n        lead_event_source: 'DOMATION_CRM_360',\n      },\n    }],\n  };\n\n  const res = await fetch(\n    `https://graph.facebook.com/v21.0/${pixelId}/events?access_token=${accessToken}`,\n    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }\n  );\n  if (!res.ok) throw new Error(`Meta CAPI failed: ${res.status}`);\n  return (await res.json()) as { events_received: number; fbtrace_id: string };\n}"
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "ngon-han-sai-lam-ve-attribution-va-pixel",
+      "heading": "Bốn lầm tưởng phổ biến khiến đội Marketing nhìn sai bản đồ ROAS",
+      "pairs": [
+        {
+          "myth": "Cài Meta Pixel + CAPI cho sự kiện gửi Form (`Lead`) là thuật toán đã tự tối ưu chuẩn.",
+          "reality": "CAPI ở bước gửi Form chỉ đếm đủ lượt submit khi bị chặn cookie, hoàn toàn không báo cho Meta biết 80% số đó là rác hay sai đối tượng, nên AI vẫn tiếp tục gom form rẻ kém chất lượng.",
+          "proofMetric": "Chuyển sang CAPI `Qualified` cắt 35% chi phí Lead rác sau 14 ngày"
+        },
+        {
+          "myth": "Cộng ROAS trên Meta Ads Manager, TikTok và Google Ads là hiệu quả thật của Paid Media.",
+          "reality": "Mỗi sàn đều dùng cửa sổ quy đổi rộng và tự nhận công khi khách chạm đa kênh, làm tổng doanh thu bị thổi phồng 1.8x–2.3x so với thực thu ngân hàng.",
+          "proofMetric": "Chênh lệch trung bình 42% giữa ROAS cộng gộp và ROAS Cohort CRM"
+        },
+        {
+          "myth": "Chiến dịch nào có CPL cao hơn 2x mục tiêu thì phải tắt ngay sau 48 giờ.",
+          "reality": "Ngành BĐS, Nha khoa hay MBA có khách giàu cân nhắc kỹ nên CPL đầu vào cao hơn 2x–3x nhưng tỷ lệ chốt và AOV cao gấp 5x. Tắt theo CPL thô là tự cắt nguồn sinh lời.",
+          "proofMetric": "Viện IDEAS tối ưu theo CPQL & Enroll thực giúp hạ CPA 30%"
+        },
+        {
+          "myth": "Khách nhắn qua Zalo cá nhân hoặc gọi hotline thì Ads không thể nào đo Attribution được.",
+          "reality": "Gắn Click ID vào deep-link chuyển tiếp kết hợp Webhook Zalo OA và đối chiếu SĐT +84 trên First-Party Ledger giúp truy vết trên 88% đơn chốt về đúng Adset.",
+          "proofMetric": "EcoLife Signature & 25 OOH QR đạt độ khớp Attribution > 90%"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-dong-vong-lap-capi",
+      "variant": "founder-pov",
+      "title": "Đừng hỏi Ads bao nhiêu tiền một Lead—hãy hỏi Adset nào đẻ ra tiền mặt trên CRM",
+      "body": "Sau khi vận hành ngân sách đỉnh 500 triệu/tháng và xử lý 150.000+ Lead, bài học cốt lõi trong sách 'Facebook Ads: AI Chạy Không Được' của tôi là: AI quảng cáo rất thông minh nhưng mù hoàn toàn sau cú click. Chỉ khi nối ống dẫn sạch từ CRM 360° và MISA bắn ngược `Qualified`, `Booked`, `Purchase` bằng Meta CAPI SHA-256 (HTTP 200) kèm đối chiếu Cohort trên Meta Ad Report, doanh nghiệp mới cắt được 35% ngân sách rác và duy trì ROAS 4.8x–8.2x bền vững.",
+      "authorBadge": "Góc Nhìn Founder & CEO • Huỳnh Trọng Phúc (TurnioDEV)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Bắn sự kiện Qualified qua Meta CAPI khác gì cài Pixel & CAPI thông thường trên Web?",
+      "answer": "CAPI thông thường bắn ngay khi khách gửi form (bao gồm cả số rác và trùng lặp). CRM Feedback CAPI chỉ bắn khi Sale hoặc hệ thống chấm điểm xác nhận khách đạt chuẩn (`Qualified`, `Booked`, `Paid`), từ đó dạy lại AI đấu giá chỉ tìm tập khách có năng lực chi trả thật."
+    },
+    {
+      "question": "Gửi SĐT và Email lên Meta CAPI có làm lộ thông tin bí mật khách hàng không?",
+      "answer": "Không. Trước khi truyền qua HTTPS, toàn bộ dữ liệu định danh (SĐT `84...`, email) đều được băm một chiều bằng SHA-256 ngay trên server doanh nghiệp. Meta không đọc được dữ liệu thô mà chỉ đối khớp mã hash với tài khoản người dùng."
+    },
+    {
+      "question": "Cần bao nhiêu sự kiện Qualified mỗi tuần để thuật toán tối ưu theo CAPI chạy ổn định?",
+      "answer": "Mỗi nhóm quảng cáo nên đạt 30–50 sự kiện/tuần để thoát giai đoạn máy học. Nếu đơn chốt cuối (`Purchase`) ít, DOMATION cấu hình tối ưu theo sự kiện trung gian có độ tương quan cao như `QualifiedLead` hoặc `Schedule` (40–100+ lượt/tuần) và gửi kèm `Purchase` để đo ROAS."
+    },
+    {
+      "question": "Đo Attribution thế nào khi khách xem TikTok hôm nay nhưng 10 ngày sau tìm Google mới mua?",
+      "answer": "Tất cả Click ID (`ttclid`, `fbclid`, `gclid`, `utm_*`) được ghi tuần tự vào bảng `lead_touchpoints` trên PostgreSQL theo dòng thời gian, cho phép ban điều hành xem đồng thời First-Touch, Last-Touch và Cohort ROAS thay vì tin báo cáo đơn lẻ từng sàn."
+    }
+  ]
+}

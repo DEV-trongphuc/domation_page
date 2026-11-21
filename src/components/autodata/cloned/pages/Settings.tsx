@@ -2056,7 +2056,7 @@ const SettingsInner = () => {
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>{t('🔗 URL Frontend (Dùng trong link Email báo cáo lỗi)')}</label>
                     <input
                       className="form-input"
-                      placeholder={t("Ví dụ: https://domation.net/data")}
+                      placeholder={t("Ví dụ: https://data.domation.net")}
                       value={frontendUrl}
                       onChange={e => setFrontendUrl(e.target.value)}
                     />
@@ -2238,7 +2238,7 @@ function doPost(e) {
                     <label className="form-label">{t('Link Webhook khai báo trên Zalo Bot Platform:')}</label>
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <code style={{ flex: 1, background: 'var(--color-bg)', padding: '0.5rem', borderRadius: 6, fontSize: '0.875rem', color: 'var(--color-primary)', border: '1px solid var(--color-border)' }}>
-                        https://domation.net/api/v1/integrations/zalo
+                        {`https://data.domation.net/api/v1/webhooks/zalo/${tenantSlug || '<tenant_slug>'}`}
                       </code>
                     </div>
                     <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 8 }}>

@@ -1,0 +1,263 @@
+{
+  "id": "art-105",
+  "number": "105",
+  "slug": "data-observability-freshness-sla-phat-hien-ket-queue-webhook",
+  "shardId": "shard03",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "SRE & Data Operations",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "field-report",
+  "title": "Data Observability & Freshness SLA: Phát hiện Webhook Meta/POS chết ngầm trước khi AI đọc số sai",
+  "seoTitle": "Data Observability: Cảnh Báo Sớm Kẹt Webhook & AI | DOMATION",
+  "metaDescription": "Thiết lập 5 trụ cột Data Observability (Freshness, Volume, Schema, Null-Rate, Lineage) để ZaloBot cảnh báo ngay khi Meta Webhook hay POS bị kẹt ngầm.",
+  "focusKeyword": "data observability và freshness sla",
+  "secondaryKeywords": [
+    "giám sát webhook meta ads bị chết",
+    "phát hiện trễ dữ liệu pipeline ai",
+    "cảnh báo kẹt queue bullmq",
+    "độ tươi dữ liệu freshness sla",
+    "giám sát chất lượng dữ liệu realtime"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Phát Hiện Dữ Liệu Tắc Nghẽn Trước Khi CEO Hỏi Số",
+  "thumbnailHook": "Báo ZaloBot tức thì nếu Freshness SLA trễ 180 giây hoặc volume tụt 40%.",
+  "thumbnailBadge": "OBSERVABILITY • SLA",
+  "coverImage": "/imgs/boost/v2/data-observability-freshness-sla-phat-hien-ket-queue-webhook.webp",
+  "screenshotImage": "/imgs/boost/charts/data-observability-freshness-sla-phat-hien-ket-queue-webhook-report.webp",
+  "relatedModuleUrl": "/data",
+  "relatedModuleLabel": "Xem Giám Sát Realtime Tại Auto Data",
+  "relatedSlugs": [
+    "etl-elt-realtime-hop-nhat-pos-crm-erp-zalo-oa",
+    "data-contracts-chong-gay-pipeline-ai-khi-backend-doi-schema",
+    "phat-hien-data-drift-concept-drift-trong-he-thong-ai",
+    "ai-anomaly-detection-bat-thuong-doanh-thu-cham-cong-creative"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Hệ thống Data Observability giám sát Freshness SLA, phát hiện kẹt hàng đợi BullMQ và webhook Meta Ads/POS chết ngầm trước khi AI đọc sai số",
+  "screenshotCaption": "Biểu đồ giám sát độ tươi dữ liệu Freshness SLA 180 giây, phát hiện sụt giảm volume bất thường và tồn đọng hàng đợi BullMQ trên DOMATION Auto Data.",
+  "tldrSummary": "Rủi ro lớn nhất của pipeline dữ liệu đa kênh không phải lỗi HTTP 500 làm sập trang, mà là sự cố chết im lặng (Silent Data Failure): Webhook Meta bị thu hồi token hoặc worker BullMQ treo ngầm suốt 42 tiếng cuối tuần trong khi Gateway vẫn trả `200 OK`, khiến AI BI Agent và báo cáo CEO đọc sai hoàn toàn số liệu. Thiết lập 5 trụ cột Data Observability (Freshness SLA, Volume Z-Score theo khung giờ, Schema Drift, Null-Rate và Lineage) nối cảnh báo ZaloBot giúp phát hiện đứt gãy dưới 180 giây và khóa ngay câu trả lời sai của AI.",
+  "keyTakeaways": [
+    "Infrastructure Monitoring (CPU/RAM xanh, HTTP 200) không bắt được lỗi Webhook mất token hay Worker BullMQ nghẽn nội bộ — bắt buộc phải đo trực tiếp dòng chảy dữ liệu.",
+    "Dùng Same-Hour Rolling Baseline (so sánh cùng khung giờ của 4 tuần gần nhất) kết hợp Canary Heartbeat 5 phút/lần để bắt Volume tụt 40% giờ cao điểm mà không nổ báo giả lúc 3h sáng.",
+    "Theo dõi Null-Rate và Schema Validation riêng cho các luồng Unstructured-to-Structured AI Parser để chặn tình trạng LLM trả JSON hợp lệ nhưng rỗng toàn bộ SĐT hoặc số tiền.",
+    "Bật Freshness Circuit Breaker: khi dữ liệu nguồn trễ quá SLA 180s, gắn cờ `STALE` buộc AI BI Agent cảnh báo độ trễ thay vì tự tin đọc số thiếu."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Phát hiện đứt gãy ngầm (MTTD)", "value": "< 180 giây qua ZaloBot" },
+    { "label": "Giảm cảnh báo giả ban đêm", "value": "-91% Rolling Baseline" },
+    { "label": "Cứu Lead kẹt Dead-Letter Queue", "value": "99.8% Replay an toàn" },
+    { "label": "Chặn AI báo cáo số thiếu", "value": "100% Freshness Gate" }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao đã cài Grafana/Prometheus kiểm tra uptime HTTP 200 mà Webhook Meta hay POS vẫn chết ngầm?",
+      "answer": "Khi Admin đổi mật khẩu Facebook làm thu hồi Page Token, Meta ngừng gửi webhook luôn nên cổng API của bạn không phát sinh HTTP 500. Hoặc nếu Gateway đẩy job vào Redis BullMQ rồi trả 200 OK trong khi worker phía sau crash, server vẫn xanh nhưng dữ liệu đứng hình. Chỉ Data Observability đo độ tươi bảng đích mới bắt được."
+    },
+    {
+      "question": "Làm sao để 2 giờ sáng vắng khách hệ thống không báo động giả liên tục là Webhook chết?",
+      "answer": "Kết hợp hai cơ chế: tính Z-score so sánh lưu lượng với đúng khung giờ đó trong 4 tuần trước (ban đêm kỳ vọng 0–1 Lead là bình thường) và bắn một sự kiện Canary Ping mỗi 5 phút xuyên suốt Gateway -> BullMQ -> Postgres để kiểm chứng đường ống thông suốt."
+    },
+    {
+      "question": "Ngưỡng Freshness SLA 180 giây nên áp dụng cho bảng nào và có phân tầng không?",
+      "answer": "Nên chia 3 cấp: Tier 1 (Lead nóng Meta/Landing Page chia ZaloBot cho Sale) đặt SLA <= 180 giây; Tier 2 (giao dịch VietQR và POS thu ngân) đặt SLA <= 60–300 giây; Tier 3 (đồng bộ chi phí Graph API theo giờ lên ClickHouse/Parquet) nới lên 15–30 phút."
+    },
+    {
+      "question": "Có lấy lại được Lead đã rớt trong thời gian Webhook Meta bị thu hồi quyền không?",
+      "answer": "Có. Ngoài việc replay job trong Dead-Letter Queue cho lỗi nội bộ, hệ thống tự động (hoặc bấm kích hoạt) gọi Meta Graph API `/{form_id}/leads` lọc theo `created_time` trong khoảng sự cố, đẩy qua cổng chống trùng `leadgen_id` để bù 100% Lead bị sót."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "telemetries-su-co-silent-failure",
+      "heading": "Bốn con số thực địa về tổn thất từ các pipeline dữ liệu chết im lặng",
+      "stats": [
+        { "value": "42 giờ", "label": "Thời gian kẹt ngầm trung bình", "context": "Khi chỉ giám sát CPU/RAM và HTTP 200", "trend": "down" },
+        { "value": "180 giây", "label": "Trần Freshness SLA Lead nóng", "context": "Ngưỡng nổ cảnh báo ZaloBot SRE", "trend": "up" },
+        { "value": "100%", "label": "Rủi ro mất dấu thiếu DLQ", "context": "Job lỗi biến mất sau khi hết retry", "trend": "down" },
+        { "value": "4 phút", "label": "MTTR khôi phục tự động", "context": "Nhờ Watchdog DLQ + Graph API Backfill", "trend": "up" }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ho-so-su-co-webhook-chet-ngam-cuoi-tuan",
+      "eyebrow": "Hồ Sơ Sự Cố Thực Địa",
+      "variant": "incident",
+      "heading": "42 giờ chết ngầm cuối tuần: Server xanh, HTTP 200 OK nhưng cả hệ thống AI & CEO đọc số rỗng",
+      "pullQuote": "9h00 sáng thứ Hai, AI BI báo doanh thu cuối tuần sụt 62%. Grafana vẫn xanh mượt ở 14% CPU và 0 lỗi 500 — nhưng bảng `leads` và `orders` đã đứng hình từ 18h tối thứ Sáu.",
+      "paragraphs": [
+        "Trong một đợt kiểm toán cho chuỗi bán lẻ đa kênh tại TP.HCM, đội SRE DOMATION ghi nhận một tai nạn kép kinh điển: chiều thứ Sáu, quản trị viên Marketing bật 2FA đổi mật khẩu tài khoản Facebook cá nhân khiến quyền Webhook Fanpage bị Meta âm thầm thu hồi. Cùng đêm đó, bản cập nhật POS đổi tên trường `customer_mobile` thành `buyer_phone`. Cổng API nhận webhook vẫn đẩy JSON vào Redis BullMQ và trả `200 OK` trong 18ms, nhưng Worker phía sau lại ném sự kiện sai schema sang hàng đợi `failed` không ai theo dõi.",
+        "Hậu quả dây chuyền kéo dài suốt 42 tiếng: Sale không nhận được Lead nóng cuối tuần, team Media tưởng chiến dịch hết hiệu quả nên vội tắt những adset đang ra đơn tốt, còn Trợ lý AI báo cáo cho Ban Giám đốc vào sáng thứ Hai vẫn tự tin phân tích trên tập dữ liệu khuyết thiếu. Nếu không tách riêng lớp Data Observability khỏi hạ tầng server, CEO luôn là người phát hiện lỗi muộn nhất."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "freshness-sla-va-volume-anomaly-telemetry",
+      "heading": "Telemetry 12 giờ: Bắt sớm tụt Volume & nghẽn BullMQ tại trần SLA 180 giây",
+      "subtitle": "Đối chiếu Freshness Lag (giây) với lưu lượng thực tế và Baseline trung bình 4 tuần cùng khung giờ",
+      "chart": {
+        "chartType": "composed",
+        "title": "Độ trễ Freshness (giây) vs Lưu lượng sự kiện thực tế và Baseline 4 tuần",
+        "xKey": "hour",
+        "yUnit": "s / ev",
+        "kpis": [
+          { "label": "Độ trễ bình thường P95", "value": "4.2 giây", "delta": "Đạt chuẩn SLA <= 180s", "positive": true },
+          { "label": "Đỉnh nghẽn sự cố 13h15", "value": "412 giây", "delta": "ZaloBot báo ngay tại 195s", "positive": false },
+          { "label": "Sụt giảm Volume đỉnh điểm", "value": "-68%", "delta": "Bắt Z-score trong 3 phút", "positive": false },
+          { "label": "Thời gian xả sạch DLQ", "value": "4.5 phút", "delta": "Replay không mất 1 Lead", "positive": true }
+        ],
+        "series": [
+          { "key": "freshnessLagSec", "label": "Freshness Lag (giây)", "color": "#EF4444", "type": "bar" },
+          { "key": "actualEvents", "label": "Sự kiện ingest thực tế / 15p", "color": "#1E40FF", "type": "line" },
+          { "key": "baselineEvents", "label": "Baseline 4 tuần cùng giờ / 15p", "color": "#06B6D4", "type": "area" }
+        ],
+        "data": [
+          { "hour": "10:00", "freshnessLagSec": 4, "actualEvents": 142, "baselineEvents": 138 },
+          { "hour": "11:00", "freshnessLagSec": 5, "actualEvents": 165, "baselineEvents": 160 },
+          { "hour": "12:00", "freshnessLagSec": 6, "actualEvents": 188, "baselineEvents": 184 },
+          { "hour": "13:00", "freshnessLagSec": 195, "actualEvents": 62, "baselineEvents": 190 },
+          { "hour": "13:15", "freshnessLagSec": 412, "actualEvents": 18, "baselineEvents": 196 },
+          { "hour": "13:30", "freshnessLagSec": 38, "actualEvents": 310, "baselineEvents": 202 },
+          { "hour": "14:00", "freshnessLagSec": 5, "actualEvents": 215, "baselineEvents": 210 }
+        ],
+        "sourceNote": "Telemetry mô phỏng sự cố nghẽn worker BullMQ lúc 13h00 được ZaloBot Watchdog bắt tại ngưỡng 180s và xả Replay lúc 13h30."
+      },
+      "insightSummary": "Ngay khi Freshness Lag vượt 180s lên 195s lúc 13:00 và Volume thực tế rơi từ mức kỳ vọng 190 xuống 62 (-67%), Watchdog lập tức kích hoạt cảnh báo ZaloBot có đính kèm thống kê hàng đợi. Nhờ xử lý kịp ở phút thứ 3, 310 sự kiện tồn đọng được xả sạch lúc 13:30 mà không ảnh hưởng đến ca bán hàng buổi chiều."
+    },
+    {
+      "type": "visual-figure",
+      "id": "data-observability-dashboard-visual",
+      "src": "/imgs/boost/charts/data-observability-freshness-sla-phat-hien-ket-queue-webhook-report.webp",
+      "alt": "Giao diện giám sát Data Observability theo dõi 5 trụ cột Freshness SLA, Volume, Schema, Null-Rate và hàng đợi BullMQ",
+      "caption": "Bảng điều khiển 5 trụ cột Data Observability phát hiện kẹt Webhook Meta Ads, POS và AI Extraction trước khi sai số lan sang báo cáo.",
+      "badge": "DATA OBSERVABILITY & SLA"
+    },
+    {
+      "type": "prose",
+      "id": "nam-tru-cot-data-observability-va-alert-fatigue",
+      "eyebrow": "Kiến Trúc 5 Trụ Cột & Trade-off",
+      "variant": "deep-dive",
+      "heading": "Thiết kế 5 trụ cột Data Observability cho AI Pipeline & đánh đổi chống Alert Fatigue",
+      "paragraphs": [
+        "Thay vì tốn hàng nghìn USD mua phần mềm quan sát dữ liệu cồng kềnh, SME có thể dựng trọn bộ 5 trụ cột ngay trên PostgreSQL + Redis + ZaloBot: (1) **Freshness SLA** đo tuổi job cũ nhất trong hàng đợi kèm **Canary Heartbeat** 5 phút/lần để phân biệt giờ vắng khách với đường ống chết; (2) **Volume Anomaly** tính Z-score theo đúng khung giờ 4 tuần trước để bắt sụt giảm bất thường 40%; (3) **Schema Drift** ép Zod/Pydantic trước khi lưu; (4) **Null-Rate** bắt ngay trường hợp Unstructured-to-Structured AI Parser bỗng dưng nhả hàng loạt giá trị `phone = null`; và (5) **Lineage & DLQ Replay** giữ trọn payload thô.",
+        "Điểm đánh đổi cốt lõi của kỹ sư SRE là độ nhạy cảnh báo đối chọi với hội chứng nhờn thông báo (Alert Fatigue). Nếu đặt ngưỡng tĩnh hoặc báo lặp mỗi phút, kỹ sư sẽ tắt tiếng nhóm chat sau vài ngày. Giải pháp là áp khóa Cooldown 15 phút trong Redis (`SET NX EX 900`), gom lỗi theo gốc rễ và tự động bật cờ `STALE` ngắt cầu chì AI BI Agent cho tới khi dữ liệu hồi phục."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "chuoi-tu-phat-hien-den-tu-chua-lanh",
+      "heading": "Chuỗi phản ứng 5 nhịp từ lúc kẹt Queue/Webhook đến ZaloBot Alert & xả DLQ",
+      "variant": "incident-chain",
+      "items": [
+        {
+          "tag": "T+00:00 • KẸT NGẦM",
+          "title": "Token Meta thu hồi hoặc POS đổi schema làm Worker ném job vào `failed`",
+          "detail": "API Gateway vẫn trả 200 OK nhưng dữ liệu ngừng đổ về `crm_leads` và tích tụ trong Redis.",
+          "metricOrTool": "Silent Queue Backlog"
+        },
+        {
+          "tag": "T+03:00 • PHÁT HIỆN",
+          "title": "Watchdog bắt vi phạm Freshness SLA 180s & Z-Score Volume <= -2.5",
+          "detail": "Kiểm tra tuổi job trong `:wait`, nhịp Canary Heartbeat và đối chiếu chi phí Meta vẫn đang chạy.",
+          "metricOrTool": "Postgres + Redis Watchdog"
+        },
+        {
+          "tag": "T+03:05 • NGẮT AI BI",
+          "title": "Ghi cờ `pipeline_health_status = STALE` vào kho trạng thái",
+          "detail": "AI BI Agent và Dashboard tự động chèn banner cảnh báo số liệu trễ thay vì báo số sai cho CEO.",
+          "metricOrTool": "Freshness Circuit Breaker"
+        },
+        {
+          "tag": "T+03:10 • ZALOBOT ALERT",
+          "title": "Gửi 1 tin nhắn giàu ngữ cảnh kèm Redis Cooldown 15 phút",
+          "detail": "Báo rõ kênh lỗi, số lượng `wait`/`failed`/`dlq`, một mẫu JSON lỗi và đường dẫn runbook xử lý.",
+          "metricOrTool": "ZaloBot SRE Pager"
+        },
+        {
+          "tag": "T+07:30 • REPLAY & BACKFILL",
+          "title": "Xả Dead-Letter Queue và kéo bù Meta Graph API qua Idempotency",
+          "detail": "Sau khi vá Token hoặc Schema, replay toàn bộ payload gốc từ DLQ đạt 0% thất thoát Lead.",
+          "metricOrTool": "DLQ Replay • Graph API"
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "sql-observability-freshness-volume-nullrate",
+      "heading": "SQL Recipe: Giám sát Freshness Lag, Same-Hour Volume Z-Score & Null-Rate trên PostgreSQL",
+      "language": "sql",
+      "filename": "monitoring/data_observability_checks.sql",
+      "description": "Truy vấn kiểm tra đồng thời độ trễ Freshness SLA 180 giây, độ lệch chuẩn lưu lượng so với cùng khung giờ 4 tuần trước và đột biến tỷ lệ `normalized_phone IS NULL` từ Webhook hoặc AI Parser.",
+      "code": "WITH recent_window AS (\n  SELECT source_channel, MAX(ingested_at) AS last_event_at,\n         EXTRACT(EPOCH FROM (NOW() - MAX(ingested_at)))::INT AS freshness_lag_sec,\n         COUNT(*) FILTER (WHERE ingested_at >= NOW() - INTERVAL '30 minutes') AS events_30m,\n         ROUND(100.0 * COUNT(*) FILTER (\n           WHERE ingested_at >= NOW() - INTERVAL '30 minutes' AND normalized_phone IS NULL\n         ) / NULLIF(COUNT(*) FILTER (WHERE ingested_at >= NOW() - INTERVAL '30 minutes'), 0), 2) AS null_phone_pct\n  FROM inbound_events\n  WHERE is_canary = FALSE AND ingested_at >= NOW() - INTERVAL '24 hours'\n  GROUP BY source_channel\n),\nsame_hour_baseline AS (\n  SELECT source_channel, AVG(cnt) AS avg_30m, GREATEST(STDDEV_POP(cnt), 2.0) AS std_30m\n  FROM (\n    SELECT source_channel, date_trunc('day', ingested_at) AS d, COUNT(*) AS cnt\n    FROM inbound_events\n    WHERE is_canary = FALSE AND ingested_at BETWEEN NOW() - INTERVAL '28 days' AND NOW() - INTERVAL '1 day'\n      AND EXTRACT(DOW FROM ingested_at) = EXTRACT(DOW FROM NOW())\n      AND ingested_at::TIME BETWEEN (NOW() - INTERVAL '30 minutes')::TIME AND NOW()::TIME\n    GROUP BY 1, 2\n  ) hist GROUP BY 1\n)\nSELECT r.source_channel, r.freshness_lag_sec, r.events_30m,\n       ROUND(((r.events_30m - COALESCE(b.avg_30m, 0)) / COALESCE(b.std_30m, 5.0))::NUMERIC, 2) AS z_score,\n       COALESCE(r.null_phone_pct, 0) AS null_phone_pct,\n       CASE\n         WHEN r.freshness_lag_sec > 180 AND COALESCE(b.avg_30m, 0) >= 8 THEN 'CRITICAL_STALE'\n         WHEN ((r.events_30m - COALESCE(b.avg_30m, 0)) / COALESCE(b.std_30m, 5.0)) <= -2.5 THEN 'HIGH_VOLUME_DROP'\n         WHEN COALESCE(r.null_phone_pct, 0) >= 12.0 THEN 'HIGH_NULL_RATE_SPIKE'\n         ELSE 'HEALTHY'\n       END AS health_status\nFROM recent_window r LEFT JOIN same_hour_baseline b USING (source_channel);"
+    },
+    {
+      "type": "code-recipe",
+      "id": "python-bullmq-redis-zalobot-watchdog",
+      "heading": "Python Recipe: Watchdog hàng đợi BullMQ Redis, Cooldown chống spam & bắn cảnh báo ZaloBot",
+      "language": "python",
+      "filename": "workers/observability_watchdog.py",
+      "description": "Đọc tuổi job cũ nhất trong danh sách `wait` và bộ đếm `failed`/`dlq` của BullMQ trong Redis, áp khóa Cooldown 15 phút chống spam và đẩy cảnh báo SRE thẳng về ZaloBot.",
+      "code": "import json, time, requests, redis\n\nSLA_MAX_WAIT_SEC, COOLDOWN_SEC = 180, 900\n\ndef inspect_bullmq_queue(r: redis.Redis, queue_name: str) -> dict:\n    prefix = f\"bull:{queue_name}\"\n    oldest_age = 0\n    oldest_id = r.lindex(f\"{prefix}:wait\", -1)\n    if oldest_id:\n        ts = r.hget(f\"{prefix}:{oldest_id.decode()}\", \"timestamp\")\n        if ts: oldest_age = int(time.time() - int(ts) / 1000)\n    return {\n        \"queue\": queue_name, \"wait\": r.llen(f\"{prefix}:wait\"),\n        \"active\": r.llen(f\"{prefix}:active\"), \"failed\": r.zcard(f\"{prefix}:failed\"),\n        \"dlq\": r.llen(f\"{prefix}:dlq\"), \"oldest_wait_age_sec\": oldest_age,\n    }\n\ndef send_zalobot_alert_if_needed(r: redis.Redis, stats: dict, webhook_url: str, secret: str) -> bool:\n    breaches = []\n    if stats[\"oldest_wait_age_sec\"] > SLA_MAX_WAIT_SEC:\n        breaches.append(f\"Kẹt queue {stats['oldest_wait_age_sec']}s (> {SLA_MAX_WAIT_SEC}s)\")\n    if stats[\"failed\"] >= 15 or stats[\"dlq\"] >= 5:\n        breaches.append(f\"Tồn lỗi failed={stats['failed']}, dlq={stats['dlq']}\")\n    if not breaches or not r.set(f\"obs:cooldown:{stats['queue']}\", \"1\", ex=COOLDOWN_SEC, nx=True):\n        return False\n    msg = (f\"[SRE ALERT] Queue `{stats['queue']}` bất thường: {' | '.join(breaches)}\\n\"\n           f\"wait={stats['wait']}, failed={stats['failed']}, dlq={stats['dlq']} -> Đã bật cờ STALE AI BI.\")\n    resp = requests.post(webhook_url, headers={\"Authorization\": f\"Bearer {secret}\"},\n                         json={\"channel\": \"sre-ops\", \"text\": msg}, timeout=5)\n    return resp.status_code == 200"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-observability-truoc-go-live",
+      "heading": "Checklist 6 điểm Data Observability bắt buộc trước khi scale Ads & AI Agent",
+      "items": [
+        {
+          "check": "Tách rời cửa nhận Webhook sang Async Queue (BullMQ)",
+          "severity": "critical",
+          "verificationHow": "Giả lập tạm ngưng DB và bắn thử webhook Meta/POS xem API có trả HTTP 200 trong <150ms không.",
+          "passThreshold": "P99 ACK < 150ms, không rớt kết nối"
+        },
+        {
+          "check": "Chạy Canary Heartbeat xuyên suốt mỗi 5 phút",
+          "severity": "critical",
+          "verificationHow": "Theo dõi bản tin `is_canary=true` từ Gateway qua Redis tới Postgres và ClickHouse.",
+          "passThreshold": "Độ trễ E2E <= 30s, báo ZaloBot nếu lỡ 2 nhịp"
+        },
+        {
+          "check": "Lưu giữ Dead-Letter Queue (DLQ) nguyên bản payload tối thiểu 14 ngày",
+          "severity": "critical",
+          "verificationHow": "Gửi payload POS sai kiểu dữ liệu kiểm chứng job được chuyển vào `dlq` để replay.",
+          "passThreshold": "0% dữ liệu bị drop âm thầm"
+        },
+        {
+          "check": "Gắn Freshness Circuit Breaker lên AI BI Agent",
+          "severity": "high",
+          "verificationHow": "Đặt cờ `STALE` cho bảng nguồn rồi hỏi Trợ lý AI về ROAS ngày hôm nay.",
+          "passThreshold": "AI cảnh báo độ trễ nguồn ngay câu đầu tiên"
+        },
+        {
+          "check": "Giám sát Null-Rate cho bộ trích xuất Unstructured-to-Structured AI",
+          "severity": "high",
+          "verificationHow": "Đo tỷ lệ `phone_e164 IS NULL` hoặc `schema_error` trên cửa sổ trượt 30 phút.",
+          "passThreshold": "Cảnh báo ngay khi vượt 2.5x mức bình quân 7 ngày"
+        },
+        {
+          "check": "Chạy Backfill đối soát chéo Meta Graph API mỗi 6 giờ",
+          "severity": "recommended",
+          "verificationHow": "Đối chiếu số `leadgen_id` trên Meta với bản ghi đã ingest qua cổng Idempotency.",
+          "passThreshold": "Tỷ lệ khớp >= 99.9%"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "observability-sre-callout",
+      "variant": "warning",
+      "title": "Đừng để CEO là hệ thống giám sát dữ liệu đầu tiên của công ty",
+      "body": "AI không biết tự hoài nghi khi nguồn dữ liệu bị khuyết 42 tiếng — nó sẽ bình tĩnh đọc sai số liệu với giọng điệu đầy tự tin. Tại DOMATION Auto Data, 5 trụ cột Data Observability giám sát liên tục từ Webhook Meta, POS đến hàng đợi BullMQ: hễ Freshness SLA vượt 180 giây hoặc volume tụt 40%, ZaloBot đánh thức đúng kỹ sư trước khi một đồng ngân sách Ads bị tắt oan hay báo cáo sai lọt lên Ban Giám đốc.",
+      "authorBadge": "Huỳnh Trọng Phúc (TurnioDEV) • SRE & Data Operations DOMATION"
+    }
+  ]
+}

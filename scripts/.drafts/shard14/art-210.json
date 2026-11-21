@@ -1,0 +1,358 @@
+{
+  "id": "art-210",
+  "number": "210",
+  "slug": "ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Anthropic Claude 2026 Role Map",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "playbook-manual",
+  "title": "Bản đồ phân vai Anthropic Claude 2026: Fable 5.2, Opus 5.5, Sonnet 5.5, Haiku 5.5 & Claude Code Worktree",
+  "seoTitle": "Bản Đồ Anthropic Claude 2026 & Claude Code | DOMATION",
+  "metaDescription": "Phân vai bộ tứ Claude 2026 (1M context, 128K out): Adaptive Thinking, Fast Mode 2.5x trên Fable/Opus, Dynamic Tool Search giảm 85% bloat và Worktree.",
+  "focusKeyword": "bản đồ hệ sinh thái anthropic claude 2026 claude code",
+  "secondaryKeywords": [
+    "phân vai claude fable 5.2 opus 5.5 sonnet haiku",
+    "claude code worktree isolation và 33 hooks",
+    "fast mode 2.5x và cache pool riêng claude",
+    "enable tool search giảm 85 phần trăm mcp bloat",
+    "cách cấu hình claude md và rules globs"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Bản Đồ Anthropic Claude 2026: Fable, Opus, Sonnet, Haiku & Code",
+  "thumbnailHook": "Khai thác Adaptive Thinking, Fast Mode 2.5x và Subagent Worktree không đụng code.",
+  "thumbnailBadge": "ECOSYSTEM • CLAUDE 2026",
+  "coverImage": "/imgs/boost/v2/ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code.webp",
+  "screenshotImage": "/imgs/boost/charts/ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code-report.webp",
+  "coverAlt": "Sổ tay thực hành bản đồ hệ sinh thái anthropic claude 2026 claude code phân vai Fable 5.2, Opus 5.5, Sonnet 5.5, Haiku 5.5, 33 Lifecycle Hooks và Git Worktree isolation",
+  "screenshotCaption": "Đo lường chi phí thực thi và độ phình ngữ cảnh MCP trên Claude Code 2026 giữa các cấu hình Standard vs Fast Mode 2.5x và khi bật Dynamic Tool Search (`ENABLE_TOOL_SEARCH`).",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Cách DOMATION Dùng Claude Code Xây ERP",
+  "relatedSlugs": [
+    "ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli",
+    "ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp",
+    "git-worktree-multi-agent-swarm-plan-execute-verifier",
+    "giai-phau-slash-commands-plan-compact-context-mcp-review-goal-grill-me"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Sổ tay bản đồ hệ sinh thái anthropic claude 2026 claude code chuẩn hóa cách phân vai bộ tứ mô hình thế hệ mới (cùng sở hữu cửa sổ 1 triệu token và đầu ra 128K): Claude Fable 5.2, Opus 5.5, Sonnet 5.5 và Haiku 5.5. Tài liệu đi sâu vào cơ chế Adaptive Thinking, cảnh báo bể Prompt Cache tách biệt của Fast Mode 2.5x trên Fable/Opus, hệ thống phân cấp `CLAUDE.md` và `.claude/rules/*.md`, kỹ thuật `ENABLE_TOOL_SEARCH` giảm 85%+ độ phình schema MCP, bộ 33+ Lifecycle Hooks (`PreToolUse` exit code 2) cùng cơ chế cô lập `claude --worktree` để chạy nhiều subagent dựng ERP song song.",
+  "keyTakeaways": [
+    "Cả bốn mô hình Claude cuối 2026 (`Fable 5.2`, `Opus 5.5`, `Sonnet 5.5`, `Haiku 5.5`) đều chuẩn hóa cửa sổ 1.000.000 token và trần đầu ra 128.000 token (dữ liệu kiến thức tới tháng 6/2026), hỗ trợ Text + Image và giảm 50% cước qua Batch API.",
+    "`Fable 5.2` ($8/$40) và `Opus 5.5` ($4/$20) luôn bật Adaptive Thinking và hỗ trợ **Fast Mode** tăng tốc sinh chữ tới 2.5x (giá gấp đôi $16/$80 và $8/$40) — nhưng lưu ý Fast Mode dùng một bể Prompt Cache hoàn toàn tách biệt với chế độ thường.",
+    "`Sonnet 5.5` ($2/$10, cache read $0.10) gánh công việc coding hàng ngày, còn `Haiku 5.5` ($0.10/$0.50 khi prompt <=100K, nhảy lên $0.50/$2.50 nếu >100K) đóng vai subagent, bộ định tuyến và giám khảo tự động cho lệnh `/goal`.",
+    "Trên `Claude Code`, nếu đặt cả `CLAUDE.md` và `AGENTS.md` ở thư mục gốc, `CLAUDE.md` sẽ thắng tuyệt đối và `AGENTS.md` bị bỏ qua (trừ khi import qua `@./AGENTS.md`); đồng thời bật `ENABLE_TOOL_SEARCH=true|auto` + `defer_loading: true` cắt tới 85%+ rác schema MCP.",
+    "Hệ thống 33+ Lifecycle Hooks (`PreToolUse` trả mã thoát 2 để chặn cứng trước bước xin quyền) kết hợp `claude --worktree` (`isolation: worktree`) biến Claude Code thành dây chuyền sản xuất song song nhiều phân hệ ERP không xung đột file."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Context / Max Out đồng bộ",
+      "value": "1M Input / 128K Out"
+    },
+    {
+      "label": "Fast Mode (Fable / Opus)",
+      "value": "Nhanh 2.5x (Pool cache riêng)"
+    },
+    {
+      "label": "Giảm MCP Schema Bloat",
+      "value": "-85%+ (ENABLE_TOOL_SEARCH)"
+    },
+    {
+      "label": "Rào kiểm soát & Cô lập",
+      "value": "33+ Hooks & Git Worktree"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao bật lệnh /fast trong lúc đang code dở với Claude Opus 5.5 hoặc Fable 5.2 lại làm hóa đơn cache tăng đột biến?",
+      "answer": "Fast Mode tăng tốc độ sinh token đầu ra lên tới 2,5x với đơn giá gấp đôi (`$8/$40` trên Opus 5.5 và `$16/$80` trên Fable 5.2), nhưng cơ chế hạ tầng của Anthropic duy trì **hai hồ chứa Prompt Cache tách biệt hoàn toàn** giữa Standard Mode và Fast Mode. Khi bạn đang làm việc ở Standard Mode (đã tốn phí cache write cho 80K token mã nguồn dự án) rồi gõ `/fast` để đẩy nhanh một lượt sửa lỗi, toàn bộ 80K token ngữ cảnh đó bị tính là trượt cache (cache miss) và phải ghi lại mới hoàn toàn ở đơn giá Fast Mode. Quy tắc thực hành tại DOMATION là xác định ngay từ đầu phiên: hoặc giữ Fast Mode cho phiên debug khẩn cấp ngắn, hoặc giữ Standard Mode xuyên suốt sprint dài."
+    },
+    {
+      "question": "Khi nhóm dev dùng song song cả Claude Code và Codex CLI trên cùng một repository thì xử lý CLAUDE.md và AGENTS.md thế nào để khỏi vênh luật?",
+      "answer": "Từ phiên bản v2.1.277, Claude Code có cơ chế tự động đọc `AGENTS.md` nếu không tìm thấy `CLAUDE.md`. Tuy nhiên, nếu trong thư mục gốc repo có **cả hai file** `CLAUDE.md` và `AGENTS.md`, Claude Code sẽ ưu tiên `CLAUDE.md` và bỏ qua hoàn toàn `AGENTS.md`. Để giữ một nguồn sự thật duy nhất (Single Source of Truth), hãy đặt toàn bộ quy chuẩn chung của dự án (kiến trúc DB, quy tắc Git, chuẩn API) vào `AGENTS.md`, rồi bên trong `CLAUDE.md` chỉ viết dòng import `@./AGENTS.md` (hỗ trợ lồng nhau tới độ sâu ~5) kèm các chỉ dẫn riêng về `/plan`, subagent hoặc `.claude/rules/*.md` theo glob `paths`."
+    },
+    {
+      "question": "Bật ENABLE_TOOL_SEARCH và defer_loading trên .mcp.json hoạt động ra sao để cắt 85%+ dung lượng context MCP?",
+      "answer": "Khi dự án gắn cùng lúc 5–7 MCP Server (GitHub, Supabase, Playwright, Chrome DevTools, Context7, CRM nội bộ), toàn bộ JSON Schema của hàng trăm công cụ được nhồi thẳng vào đầu mỗi prompt, chiếm 40.000–60.000 token ngay cả khi người dùng chỉ hỏi một câu SQL đơn giản — vừa đốt tiền vừa làm giảm độ tập trung suy luận của model và phơi bày bề mặt tấn công Tool Poisoning. Khi đặt `ENABLE_TOOL_SEARCH=true` (hoặc `auto`) kèm thuộc tính `defer_loading: true`, Claude Code chỉ nạp một công cụ tìm kiếm tool siêu nhẹ; đến lượt nào cần thao tác Playwright hay Supabase, nó mới tự truy vấn và kéo đúng 3–5 schema liên quan vào ngữ cảnh, giảm tới hơn 85% token schema dư thừa."
+    },
+    {
+      "question": "Làm sao ép Claude Code tuyệt đối không bao giờ đọc file .env chứa khóa Meta CAPI hay tự động chạy lệnh xóa database?",
+      "answer": "Không bao giờ tin cậy chỉ vào câu dặn bằng chữ trong `CLAUDE.md` vì ngữ cảnh càng dài model càng dễ quên luật mềm. Hãy viết một Hook sự kiện `PreToolUse` trong `.claude/settings.json` sử dụng handler dạng `command`. Sự kiện `PreToolUse` chạy **trước cả bước hỏi quyền người dùng**: script của bạn đọc JSON đầu vào từ `stdin`, kiểm tra nếu đường dẫn chạm `.env`, `secrets/` hoặc lệnh Bash chứa từ khóa nguy hiểm (`DROP TABLE`, `rm -rf`, `psql` ghi trực tiếp) thì in lý do từ chối ra `stderr` và thoát bằng **exit code 2** (hoặc trả JSON deny). Đây là rào thép mang tính xác định 100%, không phụ thuộc vào sự ngoan ngoãn của LLM."
+    },
+    {
+      "question": "Cơ chế claude --worktree và isolation: worktree giúp chạy nhiều Subagent song song như thế nào mà không đè file nhau?",
+      "answer": "Nếu mở 3 phiên Claude Code trên cùng một thư mục dự án để vừa sửa Frontend CRM vừa viết Payroll PDF vừa nâng cấp Webhook Meta CAPI, chúng sẽ tranh chấp `git index`, sửa chồng lên cùng file cấu hình và làm hỏng trạng thái build của nhau. Lệnh `claude --worktree <tên-nhánh>` (`-w`) hoặc khai báo `isolation: worktree` trong YAML frontmatter của Custom Subagent sẽ tự động tạo ra một bản làm việc Git Worktree tách biệt hoàn toàn thư mục và nhánh tạm cho từng tác vụ. Nếu subagent chỉ đọc tham khảo mà không sửa file, worktree tự động được dọn dẹp; nếu có thay đổi thực tế, nhánh đó được giữ lại để người lập trình hoặc Verifier Agent kiểm tra hợp nhất (merge), đồng thời có thể tùy biến sâu qua cặp hook `WorktreeCreate` và `WorktreeRemove`."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "playbook-ch1-bo-tu-claude-2026-va-adaptive-thinking",
+      "eyebrow": "SỔ TAY THỰC HÀNH • CHƯƠNG 1: BỘ TỨ CLAUDE 2026, ADAPTIVE THINKING & BẪY FAST MODE",
+      "variant": "deep-dive",
+      "heading": "Phân vai chuẩn xác bộ tứ Fable 5.2, Opus 5.5, Sonnet 5.5 và Haiku 5.5 trên cửa sổ 1M token",
+      "pullQuote": "Anthropic không cạnh tranh bằng hàng chục tên model rối rắm: cuối năm 2026 chỉ có đúng 4 bậc thang cùng chung trần 1M input / 128K output, giúp kỹ sư quy hoạch vai trò từ Giám đốc Kiến trúc tới Thợ kiểm duyệt chỉ trong một bảng duy nhất.",
+      "paragraphs": [
+        "Trong sổ tay vận hành kỹ thuật bản đồ hệ sinh thái anthropic claude 2026 claude code tại DOMATION, điểm dễ nắm bắt nhất nhưng cũng đòi hỏi kỷ luật cao nhất là cách Anthropic chuẩn hóa đồng loạt cả bốn mô hình mới phát hành từ cuối tháng 9 đến đầu tháng 11/2026 lên cùng một khung năng lực: **1.000.000 token đầu vào**, **128.000 token đầu ra tối đa**, dữ liệu kiến thức tới tháng 6/2026 và hỗ trợ đầu vào Văn bản + Hình ảnh. Đứng ở đỉnh cao nhất là `Claude Fable 5.2` (ra mắt ngày 09/11/2026) chuyên trị những bài toán suy luận đường dài phức tạp nhất với Adaptive Thinking luôn bật mặc định ở mức `high` (mở rộng tới `max`). Ngay sát phía dưới là `Claude Opus 5.5` (22/09/2026, Adaptive Thinking luôn bật mặc định `medium`) giữ vai trò chủ lực thiết kế kiến trúc Monorepo và lập trình agentic bền bỉ.",
+        "Điểm tinh tế về mặt tài chính nằm ở hai bậc trung và nhẹ cùng các tùy chọn tốc độ. `Claude Sonnet 5.5` (28/09/2026) mang mức giá `$2.00 input / $10.00 output` với chi phí đọc Prompt Cache chỉ `$0.10/1M`, là lựa chọn mặc định cho 75–80% lượt phát triển tính năng ERP và kiểm định giao diện hàng ngày. Trong khi đó, `Claude Haiku 5.5` (07/10/2026) sở hữu bảng giá bậc thang cực kỳ sắc bén: nếu giữ prompt đầu vào **dưới hoặc bằng 100.000 token**, đơn giá chỉ là **`$0.10 input / $0.50 output`** và cache read **`$0.01/1M`** — biến nó thành động cơ lý tưởng cho subagent, phân loại Lead và bộ đánh giá điều kiện vòng lặp `/goal`; nhưng hễ để ngữ cảnh vượt mốc 100K token, giá của Haiku 5.5 nhảy gấp 5 lần lên `$0.50/$2.50`! Tương tự, dù Fast Mode (`2.5x` tốc độ qua lệnh `/fast`) rất hấp dẫn trên Fable 5.2 và Opus 5.5, kỹ sư phải nhớ nó có giá gấp đôi và **dùng hồ Prompt Cache tách riêng**, tránh bật tắt `/fast` giữa chừng làm mất trắng hiệu lực cache."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-anthropic-claude-2026-quartet",
+      "heading": "Ma trận phân vai bộ tứ Anthropic Claude cuối năm 2026",
+      "caption": "Thông số phát hành, Adaptive Thinking, đơn giá chuẩn vs Fast Mode và bảng phí Prompt Cache TTL 5 phút / 1 giờ",
+      "columns": [
+        "Thông số phân loại",
+        "Claude Fable 5.2 (`claude-fable-5-2`)",
+        "Claude Opus 5.5 (`claude-opus-5-5`)",
+        "Claude Sonnet 5.5 (`claude-sonnet-5-5`)",
+        "Claude Haiku 5.5 (`claude-haiku-5-5`)"
+      ],
+      "highlightColumn": 2,
+      "rows": [
+        {
+          "criterion": "Ngày phát hành & Hạng cân",
+          "values": [
+            "09/11/2026 • Ultra Deep Reasoning & Frontier Intelligence",
+            "22/09/2026 • Heavyweight Architecture & Agentic Coding",
+            "28/09/2026 • Midweight Daily Coding Workhorse",
+            "07/10/2026 • Lightweight Subagent, Classifier & `/goal` Judge"
+          ],
+          "winnerNote": "Opus 5.5 & Sonnet 5.5 gánh phần lớn tải kỹ thuật phần mềm doanh nghiệp"
+        },
+        {
+          "criterion": "Context / Output & Adaptive Thinking",
+          "values": [
+            "1M in / 128K out • Always On (mặc định `high`, hỗ trợ `low..max`)",
+            "1M in / 128K out • Always On (mặc định `medium`, hỗ trợ `low..max`)",
+            "1M in / 128K out • Bật/tắt linh hoạt (mặc định `high`, `low..max`)",
+            "1M in / 128K out • Bật/tắt linh hoạt (mặc định `medium`, `low|med|high`)"
+          ]
+        },
+        {
+          "criterion": "Giá Standard (USD / 1M token)",
+          "values": [
+            "$8.00 input / $40.00 output (Batch -50%)",
+            "$4.00 input / $20.00 output (Batch -50%)",
+            "$2.00 input / $10.00 output (Batch -50%)",
+            "<=100K: $0.10 / $0.50; >100K: $0.50 / $2.50 (Batch -50%)"
+          ],
+          "winnerNote": "Giữ Haiku 5.5 <=100K tiết kiệm gấp 5x so với để phình prompt >100K"
+        },
+        {
+          "criterion": "Fast Mode (2.5x tốc độ)",
+          "values": [
+            "$16.00 in / $80.00 out (Cache Pool riêng)",
+            "$8.00 in / $40.00 out (Cache Pool riêng)",
+            "Không áp dụng Fast Mode chuyên biệt",
+            "Tốc độ gốc vốn rất nhanh ở ngưỡng sub-second"
+          ]
+        },
+        {
+          "criterion": "Prompt Caching (Write 5m / 1h / Read)",
+          "values": [
+            "Write 5m $10.00 / 1h $16.00 / Read $0.20 (giảm 97.5%)",
+            "Write 5m $5.00 / 1h $8.00 / Read $0.20 (giảm 95%)",
+            "Read $0.10 (giảm 95% chi phí đọc tiền tố)",
+            "<=100K: 5m $0.125 / 1h $0.20 / Read $0.01 (>100K Read $0.05)"
+          ]
+        }
+      ],
+      "footnote": "Tất cả 4 mô hình đều có knowledge cutoff tháng 6/2026 và nhận đầu vào Text + Image (xuất Text)."
+    },
+    {
+      "type": "prose",
+      "id": "playbook-ch2-claude-md-rules-skills-va-mcp-tool-search",
+      "eyebrow": "SỔ TAY THỰC HÀNH • CHƯƠNG 2: CLAUDE.MD, .CLAUDE/RULES, SKILL.MD & .MCP.JSON",
+      "variant": "deep-dive",
+      "heading": "Quy hoạch bộ nhớ dự án 5 tầng và cắt 85%+ rác Schema MCP bằng `ENABLE_TOOL_SEARCH`",
+      "paragraphs": [
+        "Trên công cụ lập trình đầu cuối `Claude Code` (chạy đồng nhất từ Terminal, IDE, Desktop tới Cloud), hiệu suất của AI phụ thuộc tới 70% vào cách đội ngũ tổ chức bộ nhớ chỉ dẫn chứ không phải kỹ thuật gõ prompt miệng. Hệ thống nạp ngữ cảnh `CLAUDE.md` tuân theo 5 tầng ghép nối từ trên xuống: (1) Chính sách quản trị hệ thống `/etc/claude-code/CLAUDE.md`; (2) Cá nhân `~/.claude/CLAUDE.md`; (3) Gốc dự án (`CLAUDE.md` hoặc `.claude/CLAUDE.md`); (4) Các tệp `CLAUDE.md` lồng trong thư mục con; và (5) Ghi đè cục bộ không đưa lên Git `CLAUDE.local.md`. Kỹ sư cần đặc biệt lưu ý luật giao thoa chuẩn mở: Claude Code tự động đọc `AGENTS.md` khi thiếu `CLAUDE.md`, nhưng hễ hai file đứng chung tại thư mục gốc thì `CLAUDE.md` sẽ đè và làm `AGENTS.md` bị bỏ qua hoàn toàn trừ phi bạn chủ động nhúng dòng `@./AGENTS.md`.",
+        "Thay vì nhét một file `CLAUDE.md` dài 2.000 dòng làm loãng sự chú ý của mô hình, sổ tay DOMATION áp dụng hai cơ chế phân mảnh theo ngữ cảnh (modular context). Thứ nhất là tách quy tắc theo đường dẫn tệp trong `.claude/rules/*.md` với thẻ YAML frontmatter `paths` chứa mảng glob (ví dụ quy tắc bảo mật PostgreSQL RLS chỉ tự động nạp vào prompt khi agent chạm tới `supabase/migrations/**` hoặc `src/server/db/**`). Thứ hai là đóng gói quy trình lặp đi lặp lại thành chuẩn mở `SKILL.md` trong `.claude/skills/<tên-skill>/SKILL.md` với khả năng khóa `allowed-tools`, gợi ý tham số `argument-hint` và chế độ chạy cô lập `isolation`. Song song đó, khi kết nối các MCP Server qua thứ tự ưu tiên `Local ~/.claude.json > Project .mcp.json > User ~/.claude.json > Plugin`, bắt buộc bật biến môi trường `ENABLE_TOOL_SEARCH=true` (hoặc `auto`) kết hợp `defer_loading: true` để tránh nạp sẵn 50.000+ token JSON Schema dư thừa ở mỗi lượt chat."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-claude-2026-cost-and-context-optimization",
+      "heading": "Đo lường chi phí & hiệu quả nén ngữ cảnh trên 5 kịch bản vận hành Claude Code thực tế",
+      "subtitle": "So sánh tổng chi phí phiên làm việc (USD) và lượng Token tiêu hao quy đổi (nghìn token) cho một Sprint phát triển phân hệ ERP tại DOMATION (12 lượt lặp/tính năng)",
+      "chart": {
+        "chartType": "composed",
+        "title": "Chi phí Sprint (USD) & Token Context tiêu thụ (nghìn token) qua 5 cấu hình tối ưu hóa Claude",
+        "subtitle": "Bật Prompt Cache + ENABLE_TOOL_SEARCH + định tuyến Sonnet/Haiku cắt gần 80% chi phí và hơn 70% phình ngữ cảnh so với chạy thô",
+        "xKey": "workflow",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "sessionCostUsd",
+            "label": "Chi phí 10 Sprint (USD)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "contextTokensK",
+            "label": "Ngữ cảnh trung bình / lượt (K tokens)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "mcpBloatTokensK",
+            "label": "Rác MCP Schema gánh thêm (K tokens)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "workflow": "Fable Fast Mode + Full MCP (Miss Cache)", "sessionCostUsd": 248, "contextTokensK": 165, "mcpBloatTokensK": 54 },
+          { "workflow": "Opus 5.5 Standard + Full MCP (No Search)", "sessionCostUsd": 112, "contextTokensK": 148, "mcpBloatTokensK": 54 },
+          { "workflow": "Opus 5.5 Plan + Cache + Tool Search", "sessionCostUsd": 58, "contextTokensK": 68, "mcpBloatTokensK": 7 },
+          { "workflow": "Opus Plan -> Sonnet 5.5 Worktree + Search", "sessionCostUsd": 31, "contextTokensK": 54, "mcpBloatTokensK": 7 },
+          { "workflow": "Hybrid + Haiku /goal Judge <=100K", "sessionCostUsd": 22, "contextTokensK": 42, "mcpBloatTokensK": 5 }
+        ],
+        "kpis": [
+          {
+            "label": "Giảm rác MCP Schema",
+            "value": "54K -> 5K tok",
+            "delta": "Cắt ~88% nhờ ENABLE_TOOL_SEARCH",
+            "positive": true
+          },
+          {
+            "label": "Chi phí 10 Sprint tối ưu",
+            "value": "$22,00",
+            "delta": "Giảm 80% so với Opus thường ($112)",
+            "positive": true
+          },
+          {
+            "label": "Rủi ro Fast Mode đứt Cache",
+            "value": "$248,00",
+            "delta": "Tăng 4,3x khi chuyển pool sai lúc",
+            "positive": false
+          },
+          {
+            "label": "Ngưỡng vàng Haiku 5.5",
+            "value": "<= 100K tokens",
+            "delta": "Tránh nhảy giá 5x ($0.10 -> $0.50)",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark trên chuỗi 10 sprint phát triển module ERP Next.js/PostgreSQL có gắn 6 MCP Servers (GitHub, Context7, Playwright, Chrome DevTools, Supabase, Filesystem)."
+      },
+      "insightSummary": "Đường màu đỏ thể hiện rõ sức tàn phá của 'MCP Schema Bloat': khi gắn 6 MCP server mà không trì hoãn nạp, mỗi lượt hỏi phải cõng thêm 54.000 token mô tả công cụ vô ích. Chỉ cần bật `ENABLE_TOOL_SEARCH=true` kết hợp tách vai `Opus 5.5` làm `/plan` đầu sprint, giao phần code song song trên `git worktree` cho `Sonnet 5.5`, và giữ `Haiku 5.5` kiểm tra `/goal` dưới ngưỡng 100K token, tổng chi phí 10 sprint rớt từ $112 (hoặc $248 nếu bật Fast Mode trượt cache) xuống chỉ còn $22."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-claude-2026-ecosystem-playbook",
+      "src": "/imgs/boost/charts/ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code-report.webp",
+      "alt": "Biểu đồ bản đồ hệ sinh thái anthropic claude 2026 claude code so sánh Fable 5.2, Opus 5.5, Sonnet 5.5, Haiku 5.5, Dynamic Tool Search và Worktree",
+      "caption": "Bản đồ vận hành Anthropic Claude 2026: tương quan giá Standard vs Fast Mode 2.5x, hiệu ứng tiết kiệm 85%+ từ `ENABLE_TOOL_SEARCH` và luồng điều phối Subagent trên Git Worktree.",
+      "badge": "PLAYBOOK • CLAUDE 2026"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-claude-2026-selection",
+      "heading": "Cây quyết định phân vai Fable 5.2, Opus 5.5, Sonnet 5.5, Haiku 5.5 & tính năng Claude Code",
+      "subtitle": "Hướng dẫn thực hành chọn đúng mô hình và chế độ chạy trong từng giai đoạn phát triển phần mềm",
+      "scenarios": [
+        {
+          "condition": "Giải mã bài toán suy luận cực sâu: rà soát lỗ hổng bảo mật kiến trúc đa tenant, chứng minh logic tài chính phức tạp hoặc điều tra bug khó nhất",
+          "recommendedChoice": "Dùng Claude Fable 5.2 (Effort `high` hoặc `max`)",
+          "rationale": "Cấp độ thông minh cao nhất của Anthropic (ra mắt 11/2026) với Adaptive Thinking luôn bật, phù hợp cho quyết định không được phép sai.",
+          "avoidIf": "Chạy cho các thao tác viết UI hoặc CRUD lặp lại — giá $8/$40 ($16/$80 Fast) sẽ đốt ngân sách cực nhanh."
+        },
+        {
+          "condition": "Chạy `/plan` thiết kế kiến trúc hệ thống mới, refactor xuyên suốt hàng chục tệp Monorepo ERP hoặc giữ vai trò Parent Orchestrator",
+          "recommendedChoice": "Dùng Claude Opus 5.5 (chế độ Standard ổn định cache)",
+          "rationale": "Giá bằng một nửa Fable ($4/$20, cache read $0.20), xử lý xuất sắc các phiên Agent kéo dài trên ngữ cảnh 1M token.",
+          "avoidIf": "Bạn liên tục bật/tắt `/fast` trong cùng một cuộc trò chuyện vì sẽ làm hỏng cache pool."
+        },
+        {
+          "condition": "Lập trình tính năng hàng ngày, thực thi các nhánh subagent trong `claude --worktree`, hoặc dùng Vision kiểm định lỗi CSS/UI",
+          "recommendedChoice": "Dùng Claude Sonnet 5.5 + `ENABLE_TOOL_SEARCH=true`",
+          "rationale": "Giá $2/$10 ($0.10 cache read), tốc độ cân bằng, hỗ trợ đầy đủ Adaptive Thinking và cực kỳ ổn định với các công cụ Playwright/GitHub MCP.",
+          "avoidIf": "Tác vụ chỉ là tóm tắt log ngắn, đánh giá vòng lặp `/goal` hoặc phân loại ticket đơn giản."
+        },
+        {
+          "condition": "Chạy Subagent đọc log dài, kiểm tra điều kiện dừng `/goal`, tóm tắt lịch sử `/compact` hoặc phân loại dữ liệu tốc độ cao",
+          "recommendedChoice": "Dùng Claude Haiku 5.5 (khóa prompt <= 100.000 token)",
+          "rationale": "Chi phí $0.10/$0.50 (cache read $0.01) trong phạm vi <=100K rẻ hơn tới 40 lần so với Opus 5.5.",
+          "avoidIf": "Để ngữ cảnh trôi vượt mốc 100K token vì bảng giá Haiku 5.5 sẽ nhảy gấp 5 lần."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-claude-code-rules-hooks-mcp-worktree",
+      "heading": "Playbook Recipe: Cấu hình `.claude/rules/*.md` + `PreToolUse` Hook chặn `.env` + `.mcp.json` Tool Search + Subagent Worktree",
+      "language": "json",
+      "filename": ".claude/settings.json & modular configs",
+      "description": "Bộ cấu hình thực chiến từ xưởng DOMATION: cài đặt PreToolUse hook thoát exit code 2 để chặn đọc .env hoặc xóa DB, bật ENABLE_TOOL_SEARCH trong settings/mcp, kèm mẫu rule theo glob paths và subagent isolation: worktree.",
+      "code": "{\n  \"env\": {\n    \"ENABLE_TOOL_SEARCH\": \"auto\"\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash|Read|Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"python3 .claude/hooks/guard_secrets_and_sql.py\"\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"npx tsc --noEmit --pretty false\"\n          }\n        ]\n      }\n    ]\n  }\n}\n\n/* --- .claude/hooks/guard_secrets_and_sql.py (Exit code 2 chan cung truoc permission) ---\nimport json, sys\npayload = json.load(sys.stdin)\ninp = json.dumps(payload.get(\"tool_input\", {})).lower()\nfor banned in (\".env\", \"rm -rf\", \"drop table\", \"meta_capi_secret\"):\n    if banned in inp:\n        print(f\"BLOCKED by PreToolUse policy: cam truy cap '{banned}'\", file=sys.stderr)\n        sys.exit(2)\n*/\n\n/* --- .claude/rules/supabase-rls.md ---\n---\npaths:\n  - \"supabase/migrations/**/*.sql\"\n  - \"src/server/db/**/*.ts\"\n---\nMoi bang du lieu multi-tenant bat buoc bat ENABLE ROW LEVEL SECURITY va FORCE ROW LEVEL SECURITY.\n*/\n\n/* --- .claude/agents/erp-module-worker.md ---\n---\nname: erp-module-worker\ndescription: Trien khai doc lap mot phan he ERP trong git worktree rieng\nisolation: worktree\n---\nBan thuc thi trong worktree co lap. Luon chay unit test truoc khi bao cao ve Parent Agent.\n*/\n"
+    },
+    {
+      "type": "timeline-flow",
+      "id": "timeline-flow-claude-code-erp-workflow",
+      "heading": "Quy trình 5 nhịp điều khiển Claude Code dựng phân hệ ERP 5.0 chuẩn Playbook",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "NHỊP 1 • KHỞI TẠO & /PLAN",
+          "title": "Nạp `@./AGENTS.md` + `/context` kiểm tra phình schema, bật chế độ chỉ đọc `/plan`",
+          "detail": "Trước khi cho phép sửa bất kỳ dòng code nào, kiểm tra tỷ lệ chiếm dụng cửa sổ qua `/context all` để chắc chắn `ENABLE_TOOL_SEARCH` đang hoạt động. Dùng `Opus 5.5` hoặc `Fable 5.2` ở chế độ `/plan` đọc chỉ dẫn phân vùng `.claude/rules/*.md` và chốt kiến trúc bảng dữ liệu.",
+          "metricOrTool": "Opus 5.5 • /plan & /context all"
+        },
+        {
+          "tag": "NHỊP 2 • PHÂN TÁCH WORKTREE",
+          "title": "Tách 3–4 nhánh song song qua `claude --worktree` và `isolation: worktree`",
+          "detail": "Parent Agent giao từng phân hệ độc lập (ví dụ Payroll PDF, CRM Pipeline 8 nấc, Chấm công GPS AI) cho các Subagent chạy `Sonnet 5.5` trong từng Git Worktree riêng biệt (tùy biến đường dẫn nếu cần bằng hook `WorktreeCreate`). Không xảy ra xung đột git index.",
+          "metricOrTool": "Sonnet 5.5 • claude -w"
+        },
+        {
+          "tag": "NHỊP 3 • RÀO CHẮN HOOKS 33+",
+          "title": "Kiểm soát xác định qua `PreToolUse` (exit code 2) và tự động `PostToolUse` Typecheck",
+          "detail": "Mọi lệnh Bash hay sửa file đi qua bộ lọc `PreToolUse` (cấm tuyệt đối đụng `.env`, token Meta CAPI, Zalo OA hoặc xóa dữ liệu) và `PostToolUse` chạy kiểm tra TypeScript/lint ngay sau mỗi lần ghi file. Kết nối đa dạng handler `command`, `http` webhook hoặc `prompt` judge.",
+          "metricOrTool": "33+ Lifecycle Hooks"
+        },
+        {
+          "tag": "NHỊP 4 • NGHIỆM THU /REVIEW & /GOAL",
+          "title": "Kích hoạt `/review` diff cục bộ và vòng lặp tự chủ `/goal` (Haiku 5.5 chấm điểm)",
+          "detail": "Chạy `/review` kiểm tra chất lượng thay đổi trước khi merge, hoặc gắn điều kiện hoàn thành qua `/goal \"Toan bo Playwright E2E va vitest pass 100%\"` để Haiku 5.5 tự đánh giá qua từng lượt chạy mà không tốn công kỹ sư ngồi canh.",
+          "metricOrTool": "Haiku 5.5 • /review & /goal"
+        },
+        {
+          "tag": "NHỊP 5 • NÉN MẠCH /COMPACT & /SCHEDULE",
+          "title": "Giải phóng ngữ cảnh bằng `/compact [focus]` và đẩy tác vụ định kỳ lên `/schedule`",
+          "detail": "Giữ lại đúng quyết định kiến trúc qua `/compact \"giu lai migration schema va RLS\"` khi ngữ cảnh chạm ngưỡng 100K+, đồng thời dùng `/schedule` (thay cho `/routines` cũ) cho các tác vụ cloud định kỳ hàng đêm khác với `/loop` cục bộ.",
+          "metricOrTool": "/compact & /schedule"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "playbook-ch3-worktree-hooks-va-domation-erp",
+      "eyebrow": "SỔ TAY THỰC HÀNH • CHƯƠNG 3: 33+ LIFECYCLE HOOKS, SLASH COMMANDS & WORKTREE TRONG DOMATION",
+      "variant": "narrative",
+      "heading": "Từ công cụ chat đơn lẻ thành dây chuyền 4 Subagent dựng ERP May Đo không xung đột code",
+      "paragraphs": [
+        "Sự khác biệt giữa một lập trình viên dùng AI theo cảm hứng và xưởng phần mềm AI tại DOMATION nằm ở cách tận dụng hai tính năng ít được khai thác hết của Claude Code: **33+ Lifecycle Hooks** và **Worktree Isolation**. Nếu chỉ dặn bằng văn bản rằng 'hãy chạy `tsc` sau khi sửa code và đừng đụng vào khóa bí mật', mô hình chắc chắn sẽ có lúc quên khi cuộc hội thoại kéo dài qua hàng chục lượt sửa lỗi. Nhưng khi bạn nối các sự kiện `PreToolUse`, `PostToolUse`, `SubagentStart`, `SubagentStop`, `TaskCreated`, `TaskCompleted` và `StopFailure` vào kịch bản shell hoặc webhook HTTP nội bộ, mọi quy trình kiểm tra an toàn trở thành luật vật lý bắt buộc của hệ thống.",
+        "Ngoài ra, hệ sinh thái lệnh gạch chéo tích hợp sẵn của Claude Code cuối 2026 cũng đã hoàn thiện vòng đời quản trị: `/import [codex|gemini|cursor]` giúp kéo tức thì bộ quy tắc, kỹ năng và cấu hình MCP từ các công cụ khác khi đội ngũ hợp nhất dự án; `/schedule` thay thế hoàn toàn `/routines` trước đây để tạo tác vụ chạy ngầm trên đám mây (khác với `/loop` chạy vòng lặp cục bộ tại máy trạm); và cặp `/compact [focus]` + `/context all` giữ cho cửa sổ ngữ cảnh luôn gọn nhẹ, sạch sẽ xuyên suốt các đợt phát hành dài ngày cho khách hàng Bất động sản, Giáo dục hay Chuỗi F&B."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-claude-2026",
+      "variant": "founder-pov",
+      "authorBadge": "Ghi Chú Vận Hành • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Claude Code mạnh nhất không phải ở câu chữ văn hoa, mà ở kỷ luật Worktree, Tool Search và rào thép PreToolUse",
+      "body": "Khi xây dựng các hệ thống ERP 5.0 12 phân hệ hay lõi xử lý phức tạp như INKICA 208 SKU, đội ngũ DOMATION coi bộ tứ Anthropic Claude như một phòng kỹ thuật hoàn chỉnh: Opus 5.5 hoặc Fable 5.2 ngồi vị trí Kiến trúc sư trưởng làm `/plan`, Sonnet 5.5 nhân bản thành 3–4 kỹ sư chạy song song trong `claude --worktree`, còn Haiku 5.5 làm QA trực canh dưới ngưỡng 100K token qua `/goal`. Chỉ cần giữ kỷ luật bật `ENABLE_TOOL_SEARCH`, tách bạch Standard vs Fast Mode để không làm rơi Prompt Cache, và khóa mọi hành vi nhạy cảm bằng `PreToolUse` exit code 2, bạn sẽ khai thác được 100% sức mạnh của hệ sinh thái Anthropic mà chi phí API vẫn nằm hoàn toàn trong tầm kiểm soát."
+    }
+  ]
+}

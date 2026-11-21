@@ -1,0 +1,310 @@
+{
+  "id": "art-103",
+  "number": "103",
+  "slug": "gan-nhan-du-lieu-tieng-viet-active-learning-phan-loai-lead-ticket",
+  "shardId": "shard03",
+  "pillar": "multi-agent-ai",
+  "pillarLabel": "AI Doanh Nghiệp 5.0 & RAG",
+  "industry": "AI Product & CSKH Operations",
+  "clusterId": "kw-ai-data-foundation",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "playbook-manual",
+  "title": "Chiến lược gán nhãn dữ liệu tiếng Việt & Active Learning cho AI phân loại Lead và Ticket CSKH",
+  "seoTitle": "Gán Nhãn Dữ Liệu Tiếng Việt Cho AI Phân Loại Lead | DOMATION",
+  "metaDescription": "Xây bộ Taxonomy ý định khách hàng tiếng Việt (viết tắt, teen-code, vùng miền) kết hợp Human-in-the-loop Active Learning nâng chuẩn AI Pre-Scorer lên 94%.",
+  "focusKeyword": "gán nhãn dữ liệu tiếng việt cho ai",
+  "secondaryKeywords": [
+    "taxonomy phân loại lead cskh",
+    "active learning human in the loop",
+    "xử lý tiếng việt viết tắt trong ai",
+    "nâng độ chính xác ai pre-scorer",
+    "dataset đánh giá chất lượng ai"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "Xây Bộ Nhãn Tiếng Việt Chuẩn Cho AI Phân Loại Lead",
+  "thumbnailHook": "Xử lý viết tắt Zalo và đẩy chuẩn phân loại lên 94% HITL.",
+  "thumbnailBadge": "NLP • DATA LABELING",
+  "coverImage": "/imgs/boost/v2/gan-nhan-du-lieu-tieng-viet-active-learning-phan-loai-lead-ticket.webp",
+  "screenshotImage": "/imgs/boost/charts/gan-nhan-du-lieu-tieng-viet-active-learning-phan-loai-lead-ticket-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem AI Pre-Scorer & Phân Nhóm CSKH",
+  "relatedSlugs": [
+    "ai-pre-scorer-cham-diem-thien-chi-lead-truoc-khi-giao-sale",
+    "rag-evaluation-ragas-deepeval-golden-set-triet-tieu-ao-giac",
+    "bien-5-nam-lich-su-chat-zalo-crm-thanh-sales-playbook-chot-don",
+    "synthetic-data-test-tai-crm-meta-capi-khong-dung-pii-that"
+  ],
+  "readingMinutes": 12,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Quy trình gán nhãn dữ liệu tiếng Việt và Active Learning Human-in-the-loop nâng độ chính xác AI phân loại Lead và Ticket CSKH",
+  "screenshotCaption": "Đường cong cải thiện F1-Score và tối ưu chi phí gán nhãn tiếng Việt khi áp dụng Active Learning kết hợp LLM Pre-Labeling trên DOMATION AI Pre-Scorer.",
+  "tldrSummary": "Mô hình AI phân loại Lead và Ticket CSKH thường tụt xuống dưới 70% khi gặp tin nhắn Zalo, TikTok, Messenger Việt Nam vì viết tắt teencode, thiếu dấu thanh, từ vùng miền và nhiều ý định đan xen. Bằng cách xây dựng Taxonomy trực giao phục vụ Unstructured-to-Structured JSON Extraction kết hợp vòng lặp Human-in-the-loop Active Learning ưu tiên mẫu vùng biên, doanh nghiệp chỉ cần gán khoảng 2.500 mẫu chuẩn thay vì 15.000 mẫu ngẫu nhiên để đẩy F1-Score vượt 94%.",
+  "keyTakeaways": [
+    "Chuẩn hóa Unicode NFC và giải mã từ điển teencode tiếng Việt (`ib`, `bnhiu`, `ck`, `đh`, `ko`, `dc`, `rùi`) trước khi bóc tách JSON giúp giảm 42% lỗi hiểu sai ngữ cảnh.",
+    "Thiết kế Taxonomy 3 trục trực giao (`primary_intent`, `lead_tier`, `extracted_entities`) thay vì danh sách 20 nhãn phẳng chồng chéo gây mâu thuẫn giữa người gán nhãn.",
+    "Dùng Margin/Entropy Uncertainty Sampling đẩy 15% mẫu vùng xám (độ tự tin 0.42–0.68) cho Sale Leader duyệt giúp cắt 72% công sức nhân sự.",
+    "Khóa cứng Golden Eval Set tối thiểu 600 mẫu đạt độ đồng thuận Cohen's Kappa >= 0.82 và đã ẩn danh PII trước khi nghiệm thu bất kỳ phiên bản prompt hay fine-tune nào."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "F1-Score phân loại Lead/Ticket", "value": "94.6% (+26.4%)" },
+    { "label": "Giảm mẫu cần gán tay", "value": "-72% nhờ Active Learning" },
+    { "label": "Độ đồng thuận nhãn (Kappa)", "value": "0.86 chuẩn QA nội bộ" },
+    { "label": "Độ trễ AI Pre-Scorer JSON", "value": "< 320ms / hội thoại" }
+  ],
+  "faqs": [
+    {
+      "question": "Dùng LLM mạnh viết prompt trực tiếp có cần tốn công gán nhãn dữ liệu tiếng Việt không?",
+      "answer": "Rất cần cho hai mục tiêu: lập Golden Eval Set đo khách quan xem bản prompt mới có thật sự tăng độ chính xác hay không, và chưng cất dữ liệu huấn luyện model nhỏ chạy giá rẻ ở lưu lượng hàng chục nghìn tin nhắn mỗi ngày."
+    },
+    {
+      "question": "Xử lý tình huống khách nhắn 4–5 bong bóng chat rời rạc liên tiếp trên Zalo như thế nào?",
+      "answer": "Không chấm điểm từng dòng đơn lẻ vì ngữ cảnh bị xé vụn. DOMATION gom tin nhắn trong cửa sổ Debounce 15–25 giây thành một phiên hội thoại trước khi chạy Unstructured-to-Structured Extraction."
+    },
+    {
+      "question": "Giải quyết mâu thuẫn khi Sale bảo 'Khách nóng' còn CSKH bảo 'Chỉ hỏi giá' bằng cách nào?",
+      "answer": "Ban hành bộ Annotation Guideline gắn tiêu chí hành vi định lượng và cặp ví dụ biên (Boundary Examples): khách hỏi lịch hẹn, xin số tài khoản cọc hoặc chốt ngân sách mới gắn `HOT`; hỏi giá chung chung chỉ gắn `WARM`."
+    },
+    {
+      "question": "Có tận dụng được thao tác chốt Lead hằng ngày trên CRM để làm Active Learning không?",
+      "answer": "Có. Mỗi lần Sale đổi trạng thái Lead (`Qualified`, `Booked`, `NotLead`) hoặc sửa thẻ Ticket do AI gợi ý trên DOMATION CRM 360°, hệ thống tự ghi phản hồi vào hàng đợi hiệu chỉnh AI Pre-Scorer hàng tuần."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "vi-sao-ai-phan-loai-gay-tren-chat-zalo",
+      "eyebrow": "Bệnh Lý Ngữ Liệu Thực Địa",
+      "variant": "narrative",
+      "heading": "Vì sao AI đạt 92% trên tập mẫu nhưng rớt xuống 64% trước tin nhắn Zalo, TikTok & CSKH Việt Nam?",
+      "pullQuote": "Trong phòng lab, khách hỏi 'Báo giá gói Enterprise 50 nhân sự'. Ngoài Zalo lúc 22h, họ nhắn 3 dòng cụt: 'ib', 'gói 50 ng bnhiu ad', 'có xài dc misa k'.",
+      "paragraphs": [
+        "Nhiều đội kỹ thuật tự tin đưa AI Pre-Scorer lên Production sau khi test mượt trên vài chục câu chat mẫu soạn đúng chính tả. Chỉ sau tuần đầu, Trưởng phòng Kinh doanh lập tức báo động: khách nhắn tin muốn cọc bị xếp nhầm sang Spam, còn các ca khiếu nại hàng lỗi lại lọt vào phễu tư vấn mới.",
+        "Gốc rễ nằm ở độ nhiễu đặc thù của hội thoại tiếng Việt phi cấu trúc (Unstructured Conversational Data): dày đặc teencode (`ib`, `bnhiu`, `ck`, `đh`, `ko`, `dc`, `rùi`), bỏ dấu thanh, lệch mã Unicode NFD từ bàn phím iOS/macOS, lỗi Voice-to-Text vùng miền và câu đa ý định vừa khen vừa thúc giục đơn hàng. Nếu thiếu chuẩn bóc tách cấu trúc JSON và vòng lặp hiệu chỉnh nhãn thực tế, mô hình sẽ trượt dài khi chiến dịch Ads mở rộng."
+      ],
+      "bullets": [
+        "Đa dạng teencode cho cùng một hành vi: 'chuyển khoản đặt cọc' có thể là `ck r nha`, `đã bank`, `bắn lúa` hoặc chỉ gửi mỗi ảnh biên lai.",
+        "Lệch phân phối lớp 90/10: Spam/Hỏi dạo chiếm tới 50% nhưng nhóm VIP sẵn sàng chốt hoặc Ticket khủng hoảng chỉ chiếm 6%–10%.",
+        "Concept Drift: mỗi đợt khuyến mãi mới hay mã voucher riêng dễ làm bộ phân loại cũ gắn nhầm nhãn."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "vong-lap-active-learning-6-buoc",
+      "heading": "Quy trình Active Learning Human-in-the-Loop 6 chặng cho AI Pre-Scorer",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "CHẶNG 01 • GOM & CHE PII",
+          "title": "Chuẩn hóa Unicode NFC, Debounce 20s & ẩn danh SĐT/CCCD",
+          "detail": "Gom bong bóng chat rời rạc thành phiên hoàn chỉnh, chuyển NFC, che dữ liệu nhạy cảm trước khi lưu trữ.",
+          "metricOrTool": "NFC Normalizer • PII Mask"
+        },
+        {
+          "tag": "CHẶNG 02 • TAXONOMY",
+          "title": "Khóa bộ nhãn trực giao & 150 cặp ví dụ ranh giới",
+          "detail": "Tách riêng Intent, Lead Tier, Urgency và Entities trong JSON Schema kèm quy tắc xử lý câu đa ý định.",
+          "metricOrTool": "Pydantic Taxonomy Spec"
+        },
+        {
+          "tag": "CHẶNG 03 • GOLDEN SET",
+          "title": "Gán tay độc lập 600 mẫu đạt Cohen's Kappa >= 0.82",
+          "detail": "Hai chuyên viên Sales/CSKH gán chéo độc lập, cô lập 600 mẫu làm bộ kiểm chứng bất biến.",
+          "metricOrTool": "Dual Annotator QA"
+        },
+        {
+          "tag": "CHẶNG 04 • SILVER PRE-LABEL",
+          "title": "Chạy Teacher LLM gắn nhãn nháp kèm điểm tự tin",
+          "detail": "Tạo sẵn dự đoán JSON và bằng chứng trích dẫn giúp người duyệt đọc nhanh gấp 4 lần.",
+          "metricOrTool": "Teacher Silver Labels"
+        },
+        {
+          "tag": "CHẶNG 05 • UNCERTAINTY",
+          "title": "Lọc 15% mẫu vùng biên (Margin thấp) về hàng đợi HITL",
+          "detail": "Chỉ đẩy các câu AI phân vân (xác suất top-1 trừ top-2 <= 0.25) cộng 10% mẫu ngẫu nhiên cho Leader sửa.",
+          "metricOrTool": "Margin & Entropy Sampler"
+        },
+        {
+          "tag": "CHẶNG 06 • GATE PHÁT HÀNH",
+          "title": "Cập nhật Few-Shot/Model & kiểm thử hồi quy Golden Set",
+          "detail": "Chỉ deploy phiên bản AI mới khi Macro F1 và lớp Khiếu nại đều vượt kỷ lục cũ trên Golden Eval Set.",
+          "metricOrTool": "CI Regression Gate"
+        }
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "active-learning-f1-curve",
+      "heading": "Đường cong Active Learning vs Gán nhãn ngẫu nhiên trên 8.000 hội thoại tiếng Việt",
+      "subtitle": "Theo dõi tốc độ hội tụ Macro F1-Score (%) theo số lượng mẫu con người duyệt tay",
+      "chart": {
+        "chartType": "line",
+        "title": "Macro F1-Score (%) theo số mẫu được gán nhãn chuẩn",
+        "xKey": "samples",
+        "yUnit": "%",
+        "kpis": [
+          { "label": "F1 tại 2.500 mẫu (Active)", "value": "94.2%", "delta": "+11.3% vs Random", "positive": true },
+          { "label": "Tiết kiệm công gán nhãn", "value": "-72%", "delta": "Ít hơn 5.500 mẫu", "positive": true },
+          { "label": "Chi phí gán / 1k mẫu", "value": "1.4M₫", "delta": "Nhờ Teacher Pre-label", "positive": true },
+          { "label": "F1 lớp Khiếu nại hiếm", "value": "91.8%", "delta": "+29.4% sau vòng 3", "positive": true }
+        ],
+        "series": [
+          { "key": "activeF1", "label": "Active Learning + Pre-label (%)", "color": "#1E40FF" },
+          { "key": "randomF1", "label": "Gán nhãn ngẫu nhiên (%)", "color": "#06B6D4" },
+          { "key": "rareClassF1", "label": "F1 lớp Khiếu nại/Hoàn tiền (%)", "color": "#10B981" }
+        ],
+        "data": [
+          { "samples": "500 mẫu", "activeF1": 74.2, "randomF1": 71.5, "rareClassF1": 62.4 },
+          { "samples": "1.200 mẫu", "activeF1": 85.6, "randomF1": 76.8, "rareClassF1": 77.9 },
+          { "samples": "2.000 mẫu", "activeF1": 91.4, "randomF1": 80.2, "rareClassF1": 86.3 },
+          { "samples": "2.500 mẫu", "activeF1": 94.2, "randomF1": 82.9, "rareClassF1": 91.8 },
+          { "samples": "5.000 mẫu", "activeF1": 95.3, "randomF1": 88.4, "rareClassF1": 93.1 },
+          { "samples": "8.000 mẫu", "activeF1": 95.8, "randomF1": 92.1, "rareClassF1": 94.0 }
+        ],
+        "sourceNote": "Thực nghiệm trên ngữ liệu Zalo/Messenger đa ngành (Giáo dục, Nha khoa, F&B) tại lab AI DOMATION."
+      },
+      "insightSummary": "Gán nhãn ngẫu nhiên mất 8.000 mẫu mới chạm 92.1% vì phần lớn thời gian tiêu tốn cho các câu hỏi lặp dễ đoán. Active Learning dồn ngân sách duyệt vào 2.500 mẫu biên độ tin cậy thấp và lớp thiểu số giúp F1 bứt lên 94.2% ngay từ vòng thứ ba."
+    },
+    {
+      "type": "visual-figure",
+      "id": "data-labeling-telemetry-figure",
+      "src": "/imgs/boost/charts/gan-nhan-du-lieu-tieng-viet-active-learning-phan-loai-lead-ticket-report.webp",
+      "alt": "Biểu đồ đường cong học tập Active Learning và quy trình gán nhãn dữ liệu tiếng Việt chuẩn cho AI Pre-Scorer",
+      "caption": "Chu trình tinh chỉnh bộ nhãn tiếng Việt và cải thiện độ chính xác AI Pre-Scorer qua các vòng lặp Human-in-the-Loop.",
+      "badge": "ACTIVE LEARNING & TAXONOMY"
+    },
+    {
+      "type": "prose",
+      "id": "thiet-ke-taxonomy-va-unstructured-to-structured",
+      "eyebrow": "Unstructured-to-Structured Extraction",
+      "variant": "deep-dive",
+      "heading": "Biến chat lộn xộn thành JSON định tuyến: Thiết kế Taxonomy trực giao và bóc tách thực thể",
+      "paragraphs": [
+        "Sai lầm kinh điển khi dựng bộ nhãn là trộn nhiều chiều thông tin vào cùng một danh sách phẳng (ví dụ `Hỏi giá`, `Khách nóng`, `Khiếu nại`, `Chi nhánh Q7`). Khi khách nhắn 'Anh ở Q7 từng mua rồi mà hôm nay đơn thiếu 2 hộp, xử lý gấp để anh đặt thêm lô mới', người gán nhãn lập tức bị kẹt giữa `Khiếu nại` và `Khách nóng`.",
+        "Kiến trúc Unstructured-to-Structured AI Extraction tại DOMATION ép đầu ra thành một JSON Schema 4 trục độc lập: `primary_intent` (mục đích), `lead_tier` (độ nóng), `urgency` (khẩn cấp) và `entities` (SKU, số lượng, chi nhánh, dấu hiệu chuyển khoản). Nhờ vậy, nhánh Automation IF/ELSE xử lý chính xác được cả ca vừa khiếu nại vừa muốn mua thêm mà không đẩy nhầm cho Sale chào hàng phản cảm."
+      ],
+      "bullets": [
+        "Khống chế 5–9 nhãn mỗi trục đơn trị; không sinh nhãn vụn có dưới 30 mẫu.",
+        "Truyền song song `raw_text` (giữ viết hoa/dấu chấm than biểu cảm) và `normalized_text` đã giải mã teencode.",
+        "Trường không có thông tin phải trả `null`, nghiêm cấm AI tự bịa ngân sách hoặc mã SKU."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "python-unstructured-extraction-active-learning",
+      "heading": "Python Recipe: Bóc tách Unstructured-to-Structured Pydantic & Lọc mẫu Entropy/Margin",
+      "language": "python",
+      "filename": "pipelines/vn_labeling_active_loop.py",
+      "description": "Chuẩn hóa teencode Zalo tiếng Việt, ép kiểu đầu ra JSON chặt chẽ bằng Pydantic v2 cho AI Extraction và xếp hạng các hội thoại bất định nhất đẩy vào hàng đợi duyệt tay HITL.",
+      "code": "import math, re, unicodedata\nfrom typing import Literal, Optional\nfrom pydantic import BaseModel, Field\n\nTEENCODE = {\n    r\"\\bbnhiu\\b|\\bbn\\b\": \"bao nhiêu\", r\"\\bib\\b\": \"nhắn tin tư vấn\",\n    r\"\\bck\\b\": \"chuyển khoản\", r\"\\bđh\\b|\\bdh\\b\": \"đơn hàng\",\n    r\"\\bko\\b|\\bkhum\\b|\\bk\\b\": \"không\", r\"\\bdc\\b|\\bđc\\b\": \"được\",\n    r\"\\brùi\\b|\\br\\b\": \"rồi\", r\"\\bntn\\b\": \"như thế nào\",\n}\n\ndef normalize_zalo_chat(raw_text: str) -> str:\n    s = unicodedata.normalize(\"NFC\", raw_text or \"\").strip().lower()\n    for pat, rep in TEENCODE.items():\n        s = re.sub(pat, rep, s)\n    return re.sub(r\"\\s+\", \" \", s)\n\nclass ExtractedEntities(BaseModel):\n    branch_or_area: Optional[str] = Field(None)\n    sku_or_service: Optional[str] = Field(None)\n    quantity: Optional[int] = Field(None, ge=1)\n    payment_receipt_mentioned: bool = False\n\nclass StructuredLeadTicket(BaseModel):\n    primary_intent: Literal[\"PURCHASE_INQUIRY\", \"BOOKING_APPOINTMENT\", \"ORDER_SUPPORT_COMPLAINT\", \"PARTNERSHIP_B2B\", \"SPAM_IRRELEVANT\"]\n    lead_tier: Literal[\"HOT\", \"WARM\", \"COLD\", \"NOT_LEAD\"]\n    urgency: Literal[\"P0_CRITICAL\", \"P1_HIGH\", \"P2_NORMAL\"]\n    entities: ExtractedEntities\n    evidence_span: str = Field(..., max_length=180)\n\ndef select_active_learning_batch(predictions: list[dict], batch_size: int = 100) -> list[dict]:\n    scored = []\n    for item in predictions:\n        probs = sorted(item[\"probs\"].values(), reverse=True)\n        margin = (probs[0] if probs else 1.0) - (probs[1] if len(probs) > 1 else 0.0)\n        entropy = -sum(p * math.log2(p) for p in probs if p > 1e-9)\n        priority = (1.0 - margin) * 0.65 + min(entropy / 2.32, 1.0) * 0.35\n        scored.append({**item, \"uncertainty_priority\": round(priority, 4)})\n    scored.sort(key=lambda x: x[\"uncertainty_priority\"], reverse=True)\n    head = int(batch_size * 0.8)\n    tail_pool = scored[head:]\n    step = max(1, len(tail_pool) // max(1, batch_size - head))\n    return scored[:head] + tail_pool[::step][: batch_size - head]"
+    },
+    {
+      "type": "code-recipe",
+      "id": "sql-active-learning-disagreement-audit",
+      "heading": "SQL Recipe: Đối chiếu bất đồng thuận AI vs Sale CRM & rút mẫu vùng xám",
+      "language": "sql",
+      "filename": "queries/active_learning_feedback_audit.sql",
+      "description": "Truy vấn PostgreSQL phát hiện cặp nhãn AI dự đoán lệch nhiều nhất so với kết quả Sale chốt thực tế trong 14 ngày, đồng thời trích xuất 150 hội thoại vùng biên chưa duyệt.",
+      "code": "WITH model_vs_crm AS (\n  SELECT c.conversation_id, c.ai_predicted_intent, c.ai_confidence, l.human_verified_intent,\n         (c.ai_predicted_intent = l.human_verified_intent) AS is_match\n  FROM ai_conversation_scores c\n  JOIN crm_lead_verifications l ON l.conversation_id = c.conversation_id\n  WHERE c.scored_at >= NOW() - INTERVAL '14 days' AND l.human_verified_intent IS NOT NULL\n)\nSELECT ai_predicted_intent, human_verified_intent, COUNT(*) AS cases,\n       ROUND(100.0 * SUM(CASE WHEN is_match THEN 0 ELSE 1 END) / COUNT(*), 2) AS mismatch_pct\nFROM model_vs_crm\nGROUP BY 1, 2 HAVING COUNT(*) >= 10\nORDER BY mismatch_pct DESC;\n\nSELECT raw.conversation_id, raw.channel, raw.normalized_text, raw.ai_predicted_intent, raw.ai_margin_gap\nFROM ai_conversation_scores raw\nLEFT JOIN labeling_hitl_queue q ON q.conversation_id = raw.conversation_id\nWHERE q.conversation_id IS NULL\n  AND (raw.ai_margin_gap <= 0.22 OR raw.ai_confidence BETWEEN 0.42 AND 0.68)\nORDER BY raw.ai_margin_gap ASC, raw.created_at DESC\nLIMIT 150;"
+    },
+    {
+      "type": "prose",
+      "id": "tradeoffs-silver-gold-va-mat-can-bang-lop",
+      "eyebrow": "Đánh Đổi Kỹ Thuật",
+      "variant": "contrarian",
+      "heading": "Cạm bẫy Silver Label, lệch lớp 90/10 và ranh giới chọn Prompt Few-Shot vs Fine-Tune nội bộ",
+      "paragraphs": [
+        "Dùng LLM lớn tự sinh nhãn (Silver Labels) rồi nạp thẳng vào huấn luyện model nhỏ mà không qua con người duyệt vùng biên sẽ gây hiện tượng khuếch đại sai số (Error Amplification). Tại DOMATION, Silver Labels chỉ đóng vai trò gợi ý tăng tốc duyệt tay chứ không bao giờ được lọt vào Golden Eval Set. Đồng thời, trước phân phối lệch lớp 90/10, phải tối ưu Macro F1-Score thay vì Accuracy tổng để không bỏ sót nhóm khách VIP hay khiếu nại khẩn cấp.",
+        "Về kiến trúc suy luận, nếu lưu lượng dưới 3.000 tin nhắn/ngày và bảng giá thay đổi liên tục, Dynamic Few-Shot trích xuất JSON qua mô hình Midweight giúp sửa Taxonomy trong 30 phút. Ngược lại, khi vượt 25.000 tin nhắn/ngày, dùng 3.000 mẫu Gold từ Active Learning để fine-tune classifier tiếng Việt chuyên biệt sẽ cắt 80% chi phí token và hạ độ trễ xuống dưới 80ms."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-dinh-bo-nhan-tieng-viet",
+      "heading": "Checklist 6 điểm kiểm toán Dataset tiếng Việt trước khi mở AI Pre-Scorer thật",
+      "items": [
+        {
+          "check": "Đo độ đồng thuận giữa các chuyên viên gán nhãn (IAA)",
+          "severity": "critical",
+          "verificationHow": "Giao ngẫu nhiên 200 hội thoại cho 2 người gán độc lập, tính hệ số Cohen's Kappa từng trục.",
+          "passThreshold": "Kappa >= 0.82 cho Intent và >= 0.78 cho Lead_Tier"
+        },
+        {
+          "check": "Chống rò rỉ Golden Eval Set vào tập Train / Few-Shot",
+          "severity": "critical",
+          "verificationHow": "So khớp hash SHA-256 nội dung chuẩn hóa giữa Eval Set và kho ví dụ RAG/Prompt.",
+          "passThreshold": "0% bản ghi trùng lặp"
+        },
+        {
+          "check": "Che giấu PII (SĐT, số tài khoản, CCCD) trong file huấn luyện",
+          "severity": "critical",
+          "verificationHow": "Chạy quét Regex & NER trên tập JSONL trước khi lưu trữ hoặc chia sẻ nội bộ.",
+          "passThreshold": "100% thay thế bằng placeholder `[PHONE]`"
+        },
+        {
+          "check": "Kiểm thử lát cắt teencode & voice-to-text vùng miền",
+          "severity": "high",
+          "verificationHow": "Đo riêng F1 trên 120 câu chat viết tắt nặng và sai dấu thực địa.",
+          "passThreshold": "Macro F1 >= 88% trên lát cắt khó"
+        },
+        {
+          "check": "Theo dõi Concept Drift khi Marketing đổi chương trình ưu đãi",
+          "severity": "high",
+          "verificationHow": "Tính chỉ số PSI so sánh phân phối nhãn AI tuần hiện tại với kết quả chốt CRM.",
+          "passThreshold": "PSI < 0.15 mỗi tuần"
+        },
+        {
+          "check": "Đo tỷ lệ bịa thực thể JSON khi khách không cung cấp thông tin",
+          "severity": "recommended",
+          "verificationHow": "Test 50 câu bẫy không chứa ngân sách/SKU để kiểm tra tỷ lệ trả đúng `null`.",
+          "passThreshold": "Hallucinated Entity < 1.5%"
+        }
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "chon-chien-luoc-gan-nhan-va-model",
+      "heading": "Cây quyết định chiến lược gán nhãn & mô hình phân loại theo quy mô traffic",
+      "subtitle": "Cân đối giữa tốc độ ra mắt tuần đầu và chi phí vận hành dài hạn",
+      "scenarios": [
+        {
+          "condition": "< 1.500 hội thoại/ngày, chiến dịch & combo đổi liên tục mỗi tuần",
+          "recommendedChoice": "Dynamic Few-Shot + Structured JSON Schema (LLM Midweight)",
+          "rationale": "Chỉ cần 500 mẫu Golden Eval Set và kho ví dụ động theo chiến dịch, chỉnh sửa Taxonomy cực nhanh.",
+          "avoidIf": "Đừng vội fine-tune model riêng khi chính sách bán hàng chưa ổn định."
+        },
+        {
+          "condition": "1.500 – 15.000 hội thoại/ngày, quy trình bán hàng ổn định (Nha khoa, BĐS, Giáo dục)",
+          "recommendedChoice": "Active Learning 2.500 mẫu Gold + Bộ lọc Pre-Scorer 2 tầng",
+          "rationale": "Dùng lớp lọc nhẹ gạt Spam/FAQ dưới 100ms rồi mới đưa hội thoại tiềm năng qua bước trích xuất thực thể đầy đủ.",
+          "avoidIf": "Tránh gửi 100% tin nhắn chào hỏi ngắn qua mô hình lớn gây lãng phí token."
+        },
+        {
+          "condition": "> 20.000 hội thoại/ngày hoặc yêu cầu bảo mật On-Premise tuyệt đối",
+          "recommendedChoice": "Fine-tune PhoBERT / Qwen-SLM nội bộ theo chu kỳ Active Learning",
+          "rationale": "Đạt độ trễ < 60ms, chi phí biên gần bằng 0 và không gửi dữ liệu khách hàng ra API bên ngoài.",
+          "avoidIf": "Không tự train khi mỗi lớp nhãn chưa đủ tối thiểu 200 mẫu chuẩn hóa."
+        },
+        {
+          "condition": "Luồng chat kèm nhiều ảnh chụp bill chuyển khoản, PDF hoặc tin nhắn thoại",
+          "recommendedChoice": "Multimodal Extraction + HITL Confidence Routing",
+          "rationale": "OCR/Vision parse ra JSON giao dịch và đẩy ca độ tự tin < 0.75 qua ZaloBot cho kế toán xác nhận 1 chạm.",
+          "avoidIf": "Không tự động hạch toán tiền vào ERP khi chưa đối soát Webhook ngân hàng."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "data-labeling-domation-rule",
+      "variant": "key-rule",
+      "title": "Chất lượng bộ nhãn tiếng Việt quyết định 80% trần hiệu suất AI Pre-Scorer",
+      "body": "Chưa có prompt thông minh nào cứu nổi một bộ Taxonomy nhập nhằng giữa các phòng ban. Khi doanh nghiệp đầu tư chuẩn Golden Set 600 mẫu và gắn vòng lặp Active Learning vào chính thao tác chốt Lead trên DOMATION CRM 360°, AI Pre-Scorer dễ dàng chạm mốc chính xác 94%+ và tự tích lũy trí tuệ nội bộ theo từng tháng vận hành.",
+      "authorBadge": "DOMATION Multi-Agent AI Engineering"
+    }
+  ]
+}

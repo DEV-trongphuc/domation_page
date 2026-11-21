@@ -1,0 +1,382 @@
+{
+  "id": "art-205",
+  "number": "205",
+  "slug": "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "Terminal Agentic CLI Harnesses",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Comparison",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "contrarian-essay",
+  "title": "Đấu trường Terminal Agent CLI: Claude Code vs OpenAI Codex CLI vs Gemini CLI trên dự án Production",
+  "seoTitle": "Claude Code vs Codex CLI vs Gemini CLI Thực Chiến | DOMATION",
+  "metaDescription": "So sánh 3 Terminal Coding Harness: Claude Code (33+ Hooks & Worktree), Codex CLI (Landlock/Seatbelt sandbox & GitHub PR) và Gemini CLI (TOML Policy).",
+  "focusKeyword": "claude code vs codex cli vs gemini cli",
+  "secondaryKeywords": [
+    "so sánh claude code và codex cli",
+    "gemini cli apache 2.0 toml policy engine",
+    "codex cli sandbox landlock seatbelt",
+    "claude code worktree và lifecycle hooks",
+    "chọn terminal coding agent cho team dev"
+  ],
+  "thumbnailTheme": "arena-peer-vs",
+  "thumbnailTitle": "Claude Code vs Codex CLI vs Gemini CLI Thực Chiến",
+  "thumbnailHook": "Hiểu Hooks của Claude, Sandbox của Codex và Policy TOML của Gemini để phối.",
+  "thumbnailBadge": "CLI ARENA 3-HARNESS",
+  "coverImage": "/imgs/boost/v2/terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli.webp",
+  "screenshotImage": "/imgs/boost/charts/terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli-report.webp",
+  "coverAlt": "Đấu trường phản biện claude code vs codex cli vs gemini cli phân tích hooks, sandbox kernel landlock seatbelt và toml policy engine trên production",
+  "screenshotCaption": "Biểu đồ radar 6 trục năng lực Production của 3 Terminal Coding Harness: Claude Code (33+ Hooks & Worktree), Codex CLI (OS Kernel Sandbox & CI PR) và Gemini CLI (Apache 2.0 & 5-Tier TOML Policy).",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Cách DOMATION Vận Hành 3 CLI Song Song",
+  "relatedSlugs": [
+    "chuan-hoa-agent-skills-skill-md-va-claude-md-vs-agents-md-vs-gemini-md",
+    "lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x",
+    "anomalyco-opencode-audit-lsp-diagnostics-va-git-undo"
+  ],
+  "readingMinutes": 16,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Luận văn claude code vs codex cli vs gemini cli bóc trần sai lầm chọn CLI theo model thay vì kiến trúc harness. Claude Code dẫn đầu lập trình tương tác với 33+ Lifecycle Hooks (PreToolUse chặn cứng bằng exit code 2), git --worktree và Dynamic Tool Search giảm 85% bloat MCP. OpenAI Codex CLI (Apache 2.0) thắng ở bảo mật hạt nhân OS (Seatbelt, Landlock+Bubblewrap+seccomp-BPF), chạy codex exec CI và review PR qua @codex (lưu ý untrusted bị xóa từ v0.149.0). Gemini CLI (Apache 2.0) nổi bật nhờ 5 tầng TOML Policy Engine, Google Workspace extension và router Flash-Lite.",
+  "keyTakeaways": [
+    "Mô hình thông minh không cứu nổi một CLI harness yếu kỷ luật: khi đưa agent vào repo thật có biến môi trường Production, thứ bạn mua từ CLI là Hooks, Kernel Sandbox và Policy Engine chứ không phải chỉ giao diện chat ngoài terminal.",
+    "Claude Code là lựa chọn số 1 cho Interactive Engineering & Multi-Branch Sprint: sở hữu 33+ lifecycle hooks (PreToolUse, PostToolUse, WorktreeCreate), cơ chế cô lập nhánh claude --worktree, lệnh /plan /compact /context /goal /schedule và tự đọc AGENTS.md khi thiếu CLAUDE.md (từ v2.1.277).",
+    "OpenAI Codex CLI (Apache 2.0) sở hữu lớp Sandbox hạt nhân cứng nhất (macOS Seatbelt .sbpl, Linux Landlock+Bubblewrap+seccomp-BPF, Windows ACLs) và cổng CI/PR mượt mà (codex exec + @codex review); lưu ý quan trọng: policy untrusted đã bị xóa sổ từ Codex CLI v0.149.0 — phải đổi sang on-request + read-only.",
+    "Gemini CLI (Apache 2.0) nổi bật ở khả năng quản trị doanh nghiệp qua 5 tầng TOML Policy Engine (Admin > User > Workspace > Extension > Default), cơ chế Folder Trust, lệnh tùy biến .toml và Extension Google Workspace chính chủ (/drive:search, /calendar:get-schedule).",
+    "Thay vì chọn 1 bỏ 2, đội ngũ DOMATION & TurnioDEV dùng cả 3 harness trên cùng một file AGENTS.md gốc: Claude Code làm kiến trúc & code tính năng, Gemini CLI tra cứu Workspace/tài liệu & chạy tác vụ đa phương thức, còn Codex CLI gác cổng codex exec & PR review trong CI."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Lifecycle Hooks Claude Code",
+      "value": "33+ Events (PreToolUse)"
+    },
+    {
+      "label": "Kernel Sandbox Codex CLI",
+      "value": "Landlock + Seatbelt + BPF"
+    },
+    {
+      "label": "TOML Policy Gemini CLI",
+      "value": "5 Tầng (Admin → Default)"
+    },
+    {
+      "label": "Chuẩn Hội tụ Instruction",
+      "value": "AGENTS.md Single Source"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao Codex CLI phiên bản từ v0.149.0 trở lên lại báo lỗi khởi động nếu giữ cấu hình approval_policy = 'untrusted'?",
+      "answer": "Đây là thay đổi phá vỡ tương thích ngược (breaking change) quan trọng trong OpenAI Codex CLI v0.149.0. Chính sách phê duyệt cũ 'untrusted' cùng 'on-failure' đã bị gỡ bỏ hoàn toàn khỏi bộ parser config.toml để đơn giản hóa mô hình bảo mật; nếu tệp ~/.codex/config.toml hoặc .codex/config.toml vẫn còn dòng approval_policy = 'untrusted', lệnh codex sẽ từ chối khởi chạy ngay lập tức. Cách chuyển đổi chuẩn là đặt approval_policy = 'on-request' kết hợp sandbox_mode = 'read-only' (hoặc 'workspace-write' cho dev local)."
+    },
+    {
+      "question": "Làm sao dùng chung một bộ quy tắc dự án cho cả Claude Code, Codex CLI và Gemini CLI mà không phải sửa 3 file CLAUDE.md, AGENTS.md và GEMINI.md mỗi tuần?",
+      "answer": "Cả 3 công cụ cuối 2026 đều đã hội tụ xung quanh chuẩn mở AGENTS.md! Cụ thể, Codex CLI đọc trực tiếp AGENTS.md (bao gồm cả mục ## Code Review Rules). Claude Code từ bản v2.1.277 sẽ tự động đọc AGENTS.md nếu không có CLAUDE.md ở gốc (hoặc giữ CLAUDE.md mỏng chỉ chứa một dòng import @./AGENTS.md kèm các quy tắc theo đường dẫn trong .claude/rules/*.md). Tương tự, Gemini CLI cho phép cấu hình mảng fallback ['AGENTS.md', 'GEMINI.md'] trong .gemini/settings.json hoặc dùng cú pháp @./AGENTS.md ngay trong GEMINI.md."
+    },
+    {
+      "question": "Cơ chế bảo vệ của Claude Code PreToolUse khác gì so với Sandbox hạt nhân của Codex CLI và TOML Policy Engine của Gemini CLI?",
+      "answer": "Ba harness tiếp cận bài toán an toàn theo ba triết lý khác nhau: (1) Claude Code dùng Lifecycle Hooks (33+ sự kiện): trước khi tool chạy, PreToolUse gửi JSON payload qua stdin tới script/HTTP/prompt judge; nếu script trả exit code 2 hoặc JSON deny, hành động bị chặn tuyệt đối trước cả bước hỏi quyền; (2) Codex CLI khóa quyền ở tầng nhân hệ điều hành (Seatbelt trên macOS, Landlock + Bubblewrap + seccomp-BPF trên Linux) — ngay cả khi prompt injection lừa được model sinh lệnh curl hay rm -rf ra ngoài workspace hoặc sửa .git, nhân OS vẫn chặn đứng ở cấp syscall; (3) Gemini CLI dùng 5 tầng tệp TOML khai báo sẵn toolName và commandPrefix với thứ tự ưu tiên Admin (5) > User (4) > Workspace (3) > Extension (2) > Default (1), giúp phòng IT quản lý tập trung toàn bộ team."
+    },
+    {
+      "question": "Lệnh /import trong Claude Code hỗ trợ di chuyển những thành phần nào từ Codex CLI và Gemini CLI?",
+      "answer": "Lệnh tích hợp /import [codex|gemini|cursor] trong Claude Code cho phép kỹ sư di chuyển nhanh bộ cấu hình hiện có — bao gồm file chỉ dẫn (instructions), kỹ năng (skills), định nghĩa subagent và danh sách kết nối MCP servers — sang định dạng của Claude Code (.claude/skills/SKILL.md, .mcp.json, CLAUDE.md) mà không cần viết lại thủ công từ đầu."
+    },
+    {
+      "question": "Khi chạy agent tự động qua đêm hoặc trong GitHub Actions CI, nên chọn codex exec, Claude Code headless hay Gemini CLI?",
+      "answer": "Tùy mục đích: nếu chạy bước kiểm tra an toàn, sinh patch trong container CI hoặc tự động review Pull Request qua GitHub, codex exec (mặc định read-only sandbox, xuất JSONL có cấu trúc kèm --output-last-message) và @codex review (qua chatgpt-codex-connector + Codex Security Actions) là mượt mà và cô lập nhất. Nếu cần chạy tác vụ định kỳ trên cloud có đồng bộ trạng thái sâu với repository và đánh giá hoàn thành tự chủ, lệnh /schedule (thay cho /routines cũ) và /goal của Claude Code vượt trội. Còn nếu pipeline cần kéo dữ liệu từ Google Docs/Drive/Calendar hoặc chạy trong Podman/gVisor chi phí mở theo Apache 2.0, Gemini CLI chiếm ưu thế."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "contrarian-bo-dinh-kien-mot-cli",
+      "eyebrow": "LUẬN VĂN PHẢN BIỆN • KỶ NGUYÊN TERMINAL HARNESS",
+      "variant": "contrarian",
+      "heading": "Ngừng cãi nhau xem CLI nào 'code khôn hơn' — thứ phân định sống còn trên Production là Hooks, Sandbox và Policy",
+      "pullQuote": "Trong môi trường demo 5 file, CLI nào chạy cũng đẹp như nhau. Nhưng chỉ cần thả agent vào một monorepo ERP chứa file .env production, khóa API MISA và lịch sử Git 2 năm tuổi, ranh giới giữa một công cụ đồ chơi và một Terminal Harness chuẩn công nghiệp lập tức lộ diện.",
+      "paragraphs": [
+        "Suốt nửa đầu năm 2026, cộng đồng kỹ sư phần mềm rơi vào cuộc tranh luận mòn sáo khi so sánh claude code vs codex cli vs gemini cli: nhóm thì khen Claude Code viết React mượt, nhóm lại tung hô Codex CLI sửa test chuẩn, người khác lại chuộng Gemini CLI vì miễn phí hoặc gắn sẵn vào tài khoản Google Workspace. Tư duy đó đánh đồng hai lớp kiến trúc hoàn toàn khác biệt: trí thông minh của Model (Claude 5.5, GPT-5.3/5.6, Gemini 3.8/4) và bộ khung thực thi bao quanh nó (Agentic CLI Harness).",
+        "Trên thực tế xây dựng 35+ hệ thống thương mại tại DOMATION — từ bộ lõi 18 phân hệ quản trị doanh nghiệp cho tới các dự án có yêu cầu bảo mật chặt như thanh toán VietQR ACB của Nha khoa Flora hay dữ liệu đa đại lý EcoLife Signature — một Terminal Coding Agent không chỉ đọc và gõ code. Nó trực tiếp nắm quyền gọi bash, đọc biến môi trường, tạo nhánh Git, mở kết nối MCP tới cơ sở dữ liệu Supabase/PostgreSQL và thay đổi hạ tầng Docker. Sai một ly ở lớp Harness có thể khiến agent lỡ tay xóa migration, rò rỉ token qua curl hoặc làm phình 50.000 token schema MCP ngay từ dòng lệnh đầu tiên."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-three-cli-harnesses-2026",
+      "heading": "Đối chiếu kiến trúc 3 Terminal Harness: Claude Code vs OpenAI Codex CLI vs Gemini CLI",
+      "caption": "So sánh chuyên sâu các cơ chế kiểm soát hệ thống, cô lập nhánh, mở rộng kỹ năng và quản trị rủi ro theo bản phát hành tháng 11/2026",
+      "columns": [
+        "Lớp kiến trúc Harness",
+        "Claude Code (Anthropic)",
+        "OpenAI Codex CLI (openai/codex)",
+        "Gemini CLI (google-gemini/gemini-cli)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Giấy phép & Hệ sinh thái",
+          "values": [
+            "Proprietary (Terminal, IDE, Desktop, Cloud); hỗ trợ /import từ Codex/Gemini/Cursor",
+            "Mã nguồn mở Apache 2.0; hỗ trợ cờ --oss chạy model local Ollama / LM Studio",
+            "Mã nguồn mở Apache 2.0; hệ thống Git Extensions (gemini extensions install)"
+          ],
+          "winnerNote": "Codex CLI & Gemini CLI mở hoàn toàn cho audit bảo mật"
+        },
+        {
+          "criterion": "Hệ thống Chỉ dẫn & Bộ nhớ",
+          "values": [
+            "CLAUDE.md 5 tầng + .claude/rules/*.md (paths globs) + tự đọc AGENTS.md khi thiếu CLAUDE.md",
+            "Chuẩn mở AGENTS.md (tự đọc ## Code Review Rules cho PR) + ~/.codex/config.toml",
+            "GEMINI.md 3 tầng + mảng fallback ['AGENTS.md', 'GEMINI.md'] + /memory show|add|reload"
+          ],
+          "winnerNote": "AGENTS.md là điểm hội tụ chung của cả 3 CLI"
+        },
+        {
+          "criterion": "Cơ chế Sandbox & Bảo vệ OS",
+          "values": [
+            "Host Sandboxed Bash (Seatbelt/WSL2) + Sandbox Runtime + cô lập nhánh git --worktree",
+            "3 chế độ: read-only (mặc định codex exec), workspace-write (.git/.codex khóa read-only, tắt mạng), danger-full-access — ép ở nhân OS (Seatbelt, Linux Landlock+Bubblewrap+seccomp-BPF, Windows ACLs)",
+            "Seatbelt, Docker, Podman, gVisor, LXC, bọc luồng PTY + security.folderTrust.enabled chặn .env kho lạ"
+          ],
+          "winnerNote": "Codex CLI cứng nhất ở tầng OS kernel & Gemini CLI đa dạng container"
+        },
+        {
+          "criterion": "Hooks & Động cơ Chính sách (Policy)",
+          "values": [
+            "33+ Lifecycle Hooks (PreToolUse chặn cứng bằng exit code 2, PostToolUse, WorktreeCreate, TaskCompleted) hỗ trợ command/http/prompt/agent/mcp_tool",
+            "Chính sách phê duyệt on-request / never (cảnh báo: untrusted đã bị XÓA ở v0.149.0!); dựa vào OS Sandbox + CI wrapper",
+            "5 tầng TOML Policy Engine (Admin 5 > User 4 > Workspace 3 > Extension 2 > Default 1) + lệnh TOML tùy biến .toml"
+          ],
+          "winnerNote": "Claude Code vô địch chi tiết hook; Gemini CLI xuất sắc ở Admin TOML Policy"
+        },
+        {
+          "criterion": "Quản lý MCP & Chống phình Ngữ cảnh",
+          "values": [
+            "ENABLE_TOOL_SEARCH=true|auto + defer_loading: true (cắt ~85%+ bloat schema MCP), /context all, /compact [focus]",
+            "Khai báo [mcp_servers.<name>] trong config.toml; ưu tiên tool gọn trong phạm vi 272K–400K",
+            "mcpServers trong settings.json / gemini-extension.json, /mcp list|reload|auth, tự lộ MCP prompts thành slash command"
+          ],
+          "winnerNote": "Dynamic Tool Search của Claude Code xử lý bài toán nhiều MCP hay nhất"
+        },
+        {
+          "criterion": "Cô lập đa nhánh & Tự động hóa CI/Cloud",
+          "values": [
+            "claude --worktree (-w) + subagent isolation: worktree + /schedule (cloud) + /goal (Haiku evaluator)",
+            "codex exec (JSONL headless CI) + tích hợp gốc GitHub @codex review & Codex Security Actions",
+            "Workspace /directory add, chat checkpoints (/chat), Extension Google Workspace (/drive:search, /calendar)"
+          ],
+          "winnerNote": "Claude Code mạnh đa nhánh local; Codex CLI mượt nhất ở GitHub PR CI"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "contrarian-phan-tach-quyen-luc-3-harness",
+      "eyebrow": "SOI KỸ THUẬT LÕI • HOOKS VS KERNEL SANDBOX VS TOML POLICY",
+      "variant": "deep-dive",
+      "heading": "Phân tách quyền lực: 33+ Hooks của Claude Code, Kernel Sandbox của Codex CLI và 5 tầng TOML Policy của Gemini CLI",
+      "paragraphs": [
+        "Để thấy rõ vì sao TurnioDEV không chọn bỏ bất kỳ harness nào, hãy soi thẳng vào điểm mạnh không thể thay thế của từng công cụ khi đưa vào dự án thật. Ở góc thứ nhất, Claude Code xây dựng triết lý kiểm soát xoay quanh vòng đời sự kiện (Lifecycle Hooks) và cô lập nhánh làm việc. Với hơn 33 sự kiện móc nối — từ SessionStart, UserPromptSubmit, PreToolUse, PostToolUse cho tới WorktreeCreate và SubagentStop — kỹ sư có thể cài một đoạn script Node hoặc Python đứng ở cửa PreToolUse để kiểm tra từng tham số mà agent sắp truyền vào công cụ. Nếu agent định sửa file migration đã khóa hoặc chạy câu lệnh SQL thiếu WHERE tenant_id, hook trả về mã thoát exit code 2 để chặn đứng trước cả khi hộp thoại xin phép kịp hiện lên. Kết hợp với cờ claude --worktree (-w) tạo thư mục Git tách biệt cho từng subagent (tự dọn nếu không có sửa đổi) và Dynamic Tool Search (ENABLE_TOOL_SEARCH=true cắt tới 85%+ dung lượng schema MCP nạp thừa), Claude Code trở thành buồng lái tương tác mượt nhất cho kiến trúc sư.",
+        "Ở góc thứ hai, OpenAI Codex CLI tiếp cận an toàn theo tư duy bảo mật hệ thống Unix thuần túy: không bao giờ tin vào lời hứa của LLM hay script ứng dụng, mà khóa thẳng tiến trình agent bằng cơ chế hạt nhân hệ điều hành. Trên macOS, Codex CLI ép chính sách qua Apple Seatbelt (.sbpl); trên Linux, nó kết hợp bộ ba Landlock (giới hạn đường dẫn), Bubblewrap (tách namespace hệ thống tệp) và seccomp-BPF (lọc syscall); trên Windows là restricted user tokens và ACLs. Ở chế độ workspace-write, agent được sửa file mã nguồn nhưng toàn bộ thư mục .git, .agents, .codex bị khóa chỉ đọc (read-only) và truy cập mạng bị ngắt hoàn toàn. Cần lưu ý một lỗi rất hay gặp khi nâng cấp gần đây: kể từ Codex CLI v0.149.0, giá trị approval_policy = 'untrusted' đã bị xóa bỏ hoàn toàn và sẽ làm CLI sập ngay lúc khởi động nếu còn sót trong config.toml — bắt buộc phải chuyển về 'on-request' kết hợp sandbox_mode = 'read-only'.",
+        "Ở góc thứ ba, Gemini CLI (Apache 2.0) giải quyết xuất sắc bài toán quản trị tập trung cho doanh nghiệp nhiều phòng ban và kết nối tài nguyên Google. Thay vì viết script hook phức tạp cho từng máy dev, bộ phận IT/Security có thể phát hành một tệp chính sách TOML ở tầng Admin (mức ưu tiên 5, cao hơn User 4, Workspace 3, Extension 2 và Default 1) để quy định rạch ròi lệnh bash hoặc tool nào được allow, deny hay ask_user, đồng thời bật security.folderTrust.enabled để vô hiệu hóa file .env hoặc .gemini/settings.json trong các repo lạ chưa được tin cậy. Chưa hết, hệ sinh thái Extension của Gemini CLI (cài qua Git bằng gemini extensions install) kết hợp bộ định tuyến Flash-Lite nội bộ và gói Google Workspace Extension cho phép lập trình viên gõ /drive:search hay /calendar:get-schedule ngay trong terminal."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-cli-harness-6-dimensions",
+      "heading": "Bản đồ chấm điểm 6 chiều năng lực Production của 3 Terminal Agent CLI (Thang 0–100)",
+      "subtitle": "Đánh giá thực nghiệm trên 4 tháng triển khai song song tại DOMATION (chuẩn hóa từ log CI/CD, kiểm thử xâm nhập sandbox và số lần can thiệp thủ công)",
+      "chart": {
+        "chartType": "radar",
+        "title": "Hồ sơ năng lực vận hành doanh nghiệp: Claude Code vs Codex CLI vs Gemini CLI",
+        "subtitle": "Mỗi harness tạo một vùng lồi khác nhau — bằng chứng trực quan nhất cho chiến lược dùng phối hợp cả 3",
+        "xKey": "axis",
+        "yUnit": "điểm",
+        "series": [
+          {
+            "key": "claudeCode",
+            "label": "Claude Code",
+            "color": "#1E40FF"
+          },
+          {
+            "key": "codexCli",
+            "label": "Codex CLI (v0.149+)",
+            "color": "#10B981"
+          },
+          {
+            "key": "geminiCli",
+            "label": "Gemini CLI",
+            "color": "#06B6D4"
+          }
+        ],
+        "data": [
+          {
+            "axis": "Lifecycle Hooks Chi tiết",
+            "claudeCode": 96,
+            "codexCli": 64,
+            "geminiCli": 78
+          },
+          {
+            "axis": "OS Kernel Sandbox",
+            "claudeCode": 83,
+            "codexCli": 97,
+            "geminiCli": 91
+          },
+          {
+            "axis": "Worktree & Đa luồng Local",
+            "claudeCode": 95,
+            "codexCli": 76,
+            "geminiCli": 74
+          },
+          {
+            "axis": "Quản trị Policy Doanh nghiệp",
+            "claudeCode": 84,
+            "codexCli": 82,
+            "geminiCli": 94
+          },
+          {
+            "axis": "CI Headless & GitHub PR",
+            "claudeCode": 86,
+            "codexCli": 96,
+            "geminiCli": 80
+          },
+          {
+            "axis": "Kiểm soát Bloat MCP & Workspace",
+            "claudeCode": 93,
+            "codexCli": 79,
+            "geminiCli": 88
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Giảm Bloat MCP (Claude Code)",
+            "value": "-85%+ Token",
+            "delta": "Nhờ ENABLE_TOOL_SEARCH=true",
+            "positive": true
+          },
+          {
+            "label": "Cổng chặn cứng Codex CI",
+            "value": "codex exec (Read-Only)",
+            "delta": "Bắt buộc bỏ untrusted ở v0.149",
+            "positive": true
+          },
+          {
+            "label": "Thứ tự khóa Gemini Policy",
+            "value": "Admin (5) > User (4)",
+            "delta": "Không bị repo ngoài ghi đè",
+            "positive": true
+          },
+          {
+            "label": "Rủi ro dùng --yolo ngoài VM",
+            "value": "Tắt toàn bộ Sandbox",
+            "delta": "Cấm dùng trực tiếp trên máy thật",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Benchmark (11/2026), đối chiếu thông số kỹ thuật từ tài liệu Anthropic Claude Code, openai/codex và google-gemini/gemini-cli."
+      },
+      "insightSummary": "Hình dạng biểu đồ radar chứng minh luận điểm cốt lõi của bài viết: Claude Code đạt điểm kịch trần ở Hooks chi tiết (96), Worktree đa nhánh (95) và kiểm soát phình schema MCP (93); Codex CLI thống trị ở OS Kernel Sandbox (97) và tự động hóa CI/GitHub PR (96); còn Gemini CLI vượt trội về chính sách TOML phân tầng cho IT doanh nghiệp (94) và container sandbox linh hoạt."
+    },
+    {
+      "type": "myth-vs-reality",
+      "id": "myth-reality-terminal-agent-cli",
+      "heading": "4 ngộ nhận nguy hiểm khi đưa Terminal Coding Agent vào dự án Production",
+      "pairs": [
+        {
+          "myth": "Bật cờ --yolo (--dangerously-bypass-approvals-and-sandbox) hoặc auto-approve trên máy dev cho nhanh việc vì repo đã có Git backup.",
+          "reality": "Cờ --yolo không chỉ cho phép ghi đè file chưa commit mà còn mở toang mạng và quyền đọc ~/.ssh, ~/.aws, biến môi trường .env. Nếu mở một repo lạ có cài bẫy prompt injection trong comment code hoặc MCP độc hại, khóa API công ty có thể bị tuồn ra ngoài trong 2 giây.",
+          "proofMetric": "Chỉ chạy danger-full-access trong VM/container dùng 1 lần"
+        },
+        {
+          "myth": "Dùng một file AGENTS.md thì chỉ chạy được trên Codex CLI, muốn dùng Claude Code và Gemini CLI phải duy trì 3 bản sao nội dung khác nhau.",
+          "reality": "Claude Code (từ v2.1.277) tự động đọc AGENTS.md khi vắng CLAUDE.md, còn Gemini CLI hỗ trợ mảng fallback ['AGENTS.md', 'GEMINI.md'] và import @./AGENTS.md. Doanh nghiệp chỉ cần duy trì duy nhất một tệp AGENTS.md gốc.",
+          "proofMetric": "Giảm 100% lệch chuẩn rule giữa các thành viên dùng CLI khác nhau"
+        },
+        {
+          "myth": "Cắm 8–10 MCP server vào terminal CLI không tốn bao nhiêu tiền vì chỉ khi nào gọi tool mới tính token.",
+          "reality": "Theo mặc định không có cơ chế tải trễ, toàn bộ mô tả JSON schema của hàng trăm tool MCP bị nhồi thẳng vào phần đầu context mỗi lượt gọi, dễ ngốn 50.000+ token vô ích và làm lộ bề mặt tấn công Tool Poisoning. Bắt buộc phải bật Dynamic Tool Search (defer_loading: true).",
+          "proofMetric": "ENABLE_TOOL_SEARCH=true cắt giảm >85% token schema dư thừa"
+        },
+        {
+          "myth": "Nâng cấp Codex CLI lên bản mới nhất v0.149+ chỉ cần giữ nguyên file config.toml cũ có dòng approval_policy='untrusted' là an toàn nhất.",
+          "reality": "Từ bản v0.149.0, Codex CLI đã xóa bỏ hoàn toàn giá trị 'untrusted' và sẽ lỗi không khởi động được nếu gặp dòng này. Đội dev phải chuyển sang approval_policy='on-request' kết hợp sandbox_mode='read-only'.",
+          "proofMetric": "Breaking change xác thực trên openai/codex v0.149.0"
+        }
+      ]
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-cli-harness-report",
+      "src": "/imgs/boost/charts/terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli-report.webp",
+      "alt": "Biểu đồ so sánh claude code vs codex cli vs gemini cli về lifecycle hooks, sandbox kernel và toml policy engine",
+      "caption": "Kiến trúc phối hợp 3 Terminal Harness trên cùng một kho mã nguồn: dùng chung AGENTS.md, khóa ranh giới bảo mật bằng PreToolUse / TOML Policy / Landlock và chốt cổng PR qua codex exec.",
+      "badge": "CONTRARIAN AUDIT • 3 CLI HARNESS"
+    },
+    {
+      "type": "prose",
+      "id": "contrarian-cong-thuc-phoi-3-harness-domation",
+      "eyebrow": "CÔNG THỨC TRIỂN KHAI • DÂY CHUYỀN 3 CLI CỦA DOMATION",
+      "variant": "narrative",
+      "heading": "Công thức phối 3 Harness tại DOMATION: Mỗi công cụ giữ một chốt chặn trong quy trình A–Z",
+      "paragraphs": [
+        "Thay vì ép cả đội ngũ phải trung thành với một lá cờ duy nhất, TurnioDEV chuẩn hóa ngay từ gốc kho mã của các hệ thống ERP 5.0 và AI Platform một tệp AGENTS.md duy nhất làm nguồn chân lý (Single Source of Truth), kèm thư mục .claude/skills/SKILL.md tuân theo đặc tả mở agentskills.io vốn tương thích chéo cả Claude Code lẫn Codex. Khi bước vào ngày làm việc thực chiến, ba chiếc CLI vận hành như một tổ đội ăn ý trên cùng một kho mã.",
+        "Ở vai trò lập trình tương tác và mở tính năng mới song song, kỹ sư mở Claude Code cùng lệnh /plan để khóa bản thiết kế trước khi sửa file, rồi tách 3 nhánh thử nghiệm song song qua claude --worktree mà không sợ giẫm chân nhau trong bảng migrations SQL. Ở vai trò tra cứu tài liệu Google Docs/Drive yêu cầu của khách hàng, kiểm tra dữ liệu video/PDF khổng lồ bằng Gemini 4 Argon hoặc thực thi trong môi trường container Docker/gVisor theo chính sách IT chuẩn hóa TOML, Gemini CLI đảm nhận trơn tru và hoàn toàn minh bạch mã nguồn theo giấy phép Apache 2.0.",
+        "Cuối cùng, khi mã nguồn được đẩy lên GitHub để chuẩn bị merge vào nhánh chính của các khách hàng lớn như Capital House hay RichLand, toàn bộ khâu gác cổng kiểm duyệt được giao cho OpenAI Codex CLI: lệnh codex exec chạy không tương tác trong CI ở chế độ read-only sandbox (Landlock + Bubblewrap) xuất log JSONL kiểm tra bất thường, song song với @codex review đọc trực tiếp mục ## Code Review Rules trong AGENTS.md để vạch trần lỗi biên trước khi con người bấm nút Merge."
+      ]
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-cli-harness-selection",
+      "heading": "Khi nào khởi chạy Claude Code, Codex CLI hay Gemini CLI trên dự án thật?",
+      "subtitle": "Hướng dẫn phân vai nhanh cho Tech Lead và kỹ sư DevOps/Fullstack",
+      "scenarios": [
+        {
+          "condition": "Xây tính năng phức tạp nhiều nhánh song song cần /plan, cô lập Git worktree, tối ưu token MCP và hook chặn PreToolUse tự động",
+          "recommendedChoice": "Claude Code (bật ENABLE_TOOL_SEARCH=auto & --worktree)",
+          "rationale": "Hệ thống 33+ lifecycle hooks, Worktree isolation gốc, /context diagnostics và /goal tự đánh giá giúp năng suất Vibecode tương tác đạt đỉnh.",
+          "avoidIf": "Bạn buộc phải chạy 100% phần mềm CLI mã nguồn mở Apache 2.0 hoặc trỏ trực tiếp vào model local qua --oss."
+        },
+        {
+          "condition": "Chạy tác vụ tự động trong CI/CD headless, kiểm toán repo chưa tin cậy cần khóa kernel OS (Landlock/Seatbelt) và review PR trên GitHub",
+          "recommendedChoice": "OpenAI Codex CLI (codex exec read-only + @codex review)",
+          "rationale": "Bảo vệ tầng nhân OS chống rò rỉ mạng/.git bất kể model bị prompt injection, xuất log JSONL sạch và tích hợp trực tiếp GitHub Actions Security.",
+          "avoidIf": "Kịch bản cần 33 sự kiện hook can thiệp sâu ở từng bước gọi tool tương tác như PreToolUse."
+        },
+        {
+          "condition": "Doanh nghiệp cần khóa quyền IT tập trung qua 5 tầng TOML Policy, tích hợp Google Workspace (/drive, /calendar) hoặc dùng container gVisor/Podman",
+          "recommendedChoice": "Gemini CLI (Apache 2.0 + Admin TOML Policy + folderTrust)",
+          "rationale": "Cấu trúc TOML Policy Engine minh bạch dễ kiểm toán, bộ định tuyến Flash-Lite tích hợp sẵn giúp tối ưu chi phí tự động và liên thông tài liệu Workspace.",
+          "avoidIf": "Đội dev phụ thuộc chặt vào worktree isolation tự động của từng subagent hoặc /compact tinh chỉnh sâu như Claude Code."
+        },
+        {
+          "condition": "Chạy coding agent hoàn toàn nội bộ (Air-Gapped) trên máy trạm Ollama/LM Studio mà không gửi code lên cloud",
+          "recommendedChoice": "Codex CLI với cờ --oss (kết nối local runtime chuẩn OpenAI)",
+          "rationale": "Hỗ trợ gốc --oss cho phép tận dụng toàn bộ lớp Landlock/Seatbelt sandbox cùng AGENTS.md ngay trên hạ tầng tự chủ.",
+          "avoidIf": "Model local kích thước nhỏ chưa xử lý tốt tool calling đa bước."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-three-cli-guardrails",
+      "heading": "Code Recipe: Bộ cấu hình chốt chặn an toàn thực chiến cho cả 3 CLI (PreToolUse Hook + Codex v0.149 TOML + Gemini Admin Policy)",
+      "language": "toml",
+      "filename": "multi-harness-guardrails.toml",
+      "description": "Đoạn cấu hình đối chiếu thực tế dùng tại DOMATION: (1) file .codex/config.toml chuẩn v0.149+ bỏ hoàn toàn 'untrusted' và giữ .git an toàn; (2) tệp ~/.gemini/policies/prod-guard.toml chặn tuyệt đối lệnh phá hoại DB ở tầng User/Admin; (3) quy tắc PreToolUse JSON cho .claude/settings.json chặn đọc tệp .env production.",
+      "code": "# === 1) .codex/config.toml (Chuan OpenAI Codex CLI >= v0.149.0) ===\nmodel = \"gpt-5.3-codex\"\nmodel_reasoning_effort = \"high\"\nsandbox_mode = \"workspace-write\"      # Giu .git, .agents, .codex o che do read-only, tat mang\napproval_policy = \"on-request\"        # BAT BUOC doi tu 'untrusted' (da bi xoa o v0.149.0!)\n\n# === 2) ~/.gemini/policies/prod-guard.toml (5-Tier Gemini CLI Policy Engine) ===\n[[rule]]\ntoolName = \"run_shell_command\"\ncommandPrefix = [\"rm -rf\", \"DROP TABLE\", \"psql $PROD_DB\"]\ndecision = \"deny\"\npriority = 400                        # User/Admin tier de len moi rule cua Workspace/Extension\n\n[[rule]]\ntoolName = \"run_shell_command\"\ncommandPrefix = [\"git push\", \"docker compose up\"]\ndecision = \"ask_user\"\npriority = 350\n\n# === 3) .claude/settings.json (PreToolUse Hook chan doc .env & ep exit code 2) ===\n# {\n#   \"hooks\": {\n#     \"PreToolUse\": [{\n#       \"matcher\": \"Read|Bash\",\n#       \"hooks\": [{\n#         \"type\": \"command\",\n#         \"command\": \"python3 -c \\\"import sys,json; d=json.load(sys.stdin); s=str(d.get('tool_input','')); sys.exit(2 if '.env.production' in s else 0)\\\"\"\n#       }]\n#     }]\n#   }\n# }\n"
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-cli-arena-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Quan Điểm Phản Biện • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Hãy chuẩn hóa duy nhất một tệp AGENTS.md, rồi dùng Claude Code để xây, Gemini CLI để nối Workspace và Codex CLI để gác cổng CI",
+      "body": "Sau 35+ dự án triển khai thực tế tại DOMATION, tôi khẳng định việc tranh cãi 'chỉ dùng duy nhất một CLI' là góc nhìn nghiệp dư. Trong sản xuất thực tế, Claude Code mang lại tốc độ kiến trúc và sự an tâm nhờ 33+ hooks cùng --worktree; Gemini CLI mở khóa sức mạnh Apache 2.0 với 5 tầng TOML Policy và Google Workspace; còn Codex CLI lại là pháo đài bảo mật hạt nhân Landlock/Seatbelt chuẩn mực nhất khi chạy headless trên CI và gác cổng @codex review ngoài GitHub. Khi ba công cụ cùng đọc chung một tệp AGENTS.md và bộ chuẩn kỹ năng SKILL.md, đội dev của bạn sở hữu hỏa lực tổng hợp mà không lệ thuộc vào bất kỳ hãng nào."
+    }
+  ]
+}

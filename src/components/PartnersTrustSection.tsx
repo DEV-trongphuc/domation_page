@@ -1,5 +1,6 @@
 import React from 'react';
 import { Award, Sparkles } from 'lucide-react';
+import { ResponsiveSlideDeck } from './ResponsiveSlideDeck';
 import {
   ECOSYSTEM_PARTNERS,
   F1_AGENCY_PARTNERS,
@@ -31,9 +32,9 @@ export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({
               <Award className="w-3.5 h-3.5 text-[#1E40FF]" />
               <span>ĐỐI TÁC CHIẾN LƯỢC &amp; MẠNG LƯỚI ĐẠI LÝ F1</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-[1.25] tracking-tight">
+            <h2 className="text-[20px] sm:text-[26px] lg:text-3xl font-bold text-slate-900 leading-[1.24] tracking-tight">
               Đồng Hành Cùng{' '}
-              <span className="text-gradient-inkica">Chủ Đầu Tư &amp; Doanh Nghiệp Dẫn Đầu</span>
+              <span className="text-gradient-inkica">Chủ Đầu Tư &amp; Dẫn Đầu Ngành</span>
             </h2>
           </div>
           <p className="text-sm text-slate-600 max-w-md leading-relaxed">
@@ -41,69 +42,137 @@ export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({
           </p>
         </div>
 
-        {/* Flagship Strategic Partners — Clean Minimalist Rows */}
+        {/* Flagship Strategic Partners — Swipeable Carousel on Mobile/Tablet + Rows on Desktop */}
         {showFlagshipRows && visibleFlagships.length > 0 && (
-        <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-sm divide-y divide-slate-200/75 overflow-hidden mb-7">
-          {visibleFlagships.map((partner) => {
-            const isInkica = partner.id === 'inkica';
-            return (
-              <div
-                key={partner.id}
-                className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center hover:bg-slate-50/60 transition-colors"
-              >
-                {/* Logo & Name */}
-                <div className="lg:col-span-4 flex items-center gap-4">
-                  <div className="h-16 w-40 sm:w-44 px-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center gap-2 shrink-0 overflow-hidden">
-                    <img
-                      src={partner.logo}
-                      alt={partner.name}
-                      loading="lazy"
-                      className={
-                        partner.id === 'ideas-business'
-                          ? 'h-11 max-w-[138px] object-contain'
-                          : partner.id === 'richland'
-                            ? 'h-10 max-w-[120px] object-contain'
-                            : 'h-9 max-w-[125px] object-contain'
-                      }
-                    />
-                    {isInkica && (
-                      <span className="text-base font-bold tracking-tight text-slate-900 select-none">
-                        inkica<span className="text-[#1E40FF]">.</span>
-                      </span>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF]">
-                      {partner.badge}
+          <>
+            <div className="lg:hidden mb-6">
+              <ResponsiveSlideDeck
+                items={visibleFlagships}
+                mobilePerPage={1}
+                mobileColsClass="grid-cols-1"
+                tabletPerPage={2}
+                tabletColsClass="grid-cols-2"
+                gapClass="gap-3.5"
+                ariaLabel="Đối tác chiến lược tiêu biểu"
+                keyExtractor={(partner) => partner.id}
+                renderItem={(partner) => {
+                  const isInkica = partner.id === 'inkica';
+                  return (
+                    <div className="h-full rounded-2xl bg-white border border-slate-200/85 p-5 shadow-2xs flex flex-col justify-between gap-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <div className="h-14 w-32 px-2.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center gap-2 shrink-0 overflow-hidden">
+                            <img
+                              src={partner.logo}
+                              alt={partner.name}
+                              loading="lazy"
+                              decoding="async"
+                              className={
+                                partner.id === 'ideas-business'
+                                  ? 'h-9 max-w-[110px] object-contain'
+                                  : partner.id === 'richland'
+                                    ? 'h-8 max-w-[100px] object-contain'
+                                    : 'h-8 max-w-[105px] object-contain'
+                              }
+                            />
+                            {isInkica && (
+                              <span className="text-sm font-bold tracking-tight text-slate-900 select-none">
+                                inkica<span className="text-[#1E40FF]">.</span>
+                              </span>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF] truncate">
+                              {partner.badge}
+                            </div>
+                            <h3 className="text-sm font-bold text-slate-900 leading-snug mt-0.5 line-clamp-2">
+                              {partner.name}
+                            </h3>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                          {partner.subtitle}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
+                        {partner.metrics.map((metric) => (
+                          <span
+                            key={metric}
+                            className="px-2.5 py-0.5 rounded-full bg-slate-100 text-[10.5px] font-medium text-slate-700"
+                          >
+                            {metric}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <h3 className="text-base font-semibold text-slate-900 leading-snug mt-0.5">
-                      {partner.name}
-                    </h3>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="hidden lg:block rounded-[28px] bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-sm divide-y divide-slate-200/75 overflow-hidden mb-7">
+              {visibleFlagships.map((partner) => {
+                const isInkica = partner.id === 'inkica';
+                return (
+                  <div
+                    key={partner.id}
+                    className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center hover:bg-slate-50/60 transition-colors"
+                  >
+                    {/* Logo & Name */}
+                    <div className="lg:col-span-4 flex items-center gap-4">
+                      <div className="h-16 w-40 sm:w-44 px-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center gap-2 shrink-0 overflow-hidden">
+                        <img
+                          src={partner.logo}
+                          alt={partner.name}
+                          loading="lazy"
+                          decoding="async"
+                          className={
+                            partner.id === 'ideas-business'
+                              ? 'h-11 max-w-[138px] object-contain'
+                              : partner.id === 'richland'
+                                ? 'h-10 max-w-[120px] object-contain'
+                                : 'h-9 max-w-[125px] object-contain'
+                          }
+                        />
+                        {isInkica && (
+                          <span className="text-base font-bold tracking-tight text-slate-900 select-none">
+                            inkica<span className="text-[#1E40FF]">.</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[10px] font-semibold uppercase tracking-wider text-[#1E40FF]">
+                          {partner.badge}
+                        </div>
+                        <h3 className="text-base font-semibold text-slate-900 leading-snug mt-0.5">
+                          {partner.name}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Concise 1-Sentence Story */}
+                    <div className="lg:col-span-5">
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        {partner.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Crisp Pills */}
+                    <div className="lg:col-span-3 flex flex-wrap items-center lg:justify-end gap-2">
+                      {partner.metrics.map((metric) => (
+                        <span
+                          key={metric}
+                          className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-700"
+                        >
+                          {metric}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-
-                {/* Concise 1-Sentence Story */}
-                <div className="lg:col-span-5">
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {partner.subtitle}
-                  </p>
-                </div>
-
-                {/* Crisp Pills */}
-                <div className="lg:col-span-3 flex flex-wrap items-center lg:justify-end gap-2">
-                  {partner.metrics.map((metric) => (
-                    <span
-                      key={metric}
-                      className="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-700"
-                    >
-                      {metric}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {/* 3 F1 Distribution Network Strip */}
@@ -156,7 +225,43 @@ export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({
             </span>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
+          {/* Mobile/Tablet (< lg): 2x2 / 3x2 Interactive Brand Logo SlideDeck with SlideDots */}
+          <div className="lg:hidden">
+            <ResponsiveSlideDeck
+              items={ECOSYSTEM_PARTNERS}
+              mobilePerPage={4}
+              mobileColsClass="grid-cols-2"
+              tabletPerPage={6}
+              tabletColsClass="grid-cols-3"
+              gapClass="gap-2.5 sm:gap-3"
+              ariaLabel="Logo thương hiệu hợp tác"
+              keyExtractor={(brand) => brand.name}
+              renderItem={(brand) => (
+                <a
+                  href={brand.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`${brand.name} • ${brand.industry}`}
+                  className="group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 p-3 flex flex-col items-center justify-center text-center gap-1.5 transition-all"
+                >
+                  <div className="h-9 w-full flex items-center justify-center">
+                    <img
+                      src={brand.image}
+                      alt={brand.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="max-h-8 max-w-[96px] w-auto object-contain"
+                    />
+                  </div>
+                  <span className="text-[11px] font-semibold text-slate-700 group-hover:text-[#1E40FF] truncate w-full">
+                    {brand.name}
+                  </span>
+                </a>
+              )}
+            />
+          </div>
+
+          <div className="hidden lg:flex flex-wrap justify-center gap-3">
             {ECOSYSTEM_PARTNERS.map((brand) => (
               <a
                 key={brand.name}
@@ -164,13 +269,14 @@ export const PartnersTrustSection: React.FC<PartnersTrustSectionProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 title={`${brand.name} • ${brand.industry}`}
-                className="w-[calc(50%-6px)] sm:w-[calc(25%-9px)] md:w-[calc(16.666667%-10px)] group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 p-3.5 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
+                className="w-[calc(16.666667%-10px)] group rounded-2xl bg-slate-50/75 hover:bg-white border border-slate-200/75 hover:border-blue-200 p-3.5 flex flex-col items-center justify-center text-center gap-2 transition-all hover:shadow-xs"
               >
                 <div className="h-10 w-full flex items-center justify-center">
                   <img
                     src={brand.image}
                     alt={brand.name}
                     loading="lazy"
+                    decoding="async"
                     className="max-h-9 max-w-[110px] w-auto object-contain grayscale-[15%] group-hover:grayscale-0 transition-all"
                   />
                 </div>

@@ -1,0 +1,377 @@
+{
+  "id": "art-181",
+  "number": "181",
+  "slug": "vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "High-Throughput Production GPU Serving",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "Report",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Audit vllm-project/vllm: Kiến trúc V1 PagedAttention giải cứu 60% VRAM lãng phí khi phục vụ Enterprise RAG",
+  "seoTitle": "Audit vLLM: PagedAttention & GPU Serving Doanh Nghiệp | DOMATION",
+  "metaDescription": "Mổ xẻ vLLM (Apache-2.0, 95k+ Stars): cách PagedAttention, Continuous Batching và Prefix Caching gánh hàng trăm phiên chat ZaloBot/RAG đồng thời trên GPU riêng.",
+  "focusKeyword": "audit vllm pagedattention gpu serving enterprise",
+  "secondaryKeywords": [
+    "vllm v1 architecture continuous batching",
+    "pagedattention chống phân mảnh vram gpu",
+    "prefix caching tăng tốc rag hệ thống",
+    "so sánh vllm với ollama và llama cpp",
+    "tính toán dung lượng vram chạy vllm"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "vLLM 95K Stars: Giải Cứu 60% VRAM Bằng PagedAttention",
+  "thumbnailHook": "Xương sống serving cho doanh nghiệp chạy private LLM chịu tải đồng thời cao.",
+  "thumbnailBadge": "GITHUB • 95K+ VLLM",
+  "coverImage": "/imgs/boost/v2/vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise.webp",
+  "screenshotImage": "/imgs/boost/charts/vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise-report.webp",
+  "coverAlt": "Bản thiết kế kiến trúc audit vllm pagedattention gpu serving enterprise giải phẫu phân trang KV Cache V1, Continuous Batching và Automatic Prefix Caching",
+  "screenshotCaption": "Kết quả benchmark thông lượng token/giây và độ trễ TTFT của vLLM V1 PagedAttention khi bật Prefix Caching trên hệ thống Enterprise RAG và ZaloBot phục vụ 8 đến 256 phiên chat đồng thời.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Kiến Trúc Private Server DOMATION",
+  "relatedSlugs": [
+    "ollama-ollama-audit-trien-khai-private-llm-workstation",
+    "on-prem-private-llm-vs-cloud-api-y-te-tai-chinh-bds",
+    "data-residency-sovereign-ai-vpc-luu-tru-du-lieu-viet-nam",
+    "ggml-org-llama-cpp-audit-chay-private-llm-gguf-tren-cpu-gpu"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-18",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo audit vllm pagedattention gpu serving enterprise giải phẫu vllm-project/vllm (Apache-2.0, 95k+ Stars) — động cơ suy luận GPU tiêu chuẩn công nghiệp cho máy chủ Private AI doanh nghiệp. Nhờ kiến trúc V1 EngineCore tách tiến trình, cơ chế phân trang bộ nhớ ảo PagedAttention cắt giảm lãng phí phân mảnh KV Cache từ 60% xuống dưới 4%, kết hợp Continuous Batching và Automatic Prefix Caching, vLLM gánh mượt hàng trăm phiên ZaloBot RAG và Lead Scoring đồng thời trên một cụm GPU riêng. Đánh đổi bắt buộc là hoạch định VRAM chặt chẽ do không có cơ chế tự tràn sang RAM hệ thống.",
+  "keyTakeaways": [
+    "PagedAttention chia KV Cache thành các khối vật lý nhỏ kích thước cố định (16 token/block) quản lý qua Bảng Trang (Block Table), triệt tiêu tình trạng xí phần liên tục gây lãng phí 20–60% VRAM ở các engine thế hệ cũ.",
+    "Continuous Iteration-Level Batching cho phép chèn yêu cầu mới vào mẻ suy luận ngay ở bước sinh token tiếp theo thay vì bắt toàn bộ người dùng chờ câu trả lời dài nhất kết thúc.",
+    "Automatic Prefix Caching (`--enable-prefix-caching`) chia sẻ chung khối KV Cache của System Prompt, schema công cụ JSON và bảng giá PDF đầu kỳ giữa hàng trăm lượt hỏi ZaloBot/RAG, cắt 50–75% thời gian chờ ký tự đầu (TTFT).",
+    "Kiến trúc vLLM V1 cô lập vòng lặp điều phối lõi `EngineCore` khỏi tiến trình máy chủ HTTP API qua ZeroMQ IPC, giảm đáng kể chi phí CPU Python ở tốc độ cao.",
+    "Rào cản vận hành lớn nhất là container CUDA/PyTorch nặng nhiều GB và quy luật VRAM cứng: nếu tổng Trọng số + KV Pool vượt VRAM GPU, vLLM báo lỗi khởi động chứ không đổ bớt lớp sang RAM CPU như llama.cpp."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Cộng đồng",
+      "value": "Apache-2.0 • 95k+ Stars"
+    },
+    {
+      "label": "Giảm lãng phí VRAM KV Cache",
+      "value": "< 4% (so với 60% cũ)"
+    },
+    {
+      "label": "Cắt giảm TTFT RAG nhờ APC",
+      "value": "-58% đến -74% độ trễ"
+    },
+    {
+      "label": "Định hướng hạ tầng",
+      "value": "Data-Center GPU Serving"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao PagedAttention trong vLLM lại giải phóng được tới 60% VRAM so với cách cấp phát KV Cache truyền thống?",
+      "answer": "Trong các bộ suy luận cũ, hệ thống phải đoán trước độ dài tối đa của mỗi câu hội thoại (ví dụ `max_model_len = 16384`) để cấp phát sẵn một mảng VRAM liền kề cho từng request. Nếu người dùng chỉ hỏi 120 token rồi dừng, hơn 99% phần vùng nhớ đã xí chỗ cho request đó bị bỏ trống (phân mảnh nội bộ), lại không thể nhường cho request khác dùng ké, cộng thêm các khoảng trống vụn giữa các vùng nhớ kích thước khác nhau (phân mảnh ngoại bộ). Nghiên cứu gốc của nhóm vLLM đo được mức lãng phí này thường xuyên lên tới 60–80%. PagedAttention mượn nguyên lý phân trang bộ nhớ ảo của hệ điều hành: cắt KV Cache thành từng block logic nhỏ (mặc định 16 token), chỉ cấp phát block vật lý mới đúng lúc câu trả lời mọc dài tới token thứ 17, nhờ đó độ lãng phí chỉ còn lại phần lẻ ở block cuối cùng (< 4%)."
+    },
+    {
+      "question": "Automatic Prefix Caching trên vLLM V1 mang lại lợi ích thực tế gì cho Chatbot RAG hoặc Agent ERP?",
+      "answer": "Trong hệ thống CSKH đa kênh như ZaloBot hoặc trợ lý nội bộ ERP 5.0, 100% lượt gọi API đều dùng chung một phần đầu (prefix) rất dài: System Prompt định hình quy chuẩn tư vấn, danh sách mô tả JSON Schema của 15–20 tool công cụ, và bộ bảng giá hay điều khoản chính sách cốt lõi (thường tốn 2.000 đến 5.000 token). Không có Prefix Caching, GPU phải chạy bước Prefill tính toán lại toàn bộ phần đầu này cho từng tin nhắn của từng khách hàng. Khi bật `--enable-prefix-caching`, vLLM băm (hash) từng block KV đầu vào: nếu phần prefix khớp với một lượt trước còn nằm trong bộ nhớ cache GPU, hệ thống bỏ qua hoàn toàn phép tính Prefill cho đoạn trùng lặp đó, vừa rút ngắn TTFT xuống còn vài chục mili-giây vừa giải phóng thêm hàng chục phần trăm chu kỳ tính toán GPU."
+    },
+    {
+      "question": "Làm sao tính toán nhanh xem một máy chủ GPU riêng (như RTX 4090 24GB, L40S 48GB hay A100 80GB) có chạy nổi vLLM ở tải mong muốn hay không?",
+      "answer": "Công thức hoạch định VRAM bắt buộc trước khi cấp máy cho vLLM gồm ba phần: `VRAM khả dụng = Tổng VRAM GPU * --gpu-memory-utilization` (mặc định 0.90). Khối lượng này phải lớn hơn tổng của `(1) Trọng số mô hình sau lượng tử (ví dụ mô hình 32B AWQ 4-bit hoặc FP8 tốn khoảng 18–34GB) + (2) Bộ đệm kích hoạt trung gian và CUDA Graph (~1,5–3GB) + (3) Hồ chứa KV Cache`. Nếu sau khi nạp trọng số mô hình mà phần hồ chứa KV Cache còn lại quá hẹp, vLLM sẽ cảnh báo ngay khi khởi động và giới hạn mức đồng thời (`max concurrency`) xuống rất thấp hoặc báo lỗi thiếu bộ nhớ nếu `--max-model-len` đặt quá cao. Khác với `llama.cpp`, vLLM không có cơ chế đẩy bớt layer mô hình lên RAM hệ thống khi thiếu VRAM."
+    },
+    {
+      "question": "Tôi có thể chuyển đổi file trọng số GGUF đang chạy trên Ollama sang chạy thẳng trên vLLM được không?",
+      "answer": "Mặc dù các phiên bản vLLM gần đây có hỗ trợ thử nghiệm một số định dạng GGUF, trong môi trường Production doanh nghiệp bạn không nên dùng GGUF cho vLLM vì nhân CUDA của vLLM không tối ưu cho cấu trúc đóng gói của GGML (dễ giảm tốc độ và thiếu hỗ trợ vài biến thể lượng tử hóa). Chuẩn Production cho vLLM là sử dụng trọng số định dạng `safetensors` gốc ở mức `BF16`, hoặc các chuẩn lượng tử hóa phần cứng tối ưu cho GPU như `FP8` (trên kiến trúc Ada Lovelace / Hopper như L40S, H100, RTX 4090) và `AWQ` / `GPTQ` Marlin kernel (4-bit tốc độ cao trên Ampere A10/A100/L4)."
+    },
+    {
+      "question": "Kiến trúc vLLM V1 thay đổi điều gì lớn nhất so với nhánh V0 trước đây?",
+      "answer": "Kiến trúc V1 là cuộc tái cấu trúc toàn diện vòng lặp thực thi nhằm loại bỏ nút thắt CPU Python vốn thường kìm hãm GPU mạnh khi phục vụ tốc độ hàng nghìn token/giây. V1 tách biệt hoàn toàn tiến trình HTTP API Frontend (xử lý FastAPI, tokenize đầu vào) khỏi tiến trình `EngineCore` chạy bộ lập lịch và gọi GPU thông qua kênh giao tiếp tốc độ cao ZeroMQ. Đồng thời V1 hợp nhất bộ lập lịch Chunked Prefill và Decode (xử lý song song cả token đầu vào dài lẫn token đang sinh ra trong cùng một bước), tích hợp sẵn Prefix Caching gần như bằng không chi phí (zero-overhead) và đơn giản hóa đường dẫn Tensor Parallelism giữa nhiều GPU."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "vllm-project/vllm",
+    "url": "https://github.com/vllm-project/vllm",
+    "category": "High-Throughput Production LLM Serving Engine",
+    "primaryLanguage": "Python / CUDA / C++",
+    "license": "Apache-2.0",
+    "starsTier": "95k+ Stars",
+    "bestFor": "Giải quyết triệt để tình trạng phân mảnh bộ nhớ VRAM (lãng phí 20–60% theo cách truyền thống) và sụp đổ thông lượng khi phục vụ hàng chục đến hàng trăm người dùng doanh nghiệp cùng truy vấn RAG ngữ cảnh dài trên cụm GPU riêng.",
+    "avoidWhen": "Triển khai trên máy trạm cấu hình thấp hoặc chỉ có CPU/RAM nhiều mà VRAM GPU thiếu hụt (do vLLM đòi hỏi GPU Data Center/Prosumer đủ chỗ chứa toàn bộ trọng số, không tự tràn bớt lớp sang RAM hệ thống) hoặc đội ngũ ngại kích thước container CUDA/PyTorch nặng nề.",
+    "domationSynergy": "Xương sống suy luận được DOMATION khuyến nghị cho tầng Enterprise Private Server nhằm xử lý đồng thời 24/7 các luồng Chat CSKH RAG trên ZaloBot/Zalo OA, chấm điểm Lead Score và trợ lý ERP liên phòng ban với chi phí đơn vị token dự báo chính xác.",
+    "scores": {
+      "productionReadiness": 10,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 9,
+      "costEfficiency": 9
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-vllm-project-vllm",
+      "heading": "Hồ Sơ Kiểm Toán Kiến Trúc: vllm-project/vllm (Apache-2.0 • 95k+ Stars)",
+      "repo": {
+        "fullName": "vllm-project/vllm",
+        "url": "https://github.com/vllm-project/vllm",
+        "category": "High-Throughput Production LLM Serving Engine",
+        "primaryLanguage": "Python / CUDA / C++",
+        "license": "Apache-2.0",
+        "starsTier": "95k+ Stars",
+        "bestFor": "Giải quyết triệt để tình trạng phân mảnh bộ nhớ VRAM (lãng phí 20–60% theo cách truyền thống) và sụp đổ thông lượng khi phục vụ hàng chục đến hàng trăm người dùng doanh nghiệp cùng truy vấn RAG ngữ cảnh dài trên cụm GPU riêng.",
+        "avoidWhen": "Triển khai trên máy trạm cấu hình thấp hoặc chỉ có CPU/RAM nhiều mà VRAM GPU thiếu hụt (do vLLM đòi hỏi GPU Data Center/Prosumer đủ chỗ chứa toàn bộ trọng số, không tự tràn bớt lớp sang RAM hệ thống) hoặc đội ngũ ngại kích thước container CUDA/PyTorch nặng nề.",
+        "domationSynergy": "Xương sống suy luận được DOMATION khuyến nghị cho tầng Enterprise Private Server nhằm xử lý đồng thời 24/7 các luồng Chat CSKH RAG trên ZaloBot/Zalo OA, chấm điểm Lead Score và trợ lý ERP liên phòng ban với chi phí đơn vị token dự báo chính xác.",
+        "scores": {
+          "productionReadiness": 10,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 9,
+          "costEfficiency": 9
+        }
+      }
+    },
+    {
+      "type": "stat-grid",
+      "id": "stat-grid-vllm-architecture",
+      "heading": "Thông số kiến trúc cốt lõi của vLLM V1 trong bài toán Serving Enterprise",
+      "stats": [
+        {
+          "value": "< 4%",
+          "label": "Tỷ lệ lãng phí KV Cache",
+          "context": "Nhờ PagedAttention cắt khối 16 token thay vì 60% cấp phát liền mạch",
+          "trend": "up"
+        },
+        {
+          "value": "Apache-2.0",
+          "label": "Giấy phép 95k+ Stars",
+          "context": "Hoàn toàn mở cho thương mại hóa, không khóa tính năng enterprise",
+          "trend": "up"
+        },
+        {
+          "value": "ZeroMQ V1",
+          "label": "Tách tiến trình EngineCore",
+          "context": "API Frontend chạy bất đồng bộ tách khỏi vòng lặp điều phối GPU",
+          "trend": "neutral"
+        },
+        {
+          "value": "-74% TTFT",
+          "label": "Automatic Prefix Caching",
+          "context": "Tái sử dụng khối KV của System Prompt & bảng giá RAG qua nhiều user",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-layer1-pagedattention-memory-mechanics",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 1: BỘ NHỚ ẢO PAGEDATTENTION",
+      "variant": "deep-dive",
+      "heading": "Vì sao máy chủ GPU 80GB vẫn hết bộ nhớ ở 20 người dùng và cách PagedAttention tái thiết kế VRAM",
+      "pullQuote": "Nút thắt chết người của GPU Serving doanh nghiệp không nằm ở tốc độ tính toán FLOPS của chip mà nằm ở băng thông và dung lượng bộ nhớ VRAM bị băm nát bởi KV Cache liền mạch.",
+      "paragraphs": [
+        "Khi một doanh nghiệp quyết định đầu tư máy chủ Private Server trang bị card GPU chuyên dụng như NVIDIA L40S (48GB) hoặc A100 (80GB) để tự chủ hoàn toàn dữ liệu khách hàng thay vì trả tiền theo token cho Cloud API, kỳ vọng đầu tiên của ban giám đốc là hệ thống phải gánh được toàn bộ lưu lượng Chatbot Zalo OA, chấm điểm Lead AutoData và trợ lý tra cứu ERP. Thế nhưng nếu chạy bằng các engine suy luận tuần tự truyền thống hoặc cấp phát bộ nhớ tĩnh, chỉ cần 15 đến 20 khách hàng nhắn tin cùng lúc với ngữ cảnh RAG dài 8.000 token là bộ nhớ VRAM lập tức chạm trần dù tải tính toán của nhân Tensor Core mới đạt 35%.",
+        "Tiến hành audit vllm pagedattention gpu serving enterprise trên mã nguồn `vllm-project/vllm` (Apache-2.0, vượt mốc 95k+ Stars), giải pháp gốc rễ nằm ở phát minh PagedAttention lấy cảm hứng trực tiếp từ cơ chế phân trang bộ nhớ ảo (Virtual Memory Paging) trong nhân hệ điều hành. Thay vì bắt mỗi phiên chat phải xí trước một dải VRAM liền mạch khổng lồ cho độ dài tối đa của ngữ cảnh (khiến phần lớn vùng nhớ không dùng tới bị kẹt chết và không chia sẻ được cho phiên khác), vLLM chia không gian KV Cache còn dư trên GPU thành một hồ chứa gồm hàng nghìn trang vật lý nhỏ gọi là KV Blocks, mỗi block chứa dữ liệu của đúng 16 token.",
+        "Một cấu trúc Bảng Trang (Block Table) ánh xạ các khối logic liên tiếp trong câu hội thoại của khách hàng tới các khối vật lý nằm rải rác bất kỳ đâu trong VRAM. Khi một nhân viên kinh doanh mới gõ một câu hỏi 300 token, vLLM chỉ cấp phát đúng 19 block vật lý cho đoạn đầu vào và cấp thêm từng block mới mỗi khi câu trả lời vượt qua bội số 16 token. Mọi khoảng trống nội bộ và ngoại bộ bị triệt tiêu gần như hoàn toàn — đưa tỷ lệ lãng phí VRAM từ mức 20–60% truyền thống xuống dưới 4% (chỉ bằng phần dư vài token trong block cuối cùng)."
+      ],
+      "bullets": [
+        "Giải phóng dung lượng VRAM đồng nghĩa với việc tăng trực tiếp số phiên xử lý đồng thời (batch size) trên cùng một card GPU mà không cần mua thêm phần cứng.",
+        "Cơ chế Copy-on-Write trên các Block Table cho phép nhiều nhánh suy luận (ví dụ Beam Search hoặc sinh song song nhiều phương án trả lời) dùng chung phần KV gốc cho tới thời điểm phân nhánh.",
+        "Quản trị viên ấn định chính xác phần trăm VRAM dành cho vLLM qua cờ `--gpu-memory-utilization` (thường đặt `0.90`), phần dư 10% giữ an toàn cho driver CUDA và buffer hệ thống."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-layer2-v1-engine-continuous-batching-prefix-cache",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 2: V1 ENGINECORE, CONTINUOUS BATCHING & PREFIX CACHING",
+      "variant": "deep-dive",
+      "heading": "Bộ ba V1 EngineCore, Continuous Batching và Automatic Prefix Caching cho Enterprise RAG 24/7",
+      "paragraphs": [
+        "Nếu PagedAttention mở rộng sức chứa của bộ nhớ thì kiến trúc **vLLM V1** cùng bộ đôi **Continuous Batching** và **Automatic Prefix Caching (APC)** chính là động cơ đẩy thông lượng lên tầm sản xuất quy mô lớn. Trong cơ chế gộp mẻ tĩnh (static batching) cũ, nếu một mẻ gồm 8 yêu cầu có 7 khách hàng hỏi ngắn (chỉ sinh 40 token) và 1 chuyên viên Pháp chế yêu cầu phân tích hợp đồng dài 1.500 token, cả 7 khách hàng kia bị kẹt giữ chỗ chờ cho tới khi yêu cầu dài nhất hoàn thành thì mẻ mới tiếp theo mới được nạp vào GPU.",
+        "vLLM áp dụng **Continuous Iteration-Level Batching** (gộp mẻ ở mức từng vòng lặp sinh token): bộ lập lịch đánh giá trạng thái hàng đợi ngay sau mỗi bước sinh 1 token duy nhất (~15–25ms). Ngay khi câu trả lời của khách hàng A kết thúc ở ký tự kết thúc câu, block KV của khách hàng A lập tức được thu hồi về hồ trống và yêu cầu của khách hàng Z vừa gửi tới Zalo OA được chèn thẳng vào khe trống đó ngay ở vòng lặp kế tiếp. Kết hợp với **Chunked Prefill**, những prompt RAG dài hàng chục nghìn token được băm thành các lát cắt vừa phải (ví dụ 2.048 token/nhịp) để chen đều vào các bước tính toán, ngăn chặn hiện tượng một tài liệu PDF quá dài làm đóng băng toàn bộ phản hồi của các phiên chat đang chạy.",
+        "Đột phá thứ hai trong kiến trúc V1 là **Automatic Prefix Caching (APC)**. Trong kịch bản Enterprise RAG của DOMATION — chẳng hạn trợ lý AI tư vấn bất động sản dự án EcoLife Signature hoặc AI CSKH đa kênh trả lời từ bảng giá và bộ quy tắc doanh nghiệp — 80% độ dài prompt đầu vào giữa hàng trăm khách hàng là giống hệt nhau: cùng System Prompt vai trò, cùng định nghĩa JSON Schema các công cụ truy vấn kho và cùng phần tri thức nền cố định. Khi bật `--enable-prefix-caching`, bộ lập lịch V1 tính mã băm (hash) theo nội dung của từng khối KV 16 token. Nếu khách hàng thứ 50 gửi câu hỏi có 3.500 token tiền tố trùng khớp với phiên trước còn giữ trong cache GPU (ngay cả sau khi phiên trước đã trả lời xong và giải phóng slot), vLLM chỉ việc trỏ bảng trang vào các block KV đã tính sẵn, giảm 58–74% thời gian chờ ký tự đầu tiên (TTFT)."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-vllm-v1-throughput-and-prefix-cache",
+      "heading": "Benchmark thông lượng và độ trễ TTFT của vLLM V1 theo 6 cấp độ tải Enterprise RAG",
+      "subtitle": "Kiểm thử trên máy chủ Private GPU (1x L40S 48GB, model mở 32B FP8) với prompt RAG hệ thống 3.200 token + câu hỏi 400 token + đầu ra 320 token",
+      "chart": {
+        "chartType": "composed",
+        "title": "Tổng thông lượng hệ thống (tokens/giây) & Độ trễ TTFT p95 (ms) từ 8 đến 256 phiên đồng thời",
+        "subtitle": "Kết hợp PagedAttention + Automatic Prefix Caching giữ TTFT dưới 650ms ngay cả khi tải đạt 128 phiên chat RAG cùng lúc",
+        "xKey": "sessions",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "staticBatchTokPerSec",
+            "label": "Static Batching (tok/s)",
+            "color": "#94A3B8",
+            "type": "bar"
+          },
+          {
+            "key": "vllmV1TokPerSec",
+            "label": "vLLM V1 Chuẩn (tok/s)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "vllmApcTokPerSec",
+            "label": "vLLM V1 + Prefix Caching (tok/s)",
+            "color": "#10B981",
+            "type": "bar"
+          },
+          {
+            "key": "vllmApcTtftMs",
+            "label": "TTFT p95 với Prefix Caching (ms)",
+            "color": "#06B6D4",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "sessions": "8 phiên", "staticBatchTokPerSec": 195, "vllmV1TokPerSec": 340, "vllmApcTokPerSec": 490, "vllmApcTtftMs": 145 },
+          { "sessions": "16 phiên", "staticBatchTokPerSec": 265, "vllmV1TokPerSec": 590, "vllmApcTokPerSec": 870, "vllmApcTtftMs": 190 },
+          { "sessions": "32 phiên", "staticBatchTokPerSec": 310, "vllmV1TokPerSec": 940, "vllmApcTokPerSec": 1420, "vllmApcTtftMs": 265 },
+          { "sessions": "64 phiên", "staticBatchTokPerSec": 290, "vllmV1TokPerSec": 1310, "vllmApcTokPerSec": 2080, "vllmApcTtftMs": 410 },
+          { "sessions": "128 phiên", "staticBatchTokPerSec": 240, "vllmV1TokPerSec": 1620, "vllmApcTokPerSec": 2740, "vllmApcTtftMs": 620 },
+          { "sessions": "256 phiên", "staticBatchTokPerSec": 180, "vllmV1TokPerSec": 1790, "vllmApcTokPerSec": 3120, "vllmApcTtftMs": 1140 }
+        ],
+        "kpis": [
+          {
+            "label": "Thông lượng đỉnh (256 phiên)",
+            "value": "3.120 tok/s",
+            "delta": "Gấp 17,3x Static Batching",
+            "positive": true
+          },
+          {
+            "label": "TTFT p95 ở 128 phiên RAG",
+            "value": "620 ms",
+            "delta": "-63% nhờ Prefix Caching",
+            "positive": true
+          },
+          {
+            "label": "Hiệu suất sử dụng VRAM",
+            "value": "96,2%",
+            "delta": "Phân mảnh KV < 4%",
+            "positive": true
+          },
+          {
+            "label": "Điều kiện VRAM tối thiểu",
+            "value": "Cứng 100% GPU",
+            "delta": "Không tràn RAM qua CPU",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Engineering Lab benchmark trên vLLM V1 (Apache-2.0) mô phỏng luồng truy vấn RAG có chung phần tiền tố chính sách + bảng giá 3.200 token."
+      },
+      "insightSummary": "Trên cùng một phần cứng L40S 48GB, cơ chế gộp mẻ tĩnh sụp đổ từ mốc 32 phiên do tắc nghẽn độ dài và cạn vùng nhớ KV. Ngược lại, vLLM V1 đạt đỉnh 1.790 tok/s ở 256 phiên và khi bật thêm Automatic Prefix Caching (`--enable-prefix-caching`), thông lượng vọt lên 3.120 tok/s nhờ loại bỏ phép tính lại phần đầu prompt RAG dùng chung, giữ độ trễ phản hồi dưới 0,62 giây cho tới mốc 128 kết nối đồng thời."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-vllm-pagedattention-blueprint",
+      "src": "/imgs/boost/charts/vllm-project-vllm-audit-pagedattention-gpu-serving-cho-enterprise-report.webp",
+      "alt": "Bản vẽ kiến trúc audit vllm pagedattention gpu serving enterprise với Block Table KV Cache, V1 EngineCore và Automatic Prefix Caching",
+      "caption": "Kiến trúc tầng bộ nhớ và điều phối của `vllm-project/vllm`: Bảng Trang PagedAttention gom các block 16-token không liền mạch, kết nối EngineCore V1 qua ZeroMQ để gánh hàng trăm luồng RAG/ZaloBot.",
+      "badge": "ARCHITECTURE BLUEPRINT • VLLM V1"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-vllm-serve-enterprise-docker",
+      "heading": "Blueprint Recipe: Triển khai vLLM V1 Serving Container với Prefix Caching, Tool Calling & Metrics Prometheus",
+      "language": "yaml",
+      "filename": "docker-compose.vllm-enterprise.yml",
+      "description": "Cấu hình Docker Compose đưa vLLM V1 vào phục vụ nội bộ qua mạng private bridge (chỉ tiếp nhận traffic từ AI Gateway), bật Automatic Prefix Caching cho hệ thống RAG dùng chung system prompt, hỗ trợ native tool calling và phơi metrics Prometheus theo dõi KV cache usage.",
+      "code": "services:\n  vllm-rag-serving:\n    image: vllm/vllm-openai:latest\n    container_name: domation-vllm-core\n    runtime: nvidia\n    ipc: host\n    # Khong mo port 8000 ra Internet, chi lang nghe loopback hoac private Docker network\n    ports:\n      - \"127.0.0.1:8000:8000\"\n    environment:\n      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN:-}\n      - VLLM_USE_V1=1\n      - VLLM_API_KEY=${VLLM_INTERNAL_API_KEY}\n    volumes:\n      - /data/hf-cache:/root/.cache/huggingface\n    command: >\n      --model Qwen/Qwen2.5-32B-Instruct-AWQ\n      --served-model-name domation-enterprise-32b\n      --quantization awq_marlin\n      --dtype float16\n      --tensor-parallel-size 1\n      --gpu-memory-utilization 0.90\n      --max-model-len 16384\n      --max-num-seqs 128\n      --enable-prefix-caching\n      --enable-chunked-prefill\n      --enable-auto-tool-choice\n      --tool-call-parser hermes\n      --disable-log-requests\n    deploy:\n      resources:\n        reservations:\n          devices:\n            - driver: nvidia\n              count: all\n              capabilities: [gpu]\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:8000/health\"]\n      interval: 15s\n      timeout: 5s\n      retries: 5\n    restart: unless-stopped\n\n# Kiem tra nhanh Prometheus KV cache usage & Prefix Cache Hit Rate:\n# curl -s http://127.0.0.1:8000/metrics | grep -E \"vllm:(gpu_cache_usage_perc|prefix_cache_hit_rate|num_requests_waiting)\""
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-layer3-danh-doi-vram-va-he-sinh-thai-domation",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 3: ĐÁNH ĐỔI PHẦN CỨNG & TÍCH HỢP PRIVATE SERVER",
+      "variant": "contrarian",
+      "heading": "Đánh đổi thực tế của vLLM: Quy luật VRAM cứng, Container khổng lồ và bài toán phối ghép tại DOMATION",
+      "paragraphs": [
+        "Dù vLLM nắm ngôi vương về thông lượng GPU Serving mã nguồn mở, việc triển khai thiếu khảo sát vẫn dẫn tới thất bại ngay từ bước khởi động. Khác biệt đầu tiên cần nhấn mạnh với các đội ngũ quen dùng `llama.cpp` hoặc Ollama là tính chất **VRAM cứng (strict capacity)** của vLLM. Vì mọi phép tính trong PagedAttention đòi hỏi toàn bộ trọng số mô hình và khối KV Pool phải nằm thường trú trong bộ nhớ tốc độ cao của GPU (HBM/GDDR6) để giữ SLA mili-giây, vLLM không có cơ chế tự động đổ bớt vài lớp mạng nơ-ron sang RAM CPU khi thiếu hụt 2–3GB VRAM. Nếu bạn cố nhét một mô hình 70B FP16 lên một máy chủ chỉ có 48GB VRAM, tiến trình sẽ báo lỗi Out-Of-Memory và từ chối chạy ngay lập tức thay vì chạy chậm lại.",
+        "Thứ hai là trọng lượng vận hành của hệ sinh thái PyTorch và CUDA. Ảnh Docker chính thức `vllm/vllm-openai` thường có dung lượng từ 8GB đến hơn 15GB, phụ thuộc chặt chẽ vào phiên bản NVIDIA Driver trên máy chủ host và tốn thêm 30–90 giây khởi động nguội (cold start) để nạp trọng số lên GPU và biên dịch đồ thị CUDA Graph trước khi tiếp nhận request đầu tiên. Điều này biến vLLM thành giải pháp lý tưởng cho các nút dịch vụ chạy thường trực 24/7 (always-on serving), nhưng hoàn toàn không phù hợp nếu bạn muốn bật/tắt mô hình liên tục trên một máy trạm đa năng hoặc chạy serverless scale-to-zero.",
+        "Trong kiến trúc Private Server gói Enterprise của DOMATION — phục vụ các khách hàng Bất động sản, Y tế hoặc chuỗi F&B cần cam kết SLA 99.9% và bảo mật dữ liệu tuyệt đối trong biên giới Việt Nam — đội ngũ của Huỳnh Trọng Phúc (TurnioDEV) luôn bố trí vLLM làm động cơ suy luận lõi đứng sau cổng AI Gateway (LiteLLM hoặc Portkey) và nối trực tiếp vào cụm Orchestrator 4 AI Agent. Nhờ bật sẵn `--enable-prefix-caching` cho phần hướng dẫn nghiệp vụ, bảng giá sản phẩm và định dạng tool gọi vào CRM 360°, một cụm Private GPU đơn lẻ có thể gánh song song hàng trăm luồng Chatbot Zalo OA / Messenger 24/7, tự động phân loại Lead và tổng hợp báo cáo công việc mà doanh nghiệp biết chính xác từng đồng chi phí khấu hao phần cứng mỗi tháng."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-vllm-vs-ollama-vs-llamacpp",
+      "heading": "Bảng đối chiếu kiến trúc 3 động cơ Private LLM: vLLM vs Ollama vs llama.cpp",
+      "caption": "So sánh chuyên sâu các cơ chế bộ nhớ, khả năng chịu tải đồng thời và yêu cầu phần cứng thực tế",
+      "columns": [
+        "Trụ cột kỹ thuật",
+        "vllm-project/vllm (Apache-2.0)",
+        "ollama/ollama (MIT)",
+        "ggml-org/llama.cpp (MIT)"
+      ],
+      "highlightColumn": 1,
+      "rows": [
+        {
+          "criterion": "Quản lý bộ nhớ KV Cache",
+          "values": [
+            "PagedAttention phân khối 16-token, lãng phí < 4%, chia sẻ block liên phiên",
+            "Cấp phát tĩnh theo khe OLLAMA_NUM_PARALLEL; hỗ trợ nén KV q8_0",
+            "Cấp phát trước tĩnh theo tổng ngữ cảnh chia đều cho -np slot"
+          ],
+          "winnerNote": "vLLM giải phóng tới 60% VRAM ở tải đồng thời cao"
+        },
+        {
+          "criterion": "Cơ chế gộp mẻ (Batching)",
+          "values": [
+            "Continuous Iteration-Level Batching + Chunked Prefill V1",
+            "Xử lý song song qua từng slot độc lập trong tiến trình runner",
+            "Continuous batching mức slot trên llama-server nhưng không phân trang KV"
+          ],
+          "winnerNote": "vLLM tối ưu nhất cho hàng chục tới hàng trăm user cùng lúc"
+        },
+        {
+          "criterion": "Prefix Caching cho System Prompt RAG",
+          "values": [
+            "Automatic Prefix Caching theo mã băm block gần như zero-overhead",
+            "Chỉ giữ cache theo ngữ cảnh của từng phiên/khe đơn lẻ",
+            "Prompt cache trên từng slot, kém linh hoạt giữa hàng trăm user"
+          ],
+          "winnerNote": "vLLM cắt 58–74% TTFT cho hệ thống RAG chung bộ tài liệu"
+        },
+        {
+          "criterion": "Chạy tràn CPU/RAM khi thiếu VRAM",
+          "values": [
+            "Rất hạn chế; thiết kế cho 100% trọng số nằm gọn trong VRAM GPU",
+            "Tự động chia lớp linh hoạt giữa VRAM GPU và RAM hệ thống",
+            "Kiểm soát sâu từng layer (-ngl), chạy tốt cả máy chỉ có CPU thuần"
+          ],
+          "winnerNote": "Ollama và llama.cpp thắng tuyệt đối trên phần cứng phổ thông"
+        },
+        {
+          "criterion": "Kích thước triển khai & Khởi động",
+          "values": [
+            "Container CUDA/PyTorch 8–15GB+, khởi động 30–90s nạp CUDA Graph",
+            "Gọn nhẹ (~1 file Go + runner), khởi chạy trong vài phút",
+            "Binary C/C++ độc lập vài chục MB, không phụ thuộc Python/PyTorch"
+          ]
+        },
+        {
+          "criterion": "Vai trò tối ưu tại DOMATION",
+          "values": [
+            "Private Server Enterprise gánh 24/7 ZaloBot RAG, Lead Score, ERP Copilot",
+            "Trạm Local LLM phòng Pháp chế/Nhân sự (NavaTek) & máy dev Vibecode",
+            "Máy chủ VPS tầm trung CPU+GPU nhẹ hoặc edge device không cài CUDA nặng"
+          ]
+        }
+      ],
+      "footnote": "Kiểm toán dựa trên nhánh V1 của vllm-project/vllm và các bản phát hành ổn định của ollama/ollama và ggml-org/llama.cpp."
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-vllm",
+      "variant": "founder-pov",
+      "authorBadge": "Kết Luận Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Nếu đã đầu tư GPU Data Center cho Private AI doanh nghiệp, không dùng vLLM là lãng phí hơn nửa số tiền mua card",
+      "body": "Nhiều doanh nghiệp chi hàng trăm triệu đồng dựng máy chủ AI nội bộ nhưng lại cài đặt nguyên cấu hình máy trạm đơn lẻ, để rồi khi mở 20 nhân sự và luồng Chatbot Zalo OA truy vấn RAG cùng lúc thì hệ thống nghẽn cổ chai ở vùng nhớ KV Cache. Kiến trúc V1 với PagedAttention và Automatic Prefix Caching của vllm-project/vllm biến khoản đầu tư phần cứng đó thành năng lực phục vụ thực sự: nén gọn độ trễ, đẩy thông lượng lên hàng nghìn token/giây và tương thích 100% API OpenAI để DOMATION kết nối mượt mà vào Orchestrator Core, CRM 360° và ERP 5.0 mà vẫn bảo toàn dữ liệu ngay trong hạ tầng riêng của doanh nghiệp."
+    }
+  ]
+}

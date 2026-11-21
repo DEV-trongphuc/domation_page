@@ -1,0 +1,331 @@
+{
+  "id": "art-138",
+  "number": "138",
+  "slug": "quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai",
+  "shardId": "shard07",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "DevSecOps & Credential Security",
+  "clusterId": "kw-privacy-zerotrust-ip",
+  "searchIntent": "Informational",
+  "schemaType": "TechArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Bảo vệ Secrets, Token Meta Ads & MISA khỏi rò rỉ vào Context Window, Trace Log và Git Repo của AI Agent",
+  "seoTitle": "Chống Lộ API Key Meta Ads & MISA Vào Context AI | DOMATION",
+  "metaDescription": "Coding Agent rất dễ đọc nhầm file .env hoặc in Bearer Token vào trace log. Kỹ thuật Credential Broker, Hook PreToolUse chặn đọc .env và quét Secret.",
+  "focusKeyword": "bảo vệ secrets api key không lộ vào context ai",
+  "secondaryKeywords": [
+    "chặn ai coding agent đọc file env",
+    "giấu token meta ads và misa khỏi llm",
+    "credential broker cho mcp server",
+    "tránh lộ api key trong trace langfuse",
+    "hook bảo mật pretooluse chặn secret"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "Đừng Để Coding Agent Đọc .env Và In Token Ra Log",
+  "thumbnailHook": "Chặn đọc secret bằng PreToolUse Hook và tiêm token ngoài LLM.",
+  "thumbnailBadge": "DEVSECOPS • SECRETS",
+  "coverImage": "/imgs/boost/v2/quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai.webp",
+  "screenshotImage": "/imgs/boost/charts/quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai-report.webp",
+  "relatedModuleUrl": "/data",
+  "relatedModuleLabel": "Xem AES Key Vault & Bảo Mật Token DOMATION",
+  "relatedSlugs": [
+    "sensitive-information-disclosure-chan-ai-lo-sdt-gia-von-rag",
+    "lifecycle-hooks-pretooluse-policy-toml-sandbox-coding-agent",
+    "system-prompt-leakage-incident-playbook-dieu-tra-su-co-ai",
+    "github-github-mcp-server-audit-bao-mat-token-toolsets-devops"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Hồ sơ điều tra rò rỉ API Key Meta Ads, MISA, Zalo OA vào Context Window, Trace Log Langfuse và giải pháp Hook PreToolUse kết hợp Credential Broker",
+  "screenshotCaption": "Biểu đồ thống kê các điểm rò rỉ Secrets phổ biến nhất khi vận hành AI Coding Agent và MCP Server cùng mức độ giảm thiểu sau khi lắp Credential Broker.",
+  "relatedPortfolioId": "turnio-executive-portal",
+  "tldrSummary": "Khi sử dụng Coding Agent hoặc MCP Server để phát triển và tự động hóa Meta Ads, kế toán MISA và Zalo OA, thói quen đặt khóa trực tiếp trong `.env` rất dễ khiến Secret hút thẳng vào Context Window. Chỉ sau một lệnh `printenv` hoặc ghi log header Authorization chưa làm sạch, API Key lập tức trôi vào bộ nhớ LLM, nền tảng trace Langfuse và lịch sử Git. Hồ sơ điều tra sự cố này cung cấp mã nguồn Hook `PreToolUse` chặn đọc `.env` cùng kiến trúc Credential Broker tiêm token hoàn toàn ngoài tầm mắt AI.",
+  "keyTakeaways": [
+    "Tuyệt đối không tin tưởng lời dặn bằng văn bản trong `CLAUDE.md` hay System Prompt kiểu 'Không được đọc file .env'; bảo mật phải ép ở tầng Hook `PreToolUse` xác định tính (Deterministic) trước khi tool thực thi.",
+    "LLM và MCP Tool không bao giờ được nhận chuỗi Token thật (`EAA...`, `MISA_SECRET`, `ZALO_REFRESH_TOKEN`); mô hình chỉ truyền định danh tham chiếu (`credential_id`) qua Credential Broker Proxy.",
+    "Đặt bộ lọc Redact trên Langfuse / OpenTelemetry SDK trước khi xuất telemetry ra ngoài để cắt bỏ mọi header `Authorization`, `x-api-key` và chuỗi có Entropy cao.",
+    "Cài đặt `gitleaks` ở cả `pre-commit` cục bộ lẫn GitHub Push Protection nhằm ngăn AI Agent vô tình commit file cấu hình hoặc fixture test chứa khóa thật lên kho mã nguồn.",
+    "Sử dụng nguyên lý Token Scoped & Short-lived: tách riêng khóa Meta Ads chỉ đọc báo cáo khỏi khóa chỉnh sửa ngân sách chiến dịch và xoay vòng định kỳ."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Token thô lọt vào LLM Context",
+      "value": "0 lần (100% bị chặn)"
+    },
+    {
+      "label": "Thời gian chặn truy cập .env ở Hook",
+      "value": "< 12 ms / tool call"
+    },
+    {
+      "label": "Tỷ lệ Trace Log sạch Authorization",
+      "value": "100% Redacted"
+    },
+    {
+      "label": "Chi phí xoay vòng khi nghi ngờ lộ",
+      "value": "< 60 giây tự động"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao dặn trong System Prompt hay `CLAUDE.md` là 'Không đọc file .env' vẫn bị AI Agent vượt qua?",
+      "answer": "Vì chỉ dẫn ngôn ngữ tự nhiên mang tính xác suất, không phải tường lửa kỹ thuật. Khi gặp lỗi HTTP 401 từ Meta Ads hay MISA, Coding Agent tự tìm nguyên nhân bằng lệnh `env | grep MISA` hoặc đọc `.env` để kiểm tra. Nếu file mã nguồn hoặc issue dính Prompt Injection, mô hình cũng có thể bị đánh lừa bỏ qua lời dặn mềm."
+    },
+    {
+      "question": "Credential Broker hoạt động ra sao khi AI Agent cần gọi Meta Ads API hay đồng bộ MISA thật?",
+      "answer": "Thay vì cấp chuỗi token vào biến môi trường của MCP Server, hệ thống đặt một Proxy trung gian chạy cô lập. Agent chỉ gửi định danh tham chiếu (`cred_ref: 'misa_prod_ro'`) kèm đường dẫn API. Broker kiểm tra quyền hạn RBAC, giải mã AES-256-GCM trong RAM, tiêm header `Authorization` lúc gói tin rời server rồi xóa sạch header nhạy cảm trước khi trả JSON cho Agent."
+    },
+    {
+      "question": "Làm sao tránh lộ API Key vào bảng Trace Log của Langfuse, n8n hay OpenTelemetry?",
+      "answer": "Mọi công cụ gọi HTTP và callback telemetry phải đi qua bộ lọc `scrub_secrets()` trước khi đẩy lên Langfuse: thay thế toàn bộ `Authorization`, `x-api-key`, `secure-token` thành `[REDACTED_SECRET]` và quét bằng Regex các tiền tố khóa đặc trưng (`EAA...`, `sk-ant-`, `sk-proj-`, `ghp_`)."
+    },
+    {
+      "question": "Xử lý khẩn cấp thế nào nếu phát hiện AI Coding Agent lỡ đọc hoặc commit token lên Git?",
+      "answer": "Tuyệt đối không chỉ tạo commit mới đè lên trên vì lịch sử Git vẫn giữ chuỗi khóa cũ. Phải thu hồi (Revoke) và tạo lại token ngay trên Meta Business Manager, MISA hoặc Zalo OA, kiểm tra Audit Log giao dịch 24 giờ gần nhất rồi mới dùng `git filter-repo` dọn lịch sử."
+    },
+    {
+      "question": "DOMATION cô lập token Meta CAPI, Zalo OA và MISA giữa nhiều doanh nghiệp ra sao?",
+      "answer": "Mỗi doanh nghiệp được cấp khóa mã hóa riêng trong AES-256-GCM Key Vault gắn với ranh giới `tenant_id` của PostgreSQL FORCE RLS. Các AI Agent hay Visual Flow Builder chỉ gọi qua `integration_id` nội bộ, không bao giờ đọc được chuỗi token nguyên bản."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "ho-so-su-co-coding-agent-hut-sach-env-trong-14-giay",
+      "eyebrow": "Hồ Sơ Điều Tra Sự Cố #PM-2026-SEC08",
+      "variant": "incident",
+      "heading": "14 giây điều tra lỗi HTTP 401 và cách một Coding Agent hút trọn khóa Meta Ads lẫn MISA vào Context",
+      "pullQuote": "Kỹ sư không hề copy-paste API Key vào khung chat, nhưng chỉ sau ba lượt gọi công cụ tự động của AI Agent, toàn bộ chìa khóa kho bạc quảng cáo và hóa đơn điện tử đã nằm gọn trên 3 máy chủ bên thứ ba.",
+      "paragraphs": [
+        "Sự cố bắt đầu vào một buổi tối triển khai tính năng đối soát tự động doanh thu thực từ MISA AMIS đẩy ngược về Meta Conversions API (CAPI). Khi chạy script kiểm thử cục bộ báo lỗi `401 Unauthorized`, lập trình viên gõ một câu lệnh rất tự nhiên cho AI Coding Agent trên terminal: 'Kiểm tra lại xem vì sao script gọi API MISA và Meta CAPI đang bị lỗi 401 rồi sửa giúp tôi'. Không cần chờ người dùng cho phép từng dòng vì đang bật chế độ tự động hóa nhanh (auto-approve), AI Agent lập tức thực thi chuỗi suy luận quen thuộc của một kỹ sư debug.",
+        "Ở giây thứ 2, Agent gọi tool đọc tệp `.env` nằm ngay thư mục gốc dự án để đối chiếu tên biến môi trường và kiểm tra xem token có bị hết hạn hay dư khoảng trắng không. Ngay khoảnh khắc nội dung `.env` được trả về từ tool output, toàn bộ `META_CAPI_ACCESS_TOKEN`, `META_ADS_SYSTEM_USER_TOKEN`, `MISA_APP_ID`, `MISA_SECRET_KEY`, `ZALO_OA_REFRESH_TOKEN` và chuỗi kết nối `DATABASE_URL` chứa mật khẩu PostgreSQL chính thức bị bơm vào Context Window gửi lên nhà cung cấp LLM bên ngoài.",
+        "Chưa dừng lại ở đó, ở giây thứ 8, để kiểm tra tính hợp lệ của token thật, Agent sinh một đoạn script debug tạm thời in thẳng header `Authorization: Bearer ...` kèm phản hồi từ cổng API ra màn hình chuẩn, làm chuỗi Bearer Token dính chặt vào nhật ký kiểm thử trên Langfuse Trace Collector đang gắn hook theo dõi phiên làm việc. Đến giây thứ 14, khi tạo file `mock_capi_test.json` để viết unit test, Agent tiện tay chép nguyên giá trị token thật lấy từ ngữ cảnh làm ví dụ mẫu rồi đẩy lên nhánh feature của kho lưu trữ Git nội bộ.",
+        "Hậu quả chỉ được phát hiện ba ngày sau khi hệ thống quét bảo mật định kỳ báo động chuỗi tiền tố `EAA...` xuất hiện trong nhánh commit mở. Rà soát lại toàn bộ dây chuyền cho thấy lỗi không xuất phát từ việc lập trình viên cố tình bất cẩn, mà vì hệ sinh thái công cụ AI được cấp quyền đọc trực tiếp kho chứa Secret và không có bất kỳ bức tường kỹ thuật nào đứng giữa AI Agent với các khóa xác thực sống."
+      ],
+      "bullets": [
+        "Thời gian phát tán ra 3 bề mặt (Context Window LLM, Langfuse Trace Log, Git Commit): chỉ mất đúng 14 giây.",
+        "Rủi ro tài chính trực tiếp: System User Token của Meta Ads nếu bị lạm dụng có thể chỉnh sửa ngân sách chiến dịch hàng trăm triệu VNĐ/ngày; khóa MISA cho phép truy vấn toàn bộ hóa đơn khách hàng B2B.",
+        "Điểm mù phổ biến: hơn 80% nhóm phát triển Vibecode chỉ đặt `.env` vào `.gitignore` mà quên chặn các công cụ đọc tệp của AI Agent và quên lọc Telemetry Trace."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "thong-ke-diem-ro-ri-secret-ai-agent",
+      "heading": "Tỷ lệ rò rỉ Secret qua 6 bề mặt vận hành AI Agent & MCP Server (Trước vs Sau Credential Broker)",
+      "subtitle": "Kết quả kiểm toán mô phỏng trên 400 phiên debug bằng AI Coding Agent và 1.200 lượt gọi MCP Tool tích hợp CRM/Ads/MISA.",
+      "chart": {
+        "chartType": "horizontal-bar",
+        "title": "Tỷ lệ xuất hiện Secret chưa che giấu (%) theo từng bề mặt kỹ thuật",
+        "xKey": "surface",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "beforePct",
+            "label": "Trước khi chặn (Mặc định .env + Auto-run)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "afterPct",
+            "label": "Sau khi lắp PreToolUse + Broker + Scrubber",
+            "color": "#10B981"
+          }
+        ],
+        "data": [
+          {
+            "surface": "Đọc thẳng file .env / config",
+            "beforePct": 68.5,
+            "afterPct": 0.0
+          },
+          {
+            "surface": "Trace Log (Langfuse/OTel)",
+            "beforePct": 54.2,
+            "afterPct": 0.2
+          },
+          {
+            "surface": "Lệnh Bash (printenv / curl)",
+            "beforePct": 41.8,
+            "afterPct": 0.0
+          },
+          {
+            "surface": "Error Stacktrace HTTP Client",
+            "beforePct": 33.6,
+            "afterPct": 0.4
+          },
+          {
+            "surface": "System Prompt / MCP Env Dump",
+            "beforePct": 27.4,
+            "afterPct": 0.0
+          },
+          {
+            "surface": "Git Commit / Test Fixtures",
+            "beforePct": 16.9,
+            "afterPct": 0.0
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Lần Agent tự đọc .env",
+            "value": "68.5% -> 0%",
+            "delta": "Chặn cứng tại PreToolUse",
+            "positive": true
+          },
+          {
+            "label": "Trace Log chứa Bearer Token",
+            "value": "54.2% -> 0.2%",
+            "delta": "Scrubber cắt header Auth",
+            "positive": true
+          },
+          {
+            "label": "Độ trễ Hook PreToolUse",
+            "value": "9.4 ms",
+            "delta": "Gần như 0 ảnh hưởng tốc độ",
+            "positive": true
+          },
+          {
+            "label": "Chặn Secret trước Git Push",
+            "value": "100%",
+            "delta": "Gitleaks + Entropy Guard",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Kiểm thử red-team nội bộ trên 400 phiên Coding Agent & MCP tại DOMATION DevSecOps Lab (Q4/2026)."
+      },
+      "insightSummary": "Hai điểm rò rỉ nguy hiểm nhất và xảy ra với tần suất áp đảo hoàn toàn nằm ngoài tầm để ý của kỹ sư: 68.5% phiên debug Agent chủ động đọc file `.env` nếu không có hook chặn, và 54.2% hệ thống không lắp Telemetry Scrubber đã đẩy nguyên vẹn header Authorization hoặc token truy vấn vào bảng Trace Log. Khi kết hợp ba lớp phòng thủ gồm Hook PreToolUse, Credential Broker ngoài LLM và Log Scrubber, tỷ lệ rò rỉ trên cả 6 bề mặt tiệm cận mức 0%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "so-do-credential-broker-va-pretooluse-hook",
+      "src": "/imgs/boost/charts/quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai-report.webp",
+      "alt": "Biểu đồ thống kê các bề mặt rò rỉ API Key Meta Ads, MISA vào Context AI và hiệu quả ngăn chặn bằng Credential Broker",
+      "caption": "Phân bổ tỷ lệ lộ Secret trên 6 kênh vận hành AI Agent trước và sau khi áp dụng kiến trúc Zero-Secret-In-Context.",
+      "badge": "DevSecOps • Zero-Secret Context"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-zero-secret-in-context-ba-chot-chan",
+      "eyebrow": "Biện Pháp Khắc Phục Tận Gốc",
+      "variant": "deep-dive",
+      "heading": "Kiến trúc Zero-Secret-In-Context: Chặn đọc tại Hook PreToolUse, tiêm Token qua Broker và làm sạch Trace",
+      "paragraphs": [
+        "Để chấm dứt vĩnh viễn cảnh AI Agent tiếp xúc với API Key thật, đội ngũ kỹ thuật phải từ bỏ thói quen cấp phát Secret qua môi trường chạy của Agent rồi dặn dò bằng văn bản. Thay vào đó, hãy áp dụng mô hình **Zero-Secret-In-Context** với ba lớp chốt chặn độc lập bổ trợ lẫn nhau sao cho dù một lớp bị vô hiệu hóa, lớp kế tiếp vẫn ngăn được thảm họa.",
+        "Lớp thứ nhất là **Hook `PreToolUse` Chặn Truy Cập Tệp & Lệnh Nhạy Cảm** gắn trực tiếp vào vòng đời của Coding Agent (như Claude Code, Cursor hooks hoặc lớp wrapper Sandbox nội bộ). Trước khi bất kỳ công cụ nào như `Read`, `Edit`, `Grep` hay `Bash` được phép chạy, Agent harness gửi gói JSON mô tả tên công cụ và tham số đầu vào (`tool_name`, `tool_input`) qua đường `stdin` tới một script Python/Node độc lập. Nếu đường dẫn chạm `.env`, `.env.local`, `.pem`, `id_rsa`, `secrets/` hoặc lệnh shell chứa `printenv`, `env`, `cat`, `echo $META_`, script ngay lập tức xuất JSON với `permissionDecision: \"deny\"` kèm thông báo hướng dẫn Agent dùng biến giả lập `.env.example` hoặc gọi qua cổng Broker thay thế.",
+        "Lớp thứ hai là **Credential Broker Proxy (Tiêm Token Ngoài LLM)** dùng chung cho cả Coding Agent lẫn hệ thống AI Agent Production (như DOM Agent hay các MCP Server kết nối MISA, Meta Ads, VietQR, Zalo OA). Trong thiết kế này, biến môi trường của MCP Server hoàn toàn trống rỗng về Secret; nó chỉ giữ địa chỉ của Proxy nội bộ (`http://127.0.0.1:8787`) và danh sách tên tham chiếu (`meta_capi_ro`, `misa_invoice_sync`). Khi Agent yêu cầu kéo báo cáo quảng cáo hoặc kiểm tra công nợ MISA, Proxy đối chiếu quyền hạn của Agent với chính sách cho phép (ví dụ Agent phân tích chỉ được gọi `GET` đọc chỉ số Meta Insights, cấm tuyệt đối `POST` tăng ngân sách), giải mã khóa thật từ **AES-256-GCM Vault** rồi mới tiêm trực tiếp vào HTTP Header lúc bắn gói tin ra Internet.",
+        "Lớp thứ ba là **Telemetry Redaction & Git Secret Guard**. Mọi chuỗi văn bản trả về từ Tool Calling hoặc HTTP Exception trước khi quay ngược về Context Window và trước khi đẩy sang Langfuse/OpenTelemetry đều phải chạy qua hàm quét `scrub_secrets()`. Hàm này tìm và thay thế mọi mẫu token đặc trưng (`EAAG...`, `sk-...`, `Bearer ...`, `SecretKey=...`) bằng chuỗi `[MASKED_CREDENTIAL]` để lỗi 401 hoặc stacktrace không bao giờ biến thành đường dẫn rò rỉ ngược."
+      ],
+      "bullets": [
+        "Tạo tệp `.env.example` chứa đầy đủ tên biến và định dạng giả (`META_CAPI_TOKEN=mock_token_123`) để Coding Agent vẫn đọc hiểu cấu trúc dự án mà không cần đụng tới `.env` thật.",
+        "Áp dụng nguyên tắc Tách Quyền Hẹp (Least Privilege): tuyệt đối không dùng chung một Admin Token cho cả đọc báo cáo Meta Ad Report và thao tác tài khoản quảng cáo.",
+        "Bật `gitleaks protect --staged` ở Git Pre-Commit Hook để từ chối mọi commit chứa chuỗi có độ ngẫu nhiên Entropy cao hoặc trùng mẫu khóa API."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "python-pretooluse-hook-va-credential-broker-scrubber",
+      "heading": "Python Recipe: Hook PreToolUse chặn Coding Agent đọc .env & Credential Broker Proxy tiêm Token Meta/MISA",
+      "language": "python",
+      "filename": "security/pretooluse_hook_and_broker.py",
+      "description": "Phần 1 triển khai Hook `PreToolUse` chuẩn JSON (`permissionDecision: deny`) chặn Agent đọc `.env`, `printenv` hoặc tệp khóa; Phần 2 minh họa Credential Broker Proxy giải mã AES-256-GCM ngoài LLM và hàm làm sạch Secret trước khi ghi Trace Log.",
+      "code": "import json, os, re, sys\nfrom pathlib import Path\n\nSENSITIVE_FILE_PATTERNS = (\n    r\"(^|/)\\.env(\\..*)?$\",\n    r\"\\.(pem|key|p12|pfx)$\",\n    r\"(^|/)(id_rsa|id_ed25519|credentials\\.json|secrets\\.ya?ml)$\",\n)\nSENSITIVE_BASH_PATTERNS = (\n    r\"\\b(printenv|env|export\\s+-p|set)\\b\",\n    r\"\\b(cat|head|tail|less|grep|rg|sed|awk|base64)\\b[^\\n]*(\\.env|\\.pem|secret|credentials)\",\n    r\"echo\\s+\\$[A-Z0-9_]*(TOKEN|SECRET|KEY|PASSWORD|DATABASE_URL)\",\n)\nSECRET_VALUE_REGEXES = [\n    re.compile(r\"(Bearer\\s+)[A-Za-z0-9._\\-]{16,}\", re.IGNORECASE),\n    re.compile(r\"\\bEAA[A-Za-z0-9]{20,}\\b\"),          # Meta Graph / CAPI Token\n    re.compile(r\"\\bsk-(proj-|ant-)?[A-Za-z0-9_\\-]{20,}\\b\"),  # LLM Keys\n    re.compile(r\"(?i)(misa_secret|oa_secret|api_key|client_secret)\\s*[:=]\\s*['\\\"]?[^\\s'\\\"]{8,}\"),\n]\n\ndef evaluate_pretooluse_hook(payload: dict) -> dict | None:\n    tool_name = payload.get(\"tool_name\", \"\")\n    tool_input = payload.get(\"tool_input\", {}) or {}\n    target_path = str(tool_input.get(\"file_path\") or tool_input.get(\"path\") or \"\").replace(\"\\\\\", \"/\")\n\n    if tool_name in {\"Read\", \"Edit\", \"Write\", \"MultiEdit\", \"Grep\"} and target_path:\n        if not target_path.endswith((\".env.example\", \".env.template\")):\n            if any(re.search(p, target_path, re.IGNORECASE) for p in SENSITIVE_FILE_PATTERNS):\n                return {\n                    \"hookSpecificOutput\": {\n                        \"hookEventName\": \"PreToolUse\",\n                        \"permissionDecision\": \"deny\",\n                        \"permissionDecisionReason\": (\n                            f\"SECURITY_POLICY: Cấm AI Agent đọc/sửa '{Path(target_path).name}'. \"\n                            \"Hãy dùng .env.example để xem tên biến hoặc gọi qua Credential Broker.\"\n                        ),\n                    }\n                }\n\n    if tool_name == \"Bash\":\n        cmd = str(tool_input.get(\"command\") or \"\")\n        if any(re.search(p, cmd, re.IGNORECASE) for p in SENSITIVE_BASH_PATTERNS):\n            return {\n                \"hookSpecificOutput\": {\n                    \"hookEventName\": \"PreToolUse\",\n                    \"permissionDecision\": \"deny\",\n                    \"permissionDecisionReason\": \"SECURITY_POLICY: Lệnh shell có dấu hiệu trích xuất biến môi trường hoặc tệp Secret.\",\n                }\n            }\n    return None\n\ndef scrub_secrets_for_trace(text: str) -> str:\n    cleaned = text or \"\"\n    for rx in SECRET_VALUE_REGEXES:\n        cleaned = rx.sub(\"[REDACTED_SECRET]\", cleaned)\n    return cleaned\n\n# Mẫu ánh xạ Credential Broker chạy ở tiến trình cô lập (Agent chỉ truyền cred_ref)\nALLOWED_BROKER_ROUTES = {\n    \"meta_insights_ro\": {\"host\": \"graph.facebook.com\", \"methods\": {\"GET\"}, \"vault_env\": \"VAULT_META_RO_TOKEN\"},\n    \"misa_invoice_sync\": {\"host\": \"amisapp.misa.vn\", \"methods\": {\"GET\", \"POST\"}, \"vault_env\": \"VAULT_MISA_SECRET\"},\n}\n\ndef build_broker_outbound_headers(cred_ref: str, method: str) -> dict:\n    policy = ALLOWED_BROKER_ROUTES.get(cred_ref)\n    if not policy or method.upper() not in policy[\"methods\"]:\n        raise PermissionError(f\"Blocked broker call for ref={cred_ref}, method={method}\")\n    # Giải mã từ Vault ngoài bộ nhớ LLM vào phút chót trước khi gọi HTTP\n    raw_token = os.environ[policy[\"vault_env\"]]\n    return {\"Authorization\": f\"Bearer {raw_token}\", \"Content-Type\": \"application/json\"}\n\nif __name__ == \"__main__\":\n    hook_req = json.loads(sys.stdin.read() or \"{}\")\n    decision = evaluate_pretooluse_hook(hook_req)\n    if decision:\n        print(json.dumps(decision, ensure_ascii=False))\n    sys.exit(0)"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-secret-ai-agent",
+      "heading": "Checklist 6 chốt chặn bảo vệ API Key Meta Ads, MISA & Zalo OA trước AI Agent",
+      "items": [
+        {
+          "check": "Chặn AI Coding Agent truy cập trực tiếp các tệp .env và khóa riêng tư qua Hook PreToolUse",
+          "severity": "critical",
+          "verificationHow": "Thử ra lệnh cho Coding Agent đọc `.env` hoặc chạy `bash: printenv` trong phiên làm việc test.",
+          "passThreshold": "100% lệnh bị trả `permissionDecision: deny` trong < 20ms và không lộ ký tự nào vào Context"
+        },
+        {
+          "check": "Cô lập Token sống bằng Credential Broker Proxy ngoài tiến trình LLM/MCP",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra danh sách biến môi trường (`env`) bên trong container chạy MCP Server và Agent Sandbox.",
+          "passThreshold": "0 biến môi trường chứa chuỗi Token thật của Meta Ads, MISA hay Database Production"
+        },
+        {
+          "check": "Làm sạch (Scrub) Header & Token trước khi ghi nhật ký Langfuse / OpenTelemetry / Sentry",
+          "severity": "critical",
+          "verificationHow": "Cố tình kích hoạt một lỗi HTTP 401 từ công cụ gọi API và mở giao diện Trace Log kiểm tra.",
+          "passThreshold": "100% chuỗi `Bearer`, `EAA...`, `x-api-key` hiển thị dưới dạng `[REDACTED_SECRET]`"
+        },
+        {
+          "check": "Quét Secret tự động tại Git Pre-Commit Hook và GitHub Push Protection",
+          "severity": "high",
+          "verificationHow": "Thử stage một file JSON chứa token mẫu có định dạng `EAAG...` hoặc `sk-proj-...` rồi chạy `git commit`.",
+          "passThreshold": "Gitleaks chặn commit ngay tại máy trạm trước khi code kịp đẩy lên remote"
+        },
+        {
+          "check": "Phân quyền Scope tối thiểu & Tách riêng Token Read-Only cho AI phân tích báo cáo",
+          "severity": "high",
+          "verificationHow": "Kiểm tra quyền trên Meta Business Manager và MISA API cho từng Agent báo cáo.",
+          "passThreshold": "Agent xem báo cáo Meta Ad Report chỉ có quyền `ads_read`, không có quyền `ads_management`"
+        },
+        {
+          "check": "Quy trình xoay vòng khóa tự động (Secret Rotation) định kỳ và khẩn cấp",
+          "severity": "recommended",
+          "verificationHow": "Thực hành diễn tập thu hồi một khóa Zalo OA/Meta CAPI trong Vault và đo thời gian hệ thống cập nhật.",
+          "passThreshold": "Xoay vòng khóa không gây downtime và hoàn tất trong dưới 60 giây"
+        }
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "quy-trinh-ung-cuu-va-tai-thiet-secret-vault",
+      "heading": "Quy trình 6 bước ứng cứu khẩn cấp và tái thiết kiến trúc khi phát hiện Agent làm lộ Secret",
+      "variant": "steps",
+      "items": [
+        {
+          "tag": "BƯỚC 01 • NGAY LẬP TỨC",
+          "title": "Thu hồi (Revoke) & Xoay vòng Token trên Meta / MISA / Zalo OA",
+          "detail": "Vô hiệu hóa ngay Access Token hoặc Client Secret bị lộ tại trang quản trị gốc trước khi làm sạch code, không chờ dọn Git history trước.",
+          "metricOrTool": "Meta Business • MISA Admin"
+        },
+        {
+          "tag": "BƯỚC 02 • PHÚT THỨ 5",
+          "title": "Rà soát Audit Log truy cập API và biến động ngân sách",
+          "detail": "Kiểm tra nhật ký tạo hóa đơn MISA, lịch sử đổi ngân sách Meta Ads và truy vấn bất thường trên Database để khoanh vùng thiệt hại.",
+          "metricOrTool": "API Access Audit"
+        },
+        {
+          "tag": "BƯỚC 03 • PHÚT THỨ 15",
+          "title": "Xóa sạch lịch sử Git & Vô hiệu hóa Trace Log chứa khóa cũ",
+          "detail": "Dùng `git filter-repo` loại bỏ blob chứa Secret khỏi mọi nhánh Git và xóa/ẩn danh các span cũ trên Langfuse hoặc kho log tập trung.",
+          "metricOrTool": "git-filter-repo • Langfuse API"
+        },
+        {
+          "tag": "BƯỚC 04 • GIỜ THỨ 2",
+          "title": "Triển khai Hook PreToolUse chặn đọc .env cho toàn đội Dev",
+          "detail": "Đẩy cấu hình hook vào kho lưu trữ chuẩn để bất kỳ Coding Agent nào mở repo cũng tự động bị chặn đọc `.env` và `printenv`.",
+          "metricOrTool": "PreToolUse Guard"
+        },
+        {
+          "tag": "BƯỚC 05 • NGÀY THỨ 1",
+          "title": "Chuyển đổi Token vào AES-256-GCM Vault & Credential Broker",
+          "detail": "Chuyển toàn bộ chuỗi mật ra khỏi tiến trình chạy Agent, ép MCP Server và kịch bản Automation chỉ gọi thông qua `credential_ref`.",
+          "metricOrTool": "DOMATION Key Vault"
+        },
+        {
+          "tag": "BƯỚC 06 • DUY TRÌ",
+          "title": "Bật Gitleaks CI/CD & Red-Team kiểm tra định kỳ hàng tuần",
+          "detail": "Chạy kiểm thử tự động các câu prompt bẫy cố ép Agent đọc file cấu hình để đảm bảo lớp phòng thủ không bị vô hiệu hóa khi nâng cấp công cụ.",
+          "metricOrTool": "Gitleaks • Promptfoo Security"
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-secret-protection-domation",
+      "variant": "warning",
+      "title": "Quy tắc thép trong kỹ thuật AI Systems tại DOMATION: LLM không bao giờ được cầm chìa khóa thật",
+      "body": "Sức mạnh của Coding Agent và Multi-Agent AI trong tăng tốc Vibecode sẽ phản tác dụng tức thì nếu chúng ta đưa luôn chùm chìa khóa kho bạc quảng cáo Meta Ads, hóa đơn MISA và cơ sở dữ liệu Production vào thẳng tầm đọc của mô hình. Hãy tách tuyệt đối tầng suy luận khỏi tầng giữ khóa: Agent chỉ được quyền gọi tên định danh kết nối qua Credential Broker, còn việc giải mã AES-256-GCM và tiêm Header xác thực phải nằm sau bức tường Proxy và Hook PreToolUse có tính tất định 100%.",
+      "authorBadge": "DOMATION DevSecOps & AES Key Vault Architecture"
+    }
+  ]
+}

@@ -1,0 +1,375 @@
+{
+  "id": "art-211",
+  "number": "211",
+  "slug": "ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp",
+  "shardId": "shard14",
+  "pillar": "llm-models-mcp-skills",
+  "pillarLabel": "Gemini • Claude • Codex & MCP Skills",
+  "industry": "OpenAI Codex 2026 & Hybrid Pipeline",
+  "clusterId": "kw-models-mcp-skills",
+  "searchIntent": "Commercial",
+  "schemaType": "TechArticle",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Bản đồ OpenAI Codex 2026 (5.3-Codex, GPT-5.6 Sol/Terra/Luna, Codex CLI) & Hybrid Pipeline Vibecode ERP",
+  "seoTitle": "Bản Đồ OpenAI Codex 2026 & Hybrid Vibecode ERP | DOMATION",
+  "metaDescription": "Tổng hợp OpenAI Codex cuối 2026: GPT-5.3-Codex, gia đình GPT-5.6 Sol/Terra/Luna, lộ trình thay GPT-5.2-Codex & policy untrusted bị xóa ở Codex CLI v0.149.",
+  "focusKeyword": "bản đồ openai codex 2026 và hybrid pipeline erp",
+  "secondaryKeywords": [
+    "openai gpt 5.3 codex và gpt 5.6 sol terra luna",
+    "codex cli v0.149 bỏ policy untrusted",
+    "codex exec trong github actions review pr",
+    "cảnh báo deprecated gpt 5.2 codex 5.1 mini",
+    "phối hợp codex cli với claude code và gemini"
+  ],
+  "thumbnailTheme": "swiss-editorial-paper",
+  "thumbnailTitle": "OpenAI Codex 2026: 5.3-Codex, GPT-5.6 & Pipeline Vibecode",
+  "thumbnailHook": "Chuyển từ 5.2-Codex sang 5.3/5.6 Terra và review PR bằng codex exec.",
+  "thumbnailBadge": "ECOSYSTEM • CODEX 2026",
+  "coverImage": "/imgs/boost/v2/ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp.webp",
+  "screenshotImage": "/imgs/boost/charts/ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp-report.webp",
+  "coverAlt": "Bản thiết kế kiến trúc bản đồ openai codex 2026 và hybrid pipeline erp phân tích GPT-5.3-Codex, GPT-5.6 Sol Terra Luna, Codex CLI Seatbelt Landlock và quy trình dựng Bespoke ERP",
+  "screenshotCaption": "Ảnh hưởng của vách đá phụ phí >272.000 token trên GPT-5.6 Sol/Terra và chi phí tối ưu hóa khi điều phối Hybrid Pipeline kết hợp Gemini, Claude Code và Codex CLI cho Monorepo ERP.",
+  "relatedModuleUrl": "/erp",
+  "relatedModuleLabel": "Xem Pipeline Vibecode Bespoke ERP DOMATION",
+  "relatedSlugs": [
+    "ban-do-he-sinh-thai-anthropic-claude-2026-fable-opus-sonnet-haiku-code",
+    "ban-do-he-sinh-thai-google-gemini-2026-argon-pro-flash-live-omni-cli",
+    "terminal-agent-cli-arena-claude-code-vs-codex-cli-vs-gemini-cli",
+    "thuc-chien-domation-turniodev-claude-codex-gemini-mcp-4-5x"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Bản thiết kế kiến trúc bản đồ openai codex 2026 và hybrid pipeline erp giải phẫu toàn bộ dải mô hình OpenAI cuối 2026 gồm `GPT-5.3-Codex`, gia đình `GPT-5.6 Sol / Terra / Luna` (~1.05M context kèm cảnh báo nhân đôi giá khi vượt 272.000 token đầu vào) và lộ trình thay thế `GPT-5.2-Codex` cùng `GPT-5.1-Codex-Mini` đã ngừng hỗ trợ. Bài viết đi sâu vào cơ chế Sandbox cấp nhân hệ điều hành của `Codex CLI` (Seatbelt, Landlock+Bubblewrap+seccomp-BPF), lỗi vỡ khởi động do `untrusted` bị xóa ở v0.149.0, tự động hóa CI với `codex exec` / `@codex review` và dây chuyền 3 hãng dựng Bespoke ERP tại DOMATION.",
+  "keyTakeaways": [
+    "`GPT-5.3-Codex` ($1.75 in / $14 out, 400K context / 272K max input / 128K out) là chủ lực thực thi terminal với `reasoning.effort: xhigh` — lưu ý toàn bộ `reasoning_tokens` được tính phí theo đơn giá output $14/1M.",
+    "Gia đình `GPT-5.6` (`Sol` $4/$20, `Terra` $2/$12, `Luna` $0.20/$1.20) mở rộng ngữ cảnh lên ~1.05M token nhưng áp dụng luật phụ phí gắt: vượt `272.000` input token sẽ nhân `2x` giá input/cache và `1.5x` output cho toàn bộ request.",
+    "Lộ trình dọn dẹp model di sản bắt buộc: ngừng dùng `gpt-5.2-codex` và `gpt-5.1-codex-mini` (đã deprecated) chuyển sang `GPT-5.3-Codex` hoặc `GPT-5.6 Terra/Luna`; thay `codex-mini-latest` ($1.50/$6) bằng `GPT-5.6 Luna` ($0.20/$1.20) rẻ hơn 5–7 lần.",
+    "Cảnh báo breaking change trên `Codex CLI v0.149.0`: chính sách `approval_policy = \"untrusted\"` đã bị XÓA và làm CLI lỗi khởi động ngay lập tức — phải đổi sang `approval_policy = \"on-request\"` kết hợp `sandbox_mode = \"read-only\"`.",
+    "Kiến trúc Hybrid Pipeline tại DOMATION kết hợp `AGENTS.md` làm nguồn sự thật chung: Gemini 4 Argon/Claude Opus xử lý bối cảnh >272K token và `/plan`; Claude Code `--worktree` + Codex CLI `workspace-write` viết code song song; `codex exec` + `@codex review` + `Codex Security` gác cổng CI."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Sandbox OS Codex CLI",
+      "value": "Seatbelt & Landlock+seccomp"
+    },
+    {
+      "label": "Ngưỡng tránh phụ phí GPT-5.6",
+      "value": "<= 272.000 Input Tokens"
+    },
+    {
+      "label": "Tiết kiệm thay codex-mini",
+      "value": "-80% cước (GPT-5.6 Luna)"
+    },
+    {
+      "label": "Chuẩn CI/CD Review tự động",
+      "value": "codex exec + @codex review"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao Codex CLI bỗng nhiên báo lỗi không khởi động được sau khi nâng cấp lên bản v0.149.0 trở lên?",
+      "answer": "Nguyên nhân 99% nằm trong tệp `~/.codex/config.toml` hoặc `.codex/config.toml` của dự án vẫn còn dòng `approval_policy = \"untrusted\"`. Từ phiên bản `Codex CLI v0.149.0`, OpenAI đã chính thức gỡ bỏ hoàn toàn chính sách `untrusted` (và khai tử `on-failure` trước đó) — nếu còn giữ từ khóa này trong cấu hình, Codex CLI sẽ từ chối chạy ngay lúc khởi động. Cách sửa chuẩn là thay bằng cặp `approval_policy = \"on-request\"` đi cùng `sandbox_mode = \"read-only\"` để buộc kiểm tra trước mọi thao tác ghi hoặc lệnh vượt phạm vi sandbox."
+    },
+    {
+      "question": "Vách đá 272.000 token trên GPT-5.6 Sol/Terra/Luna hoạt động thế nào và ảnh hưởng gì đến hóa đơn Monorepo?",
+      "answer": "Dù gia đình `GPT-5.6` (`Sol`, `Terra`, `Luna`, ra mắt tháng 7/2026) mở rộng cửa sổ ngữ cảnh từ 400K lên tới ~1.050.000 token, OpenAI áp dụng quy tắc tính phí hai nấc cực kỳ gắt tại mốc **272.000 input tokens**. Chỉ cần một request chứa 272.001 token đầu vào, **toàn bộ request đó** lập tức bị nhân `2x` đơn giá input và cache read, đồng thời nhân `1.5x` đơn giá output (ví dụ `GPT-5.6 Sol` vọt từ $4/$20 lên $8/$30, `Terra` từ $2/$12 lên $4/$18). Vì vậy trong pipeline DOMATION, mọi tác vụ cần nạp toàn bộ kho mã 300K–800K token đều được điều phối sang Gemini (`4 Argon` / `3.8 Flash`) hoặc Claude (`Opus 5.5` / `Sonnet 5.5` 1M không phạt ngưỡng 272K), còn OpenAI chỉ nhận các gói ngữ cảnh gọn dưới 272K."
+    },
+    {
+      "question": "Giữa GPT-5.3-Codex và GPT-5.6 Terra thì nên dùng model nào cho Codex CLI hàng ngày?",
+      "answer": "Cả hai đều rất mạnh nhưng phục vụ hai nhịp độ khác nhau: `GPT-5.3-Codex` ($1.75 in / $14 out, max input thực tế 272K trong cửa sổ 400K) được tối ưu chuyên biệt cho terminal execution, SWE-Bench Pro, computer operation và hỗ trợ `reasoning.effort: xhigh` để giải các bài toán sửa code hóc búa liên hoàn trên bash. Trong khi đó, `GPT-5.6 Terra` ($2.00 in / $12 out, cache read $0.20, ~1.05M context) có chi phí đầu ra rẻ hơn 14%, cân bằng tốt hơn cho tác vụ review code, sinh test, viết tài liệu và suy luận doanh nghiệp có kiểm soát mức effort (`none` tới `max`). Nếu là tác vụ subagent nhẹ, đừng dùng `codex-mini-latest` ($1.50/$6) mà hãy trỏ sang `GPT-5.6 Luna` ($0.20/$1.20)."
+    },
+    {
+      "question": "Cơ chế sandbox workspace-write của Codex CLI bảo vệ mã nguồn Git và cấu hình như thế nào?",
+      "answer": "Khác với các agent chỉ kiểm tra quyền bằng lời nhắc ở tầng ứng dụng, `Codex CLI` (`openai/codex`, Apache 2.0) ép buộc cô lập ở cấp nhân hệ điều hành: sử dụng Apple Seatbelt (`sandbox-exec` + profile `.sbpl`) trên macOS, tổ hợp **Landlock + Bubblewrap + seccomp-BPF** trên Linux và restricted tokens/ACLs trên Windows. Ở chế độ `workspace-write`, agent được ghi file dự án và `$TMPDIR`, nhưng mạng Internet mặc định bị khóa và các thư mục nhạy cảm gồm `.git`, `.agents`, `.codex` được gắn cờ **chỉ đọc tuyệt đối** nhằm ngăn agent tự sửa lịch sử Git, sửa quy tắc `AGENTS.md` hay tắt cơ chế sandbox của chính nó."
+    },
+    {
+      "question": "Làm sao kết hợp Claude Code, Codex CLI và Gemini CLI trong một dự án Bespoke ERP mà không phải duy trì 3 bộ hướng dẫn khác nhau?",
+      "answer": "Giải pháp chuẩn tại DOMATION là lấy **`AGENTS.md`** tại thư mục gốc làm Hiến pháp kỹ thuật duy nhất (Single Source of Truth), trong đó có sẵn mục `## Code Review Rules` để bộ `chatgpt-codex-connector` đọc tự động mỗi khi mở Pull Request trên GitHub. Tiếp theo, đặt trong `CLAUDE.md` dòng `@./AGENTS.md` (cộng thêm rules riêng về hooks/worktree), và trong `.gemini/settings.json` khai báo mảng fallback `[\"AGENTS.md\", \"GEMINI.md\"]`. Với cách này, bạn sửa một quy tắc bảo mật PostgreSQL RLS ở `AGENTS.md` là cả 3 terminal agent đều tuân thủ tức thì."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "prose",
+      "id": "blueprint-t1-giai-phau-codex-va-gpt-5-6",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 1: GIA ĐÌNH OPENAI CODEX & GPT-5.6 CUỐI NĂM 2026",
+      "variant": "deep-dive",
+      "heading": "Chuyển dịch mô hình OpenAI cuối 2026: Chuẩn hóa lên `GPT-5.3-Codex`, `GPT-5.6 Sol/Terra/Luna` và dọn sạch model di sản",
+      "pullQuote": "Trong hệ sinh thái OpenAI cuối 2026, cái giá của sự chậm nâng cấp là rất rõ: giữ lại `gpt-5.2-codex` là đụng bản deprecated, còn giữ `codex-mini-latest` nghĩa là đang trả đắt hơn 5–7 lần so với `GPT-5.6 Luna`.",
+      "paragraphs": [
+        "Nếu không cập nhật bản đồ định kỳ, rất nhiều dự án phần mềm vẫn đang cấu hình mặc định những cái tên đã lỗi thời từ đầu năm. Theo tài liệu kỹ thuật xác thực trong bản đồ openai codex 2026 và hybrid pipeline erp của DOMATION, hệ sinh thái lập trình của OpenAI cuối năm 2026 xoay quanh hai trụ cột chính đang hoạt động song song: mũi nhọn thực thi đầu cuối **`GPT-5.3-Codex`** (ra mắt 05/02/2026) và gia đình đa dụng mở rộng ngữ cảnh **`GPT-5.6`** gồm ba bậc **`Sol`**, **`Terra`**, **`Luna`** (ra mắt 09/07/2026). Ngược lại, cả `gpt-5.2-codex` (ra mắt 18/12/2025) lẫn `gpt-5.1-codex-mini` (bị loại khỏi các bộ công cụ mới từ tháng 4/2026) đều đã bước vào trạng thái ngừng bảo trì hoặc bị thay thế chính thức.",
+        "Hiểu đúng cơ chế tính tiền của hai nhánh mới này giúp tránh những cú sốc hóa đơn cuối tháng. Với `GPT-5.3-Codex` ($1,75 input / $0,175 cached / $14,00 output, tổng cửa sổ 400K nhưng giới hạn input thực tế 272K và max output 128K), mô hình cho phép đẩy tham số `reasoning.effort` lên mức cực đại `xhigh` để chinh phục các bài toán terminal và đa tệp khó nhất, nhưng **toàn bộ `reasoning_tokens` sinh ra trong lúc suy nghĩ ngầm đều tính phí ở mức output $14/1M**. Trong khi đó, bộ ba `GPT-5.6 Sol` ($4/$20, gồm chế độ Ultra), `GPT-5.6 Terra` ($2/$12) và `GPT-5.6 Luna` ($0.20/$1.20) mở rộng cửa sổ tới ~1,05 triệu token với 6 nấc effort (`none` tới `max`) và explicit cache breakpoints (TTL tối thiểu 30 phút, giảm 90% khi đọc), song lại đặt ra **ngưỡng phụ phí 272.000 input tokens**: hễ vượt qua con số này, toàn bộ request lập tức bị tính giá input/cache gấp 2 lần và output gấp 1,5 lần."
+      ]
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "matrix-openai-codex-gpt-5-6-2026",
+      "heading": "Ma trận phân vai các mô hình OpenAI Codex & GPT-5.6 (Active vs Legacy/Deprecated)",
+      "caption": "So sánh Context, Effective Input, mức Reasoning Effort, đơn giá USD/1M và trạng thái vòng đời cập nhật tháng 11/2026",
+      "columns": [
+        "Model & Trạng thái",
+        "Context / Effective Input / Out",
+        "Reasoning Effort & Đặc điểm",
+        "Đơn giá USD / 1M Token",
+        "Phân vai & Lộ trình chuyển đổi"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "GPT-5.3-Codex (`gpt-5.3-codex`) • ACTIVE",
+          "values": [
+            "400K tổng / 272K max input / 128K out",
+            "`reasoning.effort` hỗ trợ `xhigh`; tối ưu SWE-Bench Pro, Terminal-Bench & computer operation",
+            "$1.75 in / $0.175 cached / $14.00 out (`reasoning_tokens` tính giá out)",
+            "Chủ lực giải bug khó, thao tác bash dài và điều khiển GUI trong Codex CLI"
+          ],
+          "winnerNote": "Tránh đẩy `xhigh` cho các tác vụ vặt để không đội hóa đơn `reasoning_tokens`"
+        },
+        {
+          "criterion": "GPT-5.6 Sol (`gpt-5.6-sol`) • ACTIVE",
+          "values": [
+            "~1.05M–1.1M context / 128K out",
+            "6 mức `none..max`; gồm chế độ Ultra cho suy luận đường dài",
+            "$4.00 in / $20.00 out (ra mắt $5/$30); Read $0.40, Write $5.00; >272K nhân 2x/1.5x",
+            "Planner & kiến trúc sư hệ thống khi ngữ cảnh giữ gọn <= 272K token"
+          ]
+        },
+        {
+          "criterion": "GPT-5.6 Terra (`gpt-5.6-terra`) • ACTIVE",
+          "values": [
+            "~1.05M–1.1M context / 128K out",
+            "Cân bằng Enterprise / Midweight; hỗ trợ explicit cache >=30m TTL",
+            "$2.00 in / $12.00 out; Read $0.20, Write $2.50; >272K nhân 2x/1.5x",
+            "Thay thế trực tiếp cho `GPT-5.2-Codex` trong review PR, CI và coding hàng ngày"
+          ],
+          "winnerNote": "Lựa chọn cân bằng nhất trong hệ OpenAI cho Enterprise CI & Review"
+        },
+        {
+          "criterion": "GPT-5.6 Luna (`gpt-5.6-luna`) • ACTIVE",
+          "values": [
+            "~1.05M–1.1M context / 128K out",
+            "Tối ưu lưu lượng lớn, tốc độ cao, chi phí siêu thấp",
+            "$0.20 in / $1.20 out; Read $0.02, Write $0.25; >272K nhân 2x/1.5x",
+            "Thay thế `codex-mini-latest` & `5.1-codex-mini` cho phân loại, test nhỏ & subagent"
+          ],
+          "winnerNote": "Rẻ hơn `codex-mini-latest` tới 5–7 lần nhưng ngữ cảnh lớn hơn gấp 5x"
+        },
+        {
+          "criterion": "`codex-mini-latest` • LEGACY CLI",
+          "values": [
+            "200K input / 100K output (gốc o4-mini)",
+            "Phát hành 05/2025 cho CLI nhanh thời kỳ đầu",
+            "$1.50 in / $0.375 cached / $6.00 out",
+            "Ngừng mở rộng: chuyển ngay sang `GPT-5.6 Luna` hoặc `Terra`"
+          ]
+        },
+        {
+          "criterion": "`gpt-5.2-codex` & `gpt-5.1-codex-mini` • DEPRECATED",
+          "values": [
+            "400K (272K eff) / 128K out",
+            "Phát hành cuối 2025; đã đánh dấu ngừng hỗ trợ / retired 2026",
+            "Lịch sử: 5.2 ($1.75/$14); 5.1-mini ($0.25/$2)",
+            "Bắt buộc gỡ khỏi `.codex/config.toml`, GitHub Actions và IDE Copilot"
+          ]
+        }
+      ],
+      "footnote": "Mọi cấu hình caching trên GPT-5.6 dùng explicit breakpoints (tối thiểu 30 phút TTL, chiết khấu đọc 90%, phí ghi 1.25x)."
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-t2-codex-cli-kernel-sandbox-va-github-ci",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 2: CODEX CLI KERNEL SANDBOX (SEATBELT/LANDLOCK), BREAKING V0.149 & CI",
+      "variant": "deep-dive",
+      "heading": "Khai thác Sandbox cấp nhân OS, `codex exec` headless CI và rà lỗi PR bằng `AGENTS.md`",
+      "paragraphs": [
+        "Nếu thế mạnh lớn nhất của Claude Code là hệ thống 33+ Lifecycle Hooks và Git Worktree, thì vũ khí tối thượng của **`Codex CLI`** (`openai/codex`, mã nguồn mở Apache 2.0) lại nằm ở **kiến trúc cô lập cấp nhân hệ điều hành (OS-Kernel Sandboxing)** và tích hợp CI/PR bản địa trên GitHub. Thay vì chỉ kiểm tra chuỗi lệnh bằng bộ lọc JavaScript, Codex CLI thực thi rào chắn trực tiếp dưới lớp nhân: chạy **Apple Seatbelt** (`sandbox-exec` kèm profile `.sbpl`) trên macOS, kết hợp bộ ba **Landlock + Bubblewrap + seccomp-BPF** trên Linux, và dùng restricted user tokens/ACLs trên Windows. Ở chế độ `workspace-write`, AI được sửa mã trong thư mục làm việc và `$TMPDIR`, nhưng mạng Internet mặc định bị cắt đứt và ba thư mục nhạy cảm nhất là `.git`, `.agents`, `.codex` bị khóa cứng ở trạng thái chỉ đọc để AI không thể tự nới quyền cho chính mình.",
+        "Tuy nhiên, đội ngũ vận hành cần đặc biệt lưu ý thay đổi phá vỡ tương thích từ **`Codex CLI v0.149.0`**: chính sách phê duyệt `untrusted` đã bị **xóa bỏ hoàn toàn** (và `on-failure` đã bị khai tử). Nếu file `~/.codex/config.toml` hay `.codex/config.toml` trong dự án cũ vẫn sót lại dòng `approval_policy = \"untrusted\"`, Codex CLI sẽ sập ngay khi khởi động cho đến khi bạn chuyển sang `approval_policy = \"on-request\"` đi kèm `sandbox_mode = \"read-only\"` (hoặc `never` cho pipeline tự động đã bọc container). Song song với đó, lệnh **`codex exec`** biến Codex CLI thành một động cơ CI/CD headless thực thụ: chạy mặc định trong sandbox `read-only`, xuất log có cấu trúc JSONL, hỗ trợ `--skip-git-repo-check`, `--output-last-message` và tùy chọn `--oss` để nối sang trạm Ollama / LM Studio nội bộ.",
+        "Trên mặt trận GitHub, ứng dụng **`chatgpt-codex-connector`** biến Codex thành thành viên review code tự động cho mọi Pull Request. Đội ngũ chỉ cần khai báo mục `## Code Review Rules` ngay bên trong tệp `AGENTS.md` ở gốc repository — ví dụ quy định mọi API Route ERP mới phải kiểm tra tenant isolation, không nuốt lỗi webhook Meta CAPI hoặc không bỏ qua index khóa ngoại — là Codex tự động rà soát khi mở PR hoặc phản hồi ngay khi kỹ sư bình luận `@codex review`. Kết hợp với **Codex Security GitHub Actions** (chạy qua biến `CODEX_SECURITY_API_KEY`) để quét lỗ hổng theo lịch cron và gắn chú thích trực tiếp lên từng dòng diff PR, doanh nghiệp thiết lập được vòng gác cổng chất lượng độc lập trước khi hợp nhất nhánh."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-codex-272k-cliff-and-hybrid-pipeline",
+      "heading": "Ảnh hưởng của vách đá 272K token trên GPT-5.6 Sol và hiệu quả Hybrid Pipeline 3 hãng trên Monorepo ERP",
+      "subtitle": "Đo lường chi phí trung bình (USD / 100 lượt xử lý) khi kích thước ngữ cảnh Monorepo tăng từ 60K lên 600K token giữa chạy thuần OpenAI GPT-5.6 Sol vs Hybrid Pipeline DOMATION",
+      "chart": {
+        "chartType": "composed",
+        "title": "Chi phí 100 lượt chạy Agent (USD) theo độ lớn ngữ cảnh Monorepo (60K -> 600K tokens)",
+        "subtitle": "Vượt mốc 272K input token làm giá GPT-5.6 Sol nhảy vọt gấp đôi, trong khi Hybrid Pipeline điều hướng ngữ cảnh lớn sang Gemini/Claude giữ chi phí tăng tuyến tính thấp",
+        "xKey": "contextSize",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "gpt56SolRawUsd",
+            "label": "100% GPT-5.6 Sol (Dính phụ phí >272K)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "gpt56TerraRawUsd",
+            "label": "100% GPT-5.6 Terra (Dính phụ phí >272K)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "hybridPipelineUsd",
+            "label": "Hybrid Pipeline DOMATION (3 Hãng + Cache)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "savingsUsd",
+            "label": "Số tiền tiết kiệm được (USD)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "contextSize": "60K tok (1 module)", "gpt56SolRawUsd": 36, "gpt56TerraRawUsd": 19, "hybridPipelineUsd": 11, "savingsUsd": 25 },
+          { "contextSize": "150K tok (3 modules)", "gpt56SolRawUsd": 72, "gpt56TerraRawUsd": 38, "hybridPipelineUsd": 18, "savingsUsd": 54 },
+          { "contextSize": "250K tok (Sát trần 272K)", "gpt56SolRawUsd": 112, "gpt56TerraRawUsd": 58, "hybridPipelineUsd": 24, "savingsUsd": 88 },
+          { "contextSize": "300K tok (Vượt 272K -> 2x)", "gpt56SolRawUsd": 264, "gpt56TerraRawUsd": 138, "hybridPipelineUsd": 31, "savingsUsd": 233 },
+          { "contextSize": "450K tok (Full ERP Core)", "gpt56SolRawUsd": 384, "gpt56TerraRawUsd": 200, "hybridPipelineUsd": 42, "savingsUsd": 342 },
+          { "contextSize": "600K tok (Monorepo + Docs)", "gpt56SolRawUsd": 504, "gpt56TerraRawUsd": 262, "hybridPipelineUsd": 52, "savingsUsd": 452 }
+        ],
+        "kpis": [
+          {
+            "label": "Bước nhảy giá tại >272K tok",
+            "value": "2x In / 1.5x Out",
+            "delta": "$112 vọt lên $264 (GPT-5.6 Sol)",
+            "positive": false
+          },
+          {
+            "label": "Tiết kiệm thay codex-mini",
+            "value": "$0,20 vs $1,50",
+            "delta": "GPT-5.6 Luna rẻ hơn 7.5x input",
+            "positive": true
+          },
+          {
+            "label": "Chi phí Hybrid ở 450K tok",
+            "value": "$42,00 / 100 lượt",
+            "delta": "Cắt 89% so với Sol thuần ($384)",
+            "positive": true
+          },
+          {
+            "label": "Tốc độ ship Bespoke ERP",
+            "value": "Nhanh gấp 4,5x",
+            "delta": "12 phân hệ trong ~14 ngày",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Engineering FinOps Model (11/2026): Giả định 100 lượt agent với 4K output/lượt (50% cache hit trên tiền tố tĩnh), so sánh cấu hình đơn nhà cung cấp OpenAI dính ngưỡng >272K với Hybrid Pipeline (Gemini 4 Argon/3.8 Flash cho ngữ cảnh >272K + Claude Sonnet 5.5 Worktree + GPT-5.3-Codex/Terra <=272K)."
+      },
+      "insightSummary": "Biểu đồ chỉ ra chính xác điểm gãy tài chính ở cột `300K tok`: ngay khi Monorepo ERP vượt qua ngưỡng 272.000 token đầu vào, chi phí của `GPT-5.6 Sol` lập tức tăng vọt hơn gấp đôi từ $112 lên $264 cho cùng một số lượt chạy do luật nhân 2x input và 1.5x output lên toàn bộ request. Ngược lại, **Hybrid Pipeline** của DOMATION khóa cứng nguyên tắc: chỉ giao cho `GPT-5.3-Codex` và `GPT-5.6 Terra` các gói ngữ cảnh gọn <= 272K (như rà diff PR, chạy test terminal trong Landlock sandbox), còn phần nuốt 450K–600K token đặc tả và mã nguồn chéo phân hệ được chuyển sang `Gemini 4 Argon / 3.8 Flash` và `Claude Opus/Sonnet 5.5` 1M không bị phạt ngưỡng 272K — giữ hóa đơn ở mốc $42–$52."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-openai-codex-and-hybrid-pipeline",
+      "src": "/imgs/boost/charts/ban-do-he-sinh-thai-openai-codex-2026-va-hybrid-pipeline-vibecode-erp-report.webp",
+      "alt": "Biểu đồ bản đồ openai codex 2026 và hybrid pipeline erp minh họa vách đá 272K token GPT-5.6 và kiến trúc phối hợp 3 CLI xây Bespoke ERP",
+      "caption": "Kiến trúc phối hợp đa nhà cung cấp dựng Bespoke ERP 5.0 tại DOMATION: định vị dải mô hình OpenAI Codex 2026, lớp bảo vệ kernel Landlock/Seatbelt và quy tắc tránh ngưỡng phụ phí 272K token.",
+      "badge": "ARCHITECTURE • CODEX & HYBRID ERP"
+    },
+    {
+      "type": "decision-tree",
+      "id": "decision-tree-codex-and-hybrid-erp",
+      "heading": "Cây quyết định phân công OpenAI Codex vs Claude Code vs Gemini CLI trong Pipeline Bespoke ERP",
+      "subtitle": "Áp dụng trực tiếp khi tổ chức dây chuyền Vibecode sản xuất phần mềm doanh nghiệp",
+      "scenarios": [
+        {
+          "condition": "Sửa lỗi hóc búa trên terminal, chạy chuỗi bash kiểm thử phức tạp hoặc thao tác GUI không có API với gói ngữ cảnh gọn (<= 272K token)",
+          "recommendedChoice": "Dùng Codex CLI + `GPT-5.3-Codex` (`reasoning.effort = high/xhigh`, `workspace-write`)",
+          "rationale": "Chuyên biệt cho SWE-Bench Pro / Terminal-Bench, có Landlock/Seatbelt khóa chết thư mục `.git` và `.codex` ở mức nhân OS tránh agent phá kho mã.",
+          "avoidIf": "Ngữ cảnh đầu vào vượt 272K hoặc cần nối 33+ hooks chặn đọc `.env` tùy biến sâu theo từng tool call như Claude Code."
+        },
+        {
+          "condition": "Tự động rà soát mọi Pull Request trên GitHub, quét bảo mật định kỳ và kiểm tra tuân thủ quy tắc repo trước khi merge",
+          "recommendedChoice": "Dùng `codex exec` + `@codex review` + `Codex Security` (`GPT-5.6 Terra`)",
+          "rationale": "Đọc thẳng mục `## Code Review Rules` trong `AGENTS.md`, chạy trong sandbox `read-only` mặc định, xuất JSONL chuẩn CI và gắn comment trực tiếp lên diff.",
+          "avoidIf": "Dự án vẫn giữ `gpt-5.2-codex` hoặc cấu hình `approval_policy = \"untrusted\"` trong `.codex/config.toml`."
+        },
+        {
+          "condition": "Nạp toàn bộ 400K–800K token tài liệu nghiệp vụ PDF, bảng lương, sơ đồ MISA và quy chuẩn 12 phân hệ ERP để lập bản thiết kế",
+          "recommendedChoice": "Chuyển sang `Gemini 4 Argon` / `3.8 Flash` hoặc `Claude Opus 5.5` (`1M` phẳng)",
+          "rationale": "Không bị phụ phí nhân 2x tại mốc 272K của GPT-5.6, tận dụng Implicit Cache 95% (Argon) hoặc Explicit Cache 95% (Opus/Sonnet) và Long Decode >64K.",
+          "avoidIf": "Bạn đang cố nhồi nguyên Monorepo 500K token vào một lệnh `GPT-5.6 Sol` duy nhất."
+        },
+        {
+          "condition": "Phát triển song song 3–4 phân hệ ERP độc lập (CRM 8 nấc, Automated Payroll, Auto Chia Data ZaloBot, WebGL 3D) trong 14 ngày",
+          "recommendedChoice": "Chạy Hybrid Pipeline DOMATION: `AGENTS.md` gốc + Claude `--worktree` + Codex CI + Gemini 3.8 Flash Subagents",
+          "rationale": "Khai thác Worktree isolation & PreToolUse Hooks của Claude, tốc độ/giá rẻ 1M của Gemini 3.8 Flash, và OS Sandbox + PR review của Codex CLI.",
+          "avoidIf": "Mỗi công cụ dùng một file quy tắc rời rạc không trỏ về `AGENTS.md` khiến code sinh ra lệch chuẩn giữa các phân hệ."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-codex-config-agents-and-github-action",
+      "heading": "Blueprint Recipe: `.codex/config.toml` chuẩn >= v0.149 + `AGENTS.md` Code Review Rules + CI `codex exec`",
+      "language": "toml",
+      "filename": ".codex/config.toml & .github/workflows/codex-pr.yml",
+      "description": "Cấu hình Codex CLI v0.149+ hợp lệ (đã loại bỏ approval_policy='untrusted' gây sập khởi động và model deprecated 5.2-codex), kết hợp luật ## Code Review Rules trong AGENTS.md và workflow GitHub Actions chạy codex exec read-only.",
+      "code": "# --- File 1: .codex/config.toml (Tuong thich Codex CLI >= v0.149.0) ---\nmodel = \"gpt-5.3-codex\"\nmodel_reasoning_effort = \"high\"\n\n# QUAN TRONG: Tuyet doi KHONG dung \"untrusted\" (da bi xoa o v0.149 lam loi khoi dong)\nsandbox_mode = \"workspace-write\"\napproval_policy = \"on-request\"\n\n[mcp_servers.context7]\ncommand = \"npx\"\nargs = [\"-y\", \"@upstash/context7-mcp\"]\n\n# --- File 2: AGENTS.md (Nguon su that chung cho Codex, Claude @./AGENTS.md & Gemini fallback) ---\n# ## Code Review Rules\n# - Moi bang du lieu khach hang/don hang bat buoc co PostgreSQL FORCE ROW LEVEL SECURITY.\n# - Khong bao gio hardcode Meta CAPI Access Token hoac Zalo OA Secret trong ma nguon.\n# - Moi webhook chia data ZaloBot phai dam bao idempotent va ghi log HTTP 200.\n# - Khong goi GPT-5.6 khi payload input vuot qua 272.000 token.\n\n# --- File 3: .github/workflows/codex-pr-audit.yml (CI Headless codex exec) ---\n# name: Codex PR Guard\n# on: [pull_request]\n# jobs:\n#   codex-audit:\n#     runs-on: ubuntu-latest\n#     steps:\n#       - uses: actions/checkout@v4\n#       - name: Run Codex Headless Read-Only Review\n#         env:\n#           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}\n#         run: |\n#           npx -y @openai/codex exec \\\n#             --model gpt-5.6-terra \\\n#             --sandbox read-only \\\n#             --output-last-message codex-review.md \\\n#             \"Review git diff HEAD~1 theo dung muc Code Review Rules trong AGENTS.md va bao cao loi RLS/Security.\""
+    },
+    {
+      "type": "prose",
+      "id": "blueprint-t3-hybrid-pipeline-vibecode-bespoke-erp",
+      "eyebrow": "BẢN THIẾT KẾ KIẾN TRÚC • TẦNG 3: HYBRID PIPELINE ĐA NHÀ CUNG CẤP DỰNG BESPOKE ERP TẠI DOMATION",
+      "variant": "narrative",
+      "heading": "Cách DOMATION & TurnioDEV ghép 3 hệ sinh thái Gemini – Claude – Codex thành xưởng Bespoke ERP nhanh gấp 4,5 lần",
+      "paragraphs": [
+        "Tại sao chúng tôi dành trọn bộ ba bài bản đồ hệ sinh thái cho Google Gemini, Anthropic Claude và OpenAI Codex? Bởi vì triết lý kỹ thuật cốt lõi của Founder Huỳnh Trọng Phúc (TurnioDEV) tại DOMATION không bao giờ tôn thờ độc quyền một nhà cung cấp nào. Khi triển khai một hệ thống **Bespoke ERP 5.0** 12 phân hệ hoặc các dự án thực chiến phức tạp — từ hệ thống ERP & LMS của Viện IDEAS, sa bàn 3D WebGL và auto chia data 3 Đại lý F1 của EcoLife Signature (Capital House), đến nền tảng AI Prepress 208 SKU tại INKICA — mỗi nhà cung cấp chỉ thực sự xuất sắc nhất ở một mắt xích cụ thể của vòng đời sản xuất phần mềm.",
+        "Chuỗi **Hybrid Multi-Vendor Pipeline** chuẩn của DOMATION vận hành qua 4 chặng khép kín trên cùng một kho mã đặt `AGENTS.md` và `SKILL.md` làm trung tâm: ở chặng **Khảo sát & Kiến trúc**, `Gemini 4 Argon` (hoặc `3.1 Pro`) nuốt trọn bộ hàng trăm trang PDF quy trình phòng ban, bảng lương và đặc tả kế toán MISA trên cửa sổ 1M hợp nhất rồi chuyển sang `Claude Opus 5.5` chạy `/plan` để chốt cấu trúc database Multi-Tenant PostgreSQL FORCE RLS. Sang chặng **Thi công Song song**, `Claude Code` mở 3–4 nhánh `claude --worktree` chạy `Sonnet 5.5` viết từng phân hệ độc lập dưới sự canh gác của `PreToolUse` Hooks và `ENABLE_TOOL_SEARCH` nối Context7/Supabase/Playwright MCP, trong khi `Gemini CLI` (dùng `3.8 Flash` + Google Workspace Extension) đồng bộ biểu mẫu Docs/Sheets và tài liệu vận hành nội bộ. Cuối cùng ở chặng **Gác cổng & Nghiệm thu**, `Codex CLI` (`GPT-5.3-Codex` và `GPT-5.6 Terra`) chạy trong sandbox nhân OS `Landlock/Seatbelt`, thực thi `codex exec` headless cùng `@codex review` + `Codex Security` trên GitHub Pull Request trước khi kích hoạt bản kiểm thử thị giác Playwright + Claude Vision và bấm nút Go-live."
+      ]
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-audit-codex-2026-and-hybrid-pipeline",
+      "heading": "Checklist nâng cấp Codex CLI 2026 & chuẩn hóa Hybrid Pipeline dựng Bespoke ERP",
+      "items": [
+        {
+          "check": "Xóa sạch `approval_policy = \"untrusted\"` và `on-failure` khỏi mọi tệp `config.toml`",
+          "severity": "critical",
+          "verificationHow": "Tìm kiếm toàn cục `untrusted` trong `~/.codex/config.toml` và `.codex/config.toml`; nâng cấp lên `approval_policy = \"on-request\"` + `sandbox_mode = \"read-only\"`.",
+          "passThreshold": "Codex CLI >= v0.149.0 khởi động sạch không lỗi cấu hình."
+        },
+        {
+          "check": "Loại bỏ các model đã deprecated (`gpt-5.2-codex`, `gpt-5.1-codex-mini`) và legacy `codex-mini-latest`",
+          "severity": "critical",
+          "verificationHow": "Kiểm tra pipeline CI, LiteLLM config và `.codex/config.toml` đảm bảo đã chuyển sang `gpt-5.3-codex`, `gpt-5.6-terra` hoặc `gpt-5.6-luna`.",
+          "passThreshold": "100% endpoint OpenAI Coding trỏ về nhánh 5.3-Codex hoặc gia đình 5.6."
+        },
+        {
+          "check": "Thiết lập ngưỡng chặn Input <= 272.000 token cho toàn bộ luồng gọi GPT-5.6 & GPT-5.3-Codex",
+          "severity": "high",
+          "verificationHow": "Cấu hình bộ đếm token ở AI Gateway: hễ ngữ cảnh > 272K, tự động chuyển hướng sang `Gemini 3.8 Flash`/`4 Argon` hoặc `Claude Sonnet/Opus 5.5`.",
+          "passThreshold": "0% request GPT-5.6 bị kích hoạt phụ phí 2x input / 1.5x output ngoài ý muốn."
+        },
+        {
+          "check": "Hợp nhất quy tắc `AGENTS.md` + `## Code Review Rules` xuyên suốt 3 Terminal CLI",
+          "severity": "high",
+          "verificationHow": "Xác minh `CLAUDE.md` có `@./AGENTS.md`, `.gemini/settings.json` có `[\"AGENTS.md\", \"GEMINI.md\"]` và GitHub PR đã kích hoạt `chatgpt-codex-connector`.",
+          "passThreshold": "Cả 3 CLI đọc chung một bộ luật bảo mật RLS, CAPI và cấu trúc ERP."
+        },
+        {
+          "check": "Khóa chạy CI tự động bằng `codex exec --sandbox read-only` & `Codex Security`",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra workflow GitHub Actions chạy `codex exec` trên từng PR và quét bảo mật định kỳ trước bước merge vào nhánh sản xuất.",
+          "passThreshold": "Mọi PR đều có báo cáo review tự động từ `AGENTS.md` trước khi deploy."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-codex-hybrid-pipeline",
+      "variant": "founder-pov",
+      "authorBadge": "Tổng Kết Kiến Trúc • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng đánh cược cả doanh nghiệp vào một hãng AI: sức mạnh thật đến từ Hybrid Pipeline giữ AGENTS.md làm xương sống",
+      "body": "OpenAI Codex cuối năm 2026 mang đến cho giới kỹ thuật thứ mà các hệ thống sản xuất khao khát nhất: khả năng thực thi terminal sắc bén của `GPT-5.3-Codex`, dải `GPT-5.6 Sol/Terra/Luna` linh hoạt theo ngân sách, và lớp phòng thủ sandbox cấp nhân OS Seatbelt/Landlock không phụ thuộc vào lời hứa của LLM. Khi bạn đặt Codex CLI làm lực lượng rà soát PR và thực thi tác vụ gọn <=272K, ghép cùng sức mạnh xử lý ngữ cảnh 1M token giá rẻ của Google Gemini và bộ khung Worktree + 33+ Hooks của Anthropic Claude Code xung quanh một tệp `AGENTS.md` thống nhất, doanh nghiệp sẽ sở hữu dây chuyền xây dựng Bespoke ERP nhanh gấp 4,5 lần mà độ an toàn mã nguồn vẫn đạt chuẩn Tập đoàn."
+    }
+  ]
+}

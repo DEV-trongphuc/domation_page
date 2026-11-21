@@ -1,0 +1,339 @@
+{
+  "id": "art-110",
+  "number": "110",
+  "slug": "semantic-caching-context-compression-giam-60-chi-phi-token",
+  "shardId": "shard04",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "AI Cost Optimization & FinOps",
+  "clusterId": "kw-ai-agent-rag",
+  "searchIntent": "Commercial",
+  "schemaType": "Report",
+  "editorialFormat": "field-report",
+  "title": "Semantic Caching & Context Compression: Cắt giảm 60% hóa đơn token cho Chatbot CSKH lưu lượng cao",
+  "seoTitle": "Semantic Caching: Cắt 60% Chi Phí Token Chatbot CSKH | DOMATION",
+  "metaDescription": "70% câu hỏi Zalo OA lặp lại về giá, địa chỉ và bảo hành. Triển khai Semantic Cache ngưỡng cosine an toàn kết hợp nén ngữ cảnh giảm 60% chi phí token.",
+  "focusKeyword": "semantic caching giảm chi phí token rag",
+  "secondaryKeywords": [
+    "nén ngữ cảnh prompt compression",
+    "tối ưu chi phí chatbot ai cskh",
+    "redis semantic cache rag",
+    "giảm độ trễ trả lời ai dưới 400ms",
+    "token finops chatbot doanh nghiệp"
+  ],
+  "thumbnailTheme": "midnight-cyan-data",
+  "thumbnailTitle": "Semantic Cache: Cắt 60% Hóa Đơn Token Bot CSKH",
+  "thumbnailHook": "Trả lời câu hỏi lặp trong 180ms với 0đ phí suy luận LLM.",
+  "thumbnailBadge": "FINOPS • SEMANTIC CACHE",
+  "coverImage": "/imgs/boost/v2/semantic-caching-context-compression-giam-60-chi-phi-token.webp",
+  "screenshotImage": "/imgs/boost/charts/semantic-caching-context-compression-giam-60-chi-phi-token-report.webp",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Tối Ưu Chi Phí AI Chatbot Đa Kênh",
+  "relatedSlugs": [
+    "ai-unit-economics-token-finops-kiem-soat-chi-phi-theo-lead",
+    "monorepo-long-context-gemini-1m-vs-claude-cache-vs-codex",
+    "portkey-ai-gateway-audit-edge-ai-gateway-semantic-cache",
+    "unbounded-consumption-token-dos-chong-dot-sach-ngan-sach-api"
+  ],
+  "readingMinutes": 11,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Báo cáo thực địa triển khai Entity-Safe Semantic Caching và Context Compression cắt giảm 60% chi phí token chatbot CSKH Zalo OA",
+  "screenshotCaption": "Biểu đồ theo dõi chi phí token đầu vào, đầu ra và tổng hóa đơn trên 100.000 lượt hội thoại CSKH/tháng qua 6 bước tối ưu FinOps.",
+  "relatedPortfolioId": "phucloctho-ampersand",
+  "tldrSummary": "Báo cáo thực địa trên chatbot CSKH Zalo OA và Messenger lưu lượng lớn cho thấy gần 70% tin nhắn lặp lại về bảng giá, địa chỉ và bảo hành. Tuy nhiên, exact-match cache chỉ đạt dưới 10% do biến thể gõ tiếng Việt, còn Semantic Cache theo Cosine thuần lại dễ trả nhầm đáp án giữa hai mã SKU khác nhau. Phối hợp Entity-Safe Semantic Cache (Cosine >= 0,94 kèm chữ ký thực thể), Rerank Pruning và Prefix Prompt Caching giúp cắt 60–66% hóa đơn token và phản hồi dưới 185ms.",
+  "keyTakeaways": [
+    "Semantic Cache chỉ dùng Cosine thuần rất nguy hiểm: 'Giá căn 2PN tòa A1?' và 'tòa B2?' có Cosine trên 0,96 nhưng đáp án khác nhau.",
+    "Entity-Safe Semantic Cache chỉ trả kết quả khi câu hỏi không mang tính cá nhân hóa, khớp `kb_version` và trùng tuyệt đối chữ ký thực thể (`sku`, `branch`).",
+    "Gắn khóa `kb_version` và `doc_id` giúp vô hiệu hóa toàn bộ cache giá cũ trong dưới 50ms ngay khi cập nhật tài liệu mới.",
+    "Với 62% lượt gọi LLM thật, cắt tỉa Rerank Top-4 và nén ngữ cảnh giảm 40%+ token đầu vào trước khi ăn thêm 90% giảm giá Prefix Cache.",
+    "Trên 100.000 lượt hội thoại/tháng, bộ ba FinOps hạ chi phí từ $1,420 xuống $480 (-66,2%) và phục vụ lượt Hit trong 175ms."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    { "label": "Giảm tổng hóa đơn Token / 100K lượt", "value": "-66.2% ($1,420 -> $480)" },
+    { "label": "Tỷ lệ Semantic Cache Hit an toàn", "value": "38.0% lượt hỏi CSKH" },
+    { "label": "Độ trễ phản hồi khi Hit Cache", "value": "175 ms (0đ suy luận LLM)" },
+    { "label": "Sự cố trả nhầm SKU hoặc rò PII", "value": "0 vụ nhờ Entity Guard" }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao không dùng luôn Exact-Match Redis Cache (băm MD5 câu hỏi) mà phải mất công xây Semantic Cache?",
+      "answer": "Người dùng Việt Nam trên Zalo OA và Messenger hiếm khi gõ hai câu giống hệt từng ký tự. Cùng một nhu cầu hỏi giá nhượng quyền hoặc địa chỉ cửa hàng, khách thứ nhất gõ 'chi nhánh q7 ở đâu v shop', khách thứ hai viết 'Cho em xin địa chỉ cửa hàng Quận 7 với ạ', khách thứ ba viết tắt không dấu 'xin dc cn q7'. Băm chuỗi chính xác chỉ bắt được dưới 9% lưu lượng (đa phần từ nút bấm Quick Reply), trong khi Semantic Cache đưa tỷ lệ khớp an toàn lên 38–42%."
+    },
+    {
+      "question": "Làm sao ngăn Semantic Cache trả nhầm câu trả lời cá nhân hóa của khách hàng A sang cho khách hàng B?",
+      "answer": "Bước bắt buộc trước khi tra cứu Semantic Cache là tầng **Cache Eligibility Gate (Cổng phân loại được phép Cache)**. Mọi truy vấn chứa đại từ sở hữu cá nhân hoặc từ khóa giao dịch sống ('đơn của tôi', 'kiểm tra công nợ', 'lịch hẹn hôm nay', 'tồn kho còn mấy căn', mã đơn hàng, số điện thoại) đều bị đánh dấu `cache_eligible = false` và đi thẳng qua Agent/SQL với quyền RLS theo phiên người dùng. Semantic Cache chỉ phục vụ cho nhóm câu hỏi tri thức công khai hoặc quy chuẩn tĩnh của thương hiệu."
+    },
+    {
+      "question": "Nếu chọn ngưỡng Cosine Similarity quá cao (0,97) thì ít Hit, mà hạ xuống (0,88) thì dễ sai nghĩa — nên đặt ngưỡng bao nhiêu là chuẩn?",
+      "answer": "Kinh nghiệm kiểm thử trên tiếng Việt tại DOMATION cho thấy ngưỡng an toàn nằm ở `0,94–0,95` NHƯNG với điều kiện tiên quyết là phải đi kèm **Exact Entity Slot Verification**. Nghĩa là chúng tôi tách các thực thể định danh cứng (mã SKU, mã tòa, tên quận/chi nhánh, tên gói khóa học) ra thành trường riêng: câu mới và câu trong cache vừa phải có độ tương đồng Vector >= 0,94, vừa phải có danh sách thực thể rút trích trùng khớp 100%. Nhờ vậy, 'giá gói Growth' không bao giờ ăn nhầm vào cache của 'giá gói Starter' dù hai câu giống nhau 95%."
+    },
+    {
+      "question": "Khi công ty vừa cập nhật bảng giá PDF mới lúc 10h sáng, làm sao xóa kịp các câu trả lời giá cũ đang nằm trong Semantic Cache?",
+      "answer": "Đừng đợi TTL hết hạn sau 24 giờ vì chỉ 1 tiếng báo giá cũ đã đủ gây tranh cãi với khách hàng. Kiến trúc chuẩn luôn nhúng `kb_version` (hoặc `pricing_epoch`) vào điều kiện lọc của khóa Cache và gắn kèm mảng `source_doc_ids` đã dùng để sinh ra câu trả lời đó. Ngay khi pipeline Data Clean Room xuất bản phiên bản bảng giá mới, hệ thống tăng biến đếm version hoặc chạy xóa tức thì mọi khóa Redis mang `doc_id` tương ứng — toàn bộ cache cũ bị vô hiệu hóa trong dưới 50 mili-giây."
+    },
+    {
+      "question": "Prefix Prompt Caching của các hãng như Gemini hay Claude khác gì Semantic Cache và có dùng chung được không?",
+      "answer": "Hai cơ chế này bổ trợ hoàn hảo cho nhau ở hai tầng khác nhau. Semantic Cache chặn ở cửa vào (tầng ứng dụng Redis/Gateway): nếu khớp câu hỏi tĩnh đã từng trả lời, hệ thống trả kết quả trong ~175ms và tốn 0 token suy luận LLM. Với ~62% câu hỏi phức tạp hoặc cá nhân hóa bị Cache Miss phải gọi LLM, Prefix Prompt Caching tại máy chủ của Gemini 3.8 Flash / Claude Sonnet 5.5 sẽ giảm tới 90–95% đơn giá cho phần System Prompt + Tool Schemas + Quy chế nền nằm cố định ở đầu prompt."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "chi-so-thuc-dia-finops-chatbot-100k",
+      "heading": "Kết quả đo lường thực địa trên lưu lượng 100.000 lượt hội thoại Chatbot CSKH / tháng",
+      "stats": [
+        {
+          "value": "-66.2%",
+          "label": "Giảm hóa đơn Token hàng tháng",
+          "context": "Từ $1,420/tháng xuống $480/tháng khi phối hợp 3 tầng FinOps",
+          "trend": "down"
+        },
+        {
+          "value": "38.0%",
+          "label": "Tỷ lệ Semantic Cache Hit an toàn",
+          "context": "Chỉ tính trên các câu hỏi tĩnh đã qua xác thực thực thể (Entity Match)",
+          "trend": "up"
+        },
+        {
+          "value": "175 ms",
+          "label": "Độ trễ P95 tại nhánh Cache Hit",
+          "context": "Giảm hơn 12x so với mức 2.250ms khi phải chạy Full RAG + LLM",
+          "trend": "up"
+        },
+        {
+          "value": "0 vụ",
+          "label": "Trả nhầm SKU hoặc lộ ngữ cảnh cũ",
+          "context": "Nhờ cô lập `kb_version` và chặn cache toàn bộ truy vấn giao dịch sống",
+          "trend": "up"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "hien-truong-dot-tien-token-chatbot-zalo-oa",
+      "eyebrow": "Báo Cáo Thực Địa Token FinOps",
+      "variant": "narrative",
+      "heading": "Nghịch lý Chatbot CSKH: Quảng cáo càng hiệu quả, hóa đơn API LLM càng ăn mòn biên lợi nhuận",
+      "pullQuote": "Gửi 7.800 token ngữ cảnh RAG cho một câu hỏi 'Quán mở cửa đến mấy giờ vậy shop?' cũng giống như thuê chuyên gia tư vấn chiến lược đứng trực chỉ để đọc lại tấm biển giờ mở cửa trước cổng.",
+      "paragraphs": [
+        "Khi vận hành trợ lý AI CSKH trực chiến 24/7 trên Zalo OA, Facebook Messenger và Website cho các chiến dịch lưu lượng lớn — từ phễu tuyển sinh 12.600+ Leads tại IDEAS, chuỗi 30+ cửa hàng F&B Phúc Lộc Thọ cho tới đợt mở bán bất động sản EcoLife Signature — đội ngũ FinOps của DOMATION luôn bắt gặp một quy luật tài chính khắc nghiệt. Ở giai đoạn thử nghiệm 2.000 tin nhắn/tháng, chi phí LLM chỉ vài chục USD nên không ai để ý. Nhưng ngay khi chiến dịch Meta Ads tăng tốc lên 100.000–300.000 lượt tương tác/tháng, hóa đơn API vọt lên hàng nghìn USD mỗi tháng, đẩy chi phí trên mỗi Lead chất lượng (CPL) tăng ngoài dự kiến.",
+        "Phân tích nhật ký truy vết (Trace Audit) từ hàng trăm nghìn lượt chat thật cho thấy tới 75% lãng phí token đến từ hai nguồn. Nguồn thứ nhất là **sự lặp lại tự nhiên của khách hàng**: khoảng 65–70% tin nhắn đầu phễu hỏi đi hỏi lại cùng một nhóm thông tin về bảng giá cơ bản, giờ hoạt động, địa chỉ chi nhánh, thủ tục đặt cọc hay ưu đãi hiện hành. Tuy nhiên, cache băm chuỗi chính xác (Exact Redis Cache) gần như vô dụng vì khách nhắn bằng muôn kiểu teencode, thiếu dấu hoặc biến thể vùng miền khác nhau. Nguồn thứ hai là **thói quen nhồi nhét ngữ cảnh quá tay (Context Bloat)**: nhiều bot kéo mặc định Top-12 đoạn văn bản (~5.500–7.500 token kèm rác HTML/tiêu đề trang) nhét vào prompt cho mọi lượt chat bất kể người dùng hỏi đơn giản hay phức tạp.",
+        "Nhưng khi nhiều đội kỹ thuật vội vã lắp một bộ Semantic Cache ngây thơ (chỉ nhúng câu hỏi thành vector rồi đối sánh Redis với ngưỡng Cosine `>= 0.90`), một tai nạn còn tệ hơn hóa đơn cao lập tức nổ ra: khách B hỏi 'Giá căn 2PN tòa B2 tầng 10?' lại nhận ngay câu trả lời đã cache trước đó của khách A hỏi 'Giá căn 2PN tòa A1 tầng 10?', bởi vì hai câu này có độ tương đồng Cosine tới **0,968**. Báo cáo thực địa này tổng kết kiến trúc 3 tầng **Entity-Safe Semantic Cache + Context Compression + Prefix Caching** giúp cắt 60–66% chi phí token mà vẫn khóa chặt tính chính xác nghiệp vụ."
+      ],
+      "bullets": [
+        "Đừng tối ưu token bằng cách hạ model xuống quá yếu gây mất khả năng tuân thủ chỉ dẫn tiếng Việt — hãy cắt bỏ các lượt suy luận thừa và ngữ cảnh rác trước.",
+        "Mọi kiến trúc Semantic Cache đạt chuẩn sản xuất đều phải tách rạch ròi giữa tri thức tĩnh dùng chung (Cacheable) và dữ liệu phiên cá nhân/tồn kho sống (Bypass Cache)."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-cat-giam-chi-phi-token-6-chang",
+      "heading": "Lộ trình cắt 66,2% hóa đơn Token trên 100.000 lượt Chatbot CSKH mỗi tháng",
+      "subtitle": "Phân rã chi phí Input Token, Output Token và Tổng chi phí (USD) theo mặt bằng giá mô hình Midweight ($2/1M input, $10/1M output) qua 6 lớp tối ưu tích lũy.",
+      "chart": {
+        "chartType": "composed",
+        "title": "Chi phí Input, Output và Tổng hóa đơn Token trên 100.000 lượt chat/tháng (USD)",
+        "xKey": "stage",
+        "yUnit": "USD",
+        "series": [
+          {
+            "key": "inputCostUsd",
+            "label": "Chi phí Input Token (USD)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "outputCostUsd",
+            "label": "Chi phí Output Token (USD)",
+            "color": "#06B6D4",
+            "type": "bar"
+          },
+          {
+            "key": "totalCostUsd",
+            "label": "Tổng hóa đơn tháng (USD)",
+            "color": "#EF4444",
+            "type": "line"
+          }
+        ],
+        "data": [
+          {
+            "stage": "Baseline Top-12",
+            "inputCostUsd": 1100,
+            "outputCostUsd": 320,
+            "totalCostUsd": 1420
+          },
+          {
+            "stage": "+ Rerank Top-4",
+            "inputCostUsd": 750,
+            "outputCostUsd": 320,
+            "totalCostUsd": 1070
+          },
+          {
+            "stage": "+ Compress Context",
+            "inputCostUsd": 590,
+            "outputCostUsd": 305,
+            "totalCostUsd": 895
+          },
+          {
+            "stage": "+ Prefix Cache",
+            "inputCostUsd": 470,
+            "outputCostUsd": 305,
+            "totalCostUsd": 775
+          },
+          {
+            "stage": "+ SemCache (0.96)",
+            "inputCostUsd": 348,
+            "outputCostUsd": 226,
+            "totalCostUsd": 574
+          },
+          {
+            "stage": "+ SemCache Guard 0.94",
+            "inputCostUsd": 291,
+            "outputCostUsd": 189,
+            "totalCostUsd": 480
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Tổng chi phí 100K lượt cuối",
+            "value": "$480 / tháng",
+            "delta": "Giảm -66.2% từ $1,420",
+            "positive": true
+          },
+          {
+            "label": "Tiết kiệm ròng mỗi 100K lượt",
+            "value": "$940 / tháng",
+            "delta": "Hoàn vốn hạ tầng Redis tuần 1",
+            "positive": true
+          },
+          {
+            "label": "Chi phí Input giảm được",
+            "value": "-73.5%",
+            "delta": "$1,100 -> $291 nhờ nén + cache",
+            "positive": true
+          },
+          {
+            "label": "Thời gian đáp ứng Cache Hit",
+            "value": "175 ms",
+            "delta": "P95 toàn hệ thống < 1.3s",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Mô hình hóa FinOps trên dữ liệu nhật ký thực tế DOMATION Gateway (trung bình 5.500 input tokens & 320 output tokens ở mức Baseline trước tối ưu)."
+      },
+      "insightSummary": "Hai bước đầu tiên (Rerank Cutoff xuống Top-4 và Context Compression) đã cắt ngay 37% tổng chi phí ($1,420 xuống $895) mà không cần đụng tới bất kỳ lớp cache rủi ro nào — thậm chí còn giúp bot trả lời gọn và bớt lan man hơn. Sau khi sắp xếp lại cấu trúc prompt để ăn Prefix Cache của nhà cung cấp LLM ($775), việc bổ sung Entity-Safe Semantic Cache ở ngưỡng 0,94 (đạt tỷ lệ hit 38%) kéo nốt phần hóa đơn cả Input lẫn Output xuống còn $480 (-66,2%)."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-finops-semantic-cache-va-nen-ngu-canh",
+      "src": "/imgs/boost/charts/semantic-caching-context-compression-giam-60-chi-phi-token-report.webp",
+      "alt": "Biểu đồ thống kê cắt giảm 60% hóa đơn token nhờ Semantic Caching có kiểm tra thực thể, nén ngữ cảnh và Prefix Prompt Caching",
+      "caption": "Thác suy giảm chi phí token trên 100.000 lượt chatbot CSKH khi phối hợp Rerank Pruning, Context Compression, Prefix Caching và Entity-Safe Semantic Cache.",
+      "badge": "Field Report • Token FinOps"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-ba-tang-cache-va-context-compression",
+      "eyebrow": "Thiết Kế Kỹ Thuật Ba Lớp FinOps",
+      "variant": "deep-dive",
+      "heading": "Bên trong cỗ máy giảm 66% chi phí: Entity-Safe Semantic Cache, Context Pruning và Prefix Alignment",
+      "paragraphs": [
+        "Để đạt mức cắt giảm trên 60% hóa đơn token một cách bền vững mà không đánh đổi bằng sai sót nghiệp vụ, kỹ sư cần kết hợp chặt chẽ ba lớp lọc theo đúng thứ tự từ cửa vào đến mô hình LLM.",
+        "**Lớp 1: Entity-Safe Semantic Cache tại Edge Gateway (Portkey/Fastify + Redis Vector).** Thay vì gửi thẳng mọi câu hỏi tới LLM, bộ Gateway nhúng câu hỏi bằng một mô hình embedding siêu nhẹ (~15ms) và kiểm tra hai điều kiện trước khi đọc Redis HNSW: (1) Câu hỏi không chứa dấu hiệu truy vấn cá nhân/biến động (số điện thoại, mã đơn, cụm từ 'của tôi', 'còn trống không') và (2) Phiên trò chuyện đang ở lượt mở đầu hoặc câu hỏi mang tính độc lập ngữ cảnh. Khi tìm thấy cặp câu hỏi cũ trong Redis có Cosine `>= 0.94` và khớp cùng `kb_version_hash`, hệ thống **đối chiếu tiếp tập chữ ký thực thể (`entity_signature`)** được trích xuất bằng bộ Regex/từ điển SKU nội bộ. Chỉ khi cả hai câu đều hỏi về cùng một mã căn hộ, cùng một chi nhánh hoặc cùng không chứa mã thực thể đặc thù, câu trả lời mới được trả về ngay trong ~175ms với chi phí LLM bằng 0.",
+        "**Lớp 2: Rerank Pruning & Extractive Context Compression cho các lượt Cache Miss.** Với ~62% lượt không trúng Semantic Cache, ta không chuyển toàn bộ Top-12 đoạn văn tìm được vào LLM. Cross-Encoder Reranker cắt cứng lấy tối đa 4 đoạn có điểm liên quan `>= 0.42`. Ngay sau đó, một hàm nén ngữ cảnh thuần thuật toán (zero-LLM cost, chạy dưới 3ms) loại bỏ các thẻ HTML trang trí dư thừa, số trang, đường viền bảng Markdown thừa khoảng trắng và các câu trùng lặp giữa hai đoạn chồng lấn. Đối với tài liệu quy chế rất dài, áp dụng lọc trích xuất câu (Extractive Sentence Pruning) giữ lại đúng những câu đạt điểm liên quan cao quanh đoạn chứa từ khóa mục tiêu, rút gọn phần ngữ cảnh từ ~4.000 token xuống dưới ~1.250 token.",
+        "**Lớp 3: Prefix Prompt Caching Alignment.** Cả Gemini 3.8 Flash / Gemini 4 Argon lẫn Claude Sonnet 5.5 và GPT-5.6 đều cung cấp mức giảm giá **90% đến 95%** cho các token tiền tố lặp lại (Cached Input). Tuy nhiên, rất nhiều lập trình viên đánh mất ưu đãi này chỉ vì đặt biến động như `{{current_timestamp}}` hoặc tên khách hàng ở ngay dòng đầu tiên của System Prompt! Chỉ cần một ký tự ở đầu prompt thay đổi, toàn bộ phần tiền tố 1.500 token phía sau bị trượt cache (cache miss). Nguyên tắc vàng tại DOMATION là: ghim cố định `[System Role + Brand Rules + Static Tool Schemas + Static Policy Summary]` ở phần đầu bất biến của prompt, rồi mới nối phần `[Retrieved Dynamic Chunks + Customer Context + User Message]` xuống cuối."
+      ],
+      "bullets": [
+        "Không cache câu hỏi nối tiếp mơ hồ kiểu 'Còn gói kia thì sao ạ?' — chỉ cache khi ngữ cảnh câu hỏi tự đầy đủ hoặc kết hợp kèm `intent_topic` của lượt trước.",
+        "Giới hạn kích thước `max_tokens` đầu ra hợp lý theo kênh (Zalo OA tối đa ~350–450 token dễ đọc trên màn hình điện thoại thay vì để AI viết tiểu luận 1.500 token tốn gấp 4x tiền Output)."
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "ts-entity-safe-semantic-cache-redis",
+      "heading": "TypeScript Recipe: Middleware Entity-Safe Semantic Cache với khóa thực thể & vô hiệu hóa theo `kb_version`",
+      "language": "TypeScript",
+      "filename": "cache/entity_safe_semantic_cache.ts",
+      "description": "Middleware kiểm tra điều kiện an toàn trước khi tra cứu Semantic Cache trên Redis: chặn các câu hỏi cá nhân hóa/dữ liệu sống, rút trích chữ ký thực thể (SKU, chi nhánh, gói dịch vụ) và bắt buộc trùng khớp `kbVersion` lẫn `entitySignature` khi Cosine >= 0.94 để không bao giờ trả nhầm giá.",
+      "code": "import { createHash } from 'node:crypto';\n\nconst PERSONAL_OR_LIVE_RE = /(đơn của tôi|đơn hàng|công nợ|tồn kho|còn mấy|lịch hẹn|hồ sơ của em|trạng thái|số dư)/i;\nconst ENTITY_CODE_RE = /\\b(?:[A-Z]{2,5}[-_]?\\d{2,4}(?:\\.\\d{2})?|starter|growth|enterprise|q\\d{1,2}|quận\\s+\\d+)\\b/gi;\n\nexport interface CacheLookupResult {\n  hit: boolean;\n  reason: string;\n  cachedAnswer?: string;\n  similarity?: number;\n}\n\nexport function checkCacheEligibility(query: string, turnCount: number): boolean {\n  if (turnCount > 2) return false; // Hội thoại nối tiếp sâu dễ phụ thuộc đại từ ẩn\n  if (PERSONAL_OR_LIVE_RE.test(query)) return false; // Dữ liệu sống/PII đi thẳng SQL RLS\n  if (/\\b0[35789]\\d{8}\\b/.test(query)) return false; // Chứa SĐT cá nhân\n  return true;\n}\n\nexport function extractEntitySignature(query: string): string {\n  const matches = (query.match(ENTITY_CODE_RE) || [])\n    .map((m) => m.toLowerCase().replace(/\\s+/g, ''))\n    .sort();\n  const unique = Array.from(new Set(matches));\n  return unique.length > 0 ? unique.join('|') : 'GENERIC_STATIC';\n}\n\nexport async function lookupEntitySafeSemanticCache(params: {\n  query: string;\n  turnCount: number;\n  kbVersion: string;\n  tenantId: string;\n  embedFn: (text: string) => Promise<number[]>;\n  redisVectorSearch: (args: {\n    tenantId: string;\n    kbVersion: string;\n    entitySignature: string;\n    vector: number[];\n    minCosine: number;\n  }) => Promise<{ answer: string; cosine: number } | null>;\n}): Promise<CacheLookupResult> {\n  if (!checkCacheEligibility(params.query, params.turnCount)) {\n    return { hit: false, reason: 'BYPASS_DYNAMIC_OR_PERSONAL' };\n  }\n\n  const entitySignature = extractEntitySignature(params.query);\n  const queryVector = await params.embedFn(params.query.trim().toLowerCase());\n\n  const matched = await params.redisVectorSearch({\n    tenantId: params.tenantId,\n    kbVersion: params.kbVersion,\n    entitySignature,\n    vector: queryVector,\n    minCosine: 0.94,\n  });\n\n  if (!matched) {\n    return { hit: false, reason: 'MISS_OR_ENTITY_MISMATCH' };\n  }\n\n  return {\n    hit: true,\n    reason: `SAFE_HIT:${entitySignature}`,\n    cachedAnswer: matched.answer,\n    similarity: matched.cosine,\n  };\n}\n\nexport function buildCacheRecordKey(tenantId: string, kbVersion: string, query: string): string {\n  const sig = extractEntitySignature(query);\n  const hash = createHash('sha256').update(`${kbVersion}:${sig}:${query}`).digest('hex').slice(0, 16);\n  return `semcache:${tenantId}:${kbVersion}:${sig}:${hash}`;\n}"
+    },
+    {
+      "type": "comparison-matrix",
+      "id": "so-sanh-4-chien-luoc-caching-chatbot",
+      "heading": "Đối chiếu 4 chiến lược tối ưu hóa chi phí Chatbot CSKH lưu lượng cao",
+      "caption": "Đánh giá tỷ lệ trúng cache, rủi ro sai lệch nghiệp vụ và mức độ tiết kiệm tổng hóa đơn API",
+      "columns": [
+        "Tiêu chí vận hành",
+        "Exact-Match Cache (MD5)",
+        "Semantic Cache Thuần (Cosine Only)",
+        "Entity-Safe SemCache + Compression",
+        "Full Stack (+ Prefix Prompt Cache)"
+      ],
+      "highlightColumn": 4,
+      "rows": [
+        {
+          "criterion": "Tỷ lệ Cache Hit tiếng Việt thực tế",
+          "values": [
+            "6% – 10% (trượt khi đổi dấu/viết tắt)",
+            "44% – 50% (nhưng lẫn nhiều ca sai nghĩa)",
+            "36% – 40% (lọc chặt chỉ lấy ca an toàn)",
+            "38% SemCache + 90% Prefix Cache phần còn lại"
+          ],
+          "winnerNote": "Tối ưu kép ở cả lượt Hit lẫn lượt Miss"
+        },
+        {
+          "criterion": "Rủi ro trả nhầm mã SKU / Lộ PII phiên",
+          "values": [
+            "Thấp (nếu tách theo tenant)",
+            "Rất cao — nhầm 'Tòa A1' sang 'Tòa B2' ở Cosine 0.96",
+            "Gần như bằng 0 nhờ Entity Signature + Bypass Gate",
+            "Gần như bằng 0 + tách RLS cho phần hội thoại sống"
+          ],
+          "winnerNote": "An toàn cấp doanh nghiệp"
+        },
+        {
+          "criterion": "Tổng mức cắt giảm hóa đơn Token",
+          "values": [
+            "~7% – 10%",
+            "~42% (nhưng tốn chi phí xử lý khiếu nại sai giá)",
+            "~54% – 58%",
+            "60% – 66.2% tổng chi phí hàng tháng"
+          ],
+          "winnerNote": "Đạt mục tiêu FinOps > 60%"
+        },
+        {
+          "criterion": "Độ trễ phản hồi (P50 / P95)",
+          "values": [
+            "Hit ~30ms / Miss ~2.300ms",
+            "Hit ~160ms / Miss ~2.300ms",
+            "Hit ~175ms / Miss ~1.350ms (nhờ cắt Top-4)",
+            "Hit ~175ms / Miss ~1.180ms (Time-to-First-Token nhanh)"
+          ]
+        },
+        {
+          "criterion": "Vô hiệu hóa khi đổi bảng giá / chính sách",
+          "values": [
+            "Xóa theo key hoặc chờ TTL",
+            "Khó dò xóa chính xác các câu liên quan",
+            "Tức thì (< 50ms) qua khóa `kb_version` & `doc_id`",
+            "Tức thì ở Redis + tự đổi Prefix Cache cho phần sách giá mới"
+          ]
+        }
+      ],
+      "footnote": "Nếu doanh nghiệp sử dụng Edge AI Gateway như `Portkey-AI/gateway` (MIT) kết hợp Redis nội bộ, đội ngũ có thể triển khai lớp routing và fallback dự phòng giữa các model chỉ bằng cấu hình JSON."
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-semantic-cache-finops-turniodev",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng tăng ngân sách Ads cho một con Chatbot ngốn token không kiểm soát",
+      "body": "Khi xây dựng các phễu tự động hóa tiếp nhận hàng chục nghìn Lead trên Zalo OA và Messenger, bài toán sống còn không chỉ là AI trả lời hay, mà là chi phí API trên mỗi Lead phải đủ thấp để nhân rộng lợi nhuận. Kinh nghiệm FinOps tại DOMATION chứng minh: chỉ cần khóa chặt bộ ba Rerank Top-4 + Context Compression + Entity-Safe Semantic Cache gắn `kb_version` và sắp xếp lại Prefix Prompt Caching, doanh nghiệp dễ dàng cắt 60–66% hóa đơn token ngay trong tuần đầu vận hành mà tốc độ phản hồi khách hàng còn mượt gấp nhiều lần."
+    }
+  ]
+}

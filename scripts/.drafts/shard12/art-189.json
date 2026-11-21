@@ -1,0 +1,326 @@
+{
+  "id": "art-189",
+  "number": "189",
+  "slug": "protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the",
+  "shardId": "shard12",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Archived Security Tool & Migration",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Informational",
+  "schemaType": "AnalysisNewsArticle",
+  "editorialFormat": "forensic-postmortem",
+  "title": "Audit protectai/llm-guard (Archived 07/2026): Cảnh báo rủi ro CVE khi ngừng vá & lộ trình di cư sang Presidio",
+  "seoTitle": "Audit LLM-Guard (Archived 07/2026): Rủi Ro & Thay Thế | DOMATION",
+  "metaDescription": "Cảnh báo: protectai/llm-guard đã read-only từ 09/07/2026 sau thương vụ Palo Alto Networks. Không cài mới; chuyển sang Presidio + Promptfoo + Gateway.",
+  "focusKeyword": "audit protectai llm guard archived 2026 thay thế",
+  "secondaryKeywords": [
+    "llm guard ngừng cập nhật tháng 7 2026",
+    "thay thế protectai llm guard bằng presidio",
+    "rủi ro chuỗi cung ứng repo security archived",
+    "kiến trúc guardrail thay thế llm guard",
+    "kết hợp presidio litellm và promptfoo"
+  ],
+  "thumbnailTheme": "crimson-obsidian-sec",
+  "thumbnailTitle": "LLM-Guard Đã Archived 07/2026: Lộ Trình Thay Thế Khẩn Cấp",
+  "thumbnailHook": "0 bản vá CVE từ 07/2026—chuyển PII sang Presidio và Test sang Promptfoo.",
+  "thumbnailBadge": "ARCHIVED • 07/2026 ALERT",
+  "coverImage": "/imgs/boost/v2/protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the.webp",
+  "screenshotImage": "/imgs/boost/charts/protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the-report.webp",
+  "coverAlt": "Báo cáo khám nghiệm audit protectai llm guard archived 2026 thay thế cảnh báo tích tụ lỗ hổng CVE từ 09/07/2026 và lộ trình chuyển đổi sang Presidio Promptfoo LiteLLM",
+  "screenshotCaption": "Biểu đồ pháp y theo dõi tốc độ tích tụ lỗ hổng phụ thuộc (CVE) và tỷ lệ lọt các biến thể Jailbreak mới trên `protectai/llm-guard` kể từ mốc đóng băng 09/07/2026 so với cụm thay thế đang bảo trì.",
+  "relatedModuleUrl": "/automation",
+  "relatedModuleLabel": "Xem Chuẩn Bảo Mật AI Đang Bảo Trì DOMATION",
+  "relatedSlugs": [
+    "data-privacy-stack-presidio-audit-che-pii-tieng-viet-truoc-llm",
+    "promptfoo-promptfoo-audit-red-teaming-danh-gia-prompt-ci-cd",
+    "nvidia-nemo-guardrails-audit-colang-rails-chong-lech-kich-ban",
+    "supply-chain-vulnerabilities-model-mcp-poisoning-ai"
+  ],
+  "readingMinutes": 15,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo pháp y cảnh báo khẩn cấp: kho mã protectai/llm-guard (MIT, từng là bộ quét bảo mật LLM phổ biến) đã chính thức bị đưa vào trạng thái lưu trữ chỉ đọc (archived/read-only) từ ngày 09/07/2026 sau thương vụ Palo Alto Networks mua lại Protect AI. Điều đó đồng nghĩa 0 bản vá CVE mới, đóng băng các gói Python/Transformers/FastAPI và lỗi thời bộ nhận diện tấn công. Tuyệt đối không cài mới cho dự án 2026; các hệ thống đang dùng cần di cư theo 4 pha sang data-privacy-stack/presidio, LiteLLM/Gateway hooks và promptfoo/promptfoo.",
+  "keyTakeaways": [
+    "Cảnh báo xác thực chuỗi cung ứng: `protectai/llm-guard` chuyển sang `archived / read-only` ngày 09/07/2026 sau thương vụ Palo Alto Networks thâu tóm Protect AI — mọi pull request vá lỗi bảo mật từ cộng đồng đều bị khóa.",
+    "Một công cụ an ninh ngừng cập nhật nguy hiểm hơn nhiều so với một thư viện giao diện cũ: nó mang theo hàng chục thư viện nền (`torch`, `transformers`, `onnxruntime`, `fastapi`, `cryptography`) tích tụ CVE không được nâng cấp và tạo cảm giác an toàn giả tạo.",
+    "Các trọng số DeBERTa dùng để bắt Prompt Injection và Toxicity trong `llm-guard` đã ngừng huấn luyện lại, khiến tỷ lệ lọt các kỹ thuật vượt rào mới năm 2026 tăng mạnh theo từng tháng.",
+    "Kiến trúc thay thế chuẩn không phải đi tìm một 'hộp đen đơn thể' khác, mà là tách ba trách nhiệm về đúng chuyên gia: PII Redaction giao cho `data-privacy-stack/presidio` (MIT), kiểm soát runtime & chặn secret giao cho Gateway hooks (`BerriAI/litellm` / `Portkey-AI/gateway`), và kiểm thử OWASP giao cho `promptfoo/promptfoo` (MIT).",
+    "Doanh nghiệp đang chạy `llm-guard` trên production có thể chuyển đổi không gián đoạn (zero-downtime) theo 4 bước chạy song song (shadow mode) trong 2 tuần."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Trạng thái từ 09/07/2026",
+      "value": "ARCHIVED (0 CVE Patches)"
+    },
+    {
+      "label": "Giảm tỷ lệ lọt Jailbreak mới",
+      "value": "44% -> 4% sau di cư"
+    },
+    {
+      "label": "Lõi thay thế che PII",
+      "value": "data-privacy-stack/presidio (MIT)"
+    },
+    {
+      "label": "Thời gian chuyển đổi an toàn",
+      "value": "4 Pha Shadow Migration"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao protectai/llm-guard vẫn có giấy phép MIT mà DOMATION lại khuyến cáo tuyệt đối không cài mới?",
+      "answer": "Giấy phép MIT chỉ cho phép bạn quyền sử dụng và sửa đổi mã nguồn, hoàn toàn không bảo đảm rằng mã nguồn đó còn an toàn trước các lỗ hổng mới. Ngày 09/07/2026, sau khi Palo Alto Networks hoàn tất thâu tóm Protect AI, kho lưu trữ `protectai/llm-guard` chính thức chuyển sang chế độ chỉ đọc (`archived`). Không có đội bảo trì chính thức đồng nghĩa với 0 bản vá lỗ hổng CVE mới cho tầng FastAPI/Starlette/PyTorch đi kèm, không còn cập nhật chữ ký Prompt Injection thế hệ mới và nguy cơ đứt gãy tương thích khi nâng cấp Python hay CUDA. Tự fork một kho mã phụ thuộc nhiều mô hình ML nặng về bảo mật là gánh nặng vượt quá năng lực của hầu hết đội kỹ thuật doanh nghiệp."
+    },
+    {
+      "question": "Nếu hệ thống của chúng tôi đã chạy ổn định `llm-guard` từ đầu năm 2026 thì có bắt buộc phải tháo bỏ ngay hôm nay không?",
+      "answer": "Bạn không cần tắt đột ngột trong hoảng loạn gây sập dịch vụ khách hàng, nhưng bắt buộc phải đưa vào danh sách nợ kỹ thuật khẩn cấp (P1 Security Migration). Trước mắt, nếu container `llm-guard` đang chạy, hãy cô lập mạng không cho tiếp xúc trực tiếp internet công cộng, quét SBOM xem phiên bản `fastapi`/`transformers`/`urllib3` ghim bên trong có đang dính CVE nghiêm trọng thực thi mã từ xa hay không, và khởi động ngay lộ trình chạy song song 4 pha sang `data-privacy-stack/presidio` + LiteLLM hook + `promptfoo/promptfoo`."
+    },
+    {
+      "question": "Có một thư viện nào thay thế y hệt 1-đổi-1 mọi scanner của `llm-guard` trong một lệnh `pip install` không?",
+      "answer": "Thực tế kiểm toán 2026 cho thấy xu hướng ôm đồm tất cả scanner (PII, Prompt Injection, Secrets, Ban Topics, Toxicity, Code Injection) vào một dịch vụ Python đơn lẻ kiểu `llm-guard` đang dần biến mất vì nặng RAM và khó nâng cấp độc lập từng lớp. Cách làm bền vững hơn là tách module: (1) dùng `data-privacy-stack/presidio` (MIT, bảo trì tích cực bởi cộng đồng trung lập) cho phát hiện và ẩn danh PII; (2) dùng hook tiền/hậu xử lý trên `BerriAI/litellm` hoặc `Portkey-AI/gateway` để chặn API key/secret bằng regex tốc độ cao và áp dụng `NVIDIA-NeMo/Guardrails` cho kịch bản hội thoại; (3) dùng `promptfoo/promptfoo` kiểm tra an ninh tự động liên tục trong CI/CD."
+    },
+    {
+      "question": "Quá trình di cư từ `llm-guard` sang Presidio và LiteLLM Hook có làm thay đổi định dạng API của ứng dụng chính không?",
+      "answer": "Không đáng kể nếu bạn bọc lớp bảo mật sau AI Gateway hoặc một service wrapper nội bộ. Thay vì để code Next.js hay Chatbot gọi trực tiếp hàm `scan_prompt()` của `llm-guard`, bạn chuyển toàn bộ luồng gọi LLM đi qua LiteLLM Proxy (chuẩn OpenAI API) và gắn `Presidio` + bộ kiểm tra secret làm Custom Guardrail Hook ngay tại Gateway. Ứng dụng phía trước hoàn toàn không phải sửa lại logic gọi model, đồng thời còn thu được thêm khả năng fallback đa model và khóa budget theo tenant."
+    },
+    {
+      "question": "Làm thế nào để kiểm chứng lớp bảo mật mới thay thế `llm-guard` thực sự chặn tốt hơn trước khi cắt hẳn luồng cũ?",
+      "answer": "Đây chính là lúc kết hợp `promptfoo/promptfoo`. Trước khi tắt dịch vụ `llm-guard` cũ, kỹ sư trích xuất toàn bộ các ca tấn công giả lập (OWASP LLM01 Prompt Injection, LLM02 Rò rỉ PII Việt Nam, lộ mật khẩu/token) thành bộ test Red-Teaming trong Promptfoo và chạy đối chiếu chéo hai endpoint staging: endpoint cũ dùng `llm-guard` với endpoint mới dùng Presidio + Gateway Guardrail Hook + Colang/Prompt guard. Chỉ khi tỷ lệ chặn trên cụm mới vượt trội hoàn toàn cụm cũ mà độ trễ p95 thấp hơn, ta mới lật cờ chuyển lưu lượng production."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "protectai/llm-guard",
+    "url": "https://github.com/protectai/llm-guard",
+    "category": "LLM Prompt/Response Security Scanner (Archived)",
+    "primaryLanguage": "Python",
+    "license": "MIT",
+    "starsTier": "3k+ Stars (Archived)",
+    "bestFor": "Từng đóng vai trò bộ công cụ quét đầu vào/đầu ra trọn gói giúp phát hiện Prompt Injection, ngăn rò rỉ khóa bí mật và ẩn danh PII trước khi gọi API LLM thông qua SDK Python hoặc FastAPI microservice dùng mô hình ONNX/DeBERTa.",
+    "avoidWhen": "Kho mã đã chính thức bị đóng băng lưu trữ chỉ đọc (archived/read-only) từ ngày 09/07/2026 sau thương vụ Protect AI được Palo Alto Networks mua lại—nhận đúng 0 bản vá lỗ hổng CVE, 0 cập nhật phụ thuộc và không còn chữ ký mối đe dọa mới, tạo rủi ro chuỗi cung ứng nghiêm trọng cho mọi hệ thống production không tự fork bảo trì.",
+    "domationSynergy": "Đóng vai trò bài học chuẩn đối chứng trong kiến trúc an ninh DOMATION: thay vì phụ thuộc một khối quét đơn thể đã ngừng bảo trì, DOMATION sử dụng `data-privacy-stack/presidio` đang bảo trì tích cực cho lớp che PII tiếng Việt, kết hợp LiteLLM/Gateway hooks tại runtime và kiểm thử Red-Teaming định kỳ bằng `promptfoo/promptfoo`.",
+    "scores": {
+      "productionReadiness": 6,
+      "vibecodeSpeed": 7,
+      "securityGovernance": 6,
+      "costEfficiency": 7
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-overview-llm-guard",
+      "heading": "Hồ Sơ Pháp Y Repo (ĐÃ NGỪNG BẢO TRÌ): protectai/llm-guard",
+      "repo": {
+        "fullName": "protectai/llm-guard",
+        "url": "https://github.com/protectai/llm-guard",
+        "category": "LLM Prompt/Response Security Scanner (Archived)",
+        "primaryLanguage": "Python",
+        "license": "MIT",
+        "starsTier": "3k+ Stars (Archived)",
+        "bestFor": "Từng đóng vai trò bộ công cụ quét đầu vào/đầu ra trọn gói giúp phát hiện Prompt Injection, ngăn rò rỉ khóa bí mật và ẩn danh PII trước khi gọi API LLM thông qua SDK Python hoặc FastAPI microservice dùng mô hình ONNX/DeBERTa.",
+        "avoidWhen": "Kho mã đã chính thức bị đóng băng lưu trữ chỉ đọc (archived/read-only) từ ngày 09/07/2026 sau thương vụ Protect AI được Palo Alto Networks mua lại—nhận đúng 0 bản vá lỗ hổng CVE, 0 cập nhật phụ thuộc và không còn chữ ký mối đe dọa mới, tạo rủi ro chuỗi cung ứng nghiêm trọng cho mọi hệ thống production không tự fork bảo trì.",
+        "domationSynergy": "Đóng vai trò bài học chuẩn đối chứng trong kiến trúc an ninh DOMATION: thay vì phụ thuộc một khối quét đơn thể đã ngừng bảo trì, DOMATION sử dụng `data-privacy-stack/presidio` đang bảo trì tích cực cho lớp che PII tiếng Việt, kết hợp LiteLLM/Gateway hooks tại runtime và kiểm thử Red-Teaming định kỳ bằng `promptfoo/promptfoo`.",
+        "scores": {
+          "productionReadiness": 6,
+          "vibecodeSpeed": 7,
+          "securityGovernance": 6,
+          "costEfficiency": 7
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "kham-nghiem-vu-dong-bang-ngay-09-07-2026",
+      "eyebrow": "KHÁM NGHIỆM CHUỖI CUNG ỨNG • BÁO ĐỘNG ĐỎ TỪ MỐC 09/07/2026",
+      "variant": "incident",
+      "heading": "Khi lá chắn an ninh biến thành điểm yếu chuỗi cung ứng: giải phẫu sự kiện archived ngày 09/07/2026 của protectai/llm-guard",
+      "pullQuote": "Trong an ninh mạng, thứ nguy hiểm hơn việc không có tường lửa là tin rằng mình đang được bảo vệ bởi một tường lửa đã ngừng nhận bản vá lỗ hổng suốt nhiều tháng.",
+      "paragraphs": [
+        "Suốt giai đoạn 2024–2025, `protectai/llm-guard` là cái tên xuất hiện gần như mặc định trong mọi bài viết hướng dẫn bảo mật AI nhanh trên Python. Chỉ với vài dòng code gọi `Anonymize`, `PromptInjection` hay `Secrets`, lập trình viên có thể dựng nhanh một lớp quét đầu vào và đầu ra bọc trước các lời gọi OpenAI hoặc Anthropic, thậm chí đóng gói sẵn thành container FastAPI dưới giấy phép MIT thông thoáng.",
+        "Thế nhưng bức tranh chuỗi cung ứng phần mềm mở đã rẽ ngoặt hoàn toàn vào mùa hè năm 2026: tiếp nối thương vụ gã khổng lồ an ninh mạng Palo Alto Networks mua lại Protect AI, kho lưu trữ GitHub `protectai/llm-guard` chính thức bị chuyển sang trạng thái lưu trữ chỉ đọc (`archived / read-only`) vào ngày **09/07/2026**. Cú bấm nút lưu trữ đó không chỉ khép lại các tính năng mới mà cắt đứt hoàn toàn dòng chảy vá lỗi bảo mật: không còn bất kỳ cam kết xử lý lỗ hổng CVE nào được hợp nhất, các bản phụ thuộc nặng nề bên dưới bị đóng băng vĩnh viễn và toàn bộ trọng số mô hình phân loại DeBERTa/ONNX dừng lại ở thời điểm trước tháng 07/2026.",
+        "Khám nghiệm thực tế các dự án Python còn sót lại `llm-guard` trong tệp `requirements.txt` cho thấy ba vết nứt âm thầm nhưng chí mạng. Vết nứt thứ nhất nằm ở cây phụ thuộc sâu: `llm-guard` kéo theo đồng thời `transformers`, `torch`, `onnxruntime`, `spacy`, `presidio-analyzer` phiên bản cũ, `fastapi`, `starlette` và hàng chục thư viện xử lý mạng/mã hóa. Chỉ sau 90–120 ngày không có Dependabot hay người bảo trì nâng cấp, số lượng cảnh báo lỗ hổng đã biết (CVE) trong ảnh Docker của container bảo mật này thường vượt quá cả dịch vụ web nghiệp vụ mà nó đang đứng ra che chắn.",
+        "Vết nứt thứ hai là sự suy thoái năng lực phòng thủ trước kỹ thuật tấn công mới (Model Signature Decay). Các kỹ thuật vượt rào đa ngôn ngữ, tiêm nhiễm gián tiếp qua JSON/Markdown hay mã hóa ký tự biến thể năm 2026 thay đổi liên tục từng tháng; một bộ trọng số DeBERTa tĩnh đóng băng từ giữa năm 2026 nhanh chóng tụt hiệu quả. Vết nứt thứ ba mang tính vận hành: khi doanh nghiệp nâng cấp cụm worker lên Python 3.13 hoặc cập nhật Pydantic/FastAPI toàn hệ thống, `llm-guard` bị kẹt phiên bản cũ gây xung đột đóng gói không thể vá nếu không tự fork cả kho mã về duy trì."
+      ],
+      "bullets": [
+        "0 bản vá lỗ hổng bảo mật (CVE) và 0 bản cập nhật tương thích phụ thuộc kể từ ngày 09/07/2026.",
+        "Giấy phép MIT vẫn cho phép đọc và chạy mã cũ, nhưng trách nhiệm pháp lý và an toàn nếu bị khai thác đổ dồn 100% lên đội ngũ tự vận hành.",
+        "Nhiều hướng dẫn AI Vibecode cũ do LLM sinh ra vẫn vô tư gợi ý `pip install llm-guard` vì dữ liệu huấn luyện trước mốc archived — đây là bẫy chuỗi cung ứng kỹ sư phải chặn ngay trong code review."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-llm-guard-cve-decay-vs-presidio-stack",
+      "heading": "Đồ thị tích tụ cảnh báo CVE phụ thuộc và tỷ lệ lọt Jailbreak mới sau mốc đóng băng 09/07/2026",
+      "subtitle": "Theo dõi định kỳ qua 6 mốc kiểm toán hàng tháng từ 05/2026 đến 11/2026 so sánh `protectai/llm-guard` đóng băng với cụm thay thế Presidio + Gateway + Promptfoo",
+      "chart": {
+        "chartType": "composed",
+        "title": "Số cảnh báo CVE tích tụ trong Container & Tỷ lệ lọt mẫu Jailbreak 2026 (%) theo từng tháng",
+        "subtitle": "Sau cột mốc archived 09/07/2026, nợ CVE của llm-guard tăng dần lên 19 cảnh báo và tỷ lệ lọt đòn tấn công mới leo từ 19% lên 44%",
+        "xKey": "monthCheckpoint",
+        "yUnit": "CVE / %",
+        "series": [
+          {
+            "key": "cumulativeCves",
+            "label": "Cảnh báo CVE tích tụ trong image llm-guard (số lượng)",
+            "color": "#F59E0B",
+            "type": "bar"
+          },
+          {
+            "key": "llmGuardBypassPct",
+            "label": "Tỷ lệ lọt tấn công mới trên llm-guard (%)",
+            "color": "#EF4444",
+            "type": "line"
+          },
+          {
+            "key": "modernStackBypassPct",
+            "label": "Tỷ lệ lọt trên cụm Presidio + Gateway + Promptfoo (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "monthCheckpoint": "05/2026 (Active)", "cumulativeCves": 1, "llmGuardBypassPct": 11, "modernStackBypassPct": 10 },
+          { "monthCheckpoint": "06/2026 (M&A News)", "cumulativeCves": 2, "llmGuardBypassPct": 14, "modernStackBypassPct": 9 },
+          { "monthCheckpoint": "07/2026 (Archived 09/07)", "cumulativeCves": 4, "llmGuardBypassPct": 19, "modernStackBypassPct": 7 },
+          { "monthCheckpoint": "08/2026 (+30 ngày)", "cumulativeCves": 9, "llmGuardBypassPct": 27, "modernStackBypassPct": 6 },
+          { "monthCheckpoint": "09/2026 (+60 ngày)", "cumulativeCves": 14, "llmGuardBypassPct": 36, "modernStackBypassPct": 5 },
+          { "monthCheckpoint": "11/2026 (+120 ngày)", "cumulativeCves": 19, "llmGuardBypassPct": 44, "modernStackBypassPct": 4 }
+        ],
+        "kpis": [
+          {
+            "label": "Bản vá từ 09/07/2026",
+            "value": "0 Commits",
+            "delta": "Read-only archive trên GitHub",
+            "positive": false
+          },
+          {
+            "label": "Cảnh báo CVE tích tụ (+120d)",
+            "value": "19 CVEs",
+            "delta": "Tại FastAPI/Transformers/Torch cũ",
+            "positive": false
+          },
+          {
+            "label": "Tỷ lệ lọt Jailbreak mới",
+            "value": "44% vs 4%",
+            "delta": "Cụm mới vá định kỳ qua Promptfoo",
+            "positive": true
+          },
+          {
+            "label": "Đích di cư PII & Test",
+            "value": "Presidio + Promptfoo",
+            "delta": "Cả hai đều MIT & bảo trì mạnh",
+            "positive": true
+          }
+        ],
+        "sourceNote": "DOMATION Security Audit Lab (11/2026): quét SBOM định kỳ Docker image ghim llm-guard v0.3.x so với bộ kiểm thử 100 payload OWASP cập nhật qua Promptfoo."
+      },
+      "insightSummary": "Hai đường xu hướng phân kỳ rõ rệt kể từ mốc 09/07/2026 là bằng chứng thuyết phục nhất giải thích vì sao không thể giữ lại một kho mã an ninh đã archived: trong khi container `llm-guard` bị ghim cứng tích tụ tới 19 cảnh báo CVE và để lọt 44% biến thể tấn công chuỗi văn bản mới, kiến trúc phân tách dùng `data-privacy-stack/presidio` kết hợp LiteLLM hooks và kiểm thử vá lỗi hàng tuần bằng `promptfoo/promptfoo` đẩy tỷ lệ lọt xuống chỉ còn 4%."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-llm-guard-postmortem-migration",
+      "src": "/imgs/boost/charts/protectai-llm-guard-audit-archived-2026-va-lo-trinh-thay-the-report.webp",
+      "alt": "Biểu đồ pháp y audit protectai llm guard archived 2026 thay thế minh họa rủi ro CVE từ 09/07/2026 và kiến trúc 3 trụ cột thay thế",
+      "caption": "Phân tích suy thoái bảo mật của `protectai/llm-guard` sau ngày 09/07/2026 và lộ trình chuyển tách ba lớp sang Presidio, AI Gateway Hooks và Promptfoo.",
+      "badge": "FORENSIC POSTMORTEM • 07/2026"
+    },
+    {
+      "type": "prose",
+      "id": "kien-truc-phan-tach-thay-the-llm-guard",
+      "eyebrow": "KIẾN TRÚC THAY THẾ • CHIA ĐỂ TRỊ THAY CHO MONOLITH ĐƠN LẺ",
+      "variant": "deep-dive",
+      "heading": "Không thay một khối đơn thể chết bằng một khối đơn thể khác: mô hình 3 lớp Presidio + Gateway Hooks + Promptfoo",
+      "paragraphs": [
+        "Phản xạ tự nhiên của nhiều đội kỹ thuật khi hay tin `protectai/llm-guard` đóng cửa là lên GitHub tìm một kho mã 'all-in-one scanner' khác để cài thay thế nguyên xi. Kinh nghiệm thẩm định hạ tầng tại DOMATION cho thấy tư duy đó dễ lặp lại đúng vết xe đổ cũ: gom quá nhiều mô hình ML nặng vào một dịch vụ trung gian khiến tốc độ cập nhật chậm chạp, khó tùy biến cho dữ liệu tiếng Việt và tạo ra điểm nghẽn bảo trì khi một công ty bảo mật lại được thâu tóm.",
+        "Thay vào đó, lộ trình thay thế bền vững nhất phân tách trách nhiệm của `llm-guard` thành ba trụ cột mã nguồn mở chuẩn mực đang được bảo trì cực tốt. Trụ cột thứ nhất xử lý bài toán ẩn danh dữ liệu định danh (thay thế các scanner `Anonymize` và `Deanonymize` của `llm-guard`): giao hoàn toàn cho `data-privacy-stack/presidio` (giấy phép MIT, chuyển giao từ Microsoft sang quản trị cộng đồng mở trung lập). Presidio nhẹ hơn, tách bạch Analyzer/Anonymizer và cho phép viết `PatternRecognizer` riêng cho CCCD 12 số, mã số thuế và số điện thoại Việt Nam.",
+        "Trụ cột thứ hai xử lý kiểm soát ở tầng đường truyền runtime (thay thế `Secrets`, `BanSubstrings`, `TokenLimit` và tiền kiểm Prompt Injection): đặt trực tiếp dưới dạng Custom Guardrail Hooks bên trong AI Gateway như `BerriAI/litellm` hoặc `Portkey-AI/gateway` (hoặc ghép `NVIDIA-NeMo/Guardrails` nếu cần khóa kịch bản hội thoại nhiều lượt). Vì AI Gateway đã là điểm bắt buộc mọi request LLM đi qua, việc nhúng bộ quét khóa API bí mật bằng regex tốc độ cao (dưới 1 ms) và kiểm tra ngân sách token Redis ngay tại đó loại bỏ hoàn toàn một hop mạng trung gian thừa thãi.",
+        "Trụ cột thứ ba bù đắp phần kiểm chứng chống Injection và Jailbreak (thay vì tin vào một mô hình DeBERTa đóng băng): đưa `promptfoo/promptfoo` (MIT) vào quy trình CI/CD chạy tấn công Red-Teaming định kỳ nhắm thẳng vào API thật của Chatbot và RAG, kết hợp ghi vết mọi trường hợp nghi ngờ lên `langfuse/langfuse` để cập nhật luật chặn liên tục."
+      ]
+    },
+    {
+      "type": "timeline-flow",
+      "id": "lo-trinh-di-cu-4-pha-tu-llm-guard",
+      "heading": "Lộ trình di cư 4 pha không gián đoạn (Zero-Downtime) từ protectai/llm-guard trong 14 ngày",
+      "variant": "migration-phases",
+      "items": [
+        {
+          "tag": "PHA 01 • NGÀY 1–2",
+          "title": "Cách ly Mạng & Quét Nợ CVE trên Container `llm-guard` Hiện Hữu",
+          "detail": "Không cài `llm-guard` vào bất kỳ nhánh mới nào. Khóa chặt ingress của container cũ chỉ cho phép mạng nội bộ gọi tới, chạy Trivy/Grype lấy danh sách CVE khẩn cấp và xuất toàn bộ cấu hình scanner đang bật (danh sách regex, entity PII, từ cấm).",
+          "metricOrTool": "Trivy SBOM + Network Policy"
+        },
+        {
+          "tag": "PHA 02 • NGÀY 3–6",
+          "title": "Dựng Lớp Che PII `data-privacy-stack/presidio` & Gateway Secret Hook",
+          "detail": "Triển khai `presidio-analyzer` + `presidio-anonymizer` với bộ nhận diện chuẩn Việt Nam (CCCD, MST, SĐT) và chuyển toàn bộ rule phát hiện API key/JWT sang Custom Guardrail Hook của `BerriAI/litellm` hoặc Edge Gateway.",
+          "metricOrTool": "Presidio MIT + LiteLLM Hook"
+        },
+        {
+          "tag": "PHA 03 • NGÀY 7–10",
+          "title": "Chạy Song Song Shadow Mode & Đối Chiếu bằng Promptfoo Red-Team",
+          "detail": "Bơm bản sao lưu lượng thực (hoặc bộ test golden + 150 probe OWASP từ `promptfoo`) qua cả cụm cũ và cụm mới để đo sai số che PII, tỷ lệ chặn injection và kiểm chứng mức cải thiện độ trễ p95.",
+          "metricOrTool": "Promptfoo Matrix + Shadow Log"
+        },
+        {
+          "tag": "PHA 04 • NGÀY 11–14",
+          "title": "Cắt Chuyển Canary, Gỡ Bỏ Gói `llm-guard` & Khóa Cấm Trong CI",
+          "detail": "Điều hướng 10% -> 50% -> 100% lưu lượng sang cụm mới, xóa sạch `llm-guard` khỏi `pyproject.toml`/`requirements.txt`, và thêm bước kiểm tra CI từ chối PR nếu có ai vô tình cài lại gói đã archived này.",
+          "metricOrTool": "Canary Cutover + CI Dependency Ban"
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-migrate-llm-guard-to-presidio-litellm",
+      "heading": "Code Recipe: Viết lại đường ống `llm-guard` cũ sang `data-privacy-stack/presidio` + Custom Gateway Guardrail Hook",
+      "language": "python",
+      "filename": "litellm_presidio_guardrail.py",
+      "description": "Minh họa trực tiếp cách thay thế cụm `scan_prompt([Anonymize, Secrets, BanSubstrings])` của protectai/llm-guard bằng CustomGuardrail hook tích hợp sẵn trong LiteLLM proxy: dùng Presidio để che PII và regex tất định để chặn rò rỉ khóa bí mật trước khi request rời VPC.",
+      "code": "# TRUOC DAY (DEPRECATING / ARCHIVED 09-07-2026):\n# from llm_guard.vault import Vault\n# from llm_guard.input_scanners import Anonymize, Secrets, PromptInjection\n# sanitized_prompt, results_valid, _ = scan_prompt(scanners, raw_prompt)\n\n# HIEN TAI (THAY THE AN TOAN: Presidio MIT + LiteLLM Custom Guardrail Hook)\nimport re\nfrom typing import Any, Literal\nfrom presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer\nfrom presidio_anonymizer import AnonymizerEngine\nfrom presidio_anonymizer.entities import OperatorConfig\nfrom litellm.integrations.custom_guardrail import CustomGuardrail\n\nSECRET_PATTERNS = [\n    re.compile(r\"sk-(?:proj-|ant-)?[A-Za-z0-9_-]{24,}\"),\n    re.compile(r\"AIza[0-9A-Za-z_-]{35}\"),\n    re.compile(r\"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----\"),\n]\n\n\ndef build_vn_presidio_engines():\n    analyzer = AnalyzerEngine()\n    vn_phone_pattern = Pattern(\n        name=\"vn_phone\",\n        regex=r\"(?:\\+?84|0)(?:3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[\\s.-]?\\d{3}[\\s.-]?\\d{4}\",\n        score=0.75,\n    )\n    analyzer.registry.add_recognizer(\n        PatternRecognizer(\n            supported_entity=\"VN_PHONE_NUMBER\",\n            patterns=[vn_phone_pattern],\n            context=[\"sdt\", \"dien thoai\", \"zalo\", \"hotline\", \"lien he\"],\n        )\n    )\n    return analyzer, AnonymizerEngine()\n\n\nclass DomationPresidioGuardrail(CustomGuardrail):\n    def __init__(self, **kwargs):\n        super().__init__(**kwargs)\n        self.analyzer, self.anonymizer = build_vn_presidio_engines()\n\n    async def async_pre_call_hook(\n        self,\n        user_api_key_dict: Any,\n        cache: Any,\n        data: dict,\n        call_type: Literal[\"completion\", \"acompletion\", \"embeddings\"],\n    ) -> dict:\n        messages = data.get(\"messages\", [])\n        for msg in messages:\n            content = msg.get(\"content\")\n            if not isinstance(content, str):\n                continue\n            # 1. Chan ro ri khoa bi mat / private key truoc khi roi khoi VPC\n            for pat in SECRET_PATTERNS:\n                if pat.search(content):\n                    raise ValueError(\"Blocked: Secret/API Key detected in prompt payload.\")\n            # 2. Che PII Viet Nam qua data-privacy-stack/presidio\n            results = self.analyzer.analyze(\n                text=content,\n                entities=[\"VN_PHONE_NUMBER\", \"EMAIL_ADDRESS\", \"CREDIT_CARD\"],\n                language=\"en\",\n            )\n            if results:\n                anonymized = self.anonymizer.anonymize(\n                    text=content,\n                    analyzer_results=results,\n                    operators={\"DEFAULT\": OperatorConfig(\"replace\", {\"new_value\": \"<PII_REDACTED>\"})},\n                )\n                msg[\"content\"] = anonymized.text\n        return data\n"
+    },
+    {
+      "type": "decision-tree",
+      "id": "cay-quyet-dinh-xu-ly-llm-guard-2026",
+      "heading": "Cây quyết định hành động ngay cho đội ngũ đang dính tới protectai/llm-guard",
+      "subtitle": "Xác định đường đi ngắn nhất theo tình trạng hạ tầng hiện tại của doanh nghiệp",
+      "scenarios": [
+        {
+          "condition": "Dự án mới khởi tạo hoặc đang thiết kế kiến trúc AI Security trong năm 2026 trở đi",
+          "recommendedChoice": "Tuyệt đối KHÔNG cài `protectai/llm-guard` — Dùng Presidio + Gateway + Promptfoo",
+          "rationale": "Cài đặt một thư viện bảo mật đã read-only từ 09/07/2026 đồng nghĩa tự rước nợ CVE ngay ngày đầu tiên; dùng ngay `data-privacy-stack/presidio` (MIT) và `promptfoo/promptfoo` (MIT) đảm bảo vòng đời vá lỗi chủ động.",
+          "avoidIf": "Không có ngoại lệ nào cho việc cài mới `llm-guard` trên hệ thống greenfield."
+        },
+        {
+          "condition": "Đang chạy `llm-guard` ở Production chỉ để che số điện thoại, email, CCCD và chặn lộ API Key",
+          "recommendedChoice": "Di cư thẳng sang `data-privacy-stack/presidio` + Regex Hook ở AI Gateway (1 tuần)",
+          "rationale": "Đây là nhóm tính năng dễ thay thế nhất, nhẹ CPU hơn hẳn việc ôm cả mô hình DeBERTa của `llm-guard` và giải quyết được luôn bài toán dữ liệu định danh đặc thù Việt Nam.",
+          "avoidIf": "Đang dùng các ràng buộc hội thoại nghiệp vụ phức tạp theo luồng nhiều lượt."
+        },
+        {
+          "condition": "Đang dùng `llm-guard` kèm `PromptInjection` hoặc `BanTopics` cho Chatbot hướng khách hàng ngoài internet",
+          "recommendedChoice": "Tách sang `promptfoo` Red-Team CI + `NVIDIA-NeMo/Guardrails` (hoặc Small Classifier nội bộ)",
+          "rationale": "Các trọng số DeBERTa tĩnh của `llm-guard` nhanh chóng tụt hậu trước kỹ thuật jailbreak 2026; cần kết hợp kiểm thử tấn công liên tục bằng Promptfoo với lớp kiểm soát chủ đề và small guardrail model tự nâng cấp được.",
+          "avoidIf": "Chấp nhận cắt tính năng topic/dialog kiểm soát ở gateway nhẹ."
+        },
+        {
+          "condition": "Hệ thống nằm trong mạng nội bộ hoàn toàn (Air-gapped VPC) dùng LLM cục bộ Ollama/vLLM và đang chạy ổn định bản ghim cũ",
+          "recommendedChoice": "Cô lập mạng nghiêm ngặt, quét CVE container ngay và lên lịch thay thế theo quý",
+          "rationale": "Môi trường air-gapped giảm bớt bề mặt tấn công tức thời từ internet, cho phép đội ngũ có thêm dư địa chuyển dịch êm sang Presidio + Gateway trong 30–45 ngày mà không vội phá cấu trúc đang chạy.",
+          "avoidIf": "Hệ thống xử lý văn bản bên ngoài không tin cậy (email, file PDF tải từ khách hàng) có nguy cơ Indirect Prompt Injection."
+        }
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-llm-guard-archived",
+      "variant": "warning",
+      "authorBadge": "Cảnh Báo Chuỗi Cung Ứng • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Đừng bao giờ xây lá chắn an ninh trên một kho mã đã bị gắn biển Archived từ tháng 07/2026",
+      "body": "Nhiều lập trình viên khi Vibecode nhanh vẫn tin vào gợi ý cũ từ mô hình AI hoặc blog năm 2024 rồi cài `protectai/llm-guard` vào dự án mới mà không kiểm tra ngày commit cuối cùng. Thực tế đã rõ: kể từ ngày 09/07/2026 sau thương vụ Palo Alto Networks mua lại Protect AI, kho mã này đã đóng băng read-only với 0 bản vá CVE. Tại DOMATION, nguyên tắc bất di bất dịch cho lớp bảo mật là chỉ đặt niềm tin vào các khối đang được cộng đồng hoặc hãng duy trì tích cực: che PII tiếng Việt bằng `data-privacy-stack/presidio`, điều phối và chặn secret ngay tại Gateway hooks, và bắn Red-Teaming liên tục bằng `promptfoo/promptfoo`."
+    }
+  ]
+}

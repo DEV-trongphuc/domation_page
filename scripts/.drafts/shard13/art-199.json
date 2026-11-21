@@ -1,0 +1,314 @@
+{
+  "id": "art-199",
+  "number": "199",
+  "slug": "posthog-posthog-audit-product-analytics-server-side-tracking",
+  "shardId": "shard13",
+  "pillar": "github-vibecode-audit",
+  "pillarLabel": "Audit Repo GitHub & Vibecode",
+  "industry": "Product Analytics & Session Replay",
+  "clusterId": "kw-github-vibecode-audit",
+  "searchIntent": "Comparison",
+  "schemaType": "TechArticle",
+  "editorialFormat": "repo-teardown",
+  "title": "Audit posthog/posthog: Heatmap, Feature Flags & Session Replay trên ClickHouse kèm kỷ luật che PII",
+  "seoTitle": "Audit PostHog: Analytics, Session Replay & Che PII | DOMATION",
+  "metaDescription": "Mổ xẻ PostHog (MIT Core, 40k+ Stars): hợp nhất funnel analytics, A/B test và replay trên ClickHouse/Kafka, nhớ cấu hình maskInputOptions che CCCD/SĐT.",
+  "focusKeyword": "audit posthog analytics session replay và pii",
+  "secondaryKeywords": [
+    "posthog self host clickhouse kafka ram",
+    "che dữ liệu nhạy cảm trong session replay",
+    "so sánh posthog và google analytics 4",
+    "feature flags ab testing landing page",
+    "kết nối hành vi web về meta capi"
+  ],
+  "thumbnailTheme": "github-terminal-audit",
+  "thumbnailTitle": "PostHog 40K Stars: Heatmap & Replay Đỉnh Nhưng Phải Che Input",
+  "thumbnailHook": "Bật maskAllInputs khi quay Session Replay và cân nhắc dung lượng ClickHouse/Kafka.",
+  "thumbnailBadge": "GITHUB • PRODUCT ANALYTICS",
+  "coverImage": "/imgs/boost/v2/posthog-posthog-audit-product-analytics-server-side-tracking.webp",
+  "screenshotImage": "/imgs/boost/charts/posthog-posthog-audit-product-analytics-server-side-tracking-report.webp",
+  "coverAlt": "Mổ xẻ kiến trúc audit posthog analytics session replay và pii phân tích kho ClickHouse Kafka, cơ chế che dữ liệu nhạy cảm maskInputOptions và đồng bộ sự kiện Meta CAPI",
+  "screenshotCaption": "Biểu đồ đo kiểm mức tiêu thụ RAM (GB) của hạ tầng tự host PostHog (ClickHouse, Kafka, Postgres, Redis) và tỷ lệ giữ lại dữ liệu sạch khi áp dụng kỷ luật che PII trên Session Replay so với đồng bộ sự kiện CRO về Meta CAPI.",
+  "relatedModuleUrl": "/web-design",
+  "relatedModuleLabel": "Xem Giải Pháp Web Heatmap & CRO DOMATION",
+  "relatedSlugs": [
+    "landing-page-ab-testing-server-side-tracking-doanh-thu-crm",
+    "web-tracking-hanh-vi-khach-hang-an-danh-xem-bang-gia",
+    "mu-attribution-meta-tiktok-google-crm-giai-phap-capi",
+    "chuan-hoa-first-party-data-hau-cookieless-cho-ai-va-ads"
+  ],
+  "readingMinutes": 13,
+  "publishedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
+  "tldrSummary": "Báo cáo mổ xẻ audit posthog analytics session replay và pii đánh giá posthog/posthog (40k+ Stars, MIT Core + thương mại ee/) — nền tảng hợp nhất Event Analytics, Heatmap, Session Replay, Feature Flags, A/B Test và LLM Analytics trên ClickHouse/Kafka. Sức mạnh lớn nhất là phân tích phễu sâu hơn GA4, nhưng kéo theo hai rủi ro: cụm tự host ClickHouse + Kafka đòi hỏi 16–32GB RAM và quay Session Replay dễ lọt CCCD, SĐT nếu tắt maskAllInputs. Để tối ưu quảng cáo, doanh nghiệp vẫn cần đẩy sự kiện ý định cao kèm event_id về Meta CAPI và CRM.",
+  "keyTakeaways": [
+    "Kiến trúc vertical-slice monorepo kết hợp Django/Python, React/TypeScript, Kafka streaming và ClickHouse OLAP giúp PostHog truy vấn phễu hành vi (funnel), giữ chân (retention) và theo dõi LLM cost/latency tốc độ cao trong một nền tảng duy nhất.",
+    "Đọc kỹ rủi ro hạ tầng trước khi bấm tự host: cụm PostHog Hobby/Production tiêu chuẩn gánh ClickHouse, Kafka, PostgreSQL, Redis, MinIO và workers nên đòi hỏi ít nhất 16–32GB RAM và ổ NVMe tốc độ cao ngay cả ở lưu lượng trung bình.",
+    "Ranh giới bảo mật số 1 khi bật Session Replay là cấu hình maskAllInputs: true và maskInputOptions ngay phía trình duyệt để dữ liệu nhạy cảm (số điện thoại, CCCD, thẻ ngân hàng, hồ sơ bệnh án) bị thay bằng dấu hoa thị trước khi rời máy người dùng.",
+    "Bản lõi MIT đủ mạnh cho một sản phẩm đơn lẻ, nhưng phân quyền đa dự án, SAML SSO, kiểm soát truy cập theo nhóm (RBAC) và một số tính năng quản trị tập đoàn nằm trong thư mục ee/ theo giấy phép thương mại PostHog Enterprise.",
+    "PostHog mạnh về quan sát hành vi bên trong Website/App, nhưng để tối ưu tiền quảng cáo cần kết nối đồng bộ những sự kiện ý định cao (xem bảng giá, xoay sa bàn 3D, điền form) kèm event_id về Meta CAPI và CRM 360° như kiến trúc Website CRO của DOMATION."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Giấy phép & Kiến trúc lưu trữ",
+      "value": "MIT / ee/ • ClickHouse + Kafka"
+    },
+    {
+      "label": "RAM tối thiểu khi tự host",
+      "value": "16–32 GB (ClickHouse/Kafka)"
+    },
+    {
+      "label": "Chống lộ PII Session Replay",
+      "value": "maskAllInputs + ph-no-capture"
+    },
+    {
+      "label": "Khép vòng tối ưu quảng cáo",
+      "value": "Nối event_id -> Meta CAPI + CRM"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao tự host PostHog trên một con VPS 4GB hay 8GB RAM giá rẻ thường bị sập hoặc treo ClickHouse sau vài ngày?",
+      "answer": "Khác với các công cụ web nhẹ chỉ ghi log đơn giản vào SQLite hay MySQL, PostHog là một hệ thống phân tích dữ liệu lớn thực thụ. Khi triển khai tự host qua Docker Compose, máy chủ phải chạy đồng thời cơ sở dữ liệu phân tích cột ClickHouse (ngốn nhiều RAM để nén và trộn segment dữ liệu sự kiện/replay), hàng đợi Kafka/Redpanda chịu trách nhiệm đệm luồng sự kiện đến, PostgreSQL lưu cấu hình người dùng/feature flags, Redis cho bộ nhớ đệm, MinIO/S3 lưu tệp video DOM replay và nhiều worker Python/Node. Dưới 16GB RAM, chỉ cần vài trăm người truy cập bật Session Replay cùng lúc là trình quản lý bộ nhớ nhân Linux (OOM Killer) sẽ giết đột ngột tiến trình ClickHouse hoặc Kafka."
+    },
+    {
+      "question": "Cấu hình maskAllInputs và maskInputOptions trong posthog-js hoạt động như thế nào để bảo vệ CCCD và số điện thoại?",
+      "answer": "Cơ chế ghi hình Session Replay của PostHog không quay video pixel màn hình mà chụp lại cấu trúc DOM (dựa trên thư viện rrweb) ngay tại trình duyệt người dùng trước khi gửi JSON về máy chủ. Mặc định posthog-js đặt maskAllInputs: true để biến toàn bộ giá trị gõ vào thẻ input thành các dấu sao ngay ở phía client, nên dữ liệu thật không bao giờ đi qua mạng. Tuy nhiên, nhiều đội marketing vì muốn xem khách gõ gì vào ô tìm kiếm hoặc form đăng ký liền tắt thẳng maskAllInputs: false mà quên khóa riêng các trường nhạy cảm. Cách làm chuẩn kỷ luật là giữ maskAllInputs: true hoặc cấu hình chi tiết maskInputOptions (bắt buộc khóa password, tel, number), gắn class .ph-no-capture cho các khối hiển thị thông tin cá nhân/mã VietQR và dùng hàm maskInputFn chặn các chuỗi khớp định dạng số điện thoại hoặc CCCD 12 số."
+    },
+    {
+      "question": "PostHog Feature Flags và A/B Testing mang lại lợi ích gì cho Landing Page chuyển đổi cao hơn Google Analytics 4?",
+      "answer": "Google Analytics 4 (GA4) thuần túy là công cụ đếm lượt truy cập và báo cáo trễ hàng giờ, không cung cấp hạ tầng phân phối biến thể giao diện theo thời gian thực. Trong khi đó, PostHog tích hợp trực tiếp Feature Flags và Experiments ngay cùng kho sự kiện ClickHouse: đội ngũ phát triển Website Next.js (như bộ giải pháp Web Design 3D của DOMATION) có thể chia 50/50 lưu lượng truy cập ngay ở tầng Server-Side để thử nghiệm hai bố cục bảng giá hoặc vị trí nút mở Sa bàn 3D WebGL mà không gây chớp nháy giao diện (zero layout flicker), đồng thời đo tức thì xem biến thể nào tạo ra tỷ lệ đặt lịch hẹn thật cao hơn theo chuẩn thống kê Bayes."
+    },
+    {
+      "question": "Những tính năng quản trị nào của PostHog nằm trong thư mục ee/ thương mại?",
+      "answer": "Phần lớn lõi đo lường sản phẩm, Session Replay, Feature Flags, Experiments, Surveys và LLM Analytics có mặt trong bản lõi giấy phép MIT. Tuy nhiên, nếu tổ chức cần các tính năng quản trị doanh nghiệp như SAML SSO, phân quyền truy cập chi tiết theo vai trò (RBAC) để chặn nhân viên thực tập không được mở xem Session Replay hay xuất tệp CSV chứa hành vi người dùng, quản trị đa dự án nâng cao và kiểm soát lưu giữ dữ liệu cấp tập đoàn, các module đó nằm trong thư mục ee/ thuộc PostHog Enterprise License."
+    },
+    {
+      "question": "Làm sao kết hợp dữ liệu hành vi ẩn danh trên PostHog với DOMATION AutoData & Meta CAPI để tối ưu quảng cáo?",
+      "answer": "PostHog rất giỏi trả lời câu hỏi 'khách đang vướng ở bước nào trên trang bảng giá trước khi thoát', nhưng thuật toán phân phối quảng cáo của Facebook hay TikTok không tự đọc được bảng ClickHouse của bạn. Trong kiến trúc DOMATION (/web-design và /data), khi khách tương tác sâu trên website (ví dụ xoay sa bàn 3D quá 45 giây, xem chi tiết 2 căn hộ mẫu hoặc bấm nút tải bảng giá PDF), hệ thống tạo một mã event_id nhất quán vừa ghi nhận vào hệ thống Tracking/Heatmap để chấm điểm Lead Score, vừa bắn Server-Side về Meta Conversions API khi khách điền thông tin hoặc bước vào nấc Qualified trong CRM 360°."
+    }
+  ],
+  "repoMeta": {
+    "fullName": "posthog/posthog",
+    "url": "https://github.com/posthog/posthog",
+    "category": "Product Analytics, Session Replay & Feature Flags",
+    "primaryLanguage": "Python / TypeScript",
+    "license": "MIT (Core) / PostHog Enterprise License (ee/)",
+    "starsTier": "40k+ Stars",
+    "bestFor": "Hợp nhất phân tích hành vi sản phẩm (funnel, retention), bản đồ nhiệt/quay lại phiên thao tác (Heatmap/Session Replay), bật/tắt tính năng (Feature Flags), thử nghiệm A/B và giám sát LLM vào một kho ClickHouse thống nhất thay vì mua rời 4–5 công cụ SaaS.",
+    "avoidWhen": "Cố tự host toàn bộ cụm ClickHouse + Kafka + Postgres + Redis trên máy chủ VPS RAM nhỏ dưới 16GB, hoặc kích hoạt Session Replay mà thiếu cấu hình maskAllInputs/maskInputOptions làm rò rỉ CCCD, số điện thoại hay hồ sơ nhạy cảm; các tính năng RBAC/SSO cấp tập đoàn nằm trong ee/ thương mại.",
+    "domationSynergy": "Bổ trợ trực tiếp cho tầng Website Heatmap, Landing Page CRO (/web-design) và đường ống Server-Side Meta CAPI của DOMATION — nối liền dữ liệu tương tác sâu trên Sa bàn 3D WebGL và bảng giá về điểm chất lượng Lead trong CRM 360°.",
+    "scores": {
+      "productionReadiness": 9,
+      "vibecodeSpeed": 8,
+      "securityGovernance": 8,
+      "costEfficiency": 8
+    }
+  },
+  "blocks": [
+    {
+      "type": "repo-card",
+      "id": "repo-card-posthog-posthog",
+      "heading": "Hồ Sơ Kiểm Toán Kho Mã: posthog/posthog (MIT Core / Enterprise ee/ • 40k+ Stars)",
+      "repo": {
+        "fullName": "posthog/posthog",
+        "url": "https://github.com/posthog/posthog",
+        "category": "Product Analytics, Session Replay & Feature Flags",
+        "primaryLanguage": "Python / TypeScript",
+        "license": "MIT (Core) / PostHog Enterprise License (ee/)",
+        "starsTier": "40k+ Stars",
+        "bestFor": "Hợp nhất phân tích hành vi sản phẩm (funnel, retention), bản đồ nhiệt/quay lại phiên thao tác (Heatmap/Session Replay), bật/tắt tính năng (Feature Flags), thử nghiệm A/B và giám sát LLM vào một kho ClickHouse thống nhất thay vì mua rời 4–5 công cụ SaaS.",
+        "avoidWhen": "Cố tự host toàn bộ cụm ClickHouse + Kafka + Postgres + Redis trên máy chủ VPS RAM nhỏ dưới 16GB, hoặc kích hoạt Session Replay mà thiếu cấu hình maskAllInputs/maskInputOptions làm rò rỉ CCCD, số điện thoại hay hồ sơ nhạy cảm; các tính năng RBAC/SSO cấp tập đoàn nằm trong ee/ thương mại.",
+        "domationSynergy": "Bổ trợ trực tiếp cho tầng Website Heatmap, Landing Page CRO (/web-design) và đường ống Server-Side Meta CAPI của DOMATION — nối liền dữ liệu tương tác sâu trên Sa bàn 3D WebGL và bảng giá về điểm chất lượng Lead trong CRM 360°.",
+        "scores": {
+          "productionReadiness": 9,
+          "vibecodeSpeed": 8,
+          "securityGovernance": 8,
+          "costEfficiency": 8
+        }
+      }
+    },
+    {
+      "type": "prose",
+      "id": "teardown-monorepo-clickhouse-kafka-posthog",
+      "eyebrow": "REPO TEARDOWN • GIẢI PHẪU LÕI INGESTION & CLICKHOUSE",
+      "variant": "deep-dive",
+      "heading": "Mổ xẻ kho mã PostHog: Khi Django, React, Kafka và ClickHouse hợp nhất bốn công cụ đo lường",
+      "pullQuote": "Bí quyết khiến posthog/posthog thay thế được cả Mixpanel, Hotjar lẫn LaunchDarkly nằm ở việc dồn mọi dòng sự kiện hành vi, bản ghi DOM replay và phân nhánh A/B vào chung một bảng sự kiện ClickHouse.",
+      "paragraphs": [
+        "Trước khi xuất hiện làn sóng hợp nhất telemetry, một doanh nghiệp làm thương mại điện tử hay phần mềm SaaS thường phải dán bốn mã theo dõi JavaScript khác nhau lên cùng một trang web: Google Analytics 4 để đếm lượt xem, Hotjar để xem Heatmap và quay phiên thao tác, LaunchDarkly hoặc tự viết cookie để thử nghiệm A/B, cộng thêm một công cụ theo dõi lỗi riêng. Hậu quả là trang đích nặng nề vì tải nhiều script bên thứ ba, chỉ số chuyển đổi giữa các công cụ lệch nhau 15–30%, và không thể truy vấn chéo dạng 'những người dùng từng rớt ở bước thanh toán VietQR thuộc nhánh A/B nào'.",
+        "Khi tiến hành audit posthog analytics session replay và pii trên cấu trúc mã nguồn của posthog/posthog (vượt mốc 40k+ Stars), điểm sáng kiến trúc dễ thấy nhất là mô hình vertical-slice monorepo cực kỳ chặt chẽ. Lớp API quản trị, định nghĩa phễu, cấu hình phân quyền và Feature Flags được tổ chức trên Django/Python kết hợp giao diện React/TypeScript mượt mà và lưu trạng thái cấu hình trong PostgreSQL. Trong khi đó, toàn bộ luồng dữ liệu khổng lồ từ SDK trình duyệt hoặc server đổ về đi qua cổng tiếp nhận hiệu năng cao (Rust/Node capture service), đẩy qua Redis và hàng đợi Kafka để chạy plugin làm giàu dữ liệu trước khi ghi hàng loạt theo cột vào ClickHouse.",
+        "Nhờ đặc tính lưu trữ theo cột và nén dữ liệu cực mạnh của ClickHouse, PostHog có thể chạy các câu truy vấn phân tích phễu đa bước, tính toán tỷ lệ quay lại theo nhóm (cohort retention), đo độ trễ/chi phí gọi LLM Analytics và ghép nối trực tiếp với hàng triệu bản ghi Session Replay lưu trữ trên S3/MinIO trong vài trăm mili-giây. Đặc biệt, cơ chế Feature Flags cho phép đánh giá cờ bật/tắt tính năng ngay trên Node/Edge server với bộ nhớ đệm cục bộ, loại bỏ hoàn toàn hiện tượng nhấp nháy giao diện khi chạy A/B test trên trang đích chuyển đổi cao."
+      ],
+      "bullets": [
+        "Định danh gộp (Identity Resolution): nối chuỗi hành vi ẩn danh trước khi đăng ký (distinct_id tạm) với ID khách hàng thật ngay giây phút điền form qua lệnh posthog.identify().",
+        "Tính năng LLM Analytics tích hợp sẵn cho phép ghi nhận các sự kiện $ai_generation kèm số lượng token, chi phí ước tính và độ trễ song hành với phễu sử dụng sản phẩm.",
+        "Reverse Proxy / First-Party Ingestion: có thể định tuyến /ingest qua cùng tên miền chính của doanh nghiệp (Next.js rewrite hoặc Cloudflare Worker) để tránh bị trình chặn quảng cáo AdBlock vô hiệu hóa."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ky-luat-pii-session-replay-va-tai-ha-tang",
+      "eyebrow": "CẢNH BÁO BẢO MẬT & FINOPS • CHI PHÍ CLICKHOUSE VÀ RÒ RỈ PII",
+      "variant": "incident",
+      "heading": "Cái giá hạ tầng khi tự host PostHog và kỷ luật che PII trên Session Replay tại Việt Nam",
+      "paragraphs": [
+        "Sự hấp dẫn của nhãn mã nguồn mở MIT Core rất dễ khiến nhiều đội kỹ thuật đánh giá thấp hai cái bẫy lớn của PostHog: độ nặng hạ tầng tự vận hành và rủi ro lộ dữ liệu định danh cá nhân (PII) trong các bản quay Session Replay.",
+        "Thứ nhất về tài nguyên phần cứng: dù tài liệu cộng đồng cung cấp bản Hobby Docker Compose để tự dựng trên một máy chủ đơn, bộ máy phía sau vẫn kéo theo hơn mười tiến trình nặng ký gồm ClickHouse, Kafka, PostgreSQL, Redis, MinIO, Temporal và các worker xử lý plugin. Trong đo kiểm thực tế, chỉ riêng ClickHouse và Kafka khi nhàn rỗi đã chiếm dụng sẵn 6–9GB RAM, và ngay khi có lưu lượng 50.000–100.000 lượt truy cập mỗi tháng kèm bật Session Replay, mức RAM an toàn buộc phải nâng lên tối thiểu 16–32GB kèm ổ NVMe có IOPS cao để không làm nghẽn tiến trình gộp mảnh của ClickHouse. Đối với phần lớn SME Việt Nam không có đội SRE chuyên trách ClickHouse/Kafka, chi phí VPS và công sức bảo trì nâng cấp tự host có thể cao hơn hẳn gói miễn phí hào phóng trên Cloud hoặc giải pháp tracking gọn nhẹ đi kèm nền tảng web.",
+        "Thứ hai — và nguy hiểm hơn về mặt pháp lý theo Nghị định 13/2023/NĐ-CP bảo vệ dữ liệu cá nhân tại Việt Nam — là lỗi cấu hình Session Replay. Khi bật rrweb quay lại thao tác DOM của khách hàng trên trang đăng ký tư vấn, giỏ hàng hoặc hồ sơ bệnh án phòng khám, nếu lập trình viên tắt cờ maskAllInputs: false để 'tiện xem khách gõ tên gì' mà quên khóa chi tiết maskInputOptions và các vùng hiển thị dữ liệu nhạy cảm, toàn bộ số CCCD 12 số, số điện thoại, địa chỉ nhà, ghi chú bệnh lý hoặc mã giao dịch VietQR sẽ được chụp nguyên văn đẩy lên máy chủ phân tích. Lúc đó, bất kỳ nhân viên marketing nào có quyền mở xem Session Replay đều vô tình đọc được dữ liệu mật ngoài phạm vi cho phép."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "chart-posthog-infra-ram-and-pii-coverage",
+      "heading": "Đo kiểm tiêu thụ RAM khi tự host PostHog (ClickHouse + Kafka) và hiệu quả che PII trên Session Replay",
+      "subtitle": "Khảo sát mức chiếm dụng RAM (GB) của cụm Self-Hosted Docker qua 5 quy mô lưu lượng hàng tháng so với giải pháp DOMATION Server-Side Tracking gọn nhẹ",
+      "chart": {
+        "chartType": "composed",
+        "title": "Dung lượng RAM thực tế của PostHog Self-Hosted (GB) vs Độ trễ truy vấn phễu (ms / 10)",
+        "subtitle": "Cụm PostHog gồm ClickHouse, Kafka, Postgres, Redis, MinIO; độ trễ P95 truy vấn funnel 3 bước chia hệ số 10 (65 = 650 ms)",
+        "xKey": "monthlyEvents",
+        "yUnit": "",
+        "series": [
+          {
+            "key": "posthogClickhouseRamGb",
+            "label": "RAM Cụm Self-Hosted PostHog (GB)",
+            "color": "#EF4444",
+            "type": "bar"
+          },
+          {
+            "key": "domationTrackingRamGb",
+            "label": "RAM Tầng Tracking + Heatmap DOMATION (GB)",
+            "color": "#1E40FF",
+            "type": "bar"
+          },
+          {
+            "key": "funnelQueryP95Scaled",
+            "label": "Độ trễ truy vấn Funnel P95 PostHog (ms / 10)",
+            "color": "#06B6D4",
+            "type": "line"
+          },
+          {
+            "key": "replayMaskCompliancePct",
+            "label": "Tỷ lệ che sạch SĐT/CCCD khi bật Strict Mask (%)",
+            "color": "#10B981",
+            "type": "line"
+          }
+        ],
+        "data": [
+          { "monthlyEvents": "100K events/th", "posthogClickhouseRamGb": 12, "domationTrackingRamGb": 2, "funnelQueryP95Scaled": 18, "replayMaskCompliancePct": 100 },
+          { "monthlyEvents": "500K events/th", "posthogClickhouseRamGb": 16, "domationTrackingRamGb": 3, "funnelQueryP95Scaled": 26, "replayMaskCompliancePct": 100 },
+          { "monthlyEvents": "2M events/th", "posthogClickhouseRamGb": 24, "domationTrackingRamGb": 4, "funnelQueryP95Scaled": 38, "replayMaskCompliancePct": 100 },
+          { "monthlyEvents": "5M events/th", "posthogClickhouseRamGb": 36, "domationTrackingRamGb": 6, "funnelQueryP95Scaled": 52, "replayMaskCompliancePct": 100 },
+          { "monthlyEvents": "15M events/th", "posthogClickhouseRamGb": 58, "domationTrackingRamGb": 9, "funnelQueryP95Scaled": 74, "replayMaskCompliancePct": 100 }
+        ],
+        "kpis": [
+          {
+            "label": "RAM nền tối thiểu (100K–500K)",
+            "value": "12–16 GB",
+            "delta": "Do ClickHouse + Kafka + MinIO",
+            "positive": false
+          },
+          {
+            "label": "Tốc độ truy vấn Funnel 15M",
+            "value": "740 ms",
+            "delta": "Nhờ lưu trữ cột ClickHouse",
+            "positive": true
+          },
+          {
+            "label": "Che SĐT/CCCD tại trình duyệt",
+            "value": "100% Masked",
+            "delta": "Khi khóa maskAllInputs + maskInputFn",
+            "positive": true
+          },
+          {
+            "label": "Lưu ý bản quyền ee/",
+            "value": "RBAC / SAML",
+            "delta": "Nằm trong PostHog Enterprise",
+            "positive": false
+          }
+        ],
+        "sourceNote": "DOMATION Telemetry Benchmark trên cụm Linux Docker 16 vCPU / NVMe SSD mô phỏng luồng event + Session Replay bật nén gzip."
+      },
+      "insightSummary": "ClickHouse giúp PostHog giữ độ trễ truy vấn phễu ở mức cực thấp (180ms đến 740ms ngay cả khi lên 15 triệu sự kiện/tháng), nhưng cái giá phải trả là ngưỡng RAM nền tối thiểu 12–16GB ngay từ quy mô nhỏ. Khi kích hoạt bộ lọc che PII chuẩn ở trình duyệt, 100% chuỗi SĐT và CCCD được chặn trước khi phát sinh lưu lượng mạng."
+    },
+    {
+      "type": "visual-figure",
+      "id": "figure-posthog-teardown-report",
+      "src": "/imgs/boost/charts/posthog-posthog-audit-product-analytics-server-side-tracking-report.webp",
+      "alt": "Báo cáo mổ xẻ audit posthog analytics session replay và pii phân tích tải RAM ClickHouse Kafka, cấu hình maskInputOptions và cầu nối sự kiện Meta CAPI",
+      "caption": "Đồ thị kiểm toán kiến trúc PostHog: tương quan dung lượng RAM của cụm ClickHouse/Kafka theo lưu lượng sự kiện, tốc độ truy vấn phễu và quy trình che PII phía client trước khi đẩy sự kiện chuyển đổi về Meta CAPI.",
+      "badge": "REPO TEARDOWN • POSTHOG"
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-recipe-posthog-pii-masking-and-capi-sync",
+      "heading": "Code Recipe: Cấu hình PostHog SDK che tuyệt đối SĐT/CCCD khi quay Replay & đồng bộ event_id sang Meta CAPI",
+      "language": "typescript",
+      "filename": "posthog-pii-hardened-client.ts",
+      "description": "Mẫu khởi tạo posthog-js chuẩn sản xuất trong Next.js/React: đi qua reverse proxy nội bộ tránh AdBlock, giữ maskAllInputs: true, bổ sung bộ lọc maskInputFn chặn lọt số điện thoại/CCCD 12 số và phát đồng bộ event_id về endpoint Server-Side Meta CAPI.",
+      "code": "import posthog from 'posthog-js';\n\nconst VN_PII_REGEX = /(?:\\+?84|0)(?:3|5|7|8|9)\\d{8}|\\b\\d{9,12}\\b/g;\n\nexport function initHardenedPostHog() {\n  if (typeof window === 'undefined') return;\n\n  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {\n    // Di qua Next.js rewrite /ingest de tang do tin cay first-party truoc AdBlock\n    api_host: '/ingest',\n    ui_host: 'https://us.posthog.com',\n    person_profiles: 'identified_only',\n    capture_pageview: false, // Tu goi de gan kem campaign & event_id chuan\n    session_recording: {\n      // BAT BUOC giu true de che toan bo o nhap lieu ngay tai trinh duyet\n      maskAllInputs: true,\n      maskInputOptions: {\n        password: true,\n        tel: true,\n        email: true,\n        text: true,\n        textarea: true,\n        select: true,\n      },\n      // Chan luon cac vung DOM co gan class .ph-no-capture hoac thuoc tinh data-pii\n      maskTextSelector: '.ph-no-capture, [data-pii=\"true\"]',\n      blockSelector: '.ph-block-vietqr, [data-payment-qr=\"true\"]',\n      // Lop phong thu bo sung neu input mang nhan dac thu hoac lo chuoi SDT/CCCD\n      maskInputFn: (text, element) => {\n        if (element?.getAttribute('data-allow-analytics') === 'search-keyword') {\n          return text.replace(VN_PII_REGEX, '[MASKED_VN_ID]');\n        }\n        return '*'.repeat(Math.min(text.length, 12));\n      },\n    },\n  });\n}\n\nexport async function trackHighIntentWithCapiParity(params: {\n  eventName: 'ViewPricingMatrix' | 'Interact3DModel' | 'SubmitLeadForm';\n  unitCode?: string;\n  valueVnd?: number;\n}) {\n  const eventId = crypto.randomUUID();\n\n  // 1. Ghi nhan hanh vi tren PostHog de do Heatmap, Funnel & A/B Variant\n  posthog.capture(params.eventName, {\n    event_id: eventId,\n    unit_code: params.unitCode,\n    value_vnd: params.valueVnd,\n  });\n\n  // 2. Day dong bo cung event_id ve backend de Server-Side CAPI loai trung voi Pixel\n  await fetch('/api/tracking/server-capi-relay', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    keepalive: true,\n    body: JSON.stringify({\n      eventName: params.eventName,\n      eventId,\n      sourceUrl: window.location.href,\n      unitCode: params.unitCode,\n    }),\n  });\n}"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-audit-posthog-pii-attribution",
+      "heading": "Checklist kiểm toán bảo mật PII & Attribution trước khi bật PostHog trên Landing Page bán hàng",
+      "items": [
+        {
+          "check": "Bật maskAllInputs: true và chặn DOM nhạy cảm bằng .ph-no-capture / blockSelector",
+          "severity": "critical",
+          "verificationHow": "Mở tab Network trong DevTools khi nhập thử SĐT, email, CCCD và mở mã VietQR; soi payload gửi tới /ingest/s/.",
+          "passThreshold": "100% ký tự nhạy cảm hiển thị dạng dấu sao hoặc bị loại khỏi snapshot DOM trước khi rời trình duyệt."
+        },
+        {
+          "check": "Định tuyến First-Party Reverse Proxy (/ingest) trên cùng tên miền gốc",
+          "severity": "high",
+          "verificationHow": "Bật tiện ích chặn quảng cáo phổ biến và kiểm tra trạng thái HTTP của các sự kiện gửi về.",
+          "passThreshold": "Sự kiện Pageview và ViewPricingMatrix ghi nhận HTTP 200 thay vì bị ERR_BLOCKED_BY_CLIENT."
+        },
+        {
+          "check": "Chốt dung lượng RAM ClickHouse/Kafka và chính sách TTL xóa tự động bản ghi Replay",
+          "severity": "high",
+          "verificationHow": "Kiểm tra cấu hình TTL trên ClickHouse/MinIO và theo dõi bộ nhớ cụm Docker dưới tải mô phỏng 2x giờ cao điểm.",
+          "passThreshold": "Thiết lập TTL tự xóa replay sau 30–90 ngày và giữ tải RAM dưới 75% ngưỡng giới hạn."
+        },
+        {
+          "check": "Đồng bộ chung mã event_id giữa PostHog, Meta Pixel trình duyệt và Meta CAPI Server-Side",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra tab Test Events trong Meta Events Manager khi gửi biểu mẫu tư vấn từ Landing Page.",
+          "passThreshold": "Meta ghi nhận đúng 1 sự kiện hợp nhất (Deduplicated) kèm tỷ lệ khớp thông số cao."
+        },
+        {
+          "check": "Khóa quyền xem Session Replay & xuất CSV theo nhóm (hoặc dùng ee/ RBAC)",
+          "severity": "recommended",
+          "verificationHow": "Kiểm tra danh sách tài khoản được phép xem mục Recordings trong cấu hình dự án PostHog.",
+          "passThreshold": "Chỉ quản trị viên kỹ thuật và trưởng nhóm CRO được truy cập kho bản ghi thao tác."
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "khoang-trong-attribution-heatmap-den-meta-capi",
+      "eyebrow": "TỪ CRO ĐẾN DOANH THU THẬT • NỐI LIỀN WEB 3D VỚI META CAPI",
+      "variant": "narrative",
+      "heading": "Khoảng trống Attribution: Từ hành vi Heatmap nội trang đến tín hiệu Meta CAPI Server-Side",
+      "paragraphs": [
+        "Trong hệ sinh thái giải pháp Thiết kế Web Chuyển đổi & Sa bàn 3D WebGL (/web-design) của DOMATION — vốn đã chứng minh hiệu quả tại EcoLife Signature của Capital House (ROAS 8.2x) hay các chiến dịch giáo dục của Viện IDEAS (12.600+ Leads, giảm 30% CPA) — việc đo lường hành vi trên trang luôn gồm hai nửa gắn chặt với nhau. Nửa thứ nhất là quan sát vi mô trên bề mặt website: khách hàng dừng lại ở phân khúc căn hộ nào trên mô hình Three.js, bấm vào tab chính sách thanh toán bao lâu và vì sao bỏ dở biểu mẫu giữ chỗ.",
+        "PostHog là công cụ mã nguồn mở xuất sắc nhất cho nửa thứ nhất đó nhờ khả năng kết hợp Heatmap, Session Replay, Feature Flags A/B Test và ClickHouse trong một nơi. Nhưng nếu chỉ dừng lại ở PostHog, đội ngũ vẫn đối mặt với khoảng trống Attribution: làm sao để thuật toán máy học của Meta Ads hoặc TikTok Ads hiểu rằng vị khách vừa xoay Sa bàn 3D 60 giây đó hai ngày sau đã thực sự chuyển cọc hoặc trở thành Lead đạt chuẩn (Qualified) trong CRM?",
+        "Câu trả lời nằm ở mô hình ghép nối chuẩn mực: giữ PostHog làm bộ kính hiển vi tối ưu tỷ lệ chuyển đổi trên Landing Page (bằng Cloud tier tối ưu hoặc cụm ClickHouse cấu hình chặt PII), đồng thời dùng Server-Side Tracking phát đồng bộ event_id từ hành vi ý định cao sang AutoData & CRM 360°. Nhờ đó, khi khách hàng đi qua bộ lọc trùng 6 tháng và được Sale đánh dấu Qualified/Booked trong Pipeline 8 nấc, máy chủ DOMATION tự động băm SHA-256 thông tin gửi ngược về Meta CAPI với mã HTTP 200 — biến dữ liệu hành vi web thành đòn bẩy giảm giá thầu quảng cáo thật sự."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "verdict-turniodev-posthog",
+      "variant": "founder-pov",
+      "authorBadge": "Đánh Giá Kỹ Thuật • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "PostHog thay thế trọn bộ GA4 + Hotjar + A/B Test — nhưng chỉ bật Session Replay khi đã khóa chặt lớp che PII",
+      "body": "posthog/posthog là một kho báu kỹ thuật hiếm hoi gom được Product Analytics, Session Replay, Feature Flags và LLM Analytics lên cùng lõi ClickHouse. Lời khuyên thực chiến của tôi dành cho các đội ngũ Việt Nam có hai điểm: đừng cố tự host nguyên cụm ClickHouse + Kafka trên một VPS nhỏ để rồi tối ngày đi cứu OOM Killer, hãy bắt đầu nhẹ nhàng hoặc tách hạ tầng đủ 16–32GB RAM; và tuyệt đối không bao giờ tắt maskAllInputs trên các trang có nhập SĐT, CCCD hay thông tin thanh toán. Khi giữ đúng kỷ luật che PII và nối tiếp sự kiện ý định cao sang Meta CAPI + CRM 360°, bạn sẽ nắm trọn cả trải nghiệm người dùng lẫn ROAS thật."
+    }
+  ]
+}

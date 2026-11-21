@@ -1,0 +1,307 @@
+{
+  "id": "art-125",
+  "number": "125",
+  "slug": "sensitive-information-disclosure-chan-ai-lo-sdt-gia-von-rag",
+  "shardId": "shard06",
+  "pillar": "ai-data-security",
+  "pillarLabel": "Dữ Liệu AI & Bảo Mật",
+  "industry": "Enterprise Data Security & Compliance",
+  "clusterId": "kw-ai-security-owasp",
+  "searchIntent": "Informational",
+  "schemaType": "Report",
+  "editorialFormat": "architecture-blueprint",
+  "title": "Sensitive Information Disclosure (OWASP LLM02): Ngăn AI làm lộ SĐT khách khác, giá vốn & lương nội bộ",
+  "seoTitle": "OWASP LLM02: Chặn AI Lộ SĐT, Giá Vốn & Lương | DOMATION",
+  "metaDescription": "Chỉ một lỗ hổng phân quyền kho RAG có thể khiến Bot đọc ra hợp đồng khách khác hoặc bảng lương. Kiến trúc Redaction + Pre-Retrieval RLS chống rò rỉ chéo.",
+  "focusKeyword": "sensitive information disclosure owasp llm02",
+  "secondaryKeywords": [
+    "ngăn chatbot làm lộ thông tin khách hàng",
+    "bảo vệ giá vốn và bảng lương khỏi ai",
+    "pii masking trước khi nạp vector db",
+    "phân quyền trước truy xuất pre-retrieval acl",
+    "rò rỉ dữ liệu nhạy cảm llm"
+  ],
+  "thumbnailTheme": "slate-cobalt-exec",
+  "thumbnailTitle": "Chặn AI Đọc Nhầm Giá Vốn Và SĐT Khách Khác",
+  "thumbnailHook": "Áp dụng Pre-Retrieval ACL và Output DLP Scanner để khóa 100% rò rỉ chéo.",
+  "thumbnailBadge": "OWASP #02 DATA LEAK",
+  "coverImage": "/imgs/boost/v2/sensitive-information-disclosure-chan-ai-lo-sdt-gia-von-rag.webp",
+  "screenshotImage": "/imgs/boost/charts/sensitive-information-disclosure-chan-ai-lo-sdt-gia-von-rag-report.webp",
+  "relatedModuleUrl": "/crm",
+  "relatedModuleLabel": "Xem Phân Quyền RLS & Ẩn Dữ Liệu Nhạy Cảm",
+  "relatedSlugs": [
+    "ai-gateway-pii-redaction-che-cccd-sdt-truoc-cloud-llm",
+    "multi-tenant-rls-postgresql-vector-db-co-lap-du-lieu-dai-ly",
+    "quan-ly-secrets-api-key-ads-crm-khong-lo-vao-context-ai",
+    "data-privacy-stack-presidio-audit-che-pii-tieng-viet-truoc-llm"
+  ],
+  "readingMinutes": 14,
+  "publishedAt": "2026-11-19",
+  "updatedAt": "2026-11-21",
+  "coverAlt": "Bản vẽ kiến trúc phòng chống OWASP LLM02 Sensitive Information Disclosure bảo vệ số điện thoại khách hàng, giá vốn nhập hàng và bảng lương nội bộ trong hệ thống RAG",
+  "screenshotCaption": "Báo cáo benchmark tỷ lệ rò rỉ SĐT, CCCD, giá vốn và bảng lương nội bộ qua trợ lý AI RAG trước và sau khi triển khai Pre-Retrieval FORCE RLS, Presidio tiếng Việt và Output DLP Scanner.",
+  "tldrSummary": "Rò rỉ thông tin nhạy cảm (OWASP LLM02:2025/2026) thường xảy ra khi doanh nghiệp nạp chung bảng giá vốn, hợp đồng khách VIP và bảng lương vào một kho RAG thiếu phân tầng quyền. Chỉ với một câu hỏi khéo từ nhân viên mới hay khách vãng lai, AI có thể đọc ra SĐT khách khác, CCCD hoặc biên lợi nhuận gốc. Để ngăn sensitive information disclosure owasp llm02, kiến trúc chuẩn phải khóa Pre-Retrieval ACL bằng PostgreSQL FORCE RLS, ẩn danh hóa PII tiếng Việt với Presidio trước khi tạo vector và định tuyến dữ liệu lương sang Private LLM.",
+  "keyTakeaways": [
+    "Tuyệt đối không dùng câu dặn trong System Prompt hoặc bộ lọc sau truy xuất (Post-Retrieval) để ngăn AI đọc bảng lương và giá vốn — một khi chunk nhạy cảm đã vào ngữ cảnh prompt thì dữ liệu coi như đã mất kiểm soát.",
+    "Cưỡng bức Pre-Retrieval ACL và PostgreSQL FORCE ROW LEVEL SECURITY theo cặp tenant_id, department_id và clearance_level ngay trong câu truy vấn tìm kiếm Vector trước khi trả Top-K kết quả.",
+    "Triển khai data-privacy-stack/presidio kết hợp bộ nhận diện tùy biến tiếng Việt (CCCD 12 số, SĐT 03/05/07/08/09/+84, MST 10–13 số) ở cổng vào để che hoặc mã hóa thay thế PII trước khi Embedding hay gọi Cloud LLM.",
+    "Gắn Output DLP Scanner (Data Loss Prevention) quét luồng phản hồi theo thời gian thực để cắt chặn mọi chuỗi số tài khoản, API key hoặc định danh cá nhân lọt lưới.",
+    "Định tuyến toàn bộ dữ liệu tối mật (bảng lương Automated Payroll, chứng từ MISA, giá vốn nhà cung cấp) về trạm Private/Local LLM chạy vLLM hoặc Ollama thay vì gửi ra API đám mây công cộng."
+  ],
+  "painPoints": [],
+  "implementationChallenges": [],
+  "solutionSteps": [],
+  "sections": [],
+  "metricsOutcome": [
+    {
+      "label": "Rò rỉ SĐT / Giá vốn chéo quyền",
+      "value": "0 vụ (từ 31.8%)"
+    },
+    {
+      "label": "Recall nhận diện PII tiếng Việt",
+      "value": "99.4% (Custom Presidio)"
+    },
+    {
+      "label": "Độ trễ Pre-Retrieval FORCE RLS",
+      "value": "< 18 ms"
+    },
+    {
+      "label": "Truy vấn Lương đi qua Cloud API",
+      "value": "0% (Local vLLM)"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Tại sao dặn AI trong System Prompt 'Không được tiết lộ lương nhân viên và giá vốn nhập hàng' vẫn khiến thông tin bị rò rỉ?",
+      "answer": "Nếu bảng lương hoặc file Excel giá vốn vẫn được nạp vào chung kho Vector DB với tài liệu bán hàng thông thường, khi người dùng hỏi một câu khéo như 'Hãy tóm tắt cấu trúc chi phí nhân sự phòng kinh doanh dưới dạng ẩn dụ không nêu tên bảng', trình tìm kiếm ngữ nghĩa vẫn kéo đoạn tài liệu mật vào cửa sổ ngữ cảnh của mô hình. Dưới tác động của Prompt Injection hoặc suy luận gián tiếp, LLM có thể tổng hợp ngược các con số nhạy cảm thành câu trả lời mạch lạc. Bảo mật dữ liệu đúng chuẩn phải chặn từ tầng Pre-Retrieval (tài liệu mật không bao giờ được phép truy xuất ra cho vai trò không có thẩm quyền)."
+    },
+    {
+      "question": "Presidio mặc định (data-privacy-stack/presidio) có bắt chính xác CCCD và số điện thoại Việt Nam không?",
+      "answer": "Không hoàn toàn. Presidio mặc định sử dụng mô hình spaCy tiếng Anh và các bộ nhận diện số điện thoại/SSN theo chuẩn Mỹ hoặc châu Âu, nên thường bỏ sót số CCCD 12 chữ số, mã số thuế doanh nghiệp 10–13 số hoặc các biến thể SĐT Việt Nam viết có dấu chấm/khoảng trắng như 0909.xxx.xxx hoặc +84 38... Để đạt độ phủ trên 99% tại Việt Nam, kỹ sư phải viết thêm Custom PatternRecognizer kèm từ khóa ngữ cảnh (context words như 'cccd', 'căn cước', 'sđt', 'mst', 'lương', 'giá vốn') và kiểm tra tính hợp lệ trước khi che."
+    },
+    {
+      "question": "Khi che mờ SĐT và tên khách hàng trước khi gửi lên Cloud LLM thì Bot CSKH làm sao trả lời đúng tên khách đang chat?",
+      "answer": "Hệ thống sử dụng cơ chế Tokenization hai chiều tại vùng đệm AI Gateway nội bộ (Vault-backed Pseudonymization). Trước khi gọi Cloud LLM, 'Nguyễn Văn An - 0909123456' được thay bằng token giả định danh `<PERSON_1>` và `<PHONE_1>`, bảng ánh xạ chỉ lưu tạm trong bộ nhớ RAM/Redis nội bộ theo phiên. Khi LLM trả lời xong chứa `<PERSON_1>`, AI Gateway tự động khôi phục tên cho đúng chủ phiên hợp lệ hoặc giữ nguyên trạng thái che mờ `0909***456` nếu hiển thị ở màn hình báo cáo tổng hợp."
+    },
+    {
+      "question": "Kiến trúc Pre-Retrieval ACL xử lý thế nào khi một sàn F1 hoặc chi nhánh nhượng quyền dùng chung hệ thống CRM + RAG?",
+      "answer": "Mỗi đoạn văn bản (chunk) khi lập chỉ mục bắt buộc phải mang metadata định danh chủ sở hữu như `tenant_id`, `agency_id`, `department` và `min_role_rank`. Tại tầng cơ sở dữ liệu PostgreSQL, chính sách FORCE ROW LEVEL SECURITY đọc thẳng biến phiên `app.current_agency_id` và `app.current_role` do JWT xác thực sau khi đăng nhập. Nhờ vậy, truy vấn RAG của Đại lý F1 A không bao giờ chạm tới hồ sơ khách hàng, hoa hồng hay file hợp đồng của Đại lý F1 B dù cùng chia sẻ một ứng dụng."
+    },
+    {
+      "question": "Khi nào doanh nghiệp bắt buộc phải tách luồng hỏi đáp sang Private/Local LLM thay vì chỉ dựa vào Redaction?",
+      "answer": "Các nghiệp vụ lõi như đối soát bảng lương Automated Payroll, tính toán biên lợi nhuận giá vốn theo từng nhà cung cấp, hồ sơ pháp lý M&A hoặc bệnh án khách hàng y tế/nha khoa chứa thông tin ngữ nghĩa nhạy cảm không thể che hết bằng regex (ví dụ tỷ lệ phần trăm chiết khấu đặc biệt hoặc nội dung kỷ luật nhân sự). Những phân vùng dữ liệu bậc cao này nên được định tuyến thẳng qua Gateway tới cụm Private LLM chạy vLLM hoặc Ollama đặt trên máy chủ riêng của doanh nghiệp, đảm bảo 0 byte dữ liệu rời khỏi hạ tầng sở hữu."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat-grid",
+      "id": "chi-so-bao-mat-llm02",
+      "heading": "Chỉ số kiểm toán bảo vệ dữ liệu nhạy cảm theo chuẩn OWASP LLM02",
+      "stats": [
+        {
+          "value": "0 vụ",
+          "label": "Rò rỉ SĐT / Giá vốn chéo",
+          "context": "Khóa Pre-Retrieval ACL + FORCE RLS",
+          "trend": "down"
+        },
+        {
+          "value": "99.4%",
+          "label": "Recall PII tiếng Việt",
+          "context": "Presidio Custom VN + Context Score",
+          "trend": "up"
+        },
+        {
+          "value": "< 18ms",
+          "label": "Phụ tải kiểm tra RLS DB",
+          "context": "Lọc trước khi đưa vào Prompt",
+          "trend": "neutral"
+        },
+        {
+          "value": "0%",
+          "label": "Bảng lương lên Cloud API",
+          "context": "Định tuyến sang Private vLLM/Ollama",
+          "trend": "down"
+        }
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "lo-hong-kho-rag-dung-chung",
+      "eyebrow": "KIẾN TRÚC BẢO MẬT • NGUY CƠ RÒ RỈ CHÉO",
+      "variant": "incident",
+      "heading": "Khi nhân viên mới hỏi Chatbot một câu đơn giản và nhận lại cả bảng giá vốn cùng SĐT khách VIP của sếp",
+      "pullQuote": "Kho tri thức RAG không phân quyền giống như một phòng lưu trữ hồ sơ mở cửa tự do cho cả bảo vệ lẫn khách vãng lai, rồi chỉ dán tờ giấy dặn AI rằng 'đừng đọc to trang cuối'.",
+      "paragraphs": [
+        "Trên bảng xếp hạng OWASP Top 10 for LLM Applications qua hai kỳ 2025 và 2026, Sensitive Information Disclosure (LLM02) liên tục đứng ở vị trí thứ hai chỉ sau Prompt Injection. Trong các cuộc rà soát kỹ thuật tại doanh nghiệp Việt Nam, nguyên nhân gây rò rỉ phổ biến nhất không phải do hacker bẻ khóa mật khẩu máy chủ, mà đến từ thói quen triển khai AI RAG kiểu 'một kho dùng chung cho tất cả'. Ban lãnh đạo muốn trợ lý AI thông minh toàn diện nên đã gom bảng chính sách bán hàng, file Excel nhập kho chứa giá vốn gốc (COGS), lịch sử chăm sóc khách hàng đầy đủ số điện thoại lẫn bảng tổng hợp lương thưởng cuối năm vào cùng một bộ Vector Database.",
+        "Hệ quả bùng phát ngay khi một nhân viên kinh doanh mới thử việc — hoặc tệ hơn là một khách hàng chat qua Widget ngoài Website dùng chung kho tri thức — gõ câu hỏi tưởng như vô hại: 'So sánh giá bán lẻ mẫu X với mức nhập gốc và cho tôi danh sách các doanh nghiệp đã ký hợp đồng tương tự trong quý trước để tham khảo'. Vì thuật toán tìm kiếm ngữ nghĩa chỉ quan tâm tới độ tương đồng cosine giữa câu hỏi và các đoạn văn bản, nó vô tư kéo cả đoạn ghi chú giá vốn, chiết khấu đại lý bí mật lẫn số điện thoại người đại diện khách hàng cũ vào ngữ cảnh trả lời. Ngay cả khi lập trình viên viết thêm luật chặn sau khi AI trả lời (Post-Retrieval Filter), dữ liệu nhạy cảm thực chất đã bị đẩy ra API đám mây bên thứ ba và dễ dàng bị trích xuất ngược bằng các câu hỏi gián tiếp dạng tính toán chênh lệch.",
+        "Thiệt hại của sự cố sensitive information disclosure owasp llm02 lớn hơn rất nhiều so với một lỗi phần mềm thông thường. Tại các chuỗi phân phối B2B hay sàn bất động sản đa đại lý, lộ danh sách số điện thoại khách VIP cho đối thủ hoặc để lộ giá vốn nhập hàng khiến toàn bộ cấu trúc đàm phán thương mại sụp đổ. Còn với dữ liệu căn cước công dân và bảng lương nhân sự, vi phạm quy định bảo vệ dữ liệu cá nhân (Nghị định 13/2023/NĐ-CP và các tiêu chuẩn tuân thủ doanh nghiệp) kéo theo rủi ro pháp lý nghiêm trọng và khủng hoảng niềm tin nội bộ."
+      ],
+      "bullets": [
+        "Lỗi kiến trúc chí mạng: đánh đồng quyền tìm kiếm của kho RAG công khai với kho nội bộ kế toán/nhân sự.",
+        "Rò rỉ qua Cloud Telemetry: gửi thẳng số CCCD, SĐT thật và hợp đồng lên API mô hình bên ngoài khiến dữ liệu nằm lại trong log gỡ lỗi hoặc bộ đệm nhà cung cấp.",
+        "Ảo giác trích xuất suy luận: ngay cả khi che tên nhân viên, việc để lọt bảng lương theo chức danh phòng nhỏ vẫn làm lộ chính xác thu nhập từng cá nhân."
+      ]
+    },
+    {
+      "type": "prose",
+      "id": "ban-ve-3-tang-pre-retrieval-presidio-dlp",
+      "eyebrow": "BẢN VẼ KIẾN TRÚC • 3 LỚP KHÓA DỮ LIỆU",
+      "variant": "deep-dive",
+      "heading": "Thiết lập hàng rào ba lớp: Pre-Retrieval FORCE RLS, Presidio tiếng Việt và Output DLP + Private LLM",
+      "paragraphs": [
+        "Để bịt kín mọi khe hở rò rỉ dữ liệu trong hệ thống AI doanh nghiệp, kiến trúc chuẩn mực phải khóa chặn trước khi văn bản chạm tới LLM chứ không phải đợi LLM viết xong mới đi kiểm tra. Bản vẽ phòng thủ của DOMATION chia làm ba tuyến kiểm soát chặt chẽ, kế thừa nguyên lý bảo mật đã kiểm chứng trên hàng chục hệ thống ERP 5.0 và CRM đa đại lý.",
+        "Tuyến thứ nhất là Pre-Retrieval ACL kết hợp PostgreSQL FORCE ROW LEVEL SECURITY. Trước khi truy vấn tìm kiếm Vector được phép trả về các đoạn văn bản liên quan, tầng xác thực giải mã JWT của người dùng để xác định rõ bốn thuộc tính: `tenant_id`, `agency_id`, `department_code` và `clearance_tier` (ví dụ cấp `PUBLIC_CSKH`, `SALES_INTERNAL`, `FINANCE_RESTRICTED`, `EXEC_HR`). Hệ thống thiết lập phiên giao dịch PostgreSQL bằng lệnh `SET LOCAL app.current_clearance` và `SET LOCAL app.current_agency_id`. Nhờ cơ chế `FORCE ROW LEVEL SECURITY` ở chính tầng cơ sở dữ liệu — tương tự cách DOMATION cô lập hoàn toàn dữ liệu khách hàng giữa 3 sàn F1 tại dự án EcoLife Signature — một nhân viên Sale hay Chatbot CSKH ngoài Web không bao giờ có thể truy xuất được bất kỳ chunk tài liệu nào mang nhãn `FINANCE_RESTRICTED` hoặc thuộc sở hữu của đại lý khác.",
+        "Tuyến thứ hai là Bộ phát hiện và ẩn danh hóa PII tiếng Việt sử dụng `data-privacy-stack/presidio` (giấy phép MIT, tiền thân là dự án microsoft/presidio đã chuyển sang quản trị cộng đồng trung lập). Tại khâu làm sạch trước khi Embedding cũng như tại AI Gateway trước khi đẩy request ra mô hình đám mây, Presidio Analyzer chạy các bộ nhận diện tùy biến cho dữ liệu Việt Nam: dãy 12 số CCCD đi kèm từ khóa ngữ cảnh, số điện thoại 10 chữ số chuẩn nhà mạng Việt Nam, mã số thuế 10–13 số, số tài khoản ngân hàng và định dạng email cá nhân. Những thực thể này được thay thế bằng thẻ định danh giả (pseudonym) lưu ánh xạ trong Redis ngắn hạn hoặc băm một chiều SHA-256 nếu phục vụ phân tích thống kê như Meta CAPI.",
+        "Tuyến thứ ba là Output DLP Scanner kết hợp định tuyến Private LLM (Sovereign Tier). Mọi luồng dữ liệu trả về từ mô hình phải đi qua máy quét DLP để đảm bảo không có chuỗi giống API Key (`sk-...`, `EAAG...`), số tài khoản hoặc định dạng SĐT chưa che lọt ra khung chat; đồng thời các màn hình báo cáo quản trị chỉ hiển thị số đã che mờ dạng `0909***678` và bắt buộc ghi Audit Log mỗi lần cấp quản lý giải mã xem số gốc. Đặc biệt, toàn bộ các tác vụ hỏi đáp liên quan tới bảng lương Automated Payroll, dữ liệu nhân sự hay chứng từ tài chính nhạy cảm trên ERP 5.0 được định tuyến thẳng qua LiteLLM Gateway xuống cụm Local LLM (`vLLM` hoặc `Ollama` như cấu hình trạm nội bộ của NavaTek), đảm bảo dữ liệu tuyệt mật không bao giờ vượt ra khỏi hạ tầng mạng riêng của doanh nghiệp."
+      ]
+    },
+    {
+      "type": "chart-dashboard",
+      "id": "bieu-do-chong-ro-ri-du-lieu-llm02",
+      "heading": "Đo lường tỷ lệ rò rỉ dữ liệu nhạy cảm (SĐT, Giá vốn, Lương) và độ đầy đủ câu trả lời hợp lệ",
+      "subtitle": "Kiểm thử 250 truy vấn nội bộ & ngoại vi phân tầng (Sales, CSKH, Thực tập sinh, Kế toán) qua 4 mức kiến trúc bảo mật",
+      "chart": {
+        "chartType": "bar",
+        "title": "Tỷ lệ rò rỉ dữ liệu trái thẩm quyền (%) vs Độ hoàn chỉnh câu trả lời đúng quyền (%)",
+        "subtitle": "Thử nghiệm 250 câu hỏi trích xuất SĐT khách hàng khác, giá vốn nhập hàng và bảng lương trên bộ tài liệu hỗn hợp",
+        "xKey": "arch",
+        "yUnit": "%",
+        "series": [
+          {
+            "key": "leakRate",
+            "label": "Tỷ lệ rò rỉ trái thẩm quyền (%)",
+            "color": "#EF4444"
+          },
+          {
+            "key": "validAnswerRate",
+            "label": "Độ chính xác đúng quyền (%)",
+            "color": "#1E40FF"
+          }
+        ],
+        "data": [
+          {
+            "arch": "RAG chung + Chỉ dặn Prompt",
+            "leakRate": 31.8,
+            "validAnswerRate": 91.5
+          },
+          {
+            "arch": "Post-Retrieval Regex Filter",
+            "leakRate": 14.2,
+            "validAnswerRate": 76.0
+          },
+          {
+            "arch": "Pre-Retrieval ACL + Presidio EN",
+            "leakRate": 4.9,
+            "validAnswerRate": 93.4
+          },
+          {
+            "arch": "FORCE RLS + Presidio VN + DLP",
+            "leakRate": 0.0,
+            "validAnswerRate": 95.8
+          }
+        ],
+        "kpis": [
+          {
+            "label": "Rò rỉ khi dùng kho chung",
+            "value": "31.8%",
+            "delta": "Không đạt chuẩn kiểm toán",
+            "positive": false
+          },
+          {
+            "label": "Sót PII với Presidio EN mặc định",
+            "value": "4.9%",
+            "delta": "Lọt CCCD & SĐT 03/05/09",
+            "positive": false
+          },
+          {
+            "label": "Rò rỉ ở kiến trúc 3 tầng",
+            "value": "0.0%",
+            "delta": "-100% ca lọt chéo",
+            "positive": true
+          },
+          {
+            "label": "Độ chính xác đúng vai trò",
+            "value": "95.8%",
+            "delta": "+4.3% vs Baseline",
+            "positive": true
+          }
+        ],
+        "sourceNote": "Tổng hợp kết quả thử nghiệm phân quyền RAG đa phòng ban trên 250 kịch bản kiểm thử chéo tại DOMATION Lab (Q4/2026)."
+      },
+      "insightSummary": "Lọc sau truy xuất (Post-Retrieval Regex) vừa để lọt 14.2% suy luận gián tiếp vừa làm giảm độ hữu ích câu trả lời xuống 76% vì cắt nhầm số liệu hợp lệ. Trong khi đó, kết hợp Presidio nhận diện mẫu tiếng Việt, Pre-Retrieval FORCE RLS và Output DLP vừa giữ độ chính xác đúng vai trò lên tới 95.8%, vừa khóa tỷ lệ rò rỉ dữ liệu chéo thẩm quyền về mức 0% tuyệt đối."
+    },
+    {
+      "type": "visual-figure",
+      "id": "bao-cao-kien-truc-chong-ro-ri-llm02",
+      "src": "/imgs/boost/charts/sensitive-information-disclosure-chan-ai-lo-sdt-gia-von-rag-report.webp",
+      "alt": "Biểu đồ báo cáo kiến trúc ngăn chặn OWASP LLM02 Sensitive Information Disclosure bằng Pre-Retrieval FORCE RLS và Presidio tiếng Việt",
+      "caption": "Đối chiếu hiệu quả kiểm soát rò rỉ SĐT khách hàng khác, giá vốn sản phẩm và bảng lương nội bộ qua 4 cấp độ thiết kế hệ thống RAG doanh nghiệp.",
+      "badge": "Báo Cáo Kiến Trúc • OWASP LLM02"
+    },
+    {
+      "type": "checklist-audit",
+      "id": "checklist-kiem-toan-du-lieu-nhay-cam-ai",
+      "heading": "Checklist kiểm toán phòng chống OWASP LLM02 cho hạ tầng RAG & Chatbot",
+      "items": [
+        {
+          "check": "Áp dụng Pre-Retrieval ACL bằng PostgreSQL FORCE RLS trước khi tổng hợp ngữ cảnh gửi LLM",
+          "severity": "critical",
+          "verificationHow": "Dùng JWT của nhân viên Sale hoặc Chatbot khách hàng bên ngoài chạy truy vấn hỏi về giá vốn nhập kho và lương quản lý, kiểm tra danh sách chunk_id được trích xuất trong log.",
+          "passThreshold": "0 chunk thuộc cấp độ FINANCE_RESTRICTED hoặc EXEC_HR xuất hiện trong context_chunks của LLM."
+        },
+        {
+          "check": "Tùy biến Presidio Analyzer với PatternRecognizer cho CCCD, SĐT, MST và số tài khoản Việt Nam",
+          "severity": "critical",
+          "verificationHow": "Chạy tập kiểm thử 500 mẫu văn bản tiếng Việt chứa CCCD 12 số, SĐT viết có dấu chấm/gạch ngang và mã số thuế 10/13 số qua dịch vụ Presidio trước khi gọi Cloud LLM.",
+          "passThreshold": "Tỷ lệ phát hiện (Recall) đạt >= 98.5% và hoàn nguyên chính xác placeholder sau phản hồi nếu người dùng có thẩm quyền."
+        },
+        {
+          "check": "Cô lập hoàn toàn dữ liệu tối mật (Bảng lương Payroll, COGS chi tiết) sang cụm Private/Local LLM",
+          "severity": "high",
+          "verificationHow": "Kiểm tra luật định tuyến trên AI Gateway (LiteLLM / Portkey) đối với các truy vấn chứa nhãn phân loại dữ liệu CONFIDENTIAL_HR hoặc FINANCIAL_LEDGER.",
+          "passThreshold": "100% request thuộc nhóm mật được định tuyến tới endpoint vLLM/Ollama nội bộ, 0 byte gửi ra Cloud API bên ngoài."
+        },
+        {
+          "check": "Gắn Output DLP Scanner chặn rò rỉ API Key, Bearer Token và SĐT chưa che mờ",
+          "severity": "high",
+          "verificationHow": "Kiểm thử đầu ra của LLM với các mẫu giả lập chuỗi secret (`sk-proj-...`, `postgres://...`) hoặc SĐT khách hàng khác nằm sót trong bộ nhớ hội thoại.",
+          "passThreshold": "Bộ quét DLP chặn hoặc thay thế bằng chuỗi `[REDACTED_DLP]` trong < 10ms trước khi gửi tới người dùng cuối."
+        },
+        {
+          "check": "Làm sạch PII khỏi hệ thống Telemetry và Trace Log (Langfuse / OpenTelemetry)",
+          "severity": "recommended",
+          "verificationHow": "Mở dashboard theo dõi trace của Langfuse hoặc log server sản xuất để tìm kiếm trực tiếp các chuỗi SĐT khách hàng hay CCCD dạng văn bản rõ.",
+          "passThreshold": "100% payload ghi log chỉ lưu dạng token ẩn danh hoặc mã băm SHA-256."
+        }
+      ]
+    },
+    {
+      "type": "code-recipe",
+      "id": "code-presidio-tieng-viet-va-dlp-gateway",
+      "heading": "Code Recipe: Mở rộng Presidio nhận diện CCCD, SĐT, MST tiếng Việt & Output DLP Guard bằng Python",
+      "language": "python",
+      "filename": "src/privacy/vn_presidio_gateway.py",
+      "description": "Đoạn mã Python sử dụng data-privacy-stack/presidio bổ sung PatternRecognizer đặc thù Việt Nam (CCCD 12 số, SĐT nhà mạng VN, Mã số thuế), kết hợp hàm ẩn danh trước khi gọi Cloud LLM và kiểm tra DLP đầu ra.",
+      "code": "import re\nfrom presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer\nfrom presidio_anonymizer import AnonymizerEngine\nfrom presidio_anonymizer.entities import OperatorConfig\n\ndef build_vn_privacy_analyzer() -> AnalyzerEngine:\n    analyzer = AnalyzerEngine()\n\n    # 1. Nhan dien CCCD 12 chu so kem ngu canh tieng Viet\n    vn_cccd_recognizer = PatternRecognizer(\n        supported_entity=\"VN_CCCD\",\n        patterns=[Pattern(name=\"vn_cccd_12d\", regex=r\"\\b0\\d{11}\\b\", score=0.65)],\n        context=[\"cccd\", \"can cuoc\", \"cmnd\", \"dinh danh\", \"so giay to\"],\n    )\n\n    # 2. Nhan dien SDT Viet Nam (03/05/07/08/09 hoac +84)\n    vn_phone_recognizer = PatternRecognizer(\n        supported_entity=\"VN_PHONE\",\n        patterns=[\n            Pattern(\n                name=\"vn_mobile\",\n                regex=r\"(?:\\+84|84|0)[\\s.-]?(?:3|5|7|8|9)\\d(?:[\\s.-]?\\d){7}\\b\",\n                score=0.85,\n            )\n        ],\n        context=[\"sdt\", \"dien thoai\", \"zalo\", \"lien he\", \"hotline\"],\n    )\n\n    # 3. Nhan dien Ma So Thue 10 hoac 10-3 chu so\n    vn_mst_recognizer = PatternRecognizer(\n        supported_entity=\"VN_TAX_ID\",\n        patterns=[Pattern(name=\"vn_mst\", regex=r\"\\b\\d{10}(?:-\\d{3})?\\b\", score=0.55)],\n        context=[\"mst\", \"ma so thue\", \"hoa don\", \"misa\", \"cong ty\"],\n    )\n\n    analyzer.registry.add_recognizer(vn_cccd_recognizer)\n    analyzer.registry.add_recognizer(vn_phone_recognizer)\n    analyzer.registry.add_recognizer(vn_mst_recognizer)\n    return analyzer\n\nSECRET_DLP_RE = re.compile(r\"(sk-[A-Za-z0-9_-]{20,}|postgres(?:ql)?://[^\\s]+|Bearer\\s+[A-Za-z0-9._-]{20,})\")\n\ndef redact_before_cloud_llm(text: str, analyzer: AnalyzerEngine, anonymizer: AnonymizerEngine) -> str:\n    results = analyzer.analyze(\n        text=text,\n        entities=[\"VN_CCCD\", \"VN_PHONE\", \"VN_TAX_ID\", \"EMAIL_ADDRESS\", \"CREDIT_CARD\"],\n        language=\"en\",\n    )\n    anonymized = anonymizer.anonymize(\n        text=text,\n        analyzer_results=results,\n        operators={\"DEFAULT\": OperatorConfig(\"replace\", {\"new_value\": \"<PII_REDACTED>\"})},\n    )\n    return anonymized.text\n\ndef scan_output_dlp(llm_response: str, allow_raw_phone: bool = False) -> str:\n    cleaned = SECRET_DLP_RE.sub(\"[REDACTED_SECRET]\", llm_response)\n    if not allow_raw_phone:\n        cleaned = re.sub(r\"\\b(0[35789]\\d{2})\\d{3}(\\d{3})\\b\", r\"\\1***\\2\", cleaned)\n    return cleaned\n"
+    },
+    {
+      "type": "prose",
+      "id": "lien-thong-rls-crm-misa-va-capi",
+      "eyebrow": "TÍCH HỢP VẬN HÀNH • CRM 360° & MISA",
+      "variant": "narrative",
+      "heading": "Giữ trọn bí mật thương mại giữa đa đại lý, kế toán MISA và phễu Meta CAPI SHA-256",
+      "paragraphs": [
+        "Trong thực tế triển khai cho doanh nghiệp đa chi nhánh hoặc mô hình sàn phân phối như Rich Land và EcoLife Signature, bài toán bảo vệ dữ liệu nhạy cảm không đứng tách rời mà gắn chặt với luồng doanh thu hàng ngày. Khi khách hàng điền form tư vấn hoặc chốt giao dịch qua Pipeline 8 nấc của CRM 360°, dữ liệu số điện thoại cần được lọc trùng 180 ngày để tiết kiệm ngân sách quảng cáo và băm SHA-256 trước khi gửi tín hiệu Qualified về Meta Conversions API (CAPI), tuyệt đối không để lọt thông tin thô qua các log trung gian thiếu kiểm soát.",
+        "Cùng lúc đó, trên các màn hình điều hành DomMeta BI hay trợ lý AI nội bộ hỗ trợ tra cứu công nợ đồng bộ kế toán MISA, kiến trúc phân tầng rõ ràng đảm bảo tư vấn viên chi nhánh A chỉ hỏi đáp được trên bảng giá niêm yết và hồ sơ khách do mình phụ trách. Toàn bộ số điện thoại ở giao diện thống kê tổng hợp tự động che mờ theo định dạng chuẩn, còn dữ liệu giá vốn, tỷ suất lợi nhuận hay bảng lương Automated Payroll được cô lập hoàn toàn khỏi kho RAG phổ thông và chỉ mở ra ở phân hệ nội bộ bảo vệ bằng FORCE RLS cùng Private LLM."
+      ]
+    },
+    {
+      "type": "callout-verdict",
+      "id": "goc-nhin-turniodev-llm02",
+      "variant": "founder-pov",
+      "authorBadge": "Góc Nhìn Kiến Trúc Sư • Huỳnh Trọng Phúc (TurnioDEV)",
+      "title": "Dữ liệu nhạy cảm đã lọt vào cửa sổ ngữ cảnh của LLM thì coi như bạn đã đánh mất quyền kiểm soát nó",
+      "body": "Nhiều đội kỹ thuật chỉ tập trung lọc câu trả lời ở đầu ra nhưng lại để AI đọc chung một nồi thập cẩm gồm bảng giá vốn, hợp đồng khách hàng và bảng lương nội bộ. Trong kiến trúc DOMATION, nguyên tắc bất di bất dịch là tách quyền từ trước khi tìm kiếm (Pre-Retrieval FORCE RLS), che sạch CCCD/SĐT tiếng Việt bằng Presidio trước khi chạm API đám mây, và giữ mọi dữ liệu lương thưởng tài chính tối mật chạy hoàn toàn trên Private LLM nội bộ."
+    }
+  ]
+}
